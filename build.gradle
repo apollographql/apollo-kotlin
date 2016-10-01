@@ -12,7 +12,6 @@ ext {
       kotlinReflect: "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion",
       kotlinGradlePlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
       junit: 'junit:junit:4.12',
-      retrolambda: 'me.tatarka:gradle-retrolambda:3.3.0'
   ]
 
   isCi = "true".equals(System.getenv('CI'))
