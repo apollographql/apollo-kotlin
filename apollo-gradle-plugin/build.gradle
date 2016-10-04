@@ -1,0 +1,16 @@
+apply plugin: 'kotlin'
+apply plugin: 'idea'
+apply plugin: 'java-gradle-plugin'
+
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+
+dependencies {
+  compileOnly gradleApi()
+  compile dep.kotlinStdLib
+  compile dep.androidPlugin
+
+  testCompile dep.junit
+}
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

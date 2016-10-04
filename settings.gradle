@@ -1,0 +1,3 @@
+rootProject.name = 'apollo-android'
+
+include 'apollo-gradle-plugin'
