@@ -1,3 +1,4 @@
 rootProject.name = 'apollo-android'
 
+include ':apollo-compiler'
 include 'apollo-gradle-plugin'
