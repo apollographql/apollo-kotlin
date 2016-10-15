@@ -13,4 +13,4 @@ The Apollo community builds and maintains a collection of utilities designed to 
 
 The [React integration](/react) works with [React Native](https://facebook.github.io/react-native/) on both iOS and Android without changes.
 
-You can learn more about the Apollo project at the project's [home page](http://apollostack.com).
+You can learn more about the Apollo project at the project's [home page](http://dev.apollodata.com/).
