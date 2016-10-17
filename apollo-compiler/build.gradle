@@ -1,0 +1,37 @@
+apply plugin: 'java'
+apply plugin: 'kotlin'
+
+targetCompatibility = JavaVersion.VERSION_1_6
+sourceCompatibility = JavaVersion.VERSION_1_6
+
+sourceSets {
+  main.java.srcDir "src/main/build"
+  main.java.srcDir "src/generated/kotlin"
+}
+
+dependencies {
+  compile dep.javaPoet
+  compile dep.kotlinStdLib
+
+  testCompile dep.junit
+  testCompile dep.truth
+}
+
+task pluginVersion {
+  def outputDir = file("src/generated/kotlin")
+
+  inputs.property 'version', version
+  outputs.dir outputDir
+
+  doLast {
+    def versionFile = file("$outputDir/com/apollostack/android/Version.kt")
+    versionFile.parentFile.mkdirs()
+    versionFile.text = """// Generated file. Do not edit!
+package com.apollostack.android
+val VERSION = "${project.version}"
+"""
+  }
+}
+tasks.getByName('compileKotlin').dependsOn('pluginVersion')
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
