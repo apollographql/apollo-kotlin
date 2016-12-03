@@ -18,7 +18,7 @@ class GraphqlCompilerTest {
 import java.lang.String;
 
 interface TwoHeroes {
-  Character k2();
+  Character r2();
 
   Character luke();
 
