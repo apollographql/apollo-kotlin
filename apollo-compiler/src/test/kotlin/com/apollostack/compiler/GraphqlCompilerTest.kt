@@ -8,7 +8,30 @@ import org.junit.Test
 import java.io.File
 
 class GraphqlCompilerTest {
-  @Test fun simpleQuery() {
+  @Test fun heroName() {
+    val compiler = GraphqlCompiler()
+    compiler.write("src/test/data/HeroName.json")
+    val outputFile = File("build/generated/source/apollo/test/HeroName.java")
+    assertThat(outputFile.readText()).isEqualTo(
+        """package test;
+
+import java.lang.String;
+
+interface HeroName {
+  Character hero();
+
+  interface Character {
+    String name();
+  }
+}
+""")
+    val source = JavaFileObjects.forSourceLines("test.TwoHeroes", outputFile.readLines())
+    assertAbout(javaSources())
+        .that(listOf(source))
+        .compilesWithoutError()
+  }
+
+  @Test fun twoHeroes() {
     val compiler = GraphqlCompiler()
     compiler.write("src/test/data/TwoHeroes.json")
     val outputFile = File("build/generated/source/apollo/test/TwoHeroes.java")
