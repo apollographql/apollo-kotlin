@@ -15,6 +15,7 @@ dependencies {
 
   testCompile dep.junit
   testCompile dep.truth
+  testCompile dep.compiletesting
 }
 
 task pluginVersion {
