@@ -55,4 +55,45 @@ interface TwoHeroes {
         .that(listOf(source))
         .compilesWithoutError()
   }
+
+  @Test fun heroDetails() {
+    val compiler = GraphqlCompiler()
+    compiler.write("src/test/data/HeroDetails.json")
+    val outputFile = File("build/generated/source/apollo/test/HeroDetails.java")
+    assertThat(outputFile.readText()).isEqualTo(
+      """package test;
+
+import java.lang.String;
+import java.util.List;
+
+interface HeroDetails {
+  Character hero();
+
+  interface Character {
+    String name();
+
+    FriendsConnection friendsConnection();
+
+    interface FriendsConnection {
+      int totalCount();
+
+      List<FriendsEdge> edges();
+
+      interface FriendsEdge {
+        Character node();
+
+        interface Character {
+          String name();
+        }
+      }
+    }
+  }
+}
+""")
+
+    val source = JavaFileObjects.forSourceLines("test.HeroDetails", outputFile.readLines())
+    assertAbout(javaSources())
+      .that(listOf(source))
+      .compilesWithoutError()
+  }
 }

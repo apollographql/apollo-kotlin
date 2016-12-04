@@ -16,12 +16,8 @@ open class GraphqlCompiler {
     // TODO: Handle multiple or no operations
     val operation = ir.operations.first()
     val methods = operation.fields.map { it.toMethodSpec() }
-    val customTypes = operation.fields.filter { it.fields.any() }.distinct().map {
-      // TODO: Also need to recurse into inner types
-      TypeSpec.interfaceBuilder(it.type)
-          .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-          .addMethods(it.fields.map { it.toMethodSpec() })
-          .build()
+    val customTypes = operation.fields.filter { it.fields?.any() ?: false }.distinct().map {
+      it.toInterfaceTypeSpec()
     }
     val typeSpec = TypeSpec.interfaceBuilder(operation.operationName)
         .addMethods(methods)
@@ -40,11 +36,23 @@ open class GraphqlCompiler {
 
   private fun String.toTypeName(): TypeName =
       // TODO: Handle other primitive types
-      if (this == "String!") {
-        ClassName.get(String::class.java)
-      } else {
-        ClassName.get("", this)
+      // TODO: don't ignore "!", add @NotNull annotation
+      when {
+        equals("String!") -> ClassName.get(String::class.java)
+        equals("Int") -> TypeName.INT
+        startsWith('[') && endsWith(']') -> ParameterizedTypeName.get(ClassName.get(List::class.java), ClassName.get("", removePrefix("[").removeSuffix("]")))
+        else -> ClassName.get("", this.removeSuffix("!"))
       }
+
+  private fun Field.toInterfaceTypeSpec(): TypeSpec {
+    val innerTypes = fields!!.filter { it.fields?.any() ?: false }.distinct().map { it.toInterfaceTypeSpec() }
+    // TODO: don't ignore "!", add @NotNull annotation
+    return TypeSpec.interfaceBuilder(type.removePrefix("[").removeSuffix("]").removeSuffix("!"))
+      .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+      .addMethods(fields.map { it.toMethodSpec() })
+      .addTypes(innerTypes)
+      .build()
+  }
 
   companion object {
     const val FILE_EXTENSION = "graphql"
