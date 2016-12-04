@@ -9,7 +9,7 @@ import java.io.File
 open class GraphqlCompiler {
   private val moshi = Moshi.Builder().build()
 
-  fun write(relativePath: String): Status {
+  fun write(relativePath: String) {
     val irAdapter = moshi.adapter(QueryIntermediateRepresentation::class.java)
     val ir = irAdapter.fromJson(File(relativePath).readText())
     // TODO: Handle multiple or no operations
@@ -21,7 +21,6 @@ open class GraphqlCompiler {
         .build()
     JavaFile.builder("test", typeSpec).build()
         .writeTo(OUTPUT_DIRECTORY.fold(File("build"), ::File))
-    return Status.Success()
   }
 
   companion object {
