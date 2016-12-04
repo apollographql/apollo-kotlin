@@ -6,7 +6,7 @@ import com.squareup.javapoet.TypeSpec
 import java.util.*
 import javax.lang.model.element.Modifier
 
-class CustomTypeCollector(val fields: List<Field>) {
+class FieldCollector(val fields: List<Field>) {
   private val typeMap = HashMap<String, Field>()
 
   init {

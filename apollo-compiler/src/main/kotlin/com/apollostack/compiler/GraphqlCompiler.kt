@@ -14,10 +14,10 @@ open class GraphqlCompiler {
     val ir = irAdapter.fromJson(File(relativePath).readText())
     // TODO: Handle multiple or no operations
     val operation = ir.operations.first()
-    val customTypeCollector = CustomTypeCollector(operation.fields)
+    val fieldCollector = FieldCollector(operation.fields)
     val typeSpec = TypeSpec.interfaceBuilder(operation.operationName)
-        .addMethods(customTypeCollector.collectMethods())
-        .addTypes(customTypeCollector.collectTypes())
+        .addMethods(fieldCollector.collectMethods())
+        .addTypes(fieldCollector.collectTypes())
         .build()
     JavaFile.builder("test", typeSpec).build()
         .writeTo(OUTPUT_DIRECTORY.fold(File("build"), ::File))
