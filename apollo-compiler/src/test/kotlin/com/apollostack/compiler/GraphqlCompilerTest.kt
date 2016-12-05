@@ -63,6 +63,7 @@ public interface TwoHeroes {
     assertThat(outputFile.readText()).isEqualTo(
       """package test;
 
+import java.lang.Integer;
 import java.lang.String;
 import java.util.List;
 
@@ -76,7 +77,7 @@ public interface HeroDetails {
   }
 
   interface CharacterFriendsConnection {
-    int totalCount();
+    Integer totalCount();
 
     List<CharacterFriendsConnectionFriendsEdge> edges();
   }
@@ -125,5 +126,54 @@ public interface TwoHeroesUnique {
     assertAbout(javaSources())
         .that(listOf(source))
         .compilesWithoutError()
+  }
+
+  @Test fun graphQlScalarTypes() {
+    compiler.write("src/test/data/ScalarTypes.json")
+    val outputFile = File("build/generated/source/apollo/test/ScalarTypes.java")
+    assertThat(outputFile.readText()).isEqualTo(
+      """package test;
+
+import java.lang.Boolean;
+import java.lang.Float;
+import java.lang.Integer;
+import java.lang.Long;
+import java.lang.String;
+import java.util.List;
+
+public interface ScalarTypes {
+  String graphQlString();
+
+  Long graphQlIdNullable();
+
+  long graphQlIdNonNullable();
+
+  Integer graphQlIntNullable();
+
+  int graphQlIntNonNullable();
+
+  Float graphQlFloatNullable();
+
+  float graphQlFloatNonNullable();
+
+  Boolean graphQlBooleanNullable();
+
+  boolean graphQlBooleanNonNullable();
+
+  List<Integer> graphQlListOfInt();
+
+  List<SomeObject> graphQlListOfObjects();
+
+  List<List<Integer>> graphQlNestedList();
+
+  interface SomeObject {
+    int someField();
+  }
+}
+""")
+    val source = JavaFileObjects.forSourceLines("test.ScalarTypes", outputFile.readLines())
+    assertAbout(javaSources())
+      .that(listOf(source))
+      .compilesWithoutError()
   }
 }

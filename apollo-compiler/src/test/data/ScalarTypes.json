@@ -1,0 +1,108 @@
+{
+  "operations": [
+    {
+      "operationName": "ScalarTypes",
+      "operationType": "query",
+      "variables": [],
+      "source": "",
+      "fields": [
+        {
+          "responseName": "graphQlString",
+          "fieldName": "graphQlString",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "graphQlIdNullable",
+          "fieldName": "graphQlIdNullable",
+          "type": "ID",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "graphQlIdNonNullable",
+          "fieldName": "graphQlIdNonNullable",
+          "type": "ID!",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "graphQlIntNullable",
+          "fieldName": "graphQlIntNullable",
+          "type": "Int",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "graphQlIntNonNullable",
+          "fieldName": "graphQlIntNonNullable",
+          "type": "Int!",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "graphQlFloatNullable",
+          "fieldName": "graphQlFloatNullable",
+          "type": "Float",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "graphQlFloatNonNullable",
+          "fieldName": "graphQlFloatNonNullable",
+          "type": "Float!",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "graphQlBooleanNullable",
+          "fieldName": "graphQlBooleanNullable",
+          "type": "Boolean",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "graphQlBooleanNonNullable",
+          "fieldName": "graphQlBooleanNonNullable",
+          "type": "Boolean!",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "graphQlListOfInt",
+          "fieldName": "graphQlListOfInt",
+          "type": "[Int]",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "graphQlListOfObjects",
+          "fieldName": "graphQlListOfObjects",
+          "type": "[SomeObject]",
+          "fields": [
+            {
+              "responseName": "someField",
+              "fieldName": "someField",
+              "type": "Int!",
+              "fragmentSpreads": [],
+              "inlineFragments": []
+            }
+          ],
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "graphQlNestedList",
+          "fieldName": "graphQlNestedList",
+          "type": "[[Int]]",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentsReferenced": []
+    }
+  ],
+  "fragments": [],
+  "typesUsed": []
+}
