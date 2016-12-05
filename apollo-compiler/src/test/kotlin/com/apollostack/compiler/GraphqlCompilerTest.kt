@@ -164,6 +164,8 @@ public interface ScalarTypes {
 
   List<SomeObject> graphQlListOfObjects();
 
+  List<List<Integer>> graphQlNestedList();
+
   interface SomeObject {
     int someField();
   }
