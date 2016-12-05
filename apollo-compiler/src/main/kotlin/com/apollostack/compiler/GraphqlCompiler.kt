@@ -14,12 +14,8 @@ open class GraphqlCompiler {
     val ir = irAdapter.fromJson(File(relativePath).readText())
     // TODO: Handle multiple or no operations
     val operation = ir.operations.first()
-    val fieldCollector = FieldCollector(operation.fields)
-    val typeSpec = TypeSpec.interfaceBuilder(operation.operationName)
-        .addMethods(fieldCollector.collectMethods())
-        .addTypes(fieldCollector.collectTypes())
-        .build()
-    JavaFile.builder("test", typeSpec).build()
+    val typeSpecBuilder = OperationTypeSpecBuilder(operation.operationName, operation.fields)
+    JavaFile.builder("test", typeSpecBuilder.build()).build()
         .writeTo(OUTPUT_DIRECTORY.fold(File("build"), ::File))
   }
 

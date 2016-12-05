@@ -18,7 +18,7 @@ class GraphqlCompilerTest {
 
 import java.lang.String;
 
-interface HeroName {
+public interface HeroName {
   Character hero();
 
   interface Character {
@@ -26,7 +26,7 @@ interface HeroName {
   }
 }
 """)
-    val source = JavaFileObjects.forSourceLines("test.TwoHeroes", outputFile.readLines())
+    val source = JavaFileObjects.forSourceLines("test.HeroName", outputFile.readLines())
     assertAbout(javaSources())
         .that(listOf(source))
         .compilesWithoutError()
@@ -40,7 +40,7 @@ interface HeroName {
 
 import java.lang.String;
 
-interface TwoHeroes {
+public interface TwoHeroes {
   Character r2();
 
   Character luke();
@@ -56,6 +56,47 @@ interface TwoHeroes {
         .compilesWithoutError()
   }
 
+  @Test fun heroDetails() {
+    val compiler = GraphqlCompiler()
+    compiler.write("src/test/data/HeroDetails.json")
+    val outputFile = File("build/generated/source/apollo/test/HeroDetails.java")
+    assertThat(outputFile.readText()).isEqualTo(
+      """package test;
+
+import java.lang.String;
+import java.util.List;
+
+public interface HeroDetails {
+  Character hero();
+
+  interface Character {
+    String name();
+
+    CharacterFriendsConnection friendsConnection();
+  }
+
+  interface CharacterFriendsConnection {
+    int totalCount();
+
+    List<CharacterFriendsConnectionFriendsEdge> edges();
+  }
+
+  interface CharacterFriendsConnectionFriendsEdge {
+    CharacterFriendsConnectionFriendsEdgeCharacter node();
+  }
+
+  interface CharacterFriendsConnectionFriendsEdgeCharacter {
+    String name();
+  }
+}
+""")
+
+    val source = JavaFileObjects.forSourceLines("test.HeroDetails", outputFile.readLines())
+    assertAbout(javaSources())
+      .that(listOf(source))
+      .compilesWithoutError()
+  }
+
   @Test fun twoHeroesUnique() {
     compiler.write("src/test/data/TwoHeroesUnique.json")
     val outputFile = File("build/generated/source/apollo/test/TwoHeroesUnique.java")
@@ -64,7 +105,7 @@ interface TwoHeroes {
 
 import java.lang.String;
 
-interface TwoHeroesUnique {
+public interface TwoHeroesUnique {
   R2Character r2();
 
   LukeCharacter luke();
@@ -80,7 +121,7 @@ interface TwoHeroesUnique {
   }
 }
 """)
-    val source = JavaFileObjects.forSourceLines("test.TwoHeroes", outputFile.readLines())
+    val source = JavaFileObjects.forSourceLines("test.TwoHeroesUnique", outputFile.readLines())
     assertAbout(javaSources())
         .that(listOf(source))
         .compilesWithoutError()
