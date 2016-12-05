@@ -27,5 +27,5 @@ data class Field(
 
   private fun String.toTypeName(): TypeName = GraphQlType.resolveByName(this).toJavaTypeName()
 
-  private fun String.normalizeTypeName() = removeSuffix("!").removePrefix("[").removeSuffix("]").removeSuffix("!")
+  private fun String.normalizeTypeName() = removeSuffix("!").removeSurrounding(prefix = "[", suffix = "]").removeSuffix("!")
 }

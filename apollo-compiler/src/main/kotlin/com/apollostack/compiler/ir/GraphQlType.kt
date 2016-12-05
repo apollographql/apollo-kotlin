@@ -34,7 +34,7 @@ sealed class GraphQlType(val nullable: Boolean) {
 
   companion object {
 
-    private fun String.normalizeTypeName() = removeSuffix("!").removePrefix("[").removeSuffix("]").removeSuffix("!")
+    private fun String.normalizeTypeName() = removeSuffix("!").removeSurrounding(prefix = "[", suffix = "]").removeSuffix("!")
 
     fun resolveByName(typeName: String): GraphQlType = when {
       typeName.startsWith("String") -> GraphQlString(!typeName.endsWith("!"))
