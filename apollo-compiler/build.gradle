@@ -12,9 +12,11 @@ sourceSets {
 dependencies {
   compile dep.javaPoet
   compile dep.kotlinStdLib
+  compile dep.moshi
 
   testCompile dep.junit
   testCompile dep.truth
+  testCompile dep.compiletesting
 }
 
 task pluginVersion {

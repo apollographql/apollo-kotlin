@@ -1,0 +1,48 @@
+{
+  "operations": [
+    {
+      "operationName": "TwoHeroesUnique",
+      "operationType": "query",
+      "variables": [],
+      "source": "query TwoHeroesUnique {\n  r2: hero {\n    __typename\n    name\n  }\n  luke: hero(episode: EMPIRE) {\n    __typename\n    id\n    name\n  }\n}",
+      "fields": [
+        {
+          "responseName": "r2",
+          "fieldName": "hero",
+          "type": "Character",
+          "fields": [
+            {
+              "responseName": "name",
+              "fieldName": "name",
+              "type": "String!"
+            }
+          ],
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "luke",
+          "fieldName": "hero",
+          "type": "Character",
+          "fields": [
+            {
+              "responseName": "id",
+              "fieldName": "id",
+              "type": "ID!"
+            },
+            {
+              "responseName": "name",
+              "fieldName": "name",
+              "type": "String!"
+            }
+          ],
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentsReferenced": []
+    }
+  ],
+  "fragments": [],
+  "typesUsed": []
+}
