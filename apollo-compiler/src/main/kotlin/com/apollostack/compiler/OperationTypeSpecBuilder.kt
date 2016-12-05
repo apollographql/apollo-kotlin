@@ -25,7 +25,6 @@ class OperationTypeSpecBuilder(
     val nonScalarFields = fields.filter { it.fields?.any() ?: false }
     nonScalarFields.forEach {
       val fieldType = "$typeNamePrefix${it.toTypeName()}"
-
       val existingMapping = typeToFieldMap[fieldType]
       if (existingMapping != null && it.fields != existingMapping.fields) {
         // If we already saw this type and it has a different set of fields, it means
@@ -49,17 +48,11 @@ class OperationTypeSpecBuilder(
       }
     }
 
-    val resultTypeSpecs = ArrayList<TypeSpec>()
-    resultTypeSpecs.add(
-      TypeSpec.interfaceBuilder(currentTypeName)
-        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .addMethods(fields.map { it.toMethodSpec(fieldToTypeMap[it]) })
-        .build()
-    )
+    val typeSpec = TypeSpec.interfaceBuilder(currentTypeName)
+      .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+      .addMethods(fields.map { it.toMethodSpec(fieldToTypeMap[it]) })
+      .build()
 
-    return typeToFieldMap.toList().fold(resultTypeSpecs) { typeSpecs, it ->
-      typeSpecs.addAll(buildTypeSpecs(it.first, it.second.fields!!, it.first))
-      typeSpecs
-    }
+    return listOf(typeSpec) + typeToFieldMap.flatMap { buildTypeSpecs(it.key, it.value.fields!!, it.key) }
   }
 }
