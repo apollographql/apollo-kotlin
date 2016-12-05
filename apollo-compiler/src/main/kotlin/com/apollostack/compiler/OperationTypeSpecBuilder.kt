@@ -24,7 +24,7 @@ class OperationTypeSpecBuilder(
     val typeToFieldMap = HashMap<String, Field>()
     val nonScalarFields = fields.filter { it.fields?.any() ?: false }
     nonScalarFields.forEach {
-      val fieldType = "$typeNamePrefix${it.type.normalizeTypeName()}"
+      val fieldType = "$typeNamePrefix${it.toTypeName()}"
 
       val existingMapping = typeToFieldMap[fieldType]
       if (existingMapping != null && it.fields != existingMapping.fields) {
@@ -34,12 +34,12 @@ class OperationTypeSpecBuilder(
         // used more than once. We also need to use the explicit naming for the previously
         // seen type, so we need to also remove it and re-add with the explicit naming.
 
-        val fieldNewType = "$typeNamePrefix${it.toTypeName()}"
+        val fieldNewType = "$typeNamePrefix${it.toTypeName(it.responseName)}"
         typeToFieldMap.put(fieldNewType, it)
         fieldToTypeMap.put(it, fieldNewType)
 
-        val existingFieldType = "$typeNamePrefix${it.type.normalizeTypeName()}"
-        val existingFieldNewType = "$typeNamePrefix${existingMapping.toTypeName()}"
+        val existingFieldType = "$typeNamePrefix${it.toTypeName()}"
+        val existingFieldNewType = "$typeNamePrefix${existingMapping.toTypeName(existingMapping.responseName)}"
         typeToFieldMap.put(existingFieldNewType, existingMapping)
         typeToFieldMap.remove(existingFieldType)
         fieldToTypeMap.put(existingMapping, existingFieldNewType)
@@ -62,6 +62,4 @@ class OperationTypeSpecBuilder(
       typeSpecs
     }
   }
-
-  private fun String.normalizeTypeName() = removeSuffix("!").removePrefix("[").removeSuffix("]").removeSuffix("!")
 }

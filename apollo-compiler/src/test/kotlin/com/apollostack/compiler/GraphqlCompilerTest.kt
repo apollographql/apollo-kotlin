@@ -64,6 +64,7 @@ public interface TwoHeroes {
       """package test;
 
 import java.lang.String;
+import java.util.List;
 
 public interface HeroDetails {
   Character hero();
@@ -77,7 +78,7 @@ public interface HeroDetails {
   interface CharacterFriendsConnection {
     int totalCount();
 
-    CharacterFriendsConnectionFriendsEdge edges();
+    List<CharacterFriendsConnectionFriendsEdge> edges();
   }
 
   interface CharacterFriendsConnectionFriendsEdge {

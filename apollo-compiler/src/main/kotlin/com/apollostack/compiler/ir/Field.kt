@@ -13,28 +13,32 @@ data class Field(
   val fields: List<Field>?
 ) {
 
-  fun toTypeName() = "${responseName.capitalize()}${type.normalizeTypeName()}"
+  fun toTypeName(prefix:String? = null) = "${prefix?.capitalize() ?: ""}${type.normalizeTypeName()}"
 
-  fun toMethodSpec(returnTypeOverride: String? = null): MethodSpec =
-    MethodSpec.methodBuilder(responseName)
-      .returns(returnTypeName(returnTypeOverride))
+  fun toMethodSpec(returnTypeOverride: String? = null): MethodSpec {
+    val typeName = returnTypeOverride
+      ?.let { if (type.startsWith('[') && type.endsWith(']')) "[${it.normalizeTypeName()}]" else it.normalizeTypeName() }
+      ?.toTypeName()
+      ?: type.toTypeName()
+
+    return MethodSpec.methodBuilder(responseName)
+      .returns(typeName)
       .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
       .build()
+  }
 
-  fun returnTypeName(returnTypeOverride: String? = null): TypeName =
+  private fun String.toTypeName(): TypeName =
     // TODO: Handle other primitive types
-    if (returnTypeOverride != null) {
-      ClassName.get("", returnTypeOverride.normalizeTypeName())
-    } else if (type == "String!") {
+    if (this == "String!") {
       ClassName.get(String::class.java)
-    } else if (type == "ID!") {
+    } else if (this == "ID!") {
       ClassName.LONG
-    } else if (type == "Int") {
+    } else if (this == "Int") {
       TypeName.INT
-    } else if (type.startsWith('[') && type.endsWith(']')) {
-      ParameterizedTypeName.get(ClassName.get(List::class.java), ClassName.get("", type.normalizeTypeName()))
+    } else if (this.startsWith('[') && this.endsWith(']')) {
+      ParameterizedTypeName.get(ClassName.get(List::class.java), ClassName.get("", this.normalizeTypeName()))
     } else {
-      ClassName.get("", toTypeName())
+      ClassName.get("", this)
     }
 
   private fun String.normalizeTypeName() = removeSuffix("!").removePrefix("[").removeSuffix("]").removeSuffix("!")
