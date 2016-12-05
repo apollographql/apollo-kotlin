@@ -1,0 +1,29 @@
+{
+  "operations": [
+    {
+      "operationName": "HeroName",
+      "operationType": "query",
+      "variables": [],
+      "source": "query HeroName {\n  hero {\n    __typename\n    name\n  }\n}",
+      "fields": [
+        {
+          "responseName": "hero",
+          "fieldName": "hero",
+          "type": "Character",
+          "fields": [
+            {
+              "responseName": "name",
+              "fieldName": "name",
+              "type": "String!"
+            }
+          ],
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentsReferenced": []
+    }
+  ],
+  "fragments": [],
+  "typesUsed": []
+}

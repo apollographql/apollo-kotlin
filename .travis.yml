@@ -9,7 +9,7 @@ jdk:
   - oraclejdk8
 
 script:
-  - ./gradlew clean check --info
+  - ./gradlew clean check --stacktrace
 
 branches:
   except:
