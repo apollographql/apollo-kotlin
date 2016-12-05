@@ -1,0 +1,22 @@
+language: android
+
+android:
+  components:
+    - build-tools-24.0.2
+    - android-24
+
+jdk:
+  - oraclejdk8
+
+script:
+  - ./gradlew clean check --stacktrace
+
+branches:
+  except:
+    - gh-pages
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.gradle
