@@ -9,18 +9,27 @@ import java.io.File
 open class GraphqlCompiler {
   private val moshi = Moshi.Builder().build()
 
-  fun write(relativePath: String) {
+  fun write(queryFile: File) {
+    val packageName = queryFile.absolutePath.formatPackageName()
     val irAdapter = moshi.adapter(QueryIntermediateRepresentation::class.java)
-    val ir = irAdapter.fromJson(File(relativePath).readText())
+    val ir = irAdapter.fromJson(queryFile.readText())
     // TODO: Handle multiple or no operations
     val operation = ir.operations.first()
     val typeSpecBuilder = OperationTypeSpecBuilder(operation.operationName, operation.fields)
-    JavaFile.builder("test", typeSpecBuilder.build()).build()
-        .writeTo(OUTPUT_DIRECTORY.fold(File("build"), ::File))
+    JavaFile.builder(packageName, typeSpecBuilder.build()).build().writeTo(OUTPUT_DIRECTORY.fold(File("build"), ::File))
   }
 
   companion object {
     const val FILE_EXTENSION = "graphql"
     val OUTPUT_DIRECTORY = listOf("generated", "source", "apollo")
+  }
+
+  private fun String.formatPackageName(): String {
+    val parts = split(File.separatorChar)
+    (2..parts.size)
+      .filter { parts[it - 2] == "src" && parts[it] == "graphql" }
+      .forEach { return parts.subList(it + 1, parts.size).dropLast(1).joinToString(".") }
+
+    throw IllegalStateException("Files must be organized like src/main/graphql/...")
   }
 }
