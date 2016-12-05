@@ -6,19 +6,19 @@ import com.squareup.javapoet.TypeName
 
 sealed class GraphQlType(val nullable: Boolean) {
 
-  class GraphQlString(nullable: Boolean = true) : GraphQlType(nullable)
+  class GraphQlString(nullable: Boolean) : GraphQlType(nullable)
 
-  class GraphQlId(nullable: Boolean = true) : GraphQlType(nullable)
+  class GraphQlId(nullable: Boolean) : GraphQlType(nullable)
 
-  class GraphQlInt(nullable: Boolean = true) : GraphQlType(nullable)
+  class GraphQlInt(nullable: Boolean) : GraphQlType(nullable)
 
-  class GraphQLFloat(nullable: Boolean = true) : GraphQlType(nullable)
+  class GraphQLFloat(nullable: Boolean) : GraphQlType(nullable)
 
-  class GraphQLBoolean(nullable: Boolean = true) : GraphQlType(nullable)
+  class GraphQLBoolean(nullable: Boolean) : GraphQlType(nullable)
 
-  class GraphQLList(nullable: Boolean = true, val listType: GraphQlType) : GraphQlType(nullable)
+  class GraphQLList(nullable: Boolean, val listType: GraphQlType) : GraphQlType(nullable)
 
-  class GraphQlUnknown(nullable: Boolean = true, val typeName: String) : GraphQlType(nullable)
+  class GraphQlUnknown(nullable: Boolean, val typeName: String) : GraphQlType(nullable)
 
   fun toJavaTypeName(): TypeName {
     return when (this) {
