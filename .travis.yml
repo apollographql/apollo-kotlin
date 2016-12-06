@@ -1,12 +1,12 @@
 language: android
 
-android:
-  components:
+components:
+    - tools
+    - platform-tools
     - build-tools-24.0.2
     - android-24
   licenses:
     - 'android-sdk-license-.+'
-    - 'google-gdk-license-.+'
 
 jdk:
   - oraclejdk8
