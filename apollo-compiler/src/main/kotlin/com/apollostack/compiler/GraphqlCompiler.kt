@@ -9,10 +9,10 @@ import java.io.File
 open class GraphqlCompiler {
   private val moshi = Moshi.Builder().build()
 
-  fun write(queryFile: File) {
-    val packageName = queryFile.absolutePath.formatPackageName()
+  fun write(irFile: File) {
+    val packageName = irFile.absolutePath.formatPackageName()
     val irAdapter = moshi.adapter(QueryIntermediateRepresentation::class.java)
-    val ir = irAdapter.fromJson(queryFile.readText())
+    val ir = irAdapter.fromJson(irFile.readText())
     // TODO: Handle multiple or no operations
     val operation = ir.operations.first()
     val typeSpecBuilder = OperationTypeSpecBuilder(operation.operationName, operation.fields)
