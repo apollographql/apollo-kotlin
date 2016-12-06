@@ -5,7 +5,8 @@ android:
     - build-tools-24.0.2
     - android-24
   licenses:
-    - android-sdk-license-c81a61d9
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
 
 jdk:
   - oraclejdk8
