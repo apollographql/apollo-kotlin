@@ -4,9 +4,8 @@ android:
   components:
     - build-tools-24.0.2
     - android-24
-
-before_script:
-  - "android update sdk --no-ui --filter build-tools-24.0.2,android-24,extra-android-m2repository"
+  licenses:
+    - android-sdk-license-.+
 
 jdk:
   - oraclejdk8
