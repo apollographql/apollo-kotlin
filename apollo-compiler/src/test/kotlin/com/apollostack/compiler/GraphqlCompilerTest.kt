@@ -11,167 +11,70 @@ class GraphqlCompilerTest {
   private val compiler = GraphqlCompiler()
 
   @Test fun heroName() {
-    compiler.write("src/test/data/HeroName.json")
-    val outputFile = File("build/generated/source/apollo/test/HeroName.java")
-    assertThat(outputFile.readText()).isEqualTo(
-        """package test;
+    val irFile = File("src/test/graphql/com/example/HeroName.json")
+    val actualFile = File("build/generated/source/apollo/com/example/HeroName.java")
+    val expectedFile = File("src/test/graphql/com/example/HeroNameExpected.java")
 
-import java.lang.String;
+    compiler.write(irFile)
+    assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
 
-public interface HeroName {
-  Character hero();
-
-  interface Character {
-    String name();
-  }
-}
-""")
-    val source = JavaFileObjects.forSourceLines("test.HeroName", outputFile.readLines())
+    val source = JavaFileObjects.forSourceLines("com.apollostack.compiler.query.HeroName", actualFile.readLines())
     assertAbout(javaSources())
-        .that(listOf(source))
-        .compilesWithoutError()
+      .that(listOf(source))
+      .compilesWithoutError()
   }
 
   @Test fun twoHeroes() {
-    compiler.write("src/test/data/TwoHeroes.json")
-    val outputFile = File("build/generated/source/apollo/test/TwoHeroes.java")
-    assertThat(outputFile.readText()).isEqualTo(
-"""package test;
+    val irFile = File("src/test/graphql/com/example/TwoHeroes.json")
+    val actualFile = File("build/generated/source/apollo/com/example/TwoHeroes.java")
+    val expectedFile = File("src/test/graphql/com/example/TwoHeroesExpected.java")
 
-import java.lang.String;
+    compiler.write(irFile)
+    assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
 
-public interface TwoHeroes {
-  Character r2();
-
-  Character luke();
-
-  interface Character {
-    String name();
-  }
-}
-""")
-    val source = JavaFileObjects.forSourceLines("test.TwoHeroes", outputFile.readLines())
+    val source = JavaFileObjects.forSourceLines("com.apollostack.compiler.query.TwoHeroes", actualFile.readLines())
     assertAbout(javaSources())
-        .that(listOf(source))
-        .compilesWithoutError()
+      .that(listOf(source))
+      .compilesWithoutError()
   }
 
   @Test fun heroDetails() {
-    val compiler = GraphqlCompiler()
-    compiler.write("src/test/data/HeroDetails.json")
-    val outputFile = File("build/generated/source/apollo/test/HeroDetails.java")
-    assertThat(outputFile.readText()).isEqualTo(
-      """package test;
+    val irFile = File("src/test/graphql/com/example/HeroDetails.json")
+    val actualFile = File("build/generated/source/apollo/com/example/HeroDetails.java")
+    val expectedFile = File("src/test/graphql/com/example/HeroDetailsExpected.java")
 
-import java.lang.Integer;
-import java.lang.String;
-import java.util.List;
+    compiler.write(irFile)
+    assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
 
-public interface HeroDetails {
-  Character hero();
-
-  interface Character {
-    String name();
-
-    CharacterFriendsConnection friendsConnection();
-  }
-
-  interface CharacterFriendsConnection {
-    Integer totalCount();
-
-    List<CharacterFriendsConnectionFriendsEdge> edges();
-  }
-
-  interface CharacterFriendsConnectionFriendsEdge {
-    CharacterFriendsConnectionFriendsEdgeCharacter node();
-  }
-
-  interface CharacterFriendsConnectionFriendsEdgeCharacter {
-    String name();
-  }
-}
-""")
-
-    val source = JavaFileObjects.forSourceLines("test.HeroDetails", outputFile.readLines())
+    val source = JavaFileObjects.forSourceLines("com.apollostack.compiler.query.HeroDetails", actualFile.readLines())
     assertAbout(javaSources())
       .that(listOf(source))
       .compilesWithoutError()
   }
 
   @Test fun twoHeroesUnique() {
-    compiler.write("src/test/data/TwoHeroesUnique.json")
-    val outputFile = File("build/generated/source/apollo/test/TwoHeroesUnique.java")
-    assertThat(outputFile.readText()).isEqualTo(
-        """package test;
+    val irFile = File("src/test/graphql/com/example/TwoHeroesUnique.json")
+    val actualFile = File("build/generated/source/apollo/com/example/TwoHeroesUnique.java")
+    val expectedFile = File("src/test/graphql/com/example/TwoHeroesUniqueExpected.java")
 
-import java.lang.String;
+    compiler.write(irFile)
+    assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
 
-public interface TwoHeroesUnique {
-  R2Character r2();
-
-  LukeCharacter luke();
-
-  interface LukeCharacter {
-    long id();
-
-    String name();
-  }
-
-  interface R2Character {
-    String name();
-  }
-}
-""")
-    val source = JavaFileObjects.forSourceLines("test.TwoHeroesUnique", outputFile.readLines())
+    val source = JavaFileObjects.forSourceLines("com.apollostack.compiler.query.TwoHeroesUnique", actualFile.readLines())
     assertAbout(javaSources())
-        .that(listOf(source))
-        .compilesWithoutError()
+      .that(listOf(source))
+      .compilesWithoutError()
   }
 
   @Test fun graphQlScalarTypes() {
-    compiler.write("src/test/data/ScalarTypes.json")
-    val outputFile = File("build/generated/source/apollo/test/ScalarTypes.java")
-    assertThat(outputFile.readText()).isEqualTo(
-      """package test;
+    val irFile = File("src/test/graphql/com/example/ScalarTypes.json")
+    val actualFile = File("build/generated/source/apollo/com/example/ScalarTypes.java")
+    val expectedFile = File("src/test/graphql/com/example/ScalarTypesExpected.java")
 
-import java.lang.Boolean;
-import java.lang.Float;
-import java.lang.Integer;
-import java.lang.Long;
-import java.lang.String;
-import java.util.List;
+    compiler.write(irFile)
+    assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
 
-public interface ScalarTypes {
-  String graphQlString();
-
-  Long graphQlIdNullable();
-
-  long graphQlIdNonNullable();
-
-  Integer graphQlIntNullable();
-
-  int graphQlIntNonNullable();
-
-  Float graphQlFloatNullable();
-
-  float graphQlFloatNonNullable();
-
-  Boolean graphQlBooleanNullable();
-
-  boolean graphQlBooleanNonNullable();
-
-  List<Integer> graphQlListOfInt();
-
-  List<SomeObject> graphQlListOfObjects();
-
-  List<List<Integer>> graphQlNestedList();
-
-  interface SomeObject {
-    int someField();
-  }
-}
-""")
-    val source = JavaFileObjects.forSourceLines("test.ScalarTypes", outputFile.readLines())
+    val source = JavaFileObjects.forSourceLines("com.apollostack.compiler.query.ScalarTypes", actualFile.readLines())
     assertAbout(javaSources())
       .that(listOf(source))
       .compilesWithoutError()
