@@ -32,19 +32,4 @@ dependencies {
     compile dep.jsr305
 }
 
-configurations {
-    jar
-}
-android.libraryVariants.all { variant ->
-    if (variant.name != 'release') return
-
-    def task = project.tasks.create "jar${variant.name.capitalize()}", Jar
-    task.description = "Create jar artifact for ${variant.name}"
-    task.dependsOn variant.javaCompile
-    task.from variant.javaCompile.destinationDir
-    task.destinationDir = project.file("${project.buildDir}/outputs/jar")
-    task.archiveName = "${project.name}-${variant.baseName}.jar"
-    artifacts.add('jar', task);
-}
-
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
