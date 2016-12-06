@@ -1,11 +1,12 @@
 package com.example;
 
 import java.lang.String;
+import javax.annotation.Nullable;
 
 public interface HeroName {
-  Character hero();
+  @Nullable Hero hero();
 
-  interface Character {
+  interface Hero {
     String name();
   }
 }

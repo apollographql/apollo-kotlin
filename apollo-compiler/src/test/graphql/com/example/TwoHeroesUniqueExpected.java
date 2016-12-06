@@ -1,19 +1,20 @@
 package com.example;
 
 import java.lang.String;
+import javax.annotation.Nullable;
 
 public interface TwoHeroesUnique {
-  R2Character r2();
+  @Nullable R2 r2();
 
-  LukeCharacter luke();
+  @Nullable Luke luke();
 
-  interface LukeCharacter {
-    long id();
-
+  interface R2 {
     String name();
   }
 
-  interface R2Character {
+  interface Luke {
+    long id();
+
     String name();
   }
 }

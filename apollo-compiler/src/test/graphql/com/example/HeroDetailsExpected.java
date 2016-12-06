@@ -3,27 +3,28 @@ package com.example;
 import java.lang.Integer;
 import java.lang.String;
 import java.util.List;
+import javax.annotation.Nullable;
 
 public interface HeroDetails {
-  Character hero();
+  @Nullable Hero hero();
 
-  interface Character {
+  interface Hero {
     String name();
 
-    CharacterFriendsConnection friendsConnection();
-  }
+    FriendsConnection friendsConnection();
 
-  interface CharacterFriendsConnection {
-    Integer totalCount();
+    interface FriendsConnection {
+      @Nullable Integer totalCount();
 
-    List<CharacterFriendsConnectionFriendsEdge> edges();
-  }
+      @Nullable List<Edge> edges();
 
-  interface CharacterFriendsConnectionFriendsEdge {
-    CharacterFriendsConnectionFriendsEdgeCharacter node();
-  }
+      interface Edge {
+        @Nullable Node node();
 
-  interface CharacterFriendsConnectionFriendsEdgeCharacter {
-    String name();
+        interface Node {
+          String name();
+        }
+      }
+    }
   }
 }
