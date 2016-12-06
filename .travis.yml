@@ -5,13 +5,10 @@ android:
     - build-tools-24.0.2
     - android-24
   licenses:
-    - android-sdk-license-.+
+    - android-sdk-license-c81a61d9
 
 jdk:
   - oraclejdk8
-
-before_script:
-    - "android update sdk --no-ui --filter build-tools-24.0.2,android-24,extra-android-m2repository"
 
 script:
   - ./gradlew clean check --stacktrace
