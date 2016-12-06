@@ -1,4 +1,4 @@
-package com.apollostack.compiler.query;
+package com.example;
 
 import java.lang.Boolean;
 import java.lang.Float;

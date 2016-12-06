@@ -16,7 +16,10 @@ open class GraphqlCompiler {
     // TODO: Handle multiple or no operations
     val operation = ir.operations.first()
     val typeSpecBuilder = OperationTypeSpecBuilder(operation.operationName, operation.fields)
-    JavaFile.builder(packageName, typeSpecBuilder.build()).build().writeTo(OUTPUT_DIRECTORY.fold(File("build"), ::File))
+    JavaFile
+      .builder(packageName, typeSpecBuilder.build())
+      .build()
+      .writeTo(OUTPUT_DIRECTORY.fold(File("build"), ::File))
   }
 
   companion object {
@@ -26,10 +29,12 @@ open class GraphqlCompiler {
 
   private fun String.formatPackageName(): String {
     val parts = split(File.separatorChar)
-    (2..parts.size)
-      .filter { parts[it - 2] == "src" && parts[it] == "graphql" }
-      .forEach { return parts.subList(it + 1, parts.size).dropLast(1).joinToString(".") }
+    val srcFolderIndex = parts.indexOfFirst { it == "src" }
+    val graphqlFolderIndex = parts.indexOfFirst { it == "graphql" }
+    if (graphqlFolderIndex - srcFolderIndex != 2) {
+      throw IllegalStateException("Files must be organized like src/main/graphql/...")
+    }
 
-    throw IllegalStateException("Files must be organized like src/main/graphql/...")
+    return parts.subList(graphqlFolderIndex + 1, parts.size).dropLast(1).joinToString(".")
   }
 }

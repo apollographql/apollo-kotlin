@@ -11,9 +11,9 @@ class GraphqlCompilerTest {
   private val compiler = GraphqlCompiler()
 
   @Test fun heroName() {
-    val queryFile = File("src/test/graphql/com/apollostack/compiler/query/HeroName.json")
-    val actualFile = File("build/generated/source/apollo/com/apollostack/compiler/query/HeroName.java")
-    val expectedFile = File("src/test/graphql/com/apollostack/compiler/query/HeroNameExpected.java")
+    val queryFile = File("src/test/graphql/com/example/HeroName.json")
+    val actualFile = File("build/generated/source/apollo/com/example/HeroName.java")
+    val expectedFile = File("src/test/graphql/com/example/HeroNameExpected.java")
 
     compiler.write(queryFile)
     assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
@@ -25,9 +25,9 @@ class GraphqlCompilerTest {
   }
 
   @Test fun twoHeroes() {
-    val queryFile = File("src/test/graphql/com/apollostack/compiler/query/TwoHeroes.json")
-    val actualFile = File("build/generated/source/apollo/com/apollostack/compiler/query/TwoHeroes.java")
-    val expectedFile = File("src/test/graphql/com/apollostack/compiler/query/TwoHeroesExpected.java")
+    val queryFile = File("src/test/graphql/com/example/TwoHeroes.json")
+    val actualFile = File("build/generated/source/apollo/com/example/TwoHeroes.java")
+    val expectedFile = File("src/test/graphql/com/example/TwoHeroesExpected.java")
 
     compiler.write(queryFile)
     assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
@@ -39,9 +39,9 @@ class GraphqlCompilerTest {
   }
 
   @Test fun heroDetails() {
-    val queryFile = File("src/test/graphql/com/apollostack/compiler/query/HeroDetails.json")
-    val actualFile = File("build/generated/source/apollo/com/apollostack/compiler/query/HeroDetails.java")
-    val expectedFile = File("src/test/graphql/com/apollostack/compiler/query/HeroDetailsExpected.java")
+    val queryFile = File("src/test/graphql/com/example/HeroDetails.json")
+    val actualFile = File("build/generated/source/apollo/com/example/HeroDetails.java")
+    val expectedFile = File("src/test/graphql/com/example/HeroDetailsExpected.java")
 
     compiler.write(queryFile)
     assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
@@ -53,9 +53,9 @@ class GraphqlCompilerTest {
   }
 
   @Test fun twoHeroesUnique() {
-    val queryFile = File("src/test/graphql/com/apollostack/compiler/query/TwoHeroesUnique.json")
-    val actualFile = File("build/generated/source/apollo/com/apollostack/compiler/query/TwoHeroesUnique.java")
-    val expectedFile = File("src/test/graphql/com/apollostack/compiler/query/TwoHeroesUniqueExpected.java")
+    val queryFile = File("src/test/graphql/com/example/TwoHeroesUnique.json")
+    val actualFile = File("build/generated/source/apollo/com/example/TwoHeroesUnique.java")
+    val expectedFile = File("src/test/graphql/com/example/TwoHeroesUniqueExpected.java")
 
     compiler.write(queryFile)
     assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
@@ -67,9 +67,9 @@ class GraphqlCompilerTest {
   }
 
   @Test fun graphQlScalarTypes() {
-    val queryFile = File("src/test/graphql/com/apollostack/compiler/query/ScalarTypes.json")
-    val actualFile = File("build/generated/source/apollo/com/apollostack/compiler/query/ScalarTypes.java")
-    val expectedFile = File("src/test/graphql/com/apollostack/compiler/query/ScalarTypesExpected.java")
+    val queryFile = File("src/test/graphql/com/example/ScalarTypes.json")
+    val actualFile = File("build/generated/source/apollo/com/example/ScalarTypes.java")
+    val expectedFile = File("src/test/graphql/com/example/ScalarTypesExpected.java")
 
     compiler.write(queryFile)
     assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())

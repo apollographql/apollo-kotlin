@@ -1,4 +1,4 @@
-package com.apollostack.compiler.query;
+package com.example;
 
 import java.lang.Integer;
 import java.lang.String;
