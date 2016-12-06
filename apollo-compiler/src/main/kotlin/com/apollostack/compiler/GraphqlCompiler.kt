@@ -32,7 +32,7 @@ open class GraphqlCompiler {
     val srcFolderIndex = parts.indexOfFirst { it == "src" }
     val graphqlFolderIndex = parts.indexOfFirst { it == "graphql" }
     if (graphqlFolderIndex - srcFolderIndex != 2) {
-      throw IllegalStateException("Files must be organized like src/main/graphql/...")
+      throw IllegalArgumentException("Files must be organized like src/main/graphql/...")
     }
 
     return parts.subList(graphqlFolderIndex + 1, parts.size).dropLast(1).joinToString(".")
