@@ -1,0 +1,35 @@
+buildscript {
+    dependencies {
+        classpath dep.androidPlugin
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    lintOptions {
+        textOutput 'stdout'
+    }
+
+    dexOptions {
+        preDexLibraries = !rootProject.ext.isCi
+    }
+
+    defaultConfig {
+        minSdkVersion 4
+    }
+}
+
+dependencies {
+    compile dep.jsr305
+}
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
