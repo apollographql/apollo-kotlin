@@ -6,6 +6,7 @@ import javax.lang.model.element.Modifier
 data class TypeDeclaration(
     val kind: String,
     val name: String,
+    val description:String?,
     val values: List<TypeDeclarationValue>?) {
 
   fun toTypeSpec(): TypeSpec {
@@ -27,6 +28,9 @@ data class TypeDeclaration(
 
     val builder = TypeSpec.enumBuilder(name).addModifiers(Modifier.PUBLIC)
     values?.forEach { builder.addTypeDeclarationValue(it) }
+    if (!description.isNullOrEmpty()) {
+      builder.addJavadoc("$description\n")
+    }
     return builder.build()
   }
 }

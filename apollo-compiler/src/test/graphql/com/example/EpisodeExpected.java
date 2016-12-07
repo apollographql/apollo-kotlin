@@ -1,5 +1,8 @@
 package com.example;
 
+/**
+ * The episodes in the Star Wars trilogy
+ */
 public enum Episode {
   /**
    * Star Wars Episode IV: A New Hope, released in 1977.
