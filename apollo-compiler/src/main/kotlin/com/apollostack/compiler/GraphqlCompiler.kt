@@ -19,6 +19,12 @@ open class GraphqlCompiler {
           .build()
           .writeTo(OUTPUT_DIRECTORY.fold(File("build"), ::File))
     }
+    ir.typesUsed.forEach {
+      JavaFile
+          .builder(packageName, it.toTypeSpec())
+          .build()
+          .writeTo(OUTPUT_DIRECTORY.fold(File("build"), ::File))
+    }
   }
 
   companion object {

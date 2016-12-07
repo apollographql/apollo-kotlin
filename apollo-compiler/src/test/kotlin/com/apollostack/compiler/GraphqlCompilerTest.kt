@@ -80,4 +80,24 @@ class GraphqlCompilerTest {
         .that(listOf(source))
         .compilesWithoutError()
   }
+
+  @Test fun enumType() {
+    val irFile = File("src/test/graphql/com/example/HeroAppearsIn.json")
+    val actualFile = File("build/generated/source/apollo/com/example/HeroAppearsIn.java")
+    val expectedFile = File("src/test/graphql/com/example/HeroAppearsInExpected.java")
+    val episodeEnumActualFile = File("build/generated/source/apollo/com/example/Episode.java")
+    val episodeEnumExpectedFile = File("src/test/graphql/com/example/EpisodeExpected.java")
+
+    compiler.write(irFile)
+
+    assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
+    assertThat(episodeEnumActualFile.readText()).isEqualTo(episodeEnumExpectedFile.readText())
+
+    val episodeEnumSource = JavaFileObjects.forSourceLines("com.example.Episode", episodeEnumActualFile.readLines())
+    val source = JavaFileObjects.forSourceLines("com.example.HeroAppearsIn", actualFile.readLines())
+    assertAbout(javaSources())
+        .that(listOf(source, episodeEnumSource))
+        .compilesWithoutError()
+  }
+
 }
