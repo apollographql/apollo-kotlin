@@ -12,7 +12,7 @@ data class Field(
     val fields: List<Field>?) {
   fun toMethodSpec(): MethodSpec {
     return MethodSpec.methodBuilder(responseName)
-        .returns(toTypeName(methodResponsType()))
+        .returns(toTypeName(methodResponseType()))
         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
         .build()
   }
@@ -20,7 +20,7 @@ data class Field(
   private fun toTypeName(responseType: String): TypeName =
       GraphQlType.resolveByName(responseType).toJavaTypeName()
 
-  private fun methodResponsType(): String {
+  private fun methodResponseType(): String {
     if (isNonScalar()) {
       // For non scalar fields, we use the responseName as the method return type.
       // However, we need to also encode any extra information from the `type` field

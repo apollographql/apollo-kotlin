@@ -10,6 +10,16 @@ import java.io.File
 class GraphqlCompilerTest {
   private val compiler = GraphqlCompiler()
 
+  @Test fun shouldThrowExceptionForInvalidIrPath() {
+    val irFile = File("src/test/dummyfolder/graphql/com/example/HeroName.json")
+    try {
+      compiler.write(irFile)
+    }
+    catch (ex: IllegalArgumentException) {
+      assertThat(ex.message.equals("Files must be organized like src/main/graphql/..."))
+    }
+  }
+
   @Test fun heroName() {
     val irFile = File("src/test/graphql/com/example/HeroName.json")
     val actualFile = File("build/generated/source/apollo/com/example/HeroName.java")
