@@ -10,13 +10,23 @@ data class TypeDeclaration(
 
   fun toTypeSpec(): TypeSpec {
     if (kind == "EnumType") {
-      val builder = TypeSpec.enumBuilder(name).addModifiers(Modifier.PUBLIC)
-      values?.forEach {
-        builder.addEnumConstant(it.name.toUpperCase())
-      }
-      return builder.build()
+      return enumTypeToTypeSpec()
     } else {
       throw UnsupportedOperationException("unsupported $kind type declaration")
     }
+  }
+
+  private fun enumTypeToTypeSpec():TypeSpec {
+    fun TypeSpec.Builder.addTypeDeclarationValue(value: TypeDeclarationValue) {
+      val enumConstBuilder = TypeSpec.anonymousClassBuilder("")
+      if (!value.description.isNullOrEmpty()) {
+        enumConstBuilder.addJavadoc("${value.description}\n")
+      }
+      this.addEnumConstant(value.name.toUpperCase(), enumConstBuilder.build())
+    }
+
+    val builder = TypeSpec.enumBuilder(name).addModifiers(Modifier.PUBLIC)
+    values?.forEach { builder.addTypeDeclarationValue(it) }
+    return builder.build()
   }
 }
