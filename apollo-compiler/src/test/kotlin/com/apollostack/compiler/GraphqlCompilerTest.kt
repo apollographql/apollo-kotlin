@@ -18,10 +18,10 @@ class GraphqlCompilerTest {
     compiler.write(irFile)
     assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
 
-    val source = JavaFileObjects.forSourceLines("com.apollostack.compiler.query.HeroName", actualFile.readLines())
+    val source = JavaFileObjects.forSourceLines("com.example.HeroName", actualFile.readLines())
     assertAbout(javaSources())
-      .that(listOf(source))
-      .compilesWithoutError()
+        .that(listOf(source))
+        .compilesWithoutError()
   }
 
   @Test fun twoHeroes() {
@@ -32,10 +32,10 @@ class GraphqlCompilerTest {
     compiler.write(irFile)
     assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
 
-    val source = JavaFileObjects.forSourceLines("com.apollostack.compiler.query.TwoHeroes", actualFile.readLines())
+    val source = JavaFileObjects.forSourceLines("com.example.TwoHeroes", actualFile.readLines())
     assertAbout(javaSources())
-      .that(listOf(source))
-      .compilesWithoutError()
+        .that(listOf(source))
+        .compilesWithoutError()
   }
 
   @Test fun heroDetails() {
@@ -46,10 +46,10 @@ class GraphqlCompilerTest {
     compiler.write(irFile)
     assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
 
-    val source = JavaFileObjects.forSourceLines("com.apollostack.compiler.query.HeroDetails", actualFile.readLines())
+    val source = JavaFileObjects.forSourceLines("com.example.HeroDetails", actualFile.readLines())
     assertAbout(javaSources())
-      .that(listOf(source))
-      .compilesWithoutError()
+        .that(listOf(source))
+        .compilesWithoutError()
   }
 
   @Test fun twoHeroesUnique() {
@@ -60,10 +60,11 @@ class GraphqlCompilerTest {
     compiler.write(irFile)
     assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
 
-    val source = JavaFileObjects.forSourceLines("com.apollostack.compiler.query.TwoHeroesUnique", actualFile.readLines())
+    val source = JavaFileObjects.forSourceLines("com.example.TwoHeroesUnique",
+        actualFile.readLines())
     assertAbout(javaSources())
-      .that(listOf(source))
-      .compilesWithoutError()
+        .that(listOf(source))
+        .compilesWithoutError()
   }
 
   @Test fun graphQlScalarTypes() {
@@ -74,9 +75,9 @@ class GraphqlCompilerTest {
     compiler.write(irFile)
     assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
 
-    val source = JavaFileObjects.forSourceLines("com.apollostack.compiler.query.ScalarTypes", actualFile.readLines())
+    val source = JavaFileObjects.forSourceLines("com.example.ScalarTypes", actualFile.readLines())
     assertAbout(javaSources())
-      .that(listOf(source))
-      .compilesWithoutError()
+        .that(listOf(source))
+        .compilesWithoutError()
   }
 }

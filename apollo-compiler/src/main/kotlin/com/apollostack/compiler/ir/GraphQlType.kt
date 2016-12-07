@@ -1,11 +1,13 @@
 package com.apollostack.compiler.ir
 
+import com.apollostack.compiler.normalizeTypeName
+import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
+import javax.annotation.Nullable
 
 sealed class GraphQlType(val nullable: Boolean) {
-
   class GraphQlString(nullable: Boolean) : GraphQlType(nullable)
 
   class GraphQlId(nullable: Boolean) : GraphQlType(nullable)
@@ -20,21 +22,17 @@ sealed class GraphQlType(val nullable: Boolean) {
 
   class GraphQlUnknown(nullable: Boolean, val typeName: String) : GraphQlType(nullable)
 
-  fun toJavaTypeName(): TypeName {
-    return when (this) {
-      is GraphQlString -> ClassName.get(String::class.java)
-      is GraphQlId -> if (nullable) ClassName.get(java.lang.Long::class.java) else ClassName.LONG
-      is GraphQlInt -> if (nullable) ClassName.get(java.lang.Integer::class.java) else TypeName.INT
-      is GraphQLFloat -> if (nullable) ClassName.get(java.lang.Float::class.java) else TypeName.FLOAT
-      is GraphQLBoolean -> if (nullable) ClassName.get(java.lang.Boolean::class.java) else TypeName.BOOLEAN
-      is GraphQLList -> ParameterizedTypeName.get(ClassName.get(List::class.java), listType.toJavaTypeName())
-      is GraphQlUnknown -> ClassName.get("", typeName)
-    }
-  }
+  fun toJavaTypeName() = graphQlTypeToJavaTypeName(this, !nullable, nullable)
 
   companion object {
-
-    private fun String.normalizeTypeName() = removeSuffix("!").removeSurrounding(prefix = "[", suffix = "]").removeSuffix("!")
+    private val NULLABLE_ANNOTATION = AnnotationSpec.builder(Nullable::class.java).build()
+    private val LIST_TYPE = ClassName.get(List::class.java)
+    private val GRAPHQLTYPE_TO_JAVA_TIPE = mapOf(
+        GraphQlString::class.java to ClassName.get(String::class.java),
+        GraphQlId::class.java to TypeName.LONG,
+        GraphQlInt::class.java to TypeName.INT,
+        GraphQLFloat::class.java to TypeName.FLOAT,
+        GraphQLBoolean::class.java to TypeName.BOOLEAN)
 
     fun resolveByName(typeName: String): GraphQlType = when {
       typeName.startsWith("String") -> GraphQlString(!typeName.endsWith("!"))
@@ -42,8 +40,29 @@ sealed class GraphQlType(val nullable: Boolean) {
       typeName.startsWith("Int") -> GraphQlInt(!typeName.endsWith("!"))
       typeName.startsWith("Boolean") -> GraphQLBoolean(!typeName.endsWith("!"))
       typeName.startsWith("Float") -> GraphQLFloat(!typeName.endsWith("!"))
-      typeName.removeSuffix("!").let { it.startsWith('[') && it.endsWith(']') } -> GraphQLList(!typeName.endsWith("!"), resolveByName(typeName.normalizeTypeName()))
+      typeName.removeSuffix("!").let { it.startsWith('[') && it.endsWith(']') } -> GraphQLList(
+          !typeName.endsWith("!"), resolveByName(typeName.normalizeTypeName()))
       else -> GraphQlUnknown(!typeName.endsWith("!"), typeName.normalizeTypeName())
+    }
+
+    fun graphQlTypeToJavaTypeName(
+        type: GraphQlType,
+        primitive: Boolean,
+        nullable: Boolean): TypeName {
+      val typeName = when (type) {
+        is GraphQLList -> ParameterizedTypeName.get(LIST_TYPE,
+            graphQlTypeToJavaTypeName(type.listType, false, false))
+        is GraphQlUnknown -> ClassName.get("", type.typeName)
+        else ->
+          GRAPHQLTYPE_TO_JAVA_TIPE[type.javaClass]!!.let {
+            if (primitive) it else it.box()
+          }
+      }
+      return if (nullable) {
+        typeName.annotated(NULLABLE_ANNOTATION)
+      } else {
+        typeName
+      }
     }
   }
 }

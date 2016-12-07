@@ -6,33 +6,34 @@ import java.lang.Integer;
 import java.lang.Long;
 import java.lang.String;
 import java.util.List;
+import javax.annotation.Nullable;
 
 public interface ScalarTypes {
-  String graphQlString();
+  @Nullable String graphQlString();
 
-  Long graphQlIdNullable();
+  @Nullable Long graphQlIdNullable();
 
   long graphQlIdNonNullable();
 
-  Integer graphQlIntNullable();
+  @Nullable Integer graphQlIntNullable();
 
   int graphQlIntNonNullable();
 
-  Float graphQlFloatNullable();
+  @Nullable Float graphQlFloatNullable();
 
   float graphQlFloatNonNullable();
 
-  Boolean graphQlBooleanNullable();
+  @Nullable Boolean graphQlBooleanNullable();
 
   boolean graphQlBooleanNonNullable();
 
-  List<Integer> graphQlListOfInt();
+  @Nullable List<Integer> graphQlListOfInt();
 
-  List<SomeObject> graphQlListOfObjects();
+  @Nullable List<GraphQlListOfObject> graphQlListOfObjects();
 
-  List<List<Integer>> graphQlNestedList();
+  @Nullable List<List<Integer>> graphQlNestedList();
 
-  interface SomeObject {
+  interface GraphQlListOfObject {
     int someField();
   }
 }
