@@ -6,9 +6,8 @@ import javax.lang.model.element.Modifier
 data class TypeDeclaration(
     val kind: String,
     val name: String,
-    val description:String?,
+    val description: String?,
     val values: List<TypeDeclarationValue>?) {
-
   fun toTypeSpec(): TypeSpec {
     if (kind == "EnumType") {
       return enumTypeToTypeSpec()
@@ -17,7 +16,7 @@ data class TypeDeclaration(
     }
   }
 
-  private fun enumTypeToTypeSpec():TypeSpec {
+  private fun enumTypeToTypeSpec(): TypeSpec {
     fun TypeSpec.Builder.addTypeDeclarationValue(value: TypeDeclarationValue) {
       val enumConstBuilder = TypeSpec.anonymousClassBuilder("")
       if (!value.description.isNullOrEmpty()) {
