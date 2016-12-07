@@ -34,12 +34,12 @@ open class GraphqlCompiler {
 
   private fun String.formatPackageName(): String {
     val parts = split(File.separatorChar)
-    val srcFolderIndex = parts.indexOfFirst { it == "src" }
-    val graphqlFolderIndex = parts.indexOfFirst { it == "graphql" }
-    if (graphqlFolderIndex - srcFolderIndex != 2) {
-      throw IllegalArgumentException("Files must be organized like src/main/graphql/...")
-    }
 
-    return parts.subList(graphqlFolderIndex + 1, parts.size).dropLast(1).joinToString(".")
+    for (i in 2..parts.size) {
+      if (parts[i - 2] == "src" && parts[i] == "graphql") {
+        return parts.subList(i + 1, parts.size).dropLast(1).joinToString(".")
+      }
+    }
+    throw IllegalArgumentException("Files must be organized like src/main/graphql/...")
   }
 }

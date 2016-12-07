@@ -30,7 +30,7 @@ class ApolloPlugin : Plugin<Project> {
       val task = project.tasks.create(taskName, ApolloTask::class.java)
       task.group = "apollo"
       task.buildDirectory = project.buildDir
-      task.description = "Generate Android interfaces for working with ${it.name} database tables"
+      task.description = "Generate Android interfaces for working with ${it.name} GraphQL queries"
       task.source("src")
       task.include("**${File.separatorChar}*.${GraphqlCompiler.FILE_EXTENSION}")
 
