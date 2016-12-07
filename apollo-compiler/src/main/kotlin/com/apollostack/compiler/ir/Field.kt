@@ -21,7 +21,6 @@ data class Field(
       GraphQlType.resolveByName(responseType).toJavaTypeName()
 
   private fun methodResponsType(): String {
-    // TODO: Do we also need to handle nested lists?
     if (isNonScalar()) {
       // For non scalar fields, we use the responseName as the method return type.
       // However, we need to also encode any extra information from the `type` field

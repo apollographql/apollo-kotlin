@@ -27,7 +27,7 @@ sealed class GraphQlType(val nullable: Boolean) {
   companion object {
     private val NULLABLE_ANNOTATION = AnnotationSpec.builder(Nullable::class.java).build()
     private val LIST_TYPE = ClassName.get(List::class.java)
-    private val GRAPHQLTYPE_TO_JAVA_TIME = mapOf(
+    private val GRAPHQLTYPE_TO_JAVA_TIPE = mapOf(
         GraphQlString::class.java to ClassName.get(String::class.java),
         GraphQlId::class.java to TypeName.LONG,
         GraphQlInt::class.java to TypeName.INT,
@@ -54,7 +54,7 @@ sealed class GraphQlType(val nullable: Boolean) {
             graphQlTypeToJavaTypeName(type.listType, false, false))
         is GraphQlUnknown -> ClassName.get("", type.typeName)
         else ->
-          GRAPHQLTYPE_TO_JAVA_TIME[type.javaClass]!!.let {
+          GRAPHQLTYPE_TO_JAVA_TIPE[type.javaClass]!!.let {
             if (primitive) it else it.box()
           }
       }
