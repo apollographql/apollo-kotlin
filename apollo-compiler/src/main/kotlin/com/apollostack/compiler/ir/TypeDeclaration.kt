@@ -7,8 +7,8 @@ data class TypeDeclaration(
     val kind: String,
     val name: String,
     val description: String?,
-    val values: List<TypeDeclarationValue>?) {
-  fun toTypeSpec(): TypeSpec {
+    val values: List<TypeDeclarationValue>?) : CodeGenerator {
+  override fun toTypeSpec(): TypeSpec {
     if (kind == "EnumType") {
       return enumTypeToTypeSpec()
     } else {

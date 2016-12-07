@@ -1,5 +1,6 @@
 package com.apollostack.compiler
 
+import com.apollostack.compiler.ir.CodeGenerator
 import com.apollostack.compiler.ir.Field
 import com.apollostack.compiler.ir.Fragment
 import com.squareup.javapoet.TypeSpec
@@ -8,9 +9,9 @@ import javax.lang.model.element.Modifier
 class OperationTypeSpecBuilder(
     val operationName: String,
     val fields: List<Field>,
-    val allFragments: List<Fragment>) {
+    val allFragments: List<Fragment>) : CodeGenerator {
 
-  fun build(): TypeSpec = buildTypeSpecs(operationName, fields, allFragments)
+  override fun toTypeSpec(): TypeSpec = buildTypeSpecs(operationName, fields, allFragments)
 
   private fun buildTypeSpecs(typeName: String, fields: List<Field>, fragments: List<Fragment>) =
       TypeSpec.interfaceBuilder(typeName)

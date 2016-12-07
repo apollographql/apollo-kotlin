@@ -1,4 +1,4 @@
-package com.example;
+package com.example.simple_fragment;
 
 import javax.annotation.Nullable;
 

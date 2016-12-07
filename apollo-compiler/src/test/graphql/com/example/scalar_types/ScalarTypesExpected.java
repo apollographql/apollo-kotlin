@@ -1,4 +1,4 @@
-package com.example;
+package com.example.scalar_types;
 
 import java.lang.Boolean;
 import java.lang.Float;
