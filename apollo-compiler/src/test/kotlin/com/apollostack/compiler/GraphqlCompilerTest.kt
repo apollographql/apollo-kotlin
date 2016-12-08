@@ -14,8 +14,7 @@ class GraphqlCompilerTest {
     val irFile = File("src/test/dummyfolder/graphql/com/example/HeroName.json")
     try {
       compiler.write(irFile)
-    }
-    catch (ex: IllegalArgumentException) {
+    } catch (ex: IllegalArgumentException) {
       assertThat(ex.message.equals("Files must be organized like src/main/graphql/..."))
     }
   }
@@ -107,18 +106,43 @@ class GraphqlCompilerTest {
         "build/generated/source/apollo/com/example/simple_fragment/SimpleFragment.java")
     val expected = File("src/test/graphql/com/example/simple_fragment/SimpleFragmentExpected.java")
     val fragmentActual = File(
-        "build/generated/source/apollo/com/example/simple_fragment/HeroDetailsFragment.java")
+        "build/generated/source/apollo/com/example/simple_fragment/HeroDetails.java")
     val fragmentExpected = File(
-        "src/test/graphql/com/example/simple_fragment/HeroDetailsFragmentExpected.java")
+        "src/test/graphql/com/example/simple_fragment/HeroDetailsExpected.java")
 
     compiler.write(File("src/test/graphql/com/example/simple_fragment/SimpleFragment.json"))
 
     assertThat(actual.readText()).isEqualTo(expected.readText())
     assertThat(fragmentActual.readText()).isEqualTo(fragmentExpected.readText())
 
-    val fragment = JavaFileObjects.forSourceLines("com.example.HeroDetailsFragment",
+    val fragment = JavaFileObjects.forSourceLines("test.HeroDetails",
         fragmentActual.readLines())
-    val source = JavaFileObjects.forSourceLines("com.example.SimpleFragment", actual.readLines())
+    val source = JavaFileObjects.forSourceLines("test.SimpleFragment", actual.readLines())
+    assertAbout(javaSources())
+        .that(listOf(source, fragment))
+        .compilesWithoutError()
+  }
+
+  @Test fun fragmentFriendsConnection() {
+    val actual = File("build/generated/source/apollo/com/example/fragment_friends_connection/" +
+        "FragmentFriendsConnection.java")
+    val expected = File("src/test/graphql/com/example/fragment_friends_connection/" +
+        "FragmentFriendsConnectionExpected.java")
+    val fragmentActual = File(
+        "build/generated/source/apollo/com/example/fragment_friends_connection/HeroDetails.java")
+    val fragmentExpected = File(
+        "src/test/graphql/com/example/fragment_friends_connection/HeroDetailsExpected.java")
+
+    compiler.write(File(
+        "src/test/graphql/com/example/fragment_friends_connection/FragmentFriendsConnection.json"))
+
+    assertThat(actual.readText()).isEqualTo(expected.readText())
+    assertThat(fragmentActual.readText()).isEqualTo(fragmentExpected.readText())
+
+    val fragment = JavaFileObjects.forSourceLines("test.HeroDetails",
+        fragmentActual.readLines())
+    val source = JavaFileObjects.forSourceLines("test.FragmentFriendsConnection",
+        actual.readLines())
     assertAbout(javaSources())
         .that(listOf(source, fragment))
         .compilesWithoutError()

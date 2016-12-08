@@ -1,0 +1,80 @@
+{
+  "operations": [
+    {
+      "operationName": "FragmentFriendsConnection",
+      "operationType": "query",
+      "variables": [],
+      "source": "query FragmentFriendsConnection {\n  hero {\n    __typename\n    ...HeroDetails\n  }\n}",
+      "fields": [
+        {
+          "responseName": "hero",
+          "fieldName": "hero",
+          "type": "Character",
+          "fields": [],
+          "fragmentSpreads": [
+            "HeroDetails"
+          ],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentsReferenced": [
+        "HeroDetails"
+      ]
+    }
+  ],
+  "fragments": [
+    {
+      "fragmentName": "HeroDetails",
+      "source": "fragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    totalCount\n    edges {\n      node {\n        __typename\n        name\n      }\n    }\n  }\n}",
+      "typeCondition": "Character",
+      "fields": [
+        {
+          "responseName": "name",
+          "fieldName": "name",
+          "type": "String!"
+        },
+        {
+          "responseName": "friendsConnection",
+          "fieldName": "friendsConnection",
+          "type": "FriendsConnection!",
+          "fields": [
+            {
+              "responseName": "totalCount",
+              "fieldName": "totalCount",
+              "type": "Int"
+            },
+            {
+              "responseName": "edges",
+              "fieldName": "edges",
+              "type": "[FriendsEdge]",
+              "fields": [
+                {
+                  "responseName": "node",
+                  "fieldName": "node",
+                  "type": "Character",
+                  "fields": [
+                    {
+                      "responseName": "name",
+                      "fieldName": "name",
+                      "type": "String!"
+                    }
+                  ],
+                  "fragmentSpreads": [],
+                  "inlineFragments": []
+                }
+              ],
+              "fragmentSpreads": [],
+              "inlineFragments": []
+            }
+          ],
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentSpreads": [],
+      "inlineFragments": [],
+      "fragmentsReferenced": []
+    }
+  ],
+  "typesUsed": []
+}

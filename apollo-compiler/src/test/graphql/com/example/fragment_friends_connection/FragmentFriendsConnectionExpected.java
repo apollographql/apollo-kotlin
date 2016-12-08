@@ -1,8 +1,8 @@
-package com.example.simple_fragment;
+package com.example.fragment_friends_connection;
 
 import javax.annotation.Nullable;
 
-public interface SimpleFragment {
+public interface FragmentFriendsConnection {
   @Nullable Hero hero();
 
   interface Hero {

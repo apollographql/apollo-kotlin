@@ -1,8 +1,10 @@
 package com.apollostack.compiler.ir
 
+import com.apollostack.compiler.FieldTypeSpecBuilder
 import com.cesarferreira.pluralize.singularize
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeName
+import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 data class Field(
@@ -12,12 +14,19 @@ data class Field(
     val fields: List<Field>?,
     val fragmentSpreads: List<String>?,
     val inlineFragments: List<InlineFragment>?
-) {
+) : CodeGenerator {
+  override fun toTypeSpec(): TypeSpec =
+      FieldTypeSpecBuilder().build(normalizedName(), fields ?: emptyList(), emptyList())
+
   fun toMethodSpec(): MethodSpec =
       MethodSpec.methodBuilder(responseName)
           .returns(toTypeName(methodResponseType()))
           .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
           .build()
+
+  /** Filters all fragments to only the ones referenced by this Field */
+  fun referencedFragments(allFragments: List<Fragment>) =
+      allFragments.filter { fragmentSpreads?.contains(it.fragmentName) ?: false }
 
   private fun toTypeName(responseType: String): TypeName =
       GraphQlType.resolveByName(responseType).toJavaTypeName()
@@ -50,6 +59,5 @@ data class Field(
   fun isScalar() = fields?.none() ?: true
 
   fun hasFragments() = fragmentSpreads?.any() ?: false
-
 
 }
