@@ -39,16 +39,16 @@ class FieldTypeSpecBuilder {
           .map { build(it.normalizedName(), it.fields!!, it.referencedFragments(fragments),
               it.inlineFragments ?: emptyList()) }
 
-  private fun inlineFragmentsTypeSpecs(inlineFragments: List<InlineFragment>?): List<TypeSpec> =
-      inlineFragments?.map { it.toTypeSpec() } ?: emptyList()
+  private fun inlineFragmentsTypeSpecs(inlineFragments: List<InlineFragment>): List<TypeSpec> =
+      inlineFragments.map { it.toTypeSpec() }
 
-  private fun inlineFragmentMethodSpecs(inlineFragments: List<InlineFragment>?): List<MethodSpec> =
-      inlineFragments?.map {
+  private fun inlineFragmentMethodSpecs(inlineFragments: List<InlineFragment>): List<MethodSpec> =
+      inlineFragments.map {
         MethodSpec.methodBuilder(it.interfaceName().decapitalize())
             .returns(ClassName.get("", it.interfaceName()).annotated(JavaPoetUtils.NULLABLE_ANNOTATION))
             .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
             .build()
-      } ?: emptyList()
+      }
 
   companion object {
     private val FRAGMENTS_INTERFACE_NAME = "Fragments"
