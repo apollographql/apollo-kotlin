@@ -151,4 +151,25 @@ class GraphqlCompilerTest {
 
     throw RuntimeException("Intentionally fail as this test not completed yet, missing non-scalar type generation")
   }
+
+  @Test fun fragmentsWithTypeCondition() {
+    val actual = File("build/generated/source/apollo/com/example/fragments_with_type_condition/Query.java")
+    val expected = File("src/test/graphql/com/example/fragments_with_type_condition/QueryExpected.java")
+    val humanDetailsActual = File("build/generated/source/apollo/com/example/fragments_with_type_condition/HumanDetails.java")
+    val droidDetailsActual = File("build/generated/source/apollo/com/example/fragments_with_type_condition/DroidDetails.java")
+
+    compiler.write(File("src/test/graphql/com/example/fragments_with_type_condition/Query.json"))
+    assertThat(actual.readText()).isEqualTo(expected.readText())
+
+    val humanDetails = JavaFileObjects.forSourceLines("com.example.fragments_with_type_condition.HumanDetails",
+        humanDetailsActual.readLines())
+
+    val droidDetails = JavaFileObjects.forSourceLines("com.example.fragments_with_type_condition.DroidDetails",
+        droidDetailsActual.readLines())
+
+    val source = JavaFileObjects.forSourceLines("com.example.Query", actual.readLines())
+    assertAbout(javaSources())
+        .that(listOf(source, humanDetails, droidDetails))
+        .compilesWithoutError()
+  }
 }
