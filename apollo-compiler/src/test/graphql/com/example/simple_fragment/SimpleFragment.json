@@ -4,7 +4,7 @@
       "operationName": "SimpleFragment",
       "operationType": "query",
       "variables": [],
-      "source": "query SimpleFragment {\n  hero {\n    __typename\n    ...HeroDetailsFragment\n  }\n}",
+      "source": "query SimpleFragment {\n  hero {\n    __typename\n    ...HeroDetails\n  }\n}",
       "fields": [
         {
           "responseName": "hero",
@@ -12,20 +12,20 @@
           "type": "Character",
           "fields": [],
           "fragmentSpreads": [
-            "HeroDetailsFragment"
+            "HeroDetails"
           ],
           "inlineFragments": []
         }
       ],
       "fragmentsReferenced": [
-        "HeroDetailsFragment"
+        "HeroDetails"
       ]
     }
   ],
   "fragments": [
     {
-      "fragmentName": "HeroDetailsFragment",
-      "source": "fragment HeroDetailsFragment on Character {\n  __typename\n  name\n}",
+      "fragmentName": "HeroDetails",
+      "source": "fragment HeroDetails on Character {\n  __typename\n  name\n}",
       "typeCondition": "Character",
       "fields": [
         {

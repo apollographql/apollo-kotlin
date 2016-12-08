@@ -2,6 +2,6 @@ package com.example.simple_fragment;
 
 import java.lang.String;
 
-public interface HeroDetailsFragment {
+public interface HeroDetails {
   String name();
 }
