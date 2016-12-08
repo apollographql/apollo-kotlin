@@ -25,5 +25,6 @@ data class Fragment(
       TypeSpec.interfaceBuilder(fragmentName.capitalize())
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
           .addMethods(fields.map(Field::toMethodSpec))
+          .addTypes(fields.filter(Field::isNonScalar).map(Field::toTypeSpec))
           .build()
 }
