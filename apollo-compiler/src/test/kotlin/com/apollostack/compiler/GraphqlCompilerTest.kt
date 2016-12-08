@@ -137,4 +137,12 @@ class GraphqlCompilerTest {
         .that(listOf(source, fragment))
         .compilesWithoutError()
   }
+
+  @Test fun fieldDirectives() {
+    val actualFile = actualFileFor("directives", "HeroNameDirective")
+    val expectedFile = expectedFileFor("directives", "HeroNameDirective")
+
+    compiler.write(irFileFor("directives", "HeroNameDirective"))
+    assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
+  }
 }
