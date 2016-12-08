@@ -35,17 +35,17 @@ class FieldTypeSpecBuilder {
           .map { build(it.normalizedName(), it.fields!!, it.referencedFragments(fragments)) }
 
   companion object {
-    private val INTERFACE_NAME = "Fragments"
+    private val FRAGMENTS_INTERFACE_NAME = "Fragments"
 
     private fun newFragmentAccessorMethodSpec(): MethodSpec =
         MethodSpec.methodBuilder("fragments")
-            .returns(ClassName.get("", INTERFACE_NAME))
+            .returns(ClassName.get("", FRAGMENTS_INTERFACE_NAME))
             .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
             .build()
 
     /** Returns a generic `Fragments` interface with methods for each of the provided fragments */
     private fun newFragmentInterfaceSpec(fragments: List<Fragment>): TypeSpec =
-        TypeSpec.interfaceBuilder(INTERFACE_NAME)
+        TypeSpec.interfaceBuilder(FRAGMENTS_INTERFACE_NAME)
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
             .addMethods(fragments.map(Fragment::toMethodSpec))
             .build()
