@@ -1,11 +1,10 @@
 package com.apollostack.compiler.ir
 
+import com.apollostack.compiler.JavaPoetUtils
 import com.apollostack.compiler.normalizeTypeName
-import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
-import javax.annotation.Nullable
 
 sealed class GraphQlType(val nullable: Boolean) {
   class GraphQlString(nullable: Boolean) : GraphQlType(nullable)
@@ -25,7 +24,6 @@ sealed class GraphQlType(val nullable: Boolean) {
   fun toJavaTypeName() = graphQlTypeToJavaTypeName(this, !nullable, nullable)
 
   companion object {
-    private val NULLABLE_ANNOTATION = AnnotationSpec.builder(Nullable::class.java).build()
     private val LIST_TYPE = ClassName.get(List::class.java)
     private val GRAPHQLTYPE_TO_JAVA_TIPE = mapOf(
         GraphQlString::class.java to ClassName.get(String::class.java),
@@ -59,7 +57,7 @@ sealed class GraphQlType(val nullable: Boolean) {
           }
       }
       return if (nullable) {
-        typeName.annotated(NULLABLE_ANNOTATION)
+        typeName.annotated(JavaPoetUtils.NULLABLE_ANNOTATION)
       } else {
         typeName
       }

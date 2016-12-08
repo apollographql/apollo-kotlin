@@ -123,4 +123,32 @@ class GraphqlCompilerTest {
         .that(listOf(source, fragment))
         .compilesWithoutError()
   }
+
+  @Test fun simpleInlineFragments() {
+    val actual = File("build/generated/source/apollo/com/example/simple_inline_fragment/Query.java")
+    val expected = File("src/test/graphql/com/example/simple_inline_fragment/QueryExpected.java")
+
+    compiler.write(File("src/test/graphql/com/example/simple_inline_fragment/Query.json"))
+    assertThat(actual.readText()).isEqualTo(expected.readText())
+
+    val source = JavaFileObjects.forSourceLines("com.example.Query", actual.readLines())
+    assertAbout(javaSources())
+        .that(listOf(source))
+        .compilesWithoutError()
+  }
+
+  @Test fun inlineFragmentsWithFriends() {
+    val actual = File("build/generated/source/apollo/com/example/inline_fragments_with_friends/Query.java")
+    val expected = File("src/test/graphql/com/example/inline_fragments_with_friends/QueryExpected.java")
+
+    compiler.write(File("src/test/graphql/com/example/inline_fragments_with_friends/Query.json"))
+    assertThat(actual.readText()).isEqualTo(expected.readText())
+
+    val source = JavaFileObjects.forSourceLines("com.example.Query", actual.readLines())
+    assertAbout(javaSources())
+        .that(listOf(source))
+        .compilesWithoutError()
+
+    throw RuntimeException("Intentionally fail as this test not completed yet, missing non-scalar type generation")
+  }
 }

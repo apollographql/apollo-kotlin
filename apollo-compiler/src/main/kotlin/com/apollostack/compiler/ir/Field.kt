@@ -10,7 +10,9 @@ data class Field(
     val fieldName: String,
     val type: String,
     val fields: List<Field>?,
-    val fragmentSpreads: List<String>?) {
+    val fragmentSpreads: List<String>?,
+    val inlineFragments: List<InlineFragment>?
+) {
   fun toMethodSpec(): MethodSpec =
       MethodSpec.methodBuilder(responseName)
           .returns(toTypeName(methodResponseType()))
@@ -45,5 +47,9 @@ data class Field(
 
   fun isNonScalar() = fields?.any() ?: false
 
+  fun isScalar() = fields?.none() ?: true
+
   fun hasFragments() = fragmentSpreads?.any() ?: false
+
+
 }
