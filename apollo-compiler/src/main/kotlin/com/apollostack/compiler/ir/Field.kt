@@ -13,7 +13,7 @@ data class Field(
     val fragmentSpreads: List<String>?) {
   fun toMethodSpec(): MethodSpec =
       MethodSpec.methodBuilder(responseName)
-          .returns(toTypeName(methodResponsType()))
+          .returns(toTypeName(methodResponseType()))
           .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
           .build()
 
@@ -22,7 +22,7 @@ data class Field(
 
   fun normalizedName() = responseName.capitalize().singularize()
 
-  private fun methodResponsType(): String {
+  private fun methodResponseType(): String {
     if (isNonScalar() || hasFragments()) {
       // For non scalar fields, we use the responseName as the method return type.
       // However, we need to also encode any extra information from the `type` field
