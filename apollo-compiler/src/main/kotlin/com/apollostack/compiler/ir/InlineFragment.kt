@@ -11,13 +11,11 @@ data class InlineFragment(
   override fun toTypeSpec(): TypeSpec =
       TypeSpec.interfaceBuilder(interfaceName())
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-          .addMethods(scalarFields().map(Field::toMethodSpec))
-
+          .addMethods(fields.map(Field::toMethodSpec))
+          .addTypes(fields.filter(Field::isNonScalar).map(Field::toTypeSpec))
           .build()
 
   fun interfaceName() = "$INTERFACE_PREFIX${typeCondition.capitalize()}"
-
-  private fun scalarFields() = fields.filter(Field::isScalar)
 
   companion object {
     private val INTERFACE_PREFIX = "As"

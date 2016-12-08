@@ -11,28 +11,38 @@ public interface Query {
   interface Hero {
     String name();
 
-    @Nullable List<Friend> friends();
-
     @Nullable
     AsHuman asHuman();
 
     @Nullable
     AsDroid asDroid();
 
-    interface Friend {
-      String name();
-    }
-
     interface AsHuman {
       String name();
 
+      @Nullable List<Friend> friends();
+
       @Nullable Float height();
+
+      interface Friend {
+        String name();
+
+        List<Episode> appearsIn();
+      }
     }
 
     interface AsDroid {
       String name();
 
+      @Nullable List<Friend> friends();
+
       @Nullable String primaryFunction();
+
+      interface Friend {
+        String name();
+
+        long id();
+      }
     }
   }
 }

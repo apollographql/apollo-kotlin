@@ -164,16 +164,17 @@ class GraphqlCompilerTest {
   @Test fun inlineFragmentsWithFriends() {
     val actual = File("build/generated/source/apollo/com/example/inline_fragments_with_friends/Query.java")
     val expected = File("src/test/graphql/com/example/inline_fragments_with_friends/QueryExpected.java")
+    val episodeEnumActual = File("build/generated/source/apollo/com/example/inline_fragments_with_friends/Episode.java")
 
     compiler.write(File("src/test/graphql/com/example/inline_fragments_with_friends/Query.json"))
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
+    val episodeEnumSource = JavaFileObjects.forSourceLines("test.Episode", episodeEnumActual.readLines())
+
     val source = JavaFileObjects.forSourceLines("com.example.Query", actual.readLines())
     assertAbout(javaSources())
-        .that(listOf(source))
+        .that(listOf(source, episodeEnumSource))
         .compilesWithoutError()
-
-    throw RuntimeException("Intentionally fail as this test not completed yet, missing non-scalar type generation")
   }
 
   @Test fun fragmentsWithTypeCondition() {
