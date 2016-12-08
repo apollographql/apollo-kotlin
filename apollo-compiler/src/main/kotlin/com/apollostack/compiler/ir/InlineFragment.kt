@@ -20,5 +20,4 @@ data class InlineFragment(
   companion object {
     private val INTERFACE_PREFIX = "As"
   }
-
 }

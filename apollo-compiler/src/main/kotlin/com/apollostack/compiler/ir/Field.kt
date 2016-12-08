@@ -16,7 +16,8 @@ data class Field(
     val inlineFragments: List<InlineFragment>?
 ) : CodeGenerator {
   override fun toTypeSpec(): TypeSpec =
-      FieldTypeSpecBuilder().build(normalizedName(), fields ?: emptyList(), emptyList(), inlineFragments)
+      FieldTypeSpecBuilder().build(normalizedName(), fields ?: emptyList(), emptyList(),
+          inlineFragments ?: emptyList())
 
   fun toMethodSpec(): MethodSpec =
       MethodSpec.methodBuilder(responseName)
@@ -57,5 +58,4 @@ data class Field(
   fun isNonScalar() = fields?.any() ?: false
 
   fun hasFragments() = fragmentSpreads?.any() ?: false
-
 }

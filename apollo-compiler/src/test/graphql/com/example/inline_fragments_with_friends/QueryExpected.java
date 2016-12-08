@@ -11,11 +11,9 @@ public interface Query {
   interface Hero {
     String name();
 
-    @Nullable
-    AsHuman asHuman();
+    @Nullable AsHuman asHuman();
 
-    @Nullable
-    AsDroid asDroid();
+    @Nullable AsDroid asDroid();
 
     interface AsHuman {
       String name();
