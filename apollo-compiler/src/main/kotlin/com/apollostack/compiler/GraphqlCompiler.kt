@@ -12,19 +12,13 @@ open class GraphqlCompiler {
   fun write(irFile: File) {
     val packageName = irFile.absolutePath.formatPackageName()
     val ir = irAdapter.fromJson(irFile.readText())
-    ir.operations.forEach {
-      val typeSpecBuilder = OperationTypeSpecBuilder(it.operationName, it.fields)
-      JavaFile
-          .builder(packageName, typeSpecBuilder.build())
-          .build()
-          .writeTo(OUTPUT_DIRECTORY.fold(File("build"), ::File))
+    val outputDir = OUTPUT_DIRECTORY.fold(File("build"), ::File)
+    val operationTypeSpecBuilders = ir.operations.map {
+      OperationTypeSpecBuilder(it.operationName, it.fields, ir.fragments)
     }
-    ir.typesUsed.forEach {
-      JavaFile
-          .builder(packageName, it.toTypeSpec())
-          .build()
-          .writeTo(OUTPUT_DIRECTORY.fold(File("build"), ::File))
-    }
+    (operationTypeSpecBuilders + ir.typesUsed + ir.fragments)
+        .map { JavaFile.builder(packageName, it.toTypeSpec()).build() }
+        .forEach { it.writeTo(outputDir) }
   }
 
   companion object {

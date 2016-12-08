@@ -1,4 +1,4 @@
-package com.example;
+package com.example.enum_type;
 
 /**
  * The episodes in the Star Wars trilogy

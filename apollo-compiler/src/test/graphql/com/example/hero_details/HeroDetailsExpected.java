@@ -1,4 +1,4 @@
-package com.example;
+package com.example.hero_details;
 
 import java.lang.Integer;
 import java.lang.String;

@@ -1,4 +1,4 @@
-package com.example;
+package com.example.hero_name;
 
 import java.lang.String;
 import javax.annotation.Nullable;

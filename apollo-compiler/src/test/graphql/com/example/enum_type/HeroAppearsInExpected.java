@@ -1,4 +1,4 @@
-package com.example;
+package com.example.enum_type;
 
 import java.lang.String;
 import java.util.List;
