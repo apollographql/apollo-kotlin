@@ -10,7 +10,7 @@ import javax.lang.model.element.Modifier
 
 class FieldTypeSpecBuilder {
   fun build(typeName: String, fields: List<Field>, fragments: List<Fragment>,
-            inlineFragments: List<InlineFragment>): TypeSpec =
+      inlineFragments: List<InlineFragment>): TypeSpec =
       TypeSpec.interfaceBuilder(typeName)
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
           .addMethods(fields.map(Field::toMethodSpec))
@@ -36,8 +36,10 @@ class FieldTypeSpecBuilder {
   /** Returns a list of types referenced by the inner fields in the provided fields */
   private fun innerTypes(fields: List<Field>, fragments: List<Fragment>): List<TypeSpec> =
       fields.filter(Field::isNonScalar)
-          .map { build(it.normalizedName(), it.fields!!, it.referencedFragments(fragments),
-              it.inlineFragments ?: emptyList()) }
+          .map {
+            build(it.normalizedName(), it.fields!!, it.referencedFragments(fragments),
+                it.inlineFragments ?: emptyList())
+          }
 
   private fun inlineFragmentsTypeSpecs(inlineFragments: List<InlineFragment>): List<TypeSpec> =
       inlineFragments.map { it.toTypeSpec() }
@@ -45,7 +47,8 @@ class FieldTypeSpecBuilder {
   private fun inlineFragmentMethodSpecs(inlineFragments: List<InlineFragment>): List<MethodSpec> =
       inlineFragments.map {
         MethodSpec.methodBuilder(it.interfaceName().decapitalize())
-            .returns(ClassName.get("", it.interfaceName()).annotated(JavaPoetUtils.NULLABLE_ANNOTATION))
+            .returns(ClassName.get("", it.interfaceName())
+                .annotated(JavaPoetUtils.NULLABLE_ANNOTATION))
             .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
             .build()
       }
