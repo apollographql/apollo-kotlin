@@ -44,8 +44,8 @@ class FieldTypeSpecBuilder {
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
             .addMethods(it.fields.map(Field::toMethodSpec))
             .addTypes(it.fields.filter(Field::isNonScalar).map{
-              FieldTypeSpecBuilder().build(it.normalizedName(), it.fields ?: emptyList(),
-                  fragments, it.inlineFragments ?: emptyList())
+              build(it.normalizedName(), it.fields ?: emptyList(), fragments,
+                  it.inlineFragments ?: emptyList())
             })
             .build()
       }
