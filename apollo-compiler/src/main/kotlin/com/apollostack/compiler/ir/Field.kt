@@ -13,10 +13,12 @@ data class Field(
     val type: String,
     val isConditional: Boolean = false,
     val fields: List<Field>?,
-    val fragmentSpreads: List<String>?
+    val fragmentSpreads: List<String>?,
+    val inlineFragments: List<InlineFragment>?
 ) : CodeGenerator {
   override fun toTypeSpec(): TypeSpec =
-      FieldTypeSpecBuilder().build(normalizedName(), fields ?: emptyList(), emptyList())
+      FieldTypeSpecBuilder().build(normalizedName(), fields ?: emptyList(), emptyList(),
+          inlineFragments ?: emptyList())
 
   fun toMethodSpec(): MethodSpec =
       MethodSpec.methodBuilder(responseName)

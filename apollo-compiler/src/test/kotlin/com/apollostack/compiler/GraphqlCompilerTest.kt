@@ -138,6 +138,56 @@ class GraphqlCompilerTest {
         .compilesWithoutError()
   }
 
+  @Test fun simpleInlineFragments() {
+    val actual = actualFileFor("simple_inline_fragment", "Query")
+    val expected = expectedFileFor("simple_inline_fragment", "Query")
+
+    compiler.write(irFileFor("simple_inline_fragment", "Query"))
+    assertThat(actual.readText()).isEqualTo(expected.readText())
+
+    val source = JavaFileObjects.forSourceLines("com.example.Query", actual.readLines())
+    assertAbout(javaSources())
+        .that(listOf(source))
+        .compilesWithoutError()
+  }
+
+  @Test fun inlineFragmentsWithFriends() {
+    val actual = actualFileFor("inline_fragments_with_friends", "Query")
+    val expected = expectedFileFor("inline_fragments_with_friends", "Query")
+    val episodeEnumActual = actualFileFor("inline_fragments_with_friends", "Episode")
+
+    compiler.write(irFileFor("inline_fragments_with_friends", "Query"))
+    assertThat(actual.readText()).isEqualTo(expected.readText())
+
+    val episodeEnumSource = JavaFileObjects.forSourceLines("test.Episode", episodeEnumActual.readLines())
+
+    val source = JavaFileObjects.forSourceLines("com.example.Query", actual.readLines())
+    assertAbout(javaSources())
+        .that(listOf(source, episodeEnumSource))
+        .compilesWithoutError()
+  }
+
+  @Test fun fragmentsWithTypeCondition() {
+    val actual = actualFileFor("fragments_with_type_condition", "Query")
+    val expected = expectedFileFor("fragments_with_type_condition", "Query")
+    val humanDetailsActual = actualFileFor("fragments_with_type_condition", "HumanDetails")
+    val droidDetailsActual = actualFileFor("fragments_with_type_condition", "DroidDetails")
+
+    compiler.write(irFileFor("fragments_with_type_condition", "Query"))
+    assertThat(actual.readText()).isEqualTo(expected.readText())
+
+    val humanDetails = JavaFileObjects.forSourceLines("com.example.fragments_with_type_condition.HumanDetails",
+        humanDetailsActual.readLines())
+
+    val droidDetails = JavaFileObjects.forSourceLines("com.example.fragments_with_type_condition.DroidDetails",
+        droidDetailsActual.readLines())
+
+    val source = JavaFileObjects.forSourceLines("com.example.Query", actual.readLines())
+    assertAbout(javaSources())
+        .that(listOf(source, humanDetails, droidDetails))
+        .compilesWithoutError()
+  }
+
   @Test fun fieldDirectives() {
     val actualFile = actualFileFor("directives", "HeroNameDirective")
     val expectedFile = expectedFileFor("directives", "HeroNameDirective")

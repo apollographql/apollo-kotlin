@@ -2,18 +2,22 @@ package com.apollostack.compiler
 
 import com.apollostack.compiler.ir.Field
 import com.apollostack.compiler.ir.Fragment
+import com.apollostack.compiler.ir.InlineFragment
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 class FieldTypeSpecBuilder {
-  fun build(typeName: String, fields: List<Field>, fragments: List<Fragment>): TypeSpec =
+  fun build(typeName: String, fields: List<Field>, fragments: List<Fragment>,
+            inlineFragments: List<InlineFragment>): TypeSpec =
       TypeSpec.interfaceBuilder(typeName)
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
           .addMethods(fields.map(Field::toMethodSpec))
+          .addMethods(inlineFragmentMethodSpecs(inlineFragments))
           .addTypes(innerTypes(fields, fragments))
           .addTypes(innerFragments(fields, fragments))
+          .addTypes(inlineFragmentsTypeSpecs(inlineFragments))
           .build()
 
   /** Returns a list of fragment types referenced by the provided list of fields */
@@ -32,7 +36,19 @@ class FieldTypeSpecBuilder {
   /** Returns a list of types referenced by the inner fields in the provided fields */
   private fun innerTypes(fields: List<Field>, fragments: List<Fragment>): List<TypeSpec> =
       fields.filter(Field::isNonScalar)
-          .map { build(it.normalizedName(), it.fields!!, it.referencedFragments(fragments)) }
+          .map { build(it.normalizedName(), it.fields!!, it.referencedFragments(fragments),
+              it.inlineFragments ?: emptyList()) }
+
+  private fun inlineFragmentsTypeSpecs(inlineFragments: List<InlineFragment>): List<TypeSpec> =
+      inlineFragments.map { it.toTypeSpec() }
+
+  private fun inlineFragmentMethodSpecs(inlineFragments: List<InlineFragment>): List<MethodSpec> =
+      inlineFragments.map {
+        MethodSpec.methodBuilder(it.interfaceName().decapitalize())
+            .returns(ClassName.get("", it.interfaceName()).annotated(JavaPoetUtils.NULLABLE_ANNOTATION))
+            .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+            .build()
+      }
 
   companion object {
     private val FRAGMENTS_INTERFACE_NAME = "Fragments"

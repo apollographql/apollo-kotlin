@@ -1,0 +1,62 @@
+{
+  "operations": [
+    {
+      "operationName": "Query",
+      "operationType": "query",
+      "variables": [],
+      "source": "query Query {\n  hero {\n    __typename\n    name\n    ... on Human {\n      height\n    }\n    ... on Droid {\n      primaryFunction\n    }\n  }\n}",
+      "fields": [
+        {
+          "responseName": "hero",
+          "fieldName": "hero",
+          "type": "Character",
+          "fields": [
+            {
+              "responseName": "name",
+              "fieldName": "name",
+              "type": "String!"
+            }
+          ],
+          "fragmentSpreads": [],
+          "inlineFragments": [
+            {
+              "typeCondition": "Human",
+              "fields": [
+                {
+                  "responseName": "name",
+                  "fieldName": "name",
+                  "type": "String!"
+                },
+                {
+                  "responseName": "height",
+                  "fieldName": "height",
+                  "type": "Float"
+                }
+              ],
+              "fragmentSpreads": []
+            },
+            {
+              "typeCondition": "Droid",
+              "fields": [
+                {
+                  "responseName": "name",
+                  "fieldName": "name",
+                  "type": "String!"
+                },
+                {
+                  "responseName": "primaryFunction",
+                  "fieldName": "primaryFunction",
+                  "type": "String"
+                }
+              ],
+              "fragmentSpreads": []
+            }
+          ]
+        }
+      ],
+      "fragmentsReferenced": []
+    }
+  ],
+  "fragments": [],
+  "typesUsed": []
+}

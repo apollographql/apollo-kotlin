@@ -1,0 +1,81 @@
+{
+  "operations": [
+    {
+      "operationName": "Query",
+      "operationType": "query",
+      "variables": [],
+      "source": "query Query {\n  r2: hero {\n    __typename\n    ...HumanDetails\n    ...DroidDetails\n  }\n  luke: hero {\n    __typename\n    ...HumanDetails\n    ...DroidDetails\n  }\n}",
+      "fields": [
+        {
+          "responseName": "r2",
+          "fieldName": "hero",
+          "type": "Character",
+          "fields": [],
+          "fragmentSpreads": [
+            "HumanDetails",
+            "DroidDetails"
+          ],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "luke",
+          "fieldName": "hero",
+          "type": "Character",
+          "fields": [],
+          "fragmentSpreads": [
+            "HumanDetails",
+            "DroidDetails"
+          ],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentsReferenced": [
+        "HumanDetails",
+        "DroidDetails"
+      ]
+    }
+  ],
+  "fragments": [
+    {
+      "fragmentName": "HumanDetails",
+      "source": "fragment HumanDetails on Human {\n  name\n  height\n}",
+      "typeCondition": "Human",
+      "fields": [
+        {
+          "responseName": "name",
+          "fieldName": "name",
+          "type": "String!"
+        },
+        {
+          "responseName": "height",
+          "fieldName": "height",
+          "type": "Float"
+        }
+      ],
+      "fragmentSpreads": [],
+      "inlineFragments": [],
+      "fragmentsReferenced": []
+    },
+    {
+      "fragmentName": "DroidDetails",
+      "source": "fragment DroidDetails on Droid {\n  name\n  primaryFunction\n}",
+      "typeCondition": "Droid",
+      "fields": [
+        {
+          "responseName": "name",
+          "fieldName": "name",
+          "type": "String!"
+        },
+        {
+          "responseName": "primaryFunction",
+          "fieldName": "primaryFunction",
+          "type": "String"
+        }
+      ],
+      "fragmentSpreads": [],
+      "inlineFragments": [],
+      "fragmentsReferenced": []
+    }
+  ],
+  "typesUsed": []
+}
