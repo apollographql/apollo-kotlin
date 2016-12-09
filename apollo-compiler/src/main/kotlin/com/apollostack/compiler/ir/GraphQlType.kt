@@ -39,7 +39,7 @@ sealed class GraphQlType(val isOptional: Boolean) {
       typeName.startsWith("Boolean") -> GraphQLBoolean(isOptional)
       typeName.startsWith("Float") -> GraphQLFloat(isOptional)
       typeName.removeSuffix("!").let { it.startsWith('[') && it.endsWith(']') } -> GraphQLList(
-              isOptional, resolveByName(typeName.normalizeTypeName(), isOptional))
+          isOptional, resolveByName(typeName.normalizeTypeName(), isOptional))
       else -> GraphQlUnknown(isOptional, typeName.normalizeTypeName())
     }
 

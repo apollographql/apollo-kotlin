@@ -20,5 +20,4 @@ class OperationTypeSpecBuilder(
       // able to inject the parameters directly (including the list of fragments), so we use
       // FieldTypeSpecBuilder directly.
       FieldTypeSpecBuilder().build(operationName, fields, allFragments, emptyList())
-
 }

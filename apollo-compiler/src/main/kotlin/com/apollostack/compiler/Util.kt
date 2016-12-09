@@ -6,5 +6,5 @@ import javax.annotation.Nullable
 fun String.normalizeTypeName() = removeSuffix("!").removeSurrounding("[", "]").removeSuffix("!")
 
 object JavaPoetUtils {
-  val NULLABLE_ANNOTATION = AnnotationSpec.builder(Nullable::class.java).build()
+  val NULLABLE_ANNOTATION: AnnotationSpec = AnnotationSpec.builder(Nullable::class.java).build()
 }
