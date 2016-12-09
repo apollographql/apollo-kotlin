@@ -17,7 +17,7 @@ class FieldTypeSpecBuilder {
           .addMethods(inlineFragmentMethodSpecs(inlineFragments))
           .addTypes(innerTypes(fields, fragments))
           .addTypes(innerFragments(fields, fragments))
-          .addTypes(inlineFragmentsTypeSpecs(inlineFragments))
+          .addTypes(inlineFragmentsTypeSpecs(inlineFragments, fragments))
           .build()
 
   /** Returns a list of fragment types referenced by the provided list of fields */
@@ -36,13 +36,10 @@ class FieldTypeSpecBuilder {
   /** Returns a list of types referenced by the inner fields in the provided fields */
   private fun innerTypes(fields: List<Field>, fragments: List<Fragment>): List<TypeSpec> =
       fields.filter(Field::isNonScalar)
-          .map {
-            build(it.normalizedName(), it.fields!!, it.referencedFragments(fragments),
-                it.inlineFragments ?: emptyList())
-          }
+          .map { build(it.normalizedName(), it.fields!!, fragments, it.inlineFragments ?: emptyList()) }
 
-  private fun inlineFragmentsTypeSpecs(inlineFragments: List<InlineFragment>): List<TypeSpec> =
-      inlineFragments.map { it.toTypeSpec() }
+  private fun inlineFragmentsTypeSpecs(inlineFragments: List<InlineFragment>, fragments: List<Fragment>): List<TypeSpec> =
+      inlineFragments.map { it.toTypeSpec(fragments) }
 
   private fun inlineFragmentMethodSpecs(inlineFragments: List<InlineFragment>): List<MethodSpec> =
       inlineFragments.map {

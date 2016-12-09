@@ -186,6 +186,27 @@ class GraphqlCompilerTest {
         .compilesWithoutError()
   }
 
+  @Test fun uniqueName() {
+    val actual = actualFileFor("unique_type_name", "Query")
+    val expected = expectedFileFor("unique_type_name", "Query")
+    val heroDetailsActual = actualFileFor("unique_type_name", "HeroDetails")
+    val episodeActual = actualFileFor("unique_type_name", "Episode")
+
+    compiler.write(irFileFor("unique_type_name", "QueryIR"))
+    assertThat(actual.readText()).isEqualTo(expected.readText())
+
+    val heroDetails = JavaFileObjects.forSourceLines("com.example.unique_type_name.HeroDetails",
+        heroDetailsActual.readLines())
+
+    val episode = JavaFileObjects.forSourceLines("com.example.unique_type_name.Episode",
+        episodeActual.readLines())
+
+    val source = JavaFileObjects.forSourceLines("com.example.unique_type_name.Query", actual.readLines())
+    assertAbout(javaSources())
+        .that(listOf(source, heroDetails, episode))
+        .compilesWithoutError()
+  }
+
   @Test fun fieldDirectives() {
     val actualFile = actualFileFor("directives", "HeroNameDirective")
     val expectedFile = expectedFileFor("directives", "HeroNameDirective")

@@ -16,8 +16,8 @@ data class Field(
     val fragmentSpreads: List<String>?,
     val inlineFragments: List<InlineFragment>?
 ) : CodeGenerator {
-  override fun toTypeSpec(): TypeSpec =
-      FieldTypeSpecBuilder().build(normalizedName(), fields ?: emptyList(), emptyList(),
+  override fun toTypeSpec(fragments: List<Fragment>): TypeSpec =
+      FieldTypeSpecBuilder().build(normalizedName(), fields ?: emptyList(), fragments,
           inlineFragments ?: emptyList())
 
   fun toMethodSpec(): MethodSpec =
@@ -25,10 +25,6 @@ data class Field(
           .returns(toTypeName(methodResponseType()))
           .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
           .build()
-
-  /** Filters all fragments to only the ones referenced by this Field */
-  fun referencedFragments(allFragments: List<Fragment>) =
-      allFragments.filter { fragmentSpreads?.contains(it.fragmentName) ?: false }
 
   private fun toTypeName(responseType: String): TypeName =
       GraphQlType.resolveByName(responseType, isOptional()).toJavaTypeName()
