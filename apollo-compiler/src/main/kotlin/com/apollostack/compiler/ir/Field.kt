@@ -11,6 +11,7 @@ data class Field(
     val responseName: String,
     val fieldName: String,
     val type: String,
+    val isConditional: Boolean = false,
     val fields: List<Field>?,
     val fragmentSpreads: List<String>?,
     val inlineFragments: List<InlineFragment>?
@@ -26,7 +27,7 @@ data class Field(
           .build()
 
   private fun toTypeName(responseType: String): TypeName =
-      GraphQlType.resolveByName(responseType).toJavaTypeName()
+      GraphQlType.resolveByName(responseType, isOptional()).toJavaTypeName()
 
   fun normalizedName() = responseName.capitalize().singularize()
 
@@ -54,4 +55,6 @@ data class Field(
   fun isNonScalar() = fields?.any() ?: false
 
   fun hasFragments() = fragmentSpreads?.any() ?: false
+
+  fun isOptional(): Boolean = isConditional || !methodResponseType().endsWith("!")
 }
