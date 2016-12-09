@@ -24,12 +24,12 @@ fun MethodSpec.overrideMethodReturnType(typeNameOverrideMap: Map<String, String>
         .build()
 
 fun TypeSpec.resolveNestedTypeNameDuplication(reservedTypeNames: List<String>): TypeSpec {
-  fun String.formatUniqueTypeName(reservedTypeNames: List<String>):String {
+  fun String.formatUniqueTypeName(reservedTypeNames: List<String>): String {
     val suffix = reservedTypeNames.count { it == this }.let { if (it > 0) "$".repeat(it) else "" }
     return "$this$suffix"
   }
 
-  val typeNameOverrideMap = typeSpecs.map {it.name }
+  val typeNameOverrideMap = typeSpecs.map { it.name }
       .map { it to it.formatUniqueTypeName(reservedTypeNames) }.toMap()
 
   val typeSpecName = name.formatUniqueTypeName(reservedTypeNames.minusElement(name))
