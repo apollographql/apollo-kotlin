@@ -1,7 +1,6 @@
 package com.apollostack.compiler
 
 import com.apollostack.compiler.ir.Field
-import com.apollostack.compiler.ir.Fragment
 import com.apollostack.compiler.ir.InlineFragment
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.MethodSpec
@@ -9,46 +8,51 @@ import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 class InterfaceTypeSpecBuilder {
-  fun build(typeName: String, fields: List<Field>, fragments: List<Fragment>,
+  fun build(typeName: String, fields: List<Field>, fragmentSpreads: List<String>,
       inlineFragments: List<InlineFragment>): TypeSpec =
       TypeSpec.interfaceBuilder(typeName)
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-          .addMethods(fields.map(Field::toMethodSpec))
-          .addMethods(inlineFragmentMethodSpecs(inlineFragments))
-          .addTypes(innerTypes(fields, fragments))
-          .addTypes(innerFragments(fields, fragments))
-          .addTypes(inlineFragmentsTypeSpecs(inlineFragments, fragments))
+          .addFieldAccessorMethods(fields)
+          .addInlineFragmentAccessorMethods(inlineFragments)
+          .addInnerTypes(fields)
+          .addInnerFragmentTypes(fragmentSpreads)
+          .addInlineFragmentTypes(inlineFragments)
           .build()
 
+  private fun TypeSpec.Builder.addFieldAccessorMethods(fields: List<Field>): TypeSpec.Builder {
+    val methodSpecs = fields.map(Field::toMethodSpec)
+    return addMethods(methodSpecs)
+  }
+
   /** Returns a list of fragment types referenced by the provided list of fields */
-  private fun innerFragments(fields: List<Field>, fragments: List<Fragment>): List<TypeSpec> =
-      fields.filter(Field::hasFragments)
-          .map { field ->
-            // TODO: This is generating the same "Fragments" interface for every field that
-            // references a fragment.
-            TypeSpec.interfaceBuilder(field.normalizedName())
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .addMethod(newFragmentAccessorMethodSpec())
-                .addType(newFragmentInterfaceSpec(fragments))
-                .build()
-          }
+  private fun TypeSpec.Builder.addInnerFragmentTypes(fragments: List<String>): TypeSpec.Builder {
+    if (fragments.isNotEmpty()) {
+      addMethod(newFragmentAccessorMethodSpec())
+      addType(newFragmentInterfaceSpec(fragments))
+    }
+    return this
+  }
 
   /** Returns a list of types referenced by the inner fields in the provided fields */
-  private fun innerTypes(fields: List<Field>, fragments: List<Fragment>): List<TypeSpec> =
-      fields.filter(Field::isNonScalar)
-          .map { build(it.normalizedName(), it.fields!!, fragments, it.inlineFragments ?: emptyList()) }
+  private fun TypeSpec.Builder.addInnerTypes(fields: List<Field>): TypeSpec.Builder {
+    val typeSpecs = fields.filter(Field::isNonScalar).map(Field::toTypeSpec)
+    return addTypes(typeSpecs)
+  }
 
-  private fun inlineFragmentsTypeSpecs(inlineFragments: List<InlineFragment>, fragments: List<Fragment>): List<TypeSpec> =
-      inlineFragments.map { it.toTypeSpec(fragments) }
+  private fun TypeSpec.Builder.addInlineFragmentTypes(inlineFragments: List<InlineFragment>): TypeSpec.Builder {
+    val typeSpecs = inlineFragments.map { it.toTypeSpec() }
+    return addTypes(typeSpecs)
+  }
 
-  private fun inlineFragmentMethodSpecs(inlineFragments: List<InlineFragment>): List<MethodSpec> =
-      inlineFragments.map {
-        MethodSpec.methodBuilder(it.interfaceName().decapitalize())
-            .returns(ClassName.get("", it.interfaceName())
-                .annotated(JavaPoetUtils.NULLABLE_ANNOTATION))
-            .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-            .build()
-      }
+  private fun TypeSpec.Builder.addInlineFragmentAccessorMethods(inlineFragments: List<InlineFragment>): TypeSpec.Builder {
+    val methodSpecs = inlineFragments.map {
+      MethodSpec.methodBuilder(it.interfaceName().decapitalize())
+          .returns(ClassName.get("", it.interfaceName()).annotated(JavaPoetUtils.NULLABLE_ANNOTATION))
+          .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+          .build()
+    }
+    return addMethods(methodSpecs)
+  }
 
   companion object {
     private val FRAGMENTS_INTERFACE_NAME = "Fragments"
@@ -60,10 +64,15 @@ class InterfaceTypeSpecBuilder {
             .build()
 
     /** Returns a generic `Fragments` interface with methods for each of the provided fragments */
-    private fun newFragmentInterfaceSpec(fragments: List<Fragment>): TypeSpec =
+    private fun newFragmentInterfaceSpec(fragments: List<String>): TypeSpec =
         TypeSpec.interfaceBuilder(FRAGMENTS_INTERFACE_NAME)
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-            .addMethods(fragments.map(Fragment::toMethodSpec))
+            .addMethods(fragments.map {
+              MethodSpec.methodBuilder(it.decapitalize())
+                  .returns(ClassName.get("", it.capitalize()))
+                  .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                  .build()
+            })
             .build()
   }
 }

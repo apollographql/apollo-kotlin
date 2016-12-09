@@ -6,14 +6,15 @@ import javax.lang.model.element.Modifier
 
 data class InlineFragment(
     val typeCondition: String,
-    val fields: List<Field>
+    val fields: List<Field>,
+    val fragmentSpreads: List<String>?
 ) : CodeGenerator {
-  override fun toTypeSpec(fragments: List<Fragment>): TypeSpec =
+  override fun toTypeSpec(): TypeSpec =
     TypeSpec.interfaceBuilder(interfaceName())
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
         .addMethods(fields.map(Field::toMethodSpec))
         .addTypes(fields.filter(Field::isNonScalar).map { field ->
-          InterfaceTypeSpecBuilder().build(field.normalizedName(), field.fields ?: emptyList(), fragments,
+          InterfaceTypeSpecBuilder().build(field.normalizedName(), field.fields ?: emptyList(), fragmentSpreads ?: emptyList(),
               field.inlineFragments ?: emptyList())
         })
         .build()

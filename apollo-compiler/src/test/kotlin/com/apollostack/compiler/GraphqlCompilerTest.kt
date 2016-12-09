@@ -214,4 +214,25 @@ class GraphqlCompilerTest {
     compiler.write(irFileFor("directives", "HeroNameDirective"))
     assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
   }
+
+  @Test fun fragmentsWithInlineFragment() {
+    val actual = actualFileFor("fragment_with_inline_fragment", "Query")
+    val expected = expectedFileFor("fragment_with_inline_fragment", "Query")
+    val heroDetailsActual = actualFileFor("fragment_with_inline_fragment", "HeroDetails")
+    val heroDetailsExpected = expectedFileFor("fragment_with_inline_fragment", "HeroDetails")
+    val episodeActual = actualFileFor("fragment_with_inline_fragment", "Episode")
+
+    compiler.write(irFileFor("fragment_with_inline_fragment", "QueryIR"))
+    assertThat(actual.readText()).isEqualTo(expected.readText())
+    assertThat(heroDetailsActual.readText()).isEqualTo(heroDetailsExpected.readText())
+
+    val heroDetails = JavaFileObjects.forSourceLines("com.example.fragment_with_inline_fragment.HeroDetails",
+        heroDetailsActual.readLines())
+    val episode = JavaFileObjects.forSourceLines("com.example.fragment_with_inline_fragment.Episode",
+        episodeActual.readLines())
+    val source = JavaFileObjects.forSourceLines("com.example.fragment_with_inline_fragment.Query", actual.readLines())
+    assertAbout(javaSources())
+        .that(listOf(source, heroDetails, episode))
+        .compilesWithoutError()
+  }
 }

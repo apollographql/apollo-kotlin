@@ -1,0 +1,140 @@
+{
+  "operations": [
+    {
+      "operationName": "Query",
+      "operationType": "query",
+      "variables": [],
+      "source": "query Query {\n  hero {\n    __typename\n    name\n    ...HeroDetails\n  }\n}",
+      "fields": [
+        {
+          "responseName": "hero",
+          "fieldName": "hero",
+          "type": "Character",
+          "fields": [
+            {
+              "responseName": "name",
+              "fieldName": "name",
+              "type": "String!"
+            }
+          ],
+          "fragmentSpreads": [
+            "HeroDetails"
+          ],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentsReferenced": [
+        "HeroDetails"
+      ]
+    }
+  ],
+  "fragments": [
+    {
+      "fragmentName": "HeroDetails",
+      "source": "fragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    totalCount\n    edges {\n      node {\n        __typename\n        name\n      }\n    }\n  }\n  ... on Droid {\n    primaryFunction\n  }\n}",
+      "typeCondition": "Character",
+      "fields": [
+        {
+          "responseName": "name",
+          "fieldName": "name",
+          "type": "String!"
+        },
+        {
+          "responseName": "friendsConnection",
+          "fieldName": "friendsConnection",
+          "type": "FriendsConnection!",
+          "fields": [
+            {
+              "responseName": "totalCount",
+              "fieldName": "totalCount",
+              "type": "Int"
+            },
+            {
+              "responseName": "edges",
+              "fieldName": "edges",
+              "type": "[FriendsEdge]",
+              "fields": [
+                {
+                  "responseName": "node",
+                  "fieldName": "node",
+                  "type": "Character",
+                  "fields": [
+                    {
+                      "responseName": "name",
+                      "fieldName": "name",
+                      "type": "String!"
+                    }
+                  ],
+                  "fragmentSpreads": [],
+                  "inlineFragments": []
+                }
+              ],
+              "fragmentSpreads": [],
+              "inlineFragments": []
+            }
+          ],
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentSpreads": [],
+      "inlineFragments": [
+        {
+          "typeCondition": "Droid",
+          "fields": [
+            {
+              "responseName": "name",
+              "fieldName": "name",
+              "type": "String!"
+            },
+            {
+              "responseName": "friendsConnection",
+              "fieldName": "friendsConnection",
+              "type": "FriendsConnection!",
+              "fields": [
+                {
+                  "responseName": "totalCount",
+                  "fieldName": "totalCount",
+                  "type": "Int"
+                },
+                {
+                  "responseName": "edges",
+                  "fieldName": "edges",
+                  "type": "[FriendsEdge]",
+                  "fields": [
+                    {
+                      "responseName": "node",
+                      "fieldName": "node",
+                      "type": "Character",
+                      "fields": [
+                        {
+                          "responseName": "name",
+                          "fieldName": "name",
+                          "type": "String!"
+                        }
+                      ],
+                      "fragmentSpreads": [],
+                      "inlineFragments": []
+                    }
+                  ],
+                  "fragmentSpreads": [],
+                  "inlineFragments": []
+                }
+              ],
+              "fragmentSpreads": [],
+              "inlineFragments": []
+            },
+            {
+              "responseName": "primaryFunction",
+              "fieldName": "primaryFunction",
+              "type": "String"
+            }
+          ],
+          "fragmentSpreads": []
+        }
+      ],
+      "fragmentsReferenced": []
+    }
+  ],
+  "typesUsed": []
+}
