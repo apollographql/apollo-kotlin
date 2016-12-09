@@ -39,13 +39,13 @@ class FieldTypeSpecBuilder {
           .map { build(it.normalizedName(), it.fields!!, fragments, it.inlineFragments ?: emptyList()) }
 
   private fun inlineFragmentsTypeSpecs(inlineFragments: List<InlineFragment>, fragments: List<Fragment>): List<TypeSpec> =
-      inlineFragments.map {
-        TypeSpec.interfaceBuilder(it.interfaceName())
+      inlineFragments.map { inlineFragment ->
+        TypeSpec.interfaceBuilder(inlineFragment.interfaceName())
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-            .addMethods(it.fields.map(Field::toMethodSpec))
-            .addTypes(it.fields.filter(Field::isNonScalar).map{
-              build(it.normalizedName(), it.fields ?: emptyList(), fragments,
-                  it.inlineFragments ?: emptyList())
+            .addMethods(inlineFragment.fields.map(Field::toMethodSpec))
+            .addTypes(inlineFragment.fields.filter(Field::isNonScalar).map { field ->
+              build(field.normalizedName(), field.fields ?: emptyList(), fragments,
+                  field.inlineFragments ?: emptyList())
             })
             .build()
       }
