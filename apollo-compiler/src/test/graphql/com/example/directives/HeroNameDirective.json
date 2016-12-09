@@ -1,0 +1,30 @@
+{
+  "operations": [
+    {
+      "operationName": "HeroNameDirective",
+      "operationType": "query",
+      "variables": [],
+      "source": "query HeroNameDirective {\n  hero {\n    __typename\n    name @include(if: false)\n  }\n}",
+      "fields": [
+        {
+          "responseName": "hero",
+          "fieldName": "hero",
+          "type": "Character",
+          "fields": [
+            {
+              "responseName": "name",
+              "fieldName": "name",
+              "type": "String!",
+              "isConditional": true
+            }
+          ],
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentsReferenced": []
+    }
+  ],
+  "fragments": [],
+  "typesUsed": []
+}
