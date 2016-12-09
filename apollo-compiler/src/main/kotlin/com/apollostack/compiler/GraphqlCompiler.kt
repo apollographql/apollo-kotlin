@@ -28,12 +28,9 @@ open class GraphqlCompiler {
 
   private fun String.formatPackageName(): String {
     val parts = split(File.separatorChar)
-
-    for (i in 2..parts.size) {
-      if (parts[i - 2] == "src" && parts[i] == "graphql") {
-        return parts.subList(i + 1, parts.size).dropLast(1).joinToString(".")
-      }
-    }
+    (parts.size - 1 downTo 2)
+        .filter { parts[it - 2] == "src" && parts[it] == "graphql" }
+        .forEach { return parts.subList(it + 1, parts.size).dropLast(1).joinToString(".") }
     throw IllegalArgumentException("Files must be organized like src/main/graphql/...")
   }
 }

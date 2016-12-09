@@ -159,8 +159,8 @@ class GraphqlCompilerTest {
     compiler.write(irFileFor("inline_fragments_with_friends", "Query"))
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
-    val episodeEnumSource = JavaFileObjects.forSourceLines("test.Episode", episodeEnumActual.readLines())
-
+    val episodeEnumSource = JavaFileObjects.forSourceLines("test.Episode",
+        episodeEnumActual.readLines())
     val source = JavaFileObjects.forSourceLines("com.example.Query", actual.readLines())
     assertAbout(javaSources())
         .that(listOf(source, episodeEnumSource))
@@ -176,12 +176,10 @@ class GraphqlCompilerTest {
     compiler.write(irFileFor("fragments_with_type_condition", "Query"))
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
-    val humanDetails = JavaFileObjects.forSourceLines("com.example.fragments_with_type_condition.HumanDetails",
+    val humanDetails = JavaFileObjects.forSourceLines("test.HumanDetails",
         humanDetailsActual.readLines())
-
-    val droidDetails = JavaFileObjects.forSourceLines("com.example.fragments_with_type_condition.DroidDetails",
+    val droidDetails = JavaFileObjects.forSourceLines("test.DroidDetails",
         droidDetailsActual.readLines())
-
     val source = JavaFileObjects.forSourceLines("com.example.Query", actual.readLines())
     assertAbout(javaSources())
         .that(listOf(source, humanDetails, droidDetails))

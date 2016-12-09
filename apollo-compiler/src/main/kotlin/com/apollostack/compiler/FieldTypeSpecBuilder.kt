@@ -10,7 +10,7 @@ import javax.lang.model.element.Modifier
 
 class FieldTypeSpecBuilder {
   fun build(typeName: String, fields: List<Field>, fragments: List<Fragment>,
-            inlineFragments: List<InlineFragment>): TypeSpec =
+      inlineFragments: List<InlineFragment>): TypeSpec =
       TypeSpec.interfaceBuilder(typeName)
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
           .addMethods(fields.map(Field::toMethodSpec))
@@ -44,7 +44,8 @@ class FieldTypeSpecBuilder {
   private fun inlineFragmentMethodSpecs(inlineFragments: List<InlineFragment>): List<MethodSpec> =
       inlineFragments.map {
         MethodSpec.methodBuilder(it.interfaceName().decapitalize())
-            .returns(ClassName.get("", it.interfaceName()).annotated(JavaPoetUtils.NULLABLE_ANNOTATION))
+            .returns(ClassName.get("", it.interfaceName())
+                .annotated(JavaPoetUtils.NULLABLE_ANNOTATION))
             .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
             .build()
       }
