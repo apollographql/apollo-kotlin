@@ -9,7 +9,7 @@ data class TypeDeclaration(
     val description: String?,
     val values: List<TypeDeclarationValue>?
 ) : CodeGenerator {
-  override fun toTypeSpec(): TypeSpec {
+  override fun toTypeSpec(fragments: List<Fragment>): TypeSpec {
     if (kind == "EnumType") {
       return enumTypeToTypeSpec()
     } else {

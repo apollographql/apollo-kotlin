@@ -22,10 +22,10 @@ data class Fragment(
           .build()
 
   /** Returns the Java interface that represents this Fragment object. */
-  override fun toTypeSpec(): TypeSpec =
+  override fun toTypeSpec(fragments: List<Fragment>): TypeSpec =
       TypeSpec.interfaceBuilder(fragmentName.capitalize())
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
           .addMethods(fields.map(Field::toMethodSpec))
-          .addTypes(fields.filter(Field::isNonScalar).map(Field::toTypeSpec))
+          .addTypes(fields.filter(Field::isNonScalar).map { it.toTypeSpec(fragments) })
           .build()
 }
