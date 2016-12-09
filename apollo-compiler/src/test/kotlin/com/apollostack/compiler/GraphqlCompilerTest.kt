@@ -139,10 +139,10 @@ class GraphqlCompilerTest {
   }
 
   @Test fun simpleInlineFragments() {
-    val actual = File("build/generated/source/apollo/com/example/simple_inline_fragment/Query.java")
-    val expected = File("src/test/graphql/com/example/simple_inline_fragment/QueryExpected.java")
+    val actual = actualFileFor("simple_inline_fragment", "Query")
+    val expected = expectedFileFor("simple_inline_fragment", "Query")
 
-    compiler.write(File("src/test/graphql/com/example/simple_inline_fragment/Query.json"))
+    compiler.write(irFileFor("simple_inline_fragment", "Query"))
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     val source = JavaFileObjects.forSourceLines("com.example.Query", actual.readLines())
@@ -152,11 +152,11 @@ class GraphqlCompilerTest {
   }
 
   @Test fun inlineFragmentsWithFriends() {
-    val actual = File("build/generated/source/apollo/com/example/inline_fragments_with_friends/Query.java")
-    val expected = File("src/test/graphql/com/example/inline_fragments_with_friends/QueryExpected.java")
-    val episodeEnumActual = File("build/generated/source/apollo/com/example/inline_fragments_with_friends/Episode.java")
+    val actual = actualFileFor("inline_fragments_with_friends", "Query")
+    val expected = expectedFileFor("inline_fragments_with_friends", "Query")
+    val episodeEnumActual = actualFileFor("inline_fragments_with_friends", "Episode")
 
-    compiler.write(File("src/test/graphql/com/example/inline_fragments_with_friends/Query.json"))
+    compiler.write(irFileFor("inline_fragments_with_friends", "Query"))
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     val episodeEnumSource = JavaFileObjects.forSourceLines("test.Episode", episodeEnumActual.readLines())
@@ -168,12 +168,12 @@ class GraphqlCompilerTest {
   }
 
   @Test fun fragmentsWithTypeCondition() {
-    val actual = File("build/generated/source/apollo/com/example/fragments_with_type_condition/Query.java")
-    val expected = File("src/test/graphql/com/example/fragments_with_type_condition/QueryExpected.java")
-    val humanDetailsActual = File("build/generated/source/apollo/com/example/fragments_with_type_condition/HumanDetails.java")
-    val droidDetailsActual = File("build/generated/source/apollo/com/example/fragments_with_type_condition/DroidDetails.java")
+    val actual = actualFileFor("fragments_with_type_condition", "Query")
+    val expected = expectedFileFor("fragments_with_type_condition", "Query")
+    val humanDetailsActual = actualFileFor("fragments_with_type_condition", "HumanDetails")
+    val droidDetailsActual = actualFileFor("fragments_with_type_condition", "DroidDetails")
 
-    compiler.write(File("src/test/graphql/com/example/fragments_with_type_condition/Query.json"))
+    compiler.write(irFileFor("fragments_with_type_condition", "Query"))
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     val humanDetails = JavaFileObjects.forSourceLines("com.example.fragments_with_type_condition.HumanDetails",
