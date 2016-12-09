@@ -23,21 +23,22 @@ fun MethodSpec.overrideMethodReturnType(typeNameOverrideMap: Map<String, String>
         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
         .build()
 
-fun TypeSpec.resolveNestedTypeNameDuplication(usedTypeNames: List<String>): TypeSpec {
+fun TypeSpec.resolveNestedTypeNameDuplication(usedOuterTypeNames: List<String>): TypeSpec {
+  val usedTypeNames = usedOuterTypeNames + name
   val typeNameOverrideMap = typeSpecs.map {
     val typeName = it.name
     val typeNameSuffix = usedTypeNames.count { it == typeName }.let { if (it > 0) "$".repeat(it) else "" }
     typeName to "$typeName$typeNameSuffix"
   }.toMap()
 
-  val typeNameSuffix = usedTypeNames.count { it == name }.let { if (it > 0) "$".repeat(it) else "" }
+  val typeNameSuffix = usedOuterTypeNames.count { it == name }.let { if (it > 0) "$".repeat(it) else "" }
   return TypeSpec.interfaceBuilder("$name$typeNameSuffix")
       .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
       .addMethods(methodSpecs.map { it.overrideMethodReturnType(typeNameOverrideMap) })
       .addTypes(typeSpecs.map {
         val currentNestedType = it
         it.resolveNestedTypeNameDuplication(
-            usedTypeNames + typeSpecs.filter { it != currentNestedType }.map { it.name } + it.name
+            usedTypeNames + typeSpecs.filter { it != currentNestedType }.map { it.name }
         )
       })
       .build()
