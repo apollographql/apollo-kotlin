@@ -12,7 +12,8 @@ data class Fragment(
     val fields: List<Field>,
     val fragmentsSpread: List<String>,
     val inlineFragments: List<String>,
-    val fragmentsReferenced: List<String>) : CodeGenerator {
+    val fragmentsReferenced: List<String>
+) : CodeGenerator {
   /** Returns a Java method that returns the interface represented by this Fragment object. */
   fun toMethodSpec(): MethodSpec =
       MethodSpec.methodBuilder(fragmentName.decapitalize())

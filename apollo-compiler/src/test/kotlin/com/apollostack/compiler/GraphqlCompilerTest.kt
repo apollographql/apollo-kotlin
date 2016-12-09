@@ -197,4 +197,25 @@ class GraphqlCompilerTest {
         .that(listOf(source, humanDetails, droidDetails))
         .compilesWithoutError()
   }
+
+  @Test fun uniqueName() {
+    val actual = File("build/generated/source/apollo/com/example/unique_type_name/Query.java")
+    val expected = File("src/test/graphql/com/example/unique_type_name/QueryExpected.java")
+    val heroDetailsActual = File("build/generated/source/apollo/com/example/unique_type_name/HeroDetails.java")
+    val episodeActual = File("build/generated/source/apollo/com/example/unique_type_name/Episode.java")
+
+    compiler.write(File("src/test/graphql/com/example/unique_type_name/QueryIR.json"))
+    assertThat(actual.readText()).isEqualTo(expected.readText())
+
+    val heroDetails = JavaFileObjects.forSourceLines("com.example.unique_type_name.HeroDetails",
+        heroDetailsActual.readLines())
+
+    val episode = JavaFileObjects.forSourceLines("com.example.unique_type_name.Episode",
+        episodeActual.readLines())
+
+    val source = JavaFileObjects.forSourceLines("com.example.unique_type_name.Query", actual.readLines())
+    assertAbout(javaSources())
+        .that(listOf(source, heroDetails, episode))
+        .compilesWithoutError()
+  }
 }

@@ -25,10 +25,6 @@ data class Field(
           .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
           .build()
 
-  /** Filters all fragments to only the ones referenced by this Field */
-  fun referencedFragments(allFragments: List<Fragment>) =
-      allFragments.filter { fragmentSpreads?.contains(it.fragmentName) ?: false }
-
   private fun toTypeName(responseType: String): TypeName =
       GraphQlType.resolveByName(responseType).toJavaTypeName()
 
