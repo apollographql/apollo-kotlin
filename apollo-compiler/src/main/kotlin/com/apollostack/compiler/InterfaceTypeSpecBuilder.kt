@@ -8,7 +8,7 @@ import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-class FieldTypeSpecBuilder {
+class InterfaceTypeSpecBuilder {
   fun build(typeName: String, fields: List<Field>, fragments: List<Fragment>,
       inlineFragments: List<InlineFragment>): TypeSpec =
       TypeSpec.interfaceBuilder(typeName)
