@@ -1,6 +1,7 @@
 package com.example.two_heroes_unique;
 
 import java.lang.String;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public interface TwoHeroesUnique {
@@ -9,12 +10,12 @@ public interface TwoHeroesUnique {
   @Nullable Luke luke();
 
   interface R2 {
-    String name();
+    @Nonnull String name();
   }
 
   interface Luke {
     long id();
 
-    String name();
+    @Nonnull String name();
   }
 }

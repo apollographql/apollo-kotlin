@@ -186,7 +186,7 @@ class GraphqlCompilerTest {
         .compilesWithoutError()
   }
 
-  @Test fun uniqueName() {
+  @Test fun uniqueTypeName() {
     val actual = actualFileFor("unique_type_name", "Query")
     val expected = expectedFileFor("unique_type_name", "Query")
     val heroDetailsActual = actualFileFor("unique_type_name", "HeroDetails")

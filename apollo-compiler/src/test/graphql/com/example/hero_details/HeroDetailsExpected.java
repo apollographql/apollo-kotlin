@@ -3,15 +3,16 @@ package com.example.hero_details;
 import java.lang.Integer;
 import java.lang.String;
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public interface HeroDetails {
   @Nullable Hero hero();
 
   interface Hero {
-    String name();
+    @Nonnull String name();
 
-    FriendsConnection friendsConnection();
+    @Nonnull FriendsConnection friendsConnection();
 
     interface FriendsConnection {
       @Nullable Integer totalCount();
@@ -22,7 +23,7 @@ public interface HeroDetails {
         @Nullable Node node();
 
         interface Node {
-          String name();
+          @Nonnull String name();
         }
       }
     }

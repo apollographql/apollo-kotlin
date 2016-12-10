@@ -1,6 +1,7 @@
 package com.apollostack.compiler
 
 import com.squareup.javapoet.*
+import javax.annotation.Nonnull
 import javax.annotation.Nullable
 import javax.lang.model.element.Modifier
 
@@ -44,4 +45,5 @@ fun TypeSpec.resolveNestedTypeNameDuplication(reservedTypeNames: List<String>): 
 
 object JavaPoetUtils {
   val NULLABLE_ANNOTATION: AnnotationSpec = AnnotationSpec.builder(Nullable::class.java).build()
+  val NONNULL_ANNOTATION: AnnotationSpec = AnnotationSpec.builder(Nonnull::class.java).build()
 }
