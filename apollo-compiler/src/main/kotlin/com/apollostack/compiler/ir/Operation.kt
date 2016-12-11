@@ -11,11 +11,11 @@ data class Operation(
     val source: String,
     val fields: List<Field>
 ) : CodeGenerator {
-  override fun toTypeSpec(): TypeSpec {
-    // TODO: This is a bit weird that we can' call field.toTypeSpec directly, also we need to be
-    // able to inject the parameters directly (including the list of fragments), so we use
-    // FieldTypeSpecBuilder directly.
-    return InterfaceTypeSpecBuilder().build(operationName, fields, emptyList(), emptyList())
+  override fun toTypeSpec(): TypeSpec =
+    InterfaceTypeSpecBuilder().build(INTERFACE_TYPE_SPEC_NAME, fields, emptyList(), emptyList())
         .resolveNestedTypeNameDuplication(emptyList())
+
+  companion object {
+    val INTERFACE_TYPE_SPEC_NAME = "Data"
   }
 }
