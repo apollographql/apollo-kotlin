@@ -1,0 +1,165 @@
+{
+  "operations": [
+    {
+      "operationName": "Query",
+      "operationType": "query",
+      "variables": [],
+      "source": "query Query {\n  hero {\n    __typename\n    name\n    ...HeroDetails\n    appearsIn\n  }\n}",
+      "fields": [
+        {
+          "responseName": "hero",
+          "fieldName": "hero",
+          "type": "Character",
+          "fields": [
+            {
+              "responseName": "name",
+              "fieldName": "name",
+              "type": "String!"
+            },
+            {
+              "responseName": "appearsIn",
+              "fieldName": "appearsIn",
+              "type": "[Episode]!"
+            }
+          ],
+          "fragmentSpreads": [
+            "HeroDetails"
+          ],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentsReferenced": [
+        "HeroDetails"
+      ]
+    }
+  ],
+  "fragments": [
+    {
+      "fragmentName": "HeroDetails",
+      "source": "fragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    totalCount\n    edges {\n      node {\n        __typename\n        name\n      }\n    }\n  }\n  ... on Droid {\n    name\n    primaryFunction\n  }\n}",
+      "typeCondition": "Character",
+      "fields": [
+        {
+          "responseName": "name",
+          "fieldName": "name",
+          "type": "String!"
+        },
+        {
+          "responseName": "friendsConnection",
+          "fieldName": "friendsConnection",
+          "type": "FriendsConnection!",
+          "fields": [
+            {
+              "responseName": "totalCount",
+              "fieldName": "totalCount",
+              "type": "Int"
+            },
+            {
+              "responseName": "edges",
+              "fieldName": "edges",
+              "type": "[FriendsEdge]",
+              "fields": [
+                {
+                  "responseName": "node",
+                  "fieldName": "node",
+                  "type": "Character",
+                  "fields": [
+                    {
+                      "responseName": "name",
+                      "fieldName": "name",
+                      "type": "String!"
+                    }
+                  ],
+                  "fragmentSpreads": [],
+                  "inlineFragments": []
+                }
+              ],
+              "fragmentSpreads": [],
+              "inlineFragments": []
+            }
+          ],
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentSpreads": [],
+      "inlineFragments": [
+        {
+          "typeCondition": "Droid",
+          "fields": [
+            {
+              "responseName": "name",
+              "fieldName": "name",
+              "type": "String!"
+            },
+            {
+              "responseName": "friendsConnection",
+              "fieldName": "friendsConnection",
+              "type": "FriendsConnection!",
+              "fields": [
+                {
+                  "responseName": "totalCount",
+                  "fieldName": "totalCount",
+                  "type": "Int"
+                },
+                {
+                  "responseName": "edges",
+                  "fieldName": "edges",
+                  "type": "[FriendsEdge]",
+                  "fields": [
+                    {
+                      "responseName": "node",
+                      "fieldName": "node",
+                      "type": "Character",
+                      "fields": [
+                        {
+                          "responseName": "name",
+                          "fieldName": "name",
+                          "type": "String!"
+                        }
+                      ],
+                      "fragmentSpreads": [],
+                      "inlineFragments": []
+                    }
+                  ],
+                  "fragmentSpreads": [],
+                  "inlineFragments": []
+                }
+              ],
+              "fragmentSpreads": [],
+              "inlineFragments": []
+            },
+            {
+              "responseName": "primaryFunction",
+              "fieldName": "primaryFunction",
+              "type": "String"
+            }
+          ],
+          "fragmentSpreads": []
+        }
+      ],
+      "fragmentsReferenced": []
+    }
+  ],
+  "typesUsed": [
+    {
+      "kind": "EnumType",
+      "name": "Episode",
+      "description": "The episodes in the Star Wars trilogy",
+      "values": [
+        {
+          "name": "NEWHOPE",
+          "description": "Star Wars Episode IV: A New Hope, released in 1977."
+        },
+        {
+          "name": "EMPIRE",
+          "description": "Star Wars Episode V: The Empire Strikes Back, released in 1980."
+        },
+        {
+          "name": "JEDI",
+          "description": "Star Wars Episode VI: Return of the Jedi, released in 1983."
+        }
+      ]
+    }
+  ]
+}

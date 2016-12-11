@@ -13,9 +13,9 @@ open class GraphqlCompiler {
     val packageName = irFile.absolutePath.formatPackageName()
     val ir = irAdapter.fromJson(irFile.readText())
     val outputDir = OUTPUT_DIRECTORY.fold(File("build"), ::File)
-    (ir.operations + ir.typesUsed + ir.fragments)
-        .map { JavaFile.builder(packageName, it.toTypeSpec(ir.fragments)).build() }
-        .forEach { it.writeTo(outputDir) }
+    (ir.operations + ir.typesUsed + ir.fragments).forEach {
+      JavaFile.builder(packageName, it.toTypeSpec()).build().writeTo(outputDir)
+    }
   }
 
   companion object {
