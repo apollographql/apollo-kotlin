@@ -3,12 +3,13 @@ package com.example.fragment_with_inline_fragment;
 import java.lang.Integer;
 import java.lang.String;
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public interface HeroDetails {
-  String name();
+  @Nonnull String name();
 
-  FriendsConnection friendsConnection();
+  @Nonnull FriendsConnection friendsConnection();
 
   @Nullable AsDroid asDroid();
 
@@ -21,15 +22,15 @@ public interface HeroDetails {
       @Nullable Node node();
 
       interface Node {
-        String name();
+        @Nonnull String name();
       }
     }
   }
 
   interface AsDroid {
-    String name();
+    @Nonnull String name();
 
-    FriendsConnection$ friendsConnection();
+    @Nonnull FriendsConnection$ friendsConnection();
 
     @Nullable String primaryFunction();
 
@@ -42,7 +43,7 @@ public interface HeroDetails {
         @Nullable Node node();
 
         interface Node {
-          String name();
+          @Nonnull String name();
         }
       }
     }

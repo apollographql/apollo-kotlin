@@ -56,10 +56,13 @@ sealed class GraphQlType(val isOptional: Boolean) {
             if (primitive) it else it.box()
           }
       }
-      return if (isOptional) {
+
+      return if (typeName.isPrimitive) {
+        typeName
+      } else if (isOptional) {
         typeName.annotated(JavaPoetUtils.NULLABLE_ANNOTATION)
       } else {
-        typeName
+        typeName.annotated(JavaPoetUtils.NONNULL_ANNOTATION)
       }
     }
   }

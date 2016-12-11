@@ -2,14 +2,15 @@ package com.example.enum_type;
 
 import java.lang.String;
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public interface HeroAppearsIn {
   @Nullable Hero hero();
 
   interface Hero {
-    String name();
+    @Nonnull String name();
 
-    List<Episode> appearsIn();
+    @Nonnull List<Episode> appearsIn();
   }
 }

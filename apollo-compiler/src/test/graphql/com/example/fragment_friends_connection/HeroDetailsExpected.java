@@ -3,12 +3,13 @@ package com.example.fragment_friends_connection;
 import java.lang.Integer;
 import java.lang.String;
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public interface HeroDetails {
-  String name();
+  @Nonnull String name();
 
-  FriendsConnection friendsConnection();
+  @Nonnull FriendsConnection friendsConnection();
 
   interface FriendsConnection {
     @Nullable Integer totalCount();
@@ -19,7 +20,7 @@ public interface HeroDetails {
       @Nullable Node node();
 
       interface Node {
-        String name();
+        @Nonnull String name();
       }
     }
   }
