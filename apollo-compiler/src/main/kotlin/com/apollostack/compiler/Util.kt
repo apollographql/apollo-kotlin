@@ -46,4 +46,5 @@ fun TypeSpec.resolveNestedTypeNameDuplication(reservedTypeNames: List<String>): 
 object JavaPoetUtils {
   val NULLABLE_ANNOTATION: AnnotationSpec = AnnotationSpec.builder(Nullable::class.java).build()
   val NONNULL_ANNOTATION: AnnotationSpec = AnnotationSpec.builder(Nonnull::class.java).build()
+  val OVERRIDE_ANNOTATION: AnnotationSpec = AnnotationSpec.builder(Override::class.java).build()
 }

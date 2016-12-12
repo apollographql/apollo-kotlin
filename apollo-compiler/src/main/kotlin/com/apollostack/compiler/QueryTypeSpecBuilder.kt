@@ -31,7 +31,7 @@ class QueryTypeSpecBuilder(
         .build()
     )
     addMethod(MethodSpec.methodBuilder("getOperationDefinition")
-        .addAnnotation(Override::class.java)
+        .addAnnotation(JavaPoetUtils.OVERRIDE_ANNOTATION)
         .addModifiers(Modifier.PUBLIC)
         .returns(ClassName.get(String::class.java))
         .addStatement("return $OPERATION_SOURCE_FIELD_NAME")
@@ -57,7 +57,7 @@ class QueryTypeSpecBuilder(
   private fun TypeSpec.Builder.addFragmentSourceDefinitions(fragments: List<Fragment>): TypeSpec.Builder {
     if (fragments.isEmpty()) {
       addMethod(MethodSpec.methodBuilder("getFragmentDefinitions")
-          .addAnnotation(Override::class.java)
+          .addAnnotation(JavaPoetUtils.OVERRIDE_ANNOTATION)
           .addModifiers(Modifier.PUBLIC)
           .returns(ParameterizedTypeName.get(ClassName.get(List::class.java), ClassName.get(String::class.java)))
           .addStatement("return \$T.emptyList()", ClassName.get(Collections::class.java))
