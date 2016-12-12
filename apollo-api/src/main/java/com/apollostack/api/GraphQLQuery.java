@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface GraphQLQuery {
 
-  String getOperationDefinition();
+  String operationDefinition();
 
-  List<String> getFragmentDefinitions();
+  List<String> fragmentDefinitions();
 }

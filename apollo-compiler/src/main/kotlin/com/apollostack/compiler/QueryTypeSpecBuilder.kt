@@ -1,10 +1,8 @@
 package com.apollostack.compiler
 
-import com.apollostack.api.GraphQLQuery
 import com.apollostack.compiler.ir.Fragment
 import com.apollostack.compiler.ir.Operation
 import com.squareup.javapoet.*
-import java.util.*
 import javax.lang.model.element.Modifier
 
 class QueryTypeSpecBuilder(
@@ -28,7 +26,7 @@ class QueryTypeSpecBuilder(
         .initializer("\$S", operation.source)
         .build()
     )
-    addMethod(MethodSpec.methodBuilder("getOperationDefinition")
+    addMethod(MethodSpec.methodBuilder(OPERATION_DEFINITION_ACCESSOR_NAME)
         .addAnnotation(JavaPoetUtils.OVERRIDE_ANNOTATION)
         .addModifiers(Modifier.PUBLIC)
         .returns(JavaPoetUtils.STRING_CLASS_NAME)
@@ -40,8 +38,8 @@ class QueryTypeSpecBuilder(
 
   private fun List<Fragment>.toSourceDefinitionCode(): CodeBlock {
     val codeBlockBuilder = CodeBlock.builder()
-    codeBlockBuilder.add("\$T.unmodifiableList(", ClassName.get(Collections::class.java))
-    codeBlockBuilder.add("\$T.asList(\n", ClassName.get(Arrays::class.java))
+    codeBlockBuilder.add("\$T.unmodifiableList(", JavaPoetUtils.COLLECTIONS_CLASS_NAME)
+    codeBlockBuilder.add("\$T.asList(\n", JavaPoetUtils.ARRAYS_CLASS_NAME)
     codeBlockBuilder.indent()
     forEachIndexed { i, fragment ->
       codeBlockBuilder.add("\$S\$L", fragment.source, if (i < this.size - 1) "," else "")
@@ -54,11 +52,11 @@ class QueryTypeSpecBuilder(
 
   private fun TypeSpec.Builder.addFragmentSourceDefinitions(fragments: List<Fragment>): TypeSpec.Builder {
     if (fragments.isEmpty()) {
-      addMethod(MethodSpec.methodBuilder("getFragmentDefinitions")
+      addMethod(MethodSpec.methodBuilder(FRAGMENT_DEFINITIONS_ACCESSOR_NAME)
           .addAnnotation(JavaPoetUtils.OVERRIDE_ANNOTATION)
           .addModifiers(Modifier.PUBLIC)
           .returns(ParameterizedTypeName.get(JavaPoetUtils.LIST_CLASS_NAME, JavaPoetUtils.STRING_CLASS_NAME))
-          .addStatement("return \$T.emptyList()", ClassName.get(Collections::class.java))
+          .addStatement("return \$T.emptyList()", JavaPoetUtils.COLLECTIONS_CLASS_NAME)
           .build()
       )
     } else {
@@ -70,8 +68,8 @@ class QueryTypeSpecBuilder(
               .initializer(fragments.toSourceDefinitionCode())
               .build()
       )
-      addMethod(MethodSpec.methodBuilder("getFragmentDefinitions")
-          .addAnnotation(Override::class.java)
+      addMethod(MethodSpec.methodBuilder(FRAGMENT_DEFINITIONS_ACCESSOR_NAME)
+          .addAnnotation(JavaPoetUtils.OVERRIDE_ANNOTATION)
           .addModifiers(Modifier.PUBLIC)
           .returns(ParameterizedTypeName.get(JavaPoetUtils.LIST_CLASS_NAME, JavaPoetUtils.STRING_CLASS_NAME))
           .addStatement("return $FRAGMENT_SOURCES_FIELD_NAME")
@@ -83,6 +81,8 @@ class QueryTypeSpecBuilder(
 
   companion object {
     private val OPERATION_SOURCE_FIELD_NAME = "OPERATION_DEFINITION"
+    private val OPERATION_DEFINITION_ACCESSOR_NAME = "operationDefinition"
     private val FRAGMENT_SOURCES_FIELD_NAME = "FRAGMENT_DEFINITIONS"
+    private val FRAGMENT_DEFINITIONS_ACCESSOR_NAME = "fragmentDefinitions"
   }
 }

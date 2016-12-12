@@ -15,12 +15,12 @@ public final class ScalarTypes implements GraphQLQuery {
   public static final String OPERATION_DEFINITION = "";
 
   @Override
-  public String getOperationDefinition() {
+  public String operationDefinition() {
     return OPERATION_DEFINITION;
   }
 
   @Override
-  public List<String> getFragmentDefinitions() {
+  public List<String> fragmentDefinitions() {
     return Collections.emptyList();
   }
 

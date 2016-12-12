@@ -21,12 +21,12 @@ public final class TwoHeroes implements GraphQLQuery {
       + "}";
 
   @Override
-  public String getOperationDefinition() {
+  public String operationDefinition() {
     return OPERATION_DEFINITION;
   }
 
   @Override
-  public List<String> getFragmentDefinitions() {
+  public List<String> fragmentDefinitions() {
     return Collections.emptyList();
   }
 
