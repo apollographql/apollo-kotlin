@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 
-public final class ScalarTypes implements GraphQLQuery<ScalarTypes.Data> {
+public final class ScalarTypes implements GraphQLQuery {
   public static final String OPERATION_DEFINITION = "";
 
   @Override

@@ -9,7 +9,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class Query implements GraphQLQuery<Query.Data> {
+public final class Query implements GraphQLQuery {
   public static final String OPERATION_DEFINITION = "query Query {\n"
       + "  hero {\n"
       + "    __typename\n"

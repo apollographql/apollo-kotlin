@@ -24,9 +24,8 @@ sealed class GraphQlType(val isOptional: Boolean) {
   fun toJavaTypeName() = graphQlTypeToJavaTypeName(this, !isOptional, isOptional)
 
   companion object {
-    private val LIST_TYPE = ClassName.get(List::class.java)
     private val GRAPHQLTYPE_TO_JAVA_TYPE = mapOf(
-        GraphQlString::class.java to ClassName.get(String::class.java),
+        GraphQlString::class.java to JavaPoetUtils.STRING_CLASS_NAME,
         GraphQlId::class.java to TypeName.LONG,
         GraphQlInt::class.java to TypeName.INT,
         GraphQLFloat::class.java to TypeName.FLOAT,
@@ -48,7 +47,7 @@ sealed class GraphQlType(val isOptional: Boolean) {
         primitive: Boolean,
         isOptional: Boolean): TypeName {
       val typeName = when (type) {
-        is GraphQLList -> ParameterizedTypeName.get(LIST_TYPE,
+        is GraphQLList -> ParameterizedTypeName.get(JavaPoetUtils.LIST_CLASS_NAME,
             graphQlTypeToJavaTypeName(type.listType, false, false))
         is GraphQlUnknown -> ClassName.get("", type.typeName)
         else ->

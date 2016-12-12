@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 
-public final class SimpleFragment implements GraphQLQuery<SimpleFragment.Data> {
+public final class SimpleFragment implements GraphQLQuery {
   public static final String OPERATION_DEFINITION = "query SimpleFragment {\n"
       + "  hero {\n"
       + "    __typename\n"

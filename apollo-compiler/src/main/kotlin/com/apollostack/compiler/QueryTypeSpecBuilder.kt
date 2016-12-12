@@ -13,10 +13,8 @@ class QueryTypeSpecBuilder(
 ) {
   fun build(): TypeSpec {
     val queryClassName = operation.operationName.capitalize()
-    val queryInterfaceTypeName = ParameterizedTypeName.get(ClassName.get(GraphQLQuery::class.java),
-        ClassName.get("", "$queryClassName.${Operation.INTERFACE_TYPE_SPEC_NAME}"))
     return TypeSpec.classBuilder(queryClassName)
-        .addSuperinterface(queryInterfaceTypeName)
+        .addSuperinterface(JavaPoetUtils.GRAPH_QL_QUERY_CLASS_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
         .addOperationSourceDefinition(operation)
         .addFragmentSourceDefinitions(fragments)
@@ -25,7 +23,7 @@ class QueryTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addOperationSourceDefinition(operation: Operation): TypeSpec.Builder {
-    addField(FieldSpec.builder(ClassName.get(String::class.java), OPERATION_SOURCE_FIELD_NAME)
+    addField(FieldSpec.builder(JavaPoetUtils.STRING_CLASS_NAME, OPERATION_SOURCE_FIELD_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
         .initializer("\$S", operation.source)
         .build()
@@ -33,7 +31,7 @@ class QueryTypeSpecBuilder(
     addMethod(MethodSpec.methodBuilder("getOperationDefinition")
         .addAnnotation(JavaPoetUtils.OVERRIDE_ANNOTATION)
         .addModifiers(Modifier.PUBLIC)
-        .returns(ClassName.get(String::class.java))
+        .returns(JavaPoetUtils.STRING_CLASS_NAME)
         .addStatement("return $OPERATION_SOURCE_FIELD_NAME")
         .build()
     )
@@ -59,14 +57,14 @@ class QueryTypeSpecBuilder(
       addMethod(MethodSpec.methodBuilder("getFragmentDefinitions")
           .addAnnotation(JavaPoetUtils.OVERRIDE_ANNOTATION)
           .addModifiers(Modifier.PUBLIC)
-          .returns(ParameterizedTypeName.get(ClassName.get(List::class.java), ClassName.get(String::class.java)))
+          .returns(ParameterizedTypeName.get(JavaPoetUtils.LIST_CLASS_NAME, JavaPoetUtils.STRING_CLASS_NAME))
           .addStatement("return \$T.emptyList()", ClassName.get(Collections::class.java))
           .build()
       )
     } else {
       addField(
           FieldSpec.builder(
-              ParameterizedTypeName.get(ClassName.get(List::class.java), ClassName.get(String::class.java)),
+              ParameterizedTypeName.get(JavaPoetUtils.LIST_CLASS_NAME, JavaPoetUtils.STRING_CLASS_NAME),
               FRAGMENT_SOURCES_FIELD_NAME)
               .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
               .initializer(fragments.toSourceDefinitionCode())
@@ -75,7 +73,7 @@ class QueryTypeSpecBuilder(
       addMethod(MethodSpec.methodBuilder("getFragmentDefinitions")
           .addAnnotation(Override::class.java)
           .addModifiers(Modifier.PUBLIC)
-          .returns(ParameterizedTypeName.get(ClassName.get(List::class.java), ClassName.get(String::class.java)))
+          .returns(ParameterizedTypeName.get(JavaPoetUtils.LIST_CLASS_NAME, JavaPoetUtils.STRING_CLASS_NAME))
           .addStatement("return $FRAGMENT_SOURCES_FIELD_NAME")
           .build()
       )

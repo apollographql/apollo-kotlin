@@ -1,5 +1,6 @@
 package com.apollostack.compiler
 
+import com.apollostack.api.GraphQLQuery
 import com.squareup.javapoet.*
 import javax.annotation.Nonnull
 import javax.annotation.Nullable
@@ -47,4 +48,7 @@ object JavaPoetUtils {
   val NULLABLE_ANNOTATION: AnnotationSpec = AnnotationSpec.builder(Nullable::class.java).build()
   val NONNULL_ANNOTATION: AnnotationSpec = AnnotationSpec.builder(Nonnull::class.java).build()
   val OVERRIDE_ANNOTATION: AnnotationSpec = AnnotationSpec.builder(Override::class.java).build()
+  val GRAPH_QL_QUERY_CLASS_NAME: ClassName = ClassName.get(GraphQLQuery::class.java)
+  val STRING_CLASS_NAME: ClassName = ClassName.get(String::class.java)
+  val LIST_CLASS_NAME: ClassName = ClassName.get(List::class.java)
 }

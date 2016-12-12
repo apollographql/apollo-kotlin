@@ -8,7 +8,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class HeroName implements GraphQLQuery<HeroName.Data> {
+public final class HeroName implements GraphQLQuery {
   public static final String OPERATION_DEFINITION = "query HeroName {\n"
       + "  hero {\n"
       + "    __typename\n"

@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 
-public final class FragmentFriendsConnection implements GraphQLQuery<FragmentFriendsConnection.Data> {
+public final class FragmentFriendsConnection implements GraphQLQuery {
   public static final String OPERATION_DEFINITION = "query FragmentFriendsConnection {\n"
       + "  hero {\n"
       + "    __typename\n"

@@ -8,7 +8,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class HeroAppearsIn implements GraphQLQuery<HeroAppearsIn.Data> {
+public final class HeroAppearsIn implements GraphQLQuery {
   public static final String OPERATION_DEFINITION = "query HeroAppearsIn {\n"
       + "  hero {\n"
       + "    __typename\n"

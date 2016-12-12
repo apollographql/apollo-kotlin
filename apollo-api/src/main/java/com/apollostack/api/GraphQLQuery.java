@@ -2,7 +2,7 @@ package com.apollostack.api;
 
 import java.util.List;
 
-public interface GraphQLQuery<T> {
+public interface GraphQLQuery {
 
   String getOperationDefinition();
 
