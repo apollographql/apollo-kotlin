@@ -33,6 +33,7 @@ android {
 dependencies {
   compile dep.jsr305
   compile dep.retrofit
+  // TODO: This be added via a pluggable API instead (eg.: retrofit adapters)
   compile dep.rxjava
   compile dep.supportAnnotations
 }

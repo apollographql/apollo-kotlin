@@ -7,16 +7,9 @@ import static com.apollostack.android.Utils.checkNotNull;
 /** TODO */
 public final class Apollo {
   private final Retrofit retrofit;
-  private final GraphqlService service;
 
-  private Apollo(Retrofit retrofit, Class<? extends GraphqlService> serviceClass) {
+  private Apollo(Retrofit retrofit) {
     this.retrofit = retrofit;
-    this.service = retrofit.create(serviceClass);
-  }
-
-  /** TODO */
-  public GraphqlService service() {
-    return service;
   }
 
   /**
@@ -25,17 +18,10 @@ public final class Apollo {
    */
   public static class Builder {
     private Retrofit retrofit;
-    private Class<? extends GraphqlService> service;
 
     /** Set the {@link Retrofit} instance to be used by Apollo to make HTTP requests. */
     public Builder retrofit(Retrofit retrofit) {
       this.retrofit = checkNotNull(retrofit, "retrofit == null");
-      return this;
-    }
-
-    /** Set the service interface to be used by Retrofit. */
-    public Builder service(Class<? extends GraphqlService> service) {
-      this.service = checkNotNull(service, "service == null");
       return this;
     }
 
@@ -44,10 +30,7 @@ public final class Apollo {
       if (retrofit == null) {
         throw new IllegalStateException("Retrofit required.");
       }
-      if (service == null) {
-        throw new IllegalStateException("GraphqlService required.");
-      }
-      return new Apollo(retrofit, service);
+      return new Apollo(retrofit);
     }
   }
 }
