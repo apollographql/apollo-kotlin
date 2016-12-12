@@ -58,13 +58,13 @@ class QueryTypeSpecBuilder(
           .addAnnotation(JavaPoetUtils.OVERRIDE_ANNOTATION)
           .addModifiers(Modifier.PUBLIC)
           .returns(JavaPoetUtils.parameterizedList(JavaPoetUtils.STRING_CLASS_NAME))
+          .returns(ParameterizedTypeName.get(JavaPoetUtils.LIST_CLASS_NAME, JavaPoetUtils.STRING_CLASS_NAME))
           .addStatement("return \$T.emptyList()", JavaPoetUtils.COLLECTIONS_CLASS_NAME)
           .build()
       )
     } else {
       addField(
-          FieldSpec.builder(
-              JavaPoetUtils.parameterizedList(JavaPoetUtils.STRING_CLASS_NAME),
+          FieldSpec.builder(JavaPoetUtils.parameterizedList(JavaPoetUtils.STRING_CLASS_NAME),
               FRAGMENT_SOURCES_FIELD_NAME)
               .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
               .initializer(fragments.toSourceDefinitionCode())
@@ -74,6 +74,7 @@ class QueryTypeSpecBuilder(
           .addAnnotation(JavaPoetUtils.OVERRIDE_ANNOTATION)
           .addModifiers(Modifier.PUBLIC)
           .returns(JavaPoetUtils.parameterizedList(JavaPoetUtils.STRING_CLASS_NAME))
+          .returns(ParameterizedTypeName.get(JavaPoetUtils.LIST_CLASS_NAME, JavaPoetUtils.STRING_CLASS_NAME))
           .addStatement("return $FRAGMENT_SOURCES_FIELD_NAME")
           .build()
       )
