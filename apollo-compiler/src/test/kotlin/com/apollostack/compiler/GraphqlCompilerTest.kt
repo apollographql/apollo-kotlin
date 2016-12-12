@@ -235,4 +235,20 @@ class GraphqlCompilerTest {
         .that(listOf(source, heroDetails, episode))
         .compilesWithoutError()
   }
+
+  @Test fun simpleArguments() {
+    val actual = actualFileFor("simple_arguments", "HeroNameConditionalInclusion")
+    val expected = expectedFileFor("simple_arguments", "HeroNameConditionalInclusion")
+    val episodeActual = actualFileFor("simple_arguments", "Episode")
+
+    compiler.write(irFileFor("simple_arguments", "QueryIR"))
+    assertThat(actual.readText()).isEqualTo(expected.readText())
+
+    val episode = JavaFileObjects.forSourceLines("com.example.simple_arguments.Episode",
+        episodeActual.readLines())
+    val source = JavaFileObjects.forSourceLines("com.example.simple_arguments.HeroNameConditionalInclusion", actual.readLines())
+    assertAbout(javaSources())
+        .that(listOf(source, episode))
+        .compilesWithoutError()
+  }
 }

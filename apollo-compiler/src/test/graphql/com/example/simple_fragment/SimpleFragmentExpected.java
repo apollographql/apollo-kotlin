@@ -1,11 +1,13 @@
 package com.example.simple_fragment;
 
 import com.apollostack.api.GraphQLQuery;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nullable;
 
 public final class SimpleFragment implements GraphQLQuery {
@@ -31,6 +33,11 @@ public final class SimpleFragment implements GraphQLQuery {
   @Override
   public List<String> fragmentDefinitions() {
     return FRAGMENT_DEFINITIONS;
+  }
+
+  @Override
+  public Map<String, Object> variableDefinitions() {
+    return Collections.EMPTY_MAP;
   }
 
   public interface Data {

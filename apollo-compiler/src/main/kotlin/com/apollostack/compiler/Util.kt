@@ -54,4 +54,16 @@ object JavaPoetUtils {
   val LIST_CLASS_NAME: ClassName = ClassName.get(List::class.java)
   val COLLECTIONS_CLASS_NAME: ClassName = ClassName.get(Collections::class.java)
   val ARRAYS_CLASS_NAME: ClassName = ClassName.get(Arrays::class.java)
+  val OBJECT_CLASS_NAME: ClassName = ClassName.get(Object::class.java)
+  val MAP_CLASS_NAME: ClassName = ClassName.get(Map::class.java)
+  val HASH_MAP_CLASS_NAME: ClassName = ClassName.get(HashMap::class.java)
+
+  fun parameterizedMap(firstTypeArgument: TypeName, secondTypeArgument: TypeName): TypeName =
+      ParameterizedTypeName.get(MAP_CLASS_NAME, firstTypeArgument, secondTypeArgument)
+
+  fun parameterizedHashMap(firstTypeArgument: TypeName, secondTypeArgument: TypeName): TypeName =
+      ParameterizedTypeName.get(HASH_MAP_CLASS_NAME, firstTypeArgument, secondTypeArgument)
+
+  fun parameterizedList(typeArgument: TypeName): TypeName =
+      ParameterizedTypeName.get(LIST_CLASS_NAME, typeArgument)
 }

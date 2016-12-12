@@ -2,6 +2,7 @@ package com.apollostack.compiler
 
 import com.apollostack.compiler.ir.Fragment
 import com.apollostack.compiler.ir.Operation
+import com.apollostack.compiler.ir.Variable
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
@@ -16,6 +17,7 @@ class QueryTypeSpecBuilder(
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
         .addOperationSourceDefinition(operation)
         .addFragmentSourceDefinitions(fragments)
+        .addVariablesDefinitions(operation.variables)
         .addType(operation.toTypeSpec())
         .build()
   }
@@ -55,14 +57,14 @@ class QueryTypeSpecBuilder(
       addMethod(MethodSpec.methodBuilder(FRAGMENT_DEFINITIONS_ACCESSOR_NAME)
           .addAnnotation(JavaPoetUtils.OVERRIDE_ANNOTATION)
           .addModifiers(Modifier.PUBLIC)
-          .returns(ParameterizedTypeName.get(JavaPoetUtils.LIST_CLASS_NAME, JavaPoetUtils.STRING_CLASS_NAME))
+          .returns(JavaPoetUtils.parameterizedList(JavaPoetUtils.STRING_CLASS_NAME))
           .addStatement("return \$T.emptyList()", JavaPoetUtils.COLLECTIONS_CLASS_NAME)
           .build()
       )
     } else {
       addField(
           FieldSpec.builder(
-              ParameterizedTypeName.get(JavaPoetUtils.LIST_CLASS_NAME, JavaPoetUtils.STRING_CLASS_NAME),
+              JavaPoetUtils.parameterizedList(JavaPoetUtils.STRING_CLASS_NAME),
               FRAGMENT_SOURCES_FIELD_NAME)
               .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
               .initializer(fragments.toSourceDefinitionCode())
@@ -71,10 +73,44 @@ class QueryTypeSpecBuilder(
       addMethod(MethodSpec.methodBuilder(FRAGMENT_DEFINITIONS_ACCESSOR_NAME)
           .addAnnotation(JavaPoetUtils.OVERRIDE_ANNOTATION)
           .addModifiers(Modifier.PUBLIC)
-          .returns(ParameterizedTypeName.get(JavaPoetUtils.LIST_CLASS_NAME, JavaPoetUtils.STRING_CLASS_NAME))
+          .returns(JavaPoetUtils.parameterizedList(JavaPoetUtils.STRING_CLASS_NAME))
           .addStatement("return $FRAGMENT_SOURCES_FIELD_NAME")
           .build()
       )
+    }
+    return this
+  }
+
+  private fun TypeSpec.Builder.addVariablesDefinitions(variables: List<Variable>): TypeSpec.Builder {
+    if (variables.isEmpty()) {
+      addMethod(MethodSpec.methodBuilder(VARIABLE_DEFINITIONS_ACCESSOR_NAME)
+          .addAnnotation(JavaPoetUtils.OVERRIDE_ANNOTATION)
+          .addModifiers(Modifier.PUBLIC)
+          .returns(JavaPoetUtils.parameterizedMap(JavaPoetUtils.STRING_CLASS_NAME, JavaPoetUtils.OBJECT_CLASS_NAME))
+          .addStatement("return \$T.EMPTY_MAP", JavaPoetUtils.COLLECTIONS_CLASS_NAME)
+          .build()
+      )
+    } else {
+      addField(FieldSpec
+          .builder(QueryVariablesTypeSpecBuilder.VARIABLES_TYPE_NAME, VARIABLES_FIELD_NAME)
+          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+          .build()
+      )
+      addMethod(MethodSpec.constructorBuilder()
+          .addParameter(ParameterSpec.builder(QueryVariablesTypeSpecBuilder.VARIABLES_TYPE_NAME, VARIABLES_FIELD_NAME)
+              .addAnnotation(JavaPoetUtils.NONNULL_ANNOTATION).build())
+          .addModifiers(Modifier.PUBLIC)
+          .addStatement("this.\$L = \$L", VARIABLES_FIELD_NAME, VARIABLES_FIELD_NAME)
+          .build()
+      )
+      addMethod(MethodSpec.methodBuilder(VARIABLE_DEFINITIONS_ACCESSOR_NAME)
+          .addAnnotation(JavaPoetUtils.OVERRIDE_ANNOTATION)
+          .addModifiers(Modifier.PUBLIC)
+          .returns(JavaPoetUtils.parameterizedMap(JavaPoetUtils.STRING_CLASS_NAME, JavaPoetUtils.OBJECT_CLASS_NAME))
+          .addStatement("return \$L.\$L", VARIABLES_FIELD_NAME, QueryVariablesTypeSpecBuilder.VARIABLES_MAP_FIELD_NAME)
+          .build()
+      )
+      addType(QueryVariablesTypeSpecBuilder(variables).build())
     }
     return this
   }
@@ -84,5 +120,7 @@ class QueryTypeSpecBuilder(
     private val OPERATION_DEFINITION_ACCESSOR_NAME = "operationDefinition"
     private val FRAGMENT_SOURCES_FIELD_NAME = "FRAGMENT_DEFINITIONS"
     private val FRAGMENT_DEFINITIONS_ACCESSOR_NAME = "fragmentDefinitions"
+    private val VARIABLE_DEFINITIONS_ACCESSOR_NAME = "variableDefinitions"
+    private val VARIABLES_FIELD_NAME = "variables"
   }
 }

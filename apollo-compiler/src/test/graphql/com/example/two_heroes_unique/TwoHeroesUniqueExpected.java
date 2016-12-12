@@ -1,10 +1,12 @@
 package com.example.two_heroes_unique;
 
 import com.apollostack.api.GraphQLQuery;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -29,6 +31,11 @@ public final class TwoHeroesUnique implements GraphQLQuery {
   @Override
   public List<String> fragmentDefinitions() {
     return Collections.emptyList();
+  }
+
+  @Override
+  public Map<String, Object> variableDefinitions() {
+    return Collections.EMPTY_MAP;
   }
 
   public interface Data {

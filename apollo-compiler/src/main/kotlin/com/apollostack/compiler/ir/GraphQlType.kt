@@ -47,8 +47,7 @@ sealed class GraphQlType(val isOptional: Boolean) {
         primitive: Boolean,
         isOptional: Boolean): TypeName {
       val typeName = when (type) {
-        is GraphQLList -> ParameterizedTypeName.get(JavaPoetUtils.LIST_CLASS_NAME,
-            graphQlTypeToJavaTypeName(type.listType, false, false))
+        is GraphQLList -> JavaPoetUtils.parameterizedList(graphQlTypeToJavaTypeName(type.listType, false, false))
         is GraphQlUnknown -> ClassName.get("", type.typeName)
         else ->
           GRAPHQLTYPE_TO_JAVA_TYPE[type.javaClass]!!.let {

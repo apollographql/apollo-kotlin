@@ -5,10 +5,12 @@ import java.lang.Boolean;
 import java.lang.Float;
 import java.lang.Integer;
 import java.lang.Long;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nullable;
 
 public final class ScalarTypes implements GraphQLQuery {
@@ -22,6 +24,11 @@ public final class ScalarTypes implements GraphQLQuery {
   @Override
   public List<String> fragmentDefinitions() {
     return Collections.emptyList();
+  }
+
+  @Override
+  public Map<String, Object> variableDefinitions() {
+    return Collections.EMPTY_MAP;
   }
 
   public interface Data {
