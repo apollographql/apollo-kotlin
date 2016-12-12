@@ -9,7 +9,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 public final class Query implements GraphQLQuery<Query.Data> {
-  private final String OPERATION_DEFINITION = "query Query {\n"
+  public static final String OPERATION_DEFINITION = "query Query {\n"
       + "  r2: hero {\n"
       + "    __typename\n"
       + "    ...HumanDetails\n"
@@ -22,7 +22,7 @@ public final class Query implements GraphQLQuery<Query.Data> {
       + "  }\n"
       + "}";
 
-  private final List<String> FRAGMENT_DEFINITIONS = Collections.unmodifiableList(Arrays.asList(
+  public static final List<String> FRAGMENT_DEFINITIONS = Collections.unmodifiableList(Arrays.asList(
     "fragment HumanDetails on Human {\n"
         + "  name\n"
         + "  height\n"

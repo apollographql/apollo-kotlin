@@ -26,7 +26,7 @@ class QueryTypeSpecBuilder(
 
   private fun TypeSpec.Builder.addOperationSourceDefinition(operation: Operation): TypeSpec.Builder {
     addField(FieldSpec.builder(ClassName.get(String::class.java), OPERATION_SOURCE_FIELD_NAME)
-        .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+        .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
         .initializer("\$S", operation.source)
         .build()
     )
@@ -68,7 +68,7 @@ class QueryTypeSpecBuilder(
           FieldSpec.builder(
               ParameterizedTypeName.get(ClassName.get(List::class.java), ClassName.get(String::class.java)),
               FRAGMENT_SOURCES_FIELD_NAME)
-              .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+              .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
               .initializer(fragments.toSourceDefinitionCode())
               .build()
       )

@@ -12,7 +12,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 public final class ScalarTypes implements GraphQLQuery<ScalarTypes.Data> {
-  private final String OPERATION_DEFINITION = "";
+  public static final String OPERATION_DEFINITION = "";
 
   @Override
   public String getOperationDefinition() {

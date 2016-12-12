@@ -9,14 +9,14 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 public final class FragmentFriendsConnection implements GraphQLQuery<FragmentFriendsConnection.Data> {
-  private final String OPERATION_DEFINITION = "query FragmentFriendsConnection {\n"
+  public static final String OPERATION_DEFINITION = "query FragmentFriendsConnection {\n"
       + "  hero {\n"
       + "    __typename\n"
       + "    ...HeroDetails\n"
       + "  }\n"
       + "}";
 
-  private final List<String> FRAGMENT_DEFINITIONS = Collections.unmodifiableList(Arrays.asList(
+  public static final List<String> FRAGMENT_DEFINITIONS = Collections.unmodifiableList(Arrays.asList(
     "fragment HeroDetails on Character {\n"
         + "  __typename\n"
         + "  name\n"

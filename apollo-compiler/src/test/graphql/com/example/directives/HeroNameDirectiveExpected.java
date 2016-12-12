@@ -8,7 +8,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 public final class HeroNameDirective implements GraphQLQuery<HeroNameDirective.Data> {
-  private final String OPERATION_DEFINITION = "query HeroNameDirective {\n"
+  public static final String OPERATION_DEFINITION = "query HeroNameDirective {\n"
       + "  hero {\n"
       + "    __typename\n"
       + "    name @include(if: false)\n"
