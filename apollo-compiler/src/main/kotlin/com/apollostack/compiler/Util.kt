@@ -18,7 +18,7 @@ fun TypeName.overrideTypeName(typeNameOverrideMap: Map<String, String>): TypeNam
   }
 }
 
-fun MethodSpec.overrideMethodReturnType(typeNameOverrideMap: Map<String, String>) =
+fun MethodSpec.overrideMethodReturnType(typeNameOverrideMap: Map<String, String>): MethodSpec =
     MethodSpec.methodBuilder(name)
         .returns(returnType.overrideTypeName(typeNameOverrideMap).annotated(returnType.annotations))
         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
