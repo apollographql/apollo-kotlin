@@ -1,29 +1,70 @@
 package com.example.fragments_with_type_condition;
 
+import com.apollostack.api.GraphQLQuery;
+import java.lang.Override;
+import java.lang.String;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nullable;
 
-public interface Query {
-  @Nullable R2 r2();
+public final class Query implements GraphQLQuery {
+  public static final String OPERATION_DEFINITION = "query Query {\n"
+      + "  r2: hero {\n"
+      + "    __typename\n"
+      + "    ...HumanDetails\n"
+      + "    ...DroidDetails\n"
+      + "  }\n"
+      + "  luke: hero {\n"
+      + "    __typename\n"
+      + "    ...HumanDetails\n"
+      + "    ...DroidDetails\n"
+      + "  }\n"
+      + "}";
 
-  @Nullable Luke luke();
+  public static final List<String> FRAGMENT_DEFINITIONS = Collections.unmodifiableList(Arrays.asList(
+    "fragment HumanDetails on Human {\n"
+        + "  name\n"
+        + "  height\n"
+        + "}","fragment DroidDetails on Droid {\n"
+        + "  name\n"
+        + "  primaryFunction\n"
+        + "}"
+  ));
 
-  interface R2 {
-    Fragments fragments();
-
-    interface Fragments {
-      HumanDetails humanDetails();
-
-      DroidDetails droidDetails();
-    }
+  @Override
+  public String operationDefinition() {
+    return OPERATION_DEFINITION;
   }
 
-  interface Luke {
-    Fragments fragments();
+  @Override
+  public List<String> fragmentDefinitions() {
+    return FRAGMENT_DEFINITIONS;
+  }
 
-    interface Fragments {
-      HumanDetails humanDetails();
+  public interface Data {
+    @Nullable R2 r2();
 
-      DroidDetails droidDetails();
+    @Nullable Luke luke();
+
+    interface R2 {
+      Fragments fragments();
+
+      interface Fragments {
+        HumanDetails humanDetails();
+
+        DroidDetails droidDetails();
+      }
+    }
+
+    interface Luke {
+      Fragments fragments();
+
+      interface Fragments {
+        HumanDetails humanDetails();
+
+        DroidDetails droidDetails();
+      }
     }
   }
 }

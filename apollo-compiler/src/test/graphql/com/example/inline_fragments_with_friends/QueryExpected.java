@@ -1,46 +1,82 @@
 package com.example.inline_fragments_with_friends;
 
+import com.apollostack.api.GraphQLQuery;
 import java.lang.Float;
+import java.lang.Override;
 import java.lang.String;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface Query {
-  @Nullable Hero hero();
+public final class Query implements GraphQLQuery {
+  public static final String OPERATION_DEFINITION = "query Query {\n"
+      + "  hero {\n"
+      + "    __typename\n"
+      + "    name\n"
+      + "  ... on Human {\n"
+      + "      height\n"
+      + "      friends {\n"
+      + "        __typename\n"
+      + "        appearsIn\n"
+      + "      }\n"
+      + "    }\n"
+      + "    ... on Droid {\n"
+      + "      primaryFunction\n"
+      + "      friends {\n"
+      + "        __typename\n"
+      + "        id\n"
+      + "      }\n"
+      + "    }\n"
+      + "  }\n"
+      + "}";
 
-  interface Hero {
-    @Nonnull String name();
+  @Override
+  public String operationDefinition() {
+    return OPERATION_DEFINITION;
+  }
 
-    @Nullable AsHuman asHuman();
+  @Override
+  public List<String> fragmentDefinitions() {
+    return Collections.emptyList();
+  }
 
-    @Nullable AsDroid asDroid();
+  public interface Data {
+    @Nullable Hero hero();
 
-    interface AsHuman {
+    interface Hero {
       @Nonnull String name();
 
-      @Nullable List<Friend> friends();
+      @Nullable AsHuman asHuman();
 
-      @Nullable Float height();
+      @Nullable AsDroid asDroid();
 
-      interface Friend {
+      interface AsHuman {
         @Nonnull String name();
 
-        @Nonnull List<Episode> appearsIn();
+        @Nullable List<Friend> friends();
+
+        @Nullable Float height();
+
+        interface Friend {
+          @Nonnull String name();
+
+          @Nonnull List<Episode> appearsIn();
+        }
       }
-    }
 
-    interface AsDroid {
-      @Nonnull String name();
-
-      @Nullable List<Friend> friends();
-
-      @Nullable String primaryFunction();
-
-      interface Friend {
+      interface AsDroid {
         @Nonnull String name();
 
-        long id();
+        @Nullable List<Friend> friends();
+
+        @Nullable String primaryFunction();
+
+        interface Friend {
+          @Nonnull String name();
+
+          long id();
+        }
       }
     }
   }

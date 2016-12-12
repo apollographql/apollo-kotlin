@@ -1,30 +1,59 @@
 package com.example.simple_inline_fragment;
 
+import com.apollostack.api.GraphQLQuery;
 import java.lang.Float;
+import java.lang.Override;
 import java.lang.String;
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface Query {
-  @Nullable Hero hero();
+public final class Query implements GraphQLQuery {
+  public static final String OPERATION_DEFINITION = "query Query {\n"
+      + "  hero {\n"
+      + "    __typename\n"
+      + "    name\n"
+      + "    ... on Human {\n"
+      + "      height\n"
+      + "    }\n"
+      + "    ... on Droid {\n"
+      + "      primaryFunction\n"
+      + "    }\n"
+      + "  }\n"
+      + "}";
 
-  interface Hero {
-    @Nonnull String name();
+  @Override
+  public String operationDefinition() {
+    return OPERATION_DEFINITION;
+  }
 
-    @Nullable AsHuman asHuman();
+  @Override
+  public List<String> fragmentDefinitions() {
+    return Collections.emptyList();
+  }
 
-    @Nullable AsDroid asDroid();
+  public interface Data {
+    @Nullable Hero hero();
 
-    interface AsHuman {
+    interface Hero {
       @Nonnull String name();
 
-      @Nullable Float height();
-    }
+      @Nullable AsHuman asHuman();
 
-    interface AsDroid {
-      @Nonnull String name();
+      @Nullable AsDroid asDroid();
 
-      @Nullable String primaryFunction();
+      interface AsHuman {
+        @Nonnull String name();
+
+        @Nullable Float height();
+      }
+
+      interface AsDroid {
+        @Nonnull String name();
+
+        @Nullable String primaryFunction();
+      }
     }
   }
 }

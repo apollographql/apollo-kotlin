@@ -30,6 +30,7 @@ android {
 
 dependencies {
     compile dep.jsr305
+    compile project (":apollo-api")
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

@@ -1,19 +1,46 @@
 package com.example.two_heroes;
 
+import com.apollostack.api.GraphQLQuery;
+import java.lang.Override;
 import java.lang.String;
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface TwoHeroes {
-  @Nullable R2 r2();
+public final class TwoHeroes implements GraphQLQuery {
+  public static final String OPERATION_DEFINITION = "query TwoHeroes {\n"
+      + "  r2: hero {\n"
+      + "    __typename\n"
+      + "    name\n"
+      + "  }\n"
+      + "  luke: hero(episode: EMPIRE) {\n"
+      + "    __typename\n"
+      + "    name\n"
+      + "  }\n"
+      + "}";
 
-  @Nullable Luke luke();
-
-  interface R2 {
-    @Nonnull String name();
+  @Override
+  public String operationDefinition() {
+    return OPERATION_DEFINITION;
   }
 
-  interface Luke {
-    @Nonnull String name();
+  @Override
+  public List<String> fragmentDefinitions() {
+    return Collections.emptyList();
+  }
+
+  public interface Data {
+    @Nullable R2 r2();
+
+    @Nullable Luke luke();
+
+    interface R2 {
+      @Nonnull String name();
+    }
+
+    interface Luke {
+      @Nonnull String name();
+    }
   }
 }

@@ -1,39 +1,56 @@
 package com.example.scalar_types;
 
+import com.apollostack.api.GraphQLQuery;
 import java.lang.Boolean;
 import java.lang.Float;
 import java.lang.Integer;
 import java.lang.Long;
+import java.lang.Override;
 import java.lang.String;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 
-public interface ScalarTypes {
-  @Nullable String graphQlString();
+public final class ScalarTypes implements GraphQLQuery {
+  public static final String OPERATION_DEFINITION = "";
 
-  @Nullable Long graphQlIdNullable();
+  @Override
+  public String operationDefinition() {
+    return OPERATION_DEFINITION;
+  }
 
-  long graphQlIdNonNullable();
+  @Override
+  public List<String> fragmentDefinitions() {
+    return Collections.emptyList();
+  }
 
-  @Nullable Integer graphQlIntNullable();
+  public interface Data {
+    @Nullable String graphQlString();
 
-  int graphQlIntNonNullable();
+    @Nullable Long graphQlIdNullable();
 
-  @Nullable Float graphQlFloatNullable();
+    long graphQlIdNonNullable();
 
-  float graphQlFloatNonNullable();
+    @Nullable Integer graphQlIntNullable();
 
-  @Nullable Boolean graphQlBooleanNullable();
+    int graphQlIntNonNullable();
 
-  boolean graphQlBooleanNonNullable();
+    @Nullable Float graphQlFloatNullable();
 
-  @Nullable List<Integer> graphQlListOfInt();
+    float graphQlFloatNonNullable();
 
-  @Nullable List<GraphQlListOfObject> graphQlListOfObjects();
+    @Nullable Boolean graphQlBooleanNullable();
 
-  @Nullable List<List<Integer>> graphQlNestedList();
+    boolean graphQlBooleanNonNullable();
 
-  interface GraphQlListOfObject {
-    int someField();
+    @Nullable List<Integer> graphQlListOfInt();
+
+    @Nullable List<GraphQlListOfObject> graphQlListOfObjects();
+
+    @Nullable List<List<Integer>> graphQlNestedList();
+
+    interface GraphQlListOfObject {
+      int someField();
+    }
   }
 }

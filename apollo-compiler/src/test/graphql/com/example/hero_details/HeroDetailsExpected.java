@@ -1,29 +1,60 @@
 package com.example.hero_details;
 
+import com.apollostack.api.GraphQLQuery;
 import java.lang.Integer;
+import java.lang.Override;
 import java.lang.String;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface HeroDetails {
-  @Nullable Hero hero();
+public final class HeroDetails implements GraphQLQuery {
+  public static final String OPERATION_DEFINITION = "query HeroDetails {\n"
+      + "  hero {\n"
+      + "    __typename\n"
+      + "    name\n"
+      + "    friendsConnection {\n"
+      + "      totalCount\n"
+      + "      edges {\n"
+      + "        node {\n"
+      + "          __typename\n"
+      + "          name\n"
+      + "        }\n"
+      + "      }\n"
+      + "    }\n"
+      + "  }\n"
+      + "}";
 
-  interface Hero {
-    @Nonnull String name();
+  @Override
+  public String operationDefinition() {
+    return OPERATION_DEFINITION;
+  }
 
-    @Nonnull FriendsConnection friendsConnection();
+  @Override
+  public List<String> fragmentDefinitions() {
+    return Collections.emptyList();
+  }
 
-    interface FriendsConnection {
-      @Nullable Integer totalCount();
+  public interface Data {
+    @Nullable Hero hero();
 
-      @Nullable List<Edge> edges();
+    interface Hero {
+      @Nonnull String name();
 
-      interface Edge {
-        @Nullable Node node();
+      @Nonnull FriendsConnection friendsConnection();
 
-        interface Node {
-          @Nonnull String name();
+      interface FriendsConnection {
+        @Nullable Integer totalCount();
+
+        @Nullable List<Edge> edges();
+
+        interface Edge {
+          @Nullable Node node();
+
+          interface Node {
+            @Nonnull String name();
+          }
         }
       }
     }
