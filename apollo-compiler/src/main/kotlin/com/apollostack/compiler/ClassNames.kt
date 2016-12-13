@@ -16,12 +16,12 @@ object ClassNames {
   val MAP: ClassName = ClassName.get(Map::class.java)
   val HASH_MAP: ClassName = ClassName.get(HashMap::class.java)
 
-  fun parameterizedMap(firstTypeArgument: TypeName, secondTypeArgument: TypeName): TypeName =
+  fun parameterizedMapOf(firstTypeArgument: TypeName, secondTypeArgument: TypeName): TypeName =
       ParameterizedTypeName.get(MAP, firstTypeArgument, secondTypeArgument)
 
-  fun parameterizedHashMap(firstTypeArgument: TypeName, secondTypeArgument: TypeName): TypeName =
+  fun parameterizedHashMapOf(firstTypeArgument: TypeName, secondTypeArgument: TypeName): TypeName =
       ParameterizedTypeName.get(HASH_MAP, firstTypeArgument, secondTypeArgument)
 
-  fun parameterizedList(typeArgument: TypeName): TypeName =
+  fun parameterizedListOf(typeArgument: TypeName): TypeName =
       ParameterizedTypeName.get(LIST, typeArgument)
 }

@@ -20,7 +20,7 @@ class QueryVariablesTypeSpecBuilder(
 
   private fun TypeSpec.Builder.addDataField(initializer: CodeBlock): TypeSpec.Builder {
     return addField(FieldSpec.builder(
-        ClassNames.parameterizedMap(ClassNames.STRING, ClassNames.OBJECT),
+        ClassNames.parameterizedMapOf(ClassNames.STRING, ClassNames.OBJECT),
         VARIABLES_MAP_FIELD_NAME)
         .addModifiers(Modifier.FINAL)
         .initializer(initializer)
@@ -30,7 +30,7 @@ class QueryVariablesTypeSpecBuilder(
 
   private fun TypeSpec.Builder.addConstructor(): TypeSpec.Builder {
     return addMethod(MethodSpec.constructorBuilder()
-        .addParameter(ClassNames.parameterizedMap(ClassNames.STRING, ClassNames.OBJECT),
+        .addParameter(ClassNames.parameterizedMapOf(ClassNames.STRING, ClassNames.OBJECT),
             VARIABLES_MAP_FIELD_NAME)
         .addStatement("this.\$L = \$T.unmodifiableMap(\$L)", VARIABLES_MAP_FIELD_NAME, ClassNames.COLLECTIONS,
             VARIABLES_MAP_FIELD_NAME)
@@ -57,7 +57,7 @@ class QueryVariablesTypeSpecBuilder(
   private fun TypeSpec.Builder.addBuilder(variables: List<Variable>): TypeSpec.Builder {
     return addType(TypeSpec.classBuilder(BUILDER_CLASS_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-        .addDataField(CodeBlock.of("new \$T()", ClassNames.parameterizedHashMap(ClassNames.STRING, ClassNames.OBJECT)))
+        .addDataField(CodeBlock.of("new \$T()", ClassNames.parameterizedHashMapOf(ClassNames.STRING, ClassNames.OBJECT)))
         .addVariableSetterMethods(variables)
         .addBuildMethod()
         .build()

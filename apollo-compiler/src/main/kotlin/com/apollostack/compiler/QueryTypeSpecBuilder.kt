@@ -58,13 +58,13 @@ class QueryTypeSpecBuilder(
       addMethod(MethodSpec.methodBuilder(FRAGMENT_DEFINITIONS_ACCESSOR_NAME)
           .addAnnotation(Annotations.OVERRIDE)
           .addModifiers(Modifier.PUBLIC)
-          .returns(ClassNames.parameterizedList(ClassNames.STRING))
+          .returns(ClassNames.parameterizedListOf(ClassNames.STRING))
           .addStatement("return \$T.emptyList()", ClassNames.COLLECTIONS)
           .build()
       )
     } else {
       addField(
-          FieldSpec.builder(ClassNames.parameterizedList(ClassNames.STRING),
+          FieldSpec.builder(ClassNames.parameterizedListOf(ClassNames.STRING),
               FRAGMENT_SOURCES_FIELD_NAME)
               .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
               .initializer(fragments.toSourceDefinitionCode())
@@ -73,7 +73,7 @@ class QueryTypeSpecBuilder(
       addMethod(MethodSpec.methodBuilder(FRAGMENT_DEFINITIONS_ACCESSOR_NAME)
           .addAnnotation(Annotations.OVERRIDE)
           .addModifiers(Modifier.PUBLIC)
-          .returns(ClassNames.parameterizedList(ClassNames.STRING))
+          .returns(ClassNames.parameterizedListOf(ClassNames.STRING))
           .addStatement("return $FRAGMENT_SOURCES_FIELD_NAME")
           .build()
       )
@@ -86,7 +86,7 @@ class QueryTypeSpecBuilder(
       addMethod(MethodSpec.methodBuilder(VARIABLE_DEFINITIONS_ACCESSOR_NAME)
           .addAnnotation(Annotations.OVERRIDE)
           .addModifiers(Modifier.PUBLIC)
-          .returns(ClassNames.parameterizedMap(ClassNames.STRING, ClassNames.OBJECT))
+          .returns(ClassNames.parameterizedMapOf(ClassNames.STRING, ClassNames.OBJECT))
           .addStatement("return \$T.emptyMap()", ClassNames.COLLECTIONS)
           .build()
       )
@@ -106,7 +106,7 @@ class QueryTypeSpecBuilder(
       addMethod(MethodSpec.methodBuilder(VARIABLE_DEFINITIONS_ACCESSOR_NAME)
           .addAnnotation(Annotations.OVERRIDE)
           .addModifiers(Modifier.PUBLIC)
-          .returns(ClassNames.parameterizedMap(ClassNames.STRING, ClassNames.OBJECT))
+          .returns(ClassNames.parameterizedMapOf(ClassNames.STRING, ClassNames.OBJECT))
           .addStatement("return \$L.\$L", VARIABLES_FIELD_NAME, QueryVariablesTypeSpecBuilder.VARIABLES_MAP_FIELD_NAME)
           .build()
       )
