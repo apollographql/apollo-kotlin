@@ -37,7 +37,7 @@ public final class TestQuery implements Query {
 
   @Override
   public Map<String, Object> variableDefinitions() {
-    return Collections.EMPTY_MAP;
+    return Collections.emptyMap();
   }
 
   public interface Data extends Query.Data {

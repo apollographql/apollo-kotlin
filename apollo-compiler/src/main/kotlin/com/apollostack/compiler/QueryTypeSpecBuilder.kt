@@ -87,7 +87,7 @@ class QueryTypeSpecBuilder(
           .addAnnotation(Annotations.OVERRIDE)
           .addModifiers(Modifier.PUBLIC)
           .returns(ClassNames.parameterizedMap(ClassNames.STRING, ClassNames.OBJECT))
-          .addStatement("return \$T.EMPTY_MAP", ClassNames.COLLECTIONS)
+          .addStatement("return \$T.emptyMap()", ClassNames.COLLECTIONS)
           .build()
       )
     } else {
