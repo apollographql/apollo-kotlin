@@ -1,10 +1,10 @@
 {
   "operations": [
     {
-      "operationName": "Query",
+      "operationName": "TestQuery",
       "operationType": "query",
       "variables": [],
-      "source": "query Query {\n  hero {\n    __typename\n    name\n    friends {\n      __typename\n      name\n    }\n    ... on Human {\n      height\n      friends {\n        __typename\n        appearsIn\n        friends {\n          __typename\n          ...HeroDetails\n        }\n      }\n    }\n  }\n}",
+      "source": "query TestQuery {\n  hero {\n    __typename\n    name\n    friends {\n      __typename\n      name\n    }\n    ... on Human {\n      height\n      friends {\n        __typename\n        appearsIn\n        friends {\n          __typename\n          ...HeroDetails\n        }\n      }\n    }\n  }\n}",
       "fields": [
         {
           "responseName": "hero",

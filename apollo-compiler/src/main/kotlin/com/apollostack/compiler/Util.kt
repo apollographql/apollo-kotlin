@@ -1,8 +1,6 @@
 package com.apollostack.compiler
 
 import com.squareup.javapoet.*
-import javax.annotation.Nonnull
-import javax.annotation.Nullable
 import javax.lang.model.element.Modifier
 
 fun String.normalizeTypeName() = removeSuffix("!").removeSurrounding("[", "]").removeSuffix("!")
@@ -40,10 +38,6 @@ fun TypeSpec.resolveNestedTypeNameDuplication(reservedTypeNames: List<String>): 
       .addTypes(typeSpecs.map { typeSpec ->
         typeSpec.resolveNestedTypeNameDuplication(reservedTypeNames + typeSpecs.map { it.name })
       })
+      .addSuperinterfaces(superinterfaces)
       .build()
-}
-
-object JavaPoetUtils {
-  val NULLABLE_ANNOTATION: AnnotationSpec = AnnotationSpec.builder(Nullable::class.java).build()
-  val NONNULL_ANNOTATION: AnnotationSpec = AnnotationSpec.builder(Nonnull::class.java).build()
 }
