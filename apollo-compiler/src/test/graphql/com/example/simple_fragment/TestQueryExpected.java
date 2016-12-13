@@ -1,22 +1,29 @@
-package com.example.hero_name;
+package com.example.simple_fragment;
 
 import com.apollostack.api.Query;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class HeroName implements Query {
-  public static final String OPERATION_DEFINITION = "query HeroName {\n"
+public final class TestQuery implements Query {
+  public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  hero {\n"
       + "    __typename\n"
-      + "    name\n"
+      + "    ...HeroDetails\n"
       + "  }\n"
       + "}";
+
+  public static final List<String> FRAGMENT_DEFINITIONS = Collections.unmodifiableList(Arrays.asList(
+    "fragment HeroDetails on Character {\n"
+        + "  __typename\n"
+        + "  name\n"
+        + "}"
+  ));
 
   @Override
   public String operationDefinition() {
@@ -25,7 +32,7 @@ public final class HeroName implements Query {
 
   @Override
   public List<String> fragmentDefinitions() {
-    return Collections.emptyList();
+    return FRAGMENT_DEFINITIONS;
   }
 
   @Override
@@ -37,7 +44,11 @@ public final class HeroName implements Query {
     @Nullable Hero hero();
 
     interface Hero {
-      @Nonnull String name();
+      Fragments fragments();
+
+      interface Fragments {
+        HeroDetails heroDetails();
+      }
     }
   }
 }

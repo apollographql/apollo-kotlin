@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
-public final class ScalarTypes implements Query {
+public final class TestQuery implements Query {
   public static final String OPERATION_DEFINITION = "";
 
   @Override

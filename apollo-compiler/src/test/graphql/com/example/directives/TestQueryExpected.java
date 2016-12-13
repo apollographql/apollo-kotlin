@@ -1,4 +1,4 @@
-package com.example.enum_type;
+package com.example.directives;
 
 import com.apollostack.api.Query;
 import java.lang.Object;
@@ -7,15 +7,13 @@ import java.lang.String;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class HeroAppearsIn implements Query {
-  public static final String OPERATION_DEFINITION = "query HeroAppearsIn {\n"
+public final class TestQuery implements Query {
+  public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  hero {\n"
       + "    __typename\n"
-      + "    name\n"
-      + "    appearsIn\n"
+      + "    name @include(if: false)\n"
       + "  }\n"
       + "}";
 
@@ -38,9 +36,7 @@ public final class HeroAppearsIn implements Query {
     @Nullable Hero hero();
 
     interface Hero {
-      @Nonnull String name();
-
-      @Nonnull List<Episode> appearsIn();
+      @Nullable String name();
     }
   }
 }

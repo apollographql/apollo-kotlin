@@ -1,10 +1,10 @@
 {
   "operations": [
     {
-      "operationName": "HeroDetails",
+      "operationName": "TestQuery",
       "operationType": "query",
       "variables": [],
-      "source": "query HeroDetails {\n  hero {\n    __typename\n    name\n    friendsConnection {\n      totalCount\n      edges {\n        node {\n          __typename\n          name\n        }\n      }\n    }\n  }\n}",
+      "source": "query TestQuery {\n  hero {\n    __typename\n    name\n    friendsConnection {\n      totalCount\n      edges {\n        node {\n          __typename\n          name\n        }\n      }\n    }\n  }\n}",
       "fields": [
         {
           "responseName": "hero",

@@ -11,8 +11,8 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class HeroNameConditionalInclusion implements Query {
-  public static final String OPERATION_DEFINITION = "query HeroNameConditionalInclusion($episode: Episode, $includeName: Boolean!) {\n"
+public final class TestQuery implements Query {
+  public static final String OPERATION_DEFINITION = "query TestQuery($episode: Episode, $includeName: Boolean!) {\n"
       + "  hero(episode: $episode) {\n"
       + "    __typename\n"
       + "    name @include(if: $includeName)\n"
@@ -21,7 +21,7 @@ public final class HeroNameConditionalInclusion implements Query {
 
   private final Variables variables;
 
-  public HeroNameConditionalInclusion(@Nonnull Variables variables) {
+  public TestQuery(@Nonnull Variables variables) {
     this.variables = variables;
   }
 

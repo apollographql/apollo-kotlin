@@ -1,4 +1,4 @@
-package com.example.two_heroes_unique;
+package com.example.two_heroes;
 
 import com.apollostack.api.Query;
 import java.lang.Object;
@@ -10,15 +10,14 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class TwoHeroesUnique implements Query {
-  public static final String OPERATION_DEFINITION = "query TwoHeroesUnique {\n"
+public final class TestQuery implements Query {
+  public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  r2: hero {\n"
       + "    __typename\n"
       + "    name\n"
       + "  }\n"
       + "  luke: hero(episode: EMPIRE) {\n"
       + "    __typename\n"
-      + "    id\n"
       + "    name\n"
       + "  }\n"
       + "}";
@@ -48,8 +47,6 @@ public final class TwoHeroesUnique implements Query {
     }
 
     interface Luke {
-      long id();
-
       @Nonnull String name();
     }
   }

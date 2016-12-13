@@ -1,7 +1,7 @@
 {
   "operations": [
     {
-      "operationName": "ScalarTypes",
+      "operationName": "TestQuery",
       "operationType": "query",
       "variables": [],
       "source": "",

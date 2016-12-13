@@ -11,8 +11,8 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class HeroDetails implements Query {
-  public static final String OPERATION_DEFINITION = "query HeroDetails {\n"
+public final class TestQuery implements Query {
+  public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  hero {\n"
       + "    __typename\n"
       + "    name\n"

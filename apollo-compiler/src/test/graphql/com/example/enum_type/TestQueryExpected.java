@@ -1,4 +1,4 @@
-package com.example.directives;
+package com.example.enum_type;
 
 import com.apollostack.api.Query;
 import java.lang.Object;
@@ -7,13 +7,15 @@ import java.lang.String;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class HeroNameDirective implements Query {
-  public static final String OPERATION_DEFINITION = "query HeroNameDirective {\n"
+public final class TestQuery implements Query {
+  public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  hero {\n"
       + "    __typename\n"
-      + "    name @include(if: false)\n"
+      + "    name\n"
+      + "    appearsIn\n"
       + "  }\n"
       + "}";
 
@@ -36,7 +38,9 @@ public final class HeroNameDirective implements Query {
     @Nullable Hero hero();
 
     interface Hero {
-      @Nullable String name();
+      @Nonnull String name();
+
+      @Nonnull List<Episode> appearsIn();
     }
   }
 }

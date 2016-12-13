@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
-public final class FragmentFriendsConnection implements Query {
-  public static final String OPERATION_DEFINITION = "query FragmentFriendsConnection {\n"
+public final class TestQuery implements Query {
+  public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  hero {\n"
       + "    __typename\n"
       + "    ...HeroDetails\n"

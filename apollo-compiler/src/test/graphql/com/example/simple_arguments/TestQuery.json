@@ -1,7 +1,7 @@
 {
 	"operations": [
 		{
-			"operationName": "HeroNameConditionalInclusion",
+			"operationName": "TestQuery",
 			"operationType": "query",
 			"variables": [
 				{
@@ -13,7 +13,7 @@
 					"type": "Boolean!"
 				}
 			],
-			"source": "query HeroNameConditionalInclusion($episode: Episode, $includeName: Boolean!) {\n  hero(episode: $episode) {\n    __typename\n    name @include(if: $includeName)\n  }\n}",
+			"source": "query TestQuery($episode: Episode, $includeName: Boolean!) {\n  hero(episode: $episode) {\n    __typename\n    name @include(if: $includeName)\n  }\n}",
 			"fields": [
 				{
 					"responseName": "hero",
