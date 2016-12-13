@@ -1,7 +1,7 @@
 {
   "operations": [
     {
-      "operationName": "Query",
+      "operationName": "TestQuery",
       "operationType": "query",
       "variables": [],
       "source": "query Query {\n  hero {\n    __typename\n    name\n    ... on Human {\n      height\n    }\n    ... on Droid {\n      primaryFunction\n    }\n  }\n}",

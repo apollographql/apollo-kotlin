@@ -7,8 +7,8 @@ import com.google.testing.compile.JavaSourcesSubjectFactory.javaSources
 import org.junit.Test
 import java.io.File
 
-class GraphqlCompilerTest {
-  private val compiler = GraphqlCompiler()
+class GraphQLCompilerTest {
+  private val compiler = GraphQLCompiler()
 
   @Test fun shouldThrowExceptionForInvalidIrPath() {
     val irFile = File("src/test/dummyfolder/graphql/com/example/HeroName.json")
@@ -139,56 +139,56 @@ class GraphqlCompilerTest {
   }
 
   @Test fun simpleInlineFragments() {
-    val actual = actualFileFor("simple_inline_fragment", "Query")
-    val expected = expectedFileFor("simple_inline_fragment", "Query")
+    val actual = actualFileFor("simple_inline_fragment", "TestQuery")
+    val expected = expectedFileFor("simple_inline_fragment", "TestQuery")
 
-    compiler.write(irFileFor("simple_inline_fragment", "Query"))
+    compiler.write(irFileFor("simple_inline_fragment", "TestQuery"))
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
-    val source = JavaFileObjects.forSourceLines("com.example.Query", actual.readLines())
+    val source = JavaFileObjects.forSourceLines("com.example.TestQuery", actual.readLines())
     assertAbout(javaSources())
         .that(listOf(source))
         .compilesWithoutError()
   }
 
   @Test fun inlineFragmentsWithFriends() {
-    val actual = actualFileFor("inline_fragments_with_friends", "Query")
-    val expected = expectedFileFor("inline_fragments_with_friends", "Query")
+    val actual = actualFileFor("inline_fragments_with_friends", "TestQuery")
+    val expected = expectedFileFor("inline_fragments_with_friends", "TestQuery")
     val episodeEnumActual = actualFileFor("inline_fragments_with_friends", "Episode")
 
-    compiler.write(irFileFor("inline_fragments_with_friends", "Query"))
+    compiler.write(irFileFor("inline_fragments_with_friends", "TestQuery"))
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     val episodeEnumSource = JavaFileObjects.forSourceLines("test.Episode",
         episodeEnumActual.readLines())
-    val source = JavaFileObjects.forSourceLines("com.example.Query", actual.readLines())
+    val source = JavaFileObjects.forSourceLines("com.example.TestQuery", actual.readLines())
     assertAbout(javaSources())
         .that(listOf(source, episodeEnumSource))
         .compilesWithoutError()
   }
 
   @Test fun fragmentsWithTypeCondition() {
-    val actual = actualFileFor("fragments_with_type_condition", "Query")
-    val expected = expectedFileFor("fragments_with_type_condition", "Query")
+    val actual = actualFileFor("fragments_with_type_condition", "TestQuery")
+    val expected = expectedFileFor("fragments_with_type_condition", "TestQuery")
     val humanDetailsActual = actualFileFor("fragments_with_type_condition", "HumanDetails")
     val droidDetailsActual = actualFileFor("fragments_with_type_condition", "DroidDetails")
 
-    compiler.write(irFileFor("fragments_with_type_condition", "Query"))
+    compiler.write(irFileFor("fragments_with_type_condition", "TestQuery"))
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     val humanDetails = JavaFileObjects.forSourceLines("test.HumanDetails",
         humanDetailsActual.readLines())
     val droidDetails = JavaFileObjects.forSourceLines("test.DroidDetails",
         droidDetailsActual.readLines())
-    val source = JavaFileObjects.forSourceLines("com.example.Query", actual.readLines())
+    val source = JavaFileObjects.forSourceLines("com.example.TestQuery", actual.readLines())
     assertAbout(javaSources())
         .that(listOf(source, humanDetails, droidDetails))
         .compilesWithoutError()
   }
 
   @Test fun uniqueTypeName() {
-    val actual = actualFileFor("unique_type_name", "Query")
-    val expected = expectedFileFor("unique_type_name", "Query")
+    val actual = actualFileFor("unique_type_name", "TestQuery")
+    val expected = expectedFileFor("unique_type_name", "TestQuery")
     val heroDetailsActual = actualFileFor("unique_type_name", "HeroDetails")
     val episodeActual = actualFileFor("unique_type_name", "Episode")
 
@@ -201,7 +201,7 @@ class GraphqlCompilerTest {
     val episode = JavaFileObjects.forSourceLines("com.example.unique_type_name.Episode",
         episodeActual.readLines())
 
-    val source = JavaFileObjects.forSourceLines("com.example.unique_type_name.Query", actual.readLines())
+    val source = JavaFileObjects.forSourceLines("com.example.unique_type_name.TestQuery", actual.readLines())
     assertAbout(javaSources())
         .that(listOf(source, heroDetails, episode))
         .compilesWithoutError()
@@ -216,8 +216,8 @@ class GraphqlCompilerTest {
   }
 
   @Test fun fragmentsWithInlineFragment() {
-    val actual = actualFileFor("fragment_with_inline_fragment", "Query")
-    val expected = expectedFileFor("fragment_with_inline_fragment", "Query")
+    val actual = actualFileFor("fragment_with_inline_fragment", "TestQuery")
+    val expected = expectedFileFor("fragment_with_inline_fragment", "TestQuery")
     val heroDetailsActual = actualFileFor("fragment_with_inline_fragment", "HeroDetails")
     val heroDetailsExpected = expectedFileFor("fragment_with_inline_fragment", "HeroDetails")
     val episodeActual = actualFileFor("fragment_with_inline_fragment", "Episode")
@@ -230,7 +230,8 @@ class GraphqlCompilerTest {
         heroDetailsActual.readLines())
     val episode = JavaFileObjects.forSourceLines("com.example.fragment_with_inline_fragment.Episode",
         episodeActual.readLines())
-    val source = JavaFileObjects.forSourceLines("com.example.fragment_with_inline_fragment.Query", actual.readLines())
+    val source = JavaFileObjects.forSourceLines("com.example.fragment_with_inline_fragment.TestQuery",
+        actual.readLines())
     assertAbout(javaSources())
         .that(listOf(source, heroDetails, episode))
         .compilesWithoutError()

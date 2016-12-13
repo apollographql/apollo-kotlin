@@ -1,6 +1,6 @@
 package com.example.fragments_with_type_condition;
 
-import com.apollostack.api.GraphQLQuery;
+import com.apollostack.api.Query;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
-public final class Query implements GraphQLQuery {
-  public static final String OPERATION_DEFINITION = "query Query {\n"
+public final class TestQuery implements Query {
+  public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  r2: hero {\n"
       + "    __typename\n"
       + "    ...HumanDetails\n"
@@ -49,7 +49,7 @@ public final class Query implements GraphQLQuery {
     return Collections.EMPTY_MAP;
   }
 
-  public interface Data {
+  public interface Data extends Query.Data {
     @Nullable R2 r2();
 
     @Nullable Luke luke();

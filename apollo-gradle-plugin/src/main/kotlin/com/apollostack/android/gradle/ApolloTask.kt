@@ -1,6 +1,6 @@
 package com.apollostack.android.gradle
 
-import com.apollostack.compiler.GraphqlCompiler
+import com.apollostack.compiler.GraphQLCompiler
 import com.apollostack.android.VERSION
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
@@ -18,7 +18,7 @@ open class ApolloTask : SourceTask() {
   var buildDirectory: File? = null
     set(value) {
       field = value
-      outputDirectory = GraphqlCompiler.OUTPUT_DIRECTORY.fold(buildDirectory, ::File)
+      outputDirectory = GraphQLCompiler.OUTPUT_DIRECTORY.fold(buildDirectory, ::File)
     }
 
   @TaskAction

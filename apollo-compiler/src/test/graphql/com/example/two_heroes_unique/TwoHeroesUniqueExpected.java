@@ -1,6 +1,6 @@
 package com.example.two_heroes_unique;
 
-import com.apollostack.api.GraphQLQuery;
+import com.apollostack.api.Query;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -10,7 +10,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class TwoHeroesUnique implements GraphQLQuery {
+public final class TwoHeroesUnique implements Query {
   public static final String OPERATION_DEFINITION = "query TwoHeroesUnique {\n"
       + "  r2: hero {\n"
       + "    __typename\n"
@@ -38,7 +38,7 @@ public final class TwoHeroesUnique implements GraphQLQuery {
     return Collections.EMPTY_MAP;
   }
 
-  public interface Data {
+  public interface Data extends Query.Data {
     @Nullable R2 r2();
 
     @Nullable Luke luke();

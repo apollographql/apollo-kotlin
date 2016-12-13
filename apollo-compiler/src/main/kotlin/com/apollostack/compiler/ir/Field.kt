@@ -27,7 +27,7 @@ data class Field(
           .build()
 
   private fun toTypeName(responseType: String): TypeName =
-      GraphQlType.resolveByName(responseType, isOptional()).toJavaTypeName()
+      GraphQLType.resolveByName(responseType, isOptional()).toJavaTypeName()
 
   fun normalizedName() = responseName.capitalize().singularize()
 

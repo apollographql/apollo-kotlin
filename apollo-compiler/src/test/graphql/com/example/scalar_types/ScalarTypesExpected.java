@@ -1,6 +1,6 @@
 package com.example.scalar_types;
 
-import com.apollostack.api.GraphQLQuery;
+import com.apollostack.api.Query;
 import java.lang.Boolean;
 import java.lang.Float;
 import java.lang.Integer;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
-public final class ScalarTypes implements GraphQLQuery {
+public final class ScalarTypes implements Query {
   public static final String OPERATION_DEFINITION = "";
 
   @Override
@@ -31,7 +31,7 @@ public final class ScalarTypes implements GraphQLQuery {
     return Collections.EMPTY_MAP;
   }
 
-  public interface Data {
+  public interface Data extends Query.Data {
     @Nullable String graphQlString();
 
     @Nullable Long graphQlIdNullable();

@@ -44,10 +44,11 @@ class InterfaceTypeSpecBuilder {
     return addTypes(typeSpecs)
   }
 
-  private fun TypeSpec.Builder.addInlineFragmentAccessorMethods(inlineFragments: List<InlineFragment>): TypeSpec.Builder {
+  private fun TypeSpec.Builder.addInlineFragmentAccessorMethods(
+      inlineFragments: List<InlineFragment>): TypeSpec.Builder {
     val methodSpecs = inlineFragments.map {
       MethodSpec.methodBuilder(it.interfaceName().decapitalize())
-          .returns(ClassName.get("", it.interfaceName()).annotated(JavaPoetUtils.NULLABLE_ANNOTATION))
+          .returns(ClassName.get("", it.interfaceName()).annotated(Annotations.NULLABLE))
           .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
           .build()
     }

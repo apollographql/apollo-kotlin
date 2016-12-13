@@ -1,6 +1,6 @@
 package com.example.hero_details;
 
-import com.apollostack.api.GraphQLQuery;
+import com.apollostack.api.Query;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
@@ -11,7 +11,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class HeroDetails implements GraphQLQuery {
+public final class HeroDetails implements Query {
   public static final String OPERATION_DEFINITION = "query HeroDetails {\n"
       + "  hero {\n"
       + "    __typename\n"
@@ -43,7 +43,7 @@ public final class HeroDetails implements GraphQLQuery {
     return Collections.EMPTY_MAP;
   }
 
-  public interface Data {
+  public interface Data extends Query.Data {
     @Nullable Hero hero();
 
     interface Hero {
