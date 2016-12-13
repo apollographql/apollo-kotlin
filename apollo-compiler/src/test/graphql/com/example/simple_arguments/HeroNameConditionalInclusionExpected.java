@@ -62,12 +62,14 @@ public final class HeroNameConditionalInclusion implements GraphQLQuery {
     public static final class Builder {
       final Map<String, Object> data = new HashMap<String, Object>();
 
-      public void episode(@Nullable Episode episode) {
+      public Builder episode(@Nullable Episode episode) {
         data.put("episode", episode);
+        return this;
       }
 
-      public void includeName(boolean includeName) {
+      public Builder includeName(boolean includeName) {
         data.put("includeName", includeName);
+        return this;
       }
 
       public Variables build() {

@@ -32,7 +32,7 @@ class QueryVariablesTypeSpecBuilder(
     return addMethod(MethodSpec.constructorBuilder()
         .addParameter(JavaPoetUtils.parameterizedMap(JavaPoetUtils.STRING_CLASS_NAME, JavaPoetUtils.OBJECT_CLASS_NAME),
             VARIABLES_MAP_FIELD_NAME)
-        .addCode("this.\$L = \$T.unmodifiableMap(\$L);\n", VARIABLES_MAP_FIELD_NAME,
+        .addStatement("this.\$L = \$T.unmodifiableMap(\$L)", VARIABLES_MAP_FIELD_NAME,
             JavaPoetUtils.COLLECTIONS_CLASS_NAME, VARIABLES_MAP_FIELD_NAME)
         .build()
     )
@@ -48,7 +48,7 @@ class QueryVariablesTypeSpecBuilder(
     return addMethod(MethodSpec.methodBuilder(variable.name)
         .addModifiers(Modifier.PUBLIC)
         .returns(returnType)
-        .addCode("return (\$T) \$L.get(\$S);\n", returnType.withoutAnnotations(), VARIABLES_MAP_FIELD_NAME,
+        .addStatement("return (\$T) \$L.get(\$S)", returnType.withoutAnnotations(), VARIABLES_MAP_FIELD_NAME,
             variable.name)
         .build()
     )
@@ -74,8 +74,10 @@ class QueryVariablesTypeSpecBuilder(
     val paramType = GraphQlType.resolveByName(variable.type, !variable.type.endsWith("!")).toJavaTypeName()
     return addMethod(MethodSpec.methodBuilder(variable.name)
         .addModifiers(Modifier.PUBLIC)
+        .returns(ClassName.get("", BUILDER_CLASS_NAME))
         .addParameter(ParameterSpec.builder(paramType, variable.name).build())
-        .addCode("\$L.put(\$S, \$L);\n", VARIABLES_MAP_FIELD_NAME, variable.name, variable.name)
+        .addStatement("\$L.put(\$S, \$L)", VARIABLES_MAP_FIELD_NAME, variable.name, variable.name)
+        .addStatement("return this", VARIABLES_MAP_FIELD_NAME, variable.name, variable.name)
         .build()
     )
   }
@@ -84,7 +86,7 @@ class QueryVariablesTypeSpecBuilder(
     return addMethod(MethodSpec.methodBuilder(BUILD_METHOD_NAME)
         .addModifiers(Modifier.PUBLIC)
         .returns(VARIABLES_TYPE_NAME)
-        .addCode("return new \$L(\$L);\n", VARIABLES_CLASS_NAME, VARIABLES_MAP_FIELD_NAME)
+        .addStatement("return new \$L(\$L)", VARIABLES_CLASS_NAME, VARIABLES_MAP_FIELD_NAME)
         .build()
     )
   }
