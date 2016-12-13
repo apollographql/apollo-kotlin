@@ -1,5 +1,6 @@
 package com.apollostack.compiler
 
+import com.apollostack.compiler.ir.CodeGenerator
 import com.apollostack.compiler.ir.Fragment
 import com.apollostack.compiler.ir.Operation
 import com.squareup.javapoet.*
@@ -8,11 +9,11 @@ import javax.lang.model.element.Modifier
 class QueryTypeSpecBuilder(
     val operation: Operation,
     val fragments: List<Fragment>
-) {
-  fun build(): TypeSpec {
+) : CodeGenerator {
+  override fun toTypeSpec(): TypeSpec {
     val queryClassName = operation.operationName.capitalize()
     return TypeSpec.classBuilder(queryClassName)
-        .addSuperinterface(JavaPoetUtils.GRAPH_QL_QUERY_CLASS_NAME)
+        .addSuperinterface(ClassNames.QUERY)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
         .addOperationSourceDefinition(operation)
         .addFragmentSourceDefinitions(fragments)
@@ -21,15 +22,15 @@ class QueryTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addOperationSourceDefinition(operation: Operation): TypeSpec.Builder {
-    addField(FieldSpec.builder(JavaPoetUtils.STRING_CLASS_NAME, OPERATION_SOURCE_FIELD_NAME)
+    addField(FieldSpec.builder(ClassNames.STRING, OPERATION_SOURCE_FIELD_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
         .initializer("\$S", operation.source)
         .build()
     )
     addMethod(MethodSpec.methodBuilder(OPERATION_DEFINITION_ACCESSOR_NAME)
-        .addAnnotation(JavaPoetUtils.OVERRIDE_ANNOTATION)
+        .addAnnotation(Annotations.OVERRIDE)
         .addModifiers(Modifier.PUBLIC)
-        .returns(JavaPoetUtils.STRING_CLASS_NAME)
+        .returns(ClassNames.STRING)
         .addStatement("return $OPERATION_SOURCE_FIELD_NAME")
         .build()
     )
@@ -38,40 +39,42 @@ class QueryTypeSpecBuilder(
 
   private fun List<Fragment>.toSourceDefinitionCode(): CodeBlock {
     val codeBlockBuilder = CodeBlock.builder()
-    codeBlockBuilder.add("\$T.unmodifiableList(", JavaPoetUtils.COLLECTIONS_CLASS_NAME)
-    codeBlockBuilder.add("\$T.asList(\n", JavaPoetUtils.ARRAYS_CLASS_NAME)
-    codeBlockBuilder.indent()
+        .add("\$T.unmodifiableList(", ClassNames.COLLECTIONS)
+        .add("\$T.asList(\n", ClassNames.ARRAYS)
+        .indent()
     forEachIndexed { i, fragment ->
       codeBlockBuilder.add("\$S\$L", fragment.source, if (i < this.size - 1) "," else "")
     }
-    codeBlockBuilder.unindent()
-    codeBlockBuilder.add("\n)")
-    codeBlockBuilder.add(")")
-    return codeBlockBuilder.build()
+    return codeBlockBuilder.unindent()
+        .add("\n)")
+        .add(")")
+        .build()
   }
 
   private fun TypeSpec.Builder.addFragmentSourceDefinitions(fragments: List<Fragment>): TypeSpec.Builder {
     if (fragments.isEmpty()) {
       addMethod(MethodSpec.methodBuilder(FRAGMENT_DEFINITIONS_ACCESSOR_NAME)
-          .addAnnotation(JavaPoetUtils.OVERRIDE_ANNOTATION)
+          .addAnnotation(Annotations.OVERRIDE)
           .addModifiers(Modifier.PUBLIC)
-          .returns(ParameterizedTypeName.get(JavaPoetUtils.LIST_CLASS_NAME, JavaPoetUtils.STRING_CLASS_NAME))
-          .addStatement("return \$T.emptyList()", JavaPoetUtils.COLLECTIONS_CLASS_NAME)
+          .returns(ParameterizedTypeName.get(
+              ClassNames.LIST, ClassNames.STRING))
+          .addStatement("return \$T.emptyList()", ClassNames.COLLECTIONS)
           .build()
       )
     } else {
       addField(
           FieldSpec.builder(
-              ParameterizedTypeName.get(JavaPoetUtils.LIST_CLASS_NAME, JavaPoetUtils.STRING_CLASS_NAME),
+              ParameterizedTypeName.get(ClassNames.LIST, ClassNames.STRING),
               FRAGMENT_SOURCES_FIELD_NAME)
               .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
               .initializer(fragments.toSourceDefinitionCode())
               .build()
       )
       addMethod(MethodSpec.methodBuilder(FRAGMENT_DEFINITIONS_ACCESSOR_NAME)
-          .addAnnotation(JavaPoetUtils.OVERRIDE_ANNOTATION)
+          .addAnnotation(Annotations.OVERRIDE)
           .addModifiers(Modifier.PUBLIC)
-          .returns(ParameterizedTypeName.get(JavaPoetUtils.LIST_CLASS_NAME, JavaPoetUtils.STRING_CLASS_NAME))
+          .returns(ParameterizedTypeName.get(
+              ClassNames.LIST, ClassNames.STRING))
           .addStatement("return $FRAGMENT_SOURCES_FIELD_NAME")
           .build()
       )

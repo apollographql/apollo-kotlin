@@ -2,9 +2,14 @@ package com.apollostack.api;
 
 import java.util.List;
 
-public interface GraphQLQuery {
-
+/** TODO */
+public interface Query {
+  /** TODO */
   String operationDefinition();
-
+  /** TODO */
   List<String> fragmentDefinitions();
+
+  /** TODO */
+  interface Data {
+  }
 }

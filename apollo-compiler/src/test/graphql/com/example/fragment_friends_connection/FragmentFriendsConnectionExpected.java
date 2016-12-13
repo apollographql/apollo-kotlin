@@ -1,6 +1,6 @@
 package com.example.fragment_friends_connection;
 
-import com.apollostack.api.GraphQLQuery;
+import com.apollostack.api.Query;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 
-public final class FragmentFriendsConnection implements GraphQLQuery {
+public final class FragmentFriendsConnection implements Query {
   public static final String OPERATION_DEFINITION = "query FragmentFriendsConnection {\n"
       + "  hero {\n"
       + "    __typename\n"
@@ -42,7 +42,7 @@ public final class FragmentFriendsConnection implements GraphQLQuery {
     return FRAGMENT_DEFINITIONS;
   }
 
-  public interface Data {
+  public interface Data extends Query.Data {
     @Nullable Hero hero();
 
     interface Hero {

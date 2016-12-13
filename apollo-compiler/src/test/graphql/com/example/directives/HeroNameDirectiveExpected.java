@@ -1,13 +1,13 @@
 package com.example.directives;
 
-import com.apollostack.api.GraphQLQuery;
+import com.apollostack.api.Query;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 
-public final class HeroNameDirective implements GraphQLQuery {
+public final class HeroNameDirective implements Query {
   public static final String OPERATION_DEFINITION = "query HeroNameDirective {\n"
       + "  hero {\n"
       + "    __typename\n"
@@ -25,7 +25,7 @@ public final class HeroNameDirective implements GraphQLQuery {
     return Collections.emptyList();
   }
 
-  public interface Data {
+  public interface Data extends Query.Data {
     @Nullable Hero hero();
 
     interface Hero {

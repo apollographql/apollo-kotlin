@@ -1,10 +1,6 @@
 package com.apollostack.compiler
 
-import com.apollostack.api.GraphQLQuery
 import com.squareup.javapoet.*
-import java.util.*
-import javax.annotation.Nonnull
-import javax.annotation.Nullable
 import javax.lang.model.element.Modifier
 
 fun String.normalizeTypeName() = removeSuffix("!").removeSurrounding("[", "]").removeSuffix("!")
@@ -20,7 +16,7 @@ fun TypeName.overrideTypeName(typeNameOverrideMap: Map<String, String>): TypeNam
   }
 }
 
-fun MethodSpec.overrideMethodReturnType(typeNameOverrideMap: Map<String, String>) =
+fun MethodSpec.overrideMethodReturnType(typeNameOverrideMap: Map<String, String>): MethodSpec =
     MethodSpec.methodBuilder(name)
         .returns(returnType.overrideTypeName(typeNameOverrideMap).annotated(returnType.annotations))
         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
@@ -42,16 +38,6 @@ fun TypeSpec.resolveNestedTypeNameDuplication(reservedTypeNames: List<String>): 
       .addTypes(typeSpecs.map { typeSpec ->
         typeSpec.resolveNestedTypeNameDuplication(reservedTypeNames + typeSpecs.map { it.name })
       })
+      .addSuperinterfaces(superinterfaces)
       .build()
-}
-
-object JavaPoetUtils {
-  val NULLABLE_ANNOTATION: AnnotationSpec = AnnotationSpec.builder(Nullable::class.java).build()
-  val NONNULL_ANNOTATION: AnnotationSpec = AnnotationSpec.builder(Nonnull::class.java).build()
-  val OVERRIDE_ANNOTATION: AnnotationSpec = AnnotationSpec.builder(Override::class.java).build()
-  val GRAPH_QL_QUERY_CLASS_NAME: ClassName = ClassName.get(GraphQLQuery::class.java)
-  val STRING_CLASS_NAME: ClassName = ClassName.get(String::class.java)
-  val LIST_CLASS_NAME: ClassName = ClassName.get(List::class.java)
-  val COLLECTIONS_CLASS_NAME: ClassName = ClassName.get(Collections::class.java)
-  val ARRAYS_CLASS_NAME: ClassName = ClassName.get(Arrays::class.java)
 }

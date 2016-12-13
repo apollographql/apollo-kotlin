@@ -5,7 +5,7 @@ import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.BaseVariant
-import com.apollostack.compiler.GraphqlCompiler
+import com.apollostack.compiler.GraphQLCompiler
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -32,7 +32,7 @@ class ApolloPlugin : Plugin<Project> {
       task.buildDirectory = project.buildDir
       task.description = "Generate Android interfaces for working with ${it.name} GraphQL queries"
       task.source("src")
-      task.include("**${File.separatorChar}*.${GraphqlCompiler.FILE_EXTENSION}")
+      task.include("**${File.separatorChar}*.${GraphQLCompiler.FILE_EXTENSION}")
 
       generateApollo.dependsOn(task)
 
