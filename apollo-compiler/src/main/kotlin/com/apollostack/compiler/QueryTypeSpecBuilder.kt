@@ -1,5 +1,6 @@
 package com.apollostack.compiler
 
+import com.apollostack.compiler.ir.CodeGenerator
 import com.apollostack.compiler.ir.Fragment
 import com.apollostack.compiler.ir.Operation
 import com.squareup.javapoet.*
@@ -8,8 +9,8 @@ import javax.lang.model.element.Modifier
 class QueryTypeSpecBuilder(
     val operation: Operation,
     val fragments: List<Fragment>
-) {
-  fun build(): TypeSpec {
+) : CodeGenerator {
+  override fun toTypeSpec(): TypeSpec {
     val queryClassName = operation.operationName.capitalize()
     return TypeSpec.classBuilder(queryClassName)
         .addSuperinterface(ClassNames.QUERY)
@@ -38,16 +39,16 @@ class QueryTypeSpecBuilder(
 
   private fun List<Fragment>.toSourceDefinitionCode(): CodeBlock {
     val codeBlockBuilder = CodeBlock.builder()
-    codeBlockBuilder.add("\$T.unmodifiableList(", ClassNames.COLLECTIONS)
-    codeBlockBuilder.add("\$T.asList(\n", ClassNames.ARRAYS)
-    codeBlockBuilder.indent()
+        .add("\$T.unmodifiableList(", ClassNames.COLLECTIONS)
+        .add("\$T.asList(\n", ClassNames.ARRAYS)
+        .indent()
     forEachIndexed { i, fragment ->
       codeBlockBuilder.add("\$S\$L", fragment.source, if (i < this.size - 1) "," else "")
     }
-    codeBlockBuilder.unindent()
-    codeBlockBuilder.add("\n)")
-    codeBlockBuilder.add(")")
-    return codeBlockBuilder.build()
+    return codeBlockBuilder.unindent()
+        .add("\n)")
+        .add(")")
+        .build()
   }
 
   private fun TypeSpec.Builder.addFragmentSourceDefinitions(fragments: List<Fragment>): TypeSpec.Builder {
