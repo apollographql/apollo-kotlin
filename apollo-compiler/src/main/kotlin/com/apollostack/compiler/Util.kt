@@ -41,3 +41,4 @@ fun TypeSpec.resolveNestedTypeNameDuplication(reservedTypeNames: List<String>): 
       .addSuperinterfaces(superinterfaces)
       .build()
 }
+

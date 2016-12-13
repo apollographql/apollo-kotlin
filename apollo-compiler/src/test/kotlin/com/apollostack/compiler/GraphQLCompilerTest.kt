@@ -20,118 +20,118 @@ class GraphQLCompilerTest {
   }
 
   @Test fun heroName() {
-    val actual = actualFileFor("hero_name", "HeroName")
-    val expected = expectedFileFor("hero_name", "HeroName")
+    val actual = actualFileFor("hero_name", "TestQuery")
+    val expected = expectedFileFor("hero_name", "TestQuery")
 
-    compiler.write(irFileFor("hero_name", "HeroName"))
+    compiler.write(irFileFor("hero_name", "TestQuery"))
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     assertAbout(javaSources())
-        .that(listOf(JavaFileObjects.forSourceLines("test.HeroName", actual.readLines())))
+        .that(listOf(JavaFileObjects.forSourceLines("com.example.hero_name.TestQuery", actual.readLines())))
         .compilesWithoutError()
   }
 
   @Test fun twoHeroes() {
-    val actual = actualFileFor("two_heroes", "TwoHeroes")
-    val expected = expectedFileFor("two_heroes", "TwoHeroes")
+    val actual = actualFileFor("two_heroes", "TestQuery")
+    val expected = expectedFileFor("two_heroes", "TestQuery")
 
-    compiler.write(irFileFor("two_heroes", "TwoHeroes"))
+    compiler.write(irFileFor("two_heroes", "TestQuery"))
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     assertAbout(javaSources())
-        .that(listOf(JavaFileObjects.forSourceLines("test.TwoHeroes", actual.readLines())))
+        .that(listOf(JavaFileObjects.forSourceLines("com.example.two_heroes.TestQuery", actual.readLines())))
         .compilesWithoutError()
   }
 
   @Test fun heroDetails() {
-    val actual = actualFileFor("hero_details", "HeroDetails")
-    val expected = expectedFileFor("hero_details", "HeroDetails")
+    val actual = actualFileFor("hero_details", "TestQuery")
+    val expected = expectedFileFor("hero_details", "TestQuery")
 
-    compiler.write(irFileFor("hero_details", "HeroDetails"))
+    compiler.write(irFileFor("hero_details", "TestQuery"))
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     assertAbout(javaSources())
-        .that(listOf(JavaFileObjects.forSourceLines("test.HeroDetails", actual.readLines())))
+        .that(listOf(JavaFileObjects.forSourceLines("com.example.hero_details.TestQuery", actual.readLines())))
         .compilesWithoutError()
   }
 
   @Test fun twoHeroesUnique() {
-    val actual = actualFileFor("two_heroes_unique", "TwoHeroesUnique")
-    val expected = expectedFileFor("two_heroes_unique", "TwoHeroesUnique")
+    val actual = actualFileFor("two_heroes_unique", "TestQuery")
+    val expected = expectedFileFor("two_heroes_unique", "TestQuery")
 
-    compiler.write(irFileFor("two_heroes_unique", "TwoHeroesUnique"))
+    compiler.write(irFileFor("two_heroes_unique", "TestQuery"))
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     assertAbout(javaSources())
-        .that(listOf(JavaFileObjects.forSourceLines("test.TwoHeroesUnique", actual.readLines())))
+        .that(listOf(JavaFileObjects.forSourceLines("com.example.two_heroes_unique.TestQuery", actual.readLines())))
         .compilesWithoutError()
   }
 
   @Test fun scalarTypes() {
-    val actual = actualFileFor("scalar_types", "ScalarTypes")
-    val expected = expectedFileFor("scalar_types", "ScalarTypes")
+    val actual = actualFileFor("scalar_types", "TestQuery")
+    val expected = expectedFileFor("scalar_types", "TestQuery")
 
-    compiler.write(irFileFor("scalar_types", "ScalarTypes"))
+    compiler.write(irFileFor("scalar_types", "TestQuery"))
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
-    val source = JavaFileObjects.forSourceLines("test.ScalarTypes", actual.readLines())
+    val source = JavaFileObjects.forSourceLines("com.example.scalar_types.TestQuery", actual.readLines())
     assertAbout(javaSources())
         .that(listOf(source))
         .compilesWithoutError()
   }
 
   @Test fun enumType() {
-    val actual = actualFileFor("enum_type", "HeroAppearsIn")
-    val expected = expectedFileFor("enum_type", "HeroAppearsIn")
+    val actual = actualFileFor("enum_type", "TestQuery")
+    val expected = expectedFileFor("enum_type", "TestQuery")
     val episodeEnumActual = actualFileFor("enum_type", "Episode")
     val episodeEnumExpected = expectedFileFor("enum_type", "Episode")
 
-    compiler.write(irFileFor("enum_type", "HeroAppearsIn"))
+    compiler.write(irFileFor("enum_type", "TestQuery"))
 
     assertThat(actual.readText()).isEqualTo(expected.readText())
     assertThat(episodeEnumActual.readText()).isEqualTo(episodeEnumExpected.readText())
 
-    val episodeEnumSource = JavaFileObjects.forSourceLines("test.Episode",
+    val episodeEnumSource = JavaFileObjects.forSourceLines("com.example.enum_type.Episode",
         episodeEnumActual.readLines())
-    val source = JavaFileObjects.forSourceLines("test.HeroAppearsIn", actual.readLines())
+    val source = JavaFileObjects.forSourceLines("com.example.enum_type.TestQuery", actual.readLines())
     assertAbout(javaSources())
         .that(listOf(source, episodeEnumSource))
         .compilesWithoutError()
   }
 
   @Test fun simpleFragment() {
-    val actual = actualFileFor("simple_fragment", "SimpleFragment")
-    val expected = expectedFileFor("simple_fragment", "SimpleFragment")
+    val actual = actualFileFor("simple_fragment", "TestQuery")
+    val expected = expectedFileFor("simple_fragment", "TestQuery")
     val fragmentActual = actualFileFor("simple_fragment", "HeroDetails")
     val fragmentExpected = expectedFileFor("simple_fragment", "HeroDetails")
 
-    compiler.write(irFileFor("simple_fragment", "SimpleFragment"))
+    compiler.write(irFileFor("simple_fragment", "TestQuery"))
 
     assertThat(actual.readText()).isEqualTo(expected.readText())
     assertThat(fragmentActual.readText()).isEqualTo(fragmentExpected.readText())
 
-    val fragment = JavaFileObjects.forSourceLines("test.HeroDetails",
+    val fragment = JavaFileObjects.forSourceLines("com.example.simple_fragment.HeroDetails",
         fragmentActual.readLines())
-    val source = JavaFileObjects.forSourceLines("test.SimpleFragment", actual.readLines())
+    val source = JavaFileObjects.forSourceLines("com.example.simple_fragment.TestQuery", actual.readLines())
     assertAbout(javaSources())
         .that(listOf(source, fragment))
         .compilesWithoutError()
   }
 
   @Test fun fragmentFriendsConnection() {
-    val actual = actualFileFor("fragment_friends_connection", "FragmentFriendsConnection")
-    val expected = expectedFileFor("fragment_friends_connection", "FragmentFriendsConnection")
+    val actual = actualFileFor("fragment_friends_connection", "TestQuery")
+    val expected = expectedFileFor("fragment_friends_connection", "TestQuery")
     val fragmentActual = actualFileFor("fragment_friends_connection", "HeroDetails")
     val fragmentExpected = expectedFileFor("fragment_friends_connection", "HeroDetails")
 
-    compiler.write(irFileFor("fragment_friends_connection", "FragmentFriendsConnection"))
+    compiler.write(irFileFor("fragment_friends_connection", "TestQuery"))
 
     assertThat(actual.readText()).isEqualTo(expected.readText())
     assertThat(fragmentActual.readText()).isEqualTo(fragmentExpected.readText())
 
-    val fragment = JavaFileObjects.forSourceLines("test.HeroDetails",
+    val fragment = JavaFileObjects.forSourceLines("com.example.fragment_friends_connection.HeroDetails",
         fragmentActual.readLines())
-    val source = JavaFileObjects.forSourceLines("test.FragmentFriendsConnection",
+    val source = JavaFileObjects.forSourceLines("com.example.fragment_friends_connection.TestQuery",
         actual.readLines())
     assertAbout(javaSources())
         .that(listOf(source, fragment))
@@ -192,7 +192,7 @@ class GraphQLCompilerTest {
     val heroDetailsActual = actualFileFor("unique_type_name", "HeroDetails")
     val episodeActual = actualFileFor("unique_type_name", "Episode")
 
-    compiler.write(irFileFor("unique_type_name", "QueryIR"))
+    compiler.write(irFileFor("unique_type_name", "TestQuery"))
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     val heroDetails = JavaFileObjects.forSourceLines("com.example.unique_type_name.HeroDetails",
@@ -208,10 +208,10 @@ class GraphQLCompilerTest {
   }
 
   @Test fun fieldDirectives() {
-    val actualFile = actualFileFor("directives", "HeroNameDirective")
-    val expectedFile = expectedFileFor("directives", "HeroNameDirective")
+    val actualFile = actualFileFor("directives", "TestQuery")
+    val expectedFile = expectedFileFor("directives", "TestQuery")
 
-    compiler.write(irFileFor("directives", "HeroNameDirective"))
+    compiler.write(irFileFor("directives", "TestQuery"))
     assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
   }
 
@@ -222,7 +222,7 @@ class GraphQLCompilerTest {
     val heroDetailsExpected = expectedFileFor("fragment_with_inline_fragment", "HeroDetails")
     val episodeActual = actualFileFor("fragment_with_inline_fragment", "Episode")
 
-    compiler.write(irFileFor("fragment_with_inline_fragment", "QueryIR"))
+    compiler.write(irFileFor("fragment_with_inline_fragment", "TestQuery"))
     assertThat(actual.readText()).isEqualTo(expected.readText())
     assertThat(heroDetailsActual.readText()).isEqualTo(heroDetailsExpected.readText())
 
@@ -234,6 +234,23 @@ class GraphQLCompilerTest {
         actual.readLines())
     assertAbout(javaSources())
         .that(listOf(source, heroDetails, episode))
+        .compilesWithoutError()
+  }
+
+  @Test fun simpleArguments() {
+    val actual = actualFileFor("simple_arguments", "TestQuery")
+    val expected = expectedFileFor("simple_arguments", "TestQuery")
+    val episodeActual = actualFileFor("simple_arguments", "Episode")
+
+    compiler.write(irFileFor("simple_arguments", "TestQuery"))
+    assertThat(actual.readText()).isEqualTo(expected.readText())
+
+    val episode = JavaFileObjects.forSourceLines("com.example.simple_arguments.Episode",
+        episodeActual.readLines())
+    val source = JavaFileObjects.forSourceLines("com.example.simple_arguments.TestQuery",
+        actual.readLines())
+    assertAbout(javaSources())
+        .that(listOf(source, episode))
         .compilesWithoutError()
   }
 }

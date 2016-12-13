@@ -1,10 +1,10 @@
 {
   "operations": [
     {
-      "operationName": "HeroAppearsIn",
+      "operationName": "TestQuery",
       "operationType": "query",
       "variables": [],
-      "source": "query HeroAppearsIn {\n  hero {\n    __typename\n    name\n    appearsIn\n  }\n}",
+      "source": "query TestQuery {\n  hero {\n    __typename\n    name\n    appearsIn\n  }\n}",
       "fields": [
         {
           "responseName": "hero",

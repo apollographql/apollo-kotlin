@@ -1,10 +1,10 @@
 {
   "operations": [
     {
-      "operationName": "HeroNameDirective",
+      "operationName": "TestQuery",
       "operationType": "query",
       "variables": [],
-      "source": "query HeroNameDirective {\n  hero {\n    __typename\n    name @include(if: false)\n  }\n}",
+      "source": "query TestQuery {\n  hero {\n    __typename\n    name\n  }\n}",
       "fields": [
         {
           "responseName": "hero",
@@ -14,8 +14,7 @@
             {
               "responseName": "name",
               "fieldName": "name",
-              "type": "String!",
-              "isConditional": true
+              "type": "String!"
             }
           ],
           "fragmentSpreads": [],

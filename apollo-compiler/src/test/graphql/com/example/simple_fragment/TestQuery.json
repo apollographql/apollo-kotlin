@@ -1,10 +1,10 @@
 {
   "operations": [
     {
-      "operationName": "SimpleFragment",
+      "operationName": "TestQuery",
       "operationType": "query",
       "variables": [],
-      "source": "query SimpleFragment {\n  hero {\n    __typename\n    ...HeroDetails\n  }\n}",
+      "source": "query TestQuery {\n  hero {\n    __typename\n    ...HeroDetails\n  }\n}",
       "fields": [
         {
           "responseName": "hero",

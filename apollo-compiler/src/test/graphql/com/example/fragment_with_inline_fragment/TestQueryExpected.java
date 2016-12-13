@@ -1,11 +1,13 @@
 package com.example.fragment_with_inline_fragment;
 
 import com.apollostack.api.Query;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -47,6 +49,11 @@ public final class TestQuery implements Query {
   @Override
   public List<String> fragmentDefinitions() {
     return FRAGMENT_DEFINITIONS;
+  }
+
+  @Override
+  public Map<String, Object> variableDefinitions() {
+    return Collections.emptyMap();
   }
 
   public interface Data extends Query.Data {
