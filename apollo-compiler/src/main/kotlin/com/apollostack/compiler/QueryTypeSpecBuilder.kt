@@ -74,7 +74,6 @@ class QueryTypeSpecBuilder(
           .addAnnotation(JavaPoetUtils.OVERRIDE_ANNOTATION)
           .addModifiers(Modifier.PUBLIC)
           .returns(JavaPoetUtils.parameterizedList(JavaPoetUtils.STRING_CLASS_NAME))
-          .returns(ParameterizedTypeName.get(JavaPoetUtils.LIST_CLASS_NAME, JavaPoetUtils.STRING_CLASS_NAME))
           .addStatement("return $FRAGMENT_SOURCES_FIELD_NAME")
           .build()
       )
@@ -111,6 +110,12 @@ class QueryTypeSpecBuilder(
           .addStatement("return \$L.\$L", VARIABLES_FIELD_NAME, QueryVariablesTypeSpecBuilder.VARIABLES_MAP_FIELD_NAME)
           .build()
       )
+      addMethod(MethodSpec.methodBuilder(VARIABLES_ACCESSOR_NAME)
+          .addModifiers(Modifier.PUBLIC)
+          .returns(QueryVariablesTypeSpecBuilder.VARIABLES_TYPE_NAME)
+          .addStatement("return $VARIABLES_FIELD_NAME")
+          .build()
+      )
       addType(QueryVariablesTypeSpecBuilder(variables).build())
     }
     return this
@@ -123,5 +128,6 @@ class QueryTypeSpecBuilder(
     private val FRAGMENT_DEFINITIONS_ACCESSOR_NAME = "fragmentDefinitions"
     private val VARIABLE_DEFINITIONS_ACCESSOR_NAME = "variableDefinitions"
     private val VARIABLES_FIELD_NAME = "variables"
+    private val VARIABLES_ACCESSOR_NAME = "variables"
   }
 }

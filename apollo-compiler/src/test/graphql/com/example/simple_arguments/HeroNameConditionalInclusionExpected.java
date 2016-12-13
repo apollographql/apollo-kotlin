@@ -40,6 +40,10 @@ public final class HeroNameConditionalInclusion implements GraphQLQuery {
     return variables.data;
   }
 
+  public Variables variables() {
+    return variables;
+  }
+
   public static final class Variables {
     final Map<String, Object> data;
 
