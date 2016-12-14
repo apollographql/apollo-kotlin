@@ -18,6 +18,7 @@ ext {
       kotlinStdLib: "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion",
       kotlinReflect: "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion",
       kotlinGradlePlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
+      gradleNodePlugin: "com.moowork.gradle:gradle-node-plugin:1.0.0",
       junit: 'junit:junit:4.12',
       truth: 'com.google.truth:truth:0.30',
   ]

@@ -1,4 +1,4 @@
-apply plugin: 'kotlin'
+apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'java-gradle-plugin'
 
@@ -7,8 +7,10 @@ targetCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
   compileOnly gradleApi()
+  compile localGroovy()
   compile project(':apollo-compiler')
   compile dep.kotlinStdLib
+  compile dep.gradleNodePlugin
   compile dep.androidPlugin
 
   testCompile dep.junit
