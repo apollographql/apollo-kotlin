@@ -11,111 +11,120 @@ class QueryTypeSpecBuilder(
     val operation: Operation,
     val fragments: List<Fragment>
 ) : CodeGenerator {
+  private val QUERY_TYPE_NAME = operation.operationName.capitalize()
+  private val QUERY_VARIABLES_CLASS_NAME = ClassName.get("", "$QUERY_TYPE_NAME.Variables")
+
   override fun toTypeSpec(): TypeSpec {
-    val queryClassName = operation.operationName.capitalize()
-    return TypeSpec.classBuilder(queryClassName)
-        .addSuperinterface(ClassNames.QUERY)
+    return TypeSpec.classBuilder(QUERY_TYPE_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+        .addQuerySuperInterface(operation.variables.isNotEmpty())
         .addOperationSourceDefinition(operation)
         .addFragmentSourceDefinitions(fragments)
-        .addVariablesDefinitions(operation.variables)
+        .addQueryFields(operation.variables.isNotEmpty())
+        .addQueryConstructor(operation.variables.isNotEmpty())
+        .addVariablesTypeDefinition(operation.variables)
         .addType(operation.toTypeSpec())
         .build()
   }
 
+  private fun TypeSpec.Builder.addQuerySuperInterface(hasVariables: Boolean): TypeSpec.Builder {
+    return if (hasVariables) {
+      addSuperinterface(ParameterizedTypeName.get(ClassNames.API_QUERY, QUERY_VARIABLES_CLASS_NAME))
+    } else {
+      addSuperinterface(ParameterizedTypeName.get(ClassNames.API_QUERY, ClassNames.API_QUERY_VARIABLES))
+    }
+  }
+
   private fun TypeSpec.Builder.addOperationSourceDefinition(operation: Operation): TypeSpec.Builder {
-    addField(FieldSpec.builder(ClassNames.STRING, OPERATION_SOURCE_FIELD_NAME)
+    return addField(FieldSpec.builder(ClassNames.STRING, OPERATION_SOURCE_FIELD_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
         .initializer("\$S", operation.source)
         .build()
     )
-    addMethod(MethodSpec.methodBuilder(OPERATION_DEFINITION_ACCESSOR_NAME)
-        .addAnnotation(Annotations.OVERRIDE)
-        .addModifiers(Modifier.PUBLIC)
-        .returns(ClassNames.STRING)
-        .addStatement("return $OPERATION_SOURCE_FIELD_NAME")
-        .build()
-    )
-    return this
-  }
-
-  private fun List<Fragment>.toSourceDefinitionCode(): CodeBlock {
-    val codeBlockBuilder = CodeBlock.builder()
-        .add("\$T.unmodifiableList(", ClassNames.COLLECTIONS)
-        .add("\$T.asList(\n", ClassNames.ARRAYS)
-        .indent()
-    forEachIndexed { i, fragment ->
-      codeBlockBuilder.add("\$S\$L", fragment.source, if (i < this.size - 1) "," else "")
-    }
-    return codeBlockBuilder.unindent()
-        .add("\n)")
-        .add(")")
-        .build()
   }
 
   private fun TypeSpec.Builder.addFragmentSourceDefinitions(fragments: List<Fragment>): TypeSpec.Builder {
-    if (fragments.isEmpty()) {
-      addMethod(MethodSpec.methodBuilder(FRAGMENT_DEFINITIONS_ACCESSOR_NAME)
-          .addAnnotation(Annotations.OVERRIDE)
-          .addModifiers(Modifier.PUBLIC)
-          .returns(ClassNames.parameterizedListOf(ClassNames.STRING))
-          .addStatement("return \$T.emptyList()", ClassNames.COLLECTIONS)
-          .build()
-      )
+    return addField(FieldSpec.builder(ClassNames.parameterizedListOf(ClassNames.STRING), FRAGMENT_SOURCES_FIELD_NAME)
+        .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+        .initializer(fragments.toSourceDefinitionCode())
+        .build()
+    )
+  }
+
+  private fun List<Fragment>.toSourceDefinitionCode(): CodeBlock {
+    val codeBuilder = CodeBlock.builder().add("\$T.unmodifiableList(", ClassNames.COLLECTIONS)
+    if (isEmpty()) {
+      codeBuilder.add("\$T.<\$T>emptyList()", ClassNames.COLLECTIONS, ClassNames.STRING)
     } else {
-      addField(
-          FieldSpec.builder(ClassNames.parameterizedListOf(ClassNames.STRING),
-              FRAGMENT_SOURCES_FIELD_NAME)
-              .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-              .initializer(fragments.toSourceDefinitionCode())
-              .build()
-      )
-      addMethod(MethodSpec.methodBuilder(FRAGMENT_DEFINITIONS_ACCESSOR_NAME)
-          .addAnnotation(Annotations.OVERRIDE)
-          .addModifiers(Modifier.PUBLIC)
-          .returns(ClassNames.parameterizedListOf(ClassNames.STRING))
-          .addStatement("return $FRAGMENT_SOURCES_FIELD_NAME")
-          .build()
-      )
+      codeBuilder.add("\$T.asList(\n", ClassNames.ARRAYS).indent()
+      forEachIndexed { i, fragment ->
+        codeBuilder.add("\$S\$L", fragment.source, if (i < this.size - 1) "," else "")
+      }
+      codeBuilder.unindent().add("\n)")
     }
+    return codeBuilder.add(")").build()
+  }
+
+  private fun TypeSpec.Builder.addQueryFields(hasVariables: Boolean): TypeSpec.Builder {
+    addField(FieldSpec.builder(ClassNames.STRING, QUERY_FIELD_NAME)
+        .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+        .build()
+    )
+
+    addMethod(MethodSpec.methodBuilder(QUERY_ACCESSOR_NAME)
+        .addAnnotation(Annotations.OVERRIDE)
+        .addModifiers(Modifier.PUBLIC)
+        .returns(ClassNames.STRING)
+        .addStatement("return $QUERY_FIELD_NAME")
+        .build()
+    )
+
+    val queryFieldClassName = if (hasVariables) QUERY_VARIABLES_CLASS_NAME else ClassNames.API_QUERY_VARIABLES
+    addField(FieldSpec.builder(queryFieldClassName, VARIABLES_FIELD_NAME)
+        .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+        .build()
+    )
+
+    addMethod(MethodSpec.methodBuilder(VARIABLES_ACCESSOR_NAME)
+        .addAnnotation(Annotations.OVERRIDE)
+        .addModifiers(Modifier.PUBLIC)
+        .returns(queryFieldClassName)
+        .addStatement("return $VARIABLES_FIELD_NAME")
+        .build()
+    )
+
     return this
   }
 
-  private fun TypeSpec.Builder.addVariablesDefinitions(variables: List<Variable>): TypeSpec.Builder {
-    if (variables.isEmpty()) {
-      addMethod(MethodSpec.methodBuilder(VARIABLE_DEFINITIONS_ACCESSOR_NAME)
-          .addAnnotation(Annotations.OVERRIDE)
-          .addModifiers(Modifier.PUBLIC)
-          .returns(ClassNames.parameterizedMapOf(ClassNames.STRING, ClassNames.OBJECT))
-          .addStatement("return \$T.emptyMap()", ClassNames.COLLECTIONS)
-          .build()
-      )
+  private fun TypeSpec.Builder.addQueryConstructor(hasVariables: Boolean): TypeSpec.Builder {
+    val methodBuilder = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC)
+    if (hasVariables) {
+      methodBuilder.addParameter(ParameterSpec.builder(QUERY_VARIABLES_CLASS_NAME, VARIABLES_FIELD_NAME).build())
+    }
+    methodBuilder.addQueryConstructorCode(hasVariables)
+    return addMethod(methodBuilder.build())
+  }
+
+  private fun MethodSpec.Builder.addQueryConstructorCode(hasVariables: Boolean): MethodSpec.Builder {
+    val codeBuilder = CodeBlock.builder()
+    if (hasVariables) {
+      codeBuilder.addStatement("this.\$L = \$L", VARIABLES_FIELD_NAME, VARIABLES_FIELD_NAME)
     } else {
-      addField(FieldSpec
-          .builder(QueryVariablesTypeSpecBuilder.VARIABLES_TYPE_NAME, VARIABLES_FIELD_NAME)
-          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
-          .build()
-      )
-      addMethod(MethodSpec.constructorBuilder()
-          .addParameter(ParameterSpec.builder(QueryVariablesTypeSpecBuilder.VARIABLES_TYPE_NAME, VARIABLES_FIELD_NAME)
-              .addAnnotation(Annotations.NONNULL).build())
-          .addModifiers(Modifier.PUBLIC)
-          .addStatement("this.\$L = \$L", VARIABLES_FIELD_NAME, VARIABLES_FIELD_NAME)
-          .build()
-      )
-      addMethod(MethodSpec.methodBuilder(VARIABLE_DEFINITIONS_ACCESSOR_NAME)
-          .addAnnotation(Annotations.OVERRIDE)
-          .addModifiers(Modifier.PUBLIC)
-          .returns(ClassNames.parameterizedMapOf(ClassNames.STRING, ClassNames.OBJECT))
-          .addStatement("return \$L.\$L", VARIABLES_FIELD_NAME, QueryVariablesTypeSpecBuilder.VARIABLES_MAP_FIELD_NAME)
-          .build()
-      )
-      addMethod(MethodSpec.methodBuilder(VARIABLES_ACCESSOR_NAME)
-          .addModifiers(Modifier.PUBLIC)
-          .returns(QueryVariablesTypeSpecBuilder.VARIABLES_TYPE_NAME)
-          .addStatement("return $VARIABLES_FIELD_NAME")
-          .build()
-      )
+      codeBuilder.addStatement("this.\$L = \$T.EMPTY_VARIABLES", VARIABLES_FIELD_NAME, ClassNames.API_QUERY)
+    }
+    codeBuilder.addStatement("\$T stringBuilder = new \$T(\$L)", ClassNames.STRING_BUILDER, ClassNames.STRING_BUILDER,
+        OPERATION_SOURCE_FIELD_NAME)
+        .addStatement("stringBuilder.append(\$S)", "\n")
+        .beginControlFlow("for (\$T fragmentDefinition : $FRAGMENT_SOURCES_FIELD_NAME)", ClassNames.STRING)
+        .addStatement("stringBuilder.append(\$S)", "\n")
+        .addStatement("stringBuilder.append(fragmentDefinition)")
+        .endControlFlow()
+        .addStatement("$QUERY_FIELD_NAME = stringBuilder.toString()")
+    return addCode(codeBuilder.build())
+  }
+
+  private fun TypeSpec.Builder.addVariablesTypeDefinition(variables: List<Variable>): TypeSpec.Builder {
+    if (variables.isNotEmpty()) {
       addType(QueryVariablesTypeSpecBuilder(variables).build())
     }
     return this
@@ -123,10 +132,9 @@ class QueryTypeSpecBuilder(
 
   companion object {
     private val OPERATION_SOURCE_FIELD_NAME = "OPERATION_DEFINITION"
-    private val OPERATION_DEFINITION_ACCESSOR_NAME = "operationDefinition"
     private val FRAGMENT_SOURCES_FIELD_NAME = "FRAGMENT_DEFINITIONS"
-    private val FRAGMENT_DEFINITIONS_ACCESSOR_NAME = "fragmentDefinitions"
-    private val VARIABLE_DEFINITIONS_ACCESSOR_NAME = "variableDefinitions"
+    private val QUERY_FIELD_NAME = "query"
+    private val QUERY_ACCESSOR_NAME = "operationDefinition"
     private val VARIABLES_FIELD_NAME = "variables"
     private val VARIABLES_ACCESSOR_NAME = "variables"
   }

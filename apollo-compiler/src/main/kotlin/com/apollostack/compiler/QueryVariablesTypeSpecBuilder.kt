@@ -11,29 +11,17 @@ class QueryVariablesTypeSpecBuilder(
   fun build(): TypeSpec {
     return TypeSpec.classBuilder(VARIABLES_CLASS_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-        .addDataField(CodeBlock.of(""))
+        .superclass(ClassNames.API_QUERY_VARIABLES)
         .addConstructor()
         .addVariablesAccessorMethods(variables)
         .addBuilder(variables)
         .build()
   }
 
-  private fun TypeSpec.Builder.addDataField(initializer: CodeBlock): TypeSpec.Builder {
-    return addField(FieldSpec.builder(
-        ClassNames.parameterizedMapOf(ClassNames.STRING, ClassNames.OBJECT),
-        VARIABLES_MAP_FIELD_NAME)
-        .addModifiers(Modifier.FINAL)
-        .initializer(initializer)
-        .build()
-    )
-  }
-
   private fun TypeSpec.Builder.addConstructor(): TypeSpec.Builder {
     return addMethod(MethodSpec.constructorBuilder()
-        .addParameter(ClassNames.parameterizedMapOf(ClassNames.STRING, ClassNames.OBJECT),
-            VARIABLES_MAP_FIELD_NAME)
-        .addStatement("this.\$L = \$T.unmodifiableMap(\$L)", VARIABLES_MAP_FIELD_NAME, ClassNames.COLLECTIONS,
-            VARIABLES_MAP_FIELD_NAME)
+        .addParameter(ClassNames.parameterizedMapOf(ClassNames.STRING, ClassNames.OBJECT), VARIABLES_MAP_FIELD_NAME)
+        .addStatement("super(\$L)", VARIABLES_MAP_FIELD_NAME)
         .build()
     )
   }
@@ -60,6 +48,16 @@ class QueryVariablesTypeSpecBuilder(
         .addDataField(CodeBlock.of("new \$T()", ClassNames.parameterizedHashMapOf(ClassNames.STRING, ClassNames.OBJECT)))
         .addVariableSetterMethods(variables)
         .addBuildMethod()
+        .build()
+    )
+  }
+
+  private fun TypeSpec.Builder.addDataField(initializer: CodeBlock): TypeSpec.Builder {
+    return addField(FieldSpec.builder(
+        ClassNames.parameterizedMapOf(ClassNames.STRING, ClassNames.OBJECT),
+        VARIABLES_MAP_FIELD_NAME)
+        .addModifiers(Modifier.FINAL)
+        .initializer(initializer)
         .build()
     )
   }
@@ -91,10 +89,10 @@ class QueryVariablesTypeSpecBuilder(
   }
 
   companion object {
-    val VARIABLES_CLASS_NAME: String = "Variables"
-    val VARIABLES_MAP_FIELD_NAME: String = "data"
-    val BUILDER_CLASS_NAME: String = "Builder"
-    val BUILD_METHOD_NAME: String = "build"
-    val VARIABLES_TYPE_NAME: TypeName = ClassName.get("", VARIABLES_CLASS_NAME)
+    private val VARIABLES_CLASS_NAME: String = "Variables"
+    private val VARIABLES_MAP_FIELD_NAME: String = "data"
+    private val BUILDER_CLASS_NAME: String = "Builder"
+    private val BUILD_METHOD_NAME: String = "build"
+    private val VARIABLES_TYPE_NAME: TypeName = ClassName.get("", VARIABLES_CLASS_NAME)
   }
 }

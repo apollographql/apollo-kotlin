@@ -11,10 +11,12 @@ object ClassNames {
   val LIST: ClassName = ClassName.get(List::class.java)
   val COLLECTIONS: ClassName = ClassName.get(Collections::class.java)
   val ARRAYS: ClassName = ClassName.get(Arrays::class.java)
-  val QUERY: ClassName = ClassName.get(Query::class.java)
   val OBJECT: ClassName = ClassName.get(Object::class.java)
   val MAP: ClassName = ClassName.get(Map::class.java)
   val HASH_MAP: ClassName = ClassName.get(HashMap::class.java)
+  val STRING_BUILDER: ClassName = ClassName.get(StringBuilder::class.java)
+  val API_QUERY: ClassName = ClassName.get(Query::class.java)
+  val API_QUERY_VARIABLES: TypeName = ClassName.get("", "${API_QUERY.simpleName()}.Variables")
 
   fun parameterizedMapOf(firstTypeArgument: TypeName, secondTypeArgument: TypeName): TypeName =
       ParameterizedTypeName.get(MAP, firstTypeArgument, secondTypeArgument)
