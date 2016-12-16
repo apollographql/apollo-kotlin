@@ -1,5 +1,6 @@
 package com.apollostack.android.gradle
 
+import com.apollostack.compiler.GraphQLCompiler
 import com.google.common.collect.ArrayListMultimap
 import com.google.common.collect.Multimap
 import org.gradle.api.Project
@@ -21,11 +22,11 @@ class ApolloExtension {
     if (cachedFiles != null) {
       return cachedFiles
     }
-    PatternSet patternSet = new PatternSet().include("**/*.graphql")
+    PatternSet patternSet = new PatternSet().include("**/*.${GraphQLCompiler.FILE_EXTENSION}")
     ArrayListMultimap<String, String> files = ArrayListMultimap.create()
-    project.files(graphqlPath).getAsFileTree().matching(patternSet).visit { el ->
-      if (!el.directory) {
-        files.put(graphqlPath, element.relativePath.pathString)
+    project.files(graphqlPath).getAsFileTree().matching(patternSet).visit {
+      if (!it.directory) {
+        files.put(graphqlPath, it.relativePath.pathString)
       }
     }
     cachedFiles = files

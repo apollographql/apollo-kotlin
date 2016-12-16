@@ -34,15 +34,26 @@ class ApolloPlugin implements Plugin<Project> {
     project.android.sourceSets.all { s ->
       createExtensionForSourceSet(project, s)
     }
+    //TODO: add dependency on apollo-runtime once we have the jars on nexus
+
+    project.tasks.create(ApolloCodeGenInstallTask.NAME, ApolloCodeGenInstallTask.class)
 
     Task apolloIRGenTask = project.task("generateApolloIR")
     apolloIRGenTask.group(TASK_GROUP)
-
-    project.tasks.create(ApolloCodegenInstallTask.NAME, ApolloCodegenInstallTask.class)
+    Task apolloClassGenTask = project.task("generateApolloClasses")
+    apolloClassGenTask.group(TASK_GROUP)
 
     variants.all { v ->
-      ApolloIRgenTask variantIRTask = createApolloIRGenTask(project, v.name, v.sourceSets)
+      List<ApolloExtension> config = Lists.newArrayListWithCapacity(sourceSets.size())
+      sourceSets.each { sourceSet ->
+        config.add((ApolloExtension) sourceSet.extensions[ApolloExtension.NAME])
+      }
+
+      ApolloIRGenTask variantIRTask = createApolloIRGenTask(project, v.name, config)
+      ApolloClassGenTask variantClassTask = createApolloClassGenTask(project, v.name, config)
+      v.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir)
       apolloIRGenTask.dependsOn(variantIRTask)
+      apolloClassGenTask.dependsOn(variantClassTask)
     }
   }
 
@@ -53,19 +64,19 @@ class ApolloPlugin implements Plugin<Project> {
     nodeConfig.version = NODE_VERSION
   }
 
-  private static ApolloIRgenTask createApolloIRGenTask(Project project, String name, Collection<?> sourceSets) {
-    List<ApolloExtension> config = Lists.newArrayListWithCapacity(sourceSets.size())
-    sourceSets.each { sourceSet ->
-      config.add((ApolloExtension) sourceSet.extensions[ApolloExtension.NAME])
-    }
-    String taskName = String.format(ApolloIRgenTask.NAME, name.capitalize())
-    ApolloIRgenTask task = project.tasks.create(taskName, ApolloIRgenTask)
-    task.variant = name
-    task.group = TASK_GROUP
-    task.config = config
-    task.description = "Generate Android classes for working with ${name.capitalize()} GraphQL queries"
-    task.dependsOn(ApolloCodegenInstallTask.NAME)
+  private static ApolloIRGenTask createApolloIRGenTask(Project project, String name, List<ApolloExtension> config) {
+    String taskName = String.format(ApolloIRGenTask.NAME, name.capitalize())
+    ApolloIRGenTask task = project.tasks.create(taskName, ApolloIRGenTask)
+    task.init(name, config)
+    return task
+  }
 
+  private static ApolloClassGenTask createApolloClassGenTask(Project project, String name, List<ApolloExtension> conf) {
+    String taskName = String.format(ApolloClassGenTask.NAME, name.capitalize())
+    ApolloClassGenTask task = project.tasks.create(taskName, ApolloClassGenTask)
+    task.source(project.tasks.findByName(String.format(ApolloIRGenTask.NAME, name.capitalize())).outputDir)
+    task.include("**${File.separatorChar}*API.json")
+    task.init(name, conf)
     return task
   }
 
