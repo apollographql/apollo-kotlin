@@ -7,6 +7,20 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public interface HeroDetails {
+  String FRAGMENT_DEFINITION = "fragment HeroDetails on Character {\n"
+      + "  __typename\n"
+      + "  name\n"
+      + "  friendsConnection {\n"
+      + "    totalCount\n"
+      + "    edges {\n"
+      + "      node {\n"
+      + "        __typename\n"
+      + "        name\n"
+      + "      }\n"
+      + "    }\n"
+      + "  }\n"
+      + "}";
+
   @Nonnull String name();
 
   @Nonnull FriendsConnection friendsConnection();

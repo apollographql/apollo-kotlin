@@ -4,10 +4,7 @@ import com.apollostack.api.Query;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.lang.StringBuilder;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
@@ -19,26 +16,17 @@ public final class TestQuery implements Query<TestQuery.Variables> {
       + "  }\n"
       + "}";
 
-  public static final List<String> FRAGMENT_DEFINITIONS = Collections.unmodifiableList(Collections.<String>emptyList());
-
-  private final String query;
+  public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
   private final TestQuery.Variables variables;
 
   public TestQuery(TestQuery.Variables variables) {
     this.variables = variables;
-    StringBuilder stringBuilder = new StringBuilder(OPERATION_DEFINITION);
-    stringBuilder.append("\n");
-    for (String fragmentDefinition : FRAGMENT_DEFINITIONS) {
-      stringBuilder.append("\n");
-      stringBuilder.append(fragmentDefinition);
-    }
-    query = stringBuilder.toString();
   }
 
   @Override
-  public String operationDefinition() {
-    return query;
+  public String queryDocument() {
+    return QUERY_DOCUMENT;
   }
 
   @Override

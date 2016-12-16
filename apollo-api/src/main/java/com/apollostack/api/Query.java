@@ -6,7 +6,7 @@ import java.util.Map;
 /** TODO */
 public interface Query<V extends Query.Variables> {
   /** TODO */
-  String operationDefinition();
+  String queryDocument();
 
   /** TODO */
   V variables();

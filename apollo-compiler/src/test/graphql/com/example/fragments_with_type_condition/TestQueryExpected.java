@@ -3,10 +3,6 @@ package com.example.fragments_with_type_condition;
 import com.apollostack.api.Query;
 import java.lang.Override;
 import java.lang.String;
-import java.lang.StringBuilder;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import javax.annotation.Nullable;
 
 public final class TestQuery implements Query<Query.Variables> {
@@ -23,34 +19,19 @@ public final class TestQuery implements Query<Query.Variables> {
       + "  }\n"
       + "}";
 
-  public static final List<String> FRAGMENT_DEFINITIONS = Collections.unmodifiableList(Arrays.asList(
-    "fragment HumanDetails on Human {\n"
-        + "  name\n"
-        + "  height\n"
-        + "}","fragment DroidDetails on Droid {\n"
-        + "  name\n"
-        + "  primaryFunction\n"
-        + "}"
-  ));
-
-  private final String query;
+  public static final String QUERY_DOCUMENT = OPERATION_DEFINITION + "\n"
+   + HumanDetails.FRAGMENT_DEFINITION + "\n"
+   + DroidDetails.FRAGMENT_DEFINITION;
 
   private final Query.Variables variables;
 
   public TestQuery() {
     this.variables = Query.EMPTY_VARIABLES;
-    StringBuilder stringBuilder = new StringBuilder(OPERATION_DEFINITION);
-    stringBuilder.append("\n");
-    for (String fragmentDefinition : FRAGMENT_DEFINITIONS) {
-      stringBuilder.append("\n");
-      stringBuilder.append(fragmentDefinition);
-    }
-    query = stringBuilder.toString();
   }
 
   @Override
-  public String operationDefinition() {
-    return query;
+  public String queryDocument() {
+    return QUERY_DOCUMENT;
   }
 
   @Override

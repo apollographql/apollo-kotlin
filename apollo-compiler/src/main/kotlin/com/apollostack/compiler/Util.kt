@@ -38,6 +38,7 @@ fun TypeSpec.resolveNestedTypeNameDuplication(reservedTypeNames: List<String>): 
       .addTypes(typeSpecs.map { typeSpec ->
         typeSpec.resolveNestedTypeNameDuplication(reservedTypeNames + typeSpecs.map { it.name })
       })
+      .addFields(fieldSpecs)
       .addSuperinterfaces(superinterfaces)
       .build()
 }
