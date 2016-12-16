@@ -24,7 +24,7 @@ class GraphQLCompilerTest {
     val actual = actualFileFor("hero_name", "TestQuery")
     val expected = expectedFileFor("hero_name", "TestQuery")
 
-    compiler.write(irFileFor("hero_name", "TestQuery"), outputDir)
+    compile("hero_name", "TestQuery")
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     assertAbout(javaSources())
@@ -36,7 +36,7 @@ class GraphQLCompilerTest {
     val actual = actualFileFor("two_heroes", "TestQuery")
     val expected = expectedFileFor("two_heroes", "TestQuery")
 
-    compiler.write(irFileFor("two_heroes", "TestQuery"), outputDir)
+    compile("two_heroes", "TestQuery")
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     assertAbout(javaSources())
@@ -48,7 +48,7 @@ class GraphQLCompilerTest {
     val actual = actualFileFor("hero_details", "TestQuery")
     val expected = expectedFileFor("hero_details", "TestQuery")
 
-    compiler.write(irFileFor("hero_details", "TestQuery"), outputDir)
+    compile("hero_details", "TestQuery")
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     assertAbout(javaSources())
@@ -60,7 +60,7 @@ class GraphQLCompilerTest {
     val actual = actualFileFor("two_heroes_unique", "TestQuery")
     val expected = expectedFileFor("two_heroes_unique", "TestQuery")
 
-    compiler.write(irFileFor("two_heroes_unique", "TestQuery"), outputDir)
+    compile("two_heroes_unique", "TestQuery")
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     assertAbout(javaSources())
@@ -72,7 +72,7 @@ class GraphQLCompilerTest {
     val actual = actualFileFor("scalar_types", "TestQuery")
     val expected = expectedFileFor("scalar_types", "TestQuery")
 
-    compiler.write(irFileFor("scalar_types", "TestQuery"), outputDir)
+    compile("scalar_types", "TestQuery")
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     val source = JavaFileObjects.forSourceLines("com.example.scalar_types.TestQuery", actual.readLines())
@@ -87,7 +87,7 @@ class GraphQLCompilerTest {
     val episodeEnumActual = actualFileFor("enum_type", "Episode")
     val episodeEnumExpected = expectedFileFor("enum_type", "Episode")
 
-    compiler.write(irFileFor("enum_type", "TestQuery"), outputDir)
+    compile("enum_type", "TestQuery")
 
     assertThat(actual.readText()).isEqualTo(expected.readText())
     assertThat(episodeEnumActual.readText()).isEqualTo(episodeEnumExpected.readText())
@@ -106,7 +106,7 @@ class GraphQLCompilerTest {
     val fragmentActual = actualFileFor("simple_fragment", "HeroDetails")
     val fragmentExpected = expectedFileFor("simple_fragment", "HeroDetails")
 
-    compiler.write(irFileFor("simple_fragment", "TestQuery"), outputDir)
+    compile("simple_fragment", "TestQuery")
 
     assertThat(actual.readText()).isEqualTo(expected.readText())
     assertThat(fragmentActual.readText()).isEqualTo(fragmentExpected.readText())
@@ -125,7 +125,7 @@ class GraphQLCompilerTest {
     val fragmentActual = actualFileFor("fragment_friends_connection", "HeroDetails")
     val fragmentExpected = expectedFileFor("fragment_friends_connection", "HeroDetails")
 
-    compiler.write(irFileFor("fragment_friends_connection", "TestQuery"), outputDir)
+    compile("fragment_friends_connection", "TestQuery")
 
     assertThat(actual.readText()).isEqualTo(expected.readText())
     assertThat(fragmentActual.readText()).isEqualTo(fragmentExpected.readText())
@@ -143,7 +143,7 @@ class GraphQLCompilerTest {
     val actual = actualFileFor("simple_inline_fragment", "TestQuery")
     val expected = expectedFileFor("simple_inline_fragment", "TestQuery")
 
-    compiler.write(irFileFor("simple_inline_fragment", "TestQuery"), outputDir)
+    compile("simple_inline_fragment", "TestQuery")
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     val source = JavaFileObjects.forSourceLines("com.example.TestQuery", actual.readLines())
@@ -157,7 +157,7 @@ class GraphQLCompilerTest {
     val expected = expectedFileFor("inline_fragments_with_friends", "TestQuery")
     val episodeEnumActual = actualFileFor("inline_fragments_with_friends", "Episode")
 
-    compiler.write(irFileFor("inline_fragments_with_friends", "TestQuery"), outputDir)
+    compile("inline_fragments_with_friends", "TestQuery")
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     val episodeEnumSource = JavaFileObjects.forSourceLines("test.Episode",
@@ -174,7 +174,7 @@ class GraphQLCompilerTest {
     val humanDetailsActual = actualFileFor("fragments_with_type_condition", "HumanDetails")
     val droidDetailsActual = actualFileFor("fragments_with_type_condition", "DroidDetails")
 
-    compiler.write(irFileFor("fragments_with_type_condition", "TestQuery"), outputDir)
+    compile("fragments_with_type_condition", "TestQuery")
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     val humanDetails = JavaFileObjects.forSourceLines("test.HumanDetails",
@@ -193,7 +193,7 @@ class GraphQLCompilerTest {
     val heroDetailsActual = actualFileFor("unique_type_name", "HeroDetails")
     val episodeActual = actualFileFor("unique_type_name", "Episode")
 
-    compiler.write(irFileFor("unique_type_name", "TestQuery"), outputDir)
+    compile("unique_type_name", "TestQuery")
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     val heroDetails = JavaFileObjects.forSourceLines("com.example.unique_type_name.HeroDetails",
@@ -212,7 +212,7 @@ class GraphQLCompilerTest {
     val actualFile = actualFileFor("directives", "TestQuery")
     val expectedFile = expectedFileFor("directives", "TestQuery")
 
-    compiler.write(irFileFor("directives", "TestQuery"), outputDir)
+    compile("directives", "TestQuery")
     assertThat(actualFile.readText()).isEqualTo(expectedFile.readText())
   }
 
@@ -222,7 +222,7 @@ class GraphQLCompilerTest {
     val heroDetailsActual = actualFileFor("fragment_with_inline_fragment", "HeroDetails")
     val heroDetailsExpected = expectedFileFor("fragment_with_inline_fragment", "HeroDetails")
     val episodeActual = actualFileFor("fragment_with_inline_fragment", "Episode")
-    compiler.write(irFileFor("fragment_with_inline_fragment", "TestQuery"), outputDir)
+    compile("fragment_with_inline_fragment", "TestQuery")
     assertThat(actual.readText()).isEqualTo(expected.readText())
     assertThat(heroDetailsActual.readText()).isEqualTo(heroDetailsExpected.readText())
 
@@ -242,7 +242,7 @@ class GraphQLCompilerTest {
     val expected = expectedFileFor("simple_arguments", "TestQuery")
     val episodeActual = actualFileFor("simple_arguments", "Episode")
 
-    compiler.write(irFileFor("simple_arguments", "TestQuery"), outputDir)
+    compile("simple_arguments", "TestQuery")
     assertThat(actual.readText()).isEqualTo(expected.readText())
 
     val episode = JavaFileObjects.forSourceLines("com.example.simple_arguments.Episode",
@@ -262,7 +262,7 @@ class GraphQLCompilerTest {
     val reviewInputExpected = expectedFileFor("input_object_type", "ReviewInput")
     val reviewInputActual = actualFileFor("input_object_type", "ReviewInput")
 
-    compiler.write(irFileFor("input_object_type", "TestQuery"))
+    compile("input_object_type", "TestQuery")
     assertThat(actual.readText()).isEqualTo(expected.readText())
     assertThat(colorInputActual.readText()).isEqualTo(colorInputExpected.readText())
     assertThat(reviewInputActual.readText()).isEqualTo(reviewInputExpected.readText())
@@ -278,5 +278,9 @@ class GraphQLCompilerTest {
     assertAbout(javaSources())
         .that(listOf(source, episode, reviewInput, colorInput))
         .compilesWithoutError()
+  }
+
+  private fun compile(pkgName: String, queryFile: String) {
+    compiler.write(irFileFor(pkgName, queryFile), outputDir)
   }
 }

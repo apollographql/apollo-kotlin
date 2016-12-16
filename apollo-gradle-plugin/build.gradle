@@ -15,6 +15,9 @@ dependencies {
   compile dep.androidPlugin
 
   testCompile dep.junit
+  testCompile(dep.spock) {
+    exclude module: 'groovy-all'
+  }
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

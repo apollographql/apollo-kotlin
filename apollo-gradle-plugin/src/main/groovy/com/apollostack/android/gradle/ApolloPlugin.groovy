@@ -85,4 +85,3 @@ class ApolloPlugin implements Plugin<Project> {
     sourceSet.extensions.create(ApolloExtension.NAME, ApolloExtension, project, sourceSet.name)
   }
 }
-

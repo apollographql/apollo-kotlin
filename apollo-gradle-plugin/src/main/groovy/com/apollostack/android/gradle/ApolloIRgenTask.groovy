@@ -62,7 +62,6 @@ public class ApolloIRGenTask extends NodeTask {
 
     setScript(apolloScript)
     List<String> apolloArgs = ["generate"]
-    println "sending request with schema path ${schemaFile.absolutePath}"
     apolloArgs.addAll(getInputFiles().collect { project.file(it).absolutePath })
     apolloArgs.addAll(["--schema", "${schemaFile.absolutePath}",
                        "--output", "$outputDir.absolutePath/${variant.capitalize()}API.json",
