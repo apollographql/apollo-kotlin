@@ -2,7 +2,7 @@ package com.example.scalar_types;
 
 import com.apollostack.api.Query;
 import java.lang.Boolean;
-import java.lang.Float;
+import java.lang.Double;
 import java.lang.Integer;
 import java.lang.Long;
 import java.lang.Override;
@@ -42,9 +42,9 @@ public final class TestQuery implements Query<Query.Variables> {
 
     int graphQlIntNonNullable();
 
-    @Nullable Float graphQlFloatNullable();
+    @Nullable Double graphQlFloatNullable();
 
-    float graphQlFloatNonNullable();
+    double graphQlFloatNonNullable();
 
     @Nullable Boolean graphQlBooleanNullable();
 

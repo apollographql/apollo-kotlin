@@ -1,7 +1,7 @@
 package com.example.unique_type_name;
 
 import com.apollostack.api.Query;
-import java.lang.Float;
+import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
@@ -69,7 +69,7 @@ public final class TestQuery implements Query<Query.Variables> {
 
         @Nullable List<Friend$> friends();
 
-        @Nullable Float height();
+        @Nullable Double height();
 
         interface Friend$ {
           @Nonnull String name();

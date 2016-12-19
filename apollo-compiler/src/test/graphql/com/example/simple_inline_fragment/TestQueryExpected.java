@@ -1,7 +1,7 @@
 package com.example.simple_inline_fragment;
 
 import com.apollostack.api.Query;
-import java.lang.Float;
+import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
 import javax.annotation.Nonnull;
@@ -52,7 +52,7 @@ public final class TestQuery implements Query<Query.Variables> {
       interface AsHuman {
         @Nonnull String name();
 
-        @Nullable Float height();
+        @Nullable Double height();
       }
 
       interface AsDroid {

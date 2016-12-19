@@ -1,8 +1,5 @@
 package com.apollostack.api;
 
-import java.util.Collections;
-import java.util.Map;
-
 /** TODO */
 public interface Query<V extends Query.Variables> {
   /** TODO */
@@ -17,18 +14,10 @@ public interface Query<V extends Query.Variables> {
 
   /** TODO */
   abstract class Variables {
-    protected final Map<String, Object> data;
-
-    protected Variables(Map<String, Object> data) {
-      this.data = Collections.unmodifiableMap(data);
-    }
-
-    /** TODO */
-    public Map<String, Object> toMap() {
-      return data;
+    protected Variables() {
     }
   }
 
-  Variables EMPTY_VARIABLES = new Variables(Collections.<String, Object>emptyMap()) {
+  Variables EMPTY_VARIABLES = new Variables() {
   };
 }

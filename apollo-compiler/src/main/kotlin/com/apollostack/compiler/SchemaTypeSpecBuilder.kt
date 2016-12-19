@@ -7,7 +7,7 @@ import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-class InterfaceTypeSpecBuilder {
+class SchemaTypeSpecBuilder {
   fun build(typeName: String, fields: List<Field>, fragmentSpreads: List<String>,
       inlineFragments: List<InlineFragment>): TypeSpec =
       TypeSpec.interfaceBuilder(typeName)

@@ -1,15 +1,16 @@
-package com.example.simple_arguments;
+package com.example.input_object_type;
 
 import com.apollostack.api.Query;
 import java.lang.Override;
 import java.lang.String;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Variables> {
-  public static final String OPERATION_DEFINITION = "query TestQuery($episode: Episode, $includeName: Boolean!) {\n"
-      + "  hero(episode: $episode) {\n"
-      + "    __typename\n"
-      + "    name @include(if: $includeName)\n"
+  public static final String OPERATION_DEFINITION = "mutation TestQuery($ep: Episode!, $review: ReviewInput!) {\n"
+      + "  createReview(episode: $ep, review: $review) {\n"
+      + "    stars\n"
+      + "    commentary\n"
       + "  }\n"
       + "}";
 
@@ -32,19 +33,19 @@ public final class TestQuery implements Query<TestQuery.Variables> {
   }
 
   public static final class Variables extends Query.Variables {
-    @Nullable Episode episode;
+    @Nonnull Episode ep;
 
-    boolean includeName;
+    @Nonnull ReviewInput review;
 
     Variables() {
     }
 
-    public @Nullable Episode episode() {
-      return episode;
+    public @Nonnull Episode ep() {
+      return ep;
     }
 
-    public boolean includeName() {
-      return includeName;
+    public @Nonnull ReviewInput review() {
+      return review;
     }
 
     public static Builder builder() {
@@ -57,13 +58,13 @@ public final class TestQuery implements Query<TestQuery.Variables> {
       Builder() {
       }
 
-      public Builder episode(@Nullable Episode episode) {
-        variables.episode = episode;
+      public Builder ep(@Nonnull Episode ep) {
+        variables.ep = ep;
         return this;
       }
 
-      public Builder includeName(boolean includeName) {
-        variables.includeName = includeName;
+      public Builder review(@Nonnull ReviewInput review) {
+        variables.review = review;
         return this;
       }
 
@@ -74,10 +75,12 @@ public final class TestQuery implements Query<TestQuery.Variables> {
   }
 
   public interface Data extends Query.Data {
-    @Nullable Hero hero();
+    @Nullable CreateReview createReview();
 
-    interface Hero {
-      @Nullable String name();
+    interface CreateReview {
+      int stars();
+
+      @Nullable String commentary();
     }
   }
 }

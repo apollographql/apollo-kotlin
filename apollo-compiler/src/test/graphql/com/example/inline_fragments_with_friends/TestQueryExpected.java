@@ -1,7 +1,7 @@
 package com.example.inline_fragments_with_friends;
 
 import com.apollostack.api.Query;
-import java.lang.Float;
+import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
@@ -63,7 +63,7 @@ public final class TestQuery implements Query<Query.Variables> {
 
         @Nullable List<Friend> friends();
 
-        @Nullable Float height();
+        @Nullable Double height();
 
         interface Friend {
           @Nonnull String name();

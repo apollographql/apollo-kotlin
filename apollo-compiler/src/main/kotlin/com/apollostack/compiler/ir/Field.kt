@@ -1,6 +1,6 @@
 package com.apollostack.compiler.ir
 
-import com.apollostack.compiler.InterfaceTypeSpecBuilder
+import com.apollostack.compiler.SchemaTypeSpecBuilder
 import com.cesarferreira.pluralize.singularize
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeName
@@ -17,7 +17,7 @@ data class Field(
     val inlineFragments: List<InlineFragment>?
 ) : CodeGenerator {
   override fun toTypeSpec(): TypeSpec =
-      InterfaceTypeSpecBuilder().build(normalizedName(), fields ?: emptyList(), fragmentSpreads ?: emptyList(),
+      SchemaTypeSpecBuilder().build(normalizedName(), fields ?: emptyList(), fragmentSpreads ?: emptyList(),
           inlineFragments ?: emptyList())
 
   fun toMethodSpec(): MethodSpec =

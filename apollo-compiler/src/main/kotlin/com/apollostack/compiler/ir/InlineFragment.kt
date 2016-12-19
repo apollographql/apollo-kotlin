@@ -1,6 +1,6 @@
 package com.apollostack.compiler.ir
 
-import com.apollostack.compiler.InterfaceTypeSpecBuilder
+import com.apollostack.compiler.SchemaTypeSpecBuilder
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
@@ -14,7 +14,7 @@ data class InlineFragment(
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
         .addMethods(fields.map(Field::toMethodSpec))
         .addTypes(fields.filter(Field::isNonScalar).map { field ->
-          InterfaceTypeSpecBuilder().build(field.normalizedName(), field.fields ?: emptyList(), fragmentSpreads ?: emptyList(),
+          SchemaTypeSpecBuilder().build(field.normalizedName(), field.fields ?: emptyList(), fragmentSpreads ?: emptyList(),
               field.inlineFragments ?: emptyList())
         })
         .build()
