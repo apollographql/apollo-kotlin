@@ -1,16 +1,12 @@
 package com.example.hero_name;
 
 import com.apollostack.api.Query;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class TestQuery implements Query {
+public final class TestQuery implements Query<Query.Variables> {
   public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  hero {\n"
       + "    __typename\n"
@@ -18,19 +14,22 @@ public final class TestQuery implements Query {
       + "  }\n"
       + "}";
 
-  @Override
-  public String operationDefinition() {
-    return OPERATION_DEFINITION;
+  public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
+
+  private final Query.Variables variables;
+
+  public TestQuery() {
+    this.variables = Query.EMPTY_VARIABLES;
   }
 
   @Override
-  public List<String> fragmentDefinitions() {
-    return Collections.emptyList();
+  public String queryDocument() {
+    return QUERY_DOCUMENT;
   }
 
   @Override
-  public Map<String, Object> variableDefinitions() {
-    return Collections.emptyMap();
+  public Query.Variables variables() {
+    return variables;
   }
 
   public interface Data extends Query.Data {

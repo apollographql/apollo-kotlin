@@ -4,14 +4,11 @@ import com.apollostack.api.Query;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class TestQuery implements Query {
+public final class TestQuery implements Query<TestQuery.Variables> {
   public static final String OPERATION_DEFINITION = "query TestQuery($episode: Episode, $includeName: Boolean!) {\n"
       + "  hero(episode: $episode) {\n"
       + "    __typename\n"
@@ -19,36 +16,27 @@ public final class TestQuery implements Query {
       + "  }\n"
       + "}";
 
-  private final Variables variables;
+  public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
-  public TestQuery(@Nonnull Variables variables) {
+  private final TestQuery.Variables variables;
+
+  public TestQuery(TestQuery.Variables variables) {
     this.variables = variables;
   }
 
   @Override
-  public String operationDefinition() {
-    return OPERATION_DEFINITION;
+  public String queryDocument() {
+    return QUERY_DOCUMENT;
   }
 
   @Override
-  public List<String> fragmentDefinitions() {
-    return Collections.emptyList();
-  }
-
-  @Override
-  public Map<String, Object> variableDefinitions() {
-    return variables.data;
-  }
-
-  public Variables variables() {
+  public TestQuery.Variables variables() {
     return variables;
   }
 
-  public static final class Variables {
-    final Map<String, Object> data;
-
+  public static final class Variables extends Query.Variables {
     Variables(Map<String, Object> data) {
-      this.data = Collections.unmodifiableMap(data);
+      super(data);
     }
 
     public @Nullable Episode episode() {

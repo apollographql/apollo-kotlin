@@ -19,5 +19,8 @@ android {
 
 dependencies {
   compile dep.appcompat
+  compile project(":apollo-runtime")
+  compile project(":apollo-api")
+
   testCompile dep.junit
 }
