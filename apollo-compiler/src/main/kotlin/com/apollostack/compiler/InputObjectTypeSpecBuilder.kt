@@ -16,18 +16,9 @@ class InputObjectTypeSpecBuilder(
       TypeSpec.classBuilder(objectClassName)
           .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
           .addMethod(MethodSpec.constructorBuilder().build())
-          .addFieldDefinitions(fields)
+          .addFields(fields)
           .addBuilder(fields)
           .build()
-
-  private fun Number.castTo(graphQLType: GraphQLType) =
-      if (graphQLType is GraphQLType.GraphQLInt) {
-        toInt()
-      } else if (graphQLType is GraphQLType.GraphQLFloat) {
-        toFloat()
-      } else {
-        this
-      }
 
   private fun TypeSpec.Builder.addFieldDefinition(field: TypeDeclarationField): TypeSpec.Builder {
     val fieldGraphQLType = field.graphQLType()
@@ -55,7 +46,7 @@ class InputObjectTypeSpecBuilder(
     }
   }
 
-  private fun TypeSpec.Builder.addFieldDefinitions(fields: List<TypeDeclarationField>): TypeSpec.Builder {
+  private fun TypeSpec.Builder.addFields(fields: List<TypeDeclarationField>): TypeSpec.Builder {
     fields.forEach { field ->
       addFieldDefinition(field)
       addFieldAccessor(field)
@@ -65,5 +56,14 @@ class InputObjectTypeSpecBuilder(
 
   companion object {
     private fun TypeDeclarationField.graphQLType() = GraphQLType.resolveByName(type, !type.endsWith("!"))
+
+    private fun Number.castTo(graphQLType: GraphQLType) =
+      if (graphQLType is GraphQLType.GraphQLInt) {
+        toInt()
+      } else if (graphQLType is GraphQLType.GraphQLFloat) {
+        toFloat()
+      } else {
+        this
+      }
   }
 }
