@@ -257,9 +257,15 @@ class GraphQLCompilerTest {
   @Test fun inputObjectType() {
     val actual = actualFileFor("input_object_type", "TestQuery")
     val expected = expectedFileFor("input_object_type", "TestQuery")
+    val colorInputExpected = expectedFileFor("input_object_type", "ColorInput")
+    val colorInputActual = actualFileFor("input_object_type", "ColorInput")
+    val reviewInputExpected = expectedFileFor("input_object_type", "ReviewInput")
+    val reviewInputActual = actualFileFor("input_object_type", "ReviewInput")
 
     compiler.write(irFileFor("input_object_type", "TestQuery"))
     assertThat(actual.readText()).isEqualTo(expected.readText())
+    assertThat(colorInputActual.readText()).isEqualTo(colorInputExpected.readText())
+    assertThat(reviewInputActual.readText()).isEqualTo(reviewInputExpected.readText())
 
     val episode = JavaFileObjects.forSourceLines("com.example.input_object_type.Episode",
         actualFileFor("input_object_type", "Episode").readLines())
