@@ -61,7 +61,7 @@ class InputObjectTypeSpecBuilder(
       if (graphQLType is GraphQLType.GraphQLInt) {
         toInt()
       } else if (graphQLType is GraphQLType.GraphQLFloat) {
-        toFloat()
+        toDouble()
       } else {
         this
       }
