@@ -18,7 +18,7 @@ class ApolloCodeGenInstallTask extends NpmTask {
     if (!installDir.exists()) {
       installDir.mkdirs()
     } else {
-      if (!apolloVersion().equals(APOLLOCODEGEN_VERSION)) {
+      if (!apolloVersion()?.equals(APOLLOCODEGEN_VERSION)) {
         installDir.deleteDir()
       }
     }
@@ -26,7 +26,7 @@ class ApolloCodeGenInstallTask extends NpmTask {
   }
 
   String apolloVersion() {
-    String version = ""
+    String version
     File packageFile = project.file("${INSTALL_DIR}/package.json")
     if (packageFile.isFile()) {
       def input = new JsonSlurper().parseText(packageFile.text)

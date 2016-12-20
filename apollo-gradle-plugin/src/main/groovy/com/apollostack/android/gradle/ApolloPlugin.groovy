@@ -71,7 +71,8 @@ class ApolloPlugin implements Plugin<Project> {
     return task
   }
 
-  private static ApolloClassGenTask createApolloClassGenTask(Project project, String name, List<ApolloExtension> conf) {
+  private static ApolloClassGenTask createApolloClassGenTask(Project project, String name,
+                                                             List<ApolloExtension> conf) {
     String taskName = String.format(ApolloClassGenTask.NAME, name.capitalize())
     ApolloClassGenTask task = project.tasks.create(taskName, ApolloClassGenTask)
     task.source(project.tasks.findByName(String.format(ApolloIRGenTask.NAME, name.capitalize())).outputDir)

@@ -7,29 +7,39 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.util.PatternSet
 
 class ApolloExtension {
+  private static final String GRAPHQL_QUERY_PATTERN = "**/*.${GraphQLCompiler.FILE_EXTENSION}"
+  static final String NAME = "apollo"
+
   private final Project project
-  static String NAME = "apollo"
-  String graphqlPath
+  private final String sourceSet
   // Maps GraphQL query files' relative paths to a sourceSet directory
   private Multimap<String, String> cachedFiles
 
+  // Configurable extension params
+  String graphQLPath
+  String schemaFile
+
   ApolloExtension(Project project, String sourceSet) {
     this.project = project
-    this.graphqlPath = "src/$sourceSet/graphql"
+    this.sourceSet = sourceSet
   }
 
-  Multimap<String, String> getFiles() {
+  Multimap<String, String> getFiles(String path) {
     if (cachedFiles != null) {
       return cachedFiles
     }
-    PatternSet patternSet = new PatternSet().include("**/*.${GraphQLCompiler.FILE_EXTENSION}")
+    PatternSet patternSet = new PatternSet().include(GRAPHQL_QUERY_PATTERN)
     ArrayListMultimap<String, String> files = ArrayListMultimap.create()
-    project.files(graphqlPath).getAsFileTree().matching(patternSet).visit {
+    project.files(path).getAsFileTree().matching(patternSet).visit {
       if (!it.directory) {
-        files.put(graphqlPath, it.relativePath.pathString)
+        files.put(path, it.relativePath.pathString)
       }
     }
     cachedFiles = files
     return cachedFiles
+  }
+
+  protected String getSourceSet() {
+    return sourceSet
   }
 }
