@@ -15,19 +15,31 @@ class InputObjectTypeSpecBuilder(
   fun build(): TypeSpec =
       TypeSpec.classBuilder(objectClassName)
           .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-          .addMethod(MethodSpec.constructorBuilder().build())
-          .addFields(fields)
-          .addBuilder(fields)
+          .addConstructor()
+          .addFields()
+          .addBuilder()
           .build()
 
-  private fun TypeSpec.Builder.addFieldDefinition(field: TypeDeclarationField): TypeSpec.Builder {
-    val fieldGraphQLType = field.graphQLType()
-    val defaultValue = field.defaultValue?.let { (it as? Number)?.castTo(fieldGraphQLType) ?: it }
-    return addField(FieldSpec
-        .builder(fieldGraphQLType.toJavaTypeName(), field.name.decapitalize())
-        .initializer(defaultValue?.let { CodeBlock.of("\$L", it) } ?: CodeBlock.of(""))
-        .build())
+  private fun TypeSpec.Builder.addConstructor(): TypeSpec.Builder {
+    val fieldInitializeCodeBuilder = fields.map {
+      CodeBlock.of("this.\$L = \$L;\n", it.name.decapitalize(), it.name.decapitalize())
+    }.fold(CodeBlock.builder(), CodeBlock.Builder::add)
+
+    return addMethod(MethodSpec
+        .constructorBuilder()
+        .addParameters(fields.map {
+          ParameterSpec.builder(it.graphQLType().toJavaTypeName(), it.name.decapitalize()).build()
+        })
+        .addCode(fieldInitializeCodeBuilder.build())
+        .build()
+    )
   }
+
+  private fun TypeSpec.Builder.addFieldDefinition(field: TypeDeclarationField): TypeSpec.Builder =
+      addField(FieldSpec
+          .builder(field.graphQLType().toJavaTypeName(), field.name.decapitalize())
+          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+          .build())
 
   private fun TypeSpec.Builder.addFieldAccessor(field: TypeDeclarationField) =
       addMethod(MethodSpec.methodBuilder(field.name.decapitalize())
@@ -36,17 +48,19 @@ class InputObjectTypeSpecBuilder(
           .addStatement("return this.\$L", field.name.decapitalize())
           .build())
 
-  private fun TypeSpec.Builder.addBuilder(fields: List<TypeDeclarationField>): TypeSpec.Builder {
+  private fun TypeSpec.Builder.addBuilder(): TypeSpec.Builder {
     if (fields.isEmpty()) {
       return this
     } else {
-      val builderFields = fields.map { it.name.decapitalize() to it.graphQLType().toJavaTypeName() }
+      val builderFields = fields.map { it.name.decapitalize() to it.graphQLType() }
+      val builderFieldDefaultValues = fields.associate { it.name.decapitalize() to it.defaultValue }
       return addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
-          .addType(BuilderTypeSpecBuilder(objectName, objectClassName, builderFields).build())
+          .addType(BuilderTypeSpecBuilder(objectName, objectClassName, builderFields, builderFieldDefaultValues)
+              .build())
     }
   }
 
-  private fun TypeSpec.Builder.addFields(fields: List<TypeDeclarationField>): TypeSpec.Builder {
+  private fun TypeSpec.Builder.addFields(): TypeSpec.Builder {
     fields.forEach { field ->
       addFieldDefinition(field)
       addFieldAccessor(field)
@@ -56,14 +70,5 @@ class InputObjectTypeSpecBuilder(
 
   companion object {
     private fun TypeDeclarationField.graphQLType() = GraphQLType.resolveByName(type, !type.endsWith("!"))
-
-    private fun Number.castTo(graphQLType: GraphQLType) =
-      if (graphQLType is GraphQLType.GraphQLInt) {
-        toInt()
-      } else if (graphQLType is GraphQLType.GraphQLFloat) {
-        toDouble()
-      } else {
-        this
-      }
   }
 }

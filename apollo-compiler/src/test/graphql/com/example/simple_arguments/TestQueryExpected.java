@@ -33,11 +33,13 @@ public final class TestQuery implements GraphQLQuery<TestQuery.Variables> {
   }
 
   public static final class Variables extends GraphQLOperation.Variables {
-    @Nullable Episode episode;
+    private final @Nullable Episode episode;
 
-    boolean includeName;
+    private final boolean includeName;
 
-    Variables() {
+    Variables(@Nullable Episode episode, boolean includeName) {
+      this.episode = episode;
+      this.includeName = includeName;
     }
 
     public @Nullable Episode episode() {
@@ -53,23 +55,25 @@ public final class TestQuery implements GraphQLQuery<TestQuery.Variables> {
     }
 
     public static final class Builder {
-      private final Variables variables = new Variables();
+      private @Nullable Episode episode;
+
+      private boolean includeName;
 
       Builder() {
       }
 
       public Builder episode(@Nullable Episode episode) {
-        variables.episode = episode;
+        this.episode = episode;
         return this;
       }
 
       public Builder includeName(boolean includeName) {
-        variables.includeName = includeName;
+        this.includeName = includeName;
         return this;
       }
 
       public Variables build() {
-        return variables;
+        return new Variables(episode, includeName);
       }
     }
   }

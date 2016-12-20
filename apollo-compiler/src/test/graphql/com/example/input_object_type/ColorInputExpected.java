@@ -4,13 +4,16 @@ import java.lang.Double;
 import javax.annotation.Nullable;
 
 public final class ColorInput {
-  int red = 1;
+  private final int red;
 
-  @Nullable Double green = 0.0;
+  private final @Nullable Double green;
 
-  double blue = 1.5;
+  private final double blue;
 
-  ColorInput() {
+  ColorInput(int red, @Nullable Double green, double blue) {
+    this.red = red;
+    this.green = green;
+    this.blue = blue;
   }
 
   public int red() {
@@ -30,28 +33,32 @@ public final class ColorInput {
   }
 
   public static final class Builder {
-    private final ColorInput colorInput = new ColorInput();
+    private int red = 1;
+
+    private @Nullable Double green = 0.0;
+
+    private double blue = 1.5;
 
     Builder() {
     }
 
     public Builder red(int red) {
-      colorInput.red = red;
+      this.red = red;
       return this;
     }
 
     public Builder green(@Nullable Double green) {
-      colorInput.green = green;
+      this.green = green;
       return this;
     }
 
     public Builder blue(double blue) {
-      colorInput.blue = blue;
+      this.blue = blue;
       return this;
     }
 
     public ColorInput build() {
-      return colorInput;
+      return new ColorInput(red, green, blue);
     }
   }
 }
