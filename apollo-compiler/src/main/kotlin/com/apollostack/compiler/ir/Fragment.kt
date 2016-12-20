@@ -1,7 +1,7 @@
 package com.apollostack.compiler.ir
 
 import com.apollostack.compiler.ClassNames
-import com.apollostack.compiler.InterfaceTypeSpecBuilder
+import com.apollostack.compiler.SchemaTypeSpecBuilder
 import com.apollostack.compiler.resolveNestedTypeNameDuplication
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.TypeSpec
@@ -18,7 +18,7 @@ data class Fragment(
 ) : CodeGenerator {
   /** Returns the Java interface that represents this Fragment object. */
   override fun toTypeSpec(): TypeSpec =
-      InterfaceTypeSpecBuilder().build(interfaceTypeName(), fields, fragmentSpreads, inlineFragments)
+      SchemaTypeSpecBuilder().build(interfaceTypeName(), fields, fragmentSpreads, inlineFragments)
           .toBuilder()
           .addFragmentDefinition(this)
           .build()

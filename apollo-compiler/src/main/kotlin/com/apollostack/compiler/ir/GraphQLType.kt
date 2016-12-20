@@ -29,7 +29,7 @@ sealed class GraphQLType(val isOptional: Boolean) {
         GraphQLString::class.java to ClassNames.STRING,
         GraphQLId::class.java to TypeName.LONG,
         GraphQLInt::class.java to TypeName.INT,
-        GraphQLFloat::class.java to TypeName.FLOAT,
+        GraphQLFloat::class.java to TypeName.DOUBLE,
         GraphQLBoolean::class.java to TypeName.BOOLEAN)
 
     fun resolveByName(typeName: String, isOptional: Boolean): GraphQLType = when {

@@ -1,12 +1,13 @@
 package com.example.two_heroes_unique;
 
-import com.apollostack.api.Query;
+import com.apollostack.api.GraphQLOperation;
+import com.apollostack.api.GraphQLQuery;
 import java.lang.Override;
 import java.lang.String;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class TestQuery implements Query<Query.Variables> {
+public final class TestQuery implements GraphQLQuery<GraphQLOperation.Variables> {
   public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  r2: hero {\n"
       + "    __typename\n"
@@ -21,10 +22,10 @@ public final class TestQuery implements Query<Query.Variables> {
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
-  private final Query.Variables variables;
+  private final GraphQLOperation.Variables variables;
 
   public TestQuery() {
-    this.variables = Query.EMPTY_VARIABLES;
+    this.variables = GraphQLOperation.EMPTY_VARIABLES;
   }
 
   @Override
@@ -33,11 +34,11 @@ public final class TestQuery implements Query<Query.Variables> {
   }
 
   @Override
-  public Query.Variables variables() {
+  public GraphQLOperation.Variables variables() {
     return variables;
   }
 
-  public interface Data extends Query.Data {
+  public interface Data extends GraphQLOperation.Data {
     @Nullable R2 r2();
 
     @Nullable Luke luke();

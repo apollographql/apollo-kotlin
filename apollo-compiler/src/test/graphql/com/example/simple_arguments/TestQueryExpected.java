@@ -1,14 +1,12 @@
 package com.example.simple_arguments;
 
-import com.apollostack.api.Query;
-import java.lang.Object;
+import com.apollostack.api.GraphQLOperation;
+import com.apollostack.api.GraphQLQuery;
 import java.lang.Override;
 import java.lang.String;
-import java.util.HashMap;
-import java.util.Map;
 import javax.annotation.Nullable;
 
-public final class TestQuery implements Query<TestQuery.Variables> {
+public final class TestQuery implements GraphQLQuery<TestQuery.Variables> {
   public static final String OPERATION_DEFINITION = "query TestQuery($episode: Episode, $includeName: Boolean!) {\n"
       + "  hero(episode: $episode) {\n"
       + "    __typename\n"
@@ -34,39 +32,53 @@ public final class TestQuery implements Query<TestQuery.Variables> {
     return variables;
   }
 
-  public static final class Variables extends Query.Variables {
-    Variables(Map<String, Object> data) {
-      super(data);
+  public static final class Variables extends GraphQLOperation.Variables {
+    private final @Nullable Episode episode;
+
+    private final boolean includeName;
+
+    Variables(@Nullable Episode episode, boolean includeName) {
+      this.episode = episode;
+      this.includeName = includeName;
     }
 
     public @Nullable Episode episode() {
-      return (Episode) data.get("episode");
+      return episode;
     }
 
     public boolean includeName() {
-      return (boolean) data.get("includeName");
+      return includeName;
+    }
+
+    public static Builder builder() {
+      return new Builder();
     }
 
     public static final class Builder {
-      final Map<String, Object> data = new HashMap<String, Object>();
+      private @Nullable Episode episode;
+
+      private boolean includeName;
+
+      Builder() {
+      }
 
       public Builder episode(@Nullable Episode episode) {
-        data.put("episode", episode);
+        this.episode = episode;
         return this;
       }
 
       public Builder includeName(boolean includeName) {
-        data.put("includeName", includeName);
+        this.includeName = includeName;
         return this;
       }
 
       public Variables build() {
-        return new Variables(data);
+        return new Variables(episode, includeName);
       }
     }
   }
 
-  public interface Data extends Query.Data {
+  public interface Data extends GraphQLOperation.Data {
     @Nullable Hero hero();
 
     interface Hero {

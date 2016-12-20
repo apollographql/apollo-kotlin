@@ -7,7 +7,7 @@ import com.apollostack.compiler.ir.Variable
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
-class QueryTypeSpecBuilder(
+class OperationTypeSpecBuilder(
     val operation: Operation,
     val fragments: List<Fragment>
 ) : CodeGenerator {
@@ -27,10 +27,12 @@ class QueryTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addQuerySuperInterface(hasVariables: Boolean): TypeSpec.Builder {
+    val isMutation = operation.operationType == "mutation"
+    val superInterfaceClassName = if (isMutation) ClassNames.GRAPHQL_MUTATION else ClassNames.GRAPHQL_QUERY
     return if (hasVariables) {
-      addSuperinterface(ParameterizedTypeName.get(ClassNames.API_QUERY, QUERY_VARIABLES_CLASS_NAME))
+      addSuperinterface(ParameterizedTypeName.get(superInterfaceClassName, QUERY_VARIABLES_CLASS_NAME))
     } else {
-      addSuperinterface(ParameterizedTypeName.get(ClassNames.API_QUERY, ClassNames.API_QUERY_VARIABLES))
+      addSuperinterface(ParameterizedTypeName.get(superInterfaceClassName, ClassNames.GRAPHQL_OPERATION_VARIABLES))
     }
   }
 
@@ -68,7 +70,7 @@ class QueryTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addVariablesDefinition(variables: List<Variable>): TypeSpec.Builder {
-    val queryFieldClassName = if (variables.isNotEmpty()) QUERY_VARIABLES_CLASS_NAME else ClassNames.API_QUERY_VARIABLES
+    val queryFieldClassName = if (variables.isNotEmpty()) QUERY_VARIABLES_CLASS_NAME else ClassNames.GRAPHQL_OPERATION_VARIABLES
     addField(FieldSpec.builder(queryFieldClassName, VARIABLES_FIELD_NAME)
         .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
         .build()
@@ -83,7 +85,7 @@ class QueryTypeSpecBuilder(
     )
 
     if (variables.isNotEmpty()) {
-      addType(QueryVariablesTypeSpecBuilder(variables).build())
+      addType(VariablesTypeSpecBuilder(variables).build())
     }
 
     return this
@@ -103,7 +105,7 @@ class QueryTypeSpecBuilder(
     if (hasVariables) {
       codeBuilder.addStatement("this.\$L = \$L", VARIABLES_FIELD_NAME, VARIABLES_FIELD_NAME)
     } else {
-      codeBuilder.addStatement("this.\$L = \$T.EMPTY_VARIABLES", VARIABLES_FIELD_NAME, ClassNames.API_QUERY)
+      codeBuilder.addStatement("this.\$L = \$T.EMPTY_VARIABLES", VARIABLES_FIELD_NAME, ClassNames.GRAPHQL_OPERATION)
     }
     return addCode(codeBuilder.build())
   }

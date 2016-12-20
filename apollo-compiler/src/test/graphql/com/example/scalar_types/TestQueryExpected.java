@@ -1,8 +1,9 @@
 package com.example.scalar_types;
 
-import com.apollostack.api.Query;
+import com.apollostack.api.GraphQLOperation;
+import com.apollostack.api.GraphQLQuery;
 import java.lang.Boolean;
-import java.lang.Float;
+import java.lang.Double;
 import java.lang.Integer;
 import java.lang.Long;
 import java.lang.Override;
@@ -10,15 +11,15 @@ import java.lang.String;
 import java.util.List;
 import javax.annotation.Nullable;
 
-public final class TestQuery implements Query<Query.Variables> {
+public final class TestQuery implements GraphQLQuery<GraphQLOperation.Variables> {
   public static final String OPERATION_DEFINITION = "";
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
-  private final Query.Variables variables;
+  private final GraphQLOperation.Variables variables;
 
   public TestQuery() {
-    this.variables = Query.EMPTY_VARIABLES;
+    this.variables = GraphQLOperation.EMPTY_VARIABLES;
   }
 
   @Override
@@ -27,11 +28,11 @@ public final class TestQuery implements Query<Query.Variables> {
   }
 
   @Override
-  public Query.Variables variables() {
+  public GraphQLOperation.Variables variables() {
     return variables;
   }
 
-  public interface Data extends Query.Data {
+  public interface Data extends GraphQLOperation.Data {
     @Nullable String graphQlString();
 
     @Nullable Long graphQlIdNullable();
@@ -42,9 +43,9 @@ public final class TestQuery implements Query<Query.Variables> {
 
     int graphQlIntNonNullable();
 
-    @Nullable Float graphQlFloatNullable();
+    @Nullable Double graphQlFloatNullable();
 
-    float graphQlFloatNonNullable();
+    double graphQlFloatNonNullable();
 
     @Nullable Boolean graphQlBooleanNullable();
 

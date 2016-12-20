@@ -1,6 +1,8 @@
 package com.apollostack.compiler
 
-import com.apollostack.api.Query
+import com.apollostack.api.GraphQLMutation
+import com.apollostack.api.GraphQLOperation
+import com.apollostack.api.GraphQLQuery
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
@@ -15,8 +17,11 @@ object ClassNames {
   val MAP: ClassName = ClassName.get(Map::class.java)
   val HASH_MAP: ClassName = ClassName.get(HashMap::class.java)
   val STRING_BUILDER: ClassName = ClassName.get(StringBuilder::class.java)
-  val API_QUERY: ClassName = ClassName.get(Query::class.java)
-  val API_QUERY_VARIABLES: TypeName = ClassName.get("", "${API_QUERY.simpleName()}.Variables")
+  val GRAPHQL_OPERATION: ClassName = ClassName.get(GraphQLOperation::class.java)
+  val GRAPHQL_QUERY: ClassName = ClassName.get(GraphQLQuery::class.java)
+  val GRAPHQL_MUTATION: ClassName = ClassName.get(GraphQLMutation::class.java)
+  val GRAPHQL_OPERATION_VARIABLES: TypeName = ClassName.get("", "${GRAPHQL_OPERATION.simpleName()}.Variables")
+  val ILLEGAL_STATE_EXCEPTION: TypeName = ClassName.get(IllegalStateException::class.java)
 
   fun parameterizedMapOf(firstTypeArgument: TypeName, secondTypeArgument: TypeName): TypeName =
       ParameterizedTypeName.get(MAP, firstTypeArgument, secondTypeArgument)
