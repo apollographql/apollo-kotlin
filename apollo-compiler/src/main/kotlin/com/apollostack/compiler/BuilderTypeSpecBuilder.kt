@@ -3,7 +3,7 @@ package com.apollostack.compiler
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
-class ObjectBuilderTypeSpec(
+class BuilderTypeSpecBuilder(
     val targetObjectName: String,
     val targetObjectClassName: ClassName,
     val fields: List<Pair<String, TypeName>>

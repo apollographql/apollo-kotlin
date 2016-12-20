@@ -1,12 +1,13 @@
 package com.example.input_object_type;
 
-import com.apollostack.api.Query;
+import com.apollostack.api.GraphQLMutation;
+import com.apollostack.api.GraphQLOperation;
 import java.lang.Override;
 import java.lang.String;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class TestQuery implements Query<TestQuery.Variables> {
+public final class TestQuery implements GraphQLMutation<TestQuery.Variables> {
   public static final String OPERATION_DEFINITION = "mutation TestQuery($ep: Episode!, $review: ReviewInput!) {\n"
       + "  createReview(episode: $ep, review: $review) {\n"
       + "    stars\n"
@@ -32,7 +33,7 @@ public final class TestQuery implements Query<TestQuery.Variables> {
     return variables;
   }
 
-  public static final class Variables extends Query.Variables {
+  public static final class Variables extends GraphQLOperation.Variables {
     @Nonnull Episode ep;
 
     @Nonnull ReviewInput review;
@@ -74,7 +75,7 @@ public final class TestQuery implements Query<TestQuery.Variables> {
     }
   }
 
-  public interface Data extends Query.Data {
+  public interface Data extends GraphQLOperation.Data {
     @Nullable CreateReview createReview();
 
     interface CreateReview {

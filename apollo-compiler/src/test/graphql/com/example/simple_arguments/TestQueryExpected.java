@@ -1,11 +1,12 @@
 package com.example.simple_arguments;
 
-import com.apollostack.api.Query;
+import com.apollostack.api.GraphQLOperation;
+import com.apollostack.api.GraphQLQuery;
 import java.lang.Override;
 import java.lang.String;
 import javax.annotation.Nullable;
 
-public final class TestQuery implements Query<TestQuery.Variables> {
+public final class TestQuery implements GraphQLQuery<TestQuery.Variables> {
   public static final String OPERATION_DEFINITION = "query TestQuery($episode: Episode, $includeName: Boolean!) {\n"
       + "  hero(episode: $episode) {\n"
       + "    __typename\n"
@@ -31,7 +32,7 @@ public final class TestQuery implements Query<TestQuery.Variables> {
     return variables;
   }
 
-  public static final class Variables extends Query.Variables {
+  public static final class Variables extends GraphQLOperation.Variables {
     @Nullable Episode episode;
 
     boolean includeName;
@@ -73,7 +74,7 @@ public final class TestQuery implements Query<TestQuery.Variables> {
     }
   }
 
-  public interface Data extends Query.Data {
+  public interface Data extends GraphQLOperation.Data {
     @Nullable Hero hero();
 
     interface Hero {

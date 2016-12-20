@@ -41,8 +41,8 @@ class InputObjectTypeSpecBuilder(
       return this
     } else {
       val builderFields = fields.map { it.name.decapitalize() to it.graphQLType().toJavaTypeName() }
-      return addMethod(ObjectBuilderTypeSpec.builderFactoryMethod())
-          .addType(ObjectBuilderTypeSpec(objectName, objectClassName, builderFields).build())
+      return addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
+          .addType(BuilderTypeSpecBuilder(objectName, objectClassName, builderFields).build())
     }
   }
 

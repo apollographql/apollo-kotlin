@@ -5,13 +5,13 @@ import com.apollostack.compiler.ir.Variable
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
-class QueryVariablesTypeSpecBuilder(
+class VariablesTypeSpecBuilder(
     val variables: List<Variable>
 ) {
   fun build(): TypeSpec =
       TypeSpec.classBuilder(VARIABLES_CLASS_NAME)
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-          .superclass(ClassNames.API_QUERY_VARIABLES)
+          .superclass(ClassNames.GRAPHQL_OPERATION_VARIABLES)
           .addMethod(MethodSpec.constructorBuilder().build())
           .addVariableFields(variables)
           .addVariableAccessors(variables)
@@ -46,8 +46,8 @@ class QueryVariablesTypeSpecBuilder(
       return this
     } else {
       val builderFields = variables.map { it.name.decapitalize() to it.javaTypeName() }
-      return addMethod(ObjectBuilderTypeSpec.builderFactoryMethod())
-          .addType(ObjectBuilderTypeSpec(VARIABLES_FIELD_NAME, VARIABLES_TYPE_NAME, builderFields).build())
+      return addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
+          .addType(BuilderTypeSpecBuilder(VARIABLES_FIELD_NAME, VARIABLES_TYPE_NAME, builderFields).build())
     }
   }
 

@@ -1,9 +1,10 @@
-package com.example.hero_name;
+package com.example.apollostack.sample;
 
 import com.apollostack.api.GraphQLOperation;
 import com.apollostack.api.GraphQLQuery;
 import java.lang.Override;
 import java.lang.String;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -12,15 +13,16 @@ public final class TestQuery implements GraphQLQuery<GraphQLOperation.Variables>
       + "  hero {\n"
       + "    __typename\n"
       + "    name\n"
+      + "    appearsIn\n"
       + "  }\n"
       + "}";
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
-  private final GraphQLOperation.Variables variables;
+  private final Variables variables;
 
   public TestQuery() {
-    this.variables = GraphQLOperation.EMPTY_VARIABLES;
+    this.variables = Variables.EMPTY_VARIABLES;
   }
 
   @Override
@@ -29,7 +31,7 @@ public final class TestQuery implements GraphQLQuery<GraphQLOperation.Variables>
   }
 
   @Override
-  public GraphQLOperation.Variables variables() {
+  public Variables variables() {
     return variables;
   }
 
@@ -38,6 +40,8 @@ public final class TestQuery implements GraphQLQuery<GraphQLOperation.Variables>
 
     interface Hero {
       @Nonnull String name();
+
+      @Nonnull List<Episode> appearsIn();
     }
   }
 }

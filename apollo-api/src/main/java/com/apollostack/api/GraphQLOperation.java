@@ -1,7 +1,7 @@
 package com.apollostack.api;
 
 /** TODO */
-public interface Query<V extends Query.Variables> {
+public interface GraphQLOperation<V extends GraphQLOperation.Variables> {
   /** TODO */
   String queryDocument();
 
