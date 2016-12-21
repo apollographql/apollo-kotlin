@@ -51,11 +51,11 @@ public final class TestQuery implements GraphQLQuery<GraphQLOperation.Variables>
 
     boolean graphQlBooleanNonNullable();
 
-    @Nullable List<Integer> graphQlListOfInt();
+    @Nullable List<? extends Integer> graphQlListOfInt();
 
-    @Nullable List<GraphQlListOfObject> graphQlListOfObjects();
+    @Nullable List<? extends GraphQlListOfObject> graphQlListOfObjects();
 
-    @Nullable List<List<Integer>> graphQlNestedList();
+    @Nullable List<? extends List<? extends Integer>> graphQlNestedList();
 
     interface GraphQlListOfObject {
       int someField();

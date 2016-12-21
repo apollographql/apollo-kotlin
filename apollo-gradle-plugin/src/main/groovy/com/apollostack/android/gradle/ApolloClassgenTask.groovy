@@ -9,12 +9,9 @@ import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 
 public class ApolloClassGenTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses"
-  @Internal
-  List<ApolloExtension> config
-  @Internal
-  String variant
-  @OutputDirectory
-  File outputDir
+  @Internal List<ApolloExtension> config
+  @Internal String variant
+  @OutputDirectory File outputDir
 
   public void init(String variantName, List<ApolloExtension> extensionsConfig) {
     variant = variantName
@@ -25,8 +22,7 @@ public class ApolloClassGenTask extends SourceTask {
     dependsOn(project.tasks.findByName(String.format(ApolloIRGenTask.NAME, variant.capitalize())))
   }
 
-  @TaskAction
-  void generateClasses(IncrementalTaskInputs inputs) {
+  @TaskAction void generateClasses(IncrementalTaskInputs inputs) {
     inputs.outOfDate { inputFileDetails ->
       new GraphQLCompiler().write(inputFileDetails.file, outputDir)
     }

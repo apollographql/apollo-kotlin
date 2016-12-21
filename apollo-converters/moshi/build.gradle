@@ -1,0 +1,17 @@
+apply plugin: 'java'
+
+targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_7
+
+dependencies {
+  compile dep.moshi
+  compile dep.jsr305
+  compile dep.retrofitMoshiConverter
+  compile project (":apollo-api")
+
+  testCompile dep.junit
+  testCompile dep.truth
+  testCompile dep.mockWebServer
+}
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

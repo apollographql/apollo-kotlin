@@ -1,7 +1,6 @@
 package com.apollostack.compiler
 
 import com.apollostack.compiler.ir.GraphQLType
-import com.apollostack.compiler.ir.TypeDeclarationField
 import com.apollostack.compiler.ir.Variable
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
@@ -60,13 +59,12 @@ class VariablesTypeSpecBuilder(
     } else {
       val builderFields = variables.map { it.name.decapitalize() to it.graphQLType() }
       return addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
-          .addType(BuilderTypeSpecBuilder(VARIABLES_FIELD_NAME, VARIABLES_TYPE_NAME, builderFields, emptyMap()).build())
+          .addType(BuilderTypeSpecBuilder(VARIABLES_TYPE_NAME, builderFields, emptyMap()).build())
     }
   }
 
   companion object {
     private val VARIABLES_CLASS_NAME: String = "Variables"
-    private val VARIABLES_FIELD_NAME: String = VARIABLES_CLASS_NAME.decapitalize()
     private val VARIABLES_TYPE_NAME: ClassName = ClassName.get("", VARIABLES_CLASS_NAME)
     private fun Variable.graphQLType() = GraphQLType.resolveByName(type, !type.endsWith("!"))
   }

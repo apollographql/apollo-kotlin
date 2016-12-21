@@ -41,7 +41,7 @@ public final class TestQuery implements GraphQLQuery<GraphQLOperation.Variables>
     interface Hero {
       @Nonnull String name();
 
-      @Nonnull List<Episode> appearsIn();
+      @Nonnull List<? extends Episode> appearsIn();
     }
   }
 }

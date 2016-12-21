@@ -15,7 +15,7 @@ android {
     minSdkVersion 15
     targetSdkVersion 25
   }
-  
+
   lintOptions {
     textReport true
     textOutput 'stdout'

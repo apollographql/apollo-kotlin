@@ -7,7 +7,6 @@ import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
 class ApolloCodeGenInstallTaskSpec extends Specification {
-
   def "creates a task under the apollo group"() {
     setup:
     def project = ProjectBuilder.builder().build()

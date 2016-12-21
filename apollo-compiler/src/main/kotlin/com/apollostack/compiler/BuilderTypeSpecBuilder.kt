@@ -5,7 +5,6 @@ import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
 class BuilderTypeSpecBuilder(
-    val targetObjectName: String,
     val targetObjectClassName: ClassName,
     val fields: List<Pair<String, GraphQLType>>,
     val fieldDefaultValues: Map<String, Any?>

@@ -34,7 +34,7 @@ public interface HeroDetails {
   interface FriendsConnection {
     @Nullable Integer totalCount();
 
-    @Nullable List<Edge> edges();
+    @Nullable List<? extends Edge> edges();
 
     interface Edge {
       @Nullable Node node();
@@ -55,7 +55,7 @@ public interface HeroDetails {
     interface FriendsConnection$ {
       @Nullable Integer totalCount();
 
-      @Nullable List<Edge> edges();
+      @Nullable List<? extends Edge> edges();
 
       interface Edge {
         @Nullable Node node();

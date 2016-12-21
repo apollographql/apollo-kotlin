@@ -1,0 +1,23 @@
+{
+  "data": {
+    "allPeople": {
+      "people": [
+        {
+          "name": "Luke Skywalker"
+        },
+        {
+          "name": "C-3PO"
+        },
+        {
+          "name": "R2-D2"
+        },
+        {
+          "name": "Darth Vader"
+        },
+        {
+          "name": "Leia Organa"
+        }
+      ]
+    }
+  }
+}

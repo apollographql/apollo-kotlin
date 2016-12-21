@@ -10,7 +10,6 @@ dependencies {
   compileOnly gradleApi()
   compile localGroovy()
   compile project(':apollo-compiler')
-  compile dep.kotlinStdLib
   compile dep.gradleNodePlugin
   compile dep.androidPlugin
 

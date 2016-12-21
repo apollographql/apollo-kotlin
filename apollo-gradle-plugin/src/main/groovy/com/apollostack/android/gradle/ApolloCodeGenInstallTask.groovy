@@ -26,7 +26,7 @@ class ApolloCodeGenInstallTask extends NpmTask {
   }
 
   String apolloVersion() {
-    String version
+    String version = null
     File packageFile = project.file("${INSTALL_DIR}/package.json")
     if (packageFile.isFile()) {
       def input = new JsonSlurper().parseText(packageFile.text)
