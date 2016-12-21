@@ -28,9 +28,9 @@ class ApolloResponseBodyConverter<T> implements Converter<ResponseBody, T> {
       if (!reader.nextName().equals("data")) {
         throw new IllegalStateException("Malformed input JSON. Expected 'data' object");
       }
-      T responseBody = (T) adapter.fromJson(reader);
+      T data = (T) adapter.fromJson(reader);
       reader.endObject();
-      return responseBody;
+      return data;
     } finally {
       value.close();
     }

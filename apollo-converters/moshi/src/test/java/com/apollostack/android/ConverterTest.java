@@ -75,9 +75,7 @@ public class ConverterTest {
   @Rule public final MockWebServer server = new MockWebServer();
 
   @Before public void setUp() {
-    Moshi moshi = new Moshi.Builder()
-        .add(new PostBodyJsonAdapterFactory())
-        .build();
+    Moshi moshi = new Moshi.Builder().build();
     Retrofit retrofit = new Retrofit.Builder()
         .baseUrl(server.url("/"))
         .addConverterFactory(new ApolloConverterFactory(moshi))

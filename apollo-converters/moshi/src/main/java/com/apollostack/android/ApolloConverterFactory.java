@@ -14,6 +14,7 @@ import retrofit2.Retrofit;
 
 import static com.squareup.moshi.Types.getRawType;
 
+@SuppressWarnings("WeakerAccess")
 public class ApolloConverterFactory extends Converter.Factory {
   private final Moshi moshi;
 
@@ -23,7 +24,7 @@ public class ApolloConverterFactory extends Converter.Factory {
 
   @Override public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations,
       Retrofit retrofit) {
-    if (isApplicableForType(type)) {
+    if (GraphQLQuery.Data.class.isAssignableFrom(getRawType(type))) {
       JsonAdapter<?> adapter = moshi.adapter(type);
       return new ApolloResponseBodyConverter<>(adapter);
     } else {
@@ -33,11 +34,11 @@ public class ApolloConverterFactory extends Converter.Factory {
 
   @Override public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations,
       Annotation[] methodAnnotations, Retrofit retrofit) {
-    // This converter is only for parsing ResponseBody
-    return null;
-  }
-
-  private static boolean isApplicableForType(Type type) {
-    return GraphQLQuery.Data.class.isAssignableFrom(getRawType(type));
+    if (PostBody.class.isAssignableFrom(getRawType(type))) {
+      JsonAdapter<PostBody> adapter = new PostBodyJsonAdapter<>(moshi);
+      return new ApolloRequestBodyConverter(adapter);
+    } else {
+      return null;
+    }
   }
 }
