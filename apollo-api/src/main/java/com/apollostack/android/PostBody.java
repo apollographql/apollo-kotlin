@@ -1,9 +1,9 @@
 package com.apollostack.android;
 
-import android.support.annotation.Nullable;
-
 import com.apollostack.api.GraphQLOperation;
 import com.apollostack.api.GraphQLQuery;
+
+import javax.annotation.Nullable;
 
 public class PostBody<T extends GraphQLOperation.Variables> {
   private final String query;
