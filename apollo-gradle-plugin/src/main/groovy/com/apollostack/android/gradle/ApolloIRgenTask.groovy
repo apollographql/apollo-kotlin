@@ -24,8 +24,7 @@ public class ApolloIRGenTask extends NodeTask {
   /** Output directory for the generated IR, defaults to src/main/graphql **/
   File outputDir
 
-  @InputFiles
-  Collection<File> getInputFiles() {
+  @InputFiles Collection<File> getInputFiles() {
     Set<File> inputFiles = Sets.newHashSet()
     config.each { ext ->
       ext.getFiles(ext.graphQLPath ?: "src/${ext.getSourceSet()}/graphql").asMap().entrySet().each { entry ->
@@ -48,8 +47,7 @@ public class ApolloIRGenTask extends NodeTask {
     outputDir = project.file("src/$variant/graphql/generatedIR")
   }
 
-  @Override
-  public void exec() {
+  @Override public void exec() {
     File apolloScript = project.file(APOLLO_CODEGEN)
     File schemaFile = userProvidedSchemaFile() ?: searchForSchemaFile()
 

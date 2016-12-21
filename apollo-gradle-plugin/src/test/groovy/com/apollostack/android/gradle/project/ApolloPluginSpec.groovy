@@ -9,7 +9,6 @@ import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
 class ApolloPluginSpec extends Specification {
-
   def "creates an IRGen task under the apollo group for a default project"() {
     setup:
     def project = ProjectBuilder.builder().build()

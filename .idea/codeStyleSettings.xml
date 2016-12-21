@@ -242,7 +242,6 @@
             <package name="" withSubpackages="true" static="true" />
           </value>
         </option>
-        <option name="RIGHT_MARGIN" value="120" />
         <option name="JD_P_AT_EMPTY_LINES" value="false" />
         <option name="JD_DO_NOT_WRAP_ONE_LINE_COMMENTS" value="true" />
         <option name="JD_KEEP_EMPTY_PARAMETER" value="false" />
@@ -342,6 +341,11 @@
           <option name="INDENT_SIZE" value="2" />
         </ADDITIONAL_INDENT_OPTIONS>
         <codeStyleSettings language="Groovy">
+          <option name="CALL_PARAMETERS_WRAP" value="1" />
+          <option name="EXTENDS_LIST_WRAP" value="1" />
+          <option name="EXTENDS_KEYWORD_WRAP" value="1" />
+          <option name="METHOD_ANNOTATION_WRAP" value="1" />
+          <option name="FIELD_ANNOTATION_WRAP" value="1" />
           <indentOptions>
             <option name="INDENT_SIZE" value="2" />
             <option name="CONTINUATION_INDENT_SIZE" value="4" />

@@ -3,7 +3,6 @@ package com.apollostack.android.gradle
 import org.gradle.api.Project;
 
 private static def setupAndroidProject(Project project) {
-
   def localProperties = new File("${project.projectDir.absolutePath}", "local.properties")
   localProperties.write("sdk.dir=${androidHome(project)}")
 
