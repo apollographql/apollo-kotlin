@@ -1,10 +1,9 @@
 package com.apollostack.compiler.ir
 
-import com.apollostack.compiler.ClassNames
 import com.apollostack.compiler.Annotations
+import com.apollostack.compiler.ClassNames
 import com.apollostack.compiler.normalizeTypeName
 import com.squareup.javapoet.ClassName
-import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
 
 sealed class GraphQLType(val isOptional: Boolean) {
@@ -43,10 +42,7 @@ sealed class GraphQLType(val isOptional: Boolean) {
       else -> GraphQLUnknown(isOptional, typeName.normalizeTypeName())
     }
 
-    fun graphQlTypeToJavaTypeName(
-        type: GraphQLType,
-        primitive: Boolean,
-        isOptional: Boolean): TypeName {
+    fun graphQlTypeToJavaTypeName(type: GraphQLType, primitive: Boolean, isOptional: Boolean): TypeName {
       val typeName = when (type) {
         is GraphQLList -> ClassNames.parameterizedListOf(graphQlTypeToJavaTypeName(type.listType, false, false))
         is GraphQLUnknown -> ClassName.get("", type.typeName)

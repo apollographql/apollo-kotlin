@@ -55,7 +55,7 @@ public final class TestQuery implements GraphQLQuery<GraphQLOperation.Variables>
       interface FriendsConnection {
         @Nullable Integer totalCount();
 
-        @Nullable List<Edge> edges();
+        @Nullable List<? extends Edge> edges();
 
         interface Edge {
           @Nullable Node node();

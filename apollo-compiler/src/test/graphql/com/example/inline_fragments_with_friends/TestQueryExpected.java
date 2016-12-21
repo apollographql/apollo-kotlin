@@ -62,21 +62,21 @@ public final class TestQuery implements GraphQLQuery<GraphQLOperation.Variables>
       interface AsHuman {
         @Nonnull String name();
 
-        @Nullable List<Friend> friends();
+        @Nullable List<? extends Friend> friends();
 
         @Nullable Double height();
 
         interface Friend {
           @Nonnull String name();
 
-          @Nonnull List<Episode> appearsIn();
+          @Nonnull List<? extends Episode> appearsIn();
         }
       }
 
       interface AsDroid {
         @Nonnull String name();
 
-        @Nullable List<Friend> friends();
+        @Nullable List<? extends Friend> friends();
 
         @Nullable String primaryFunction();
 

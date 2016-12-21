@@ -9,7 +9,6 @@ class InputObjectTypeSpecBuilder(
     val name: String,
     val fields: List<TypeDeclarationField>
 ) {
-  private val objectName = name.decapitalize()
   private val objectClassName = ClassName.get("", name.capitalize())
 
   fun build(): TypeSpec =
@@ -55,7 +54,7 @@ class InputObjectTypeSpecBuilder(
       val builderFields = fields.map { it.name.decapitalize() to it.graphQLType() }
       val builderFieldDefaultValues = fields.associate { it.name.decapitalize() to it.defaultValue }
       return addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
-          .addType(BuilderTypeSpecBuilder(objectName, objectClassName, builderFields, builderFieldDefaultValues)
+          .addType(BuilderTypeSpecBuilder(objectClassName, builderFields, builderFieldDefaultValues)
               .build())
     }
   }

@@ -33,14 +33,14 @@ public final class HeroDetails implements GraphQLQuery<GraphQLQuery.Variables> {
     return variables;
   }
 
-  public static class Data implements GraphQLQuery.Data {
-    @Nullable AllPeople allPeople;
+  public interface Data extends GraphQLQuery.Data {
+    @Nullable AllPeople allPeople();
 
-    static class AllPeople {
-      @Nullable List<People> people;
+    interface AllPeople {
+      @Nullable List<? extends People> people();
 
-      static class People {
-        @Nullable String name;
+      interface People {
+        @Nullable String name();
       }
     }
   }

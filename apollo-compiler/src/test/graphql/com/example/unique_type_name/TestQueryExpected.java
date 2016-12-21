@@ -57,7 +57,7 @@ public final class TestQuery implements GraphQLQuery<GraphQLOperation.Variables>
     interface Hero {
       @Nonnull String name();
 
-      @Nullable List<Friend> friends();
+      @Nullable List<? extends Friend> friends();
 
       @Nullable AsHuman asHuman();
 
@@ -68,16 +68,16 @@ public final class TestQuery implements GraphQLQuery<GraphQLOperation.Variables>
       interface AsHuman {
         @Nonnull String name();
 
-        @Nullable List<Friend$> friends();
+        @Nullable List<? extends Friend$> friends();
 
         @Nullable Double height();
 
         interface Friend$ {
           @Nonnull String name();
 
-          @Nonnull List<Episode> appearsIn();
+          @Nonnull List<? extends Episode> appearsIn();
 
-          @Nullable List<Friend$$> friends();
+          @Nullable List<? extends Friend$$> friends();
 
           interface Friend$$ {
             Fragments fragments();

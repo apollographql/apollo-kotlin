@@ -11,6 +11,8 @@ fun TypeName.overrideTypeName(typeNameOverrideMap: Map<String, String>): TypeNam
     return ParameterizedTypeName.get(rawType, *typeArguments)
   } else if (this is ClassName) {
     return ClassName.get(packageName(), typeNameOverrideMap[simpleName()] ?: simpleName())
+  } else if (this is WildcardTypeName) {
+    return WildcardTypeName.subtypeOf(upperBounds[0].overrideTypeName(typeNameOverrideMap))
   } else {
     return this
   }
