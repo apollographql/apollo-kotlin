@@ -24,6 +24,7 @@ class ApolloResponseBodyConverter<T> implements Converter<ResponseBody, T> {
        * If an error was encountered during the execution that prevented a valid response, the data entry in the
        * response should be null.
        */
+      // TODO add support for fragments
       if (!reader.nextName().equals("data")) {
         throw new IllegalStateException("Malformed input JSON. Expected 'data' object");
       }
