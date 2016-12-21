@@ -38,4 +38,3 @@ class ApolloIRGenTaskSpec extends Specification {
     generateApolloIR.dependsOn.contains(project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "Release")))
   }
 }
-
