@@ -1,6 +1,7 @@
 package com.apollostack.android.gradle
 
 import com.apollostack.compiler.GraphQLCompiler
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
@@ -8,7 +9,9 @@ import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 
 public class ApolloClassGenTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses"
+  @Internal
   List<ApolloExtension> config
+  @Internal
   String variant
   @OutputDirectory
   File outputDir

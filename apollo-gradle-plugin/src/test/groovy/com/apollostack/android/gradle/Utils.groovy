@@ -17,8 +17,8 @@ private static def setupAndroidProject(Project project) {
 static def setupDefaultAndroidProject(Project project) {
   setupAndroidProject(project)
   project.android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.1"
   }
   project.evaluate()
 }
@@ -26,8 +26,8 @@ static def setupDefaultAndroidProject(Project project) {
 static def setupAndroidProjectWithProductFlavours(Project project) {
   setupAndroidProject(project)
   project.android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.1"
     productFlavors {
       demo {
         applicationIdSuffix ".demo"

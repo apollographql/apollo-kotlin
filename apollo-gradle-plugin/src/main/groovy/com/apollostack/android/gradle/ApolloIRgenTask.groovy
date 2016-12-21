@@ -4,6 +4,7 @@ import com.google.common.collect.Sets
 import com.moowork.gradle.node.task.NodeTask
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.util.PatternSet
 
@@ -13,7 +14,9 @@ public class ApolloIRGenTask extends NodeTask {
   protected static final String DEFAULT_SCHEMA_FILE_PATTERN = "**/schema.json"
   static final String NAME = "generate%sApolloIR"
 
+  @Internal
   String variant
+  @Internal
   List<ApolloExtension> config
   private List<String> possibleGraphQLPaths
 
