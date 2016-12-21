@@ -20,14 +20,6 @@ public class ApolloConverterFactoryTest {
   private static class Foo {
   }
 
-  @Test public void responsebodyAppliesToDataClasses() {
-    assertThat(factory.responseBodyConverter(TestData.class, null, null)).isNotNull();
-  }
-
-  @Test public void responseBodydoesNotApplyToOtherClasses() {
-    assertThat(factory.responseBodyConverter(Foo.class, null, null)).isNull();
-  }
-
   @Test public void requestBodyDoesNotApplyToDataClasses() {
     assertThat(factory.requestBodyConverter(TestData.class, annotations, annotations, null))
         .isNull();
