@@ -8,20 +8,20 @@ import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
 
-class PostBodyJsonAdapter<T extends GraphQLOperation.Variables> extends JsonAdapter<PostBody> {
+class GraphQLOperationJsonAdapter<T extends GraphQLOperation.Variables> extends JsonAdapter<GraphQLOperation> {
   private final Moshi moshi;
 
-  PostBodyJsonAdapter(Moshi moshi) {
+  GraphQLOperationJsonAdapter(Moshi moshi) {
     this.moshi = moshi;
   }
 
-  @Override public PostBody fromJson(JsonReader reader) throws IOException {
+  @Override public GraphQLOperation fromJson(JsonReader reader) throws IOException {
     throw new IllegalStateException("This should not be called ever.");
   }
 
-  @Override public void toJson(JsonWriter writer, PostBody value) throws IOException {
+  @Override public void toJson(JsonWriter writer, GraphQLOperation value) throws IOException {
     writer.beginObject();
-    writer.name("query").value(value.query());
+    writer.name("query").value(value.queryDocument().replaceAll("\\n", ""));
     //noinspection unchecked
     T variables = (T) value.variables();
     if (variables != null) {

@@ -33,7 +33,7 @@ public class ConverterTest {
   private Service service;
 
   interface Service {
-    @POST("graphql") Call<HeroDetailsDataPOJO> heroDetails(@Body PostBody query);
+    @POST("graphql") Call<HeroDetailsDataPOJO> heroDetails(@Body HeroDetails query);
   }
 
   private static class HeroDetailsDataPOJO implements HeroDetails.Data {
@@ -84,9 +84,9 @@ public class ConverterTest {
     service = retrofit.create(Service.class);
   }
 
-  @Test public void simpleQuery() throws IOException {
+  @Test public void simpleQuery() throws IOException, InterruptedException {
     server.enqueue(mockResponse("src/test/graphql/simpleQueryResponse.json"));
-    Call<HeroDetailsDataPOJO> call = service.heroDetails(new PostBody<>(new HeroDetails()));
+    Call<HeroDetailsDataPOJO> call = service.heroDetails(new HeroDetails());
     Response<HeroDetailsDataPOJO> response = call.execute();
     HeroDetails.Data body = response.body();
     List<String> actual = FluentIterable.from(body.allPeople().people())
@@ -95,7 +95,17 @@ public class ConverterTest {
             return input.name();
           }
         }).toList();
+
     assertThat(actual).isEqualTo(Arrays.asList("Luke Skywalker", "C-3PO", "R2-D2", "Darth Vader", "Leia Organa"));
+    assertThat(server.takeRequest().getBody().readByteString().string(Charsets.UTF_8))
+        .isEqualTo("{\"query\":" + "\"query " +
+            "HeroDetails {"
+            + "  allPeople {"
+            + "    people {"
+            + "      name"
+            + "    }"
+            + "  }"
+            + "}\",\"variables\":{}}");
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
