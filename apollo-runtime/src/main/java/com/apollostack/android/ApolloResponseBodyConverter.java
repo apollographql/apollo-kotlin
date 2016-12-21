@@ -19,6 +19,11 @@ class ApolloResponseBodyConverter<T> implements Converter<ResponseBody, T> {
     try {
       JsonReader reader = JsonReader.of(value.source());
       reader.beginObject();
+      /* TODO handle other possible situations as described in the spec: http://facebook.github.io/graphql/#sec-Data
+       * If an error was encountered before execution begins, the data entry should not be present in the result.
+       * If an error was encountered during the execution that prevented a valid response, the data entry in the
+       * response should be null.
+       */
       if (!reader.nextName().equals("data")) {
         throw new IllegalStateException("Malformed input JSON. Expected 'data' object");
       }
