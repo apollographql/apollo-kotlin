@@ -8,7 +8,7 @@ import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
 
-class GraphQLOperationJsonAdapter<T extends GraphQLOperation.Variables> extends JsonAdapter<GraphQLOperation> {
+class GraphQLOperationJsonAdapter extends JsonAdapter<GraphQLOperation> {
   private final Moshi moshi;
 
   GraphQLOperationJsonAdapter(Moshi moshi) {
@@ -22,11 +22,11 @@ class GraphQLOperationJsonAdapter<T extends GraphQLOperation.Variables> extends 
   @Override public void toJson(JsonWriter writer, GraphQLOperation value) throws IOException {
     writer.beginObject();
     writer.name("query").value(value.queryDocument().replaceAll("\\n", ""));
-    //noinspection unchecked
-    T variables = (T) value.variables();
+    GraphQLOperation.Variables variables = value.variables();
     if (variables != null) {
       //noinspection unchecked
-      JsonAdapter<T> adapter = (JsonAdapter<T>) moshi.adapter(variables.getClass());
+      JsonAdapter<GraphQLOperation.Variables> adapter =
+          (JsonAdapter<GraphQLOperation.Variables>) moshi.adapter(variables.getClass());
       writer.name("variables");
       adapter.toJson(writer, variables);
     }

@@ -36,7 +36,7 @@ public class ApolloConverterFactory extends Converter.Factory {
   @Override public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations,
       Annotation[] methodAnnotations, Retrofit retrofit) {
     if (GraphQLOperation.class.isAssignableFrom(getRawType(type))) {
-      JsonAdapter<GraphQLOperation> adapter = new GraphQLOperationJsonAdapter<>(moshi);
+      JsonAdapter<GraphQLOperation> adapter = new GraphQLOperationJsonAdapter(moshi);
       return new ApolloRequestBodyConverter(adapter);
     } else {
       return null;

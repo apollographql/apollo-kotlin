@@ -16,8 +16,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import retrofit2.Call;
@@ -29,47 +27,12 @@ import retrofit2.http.POST;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class ConverterTest {
+public class IntegrationTest {
   private Service service;
 
   interface Service {
     @POST("graphql") Call<HeroDetailsDataPOJO> heroDetails(@Body HeroDetails query);
-  }
-
-  private static class HeroDetailsDataPOJO implements HeroDetails.Data {
-    private final AllPeoplePOJO allPeople;
-
-    HeroDetailsDataPOJO(AllPeoplePOJO allPeople) {
-      this.allPeople = allPeople;
-    }
-
-    static class AllPeoplePOJO implements AllPeople {
-      private final List<PeoplePOJO> people;
-
-      AllPeoplePOJO(List<PeoplePOJO> people) {
-        this.people = people;
-      }
-
-      static class PeoplePOJO implements People {
-        private final String name;
-
-        PeoplePOJO(String name) {
-          this.name = name;
-        }
-
-        @Nullable @Override public String name() {
-          return name;
-        }
-      }
-
-      @Nullable @Override public List<PeoplePOJO> people() {
-        return people;
-      }
-    }
-
-    @Nullable @Override public AllPeoplePOJO allPeople() {
-      return allPeople;
-    }
+    @POST("graphql") Call<HeroDetailsWithArgumentDataPOJO> heroDetailsWithArgument(@Body HeroDetailsWithArgument query);
   }
 
   @Rule public final MockWebServer server = new MockWebServer();
@@ -84,7 +47,7 @@ public class ConverterTest {
     service = retrofit.create(Service.class);
   }
 
-  @Test public void simpleQuery() throws IOException, InterruptedException {
+  @Test public void simpleQuery() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/simpleQueryResponse.json"));
     Call<HeroDetailsDataPOJO> call = service.heroDetails(new HeroDetails());
     Response<HeroDetailsDataPOJO> response = call.execute();
@@ -98,8 +61,8 @@ public class ConverterTest {
 
     assertThat(actual).isEqualTo(Arrays.asList("Luke Skywalker", "C-3PO", "R2-D2", "Darth Vader", "Leia Organa"));
     assertThat(server.takeRequest().getBody().readByteString().string(Charsets.UTF_8))
-        .isEqualTo("{\"query\":" + "\"query " +
-            "HeroDetails {"
+        .isEqualTo("{\"query\":" +
+            "\"query HeroDetails {"
             + "  allPeople {"
             + "    people {"
             + "      name"
@@ -108,7 +71,26 @@ public class ConverterTest {
             + "}\",\"variables\":{}}");
   }
 
-  private MockResponse mockResponse(String fileName) throws IOException {
+  @Test public void arguments() throws Exception {
+    server.enqueue(mockResponse("src/test/graphql/argumentsResponse.json"));
+    Call<HeroDetailsWithArgumentDataPOJO> call = service.heroDetailsWithArgument(new HeroDetailsWithArgument(
+        HeroDetailsWithArgument.Variables.builder()
+            .episode(Episode.EMPIRE)
+            .build()));
+    Response<HeroDetailsWithArgumentDataPOJO> response = call.execute();
+    HeroDetailsWithArgument.Data body = response.body();
+    assertThat(body.hero().name()).isEqualTo("Luke Skywalker");
+    assertThat(server.takeRequest().getBody().readByteString().string(Charsets.UTF_8))
+        .isEqualTo("{\"query\":" +
+            "\"query HeroDetailsWithArgument($episode: Episode) {"
+            + "  hero(episode: $episode) {"
+            + "    __typename"
+            + "    name"
+            + "  }"
+            + "}\",\"variables\":{\"episode\":\"EMPIRE\"}}");
+  }
+
+  private static MockResponse mockResponse(String fileName) throws IOException {
     return new MockResponse().setBody(Files.toString(new File(fileName), Charsets.UTF_8));
   }
 }
