@@ -1,0 +1,39 @@
+{
+	"operations": [
+		{
+			"operationName": "DroidDetails",
+			"operationType": "query",
+			"variables": [],
+			"source": "query DroidDetails {\n  species(id: \"c3BlY2llczoy\") {\n    id\n    name\n    classification\n  }\n}",
+			"fields": [
+				{
+					"responseName": "species",
+					"fieldName": "species",
+					"type": "Species",
+					"fields": [
+						{
+							"responseName": "id",
+							"fieldName": "id",
+							"type": "ID!"
+						},
+						{
+							"responseName": "name",
+							"fieldName": "name",
+							"type": "String"
+						},
+						{
+							"responseName": "classification",
+							"fieldName": "classification",
+							"type": "String"
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				}
+			],
+			"fragmentsReferenced": []
+		}
+	],
+	"fragments": [],
+	"typesUsed": []
+}

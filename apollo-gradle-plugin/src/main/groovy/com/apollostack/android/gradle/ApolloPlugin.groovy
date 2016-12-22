@@ -15,8 +15,7 @@ class ApolloPlugin implements Plugin<Project> {
   private static final String NODE_VERSION = "6.7.0"
   public static final String TASK_GROUP = "apollo"
 
-  @Override
-  void apply(Project project) {
+  @Override void apply(Project project) {
     setupNode(project)
     project.plugins.all { p ->
       if (p instanceof AppPlugin) {
@@ -71,8 +70,7 @@ class ApolloPlugin implements Plugin<Project> {
     return task
   }
 
-  private static ApolloClassGenTask createApolloClassGenTask(Project project, String name,
-                                                             List<ApolloExtension> conf) {
+  private static ApolloClassGenTask createApolloClassGenTask(Project project, String name, List<ApolloExtension> conf) {
     String taskName = String.format(ApolloClassGenTask.NAME, name.capitalize())
     ApolloClassGenTask task = project.tasks.create(taskName, ApolloClassGenTask)
     task.source(project.tasks.findByName(String.format(ApolloIRGenTask.NAME, name.capitalize())).outputDir)

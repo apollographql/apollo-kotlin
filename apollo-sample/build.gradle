@@ -1,6 +1,17 @@
 buildscript {
   dependencies {
+    // The output JARs don't include transitive dependencies, so we have
+    // to add them manually ourselves :(
+    classpath dep.gradleNodePlugin
     classpath dep.androidPlugin
+    classpath dep.javaPoet
+    classpath dep.kotlinStdLib
+    classpath dep.moshi
+    classpath dep.pluralizer
+    classpath dep.jsr305
+    classpath files(project(':apollo-api').jar.outputs.files.getFiles())
+    classpath files(project(':apollo-compiler').jar.outputs.files.getFiles())
+    classpath files(project(':apollo-gradle-plugin').jar.outputs.files.getFiles())
   }
 }
 
@@ -19,14 +30,15 @@ android {
   lintOptions {
     textReport true
     textOutput 'stdout'
-    ignore 'InvalidPackage'
+    ignore 'InvalidPackage', 'GoogleAppIndexingWarning', 'AllowBackup'
   }
 }
 
 dependencies {
   compile dep.appcompat
   compile project(":apollo-runtime")
-  compile project(":apollo-api")
 
   testCompile dep.junit
 }
+
+apply plugin: 'com.apollostack.android'
