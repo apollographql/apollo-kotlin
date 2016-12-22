@@ -61,7 +61,7 @@ class CodeGenTest(val testDir: File, val pkgName: String) {
 
   companion object {
     @JvmStatic
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{1}")
     fun data(): Collection<Array<Any>> {
       return File("src/test/graphql/com/example/").listFiles()
           .filter { it.isDirectory }
