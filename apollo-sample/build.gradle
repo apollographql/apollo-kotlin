@@ -1,17 +1,12 @@
 buildscript {
   dependencies {
-    // The output JARs don't include transitive dependencies, so we have
-    // to add them manually ourselves :(
-    classpath dep.gradleNodePlugin
     classpath dep.androidPlugin
-    classpath dep.javaPoet
-    classpath dep.kotlinStdLib
-    classpath dep.moshi
-    classpath dep.pluralizer
-    classpath dep.jsr305
-    classpath files(project(':apollo-api').jar.outputs.files.getFiles())
-    classpath files(project(':apollo-compiler').jar.outputs.files.getFiles())
-    classpath files(project(':apollo-gradle-plugin').jar.outputs.files.getFiles())
+    // TODO: Temporary workaround while we don't have the plugin snapshot on Sonatype.
+    // This is a shadow (fat) jar with all the transitive dependencies.
+    // In order to generate a new one for development, run:
+    // ./gradlew apollo-gradle-plugin:assemble
+    // copy the JAR from apollo-gradle-plugin/build/libs to apollo-sample/libs
+    classpath files('libs/apollo-gradle-plugin-0.0.1-SNAPSHOT-all.jar')
   }
 }
 
