@@ -4,7 +4,7 @@ import org.gradle.api.Project;
 
 private static def setupAndroidProject(Project project) {
   def localProperties = new File("${project.projectDir.absolutePath}", "local.properties")
-  localProperties.write("sdk.dir=${androidHome(project)}")
+  localProperties.write("sdk.dir=${androidHome()}")
 
   def manifest = new File("${project.projectDir.absolutePath}/src/main", "AndroidManifest.xml")
   manifest.getParentFile().mkdirs()
@@ -45,7 +45,7 @@ static def applyApolloPlugin(Project project) {
   project.apply plugin: 'com.apollostack.android'
 }
 
-static def androidHome(Project project) {
+static def androidHome() {
   def envVar = System.getenv("ANDROID_HOME")
   if (envVar) {
     return envVar

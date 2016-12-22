@@ -14,15 +14,11 @@ public class ApolloIRGenTask extends NodeTask {
   protected static final String DEFAULT_SCHEMA_FILE_PATTERN = "**/schema.json"
   static final String NAME = "generate%sApolloIR"
 
-  @Internal
-  String variant
-  @Internal
-  List<ApolloExtension> config
+  @Internal String variant
+  @Internal List<ApolloExtension> config
   private List<String> possibleGraphQLPaths
-
-  @OutputDirectory
   /** Output directory for the generated IR, defaults to src/main/graphql **/
-  File outputDir
+  @OutputDirectory File outputDir
 
   @InputFiles Collection<File> getInputFiles() {
     Set<File> inputFiles = Sets.newHashSet()
@@ -73,7 +69,7 @@ public class ApolloIRGenTask extends NodeTask {
 
   private File userProvidedSchemaFile() {
     List<String> schemaFiles = config.schemaFile?.findAll { it != null }
-    File schemaFile
+    File schemaFile = null
     if (schemaFiles) {
       if (schemaFiles.size() > 1) {
         throw new IllegalArgumentException("More than two schema files were specified for the build variant $variant." +
@@ -85,7 +81,7 @@ public class ApolloIRGenTask extends NodeTask {
   }
 
   private File searchForSchemaFile() {
-    File schemaFile
+    File schemaFile = null
     PatternSet patternSet = new PatternSet().include(DEFAULT_SCHEMA_FILE_PATTERN)
     for (String path : possibleGraphQLPaths) {
       project.files(path).getAsFileTree().matching(patternSet).visit {

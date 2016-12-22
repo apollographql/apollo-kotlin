@@ -1,6 +1,12 @@
 buildscript {
   dependencies {
     classpath dep.androidPlugin
+    // TODO: Temporary workaround while we don't have the plugin snapshot on Sonatype.
+    // This is a shadow (fat) jar with all the transitive dependencies.
+    // In order to generate a new one for development, run:
+    // ./gradlew apollo-gradle-plugin:shadowJar
+    // copy the JAR from apollo-gradle-plugin/build/libs to apollo-sample/libs
+    classpath files('libs/apollo-gradle-plugin-0.0.1-SNAPSHOT-all.jar')
   }
 }
 
@@ -19,14 +25,15 @@ android {
   lintOptions {
     textReport true
     textOutput 'stdout'
-    ignore 'InvalidPackage'
+    ignore 'InvalidPackage', 'GoogleAppIndexingWarning', 'AllowBackup'
   }
 }
 
 dependencies {
   compile dep.appcompat
   compile project(":apollo-runtime")
-  compile project(":apollo-api")
 
   testCompile dep.junit
 }
+
+apply plugin: 'com.apollostack.android'
