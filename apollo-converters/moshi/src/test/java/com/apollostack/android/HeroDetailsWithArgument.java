@@ -32,13 +32,13 @@ public final class HeroDetailsWithArgument implements Query<HeroDetailsWithArgum
   }
 
   public static final class Variables extends Operation.Variables {
-    private final @Nullable Episode episode;
+    @Nullable private final Episode episode;
 
     Variables(@Nullable Episode episode) {
       this.episode = episode;
     }
 
-    public @Nullable Episode episode() {
+    @Nullable public Episode episode() {
       return episode;
     }
 
@@ -47,7 +47,7 @@ public final class HeroDetailsWithArgument implements Query<HeroDetailsWithArgum
     }
 
     public static final class Builder {
-      private @Nullable Episode episode;
+      @Nullable private Episode episode;
 
       Builder() {
       }

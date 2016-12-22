@@ -48,4 +48,28 @@ subprojects {
 
   group = GROUP
   version = VERSION_NAME
+
+  if (!project.name.equals('apollo-gradle-plugin')) {
+    apply plugin: 'checkstyle'
+
+    checkstyle {
+      configFile rootProject.file('checkstyle.xml')
+      configProperties = ['checkstyle.cache.file': rootProject.file('build/checkstyle.cache')]
+      ignoreFailures false
+      showViolations true
+    }
+
+    task checkstyle(type: Checkstyle) {
+      source 'src/main/java'
+      include '**/*.java'
+
+      classpath = files()
+    }
+
+    afterEvaluate {
+      if (project.tasks.findByName('check')) {
+        check.dependsOn('checkstyle')
+      }
+    }
+  }
 }
