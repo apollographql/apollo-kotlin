@@ -1,6 +1,7 @@
 package com.apollostack.compiler.ir
 
 import com.apollostack.compiler.SchemaTypeSpecBuilder
+import com.apollostack.compiler.ir.graphql.Type
 import com.cesarferreira.pluralize.singularize
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeName
@@ -27,7 +28,7 @@ data class Field(
           .build()
 
   private fun toTypeName(responseType: String): TypeName =
-      GraphQLType.resolveByName(responseType, isOptional()).toJavaTypeName()
+      Type.resolveByName(responseType, isOptional()).toJavaTypeName()
 
   fun normalizedName() = responseName.capitalize().singularize()
 

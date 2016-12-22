@@ -1,6 +1,6 @@
 package com.apollostack.compiler
 
-import com.apollostack.compiler.ir.GraphQLType
+import com.apollostack.compiler.ir.graphql.Type
 import com.apollostack.compiler.ir.Variable
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
@@ -18,7 +18,7 @@ class VariablesTypeSpecBuilder(
           .addBuilder()
           .build()
 
-  private fun Variable.javaTypeName() = GraphQLType.resolveByName(type, !type.endsWith("!")).toJavaTypeName()
+  private fun Variable.javaTypeName() = Type.resolveByName(type, !type.endsWith("!")).toJavaTypeName()
 
   private fun TypeSpec.Builder.addVariableFields(): TypeSpec.Builder =
       addFields(variables.map { variable ->
@@ -66,6 +66,6 @@ class VariablesTypeSpecBuilder(
   companion object {
     private val VARIABLES_CLASS_NAME: String = "Variables"
     private val VARIABLES_TYPE_NAME: ClassName = ClassName.get("", VARIABLES_CLASS_NAME)
-    private fun Variable.graphQLType() = GraphQLType.resolveByName(type, !type.endsWith("!"))
+    private fun Variable.graphQLType() = Type.resolveByName(type, !type.endsWith("!"))
   }
 }

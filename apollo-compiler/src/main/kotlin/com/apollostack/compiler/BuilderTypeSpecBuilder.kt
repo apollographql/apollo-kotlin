@@ -1,12 +1,12 @@
 package com.apollostack.compiler
 
-import com.apollostack.compiler.ir.GraphQLType
+import com.apollostack.compiler.ir.graphql.Type
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
 class BuilderTypeSpecBuilder(
     val targetObjectClassName: ClassName,
-    val fields: List<Pair<String, GraphQLType>>,
+    val fields: List<Pair<String, Type>>,
     val fieldDefaultValues: Map<String, Any?>
 ) {
   fun build(): TypeSpec {
@@ -74,10 +74,10 @@ class BuilderTypeSpecBuilder(
             .addStatement("return new \$T()", builderClassName)
             .build()
 
-    private fun Number.castTo(graphQLType: GraphQLType) =
-        if (graphQLType is GraphQLType.GraphQLInt) {
+    private fun Number.castTo(type: Type) =
+        if (type is Type.Int) {
           toInt()
-        } else if (graphQLType is GraphQLType.GraphQLFloat) {
+        } else if (type is Type.Float) {
           toDouble()
         } else {
           this

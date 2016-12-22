@@ -1,6 +1,6 @@
 package com.apollostack.android;
 
-import com.apollostack.api.GraphQLOperation;
+import com.apollostack.api.graphql.Operation;
 import com.squareup.moshi.Moshi;
 
 import org.junit.Test;
@@ -14,7 +14,7 @@ public class ApolloConverterFactoryTest {
   private final Moshi moshi = new Moshi.Builder().build();
   private final ApolloConverterFactory factory = new ApolloConverterFactory(moshi);
 
-  private static class TestData implements GraphQLOperation.Data {
+  private static class TestData implements Operation.Data {
   }
 
   private static class Foo {
@@ -31,7 +31,7 @@ public class ApolloConverterFactoryTest {
   }
 
   @Test public void requestBodyAppliesToPostBodyClass() {
-    assertThat(factory.requestBodyConverter(GraphQLOperation.class, annotations, annotations, null))
+    assertThat(factory.requestBodyConverter(Operation.class, annotations, annotations, null))
         .isNotNull();
   }
 }

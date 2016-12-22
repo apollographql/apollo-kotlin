@@ -1,6 +1,6 @@
 package com.apollostack.android;
 
-import com.apollostack.api.GraphQLOperation;
+import com.apollostack.api.graphql.Operation;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
@@ -23,8 +23,8 @@ public class ApolloConverterFactory extends Converter.Factory {
 
   @Override public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations,
       Annotation[] methodAnnotations, Retrofit retrofit) {
-    if (GraphQLOperation.class.isAssignableFrom(getRawType(type))) {
-      JsonAdapter<GraphQLOperation> adapter = new GraphQLOperationJsonAdapter(moshi);
+    if (Operation.class.isAssignableFrom(getRawType(type))) {
+      JsonAdapter<Operation> adapter = new GraphQLOperationJsonAdapter(moshi);
       return new ApolloRequestBodyConverter(adapter);
     } else {
       return null;

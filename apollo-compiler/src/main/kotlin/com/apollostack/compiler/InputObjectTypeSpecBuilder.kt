@@ -1,6 +1,6 @@
 package com.apollostack.compiler
 
-import com.apollostack.compiler.ir.GraphQLType
+import com.apollostack.compiler.ir.graphql.Type
 import com.apollostack.compiler.ir.TypeDeclarationField
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
@@ -68,6 +68,6 @@ class InputObjectTypeSpecBuilder(
   }
 
   companion object {
-    private fun TypeDeclarationField.graphQLType() = GraphQLType.resolveByName(type, !type.endsWith("!"))
+    private fun TypeDeclarationField.graphQLType() = Type.resolveByName(type, !type.endsWith("!"))
   }
 }

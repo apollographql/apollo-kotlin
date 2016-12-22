@@ -1,4 +1,4 @@
-package com.apollostack.api;
+package com.apollostack.api.graphql;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,11 +6,11 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 /** Represents an error response returned from the GraphQL server */
-public class GraphQLError {
+public class Error {
   private final String message;
   @Nullable private final List<Location> locations;
 
-  public GraphQLError(String message, @Nullable List<Location> locations) {
+  public Error(String message, @Nullable List<Location> locations) {
     this.message = message;
     this.locations = locations;
   }
@@ -27,7 +27,7 @@ public class GraphQLError {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    GraphQLError that = (GraphQLError) o;
+    Error that = (Error) o;
 
     //noinspection SimplifiableIfStatement
     if (message != null ? !message.equals(that.message) : that.message != null) return false;
@@ -41,7 +41,7 @@ public class GraphQLError {
   }
 
   @Override public String toString() {
-    return "GraphQLError{" +
+    return "Error{" +
         "message='" + message + '\'' +
         ", locations=" + locations +
         '}';

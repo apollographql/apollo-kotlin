@@ -1,14 +1,14 @@
 package com.example.enum_type;
 
-import com.apollostack.api.GraphQLOperation;
-import com.apollostack.api.GraphQLQuery;
+import com.apollostack.api.graphql.Operation;
+import com.apollostack.api.graphql.Query;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class TestQuery implements GraphQLQuery<GraphQLOperation.Variables> {
+public final class TestQuery implements Query<Operation.Variables> {
   public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  hero {\n"
       + "    __typename\n"
@@ -19,10 +19,10 @@ public final class TestQuery implements GraphQLQuery<GraphQLOperation.Variables>
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
-  private final GraphQLOperation.Variables variables;
+  private final Operation.Variables variables;
 
   public TestQuery() {
-    this.variables = GraphQLOperation.EMPTY_VARIABLES;
+    this.variables = Operation.EMPTY_VARIABLES;
   }
 
   @Override
@@ -31,11 +31,11 @@ public final class TestQuery implements GraphQLQuery<GraphQLOperation.Variables>
   }
 
   @Override
-  public GraphQLOperation.Variables variables() {
+  public Operation.Variables variables() {
     return variables;
   }
 
-  public interface Data extends GraphQLOperation.Data {
+  public interface Data extends Operation.Data {
     @Nullable Hero hero();
 
     interface Hero {

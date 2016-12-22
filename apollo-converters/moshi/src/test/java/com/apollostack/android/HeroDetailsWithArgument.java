@@ -1,11 +1,11 @@
 package com.apollostack.android;
 
-import com.apollostack.api.GraphQLOperation;
-import com.apollostack.api.GraphQLQuery;
+import com.apollostack.api.graphql.Operation;
+import com.apollostack.api.graphql.Query;
 
 import javax.annotation.Nullable;
 
-public final class HeroDetailsWithArgument implements GraphQLQuery<HeroDetailsWithArgument.Variables> {
+public final class HeroDetailsWithArgument implements Query<HeroDetailsWithArgument.Variables> {
   public static final String OPERATION_DEFINITION = "query HeroDetailsWithArgument($episode: Episode) {\n"
       + "  hero(episode: $episode) {\n"
       + "    __typename\n"
@@ -31,7 +31,7 @@ public final class HeroDetailsWithArgument implements GraphQLQuery<HeroDetailsWi
     return variables;
   }
 
-  public static final class Variables extends GraphQLOperation.Variables {
+  public static final class Variables extends Operation.Variables {
     private final @Nullable Episode episode;
 
     Variables(@Nullable Episode episode) {
@@ -63,7 +63,7 @@ public final class HeroDetailsWithArgument implements GraphQLQuery<HeroDetailsWi
     }
   }
 
-  public interface Data extends GraphQLOperation.Data {
+  public interface Data extends Operation.Data {
     @Nullable Hero hero();
 
     interface Hero {

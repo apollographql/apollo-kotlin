@@ -1,6 +1,6 @@
 package com.apollostack.compiler.ir
 
-import com.apollostack.api.GraphQLOperation
+import com.apollostack.api.graphql.Operation
 import com.apollostack.compiler.SchemaTypeSpecBuilder
 import com.apollostack.compiler.resolveNestedTypeNameDuplication
 import com.squareup.javapoet.ClassName
@@ -17,7 +17,7 @@ data class Operation(
     SchemaTypeSpecBuilder()
         .build(INTERFACE_TYPE_SPEC_NAME, fields, emptyList(), emptyList())
         .toBuilder()
-        .addSuperinterface(ClassName.get(GraphQLOperation.Data::class.java))
+        .addSuperinterface(ClassName.get(Operation.Data::class.java))
         .build()
         .resolveNestedTypeNameDuplication(emptyList())
 

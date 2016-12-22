@@ -1,12 +1,12 @@
 package com.apollostack.android;
 
-import com.apollostack.api.GraphQLQuery;
+import com.apollostack.api.graphql.Query;
 
 import java.util.List;
 
 import javax.annotation.Nullable;
 
-public final class HeroDetails implements GraphQLQuery<GraphQLQuery.Variables> {
+public final class HeroDetails implements Query<Query.Variables> {
   public static final String OPERATION_DEFINITION = "query HeroDetails {\n"
       + "  allPeople {\n"
       + "    people {\n"
@@ -17,10 +17,10 @@ public final class HeroDetails implements GraphQLQuery<GraphQLQuery.Variables> {
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
-  private final GraphQLQuery.Variables variables;
+  private final Query.Variables variables;
 
   public HeroDetails() {
-    this.variables = GraphQLQuery.EMPTY_VARIABLES;
+    this.variables = Query.EMPTY_VARIABLES;
   }
 
   @Override
@@ -29,11 +29,11 @@ public final class HeroDetails implements GraphQLQuery<GraphQLQuery.Variables> {
   }
 
   @Override
-  public GraphQLQuery.Variables variables() {
+  public Query.Variables variables() {
     return variables;
   }
 
-  public interface Data extends GraphQLQuery.Data {
+  public interface Data extends Query.Data {
     @Nullable AllPeople allPeople();
 
     interface AllPeople {
