@@ -41,10 +41,13 @@ public class Error {
   }
 
   @Override public String toString() {
-    return "Error{" +
-        "message='" + message + '\'' +
-        ", locations=" + locations +
-        '}';
+    return "Error{"
+        + "message='"
+        + message
+        + '\''
+        + ", locations="
+        + locations
+        + '}';
   }
 
   public static class Location {
@@ -82,10 +85,12 @@ public class Error {
     }
 
     @Override public String toString() {
-      return "Location{" +
-          "line=" + line +
-          ", column=" + column +
-          '}';
+      return "Location{"
+          + "line="
+          + line
+          + ", column="
+          + column
+          + '}';
     }
   }
 }

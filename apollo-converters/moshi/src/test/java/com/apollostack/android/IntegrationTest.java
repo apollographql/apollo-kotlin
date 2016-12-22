@@ -67,8 +67,8 @@ public class IntegrationTest {
         }).toList();
     assertThat(actual).isEqualTo(Arrays.asList("Luke Skywalker", "C-3PO", "R2-D2", "Darth Vader", "Leia Organa"));
     assertThat(server.takeRequest().getBody().readByteString().string(Charsets.UTF_8))
-        .isEqualTo("{\"query\":" +
-            "\"query HeroDetails {"
+        .isEqualTo("{\"query\":"
+            + "\"query HeroDetails {"
             + "  allPeople {"
             + "    people {"
             + "      name"
@@ -89,8 +89,8 @@ public class IntegrationTest {
     //noinspection ConstantConditions
     assertThat(data.hero().name()).isEqualTo("Luke Skywalker");
     assertThat(server.takeRequest().getBody().readByteString().string(Charsets.UTF_8))
-        .isEqualTo("{\"query\":" +
-            "\"query HeroDetailsWithArgument($episode: Episode) {"
+        .isEqualTo("{\"query\":"
+            + "\"query HeroDetailsWithArgument($episode: Episode) {"
             + "  hero(episode: $episode) {"
             + "    __typename"
             + "    name"
