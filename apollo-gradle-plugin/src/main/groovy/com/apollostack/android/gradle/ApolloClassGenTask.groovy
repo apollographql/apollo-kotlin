@@ -24,7 +24,8 @@ public class ApolloClassGenTask extends SourceTask {
 
   @TaskAction void generateClasses(IncrementalTaskInputs inputs) {
     inputs.outOfDate { inputFileDetails ->
-      new GraphQLCompiler().write(inputFileDetails.file, outputDir)
+      //TODO: Add option to generate pojo to plugin extensions. Maybe, have a project-level configurable extensions too
+      new GraphQLCompiler().write(inputFileDetails.file, outputDir, false)
     }
   }
 }
