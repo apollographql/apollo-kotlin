@@ -10,7 +10,7 @@ import javax.lang.model.element.Modifier
 class OperationTypeSpecBuilder(
     val operation: Operation,
     val fragments: List<Fragment>,
-    val generatePOJO: Boolean
+    val generateClasses: Boolean
 ) : CodeGenerator {
   private val QUERY_TYPE_NAME = operation.operationName.capitalize()
   private val QUERY_VARIABLES_CLASS_NAME = ClassName.get("", "$QUERY_TYPE_NAME.Variables")
@@ -24,7 +24,7 @@ class OperationTypeSpecBuilder(
         .addQueryConstructor(operation.variables.isNotEmpty())
         .addVariablesDefinition(operation.variables)
         .addType(operation.toTypeSpec().let {
-          if (generatePOJO) it.convertToPOJO(Modifier.PUBLIC, Modifier.STATIC) else it
+          if (generateClasses) it.convertToPOJO(Modifier.PUBLIC, Modifier.STATIC) else it
         })
         .build()
   }

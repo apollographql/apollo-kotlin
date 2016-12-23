@@ -10,11 +10,11 @@ open class GraphQLCompiler {
   private val moshi = Moshi.Builder().build()
   private val irAdapter = moshi.adapter(QueryIntermediateRepresentation::class.java)
 
-  fun write(irFile: File, outputDir: File, generatePOJO: Boolean = false) {
+  fun write(irFile: File, outputDir: File, generateClasses: Boolean = false) {
     val packageName = irFile.absolutePath.formatPackageName()
     val ir = irAdapter.fromJson(irFile.readText())
-    val operationTypeBuilders = ir.operations.map { OperationTypeSpecBuilder(it, ir.fragments, generatePOJO) }
-    val fragmentTypeBuilders = ir.fragments.map { FragmentTypeSpecBuilder(it, generatePOJO) }
+    val operationTypeBuilders = ir.operations.map { OperationTypeSpecBuilder(it, ir.fragments, generateClasses) }
+    val fragmentTypeBuilders = ir.fragments.map { FragmentTypeSpecBuilder(it, generateClasses) }
     (operationTypeBuilders + fragmentTypeBuilders + ir.typesUsed).forEach {
       JavaFile.builder(packageName, it.toTypeSpec()).build().writeTo(outputDir)
     }
