@@ -26,7 +26,7 @@ sealed class Type(val isOptional: kotlin.Boolean) {
   companion object {
     private val GRAPHQLTYPE_TO_JAVA_TYPE = mapOf(
         Type.String::class.java to ClassNames.STRING,
-        Type.Id::class.java to TypeName.LONG,
+        Type.Id::class.java to ClassNames.STRING,
         Type.Int::class.java to TypeName.INT,
         Type.Float::class.java to TypeName.DOUBLE,
         Type.Boolean::class.java to TypeName.BOOLEAN)

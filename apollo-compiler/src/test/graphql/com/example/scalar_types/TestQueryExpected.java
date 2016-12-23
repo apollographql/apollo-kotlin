@@ -5,10 +5,10 @@ import com.apollostack.api.graphql.Query;
 import java.lang.Boolean;
 import java.lang.Double;
 import java.lang.Integer;
-import java.lang.Long;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public final class TestQuery implements Query<Operation.Variables> {
@@ -35,9 +35,9 @@ public final class TestQuery implements Query<Operation.Variables> {
   public interface Data extends Operation.Data {
     @Nullable String graphQlString();
 
-    @Nullable Long graphQlIdNullable();
+    @Nullable String graphQlIdNullable();
 
-    long graphQlIdNonNullable();
+    @Nonnull String graphQlIdNonNullable();
 
     @Nullable Integer graphQlIntNullable();
 

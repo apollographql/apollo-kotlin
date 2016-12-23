@@ -48,7 +48,7 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     interface Luke {
-      long id();
+      @Nonnull String id();
 
       @Nonnull String name();
     }
