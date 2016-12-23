@@ -31,7 +31,16 @@ android {
 
 dependencies {
   compile dep.appcompat
+  compile project(':apollo-converters:moshi')
   compile project(":apollo-runtime")
+  compile 'io.reactivex.rxjava2:rxjava:2.0.3'
+  compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+  compile 'com.squareup.retrofit2:adapter-rxjava2:2.1.1-SNAPSHOT'
+  compile 'com.squareup.okhttp3:logging-interceptor:3.5.0'
+  provided 'com.jakewharton.auto.value:auto-value-annotations:1.3'
+  provided 'com.ryanharter.auto.value:auto-value-moshi-annotations:0.4.2'
+  annotationProcessor 'com.google.auto.value:auto-value:1.3'
+  annotationProcessor 'com.ryanharter.auto.value:auto-value-moshi:0.4.2'
 
   testCompile dep.junit
 }

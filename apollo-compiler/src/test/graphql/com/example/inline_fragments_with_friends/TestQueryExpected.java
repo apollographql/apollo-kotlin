@@ -83,7 +83,7 @@ public final class TestQuery implements Query<Operation.Variables> {
         interface Friend {
           @Nonnull String name();
 
-          long id();
+          @Nonnull String id();
         }
       }
     }

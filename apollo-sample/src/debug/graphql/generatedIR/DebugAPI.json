@@ -1,6 +1,43 @@
 {
 	"operations": [
 		{
+			"operationName": "Films",
+			"operationType": "query",
+			"variables": [],
+			"source": "query Films {\n  allFilms {\n    films {\n      id\n      title\n    }\n  }\n}",
+			"fields": [
+				{
+					"responseName": "allFilms",
+					"fieldName": "allFilms",
+					"type": "FilmsConnection",
+					"fields": [
+						{
+							"responseName": "films",
+							"fieldName": "films",
+							"type": "[Film]",
+							"fields": [
+								{
+									"responseName": "id",
+									"fieldName": "id",
+									"type": "ID!"
+								},
+								{
+									"responseName": "title",
+									"fieldName": "title",
+									"type": "String"
+								}
+							],
+							"fragmentSpreads": [],
+							"inlineFragments": []
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				}
+			],
+			"fragmentsReferenced": []
+		},
+		{
 			"operationName": "DroidDetails",
 			"operationType": "query",
 			"variables": [],
