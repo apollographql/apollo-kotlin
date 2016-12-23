@@ -3,6 +3,7 @@ package com.apollostack.android.gradle.project
 import com.apollostack.android.gradle.ApolloCodeGenInstallTask
 import com.apollostack.android.gradle.ApolloPlugin
 import com.apollostack.android.gradle.Utils
+import groovy.json.JsonSlurper
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
@@ -44,7 +45,7 @@ class ApolloCodeGenInstallTaskSpec extends Specification {
 
     then:
     project.tasks.getByName(ApolloCodeGenInstallTask.NAME).args.equals(
-        ["install", "apollo-codegen@${ApolloCodeGenInstallTask.APOLLOCODEGEN_VERSION}"])
+        ["install", "apollo-codegen@$ApolloCodeGenInstallTask.APOLLOCODEGEN_VERSION", "--save", "--save-exact"])
   }
 
   def "task creates node_modules/apollo-codegen output dir"() {
@@ -61,4 +62,21 @@ class ApolloCodeGenInstallTaskSpec extends Specification {
         .contains(project.file(ApolloCodeGenInstallTask.INSTALL_DIR))
     project.file(ApolloCodeGenInstallTask.INSTALL_DIR).exists()
   }
+
+  def "task creates a package.json file in project root"() {
+    setup:
+    def project = ProjectBuilder.builder().build()
+    Utils.setupDefaultAndroidProject(project)
+
+    when:
+    Utils.applyApolloPlugin(project)
+
+    then:
+    File packageFile = project.file("package.json")
+    assert packageFile.isFile()
+    def input = new JsonSlurper().parseText(packageFile.text)
+    assert input.name == "apollo-android"
+    assert input.author == "Apollo"
+  }
+
 }
