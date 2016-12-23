@@ -20,7 +20,7 @@ import java.util.ArrayList
 import javax.tools.JavaFileObject
 
 @RunWith(Parameterized::class)
-class CodeGenTest(val testDir: File, val pkgName: String) {
+class CodeGenTest(val testDir: File, val pkgName: String, val generatePOJO: Boolean) {
   private val testDirPath = testDir.toPath()
   private val expectedFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**Expected.java")
 
@@ -31,7 +31,7 @@ class CodeGenTest(val testDir: File, val pkgName: String) {
   @Test
   fun generateExpectedClasses() {
     val irFile = File(testDir, "TestQuery.json")
-    compiler.write(irFile, outputDir)
+    compiler.write(irFile, outputDir, generatePOJO)
 
     Files.walkFileTree(testDirPath, object : SimpleFileVisitor<Path>() {
       override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
@@ -65,7 +65,7 @@ class CodeGenTest(val testDir: File, val pkgName: String) {
     fun data(): Collection<Array<Any>> {
       return File("src/test/graphql/com/example/").listFiles()
           .filter { it.isDirectory }
-          .map { arrayOf(it, it.name) }
+          .map { arrayOf(it, it.name, it.name.startsWith("pojo")) }
     }
   }
 }

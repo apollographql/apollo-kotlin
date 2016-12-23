@@ -45,3 +45,35 @@ fun TypeSpec.resolveNestedTypeNameDuplication(reservedTypeNames: List<String>): 
       .build()
 }
 
+fun TypeSpec.convertToPOJO(vararg modifiers: Modifier): TypeSpec {
+  if (kind != TypeSpec.Kind.INTERFACE) {
+    throw IllegalArgumentException("can't convert non-interface class to POJO")
+  }
+  return TypeSpec.classBuilder(name)
+      .addModifiers(*modifiers)
+      .addSuperinterfaces(this.superinterfaces)
+      .addFields(methodSpecs.map {
+        FieldSpec
+            .builder(it.returnType, it.name)
+            .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+            .build()
+      })
+      .addMethod(MethodSpec
+          .constructorBuilder()
+          .addModifiers(Modifier.PUBLIC)
+          .addParameters(methodSpecs.map { ParameterSpec.builder(it.returnType, it.name).build() })
+          .addCode(methodSpecs.map { CodeBlock.of("this.\$L = \$L;\n", it.name, it.name) }
+              .fold(CodeBlock.builder(), CodeBlock.Builder::add).build())
+          .build())
+      .addMethods(methodSpecs.map {
+        MethodSpec
+            .methodBuilder(it.name)
+            .returns(it.returnType)
+            .addModifiers(Modifier.PUBLIC)
+            .addStatement("return this.\$L", it.name)
+            .build()
+      })
+      .addFields(fieldSpecs)
+      .addTypes(typeSpecs.map { it.convertToPOJO(Modifier.PUBLIC, Modifier.STATIC) })
+      .build()
+}
