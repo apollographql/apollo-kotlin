@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apollostack.android.ResponseJsonReader;
+import com.apollostack.api.graphql.Response;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -30,11 +31,11 @@ public class MainActivity extends AppCompatActivity {
         .droidDetails(new DroidDetails())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Observer<com.apollostack.api.graphql.Response>() {
+        .subscribe(new Observer<Response<DroidDetailsData>>() {
           @Override public void onSubscribe(Disposable d) {
           }
 
-          @Override public void onNext(com.apollostack.api.graphql.Response response) {
+          @Override public void onNext(Response<DroidDetailsData> response) {
             txtResponse.setText(response.data().toString());
           }
 
