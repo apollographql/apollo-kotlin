@@ -2,11 +2,15 @@ package com.example.apollostack.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.JsonReader;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.apollostack.api.graphql.Response;
+import com.apollostack.android.ResponseJsonReader;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 import generatedIR.DroidDetails;
 import io.reactivex.Observer;
@@ -26,11 +30,11 @@ public class MainActivity extends AppCompatActivity {
         .droidDetails(new DroidDetails())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Observer<Response<DroidDetailsData>>() {
+        .subscribe(new Observer<com.apollostack.api.graphql.Response>() {
           @Override public void onSubscribe(Disposable d) {
           }
 
-          @Override public void onNext(Response<DroidDetailsData> response) {
+          @Override public void onNext(com.apollostack.api.graphql.Response response) {
             txtResponse.setText(response.data().toString());
           }
 
@@ -43,5 +47,29 @@ public class MainActivity extends AppCompatActivity {
           @Override public void onComplete() {
           }
         });
+
+
+    JsonReader jsonReader = null;
+    try {
+      InputStreamReader isr = new InputStreamReader(getAssets().open("TestQuery.json"));
+      jsonReader = new JsonReader(new BufferedReader(isr));
+
+      jsonReader.beginObject();
+      ResponseJsonReader responseReader = new ResponseJsonReader(jsonReader);
+      TestQueryResponse testQuery = new TestQueryResponse(responseReader);
+      jsonReader.endObject();
+
+      System.out.println("MainActivity.onCreate: " + testQuery);
+    } catch (Exception e) {
+      Log.e(TAG, e.toString(), e);
+    } finally {
+      if (jsonReader != null) {
+        try {
+          jsonReader.close();
+        } catch (Exception e) {
+          // ignore
+        }
+      }
+    }
   }
 }

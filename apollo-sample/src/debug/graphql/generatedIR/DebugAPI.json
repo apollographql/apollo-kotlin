@@ -38,6 +38,110 @@
 			"fragmentsReferenced": []
 		},
 		{
+			"operationName": "TestQuery",
+			"operationType": "query",
+			"variables": [],
+			"source": "query TestQuery {\n  allPeople {\n    pageInfo {\n      startCursor\n      endCursor\n    }\n    totalCount\n    edges {\n      cursor\n      node {\n        id\n        name\n        gender\n        species {\n          id\n          name\n          classification\n        }\n      }\n    }\n  }\n}",
+			"fields": [
+				{
+					"responseName": "allPeople",
+					"fieldName": "allPeople",
+					"type": "PeopleConnection",
+					"fields": [
+						{
+							"responseName": "pageInfo",
+							"fieldName": "pageInfo",
+							"type": "PageInfo!",
+							"fields": [
+								{
+									"responseName": "startCursor",
+									"fieldName": "startCursor",
+									"type": "String"
+								},
+								{
+									"responseName": "endCursor",
+									"fieldName": "endCursor",
+									"type": "String"
+								}
+							],
+							"fragmentSpreads": [],
+							"inlineFragments": []
+						},
+						{
+							"responseName": "totalCount",
+							"fieldName": "totalCount",
+							"type": "Int"
+						},
+						{
+							"responseName": "edges",
+							"fieldName": "edges",
+							"type": "[PeopleEdge]",
+							"fields": [
+								{
+									"responseName": "cursor",
+									"fieldName": "cursor",
+									"type": "String!"
+								},
+								{
+									"responseName": "node",
+									"fieldName": "node",
+									"type": "Person",
+									"fields": [
+										{
+											"responseName": "id",
+											"fieldName": "id",
+											"type": "ID!"
+										},
+										{
+											"responseName": "name",
+											"fieldName": "name",
+											"type": "String"
+										},
+										{
+											"responseName": "gender",
+											"fieldName": "gender",
+											"type": "String"
+										},
+										{
+											"responseName": "species",
+											"fieldName": "species",
+											"type": "Species",
+											"fields": [
+												{
+													"responseName": "id",
+													"fieldName": "id",
+													"type": "ID!"
+												},
+												{
+													"responseName": "name",
+													"fieldName": "name",
+													"type": "String"
+												},
+												{
+													"responseName": "classification",
+													"fieldName": "classification",
+													"type": "String"
+												}
+											],
+											"fragmentSpreads": [],
+											"inlineFragments": []
+										}
+									],
+									"fragmentSpreads": [],
+									"inlineFragments": []
+								}
+							],
+							"fragmentSpreads": [],
+							"inlineFragments": []
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				}
+			],
+			"fragmentsReferenced": []
+		},
+		{
 			"operationName": "DroidDetails",
 			"operationType": "query",
 			"variables": [],

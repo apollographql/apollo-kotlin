@@ -1,0 +1,951 @@
+{
+  "data": {
+    "allPeople": {
+      "pageInfo": {
+        "startCursor": "YXJyYXljb25uZWN0aW9uOjA=",
+        "endCursor": "YXJyYXljb25uZWN0aW9uOjgx"
+      },
+      "totalCount": null,
+      "edges": [
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjA=",
+          "node": {
+            "id": "cGVvcGxlOjE=",
+            "name": "Luke Skywalker",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjE=",
+          "node": {
+            "id": "cGVvcGxlOjI=",
+            "name": "C-3PO",
+            "gender": "n/a",
+            "species": {
+              "id": "c3BlY2llczoy",
+              "name": "Droid",
+              "classification": "artificial"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjI=",
+          "node": {
+            "id": "cGVvcGxlOjM=",
+            "name": "R2-D2",
+            "gender": "n/a",
+            "species": {
+              "id": "c3BlY2llczoy",
+              "name": "Droid",
+              "classification": "artificial"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjM=",
+          "node": {
+            "id": "cGVvcGxlOjQ=",
+            "name": "Darth Vader",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjQ=",
+          "node": {
+            "id": "cGVvcGxlOjU=",
+            "name": "Leia Organa",
+            "gender": "female",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjU=",
+          "node": {
+            "id": "cGVvcGxlOjY=",
+            "name": "Owen Lars",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjY=",
+          "node": {
+            "id": "cGVvcGxlOjc=",
+            "name": "Beru Whitesun lars",
+            "gender": "female",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjc=",
+          "node": {
+            "id": "cGVvcGxlOjg=",
+            "name": "R5-D4",
+            "gender": "n/a",
+            "species": {
+              "id": "c3BlY2llczoy",
+              "name": "Droid",
+              "classification": "artificial"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjg=",
+          "node": {
+            "id": "cGVvcGxlOjk=",
+            "name": "Biggs Darklighter",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjk=",
+          "node": {
+            "id": "cGVvcGxlOjEw",
+            "name": "Obi-Wan Kenobi",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjEw",
+          "node": {
+            "id": "cGVvcGxlOjEx",
+            "name": "Anakin Skywalker",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjEx",
+          "node": {
+            "id": "cGVvcGxlOjEy",
+            "name": "Wilhuff Tarkin",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjEy",
+          "node": {
+            "id": "cGVvcGxlOjEz",
+            "name": "Chewbacca",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoz",
+              "name": "Wookie",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjEz",
+          "node": {
+            "id": "cGVvcGxlOjE0",
+            "name": "Han Solo",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjE0",
+          "node": {
+            "id": "cGVvcGxlOjE1",
+            "name": "Greedo",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczo0",
+              "name": "Rodian",
+              "classification": "sentient"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjE1",
+          "node": {
+            "id": "cGVvcGxlOjE2",
+            "name": "Jabba Desilijic Tiure",
+            "gender": "hermaphrodite",
+            "species": {
+              "id": "c3BlY2llczo1",
+              "name": "Hutt",
+              "classification": "gastropod"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjE2",
+          "node": {
+            "id": "cGVvcGxlOjE4",
+            "name": "Wedge Antilles",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjE3",
+          "node": {
+            "id": "cGVvcGxlOjE5",
+            "name": "Jek Tono Porkins",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjE4",
+          "node": {
+            "id": "cGVvcGxlOjIw",
+            "name": "Yoda",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczo2",
+              "name": "Yoda's species",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjE5",
+          "node": {
+            "id": "cGVvcGxlOjIx",
+            "name": "Palpatine",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjIw",
+          "node": {
+            "id": "cGVvcGxlOjIy",
+            "name": "Boba Fett",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjIx",
+          "node": {
+            "id": "cGVvcGxlOjIz",
+            "name": "IG-88",
+            "gender": "none",
+            "species": {
+              "id": "c3BlY2llczoy",
+              "name": "Droid",
+              "classification": "artificial"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjIy",
+          "node": {
+            "id": "cGVvcGxlOjI0",
+            "name": "Bossk",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczo3",
+              "name": "Trandoshan",
+              "classification": "reptile"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjIz",
+          "node": {
+            "id": "cGVvcGxlOjI1",
+            "name": "Lando Calrissian",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjI0",
+          "node": {
+            "id": "cGVvcGxlOjI2",
+            "name": "Lobot",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjI1",
+          "node": {
+            "id": "cGVvcGxlOjI3",
+            "name": "Ackbar",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczo4",
+              "name": "Mon Calamari",
+              "classification": "amphibian"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjI2",
+          "node": {
+            "id": "cGVvcGxlOjI4",
+            "name": "Mon Mothma",
+            "gender": "female",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjI3",
+          "node": {
+            "id": "cGVvcGxlOjI5",
+            "name": "Arvel Crynyd",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjI4",
+          "node": {
+            "id": "cGVvcGxlOjMw",
+            "name": "Wicket Systri Warrick",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczo5",
+              "name": "Ewok",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjI5",
+          "node": {
+            "id": "cGVvcGxlOjMx",
+            "name": "Nien Nunb",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoxMA==",
+              "name": "Sullustan",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjMw",
+          "node": {
+            "id": "cGVvcGxlOjMy",
+            "name": "Qui-Gon Jinn",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjMx",
+          "node": {
+            "id": "cGVvcGxlOjMz",
+            "name": "Nute Gunray",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoxMQ==",
+              "name": "Neimodian",
+              "classification": "unknown"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjMy",
+          "node": {
+            "id": "cGVvcGxlOjM0",
+            "name": "Finis Valorum",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjMz",
+          "node": {
+            "id": "cGVvcGxlOjM1",
+            "name": "Padmé Amidala",
+            "gender": "female",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjM0",
+          "node": {
+            "id": "cGVvcGxlOjM2",
+            "name": "Jar Jar Binks",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoxMg==",
+              "name": "Gungan",
+              "classification": "amphibian"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjM1",
+          "node": {
+            "id": "cGVvcGxlOjM3",
+            "name": "Roos Tarpals",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoxMg==",
+              "name": "Gungan",
+              "classification": "amphibian"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjM2",
+          "node": {
+            "id": "cGVvcGxlOjM4",
+            "name": "Rugor Nass",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoxMg==",
+              "name": "Gungan",
+              "classification": "amphibian"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjM3",
+          "node": {
+            "id": "cGVvcGxlOjM5",
+            "name": "Ric Olié",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjM4",
+          "node": {
+            "id": "cGVvcGxlOjQw",
+            "name": "Watto",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoxMw==",
+              "name": "Toydarian",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjM5",
+          "node": {
+            "id": "cGVvcGxlOjQx",
+            "name": "Sebulba",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoxNA==",
+              "name": "Dug",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjQw",
+          "node": {
+            "id": "cGVvcGxlOjQy",
+            "name": "Quarsh Panaka",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjQx",
+          "node": {
+            "id": "cGVvcGxlOjQz",
+            "name": "Shmi Skywalker",
+            "gender": "female",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjQy",
+          "node": {
+            "id": "cGVvcGxlOjQ0",
+            "name": "Darth Maul",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoyMg==",
+              "name": "Zabrak",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjQz",
+          "node": {
+            "id": "cGVvcGxlOjQ1",
+            "name": "Bib Fortuna",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoxNQ==",
+              "name": "Twi'lek",
+              "classification": "mammals"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjQ0",
+          "node": {
+            "id": "cGVvcGxlOjQ2",
+            "name": "Ayla Secura",
+            "gender": "female",
+            "species": {
+              "id": "c3BlY2llczoxNQ==",
+              "name": "Twi'lek",
+              "classification": "mammals"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjQ1",
+          "node": {
+            "id": "cGVvcGxlOjQ3",
+            "name": "Ratts Tyerel",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoxNg==",
+              "name": "Aleena",
+              "classification": "reptile"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjQ2",
+          "node": {
+            "id": "cGVvcGxlOjQ4",
+            "name": "Dud Bolt",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoxNw==",
+              "name": "Vulptereen",
+              "classification": "unknown"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjQ3",
+          "node": {
+            "id": "cGVvcGxlOjQ5",
+            "name": "Gasgano",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoxOA==",
+              "name": "Xexto",
+              "classification": "unknown"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjQ4",
+          "node": {
+            "id": "cGVvcGxlOjUw",
+            "name": "Ben Quadinaros",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoxOQ==",
+              "name": "Toong",
+              "classification": "unknown"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjQ5",
+          "node": {
+            "id": "cGVvcGxlOjUx",
+            "name": "Mace Windu",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjUw",
+          "node": {
+            "id": "cGVvcGxlOjUy",
+            "name": "Ki-Adi-Mundi",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoyMA==",
+              "name": "Cerean",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjUx",
+          "node": {
+            "id": "cGVvcGxlOjUz",
+            "name": "Kit Fisto",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoyMQ==",
+              "name": "Nautolan",
+              "classification": "amphibian"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjUy",
+          "node": {
+            "id": "cGVvcGxlOjU0",
+            "name": "Eeth Koth",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoyMg==",
+              "name": "Zabrak",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjUz",
+          "node": {
+            "id": "cGVvcGxlOjU1",
+            "name": "Adi Gallia",
+            "gender": "female",
+            "species": {
+              "id": "c3BlY2llczoyMw==",
+              "name": "Tholothian",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjU0",
+          "node": {
+            "id": "cGVvcGxlOjU2",
+            "name": "Saesee Tiin",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoyNA==",
+              "name": "Iktotchi",
+              "classification": "unknown"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjU1",
+          "node": {
+            "id": "cGVvcGxlOjU3",
+            "name": "Yarael Poof",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoyNQ==",
+              "name": "Quermian",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjU2",
+          "node": {
+            "id": "cGVvcGxlOjU4",
+            "name": "Plo Koon",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoyNg==",
+              "name": "Kel Dor",
+              "classification": "unknown"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjU3",
+          "node": {
+            "id": "cGVvcGxlOjU5",
+            "name": "Mas Amedda",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoyNw==",
+              "name": "Chagrian",
+              "classification": "amphibian"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjU4",
+          "node": {
+            "id": "cGVvcGxlOjYw",
+            "name": "Gregar Typho",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjU5",
+          "node": {
+            "id": "cGVvcGxlOjYx",
+            "name": "Cordé",
+            "gender": "female",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjYw",
+          "node": {
+            "id": "cGVvcGxlOjYy",
+            "name": "Cliegg Lars",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjYx",
+          "node": {
+            "id": "cGVvcGxlOjYz",
+            "name": "Poggle the Lesser",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoyOA==",
+              "name": "Geonosian",
+              "classification": "insectoid"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjYy",
+          "node": {
+            "id": "cGVvcGxlOjY0",
+            "name": "Luminara Unduli",
+            "gender": "female",
+            "species": {
+              "id": "c3BlY2llczoyOQ==",
+              "name": "Mirialan",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjYz",
+          "node": {
+            "id": "cGVvcGxlOjY1",
+            "name": "Barriss Offee",
+            "gender": "female",
+            "species": {
+              "id": "c3BlY2llczoyOQ==",
+              "name": "Mirialan",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjY0",
+          "node": {
+            "id": "cGVvcGxlOjY2",
+            "name": "Dormé",
+            "gender": "female",
+            "species": {
+              "id": "c3BlY2llczox",
+              "name": "Human",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjY1",
+          "node": {
+            "id": "cGVvcGxlOjY3",
+            "name": "Dooku",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczox",
+              "name": "Human",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjY2",
+          "node": {
+            "id": "cGVvcGxlOjY4",
+            "name": "Bail Prestor Organa",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczox",
+              "name": "Human",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjY3",
+          "node": {
+            "id": "cGVvcGxlOjY5",
+            "name": "Jango Fett",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjY4",
+          "node": {
+            "id": "cGVvcGxlOjcw",
+            "name": "Zam Wesell",
+            "gender": "female",
+            "species": {
+              "id": "c3BlY2llczozMA==",
+              "name": "Clawdite",
+              "classification": "reptilian"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjY5",
+          "node": {
+            "id": "cGVvcGxlOjcx",
+            "name": "Dexter Jettster",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczozMQ==",
+              "name": "Besalisk",
+              "classification": "amphibian"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjcw",
+          "node": {
+            "id": "cGVvcGxlOjcy",
+            "name": "Lama Su",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczozMg==",
+              "name": "Kaminoan",
+              "classification": "amphibian"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjcx",
+          "node": {
+            "id": "cGVvcGxlOjcz",
+            "name": "Taun We",
+            "gender": "female",
+            "species": {
+              "id": "c3BlY2llczozMg==",
+              "name": "Kaminoan",
+              "classification": "amphibian"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjcy",
+          "node": {
+            "id": "cGVvcGxlOjc0",
+            "name": "Jocasta Nu",
+            "gender": "female",
+            "species": {
+              "id": "c3BlY2llczox",
+              "name": "Human",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjcz",
+          "node": {
+            "id": "cGVvcGxlOjc1",
+            "name": "R4-P17",
+            "gender": "female",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjc0",
+          "node": {
+            "id": "cGVvcGxlOjc2",
+            "name": "Wat Tambor",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczozMw==",
+              "name": "Skakoan",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjc1",
+          "node": {
+            "id": "cGVvcGxlOjc3",
+            "name": "San Hill",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczozNA==",
+              "name": "Muun",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjc2",
+          "node": {
+            "id": "cGVvcGxlOjc4",
+            "name": "Shaak Ti",
+            "gender": "female",
+            "species": {
+              "id": "c3BlY2llczozNQ==",
+              "name": "Togruta",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjc3",
+          "node": {
+            "id": "cGVvcGxlOjc5",
+            "name": "Grievous",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczozNg==",
+              "name": "Kaleesh",
+              "classification": "reptile"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjc4",
+          "node": {
+            "id": "cGVvcGxlOjgw",
+            "name": "Tarfful",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczoz",
+              "name": "Wookie",
+              "classification": "mammal"
+            }
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjc5",
+          "node": {
+            "id": "cGVvcGxlOjgx",
+            "name": "Raymus Antilles",
+            "gender": "male",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjgw",
+          "node": {
+            "id": "cGVvcGxlOjgy",
+            "name": "Sly Moore",
+            "gender": "female",
+            "species": null
+          }
+        },
+        {
+          "cursor": "YXJyYXljb25uZWN0aW9uOjgx",
+          "node": {
+            "id": "cGVvcGxlOjgz",
+            "name": "Tion Medon",
+            "gender": "male",
+            "species": {
+              "id": "c3BlY2llczozNw==",
+              "name": "Pau'an",
+              "classification": "mammal"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

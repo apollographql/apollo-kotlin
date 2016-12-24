@@ -1,0 +1,22 @@
+query TestQuery {
+  allPeople {
+    pageInfo {
+      startCursor
+      endCursor
+    }
+    totalCount
+    edges {
+      cursor
+      node {
+        id
+        name
+        gender
+        species {
+          id
+          name
+          classification
+        }
+      }
+    }
+  }
+}
