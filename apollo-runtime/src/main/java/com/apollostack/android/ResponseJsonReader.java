@@ -28,6 +28,26 @@ public class ResponseJsonReader extends ResponseStreamReader {
     jsonReader.skipValue();
   }
 
+  @Override public boolean isNextObject() throws IOException {
+    return jsonReader.peek() == JsonToken.BEGIN_OBJECT;
+  }
+
+  @Override public boolean isNextList() throws IOException {
+    return jsonReader.peek() == JsonToken.BEGIN_ARRAY;
+  }
+
+  @Override public boolean isNextNull() throws IOException {
+    return jsonReader.peek() == JsonToken.NULL;
+  }
+
+  @Override public boolean isNextBoolean() throws IOException {
+    return jsonReader.peek() == JsonToken.BOOLEAN;
+  }
+
+  @Override public boolean isNextNumber() throws IOException {
+    return jsonReader.peek() == JsonToken.NUMBER;
+  }
+
   @Override public String nextString() throws IOException {
     if (jsonReader.peek() == JsonToken.NULL) {
       throw new NullPointerException("can't parse response, expected non null json value");

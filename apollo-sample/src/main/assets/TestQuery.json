@@ -5,11 +5,12 @@
         "startCursor": "YXJyYXljb25uZWN0aW9uOjA=",
         "endCursor": "YXJyYXljb25uZWN0aW9uOjgx"
       },
-      "totalCount": null,
+      "totalCount": 82,
       "edges": [
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjA=",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjE=",
             "name": "Luke Skywalker",
             "gender": "male",
@@ -19,6 +20,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjE=",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjI=",
             "name": "C-3PO",
             "gender": "n/a",
@@ -32,6 +34,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjI=",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjM=",
             "name": "R2-D2",
             "gender": "n/a",
@@ -45,6 +48,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjM=",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjQ=",
             "name": "Darth Vader",
             "gender": "male",
@@ -54,6 +58,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjQ=",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjU=",
             "name": "Leia Organa",
             "gender": "female",
@@ -63,6 +68,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjU=",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjY=",
             "name": "Owen Lars",
             "gender": "male",
@@ -72,6 +78,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjY=",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjc=",
             "name": "Beru Whitesun lars",
             "gender": "female",
@@ -81,6 +88,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjc=",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjg=",
             "name": "R5-D4",
             "gender": "n/a",
@@ -94,6 +102,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjg=",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjk=",
             "name": "Biggs Darklighter",
             "gender": "male",
@@ -103,6 +112,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjk=",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjEw",
             "name": "Obi-Wan Kenobi",
             "gender": "male",
@@ -112,6 +122,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjEw",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjEx",
             "name": "Anakin Skywalker",
             "gender": "male",
@@ -121,6 +132,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjEx",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjEy",
             "name": "Wilhuff Tarkin",
             "gender": "male",
@@ -130,6 +142,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjEy",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjEz",
             "name": "Chewbacca",
             "gender": "male",
@@ -143,6 +156,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjEz",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjE0",
             "name": "Han Solo",
             "gender": "male",
@@ -152,6 +166,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjE0",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjE1",
             "name": "Greedo",
             "gender": "male",
@@ -165,6 +180,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjE1",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjE2",
             "name": "Jabba Desilijic Tiure",
             "gender": "hermaphrodite",
@@ -178,6 +194,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjE2",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjE4",
             "name": "Wedge Antilles",
             "gender": "male",
@@ -187,6 +204,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjE3",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjE5",
             "name": "Jek Tono Porkins",
             "gender": "male",
@@ -196,6 +214,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjE4",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjIw",
             "name": "Yoda",
             "gender": "male",
@@ -209,6 +228,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjE5",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjIx",
             "name": "Palpatine",
             "gender": "male",
@@ -218,6 +238,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjIw",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjIy",
             "name": "Boba Fett",
             "gender": "male",
@@ -227,6 +248,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjIx",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjIz",
             "name": "IG-88",
             "gender": "none",
@@ -240,6 +262,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjIy",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjI0",
             "name": "Bossk",
             "gender": "male",
@@ -253,6 +276,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjIz",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjI1",
             "name": "Lando Calrissian",
             "gender": "male",
@@ -262,6 +286,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjI0",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjI2",
             "name": "Lobot",
             "gender": "male",
@@ -271,6 +296,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjI1",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjI3",
             "name": "Ackbar",
             "gender": "male",
@@ -284,6 +310,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjI2",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjI4",
             "name": "Mon Mothma",
             "gender": "female",
@@ -293,6 +320,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjI3",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjI5",
             "name": "Arvel Crynyd",
             "gender": "male",
@@ -302,6 +330,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjI4",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjMw",
             "name": "Wicket Systri Warrick",
             "gender": "male",
@@ -315,6 +344,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjI5",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjMx",
             "name": "Nien Nunb",
             "gender": "male",
@@ -328,6 +358,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjMw",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjMy",
             "name": "Qui-Gon Jinn",
             "gender": "male",
@@ -337,6 +368,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjMx",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjMz",
             "name": "Nute Gunray",
             "gender": "male",
@@ -350,6 +382,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjMy",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjM0",
             "name": "Finis Valorum",
             "gender": "male",
@@ -359,6 +392,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjMz",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjM1",
             "name": "Padmé Amidala",
             "gender": "female",
@@ -368,6 +402,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjM0",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjM2",
             "name": "Jar Jar Binks",
             "gender": "male",
@@ -381,6 +416,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjM1",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjM3",
             "name": "Roos Tarpals",
             "gender": "male",
@@ -394,6 +430,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjM2",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjM4",
             "name": "Rugor Nass",
             "gender": "male",
@@ -407,6 +444,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjM3",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjM5",
             "name": "Ric Olié",
             "gender": "male",
@@ -416,6 +454,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjM4",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjQw",
             "name": "Watto",
             "gender": "male",
@@ -429,6 +468,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjM5",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjQx",
             "name": "Sebulba",
             "gender": "male",
@@ -442,6 +482,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjQw",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjQy",
             "name": "Quarsh Panaka",
             "gender": "male",
@@ -451,6 +492,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjQx",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjQz",
             "name": "Shmi Skywalker",
             "gender": "female",
@@ -460,6 +502,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjQy",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjQ0",
             "name": "Darth Maul",
             "gender": "male",
@@ -473,6 +516,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjQz",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjQ1",
             "name": "Bib Fortuna",
             "gender": "male",
@@ -486,6 +530,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjQ0",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjQ2",
             "name": "Ayla Secura",
             "gender": "female",
@@ -499,6 +544,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjQ1",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjQ3",
             "name": "Ratts Tyerel",
             "gender": "male",
@@ -512,6 +558,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjQ2",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjQ4",
             "name": "Dud Bolt",
             "gender": "male",
@@ -525,6 +572,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjQ3",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjQ5",
             "name": "Gasgano",
             "gender": "male",
@@ -538,6 +586,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjQ4",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjUw",
             "name": "Ben Quadinaros",
             "gender": "male",
@@ -551,6 +600,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjQ5",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjUx",
             "name": "Mace Windu",
             "gender": "male",
@@ -560,6 +610,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjUw",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjUy",
             "name": "Ki-Adi-Mundi",
             "gender": "male",
@@ -573,6 +624,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjUx",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjUz",
             "name": "Kit Fisto",
             "gender": "male",
@@ -586,6 +638,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjUy",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjU0",
             "name": "Eeth Koth",
             "gender": "male",
@@ -599,6 +652,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjUz",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjU1",
             "name": "Adi Gallia",
             "gender": "female",
@@ -612,6 +666,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjU0",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjU2",
             "name": "Saesee Tiin",
             "gender": "male",
@@ -625,6 +680,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjU1",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjU3",
             "name": "Yarael Poof",
             "gender": "male",
@@ -638,6 +694,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjU2",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjU4",
             "name": "Plo Koon",
             "gender": "male",
@@ -651,6 +708,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjU3",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjU5",
             "name": "Mas Amedda",
             "gender": "male",
@@ -664,6 +722,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjU4",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjYw",
             "name": "Gregar Typho",
             "gender": "male",
@@ -673,6 +732,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjU5",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjYx",
             "name": "Cordé",
             "gender": "female",
@@ -682,6 +742,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjYw",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjYy",
             "name": "Cliegg Lars",
             "gender": "male",
@@ -691,6 +752,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjYx",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjYz",
             "name": "Poggle the Lesser",
             "gender": "male",
@@ -704,6 +766,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjYy",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjY0",
             "name": "Luminara Unduli",
             "gender": "female",
@@ -717,6 +780,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjYz",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjY1",
             "name": "Barriss Offee",
             "gender": "female",
@@ -730,6 +794,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjY0",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjY2",
             "name": "Dormé",
             "gender": "female",
@@ -743,6 +808,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjY1",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjY3",
             "name": "Dooku",
             "gender": "male",
@@ -756,6 +822,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjY2",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjY4",
             "name": "Bail Prestor Organa",
             "gender": "male",
@@ -769,6 +836,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjY3",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjY5",
             "name": "Jango Fett",
             "gender": "male",
@@ -778,6 +846,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjY4",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjcw",
             "name": "Zam Wesell",
             "gender": "female",
@@ -791,6 +860,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjY5",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjcx",
             "name": "Dexter Jettster",
             "gender": "male",
@@ -804,6 +874,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjcw",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjcy",
             "name": "Lama Su",
             "gender": "male",
@@ -817,6 +888,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjcx",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjcz",
             "name": "Taun We",
             "gender": "female",
@@ -830,6 +902,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjcy",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjc0",
             "name": "Jocasta Nu",
             "gender": "female",
@@ -843,6 +916,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjcz",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjc1",
             "name": "R4-P17",
             "gender": "female",
@@ -852,6 +926,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjc0",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjc2",
             "name": "Wat Tambor",
             "gender": "male",
@@ -865,6 +940,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjc1",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjc3",
             "name": "San Hill",
             "gender": "male",
@@ -878,6 +954,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjc2",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjc4",
             "name": "Shaak Ti",
             "gender": "female",
@@ -891,6 +968,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjc3",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjc5",
             "name": "Grievous",
             "gender": "male",
@@ -904,6 +982,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjc4",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjgw",
             "name": "Tarfful",
             "gender": "male",
@@ -917,6 +996,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjc5",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjgx",
             "name": "Raymus Antilles",
             "gender": "male",
@@ -926,6 +1006,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjgw",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjgy",
             "name": "Sly Moore",
             "gender": "female",
@@ -935,6 +1016,7 @@
         {
           "cursor": "YXJyYXljb25uZWN0aW9uOjgx",
           "node": {
+            "__typename": "Person",
             "id": "cGVvcGxlOjgz",
             "name": "Tion Medon",
             "gender": "male",

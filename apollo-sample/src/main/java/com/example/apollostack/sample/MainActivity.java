@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apollostack.android.ResponseJsonReader;
+import com.apollostack.api.graphql.BufferedResponseStreamReader;
 import com.apollostack.api.graphql.Response;
 
 import java.io.BufferedReader;
@@ -49,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
           }
         });
 
-
     JsonReader jsonReader = null;
     try {
       InputStreamReader isr = new InputStreamReader(getAssets().open("TestQuery.json"));
@@ -57,7 +57,9 @@ public class MainActivity extends AppCompatActivity {
 
       jsonReader.beginObject();
       ResponseJsonReader responseReader = new ResponseJsonReader(jsonReader);
-      TestQueryResponse testQuery = new TestQueryResponse(responseReader);
+//      TestQuery testQuery = new TestQuery(responseReader);
+      TestQueryWithFragmentResponse testQuery = new TestQueryWithFragmentResponse(responseReader);
+
       jsonReader.endObject();
 
       System.out.println("MainActivity.onCreate: " + testQuery);

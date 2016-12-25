@@ -11,7 +11,17 @@ public abstract class ResponseStreamReader {
 
   public abstract boolean hasNext() throws IOException;
 
-  public abstract void skipNext()  throws IOException;
+  public abstract void skipNext() throws IOException;
+
+  public abstract boolean isNextObject() throws IOException;
+
+  public abstract boolean isNextList() throws IOException;
+
+  public abstract boolean isNextNull() throws IOException;
+
+  public abstract boolean isNextBoolean() throws IOException;
+
+  public abstract boolean isNextNumber() throws IOException;
 
   public abstract String nextName() throws IOException;
 
