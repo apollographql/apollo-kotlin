@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-final class MemoryBufferedResponseReader implements BufferedResponseReader {
+final class BufferedResponseJsonReader implements BufferedResponseReader {
   public final Map<String, Object> buffer;
 
-  MemoryBufferedResponseReader(Map<String, Object> buffer) {
+  BufferedResponseJsonReader(Map<String, Object> buffer) {
     this.buffer = buffer;
   }
 
@@ -76,7 +76,7 @@ final class MemoryBufferedResponseReader implements BufferedResponseReader {
     if (map == null) {
       throw new NullPointerException("can't parse response, expected non null value");
     }
-    return reader.read(new MemoryBufferedResponseReader(map));
+    return reader.read(new BufferedResponseJsonReader(map));
   }
 
   @Override public <T> T readOptionalObject(String responseName, String fieldName, NestedReader<T> reader) {
@@ -85,7 +85,7 @@ final class MemoryBufferedResponseReader implements BufferedResponseReader {
     if (map == null) {
       return null;
     }
-    return reader.read(new MemoryBufferedResponseReader(map));
+    return reader.read(new BufferedResponseJsonReader(map));
   }
 
   @Override public <T> List<T> readList(String responseName, String fieldName, NestedReader<T> reader) {
@@ -97,7 +97,7 @@ final class MemoryBufferedResponseReader implements BufferedResponseReader {
 
     List<T> result = new ArrayList<>();
     for (Map<String, Object> map : list) {
-      result.add(reader.read(new MemoryBufferedResponseReader(map)));
+      result.add(reader.read(new BufferedResponseJsonReader(map)));
     }
     return result;
   }
@@ -111,7 +111,7 @@ final class MemoryBufferedResponseReader implements BufferedResponseReader {
 
     List<T> result = new ArrayList<>();
     for (Map<String, Object> map : list) {
-      result.add(reader.read(new MemoryBufferedResponseReader(map)));
+      result.add(reader.read(new BufferedResponseJsonReader(map)));
     }
     return result;
   }

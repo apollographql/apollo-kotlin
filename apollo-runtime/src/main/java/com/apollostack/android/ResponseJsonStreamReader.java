@@ -169,7 +169,7 @@ public class ResponseJsonStreamReader implements ResponseStreamReader {
   }
 
   @Override public BufferedResponseReader toBufferedReader() throws IOException {
-    return new MemoryBufferedResponseReader(toMap());
+    return new BufferedResponseJsonReader(toMap());
   }
 
   private Map<String, Object> toMap() throws IOException {
