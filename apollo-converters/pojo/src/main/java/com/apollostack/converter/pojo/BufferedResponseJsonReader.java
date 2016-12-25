@@ -1,4 +1,4 @@
-package com.apollostack.android;
+package com.apollostack.converter.pojo;
 
 import com.apollostack.api.graphql.BufferedResponseReader;
 
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 final class BufferedResponseJsonReader implements BufferedResponseReader {
-  public final Map<String, Object> buffer;
+  private final Map<String, Object> buffer;
 
   BufferedResponseJsonReader(Map<String, Object> buffer) {
     this.buffer = buffer;
