@@ -1,8 +1,6 @@
 package com.example.apollostack.sample;
 
-import com.apollostack.api.graphql.BufferedResponseStreamReader;
-
-import java.lang.String;
+import com.apollostack.api.graphql.BufferedResponseReader;
 
 import javax.annotation.Nullable;
 
@@ -20,11 +18,11 @@ public class PeopleFragment {
 
   private @Nullable Specy species;
 
-  public PeopleFragment(BufferedResponseStreamReader streamReader) {
-    this.name = streamReader.readOptionalString("name", "name");
-    this.species = streamReader.readOptionalObject("species", "species", new BufferedResponseStreamReader.NestedReader<Specy>() {
-      @Override public Specy read(BufferedResponseStreamReader streamReader) {
-        return new Specy(streamReader);
+  public PeopleFragment(BufferedResponseReader reader) {
+    this.name = reader.readOptionalString("name", "name");
+    this.species = reader.readOptionalObject("species", "species", new BufferedResponseReader.NestedReader<Specy>() {
+      @Override public Specy read(BufferedResponseReader reader) {
+        return new Specy(reader);
       }
     });
   }
@@ -40,8 +38,8 @@ public class PeopleFragment {
   public static class Specy {
     private @Nullable String name;
 
-    public Specy(BufferedResponseStreamReader streamReader) {
-      this.name = streamReader.readOptionalString("name", "name");
+    public Specy(BufferedResponseReader reader) {
+      this.name = reader.readOptionalString("name", "name");
     }
 
     public @Nullable String name() {

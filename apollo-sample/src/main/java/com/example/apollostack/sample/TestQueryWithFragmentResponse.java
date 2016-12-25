@@ -1,6 +1,6 @@
 package com.example.apollostack.sample;
 
-import com.apollostack.api.graphql.BufferedResponseStreamReader;
+import com.apollostack.api.graphql.BufferedResponseReader;
 import com.apollostack.api.graphql.Operation;
 import com.apollostack.api.graphql.ResponseStreamReader;
 
@@ -104,7 +104,7 @@ public class TestQueryWithFragmentResponse {
             } else if ("node".equals(nextName)) {
               this.node = streamReader.nextOptionalObject(new ResponseStreamReader.NestedReader<Node>() {
                 @Override public Node read(ResponseStreamReader reader) throws IOException {
-                  return new Node(new BufferedResponseStreamReader(reader));
+                  return new Node(reader.toBufferedReader());
                 }
               });
             } else {
@@ -127,15 +127,15 @@ public class TestQueryWithFragmentResponse {
           private @Nullable Specy species;
           private Fragments fragments;
 
-          public Node(BufferedResponseStreamReader streamReader) {
-            this.name = streamReader.readOptionalString("name", "name");
-            this.gender = streamReader.readOptionalString("gender", "gender");
-            this.species = streamReader.readOptionalObject("species", "species", new BufferedResponseStreamReader.NestedReader<Specy>() {
-              @Override public Specy read(BufferedResponseStreamReader streamReader) {
-                return new Specy(streamReader);
+          public Node(BufferedResponseReader reader) {
+            this.name = reader.readOptionalString("name", "name");
+            this.gender = reader.readOptionalString("gender", "gender");
+            this.species = reader.readOptionalObject("species", "species", new BufferedResponseReader.NestedReader<Specy>() {
+              @Override public Specy read(BufferedResponseReader reader) {
+                return new Specy(reader);
               }
             });
-            this.fragments = new Fragments(streamReader, streamReader.readString("__typename", "__typename"));
+            this.fragments = new Fragments(reader, reader.readString("__typename", "__typename"));
           }
 
           public @Nullable String name() {
@@ -159,10 +159,10 @@ public class TestQueryWithFragmentResponse {
             private @Nullable String name;
             private @Nullable String classification;
 
-            public Specy(BufferedResponseStreamReader streamReader) {
-              this.id = streamReader.readString("id", "id");
-              this.name = streamReader.readOptionalString("name", "name");
-              this.classification = streamReader.readOptionalString("classification", "classification");
+            public Specy(BufferedResponseReader reader) {
+              this.id = reader.readString("id", "id");
+              this.name = reader.readOptionalString("name", "name");
+              this.classification = reader.readOptionalString("classification", "classification");
             }
 
             public @Nonnull String id() {
@@ -181,9 +181,9 @@ public class TestQueryWithFragmentResponse {
           public static class Fragments {
             private PeopleFragment peopleFragment;
 
-            public Fragments(BufferedResponseStreamReader streamReader, String typeName) {
+            public Fragments(BufferedResponseReader reader, String typeName) {
               if (typeName.equals(PeopleFragment.CONDITION_TYPE)) {
-                this.peopleFragment = new PeopleFragment(streamReader);
+                this.peopleFragment = new PeopleFragment(reader);
               }
             }
 

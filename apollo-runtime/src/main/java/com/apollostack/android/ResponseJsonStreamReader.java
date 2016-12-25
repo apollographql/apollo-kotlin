@@ -3,16 +3,20 @@ package com.apollostack.android;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
+import com.apollostack.api.graphql.BufferedResponseReader;
 import com.apollostack.api.graphql.ResponseStreamReader;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class ResponseJsonReader extends ResponseStreamReader {
+public class ResponseJsonStreamReader implements ResponseStreamReader {
   private final JsonReader jsonReader;
 
-  public ResponseJsonReader(JsonReader jsonReader) {
+  public ResponseJsonStreamReader(JsonReader jsonReader) {
     this.jsonReader = jsonReader;
   }
 
@@ -162,5 +166,61 @@ public class ResponseJsonReader extends ResponseStreamReader {
     }
     jsonReader.endArray();
     return result;
+  }
+
+  @Override public BufferedResponseReader toBufferedReader() throws IOException {
+    return new MemoryBufferedResponseReader(toMap());
+  }
+
+  private Map<String, Object> toMap() throws IOException {
+    Map<String, Object> result = new HashMap<>();
+    while (hasNext()) {
+      String name = nextName();
+      if (isNextNull()) {
+        skipNext();
+      } else if (isNextObject()) {
+        result.put(name, readObject());
+      } else if (isNextList()) {
+        result.put(name, readList());
+      } else {
+        result.put(name, readScalar());
+      }
+    }
+    return result;
+  }
+
+  private Map<String, Object> readObject() throws IOException {
+    return nextObject(new ResponseStreamReader.NestedReader<Map<String, Object>>() {
+      @Override public Map<String, Object> read(ResponseStreamReader reader) throws IOException {
+        return toMap();
+      }
+    });
+  }
+
+  private List<?> readList() throws IOException {
+    return nextList(new ResponseStreamReader.NestedReader() {
+      @Override public Object read(ResponseStreamReader reader) throws IOException {
+        if (reader.isNextObject()) {
+          return readObject();
+        } else if (reader.isNextList()) {
+          return readList();
+        } else {
+          return readScalar();
+        }
+      }
+    });
+  }
+
+  private Object readScalar() throws IOException {
+    if (isNextNull()) {
+      skipNext();
+      return null;
+    } else if (isNextBoolean()) {
+      return nextBoolean();
+    } else if (isNextNumber()) {
+      return new BigDecimal(nextString());
+    } else {
+      return nextString();
+    }
   }
 }

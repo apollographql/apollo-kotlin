@@ -7,14 +7,14 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.apollostack.android.ResponseJsonReader;
-import com.apollostack.api.graphql.BufferedResponseStreamReader;
+import com.apollostack.android.ResponseJsonStreamReader;
 import com.apollostack.api.graphql.Response;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 import generatedIR.DroidDetails;
+import generatedIR.TestQuery;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
       jsonReader = new JsonReader(new BufferedReader(isr));
 
       jsonReader.beginObject();
-      ResponseJsonReader responseReader = new ResponseJsonReader(jsonReader);
+      ResponseJsonStreamReader responseReader = new ResponseJsonStreamReader(jsonReader);
 //      TestQuery testQuery = new TestQuery(responseReader);
       TestQueryWithFragmentResponse testQuery = new TestQueryWithFragmentResponse(responseReader);
 
