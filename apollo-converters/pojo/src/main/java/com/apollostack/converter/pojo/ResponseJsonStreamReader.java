@@ -166,58 +166,6 @@ final class ResponseJsonStreamReader implements ResponseStreamReader {
   }
 
   @Override public BufferedResponseReader toBufferedReader() throws IOException {
-    return new BufferedResponseJsonReader(toMap());
-  }
-
-  private Map<String, Object> toMap() throws IOException {
-    Map<String, Object> result = new HashMap<>();
-    while (hasNext()) {
-      String name = nextName();
-      if (isNextNull()) {
-        skipNext();
-      } else if (isNextObject()) {
-        result.put(name, readObject());
-      } else if (isNextList()) {
-        result.put(name, readList());
-      } else {
-        result.put(name, readScalar());
-      }
-    }
-    return result;
-  }
-
-  private Map<String, Object> readObject() throws IOException {
-    return nextObject(new NestedReader<Map<String, Object>>() {
-      @Override public Map<String, Object> read(ResponseStreamReader reader) throws IOException {
-        return toMap();
-      }
-    });
-  }
-
-  private List<?> readList() throws IOException {
-    return nextList(new NestedReader() {
-      @Override public Object read(ResponseStreamReader reader) throws IOException {
-        if (reader.isNextObject()) {
-          return readObject();
-        } else if (reader.isNextList()) {
-          return readList();
-        } else {
-          return readScalar();
-        }
-      }
-    });
-  }
-
-  private Object readScalar() throws IOException {
-    if (isNextNull()) {
-      skipNext();
-      return null;
-    } else if (isNextBoolean()) {
-      return nextBoolean();
-    } else if (isNextNumber()) {
-      return new BigDecimal(nextString());
-    } else {
-      return nextString();
-    }
+    return BufferedResponseJsonReader.fromStreamReader(this);
   }
 }

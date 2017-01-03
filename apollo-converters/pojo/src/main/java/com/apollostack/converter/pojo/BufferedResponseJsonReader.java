@@ -1,16 +1,24 @@
 package com.apollostack.converter.pojo;
 
 import com.apollostack.api.graphql.BufferedResponseReader;
+import com.apollostack.api.graphql.ResponseStreamReader;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 final class BufferedResponseJsonReader implements BufferedResponseReader {
   private final Map<String, Object> buffer;
 
-  BufferedResponseJsonReader(Map<String, Object> buffer) {
+  static BufferedResponseJsonReader fromStreamReader(ResponseStreamReader streamReader) throws IOException {
+    Map<String, Object> buffer = toMap(streamReader);
+    return new BufferedResponseJsonReader(buffer);
+  }
+
+  private BufferedResponseJsonReader(Map<String, Object> buffer) {
     this.buffer = buffer;
   }
 
@@ -142,5 +150,57 @@ final class BufferedResponseJsonReader implements BufferedResponseReader {
       result.add(converter.convert(item));
     }
     return result;
+  }
+
+  private static Map<String, Object> toMap(ResponseStreamReader streamReader) throws IOException {
+    Map<String, Object> result = new HashMap<>();
+    while (streamReader.hasNext()) {
+      String name = streamReader.nextName();
+      if (streamReader.isNextNull()) {
+        streamReader.skipNext();
+      } else if (streamReader.isNextObject()) {
+        result.put(name, readObject(streamReader));
+      } else if (streamReader.isNextList()) {
+        result.put(name, readList(streamReader));
+      } else {
+        result.put(name, readScalar(streamReader));
+      }
+    }
+    return result;
+  }
+
+  private static Map<String, Object> readObject(final ResponseStreamReader streamReader) throws IOException {
+    return streamReader.nextObject(new ResponseStreamReader.NestedReader<Map<String, Object>>() {
+      @Override public Map<String, Object> read(ResponseStreamReader reader) throws IOException {
+        return toMap(streamReader);
+      }
+    });
+  }
+
+  private static List<?> readList(final ResponseStreamReader streamReader) throws IOException {
+    return streamReader.nextList(new ResponseStreamReader.NestedReader() {
+      @Override public Object read(ResponseStreamReader reader) throws IOException {
+        if (reader.isNextObject()) {
+          return readObject(streamReader);
+        } else if (reader.isNextList()) {
+          return readList(streamReader);
+        } else {
+          return readScalar(streamReader);
+        }
+      }
+    });
+  }
+
+  private static Object readScalar(ResponseStreamReader streamReader) throws IOException {
+    if (streamReader.isNextNull()) {
+      streamReader.skipNext();
+      return null;
+    } else if (streamReader.isNextBoolean()) {
+      return streamReader.nextBoolean();
+    } else if (streamReader.isNextNumber()) {
+      return new BigDecimal(streamReader.nextString());
+    } else {
+      return streamReader.nextString();
+    }
   }
 }

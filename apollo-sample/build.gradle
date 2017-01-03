@@ -32,6 +32,7 @@ android {
 dependencies {
   compile dep.appcompat
   compile dep.jsr305
+  compile dep.retrofitMoshiConverter
   compile project(':apollo-converters:moshi')
   compile project(':apollo-converters:pojo')
   compile project(":apollo-runtime")
