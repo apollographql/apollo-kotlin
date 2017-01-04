@@ -3,33 +3,33 @@ package com.apollostack.android.gradle
 import com.moowork.gradle.node.npm.NpmTask
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
+import org.gradle.api.tasks.OutputDirectory
 
 class ApolloCodeGenInstallTask extends NpmTask {
   static final String NAME = "installApolloCodegen"
   static final String INSTALL_DIR = "node_modules/apollo-codegen"
   static final String APOLLOCODEGEN_VERSION = "0.10.1"
 
+  @OutputDirectory
+  File installDir
+
   public ApolloCodeGenInstallTask() {
     group = ApolloPlugin.TASK_GROUP
     description = "Runs npm install for apollo-codegen"
+    installDir = project.file(INSTALL_DIR)
+
     File apolloPackageFile = project.file("package.json")
-    File installDir = project.file(INSTALL_DIR)
 
     if (!apolloPackageFile.isFile()) {
       apolloPackageFile.write(buildApolloAndroidPackage())
       outputs.upToDateWhen { false }
     }
 
-    if (!installDir.exists()) {
-      installDir.mkdirs()
-    } else {
-      if (!apolloVersion()?.equals(APOLLOCODEGEN_VERSION)) {
-        outputs.upToDateWhen { false }
-      }
+    if (!apolloVersion()?.equals(APOLLOCODEGEN_VERSION)) {
+      outputs.upToDateWhen { false }
     }
 
     setArgs(["install", "apollo-codegen@$APOLLOCODEGEN_VERSION", "--save", "--save-exact"])
-    getOutputs().dir(installDir)
   }
 
   String apolloVersion() {

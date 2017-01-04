@@ -1,8 +1,8 @@
-package com.apollostack.android.gradle.project
+package com.apollostack.android.gradle.unit
 
 import com.apollostack.android.gradle.ApolloCodeGenInstallTask
 import com.apollostack.android.gradle.ApolloPlugin
-import com.apollostack.android.gradle.Utils
+import com.apollostack.android.gradle.ApolloPluginTestHelper
 import groovy.json.JsonSlurper
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
@@ -11,10 +11,10 @@ class ApolloCodeGenInstallTaskSpec extends Specification {
   def "creates a task under the apollo group"() {
     setup:
     def project = ProjectBuilder.builder().build()
-    Utils.setupDefaultAndroidProject(project)
+    ApolloPluginTestHelper.setupDefaultAndroidProject(project)
 
     when:
-    Utils.applyApolloPlugin(project)
+    ApolloPluginTestHelper.applyApolloPlugin(project)
 
     then:
     def task = project.tasks.getByName(ApolloCodeGenInstallTask.NAME)
@@ -25,10 +25,10 @@ class ApolloCodeGenInstallTaskSpec extends Specification {
   def "creates a task that depends on nodeSetup"() {
     setup:
     def project = ProjectBuilder.builder().build()
-    Utils.setupDefaultAndroidProject(project)
+    ApolloPluginTestHelper.setupDefaultAndroidProject(project)
 
     when:
-    Utils.applyApolloPlugin(project)
+    ApolloPluginTestHelper.applyApolloPlugin(project)
 
     then:
     def task = project.tasks.getByName(ApolloCodeGenInstallTask.NAME)
@@ -38,10 +38,10 @@ class ApolloCodeGenInstallTaskSpec extends Specification {
   def "configures the npm install params"() {
     setup:
     def project = ProjectBuilder.builder().build()
-    Utils.setupDefaultAndroidProject(project)
+    ApolloPluginTestHelper.setupDefaultAndroidProject(project)
 
     when:
-    Utils.applyApolloPlugin(project)
+    ApolloPluginTestHelper.applyApolloPlugin(project)
 
     then:
     project.tasks.getByName(ApolloCodeGenInstallTask.NAME).args.equals(
@@ -51,25 +51,24 @@ class ApolloCodeGenInstallTaskSpec extends Specification {
   def "task creates node_modules/apollo-codegen output dir"() {
     setup:
     def project = ProjectBuilder.builder().build()
-    Utils.setupDefaultAndroidProject(project)
+    ApolloPluginTestHelper.setupDefaultAndroidProject(project)
 
     when:
-    Utils.applyApolloPlugin(project)
+    ApolloPluginTestHelper.applyApolloPlugin(project)
 
     then:
     project.tasks.getByName(ApolloCodeGenInstallTask.NAME).outputs.hasOutput
     project.tasks.getByName(ApolloCodeGenInstallTask.NAME).outputs.files
         .contains(project.file(ApolloCodeGenInstallTask.INSTALL_DIR))
-    project.file(ApolloCodeGenInstallTask.INSTALL_DIR).exists()
   }
 
   def "task creates a package.json file in project root"() {
     setup:
     def project = ProjectBuilder.builder().build()
-    Utils.setupDefaultAndroidProject(project)
+    ApolloPluginTestHelper.setupDefaultAndroidProject(project)
 
     when:
-    Utils.applyApolloPlugin(project)
+    ApolloPluginTestHelper.applyApolloPlugin(project)
 
     then:
     File packageFile = project.file("package.json")

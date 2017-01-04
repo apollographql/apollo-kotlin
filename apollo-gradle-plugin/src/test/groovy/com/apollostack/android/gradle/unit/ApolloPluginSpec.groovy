@@ -1,9 +1,9 @@
-package com.apollostack.android.gradle.project
+package com.apollostack.android.gradle.unit
 
 import com.apollostack.android.gradle.ApolloExtension
 import com.apollostack.android.gradle.ApolloIRGenTask
 import com.apollostack.android.gradle.ApolloPlugin
-import com.apollostack.android.gradle.Utils
+import com.apollostack.android.gradle.ApolloPluginTestHelper
 import com.moowork.gradle.node.NodePlugin
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
@@ -12,10 +12,10 @@ class ApolloPluginSpec extends Specification {
   def "creates an IRGen task under the apollo group for a default project"() {
     setup:
     def project = ProjectBuilder.builder().build()
-    Utils.setupDefaultAndroidProject(project)
+    ApolloPluginTestHelper.setupDefaultAndroidProject(project)
 
     when:
-    Utils.applyApolloPlugin(project)
+    ApolloPluginTestHelper.applyApolloPlugin(project)
 
     def debugTask = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "Debug"))
     def releaseTask = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "Release"))
@@ -32,10 +32,10 @@ class ApolloPluginSpec extends Specification {
     setup:
     def project = ProjectBuilder.builder().build()
     def flavors = ["Demo", "Full"]
-    Utils.setupAndroidProjectWithProductFlavours(project)
+    ApolloPluginTestHelper.setupAndroidProjectWithProductFlavours(project)
 
     when:
-    Utils.applyApolloPlugin(project)
+    ApolloPluginTestHelper.applyApolloPlugin(project)
 
     then:
     flavors.each { flavor ->
@@ -53,10 +53,10 @@ class ApolloPluginSpec extends Specification {
   def "adds the node plugin to the project"() {
     given:
     def project = ProjectBuilder.builder().build()
-    Utils.setupDefaultAndroidProject(project)
+    ApolloPluginTestHelper.setupDefaultAndroidProject(project)
 
     when:
-    Utils.applyApolloPlugin(project)
+    ApolloPluginTestHelper.applyApolloPlugin(project)
 
     then:
     project.plugins.hasPlugin(NodePlugin.class)
@@ -65,10 +65,10 @@ class ApolloPluginSpec extends Specification {
   def "adds extensions for all sourceSets in a default project"() {
     given:
     def project = ProjectBuilder.builder().build()
-    Utils.setupDefaultAndroidProject(project)
+    ApolloPluginTestHelper.setupDefaultAndroidProject(project)
 
     when:
-    Utils.applyApolloPlugin(project)
+    ApolloPluginTestHelper.applyApolloPlugin(project)
 
     then:
     project.android.sourceSets.all { sourceSet ->
@@ -80,10 +80,10 @@ class ApolloPluginSpec extends Specification {
   def "adds extensions for all sourceSets in a product-flavoured project"() {
     given:
     def project = ProjectBuilder.builder().build()
-    Utils.setupAndroidProjectWithProductFlavours(project)
+    ApolloPluginTestHelper.setupAndroidProjectWithProductFlavours(project)
 
     when:
-    Utils.applyApolloPlugin(project)
+    ApolloPluginTestHelper.applyApolloPlugin(project)
 
     then:
     project.android.sourceSets.all { sourceSet ->
