@@ -1,0 +1,8 @@
+query Films {
+  allFilms {
+    films {
+      id
+      title
+    }
+  }
+}

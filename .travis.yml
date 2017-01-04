@@ -20,6 +20,9 @@ branches:
   except:
     - gh-pages
 
+notifications:
+  email: false
+
 sudo: false
 
 cache:

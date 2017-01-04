@@ -19,12 +19,10 @@ class ApolloCodeGenInstallTask extends NpmTask {
     installDir = project.file(INSTALL_DIR)
 
     File apolloPackageFile = project.file("package.json")
-
     if (!apolloPackageFile.isFile()) {
       apolloPackageFile.write(buildApolloAndroidPackage())
       outputs.upToDateWhen { false }
     }
-
     if (!apolloVersion()?.equals(APOLLOCODEGEN_VERSION)) {
       outputs.upToDateWhen { false }
     }
