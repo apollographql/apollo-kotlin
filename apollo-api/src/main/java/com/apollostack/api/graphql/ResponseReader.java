@@ -3,9 +3,9 @@ package com.apollostack.api.graphql;
 import java.util.List;
 
 /** TODO java doc **/
-public interface BufferedResponseReader {
+public interface ResponseReader {
   interface NestedReader<T> {
-    T read(BufferedResponseReader streamReader);
+    T read(ResponseReader streamReader);
   }
 
   interface Converter<T> {

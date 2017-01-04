@@ -1,6 +1,6 @@
 package com.apollostack.converter.pojo;
 
-import com.apollostack.api.graphql.BufferedResponseReader;
+import com.apollostack.api.graphql.ResponseReader;
 import com.apollostack.api.graphql.ResponseStreamReader;
 
 import java.io.IOException;
@@ -10,15 +10,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-final class BufferedResponseJsonReader implements BufferedResponseReader {
+final class BufferedResponseReader implements ResponseReader {
   private final Map<String, Object> buffer;
 
-  static BufferedResponseJsonReader fromStreamReader(ResponseStreamReader streamReader) throws IOException {
+  static BufferedResponseReader fromStreamReader(ResponseStreamReader streamReader) throws IOException {
     Map<String, Object> buffer = toMap(streamReader);
-    return new BufferedResponseJsonReader(buffer);
+    return new BufferedResponseReader(buffer);
   }
 
-  private BufferedResponseJsonReader(Map<String, Object> buffer) {
+  private BufferedResponseReader(Map<String, Object> buffer) {
     this.buffer = buffer;
   }
 
@@ -84,7 +84,7 @@ final class BufferedResponseJsonReader implements BufferedResponseReader {
     if (map == null) {
       throw new NullPointerException("can't parse response, expected non null value");
     }
-    return reader.read(new BufferedResponseJsonReader(map));
+    return reader.read(new BufferedResponseReader(map));
   }
 
   @Override public <T> T readOptionalObject(String responseName, String fieldName, NestedReader<T> reader) {
@@ -93,7 +93,7 @@ final class BufferedResponseJsonReader implements BufferedResponseReader {
     if (map == null) {
       return null;
     }
-    return reader.read(new BufferedResponseJsonReader(map));
+    return reader.read(new BufferedResponseReader(map));
   }
 
   @Override public <T> List<T> readList(String responseName, String fieldName, NestedReader<T> reader) {
@@ -105,7 +105,7 @@ final class BufferedResponseJsonReader implements BufferedResponseReader {
 
     List<T> result = new ArrayList<>();
     for (Map<String, Object> map : list) {
-      result.add(reader.read(new BufferedResponseJsonReader(map)));
+      result.add(reader.read(new BufferedResponseReader(map)));
     }
     return result;
   }
@@ -119,7 +119,7 @@ final class BufferedResponseJsonReader implements BufferedResponseReader {
 
     List<T> result = new ArrayList<>();
     for (Map<String, Object> map : list) {
-      result.add(reader.read(new BufferedResponseJsonReader(map)));
+      result.add(reader.read(new BufferedResponseReader(map)));
     }
     return result;
   }

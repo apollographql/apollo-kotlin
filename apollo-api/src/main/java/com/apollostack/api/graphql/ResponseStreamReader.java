@@ -53,5 +53,5 @@ public interface ResponseStreamReader {
 
   <T> List<T> nexOptionalList(NestedReader<T> nestedReader) throws IOException;
 
-  BufferedResponseReader toBufferedReader() throws IOException;
+  ResponseReader toBufferedReader() throws IOException;
 }

@@ -1,6 +1,6 @@
 package com.example.apollostack.sample;
 
-import com.apollostack.api.graphql.BufferedResponseReader;
+import com.apollostack.api.graphql.ResponseReader;
 
 import javax.annotation.Nullable;
 
@@ -18,10 +18,10 @@ public class PeopleFragment {
 
   private @Nullable Specy species;
 
-  public PeopleFragment(BufferedResponseReader reader) {
+  public PeopleFragment(ResponseReader reader) {
     this.name = reader.readOptionalString("name", "name");
-    this.species = reader.readOptionalObject("species", "species", new BufferedResponseReader.NestedReader<Specy>() {
-      @Override public Specy read(BufferedResponseReader reader) {
+    this.species = reader.readOptionalObject("species", "species", new ResponseReader.NestedReader<Specy>() {
+      @Override public Specy read(ResponseReader reader) {
         return new Specy(reader);
       }
     });
@@ -38,7 +38,7 @@ public class PeopleFragment {
   public static class Specy {
     private @Nullable String name;
 
-    public Specy(BufferedResponseReader reader) {
+    public Specy(ResponseReader reader) {
       this.name = reader.readOptionalString("name", "name");
     }
 

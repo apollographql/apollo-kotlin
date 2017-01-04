@@ -1,14 +1,11 @@
 package com.apollostack.converter.pojo;
 
-import com.apollostack.api.graphql.BufferedResponseReader;
+import com.apollostack.api.graphql.ResponseReader;
 import com.apollostack.api.graphql.ResponseStreamReader;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 final class ResponseJsonStreamReader implements ResponseStreamReader {
   private final JsonReader jsonReader;
@@ -165,7 +162,7 @@ final class ResponseJsonStreamReader implements ResponseStreamReader {
     return result;
   }
 
-  @Override public BufferedResponseReader toBufferedReader() throws IOException {
-    return BufferedResponseJsonReader.fromStreamReader(this);
+  @Override public ResponseReader toBufferedReader() throws IOException {
+    return BufferedResponseReader.fromStreamReader(this);
   }
 }

@@ -1,6 +1,6 @@
 package com.example.apollostack.sample;
 
-import com.apollostack.api.graphql.BufferedResponseReader;
+import com.apollostack.api.graphql.ResponseReader;
 import com.apollostack.api.graphql.Operation;
 import com.apollostack.api.graphql.ResponseStreamReader;
 
@@ -104,11 +104,11 @@ public class TestQueryWithFragmentResponseData implements Operation.Data {
         private @Nullable Specy species;
         private Fragments fragments;
 
-        public Node(BufferedResponseReader reader) {
+        public Node(ResponseReader reader) {
           this.name = reader.readOptionalString("name", "name");
           this.gender = reader.readOptionalString("gender", "gender");
-          this.species = reader.readOptionalObject("species", "species", new BufferedResponseReader.NestedReader<Specy>() {
-            @Override public Specy read(BufferedResponseReader reader) {
+          this.species = reader.readOptionalObject("species", "species", new ResponseReader.NestedReader<Specy>() {
+            @Override public Specy read(ResponseReader reader) {
               return new Specy(reader);
             }
           });
@@ -136,7 +136,7 @@ public class TestQueryWithFragmentResponseData implements Operation.Data {
           private @Nullable String name;
           private @Nullable String classification;
 
-          public Specy(BufferedResponseReader reader) {
+          public Specy(ResponseReader reader) {
             this.id = reader.readString("id", "id");
             this.name = reader.readOptionalString("name", "name");
             this.classification = reader.readOptionalString("classification", "classification");
@@ -158,7 +158,7 @@ public class TestQueryWithFragmentResponseData implements Operation.Data {
         public static class Fragments {
           private PeopleFragment peopleFragment;
 
-          public Fragments(BufferedResponseReader reader, String typeName) {
+          public Fragments(ResponseReader reader, String typeName) {
             if (typeName.equals(PeopleFragment.CONDITION_TYPE)) {
               this.peopleFragment = new PeopleFragment(reader);
             }
