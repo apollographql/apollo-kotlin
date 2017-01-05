@@ -8,16 +8,6 @@ public interface ResponseStreamReader extends ResponseReader {
 
   void skipNext() throws IOException;
 
-  boolean isNextObject() throws IOException;
-
-  boolean isNextList() throws IOException;
-
-  boolean isNextNull() throws IOException;
-
-  boolean isNextBoolean() throws IOException;
-
-  boolean isNextNumber() throws IOException;
-
   String nextName() throws IOException;
 
   ResponseReader buffer() throws IOException;

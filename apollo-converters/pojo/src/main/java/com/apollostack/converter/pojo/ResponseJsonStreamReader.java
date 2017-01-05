@@ -29,26 +29,6 @@ final class ResponseJsonStreamReader implements ResponseStreamReader {
     jsonReader.skipValue();
   }
 
-  @Override public boolean isNextObject() throws IOException {
-    return jsonReader.peek() == JsonReader.Token.BEGIN_OBJECT;
-  }
-
-  @Override public boolean isNextList() throws IOException {
-    return jsonReader.peek() == JsonReader.Token.BEGIN_ARRAY;
-  }
-
-  @Override public boolean isNextNull() throws IOException {
-    return jsonReader.peek() == JsonReader.Token.NULL;
-  }
-
-  @Override public boolean isNextBoolean() throws IOException {
-    return jsonReader.peek() == JsonReader.Token.BOOLEAN;
-  }
-
-  @Override public boolean isNextNumber() throws IOException {
-    return jsonReader.peek() == JsonReader.Token.NUMBER;
-  }
-
   @Override
   public String readString(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
     return nextString();
@@ -244,6 +224,26 @@ final class ResponseJsonStreamReader implements ResponseStreamReader {
     }
     jsonReader.endArray();
     return result;
+  }
+
+  private boolean isNextObject() throws IOException {
+    return jsonReader.peek() == JsonReader.Token.BEGIN_OBJECT;
+  }
+
+  private boolean isNextList() throws IOException {
+    return jsonReader.peek() == JsonReader.Token.BEGIN_ARRAY;
+  }
+
+  private boolean isNextNull() throws IOException {
+    return jsonReader.peek() == JsonReader.Token.NULL;
+  }
+
+  private boolean isNextBoolean() throws IOException {
+    return jsonReader.peek() == JsonReader.Token.BOOLEAN;
+  }
+
+  private boolean isNextNumber() throws IOException {
+    return jsonReader.peek() == JsonReader.Token.NUMBER;
   }
 
   private static Map<String, Object> toMap(ResponseJsonStreamReader streamReader) throws IOException {
