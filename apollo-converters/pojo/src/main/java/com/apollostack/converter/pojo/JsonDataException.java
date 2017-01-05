@@ -15,7 +15,6 @@
  */
 package com.apollostack.converter.pojo;
 
-import com.squareup.moshi.JsonReader;
 
 /**
  * Thrown when the data in a JSON document doesn't match the data expected by the caller. For
