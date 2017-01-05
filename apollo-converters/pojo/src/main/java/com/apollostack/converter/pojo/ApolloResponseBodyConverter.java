@@ -3,6 +3,7 @@ package com.apollostack.converter.pojo;
 import com.apollostack.api.graphql.Error;
 import com.apollostack.api.graphql.Operation;
 import com.apollostack.api.graphql.Response;
+import com.apollostack.api.graphql.ResponseReader;
 import com.apollostack.api.graphql.ResponseStreamReader;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
     BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(value.source());
     jsonReader.beginObject();
 
-    ResponseStreamReader responseStreamReader = new ResponseJsonStreamReader(jsonReader);
+    ResponseJsonStreamReader responseStreamReader = new ResponseJsonStreamReader(jsonReader);
     Operation.Data data = null;
     List<Error> errors = null;
     while (responseStreamReader.hasNext()) {
@@ -42,12 +43,13 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
     return new Response<>(data, errors);
   }
 
-  private Operation.Data readResponseData(ResponseStreamReader reader) throws IOException {
-    return reader.nextObject(new ResponseStreamReader.NestedReader<Operation.Data>() {
-      @Override public Operation.Data read(ResponseStreamReader reader) throws IOException {
+  private Operation.Data readResponseData(ResponseJsonStreamReader reader) throws IOException {
+    return reader.readObject("", "", null, new ResponseReader.NestedReader<Operation.Data>() {
+      @Override public Operation.Data read(ResponseReader reader) throws IOException {
         //noinspection TryWithIdenticalCatches
         try {
-          return (Operation.Data) ((Class<?>) type).getConstructor(ResponseStreamReader.class).newInstance(reader);
+          return (Operation.Data) ((Class<?>) type).getConstructor(ResponseStreamReader.class).newInstance(
+              (ResponseStreamReader) reader);
         } catch (InstantiationException e) {
           throw new RuntimeException("Can't instantiate " + type, e);
         } catch (IllegalAccessException e) {
@@ -61,15 +63,15 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
     });
   }
 
-  private List<Error> readResponseErrors(ResponseStreamReader reader) throws IOException {
-    return reader.nextList(new ResponseStreamReader.NestedReader<Error>() {
-      @Override public Error read(ResponseStreamReader reader) throws IOException {
-        return readError(reader);
+  private List<Error> readResponseErrors(ResponseJsonStreamReader reader) throws IOException {
+    return reader.nextList(new ResponseReader.NestedReader<Error>() {
+      @Override public Error read(ResponseReader reader) throws IOException {
+        return readError((ResponseJsonStreamReader) reader);
       }
     });
   }
 
-  private Error readError(ResponseStreamReader reader) throws IOException {
+  private Error readError(ResponseJsonStreamReader reader) throws IOException {
     String message = null;
     List<Error.Location> locations = null;
     while (reader.hasNext()) {
@@ -77,9 +79,9 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
       if ("message".equals(name)) {
         message = reader.nextString();
       } else if ("locations".equals(name)) {
-        locations = reader.nextList(new ResponseStreamReader.NestedReader<Error.Location>() {
-          @Override public Error.Location read(ResponseStreamReader reader) throws IOException {
-            return readErrorLocation(reader);
+        locations = reader.nextList(new ResponseReader.NestedReader<Error.Location>() {
+          @Override public Error.Location read(ResponseReader reader) throws IOException {
+            return readErrorLocation((ResponseJsonStreamReader) reader);
           }
         });
       } else {
@@ -89,7 +91,7 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
     return new Error(message, locations);
   }
 
-  private Error.Location readErrorLocation(ResponseStreamReader reader) throws IOException {
+  private Error.Location readErrorLocation(ResponseJsonStreamReader reader) throws IOException {
     long line = -1;
     long column = -1;
     while (reader.hasNext()) {

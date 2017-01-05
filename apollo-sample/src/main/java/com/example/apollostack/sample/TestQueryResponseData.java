@@ -1,6 +1,7 @@
 package com.example.apollostack.sample;
 
 import com.apollostack.api.graphql.Operation;
+import com.apollostack.api.graphql.ResponseReader;
 import com.apollostack.api.graphql.ResponseStreamReader;
 
 import java.io.IOException;
@@ -16,11 +17,12 @@ public class TestQueryResponseData implements Operation.Data {
     while (streamReader.hasNext()) {
       String nextName = streamReader.nextName();
       if ("allPeople".equals(nextName)) {
-        this.allPeople = streamReader.nextOptionalObject(new ResponseStreamReader.NestedReader<AllPeople>() {
-          @Override public AllPeople read(ResponseStreamReader reader) throws IOException {
-            return new AllPeople(reader);
-          }
-        });
+        this.allPeople = streamReader.readOptionalObject("allPeople", "allPeople", null,
+            new ResponseReader.NestedReader<AllPeople>() {
+              @Override public AllPeople read(ResponseReader reader) throws IOException {
+                return new AllPeople((ResponseStreamReader) reader);
+              }
+            });
       } else {
         streamReader.skipNext();
       }
@@ -39,17 +41,14 @@ public class TestQueryResponseData implements Operation.Data {
       while (streamReader.hasNext()) {
         String nextName = streamReader.nextName();
         if ("totalCount".equals(nextName)) {
-          this.totalCount = streamReader.nextOptionalInt();
+          this.totalCount = streamReader.readOptionalInt("totalCount", "totalCount", null);
         } else if ("edges".equals(nextName)) {
-          this.edges = streamReader.nextList(new ResponseStreamReader.NestedReader<Edge>() {
-            @Override public Edge read(ResponseStreamReader reader) throws IOException {
-              return reader.nextObject(new ResponseStreamReader.NestedReader<Edge>() {
-                @Override public Edge read(ResponseStreamReader reader) throws IOException {
-                  return new Edge(reader);
+          this.edges = streamReader.readOptionalList("edges", "edges", null,
+              new ResponseReader.NestedReader<Edge>() {
+                @Override public Edge read(ResponseReader reader) throws IOException {
+                  return new Edge((ResponseStreamReader) reader);
                 }
               });
-            }
-          });
         } else {
           streamReader.skipNext();
         }
@@ -72,13 +71,14 @@ public class TestQueryResponseData implements Operation.Data {
         while (streamReader.hasNext()) {
           String nextName = streamReader.nextName();
           if ("cursor".equals(nextName)) {
-            this.cursor = streamReader.nextString();
+            this.cursor = streamReader.readString("cursor", "cursor", null);
           } else if ("node".equals(nextName)) {
-            this.node = streamReader.nextOptionalObject(new ResponseStreamReader.NestedReader<Node>() {
-              @Override public Node read(ResponseStreamReader reader) throws IOException {
-                return new Node(reader);
-              }
-            });
+            this.node = streamReader.readOptionalObject("node", "node", null,
+                new ResponseReader.NestedReader<Node>() {
+                  @Override public Node read(ResponseReader reader) throws IOException {
+                    return new Node((ResponseStreamReader) reader);
+                  }
+                });
           } else {
             streamReader.skipNext();
           }
@@ -102,15 +102,16 @@ public class TestQueryResponseData implements Operation.Data {
           while (streamReader.hasNext()) {
             String nextName = streamReader.nextName();
             if ("name".equals(nextName)) {
-              this.name = streamReader.nextOptionalString();
+              this.name = streamReader.readOptionalString("name", "name", null);
             } else if ("gender".equals(nextName)) {
-              this.gender = streamReader.nextOptionalString();
+              this.gender = streamReader.readOptionalString("gender", "gender", null);
             } else if ("species".equals(nextName)) {
-              this.species = streamReader.nextOptionalObject(new ResponseStreamReader.NestedReader<Specy>() {
-                @Override public Specy read(ResponseStreamReader reader) throws IOException {
-                  return new Specy(reader);
-                }
-              });
+              this.species = streamReader.readOptionalObject("species", "species", null,
+                  new ResponseReader.NestedReader<Specy>() {
+                    @Override public Specy read(ResponseReader reader) throws IOException {
+                      return new Specy((ResponseStreamReader) reader);
+                    }
+                  });
             } else {
               streamReader.skipNext();
             }
@@ -138,9 +139,9 @@ public class TestQueryResponseData implements Operation.Data {
           while (streamReader.hasNext()) {
             String nextName = streamReader.nextName();
             if ("name".equals(nextName)) {
-              this.name = streamReader.nextOptionalString();
+              this.name = streamReader.readOptionalString("name", "name", null);
             } else if ("classification".equals(nextName)) {
-              this.classification = streamReader.nextOptionalString();
+              this.classification = streamReader.readOptionalString("classification", "classification", null);
             } else {
               streamReader.skipNext();
             }

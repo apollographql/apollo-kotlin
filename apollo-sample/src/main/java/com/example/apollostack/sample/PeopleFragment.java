@@ -2,6 +2,8 @@ package com.example.apollostack.sample;
 
 import com.apollostack.api.graphql.ResponseReader;
 
+import java.io.IOException;
+
 import javax.annotation.Nullable;
 
 public class PeopleFragment {
@@ -18,13 +20,14 @@ public class PeopleFragment {
 
   private @Nullable Specy species;
 
-  public PeopleFragment(ResponseReader reader) {
-    this.name = reader.readOptionalString("name", "name");
-    this.species = reader.readOptionalObject("species", "species", new ResponseReader.NestedReader<Specy>() {
-      @Override public Specy read(ResponseReader reader) {
-        return new Specy(reader);
-      }
-    });
+  public PeopleFragment(ResponseReader reader) throws IOException {
+    this.name = reader.readOptionalString("name", "name", null);
+    this.species = reader.readOptionalObject("species", "species", null,
+        new ResponseReader.NestedReader<Specy>() {
+          @Override public Specy read(ResponseReader reader) throws IOException {
+            return new Specy(reader);
+          }
+        });
   }
 
   public @Nullable String name() {
@@ -38,8 +41,8 @@ public class PeopleFragment {
   public static class Specy {
     private @Nullable String name;
 
-    public Specy(ResponseReader reader) {
-      this.name = reader.readOptionalString("name", "name");
+    public Specy(ResponseReader reader) throws IOException {
+      this.name = reader.readOptionalString("name", "name", null);
     }
 
     public @Nullable String name() {

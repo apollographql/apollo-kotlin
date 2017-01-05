@@ -17,11 +17,12 @@ public class TestQueryWithFragmentResponseData implements Operation.Data {
     while (streamReader.hasNext()) {
       String nextName = streamReader.nextName();
       if ("allPeople".equals(nextName)) {
-        this.allPeople = streamReader.nextOptionalObject(new ResponseStreamReader.NestedReader<AllPeople>() {
-          @Override public AllPeople read(ResponseStreamReader reader) throws IOException {
-            return new AllPeople(reader);
-          }
-        });
+        this.allPeople = streamReader.readOptionalObject("allPeople", "allPeople", null,
+            new ResponseReader.NestedReader<AllPeople>() {
+              @Override public AllPeople read(ResponseReader reader) throws IOException {
+                return new AllPeople((ResponseStreamReader) reader);
+              }
+            });
       } else {
         streamReader.skipNext();
       }
@@ -44,17 +45,14 @@ public class TestQueryWithFragmentResponseData implements Operation.Data {
       while (streamReader.hasNext()) {
         String nextName = streamReader.nextName();
         if ("totalCount".equals(nextName)) {
-          this.totalCount = streamReader.nextOptionalInt();
+          this.totalCount = streamReader.readOptionalInt("totalCount", "totalCount", null);
         } else if ("edges".equals(nextName)) {
-          this.edges = streamReader.nextList(new ResponseStreamReader.NestedReader<Edge>() {
-            @Override public Edge read(ResponseStreamReader reader) throws IOException {
-              return reader.nextObject(new ResponseStreamReader.NestedReader<Edge>() {
-                @Override public Edge read(ResponseStreamReader reader) throws IOException {
-                  return new Edge(reader);
+          this.edges = streamReader.readOptionalList("edges", "edges", null,
+              new ResponseReader.NestedReader<Edge>() {
+                @Override public Edge read(ResponseReader reader) throws IOException {
+                  return new Edge((ResponseStreamReader) reader);
                 }
               });
-            }
-          });
         } else {
           streamReader.skipNext();
         }
@@ -77,13 +75,14 @@ public class TestQueryWithFragmentResponseData implements Operation.Data {
         while (streamReader.hasNext()) {
           String nextName = streamReader.nextName();
           if ("cursor".equals(nextName)) {
-            this.cursor = streamReader.nextString();
+            this.cursor = streamReader.readOptionalString("cursor", "cursor", null);
           } else if ("node".equals(nextName)) {
-            this.node = streamReader.nextOptionalObject(new ResponseStreamReader.NestedReader<Node>() {
-              @Override public Node read(ResponseStreamReader reader) throws IOException {
-                return new Node(reader.toBufferedReader());
-              }
-            });
+            this.node = streamReader.readOptionalObject("node", "node", null,
+                new ResponseReader.NestedReader<Node>() {
+                  @Override public Node read(ResponseReader reader) throws IOException {
+                    return new Node(((ResponseStreamReader) reader).buffer());
+                  }
+                });
           } else {
             streamReader.skipNext();
           }
@@ -104,15 +103,16 @@ public class TestQueryWithFragmentResponseData implements Operation.Data {
         private @Nullable Specy species;
         private Fragments fragments;
 
-        public Node(ResponseReader reader) {
-          this.name = reader.readOptionalString("name", "name");
-          this.gender = reader.readOptionalString("gender", "gender");
-          this.species = reader.readOptionalObject("species", "species", new ResponseReader.NestedReader<Specy>() {
-            @Override public Specy read(ResponseReader reader) {
-              return new Specy(reader);
-            }
-          });
-          this.fragments = new Fragments(reader, reader.readString("__typename", "__typename"));
+        public Node(ResponseReader reader) throws IOException {
+          this.name = reader.readOptionalString("name", "name", null);
+          this.gender = reader.readOptionalString("gender", "gender", null);
+          this.species = reader.readOptionalObject("species", "species", null,
+              new ResponseReader.NestedReader<Specy>() {
+                @Override public Specy read(ResponseReader reader) throws IOException {
+                  return new Specy(reader);
+                }
+              });
+          this.fragments = new Fragments(reader, reader.readString("__typename", "__typename", null));
         }
 
         public @Nullable String name() {
@@ -136,10 +136,10 @@ public class TestQueryWithFragmentResponseData implements Operation.Data {
           private @Nullable String name;
           private @Nullable String classification;
 
-          public Specy(ResponseReader reader) {
-            this.id = reader.readString("id", "id");
-            this.name = reader.readOptionalString("name", "name");
-            this.classification = reader.readOptionalString("classification", "classification");
+          public Specy(ResponseReader reader) throws IOException {
+            this.id = reader.readString("id", "id", null);
+            this.name = reader.readOptionalString("name", "name", null);
+            this.classification = reader.readOptionalString("classification", "classification", null);
           }
 
           public @Nonnull String id() {
@@ -158,7 +158,7 @@ public class TestQueryWithFragmentResponseData implements Operation.Data {
         public static class Fragments {
           private PeopleFragment peopleFragment;
 
-          public Fragments(ResponseReader reader, String typeName) {
+          public Fragments(ResponseReader reader, String typeName) throws IOException {
             if (typeName.equals(PeopleFragment.CONDITION_TYPE)) {
               this.peopleFragment = new PeopleFragment(reader);
             }
