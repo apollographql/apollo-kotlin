@@ -1,5 +1,6 @@
 package com.apollostack.converter.pojo;
 
+import com.apollostack.api.graphql.Field;
 import com.apollostack.api.graphql.ResponseReader;
 
 import java.io.IOException;
@@ -8,146 +9,139 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-final class BufferedResponseReader implements ResponseReader {
+@SuppressWarnings("WeakerAccess") final class BufferedResponseReader implements ResponseReader {
   private final Map<String, Object> buffer;
 
   BufferedResponseReader(Map<String, Object> buffer) {
     this.buffer = buffer;
   }
 
-  @Override public String readString(String responseName, String fieldName, Map<String, Object> arguments) throws
-      IOException {
-    String value = (String) buffer.get(responseName);
+  @Override public ResponseReader buffer() throws IOException {
+    return this;
+  }
+
+  @Override public void read(ValueHandler handler, Field... fields) throws IOException {
+    int fieldIndex = 0;
+    for (Field field : fields) {
+      switch (field.type()) {
+        case Field.TYPE_STRING:
+          handler.handle(fieldIndex, readString(field));
+          break;
+        case Field.TYPE_INT:
+          handler.handle(fieldIndex, readInt(field));
+          break;
+        case Field.TYPE_LONG:
+          handler.handle(fieldIndex, readLong(field));
+          break;
+        case Field.TYPE_DOUBLE:
+          handler.handle(fieldIndex, readDouble(field));
+          break;
+        case Field.TYPE_BOOL:
+          handler.handle(fieldIndex, readBoolean(field));
+          break;
+        case Field.TYPE_OBJECT:
+          handler.handle(fieldIndex, readObject(field));
+          break;
+        case Field.TYPE_LIST:
+          handler.handle(fieldIndex, readList(field));
+          break;
+      }
+      fieldIndex++;
+    }
+  }
+
+  String readString(Field field) throws IOException {
+    String value = (String) buffer.get(field.responseName());
     if (value == null) {
-      throw new NullPointerException("can't parse response, expected non null json value");
+      if (field.optional()) {
+        return null;
+      } else {
+        throw new NullPointerException("can't parse response, expected non null json value");
+      }
+    } else {
+      return value;
     }
-    return value;
   }
 
-  @Override public String readOptionalString(String responseName, String fieldName, Map<String, Object> arguments)
-      throws IOException {
-    return (String) buffer.get(responseName);
-  }
-
-  @Override public int readInt(String responseName, String fieldName, Map<String, Object> arguments) throws
-      IOException {
-    BigDecimal value = (BigDecimal) buffer.get(responseName);
+  Integer readInt(Field field) throws IOException {
+    BigDecimal value = (BigDecimal) buffer.get(field.responseName());
     if (value == null) {
-      throw new NullPointerException("can't parse response, expected non null json value");
+      if (field.optional()) {
+        return null;
+      } else {
+        throw new NullPointerException("can't parse response, expected non null json value");
+      }
+    } else {
+      return value.intValue();
     }
-    return value.intValue();
   }
 
-  @Override public Integer readOptionalInt(String responseName, String fieldName, Map<String, Object> arguments)
-      throws IOException {
-    BigDecimal value = (BigDecimal) buffer.get(responseName);
+  Long readLong(Field field) throws IOException {
+    BigDecimal value = (BigDecimal) buffer.get(field.responseName());
     if (value == null) {
-      return null;
+      if (field.optional()) {
+        return null;
+      } else {
+        throw new NullPointerException("can't parse response, expected non null json value");
+      }
+    } else {
+      return value.longValue();
     }
-    return value.intValue();
   }
 
-  @Override
-  public long readLong(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
-    BigDecimal value = (BigDecimal) buffer.get(responseName);
+  Double readDouble(Field field) throws IOException {
+    BigDecimal value = (BigDecimal) buffer.get(field.responseName());
     if (value == null) {
-      throw new NullPointerException("can't parse response, expected non null json value");
+      if (field.optional()) {
+        return null;
+      } else {
+        throw new NullPointerException("can't parse response, expected non null json value");
+      }
+    } else {
+      return value.doubleValue();
     }
-    return value.longValue();
   }
 
-  @Override
-  public Long readOptionalLong(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
-    BigDecimal value = (BigDecimal) buffer.get(responseName);
+  Boolean readBoolean(Field field) throws IOException {
+    Boolean value = (Boolean) buffer.get(field.responseName());
     if (value == null) {
-      return null;
+      if (field.optional()) {
+        return null;
+      } else {
+        throw new NullPointerException("can't parse response, expected non null json value");
+      }
+    } else {
+      return value;
     }
-    return value.longValue();
   }
 
-  @Override public double readDouble(String responseName, String fieldName, Map<String, Object> arguments) throws
-      IOException {
-    BigDecimal value = (BigDecimal) buffer.get(responseName);
+  @SuppressWarnings("unchecked") <T> T readObject(Field field) throws IOException {
+    final Map<String, Object> value = (Map<String, Object>) buffer.get(field.responseName());
     if (value == null) {
-      throw new NullPointerException("can't parse response, expected non null json value");
+      if (field.optional()) {
+        return null;
+      } else {
+        throw new NullPointerException("can't parse response, expected non null json value");
+      }
+    } else {
+      return (T) field.nestedReader().read(new BufferedResponseReader(value));
     }
-    return value.doubleValue();
   }
 
-  @Override public Double readOptionalDouble(String responseName, String fieldName, Map<String, Object> arguments)
-      throws IOException {
-    BigDecimal value = (BigDecimal) buffer.get(responseName);
+  @SuppressWarnings("unchecked") <T> List<T> readList(Field field) throws IOException {
+    final List<Map<String, Object>> value = (List<Map<String, Object>>) buffer.get(field.responseName());
     if (value == null) {
-      return null;
+      if (field.optional()) {
+        return null;
+      } else {
+        throw new NullPointerException("can't parse response, expected non null json value");
+      }
+    } else {
+      List<T> result = new ArrayList<>();
+      for (Map<String, Object> map : value) {
+        result.add((T) field.nestedReader().read(new BufferedResponseReader(map)));
+      }
+      return result;
     }
-    return value.doubleValue();
-  }
-
-  @Override public boolean readBoolean(String responseName, String fieldName, Map<String, Object> arguments) throws
-      IOException {
-    Boolean value = (Boolean) buffer.get(responseName);
-    if (value == null) {
-      throw new NullPointerException("can't parse response, expected non null json value");
-    }
-    return value;
-  }
-
-  @Override public Boolean readOptionalBoolean(String responseName, String fieldName, Map<String, Object> arguments)
-      throws IOException {
-    return (Boolean) buffer.get(responseName);
-  }
-
-  @Override
-  public <T> T readObject(String responseName, String fieldName, Map<String, Object> arguments, NestedReader<T>
-      reader) throws IOException {
-    @SuppressWarnings("unchecked")
-    final Map<String, Object> map = (Map<String, Object>) buffer.get(responseName);
-    if (map == null) {
-      throw new NullPointerException("can't parse response, expected non null value");
-    }
-    return reader.read(new BufferedResponseReader(map));
-  }
-
-  @Override
-  public <T> T readOptionalObject(String responseName, String fieldName, Map<String, Object> arguments,
-      NestedReader<T> reader) throws IOException {
-    @SuppressWarnings("unchecked")
-    final Map<String, Object> map = (Map<String, Object>) buffer.get(responseName);
-    if (map == null) {
-      return null;
-    }
-    return reader.read(new BufferedResponseReader(map));
-  }
-
-  @Override
-  public <T> List<T> readList(String responseName, String fieldName, Map<String, Object> arguments, NestedReader<T>
-      reader) throws IOException {
-    @SuppressWarnings("unchecked")
-    final List<Map<String, Object>> list = (List<Map<String, Object>>) buffer.get(responseName);
-    if (list == null) {
-      throw new NullPointerException("can't parse response, expected non null value");
-    }
-
-    List<T> result = new ArrayList<>();
-    for (Map<String, Object> map : list) {
-      result.add(reader.read(new BufferedResponseReader(map)));
-    }
-    return result;
-  }
-
-  @Override
-  public <T> List<T> readOptionalList(String responseName, String fieldName, Map<String, Object> arguments,
-      NestedReader<T> reader) throws IOException {
-    @SuppressWarnings("unchecked")
-    final List<Map<String, Object>> list = (List<Map<String, Object>>) buffer.get(responseName);
-    if (list == null) {
-      return null;
-    }
-
-    List<T> result = new ArrayList<>();
-    for (Map<String, Object> map : list) {
-      result.add(reader.read(new BufferedResponseReader(map)));
-    }
-    return result;
   }
 }

@@ -61,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
       Converter<ResponseBody, Response<? extends Operation.Data>> converter = new ApolloConverterFactory()
           .responseBodyConverter(TestQueryWithFragmentResponseData.class, null, null);
       Response<TestQueryWithFragmentResponseData> response = (Response<TestQueryWithFragmentResponseData>) converter.convert(responseBody);
+//      Converter<ResponseBody, Response<? extends Operation.Data>> converter = new ApolloConverterFactory()
+//          .responseBodyConverter(TestQueryResponseData.class, null, null);
+//      Response<TestQueryResponseData> response = (Response<TestQueryResponseData>) converter.convert(responseBody);
       System.out.println("MainActivity.onCreate: " + response);
     } catch (Exception e) {
       e.printStackTrace();

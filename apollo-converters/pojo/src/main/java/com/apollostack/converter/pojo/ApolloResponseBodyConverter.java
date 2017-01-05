@@ -1,10 +1,10 @@
 package com.apollostack.converter.pojo;
 
 import com.apollostack.api.graphql.Error;
+import com.apollostack.api.graphql.Field;
 import com.apollostack.api.graphql.Operation;
 import com.apollostack.api.graphql.Response;
 import com.apollostack.api.graphql.ResponseReader;
-import com.apollostack.api.graphql.ResponseStreamReader;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -44,12 +44,11 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
   }
 
   private Operation.Data readResponseData(ResponseJsonStreamReader reader) throws IOException {
-    return reader.readObject("", "", null, new ResponseReader.NestedReader<Operation.Data>() {
+    return reader.nextOptionalObject(new Field.NestedFieldReader<Operation.Data>() {
       @Override public Operation.Data read(ResponseReader reader) throws IOException {
         //noinspection TryWithIdenticalCatches
         try {
-          return (Operation.Data) ((Class<?>) type).getConstructor(ResponseStreamReader.class).newInstance(
-              (ResponseStreamReader) reader);
+          return (Operation.Data) ((Class<?>) type).getConstructor(ResponseReader.class).newInstance(reader);
         } catch (InstantiationException e) {
           throw new RuntimeException("Can't instantiate " + type, e);
         } catch (IllegalAccessException e) {
@@ -64,7 +63,7 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
   }
 
   private List<Error> readResponseErrors(ResponseJsonStreamReader reader) throws IOException {
-    return reader.nextList(new ResponseReader.NestedReader<Error>() {
+    return reader.nexOptionalList(new Field.NestedFieldReader<Error>() {
       @Override public Error read(ResponseReader reader) throws IOException {
         return readError((ResponseJsonStreamReader) reader);
       }
@@ -79,7 +78,7 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
       if ("message".equals(name)) {
         message = reader.nextString();
       } else if ("locations".equals(name)) {
-        locations = reader.nextList(new ResponseReader.NestedReader<Error.Location>() {
+        locations = reader.nexOptionalList(new Field.NestedFieldReader<Error.Location>() {
           @Override public Error.Location read(ResponseReader reader) throws IOException {
             return readErrorLocation((ResponseJsonStreamReader) reader);
           }

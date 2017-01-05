@@ -1,5 +1,6 @@
 package com.example.apollostack.sample;
 
+import com.apollostack.api.graphql.Field;
 import com.apollostack.api.graphql.ResponseReader;
 
 import java.io.IOException;
@@ -21,13 +22,26 @@ public class PeopleFragment {
   private @Nullable Specy species;
 
   public PeopleFragment(ResponseReader reader) throws IOException {
-    this.name = reader.readOptionalString("name", "name", null);
-    this.species = reader.readOptionalObject("species", "species", null,
-        new ResponseReader.NestedReader<Specy>() {
+    reader.read(
+        new ResponseReader.ValueHandler() {
+          @Override public void handle(int fieldIndex, Object value) throws IOException {
+            switch (fieldIndex) {
+              case 0:
+                PeopleFragment.this.name = (String) value;
+                break;
+              case 1:
+                PeopleFragment.this.species = (Specy) value;
+                break;
+            }
+          }
+        },
+        Field.forOptionalString("name", "name", null),
+        Field.forOptionalObject("species", "species", null, new Field.NestedFieldReader<Specy>() {
           @Override public Specy read(ResponseReader reader) throws IOException {
             return new Specy(reader);
           }
-        });
+        })
+    );
   }
 
   public @Nullable String name() {
@@ -42,7 +56,18 @@ public class PeopleFragment {
     private @Nullable String name;
 
     public Specy(ResponseReader reader) throws IOException {
-      this.name = reader.readOptionalString("name", "name", null);
+      reader.read(
+          new ResponseReader.ValueHandler() {
+            @Override public void handle(int fieldIndex, Object value) throws IOException {
+              switch (fieldIndex) {
+                case 0:
+                  Specy.this.name = (String) value;
+                  break;
+              }
+            }
+          },
+          Field.forOptionalString("name", "name", null)
+      );
     }
 
     public @Nullable String name() {

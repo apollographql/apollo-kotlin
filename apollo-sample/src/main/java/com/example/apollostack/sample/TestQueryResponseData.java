@@ -1,8 +1,8 @@
 package com.example.apollostack.sample;
 
+import com.apollostack.api.graphql.Field;
 import com.apollostack.api.graphql.Operation;
 import com.apollostack.api.graphql.ResponseReader;
-import com.apollostack.api.graphql.ResponseStreamReader;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,20 +13,23 @@ import javax.annotation.Nullable;
 public class TestQueryResponseData implements Operation.Data {
   private @Nullable AllPeople allPeople;
 
-  public TestQueryResponseData(ResponseStreamReader streamReader) throws IOException {
-    while (streamReader.hasNext()) {
-      String nextName = streamReader.nextName();
-      if ("allPeople".equals(nextName)) {
-        this.allPeople = streamReader.readOptionalObject("allPeople", "allPeople", null,
-            new ResponseReader.NestedReader<AllPeople>() {
-              @Override public AllPeople read(ResponseReader reader) throws IOException {
-                return new AllPeople((ResponseStreamReader) reader);
-              }
-            });
-      } else {
-        streamReader.skipNext();
-      }
-    }
+  public TestQueryResponseData(ResponseReader reader) throws IOException {
+    reader.read(
+        new ResponseReader.ValueHandler() {
+          @Override public void handle(int fieldIndex, Object value) {
+            switch (fieldIndex) {
+              case 0:
+                TestQueryResponseData.this.allPeople = (AllPeople) value;
+                break;
+            }
+          }
+        },
+        Field.forOptionalObject("allPeople", "allPeople", null, new Field.NestedFieldReader<AllPeople>() {
+          @Override public AllPeople read(ResponseReader reader) throws IOException {
+            return new AllPeople(reader);
+          }
+        })
+    );
   }
 
   @Nullable public AllPeople getAllPeople() {
@@ -37,22 +40,27 @@ public class TestQueryResponseData implements Operation.Data {
     private @Nullable Integer totalCount;
     private @Nullable List<? extends Edge> edges;
 
-    public AllPeople(ResponseStreamReader streamReader) throws IOException {
-      while (streamReader.hasNext()) {
-        String nextName = streamReader.nextName();
-        if ("totalCount".equals(nextName)) {
-          this.totalCount = streamReader.readOptionalInt("totalCount", "totalCount", null);
-        } else if ("edges".equals(nextName)) {
-          this.edges = streamReader.readOptionalList("edges", "edges", null,
-              new ResponseReader.NestedReader<Edge>() {
-                @Override public Edge read(ResponseReader reader) throws IOException {
-                  return new Edge((ResponseStreamReader) reader);
-                }
-              });
-        } else {
-          streamReader.skipNext();
-        }
-      }
+    public AllPeople(ResponseReader reader) throws IOException {
+      reader.read(
+          new ResponseReader.ValueHandler() {
+            @Override public void handle(int fieldIndex, Object value) {
+              switch (fieldIndex) {
+                case 0:
+                  AllPeople.this.totalCount = (Integer) value;
+                  break;
+                case 1:
+                  AllPeople.this.edges = (List<? extends Edge>) value;
+                  break;
+              }
+            }
+          },
+          Field.forOptionalInt("totalCount", "totalCount", null),
+          Field.forOptionalList("edges", "edges", null, new Field.NestedFieldReader<Edge>() {
+            @Override public Edge read(ResponseReader reader) throws IOException {
+              return new Edge(reader);
+            }
+          })
+      );
     }
 
     @Nullable public Integer getTotalCount() {
@@ -67,22 +75,27 @@ public class TestQueryResponseData implements Operation.Data {
       private @Nonnull String cursor;
       private @Nullable Node node;
 
-      public Edge(ResponseStreamReader streamReader) throws IOException {
-        while (streamReader.hasNext()) {
-          String nextName = streamReader.nextName();
-          if ("cursor".equals(nextName)) {
-            this.cursor = streamReader.readString("cursor", "cursor", null);
-          } else if ("node".equals(nextName)) {
-            this.node = streamReader.readOptionalObject("node", "node", null,
-                new ResponseReader.NestedReader<Node>() {
-                  @Override public Node read(ResponseReader reader) throws IOException {
-                    return new Node((ResponseStreamReader) reader);
-                  }
-                });
-          } else {
-            streamReader.skipNext();
-          }
-        }
+      public Edge(ResponseReader reader) throws IOException {
+        reader.read(
+            new ResponseReader.ValueHandler() {
+              @Override public void handle(int fieldIndex, Object value) {
+                switch (fieldIndex) {
+                  case 0:
+                    Edge.this.cursor = (String) value;
+                    break;
+                  case 1:
+                    Edge.this.node = (Node) value;
+                    break;
+                }
+              }
+            },
+            Field.forString("cursor", "cursor", null),
+            Field.forOptionalObject("node", "node", null, new Field.NestedFieldReader<Node>() {
+              @Override public Node read(ResponseReader reader) throws IOException {
+                return new Node(reader);
+              }
+            })
+        );
       }
 
       @Nonnull public String getCursor() {
@@ -98,24 +111,31 @@ public class TestQueryResponseData implements Operation.Data {
         private @Nullable String gender;
         private @Nullable Specy species;
 
-        public Node(ResponseStreamReader streamReader) throws IOException {
-          while (streamReader.hasNext()) {
-            String nextName = streamReader.nextName();
-            if ("name".equals(nextName)) {
-              this.name = streamReader.readOptionalString("name", "name", null);
-            } else if ("gender".equals(nextName)) {
-              this.gender = streamReader.readOptionalString("gender", "gender", null);
-            } else if ("species".equals(nextName)) {
-              this.species = streamReader.readOptionalObject("species", "species", null,
-                  new ResponseReader.NestedReader<Specy>() {
-                    @Override public Specy read(ResponseReader reader) throws IOException {
-                      return new Specy((ResponseStreamReader) reader);
-                    }
-                  });
-            } else {
-              streamReader.skipNext();
-            }
-          }
+        public Node(ResponseReader reader) throws IOException {
+          reader.read(
+              new ResponseReader.ValueHandler() {
+                @Override public void handle(int fieldIndex, Object value) throws IOException {
+                  switch (fieldIndex) {
+                    case 0:
+                      Node.this.name = (String) value;
+                      break;
+                    case 1:
+                      Node.this.gender = (String) value;
+                      break;
+                    case 2:
+                      Node.this.species = (Specy) value;
+                      break;
+                  }
+                }
+              },
+              Field.forOptionalString("name", "name", null),
+              Field.forOptionalString("gender", "gender", null),
+              Field.forOptionalObject("species", "species", null, new Field.NestedFieldReader<Specy>() {
+                @Override public Specy read(ResponseReader reader) throws IOException {
+                  return new Specy(reader);
+                }
+              })
+          );
         }
 
         @Nullable public String getName() {
@@ -135,17 +155,23 @@ public class TestQueryResponseData implements Operation.Data {
         private @Nullable String name;
         private @Nullable String classification;
 
-        public Specy(ResponseStreamReader streamReader) throws IOException {
-          while (streamReader.hasNext()) {
-            String nextName = streamReader.nextName();
-            if ("name".equals(nextName)) {
-              this.name = streamReader.readOptionalString("name", "name", null);
-            } else if ("classification".equals(nextName)) {
-              this.classification = streamReader.readOptionalString("classification", "classification", null);
-            } else {
-              streamReader.skipNext();
-            }
-          }
+        public Specy(ResponseReader reader) throws IOException {
+          reader.read(
+              new ResponseReader.ValueHandler() {
+                @Override public void handle(int fieldIndex, Object value) throws IOException {
+                  switch (fieldIndex) {
+                    case 0:
+                      Specy.this.name = (String) value;
+                      break;
+                    case 1:
+                      Specy.this.classification = (String) value;
+                      break;
+                  }
+                }
+              },
+              Field.forOptionalString("name", "name", null),
+              Field.forOptionalString("classification", "classification", null)
+          );
         }
 
         @Nullable public String getName() {

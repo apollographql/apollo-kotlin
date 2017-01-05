@@ -1,7 +1,7 @@
 package com.apollostack.converter.pojo;
 
+import com.apollostack.api.graphql.Field;
 import com.apollostack.api.graphql.ResponseReader;
-import com.apollostack.api.graphql.ResponseStreamReader;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -10,98 +10,70 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-final class ResponseJsonStreamReader implements ResponseStreamReader {
+@SuppressWarnings("WeakerAccess") final class ResponseJsonStreamReader implements ResponseReader {
   private final JsonReader jsonReader;
 
   ResponseJsonStreamReader(JsonReader jsonReader) {
     this.jsonReader = jsonReader;
   }
 
-  @Override public boolean hasNext() throws IOException {
-    return jsonReader.hasNext();
-  }
-
-  @Override public String nextName() throws IOException {
-    return jsonReader.nextName();
-  }
-
-  @Override public void skipNext() throws IOException {
-    jsonReader.skipValue();
-  }
-
-  @Override
-  public String readString(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
-    return nextString();
-  }
-
-  @Override
-  public String readOptionalString(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
-    return nextOptionalString();
-  }
-
-  @Override
-  public int readInt(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
-    return nextInt();
-  }
-
-  @Override
-  public Integer readOptionalInt(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
-    return nextOptionalInt();
-  }
-
-  @Override
-  public long readLong(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
-    return nextLong();
-  }
-
-  @Override
-  public Long readOptionalLong(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
-    return nextOptionalLong();
-  }
-
-  @Override
-  public double readDouble(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
-    return nextDouble();
-  }
-
-  @Override
-  public Double readOptionalDouble(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
-    return nextOptionalDouble();
-  }
-
-  @Override
-  public boolean readBoolean(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
-    return nextBoolean();
-  }
-
-  @Override
-  public Boolean readOptionalBoolean(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
-    return nextOptionalBoolean();
-  }
-
-  @Override
-  public <T> T readObject(String responseName, String fieldName, Map<String, Object> arguments, NestedReader<T> reader) throws IOException {
-    return nextOptionalObject(reader);
-  }
-
-  @Override
-  public <T> T readOptionalObject(String responseName, String fieldName, Map<String, Object> arguments, NestedReader<T> reader) throws IOException {
-    return nextOptionalObject(reader);
-  }
-
-  @Override
-  public <T> List<T> readList(String responseName, String fieldName, Map<String, Object> arguments, NestedReader<T> reader) throws IOException {
-    return nextList(reader);
-  }
-
-  @Override
-  public <T> List<T> readOptionalList(String responseName, String fieldName, Map<String, Object> arguments, NestedReader<T> reader) throws IOException {
-    return nexOptionalList(reader);
-  }
-
   @Override public ResponseReader buffer() throws IOException {
     Map<String, Object> buffer = toMap(this);
     return new BufferedResponseReader(buffer);
+  }
+
+  @Override public void read(ValueHandler handler, Field... fields) throws IOException {
+    Map<Field, Integer> fieldIndexMap = new HashMap<>();
+    Map<String, Field> fieldMap = new HashMap<>();
+    int fieldIndex = 0;
+    for (Field field : fields) {
+      fieldMap.put(field.responseName(), field);
+      fieldIndexMap.put(field, fieldIndex++);
+    }
+
+    while (hasNext()) {
+      String nextName = nextName();
+      Field field = fieldMap.get(nextName);
+      if (field != null) {
+        switch (field.type()) {
+          case Field.TYPE_STRING:
+            handler.handle(fieldIndexMap.get(field), readString(field));
+            break;
+          case Field.TYPE_INT:
+            handler.handle(fieldIndexMap.get(field), readInt(field));
+            break;
+          case Field.TYPE_LONG:
+            handler.handle(fieldIndexMap.get(field), readLong(field));
+            break;
+          case Field.TYPE_DOUBLE:
+            handler.handle(fieldIndexMap.get(field), readDouble(field));
+            break;
+          case Field.TYPE_BOOL:
+            handler.handle(fieldIndexMap.get(field), readBoolean(field));
+            break;
+          case Field.TYPE_OBJECT:
+            handler.handle(fieldIndexMap.get(field), readObject(field));
+            break;
+          case Field.TYPE_LIST:
+            handler.handle(fieldIndexMap.get(field), readList(field));
+            break;
+        }
+      } else {
+        skipNext();
+      }
+    }
+  }
+
+  boolean hasNext() throws IOException {
+    return jsonReader.hasNext();
+  }
+
+  String nextName() throws IOException {
+    return jsonReader.nextName();
+  }
+
+  void skipNext() throws IOException {
+    jsonReader.skipValue();
   }
 
   String nextString() throws IOException {
@@ -179,14 +151,14 @@ final class ResponseJsonStreamReader implements ResponseStreamReader {
     return jsonReader.nextBoolean();
   }
 
-  <T> T nextObject(NestedReader<T> nestedReader) throws IOException {
+  <T> T nextObject(Field.NestedFieldReader<T> nestedReader) throws IOException {
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       throw new NullPointerException("can't parse response, expected non null json value");
     }
     return nextOptionalObject(nestedReader);
   }
 
-  <T> T nextOptionalObject(NestedReader<T> nestedReader) throws IOException {
+  <T> T nextOptionalObject(Field.NestedFieldReader<T> nestedReader) throws IOException {
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       jsonReader.skipValue();
       return null;
@@ -198,14 +170,14 @@ final class ResponseJsonStreamReader implements ResponseStreamReader {
     return result;
   }
 
-  <T> List<T> nextList(NestedReader<T> nestedReader) throws IOException {
+  <T> List<T> nextList(Field.NestedFieldReader<T> nestedReader) throws IOException {
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       throw new NullPointerException("can't parse response, expected non null json value");
     }
     return nexOptionalList(nestedReader);
   }
 
-  <T> List<T> nexOptionalList(NestedReader<T> nestedReader) throws IOException {
+  <T> List<T> nexOptionalList(Field.NestedFieldReader<T> nestedReader) throws IOException {
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       jsonReader.skipValue();
       return null;
@@ -224,6 +196,62 @@ final class ResponseJsonStreamReader implements ResponseStreamReader {
     }
     jsonReader.endArray();
     return result;
+  }
+
+  private String readString(Field field) throws IOException {
+    if (field.optional()) {
+      return nextOptionalString();
+    } else {
+      return nextString();
+    }
+  }
+
+  private Integer readInt(Field field) throws IOException {
+    if (field.optional()) {
+      return nextOptionalInt();
+    } else {
+      return nextInt();
+    }
+  }
+
+  private Long readLong(Field field) throws IOException {
+    if (field.optional()) {
+      return nextOptionalLong();
+    } else {
+      return nextLong();
+    }
+  }
+
+  private Double readDouble(Field field) throws IOException {
+    if (field.optional()) {
+      return nextOptionalDouble();
+    } else {
+      return nextDouble();
+    }
+  }
+
+  private Boolean readBoolean(Field field) throws IOException {
+    if (field.optional()) {
+      return nextOptionalBoolean();
+    } else {
+      return nextBoolean();
+    }
+  }
+
+  @SuppressWarnings("unchecked") private <T> T readObject(Field field) throws IOException {
+    if (field.optional()) {
+      return (T) nextOptionalObject(field.nestedReader());
+    } else {
+      return (T) nextOptionalObject(field.nestedReader());
+    }
+  }
+
+  @SuppressWarnings("unchecked") private <T> List<T> readList(Field field) throws IOException {
+    if (field.optional()) {
+      return nexOptionalList(field.nestedReader());
+    } else {
+      return nextList(field.nestedReader());
+    }
   }
 
   private boolean isNextObject() throws IOException {
@@ -264,7 +292,7 @@ final class ResponseJsonStreamReader implements ResponseStreamReader {
   }
 
   private static Map<String, Object> readObject(final ResponseJsonStreamReader streamReader) throws IOException {
-    return streamReader.nextObject(new NestedReader<Map<String, Object>>() {
+    return streamReader.nextObject(new Field.NestedFieldReader<Map<String, Object>>() {
       @Override public Map<String, Object> read(ResponseReader streamReader) throws IOException {
         return toMap((ResponseJsonStreamReader) streamReader);
       }
@@ -272,7 +300,7 @@ final class ResponseJsonStreamReader implements ResponseStreamReader {
   }
 
   private static List<?> readList(final ResponseJsonStreamReader streamReader) throws IOException {
-    return streamReader.nextList(new NestedReader() {
+    return streamReader.nextList(new Field.NestedFieldReader<Object>() {
       @Override public Object read(ResponseReader reader) throws IOException {
         ResponseJsonStreamReader streamReader = (ResponseJsonStreamReader) reader;
         if (streamReader.isNextObject()) {
