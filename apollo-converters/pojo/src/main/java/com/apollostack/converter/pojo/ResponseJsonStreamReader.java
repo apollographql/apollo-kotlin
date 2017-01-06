@@ -23,39 +23,40 @@ import java.util.Map;
   }
 
   @Override public void read(ValueHandler handler, Field... fields) throws IOException {
-    Map<Field, Integer> fieldIndexMap = new HashMap<>();
+    Map<String, Integer> fieldIndexMap = new HashMap<>();
     Map<String, Field> fieldMap = new HashMap<>();
-    int fieldIndex = 0;
+    int index = 0;
     for (Field field : fields) {
       fieldMap.put(field.responseName(), field);
-      fieldIndexMap.put(field, fieldIndex++);
+      fieldIndexMap.put(field.responseName(), index++);
     }
 
     while (hasNext()) {
       String nextName = nextName();
       Field field = fieldMap.get(nextName);
       if (field != null) {
+        int fieldIndex = fieldIndexMap.get(nextName);
         switch (field.type()) {
           case Field.TYPE_STRING:
-            handler.handle(fieldIndexMap.get(field), readString(field));
+            handler.handle(fieldIndex, readString(field));
             break;
           case Field.TYPE_INT:
-            handler.handle(fieldIndexMap.get(field), readInt(field));
+            handler.handle(fieldIndex, readInt(field));
             break;
           case Field.TYPE_LONG:
-            handler.handle(fieldIndexMap.get(field), readLong(field));
+            handler.handle(fieldIndex, readLong(field));
             break;
           case Field.TYPE_DOUBLE:
-            handler.handle(fieldIndexMap.get(field), readDouble(field));
+            handler.handle(fieldIndex, readDouble(field));
             break;
           case Field.TYPE_BOOL:
-            handler.handle(fieldIndexMap.get(field), readBoolean(field));
+            handler.handle(fieldIndex, readBoolean(field));
             break;
           case Field.TYPE_OBJECT:
-            handler.handle(fieldIndexMap.get(field), readObject(field));
+            handler.handle(fieldIndex, readObject(field));
             break;
           case Field.TYPE_LIST:
-            handler.handle(fieldIndexMap.get(field), readList(field));
+            handler.handle(fieldIndex, readList(field));
             break;
         }
       } else {

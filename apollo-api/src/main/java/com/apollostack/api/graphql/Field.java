@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
-public class Field {
+public final class Field {
   public static final int TYPE_STRING = 1;
   public static final int TYPE_INT = 2;
   public static final int TYPE_LONG = 3;
