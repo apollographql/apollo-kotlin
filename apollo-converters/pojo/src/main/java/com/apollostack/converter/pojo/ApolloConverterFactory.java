@@ -4,6 +4,7 @@ import com.apollostack.api.graphql.Operation;
 import com.apollostack.api.graphql.Response;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import okhttp3.ResponseBody;
@@ -14,8 +15,11 @@ public class ApolloConverterFactory extends Converter.Factory {
   @Override
   public Converter<ResponseBody, Response<? extends Operation.Data>> responseBodyConverter(Type type,
       Annotation[] annotations, Retrofit retrofit) {
-    if (Operation.Data.class.isAssignableFrom((Class<?>) type)) {
-      return new ApolloResponseBodyConverter(type);
+    if (type instanceof ParameterizedType) {
+      ParameterizedType parameterizedType = (ParameterizedType) type;
+      if (Response.class.isAssignableFrom((Class<?>) parameterizedType.getRawType())) {
+        return new ApolloResponseBodyConverter(type);
+      }
     }
     return null;
   }
