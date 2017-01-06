@@ -24,7 +24,7 @@ public class TestQueryResponseData implements Operation.Data {
             }
           }
         },
-        Field.forOptionalObject("allPeople", "allPeople", null, new Field.NestedFieldReader<AllPeople>() {
+        Field.forOptionalObject("allPeople", "allPeople", null, new Field.NestedReader<AllPeople>() {
           @Override public AllPeople read(ResponseReader reader) throws IOException {
             return new AllPeople(reader);
           }
@@ -55,7 +55,7 @@ public class TestQueryResponseData implements Operation.Data {
             }
           },
           Field.forOptionalInt("totalCount", "totalCount", null),
-          Field.forOptionalList("edges", "edges", null, new Field.NestedFieldReader<Edge>() {
+          Field.forOptionalList("edges", "edges", null, new Field.NestedReader<Edge>() {
             @Override public Edge read(ResponseReader reader) throws IOException {
               return new Edge(reader);
             }
@@ -90,7 +90,7 @@ public class TestQueryResponseData implements Operation.Data {
               }
             },
             Field.forString("cursor", "cursor", null),
-            Field.forOptionalObject("node", "node", null, new Field.NestedFieldReader<Node>() {
+            Field.forOptionalObject("node", "node", null, new Field.NestedReader<Node>() {
               @Override public Node read(ResponseReader reader) throws IOException {
                 return new Node(reader);
               }
@@ -130,7 +130,7 @@ public class TestQueryResponseData implements Operation.Data {
               },
               Field.forOptionalString("name", "name", null),
               Field.forOptionalString("gender", "gender", null),
-              Field.forOptionalObject("species", "species", null, new Field.NestedFieldReader<Specy>() {
+              Field.forOptionalObject("species", "species", null, new Field.NestedReader<Specy>() {
                 @Override public Specy read(ResponseReader reader) throws IOException {
                   return new Specy(reader);
                 }

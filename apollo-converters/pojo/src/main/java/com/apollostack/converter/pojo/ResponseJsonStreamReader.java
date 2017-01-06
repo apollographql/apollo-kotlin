@@ -152,14 +152,14 @@ import java.util.Map;
     return jsonReader.nextBoolean();
   }
 
-  <T> T nextObject(Field.NestedFieldReader<T> nestedReader) throws IOException {
+  <T> T nextObject(Field.NestedReader<T> nestedReader) throws IOException {
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       throw new NullPointerException("can't parse response, expected non null json value");
     }
     return nextOptionalObject(nestedReader);
   }
 
-  <T> T nextOptionalObject(Field.NestedFieldReader<T> nestedReader) throws IOException {
+  <T> T nextOptionalObject(Field.NestedReader<T> nestedReader) throws IOException {
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       jsonReader.skipValue();
       return null;
@@ -171,14 +171,14 @@ import java.util.Map;
     return result;
   }
 
-  <T> List<T> nextList(Field.NestedFieldReader<T> nestedReader) throws IOException {
+  <T> List<T> nextList(Field.NestedReader<T> nestedReader) throws IOException {
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       throw new NullPointerException("can't parse response, expected non null json value");
     }
     return nexOptionalList(nestedReader);
   }
 
-  <T> List<T> nexOptionalList(Field.NestedFieldReader<T> nestedReader) throws IOException {
+  <T> List<T> nexOptionalList(Field.NestedReader<T> nestedReader) throws IOException {
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       jsonReader.skipValue();
       return null;
@@ -293,7 +293,7 @@ import java.util.Map;
   }
 
   private static Map<String, Object> readObject(final ResponseJsonStreamReader streamReader) throws IOException {
-    return streamReader.nextObject(new Field.NestedFieldReader<Map<String, Object>>() {
+    return streamReader.nextObject(new Field.NestedReader<Map<String, Object>>() {
       @Override public Map<String, Object> read(ResponseReader streamReader) throws IOException {
         return toMap((ResponseJsonStreamReader) streamReader);
       }
@@ -301,7 +301,7 @@ import java.util.Map;
   }
 
   private static List<?> readList(final ResponseJsonStreamReader streamReader) throws IOException {
-    return streamReader.nextList(new Field.NestedFieldReader<Object>() {
+    return streamReader.nextList(new Field.NestedReader<Object>() {
       @Override public Object read(ResponseReader reader) throws IOException {
         ResponseJsonStreamReader streamReader = (ResponseJsonStreamReader) reader;
         if (streamReader.isNextObject()) {

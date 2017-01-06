@@ -36,7 +36,7 @@ public class PeopleFragment {
           }
         },
         Field.forOptionalString("name", "name", null),
-        Field.forOptionalObject("species", "species", null, new Field.NestedFieldReader<Specy>() {
+        Field.forOptionalObject("species", "species", null, new Field.NestedReader<Specy>() {
           @Override public Specy read(ResponseReader reader) throws IOException {
             return new Specy(reader);
           }

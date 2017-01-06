@@ -44,7 +44,7 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
   }
 
   private Operation.Data readResponseData(ResponseJsonStreamReader reader) throws IOException {
-    return reader.nextOptionalObject(new Field.NestedFieldReader<Operation.Data>() {
+    return reader.nextOptionalObject(new Field.NestedReader<Operation.Data>() {
       @Override public Operation.Data read(ResponseReader reader) throws IOException {
         //noinspection TryWithIdenticalCatches
         try {
@@ -63,7 +63,7 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
   }
 
   private List<Error> readResponseErrors(ResponseJsonStreamReader reader) throws IOException {
-    return reader.nexOptionalList(new Field.NestedFieldReader<Error>() {
+    return reader.nexOptionalList(new Field.NestedReader<Error>() {
       @Override public Error read(ResponseReader reader) throws IOException {
         return readError((ResponseJsonStreamReader) reader);
       }
@@ -78,7 +78,7 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
       if ("message".equals(name)) {
         message = reader.nextString();
       } else if ("locations".equals(name)) {
-        locations = reader.nexOptionalList(new Field.NestedFieldReader<Error.Location>() {
+        locations = reader.nexOptionalList(new Field.NestedReader<Error.Location>() {
           @Override public Error.Location read(ResponseReader reader) throws IOException {
             return readErrorLocation((ResponseJsonStreamReader) reader);
           }
