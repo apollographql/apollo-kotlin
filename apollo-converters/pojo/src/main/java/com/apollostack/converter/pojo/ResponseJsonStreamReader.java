@@ -58,6 +58,8 @@ import java.util.Map;
           case Field.TYPE_LIST:
             handler.handle(fieldIndex, readList(field));
             break;
+          default:
+            throw new IllegalArgumentException("Unsupported field type");
         }
       } else {
         skipNext();

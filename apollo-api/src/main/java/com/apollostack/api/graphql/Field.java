@@ -20,67 +20,83 @@ public final class Field {
   private final NestedReader nestedReader;
   private final boolean optional;
 
-  public static Field forOptionalString(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
+  public static Field forOptionalString(String responseName, String fieldName, Map<String, Object> arguments)
+      throws IOException {
     return new Field(TYPE_STRING, responseName, fieldName, arguments, null, true);
   }
 
-  public static Field forString(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
+  public static Field forString(String responseName, String fieldName, Map<String, Object> arguments)
+      throws IOException {
     return new Field(TYPE_STRING, responseName, fieldName, arguments, null, false);
   }
 
-  public static Field forOptionalInt(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
+  public static Field forOptionalInt(String responseName, String fieldName, Map<String, Object> arguments)
+      throws IOException {
     return new Field(TYPE_INT, responseName, fieldName, arguments, null, true);
   }
 
-  public static Field forInt(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
+  public static Field forInt(String responseName, String fieldName, Map<String, Object> arguments)
+      throws IOException {
     return new Field(TYPE_INT, responseName, fieldName, arguments, null, false);
   }
 
-  public static Field forOptionalLong(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
+  public static Field forOptionalLong(String responseName, String fieldName, Map<String, Object> arguments)
+      throws IOException {
     return new Field(TYPE_LONG, responseName, fieldName, arguments, null, true);
   }
 
-  public static Field forLong(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
+  public static Field forLong(String responseName, String fieldName, Map<String, Object> arguments)
+      throws IOException {
     return new Field(TYPE_LONG, responseName, fieldName, arguments, null, false);
   }
 
-  public static Field forOptionalDouble(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
+  public static Field forOptionalDouble(String responseName, String fieldName, Map<String, Object> arguments)
+      throws IOException {
     return new Field(TYPE_DOUBLE, responseName, fieldName, arguments, null, true);
   }
 
-  public static Field forDouble(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
+  public static Field forDouble(String responseName, String fieldName, Map<String, Object> arguments)
+      throws IOException {
     return new Field(TYPE_DOUBLE, responseName, fieldName, arguments, null, false);
   }
 
-  public static Field forOptionalBool(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
+  public static Field forOptionalBool(String responseName, String fieldName, Map<String, Object> arguments)
+      throws IOException {
     return new Field(TYPE_BOOL, responseName, fieldName, arguments, null, true);
   }
 
-  public static Field forBool(String responseName, String fieldName, Map<String, Object> arguments) throws IOException {
+  public static Field forBool(String responseName, String fieldName, Map<String, Object> arguments)
+      throws IOException {
     return new Field(TYPE_BOOL, responseName, fieldName, arguments, null, false);
   }
 
-  public static <T> Field forOptionalObject(String responseName, String fieldName, Map<String, Object> arguments, NestedReader<T> nestedReader) throws IOException {
+  public static <T> Field forOptionalObject(String responseName, String fieldName, Map<String, Object> arguments,
+      NestedReader<T> nestedReader) throws IOException {
     return new Field(TYPE_OBJECT, responseName, fieldName, arguments, nestedReader, true);
   }
 
-  public static <T> Field forObject(String responseName, String fieldName, Map<String, Object> arguments, NestedReader<T> nestedReader) throws IOException {
+  public static <T> Field forObject(String responseName, String fieldName, Map<String, Object> arguments,
+      NestedReader<T> nestedReader) throws IOException {
     return new Field(TYPE_OBJECT, responseName, fieldName, arguments, nestedReader, false);
   }
 
-  public static <T> Field forOptionalList(String responseName, String fieldName, Map<String, Object> arguments, NestedReader<T> nestedReader) throws IOException {
+  public static <T> Field forOptionalList(String responseName, String fieldName, Map<String, Object> arguments,
+      NestedReader<T> nestedReader) throws IOException {
     return new Field(TYPE_LIST, responseName, fieldName, arguments, nestedReader, true);
   }
 
-  public static <T> Field forList(String responseName, String fieldName, Map<String, Object> arguments, NestedReader<T> nestedReader) throws IOException {
+  public static <T> Field forList(String responseName, String fieldName, Map<String, Object> arguments,
+      NestedReader<T> nestedReader) throws IOException {
     return new Field(TYPE_LIST, responseName, fieldName, arguments, nestedReader, false);
   }
 
-  private Field(int type, String responseName, String fieldName, Map<String, Object> arguments, NestedReader nestedReader, boolean optional) {
+  private Field(int type, String responseName, String fieldName, Map<String, Object> arguments,
+      NestedReader nestedReader, boolean optional) {
     this.type = type;
     this.responseName = responseName;
     this.fieldName = fieldName;
-    this.arguments = arguments == null ? Collections.<String, Object>emptyMap() : Collections.unmodifiableMap(arguments);
+    this.arguments = arguments == null ? Collections.<String, Object>emptyMap()
+        : Collections.unmodifiableMap(arguments);
     this.nestedReader = nestedReader;
     this.optional = optional;
   }
