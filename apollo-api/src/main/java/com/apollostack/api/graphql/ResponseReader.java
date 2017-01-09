@@ -4,7 +4,7 @@ import java.io.IOException;
 
 /** TODO java doc **/
 public interface ResponseReader {
-  ResponseReader buffer() throws IOException;
+  ResponseReader toBufferedReader() throws IOException;
 
   void read(ValueHandler handler, Field... fields) throws IOException;
 

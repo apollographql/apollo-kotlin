@@ -17,7 +17,7 @@ import java.util.Map;
     this.jsonReader = jsonReader;
   }
 
-  @Override public ResponseReader buffer() throws IOException {
+  @Override public ResponseReader toBufferedReader() throws IOException {
     Map<String, Object> buffer = toMap(this);
     return new BufferedResponseReader(buffer);
   }

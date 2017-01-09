@@ -16,7 +16,7 @@ import java.util.Map;
     this.buffer = buffer;
   }
 
-  @Override public ResponseReader buffer() throws IOException {
+  @Override public ResponseReader toBufferedReader() throws IOException {
     return this;
   }
 

@@ -6,23 +6,13 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.apollostack.api.graphql.Operation;
 import com.apollostack.api.graphql.Response;
-import com.apollostack.converter.pojo.ApolloConverterFactory;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import generatedIR.DroidDetails;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.MediaType;
-import okhttp3.ResponseBody;
-import retrofit2.Converter;
 
 public class MainActivity extends AppCompatActivity {
   private static final String TAG = "MainActivity";
@@ -53,37 +43,5 @@ public class MainActivity extends AppCompatActivity {
           @Override public void onComplete() {
           }
         });
-
-    InputStream is = null;
-    try {
-      is = getAssets().open("TestQuery.json");
-      ResponseBody responseBody = ResponseBody.create(MediaType.parse("application/json; charset=UTF-8"), toString(is));
-      Converter<ResponseBody, Response<? extends Operation.Data>> converter = new ApolloConverterFactory()
-          .responseBodyConverter(TestQueryWithFragmentResponseData.class, null, null);
-      Response<TestQueryWithFragmentResponseData> response = (Response<TestQueryWithFragmentResponseData>) converter.convert(responseBody);
-//      Converter<ResponseBody, Response<? extends Operation.Data>> converter = new ApolloConverterFactory()
-//          .responseBodyConverter(TestQueryResponseData.class, null, null);
-//      Response<TestQueryResponseData> response = (Response<TestQueryResponseData>) converter.convert(responseBody);
-      System.out.println("MainActivity.onCreate: " + response);
-    } catch (Exception e) {
-      e.printStackTrace();
-      if (is != null) {
-        try {
-          is.close();
-        } catch (Exception e1) {
-          // ignore
-        }
-      }
-    }
-  }
-
-  private String toString(InputStream is) throws IOException {
-    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-    StringBuilder stringBuilder = new StringBuilder();
-    String line;
-    while ((line = reader.readLine()) != null) {
-      stringBuilder.append(line).append('\n');
-    }
-    return stringBuilder.toString();
   }
 }
