@@ -1,0 +1,21 @@
+apply plugin: 'java'
+
+targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_7
+
+tasks.withType(Checkstyle) {
+  exclude '**/pojo/BufferedSourceJsonReader.java'
+  exclude '**/pojo/JsonScope.java'
+}
+
+dependencies {
+  compile dep.jsr305
+  compile dep.retrofit
+  compile project (":apollo-api")
+
+  testCompile dep.junit
+  testCompile dep.truth
+  testCompile dep.mockWebServer
+}
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
