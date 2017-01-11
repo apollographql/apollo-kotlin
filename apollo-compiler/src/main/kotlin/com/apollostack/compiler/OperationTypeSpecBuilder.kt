@@ -9,13 +9,12 @@ import javax.lang.model.element.Modifier
 
 class OperationTypeSpecBuilder(
     val operation: Operation,
-    val fragments: List<Fragment>,
-    val generateClasses: Boolean
+    val fragments: List<Fragment>
 ) : CodeGenerator {
   private val QUERY_TYPE_NAME = operation.operationName.capitalize()
   private val QUERY_VARIABLES_CLASS_NAME = ClassName.get("", "$QUERY_TYPE_NAME.Variables")
 
-  override fun toTypeSpec(): TypeSpec {
+  override fun toTypeSpec(abstract: Boolean): TypeSpec {
     return TypeSpec.classBuilder(QUERY_TYPE_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
         .addQuerySuperInterface(operation.variables.isNotEmpty())
@@ -23,9 +22,7 @@ class OperationTypeSpecBuilder(
         .addQueryDocumentDefinition(fragments)
         .addQueryConstructor(operation.variables.isNotEmpty())
         .addVariablesDefinition(operation.variables)
-        .addType(operation.toTypeSpec().let {
-          if (generateClasses) it.convertToPOJO(Modifier.PUBLIC, Modifier.STATIC) else it
-        })
+        .addType(operation.toTypeSpec(abstract))
         .build()
   }
 

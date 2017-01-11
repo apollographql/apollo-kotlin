@@ -38,29 +38,18 @@ public final class TestQuery implements Query<Operation.Variables> {
   }
 
   public static class Data implements Operation.Data {
-    private final @Nullable Hero hero;
-
-    public Data(@Nullable Hero hero) {
-      this.hero = hero;
-    }
+    private @Nullable Hero hero;
 
     public @Nullable Hero hero() {
       return this.hero;
     }
 
     public static class Hero {
-      private final @Nonnull String name;
+      private @Nonnull String name;
 
-      private final @Nonnull List<? extends Episode> appearsIn;
+      private @Nonnull List<? extends Episode> appearsIn;
 
-      private final Fragments fragments;
-
-      public Hero(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
-          Fragments fragments) {
-        this.name = name;
-        this.appearsIn = appearsIn;
-        this.fragments = fragments;
-      }
+      private Fragments fragments;
 
       public @Nonnull String name() {
         return this.name;
@@ -75,11 +64,7 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       public static class Fragments {
-        private final HeroDetails heroDetails;
-
-        public Fragments(HeroDetails heroDetails) {
-          this.heroDetails = heroDetails;
-        }
+        private HeroDetails heroDetails;
 
         public HeroDetails heroDetails() {
           return this.heroDetails;

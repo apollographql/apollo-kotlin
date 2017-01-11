@@ -25,18 +25,11 @@ public class HeroDetails {
       + "  }\n"
       + "}";
 
-  private final @Nonnull String name;
+  private @Nonnull String name;
 
-  private final @Nonnull FriendsConnection friendsConnection;
+  private @Nonnull FriendsConnection friendsConnection;
 
-  private final @Nullable AsDroid asDroid;
-
-  public HeroDetails(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
-      @Nullable AsDroid asDroid) {
-    this.name = name;
-    this.friendsConnection = friendsConnection;
-    this.asDroid = asDroid;
-  }
+  private @Nullable AsDroid asDroid;
 
   public @Nonnull String name() {
     return this.name;
@@ -51,14 +44,9 @@ public class HeroDetails {
   }
 
   public static class FriendsConnection {
-    private final @Nullable Integer totalCount;
+    private @Nullable Integer totalCount;
 
-    private final @Nullable List<? extends Edge> edges;
-
-    public FriendsConnection(@Nullable Integer totalCount, @Nullable List<? extends Edge> edges) {
-      this.totalCount = totalCount;
-      this.edges = edges;
-    }
+    private @Nullable List<? extends Edge> edges;
 
     public @Nullable Integer totalCount() {
       return this.totalCount;
@@ -69,22 +57,14 @@ public class HeroDetails {
     }
 
     public static class Edge {
-      private final @Nullable Node node;
-
-      public Edge(@Nullable Node node) {
-        this.node = node;
-      }
+      private @Nullable Node node;
 
       public @Nullable Node node() {
         return this.node;
       }
 
       public static class Node {
-        private final @Nonnull String name;
-
-        public Node(@Nonnull String name) {
-          this.name = name;
-        }
+        private @Nonnull String name;
 
         public @Nonnull String name() {
           return this.name;
@@ -94,18 +74,11 @@ public class HeroDetails {
   }
 
   public static class AsDroid {
-    private final @Nonnull String name;
+    private @Nonnull String name;
 
-    private final @Nonnull FriendsConnection$ friendsConnection;
+    private @Nonnull FriendsConnection$ friendsConnection;
 
-    private final @Nullable String primaryFunction;
-
-    public AsDroid(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
-        @Nullable String primaryFunction) {
-      this.name = name;
-      this.friendsConnection = friendsConnection;
-      this.primaryFunction = primaryFunction;
-    }
+    private @Nullable String primaryFunction;
 
     public @Nonnull String name() {
       return this.name;
@@ -120,15 +93,9 @@ public class HeroDetails {
     }
 
     public static class FriendsConnection$ {
-      private final @Nullable Integer totalCount;
+      private @Nullable Integer totalCount;
 
-      private final @Nullable List<? extends Edge> edges;
-
-      public FriendsConnection$(@Nullable Integer totalCount,
-          @Nullable List<? extends Edge> edges) {
-        this.totalCount = totalCount;
-        this.edges = edges;
-      }
+      private @Nullable List<? extends Edge> edges;
 
       public @Nullable Integer totalCount() {
         return this.totalCount;
@@ -139,22 +106,14 @@ public class HeroDetails {
       }
 
       public static class Edge {
-        private final @Nullable Node node;
-
-        public Edge(@Nullable Node node) {
-          this.node = node;
-        }
+        private @Nullable Node node;
 
         public @Nullable Node node() {
           return this.node;
         }
 
         public static class Node {
-          private final @Nonnull String name;
-
-          public Node(@Nonnull String name) {
-            this.name = name;
-          }
+          private @Nonnull String name;
 
           public @Nonnull String name() {
             return this.name;
