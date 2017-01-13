@@ -21,21 +21,29 @@ data class Fragment(
       SchemaTypeSpecBuilder(interfaceTypeName(), fields, fragmentSpreads, inlineFragments, abstract)
           .build(Modifier.PUBLIC)
           .toBuilder()
-          .addFragmentDefinition(this)
+          .addFragmentDefinitionField()
+          .addTypeConditionField()
           .build()
           .resolveNestedTypeNameDuplication(emptyList())
 
   fun interfaceTypeName() = fragmentName.capitalize()
 
-  private fun TypeSpec.Builder.addFragmentDefinition(fragment: Fragment): TypeSpec.Builder {
-    return addField(FieldSpec.builder(ClassNames.STRING, FRAGMENT_DEFINITION_FIELD_NAME)
-        .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-        .initializer("\$S", fragment.source)
-        .build()
-    )
-  }
+  private fun TypeSpec.Builder.addFragmentDefinitionField(): TypeSpec.Builder =
+      addField(FieldSpec.builder(ClassNames.STRING, FRAGMENT_DEFINITION_FIELD_NAME)
+          .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+          .initializer("\$S", source)
+          .build()
+      )
+
+  private fun TypeSpec.Builder.addTypeConditionField(): TypeSpec.Builder =
+      addField(FieldSpec.builder(ClassNames.STRING, TYPE_CONDITION_FIELD_NAME)
+          .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+          .initializer("\$S", typeCondition)
+          .build()
+      )
 
   companion object {
-    val FRAGMENT_DEFINITION_FIELD_NAME = "FRAGMENT_DEFINITION"
+    val FRAGMENT_DEFINITION_FIELD_NAME: String = "FRAGMENT_DEFINITION"
+    val TYPE_CONDITION_FIELD_NAME: String = "TYPE_CONDITION"
   }
 }

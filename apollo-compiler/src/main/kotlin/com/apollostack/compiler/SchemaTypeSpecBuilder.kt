@@ -17,6 +17,7 @@ class SchemaTypeSpecBuilder(
       TypeSpec.interfaceBuilder(typeName)
     } else {
       TypeSpec.classBuilder(typeName)
+          .addMethod(SchemaTypeConstructorBuilder(typeName, fields, fragmentSpreads, inlineFragments).build())
     }
     return typeSpecBuilder
         .addModifiers(*modifiers)
@@ -109,6 +110,7 @@ class SchemaTypeSpecBuilder(
       TypeSpec.interfaceBuilder(FRAGMENTS_INTERFACE_NAME)
     } else {
       TypeSpec.classBuilder(FRAGMENTS_INTERFACE_NAME)
+          .addMethod( SchemaFragmentsConstructorBuilder(fragmentSpreads).build())
     }
     return typeSpecBuilder
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -118,6 +120,6 @@ class SchemaTypeSpecBuilder(
   }
 
   companion object {
-    private val FRAGMENTS_INTERFACE_NAME = "Fragments"
+    val FRAGMENTS_INTERFACE_NAME: String = "Fragments"
   }
 }

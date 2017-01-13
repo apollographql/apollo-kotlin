@@ -49,7 +49,8 @@ fun TypeSpec.resolveNestedTypeNameDuplication(reservedTypeNames: List<String>): 
   }
   return typeSpecBuilder
       .addModifiers(*modifiers.toTypedArray())
-      .addMethods(methodSpecs.map { it.overrideMethodReturnType(typeNameOverrideMap) })
+      .addMethods(methodSpecs.filter { it.isConstructor })
+      .addMethods(methodSpecs.filter { !it.isConstructor }.map { it.overrideMethodReturnType(typeNameOverrideMap) })
       .addTypes(typeSpecs.map { typeSpec ->
         typeSpec.resolveNestedTypeNameDuplication(reservedTypeNames + typeSpecs.map { it.name })
       })

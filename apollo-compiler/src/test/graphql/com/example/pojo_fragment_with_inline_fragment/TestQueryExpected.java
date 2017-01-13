@@ -1,7 +1,10 @@
 package com.example.pojo_fragment_with_inline_fragment;
 
+import com.apollostack.api.graphql.Field;
 import com.apollostack.api.graphql.Operation;
 import com.apollostack.api.graphql.Query;
+import com.apollostack.api.graphql.ResponseReader;
+import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
@@ -40,6 +43,26 @@ public final class TestQuery implements Query<Operation.Variables> {
   public static class Data implements Operation.Data {
     private @Nullable Hero hero;
 
+    public Data(ResponseReader reader) throws IOException {
+      reader.read(
+        new ResponseReader.ValueHandler() {
+          @Override public void handle(int fieldIndex, Object value) {
+            switch (fieldIndex) {
+              case 0: {
+                Data.this.hero = (Hero) value;
+                break;
+              }
+            }
+          }
+        },
+        Field.forOptionalObject("hero", "hero", null, new Field.NestedReader<Hero>() {
+          @Override public Hero read(ResponseReader reader) {
+            return new Hero(reader);
+          }
+        })
+      );
+    }
+
     public @Nullable Hero hero() {
       return this.hero;
     }
@@ -50,6 +73,37 @@ public final class TestQuery implements Query<Operation.Variables> {
       private @Nonnull List<? extends Episode> appearsIn;
 
       private Fragments fragments;
+
+      public Hero(ResponseReader reader) throws IOException {
+        reader.toBufferedReader().read(
+          new ResponseReader.ValueHandler() {
+            @Override public void handle(int fieldIndex, Object value) {
+              switch (fieldIndex) {
+                case 0: {
+                  Hero.this.name = (String) value;
+                  break;
+                }
+                case 1: {
+                  Hero.this.appearsIn = (List<? extends Episode>) value;
+                  break;
+                }
+                case 2: {
+                  String __typename = (String) value;
+                  Hero.this.fragments = new Fragments(reader, __typename);
+                  break;
+                }
+              }
+            }
+          },
+          Field.forString("name", "name", null),
+          Field.forList("appearsIn", "appearsIn", null, new Field.NestedReader<Episode>() {
+            @Override public Episode read(ResponseReader reader) {
+              return new Episode(reader);
+            }
+          }),
+          Field.forString("__typename", "__typename", null)
+        );
+      }
 
       public @Nonnull String name() {
         return this.name;
@@ -65,6 +119,12 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       public static class Fragments {
         private HeroDetails heroDetails;
+
+        Fragments(ResponseReader reader, String __typename) throws IOException {
+          if (__typename.equals(HeroDetails.TYPE_CONDITION)) {
+            this.heroDetails = new HeroDetails(reader);
+          }
+        }
 
         public HeroDetails heroDetails() {
           return this.heroDetails;

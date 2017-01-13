@@ -10,22 +10,9 @@ data class InlineFragment(
     val fields: List<Field>,
     val fragmentSpreads: List<String>?
 ) : CodeGenerator {
-  override fun toTypeSpec(abstract: Boolean): TypeSpec {
-    val typeSpecBuilder = if (abstract) {
-      TypeSpec.interfaceBuilder(interfaceName())
-    } else {
-      TypeSpec.classBuilder(interfaceName())
-    }
-    return typeSpecBuilder
-        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .addFields(if (abstract) emptyList() else fields.map(Field::fieldSpec))
-        .addMethods(fields.map { it.accessorMethodSpec(abstract) })
-        .addTypes(fields.filter(Field::isNonScalar).map { field ->
-          SchemaTypeSpecBuilder(field.normalizedName(), field.fields ?: emptyList(), fragmentSpreads ?: emptyList(),
-              field.inlineFragments ?: emptyList(), abstract).build(Modifier.PUBLIC, Modifier.STATIC)
-        })
-        .build()
-  }
+  override fun toTypeSpec(abstract: Boolean): TypeSpec =
+    SchemaTypeSpecBuilder(interfaceName(), fields, fragmentSpreads ?: emptyList(), emptyList(), abstract)
+        .build(Modifier.PUBLIC, Modifier.STATIC)
 
   fun accessorMethodSpec(abstract: Boolean): MethodSpec {
     val methodSpecBuilder = MethodSpec
