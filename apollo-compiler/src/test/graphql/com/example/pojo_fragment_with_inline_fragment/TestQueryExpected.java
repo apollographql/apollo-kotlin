@@ -46,17 +46,17 @@ public final class TestQuery implements Query<Operation.Variables> {
     public Data(ResponseReader reader) throws IOException {
       reader.read(
         new ResponseReader.ValueHandler() {
-          @Override public void handle(int fieldIndex, Object value) {
-            switch (fieldIndex) {
+          @Override public void handle(int fieldIndex__, Object value__) throws IOException {
+            switch (fieldIndex__) {
               case 0: {
-                Data.this.hero = (Hero) value;
+                hero = (Hero) value__;
                 break;
               }
             }
           }
         },
         Field.forOptionalObject("hero", "hero", null, new Field.NestedReader<Hero>() {
-          @Override public Hero read(ResponseReader reader) {
+          @Override public Hero read(ResponseReader reader) throws IOException {
             return new Hero(reader);
           }
         })
@@ -77,19 +77,19 @@ public final class TestQuery implements Query<Operation.Variables> {
       public Hero(ResponseReader reader) throws IOException {
         reader.toBufferedReader().read(
           new ResponseReader.ValueHandler() {
-            @Override public void handle(int fieldIndex, Object value) {
-              switch (fieldIndex) {
+            @Override public void handle(int fieldIndex__, Object value__) throws IOException {
+              switch (fieldIndex__) {
                 case 0: {
-                  Hero.this.name = (String) value;
+                  name = (String) value__;
                   break;
                 }
                 case 1: {
-                  Hero.this.appearsIn = (List<? extends Episode>) value;
+                  appearsIn = (List<? extends Episode>) value__;
                   break;
                 }
                 case 2: {
-                  String __typename = (String) value;
-                  Hero.this.fragments = new Fragments(reader, __typename);
+                  String typename__ = (String) value__;
+                  fragments = new Fragments(reader, typename__);
                   break;
                 }
               }
@@ -97,8 +97,8 @@ public final class TestQuery implements Query<Operation.Variables> {
           },
           Field.forString("name", "name", null),
           Field.forList("appearsIn", "appearsIn", null, new Field.NestedReader<Episode>() {
-            @Override public Episode read(ResponseReader reader) {
-              return new Episode(reader);
+            @Override public Episode read(ResponseReader reader) throws IOException {
+              return Episode.valueOf(reader.readString());
             }
           }),
           Field.forString("__typename", "__typename", null)

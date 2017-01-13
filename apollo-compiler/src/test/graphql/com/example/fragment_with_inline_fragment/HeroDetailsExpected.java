@@ -25,6 +25,8 @@ public interface HeroDetails {
       + "  }\n"
       + "}";
 
+  String TYPE_CONDITION = "Character";
+
   @Nonnull String name();
 
   @Nonnull FriendsConnection friendsConnection();

@@ -2,6 +2,7 @@ package com.apollostack.compiler
 
 import com.apollostack.compiler.ir.Field
 import com.apollostack.compiler.ir.InlineFragment
+import com.apollostack.compiler.ir.TypeDeclaration
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
@@ -10,14 +11,20 @@ class SchemaTypeSpecBuilder(
     val fields: List<Field>,
     val fragmentSpreads: List<String>,
     val inlineFragments: List<InlineFragment>,
-    val abstract: Boolean
+    val abstract: Boolean,
+    val reservedTypeNames: List<String>,
+    val typeDeclarations: List<TypeDeclaration>
 ) {
+  private val typeOverrideMap = buildTypeNameOverrideMap(reservedTypeNames)
+
   fun build(vararg modifiers: Modifier): TypeSpec {
     val typeSpecBuilder = if (abstract) {
       TypeSpec.interfaceBuilder(typeName)
     } else {
       TypeSpec.classBuilder(typeName)
-          .addMethod(SchemaTypeConstructorBuilder(typeName, fields, fragmentSpreads, inlineFragments).build())
+          .addMethod(SchemaTypeConstructorBuilder(fields, fragmentSpreads, inlineFragments, typeOverrideMap,
+              typeDeclarations)
+              .build())
     }
     return typeSpecBuilder
         .addModifiers(*modifiers)
@@ -31,8 +38,8 @@ class SchemaTypeSpecBuilder(
   private fun TypeSpec.Builder.addFields(fields: List<Field>, abstract: Boolean): TypeSpec.Builder {
     val fieldSpecs = if (abstract) emptyList() else fields.map(Field::fieldSpec)
     val methodSpecs = fields.map { it.accessorMethodSpec(abstract) }
-    return addFields(fieldSpecs)
-        .addMethods(methodSpecs)
+    return addFields(fieldSpecs.map { it.overrideType(typeOverrideMap) })
+        .addMethods(methodSpecs.map { it.overrideReturnType(typeOverrideMap) })
   }
 
   /** Returns a list of fragment types referenced by the provided list of fields */
@@ -47,12 +54,14 @@ class SchemaTypeSpecBuilder(
 
   /** Returns a list of types referenced by the inner fields in the provided fields */
   private fun TypeSpec.Builder.addInnerTypes(fields: List<Field>): TypeSpec.Builder {
-    val typeSpecs = fields.filter(Field::isNonScalar).map { it.toTypeSpec(abstract) }
-    return addTypes(typeSpecs)
+    val reservedTypeNames = reservedTypeNames + fields.filter(Field::isNonScalar).map(Field::normalizedName)
+    val typeSpecs = fields.filter(Field::isNonScalar).map { it.toTypeSpec(abstract, reservedTypeNames, typeDeclarations) }
+    return addTypes(typeSpecs.map { it.overrideName(typeOverrideMap) })
   }
 
   private fun TypeSpec.Builder.addInlineFragments(fragments: List<InlineFragment>): TypeSpec.Builder {
-    val typeSpecs = fragments.map { it.toTypeSpec(abstract) }
+    val reservedTypeNames = reservedTypeNames + fields.filter(Field::isNonScalar).map(Field::normalizedName)
+    val typeSpecs = fragments.map { it.toTypeSpec(abstract, reservedTypeNames, typeDeclarations) }
     val methodSpecs = fragments.map { it.accessorMethodSpec(abstract) }
     val fieldSpecs = if (abstract) emptyList() else fragments.map { it.fieldSpec() }
     return addTypes(typeSpecs)
@@ -110,7 +119,7 @@ class SchemaTypeSpecBuilder(
       TypeSpec.interfaceBuilder(FRAGMENTS_INTERFACE_NAME)
     } else {
       TypeSpec.classBuilder(FRAGMENTS_INTERFACE_NAME)
-          .addMethod( SchemaFragmentsConstructorBuilder(fragmentSpreads).build())
+          .addMethod(SchemaFragmentsConstructorBuilder(fragmentSpreads).build())
     }
     return typeSpecBuilder
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)

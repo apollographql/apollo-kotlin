@@ -10,6 +10,8 @@ public interface DroidDetails {
       + "  primaryFunction\n"
       + "}";
 
+  String TYPE_CONDITION = "Droid";
+
   @Nonnull String name();
 
   @Nullable String primaryFunction();

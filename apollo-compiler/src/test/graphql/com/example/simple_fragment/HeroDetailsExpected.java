@@ -9,5 +9,7 @@ public interface HeroDetails {
       + "  name\n"
       + "}";
 
+  String TYPE_CONDITION = "Character";
+
   @Nonnull String name();
 }

@@ -11,7 +11,8 @@ data class TypeDeclaration(
     val values: List<TypeDeclarationValue>?,
     val fields: List<TypeDeclarationField>?
 ) : CodeGenerator {
-  override fun toTypeSpec(abstract: Boolean): TypeSpec {
+  override fun toTypeSpec(abstract: Boolean, reservedTypeNames: List<String>,
+      typeDeclarations: List<TypeDeclaration>): TypeSpec {
     if (kind == "EnumType") {
       return enumTypeToTypeSpec()
     } else if (kind == "InputObjectType") {

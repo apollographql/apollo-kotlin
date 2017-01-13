@@ -2,7 +2,6 @@ package com.apollostack.compiler.ir
 
 import com.apollostack.compiler.ClassNames
 import com.apollostack.compiler.SchemaTypeSpecBuilder
-import com.apollostack.compiler.resolveNestedTypeNameDuplication
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
@@ -17,14 +16,15 @@ data class Fragment(
     val fragmentsReferenced: List<String>
 ) : CodeGenerator {
   /** Returns the Java interface that represents this Fragment object. */
-  override fun toTypeSpec(abstract: Boolean): TypeSpec =
-      SchemaTypeSpecBuilder(interfaceTypeName(), fields, fragmentSpreads, inlineFragments, abstract)
+  override fun toTypeSpec(abstract: Boolean, reservedTypeNames: List<String>,
+      typeDeclarations: List<TypeDeclaration>): TypeSpec =
+      SchemaTypeSpecBuilder(interfaceTypeName(), fields, fragmentSpreads, inlineFragments, abstract, reservedTypeNames,
+          typeDeclarations)
           .build(Modifier.PUBLIC)
           .toBuilder()
           .addFragmentDefinitionField()
           .addTypeConditionField()
           .build()
-          .resolveNestedTypeNameDuplication(emptyList())
 
   fun interfaceTypeName() = fragmentName.capitalize()
 

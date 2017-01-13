@@ -2,16 +2,17 @@ package com.apollostack.compiler
 
 import com.apollostack.compiler.ir.Field
 import com.apollostack.compiler.ir.InlineFragment
+import com.apollostack.compiler.ir.TypeDeclaration
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
 class SchemaTypeConstructorBuilder(
-    schemaTypeName: String,
     val fields: List<Field>,
     val fragmentSpreads: List<String>,
-    val inlineFragments: List<InlineFragment>
+    val inlineFragments: List<InlineFragment>,
+    val typeOverrideMap: Map<String, String>,
+    val typeDeclarations: List<TypeDeclaration>
 ) {
-  private val schemaClassName = ClassName.get("", schemaTypeName)
   private val hasFragments = inlineFragments.isNotEmpty() || fragmentSpreads.isNotEmpty()
 
   fun build(): MethodSpec = MethodSpec
@@ -48,7 +49,8 @@ class SchemaTypeConstructorBuilder(
       .builder()
       .add("new \$T() {\n", ClassNames.API_RESPONSE_VALUE_HANDLER)
       .indent()
-      .beginControlFlow("@Override public void handle(int fieldIndex, Object value)")
+      .beginControlFlow("@Override public void handle(int \$L, Object \$L) throws \$T", PARAM_FIELD_INDEX, PARAM_VALUE,
+          ClassNames.IO_EXCEPTION)
       .add(valueHandlerSwitchStatement())
       .endControlFlow()
       .unindent()
@@ -57,7 +59,7 @@ class SchemaTypeConstructorBuilder(
 
   private fun valueHandlerSwitchStatement(): CodeBlock = CodeBlock
       .builder()
-      .beginControlFlow("switch (fieldIndex)")
+      .beginControlFlow("switch (\$L)", PARAM_FIELD_INDEX)
       .add(fields
           .mapIndexed { i, field -> fieldValueCaseStatement(field, i) }
           .fold(CodeBlock.builder(), CodeBlock.Builder::add)
@@ -68,10 +70,20 @@ class SchemaTypeConstructorBuilder(
 
   private fun fieldValueCaseStatement(field: Field, index: Int): CodeBlock {
     val fieldSpec = field.fieldSpec()
-    val fieldRawType = fieldSpec.type.withoutAnnotations()
+    val fieldRawType = fieldSpec.type.withoutAnnotations().overrideTypeName(typeOverrideMap)
     return CodeBlock.builder()
         .beginControlFlow("case $index:")
-        .addStatement("\$T.this.\$L = (\$T) value", schemaClassName, fieldSpec.name, fieldRawType)
+        .add(
+            if (fieldRawType.isEnum()) {
+              CodeBlock
+                  .builder()
+                  .beginControlFlow("if (\$L != null)", PARAM_VALUE)
+                  .addStatement("\$L = \$T.valueOf(\$L)", fieldSpec.name, fieldRawType, PARAM_VALUE)
+                  .endControlFlow()
+                  .build()
+            } else {
+              CodeBlock.of("\$L = (\$T) \$L;\n", fieldSpec.name, fieldRawType, PARAM_VALUE)
+            })
         .addStatement("break")
         .endControlFlow()
         .build()
@@ -82,7 +94,7 @@ class SchemaTypeConstructorBuilder(
       return CodeBlock
           .builder()
           .beginControlFlow("case $index:")
-          .addStatement("\$T \$L = (\$T) value", ClassNames.STRING, PARAM_TYPE_NAME, ClassNames.STRING)
+          .addStatement("\$T \$L = (\$T) \$L", ClassNames.STRING, PARAM_TYPE_NAME, ClassNames.STRING, PARAM_VALUE)
           .add(inlineFragments
               .map { inlineFragmentInitStatement(it) }
               .fold(CodeBlock.builder(), CodeBlock.Builder::add)
@@ -101,7 +113,7 @@ class SchemaTypeConstructorBuilder(
     val fieldRawType = fieldSpec.type.withoutAnnotations()
     return CodeBlock.builder()
         .beginControlFlow("if (\$L.equals(\$S))", PARAM_TYPE_NAME, fragment.typeCondition)
-        .addStatement("\$T.this.\$L = new \$T(\$L)", schemaClassName, fieldSpec.name, fieldRawType, PARAM_READER)
+        .addStatement("\$L = new \$T(\$L)", fieldSpec.name, fieldRawType, PARAM_READER)
         .endControlFlow()
         .build()
   }
@@ -109,8 +121,7 @@ class SchemaTypeConstructorBuilder(
   private fun fragmentsInitStatement(): CodeBlock {
     if (fragmentSpreads.isNotEmpty()) {
       return CodeBlock.builder()
-          .addStatement("\$T.this.\$L = new \$L(\$L, \$L)", schemaClassName,
-              SchemaTypeSpecBuilder.FRAGMENTS_INTERFACE_NAME.decapitalize(),
+          .addStatement("\$L = new \$L(\$L, \$L)", SchemaTypeSpecBuilder.FRAGMENTS_INTERFACE_NAME.decapitalize(),
               SchemaTypeSpecBuilder.FRAGMENTS_INTERFACE_NAME, PARAM_READER, PARAM_TYPE_NAME)
           .build()
     } else {
@@ -120,8 +131,7 @@ class SchemaTypeConstructorBuilder(
 
   private fun responseFieldFactoryStatements(): CodeBlock {
     val typeNameFieldStatement = if (hasFragments) {
-      CodeBlock.of("\$T.forString(\$S, \$S, null)", ClassNames.API_RESPONSE_FIELD, PARAM_TYPE_NAME,
-          PARAM_TYPE_NAME)
+      CodeBlock.of("\$T.forString(\$S, \$S, null)", ClassNames.API_RESPONSE_FIELD, "__typename", "__typename")
     } else {
       CodeBlock.of("")
     }
@@ -138,13 +148,10 @@ class SchemaTypeConstructorBuilder(
   }
 
   private fun Field.responseFieldFactoryStatement(): CodeBlock {
-    val scalarTypes = listOf(ClassNames.STRING, TypeName.INT, TypeName.INT.box(), TypeName.LONG, TypeName.LONG.box(),
-        TypeName.DOUBLE, TypeName.DOUBLE.box(), TypeName.FLOAT, TypeName.FLOAT.box(), TypeName.BOOLEAN,
-        TypeName.BOOLEAN.box())
     val fieldTypeName = fieldSpec().type.withoutAnnotations()
     val factoryMethod = fieldFactoryMethod(fieldTypeName, isOptional())
     val rawFieldType = fieldTypeName.let { if (it.isList()) it.listParamType() else it }
-    if (scalarTypes.contains(fieldTypeName)) {
+    if (fieldTypeName.isScalar()) {
       return scalarResponseFieldFactoryStatement(factoryMethod)
     } else {
       return objectResponseFieldFactoryStatement(factoryMethod, rawFieldType)
@@ -156,10 +163,11 @@ class SchemaTypeConstructorBuilder(
     TypeName.INT, TypeName.INT.box() -> if (optional) "forOptionalInt" else "forInt"
     TypeName.LONG, TypeName.LONG.box() -> if (optional) "forOptionalLong" else "forLong"
     TypeName.DOUBLE, TypeName.DOUBLE.box() -> if (optional) "forOptionalDouble" else "forDouble"
-    TypeName.FLOAT, TypeName.FLOAT.box() -> if (optional) "forOptionalDouble" else "forDouble"
     TypeName.BOOLEAN, TypeName.BOOLEAN.box() -> if (optional) "forOptionalBool" else "forBool"
     else -> {
-      if (type.isList()) {
+      if (type.isEnum()) {
+        if (optional) "forOptionalString" else "forString"
+      } else if (type.isList()) {
         if (optional) "forOptionalList" else "forList"
       } else {
         if (optional) "forOptionalObject" else "forObject"
@@ -168,6 +176,10 @@ class SchemaTypeConstructorBuilder(
   }
 
   private fun TypeName.isList() = (this is ParameterizedTypeName && rawType == ClassNames.LIST)
+
+  private fun TypeName.isEnum() = ((this is ClassName) && typeDeclarations.count { it.kind == "EnumType" && it.name == simpleName() } > 0)
+
+  private fun TypeName.isScalar() = (SCALAR_TYPES.contains(this) || isEnum())
 
   private fun TypeName.listParamType() =
       (this as ParameterizedTypeName)
@@ -181,18 +193,44 @@ class SchemaTypeConstructorBuilder(
   private fun Field.objectResponseFieldFactoryStatement(factoryMethod: String, type: TypeName): CodeBlock = CodeBlock
       .builder()
       .add("\$T.$factoryMethod(\$S, \$S, null, new \$T() {\n", ClassNames.API_RESPONSE_FIELD, responseName, fieldName,
-          ParameterizedTypeName.get(ClassNames.API_RESPONSE_FIELD_READER, type))
+          ParameterizedTypeName.get(ClassNames.API_RESPONSE_FIELD_READER, type.overrideTypeName(typeOverrideMap)))
       .indent()
-      .beginControlFlow("@Override public \$T read(\$T \$L)", type, ClassNames.API_RESPONSE_READER, PARAM_READER)
-      .addStatement("return new \$T(\$L)", type, PARAM_READER)
+      .beginControlFlow("@Override public \$T read(\$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
+          ClassNames.API_RESPONSE_READER, PARAM_READER, ClassNames.IO_EXCEPTION)
+      .add(readTypedValueStatement(type))
       .endControlFlow()
       .unindent()
       .add("})")
       .build()
 
+  private fun readTypedValueStatement(type: TypeName): CodeBlock {
+    if (type.isScalar()) {
+      val readMethod = when (type) {
+        ClassNames.STRING -> "readString()"
+        TypeName.INT, TypeName.INT.box() -> "readInt()"
+        TypeName.LONG, TypeName.LONG.box() -> "readLong()"
+        TypeName.DOUBLE, TypeName.DOUBLE.box() -> "readDouble()"
+        TypeName.BOOLEAN, TypeName.BOOLEAN.box() -> "readBoolean()"
+        else -> "readString()"
+      }
+      if (type.isEnum()) {
+        return CodeBlock.of("return \$T.valueOf(\$L.\$L);\n", type.overrideTypeName(typeOverrideMap), PARAM_READER,
+            readMethod)
+      } else {
+        return CodeBlock.of("return \$L.\$L;\n", PARAM_READER, readMethod);
+      }
+    } else {
+      return CodeBlock.of("return new \$T(\$L);\n", type.overrideTypeName(typeOverrideMap), PARAM_READER);
+    }
+  }
+
   companion object {
     private val PARAM_READER = "reader"
-    private val PARAM_TYPE_NAME = "__typename"
+    private val PARAM_TYPE_NAME = "typename__"
+    private val PARAM_FIELD_INDEX = "fieldIndex__"
+    private val PARAM_VALUE = "value__"
     private val READER_PARAM_SPEC = ParameterSpec.builder(ClassNames.API_RESPONSE_READER, PARAM_READER).build()
+    private val SCALAR_TYPES = listOf(ClassNames.STRING, TypeName.INT, TypeName.INT.box(), TypeName.LONG,
+        TypeName.LONG.box(), TypeName.DOUBLE, TypeName.DOUBLE.box(), TypeName.BOOLEAN, TypeName.BOOLEAN.box())
   }
 }

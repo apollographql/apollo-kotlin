@@ -14,7 +14,7 @@ open class GraphQLCompiler {
     val ir = irAdapter.fromJson(irFile.readText())
     val operationTypeBuilders = ir.operations.map { OperationTypeSpecBuilder(it, ir.fragments) }
     (operationTypeBuilders + ir.fragments + ir.typesUsed).forEach {
-      JavaFile.builder(packageName, it.toTypeSpec(!generateClasses)).build().writeTo(outputDir)
+      JavaFile.builder(packageName, it.toTypeSpec(!generateClasses, emptyList(), ir.typesUsed)).build().writeTo(outputDir)
     }
   }
 

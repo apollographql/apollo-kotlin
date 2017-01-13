@@ -8,6 +8,16 @@ public interface ResponseReader {
 
   void read(ValueHandler handler, Field... fields) throws IOException;
 
+  String readString() throws IOException;
+
+  Integer readInt() throws IOException;
+
+  Long readLong() throws IOException;
+
+  Double readDouble() throws IOException;
+
+  Boolean readBoolean() throws IOException;
+
   interface ValueHandler {
     void handle(int fieldIndex, Object value) throws IOException;
   }

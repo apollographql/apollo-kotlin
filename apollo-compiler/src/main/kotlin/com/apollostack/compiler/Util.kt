@@ -17,43 +17,41 @@ fun TypeName.overrideTypeName(typeNameOverrideMap: Map<String, String>): TypeNam
   }
 }
 
-fun TypeSpec.resolveNestedTypeNameDuplication(reservedTypeNames: List<String>): TypeSpec {
-  fun FieldSpec.overrideType(typeNameOverrideMap: Map<String, String>):FieldSpec = FieldSpec
-      .builder(type.overrideTypeName(typeNameOverrideMap).annotated(type.annotations), name)
-      .addModifiers(*modifiers.toTypedArray())
-      .addAnnotations(annotations)
-      .initializer(initializer)
-      .build()
+fun FieldSpec.overrideType(typeNameOverrideMap: Map<String, String>): FieldSpec = FieldSpec
+    .builder(type.overrideTypeName(typeNameOverrideMap).annotated(type.annotations), name)
+    .addModifiers(*modifiers.toTypedArray())
+    .addAnnotations(annotations)
+    .initializer(initializer)
+    .build()
 
-  fun MethodSpec.overrideMethodReturnType(typeNameOverrideMap: Map<String, String>): MethodSpec = MethodSpec
+fun buildTypeNameOverrideMap(reservedTypeNames: List<String>): Map<String, String> {
+  fun String.formatUniqueTypeName(reservedTypeNames: List<String>): String {
+    val suffix = reservedTypeNames.count { it == this }.let { if (it > 0) "$".repeat(it) else "" }
+    return "$this$suffix"
+  }
+  return reservedTypeNames.distinct().associate {
+    it to it.formatUniqueTypeName(reservedTypeNames)
+  }
+}
+
+fun MethodSpec.overrideReturnType(typeNameOverrideMap: Map<String, String>): MethodSpec = MethodSpec
       .methodBuilder(name)
       .returns(returnType.overrideTypeName(typeNameOverrideMap).annotated(returnType.annotations))
       .addModifiers(*modifiers.toTypedArray())
       .addCode(code)
       .build()
 
-  fun String.formatUniqueTypeName(reservedTypeNames: List<String>): String {
-    val suffix = reservedTypeNames.count { it == this }.let { if (it > 0) "$".repeat(it) else "" }
-    return "$this$suffix"
-  }
-
-  val typeNameOverrideMap = typeSpecs.map { it.name }
-      .map { it to it.formatUniqueTypeName(reservedTypeNames) }.toMap()
-
-  val typeSpecName = name.formatUniqueTypeName(reservedTypeNames.minusElement(name))
-
+fun TypeSpec.overrideName(typeNameOverrideMap: Map<String, String>): TypeSpec {
   val typeSpecBuilder = if (this.kind == TypeSpec.Kind.INTERFACE) {
-    TypeSpec.interfaceBuilder(typeSpecName)
+    TypeSpec.interfaceBuilder(typeNameOverrideMap[name] ?: name)
   } else {
-    TypeSpec.classBuilder(typeSpecName)
+    TypeSpec.classBuilder(typeNameOverrideMap[name] ?: name)
   }
   return typeSpecBuilder
       .addModifiers(*modifiers.toTypedArray())
       .addMethods(methodSpecs.filter { it.isConstructor })
-      .addMethods(methodSpecs.filter { !it.isConstructor }.map { it.overrideMethodReturnType(typeNameOverrideMap) })
-      .addTypes(typeSpecs.map { typeSpec ->
-        typeSpec.resolveNestedTypeNameDuplication(reservedTypeNames + typeSpecs.map { it.name })
-      })
+      .addMethods(methodSpecs.filter { !it.isConstructor }.map { it.overrideReturnType(typeNameOverrideMap) })
+      .addTypes(typeSpecs)
       .addFields(fieldSpecs.map { it.overrideType(typeNameOverrideMap) })
       .addSuperinterfaces(superinterfaces)
       .build()

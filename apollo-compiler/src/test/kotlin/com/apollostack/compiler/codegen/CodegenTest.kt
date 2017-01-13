@@ -65,7 +65,7 @@ class CodeGenTest(val testDir: File, val pkgName: String, val generatePOJO: Bool
     fun data(): Collection<Array<Any>> {
       return File("src/test/graphql/com/example/").listFiles()
           .filter { it.isDirectory }
-          .filter { it.name.startsWith("pojo") }
+//          .filter { it.name.startsWith("pojo") }
           .map { arrayOf(it, it.name, it.name.startsWith("pojo")) }
     }
   }

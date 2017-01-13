@@ -39,20 +39,20 @@ public class HeroDetails {
   public HeroDetails(ResponseReader reader) throws IOException {
     reader.toBufferedReader().read(
       new ResponseReader.ValueHandler() {
-        @Override public void handle(int fieldIndex, Object value) {
-          switch (fieldIndex) {
+        @Override public void handle(int fieldIndex__, Object value__) throws IOException {
+          switch (fieldIndex__) {
             case 0: {
-              HeroDetails.this.name = (String) value;
+              name = (String) value__;
               break;
             }
             case 1: {
-              HeroDetails.this.friendsConnection = (FriendsConnection) value;
+              friendsConnection = (FriendsConnection) value__;
               break;
             }
             case 2: {
-              String __typename = (String) value;
-              if (__typename.equals("Droid")) {
-                HeroDetails.this.asDroid = new AsDroid(reader);
+              String typename__ = (String) value__;
+              if (typename__.equals("Droid")) {
+                asDroid = new AsDroid(reader);
               }
               break;
             }
@@ -61,7 +61,7 @@ public class HeroDetails {
       },
       Field.forString("name", "name", null),
       Field.forObject("friendsConnection", "friendsConnection", null, new Field.NestedReader<FriendsConnection>() {
-        @Override public FriendsConnection read(ResponseReader reader) {
+        @Override public FriendsConnection read(ResponseReader reader) throws IOException {
           return new FriendsConnection(reader);
         }
       }),
@@ -89,14 +89,14 @@ public class HeroDetails {
     public FriendsConnection(ResponseReader reader) throws IOException {
       reader.read(
         new ResponseReader.ValueHandler() {
-          @Override public void handle(int fieldIndex, Object value) {
-            switch (fieldIndex) {
+          @Override public void handle(int fieldIndex__, Object value__) throws IOException {
+            switch (fieldIndex__) {
               case 0: {
-                FriendsConnection.this.totalCount = (Integer) value;
+                totalCount = (Integer) value__;
                 break;
               }
               case 1: {
-                FriendsConnection.this.edges = (List<? extends Edge>) value;
+                edges = (List<? extends Edge>) value__;
                 break;
               }
             }
@@ -104,7 +104,7 @@ public class HeroDetails {
         },
         Field.forOptionalInt("totalCount", "totalCount", null),
         Field.forOptionalList("edges", "edges", null, new Field.NestedReader<Edge>() {
-          @Override public Edge read(ResponseReader reader) {
+          @Override public Edge read(ResponseReader reader) throws IOException {
             return new Edge(reader);
           }
         })
@@ -125,17 +125,17 @@ public class HeroDetails {
       public Edge(ResponseReader reader) throws IOException {
         reader.read(
           new ResponseReader.ValueHandler() {
-            @Override public void handle(int fieldIndex, Object value) {
-              switch (fieldIndex) {
+            @Override public void handle(int fieldIndex__, Object value__) throws IOException {
+              switch (fieldIndex__) {
                 case 0: {
-                  Edge.this.node = (Node) value;
+                  node = (Node) value__;
                   break;
                 }
               }
             }
           },
           Field.forOptionalObject("node", "node", null, new Field.NestedReader<Node>() {
-            @Override public Node read(ResponseReader reader) {
+            @Override public Node read(ResponseReader reader) throws IOException {
               return new Node(reader);
             }
           })
@@ -152,10 +152,10 @@ public class HeroDetails {
         public Node(ResponseReader reader) throws IOException {
           reader.read(
             new ResponseReader.ValueHandler() {
-              @Override public void handle(int fieldIndex, Object value) {
-                switch (fieldIndex) {
+              @Override public void handle(int fieldIndex__, Object value__) throws IOException {
+                switch (fieldIndex__) {
                   case 0: {
-                    Node.this.name = (String) value;
+                    name = (String) value__;
                     break;
                   }
                 }
@@ -182,27 +182,27 @@ public class HeroDetails {
     public AsDroid(ResponseReader reader) throws IOException {
       reader.read(
         new ResponseReader.ValueHandler() {
-          @Override public void handle(int fieldIndex, Object value) {
-            switch (fieldIndex) {
+          @Override public void handle(int fieldIndex__, Object value__) throws IOException {
+            switch (fieldIndex__) {
               case 0: {
-                AsDroid.this.name = (String) value;
+                name = (String) value__;
                 break;
               }
               case 1: {
-                AsDroid.this.friendsConnection = (FriendsConnection) value;
+                friendsConnection = (FriendsConnection$) value__;
                 break;
               }
               case 2: {
-                AsDroid.this.primaryFunction = (String) value;
+                primaryFunction = (String) value__;
                 break;
               }
             }
           }
         },
         Field.forString("name", "name", null),
-        Field.forObject("friendsConnection", "friendsConnection", null, new Field.NestedReader<FriendsConnection>() {
-          @Override public FriendsConnection read(ResponseReader reader) {
-            return new FriendsConnection(reader);
+        Field.forObject("friendsConnection", "friendsConnection", null, new Field.NestedReader<FriendsConnection$>() {
+          @Override public FriendsConnection$ read(ResponseReader reader) throws IOException {
+            return new FriendsConnection$(reader);
           }
         }),
         Field.forOptionalString("primaryFunction", "primaryFunction", null)
@@ -229,14 +229,14 @@ public class HeroDetails {
       public FriendsConnection$(ResponseReader reader) throws IOException {
         reader.read(
           new ResponseReader.ValueHandler() {
-            @Override public void handle(int fieldIndex, Object value) {
-              switch (fieldIndex) {
+            @Override public void handle(int fieldIndex__, Object value__) throws IOException {
+              switch (fieldIndex__) {
                 case 0: {
-                  FriendsConnection.this.totalCount = (Integer) value;
+                  totalCount = (Integer) value__;
                   break;
                 }
                 case 1: {
-                  FriendsConnection.this.edges = (List<? extends Edge>) value;
+                  edges = (List<? extends Edge>) value__;
                   break;
                 }
               }
@@ -244,7 +244,7 @@ public class HeroDetails {
           },
           Field.forOptionalInt("totalCount", "totalCount", null),
           Field.forOptionalList("edges", "edges", null, new Field.NestedReader<Edge>() {
-            @Override public Edge read(ResponseReader reader) {
+            @Override public Edge read(ResponseReader reader) throws IOException {
               return new Edge(reader);
             }
           })
@@ -265,17 +265,17 @@ public class HeroDetails {
         public Edge(ResponseReader reader) throws IOException {
           reader.read(
             new ResponseReader.ValueHandler() {
-              @Override public void handle(int fieldIndex, Object value) {
-                switch (fieldIndex) {
+              @Override public void handle(int fieldIndex__, Object value__) throws IOException {
+                switch (fieldIndex__) {
                   case 0: {
-                    Edge.this.node = (Node) value;
+                    node = (Node) value__;
                     break;
                   }
                 }
               }
             },
             Field.forOptionalObject("node", "node", null, new Field.NestedReader<Node>() {
-              @Override public Node read(ResponseReader reader) {
+              @Override public Node read(ResponseReader reader) throws IOException {
                 return new Node(reader);
               }
             })
@@ -292,10 +292,10 @@ public class HeroDetails {
           public Node(ResponseReader reader) throws IOException {
             reader.read(
               new ResponseReader.ValueHandler() {
-                @Override public void handle(int fieldIndex, Object value) {
-                  switch (fieldIndex) {
+                @Override public void handle(int fieldIndex__, Object value__) throws IOException {
+                  switch (fieldIndex__) {
                     case 0: {
-                      Node.this.name = (String) value;
+                      name = (String) value__;
                       break;
                     }
                   }

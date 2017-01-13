@@ -67,6 +67,26 @@ import java.util.Map;
     }
   }
 
+  @Override public String readString() throws IOException {
+    return nextString(false);
+  }
+
+  @Override public Integer readInt() throws IOException {
+    return nextInt(false);
+  }
+
+  @Override public Long readLong() throws IOException {
+    return nextLong(false);
+  }
+
+  @Override public Double readDouble() throws IOException {
+    return nextDouble(false);
+  }
+
+  @Override public Boolean readBoolean() throws IOException {
+    return nextBoolean(false);
+  }
+
   boolean hasNext() throws IOException {
     return jsonReader.hasNext();
   }
@@ -79,182 +99,117 @@ import java.util.Map;
     jsonReader.skipValue();
   }
 
-  String nextString() throws IOException {
-    if (jsonReader.peek() == JsonReader.Token.NULL) {
-      throw new NullPointerException("can't parse response, expected non null json value");
-    }
-    return jsonReader.nextString();
-  }
-
-  String nextOptionalString() throws IOException {
+  String nextString(boolean optional) throws IOException {
+    checkNextValue(optional);
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       jsonReader.skipValue();
       return null;
+    } else {
+      return jsonReader.nextString();
     }
-    return jsonReader.nextString();
   }
 
-  int nextInt() throws IOException {
-    if (jsonReader.peek() == JsonReader.Token.NULL) {
-      throw new NullPointerException("can't parse response, expected non null json value");
-    }
-    return jsonReader.nextInt();
-  }
-
-  Integer nextOptionalInt() throws IOException {
+  Integer nextInt(boolean optional) throws IOException {
+    checkNextValue(optional);
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       jsonReader.skipValue();
       return null;
+    } else {
+      return jsonReader.nextInt();
     }
-    return jsonReader.nextInt();
   }
 
-  long nextLong() throws IOException {
-    if (jsonReader.peek() == JsonReader.Token.NULL) {
-      throw new NullPointerException("can't parse response, expected non null json value");
-    }
-    return jsonReader.nextLong();
-  }
-
-  Long nextOptionalLong() throws IOException {
+  Long nextLong(boolean optional) throws IOException {
+    checkNextValue(optional);
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       jsonReader.skipValue();
       return null;
+    } else {
+      return jsonReader.nextLong();
     }
-    return jsonReader.nextLong();
   }
 
-  double nextDouble() throws IOException {
-    if (jsonReader.peek() == JsonReader.Token.NULL) {
-      throw new NullPointerException("can't parse response, expected non null json value");
-    }
-    return jsonReader.nextDouble();
-  }
-
-  Double nextOptionalDouble() throws IOException {
+  Double nextDouble(boolean optional) throws IOException {
+    checkNextValue(optional);
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       jsonReader.skipValue();
       return null;
+    } else {
+      return jsonReader.nextDouble();
     }
-    return jsonReader.nextDouble();
   }
 
-  boolean nextBoolean() throws IOException {
-    if (jsonReader.peek() == JsonReader.Token.NULL) {
-      throw new NullPointerException("can't parse response, expected non null json value");
-    }
-    return jsonReader.nextBoolean();
-  }
-
-  Boolean nextOptionalBoolean() throws IOException {
+  Boolean nextBoolean(boolean optional) throws IOException {
+    checkNextValue(optional);
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       jsonReader.skipValue();
       return null;
+    } else {
+      return jsonReader.nextBoolean();
     }
-    return jsonReader.nextBoolean();
   }
 
-  <T> T nextObject(Field.NestedReader<T> nestedReader) throws IOException {
-    if (jsonReader.peek() == JsonReader.Token.NULL) {
-      throw new NullPointerException("can't parse response, expected non null json value");
-    }
-    return nextOptionalObject(nestedReader);
-  }
-
-  <T> T nextOptionalObject(Field.NestedReader<T> nestedReader) throws IOException {
+  <T> T nextObject(boolean optional, Field.NestedReader<T> nestedReader) throws IOException {
+    checkNextValue(optional);
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       jsonReader.skipValue();
       return null;
+    } else {
+      jsonReader.beginObject();
+      T result = nestedReader.read(this);
+      jsonReader.endObject();
+      return result;
     }
-
-    jsonReader.beginObject();
-    T result = nestedReader.read(this);
-    jsonReader.endObject();
-    return result;
   }
 
-  <T> List<T> nextList(Field.NestedReader<T> nestedReader) throws IOException {
-    if (jsonReader.peek() == JsonReader.Token.NULL) {
-      throw new NullPointerException("can't parse response, expected non null json value");
-    }
-    return nexOptionalList(nestedReader);
-  }
-
-  <T> List<T> nexOptionalList(Field.NestedReader<T> nestedReader) throws IOException {
+  <T> List<T> nextList(boolean optional, Field.NestedReader<T> nestedReader) throws IOException {
+    checkNextValue(optional);
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       jsonReader.skipValue();
       return null;
-    }
-
-    List<T> result = new ArrayList<>();
-    jsonReader.beginArray();
-    while (jsonReader.hasNext()) {
-      T item;
-      if (isNextObject()) {
-        item = nextObject(nestedReader);
-      } else {
-        item = nestedReader.read(this);
+    } else {
+      List<T> result = new ArrayList<>();
+      jsonReader.beginArray();
+      while (jsonReader.hasNext()) {
+        T item;
+        if (isNextObject()) {
+          item = nextObject(false, nestedReader);
+        } else {
+          item = nestedReader.read(this);
+        }
+        result.add(item);
       }
-      result.add(item);
+      jsonReader.endArray();
+      return result;
     }
-    jsonReader.endArray();
-    return result;
   }
 
   private String readString(Field field) throws IOException {
-    if (field.optional()) {
-      return nextOptionalString();
-    } else {
-      return nextString();
-    }
+    return nextString(field.optional());
   }
 
   private Integer readInt(Field field) throws IOException {
-    if (field.optional()) {
-      return nextOptionalInt();
-    } else {
-      return nextInt();
-    }
+    return nextInt(field.optional());
   }
 
   private Long readLong(Field field) throws IOException {
-    if (field.optional()) {
-      return nextOptionalLong();
-    } else {
-      return nextLong();
-    }
+    return nextLong(field.optional());
   }
 
   private Double readDouble(Field field) throws IOException {
-    if (field.optional()) {
-      return nextOptionalDouble();
-    } else {
-      return nextDouble();
-    }
+    return nextDouble(field.optional());
   }
 
   private Boolean readBoolean(Field field) throws IOException {
-    if (field.optional()) {
-      return nextOptionalBoolean();
-    } else {
-      return nextBoolean();
-    }
+    return nextBoolean(field.optional());
   }
 
   @SuppressWarnings("unchecked") private <T> T readObject(Field field) throws IOException {
-    if (field.optional()) {
-      return (T) nextOptionalObject(field.nestedReader());
-    } else {
-      return (T) nextOptionalObject(field.nestedReader());
-    }
+    return (T) nextObject(field.optional(), field.nestedReader());
   }
 
   @SuppressWarnings("unchecked") private <T> List<T> readList(Field field) throws IOException {
-    if (field.optional()) {
-      return nexOptionalList(field.nestedReader());
-    } else {
-      return nextList(field.nestedReader());
-    }
+    return nextList(field.optional(), field.nestedReader());
   }
 
   private boolean isNextObject() throws IOException {
@@ -277,6 +232,12 @@ import java.util.Map;
     return jsonReader.peek() == JsonReader.Token.NUMBER;
   }
 
+  private void checkNextValue(boolean optional) throws IOException {
+    if (!optional && jsonReader.peek() == JsonReader.Token.NULL) {
+      throw new NullPointerException("corrupted response reader, expected non null value");
+    }
+  }
+
   private static Map<String, Object> toMap(ResponseJsonStreamReader streamReader) throws IOException {
     Map<String, Object> result = new HashMap<>();
     while (streamReader.hasNext()) {
@@ -295,7 +256,7 @@ import java.util.Map;
   }
 
   private static Map<String, Object> readObject(final ResponseJsonStreamReader streamReader) throws IOException {
-    return streamReader.nextObject(new Field.NestedReader<Map<String, Object>>() {
+    return streamReader.nextObject(false, new Field.NestedReader<Map<String, Object>>() {
       @Override public Map<String, Object> read(ResponseReader streamReader) throws IOException {
         return toMap((ResponseJsonStreamReader) streamReader);
       }
@@ -303,7 +264,7 @@ import java.util.Map;
   }
 
   private static List<?> readList(final ResponseJsonStreamReader streamReader) throws IOException {
-    return streamReader.nextList(new Field.NestedReader<Object>() {
+    return streamReader.nextList(false, new Field.NestedReader<Object>() {
       @Override public Object read(ResponseReader reader) throws IOException {
         ResponseJsonStreamReader streamReader = (ResponseJsonStreamReader) reader;
         if (streamReader.isNextObject()) {
@@ -322,11 +283,11 @@ import java.util.Map;
       streamReader.skipNext();
       return null;
     } else if (streamReader.isNextBoolean()) {
-      return streamReader.nextBoolean();
+      return streamReader.nextBoolean(false);
     } else if (streamReader.isNextNumber()) {
-      return new BigDecimal(streamReader.nextString());
+      return new BigDecimal(streamReader.nextString(false));
     } else {
-      return streamReader.nextString();
+      return streamReader.nextString(false);
     }
   }
 }
