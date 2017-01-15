@@ -37,25 +37,25 @@ import java.util.Map;
       if (field != null) {
         int fieldIndex = fieldIndexMap.get(nextName);
         switch (field.type()) {
-          case Field.TYPE_STRING:
+          case STRING:
             handler.handle(fieldIndex, readString(field));
             break;
-          case Field.TYPE_INT:
+          case INT:
             handler.handle(fieldIndex, readInt(field));
             break;
-          case Field.TYPE_LONG:
+          case LONG:
             handler.handle(fieldIndex, readLong(field));
             break;
-          case Field.TYPE_DOUBLE:
+          case DOUBLE:
             handler.handle(fieldIndex, readDouble(field));
             break;
-          case Field.TYPE_BOOL:
+          case BOOLEAN:
             handler.handle(fieldIndex, readBoolean(field));
             break;
-          case Field.TYPE_OBJECT:
+          case OBJECT:
             handler.handle(fieldIndex, readObject(field));
             break;
-          case Field.TYPE_LIST:
+          case LIST:
             handler.handle(fieldIndex, readList(field));
             break;
           default:

@@ -131,7 +131,7 @@ class SchemaTypeConstructorBuilder(
 
   private fun responseFieldFactoryStatements(): CodeBlock {
     val typeNameFieldStatement = if (hasFragments) {
-      CodeBlock.of("\$T.forString(\$S, \$S, null)", ClassNames.API_RESPONSE_FIELD, "__typename", "__typename")
+      CodeBlock.of("\$T.forString(\$S, \$S, null, false)", ClassNames.API_RESPONSE_FIELD, "__typename", "__typename")
     } else {
       CodeBlock.of("")
     }
@@ -149,7 +149,7 @@ class SchemaTypeConstructorBuilder(
 
   private fun Field.responseFieldFactoryStatement(): CodeBlock {
     val fieldTypeName = fieldSpec().type.withoutAnnotations()
-    val factoryMethod = fieldFactoryMethod(fieldTypeName, isOptional())
+    val factoryMethod = fieldFactoryMethod(fieldTypeName)
     val rawFieldType = fieldTypeName.let { if (it.isList()) it.listParamType() else it }
     if (fieldTypeName.isScalar()) {
       return scalarResponseFieldFactoryStatement(factoryMethod)
@@ -158,19 +158,19 @@ class SchemaTypeConstructorBuilder(
     }
   }
 
-  private fun fieldFactoryMethod(type: TypeName, optional: Boolean) = when (type) {
-    ClassNames.STRING -> if (optional) "forOptionalString" else "forString"
-    TypeName.INT, TypeName.INT.box() -> if (optional) "forOptionalInt" else "forInt"
-    TypeName.LONG, TypeName.LONG.box() -> if (optional) "forOptionalLong" else "forLong"
-    TypeName.DOUBLE, TypeName.DOUBLE.box() -> if (optional) "forOptionalDouble" else "forDouble"
-    TypeName.BOOLEAN, TypeName.BOOLEAN.box() -> if (optional) "forOptionalBool" else "forBool"
+  private fun fieldFactoryMethod(type: TypeName) = when (type) {
+    ClassNames.STRING -> "forString"
+    TypeName.INT, TypeName.INT.box() -> "forInt"
+    TypeName.LONG, TypeName.LONG.box() -> "forLong"
+    TypeName.DOUBLE, TypeName.DOUBLE.box() -> "forDouble"
+    TypeName.BOOLEAN, TypeName.BOOLEAN.box() -> "forBoolean"
     else -> {
       if (type.isEnum()) {
-        if (optional) "forOptionalString" else "forString"
+        "forString"
       } else if (type.isList()) {
-        if (optional) "forOptionalList" else "forList"
+        "forList"
       } else {
-        if (optional) "forOptionalObject" else "forObject"
+        "forObject"
       }
     }
   }
@@ -188,12 +188,12 @@ class SchemaTypeConstructorBuilder(
           .let { if (it is WildcardTypeName) it.upperBounds.first() else it }
 
   private fun Field.scalarResponseFieldFactoryStatement(factoryMethod: String): CodeBlock = CodeBlock
-      .of("\$T.\$L(\$S, \$S, null)", ClassNames.API_RESPONSE_FIELD, factoryMethod, responseName, fieldName)
+      .of("\$T.\$L(\$S, \$S, null, \$L)", ClassNames.API_RESPONSE_FIELD, factoryMethod, responseName, fieldName, isOptional())
 
   private fun Field.objectResponseFieldFactoryStatement(factoryMethod: String, type: TypeName): CodeBlock = CodeBlock
       .builder()
-      .add("\$T.$factoryMethod(\$S, \$S, null, new \$T() {\n", ClassNames.API_RESPONSE_FIELD, responseName, fieldName,
-          ParameterizedTypeName.get(ClassNames.API_RESPONSE_FIELD_READER, type.overrideTypeName(typeOverrideMap)))
+      .add("\$T.$factoryMethod(\$S, \$S, null, \$L, new \$T() {\n", ClassNames.API_RESPONSE_FIELD, responseName,
+          fieldName, isOptional(), apiResponseFieldReaderTypeName(type.overrideTypeName(typeOverrideMap)))
       .indent()
       .beginControlFlow("@Override public \$T read(\$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
           ClassNames.API_RESPONSE_READER, PARAM_READER, ClassNames.IO_EXCEPTION)
@@ -202,6 +202,9 @@ class SchemaTypeConstructorBuilder(
       .unindent()
       .add("})")
       .build()
+
+  private fun apiResponseFieldReaderTypeName(type:TypeName) =
+      ParameterizedTypeName.get(ClassNames.API_RESPONSE_FIELD_READER, type.overrideTypeName(typeOverrideMap))
 
   private fun readTypedValueStatement(type: TypeName): CodeBlock {
     if (type.isScalar()) {

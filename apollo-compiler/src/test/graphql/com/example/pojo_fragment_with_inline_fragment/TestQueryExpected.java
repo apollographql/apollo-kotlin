@@ -55,7 +55,7 @@ public final class TestQuery implements Query<Operation.Variables> {
             }
           }
         },
-        Field.forOptionalObject("hero", "hero", null, new Field.NestedReader<Hero>() {
+        Field.forObject("hero", "hero", null, true, new Field.NestedReader<Hero>() {
           @Override public Hero read(ResponseReader reader) throws IOException {
             return new Hero(reader);
           }
@@ -95,13 +95,13 @@ public final class TestQuery implements Query<Operation.Variables> {
               }
             }
           },
-          Field.forString("name", "name", null),
-          Field.forList("appearsIn", "appearsIn", null, new Field.NestedReader<Episode>() {
+          Field.forString("name", "name", null, false),
+          Field.forList("appearsIn", "appearsIn", null, false, new Field.NestedReader<Episode>() {
             @Override public Episode read(ResponseReader reader) throws IOException {
               return Episode.valueOf(reader.readString());
             }
           }),
-          Field.forString("__typename", "__typename", null)
+          Field.forString("__typename", "__typename", null, false)
         );
       }
 

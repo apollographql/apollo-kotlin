@@ -59,13 +59,13 @@ public class HeroDetails {
           }
         }
       },
-      Field.forString("name", "name", null),
-      Field.forObject("friendsConnection", "friendsConnection", null, new Field.NestedReader<FriendsConnection>() {
+      Field.forString("name", "name", null, false),
+      Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.NestedReader<FriendsConnection>() {
         @Override public FriendsConnection read(ResponseReader reader) throws IOException {
           return new FriendsConnection(reader);
         }
       }),
-      Field.forString("__typename", "__typename", null)
+      Field.forString("__typename", "__typename", null, false)
     );
   }
 
@@ -102,8 +102,8 @@ public class HeroDetails {
             }
           }
         },
-        Field.forOptionalInt("totalCount", "totalCount", null),
-        Field.forOptionalList("edges", "edges", null, new Field.NestedReader<Edge>() {
+        Field.forInt("totalCount", "totalCount", null, true),
+        Field.forList("edges", "edges", null, true, new Field.NestedReader<Edge>() {
           @Override public Edge read(ResponseReader reader) throws IOException {
             return new Edge(reader);
           }
@@ -134,7 +134,7 @@ public class HeroDetails {
               }
             }
           },
-          Field.forOptionalObject("node", "node", null, new Field.NestedReader<Node>() {
+          Field.forObject("node", "node", null, true, new Field.NestedReader<Node>() {
             @Override public Node read(ResponseReader reader) throws IOException {
               return new Node(reader);
             }
@@ -161,7 +161,7 @@ public class HeroDetails {
                 }
               }
             },
-            Field.forString("name", "name", null)
+            Field.forString("name", "name", null, false)
           );
         }
 
@@ -199,13 +199,13 @@ public class HeroDetails {
             }
           }
         },
-        Field.forString("name", "name", null),
-        Field.forObject("friendsConnection", "friendsConnection", null, new Field.NestedReader<FriendsConnection$>() {
+        Field.forString("name", "name", null, false),
+        Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.NestedReader<FriendsConnection$>() {
           @Override public FriendsConnection$ read(ResponseReader reader) throws IOException {
             return new FriendsConnection$(reader);
           }
         }),
-        Field.forOptionalString("primaryFunction", "primaryFunction", null)
+        Field.forString("primaryFunction", "primaryFunction", null, true)
       );
     }
 
@@ -242,8 +242,8 @@ public class HeroDetails {
               }
             }
           },
-          Field.forOptionalInt("totalCount", "totalCount", null),
-          Field.forOptionalList("edges", "edges", null, new Field.NestedReader<Edge>() {
+          Field.forInt("totalCount", "totalCount", null, true),
+          Field.forList("edges", "edges", null, true, new Field.NestedReader<Edge>() {
             @Override public Edge read(ResponseReader reader) throws IOException {
               return new Edge(reader);
             }
@@ -274,7 +274,7 @@ public class HeroDetails {
                 }
               }
             },
-            Field.forOptionalObject("node", "node", null, new Field.NestedReader<Node>() {
+            Field.forObject("node", "node", null, true, new Field.NestedReader<Node>() {
               @Override public Node read(ResponseReader reader) throws IOException {
                 return new Node(reader);
               }
@@ -301,7 +301,7 @@ public class HeroDetails {
                   }
                 }
               },
-              Field.forString("name", "name", null)
+              Field.forString("name", "name", null, false)
             );
           }
 
