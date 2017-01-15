@@ -6,6 +6,7 @@ import com.apollostack.api.graphql.ResponseReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -270,9 +271,9 @@ import java.util.Map;
         if (streamReader.isNextObject()) {
           return readObject(streamReader);
         } else if (streamReader.isNextList()) {
-          return readList(streamReader);
+          return Collections.singletonMap("", readList(streamReader));
         } else {
-          return readScalar(streamReader);
+          return Collections.singletonMap("", readScalar(streamReader));
         }
       }
     });

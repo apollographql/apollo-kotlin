@@ -54,23 +54,48 @@ import java.util.Map;
   }
 
   @Override public String readString() throws IOException {
-    return readSingleValue();
+    checkSingleValue();
+
+    String value = (String) buffer.get("");
+    checkValue(value, false);
+
+    return value;
   }
 
   @Override public Integer readInt() throws IOException {
-    return readSingleValue();
+    checkSingleValue();
+
+    BigDecimal value = (BigDecimal) buffer.get("");
+    checkValue(value, false);
+
+    return value.intValue();
   }
 
   @Override public Long readLong() throws IOException {
-    return readSingleValue();
+    checkSingleValue();
+
+    BigDecimal value = (BigDecimal) buffer.get("");
+    checkValue(value, false);
+
+    return value.longValue();
   }
 
   @Override public Double readDouble() throws IOException {
-    return readSingleValue();
+    checkSingleValue();
+
+    BigDecimal value = (BigDecimal) buffer.get("");
+    checkValue(value, false);
+
+    return value.doubleValue();
   }
 
   @Override public Boolean readBoolean() throws IOException {
-    return readSingleValue();
+    checkSingleValue();
+
+    Boolean value = (Boolean) buffer.get("");
+    checkValue(value, false);
+
+    return value;
   }
 
   String readString(Field field) throws IOException {
@@ -134,32 +159,19 @@ import java.util.Map;
   }
 
   @SuppressWarnings("unchecked") <T> List<T> readList(Field field) throws IOException {
-    List values = (List) buffer.get(field.responseName());
+    List<Map<String, Object>> values = (List<Map<String, Object>>) buffer.get(field.responseName());
     checkValue(values, field.optional());
-    if (values == null) {
-      return null;
-    } else {
-      List<T> result = new ArrayList<>();
-      for (Object value : values) {
-        if (value instanceof Map) {
-          result.add((T) field.nestedReader().read(new BufferedResponseReader((Map<String, Object>) value)));
-        } else {
-          result.add((T) field.nestedReader().read(new BufferedResponseReader(Collections.singletonMap("", value))));
-        }
-      }
-      return result;
+    List<T> result = new ArrayList<>();
+    for (Map<String, Object> value : values) {
+      result.add((T) field.nestedReader().read(new BufferedResponseReader(value)));
     }
+    return result;
   }
 
-  @SuppressWarnings("unchecked") private <T> T readSingleValue() {
+  @SuppressWarnings("unchecked") private void checkSingleValue() {
     if (buffer.size() != 1) {
       throw new IllegalStateException("corrupted response reader, expected single value");
     }
-    Object value = buffer.get("");
-    if (value == null) {
-      throw new NullPointerException("corrupted response reader, expected non null value");
-    }
-    return (T) value;
   }
 
   private void checkValue(Object value, boolean optional) {
