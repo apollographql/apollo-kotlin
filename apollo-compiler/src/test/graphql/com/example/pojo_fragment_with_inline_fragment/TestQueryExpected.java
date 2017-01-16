@@ -96,8 +96,8 @@ public final class TestQuery implements Query<Operation.Variables> {
             }
           },
           Field.forString("name", "name", null, false),
-          Field.forList("appearsIn", "appearsIn", null, false, new Field.NestedReader<Episode>() {
-            @Override public Episode read(ResponseReader reader) throws IOException {
+          Field.forList("appearsIn", "appearsIn", null, false, new Field.ListItemReader<Episode>() {
+            @Override public Episode read(ResponseReader.ListItemReader reader) throws IOException {
               return Episode.valueOf(reader.readString());
             }
           }),

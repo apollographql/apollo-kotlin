@@ -68,26 +68,6 @@ import java.util.Map;
     }
   }
 
-  @Override public String readString() throws IOException {
-    return nextString(false);
-  }
-
-  @Override public Integer readInt() throws IOException {
-    return nextInt(false);
-  }
-
-  @Override public Long readLong() throws IOException {
-    return nextLong(false);
-  }
-
-  @Override public Double readDouble() throws IOException {
-    return nextDouble(false);
-  }
-
-  @Override public Boolean readBoolean() throws IOException {
-    return nextBoolean(false);
-  }
-
   boolean hasNext() throws IOException {
     return jsonReader.hasNext();
   }
@@ -185,6 +165,23 @@ import java.util.Map;
     }
   }
 
+  <T> List<T> nextList(boolean optional, Field.ListItemReader<T> listItemReader) throws IOException {
+    checkNextValue(optional);
+    if (jsonReader.peek() == JsonReader.Token.NULL) {
+      jsonReader.skipValue();
+      return null;
+    } else {
+      List<T> result = new ArrayList<>();
+      jsonReader.beginArray();
+      while (jsonReader.hasNext()) {
+        T item = listItemReader.read(new JsonListItemReader(this));
+        result.add(item);
+      }
+      jsonReader.endArray();
+      return result;
+    }
+  }
+
   private String readString(Field field) throws IOException {
     return nextString(field.optional());
   }
@@ -210,7 +207,7 @@ import java.util.Map;
   }
 
   @SuppressWarnings("unchecked") private <T> List<T> readList(Field field) throws IOException {
-    return nextList(field.optional(), field.nestedReader());
+    return nextList(field.optional(), field.listItemReader());
   }
 
   private boolean isNextObject() throws IOException {
@@ -289,6 +286,39 @@ import java.util.Map;
       return new BigDecimal(streamReader.nextString(false));
     } else {
       return streamReader.nextString(false);
+    }
+  }
+
+  private static class JsonListItemReader implements ListItemReader {
+
+    final ResponseJsonStreamReader streamReader;
+
+    JsonListItemReader(ResponseJsonStreamReader streamReader) {
+      this.streamReader = streamReader;
+    }
+
+    @Override public String readString() throws IOException {
+      return streamReader.nextString(false);
+    }
+
+    @Override public Integer readInt() throws IOException {
+      return streamReader.nextInt(false);
+    }
+
+    @Override public Long readLong() throws IOException {
+      return streamReader.nextLong(false);
+    }
+
+    @Override public Double readDouble() throws IOException {
+      return streamReader.nextDouble(false);
+    }
+
+    @Override public Boolean readBoolean() throws IOException {
+      return streamReader.nextBoolean(false);
+    }
+
+    @Override public <T> T readObject(Field.NestedReader<T> nestedReader) throws IOException {
+      return nestedReader.read(streamReader);
     }
   }
 }

@@ -19,8 +19,10 @@ object ClassNames {
   val IO_EXCEPTION: ClassName = ClassName.get(IOException::class.java)
   val API_RESPONSE_READER: ClassName = ClassName.get(ResponseReader::class.java)
   val API_RESPONSE_VALUE_HANDLER: ClassName = ClassName.get(ResponseReader.ValueHandler::class.java)
+  val API_RESPONSE_LIST_ITEM_READER: ClassName = ClassName.get(ResponseReader.ListItemReader::class.java)
   val API_RESPONSE_FIELD: ClassName = ClassName.get(Field::class.java)
   val API_RESPONSE_FIELD_READER: ClassName = ClassName.get(Field.NestedReader::class.java)
+  val API_RESPONSE_FIELD_LIST_ITEM_READER: ClassName = ClassName.get(Field.ListItemReader::class.java)
 
   fun parameterizedListOf(typeArgument: TypeName): TypeName =
       ParameterizedTypeName.get(LIST, WildcardTypeName.subtypeOf(typeArgument.withoutAnnotations()))
