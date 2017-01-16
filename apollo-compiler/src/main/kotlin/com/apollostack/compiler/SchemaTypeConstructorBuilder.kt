@@ -214,7 +214,7 @@ class SchemaTypeConstructorBuilder(
             isOptional(), apiResponseFieldListItemReaderTypeName(rawFieldType.overrideTypeName(typeOverrideMap)))
         .indent()
         .beginControlFlow("@Override public \$T read(\$T \$L) throws \$T",
-            rawFieldType.overrideTypeName(typeOverrideMap), ClassNames.API_RESPONSE_LIST_ITEM_READER, PARAM_READER,
+            rawFieldType.overrideTypeName(typeOverrideMap), ClassNames.API_RESPONSE_FIELD_LIST_ITEM_READER, PARAM_READER,
             ClassNames.IO_EXCEPTION)
         .add(if (rawFieldType.isScalar()) readScalarListItemStatement(rawFieldType) else readObjectListItemStatement(rawFieldType))
         .endControlFlow()
@@ -227,7 +227,7 @@ class SchemaTypeConstructorBuilder(
       ParameterizedTypeName.get(ClassNames.API_RESPONSE_FIELD_READER, type.overrideTypeName(typeOverrideMap))
 
   private fun apiResponseFieldListItemReaderTypeName(type: TypeName) =
-      ParameterizedTypeName.get(ClassNames.API_RESPONSE_FIELD_LIST_ITEM_READER, type.overrideTypeName(typeOverrideMap))
+      ParameterizedTypeName.get(ClassNames.API_RESPONSE_FIELD_LIST_READER, type.overrideTypeName(typeOverrideMap))
 
   private fun readScalarListItemStatement(type: TypeName): CodeBlock {
     val readMethod = when (type) {

@@ -130,20 +130,20 @@ import java.util.Map;
     }
   }
 
-  <T> T nextObject(boolean optional, Field.NestedReader<T> nestedReader) throws IOException {
+  <T> T nextObject(boolean optional, Field.ObjectReader<T> objectReader) throws IOException {
     checkNextValue(optional);
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       jsonReader.skipValue();
       return null;
     } else {
       jsonReader.beginObject();
-      T result = nestedReader.read(this);
+      T result = objectReader.read(this);
       jsonReader.endObject();
       return result;
     }
   }
 
-  <T> List<T> nextList(boolean optional, Field.NestedReader<T> nestedReader) throws IOException {
+  <T> List<T> nextList(boolean optional, Field.ObjectReader<T> objectReader) throws IOException {
     checkNextValue(optional);
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       jsonReader.skipValue();
@@ -154,9 +154,9 @@ import java.util.Map;
       while (jsonReader.hasNext()) {
         T item;
         if (isNextObject()) {
-          item = nextObject(false, nestedReader);
+          item = nextObject(false, objectReader);
         } else {
-          item = nestedReader.read(this);
+          item = objectReader.read(this);
         }
         result.add(item);
       }
@@ -165,7 +165,7 @@ import java.util.Map;
     }
   }
 
-  <T> List<T> nextList(boolean optional, Field.ListItemReader<T> listItemReader) throws IOException {
+  <T> List<T> nextList(boolean optional, Field.ListReader<T> listReader) throws IOException {
     checkNextValue(optional);
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       jsonReader.skipValue();
@@ -174,7 +174,7 @@ import java.util.Map;
       List<T> result = new ArrayList<>();
       jsonReader.beginArray();
       while (jsonReader.hasNext()) {
-        T item = listItemReader.read(new JsonListItemReader(this));
+        T item = listReader.read(new JsonListItemReader(this));
         result.add(item);
       }
       jsonReader.endArray();
@@ -207,7 +207,7 @@ import java.util.Map;
   }
 
   @SuppressWarnings("unchecked") private <T> List<T> readList(Field field) throws IOException {
-    return nextList(field.optional(), field.listItemReader());
+    return nextList(field.optional(), field.listReader());
   }
 
   private boolean isNextObject() throws IOException {
@@ -254,7 +254,7 @@ import java.util.Map;
   }
 
   private static Map<String, Object> readObject(final ResponseJsonStreamReader streamReader) throws IOException {
-    return streamReader.nextObject(false, new Field.NestedReader<Map<String, Object>>() {
+    return streamReader.nextObject(false, new Field.ObjectReader<Map<String, Object>>() {
       @Override public Map<String, Object> read(ResponseReader streamReader) throws IOException {
         return toMap((ResponseJsonStreamReader) streamReader);
       }
@@ -262,7 +262,7 @@ import java.util.Map;
   }
 
   private static List<?> readList(final ResponseJsonStreamReader streamReader) throws IOException {
-    return streamReader.nextList(false, new Field.NestedReader<Object>() {
+    return streamReader.nextList(false, new Field.ObjectReader<Object>() {
       @Override public Object read(ResponseReader reader) throws IOException {
         ResponseJsonStreamReader streamReader = (ResponseJsonStreamReader) reader;
         if (streamReader.isNextObject()) {
@@ -289,7 +289,7 @@ import java.util.Map;
     }
   }
 
-  private static class JsonListItemReader implements ListItemReader {
+  private static class JsonListItemReader implements Field.ListItemReader {
 
     final ResponseJsonStreamReader streamReader;
 
@@ -317,8 +317,8 @@ import java.util.Map;
       return streamReader.nextBoolean(false);
     }
 
-    @Override public <T> T readObject(Field.NestedReader<T> nestedReader) throws IOException {
-      return nestedReader.read(streamReader);
+    @Override public <T> T readObject(Field.ObjectReader<T> objectReader) throws IOException {
+      return objectReader.read(streamReader);
     }
   }
 }

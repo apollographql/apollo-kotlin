@@ -9,8 +9,8 @@ public final class Field {
   private final String responseName;
   private final String fieldName;
   private final Map<String, Object> arguments;
-  private final NestedReader nestedReader;
-  private final ListItemReader listItemReader;
+  private final ObjectReader objectReader;
+  private final ListReader listReader;
   private final boolean optional;
 
   public static Field forString(String responseName, String fieldName, Map<String, Object> arguments, boolean optional)
@@ -39,24 +39,24 @@ public final class Field {
   }
 
   public static <T> Field forObject(String responseName, String fieldName, Map<String, Object> arguments,
-      boolean optional, NestedReader<T> nestedReader) throws IOException {
-    return new Field(Type.OBJECT, responseName, fieldName, arguments, nestedReader, null, optional);
+      boolean optional, ObjectReader<T> objectReader) throws IOException {
+    return new Field(Type.OBJECT, responseName, fieldName, arguments, objectReader, null, optional);
   }
 
   public static <T> Field forList(String responseName, String fieldName, Map<String, Object> arguments,
-      boolean optional, ListItemReader<T> listItemReader) throws IOException {
-    return new Field(Type.LIST, responseName, fieldName, arguments, null, listItemReader, optional);
+      boolean optional, ListReader<T> listReader) throws IOException {
+    return new Field(Type.LIST, responseName, fieldName, arguments, null, listReader, optional);
   }
 
   private Field(Type type, String responseName, String fieldName, Map<String, Object> arguments,
-      NestedReader nestedReader, ListItemReader listItemReader, boolean optional) {
+      ObjectReader objectReader, ListReader listReader, boolean optional) {
     this.type = type;
     this.responseName = responseName;
     this.fieldName = fieldName;
     this.arguments = arguments == null ? Collections.<String, Object>emptyMap()
         : Collections.unmodifiableMap(arguments);
-    this.nestedReader = nestedReader;
-    this.listItemReader = listItemReader;
+    this.objectReader = objectReader;
+    this.listReader = listReader;
     this.optional = optional;
   }
 
@@ -76,16 +76,16 @@ public final class Field {
     return arguments;
   }
 
-  public NestedReader nestedReader() {
-    return nestedReader;
+  public ObjectReader nestedReader() {
+    return objectReader;
   }
 
   public boolean optional() {
     return optional;
   }
 
-  public ListItemReader listItemReader() {
-    return listItemReader;
+  public ListReader listReader() {
+    return listReader;
   }
 
   public static enum Type {
@@ -98,11 +98,26 @@ public final class Field {
     LIST
   }
 
-  public interface NestedReader<T> {
+  public interface ObjectReader<T> {
     T read(ResponseReader reader) throws IOException;
   }
 
-  public interface ListItemReader<T> {
-    T read(ResponseReader.ListItemReader reader) throws IOException;
+  public interface ListReader<T> {
+    T read(ListItemReader reader) throws IOException;
+  }
+
+  public interface ListItemReader {
+
+    String readString() throws IOException;
+
+    Integer readInt() throws IOException;
+
+    Long readLong() throws IOException;
+
+    Double readDouble() throws IOException;
+
+    Boolean readBoolean() throws IOException;
+
+    <T> T readObject(Field.ObjectReader<T> objectReader) throws IOException;
   }
 }

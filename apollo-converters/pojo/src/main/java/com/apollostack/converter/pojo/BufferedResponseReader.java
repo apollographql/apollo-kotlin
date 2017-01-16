@@ -6,7 +6,6 @@ import com.apollostack.api.graphql.ResponseReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -121,7 +120,7 @@ import java.util.Map;
     } else {
       List<T> result = new ArrayList<>();
       for (Object value : values) {
-        T item = (T) field.listItemReader().read(new BufferedListItemReader(value));
+        T item = (T) field.listReader().read(new BufferedListItemReader(value));
         result.add(item);
       }
       return result;
@@ -140,7 +139,7 @@ import java.util.Map;
     }
   }
 
-  private static class BufferedListItemReader implements ListItemReader {
+  private static class BufferedListItemReader implements Field.ListItemReader {
     private final Object value;
 
     BufferedListItemReader(Object value) {
@@ -167,9 +166,9 @@ import java.util.Map;
       return (Boolean) value;
     }
 
-    @SuppressWarnings("unchecked") @Override public <T> T readObject(Field.NestedReader<T> nestedReader)
+    @SuppressWarnings("unchecked") @Override public <T> T readObject(Field.ObjectReader<T> objectReader)
         throws IOException {
-      return nestedReader.read(new BufferedResponseReader((Map<String, Object>) value));
+      return objectReader.read(new BufferedResponseReader((Map<String, Object>) value));
     }
   }
 }
