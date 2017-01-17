@@ -16,8 +16,8 @@ public class GraphQlOperationRequest<V extends Operation.Variables> {
     this.variables = operation.variables();
   }
 
-  public GraphQlOperationRequest(@Nonnull String queryDocument, @Nullable V variables) {
-    this.query = queryDocument.replaceAll("\\n", "");
+  public GraphQlOperationRequest(@Nonnull String query, @Nullable V variables) {
+    this.query = query.replaceAll("\\n", "");
     this.variables = variables;
   }
 
