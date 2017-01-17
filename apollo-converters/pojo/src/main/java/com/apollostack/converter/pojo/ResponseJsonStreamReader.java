@@ -159,6 +159,23 @@ import java.util.Map;
     }
   }
 
+  <T> List<T> nextList(boolean optional, Field.ObjectReader<T> objectReader) throws IOException {
+    checkNextValue(optional);
+    if (jsonReader.peek() == JsonReader.Token.NULL) {
+      jsonReader.skipValue();
+      return null;
+    } else {
+      List<T> result = new ArrayList<>();
+      jsonReader.beginArray();
+      while (jsonReader.hasNext()) {
+        T item = objectReader.read(this);
+        result.add(item);
+      }
+      jsonReader.endArray();
+      return result;
+    }
+  }
+
   private String readString(Field field) throws IOException {
     return nextString(field.optional());
   }
@@ -180,11 +197,15 @@ import java.util.Map;
   }
 
   @SuppressWarnings("unchecked") private <T> T readObject(Field field) throws IOException {
-    return (T) nextObject(field.optional(), field.nestedReader());
+    return (T) nextObject(field.optional(), field.objectReader());
   }
 
   @SuppressWarnings("unchecked") private <T> List<T> readList(Field field) throws IOException {
-    return nextList(field.optional(), field.listReader());
+    if (field.objectReader() != null) {
+      return nextList(field.optional(), field.objectReader());
+    } else {
+      return nextList(field.optional(), field.listReader());
+    }
   }
 
   private boolean isNextObject() throws IOException {
@@ -293,10 +314,6 @@ import java.util.Map;
 
     @Override public Boolean readBoolean() throws IOException {
       return streamReader.nextBoolean(false);
-    }
-
-    @Override public <T> T readObject(Field.ObjectReader<T> objectReader) throws IOException {
-      return objectReader.read(streamReader);
     }
   }
 }

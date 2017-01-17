@@ -48,6 +48,11 @@ public final class Field {
     return new Field(Type.LIST, responseName, fieldName, arguments, null, listReader, optional);
   }
 
+  public static <T> Field forList(String responseName, String fieldName, Map<String, Object> arguments,
+      boolean optional, ObjectReader<T> objectReader) throws IOException {
+    return new Field(Type.LIST, responseName, fieldName, arguments, objectReader, null, optional);
+  }
+
   private Field(Type type, String responseName, String fieldName, Map<String, Object> arguments,
       ObjectReader objectReader, ListReader listReader, boolean optional) {
     this.type = type;
@@ -76,7 +81,7 @@ public final class Field {
     return arguments;
   }
 
-  public ObjectReader nestedReader() {
+  public ObjectReader objectReader() {
     return objectReader;
   }
 
@@ -117,7 +122,5 @@ public final class Field {
     Double readDouble() throws IOException;
 
     Boolean readBoolean() throws IOException;
-
-    <T> T readObject(Field.ObjectReader<T> objectReader) throws IOException;
   }
 }

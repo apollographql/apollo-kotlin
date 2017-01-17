@@ -108,7 +108,7 @@ import java.util.Map;
     if (value == null) {
       return null;
     } else {
-      return (T) field.nestedReader().read(new BufferedResponseReader(value));
+      return (T) field.objectReader().read(new BufferedResponseReader(value));
     }
   }
 
@@ -164,11 +164,6 @@ import java.util.Map;
 
     @Override public Boolean readBoolean() throws IOException {
       return (Boolean) value;
-    }
-
-    @SuppressWarnings("unchecked") @Override public <T> T readObject(Field.ObjectReader<T> objectReader)
-        throws IOException {
-      return objectReader.read(new BufferedResponseReader((Map<String, Object>) value));
     }
   }
 }

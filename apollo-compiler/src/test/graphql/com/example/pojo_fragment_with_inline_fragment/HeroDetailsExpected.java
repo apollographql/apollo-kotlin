@@ -104,13 +104,9 @@ public class HeroDetails {
           }
         },
         Field.forInt("totalCount", "totalCount", null, true),
-        Field.forList("edges", "edges", null, true, new Field.ListReader<Edge>() {
-          @Override public Edge read(final Field.ListItemReader reader) throws IOException {
-            return reader.readObject(new Field.ObjectReader<Edge>() {
-              @Override public Edge read(final ResponseReader reader) throws IOException {
-                return new Edge(reader);
-              }
-            });
+        Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
+          @Override public Edge read(final ResponseReader reader) throws IOException {
+            return new Edge(reader);
           }
         })
       );
@@ -248,13 +244,9 @@ public class HeroDetails {
             }
           },
           Field.forInt("totalCount", "totalCount", null, true),
-          Field.forList("edges", "edges", null, true, new Field.ListReader<Edge>() {
-            @Override public Edge read(final Field.ListItemReader reader) throws IOException {
-              return reader.readObject(new Field.ObjectReader<Edge>() {
-                @Override public Edge read(final ResponseReader reader) throws IOException {
-                  return new Edge(reader);
-                }
-              });
+          Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
+            @Override public Edge read(final ResponseReader reader) throws IOException {
+              return new Edge(reader);
             }
           })
         );
