@@ -38,11 +38,14 @@ class SchemaTypeConstructorBuilder(
       .builder()
       .add(
           if (hasFragments) {
-            "\$L.toBufferedReader().read(\n"
+            CodeBlock.builder()
+                .addStatement("final \$T \$L = \$L.toBufferedReader()", ClassNames.API_RESPONSE_READER,
+                    PARAM_BUFFERED_READER, PARAM_READER)
+                .add("\$L.read(\n", PARAM_BUFFERED_READER)
+                .build()
           } else {
-            "\$L.read(\n"
-          },
-          PARAM_READER)
+            CodeBlock.of("\$L.read(\n", PARAM_READER)
+          })
       .build()
 
   private fun valueHandlerStatement(): CodeBlock = CodeBlock
@@ -113,7 +116,7 @@ class SchemaTypeConstructorBuilder(
     val fieldRawType = fieldSpec.type.withoutAnnotations()
     return CodeBlock.builder()
         .beginControlFlow("if (\$L.equals(\$S))", PARAM_TYPE_NAME, fragment.typeCondition)
-        .addStatement("\$L = new \$T(\$L)", fieldSpec.name, fieldRawType, PARAM_READER)
+        .addStatement("\$L = new \$T(\$L)", fieldSpec.name, fieldRawType, PARAM_BUFFERED_READER)
         .endControlFlow()
         .build()
   }
@@ -122,7 +125,7 @@ class SchemaTypeConstructorBuilder(
     if (fragmentSpreads.isNotEmpty()) {
       return CodeBlock.builder()
           .addStatement("\$L = new \$L(\$L, \$L)", SchemaTypeSpecBuilder.FRAGMENTS_INTERFACE_NAME.decapitalize(),
-              SchemaTypeSpecBuilder.FRAGMENTS_INTERFACE_NAME, PARAM_READER, PARAM_TYPE_NAME)
+              SchemaTypeSpecBuilder.FRAGMENTS_INTERFACE_NAME, PARAM_BUFFERED_READER, PARAM_TYPE_NAME)
           .build()
     } else {
       return CodeBlock.of("")
@@ -214,9 +217,11 @@ class SchemaTypeConstructorBuilder(
             isOptional(), apiResponseFieldListItemReaderTypeName(rawFieldType.overrideTypeName(typeOverrideMap)))
         .indent()
         .beginControlFlow("@Override public \$T read(final \$T \$L) throws \$T",
-            rawFieldType.overrideTypeName(typeOverrideMap), ClassNames.API_RESPONSE_FIELD_LIST_ITEM_READER, PARAM_READER,
+            rawFieldType.overrideTypeName(typeOverrideMap), ClassNames.API_RESPONSE_FIELD_LIST_ITEM_READER,
+            PARAM_READER,
             ClassNames.IO_EXCEPTION)
-        .add(if (rawFieldType.isScalar()) readScalarListItemStatement(rawFieldType) else readObjectListItemStatement(rawFieldType))
+        .add(if (rawFieldType.isScalar()) readScalarListItemStatement(rawFieldType) else readObjectListItemStatement(
+            rawFieldType))
         .endControlFlow()
         .unindent()
         .add("})")
@@ -261,6 +266,7 @@ class SchemaTypeConstructorBuilder(
 
   companion object {
     private val PARAM_READER = "reader"
+    private val PARAM_BUFFERED_READER = "bufferedReader"
     private val PARAM_TYPE_NAME = "typename__"
     private val PARAM_FIELD_INDEX = "fieldIndex__"
     private val PARAM_VALUE = "value__"

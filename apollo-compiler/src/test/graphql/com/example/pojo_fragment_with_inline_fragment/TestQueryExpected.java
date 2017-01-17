@@ -75,7 +75,8 @@ public final class TestQuery implements Query<Operation.Variables> {
       private Fragments fragments;
 
       public Hero(ResponseReader reader) throws IOException {
-        reader.toBufferedReader().read(
+        final ResponseReader bufferedReader = reader.toBufferedReader();
+        bufferedReader.read(
           new ResponseReader.ValueHandler() {
             @Override public void handle(int fieldIndex__, Object value__) throws IOException {
               switch (fieldIndex__) {
@@ -89,7 +90,7 @@ public final class TestQuery implements Query<Operation.Variables> {
                 }
                 case 2: {
                   String typename__ = (String) value__;
-                  fragments = new Fragments(reader, typename__);
+                  fragments = new Fragments(bufferedReader, typename__);
                   break;
                 }
               }

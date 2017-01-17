@@ -37,7 +37,8 @@ public class HeroDetails {
   private @Nullable AsDroid asDroid;
 
   public HeroDetails(ResponseReader reader) throws IOException {
-    reader.toBufferedReader().read(
+    final ResponseReader bufferedReader = reader.toBufferedReader();
+    bufferedReader.read(
       new ResponseReader.ValueHandler() {
         @Override public void handle(int fieldIndex__, Object value__) throws IOException {
           switch (fieldIndex__) {
@@ -52,7 +53,7 @@ public class HeroDetails {
             case 2: {
               String typename__ = (String) value__;
               if (typename__.equals("Droid")) {
-                asDroid = new AsDroid(reader);
+                asDroid = new AsDroid(bufferedReader);
               }
               break;
             }
