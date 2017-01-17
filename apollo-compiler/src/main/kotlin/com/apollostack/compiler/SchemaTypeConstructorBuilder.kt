@@ -198,7 +198,7 @@ class SchemaTypeConstructorBuilder(
       .add("\$T.forObject(\$S, \$S, null, \$L, new \$T() {\n", ClassNames.API_RESPONSE_FIELD, responseName,
           fieldName, isOptional(), apiResponseFieldReaderTypeName(type.overrideTypeName(typeOverrideMap)))
       .indent()
-      .beginControlFlow("@Override public \$T read(\$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
+      .beginControlFlow("@Override public \$T read(final \$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
           ClassNames.API_RESPONSE_READER, PARAM_READER, ClassNames.IO_EXCEPTION)
       .add(CodeBlock.of("return new \$T(\$L);\n", type.overrideTypeName(typeOverrideMap), PARAM_READER))
       .endControlFlow()
@@ -213,7 +213,7 @@ class SchemaTypeConstructorBuilder(
         .add("\$T.forList(\$S, \$S, null, \$L, new \$T() {\n", ClassNames.API_RESPONSE_FIELD, responseName, fieldName,
             isOptional(), apiResponseFieldListItemReaderTypeName(rawFieldType.overrideTypeName(typeOverrideMap)))
         .indent()
-        .beginControlFlow("@Override public \$T read(\$T \$L) throws \$T",
+        .beginControlFlow("@Override public \$T read(final \$T \$L) throws \$T",
             rawFieldType.overrideTypeName(typeOverrideMap), ClassNames.API_RESPONSE_FIELD_LIST_ITEM_READER, PARAM_READER,
             ClassNames.IO_EXCEPTION)
         .add(if (rawFieldType.isScalar()) readScalarListItemStatement(rawFieldType) else readObjectListItemStatement(rawFieldType))
@@ -251,7 +251,7 @@ class SchemaTypeConstructorBuilder(
       .add("return \$L.readObject(new \$T() {\n", PARAM_READER,
           apiResponseFieldReaderTypeName(type.overrideTypeName(typeOverrideMap)))
       .indent()
-      .beginControlFlow("@Override public \$T read(\$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
+      .beginControlFlow("@Override public \$T read(final \$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
           ClassNames.API_RESPONSE_READER, PARAM_READER, ClassNames.IO_EXCEPTION)
       .add(CodeBlock.of("return new \$T(\$L);\n", type.overrideTypeName(typeOverrideMap), PARAM_READER))
       .endControlFlow()

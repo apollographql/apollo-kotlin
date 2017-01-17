@@ -61,7 +61,7 @@ public class HeroDetails {
       },
       Field.forString("name", "name", null, false),
       Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection>() {
-        @Override public FriendsConnection read(ResponseReader reader) throws IOException {
+        @Override public FriendsConnection read(final ResponseReader reader) throws IOException {
           return new FriendsConnection(reader);
         }
       }),
@@ -104,9 +104,9 @@ public class HeroDetails {
         },
         Field.forInt("totalCount", "totalCount", null, true),
         Field.forList("edges", "edges", null, true, new Field.ListReader<Edge>() {
-          @Override public Edge read(Field.ListItemReader reader) throws IOException {
+          @Override public Edge read(final Field.ListItemReader reader) throws IOException {
             return reader.readObject(new Field.ObjectReader<Edge>() {
-              @Override public Edge read(ResponseReader reader) throws IOException {
+              @Override public Edge read(final ResponseReader reader) throws IOException {
                 return new Edge(reader);
               }
             });
@@ -139,7 +139,7 @@ public class HeroDetails {
             }
           },
           Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
-            @Override public Node read(ResponseReader reader) throws IOException {
+            @Override public Node read(final ResponseReader reader) throws IOException {
               return new Node(reader);
             }
           })
@@ -205,7 +205,7 @@ public class HeroDetails {
         },
         Field.forString("name", "name", null, false),
         Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection$>() {
-          @Override public FriendsConnection$ read(ResponseReader reader) throws IOException {
+          @Override public FriendsConnection$ read(final ResponseReader reader) throws IOException {
             return new FriendsConnection$(reader);
           }
         }),
@@ -248,9 +248,9 @@ public class HeroDetails {
           },
           Field.forInt("totalCount", "totalCount", null, true),
           Field.forList("edges", "edges", null, true, new Field.ListReader<Edge>() {
-            @Override public Edge read(Field.ListItemReader reader) throws IOException {
+            @Override public Edge read(final Field.ListItemReader reader) throws IOException {
               return reader.readObject(new Field.ObjectReader<Edge>() {
-                @Override public Edge read(ResponseReader reader) throws IOException {
+                @Override public Edge read(final ResponseReader reader) throws IOException {
                   return new Edge(reader);
                 }
               });
@@ -283,7 +283,7 @@ public class HeroDetails {
               }
             },
             Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
-              @Override public Node read(ResponseReader reader) throws IOException {
+              @Override public Node read(final ResponseReader reader) throws IOException {
                 return new Node(reader);
               }
             })
