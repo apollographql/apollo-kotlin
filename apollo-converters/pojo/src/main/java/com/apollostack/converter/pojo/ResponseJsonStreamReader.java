@@ -6,7 +6,6 @@ import com.apollostack.api.graphql.ResponseReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -143,28 +142,6 @@ import java.util.Map;
     }
   }
 
-  <T> List<T> nextList(boolean optional, Field.ObjectReader<T> objectReader) throws IOException {
-    checkNextValue(optional);
-    if (jsonReader.peek() == JsonReader.Token.NULL) {
-      jsonReader.skipValue();
-      return null;
-    } else {
-      List<T> result = new ArrayList<>();
-      jsonReader.beginArray();
-      while (jsonReader.hasNext()) {
-        T item;
-        if (isNextObject()) {
-          item = nextObject(false, objectReader);
-        } else {
-          item = objectReader.read(this);
-        }
-        result.add(item);
-      }
-      jsonReader.endArray();
-      return result;
-    }
-  }
-
   <T> List<T> nextList(boolean optional, Field.ListReader<T> listReader) throws IOException {
     checkNextValue(optional);
     if (jsonReader.peek() == JsonReader.Token.NULL) {
@@ -237,6 +214,10 @@ import java.util.Map;
   }
 
   private static Map<String, Object> toMap(ResponseJsonStreamReader streamReader) throws IOException {
+    if (streamReader.isNextObject()) {
+      return readObject(streamReader);
+    }
+
     Map<String, Object> result = new HashMap<>();
     while (streamReader.hasNext()) {
       String name = streamReader.nextName();
@@ -262,15 +243,12 @@ import java.util.Map;
   }
 
   private static List<?> readList(final ResponseJsonStreamReader streamReader) throws IOException {
-    return streamReader.nextList(false, new Field.ObjectReader<Object>() {
-      @Override public Object read(ResponseReader reader) throws IOException {
-        ResponseJsonStreamReader streamReader = (ResponseJsonStreamReader) reader;
+    return streamReader.nextList(false, new Field.ListReader<Object>() {
+      @Override public Object read(Field.ListItemReader reader) throws IOException {
         if (streamReader.isNextObject()) {
           return readObject(streamReader);
-        } else if (streamReader.isNextList()) {
-          return Collections.singletonMap("", readList(streamReader));
         } else {
-          return Collections.singletonMap("", readScalar(streamReader));
+          return readScalar(streamReader);
         }
       }
     });
