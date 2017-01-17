@@ -5,6 +5,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
 
+import com.apollostack.api.graphql.Query;
 import com.apollostack.api.graphql.Response;
 import com.squareup.moshi.Moshi;
 
@@ -22,6 +23,7 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import retrofit2.Call;
 import retrofit2.Retrofit;
+import retrofit2.converter.moshi.MoshiConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
@@ -33,16 +35,17 @@ public class IntegrationTest {
   private Service service;
 
   interface Service {
-    @POST("graphql") Call<Response<AllPlanets.Data>> heroDetails(@Body AllPlanets query);
+    @POST("graphql")
+    Call<Response<AllPlanets.Data>> heroDetails(@Body GraphQlOperationRequest<AllPlanets.Variables> query);
   }
 
   @Rule public final MockWebServer server = new MockWebServer();
 
   @Before public void setUp() {
-    Moshi moshi = new Moshi.Builder().build();
     Retrofit retrofit = new Retrofit.Builder()
         .baseUrl(server.url("/"))
-        .addConverterFactory(new ApolloConverterFactory(moshi))
+        .addConverterFactory(new ApolloConverterFactory())
+        .addConverterFactory(MoshiConverterFactory.create())
         .build();
     service = retrofit.create(Service.class);
   }
@@ -50,11 +53,11 @@ public class IntegrationTest {
   @Test public void allPlanetQuery() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
 
-    Call<Response<AllPlanets.Data>> call = service.heroDetails(new AllPlanets());
+    Call<Response<AllPlanets.Data>> call = service.heroDetails(new GraphQlOperationRequest<>(new AllPlanets()));
     Response<AllPlanets.Data> body = call.execute().body();
     assertThat(body.isSuccessful()).isTrue();
 
-    assertThat(server.takeRequest().getBody().readByteString().string(Charsets.UTF_8))
+    assertThat(server.takeRequest().getBody().readString(Charsets.UTF_8))
         .isEqualTo("{\"query\":\"query TestQuery {  " +
             "allPlanets(first: 300) {" +
             "    planets {" +

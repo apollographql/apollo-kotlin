@@ -11,9 +11,10 @@ tasks.withType(Checkstyle) {
 dependencies {
   compile dep.jsr305
   compile dep.retrofit
-  compile dep.moshi
   compile project (":apollo-api")
 
+  testCompile dep.moshi
+  testCompile dep.retrofitMoshiConverter
   testCompile dep.junit
   testCompile dep.truth
   testCompile dep.mockWebServer

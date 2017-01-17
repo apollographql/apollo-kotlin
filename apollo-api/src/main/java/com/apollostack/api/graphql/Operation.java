@@ -17,7 +17,4 @@ public interface Operation<V extends Operation.Variables> {
     protected Variables() {
     }
   }
-
-  Variables EMPTY_VARIABLES = new Variables() {
-  };
 }
