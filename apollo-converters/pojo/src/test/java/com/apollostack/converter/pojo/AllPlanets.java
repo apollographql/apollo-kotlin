@@ -11,7 +11,7 @@ import java.lang.String;
 import java.util.List;
 import javax.annotation.Nullable;
 
-public final class AllPlanets implements Query<AllPlanets.Variables> {
+public final class AllPlanets implements Query<Operation.Variables> {
   public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  allPlanets(first: 300) {\n"
       + "    planets {\n"
@@ -34,7 +34,7 @@ public final class AllPlanets implements Query<AllPlanets.Variables> {
   private final Variables variables;
 
   public AllPlanets() {
-    this.variables = new Variables();
+    this.variables = Operation.EMPTY_VARIABLES;
   }
 
   @Override
@@ -45,9 +45,6 @@ public final class AllPlanets implements Query<AllPlanets.Variables> {
   @Override
   public Variables variables() {
     return variables;
-  }
-
-  public static class Variables extends Operation.Variables {
   }
 
   public static class Data implements Operation.Data {
