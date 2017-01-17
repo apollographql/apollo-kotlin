@@ -65,7 +65,11 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
   private List<Error> readResponseErrors(ResponseJsonStreamReader reader) throws IOException {
     return reader.nextList(true, new Field.ObjectReader<Error>() {
       @Override public Error read(ResponseReader reader) throws IOException {
-        return readError((ResponseJsonStreamReader) reader);
+        return ((ResponseJsonStreamReader) reader).nextObject(false, new Field.ObjectReader<Error>() {
+          @Override public Error read(ResponseReader reader) throws IOException {
+            return readError((ResponseJsonStreamReader) reader);
+          }
+        });
       }
     });
   }
@@ -80,7 +84,11 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
       } else if ("locations".equals(name)) {
         locations = reader.nextList(true, new Field.ObjectReader<Error.Location>() {
           @Override public Error.Location read(ResponseReader reader) throws IOException {
-            return readErrorLocation((ResponseJsonStreamReader) reader);
+            return ((ResponseJsonStreamReader) reader).nextObject(false, new Field.ObjectReader<Error.Location>() {
+              @Override public Error.Location read(ResponseReader reader) throws IOException {
+                return readErrorLocation((ResponseJsonStreamReader) reader);
+              }
+            });
           }
         });
       } else {

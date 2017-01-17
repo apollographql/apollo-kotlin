@@ -5,6 +5,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
 
+import com.apollostack.api.graphql.Error;
 import com.apollostack.api.graphql.Query;
 import com.apollostack.api.graphql.Response;
 import com.squareup.moshi.Moshi;
@@ -17,6 +18,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import okhttp3.mockwebserver.MockResponse;
@@ -108,6 +110,17 @@ public class IntegrationTest {
     assertThat(firstPlanet.filmConnection().films().get(0).fragments().filmFragment().title()).isEqualTo("A New Hope");
     assertThat(firstPlanet.filmConnection().films().get(0).fragments().filmFragment().producers()).isEqualTo(Arrays
         .asList("Gary Kurtz", "Rick McCallum"));
+  }
+
+  @Test public void errorResponse() throws Exception {
+    server.enqueue(mockResponse("src/test/graphql/errorResponse.json"));
+    Call<Response<AllPlanets.Data>> call = service.heroDetails(new GraphQlOperationRequest<>(new AllPlanets()));
+    Response<AllPlanets.Data> body = call.execute().body();
+    assertThat(body.isSuccessful()).isFalse();
+    //noinspection ConstantConditions
+    assertThat(body.errors()).containsExactly(new Error(
+        "Cannot query field \"names\" on type \"Species\".",
+        Collections.singletonList(new Error.Location(3, 5))));
   }
 
   private static MockResponse mockResponse(String fileName) throws IOException {
