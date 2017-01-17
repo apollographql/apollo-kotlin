@@ -120,16 +120,15 @@ import java.util.Map;
     } else {
       List<T> result = new ArrayList<>();
       for (Object value : values) {
-        T item = (T) field.listReader().read(new BufferedListItemReader(value));
+        T item;
+        if (value instanceof Map) {
+          item = (T) field.objectReader().read(new BufferedResponseReader((Map<String, Object>) value));
+        } else {
+          item = (T) field.listReader().read(new BufferedListItemReader(value));
+        }
         result.add(item);
       }
       return result;
-    }
-  }
-
-  @SuppressWarnings("unchecked") private void checkSingleValue() {
-    if (buffer.size() != 1) {
-      throw new IllegalStateException("corrupted response reader, expected single value");
     }
   }
 

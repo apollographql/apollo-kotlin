@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -239,7 +240,7 @@ import java.util.Map;
       return readObject(streamReader);
     }
 
-    Map<String, Object> result = new HashMap<>();
+    Map<String, Object> result = new LinkedHashMap<>();
     while (streamReader.hasNext()) {
       String name = streamReader.nextName();
       if (streamReader.isNextNull()) {
