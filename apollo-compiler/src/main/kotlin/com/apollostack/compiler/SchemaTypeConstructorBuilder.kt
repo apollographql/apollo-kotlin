@@ -34,16 +34,17 @@ class SchemaTypeConstructorBuilder(
       .add("\n);\n")
       .build()
 
-  private fun responseReadStatement(): CodeBlock = CodeBlock
-      .builder()
-      .add(
-          if (hasFragments) {
-            "\$L.toBufferedReader().read(\n"
-          } else {
-            "\$L.read(\n"
-          },
-          PARAM_READER)
-      .build()
+  private fun responseReadStatement(): CodeBlock =
+      if (hasFragments) {
+        CodeBlock
+            .builder()
+            .addStatement("final \$T \$L = \$L.toBufferedReader()", ClassNames.API_RESPONSE_READER,
+                PARAM_BUFFERED_READER, PARAM_READER)
+            .add("\$L.read(\n", PARAM_BUFFERED_READER)
+            .build()
+      } else {
+        CodeBlock.of("\$L.read(\n", PARAM_READER)
+      }
 
   private fun valueHandlerStatement(): CodeBlock = CodeBlock
       .builder()
@@ -113,7 +114,7 @@ class SchemaTypeConstructorBuilder(
     val fieldRawType = fieldSpec.type.withoutAnnotations()
     return CodeBlock.builder()
         .beginControlFlow("if (\$L.equals(\$S))", PARAM_TYPE_NAME, fragment.typeCondition)
-        .addStatement("\$L = new \$T(\$L)", fieldSpec.name, fieldRawType, PARAM_READER)
+        .addStatement("\$L = new \$T(\$L)", fieldSpec.name, fieldRawType, PARAM_BUFFERED_READER)
         .endControlFlow()
         .build()
   }
@@ -122,7 +123,7 @@ class SchemaTypeConstructorBuilder(
     if (fragmentSpreads.isNotEmpty()) {
       return CodeBlock.builder()
           .addStatement("\$L = new \$L(\$L, \$L)", SchemaTypeSpecBuilder.FRAGMENTS_INTERFACE_NAME.decapitalize(),
-              SchemaTypeSpecBuilder.FRAGMENTS_INTERFACE_NAME, PARAM_READER, PARAM_TYPE_NAME)
+              SchemaTypeSpecBuilder.FRAGMENTS_INTERFACE_NAME, PARAM_BUFFERED_READER, PARAM_TYPE_NAME)
           .build()
     } else {
       return CodeBlock.of("")
@@ -154,7 +155,7 @@ class SchemaTypeConstructorBuilder(
     } else if (fieldTypeName.isList()) {
       return listResponseFieldFactoryStatement(fieldTypeName)
     } else {
-      return objectResponseFieldFactoryStatement(fieldTypeName)
+      return objectResponseFieldFactoryStatement("forObject", fieldTypeName)
     }
   }
 
@@ -193,12 +194,12 @@ class SchemaTypeConstructorBuilder(
         fieldName, isOptional())
   }
 
-  private fun Field.objectResponseFieldFactoryStatement(type: TypeName): CodeBlock = CodeBlock
+  private fun Field.objectResponseFieldFactoryStatement(factoryMethod: String, type: TypeName): CodeBlock = CodeBlock
       .builder()
-      .add("\$T.forObject(\$S, \$S, null, \$L, new \$T() {\n", ClassNames.API_RESPONSE_FIELD, responseName,
+      .add("\$T.$factoryMethod(\$S, \$S, null, \$L, new \$T() {\n", ClassNames.API_RESPONSE_FIELD, responseName,
           fieldName, isOptional(), apiResponseFieldReaderTypeName(type.overrideTypeName(typeOverrideMap)))
       .indent()
-      .beginControlFlow("@Override public \$T read(\$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
+      .beginControlFlow("@Override public \$T read(final \$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
           ClassNames.API_RESPONSE_READER, PARAM_READER, ClassNames.IO_EXCEPTION)
       .add(CodeBlock.of("return new \$T(\$L);\n", type.overrideTypeName(typeOverrideMap), PARAM_READER))
       .endControlFlow()
@@ -210,16 +211,12 @@ class SchemaTypeConstructorBuilder(
     val rawFieldType = type.let { if (it.isList()) it.listParamType() else it }
     return CodeBlock
         .builder()
-        .add("\$T.forList(\$S, \$S, null, \$L, new \$T() {\n", ClassNames.API_RESPONSE_FIELD, responseName, fieldName,
-            isOptional(), apiResponseFieldListItemReaderTypeName(rawFieldType.overrideTypeName(typeOverrideMap)))
-        .indent()
-        .beginControlFlow("@Override public \$T read(\$T \$L) throws \$T",
-            rawFieldType.overrideTypeName(typeOverrideMap), ClassNames.API_RESPONSE_FIELD_LIST_ITEM_READER, PARAM_READER,
-            ClassNames.IO_EXCEPTION)
-        .add(if (rawFieldType.isScalar()) readScalarListItemStatement(rawFieldType) else readObjectListItemStatement(rawFieldType))
-        .endControlFlow()
-        .unindent()
-        .add("})")
+        .add(
+            if (rawFieldType.isScalar()) {
+              readScalarListItemStatement(rawFieldType)
+            } else {
+              objectResponseFieldFactoryStatement("forList", rawFieldType)
+            })
         .build()
   }
 
@@ -229,7 +226,7 @@ class SchemaTypeConstructorBuilder(
   private fun apiResponseFieldListItemReaderTypeName(type: TypeName) =
       ParameterizedTypeName.get(ClassNames.API_RESPONSE_FIELD_LIST_READER, type.overrideTypeName(typeOverrideMap))
 
-  private fun readScalarListItemStatement(type: TypeName): CodeBlock {
+  private fun Field.readScalarListItemStatement(type: TypeName): CodeBlock {
     val readMethod = when (type) {
       ClassNames.STRING -> "readString()"
       TypeName.INT, TypeName.INT.box() -> "readInt()"
@@ -238,29 +235,29 @@ class SchemaTypeConstructorBuilder(
       TypeName.BOOLEAN, TypeName.BOOLEAN.box() -> "readBoolean()"
       else -> "readString()"
     }
-    if (type.isEnum()) {
-      return CodeBlock.of("return \$T.valueOf(\$L.\$L);\n", type.overrideTypeName(typeOverrideMap), PARAM_READER,
-          readMethod)
-    } else {
-      return CodeBlock.of("return \$L.\$L;\n", PARAM_READER, readMethod);
-    }
-  }
 
-  private fun readObjectListItemStatement(type: TypeName): CodeBlock = CodeBlock
-      .builder()
-      .add("return \$L.readObject(new \$T() {\n", PARAM_READER,
-          apiResponseFieldReaderTypeName(type.overrideTypeName(typeOverrideMap)))
-      .indent()
-      .beginControlFlow("@Override public \$T read(\$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
-          ClassNames.API_RESPONSE_READER, PARAM_READER, ClassNames.IO_EXCEPTION)
-      .add(CodeBlock.of("return new \$T(\$L);\n", type.overrideTypeName(typeOverrideMap), PARAM_READER))
-      .endControlFlow()
-      .unindent()
-      .add("});\n")
-      .build()
+    val readStatement = if (type.isEnum())
+      CodeBlock.of("return \$T.valueOf(\$L.\$L);\n", type.overrideTypeName(typeOverrideMap), PARAM_READER, readMethod)
+    else
+      CodeBlock.of("return \$L.\$L;\n", PARAM_READER, readMethod);
+
+    return CodeBlock
+        .builder()
+        .add("\$T.forList(\$S, \$S, null, \$L, new \$T() {\n", ClassNames.API_RESPONSE_FIELD, responseName, fieldName,
+            isOptional(), apiResponseFieldListItemReaderTypeName(type.overrideTypeName(typeOverrideMap)))
+        .indent()
+        .beginControlFlow("@Override public \$T read(final \$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
+            ClassNames.API_RESPONSE_FIELD_LIST_ITEM_READER, PARAM_READER, ClassNames.IO_EXCEPTION)
+        .add(readStatement)
+        .endControlFlow()
+        .unindent()
+        .add("})")
+        .build()
+  }
 
   companion object {
     private val PARAM_READER = "reader"
+    private val PARAM_BUFFERED_READER = "bufferedReader"
     private val PARAM_TYPE_NAME = "typename__"
     private val PARAM_FIELD_INDEX = "fieldIndex__"
     private val PARAM_VALUE = "value__"

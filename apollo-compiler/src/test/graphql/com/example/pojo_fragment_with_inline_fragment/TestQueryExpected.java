@@ -56,7 +56,7 @@ public final class TestQuery implements Query<Operation.Variables> {
           }
         },
         Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
-          @Override public Hero read(ResponseReader reader) throws IOException {
+          @Override public Hero read(final ResponseReader reader) throws IOException {
             return new Hero(reader);
           }
         })
@@ -75,7 +75,8 @@ public final class TestQuery implements Query<Operation.Variables> {
       private Fragments fragments;
 
       public Hero(ResponseReader reader) throws IOException {
-        reader.toBufferedReader().read(
+        final ResponseReader bufferedReader = reader.toBufferedReader();
+        bufferedReader.read(
           new ResponseReader.ValueHandler() {
             @Override public void handle(int fieldIndex__, Object value__) throws IOException {
               switch (fieldIndex__) {
@@ -89,7 +90,7 @@ public final class TestQuery implements Query<Operation.Variables> {
                 }
                 case 2: {
                   String typename__ = (String) value__;
-                  fragments = new Fragments(reader, typename__);
+                  fragments = new Fragments(bufferedReader, typename__);
                   break;
                 }
               }
@@ -97,7 +98,7 @@ public final class TestQuery implements Query<Operation.Variables> {
           },
           Field.forString("name", "name", null, false),
           Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
-            @Override public Episode read(Field.ListItemReader reader) throws IOException {
+            @Override public Episode read(final Field.ListItemReader reader) throws IOException {
               return Episode.valueOf(reader.readString());
             }
           }),

@@ -89,14 +89,10 @@ public final class AllPlanets implements Query<Operation.Variables> {
               }
             }
           },
-          Field.forList("planets", "planets", null, true, new Field.ListReader<Planet>() {
-            @Override public Planet read(Field.ListItemReader reader) throws IOException {
-              return reader.readObject(new Field.ObjectReader<Planet>() {
-                @Override public Planet read(ResponseReader reader) throws IOException {
-                  return new Planet(reader);
-                }
-              });
-            }
+          Field.forList("planets", "planets", null, true, new Field.ObjectReader<Planet>() {
+              @Override public Planet read(ResponseReader reader) throws IOException {
+                return new Planet(reader);
+              }
           })
         );
       }
@@ -167,13 +163,9 @@ public final class AllPlanets implements Query<Operation.Variables> {
                 }
               },
               Field.forInt("totalCount", "totalCount", null, true),
-              Field.forList("films", "films", null, true, new Field.ListReader<Film>() {
-                @Override public Film read(Field.ListItemReader reader) throws IOException {
-                  return reader.readObject(new Field.ObjectReader<Film>() {
-                    @Override public Film read(ResponseReader reader) throws IOException {
-                      return new Film(reader);
-                    }
-                  });
+              Field.forList("films", "films", null, true, new Field.ObjectReader<Film>() {
+                @Override public Film read(ResponseReader reader) throws IOException {
+                  return new Film(reader);
                 }
               })
             );
