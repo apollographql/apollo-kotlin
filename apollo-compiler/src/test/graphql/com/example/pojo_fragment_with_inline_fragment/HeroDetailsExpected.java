@@ -25,30 +25,29 @@ public class HeroDetails {
     };
 
     @Override
-    public void handleValue(int fieldIndex, Object value, HeroDetails instance,
-        ResponseReader reader) throws IOException {
-      switch (fieldIndex) {
-        case 0: {
-          instance.name = (String) value;
-          break;
-        }
-        case 1: {
-          instance.friendsConnection = (FriendsConnection) value;
-          break;
-        }
-        case 2: {
-          String typename = (String) value;
-          if (typename.equals("Droid")) {
-            instance.asDroid = new AsDroid(reader);
+    public void map(ResponseReader reader, HeroDetails instance) throws IOException {
+      reader.read(new ResponseReader.ValueHandler() {
+        @Override
+        public void handle(final int fieldIndex, final Object value) throws IOException {
+          switch (fieldIndex) {
+            case 0: {
+              instance.name = (String) value;
+              break;
+            }
+            case 1: {
+              instance.friendsConnection = (FriendsConnection) value;
+              break;
+            }
+            case 2: {
+              String typename = (String) value;
+              if (typename.equals("Droid")) {
+                instance.asDroid = new AsDroid(reader);
+              }
+              break;
+            }
           }
-          break;
         }
-      }
-    }
-
-    @Override
-    public Field[] fields() {
-      return FIELDS;
+      }, FIELDS);
     }
   };
 
@@ -106,23 +105,22 @@ public class HeroDetails {
       };
 
       @Override
-      public void handleValue(int fieldIndex, Object value, FriendsConnection instance,
-          ResponseReader reader) throws IOException {
-        switch (fieldIndex) {
-          case 0: {
-            instance.totalCount = (Integer) value;
-            break;
+      public void map(ResponseReader reader, FriendsConnection instance) throws IOException {
+        reader.read(new ResponseReader.ValueHandler() {
+          @Override
+          public void handle(final int fieldIndex, final Object value) throws IOException {
+            switch (fieldIndex) {
+              case 0: {
+                instance.totalCount = (Integer) value;
+                break;
+              }
+              case 1: {
+                instance.edges = (List<? extends Edge>) value;
+                break;
+              }
+            }
           }
-          case 1: {
-            instance.edges = (List<? extends Edge>) value;
-            break;
-          }
-        }
-      }
-
-      @Override
-      public Field[] fields() {
-        return FIELDS;
+        }, FIELDS);
       }
     };
 
@@ -153,19 +151,18 @@ public class HeroDetails {
         };
 
         @Override
-        public void handleValue(int fieldIndex, Object value, Edge instance, ResponseReader reader)
-            throws IOException {
-          switch (fieldIndex) {
-            case 0: {
-              instance.node = (Node) value;
-              break;
+        public void map(ResponseReader reader, Edge instance) throws IOException {
+          reader.read(new ResponseReader.ValueHandler() {
+            @Override
+            public void handle(final int fieldIndex, final Object value) throws IOException {
+              switch (fieldIndex) {
+                case 0: {
+                  instance.node = (Node) value;
+                  break;
+                }
+              }
             }
-          }
-        }
-
-        @Override
-        public Field[] fields() {
-          return FIELDS;
+          }, FIELDS);
         }
       };
 
@@ -186,19 +183,18 @@ public class HeroDetails {
           };
 
           @Override
-          public void handleValue(int fieldIndex, Object value, Node instance,
-              ResponseReader reader) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                instance.name = (String) value;
-                break;
+          public void map(ResponseReader reader, Node instance) throws IOException {
+            reader.read(new ResponseReader.ValueHandler() {
+              @Override
+              public void handle(final int fieldIndex, final Object value) throws IOException {
+                switch (fieldIndex) {
+                  case 0: {
+                    instance.name = (String) value;
+                    break;
+                  }
+                }
               }
-            }
-          }
-
-          @Override
-          public Field[] fields() {
-            return FIELDS;
+            }, FIELDS);
           }
         };
 
@@ -228,27 +224,26 @@ public class HeroDetails {
       };
 
       @Override
-      public void handleValue(int fieldIndex, Object value, AsDroid instance, ResponseReader reader)
-          throws IOException {
-        switch (fieldIndex) {
-          case 0: {
-            instance.name = (String) value;
-            break;
+      public void map(ResponseReader reader, AsDroid instance) throws IOException {
+        reader.read(new ResponseReader.ValueHandler() {
+          @Override
+          public void handle(final int fieldIndex, final Object value) throws IOException {
+            switch (fieldIndex) {
+              case 0: {
+                instance.name = (String) value;
+                break;
+              }
+              case 1: {
+                instance.friendsConnection = (FriendsConnection$) value;
+                break;
+              }
+              case 2: {
+                instance.primaryFunction = (String) value;
+                break;
+              }
+            }
           }
-          case 1: {
-            instance.friendsConnection = (FriendsConnection$) value;
-            break;
-          }
-          case 2: {
-            instance.primaryFunction = (String) value;
-            break;
-          }
-        }
-      }
-
-      @Override
-      public Field[] fields() {
-        return FIELDS;
+        }, FIELDS);
       }
     };
 
@@ -286,23 +281,22 @@ public class HeroDetails {
         };
 
         @Override
-        public void handleValue(int fieldIndex, Object value, FriendsConnection$ instance,
-            ResponseReader reader) throws IOException {
-          switch (fieldIndex) {
-            case 0: {
-              instance.totalCount = (Integer) value;
-              break;
+        public void map(ResponseReader reader, FriendsConnection$ instance) throws IOException {
+          reader.read(new ResponseReader.ValueHandler() {
+            @Override
+            public void handle(final int fieldIndex, final Object value) throws IOException {
+              switch (fieldIndex) {
+                case 0: {
+                  instance.totalCount = (Integer) value;
+                  break;
+                }
+                case 1: {
+                  instance.edges = (List<? extends Edge>) value;
+                  break;
+                }
+              }
             }
-            case 1: {
-              instance.edges = (List<? extends Edge>) value;
-              break;
-            }
-          }
-        }
-
-        @Override
-        public Field[] fields() {
-          return FIELDS;
+          }, FIELDS);
         }
       };
 
@@ -333,19 +327,18 @@ public class HeroDetails {
           };
 
           @Override
-          public void handleValue(int fieldIndex, Object value, Edge instance,
-              ResponseReader reader) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                instance.node = (Node) value;
-                break;
+          public void map(ResponseReader reader, Edge instance) throws IOException {
+            reader.read(new ResponseReader.ValueHandler() {
+              @Override
+              public void handle(final int fieldIndex, final Object value) throws IOException {
+                switch (fieldIndex) {
+                  case 0: {
+                    instance.node = (Node) value;
+                    break;
+                  }
+                }
               }
-            }
-          }
-
-          @Override
-          public Field[] fields() {
-            return FIELDS;
+            }, FIELDS);
           }
         };
 
@@ -366,19 +359,18 @@ public class HeroDetails {
             };
 
             @Override
-            public void handleValue(int fieldIndex, Object value, Node instance,
-                ResponseReader reader) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  instance.name = (String) value;
-                  break;
+            public void map(ResponseReader reader, Node instance) throws IOException {
+              reader.read(new ResponseReader.ValueHandler() {
+                @Override
+                public void handle(final int fieldIndex, final Object value) throws IOException {
+                  switch (fieldIndex) {
+                    case 0: {
+                      instance.name = (String) value;
+                      break;
+                    }
+                  }
                 }
-              }
-            }
-
-            @Override
-            public Field[] fields() {
-              return FIELDS;
+              }, FIELDS);
             }
           };
 

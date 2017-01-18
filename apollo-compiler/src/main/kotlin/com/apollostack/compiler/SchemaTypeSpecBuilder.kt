@@ -141,6 +141,16 @@ class SchemaTypeSpecBuilder(
         .build()
   }
 
+  private fun buildUniqueTypeNameMap(reservedTypeNames: List<String>) =
+      reservedTypeNames.distinct().associate {
+        it to formatUniqueTypeName(it, reservedTypeNames)
+      }
+
+  private fun formatUniqueTypeName(typeName: String, reservedTypeNames: List<String>): String {
+    val suffix = reservedTypeNames.count { it == typeName }.let { if (it > 0) "$".repeat(it) else "" }
+    return "$typeName$suffix"
+  }
+
   companion object {
     val FRAGMENTS_INTERFACE_NAME: String = "Fragments"
     private val PARAM_READER = "reader"

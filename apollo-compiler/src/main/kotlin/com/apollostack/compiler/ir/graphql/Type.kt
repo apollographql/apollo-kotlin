@@ -2,7 +2,6 @@ package com.apollostack.compiler.ir.graphql
 
 import com.apollostack.compiler.Annotations
 import com.apollostack.compiler.ClassNames
-import com.apollostack.compiler.normalizeTypeName
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeName
 
@@ -30,6 +29,9 @@ sealed class Type(val isOptional: kotlin.Boolean) {
         Type.Int::class.java to TypeName.INT,
         Type.Float::class.java to TypeName.DOUBLE,
         Type.Boolean::class.java to TypeName.BOOLEAN)
+
+    private fun kotlin.String.normalizeTypeName() =
+        removeSuffix("!").removeSurrounding("[", "]").removeSuffix("!")
 
     fun resolveByName(typeName: kotlin.String, isOptional: kotlin.Boolean): Type = when {
       typeName.startsWith("String") -> Type.String(isOptional)

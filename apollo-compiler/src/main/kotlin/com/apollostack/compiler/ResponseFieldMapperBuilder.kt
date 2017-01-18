@@ -1,9 +1,12 @@
 package com.apollostack.compiler
 
+import com.apollostack.api.graphql.ResponseFieldMapper
+import com.apollostack.api.graphql.ResponseReader
 import com.apollostack.compiler.ir.Field
 import com.apollostack.compiler.ir.InlineFragment
 import com.apollostack.compiler.ir.TypeDeclaration
 import com.squareup.javapoet.*
+import java.io.IOException
 import javax.lang.model.element.Modifier
 
 class ResponseFieldMapperBuilder(
@@ -16,7 +19,7 @@ class ResponseFieldMapperBuilder(
 ) {
   private val typeClassName = ClassName.get("", typeName)
   private val hasFragments = inlineFragments.isNotEmpty() || fragmentSpreads.isNotEmpty()
-  private val responseFieldMapperType = ParameterizedTypeName.get(ClassNames.API_RESPONSE_FIELD_MAPPER, typeClassName)
+  private val responseFieldMapperType = ParameterizedTypeName.get(API_RESPONSE_FIELD_MAPPER, typeClassName)
 
   fun build(): FieldSpec = FieldSpec
       .builder(responseFieldMapperType, "MAPPER")
@@ -27,30 +30,11 @@ class ResponseFieldMapperBuilder(
   private fun mapperType() = TypeSpec
       .anonymousClassBuilder("")
       .superclass(responseFieldMapperType)
-      .addField(fieldsField())
-      .addMethod(handleValueMethod())
-      .addMethod(MethodSpec
-          .methodBuilder("fields")
-          .addModifiers(Modifier.PUBLIC)
-          .addAnnotation(Override::class.java)
-          .returns(Array<com.apollostack.api.graphql.Field>::class.java)
-          .addStatement("return FIELDS")
-          .build())
+      .addField(fieldArrayField())
+      .addMethod(mapMethod())
       .build()
 
-  private fun handleValueMethod() = MethodSpec
-      .methodBuilder("handleValue")
-      .addModifiers(Modifier.PUBLIC)
-      .addAnnotation(Override::class.java)
-      .addParameter(ParameterSpec.builder(TypeName.INT, PARAM_FIELD_INDEX).build())
-      .addParameter(ParameterSpec.builder(TypeName.OBJECT, PARAM_VALUE).build())
-      .addParameter(ParameterSpec.builder(typeClassName, PARAM_INSTANCE).build())
-      .addParameter(PARAM_SPEC_READER)
-      .addException(ClassNames.IO_EXCEPTION)
-      .addCode(handleValueMethodCode())
-      .build()
-
-  private fun fieldsField() = FieldSpec
+  private fun fieldArrayField() = FieldSpec
       .builder(Array<com.apollostack.api.graphql.Field>::class.java, "FIELDS", Modifier.PRIVATE, Modifier.FINAL)
       .initializer(CodeBlock
           .builder()
@@ -63,16 +47,48 @@ class ResponseFieldMapperBuilder(
       )
       .build()
 
-  private fun handleValueMethodCode() = CodeBlock
-      .builder()
-      .beginControlFlow("switch (\$L)", PARAM_FIELD_INDEX)
-      .add(fields
-          .mapIndexed { i, field -> fieldValueCaseStatement(field, i) }
-          .fold(CodeBlock.builder(), CodeBlock.Builder::add)
-          .build())
-      .add(valueHandlerFragmentsCaseStatement(fields.size))
-      .endControlFlow()
+  private fun mapMethod() = MethodSpec
+      .methodBuilder("map")
+      .addModifiers(Modifier.PUBLIC)
+      .addAnnotation(Override::class.java)
+      .addParameter(PARAM_SPEC_READER)
+      .addParameter(ParameterSpec.builder(typeClassName, PARAM_INSTANCE).build())
+      .addException(IOException::class.java)
+      .addCode(mapMethodCode())
       .build()
+
+  private fun mapMethodCode() = CodeBlock
+      .builder()
+      .add("\$L.read(", PARAM_READER)
+      .add("\$L", valueHandlerType())
+      .add(", FIELDS);\n")
+      .build()
+
+  private fun valueHandlerType() = TypeSpec
+      .anonymousClassBuilder("")
+      .superclass(ResponseReader.ValueHandler::class.java)
+      .addMethod(valueHandlerHandleMethod())
+      .build()
+
+  private fun valueHandlerHandleMethod() = MethodSpec
+      .methodBuilder("handle")
+      .addAnnotation(Override::class.java)
+      .addModifiers(Modifier.PUBLIC)
+      .addParameter(TypeName.INT, PARAM_FIELD_INDEX, Modifier.FINAL)
+      .addParameter(TypeName.OBJECT, PARAM_VALUE, Modifier.FINAL)
+      .addException(IOException::class.java)
+      .addCode(CodeBlock
+          .builder()
+          .beginControlFlow("switch (\$L)", PARAM_FIELD_INDEX)
+          .add(fields
+              .mapIndexed { i, field -> fieldValueCaseStatement(field, i) }
+              .fold(CodeBlock.builder(), CodeBlock.Builder::add)
+              .build())
+          .add(valueHandlerFragmentsCaseStatement(fields.size))
+          .endControlFlow()
+          .build())
+      .build()
+
 
   private fun fieldValueCaseStatement(field: Field, index: Int): CodeBlock {
     val fieldSpec = field.fieldSpec()
@@ -100,7 +116,7 @@ class ResponseFieldMapperBuilder(
       return CodeBlock
           .builder()
           .beginControlFlow("case $index:")
-          .addStatement("\$T \$L = (\$T) \$L", ClassNames.STRING, PARAM_TYPE_NAME, ClassNames.STRING, PARAM_VALUE)
+          .addStatement("\$T \$L = (\$T) \$L", String::class.java, PARAM_TYPE_NAME, String::class.java, PARAM_VALUE)
           .add(inlineFragments
               .map { inlineFragmentInitStatement(it) }
               .fold(CodeBlock.builder(), CodeBlock.Builder::add)
@@ -138,7 +154,8 @@ class ResponseFieldMapperBuilder(
 
   private fun responseFieldFactoryStatements(): CodeBlock {
     val typeNameFieldStatement = if (hasFragments) {
-      CodeBlock.of("\$T.forString(\$S, \$S, null, false)", ClassNames.API_RESPONSE_FIELD, "__typename", "__typename")
+      CodeBlock.of("\$T.forString(\$S, \$S, null, false)", com.apollostack.api.graphql.Field::class.java, "__typename",
+          "__typename")
     } else {
       CodeBlock.of("")
     }
@@ -196,13 +213,13 @@ class ResponseFieldMapperBuilder(
 
   private fun Field.scalarResponseFieldFactoryStatement(type: TypeName): CodeBlock {
     val factoryMethod = fieldFactoryMethod(type)
-    return CodeBlock.of("\$T.\$L(\$S, \$S, null, \$L)", ClassNames.API_RESPONSE_FIELD, factoryMethod, responseName,
+    return CodeBlock.of("\$T.\$L(\$S, \$S, null, \$L)", API_RESPONSE_FIELD, factoryMethod, responseName,
         fieldName, isOptional())
   }
 
-  private fun Field.objectResponseFieldFactoryStatement(factoryMethod: String, type: TypeName): CodeBlock = CodeBlock
+  private fun Field.objectResponseFieldFactoryStatement(factoryMethod: String, type: TypeName) = CodeBlock
       .builder()
-      .add("\$T.$factoryMethod(\$S, \$S, null, \$L, new \$T() {\n", ClassNames.API_RESPONSE_FIELD, responseName,
+      .add("\$T.$factoryMethod(\$S, \$S, null, \$L, new \$T() {\n", API_RESPONSE_FIELD, responseName,
           fieldName, isOptional(), apiResponseFieldReaderTypeName(type.overrideTypeName(typeOverrideMap)))
       .indent()
       .beginControlFlow("@Override public \$T read(final \$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
@@ -227,10 +244,10 @@ class ResponseFieldMapperBuilder(
   }
 
   private fun apiResponseFieldReaderTypeName(type: TypeName) =
-      ParameterizedTypeName.get(ClassNames.API_RESPONSE_FIELD_READER, type.overrideTypeName(typeOverrideMap))
+      ParameterizedTypeName.get(API_RESPONSE_FIELD_OBJECT_READER, type.overrideTypeName(typeOverrideMap))
 
   private fun apiResponseFieldListItemReaderTypeName(type: TypeName) =
-      ParameterizedTypeName.get(ClassNames.API_RESPONSE_FIELD_LIST_READER, type.overrideTypeName(typeOverrideMap))
+      ParameterizedTypeName.get(API_RESPONSE_FIELD_LIST_READER, type.overrideTypeName(typeOverrideMap))
 
   private fun Field.readScalarListItemStatement(type: TypeName): CodeBlock {
     val readMethod = when (type) {
@@ -249,11 +266,11 @@ class ResponseFieldMapperBuilder(
 
     return CodeBlock
         .builder()
-        .add("\$T.forList(\$S, \$S, null, \$L, new \$T() {\n", ClassNames.API_RESPONSE_FIELD, responseName, fieldName,
+        .add("\$T.forList(\$S, \$S, null, \$L, new \$T() {\n", API_RESPONSE_FIELD, responseName, fieldName,
             isOptional(), apiResponseFieldListItemReaderTypeName(type.overrideTypeName(typeOverrideMap)))
         .indent()
         .beginControlFlow("@Override public \$T read(final \$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
-            ClassNames.API_RESPONSE_FIELD_LIST_ITEM_READER, PARAM_READER, ClassNames.IO_EXCEPTION)
+            API_RESPONSE_FIELD_LIST_ITEM_READER, PARAM_READER, ClassNames.IO_EXCEPTION)
         .add(readStatement)
         .endControlFlow()
         .unindent()
@@ -262,14 +279,20 @@ class ResponseFieldMapperBuilder(
   }
 
   companion object {
-    private val PARAM_READER: String = "reader"
+    private val PARAM_READER = "reader"
     private val PARAM_INSTANCE = "instance"
     private val PARAM_TYPE_NAME = "typename"
     private val PARAM_FIELD_INDEX = "fieldIndex"
     private val PARAM_VALUE = "value"
-    private val PARAM_SPEC_READER: ParameterSpec = ParameterSpec.builder(ClassNames.API_RESPONSE_READER,
-        PARAM_READER).build()
+    private val PARAM_SPEC_READER = ParameterSpec.builder(ResponseReader::class.java, PARAM_READER).build()
     private val SCALAR_TYPES = listOf(ClassNames.STRING, TypeName.INT, TypeName.INT.box(), TypeName.LONG,
         TypeName.LONG.box(), TypeName.DOUBLE, TypeName.DOUBLE.box(), TypeName.BOOLEAN, TypeName.BOOLEAN.box())
+    private val API_RESPONSE_FIELD = ClassName.get(com.apollostack.api.graphql.Field::class.java)
+    private val API_RESPONSE_FIELD_OBJECT_READER = ClassName.get(
+        com.apollostack.api.graphql.Field.ObjectReader::class.java)
+    private val API_RESPONSE_FIELD_LIST_READER = ClassName.get(com.apollostack.api.graphql.Field.ListReader::class.java)
+    private val API_RESPONSE_FIELD_LIST_ITEM_READER = ClassName.get(
+        com.apollostack.api.graphql.Field.ListItemReader::class.java)
+    private val API_RESPONSE_FIELD_MAPPER = ClassName.get(ResponseFieldMapper::class.java)
   }
 }

@@ -53,19 +53,18 @@ public final class TestQuery implements Query<Operation.Variables> {
       };
 
       @Override
-      public void handleValue(int fieldIndex, Object value, Data instance, ResponseReader reader)
-          throws IOException {
-        switch (fieldIndex) {
-          case 0: {
-            instance.hero = (Hero) value;
-            break;
+      public void map(ResponseReader reader, Data instance) throws IOException {
+        reader.read(new ResponseReader.ValueHandler() {
+          @Override
+          public void handle(final int fieldIndex, final Object value) throws IOException {
+            switch (fieldIndex) {
+              case 0: {
+                instance.hero = (Hero) value;
+                break;
+              }
+            }
           }
-        }
-      }
-
-      @Override
-      public Field[] fields() {
-        return FIELDS;
+        }, FIELDS);
       }
     };
 
@@ -92,28 +91,27 @@ public final class TestQuery implements Query<Operation.Variables> {
         };
 
         @Override
-        public void handleValue(int fieldIndex, Object value, Hero instance, ResponseReader reader)
-            throws IOException {
-          switch (fieldIndex) {
-            case 0: {
-              instance.name = (String) value;
-              break;
+        public void map(ResponseReader reader, Hero instance) throws IOException {
+          reader.read(new ResponseReader.ValueHandler() {
+            @Override
+            public void handle(final int fieldIndex, final Object value) throws IOException {
+              switch (fieldIndex) {
+                case 0: {
+                  instance.name = (String) value;
+                  break;
+                }
+                case 1: {
+                  instance.appearsIn = (List<? extends Episode>) value;
+                  break;
+                }
+                case 2: {
+                  String typename = (String) value;
+                  instance.fragments = new Fragments(reader, typename);
+                  break;
+                }
+              }
             }
-            case 1: {
-              instance.appearsIn = (List<? extends Episode>) value;
-              break;
-            }
-            case 2: {
-              String typename = (String) value;
-              instance.fragments = new Fragments(reader, typename);
-              break;
-            }
-          }
-        }
-
-        @Override
-        public Field[] fields() {
-          return FIELDS;
+          }, FIELDS);
         }
       };
 
