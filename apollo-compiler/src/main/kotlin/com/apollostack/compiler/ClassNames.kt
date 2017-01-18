@@ -16,7 +16,6 @@ object ClassNames {
   val GRAPHQL_MUTATION: ClassName = ClassName.get(Mutation::class.java)
   val GRAPHQL_OPERATION_VARIABLES: TypeName = ClassName.get("", "${GRAPHQL_OPERATION.simpleName()}.Variables")
   val ILLEGAL_STATE_EXCEPTION: TypeName = ClassName.get(IllegalStateException::class.java)
-  val IO_EXCEPTION: ClassName = ClassName.get(IOException::class.java)
   val API_RESPONSE_READER: ClassName = ClassName.get(ResponseReader::class.java)
 
   fun parameterizedListOf(typeArgument: TypeName): TypeName =

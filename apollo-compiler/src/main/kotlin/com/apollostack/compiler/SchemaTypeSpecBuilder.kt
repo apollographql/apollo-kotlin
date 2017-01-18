@@ -4,6 +4,7 @@ import com.apollostack.compiler.ir.Field
 import com.apollostack.compiler.ir.InlineFragment
 import com.apollostack.compiler.ir.TypeDeclaration
 import com.squareup.javapoet.*
+import java.io.IOException
 import javax.lang.model.element.Modifier
 
 class SchemaTypeSpecBuilder(
@@ -31,7 +32,7 @@ class SchemaTypeSpecBuilder(
               .constructorBuilder()
               .addModifiers(Modifier.PUBLIC)
               .addParameter(PARAM_SPEC_READER)
-              .addException(ClassNames.IO_EXCEPTION)
+              .addException(IOException::class.java)
               .addStatement("\$L.map(\$L, this)", mapperField.name,
                   if (hasFragments) "$PARAM_READER.toBufferedReader()" else PARAM_READER)
               .build()

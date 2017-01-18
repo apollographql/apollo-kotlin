@@ -223,7 +223,7 @@ class ResponseFieldMapperBuilder(
           fieldName, isOptional(), apiResponseFieldReaderTypeName(type.overrideTypeName(typeOverrideMap)))
       .indent()
       .beginControlFlow("@Override public \$T read(final \$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
-          ClassNames.API_RESPONSE_READER, PARAM_READER, ClassNames.IO_EXCEPTION)
+          ClassNames.API_RESPONSE_READER, PARAM_READER, IOException::class.java)
       .add(CodeBlock.of("return new \$T(\$L);\n", type.overrideTypeName(typeOverrideMap), PARAM_READER))
       .endControlFlow()
       .unindent()
@@ -270,7 +270,7 @@ class ResponseFieldMapperBuilder(
             isOptional(), apiResponseFieldListItemReaderTypeName(type.overrideTypeName(typeOverrideMap)))
         .indent()
         .beginControlFlow("@Override public \$T read(final \$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
-            API_RESPONSE_FIELD_LIST_ITEM_READER, PARAM_READER, ClassNames.IO_EXCEPTION)
+            API_RESPONSE_FIELD_LIST_ITEM_READER, PARAM_READER, IOException::class.java)
         .add(readStatement)
         .endControlFlow()
         .unindent()
