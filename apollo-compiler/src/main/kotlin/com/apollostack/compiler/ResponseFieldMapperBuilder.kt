@@ -6,59 +6,64 @@ import com.apollostack.compiler.ir.TypeDeclaration
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
-class SchemaTypeConstructorBuilder(
+class ResponseFieldMapperBuilder(
+    typeName: String,
     val fields: List<Field>,
     val fragmentSpreads: List<String>,
     val inlineFragments: List<InlineFragment>,
     val typeOverrideMap: Map<String, String>,
     val typeDeclarations: List<TypeDeclaration>
 ) {
+  private val typeClassName = ClassName.get("", typeName)
   private val hasFragments = inlineFragments.isNotEmpty() || fragmentSpreads.isNotEmpty()
+  private val responseFieldMapperType = ParameterizedTypeName.get(ClassNames.API_RESPONSE_FIELD_MAPPER, typeClassName)
 
-  fun build(): MethodSpec = MethodSpec
-      .constructorBuilder()
+  fun build(): FieldSpec = FieldSpec
+      .builder(responseFieldMapperType, "MAPPER")
+      .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+      .initializer("\$L", mapperType())
+      .build()
+
+  private fun mapperType() = TypeSpec
+      .anonymousClassBuilder("")
+      .superclass(responseFieldMapperType)
+      .addField(fieldsField())
+      .addMethod(handleValueMethod())
+      .addMethod(MethodSpec
+          .methodBuilder("fields")
+          .addModifiers(Modifier.PUBLIC)
+          .addAnnotation(Override::class.java)
+          .returns(Array<com.apollostack.api.graphql.Field>::class.java)
+          .addStatement("return FIELDS")
+          .build())
+      .build()
+
+  private fun handleValueMethod() = MethodSpec
+      .methodBuilder("handleValue")
       .addModifiers(Modifier.PUBLIC)
-      .addParameter(READER_PARAM_SPEC)
+      .addAnnotation(Override::class.java)
+      .addParameter(ParameterSpec.builder(TypeName.INT, PARAM_FIELD_INDEX).build())
+      .addParameter(ParameterSpec.builder(TypeName.OBJECT, PARAM_VALUE).build())
+      .addParameter(ParameterSpec.builder(typeClassName, PARAM_INSTANCE).build())
+      .addParameter(PARAM_SPEC_READER)
       .addException(ClassNames.IO_EXCEPTION)
-      .addCode(constructorCode())
+      .addCode(handleValueMethodCode())
       .build()
 
-  private fun constructorCode(): CodeBlock = CodeBlock
-      .builder()
-      .add(responseReadStatement())
-      .indent()
-      .add(valueHandlerStatement())
-      .add(",\n")
-      .add(responseFieldFactoryStatements())
-      .unindent()
-      .add("\n);\n")
+  private fun fieldsField() = FieldSpec
+      .builder(Array<com.apollostack.api.graphql.Field>::class.java, "FIELDS", Modifier.PRIVATE, Modifier.FINAL)
+      .initializer(CodeBlock
+          .builder()
+          .add("{\n")
+          .indent()
+          .add(responseFieldFactoryStatements())
+          .unindent()
+          .add("\n}")
+          .build()
+      )
       .build()
 
-  private fun responseReadStatement(): CodeBlock =
-      if (hasFragments) {
-        CodeBlock
-            .builder()
-            .addStatement("final \$T \$L = \$L.toBufferedReader()", ClassNames.API_RESPONSE_READER,
-                PARAM_BUFFERED_READER, PARAM_READER)
-            .add("\$L.read(\n", PARAM_BUFFERED_READER)
-            .build()
-      } else {
-        CodeBlock.of("\$L.read(\n", PARAM_READER)
-      }
-
-  private fun valueHandlerStatement(): CodeBlock = CodeBlock
-      .builder()
-      .add("new \$T() {\n", ClassNames.API_RESPONSE_VALUE_HANDLER)
-      .indent()
-      .beginControlFlow("@Override public void handle(int \$L, Object \$L) throws \$T", PARAM_FIELD_INDEX, PARAM_VALUE,
-          ClassNames.IO_EXCEPTION)
-      .add(valueHandlerSwitchStatement())
-      .endControlFlow()
-      .unindent()
-      .add("}")
-      .build()
-
-  private fun valueHandlerSwitchStatement(): CodeBlock = CodeBlock
+  private fun handleValueMethodCode() = CodeBlock
       .builder()
       .beginControlFlow("switch (\$L)", PARAM_FIELD_INDEX)
       .add(fields
@@ -79,11 +84,11 @@ class SchemaTypeConstructorBuilder(
               CodeBlock
                   .builder()
                   .beginControlFlow("if (\$L != null)", PARAM_VALUE)
-                  .addStatement("\$L = \$T.valueOf(\$L)", fieldSpec.name, fieldRawType, PARAM_VALUE)
+                  .addStatement("\$L.\$L = \$T.valueOf(\$L)", PARAM_INSTANCE, fieldSpec.name, fieldRawType, PARAM_VALUE)
                   .endControlFlow()
                   .build()
             } else {
-              CodeBlock.of("\$L = (\$T) \$L;\n", fieldSpec.name, fieldRawType, PARAM_VALUE)
+              CodeBlock.of("\$L.\$L = (\$T) \$L;\n", PARAM_INSTANCE, fieldSpec.name, fieldRawType, PARAM_VALUE)
             })
         .addStatement("break")
         .endControlFlow()
@@ -114,7 +119,7 @@ class SchemaTypeConstructorBuilder(
     val fieldRawType = fieldSpec.type.withoutAnnotations()
     return CodeBlock.builder()
         .beginControlFlow("if (\$L.equals(\$S))", PARAM_TYPE_NAME, fragment.typeCondition)
-        .addStatement("\$L = new \$T(\$L)", fieldSpec.name, fieldRawType, PARAM_BUFFERED_READER)
+        .addStatement("\$L.\$L = new \$T(\$L)", PARAM_INSTANCE, fieldSpec.name, fieldRawType, PARAM_READER)
         .endControlFlow()
         .build()
   }
@@ -122,8 +127,9 @@ class SchemaTypeConstructorBuilder(
   private fun fragmentsInitStatement(): CodeBlock {
     if (fragmentSpreads.isNotEmpty()) {
       return CodeBlock.builder()
-          .addStatement("\$L = new \$L(\$L, \$L)", SchemaTypeSpecBuilder.FRAGMENTS_INTERFACE_NAME.decapitalize(),
-              SchemaTypeSpecBuilder.FRAGMENTS_INTERFACE_NAME, PARAM_BUFFERED_READER, PARAM_TYPE_NAME)
+          .addStatement("\$L.\$L = new \$L(\$L, \$L)", PARAM_INSTANCE,
+              SchemaTypeSpecBuilder.FRAGMENTS_INTERFACE_NAME.decapitalize(),
+              SchemaTypeSpecBuilder.FRAGMENTS_INTERFACE_NAME, PARAM_READER, PARAM_TYPE_NAME)
           .build()
     } else {
       return CodeBlock.of("")
@@ -256,12 +262,13 @@ class SchemaTypeConstructorBuilder(
   }
 
   companion object {
-    private val PARAM_READER = "reader"
-    private val PARAM_BUFFERED_READER = "bufferedReader"
-    private val PARAM_TYPE_NAME = "typename__"
-    private val PARAM_FIELD_INDEX = "fieldIndex__"
-    private val PARAM_VALUE = "value__"
-    private val READER_PARAM_SPEC = ParameterSpec.builder(ClassNames.API_RESPONSE_READER, PARAM_READER).build()
+    private val PARAM_READER: String = "reader"
+    private val PARAM_INSTANCE = "instance"
+    private val PARAM_TYPE_NAME = "typename"
+    private val PARAM_FIELD_INDEX = "fieldIndex"
+    private val PARAM_VALUE = "value"
+    private val PARAM_SPEC_READER: ParameterSpec = ParameterSpec.builder(ClassNames.API_RESPONSE_READER,
+        PARAM_READER).build()
     private val SCALAR_TYPES = listOf(ClassNames.STRING, TypeName.INT, TypeName.INT.box(), TypeName.LONG,
         TypeName.LONG.box(), TypeName.DOUBLE, TypeName.DOUBLE.box(), TypeName.BOOLEAN, TypeName.BOOLEAN.box())
   }

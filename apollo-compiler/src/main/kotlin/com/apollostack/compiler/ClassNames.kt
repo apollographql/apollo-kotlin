@@ -23,6 +23,7 @@ object ClassNames {
   val API_RESPONSE_FIELD_READER: ClassName = ClassName.get(Field.ObjectReader::class.java)
   val API_RESPONSE_FIELD_LIST_READER: ClassName = ClassName.get(Field.ListReader::class.java)
   val API_RESPONSE_FIELD_LIST_ITEM_READER: ClassName = ClassName.get(Field.ListItemReader::class.java)
+  val API_RESPONSE_FIELD_MAPPER: ClassName = ClassName.get(ResponseFieldMapper::class.java)
 
   fun parameterizedListOf(typeArgument: TypeName): TypeName =
       ParameterizedTypeName.get(LIST, WildcardTypeName.subtypeOf(typeArgument.withoutAnnotations()))
