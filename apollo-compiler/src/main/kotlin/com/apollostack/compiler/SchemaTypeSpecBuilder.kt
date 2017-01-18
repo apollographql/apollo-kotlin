@@ -4,6 +4,7 @@ import com.apollostack.compiler.ir.Field
 import com.apollostack.compiler.ir.InlineFragment
 import com.apollostack.compiler.ir.TypeDeclaration
 import com.squareup.javapoet.*
+import java.io.IOException
 import javax.lang.model.element.Modifier
 
 class SchemaTypeSpecBuilder(
@@ -15,16 +16,27 @@ class SchemaTypeSpecBuilder(
     val reservedTypeNames: List<String>,
     val typeDeclarations: List<TypeDeclaration>
 ) {
-  private val typeOverrideMap = buildTypeNameOverrideMap(reservedTypeNames)
+  private val uniqueTypeName = formatUniqueTypeName(typeName, reservedTypeNames)
+  private val innerTypeNameOverrideMap = buildUniqueTypeNameMap(reservedTypeNames + typeName)
+  private val hasFragments = inlineFragments.isNotEmpty() || fragmentSpreads.isNotEmpty()
 
   fun build(vararg modifiers: Modifier): TypeSpec {
     val typeSpecBuilder = if (abstract) {
-      TypeSpec.interfaceBuilder(typeName)
+      TypeSpec.interfaceBuilder(uniqueTypeName)
     } else {
-      TypeSpec.classBuilder(typeName)
-          .addMethod(SchemaTypeConstructorBuilder(fields, fragmentSpreads, inlineFragments, typeOverrideMap,
-              typeDeclarations)
-              .build())
+      val mapperField = ResponseFieldMapperBuilder(uniqueTypeName, fields, fragmentSpreads, inlineFragments,
+          innerTypeNameOverrideMap, typeDeclarations).build()
+      TypeSpec.classBuilder(uniqueTypeName)
+          .addField(mapperField)
+          .addMethod(MethodSpec
+              .constructorBuilder()
+              .addModifiers(Modifier.PUBLIC)
+              .addParameter(PARAM_SPEC_READER)
+              .addException(IOException::class.java)
+              .addStatement("\$L.map(\$L, this)", mapperField.name,
+                  if (hasFragments) "$PARAM_READER.toBufferedReader()" else PARAM_READER)
+              .build()
+          )
     }
     return typeSpecBuilder
         .addModifiers(*modifiers)
@@ -38,8 +50,8 @@ class SchemaTypeSpecBuilder(
   private fun TypeSpec.Builder.addFields(fields: List<Field>, abstract: Boolean): TypeSpec.Builder {
     val fieldSpecs = if (abstract) emptyList() else fields.map(Field::fieldSpec)
     val methodSpecs = fields.map { it.accessorMethodSpec(abstract) }
-    return addFields(fieldSpecs.map { it.overrideType(typeOverrideMap) })
-        .addMethods(methodSpecs.map { it.overrideReturnType(typeOverrideMap) })
+    return addFields(fieldSpecs.map { it.overrideType(innerTypeNameOverrideMap) })
+        .addMethods(methodSpecs.map { it.overrideReturnType(innerTypeNameOverrideMap) })
   }
 
   /** Returns a list of fragment types referenced by the provided list of fields */
@@ -54,13 +66,15 @@ class SchemaTypeSpecBuilder(
 
   /** Returns a list of types referenced by the inner fields in the provided fields */
   private fun TypeSpec.Builder.addInnerTypes(fields: List<Field>): TypeSpec.Builder {
-    val reservedTypeNames = reservedTypeNames + fields.filter(Field::isNonScalar).map(Field::normalizedName)
-    val typeSpecs = fields.filter(Field::isNonScalar).map { it.toTypeSpec(abstract, reservedTypeNames, typeDeclarations) }
-    return addTypes(typeSpecs.map { it.overrideName(typeOverrideMap) })
+    val reservedTypeNames = reservedTypeNames + typeName + fields.filter(Field::isNonScalar).map(Field::normalizedName)
+    val typeSpecs = fields.filter(Field::isNonScalar).map {
+      it.toTypeSpec(abstract, reservedTypeNames.minus(it.normalizedName()), typeDeclarations)
+    }
+    return addTypes(typeSpecs)
   }
 
   private fun TypeSpec.Builder.addInlineFragments(fragments: List<InlineFragment>): TypeSpec.Builder {
-    val reservedTypeNames = reservedTypeNames + fields.filter(Field::isNonScalar).map(Field::normalizedName)
+    val reservedTypeNames = reservedTypeNames + typeName + fields.filter(Field::isNonScalar).map(Field::normalizedName)
     val typeSpecs = fragments.map { it.toTypeSpec(abstract, reservedTypeNames, typeDeclarations) }
     val methodSpecs = fragments.map { it.accessorMethodSpec(abstract) }
     val fieldSpecs = if (abstract) emptyList() else fragments.map { it.fieldSpec() }
@@ -128,7 +142,19 @@ class SchemaTypeSpecBuilder(
         .build()
   }
 
+  private fun buildUniqueTypeNameMap(reservedTypeNames: List<String>) =
+      reservedTypeNames.distinct().associate {
+        it to formatUniqueTypeName(it, reservedTypeNames)
+      }
+
+  private fun formatUniqueTypeName(typeName: String, reservedTypeNames: List<String>): String {
+    val suffix = reservedTypeNames.count { it == typeName }.let { if (it > 0) "$".repeat(it) else "" }
+    return "$typeName$suffix"
+  }
+
   companion object {
     val FRAGMENTS_INTERFACE_NAME: String = "Fragments"
+    private val PARAM_READER = "reader"
+    private val PARAM_SPEC_READER = ParameterSpec.builder(ClassNames.API_RESPONSE_READER, PARAM_READER).build()
   }
 }

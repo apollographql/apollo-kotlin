@@ -5,13 +5,14 @@ import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterSpec
+import java.io.IOException
 
 class SchemaFragmentsConstructorBuilder(
     val fragments: List<String>
 ) {
   fun build(): MethodSpec = MethodSpec
       .constructorBuilder()
-      .addException(ClassNames.IO_EXCEPTION)
+      .addException(IOException::class.java)
       .addParameter(PARAM_READER_SPEC)
       .addParameter(PARAM_TYPE_NAME_SPEC)
       .addCode(fragments
