@@ -1,4 +1,4 @@
-package com.example.simple_arguments;
+package com.example.simple_arguments.type;
 
 /**
  * The episodes in the Star Wars trilogy

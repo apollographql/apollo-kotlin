@@ -32,7 +32,8 @@
       "fragmentsReferenced": [
         "HumanDetails",
         "DroidDetails"
-      ]
+      ],
+      "filePath": "src/test/graphql/com/example/fragments_with_type_condition/TestQuery.json"
     }
   ],
   "fragments": [

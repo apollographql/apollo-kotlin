@@ -9,12 +9,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.io.File
-import java.nio.file.FileVisitResult
 import java.nio.file.FileSystems
-import java.nio.file.SimpleFileVisitor
-import java.nio.file.Path
 import java.nio.file.Files
-
+import java.nio.file.Path
+import java.nio.file.SimpleFileVisitor
+import java.nio.file.FileVisitResult
 import java.nio.file.attribute.BasicFileAttributes
 import java.util.ArrayList
 import javax.tools.JavaFileObject
@@ -39,7 +38,7 @@ class CodeGenTest(val testDir: File, val pkgName: String, val generatePOJO: Bool
           val expected = expectedFile.toFile()
 
           val actualClassName = actualClassName(expectedFile)
-          val actual = outputDir.toPath().resolve("com/example/$pkgName/$actualClassName.java").toFile()
+          val actual = findActual(actualClassName)
 
           if (!actual.isFile) {
             throw AssertionError("Couldn't find actual file: $actual")
@@ -57,6 +56,17 @@ class CodeGenTest(val testDir: File, val pkgName: String, val generatePOJO: Bool
 
   private fun actualClassName(expectedFile: Path): String {
     return expectedFile.fileName.toString().replace("Expected", "").replace(".java", "")
+  }
+
+  private fun findActual(className: String): File {
+    val possiblePaths = arrayOf("$className.java", "type/$className.java", "fragment/$className.java")
+    for (p in possiblePaths) {
+      val actual = outputDir.toPath().resolve("com/example/$pkgName/$p").toFile()
+      if (actual.isFile) {
+        return actual
+      }
+    }
+    throw AssertionError("Couldn't find actual file: $className")
   }
 
   companion object {

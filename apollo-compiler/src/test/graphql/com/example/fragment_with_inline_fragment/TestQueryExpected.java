@@ -2,6 +2,8 @@ package com.example.fragment_with_inline_fragment;
 
 import com.apollostack.api.graphql.Operation;
 import com.apollostack.api.graphql.Query;
+import com.example.fragment_with_inline_fragment.fragment.HeroDetails;
+import com.example.fragment_with_inline_fragment.type.Episode;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;

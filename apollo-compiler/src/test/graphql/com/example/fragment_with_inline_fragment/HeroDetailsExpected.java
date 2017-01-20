@@ -1,4 +1,4 @@
-package com.example.fragment_with_inline_fragment;
+package com.example.fragment_with_inline_fragment.fragment;
 
 import java.lang.Integer;
 import java.lang.String;

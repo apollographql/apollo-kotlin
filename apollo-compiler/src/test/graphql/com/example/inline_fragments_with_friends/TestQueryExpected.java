@@ -2,6 +2,7 @@ package com.example.inline_fragments_with_friends;
 
 import com.apollostack.api.graphql.Operation;
 import com.apollostack.api.graphql.Query;
+import com.example.inline_fragments_with_friends.type.Episode;
 import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
