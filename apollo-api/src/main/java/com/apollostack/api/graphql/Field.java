@@ -13,7 +13,8 @@ public final class Field {
   private final ListReader listReader;
   private final boolean optional;
 
-  public static Field forString(String responseName, String fieldName, Map<String, Object> arguments, boolean optional) {
+  public static Field forString(String responseName, String fieldName, Map<String, Object> arguments,
+      boolean optional) {
     return new Field(Type.STRING, responseName, fieldName, arguments, null, null, optional);
   }
 
@@ -21,25 +22,28 @@ public final class Field {
     return new Field(Type.INT, responseName, fieldName, arguments, null, null, optional);
   }
 
-  public static <T> Field forLong(String responseName, String fieldName, Map<String, Object> arguments, boolean optional) {
+  public static <T> Field forLong(String responseName, String fieldName, Map<String, Object> arguments,
+      boolean optional) {
     return new Field(Type.LONG, responseName, fieldName, arguments, null, null, optional);
   }
 
-  public static Field forDouble(String responseName, String fieldName, Map<String, Object> arguments, boolean optional) {
+  public static Field forDouble(String responseName, String fieldName, Map<String, Object> arguments,
+      boolean optional) {
     return new Field(Type.DOUBLE, responseName, fieldName, arguments, null, null, optional);
   }
 
-  public static Field forBoolean(String responseName, String fieldName, Map<String, Object> arguments, boolean optional) {
+  public static Field forBoolean(String responseName, String fieldName, Map<String, Object> arguments,
+      boolean optional) {
     return new Field(Type.BOOLEAN, responseName, fieldName, arguments, null, null, optional);
   }
 
-  public static <T> Field forObject(String responseName, String fieldName, Map<String, Object> arguments, boolean optional,
-      ObjectReader<T> objectReader)  {
+  public static <T> Field forObject(String responseName, String fieldName, Map<String, Object> arguments,
+      boolean optional, ObjectReader<T> objectReader) {
     return new Field(Type.OBJECT, responseName, fieldName, arguments, objectReader, null, optional);
   }
 
   public static <T> Field forList(String responseName, String fieldName, Map<String, Object> arguments,
-      boolean optional, ListReader<T> listReader)  {
+      boolean optional, ListReader<T> listReader) {
     return new Field(Type.LIST, responseName, fieldName, arguments, null, listReader, optional);
   }
 

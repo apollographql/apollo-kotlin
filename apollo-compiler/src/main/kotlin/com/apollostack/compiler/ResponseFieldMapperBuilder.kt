@@ -52,7 +52,7 @@ class ResponseFieldMapperBuilder(
       .addModifiers(Modifier.PUBLIC)
       .addAnnotation(Override::class.java)
       .addParameter(PARAM_SPEC_READER)
-      .addParameter(ParameterSpec.builder(typeClassName, PARAM_INSTANCE).build())
+      .addParameter(ParameterSpec.builder(typeClassName, PARAM_INSTANCE, Modifier.FINAL).build())
       .addException(IOException::class.java)
       .addCode(mapMethodCode())
       .build()
@@ -284,7 +284,8 @@ class ResponseFieldMapperBuilder(
     private val PARAM_TYPE_NAME = "typename"
     private val PARAM_FIELD_INDEX = "fieldIndex"
     private val PARAM_VALUE = "value"
-    private val PARAM_SPEC_READER = ParameterSpec.builder(ResponseReader::class.java, PARAM_READER).build()
+    private val PARAM_SPEC_READER = ParameterSpec.builder(ResponseReader::class.java, PARAM_READER,
+        Modifier.FINAL).build()
     private val SCALAR_TYPES = listOf(ClassNames.STRING, TypeName.INT, TypeName.INT.box(), TypeName.LONG,
         TypeName.LONG.box(), TypeName.DOUBLE, TypeName.DOUBLE.box(), TypeName.BOOLEAN, TypeName.BOOLEAN.box())
     private val API_RESPONSE_FIELD = ClassName.get(com.apollostack.api.graphql.Field::class.java)

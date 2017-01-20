@@ -25,7 +25,7 @@ public class HeroDetails {
     };
 
     @Override
-    public void map(ResponseReader reader, HeroDetails instance) throws IOException {
+    public void map(final ResponseReader reader, final HeroDetails instance) throws IOException {
       reader.read(new ResponseReader.ValueHandler() {
         @Override
         public void handle(final int fieldIndex, final Object value) throws IOException {
@@ -105,7 +105,8 @@ public class HeroDetails {
       };
 
       @Override
-      public void map(ResponseReader reader, FriendsConnection instance) throws IOException {
+      public void map(final ResponseReader reader, final FriendsConnection instance) throws
+          IOException {
         reader.read(new ResponseReader.ValueHandler() {
           @Override
           public void handle(final int fieldIndex, final Object value) throws IOException {
@@ -151,7 +152,7 @@ public class HeroDetails {
         };
 
         @Override
-        public void map(ResponseReader reader, Edge instance) throws IOException {
+        public void map(final ResponseReader reader, final Edge instance) throws IOException {
           reader.read(new ResponseReader.ValueHandler() {
             @Override
             public void handle(final int fieldIndex, final Object value) throws IOException {
@@ -183,7 +184,7 @@ public class HeroDetails {
           };
 
           @Override
-          public void map(ResponseReader reader, Node instance) throws IOException {
+          public void map(final ResponseReader reader, final Node instance) throws IOException {
             reader.read(new ResponseReader.ValueHandler() {
               @Override
               public void handle(final int fieldIndex, final Object value) throws IOException {
@@ -224,7 +225,7 @@ public class HeroDetails {
       };
 
       @Override
-      public void map(ResponseReader reader, AsDroid instance) throws IOException {
+      public void map(final ResponseReader reader, final AsDroid instance) throws IOException {
         reader.read(new ResponseReader.ValueHandler() {
           @Override
           public void handle(final int fieldIndex, final Object value) throws IOException {
@@ -281,7 +282,8 @@ public class HeroDetails {
         };
 
         @Override
-        public void map(ResponseReader reader, FriendsConnection$ instance) throws IOException {
+        public void map(final ResponseReader reader, final FriendsConnection$ instance) throws
+            IOException {
           reader.read(new ResponseReader.ValueHandler() {
             @Override
             public void handle(final int fieldIndex, final Object value) throws IOException {
@@ -327,7 +329,7 @@ public class HeroDetails {
           };
 
           @Override
-          public void map(ResponseReader reader, Edge instance) throws IOException {
+          public void map(final ResponseReader reader, final Edge instance) throws IOException {
             reader.read(new ResponseReader.ValueHandler() {
               @Override
               public void handle(final int fieldIndex, final Object value) throws IOException {
@@ -359,7 +361,7 @@ public class HeroDetails {
             };
 
             @Override
-            public void map(ResponseReader reader, Node instance) throws IOException {
+            public void map(final ResponseReader reader, final Node instance) throws IOException {
               reader.read(new ResponseReader.ValueHandler() {
                 @Override
                 public void handle(final int fieldIndex, final Object value) throws IOException {

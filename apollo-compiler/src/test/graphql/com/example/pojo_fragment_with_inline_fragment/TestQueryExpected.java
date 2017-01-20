@@ -53,7 +53,7 @@ public final class TestQuery implements Query<Operation.Variables> {
       };
 
       @Override
-      public void map(ResponseReader reader, Data instance) throws IOException {
+      public void map(final ResponseReader reader, final Data instance) throws IOException {
         reader.read(new ResponseReader.ValueHandler() {
           @Override
           public void handle(final int fieldIndex, final Object value) throws IOException {
@@ -91,7 +91,7 @@ public final class TestQuery implements Query<Operation.Variables> {
         };
 
         @Override
-        public void map(ResponseReader reader, Hero instance) throws IOException {
+        public void map(final ResponseReader reader, final Hero instance) throws IOException {
           reader.read(new ResponseReader.ValueHandler() {
             @Override
             public void handle(final int fieldIndex, final Object value) throws IOException {
@@ -140,8 +140,8 @@ public final class TestQuery implements Query<Operation.Variables> {
       public static class Fragments {
         private HeroDetails heroDetails;
 
-        Fragments(ResponseReader reader, String __typename) throws IOException {
-          if (__typename.equals(HeroDetails.TYPE_CONDITION)) {
+        Fragments(ResponseReader reader, String typename) throws IOException {
+          if (typename.equals(HeroDetails.TYPE_CONDITION)) {
             this.heroDetails = new HeroDetails(reader);
           }
         }

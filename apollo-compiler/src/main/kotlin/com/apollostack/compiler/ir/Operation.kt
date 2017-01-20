@@ -13,9 +13,9 @@ data class Operation(
     val source: String,
     val fields: List<Field>
 ) : CodeGenerator {
-  override fun toTypeSpec(abstract: Boolean, reservedTypeNames: List<String>,
+  override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
       typeDeclarations: List<TypeDeclaration>): TypeSpec =
-      SchemaTypeSpecBuilder(INTERFACE_TYPE_SPEC_NAME, fields, emptyList(), emptyList(), abstract, reservedTypeNames,
+      SchemaTypeSpecBuilder(INTERFACE_TYPE_SPEC_NAME, fields, emptyList(), emptyList(), abstractClass, reservedTypeNames,
           typeDeclarations)
           .build(Modifier.PUBLIC, Modifier.STATIC)
           .toBuilder()
