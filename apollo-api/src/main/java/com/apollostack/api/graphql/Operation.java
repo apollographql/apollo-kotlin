@@ -13,11 +13,10 @@ public interface Operation<V extends Operation.Variables> {
   }
 
   /** TODO */
-  abstract class Variables {
+  class Variables {
     protected Variables() {
     }
   }
 
-  Variables EMPTY_VARIABLES = new Variables() {
-  };
+  Variables EMPTY_VARIABLES = new Variables();
 }

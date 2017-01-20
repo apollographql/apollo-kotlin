@@ -1,7 +1,12 @@
 package com.example.pojo_fragment_with_inline_fragment;
 
+import com.apollostack.api.graphql.Field;
 import com.apollostack.api.graphql.Operation;
 import com.apollostack.api.graphql.Query;
+import com.apollostack.api.graphql.ResponseFieldMapper;
+import com.apollostack.api.graphql.ResponseReader;
+import java.io.IOException;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
@@ -38,10 +43,35 @@ public final class TestQuery implements Query<Operation.Variables> {
   }
 
   public static class Data implements Operation.Data {
-    private final @Nullable Hero hero;
+    private static final ResponseFieldMapper<Data> MAPPER = new ResponseFieldMapper<Data>() {
+      private final Field[] FIELDS = {
+        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
+          @Override public Hero read(final ResponseReader reader) throws IOException {
+            return new Hero(reader);
+          }
+        })
+      };
 
-    public Data(@Nullable Hero hero) {
-      this.hero = hero;
+      @Override
+      public void map(final ResponseReader reader, final Data instance) throws IOException {
+        reader.read(new ResponseReader.ValueHandler() {
+          @Override
+          public void handle(final int fieldIndex, final Object value) throws IOException {
+            switch (fieldIndex) {
+              case 0: {
+                instance.hero = (Hero) value;
+                break;
+              }
+            }
+          }
+        }, FIELDS);
+      }
+    };
+
+    private @Nullable Hero hero;
+
+    public Data(ResponseReader reader) throws IOException {
+      MAPPER.map(reader, this);
     }
 
     public @Nullable Hero hero() {
@@ -49,17 +79,50 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     public static class Hero {
-      private final @Nonnull String name;
+      private static final ResponseFieldMapper<Hero> MAPPER = new ResponseFieldMapper<Hero>() {
+        private final Field[] FIELDS = {
+          Field.forString("name", "name", null, false),
+          Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
+            @Override public Episode read(final Field.ListItemReader reader) throws IOException {
+              return Episode.valueOf(reader.readString());
+            }
+          }),
+          Field.forString("__typename", "__typename", null, false)
+        };
 
-      private final @Nonnull List<? extends Episode> appearsIn;
+        @Override
+        public void map(final ResponseReader reader, final Hero instance) throws IOException {
+          reader.read(new ResponseReader.ValueHandler() {
+            @Override
+            public void handle(final int fieldIndex, final Object value) throws IOException {
+              switch (fieldIndex) {
+                case 0: {
+                  instance.name = (String) value;
+                  break;
+                }
+                case 1: {
+                  instance.appearsIn = (List<? extends Episode>) value;
+                  break;
+                }
+                case 2: {
+                  String typename = (String) value;
+                  instance.fragments = new Fragments(reader, typename);
+                  break;
+                }
+              }
+            }
+          }, FIELDS);
+        }
+      };
 
-      private final Fragments fragments;
+      private @Nonnull String name;
 
-      public Hero(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
-          Fragments fragments) {
-        this.name = name;
-        this.appearsIn = appearsIn;
-        this.fragments = fragments;
+      private @Nonnull List<? extends Episode> appearsIn;
+
+      private Fragments fragments;
+
+      public Hero(ResponseReader reader) throws IOException {
+        MAPPER.map(reader.toBufferedReader(), this);
       }
 
       public @Nonnull String name() {
@@ -75,10 +138,12 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       public static class Fragments {
-        private final HeroDetails heroDetails;
+        private HeroDetails heroDetails;
 
-        public Fragments(HeroDetails heroDetails) {
-          this.heroDetails = heroDetails;
+        Fragments(ResponseReader reader, String typename) throws IOException {
+          if (typename.equals(HeroDetails.TYPE_CONDITION)) {
+            this.heroDetails = new HeroDetails(reader);
+          }
         }
 
         public HeroDetails heroDetails() {

@@ -2,78 +2,159 @@ package com.apollostack.compiler
 
 import com.apollostack.compiler.ir.Field
 import com.apollostack.compiler.ir.InlineFragment
-import com.squareup.javapoet.ClassName
-import com.squareup.javapoet.MethodSpec
-import com.squareup.javapoet.TypeSpec
+import com.apollostack.compiler.ir.TypeDeclaration
+import com.squareup.javapoet.*
+import java.io.IOException
 import javax.lang.model.element.Modifier
 
-class SchemaTypeSpecBuilder {
-  fun build(typeName: String, fields: List<Field>, fragmentSpreads: List<String>,
-      inlineFragments: List<InlineFragment>): TypeSpec =
-      TypeSpec.interfaceBuilder(typeName)
-          .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-          .addFieldAccessorMethods(fields)
-          .addInlineFragmentAccessorMethods(inlineFragments)
-          .addInnerTypes(fields)
-          .addInnerFragmentTypes(fragmentSpreads)
-          .addInlineFragmentTypes(inlineFragments)
-          .build()
+class SchemaTypeSpecBuilder(
+    val typeName: String,
+    val fields: List<Field>,
+    val fragmentSpreads: List<String>,
+    val inlineFragments: List<InlineFragment>,
+    val abstract: Boolean,
+    val reservedTypeNames: List<String>,
+    val typeDeclarations: List<TypeDeclaration>
+) {
+  private val uniqueTypeName = formatUniqueTypeName(typeName, reservedTypeNames)
+  private val innerTypeNameOverrideMap = buildUniqueTypeNameMap(reservedTypeNames + typeName)
+  private val hasFragments = inlineFragments.isNotEmpty() || fragmentSpreads.isNotEmpty()
 
-  private fun TypeSpec.Builder.addFieldAccessorMethods(fields: List<Field>): TypeSpec.Builder {
-    val methodSpecs = fields.map(Field::toMethodSpec)
-    return addMethods(methodSpecs)
+  fun build(vararg modifiers: Modifier): TypeSpec {
+    val typeSpecBuilder = if (abstract) {
+      TypeSpec.interfaceBuilder(uniqueTypeName)
+    } else {
+      val mapperField = ResponseFieldMapperBuilder(uniqueTypeName, fields, fragmentSpreads, inlineFragments,
+          innerTypeNameOverrideMap, typeDeclarations).build()
+      TypeSpec.classBuilder(uniqueTypeName)
+          .addField(mapperField)
+          .addMethod(MethodSpec
+              .constructorBuilder()
+              .addModifiers(Modifier.PUBLIC)
+              .addParameter(PARAM_SPEC_READER)
+              .addException(IOException::class.java)
+              .addStatement("\$L.map(\$L, this)", mapperField.name,
+                  if (hasFragments) "$PARAM_READER.toBufferedReader()" else PARAM_READER)
+              .build()
+          )
+    }
+    return typeSpecBuilder
+        .addModifiers(*modifiers)
+        .addFields(fields, abstract)
+        .addInnerTypes(fields)
+        .addInlineFragments(inlineFragments)
+        .addInnerFragmentTypes(fragmentSpreads)
+        .build()
+  }
+
+  private fun TypeSpec.Builder.addFields(fields: List<Field>, abstract: Boolean): TypeSpec.Builder {
+    val fieldSpecs = if (abstract) emptyList() else fields.map(Field::fieldSpec)
+    val methodSpecs = fields.map { it.accessorMethodSpec(abstract) }
+    return addFields(fieldSpecs.map { it.overrideType(innerTypeNameOverrideMap) })
+        .addMethods(methodSpecs.map { it.overrideReturnType(innerTypeNameOverrideMap) })
   }
 
   /** Returns a list of fragment types referenced by the provided list of fields */
   private fun TypeSpec.Builder.addInnerFragmentTypes(fragments: List<String>): TypeSpec.Builder {
     if (fragments.isNotEmpty()) {
-      addMethod(newFragmentAccessorMethodSpec())
-      addType(newFragmentInterfaceSpec(fragments))
+      addMethod(fragmentsAccessorMethodSpec(abstract))
+      addFields(if (abstract) emptyList() else listOf(fragmentsFieldSpec()))
+      addType(fragmentsTypeSpec(fragments, abstract))
     }
     return this
   }
 
   /** Returns a list of types referenced by the inner fields in the provided fields */
   private fun TypeSpec.Builder.addInnerTypes(fields: List<Field>): TypeSpec.Builder {
-    val typeSpecs = fields.filter(Field::isNonScalar).map(Field::toTypeSpec)
-    return addTypes(typeSpecs)
-  }
-
-  private fun TypeSpec.Builder.addInlineFragmentTypes(inlineFragments: List<InlineFragment>): TypeSpec.Builder {
-    val typeSpecs = inlineFragments.map { it.toTypeSpec() }
-    return addTypes(typeSpecs)
-  }
-
-  private fun TypeSpec.Builder.addInlineFragmentAccessorMethods(
-      inlineFragments: List<InlineFragment>): TypeSpec.Builder {
-    val methodSpecs = inlineFragments.map {
-      MethodSpec.methodBuilder(it.interfaceName().decapitalize())
-          .returns(ClassName.get("", it.interfaceName()).annotated(Annotations.NULLABLE))
-          .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-          .build()
+    val reservedTypeNames = reservedTypeNames + typeName + fields.filter(Field::isNonScalar).map(Field::normalizedName)
+    val typeSpecs = fields.filter(Field::isNonScalar).map {
+      it.toTypeSpec(abstract, reservedTypeNames.minus(it.normalizedName()), typeDeclarations)
     }
-    return addMethods(methodSpecs)
+    return addTypes(typeSpecs)
+  }
+
+  private fun TypeSpec.Builder.addInlineFragments(fragments: List<InlineFragment>): TypeSpec.Builder {
+    val reservedTypeNames = reservedTypeNames + typeName + fields.filter(Field::isNonScalar).map(Field::normalizedName)
+    val typeSpecs = fragments.map { it.toTypeSpec(abstract, reservedTypeNames, typeDeclarations) }
+    val methodSpecs = fragments.map { it.accessorMethodSpec(abstract) }
+    val fieldSpecs = if (abstract) emptyList() else fragments.map { it.fieldSpec() }
+    return addTypes(typeSpecs)
+        .addMethods(methodSpecs)
+        .addFields(fieldSpecs)
+  }
+
+  private fun fragmentsAccessorMethodSpec(abstract: Boolean): MethodSpec {
+    val methodSpecBuilder = MethodSpec
+        .methodBuilder(FRAGMENTS_INTERFACE_NAME.decapitalize())
+        .returns(ClassName.get("", FRAGMENTS_INTERFACE_NAME))
+        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(if (abstract) listOf(Modifier.ABSTRACT) else emptyList())
+    if (!abstract) {
+      methodSpecBuilder.addCode(CodeBlock.of("return this.${FRAGMENTS_INTERFACE_NAME.toLowerCase()};\n"))
+    }
+    return methodSpecBuilder.build()
+  }
+
+  private fun fragmentsFieldSpec(): FieldSpec = FieldSpec
+      .builder(ClassName.get("", FRAGMENTS_INTERFACE_NAME.capitalize()), FRAGMENTS_INTERFACE_NAME.decapitalize())
+      .addModifiers(Modifier.PRIVATE)
+      .build()
+
+  /** Returns a generic `Fragments` interface with methods for each of the provided fragments */
+  private fun fragmentsTypeSpec(fragments: List<String>, abstract: Boolean): TypeSpec {
+
+    fun TypeSpec.Builder.addFragmentFields(): TypeSpec.Builder {
+      if (!abstract) {
+        addFields(fragments.map {
+          FieldSpec
+              .builder(ClassName.get("", it.capitalize()), it.decapitalize())
+              .addModifiers(Modifier.PRIVATE)
+              .build()
+        })
+      }
+      return this
+    }
+
+    fun TypeSpec.Builder.addFragmentAccessorMethods(): TypeSpec.Builder {
+      return addMethods(fragments.map {
+        val methodSpecBuilder = MethodSpec
+            .methodBuilder(it.decapitalize())
+            .returns(ClassName.get("", it.capitalize()))
+            .addModifiers(Modifier.PUBLIC)
+            .addModifiers(if (abstract) listOf(Modifier.ABSTRACT) else emptyList())
+        if (!abstract) {
+          methodSpecBuilder.addStatement("return this.\$L", it.decapitalize())
+        }
+        methodSpecBuilder.build()
+      })
+    }
+
+    val typeSpecBuilder = if (abstract) {
+      TypeSpec.interfaceBuilder(FRAGMENTS_INTERFACE_NAME)
+    } else {
+      TypeSpec.classBuilder(FRAGMENTS_INTERFACE_NAME)
+          .addMethod(SchemaFragmentsConstructorBuilder(fragmentSpreads).build())
+    }
+    return typeSpecBuilder
+        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+        .addFragmentFields()
+        .addFragmentAccessorMethods()
+        .build()
+  }
+
+  private fun buildUniqueTypeNameMap(reservedTypeNames: List<String>) =
+      reservedTypeNames.distinct().associate {
+        it to formatUniqueTypeName(it, reservedTypeNames)
+      }
+
+  private fun formatUniqueTypeName(typeName: String, reservedTypeNames: List<String>): String {
+    val suffix = reservedTypeNames.count { it == typeName }.let { if (it > 0) "$".repeat(it) else "" }
+    return "$typeName$suffix"
   }
 
   companion object {
-    private val FRAGMENTS_INTERFACE_NAME = "Fragments"
-
-    private fun newFragmentAccessorMethodSpec(): MethodSpec =
-        MethodSpec.methodBuilder("fragments")
-            .returns(ClassName.get("", FRAGMENTS_INTERFACE_NAME))
-            .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-            .build()
-
-    /** Returns a generic `Fragments` interface with methods for each of the provided fragments */
-    private fun newFragmentInterfaceSpec(fragments: List<String>): TypeSpec =
-        TypeSpec.interfaceBuilder(FRAGMENTS_INTERFACE_NAME)
-            .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-            .addMethods(fragments.map {
-              MethodSpec.methodBuilder(it.decapitalize())
-                  .returns(ClassName.get("", it.capitalize()))
-                  .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                  .build()
-            })
-            .build()
+    val FRAGMENTS_INTERFACE_NAME: String = "Fragments"
+    private val PARAM_READER = "reader"
+    private val PARAM_SPEC_READER = ParameterSpec.builder(ClassNames.API_RESPONSE_READER, PARAM_READER).build()
   }
 }

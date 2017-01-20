@@ -18,7 +18,7 @@ public class ApolloConverterFactory extends Converter.Factory {
     if (type instanceof ParameterizedType) {
       ParameterizedType parameterizedType = (ParameterizedType) type;
       if (Response.class.isAssignableFrom((Class<?>) parameterizedType.getRawType())) {
-        return new ApolloResponseBodyConverter(type);
+        return new ApolloResponseBodyConverter(parameterizedType.getActualTypeArguments()[0]);
       }
     }
     return null;

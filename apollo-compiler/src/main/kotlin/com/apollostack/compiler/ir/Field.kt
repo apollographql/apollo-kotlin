@@ -3,9 +3,7 @@ package com.apollostack.compiler.ir
 import com.apollostack.compiler.SchemaTypeSpecBuilder
 import com.apollostack.compiler.ir.graphql.Type
 import com.cesarferreira.pluralize.singularize
-import com.squareup.javapoet.MethodSpec
-import com.squareup.javapoet.TypeName
-import com.squareup.javapoet.TypeSpec
+import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
 data class Field(
@@ -17,18 +15,32 @@ data class Field(
     val fragmentSpreads: List<String>?,
     val inlineFragments: List<InlineFragment>?
 ) : CodeGenerator {
-  override fun toTypeSpec(): TypeSpec =
-      SchemaTypeSpecBuilder().build(normalizedName(), fields ?: emptyList(), fragmentSpreads ?: emptyList(),
-          inlineFragments ?: emptyList())
+  override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
+      typeDeclarations: List<TypeDeclaration>): TypeSpec =
+      SchemaTypeSpecBuilder(normalizedName(), fields ?: emptyList(), fragmentSpreads ?: emptyList(),
+          inlineFragments ?: emptyList(), abstractClass, reservedTypeNames, typeDeclarations)
+          .build(Modifier.PUBLIC, Modifier.STATIC)
 
-  fun toMethodSpec(): MethodSpec =
-      MethodSpec.methodBuilder(responseName)
-          .returns(toTypeName(methodResponseType()))
-          .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-          .build()
+  fun accessorMethodSpec(abstract: Boolean): MethodSpec {
+    val methodSpecBuilder = MethodSpec
+        .methodBuilder(responseName)
+        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(if (abstract) listOf(Modifier.ABSTRACT) else emptyList())
+        .returns(toTypeName(methodResponseType()))
+    if (!abstract) {
+      methodSpecBuilder.addStatement("return this.\$L", responseName)
+    }
+    return methodSpecBuilder.build()
+  }
+
+  fun fieldSpec(): FieldSpec = FieldSpec
+      .builder(toTypeName(methodResponseType()), responseName)
+      .addModifiers(Modifier.PRIVATE)
+      .build()
 
   private fun toTypeName(responseType: String): TypeName =
-      Type.resolveByName(responseType, isOptional()).toJavaTypeName()
+      Type.resolveByName(responseType, isOptional())
+          .toJavaTypeName()
 
   fun normalizedName() = responseName.capitalize().singularize()
 

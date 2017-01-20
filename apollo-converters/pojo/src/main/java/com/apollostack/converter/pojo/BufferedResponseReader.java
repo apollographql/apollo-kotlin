@@ -24,25 +24,25 @@ import java.util.Map;
     int fieldIndex = 0;
     for (Field field : fields) {
       switch (field.type()) {
-        case Field.TYPE_STRING:
+        case STRING:
           handler.handle(fieldIndex, readString(field));
           break;
-        case Field.TYPE_INT:
+        case INT:
           handler.handle(fieldIndex, readInt(field));
           break;
-        case Field.TYPE_LONG:
+        case LONG:
           handler.handle(fieldIndex, readLong(field));
           break;
-        case Field.TYPE_DOUBLE:
+        case DOUBLE:
           handler.handle(fieldIndex, readDouble(field));
           break;
-        case Field.TYPE_BOOL:
+        case BOOLEAN:
           handler.handle(fieldIndex, readBoolean(field));
           break;
-        case Field.TYPE_OBJECT:
+        case OBJECT:
           handler.handle(fieldIndex, readObject(field));
           break;
-        case Field.TYPE_LIST:
+        case LIST:
           handler.handle(fieldIndex, readList(field));
           break;
         default:
@@ -54,12 +54,9 @@ import java.util.Map;
 
   String readString(Field field) throws IOException {
     String value = (String) buffer.get(field.responseName());
+    checkValue(value, field.optional());
     if (value == null) {
-      if (field.optional()) {
-        return null;
-      } else {
-        throw new NullPointerException("can't parse response, expected non null json value");
-      }
+      return null;
     } else {
       return value;
     }
@@ -67,12 +64,9 @@ import java.util.Map;
 
   Integer readInt(Field field) throws IOException {
     BigDecimal value = (BigDecimal) buffer.get(field.responseName());
+    checkValue(value, field.optional());
     if (value == null) {
-      if (field.optional()) {
-        return null;
-      } else {
-        throw new NullPointerException("can't parse response, expected non null json value");
-      }
+      return null;
     } else {
       return value.intValue();
     }
@@ -80,12 +74,9 @@ import java.util.Map;
 
   Long readLong(Field field) throws IOException {
     BigDecimal value = (BigDecimal) buffer.get(field.responseName());
+    checkValue(value, field.optional());
     if (value == null) {
-      if (field.optional()) {
-        return null;
-      } else {
-        throw new NullPointerException("can't parse response, expected non null json value");
-      }
+      return null;
     } else {
       return value.longValue();
     }
@@ -93,12 +84,9 @@ import java.util.Map;
 
   Double readDouble(Field field) throws IOException {
     BigDecimal value = (BigDecimal) buffer.get(field.responseName());
+    checkValue(value, field.optional());
     if (value == null) {
-      if (field.optional()) {
-        return null;
-      } else {
-        throw new NullPointerException("can't parse response, expected non null json value");
-      }
+      return null;
     } else {
       return value.doubleValue();
     }
@@ -106,44 +94,75 @@ import java.util.Map;
 
   Boolean readBoolean(Field field) throws IOException {
     Boolean value = (Boolean) buffer.get(field.responseName());
+    checkValue(value, field.optional());
     if (value == null) {
-      if (field.optional()) {
-        return null;
-      } else {
-        throw new NullPointerException("can't parse response, expected non null json value");
-      }
+      return null;
     } else {
       return value;
     }
   }
 
   @SuppressWarnings("unchecked") <T> T readObject(Field field) throws IOException {
-    final Map<String, Object> value = (Map<String, Object>) buffer.get(field.responseName());
+    Map<String, Object> value = (Map<String, Object>) buffer.get(field.responseName());
+    checkValue(value, field.optional());
     if (value == null) {
-      if (field.optional()) {
-        return null;
-      } else {
-        throw new NullPointerException("can't parse response, expected non null json value");
-      }
+      return null;
     } else {
-      return (T) field.nestedReader().read(new BufferedResponseReader(value));
+      return (T) field.objectReader().read(new BufferedResponseReader(value));
     }
   }
 
   @SuppressWarnings("unchecked") <T> List<T> readList(Field field) throws IOException {
-    final List<Map<String, Object>> value = (List<Map<String, Object>>) buffer.get(field.responseName());
-    if (value == null) {
-      if (field.optional()) {
-        return null;
-      } else {
-        throw new NullPointerException("can't parse response, expected non null json value");
-      }
+    List values = (List) buffer.get(field.responseName());
+    checkValue(values, field.optional());
+    if (values == null) {
+      return null;
     } else {
       List<T> result = new ArrayList<>();
-      for (Map<String, Object> map : value) {
-        result.add((T) field.nestedReader().read(new BufferedResponseReader(map)));
+      for (Object value : values) {
+        T item;
+        if (value instanceof Map) {
+          item = (T) field.objectReader().read(new BufferedResponseReader((Map<String, Object>) value));
+        } else {
+          item = (T) field.listReader().read(new BufferedListItemReader(value));
+        }
+        result.add(item);
       }
       return result;
+    }
+  }
+
+  private void checkValue(Object value, boolean optional) {
+    if (!optional && value == null) {
+      throw new NullPointerException("corrupted response reader, expected non null value");
+    }
+  }
+
+  private static class BufferedListItemReader implements Field.ListItemReader {
+    private final Object value;
+
+    BufferedListItemReader(Object value) {
+      this.value = value;
+    }
+
+    @Override public String readString() throws IOException {
+      return (String) value;
+    }
+
+    @Override public Integer readInt() throws IOException {
+      return ((BigDecimal) value).intValue();
+    }
+
+    @Override public Long readLong() throws IOException {
+      return ((BigDecimal) value).longValue();
+    }
+
+    @Override public Double readDouble() throws IOException {
+      return ((BigDecimal) value).doubleValue();
+    }
+
+    @Override public Boolean readBoolean() throws IOException {
+      return (Boolean) value;
     }
   }
 }

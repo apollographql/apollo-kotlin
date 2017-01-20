@@ -44,7 +44,7 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
   }
 
   private Operation.Data readResponseData(ResponseJsonStreamReader reader) throws IOException {
-    return reader.nextOptionalObject(new Field.NestedReader<Operation.Data>() {
+    return reader.nextObject(true, new Field.ObjectReader<Operation.Data>() {
       @Override public Operation.Data read(ResponseReader reader) throws IOException {
         //noinspection TryWithIdenticalCatches
         try {
@@ -63,7 +63,7 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
   }
 
   private List<Error> readResponseErrors(ResponseJsonStreamReader reader) throws IOException {
-    return reader.nexOptionalList(new Field.NestedReader<Error>() {
+    return reader.nextList(true, new Field.ObjectReader<Error>() {
       @Override public Error read(ResponseReader reader) throws IOException {
         return readError((ResponseJsonStreamReader) reader);
       }
@@ -76,9 +76,9 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
     while (reader.hasNext()) {
       String name = reader.nextName();
       if ("message".equals(name)) {
-        message = reader.nextString();
+        message = reader.nextString(false);
       } else if ("locations".equals(name)) {
-        locations = reader.nexOptionalList(new Field.NestedReader<Error.Location>() {
+        locations = reader.nextList(true, new Field.ObjectReader<Error.Location>() {
           @Override public Error.Location read(ResponseReader reader) throws IOException {
             return readErrorLocation((ResponseJsonStreamReader) reader);
           }
@@ -96,9 +96,9 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
     while (reader.hasNext()) {
       String name = reader.nextName();
       if ("line".equals(name)) {
-        line = reader.nextLong();
+        line = reader.nextLong(false);
       } else if ("column".equals(name)) {
-        column = reader.nextLong();
+        column = reader.nextLong(false);
       } else {
         reader.skipNext();
       }

@@ -11,6 +11,8 @@ public interface HumanDetails {
       + "  height\n"
       + "}";
 
+  String TYPE_CONDITION = "Human";
+
   @Nonnull String name();
 
   @Nullable Double height();

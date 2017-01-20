@@ -1,6 +1,5 @@
 package com.apollostack.compiler
 
-import com.apollostack.compiler.ir.FragmentTypeSpecBuilder
 import com.apollostack.compiler.ir.QueryIntermediateRepresentation
 import com.squareup.javapoet.JavaFile
 import com.squareup.moshi.Moshi
@@ -13,10 +12,9 @@ open class GraphQLCompiler {
   fun write(irFile: File, outputDir: File, generateClasses: Boolean = false) {
     val packageName = irFile.absolutePath.formatPackageName()
     val ir = irAdapter.fromJson(irFile.readText())
-    val operationTypeBuilders = ir.operations.map { OperationTypeSpecBuilder(it, ir.fragments, generateClasses) }
-    val fragmentTypeBuilders = ir.fragments.map { FragmentTypeSpecBuilder(it, generateClasses) }
-    (operationTypeBuilders + fragmentTypeBuilders + ir.typesUsed).forEach {
-      JavaFile.builder(packageName, it.toTypeSpec()).build().writeTo(outputDir)
+    val operationTypeBuilders = ir.operations.map { OperationTypeSpecBuilder(it, ir.fragments) }
+    (operationTypeBuilders + ir.fragments + ir.typesUsed).forEach {
+      JavaFile.builder(packageName, it.toTypeSpec(!generateClasses, emptyList(), ir.typesUsed)).build().writeTo(outputDir)
     }
   }
 

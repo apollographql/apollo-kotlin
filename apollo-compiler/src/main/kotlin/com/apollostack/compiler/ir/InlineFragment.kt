@@ -1,7 +1,8 @@
 package com.apollostack.compiler.ir
 
+import com.apollostack.compiler.Annotations
 import com.apollostack.compiler.SchemaTypeSpecBuilder
-import com.squareup.javapoet.TypeSpec
+import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
 data class InlineFragment(
@@ -9,17 +10,32 @@ data class InlineFragment(
     val fields: List<Field>,
     val fragmentSpreads: List<String>?
 ) : CodeGenerator {
-  override fun toTypeSpec(): TypeSpec =
-    TypeSpec.interfaceBuilder(interfaceName())
-        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .addMethods(fields.map(Field::toMethodSpec))
-        .addTypes(fields.filter(Field::isNonScalar).map { field ->
-          SchemaTypeSpecBuilder().build(field.normalizedName(), field.fields ?: emptyList(), fragmentSpreads ?: emptyList(),
-              field.inlineFragments ?: emptyList())
-        })
-        .build()
+  override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
+      typeDeclarations: List<TypeDeclaration>): TypeSpec =
+      SchemaTypeSpecBuilder(interfaceName(), fields, fragmentSpreads ?: emptyList(), emptyList(), abstractClass,
+          reservedTypeNames, typeDeclarations)
+          .build(Modifier.PUBLIC, Modifier.STATIC)
 
-  fun interfaceName() = "$INTERFACE_PREFIX${typeCondition.capitalize()}"
+  fun accessorMethodSpec(abstract: Boolean): MethodSpec {
+    val methodSpecBuilder = MethodSpec
+        .methodBuilder(interfaceName().decapitalize())
+        .addModifiers(Modifier.PUBLIC)
+        .addModifiers(if (abstract) listOf(Modifier.ABSTRACT) else emptyList())
+        .returns(typeName())
+    if (!abstract) {
+      methodSpecBuilder.addStatement("return this.\$L", interfaceName().decapitalize())
+    }
+    return methodSpecBuilder.build()
+  }
+
+  fun fieldSpec(): FieldSpec =
+      FieldSpec.builder(typeName(), interfaceName().decapitalize())
+          .addModifiers(Modifier.PRIVATE)
+          .build()
+
+  private fun interfaceName() = "$INTERFACE_PREFIX${typeCondition.capitalize()}"
+
+  private fun typeName() = ClassName.get("", interfaceName()).annotated(Annotations.NULLABLE)
 
   companion object {
     private val INTERFACE_PREFIX = "As"
