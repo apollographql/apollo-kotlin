@@ -8,19 +8,19 @@ class OperationTypeSpecBuilder(
     val operation: Operation,
     val fragments: List<Fragment>
 ) : CodeGenerator {
-  private val QUERY_TYPE_NAME = operation.operationName.capitalize()
-  private val QUERY_VARIABLES_CLASS_NAME = ClassName.get("", "$QUERY_TYPE_NAME.Variables")
+  private val OPERATION_TYPE_NAME = operation.operationName.capitalize()
+  private val OPERATION_VARIABLES_CLASS_NAME = ClassName.get("", "$OPERATION_TYPE_NAME.Variables")
 
   override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
-      typeDeclarations: List<TypeDeclaration>): TypeSpec {
-    return TypeSpec.classBuilder(QUERY_TYPE_NAME)
+      typeDeclarations: List<TypeDeclaration>, fragmentsPkgName: String, typesPkgName: String): TypeSpec {
+    return TypeSpec.classBuilder(OPERATION_TYPE_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
         .addQuerySuperInterface(operation.variables.isNotEmpty())
         .addOperationDefinition(operation)
         .addQueryDocumentDefinition(fragments)
         .addQueryConstructor(operation.variables.isNotEmpty())
-        .addVariablesDefinition(operation.variables)
-        .addType(operation.toTypeSpec(abstractClass, reservedTypeNames, typeDeclarations))
+        .addVariablesDefinition(operation.variables, typesPkgName)
+        .addType(operation.toTypeSpec(abstractClass, reservedTypeNames, typeDeclarations, fragmentsPkgName, typesPkgName))
         .build()
   }
 
@@ -28,7 +28,7 @@ class OperationTypeSpecBuilder(
     val isMutation = operation.operationType == "mutation"
     val superInterfaceClassName = if (isMutation) ClassNames.GRAPHQL_MUTATION else ClassNames.GRAPHQL_QUERY
     return if (hasVariables) {
-      addSuperinterface(ParameterizedTypeName.get(superInterfaceClassName, QUERY_VARIABLES_CLASS_NAME))
+      addSuperinterface(ParameterizedTypeName.get(superInterfaceClassName, OPERATION_VARIABLES_CLASS_NAME))
     } else {
       addSuperinterface(ParameterizedTypeName.get(superInterfaceClassName, ClassNames.GRAPHQL_OPERATION_VARIABLES))
     }
@@ -67,8 +67,8 @@ class OperationTypeSpecBuilder(
     return this
   }
 
-  private fun TypeSpec.Builder.addVariablesDefinition(variables: List<Variable>): TypeSpec.Builder {
-    val queryFieldClassName = if (variables.isNotEmpty()) QUERY_VARIABLES_CLASS_NAME else ClassNames.GRAPHQL_OPERATION_VARIABLES
+  private fun TypeSpec.Builder.addVariablesDefinition(variables: List<Variable>, typesPkgName: String): TypeSpec.Builder {
+    val queryFieldClassName = if (variables.isNotEmpty()) OPERATION_VARIABLES_CLASS_NAME else ClassNames.GRAPHQL_OPERATION_VARIABLES
     addField(FieldSpec.builder(queryFieldClassName, VARIABLES_FIELD_NAME)
         .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
         .build()
@@ -83,7 +83,7 @@ class OperationTypeSpecBuilder(
     )
 
     if (variables.isNotEmpty()) {
-      addType(VariablesTypeSpecBuilder(variables).build())
+      addType(VariablesTypeSpecBuilder(variables, typesPkgName).build())
     }
 
     return this
@@ -92,7 +92,7 @@ class OperationTypeSpecBuilder(
   private fun TypeSpec.Builder.addQueryConstructor(hasVariables: Boolean): TypeSpec.Builder {
     val methodBuilder = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC)
     if (hasVariables) {
-      methodBuilder.addParameter(ParameterSpec.builder(QUERY_VARIABLES_CLASS_NAME, VARIABLES_FIELD_NAME).build())
+      methodBuilder.addParameter(ParameterSpec.builder(OPERATION_VARIABLES_CLASS_NAME, VARIABLES_FIELD_NAME).build())
     }
     methodBuilder.addQueryConstructorCode(hasVariables)
     return addMethod(methodBuilder.build())

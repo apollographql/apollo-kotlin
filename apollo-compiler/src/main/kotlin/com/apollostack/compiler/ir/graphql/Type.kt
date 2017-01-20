@@ -20,7 +20,7 @@ sealed class Type(val isOptional: kotlin.Boolean) {
 
   class Unknown(isOptional: kotlin.Boolean, val typeName: kotlin.String) : Type(isOptional)
 
-  fun toJavaTypeName() = graphQlTypeToJavaTypeName(this, !isOptional, isOptional)
+  fun toJavaTypeName(typesPkgName: kotlin.String = "") = graphQlTypeToJavaTypeName(this, !isOptional, isOptional, typesPkgName)
 
   companion object {
     private val GRAPHQLTYPE_TO_JAVA_TYPE = mapOf(
@@ -44,10 +44,11 @@ sealed class Type(val isOptional: kotlin.Boolean) {
       else -> Unknown(isOptional, typeName.normalizeTypeName())
     }
 
-    fun graphQlTypeToJavaTypeName(type: Type, primitive: kotlin.Boolean, isOptional: kotlin.Boolean): TypeName {
+    fun graphQlTypeToJavaTypeName(type: Type, primitive: kotlin.Boolean, isOptional: kotlin.Boolean,
+        typesPkgName: kotlin.String = ""): TypeName {
       val typeName = when (type) {
-        is Type.List -> ClassNames.parameterizedListOf(graphQlTypeToJavaTypeName(type.listType, false, false))
-        is Unknown -> ClassName.get("", type.typeName)
+        is Type.List -> ClassNames.parameterizedListOf(graphQlTypeToJavaTypeName(type.listType, false, false, typesPkgName))
+        is Unknown -> ClassName.get(if (typesPkgName.isEmpty()) "" else typesPkgName, type.typeName)
         else ->
           GRAPHQLTYPE_TO_JAVA_TYPE[type.javaClass]!!.let {
             if (primitive) it else it.box()

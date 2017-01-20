@@ -16,31 +16,31 @@ data class Field(
     val inlineFragments: List<InlineFragment>?
 ) : CodeGenerator {
   override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
-      typeDeclarations: List<TypeDeclaration>): TypeSpec =
+      typeDeclarations: List<TypeDeclaration>, fragmentsPkgName: String, typesPkgName: String): TypeSpec =
       SchemaTypeSpecBuilder(normalizedName(), fields ?: emptyList(), fragmentSpreads ?: emptyList(),
-          inlineFragments ?: emptyList(), abstractClass, reservedTypeNames, typeDeclarations)
+          inlineFragments ?: emptyList(), abstractClass, reservedTypeNames, typeDeclarations, fragmentsPkgName, typesPkgName)
           .build(Modifier.PUBLIC, Modifier.STATIC)
 
-  fun accessorMethodSpec(abstract: Boolean): MethodSpec {
+  fun accessorMethodSpec(abstract: Boolean, typesPkgName: String = ""): MethodSpec {
     val methodSpecBuilder = MethodSpec
         .methodBuilder(responseName)
         .addModifiers(Modifier.PUBLIC)
         .addModifiers(if (abstract) listOf(Modifier.ABSTRACT) else emptyList())
-        .returns(toTypeName(methodResponseType()))
+        .returns(toTypeName(methodResponseType(), typesPkgName))
     if (!abstract) {
       methodSpecBuilder.addStatement("return this.\$L", responseName)
     }
     return methodSpecBuilder.build()
   }
 
-  fun fieldSpec(): FieldSpec = FieldSpec
-      .builder(toTypeName(methodResponseType()), responseName)
+  fun fieldSpec(typesPkgName: String = ""): FieldSpec = FieldSpec
+      .builder(toTypeName(methodResponseType(), typesPkgName), responseName)
       .addModifiers(Modifier.PRIVATE)
       .build()
 
-  private fun toTypeName(responseType: String): TypeName =
+  private fun toTypeName(responseType: String, typesPkgName: String): TypeName =
       Type.resolveByName(responseType, isOptional())
-          .toJavaTypeName()
+          .toJavaTypeName(if (fields?.any() ?: false || hasFragments()) "" else typesPkgName)
 
   fun normalizedName() = responseName.capitalize().singularize()
 

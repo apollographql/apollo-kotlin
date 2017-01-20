@@ -11,9 +11,9 @@ data class InlineFragment(
     val fragmentSpreads: List<String>?
 ) : CodeGenerator {
   override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
-      typeDeclarations: List<TypeDeclaration>): TypeSpec =
+      typeDeclarations: List<TypeDeclaration>, fragmentsPkgName: String, typesPkgName: String): TypeSpec =
       SchemaTypeSpecBuilder(interfaceName(), fields, fragmentSpreads ?: emptyList(), emptyList(), abstractClass,
-          reservedTypeNames, typeDeclarations)
+          reservedTypeNames, typeDeclarations, fragmentsPkgName, typesPkgName)
           .build(Modifier.PUBLIC, Modifier.STATIC)
 
   fun accessorMethodSpec(abstract: Boolean): MethodSpec {

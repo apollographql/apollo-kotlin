@@ -1,20 +1,34 @@
 package com.apollostack.compiler
 
-import com.apollostack.compiler.ir.QueryIntermediateRepresentation
+import com.apollostack.compiler.ir.Fragment
+import com.apollostack.compiler.ir.OperationIntermediateRepresentation
+import com.apollostack.compiler.ir.TypeDeclaration
 import com.squareup.javapoet.JavaFile
 import com.squareup.moshi.Moshi
 import java.io.File
 
 open class GraphQLCompiler {
   private val moshi = Moshi.Builder().build()
-  private val irAdapter = moshi.adapter(QueryIntermediateRepresentation::class.java)
+  private val irAdapter = moshi.adapter(OperationIntermediateRepresentation::class.java)
 
   fun write(irFile: File, outputDir: File, generateClasses: Boolean = false) {
-    val packageName = irFile.absolutePath.formatPackageName()
     val ir = irAdapter.fromJson(irFile.readText())
+    val irPackageName = irFile.absolutePath.formatPackageName()
+    val fragmentsPackage = "$irPackageName.fragment"
+    val typesPackage = "$irPackageName.type"
+
     val operationTypeBuilders = ir.operations.map { OperationTypeSpecBuilder(it, ir.fragments) }
     (operationTypeBuilders + ir.fragments + ir.typesUsed).forEach {
-      JavaFile.builder(packageName, it.toTypeSpec(!generateClasses, emptyList(), ir.typesUsed)).build().writeTo(outputDir)
+      val javaFilePackageName = when (it) {
+        is OperationTypeSpecBuilder -> it.operation.filePath.formatPackageName()
+        is Fragment -> fragmentsPackage
+        is TypeDeclaration -> typesPackage
+        else -> irPackageName
+      }
+      JavaFile.builder(javaFilePackageName,
+          it.toTypeSpec(!generateClasses, emptyList(), ir.typesUsed, fragmentsPackage, typesPackage))
+          .build()
+          .writeTo(outputDir)
     }
   }
 

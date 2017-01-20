@@ -11,12 +11,13 @@ data class Operation(
     val operationType: String,
     val variables: List<Variable>,
     val source: String,
-    val fields: List<Field>
+    val fields: List<Field>,
+    val filePath: String
 ) : CodeGenerator {
   override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
-      typeDeclarations: List<TypeDeclaration>): TypeSpec =
+      typeDeclarations: List<TypeDeclaration>, fragmentsPkgName: String, typesPkgName: String): TypeSpec =
       SchemaTypeSpecBuilder(INTERFACE_TYPE_SPEC_NAME, fields, emptyList(), emptyList(), abstractClass, reservedTypeNames,
-          typeDeclarations)
+          typeDeclarations, fragmentsPkgName, typesPkgName)
           .build(Modifier.PUBLIC, Modifier.STATIC)
           .toBuilder()
           .addSuperinterface(ClassName.get(Operation.Data::class.java))

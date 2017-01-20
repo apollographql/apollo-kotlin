@@ -7,7 +7,8 @@ import javax.lang.model.element.Modifier
 
 class InputObjectTypeSpecBuilder(
     val name: String,
-    val fields: List<TypeDeclarationField>
+    val fields: List<TypeDeclarationField>,
+    val typesPkgName: String
 ) {
   private val objectClassName = ClassName.get("", name.capitalize())
 
@@ -27,7 +28,7 @@ class InputObjectTypeSpecBuilder(
     return addMethod(MethodSpec
         .constructorBuilder()
         .addParameters(fields.map {
-          ParameterSpec.builder(it.graphQLType().toJavaTypeName(), it.name.decapitalize()).build()
+          ParameterSpec.builder(it.graphQLType().toJavaTypeName(typesPkgName), it.name.decapitalize()).build()
         })
         .addCode(fieldInitializeCodeBuilder.build())
         .build()
@@ -36,7 +37,7 @@ class InputObjectTypeSpecBuilder(
 
   private fun TypeSpec.Builder.addFieldDefinition(field: TypeDeclarationField): TypeSpec.Builder =
       addField(FieldSpec
-          .builder(field.graphQLType().toJavaTypeName(), field.name.decapitalize())
+          .builder(field.graphQLType().toJavaTypeName(typesPkgName), field.name.decapitalize())
           .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
           .build())
 
@@ -54,7 +55,7 @@ class InputObjectTypeSpecBuilder(
       val builderFields = fields.map { it.name.decapitalize() to it.graphQLType() }
       val builderFieldDefaultValues = fields.associate { it.name.decapitalize() to it.defaultValue }
       return addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
-          .addType(BuilderTypeSpecBuilder(objectClassName, builderFields, builderFieldDefaultValues)
+          .addType(BuilderTypeSpecBuilder(objectClassName, builderFields, builderFieldDefaultValues, typesPkgName)
               .build())
     }
   }
