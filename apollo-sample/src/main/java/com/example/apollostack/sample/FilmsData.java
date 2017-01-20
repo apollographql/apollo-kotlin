@@ -2,6 +2,7 @@ package com.example.apollostack.sample;
 
 import com.google.auto.value.AutoValue;
 
+import com.example.Films;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
@@ -9,7 +10,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import generatedIR.Films;
 
 @AutoValue
 public abstract class FilmsData implements Films.Data {

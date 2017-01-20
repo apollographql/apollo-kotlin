@@ -2,12 +2,11 @@ package com.example.apollostack.sample;
 
 import com.google.auto.value.AutoValue;
 
+import com.example.DroidDetails;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import javax.annotation.Nullable;
-
-import generatedIR.DroidDetails;
 
 @AutoValue
 public abstract class DroidDetailsData implements DroidDetails.Data {
