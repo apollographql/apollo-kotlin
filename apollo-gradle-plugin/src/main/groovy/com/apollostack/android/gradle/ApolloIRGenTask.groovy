@@ -17,6 +17,7 @@ public class ApolloIRGenTask extends NodeTask {
   @Internal String variant
   @Internal List<ApolloExtension> config
   private List<String> possibleGraphQLPaths
+  private File schemaFile
   /** Output directory for the generated IR, defaults to src/main/graphql **/
   @OutputDirectory File outputDir
 
@@ -40,7 +41,8 @@ public class ApolloIRGenTask extends NodeTask {
     dependsOn(ApolloCodeGenInstallTask.NAME)
 
     possibleGraphQLPaths = buildPossibleGraphQLPaths()
-    outputDir = project.file("src/$variant/graphql/generatedIR")
+    schemaFile = userProvidedSchemaFile() ?: searchForSchemaFile()
+    outputDir = schemaFile.getParentFile()
   }
 
   @Override public void exec() {
