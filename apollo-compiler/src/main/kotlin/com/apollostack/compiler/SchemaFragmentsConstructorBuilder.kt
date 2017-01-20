@@ -34,7 +34,7 @@ class SchemaFragmentsConstructorBuilder(
 
   companion object {
     private val PARAM_READER = "reader"
-    private val PARAM_TYPE_NAME = "__typename"
+    private val PARAM_TYPE_NAME = "typename"
     private val PARAM_TYPE_NAME_SPEC = ParameterSpec.builder(ClassNames.STRING, PARAM_TYPE_NAME).build()
     private val PARAM_READER_SPEC = ParameterSpec.builder(ClassNames.API_RESPONSE_READER, PARAM_READER).build()
   }

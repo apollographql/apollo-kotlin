@@ -169,7 +169,7 @@ import java.io.IOException;
  * of this class are not thread safe.
  */
 /** TODO add Modifications copyright **/
-abstract class JsonReader implements Closeable {
+abstractClass class JsonReader implements Closeable {
   JsonReader() {
     // Package-private to control subclasses.
   }
@@ -199,12 +199,12 @@ abstract class JsonReader implements Closeable {
    *   <li>Name/value pairs separated by {@code ;} instead of {@code ,}.
    * </ul>
    */
-  public abstract void setLenient(boolean lenient);
+  public abstractClass void setLenient(boolean lenient);
 
   /**
    * Returns true if this parser is liberal in what it accepts.
    */
-  public abstract boolean isLenient();
+  public abstractClass boolean isLenient();
 
   /**
    * Configure whether this parser throws a {@link JsonDataException} when {@link #skipValue} is
@@ -214,53 +214,53 @@ abstract class JsonReader implements Closeable {
    * useful in development and debugging because it means a typo like "locatiom" will be detected
    * early. It's potentially harmful in production because it complicates revising a JSON schema.
    */
-  public abstract void setFailOnUnknown(boolean failOnUnknown);
+  public abstractClass void setFailOnUnknown(boolean failOnUnknown);
 
   /**
    * Returns true if this parser forbids skipping values.
    */
-  public abstract boolean failOnUnknown();
+  public abstractClass boolean failOnUnknown();
 
   /**
    * Consumes the next token from the JSON stream and asserts that it is the beginning of a new
    * array.
    */
-  public abstract void beginArray() throws IOException;
+  public abstractClass void beginArray() throws IOException;
 
   /**
    * Consumes the next token from the JSON stream and asserts that it is the
    * end of the current array.
    */
-  public abstract void endArray() throws IOException;
+  public abstractClass void endArray() throws IOException;
 
   /**
    * Consumes the next token from the JSON stream and asserts that it is the beginning of a new
    * object.
    */
-  public abstract void beginObject() throws IOException;
+  public abstractClass void beginObject() throws IOException;
 
   /**
    * Consumes the next token from the JSON stream and asserts that it is the end of the current
    * object.
    */
-  public abstract void endObject() throws IOException;
+  public abstractClass void endObject() throws IOException;
 
   /**
    * Returns true if the current array or object has another element.
    */
-  public abstract boolean hasNext() throws IOException;
+  public abstractClass boolean hasNext() throws IOException;
 
   /**
    * Returns the type of the next token without consuming it.
    */
-  public abstract Token peek() throws IOException;
+  public abstractClass Token peek() throws IOException;
 
   /**
    * Returns the next token, a {@linkplain Token#NAME property name}, and consumes it.
    *
    * @throws JsonDataException if the next token in the stream is not a property name.
    */
-  public abstract String nextName() throws IOException;
+  public abstractClass String nextName() throws IOException;
 
   /**
    * Returns the {@linkplain Token#STRING string} value of the next token, consuming it. If the next
@@ -268,14 +268,14 @@ abstract class JsonReader implements Closeable {
    *
    * @throws JsonDataException if the next token is not a string or if this reader is closed.
    */
-  public abstract String nextString() throws IOException;
+  public abstractClass String nextString() throws IOException;
 
   /**
    * Returns the {@linkplain Token#BOOLEAN boolean} value of the next token, consuming it.
    *
    * @throws JsonDataException if the next token is not a boolean or if this reader is closed.
    */
-  public abstract boolean nextBoolean() throws IOException;
+  public abstractClass boolean nextBoolean() throws IOException;
 
   /**
    * Consumes the next token from the JSON stream and asserts that it is a literal null. Returns
@@ -283,7 +283,7 @@ abstract class JsonReader implements Closeable {
    *
    * @throws JsonDataException if the next token is not null or if this reader is closed.
    */
-  public abstract <T> T nextNull() throws IOException;
+  public abstractClass <T> T nextNull() throws IOException;
 
   /**
    * Returns the {@linkplain Token#NUMBER double} value of the next token, consuming it. If the next
@@ -293,7 +293,7 @@ abstract class JsonReader implements Closeable {
    * @throws JsonDataException if the next token is not a literal value, or if the next literal
    *     value cannot be parsed as a double, or is non-finite.
    */
-  public abstract double nextDouble() throws IOException;
+  public abstractClass double nextDouble() throws IOException;
 
   /**
    * Returns the {@linkplain Token#NUMBER long} value of the next token, consuming it. If the next
@@ -303,7 +303,7 @@ abstract class JsonReader implements Closeable {
    * @throws JsonDataException if the next token is not a literal value, if the next literal value
    *     cannot be parsed as a number, or exactly represented as a long.
    */
-  public abstract long nextLong() throws IOException;
+  public abstractClass long nextLong() throws IOException;
 
   /**
    * Returns the {@linkplain Token#NUMBER int} value of the next token, consuming it. If the next
@@ -313,7 +313,7 @@ abstract class JsonReader implements Closeable {
    * @throws JsonDataException if the next token is not a literal value, if the next literal value
    *     cannot be parsed as a number, or exactly represented as an int.
    */
-  public abstract int nextInt() throws IOException;
+  public abstractClass int nextInt() throws IOException;
 
   /**
    * Skips the next value recursively. If it is an object or array, all nested elements are skipped.
@@ -323,19 +323,19 @@ abstract class JsonReader implements Closeable {
    * <p>This throws a {@link JsonDataException} if this parser has been configured to {@linkplain
    * #failOnUnknown fail on unknown} values.
    */
-  public abstract void skipValue() throws IOException;
+  public abstractClass void skipValue() throws IOException;
 
   /**
    * Returns a <a href="http://goessner.net/articles/JsonPath/">JsonPath</a> to
    * the current location in the JSON value.
    */
-  public abstract String getPath();
+  public abstractClass String getPath();
 
   /**
    * Changes the reader to treat the next name as a string value. This is useful for map adapters so
    * that arbitrary type adapters can use {@link #nextString} to read a name value.
    */
-  abstract void promoteNameToValue() throws IOException;
+  abstractClass void promoteNameToValue() throws IOException;
 
   /**
    * A structure, name, or value type in a JSON-encoded string.

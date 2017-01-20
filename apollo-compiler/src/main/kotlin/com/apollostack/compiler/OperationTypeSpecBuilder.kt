@@ -11,7 +11,7 @@ class OperationTypeSpecBuilder(
   private val QUERY_TYPE_NAME = operation.operationName.capitalize()
   private val QUERY_VARIABLES_CLASS_NAME = ClassName.get("", "$QUERY_TYPE_NAME.Variables")
 
-  override fun toTypeSpec(abstract: Boolean, reservedTypeNames: List<String>,
+  override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
       typeDeclarations: List<TypeDeclaration>): TypeSpec {
     return TypeSpec.classBuilder(QUERY_TYPE_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
@@ -20,7 +20,7 @@ class OperationTypeSpecBuilder(
         .addQueryDocumentDefinition(fragments)
         .addQueryConstructor(operation.variables.isNotEmpty())
         .addVariablesDefinition(operation.variables)
-        .addType(operation.toTypeSpec(abstract, reservedTypeNames, typeDeclarations))
+        .addType(operation.toTypeSpec(abstractClass, reservedTypeNames, typeDeclarations))
         .build()
   }
 

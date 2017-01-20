@@ -140,8 +140,8 @@ public final class TestQuery implements Query<Operation.Variables> {
       public static class Fragments {
         private HeroDetails heroDetails;
 
-        Fragments(ResponseReader reader, String __typename) throws IOException {
-          if (__typename.equals(HeroDetails.TYPE_CONDITION)) {
+        Fragments(ResponseReader reader, String typename) throws IOException {
+          if (typename.equals(HeroDetails.TYPE_CONDITION)) {
             this.heroDetails = new HeroDetails(reader);
           }
         }
