@@ -6,11 +6,8 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
 
 import com.apollostack.api.graphql.Error;
-import com.apollostack.api.graphql.Query;
 import com.apollostack.api.graphql.Response;
-import com.squareup.moshi.Moshi;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,7 +27,6 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class IntegrationTest {
 
