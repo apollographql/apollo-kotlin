@@ -16,31 +16,32 @@ data class Field(
     val inlineFragments: List<InlineFragment>?
 ) : CodeGenerator {
   override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
-      typeDeclarations: List<TypeDeclaration>, fragmentsPkgName: String, typesPkgName: String): TypeSpec =
+      typeDeclarations: List<TypeDeclaration>, fragmentsPackage: String, typesPackage: String): TypeSpec =
       SchemaTypeSpecBuilder(normalizedName(), fields ?: emptyList(), fragmentSpreads ?: emptyList(),
-          inlineFragments ?: emptyList(), abstractClass, reservedTypeNames, typeDeclarations, fragmentsPkgName, typesPkgName)
+          inlineFragments ?: emptyList(), abstractClass, reservedTypeNames, typeDeclarations, fragmentsPackage,
+          typesPackage)
           .build(Modifier.PUBLIC, Modifier.STATIC)
 
-  fun accessorMethodSpec(abstract: Boolean, typesPkgName: String = ""): MethodSpec {
+  fun accessorMethodSpec(abstract: Boolean, typesPackage: String = ""): MethodSpec {
     val methodSpecBuilder = MethodSpec
         .methodBuilder(responseName)
         .addModifiers(Modifier.PUBLIC)
         .addModifiers(if (abstract) listOf(Modifier.ABSTRACT) else emptyList())
-        .returns(toTypeName(methodResponseType(), typesPkgName))
+        .returns(toTypeName(methodResponseType(), typesPackage))
     if (!abstract) {
       methodSpecBuilder.addStatement("return this.\$L", responseName)
     }
     return methodSpecBuilder.build()
   }
 
-  fun fieldSpec(typesPkgName: String = ""): FieldSpec = FieldSpec
-      .builder(toTypeName(methodResponseType(), typesPkgName), responseName)
+  fun fieldSpec(typesPackage: String = ""): FieldSpec = FieldSpec
+      .builder(toTypeName(methodResponseType(), typesPackage), responseName)
       .addModifiers(Modifier.PRIVATE)
       .build()
 
-  private fun toTypeName(responseType: String, typesPkgName: String): TypeName =
+  private fun toTypeName(responseType: String, typesPackage: String): TypeName =
       Type.resolveByName(responseType, isOptional())
-          .toJavaTypeName(if (fields?.any() ?: false || hasFragments()) "" else typesPkgName)
+          .toJavaTypeName(if (fields?.any() ?: false || hasFragments()) "" else typesPackage)
 
   fun normalizedName() = responseName.capitalize().singularize()
 

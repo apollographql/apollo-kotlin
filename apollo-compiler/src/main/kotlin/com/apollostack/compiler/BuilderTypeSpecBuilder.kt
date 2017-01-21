@@ -8,7 +8,7 @@ class BuilderTypeSpecBuilder(
     val targetObjectClassName: ClassName,
     val fields: List<Pair<String, Type>>,
     val fieldDefaultValues: Map<String, Any?>,
-    val typesPkgName: String
+    val typesPackage: String
 ) {
   fun build(): TypeSpec {
     return TypeSpec.classBuilder(builderClassName)
@@ -25,7 +25,7 @@ class BuilderTypeSpecBuilder(
         val fieldName = it.first
         val fieldType = it.second
         val defaultValue = fieldDefaultValues[fieldName]?.let { (it as? Number)?.castTo(fieldType) ?: it }
-        FieldSpec.builder(fieldType.toJavaTypeName(typesPkgName), fieldName)
+        FieldSpec.builder(fieldType.toJavaTypeName(typesPackage), fieldName)
             .addModifiers(Modifier.PRIVATE)
             .initializer(defaultValue?.let { CodeBlock.of("\$L", it) } ?: CodeBlock.of(""))
             .build()

@@ -4,5 +4,5 @@ import com.squareup.javapoet.TypeSpec
 
 interface CodeGenerator {
   fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>, typeDeclarations: List<TypeDeclaration>,
-      fragmentsPkgName: String = "", typesPkgName: String = ""): TypeSpec
+      fragmentsPackage: String = "", typesPackage: String = ""): TypeSpec
 }

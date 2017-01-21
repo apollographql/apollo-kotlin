@@ -12,15 +12,16 @@ class OperationTypeSpecBuilder(
   private val OPERATION_VARIABLES_CLASS_NAME = ClassName.get("", "$OPERATION_TYPE_NAME.Variables")
 
   override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
-      typeDeclarations: List<TypeDeclaration>, fragmentsPkgName: String, typesPkgName: String): TypeSpec {
+      typeDeclarations: List<TypeDeclaration>, fragmentsPackage: String, typesPackage: String): TypeSpec {
     return TypeSpec.classBuilder(OPERATION_TYPE_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
         .addQuerySuperInterface(operation.variables.isNotEmpty())
         .addOperationDefinition(operation)
         .addQueryDocumentDefinition(fragments)
         .addQueryConstructor(operation.variables.isNotEmpty())
-        .addVariablesDefinition(operation.variables, typesPkgName)
-        .addType(operation.toTypeSpec(abstractClass, reservedTypeNames, typeDeclarations, fragmentsPkgName, typesPkgName))
+        .addVariablesDefinition(operation.variables, typesPackage)
+        .addType(operation.toTypeSpec(abstractClass, reservedTypeNames, typeDeclarations, fragmentsPackage,
+            typesPackage))
         .build()
   }
 
@@ -67,8 +68,9 @@ class OperationTypeSpecBuilder(
     return this
   }
 
-  private fun TypeSpec.Builder.addVariablesDefinition(variables: List<Variable>, typesPkgName: String): TypeSpec.Builder {
-    val queryFieldClassName = if (variables.isNotEmpty()) OPERATION_VARIABLES_CLASS_NAME else ClassNames.GRAPHQL_OPERATION_VARIABLES
+  private fun TypeSpec.Builder.addVariablesDefinition(variables: List<Variable>, typesPackage: String): TypeSpec.Builder {
+    val queryFieldClassName =
+        if (variables.isNotEmpty()) OPERATION_VARIABLES_CLASS_NAME else ClassNames.GRAPHQL_OPERATION_VARIABLES
     addField(FieldSpec.builder(queryFieldClassName, VARIABLES_FIELD_NAME)
         .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
         .build()
@@ -83,7 +85,7 @@ class OperationTypeSpecBuilder(
     )
 
     if (variables.isNotEmpty()) {
-      addType(VariablesTypeSpecBuilder(variables, typesPkgName).build())
+      addType(VariablesTypeSpecBuilder(variables, typesPackage).build())
     }
 
     return this

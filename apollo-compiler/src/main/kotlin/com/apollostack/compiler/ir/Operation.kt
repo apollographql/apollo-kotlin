@@ -15,9 +15,9 @@ data class Operation(
     val filePath: String
 ) : CodeGenerator {
   override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
-      typeDeclarations: List<TypeDeclaration>, fragmentsPkgName: String, typesPkgName: String): TypeSpec =
+      typeDeclarations: List<TypeDeclaration>, fragmentsPackage: String, typesPackage: String): TypeSpec =
       SchemaTypeSpecBuilder(INTERFACE_TYPE_SPEC_NAME, fields, emptyList(), emptyList(), abstractClass, reservedTypeNames,
-          typeDeclarations, fragmentsPkgName, typesPkgName)
+          typeDeclarations, fragmentsPackage, typesPackage)
           .build(Modifier.PUBLIC, Modifier.STATIC)
           .toBuilder()
           .addSuperinterface(ClassName.get(Operation.Data::class.java))
