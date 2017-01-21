@@ -1,5 +1,6 @@
 package com.apollostack.android.gradle
 
+import com.apollostack.compiler.GraphQLCompiler
 import com.google.common.collect.Sets
 import com.moowork.gradle.node.task.NodeTask
 import org.gradle.api.GradleException
@@ -42,7 +43,9 @@ public class ApolloIRGenTask extends NodeTask {
 
     possibleGraphQLPaths = buildPossibleGraphQLPaths()
     schemaFile = userProvidedSchemaFile() ?: searchForSchemaFile()
-    outputDir = schemaFile.getParentFile()
+    outputDir = new File(
+        "${project.buildDir}/${GraphQLCompiler.OUTPUT_DIRECTORY.join(File.separator)}/generatedIR/" +
+            "${project.relativePath(schemaFile.parent)}")
   }
 
   @Override public void exec() {
