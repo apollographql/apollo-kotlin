@@ -4,6 +4,7 @@ import com.apollographql.android.gradle.ApolloExtension
 import com.apollographql.android.gradle.ApolloIRGenTask
 import com.apollographql.android.gradle.ApolloPlugin
 import com.apollographql.android.gradle.ApolloPluginTestHelper
+import com.apollographql.android.gradle.GraphQLExtension
 import com.moowork.gradle.node.NodePlugin
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
