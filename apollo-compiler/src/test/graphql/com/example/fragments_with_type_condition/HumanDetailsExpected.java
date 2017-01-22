@@ -6,7 +6,7 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@Generated("Apollo GraphQl")
+@Generated("Apollo GraphQL")
 public interface HumanDetails {
   String FRAGMENT_DEFINITION = "fragment HumanDetails on Human {\n"
       + "  name\n"

@@ -11,5 +11,5 @@ object Annotations {
   val NONNULL: AnnotationSpec = AnnotationSpec.builder(Nonnull::class.java).build()
   val OVERRIDE: AnnotationSpec = AnnotationSpec.builder(Override::class.java).build()
   val GENERATED_BY_APOLLO: AnnotationSpec = AnnotationSpec.builder(Generated::class.java)
-      .addMember("value", CodeBlock.of("\$S", "Apollo GraphQl")).build()
+      .addMember("value", CodeBlock.of("\$S", "Apollo GraphQL")).build()
 }

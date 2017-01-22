@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@Generated("Apollo GraphQl")
+@Generated("Apollo GraphQL")
 public final class TestQuery implements Mutation<TestQuery.Variables> {
   public static final String OPERATION_DEFINITION = "mutation TestQuery($ep: Episode!, $review: ReviewInput!) {\n"
       + "  createReview(episode: $ep, review: $review) {\n"

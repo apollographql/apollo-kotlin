@@ -7,7 +7,7 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@Generated("Apollo GraphQl")
+@Generated("Apollo GraphQL")
 public final class ReviewInput {
   private final @Nullable Integer stars;
 

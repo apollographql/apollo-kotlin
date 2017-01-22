@@ -8,7 +8,7 @@ import java.lang.String;
 import javax.annotation.Generated;
 import javax.annotation.Nullable;
 
-@Generated("Apollo GraphQl")
+@Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Variables> {
   public static final String OPERATION_DEFINITION = "query TestQuery($episode: Episode, $includeName: Boolean!) {\n"
       + "  hero(episode: $episode) {\n"

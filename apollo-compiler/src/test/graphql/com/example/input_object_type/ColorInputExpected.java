@@ -4,7 +4,7 @@ import java.lang.Double;
 import javax.annotation.Generated;
 import javax.annotation.Nullable;
 
-@Generated("Apollo GraphQl")
+@Generated("Apollo GraphQL")
 public final class ColorInput {
   private final int red;
 

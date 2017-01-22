@@ -13,7 +13,7 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@Generated("Apollo GraphQl")
+@Generated("Apollo GraphQL")
 public class HeroDetails {
   private static final ResponseFieldMapper<HeroDetails> MAPPER = new ResponseFieldMapper<HeroDetails>() {
     private final Field[] FIELDS = {

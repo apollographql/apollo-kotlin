@@ -12,7 +12,7 @@ import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@Generated("Apollo GraphQl")
+@Generated("Apollo GraphQL")
 public final class TestQuery implements Query<Operation.Variables> {
   public static final String OPERATION_DEFINITION = "";
 
