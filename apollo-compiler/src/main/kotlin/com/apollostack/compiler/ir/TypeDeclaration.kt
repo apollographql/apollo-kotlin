@@ -1,5 +1,6 @@
 package com.apollostack.compiler.ir
 
+import com.apollostack.compiler.Annotations
 import com.apollostack.compiler.InputObjectTypeSpecBuilder
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
@@ -31,7 +32,8 @@ data class TypeDeclaration(
       this.addEnumConstant(value.name.toUpperCase(), enumConstBuilder.build())
     }
 
-    val builder = TypeSpec.enumBuilder(name).addModifiers(Modifier.PUBLIC)
+    val builder = TypeSpec.enumBuilder(name).addAnnotation(Annotations.GENERATED_BY_APOLLO)
+        .addModifiers(Modifier.PUBLIC)
     values?.forEach { builder.addTypeDeclarationValue(it) }
     if (!description.isNullOrEmpty()) {
       builder.addJavadoc("$description\n")

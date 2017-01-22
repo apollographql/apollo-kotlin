@@ -1,8 +1,11 @@
 package com.example.unique_type_name;
 
+import javax.annotation.Generated;
+
 /**
  * The episodes in the Star Wars trilogy
  */
+@Generated("Apollo GraphQl")
 public enum Episode {
   /**
    * Star Wars Episode IV: A New Hope, released in 1977.

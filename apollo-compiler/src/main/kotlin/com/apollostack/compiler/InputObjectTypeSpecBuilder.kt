@@ -13,6 +13,7 @@ class InputObjectTypeSpecBuilder(
 
   fun build(): TypeSpec =
       TypeSpec.classBuilder(objectClassName)
+          .addAnnotation(Annotations.GENERATED_BY_APOLLO)
           .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
           .addConstructor()
           .addFields()

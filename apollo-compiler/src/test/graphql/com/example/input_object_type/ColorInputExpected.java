@@ -1,8 +1,10 @@
 package com.example.input_object_type;
 
 import java.lang.Double;
+import javax.annotation.Generated;
 import javax.annotation.Nullable;
 
+@Generated("Apollo GraphQl")
 public final class ColorInput {
   private final int red;
 

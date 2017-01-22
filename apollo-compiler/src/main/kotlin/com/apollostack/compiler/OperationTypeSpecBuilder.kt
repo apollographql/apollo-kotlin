@@ -14,6 +14,7 @@ class OperationTypeSpecBuilder(
   override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
       typeDeclarations: List<TypeDeclaration>): TypeSpec {
     return TypeSpec.classBuilder(QUERY_TYPE_NAME)
+        .addAnnotation(Annotations.GENERATED_BY_APOLLO)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
         .addQuerySuperInterface(operation.variables.isNotEmpty())
         .addOperationDefinition(operation)

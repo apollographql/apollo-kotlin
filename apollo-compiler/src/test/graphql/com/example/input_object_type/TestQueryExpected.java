@@ -5,9 +5,11 @@ import com.apollostack.api.graphql.Operation;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 import java.lang.String;
+import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+@Generated("Apollo GraphQl")
 public final class TestQuery implements Mutation<TestQuery.Variables> {
   public static final String OPERATION_DEFINITION = "mutation TestQuery($ep: Episode!, $review: ReviewInput!) {\n"
       + "  createReview(episode: $ep, review: $review) {\n"

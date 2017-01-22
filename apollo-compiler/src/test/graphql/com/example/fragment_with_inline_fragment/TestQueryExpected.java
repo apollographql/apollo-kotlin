@@ -5,9 +5,11 @@ import com.apollostack.api.graphql.Query;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+@Generated("Apollo GraphQl")
 public final class TestQuery implements Query<Operation.Variables> {
   public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  hero {\n"
