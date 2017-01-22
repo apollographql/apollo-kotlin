@@ -2,6 +2,8 @@ package com.example.unique_type_name;
 
 import com.apollostack.api.graphql.Operation;
 import com.apollostack.api.graphql.Query;
+import com.example.unique_type_name.fragment.HeroDetails;
+import com.example.unique_type_name.type.Episode;
 import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;

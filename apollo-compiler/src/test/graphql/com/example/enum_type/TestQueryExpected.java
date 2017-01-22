@@ -2,6 +2,7 @@ package com.example.enum_type;
 
 import com.apollostack.api.graphql.Operation;
 import com.apollostack.api.graphql.Query;
+import com.example.enum_type.type.Episode;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;

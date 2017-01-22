@@ -1,4 +1,4 @@
-package com.example.unique_type_name;
+package com.example.unique_type_name.type;
 
 import javax.annotation.Generated;
 

@@ -54,7 +54,8 @@
           ]
         }
       ],
-      "fragmentsReferenced": []
+      "fragmentsReferenced": [],
+      "filePath": "src/test/graphql/com/example/simple_inline_fragment/TestQuery.json"
     }
   ],
   "fragments": [],

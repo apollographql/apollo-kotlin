@@ -1,4 +1,4 @@
-package com.example.input_object_type;
+package com.example.input_object_type.type;
 
 import javax.annotation.Generated;
 

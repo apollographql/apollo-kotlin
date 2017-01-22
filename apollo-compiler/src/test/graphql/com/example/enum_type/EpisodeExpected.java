@@ -1,4 +1,4 @@
-package com.example.enum_type;
+package com.example.enum_type.type;
 
 import javax.annotation.Generated;
 

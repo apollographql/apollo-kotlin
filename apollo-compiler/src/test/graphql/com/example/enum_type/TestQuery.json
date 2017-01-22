@@ -26,7 +26,8 @@
           "inlineFragments": []
         }
       ],
-      "fragmentsReferenced": []
+      "fragmentsReferenced": [],
+      "filePath": "src/test/graphql/com/example/enum_type/TestQuery.json"
     }
   ],
   "fragments": [],

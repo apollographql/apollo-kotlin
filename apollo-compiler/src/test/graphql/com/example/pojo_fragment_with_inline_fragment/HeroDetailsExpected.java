@@ -1,4 +1,4 @@
-package com.example.pojo_fragment_with_inline_fragment;
+package com.example.pojo_fragment_with_inline_fragment.fragment;
 
 import com.apollostack.api.graphql.Field;
 import com.apollostack.api.graphql.ResponseFieldMapper;

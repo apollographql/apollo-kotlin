@@ -1,4 +1,4 @@
-package com.example.fragment_with_inline_fragment;
+package com.example.fragment_with_inline_fragment.type;
 
 import javax.annotation.Generated;
 

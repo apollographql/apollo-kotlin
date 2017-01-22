@@ -1,9 +1,9 @@
 package com.example.apollostack.sample;
 
 import com.apollostack.api.graphql.Response;
+import com.example.DroidDetails;
+import com.example.Films;
 
-import generatedIR.DroidDetails;
-import generatedIR.Films;
 import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.POST;

@@ -16,31 +16,32 @@ data class Field(
     val inlineFragments: List<InlineFragment>?
 ) : CodeGenerator {
   override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
-      typeDeclarations: List<TypeDeclaration>): TypeSpec =
+      typeDeclarations: List<TypeDeclaration>, fragmentsPackage: String, typesPackage: String): TypeSpec =
       SchemaTypeSpecBuilder(normalizedName(), fields ?: emptyList(), fragmentSpreads ?: emptyList(),
-          inlineFragments ?: emptyList(), abstractClass, reservedTypeNames, typeDeclarations)
+          inlineFragments ?: emptyList(), abstractClass, reservedTypeNames, typeDeclarations, fragmentsPackage,
+          typesPackage)
           .build(Modifier.PUBLIC, Modifier.STATIC)
 
-  fun accessorMethodSpec(abstract: Boolean): MethodSpec {
+  fun accessorMethodSpec(abstract: Boolean, typesPackage: String = ""): MethodSpec {
     val methodSpecBuilder = MethodSpec
         .methodBuilder(responseName)
         .addModifiers(Modifier.PUBLIC)
         .addModifiers(if (abstract) listOf(Modifier.ABSTRACT) else emptyList())
-        .returns(toTypeName(methodResponseType()))
+        .returns(toTypeName(methodResponseType(), typesPackage))
     if (!abstract) {
       methodSpecBuilder.addStatement("return this.\$L", responseName)
     }
     return methodSpecBuilder.build()
   }
 
-  fun fieldSpec(): FieldSpec = FieldSpec
-      .builder(toTypeName(methodResponseType()), responseName)
+  fun fieldSpec(typesPackage: String = ""): FieldSpec = FieldSpec
+      .builder(toTypeName(methodResponseType(), typesPackage), responseName)
       .addModifiers(Modifier.PRIVATE)
       .build()
 
-  private fun toTypeName(responseType: String): TypeName =
+  private fun toTypeName(responseType: String, typesPackage: String): TypeName =
       Type.resolveByName(responseType, isOptional())
-          .toJavaTypeName()
+          .toJavaTypeName(if (fields?.any() ?: false || hasFragments()) "" else typesPackage)
 
   fun normalizedName() = responseName.capitalize().singularize()
 
