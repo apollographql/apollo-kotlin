@@ -1,4 +1,4 @@
-package com.example.unique_type_name;
+package com.example.unique_type_name.type;
 
 /**
  * The episodes in the Star Wars trilogy

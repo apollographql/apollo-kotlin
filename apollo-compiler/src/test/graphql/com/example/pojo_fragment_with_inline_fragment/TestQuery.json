@@ -30,7 +30,8 @@
       ],
       "fragmentsReferenced": [
         "HeroDetails"
-      ]
+      ],
+      "filePath": "src/test/graphql/com/example/pojo_fragment_with_inline_fragment/TestQuery.json"
     }
   ],
   "fragments": [

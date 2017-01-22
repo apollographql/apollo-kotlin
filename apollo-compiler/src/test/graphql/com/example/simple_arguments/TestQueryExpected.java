@@ -2,6 +2,7 @@ package com.example.simple_arguments;
 
 import com.apollostack.api.graphql.Operation;
 import com.apollostack.api.graphql.Query;
+import com.example.simple_arguments.type.Episode;
 import java.lang.Override;
 import java.lang.String;
 import javax.annotation.Nullable;

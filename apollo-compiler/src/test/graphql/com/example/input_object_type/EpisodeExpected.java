@@ -1,4 +1,4 @@
-package com.example.input_object_type;
+package com.example.input_object_type.type;
 
 /**
  * The episodes in the Star Wars trilogy

@@ -100,7 +100,8 @@
           "inlineFragments": []
         }
       ],
-      "fragmentsReferenced": []
+      "fragmentsReferenced": [],
+      "filePath": "src/test/graphql/com/example/scalar_types/TestQuery.json"
     }
   ],
   "fragments": [],

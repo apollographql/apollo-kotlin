@@ -1,4 +1,4 @@
-package com.example.simple_fragment;
+package com.example.simple_fragment.fragment;
 
 import java.lang.String;
 import javax.annotation.Nonnull;

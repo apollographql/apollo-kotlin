@@ -1,4 +1,4 @@
-package com.example.pojo_fragment_with_inline_fragment;
+package com.example.pojo_fragment_with_inline_fragment.type;
 
 /**
  * The episodes in the Star Wars trilogy

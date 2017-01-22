@@ -17,9 +17,9 @@ data class Fragment(
 ) : CodeGenerator {
   /** Returns the Java interface that represents this Fragment object. */
   override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
-      typeDeclarations: List<TypeDeclaration>): TypeSpec =
+      typeDeclarations: List<TypeDeclaration>, fragmentsPackage: String, typesPackage: String): TypeSpec =
       SchemaTypeSpecBuilder(interfaceTypeName(), fields, fragmentSpreads, inlineFragments, abstractClass, reservedTypeNames,
-          typeDeclarations)
+          typeDeclarations, fragmentsPackage, typesPackage)
           .build(Modifier.PUBLIC)
           .toBuilder()
           .addFragmentDefinitionField()

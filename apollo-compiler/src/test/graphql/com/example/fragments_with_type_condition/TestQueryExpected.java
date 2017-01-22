@@ -2,6 +2,8 @@ package com.example.fragments_with_type_condition;
 
 import com.apollostack.api.graphql.Operation;
 import com.apollostack.api.graphql.Query;
+import com.example.fragments_with_type_condition.fragment.DroidDetails;
+import com.example.fragments_with_type_condition.fragment.HumanDetails;
 import java.lang.Override;
 import java.lang.String;
 import javax.annotation.Nullable;

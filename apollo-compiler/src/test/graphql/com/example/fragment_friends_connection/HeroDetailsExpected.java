@@ -1,4 +1,4 @@
-package com.example.fragment_friends_connection;
+package com.example.fragment_friends_connection.fragment;
 
 import java.lang.Integer;
 import java.lang.String;

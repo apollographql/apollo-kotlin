@@ -7,7 +7,7 @@ import groovy.json.JsonSlurper
 class ApolloCodeGenInstallTask extends NpmTask {
   static final String NAME = "installApolloCodegen"
   static final String INSTALL_DIR = "node_modules/apollo-codegen"
-  static final String APOLLOCODEGEN_VERSION = "0.9.6"
+  static final String APOLLOCODEGEN_VERSION = "0.10.1"
 
   public ApolloCodeGenInstallTask() {
     group = ApolloPlugin.TASK_GROUP

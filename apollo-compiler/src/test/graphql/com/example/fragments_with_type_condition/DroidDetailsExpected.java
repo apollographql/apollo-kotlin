@@ -1,4 +1,4 @@
-package com.example.fragments_with_type_condition;
+package com.example.fragments_with_type_condition.fragment;
 
 import java.lang.String;
 import javax.annotation.Nonnull;

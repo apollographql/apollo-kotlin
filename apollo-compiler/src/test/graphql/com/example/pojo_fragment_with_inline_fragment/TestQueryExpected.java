@@ -5,6 +5,8 @@ import com.apollostack.api.graphql.Operation;
 import com.apollostack.api.graphql.Query;
 import com.apollostack.api.graphql.ResponseFieldMapper;
 import com.apollostack.api.graphql.ResponseReader;
+import com.example.pojo_fragment_with_inline_fragment.fragment.HeroDetails;
+import com.example.pojo_fragment_with_inline_fragment.type.Episode;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;

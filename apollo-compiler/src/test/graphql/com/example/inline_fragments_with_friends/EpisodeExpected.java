@@ -1,4 +1,4 @@
-package com.example.inline_fragments_with_friends;
+package com.example.inline_fragments_with_friends.type;
 
 /**
  * The episodes in the Star Wars trilogy
