@@ -3,9 +3,11 @@ package com.example.input_object_type.type;
 import java.lang.IllegalStateException;
 import java.lang.Integer;
 import java.lang.String;
+import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+@Generated("Apollo GraphQL")
 public final class ReviewInput {
   private final @Nullable Integer stars;
 

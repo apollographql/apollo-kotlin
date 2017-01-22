@@ -1,5 +1,6 @@
 package com.apollostack.compiler.ir
 
+import com.apollostack.compiler.Annotations
 import com.apollostack.compiler.ClassNames
 import com.apollostack.compiler.SchemaTypeSpecBuilder
 import com.squareup.javapoet.FieldSpec
@@ -22,6 +23,7 @@ data class Fragment(
           typeDeclarations, fragmentsPackage, typesPackage)
           .build(Modifier.PUBLIC)
           .toBuilder()
+          .addAnnotation(Annotations.GENERATED_BY_APOLLO)
           .addFragmentDefinitionField()
           .addTypeConditionField()
           .build()

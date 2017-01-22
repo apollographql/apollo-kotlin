@@ -3,9 +3,11 @@ package com.example.fragment_friends_connection.fragment;
 import java.lang.Integer;
 import java.lang.String;
 import java.util.List;
+import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+@Generated("Apollo GraphQL")
 public interface HeroDetails {
   String FRAGMENT_DEFINITION = "fragment HeroDetails on Character {\n"
       + "  __typename\n"

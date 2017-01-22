@@ -7,9 +7,11 @@ import com.example.fragment_with_inline_fragment.type.Episode;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+@Generated("Apollo GraphQL")
 public final class TestQuery implements Query<Operation.Variables> {
   public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  hero {\n"

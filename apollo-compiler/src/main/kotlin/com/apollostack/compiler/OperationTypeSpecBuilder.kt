@@ -14,6 +14,7 @@ class OperationTypeSpecBuilder(
   override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
       typeDeclarations: List<TypeDeclaration>, fragmentsPackage: String, typesPackage: String): TypeSpec {
     return TypeSpec.classBuilder(OPERATION_TYPE_NAME)
+        .addAnnotation(Annotations.GENERATED_BY_APOLLO)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
         .addQuerySuperInterface(operation.variables.isNotEmpty())
         .addOperationDefinition(operation)
@@ -68,7 +69,8 @@ class OperationTypeSpecBuilder(
     return this
   }
 
-  private fun TypeSpec.Builder.addVariablesDefinition(variables: List<Variable>, typesPackage: String): TypeSpec.Builder {
+  private fun TypeSpec.Builder.addVariablesDefinition(variables: List<Variable>,
+      typesPackage: String): TypeSpec.Builder {
     val queryFieldClassName =
         if (variables.isNotEmpty()) OPERATION_VARIABLES_CLASS_NAME else ClassNames.GRAPHQL_OPERATION_VARIABLES
     addField(FieldSpec.builder(queryFieldClassName, VARIABLES_FIELD_NAME)
