@@ -13,6 +13,8 @@ dependencies {
   compile dep.retrofit
   compile project (":apollo-api")
 
+  testCompile dep.moshi
+  testCompile dep.retrofitMoshiConverter
   testCompile dep.junit
   testCompile dep.truth
   testCompile dep.mockWebServer

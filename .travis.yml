@@ -14,7 +14,7 @@ jdk:
   - oraclejdk8
 
 script:
-  - ./gradlew clean check --stacktrace
+  - ./gradlew clean check -x checkstyleTest --stacktrace
 
 branches:
   except:
