@@ -14,6 +14,7 @@ class ApolloIRGenTaskSpec extends Specification {
 
     when:
     ApolloPluginTestHelper.applyApolloPlugin(project)
+    project.evaluate()
 
     def debugTask = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "Debug"))
     def releaseTask = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "Release"))
@@ -30,6 +31,8 @@ class ApolloIRGenTaskSpec extends Specification {
 
     when:
     ApolloPluginTestHelper.applyApolloPlugin(project)
+    project.evaluate()
+
     def generateApolloIR = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, ""))
 
     then:

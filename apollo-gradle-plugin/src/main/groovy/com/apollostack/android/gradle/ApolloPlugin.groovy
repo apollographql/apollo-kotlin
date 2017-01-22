@@ -16,13 +16,11 @@ class ApolloPlugin implements Plugin<Project> {
   public static final String TASK_GROUP = "apollo"
 
   @Override void apply(Project project) {
-    setupNode(project)
     project.plugins.all { p ->
       if (p instanceof AppPlugin) {
         configureAndroid(project,
             (DomainObjectCollection<BaseVariant>) project.android.applicationVariants)
-      }
-      if (p instanceof LibraryPlugin) {
+      } else if (p instanceof LibraryPlugin) {
         configureAndroid(project,
             (DomainObjectCollection<BaseVariant>) project.android.libraryVariants)
       }
@@ -30,29 +28,32 @@ class ApolloPlugin implements Plugin<Project> {
   }
 
   private static void configureAndroid(Project project, DomainObjectCollection<BaseVariant> variants) {
+    setupNode(project)
+    project.extensions.create(ApolloExtension.NAME, ApolloExtension)
+
     project.android.sourceSets.all { s ->
       createExtensionForSourceSet(project, s)
     }
     //TODO: add dependency on apollo-runtime once we have the jars on nexus
+    project.afterEvaluate {
+      project.tasks.create(ApolloCodeGenInstallTask.NAME, ApolloCodeGenInstallTask.class)
+      Task apolloIRGenTask = project.task("generateApolloIR")
+      apolloIRGenTask.group(TASK_GROUP)
+      Task apolloClassGenTask = project.task("generateApolloClasses")
+      apolloClassGenTask.group(TASK_GROUP)
 
-    project.tasks.create(ApolloCodeGenInstallTask.NAME, ApolloCodeGenInstallTask.class)
+      variants.all { v ->
+        List<GraphQLExtension> config = Lists.newArrayListWithCapacity(sourceSets.size())
+        sourceSets.each { sourceSet ->
+          config.add((GraphQLExtension) sourceSet.extensions[GraphQLExtension.NAME])
+        }
 
-    Task apolloIRGenTask = project.task("generateApolloIR")
-    apolloIRGenTask.group(TASK_GROUP)
-    Task apolloClassGenTask = project.task("generateApolloClasses")
-    apolloClassGenTask.group(TASK_GROUP)
-
-    variants.all { v ->
-      List<ApolloExtension> config = Lists.newArrayListWithCapacity(sourceSets.size())
-      sourceSets.each { sourceSet ->
-        config.add((ApolloExtension) sourceSet.extensions[ApolloExtension.NAME])
+        ApolloIRGenTask variantIRTask = createApolloIRGenTask(project, v.name, config)
+        ApolloClassGenTask variantClassTask = createApolloClassGenTask(project, v.name, config, project.apollo.generateClasses)
+        v.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir)
+        apolloIRGenTask.dependsOn(variantIRTask)
+        apolloClassGenTask.dependsOn(variantClassTask)
       }
-
-      ApolloIRGenTask variantIRTask = createApolloIRGenTask(project, v.name, config)
-      ApolloClassGenTask variantClassTask = createApolloClassGenTask(project, v.name, config)
-      v.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir)
-      apolloIRGenTask.dependsOn(variantIRTask)
-      apolloClassGenTask.dependsOn(variantClassTask)
     }
   }
 
@@ -63,23 +64,24 @@ class ApolloPlugin implements Plugin<Project> {
     nodeConfig.version = NODE_VERSION
   }
 
-  private static ApolloIRGenTask createApolloIRGenTask(Project project, String name, List<ApolloExtension> config) {
+  private static ApolloIRGenTask createApolloIRGenTask(Project project, String name, List<GraphQLExtension> config) {
     String taskName = String.format(ApolloIRGenTask.NAME, name.capitalize())
     ApolloIRGenTask task = project.tasks.create(taskName, ApolloIRGenTask)
     task.init(name, config)
     return task
   }
 
-  private static ApolloClassGenTask createApolloClassGenTask(Project project, String name, List<ApolloExtension> conf) {
+  private
+  static ApolloClassGenTask createApolloClassGenTask(Project project, String name, List<GraphQLExtension> conf, boolean generateClasses) {
     String taskName = String.format(ApolloClassGenTask.NAME, name.capitalize())
     ApolloClassGenTask task = project.tasks.create(taskName, ApolloClassGenTask)
     task.source(project.tasks.findByName(String.format(ApolloIRGenTask.NAME, name.capitalize())).outputDir)
     task.include("**${File.separatorChar}*API.json")
-    task.init(name, conf)
+    task.init(name, conf, generateClasses)
     return task
   }
 
   private static void createExtensionForSourceSet(Project project, def sourceSet) {
-    sourceSet.extensions.create(ApolloExtension.NAME, ApolloExtension, project, sourceSet.name)
+    sourceSet.extensions.create(GraphQLExtension.NAME, GraphQLExtension, project, sourceSet.name)
   }
 }
