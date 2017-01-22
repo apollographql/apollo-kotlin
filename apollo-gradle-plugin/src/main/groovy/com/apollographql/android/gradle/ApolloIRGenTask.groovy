@@ -16,7 +16,7 @@ public class ApolloIRGenTask extends NodeTask {
   static final String NAME = "generate%sApolloIR"
 
   @Internal String variant
-  @Internal List<ApolloExtension> config
+  @Internal List<GraphQLExtension> config
   private List<String> possibleGraphQLPaths
   private File schemaFile
   /** Output directory for the generated IR, defaults to src/main/graphql **/
@@ -34,7 +34,7 @@ public class ApolloIRGenTask extends NodeTask {
     return inputFiles
   }
 
-  public void init(String variantName, List<ApolloExtension> extensionsConfig) {
+  public void init(String variantName, List<GraphQLExtension> extensionsConfig) {
     variant = variantName
     config = extensionsConfig
     group = ApolloPlugin.TASK_GROUP

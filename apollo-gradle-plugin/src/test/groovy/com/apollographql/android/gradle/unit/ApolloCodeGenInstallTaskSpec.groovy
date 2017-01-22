@@ -15,6 +15,7 @@ class ApolloCodeGenInstallTaskSpec extends Specification {
 
     when:
     ApolloPluginTestHelper.applyApolloPlugin(project)
+    project.evaluate()
 
     then:
     def task = project.tasks.getByName(ApolloCodeGenInstallTask.NAME)
@@ -29,6 +30,7 @@ class ApolloCodeGenInstallTaskSpec extends Specification {
 
     when:
     ApolloPluginTestHelper.applyApolloPlugin(project)
+    project.evaluate()
 
     then:
     def task = project.tasks.getByName(ApolloCodeGenInstallTask.NAME)
@@ -42,6 +44,7 @@ class ApolloCodeGenInstallTaskSpec extends Specification {
 
     when:
     ApolloPluginTestHelper.applyApolloPlugin(project)
+    project.evaluate()
 
     then:
     project.tasks.getByName(ApolloCodeGenInstallTask.NAME).args.equals(
@@ -55,6 +58,7 @@ class ApolloCodeGenInstallTaskSpec extends Specification {
 
     when:
     ApolloPluginTestHelper.applyApolloPlugin(project)
+    project.evaluate()
 
     then:
     project.tasks.getByName(ApolloCodeGenInstallTask.NAME).outputs.hasOutput
@@ -69,6 +73,7 @@ class ApolloCodeGenInstallTaskSpec extends Specification {
 
     when:
     ApolloPluginTestHelper.applyApolloPlugin(project)
+    project.evaluate()
 
     then:
     File packageFile = project.file("package.json")

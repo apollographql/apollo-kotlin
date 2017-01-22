@@ -21,7 +21,6 @@ class ApolloPluginTestHelper {
       compileSdkVersion 25
       buildToolsVersion "25.0.2"
     }
-    project.evaluate()
   }
 
   static def setupAndroidProjectWithProductFlavours(Project project) {
@@ -40,7 +39,6 @@ class ApolloPluginTestHelper {
         }
       }
     }
-    project.evaluate()
   }
 
   static def applyApolloPlugin(Project project) {

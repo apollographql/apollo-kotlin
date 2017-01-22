@@ -15,3 +15,5 @@ dependencies {
   compile dep.jsr305
   compile dep.jsr205
 }
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
