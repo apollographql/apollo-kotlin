@@ -9,12 +9,14 @@ import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 
 public class ApolloClassGenTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses"
-  @Internal List<ApolloExtension> config
+  @Internal List<GraphQLExtension> config
   @Internal String variant
+  @Internal boolean generateClasses
   @OutputDirectory File outputDir
 
-  public void init(String variantName, List<ApolloExtension> extensionsConfig) {
+  public void init(String variantName, List<GraphQLExtension> extensionsConfig, boolean genClasses) {
     variant = variantName
+    generateClasses = genClasses
     config = extensionsConfig
     group = ApolloPlugin.TASK_GROUP
     description = "Generate Android classes for ${variant.capitalize()} GraphQL queries"
@@ -24,8 +26,7 @@ public class ApolloClassGenTask extends SourceTask {
 
   @TaskAction void generateClasses(IncrementalTaskInputs inputs) {
     inputs.outOfDate { inputFileDetails ->
-      //TODO: Add option to generate pojo to plugin extensions. Maybe, have a project-level configurable extensions too
-      new GraphQLCompiler().write(inputFileDetails.file, outputDir, false)
+      new GraphQLCompiler().write(inputFileDetails.file, outputDir, generateClasses)
     }
   }
 }
