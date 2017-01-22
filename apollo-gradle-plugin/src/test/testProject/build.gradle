@@ -1,0 +1,66 @@
+buildscript {
+  repositories {
+    mavenCentral()
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'com.android.tools.build:gradle:2.3.0-beta1'
+    // TODO: Temporary workaround while we don't have the plugin snapshot on Sonatype.
+    // This is a shadow (fat) jar with all the transitive dependencies.
+    // In order to generate a new one for development, run:
+    // ./gradlew apollo-gradle-plugin:shadowJar
+    // copy the JAR from apollo-gradle-plugin/build/libs to apollo-sample/libs
+    classpath files('libs/apollo-gradle-plugin-0.0.1-SNAPSHOT-all.jar')
+  }
+}
+
+apply plugin: 'com.android.application'
+
+android {
+  compileSdkVersion 25
+  buildToolsVersion '25.0.1'
+
+  defaultConfig {
+    applicationId "com.example.apollostack.sample"
+    minSdkVersion 15
+    targetSdkVersion 25
+  }
+
+  lintOptions {
+    textReport true
+    textOutput 'stdout'
+    ignore 'InvalidPackage', 'GoogleAppIndexingWarning', 'AllowBackup'
+  }
+}
+
+repositories {
+  mavenCentral()
+  jcenter()
+  maven { url "https://jitpack.io" }
+  maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+  flatDir {
+    dirs 'libs'
+  }
+}
+
+dependencies {
+  compile 'com.android.support:appcompat-v7:25.1.0'
+
+  //TODO: revisit those dependencies later, once we have a maven repo
+  compile 'com.jakewharton.auto.value:auto-value-annotations:1.3'
+  compile 'com.ryanharter.auto.value:auto-value-moshi-annotations:0.4.2'
+  compile 'com.google.code.findbugs:jsr305:3.0.1'
+  compile (name: 'moshi-0.0.1-SNAPSHOT', ext: 'jar')
+  compile (name: 'apollo-api-0.0.1-SNAPSHOT', ext: 'jar')
+  // END
+  compile 'io.reactivex.rxjava2:rxjava:2.0.3'
+  compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+  compile 'com.squareup.retrofit2:adapter-rxjava2:2.1.1-SNAPSHOT'
+  compile 'com.squareup.okhttp3:logging-interceptor:3.5.0'
+
+  annotationProcessor 'com.google.auto.value:auto-value:1.3'
+  annotationProcessor 'com.ryanharter.auto.value:auto-value-moshi:0.4.2'
+}
+
+apply plugin: 'com.apollostack.android'
