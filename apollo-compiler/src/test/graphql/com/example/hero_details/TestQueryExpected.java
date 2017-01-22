@@ -1,7 +1,7 @@
 package com.example.hero_details;
 
-import com.apollostack.api.graphql.Operation;
-import com.apollostack.api.graphql.Query;
+import com.apollographql.api.graphql.Operation;
+import com.apollographql.api.graphql.Query;
 import java.lang.Integer;
 import java.lang.Override;
 import java.lang.String;

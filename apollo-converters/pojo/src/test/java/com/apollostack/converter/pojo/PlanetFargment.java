@@ -1,8 +1,8 @@
-package com.apollostack.converter.pojo;
+package com.apollographql.converter.pojo;
 
-import com.apollostack.api.graphql.Field;
-import com.apollostack.api.graphql.ResponseFieldMapper;
-import com.apollostack.api.graphql.ResponseReader;
+import com.apollographql.api.graphql.Field;
+import com.apollographql.api.graphql.ResponseFieldMapper;
+import com.apollographql.api.graphql.ResponseReader;
 import java.io.IOException;
 import java.lang.Double;
 import java.lang.Object;

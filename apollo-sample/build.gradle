@@ -47,4 +47,4 @@ dependencies {
   testCompile dep.junit
 }
 
-apply plugin: 'com.apollostack.android'
+apply plugin: 'com.apollographql.android'

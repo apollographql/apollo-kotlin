@@ -1,12 +1,12 @@
-package com.apollostack.converter.pojo;
+package com.apollographql.converter.pojo;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
 
-import com.apollostack.api.graphql.Error;
-import com.apollostack.api.graphql.Response;
+import com.apollographql.api.graphql.Error;
+import com.apollographql.api.graphql.Response;
 
 import org.junit.Before;
 import org.junit.Rule;

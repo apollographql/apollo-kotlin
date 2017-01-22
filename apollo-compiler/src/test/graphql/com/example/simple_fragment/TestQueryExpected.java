@@ -1,7 +1,7 @@
 package com.example.simple_fragment;
 
-import com.apollostack.api.graphql.Operation;
-import com.apollostack.api.graphql.Query;
+import com.apollographql.api.graphql.Operation;
+import com.apollographql.api.graphql.Query;
 import com.example.simple_fragment.fragment.HeroDetails;
 import java.lang.Override;
 import java.lang.String;
