@@ -38,7 +38,7 @@ public class ApolloIRGenTask extends NodeTask {
     variant = variantName
     config = extensionsConfig
     group = ApolloPlugin.TASK_GROUP
-    description = "Generate an IR file using apollo-codgen for ${variant.capitalize()} GraphQL queries"
+    description = "Generate an IR file using apollo-codegen for ${variant.capitalize()} GraphQL queries"
     dependsOn(ApolloCodeGenInstallTask.NAME)
 
     possibleGraphQLPaths = buildPossibleGraphQLPaths()

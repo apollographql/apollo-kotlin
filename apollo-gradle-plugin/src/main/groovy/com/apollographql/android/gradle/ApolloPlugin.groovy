@@ -10,69 +10,99 @@ import org.gradle.api.DomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.compile.JavaCompile
 
 class ApolloPlugin implements Plugin<Project> {
   private static final String NODE_VERSION = "6.7.0"
   public static final String TASK_GROUP = "apollo"
+  private Project project
 
   @Override void apply(Project project) {
-    project.plugins.all { p ->
-      if (p instanceof AppPlugin) {
-        configureAndroid(project,
-            (DomainObjectCollection<BaseVariant>) project.android.applicationVariants)
-      } else if (p instanceof LibraryPlugin) {
-        configureAndroid(project,
-            (DomainObjectCollection<BaseVariant>) project.android.libraryVariants)
-      }
+    this.project = project
+    if (project.plugins.hasPlugin(AppPlugin) || project.plugins.hasPlugin(LibraryPlugin) || project.plugins.hasPlugin(
+        JavaPlugin)) {
+      applyApolloPlugin()
+    } else {
+      throw new IllegalArgumentException(
+          "Apollo plugin couldn't be applied. The Android or Java plugin must be configured first")
     }
   }
 
-  private static void configureAndroid(Project project, DomainObjectCollection<BaseVariant> variants) {
-    setupNode(project)
+  private void applyApolloPlugin() {
+    setupNode()
     project.extensions.create(ApolloExtension.NAME, ApolloExtension)
-
-    project.android.sourceSets.all { s ->
-      createExtensionForSourceSet(project, s)
-    }
+    createSourceSetExtensions()
     //TODO: add dependency on apollo-runtime once we have the jars on nexus
+
     project.afterEvaluate {
       project.tasks.create(ApolloCodeGenInstallTask.NAME, ApolloCodeGenInstallTask.class)
-      Task apolloIRGenTask = project.task("generateApolloIR")
-      apolloIRGenTask.group(TASK_GROUP)
-      Task apolloClassGenTask = project.task("generateApolloClasses")
-      apolloClassGenTask.group(TASK_GROUP)
+      addApolloTasks()
+    }
+  }
 
-      variants.all { v ->
-        List<GraphQLExtension> config = Lists.newArrayListWithCapacity(sourceSets.size())
-        sourceSets.each { sourceSet ->
-          config.add((GraphQLExtension) sourceSet.extensions[GraphQLExtension.NAME])
-        }
+  private void addApolloTasks() {
+    Task apolloIRGenTask = project.task("generateApolloIR")
+    apolloIRGenTask.group(TASK_GROUP)
+    Task apolloClassGenTask = project.task("generateApolloClasses")
+    apolloClassGenTask.group(TASK_GROUP)
 
-        ApolloIRGenTask variantIRTask = createApolloIRGenTask(project, v.name, config)
-        ApolloClassGenTask variantClassTask = createApolloClassGenTask(project, v.name, config, project.apollo.generateClasses)
-        v.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir)
-        apolloIRGenTask.dependsOn(variantIRTask)
-        apolloClassGenTask.dependsOn(variantClassTask)
+    if (isAndroidProject()) {
+      getVariants().all { v ->
+        addVariantTasks(v, apolloIRGenTask, apolloClassGenTask, v.sourceSets)
+      }
+    } else {
+      getSourceSets().all { sourceSet ->
+        addSourceSetTasks(sourceSet, apolloIRGenTask, apolloClassGenTask)
       }
     }
   }
 
-  private static void setupNode(Project project) {
+  private void addVariantTasks(Object variant, Task apolloIRGenTask, Task apolloClassGenTask, Collection<?> sourceSets) {
+    List<GraphQLExtension> config = Lists.newArrayListWithCapacity(sourceSets.size())
+    sourceSets.each { sourceSet ->
+      config.add((GraphQLExtension) sourceSet.extensions[GraphQLExtension.NAME])
+    }
+
+    ApolloIRGenTask variantIRTask = createApolloIRGenTask(variant.name, config)
+    ApolloClassGenTask variantClassTask = createApolloClassGenTask(variant.name, config,
+        project.apollo.generateClasses)
+    variant.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir)
+    apolloIRGenTask.dependsOn(variantIRTask)
+    apolloClassGenTask.dependsOn(variantClassTask)
+  }
+
+  private void addSourceSetTasks(SourceSet sourceSet, Task apolloIRGenTask, Task apolloClassGenTask) {
+    String taskName = "main".equals(sourceSet.name) ? "" : sourceSet.name
+    def config = [(GraphQLExtension) sourceSet.extensions[GraphQLExtension.NAME]]
+
+    ApolloIRGenTask sourceSetIRTask = createApolloIRGenTask(sourceSet.name, config)
+    ApolloClassGenTask sourceSetClassTask = createApolloClassGenTask(sourceSet.name, config,
+        project.apollo.generateClasses)
+    apolloIRGenTask.dependsOn(sourceSetIRTask)
+    apolloClassGenTask.dependsOn(sourceSetClassTask)
+
+    JavaCompile compileTask = (JavaCompile) project.tasks.getByName("compile${taskName.capitalize()}Java")
+    compileTask.source += project.fileTree(sourceSetClassTask.outputDir)
+    compileTask.dependsOn(apolloClassGenTask)
+  }
+
+  private void setupNode() {
     project.plugins.apply NodePlugin
     NodeExtension nodeConfig = project.extensions.findByName("node") as NodeExtension
     nodeConfig.download = true
     nodeConfig.version = NODE_VERSION
   }
 
-  private static ApolloIRGenTask createApolloIRGenTask(Project project, String name, List<GraphQLExtension> config) {
+  private ApolloIRGenTask createApolloIRGenTask(String name, List<GraphQLExtension> config) {
     String taskName = String.format(ApolloIRGenTask.NAME, name.capitalize())
     ApolloIRGenTask task = project.tasks.create(taskName, ApolloIRGenTask)
     task.init(name, config)
     return task
   }
 
-  private
-  static ApolloClassGenTask createApolloClassGenTask(Project project, String name, List<GraphQLExtension> conf, boolean generateClasses) {
+  private ApolloClassGenTask createApolloClassGenTask(String name, List<GraphQLExtension> conf, boolean generateClasses) {
     String taskName = String.format(ApolloClassGenTask.NAME, name.capitalize())
     ApolloClassGenTask task = project.tasks.create(taskName, ApolloClassGenTask)
     task.source(project.tasks.findByName(String.format(ApolloIRGenTask.NAME, name.capitalize())).outputDir)
@@ -81,7 +111,22 @@ class ApolloPlugin implements Plugin<Project> {
     return task
   }
 
-  private static void createExtensionForSourceSet(Project project, def sourceSet) {
-    sourceSet.extensions.create(GraphQLExtension.NAME, GraphQLExtension, project, sourceSet.name)
+  private void createSourceSetExtensions() {
+    getSourceSets().all { sourceSet ->
+      sourceSet.extensions.create(GraphQLExtension.NAME, GraphQLExtension, project, sourceSet.name)
+    }
   }
+
+  private boolean isAndroidProject() {
+    return project.hasProperty('android') && project.android.sourceSets
+  }
+
+  private Object getSourceSets() {
+    return (isAndroidProject() ? project.android.sourceSets : project.sourceSets)
+  }
+
+  private DomainObjectCollection<BaseVariant> getVariants() {
+    return project.android.applicationVariants ?: project.android.libraryVariants
+  }
+
 }
