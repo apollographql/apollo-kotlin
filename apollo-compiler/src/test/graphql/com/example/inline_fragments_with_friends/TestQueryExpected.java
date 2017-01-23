@@ -1,7 +1,7 @@
 package com.example.inline_fragments_with_friends;
 
-import com.apollographql.api.graphql.Operation;
-import com.apollographql.api.graphql.Query;
+import com.apollographql.android.api.graphql.Operation;
+import com.apollographql.android.api.graphql.Query;
 import com.example.inline_fragments_with_friends.type.Episode;
 import java.lang.Double;
 import java.lang.Override;

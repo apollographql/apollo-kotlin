@@ -1,7 +1,7 @@
 package com.example.input_object_type;
 
-import com.apollographql.api.graphql.Mutation;
-import com.apollographql.api.graphql.Operation;
+import com.apollographql.android.api.graphql.Mutation;
+import com.apollographql.android.api.graphql.Operation;
 import com.example.input_object_type.type.Episode;
 import com.example.input_object_type.type.ReviewInput;
 import java.lang.IllegalStateException;

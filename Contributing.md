@@ -8,6 +8,7 @@ DOs and DON'Ts
 --------------
 
 * DO follow our coding style (as described below)
+* Do add labels to your issues and pull requests:  At least 1 for each Status/Type/Priority
 * DO give priority to the current style of the project or file you're changing even if it diverges from the general guidelines.
 * DO include tests when adding new features. When fixing bugs, start with adding a test that highlights how the current behavior is broken.
 * DO keep the discussions focused. When a new or related topic comes up it's often better to create new issue than to side track the discussion.

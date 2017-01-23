@@ -1,6 +1,6 @@
 package com.apollographql.android;
 
-import com.apollographql.api.graphql.Operation;
+import com.apollographql.android.api.graphql.Operation;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;

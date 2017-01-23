@@ -5,8 +5,8 @@ import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
 
-import com.apollographql.api.graphql.Error;
-import com.apollographql.api.graphql.Response;
+import com.apollographql.android.api.graphql.Error;
+import com.apollographql.android.api.graphql.Response;
 import com.squareup.moshi.Moshi;
 
 import org.junit.Before;
