@@ -4,15 +4,8 @@ import org.gradle.api.Project;
 
 class ApolloPluginTestHelper {
 
-  private static def setupAndroidProject(Project project) {
-    def localProperties = new File("${project.projectDir.absolutePath}", "local.properties")
-    localProperties.write("sdk.dir=${androidHome()}")
-
-    def manifest = new File("${project.projectDir.absolutePath}/src/main", "AndroidManifest.xml")
-    manifest.getParentFile().mkdirs()
-    manifest.createNewFile()
-    manifest.write("<manifest package=\"com.example.apollographql\"/>")
-    project.apply plugin: 'com.android.application'
+  static def setupJavaProject(Project project) {
+    project.apply plugin: 'java'
   }
 
   static def setupDefaultAndroidProject(Project project) {
@@ -62,6 +55,17 @@ class ApolloPluginTestHelper {
           "SDK location not found. Define location with sdk.dir in the local.properties file or " +
               "with an ANDROID_HOME environment variable.")
     }
+  }
+
+  private static def setupAndroidProject(Project project) {
+    def localProperties = new File("${project.projectDir.absolutePath}", "local.properties")
+    localProperties.write("sdk.dir=${androidHome()}")
+
+    def manifest = new File("${project.projectDir.absolutePath}/src/main", "AndroidManifest.xml")
+    manifest.getParentFile().mkdirs()
+    manifest.createNewFile()
+    manifest.write("<manifest package=\"com.example.apollographql\"/>")
+    project.apply plugin: 'com.android.application'
   }
 
 }

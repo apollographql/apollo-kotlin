@@ -9,7 +9,7 @@ import com.moowork.gradle.node.NodePlugin
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
-class ApolloPluginSpec extends Specification {
+class ApolloAndroidPluginSpec extends Specification {
   def "creates an IRGen task under the apollo group for a default project"() {
     setup:
     def project = ProjectBuilder.builder().build()
@@ -24,10 +24,10 @@ class ApolloPluginSpec extends Specification {
 
     then:
     debugTask.group.equals(ApolloPlugin.TASK_GROUP)
-    debugTask.description.equals("Generate an IR file using apollo-codgen for Debug GraphQL queries")
+    debugTask.description.equals("Generate an IR file using apollo-codegen for Debug GraphQL queries")
 
     releaseTask.group.equals(ApolloPlugin.TASK_GROUP)
-    releaseTask.description.equals("Generate an IR file using apollo-codgen for Release GraphQL queries")
+    releaseTask.description.equals("Generate an IR file using apollo-codegen for Release GraphQL queries")
   }
 
   def "creates an IRGen task under the apollo group for a product-flavoured project"() {
@@ -46,10 +46,10 @@ class ApolloPluginSpec extends Specification {
       def releaseTask = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "${flavor}Release"))
 
       assert (debugTask.group) == ApolloPlugin.TASK_GROUP
-      assert (debugTask.description) == "Generate an IR file using apollo-codgen for " + flavor + "Debug GraphQL queries"
+      assert (debugTask.description) == "Generate an IR file using apollo-codegen for " + flavor + "Debug GraphQL queries"
 
       assert (releaseTask.group) == ApolloPlugin.TASK_GROUP
-      assert (releaseTask.description) == "Generate an IR file using apollo-codgen for " + flavor + "Release GraphQL queries"
+      assert (releaseTask.description) == "Generate an IR file using apollo-codegen for " + flavor + "Release GraphQL queries"
     }
   }
 
