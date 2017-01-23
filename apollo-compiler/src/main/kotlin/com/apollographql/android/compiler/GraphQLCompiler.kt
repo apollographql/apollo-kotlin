@@ -12,7 +12,8 @@ open class GraphQLCompiler {
   private val moshi = Moshi.Builder().build()
   private val irAdapter = moshi.adapter(OperationIntermediateRepresentation::class.java)
 
-  fun write(irFile: File, outputDir: File, generateClasses: Boolean = false) {
+  fun write(irFile: File, outputDir: File, generateClasses: Boolean = false,
+      customScalarTypeMap: Map<String, String> = emptyMap()) {
     val ir = irAdapter.fromJson(irFile.readText())
     val irPackageName = irFile.absolutePath.formatPackageName()
     val fragmentsPackage = "$irPackageName.fragment"
@@ -20,10 +21,10 @@ open class GraphQLCompiler {
 
     val operationTypeBuilders = ir.operations.map { OperationTypeSpecBuilder(it, ir.fragments) }
     (operationTypeBuilders + ir.fragments + ir.typesUsed).forEach {
-      JavaFile.builder(javaFilePackageName(it, irPackageName, fragmentsPackage, typesPackage),
-          it.toTypeSpec(!generateClasses, emptyList(), ir.typesUsed, fragmentsPackage, typesPackage))
-          .build()
-          .writeTo(outputDir)
+      val packageName = javaFilePackageName(it, irPackageName, fragmentsPackage, typesPackage)
+      val typeSpec = it.toTypeSpec(!generateClasses, emptyList(), ir.typesUsed, fragmentsPackage, typesPackage,
+          customScalarTypeMap)
+      JavaFile.builder(packageName, typeSpec).build().writeTo(outputDir)
     }
   }
 

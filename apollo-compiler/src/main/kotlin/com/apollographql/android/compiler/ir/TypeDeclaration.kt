@@ -2,7 +2,7 @@ package com.apollographql.android.compiler.ir
 
 import com.apollographql.android.compiler.Annotations
 import com.apollographql.android.compiler.InputObjectTypeSpecBuilder
-import com.squareup.javapoet.*
+import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 data class TypeDeclaration(
@@ -15,11 +15,12 @@ data class TypeDeclaration(
     val typesPackage: String
 ) : CodeGenerator {
   override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
-      typeDeclarations: List<TypeDeclaration>, fragmentsPackage: String, typesPackage: String): TypeSpec {
+      typeDeclarations: List<TypeDeclaration>, fragmentsPackage: String, typesPackage: String,
+      customScalarTypeMap: Map<String, String>): TypeSpec {
     if (kind == "EnumType") {
       return enumTypeToTypeSpec()
     } else if (kind == "InputObjectType") {
-      return inputObjectToTypeSpec(typesPackage)
+      return inputObjectToTypeSpec(typesPackage, customScalarTypeMap)
     } else {
       throw UnsupportedOperationException("unsupported $kind type declaration")
     }
@@ -43,6 +44,6 @@ data class TypeDeclaration(
     return builder.build()
   }
 
-  private fun inputObjectToTypeSpec(typesPackage: String) =
-      InputObjectTypeSpecBuilder(name, fields ?: emptyList(), typesPackage).build()
+  private fun inputObjectToTypeSpec(typesPackage: String, customScalarTypeMap: Map<String, String>) =
+      InputObjectTypeSpecBuilder(name, fields ?: emptyList(), typesPackage, customScalarTypeMap).build()
 }

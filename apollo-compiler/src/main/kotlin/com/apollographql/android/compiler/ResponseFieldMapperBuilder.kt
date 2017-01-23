@@ -15,7 +15,8 @@ class ResponseFieldMapperBuilder(
     val fragmentSpreads: List<String>,
     val inlineFragments: List<InlineFragment>,
     val typeOverrideMap: Map<String, String>,
-    val typeDeclarations: List<TypeDeclaration>
+    val typeDeclarations: List<TypeDeclaration>,
+    val customScalarTypeMap: Map<String, String>
 ) {
   private val typeClassName = ClassName.get("", typeName)
   private val hasFragments = inlineFragments.isNotEmpty() || fragmentSpreads.isNotEmpty()
@@ -92,7 +93,7 @@ class ResponseFieldMapperBuilder(
 
 
   private fun fieldValueCaseStatement(field: Field, index: Int): CodeBlock {
-    val fieldSpec = field.fieldSpec()
+    val fieldSpec = field.fieldSpec("", customScalarTypeMap)
     val fieldRawType = fieldSpec.type.withoutAnnotations().overrideTypeName(typeOverrideMap)
     return CodeBlock.builder()
         .beginControlFlow("case $index:")
@@ -174,7 +175,7 @@ class ResponseFieldMapperBuilder(
   }
 
   private fun Field.responseFieldFactoryStatement(): CodeBlock {
-    val fieldTypeName = fieldSpec().type.withoutAnnotations()
+    val fieldTypeName = fieldSpec("", customScalarTypeMap).type.withoutAnnotations()
     if (fieldTypeName.isScalar()) {
       return scalarResponseFieldFactoryStatement(fieldTypeName)
     } else if (fieldTypeName.isList()) {

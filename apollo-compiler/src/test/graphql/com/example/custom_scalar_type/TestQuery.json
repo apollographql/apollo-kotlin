@@ -1,0 +1,40 @@
+{
+  "operations": [
+    {
+      "operationName": "TestQuery",
+      "operationType": "query",
+      "variables": [],
+      "source": "query TestQuery {\n  hero {\n    __typename\n    name\n    birthDate\n    deathDate\n  }\n}",
+      "fields": [
+        {
+          "responseName": "hero",
+          "fieldName": "hero",
+          "type": "Character",
+          "fields": [
+            {
+              "responseName": "name",
+              "fieldName": "name",
+              "type": "String!"
+            },
+            {
+              "responseName": "birthDate",
+              "fieldName": "birthDate",
+              "type": "Date!"
+            },
+            {
+              "responseName": "deathDate",
+              "fieldName": "deathDate",
+              "type": "Date"
+            }
+          ],
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentsReferenced": [],
+      "filePath": "src/test/graphql/com/example/custom_scalar_type/TestQuery.json"
+    }
+  ],
+  "fragments": [],
+  "typesUsed": []
+}
