@@ -1,0 +1,12 @@
+query DroidDetails {
+  species(id: "c3BlY2llczoy") {
+    id
+    name
+    ...SpeciesInformation
+
+  }
+}
+
+fragment SpeciesInformation on Species{
+  classification
+}
