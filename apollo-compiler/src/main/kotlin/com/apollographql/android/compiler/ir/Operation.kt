@@ -14,11 +14,8 @@ data class Operation(
     val fields: List<Field>,
     val filePath: String
 ) : CodeGenerator {
-  override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
-      typeDeclarations: List<TypeDeclaration>, fragmentsPackage: String, typesPackage: String,
-      customScalarTypeMap: Map<String, String>): TypeSpec =
-      SchemaTypeSpecBuilder(INTERFACE_TYPE_SPEC_NAME, fields, emptyList(), emptyList(), abstractClass,
-          reservedTypeNames, typeDeclarations, fragmentsPackage, typesPackage, customScalarTypeMap)
+  override fun toTypeSpec(context: CodeGeneratorContext): TypeSpec =
+      SchemaTypeSpecBuilder(INTERFACE_TYPE_SPEC_NAME, fields, emptyList(), emptyList(), context)
           .build(Modifier.PUBLIC, Modifier.STATIC)
           .toBuilder()
           .addSuperinterface(ClassName.get(Operation.Data::class.java))

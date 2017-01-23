@@ -1,9 +1,6 @@
 package com.apollographql.android.compiler
 
-import com.apollographql.android.compiler.ir.CodeGenerator
-import com.apollographql.android.compiler.ir.Fragment
-import com.apollographql.android.compiler.ir.OperationIntermediateRepresentation
-import com.apollographql.android.compiler.ir.TypeDeclaration
+import com.apollographql.android.compiler.ir.*
 import com.squareup.javapoet.JavaFile
 import com.squareup.moshi.Moshi
 import java.io.File
@@ -18,12 +15,13 @@ open class GraphQLCompiler {
     val irPackageName = irFile.absolutePath.formatPackageName()
     val fragmentsPackage = "$irPackageName.fragment"
     val typesPackage = "$irPackageName.type"
+    val codeGenerationContext = CodeGeneratorContext(!generateClasses, emptyList(), ir.typesUsed, fragmentsPackage,
+        typesPackage, customScalarTypeMap)
 
     val operationTypeBuilders = ir.operations.map { OperationTypeSpecBuilder(it, ir.fragments) }
     (operationTypeBuilders + ir.fragments + ir.typesUsed).forEach {
       val packageName = javaFilePackageName(it, irPackageName, fragmentsPackage, typesPackage)
-      val typeSpec = it.toTypeSpec(!generateClasses, emptyList(), ir.typesUsed, fragmentsPackage, typesPackage,
-          customScalarTypeMap)
+      val typeSpec = it.toTypeSpec(codeGenerationContext)
       JavaFile.builder(packageName, typeSpec).build().writeTo(outputDir)
     }
   }

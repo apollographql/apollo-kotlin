@@ -10,17 +10,13 @@ data class TypeDeclaration(
     val name: String,
     val description: String?,
     val values: List<TypeDeclarationValue>?,
-    val fields: List<TypeDeclarationField>?,
-    val fragmentsPackage: String,
-    val typesPackage: String
+    val fields: List<TypeDeclarationField>?
 ) : CodeGenerator {
-  override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
-      typeDeclarations: List<TypeDeclaration>, fragmentsPackage: String, typesPackage: String,
-      customScalarTypeMap: Map<String, String>): TypeSpec {
+  override fun toTypeSpec(context: CodeGeneratorContext): TypeSpec {
     if (kind == "EnumType") {
       return enumTypeToTypeSpec()
     } else if (kind == "InputObjectType") {
-      return inputObjectToTypeSpec(typesPackage, customScalarTypeMap)
+      return inputObjectToTypeSpec(context.typesPackage, context.customScalarTypeMap)
     } else {
       throw UnsupportedOperationException("unsupported $kind type declaration")
     }

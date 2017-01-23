@@ -11,9 +11,7 @@ class OperationTypeSpecBuilder(
   private val OPERATION_TYPE_NAME = operation.operationName.capitalize()
   private val OPERATION_VARIABLES_CLASS_NAME = ClassName.get("", "$OPERATION_TYPE_NAME.Variables")
 
-  override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
-      typeDeclarations: List<TypeDeclaration>, fragmentsPackage: String, typesPackage: String,
-      customScalarTypeMap: Map<String, String>): TypeSpec {
+  override fun toTypeSpec(context: CodeGeneratorContext): TypeSpec {
     return TypeSpec.classBuilder(OPERATION_TYPE_NAME)
         .addAnnotation(Annotations.GENERATED_BY_APOLLO)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
@@ -21,9 +19,8 @@ class OperationTypeSpecBuilder(
         .addOperationDefinition(operation)
         .addQueryDocumentDefinition(fragments)
         .addQueryConstructor(operation.variables.isNotEmpty())
-        .addVariablesDefinition(operation.variables, typesPackage, customScalarTypeMap)
-        .addType(operation.toTypeSpec(abstractClass, reservedTypeNames, typeDeclarations, fragmentsPackage,
-            typesPackage, customScalarTypeMap))
+        .addVariablesDefinition(operation.variables, context.typesPackage, context.customScalarTypeMap)
+        .addType(operation.toTypeSpec(context))
         .build()
   }
 

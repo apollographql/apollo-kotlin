@@ -18,13 +18,9 @@ data class Field(
     val fragmentSpreads: List<String>?,
     val inlineFragments: List<InlineFragment>?
 ) : CodeGenerator {
-  override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
-      typeDeclarations: List<TypeDeclaration>, fragmentsPackage: String, typesPackage: String,
-      customScalarTypeMap: Map<String, String>): TypeSpec =
+  override fun toTypeSpec(context: CodeGeneratorContext): TypeSpec =
       SchemaTypeSpecBuilder(normalizedName(), fields ?: emptyList(), fragmentSpreads ?: emptyList(),
-          inlineFragments ?: emptyList(), abstractClass, reservedTypeNames, typeDeclarations, fragmentsPackage,
-          typesPackage, customScalarTypeMap)
-          .build(Modifier.PUBLIC, Modifier.STATIC)
+          inlineFragments ?: emptyList(), context).build(Modifier.PUBLIC, Modifier.STATIC)
 
   fun accessorMethodSpec(abstract: Boolean, typesPackage: String = "",
       customScalarTypeMap: Map<String, String>): MethodSpec {
