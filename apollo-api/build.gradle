@@ -1,16 +1,11 @@
-buildscript {
-  dependencies {
-    //TODO: remove after maven repo
-    classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
-  }
-}
-
 apply plugin: 'java'
-apply plugin: 'com.github.johnrengelman.shadow'
 
 targetCompatibility = JavaVersion.VERSION_1_7
 sourceCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
   compile dep.jsr305
+  compile dep.jsr205
 }
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

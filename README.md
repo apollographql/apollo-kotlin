@@ -16,11 +16,11 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.apollostack.android:gradle-plugin:0.0.1'
+    classpath 'com.apollographql.android:gradle-plugin:0.0.1-SNAPSHOT'
   }
 }
 
-apply plugin: 'com.apollostack.android'
+apply plugin: 'com.apollographql.android'
 ```
 
 ## License

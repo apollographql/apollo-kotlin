@@ -1,12 +1,7 @@
 buildscript {
   dependencies {
     classpath dep.androidPlugin
-    // TODO: Temporary workaround while we don't have the plugin snapshot on Sonatype.
-    // This is a shadow (fat) jar with all the transitive dependencies.
-    // In order to generate a new one for development, run:
-    // ./gradlew apollo-gradle-plugin:shadowJar
-    // copy the JAR from apollo-gradle-plugin/build/libs to apollo-sample/libs
-    classpath files('libs/apollo-gradle-plugin-0.0.1-SNAPSHOT-all.jar')
+    classpath dep.apolloPlugin
   }
 }
 
@@ -17,7 +12,7 @@ android {
   buildToolsVersion rootProject.ext.buildToolsVersion
 
   defaultConfig {
-    applicationId "com.example.apollostack.sample"
+    applicationId "com.example.apollographql.sample"
     minSdkVersion 15
     targetSdkVersion 25
   }
@@ -37,7 +32,7 @@ dependencies {
   compile project(":apollo-api")
   compile 'io.reactivex.rxjava2:rxjava:2.0.3'
   compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
-  compile 'com.squareup.retrofit2:adapter-rxjava2:2.1.1-SNAPSHOT'
+  compile 'com.squareup.retrofit2:adapter-rxjava2:2.2.0-SNAPSHOT'
   compile 'com.squareup.okhttp3:logging-interceptor:3.5.0'
   provided 'com.jakewharton.auto.value:auto-value-annotations:1.3'
   provided 'com.ryanharter.auto.value:auto-value-moshi-annotations:0.4.2'
@@ -47,4 +42,4 @@ dependencies {
   testCompile dep.junit
 }
 
-apply plugin: 'com.apollostack.android'
+apply plugin: 'com.apollographql.android'
