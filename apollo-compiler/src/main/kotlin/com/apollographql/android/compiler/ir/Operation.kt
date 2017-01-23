@@ -12,7 +12,8 @@ data class Operation(
     val variables: List<Variable>,
     val source: String,
     val fields: List<Field>,
-    val filePath: String
+    val filePath: String,
+    val fragmentsReferenced: List<String>
 ) : CodeGenerator {
   override fun toTypeSpec(context: CodeGeneratorContext): TypeSpec =
       SchemaTypeSpecBuilder(INTERFACE_TYPE_SPEC_NAME, fields, emptyList(), emptyList(), context)

@@ -13,11 +13,10 @@ open class GraphQLCompiler {
       customScalarTypeMap: Map<String, String> = emptyMap()) {
     val ir = irAdapter.fromJson(irFile.readText())
     val irPackageName = irFile.absolutePath.formatPackageName()
-    val fragmentsPackage = "$irPackageName.fragment"
-    val typesPackage = "$irPackageName.type"
+    val fragmentsPackage = if(irPackageName.length > 0) "$irPackageName.fragment" else "fragment"
+    val typesPackage = if(irPackageName.length > 0) "$irPackageName.type" else "type"
     val codeGenerationContext = CodeGeneratorContext(!generateClasses, emptyList(), ir.typesUsed, fragmentsPackage,
         typesPackage, customScalarTypeMap)
-
     val operationTypeBuilders = ir.operations.map { OperationTypeSpecBuilder(it, ir.fragments) }
     (operationTypeBuilders + ir.fragments + ir.typesUsed).forEach {
       val packageName = javaFilePackageName(it, irPackageName, fragmentsPackage, typesPackage)
