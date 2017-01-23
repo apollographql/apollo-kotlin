@@ -9,13 +9,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.io.File
-import java.nio.file.FileSystems
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.SimpleFileVisitor
-import java.nio.file.FileVisitResult
+import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
-import java.util.ArrayList
+import java.util.*
 import javax.tools.JavaFileObject
 
 @RunWith(Parameterized::class)
@@ -60,12 +56,10 @@ class CodeGenTest(val testDir: File, val pkgName: String, val generatePOJO: Bool
 
   private fun findActual(className: String): File {
     val possiblePaths = arrayOf("$className.java", "type/$className.java", "fragment/$className.java")
-    for (p in possiblePaths) {
-      val actual = outputDir.toPath().resolve("com/example/$pkgName/$p").toFile()
-      if (actual.isFile) {
-        return actual
-      }
-    }
+    possiblePaths
+        .map { outputDir.toPath().resolve("com/example/$pkgName/$it").toFile() }
+        .filter { it.isFile }
+        .forEach { return it }
     throw AssertionError("Couldn't find actual file: $className")
   }
 
