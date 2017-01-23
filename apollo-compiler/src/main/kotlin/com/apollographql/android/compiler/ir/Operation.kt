@@ -12,7 +12,8 @@ data class Operation(
     val variables: List<Variable>,
     val source: String,
     val fields: List<Field>,
-    val filePath: String
+    val filePath: String,
+    val fragmentsReferenced: List<String>
 ) : CodeGenerator {
   override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
       typeDeclarations: List<TypeDeclaration>, fragmentsPackage: String, typesPackage: String): TypeSpec =

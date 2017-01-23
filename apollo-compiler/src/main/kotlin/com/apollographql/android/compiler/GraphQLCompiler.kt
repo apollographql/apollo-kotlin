@@ -15,8 +15,8 @@ open class GraphQLCompiler {
   fun write(irFile: File, outputDir: File, generateClasses: Boolean = false) {
     val ir = irAdapter.fromJson(irFile.readText())
     val irPackageName = irFile.absolutePath.formatPackageName()
-    val fragmentsPackage = "$irPackageName.fragment"
-    val typesPackage = "$irPackageName.type"
+    val fragmentsPackage = if(irPackageName.length > 0) "$irPackageName.fragment" else "fragment"
+    val typesPackage = if(irPackageName.length > 0) "$irPackageName.type" else "type"
 
     val operationTypeBuilders = ir.operations.map { OperationTypeSpecBuilder(it, ir.fragments) }
     (operationTypeBuilders + ir.fragments + ir.typesUsed).forEach {

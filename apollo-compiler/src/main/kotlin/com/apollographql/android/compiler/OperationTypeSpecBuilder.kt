@@ -46,7 +46,7 @@ class OperationTypeSpecBuilder(
 
   private fun TypeSpec.Builder.addQueryDocumentDefinition(fragments: List<Fragment>): TypeSpec.Builder {
     val initializeCodeBuilder = CodeBlock.builder().add(OPERATION_DEFINITION_FIELD_NAME)
-    fragments.forEach {
+    fragments.filter { operation.fragmentsReferenced.contains(it.fragmentName) }.forEach {
       initializeCodeBuilder
           .add(" + \$S\n", "\n")
           .add(" + \$L.\$L", it.interfaceTypeName(), Fragment.FRAGMENT_DEFINITION_FIELD_NAME)
