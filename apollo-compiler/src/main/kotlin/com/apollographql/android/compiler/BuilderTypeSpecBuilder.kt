@@ -1,12 +1,11 @@
 package com.apollographql.android.compiler
 
-import com.apollographql.android.compiler.ir.graphql.Type
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
 class BuilderTypeSpecBuilder(
     val targetObjectClassName: ClassName,
-    val fields: List<Pair<String, Type>>,
+    val fields: List<Pair<String, TypeName>>,
     val fieldDefaultValues: Map<String, Any?>,
     val typesPackage: String
 ) {
@@ -25,7 +24,7 @@ class BuilderTypeSpecBuilder(
         val fieldName = it.first
         val fieldType = it.second
         val defaultValue = fieldDefaultValues[fieldName]?.let { (it as? Number)?.castTo(fieldType) ?: it }
-        FieldSpec.builder(fieldType.toJavaTypeName(typesPackage), fieldName)
+        FieldSpec.builder(fieldType, fieldName)
             .addModifiers(Modifier.PRIVATE)
             .initializer(defaultValue?.let { CodeBlock.of("\$L", it) } ?: CodeBlock.of(""))
             .build()
@@ -37,7 +36,7 @@ class BuilderTypeSpecBuilder(
         val fieldType = it.second
         MethodSpec.methodBuilder(fieldName)
             .addModifiers(Modifier.PUBLIC)
-            .addParameter(ParameterSpec.builder(fieldType.toJavaTypeName(), fieldName).build())
+            .addParameter(ParameterSpec.builder(fieldType, fieldName).build())
             .returns(builderClassName)
             .addStatement("this.\$L = \$L", fieldName, fieldName)
             .addStatement("return this")
@@ -46,7 +45,7 @@ class BuilderTypeSpecBuilder(
 
   private fun TypeSpec.Builder.addBuilderBuildMethod(): TypeSpec.Builder {
     val validationCodeBuilder = fields.filter {
-      val fieldType = it.second.toJavaTypeName()
+      val fieldType = it.second
       !fieldType.isPrimitive && fieldType.annotations.contains(Annotations.NONNULL)
     }.map {
       val fieldName = it.first
@@ -75,10 +74,10 @@ class BuilderTypeSpecBuilder(
             .addStatement("return new \$T()", builderClassName)
             .build()
 
-    private fun Number.castTo(type: Type) =
-        if (type is Type.Int) {
+    private fun Number.castTo(type: TypeName) =
+        if (type == TypeName.INT || type == TypeName.INT.box()) {
           toInt()
-        } else if (type is Type.Float) {
+        } else if (type == TypeName.FLOAT || type == TypeName.FLOAT.box()) {
           toDouble()
         } else {
           this

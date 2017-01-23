@@ -1,7 +1,7 @@
 package com.apollographql.android.compiler.ir
 
+import com.apollographql.android.compiler.JavaTypeResolver
 import com.apollographql.android.compiler.SchemaTypeSpecBuilder
-import com.apollographql.android.compiler.ir.graphql.Type
 import com.cesarferreira.pluralize.singularize
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.MethodSpec
@@ -42,9 +42,10 @@ data class Field(
       .addModifiers(Modifier.PRIVATE)
       .build()
 
-  private fun toTypeName(responseType: String, typesPackage: String): TypeName =
-      Type.resolveByName(responseType, isOptional())
-          .toJavaTypeName(if (fields?.any() ?: false || hasFragments()) "" else typesPackage)
+  private fun toTypeName(responseType: String, typesPackage: String): TypeName {
+    val packageName = if (fields?.any() ?: false || hasFragments()) "" else typesPackage
+    return JavaTypeResolver(packageName).resolve(responseType, isOptional())
+  }
 
   fun normalizedName() = responseName.capitalize().singularize()
 

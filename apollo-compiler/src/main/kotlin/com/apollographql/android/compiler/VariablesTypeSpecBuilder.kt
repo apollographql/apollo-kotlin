@@ -1,8 +1,5 @@
 package com.apollographql.android.compiler
 
-import com.apollographql.android.compiler.BuilderTypeSpecBuilder
-import com.apollographql.android.compiler.ClassNames
-import com.apollographql.android.compiler.ir.graphql.Type
 import com.apollographql.android.compiler.ir.Variable
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
@@ -21,12 +18,10 @@ class VariablesTypeSpecBuilder(
           .addBuilder()
           .build()
 
-  private fun Variable.javaTypeName() = Type.resolveByName(type, !type.endsWith("!")).toJavaTypeName(typesPackage)
-
   private fun TypeSpec.Builder.addVariableFields(): TypeSpec.Builder =
       addFields(variables.map { variable ->
         FieldSpec
-            .builder(variable.javaTypeName(), variable.name.decapitalize())
+            .builder(variable.javaTypeName(typesPackage), variable.name.decapitalize())
             .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
             .build()
       })
@@ -39,7 +34,7 @@ class VariablesTypeSpecBuilder(
     return addMethod(MethodSpec
         .constructorBuilder()
         .addParameters(variables.map {
-          ParameterSpec.builder(it.javaTypeName(), it.name.decapitalize()).build()
+          ParameterSpec.builder(it.javaTypeName(typesPackage), it.name.decapitalize()).build()
         })
         .addCode(fieldInitializeCodeBuilder.build())
         .build()
@@ -51,7 +46,7 @@ class VariablesTypeSpecBuilder(
         MethodSpec
             .methodBuilder(variable.name)
             .addModifiers(Modifier.PUBLIC)
-            .returns(variable.javaTypeName())
+            .returns(variable.javaTypeName(typesPackage))
             .addStatement("return \$L", variable.name.decapitalize())
             .build()
       })
@@ -60,7 +55,7 @@ class VariablesTypeSpecBuilder(
     if (variables.isEmpty()) {
       return this
     } else {
-      val builderFields = variables.map { it.name.decapitalize() to it.graphQLType() }
+      val builderFields = variables.map { it.name.decapitalize() to it.javaTypeName(typesPackage) }
       return addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
           .addType(BuilderTypeSpecBuilder(VARIABLES_TYPE_NAME, builderFields, emptyMap(), typesPackage).build())
     }
@@ -69,6 +64,7 @@ class VariablesTypeSpecBuilder(
   companion object {
     private val VARIABLES_CLASS_NAME: String = "Variables"
     private val VARIABLES_TYPE_NAME: ClassName = ClassName.get("", VARIABLES_CLASS_NAME)
-    private fun Variable.graphQLType() = Type.resolveByName(type, !type.endsWith("!"))
+    private fun Variable.javaTypeName(packageName: String) =
+        JavaTypeResolver(packageName).resolve(type, !type.endsWith("!"))
   }
 }
