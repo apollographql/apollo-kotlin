@@ -1,7 +1,7 @@
 package com.example.unique_type_name;
 
-import com.apollographql.api.graphql.Operation;
-import com.apollographql.api.graphql.Query;
+import com.apollographql.android.api.graphql.Operation;
+import com.apollographql.android.api.graphql.Query;
 import com.example.unique_type_name.fragment.HeroDetails;
 import com.example.unique_type_name.type.Episode;
 import java.lang.Double;

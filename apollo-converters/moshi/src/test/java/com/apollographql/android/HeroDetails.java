@@ -1,6 +1,6 @@
 package com.apollographql.android;
 
-import com.apollographql.api.graphql.Query;
+import com.apollographql.android.api.graphql.Query;
 
 import java.util.List;
 

@@ -1,8 +1,8 @@
 package com.example.pojo_fragment_with_inline_fragment.fragment;
 
-import com.apollographql.api.graphql.Field;
-import com.apollographql.api.graphql.ResponseFieldMapper;
-import com.apollographql.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.Field;
+import com.apollographql.android.api.graphql.ResponseFieldMapper;
+import com.apollographql.android.api.graphql.ResponseReader;
 import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Object;

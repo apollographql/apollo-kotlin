@@ -1,10 +1,10 @@
 package com.example.pojo_fragment_with_inline_fragment;
 
-import com.apollographql.api.graphql.Field;
-import com.apollographql.api.graphql.Operation;
-import com.apollographql.api.graphql.Query;
-import com.apollographql.api.graphql.ResponseFieldMapper;
-import com.apollographql.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.Field;
+import com.apollographql.android.api.graphql.Operation;
+import com.apollographql.android.api.graphql.Query;
+import com.apollographql.android.api.graphql.ResponseFieldMapper;
+import com.apollographql.android.api.graphql.ResponseReader;
 import com.example.pojo_fragment_with_inline_fragment.fragment.HeroDetails;
 import com.example.pojo_fragment_with_inline_fragment.type.Episode;
 import java.io.IOException;

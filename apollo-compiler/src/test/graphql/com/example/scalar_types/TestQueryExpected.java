@@ -1,7 +1,7 @@
 package com.example.scalar_types;
 
-import com.apollographql.api.graphql.Operation;
-import com.apollographql.api.graphql.Query;
+import com.apollographql.android.api.graphql.Operation;
+import com.apollographql.android.api.graphql.Query;
 import java.lang.Boolean;
 import java.lang.Double;
 import java.lang.Integer;
