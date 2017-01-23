@@ -20,7 +20,7 @@ buildscript {
   }
 }
 
-apply plugin: 'com.apollostack.android'
+apply plugin: 'com.apollographql.android'
 ```
 
 ## License

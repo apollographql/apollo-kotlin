@@ -29,10 +29,10 @@ task pluginVersion {
   outputs.dir outputDir
 
   doLast {
-    def versionFile = file("$outputDir/com/apollostack/android/Version.kt")
+    def versionFile = file("$outputDir/com/apollographql/android/Version.kt")
     versionFile.parentFile.mkdirs()
     versionFile.text = """// Generated file. Do not edit!
-package com.apollostack.android
+package com.apollographql.android
 val VERSION = "${project.version}"
 """
   }
