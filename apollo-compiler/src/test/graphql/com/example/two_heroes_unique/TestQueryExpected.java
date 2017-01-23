@@ -1,7 +1,7 @@
 package com.example.two_heroes_unique;
 
-import com.apollographql.api.graphql.Operation;
-import com.apollographql.api.graphql.Query;
+import com.apollographql.android.api.graphql.Operation;
+import com.apollographql.android.api.graphql.Query;
 import java.lang.Override;
 import java.lang.String;
 import javax.annotation.Generated;

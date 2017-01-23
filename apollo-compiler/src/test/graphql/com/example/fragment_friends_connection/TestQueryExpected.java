@@ -1,7 +1,7 @@
 package com.example.fragment_friends_connection;
 
-import com.apollographql.api.graphql.Operation;
-import com.apollographql.api.graphql.Query;
+import com.apollographql.android.api.graphql.Operation;
+import com.apollographql.android.api.graphql.Query;
 import com.example.fragment_friends_connection.fragment.HeroDetails;
 import java.lang.Override;
 import java.lang.String;

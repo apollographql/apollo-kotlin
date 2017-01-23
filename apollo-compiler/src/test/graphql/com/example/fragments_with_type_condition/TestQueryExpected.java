@@ -1,7 +1,7 @@
 package com.example.fragments_with_type_condition;
 
-import com.apollographql.api.graphql.Operation;
-import com.apollographql.api.graphql.Query;
+import com.apollographql.android.api.graphql.Operation;
+import com.apollographql.android.api.graphql.Query;
 import com.example.fragments_with_type_condition.fragment.DroidDetails;
 import com.example.fragments_with_type_condition.fragment.HumanDetails;
 import java.lang.Override;

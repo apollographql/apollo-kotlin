@@ -1,6 +1,6 @@
 package com.apollographql.android.gradle
 
-import com.apollographql.compiler.GraphQLCompiler
+import com.apollographql.android.compiler.GraphQLCompiler
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.SourceTask

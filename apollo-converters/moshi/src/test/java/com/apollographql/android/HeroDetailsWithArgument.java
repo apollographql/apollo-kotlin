@@ -1,7 +1,7 @@
 package com.apollographql.android;
 
-import com.apollographql.api.graphql.Operation;
-import com.apollographql.api.graphql.Query;
+import com.apollographql.android.api.graphql.Operation;
+import com.apollographql.android.api.graphql.Query;
 
 import javax.annotation.Nullable;
 

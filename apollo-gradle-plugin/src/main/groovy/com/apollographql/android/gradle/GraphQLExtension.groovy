@@ -1,6 +1,6 @@
 package com.apollographql.android.gradle
 
-import com.apollographql.compiler.GraphQLCompiler
+import com.apollographql.android.compiler.GraphQLCompiler
 import com.google.common.collect.ArrayListMultimap
 import com.google.common.collect.Multimap
 import org.gradle.api.Project

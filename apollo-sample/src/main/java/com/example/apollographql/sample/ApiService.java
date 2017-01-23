@@ -1,6 +1,6 @@
 package com.example.apollographql.sample;
 
-import com.apollographql.api.graphql.Response;
+import com.apollographql.android.api.graphql.Response;
 import com.example.DroidDetails;
 import com.example.Films;
 

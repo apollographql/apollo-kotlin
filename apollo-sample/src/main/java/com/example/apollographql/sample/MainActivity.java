@@ -6,7 +6,7 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.apollographql.api.graphql.Response;
+import com.apollographql.android.api.graphql.Response;
 import com.example.DroidDetails;
 
 import io.reactivex.Observer;
