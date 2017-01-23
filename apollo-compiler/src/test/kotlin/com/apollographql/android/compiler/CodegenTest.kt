@@ -8,21 +8,18 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.io.File
-import java.nio.file.FileVisitResult
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.SimpleFileVisitor
+import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 import java.util.*
 import javax.tools.JavaFileObject
 
-@RunWith(org.junit.runners.Parameterized::class)
-class CodeGenTest(val testDir: java.io.File, val pkgName: String, val generatePOJO: Boolean) {
+@RunWith(Parameterized::class)
+class CodeGenTest(val testDir: File, val pkgName: String, val generatePOJO: Boolean) {
   private val testDirPath = testDir.toPath()
-  private val expectedFileMatcher = java.nio.file.FileSystems.getDefault().getPathMatcher("glob:**Expected.java")
+  private val expectedFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**Expected.java")
 
   private val compiler = GraphQLCompiler()
-  private val outputDir = GraphQLCompiler.Companion.OUTPUT_DIRECTORY.fold(java.io.File("build"), ::File)
+  private val outputDir = GraphQLCompiler.Companion.OUTPUT_DIRECTORY.fold(File("build"), ::File)
   private val sourceFileObjects: MutableList<JavaFileObject> = ArrayList()
 
   @Test

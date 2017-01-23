@@ -5,11 +5,11 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 /** Represents either a successful or failed response received from the GraphQL server. */
-public class Response<T extends com.apollographql.android.api.graphql.Operation.Data> {
+public class Response<T extends Operation.Data> {
   @Nullable private final T data;
-  @Nullable private final List<com.apollographql.android.api.graphql.Error> errors;
+  @Nullable private final List<Error> errors;
 
-  public Response(@Nullable T data, @Nullable List<com.apollographql.android.api.graphql.Error> errors) {
+  public Response(@Nullable T data, @Nullable List<Error> errors) {
     this.data = data;
     this.errors = errors;
   }
@@ -22,7 +22,7 @@ public class Response<T extends com.apollographql.android.api.graphql.Operation.
     return data;
   }
 
-  @Nullable public List<com.apollographql.android.api.graphql.Error> errors() {
+  @Nullable public List<Error> errors() {
     return errors;
   }
 }
