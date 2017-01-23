@@ -1,4 +1,4 @@
-package com.example.apollostack.sample;
+package com.example.apollographql.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

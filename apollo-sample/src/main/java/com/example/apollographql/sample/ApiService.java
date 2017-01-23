@@ -1,4 +1,4 @@
-package com.example.apollostack.sample;
+package com.example.apollographql.sample;
 
 import com.apollographql.api.graphql.Response;
 import com.example.DroidDetails;

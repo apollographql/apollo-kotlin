@@ -1,4 +1,4 @@
-package com.example.apollostack.sample;
+package com.example.apollographql.sample;
 
 import com.ryanharter.auto.value.moshi.MoshiAdapterFactory;
 import com.squareup.moshi.JsonAdapter;
