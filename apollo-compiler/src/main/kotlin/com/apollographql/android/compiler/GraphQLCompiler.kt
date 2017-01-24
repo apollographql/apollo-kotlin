@@ -13,8 +13,8 @@ open class GraphQLCompiler {
       customScalarTypeMap: Map<String, String> = emptyMap()) {
     val ir = irAdapter.fromJson(irFile.readText())
     val irPackageName = irFile.absolutePath.formatPackageName()
-    val fragmentsPackage = if(irPackageName.length > 0) "$irPackageName.fragment" else "fragment"
-    val typesPackage = if(irPackageName.length > 0) "$irPackageName.type" else "type"
+    val fragmentsPackage = if (irPackageName.length > 0) "$irPackageName.fragment" else "fragment"
+    val typesPackage = if (irPackageName.length > 0) "$irPackageName.type" else "type"
     val codeGenerationContext = CodeGenerationContext(!generateClasses, emptyList(), ir.typesUsed, fragmentsPackage,
         typesPackage, customScalarTypeMap)
     val operationTypeBuilders = ir.operations.map { OperationTypeSpecBuilder(it, ir.fragments) }
@@ -22,6 +22,11 @@ open class GraphQLCompiler {
       val packageName = javaFilePackageName(it, irPackageName, fragmentsPackage, typesPackage)
       val typeSpec = it.toTypeSpec(codeGenerationContext)
       JavaFile.builder(packageName, typeSpec).build().writeTo(outputDir)
+    }
+
+    if (customScalarTypeMap.isNotEmpty()) {
+      val typeSpec = CustomScalarEnumTypeSpecBuilder(typesPackage, customScalarTypeMap).build()
+      JavaFile.builder(typesPackage, typeSpec).build().writeTo(outputDir)
     }
   }
 
