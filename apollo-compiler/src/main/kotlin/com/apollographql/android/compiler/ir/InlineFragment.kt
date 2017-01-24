@@ -10,7 +10,7 @@ data class InlineFragment(
     val fields: List<Field>,
     val fragmentSpreads: List<String>?
 ) : CodeGenerator {
-  override fun toTypeSpec(context: CodeGeneratorContext): TypeSpec =
+  override fun toTypeSpec(context: CodeGenerationContext): TypeSpec =
       SchemaTypeSpecBuilder(interfaceName(), fields, fragmentSpreads ?: emptyList(), emptyList(), context)
           .build(Modifier.PUBLIC, Modifier.STATIC)
 

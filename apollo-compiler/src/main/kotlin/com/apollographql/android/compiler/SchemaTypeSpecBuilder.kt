@@ -1,6 +1,6 @@
 package com.apollographql.android.compiler
 
-import com.apollographql.android.compiler.ir.CodeGeneratorContext
+import com.apollographql.android.compiler.ir.CodeGenerationContext
 import com.apollographql.android.compiler.ir.Field
 import com.apollographql.android.compiler.ir.InlineFragment
 import com.squareup.javapoet.*
@@ -12,7 +12,7 @@ class SchemaTypeSpecBuilder(
     val fields: List<Field>,
     val fragmentSpreads: List<String>,
     val inlineFragments: List<InlineFragment>,
-    val context: CodeGeneratorContext
+    val context: CodeGenerationContext
 ) {
   private val uniqueTypeName = formatUniqueTypeName(typeName, context.reservedTypeNames)
   private val innerTypeNameOverrideMap = buildUniqueTypeNameMap(context.reservedTypeNames + typeName)
@@ -71,7 +71,7 @@ class SchemaTypeSpecBuilder(
     val reservedTypeNames = context.reservedTypeNames + typeName + fields.filter(Field::isNonScalar).map(
         Field::normalizedName)
     val typeSpecs = fields.filter(Field::isNonScalar).map {
-      it.toTypeSpec(CodeGeneratorContext(context.abstractType, reservedTypeNames.minus(it.normalizedName()),
+      it.toTypeSpec(CodeGenerationContext(context.abstractType, reservedTypeNames.minus(it.normalizedName()),
           context.typeDeclarations, context.fragmentsPackage, context.typesPackage, context.customScalarTypeMap))
     }
     return addTypes(typeSpecs)
@@ -81,7 +81,7 @@ class SchemaTypeSpecBuilder(
     val reservedTypeNames = context.reservedTypeNames + typeName + fields.filter(Field::isNonScalar).map(
         Field::normalizedName)
     val typeSpecs = fragments.map {
-      it.toTypeSpec(CodeGeneratorContext(context.abstractType, reservedTypeNames, context.typeDeclarations,
+      it.toTypeSpec(CodeGenerationContext(context.abstractType, reservedTypeNames, context.typeDeclarations,
           context.fragmentsPackage, context.typesPackage, context.customScalarTypeMap))
     }
     val methodSpecs = fragments.map { it.accessorMethodSpec(context.abstractType) }

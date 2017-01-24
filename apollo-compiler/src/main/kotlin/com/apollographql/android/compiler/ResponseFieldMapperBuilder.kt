@@ -2,7 +2,7 @@ package com.apollographql.android.compiler
 
 import com.apollographql.android.api.graphql.ResponseFieldMapper
 import com.apollographql.android.api.graphql.ResponseReader
-import com.apollographql.android.compiler.ir.CodeGeneratorContext
+import com.apollographql.android.compiler.ir.CodeGenerationContext
 import com.apollographql.android.compiler.ir.Field
 import com.apollographql.android.compiler.ir.InlineFragment
 import com.apollographql.android.compiler.ir.TypeDeclaration
@@ -16,7 +16,7 @@ class ResponseFieldMapperBuilder(
     val fragmentSpreads: List<String>,
     val inlineFragments: List<InlineFragment>,
     val typeOverrideMap: Map<String, String>,
-    val context: CodeGeneratorContext
+    val context: CodeGenerationContext
 ) {
   private val typeClassName = ClassName.get("", typeName)
   private val hasFragments = inlineFragments.isNotEmpty() || fragmentSpreads.isNotEmpty()

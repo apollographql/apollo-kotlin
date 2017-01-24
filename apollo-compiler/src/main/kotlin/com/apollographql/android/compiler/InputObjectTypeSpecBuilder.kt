@@ -1,6 +1,6 @@
 package com.apollographql.android.compiler
 
-import com.apollographql.android.compiler.ir.CodeGeneratorContext
+import com.apollographql.android.compiler.ir.CodeGenerationContext
 import com.apollographql.android.compiler.ir.TypeDeclarationField
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
@@ -8,7 +8,7 @@ import javax.lang.model.element.Modifier
 class InputObjectTypeSpecBuilder(
     val name: String,
     val fields: List<TypeDeclarationField>,
-    val context: CodeGeneratorContext
+    val context: CodeGenerationContext
 ) {
   private val objectClassName = ClassName.get("", name.capitalize())
 
@@ -70,7 +70,7 @@ class InputObjectTypeSpecBuilder(
   }
 
   companion object {
-    private fun TypeDeclarationField.javaTypeName(context: CodeGeneratorContext) =
+    private fun TypeDeclarationField.javaTypeName(context: CodeGenerationContext) =
         JavaTypeResolver(context.customScalarTypeMap, context.typesPackage).resolve(type, !type.endsWith("!"))
   }
 }

@@ -15,7 +15,7 @@ open class GraphQLCompiler {
     val irPackageName = irFile.absolutePath.formatPackageName()
     val fragmentsPackage = if(irPackageName.length > 0) "$irPackageName.fragment" else "fragment"
     val typesPackage = if(irPackageName.length > 0) "$irPackageName.type" else "type"
-    val codeGenerationContext = CodeGeneratorContext(!generateClasses, emptyList(), ir.typesUsed, fragmentsPackage,
+    val codeGenerationContext = CodeGenerationContext(!generateClasses, emptyList(), ir.typesUsed, fragmentsPackage,
         typesPackage, customScalarTypeMap)
     val operationTypeBuilders = ir.operations.map { OperationTypeSpecBuilder(it, ir.fragments) }
     (operationTypeBuilders + ir.fragments + ir.typesUsed).forEach {

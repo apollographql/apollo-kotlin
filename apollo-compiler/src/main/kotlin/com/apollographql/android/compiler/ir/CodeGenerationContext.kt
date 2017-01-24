@@ -1,6 +1,6 @@
 package com.apollographql.android.compiler.ir
 
-data class CodeGeneratorContext(
+data class CodeGenerationContext(
     val abstractType: Boolean,
     val reservedTypeNames: List<String>,
     val typeDeclarations: List<TypeDeclaration>,

@@ -12,7 +12,7 @@ data class TypeDeclaration(
     val values: List<TypeDeclarationValue>?,
     val fields: List<TypeDeclarationField>?
 ) : CodeGenerator {
-  override fun toTypeSpec(context: CodeGeneratorContext): TypeSpec {
+  override fun toTypeSpec(context: CodeGenerationContext): TypeSpec {
     if (kind == "EnumType") {
       return enumTypeToTypeSpec()
     } else if (kind == "InputObjectType") {
@@ -40,6 +40,6 @@ data class TypeDeclaration(
     return builder.build()
   }
 
-  private fun inputObjectToTypeSpec(context: CodeGeneratorContext) =
+  private fun inputObjectToTypeSpec(context: CodeGenerationContext) =
       InputObjectTypeSpecBuilder(name, fields ?: emptyList(), context).build()
 }

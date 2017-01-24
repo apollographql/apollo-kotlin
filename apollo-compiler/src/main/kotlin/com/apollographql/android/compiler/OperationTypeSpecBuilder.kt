@@ -11,7 +11,7 @@ class OperationTypeSpecBuilder(
   private val OPERATION_TYPE_NAME = operation.operationName.capitalize()
   private val OPERATION_VARIABLES_CLASS_NAME = ClassName.get("", "$OPERATION_TYPE_NAME.Variables")
 
-  override fun toTypeSpec(context: CodeGeneratorContext): TypeSpec {
+  override fun toTypeSpec(context: CodeGenerationContext): TypeSpec {
     return TypeSpec.classBuilder(OPERATION_TYPE_NAME)
         .addAnnotation(Annotations.GENERATED_BY_APOLLO)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
