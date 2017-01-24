@@ -35,7 +35,7 @@ data class Field(
     return methodSpecBuilder.build()
   }
 
-  fun fieldSpec(typesPackage: String = "", customScalarTypeMap: Map<String, String>): FieldSpec = FieldSpec
+  fun fieldSpec(customScalarTypeMap: Map<String, String>, typesPackage: String = ""): FieldSpec = FieldSpec
       .builder(toTypeName(methodResponseType(), typesPackage, customScalarTypeMap), responseName)
       .addModifiers(Modifier.PRIVATE)
       .build()

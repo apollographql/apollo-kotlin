@@ -2,6 +2,7 @@ package com.apollographql.android.compiler
 
 import com.apollographql.android.api.graphql.ResponseFieldMapper
 import com.apollographql.android.api.graphql.ResponseReader
+import com.apollographql.android.compiler.ir.CodeGeneratorContext
 import com.apollographql.android.compiler.ir.Field
 import com.apollographql.android.compiler.ir.InlineFragment
 import com.apollographql.android.compiler.ir.TypeDeclaration
@@ -15,8 +16,7 @@ class ResponseFieldMapperBuilder(
     val fragmentSpreads: List<String>,
     val inlineFragments: List<InlineFragment>,
     val typeOverrideMap: Map<String, String>,
-    val typeDeclarations: List<TypeDeclaration>,
-    val customScalarTypeMap: Map<String, String>
+    val context: CodeGeneratorContext
 ) {
   private val typeClassName = ClassName.get("", typeName)
   private val hasFragments = inlineFragments.isNotEmpty() || fragmentSpreads.isNotEmpty()
@@ -93,7 +93,7 @@ class ResponseFieldMapperBuilder(
 
 
   private fun fieldValueCaseStatement(field: Field, index: Int): CodeBlock {
-    val fieldSpec = field.fieldSpec("", customScalarTypeMap)
+    val fieldSpec = field.fieldSpec(context.customScalarTypeMap)
     val fieldRawType = fieldSpec.type.withoutAnnotations().overrideTypeName(typeOverrideMap)
     return CodeBlock.builder()
         .beginControlFlow("case $index:")
@@ -175,7 +175,7 @@ class ResponseFieldMapperBuilder(
   }
 
   private fun Field.responseFieldFactoryStatement(): CodeBlock {
-    val fieldTypeName = fieldSpec("", customScalarTypeMap).type.withoutAnnotations()
+    val fieldTypeName = fieldSpec(context.customScalarTypeMap).type.withoutAnnotations()
     if (fieldTypeName.isScalar()) {
       return scalarResponseFieldFactoryStatement(fieldTypeName)
     } else if (fieldTypeName.isList()) {
@@ -202,9 +202,11 @@ class ResponseFieldMapperBuilder(
     }
   }
 
-  private fun TypeName.isList() = (this is ParameterizedTypeName && rawType == ClassNames.LIST)
+  private fun TypeName.isList() =
+      (this is ParameterizedTypeName && rawType == ClassNames.LIST)
 
-  private fun TypeName.isEnum() = ((this is ClassName) && typeDeclarations.count { it.kind == "EnumType" && it.name == simpleName() } > 0)
+  private fun TypeName.isEnum() =
+      ((this is ClassName) && context.typeDeclarations.count { it.kind == "EnumType" && it.name == simpleName() } > 0)
 
   private fun TypeName.isScalar() = (SCALAR_TYPES.contains(this) || isEnum())
 

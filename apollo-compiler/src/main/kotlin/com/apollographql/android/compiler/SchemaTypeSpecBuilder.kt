@@ -23,7 +23,7 @@ class SchemaTypeSpecBuilder(
       TypeSpec.interfaceBuilder(uniqueTypeName)
     } else {
       val mapperField = ResponseFieldMapperBuilder(uniqueTypeName, fields, fragmentSpreads, inlineFragments,
-          innerTypeNameOverrideMap, context.typeDeclarations, context.customScalarTypeMap).build()
+          innerTypeNameOverrideMap, context).build()
       TypeSpec.classBuilder(uniqueTypeName)
           .addField(mapperField)
           .addMethod(MethodSpec
@@ -47,7 +47,7 @@ class SchemaTypeSpecBuilder(
 
   private fun TypeSpec.Builder.addFields(fields: List<Field>, abstractClass: Boolean): TypeSpec.Builder {
     val fieldSpecs = if (abstractClass) emptyList() else fields.map {
-      it.fieldSpec(context.typesPackage, context.customScalarTypeMap)
+      it.fieldSpec(context.customScalarTypeMap, context.typesPackage)
     }
     val methodSpecs = fields.map {
       it.accessorMethodSpec(abstractClass, context.typesPackage, context.customScalarTypeMap)
