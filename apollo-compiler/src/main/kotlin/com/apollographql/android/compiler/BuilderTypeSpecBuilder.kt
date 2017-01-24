@@ -6,8 +6,7 @@ import javax.lang.model.element.Modifier
 class BuilderTypeSpecBuilder(
     val targetObjectClassName: ClassName,
     val fields: List<Pair<String, TypeName>>,
-    val fieldDefaultValues: Map<String, Any?>,
-    val typesPackage: String
+    val fieldDefaultValues: Map<String, Any?>
 ) {
   fun build(): TypeSpec {
     return TypeSpec.classBuilder(builderClassName)

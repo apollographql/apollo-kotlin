@@ -58,7 +58,7 @@ class VariablesTypeSpecBuilder(
     } else {
       val builderFields = variables.map { it.name.decapitalize() to it.javaTypeName(customScalarTypeMap, typesPackage) }
       return addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
-          .addType(BuilderTypeSpecBuilder(VARIABLES_TYPE_NAME, builderFields, emptyMap(), typesPackage).build())
+          .addType(BuilderTypeSpecBuilder(VARIABLES_TYPE_NAME, builderFields, emptyMap()).build())
     }
   }
 

@@ -16,7 +16,7 @@ data class TypeDeclaration(
     if (kind == "EnumType") {
       return enumTypeToTypeSpec()
     } else if (kind == "InputObjectType") {
-      return inputObjectToTypeSpec(context.typesPackage, context.customScalarTypeMap)
+      return inputObjectToTypeSpec(context)
     } else {
       throw UnsupportedOperationException("unsupported $kind type declaration")
     }
@@ -40,6 +40,6 @@ data class TypeDeclaration(
     return builder.build()
   }
 
-  private fun inputObjectToTypeSpec(typesPackage: String, customScalarTypeMap: Map<String, String>) =
-      InputObjectTypeSpecBuilder(name, fields ?: emptyList(), typesPackage, customScalarTypeMap).build()
+  private fun inputObjectToTypeSpec(context: CodeGeneratorContext) =
+      InputObjectTypeSpecBuilder(name, fields ?: emptyList(), context).build()
 }
