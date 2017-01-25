@@ -47,10 +47,10 @@ class SchemaTypeSpecBuilder(
 
   private fun TypeSpec.Builder.addFields(fields: List<Field>, abstractClass: Boolean): TypeSpec.Builder {
     val fieldSpecs = if (abstractClass) emptyList() else fields.map {
-      it.fieldSpec(context.customScalarTypeMap, context.typesPackage)
+      it.fieldSpec(context.customTypeMap, context.typesPackage)
     }
     val methodSpecs = fields.map {
-      it.accessorMethodSpec(abstractClass, context.typesPackage, context.customScalarTypeMap)
+      it.accessorMethodSpec(abstractClass, context.typesPackage, context.customTypeMap)
     }
     return addFields(fieldSpecs.map { it.overrideType(innerTypeNameOverrideMap) })
         .addMethods(methodSpecs.map { it.overrideReturnType(innerTypeNameOverrideMap) })
@@ -72,7 +72,7 @@ class SchemaTypeSpecBuilder(
         Field::normalizedName)
     val typeSpecs = fields.filter(Field::isNonScalar).map {
       it.toTypeSpec(CodeGenerationContext(context.abstractType, reservedTypeNames.minus(it.normalizedName()),
-          context.typeDeclarations, context.fragmentsPackage, context.typesPackage, context.customScalarTypeMap))
+          context.typeDeclarations, context.fragmentsPackage, context.typesPackage, context.customTypeMap))
     }
     return addTypes(typeSpecs)
   }
@@ -82,7 +82,7 @@ class SchemaTypeSpecBuilder(
         Field::normalizedName)
     val typeSpecs = fragments.map {
       it.toTypeSpec(CodeGenerationContext(context.abstractType, reservedTypeNames, context.typeDeclarations,
-          context.fragmentsPackage, context.typesPackage, context.customScalarTypeMap))
+          context.fragmentsPackage, context.typesPackage, context.customTypeMap))
     }
     val methodSpecs = fragments.map { it.accessorMethodSpec(context.abstractType) }
     val fieldSpecs = if (context.abstractType) emptyList() else fragments.map { it.fieldSpec() }

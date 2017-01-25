@@ -6,5 +6,5 @@ data class CodeGenerationContext(
     val typeDeclarations: List<TypeDeclaration>,
     val fragmentsPackage: String = "",
     val typesPackage: String = "",
-    val customScalarTypeMap: Map<String, String>
+    val customTypeMap: Map<String, String>
 )

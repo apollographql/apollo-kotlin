@@ -72,6 +72,8 @@ class CodeGenTest(val testDir: File, val pkgName: String, val generatePOJO: Bool
           .map {
             if (it.name == "custom_scalar_type") {
               arrayOf(it, it.name, false, mapOf("Date" to "java.util.Date"))
+            } else if (it.name == "pojo_custom_scalar_type") {
+              arrayOf(it, it.name, true, mapOf("Date" to "java.util.Date"))
             } else {
               arrayOf(it, it.name, it.name.startsWith("pojo"), emptyMap<String, String>())
             }

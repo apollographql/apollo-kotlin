@@ -1,6 +1,6 @@
 package com.apollographql.android.api.graphql;
 
-public interface ScalarTypeMapping {
+public interface TypeMapping {
   String type();
 
   Class clazz();
