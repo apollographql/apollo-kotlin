@@ -4,11 +4,13 @@ import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeName
 
 class JavaTypeResolver(
+    private val customScalarTypeMap: Map<kotlin.String, kotlin.String>,
     private val packageName: kotlin.String
 ) {
   fun resolve(typeName: kotlin.String, isOptional: kotlin.Boolean): TypeName {
     val normalizedTypeName = typeName.removeSuffix("!")
     val isList = normalizedTypeName.startsWith('[') && normalizedTypeName.endsWith(']')
+    val customScalarType = customScalarTypeMap[normalizedTypeName]
     val javaType = when {
       isList -> ClassNames.parameterizedListOf(resolve(normalizedTypeName.removeSurrounding("[", "]"), true))
       normalizedTypeName == "String" -> ClassNames.STRING
@@ -16,6 +18,8 @@ class JavaTypeResolver(
       normalizedTypeName == "Int" -> if (isOptional) TypeName.INT.box() else TypeName.INT
       normalizedTypeName == "Boolean" -> if (isOptional) TypeName.BOOLEAN.box() else TypeName.BOOLEAN
       normalizedTypeName == "Float" -> if (isOptional) TypeName.DOUBLE.box() else TypeName.DOUBLE
+      customScalarType != null -> ClassName.get(customScalarType.substringBeforeLast("."),
+          customScalarType.substringAfterLast("."))
       else -> ClassName.get(if (packageName.isEmpty()) "" else packageName, normalizedTypeName)
     }
 

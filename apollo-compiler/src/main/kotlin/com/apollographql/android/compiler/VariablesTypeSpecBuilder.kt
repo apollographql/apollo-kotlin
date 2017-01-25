@@ -6,7 +6,8 @@ import javax.lang.model.element.Modifier
 
 class VariablesTypeSpecBuilder(
     val variables: List<Variable>,
-    val typesPackage: String
+    val typesPackage: String,
+    val customScalarTypeMap: Map<String, String>
 ) {
   fun build(): TypeSpec =
       TypeSpec.classBuilder(VARIABLES_CLASS_NAME)
@@ -21,7 +22,7 @@ class VariablesTypeSpecBuilder(
   private fun TypeSpec.Builder.addVariableFields(): TypeSpec.Builder =
       addFields(variables.map { variable ->
         FieldSpec
-            .builder(variable.javaTypeName(typesPackage), variable.name.decapitalize())
+            .builder(variable.javaTypeName(customScalarTypeMap, typesPackage), variable.name.decapitalize())
             .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
             .build()
       })
@@ -34,7 +35,7 @@ class VariablesTypeSpecBuilder(
     return addMethod(MethodSpec
         .constructorBuilder()
         .addParameters(variables.map {
-          ParameterSpec.builder(it.javaTypeName(typesPackage), it.name.decapitalize()).build()
+          ParameterSpec.builder(it.javaTypeName(customScalarTypeMap, typesPackage), it.name.decapitalize()).build()
         })
         .addCode(fieldInitializeCodeBuilder.build())
         .build()
@@ -46,7 +47,7 @@ class VariablesTypeSpecBuilder(
         MethodSpec
             .methodBuilder(variable.name)
             .addModifiers(Modifier.PUBLIC)
-            .returns(variable.javaTypeName(typesPackage))
+            .returns(variable.javaTypeName(customScalarTypeMap, typesPackage))
             .addStatement("return \$L", variable.name.decapitalize())
             .build()
       })
@@ -55,16 +56,16 @@ class VariablesTypeSpecBuilder(
     if (variables.isEmpty()) {
       return this
     } else {
-      val builderFields = variables.map { it.name.decapitalize() to it.javaTypeName(typesPackage) }
+      val builderFields = variables.map { it.name.decapitalize() to it.javaTypeName(customScalarTypeMap, typesPackage) }
       return addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
-          .addType(BuilderTypeSpecBuilder(VARIABLES_TYPE_NAME, builderFields, emptyMap(), typesPackage).build())
+          .addType(BuilderTypeSpecBuilder(VARIABLES_TYPE_NAME, builderFields, emptyMap()).build())
     }
   }
 
   companion object {
     private val VARIABLES_CLASS_NAME: String = "Variables"
     private val VARIABLES_TYPE_NAME: ClassName = ClassName.get("", VARIABLES_CLASS_NAME)
-    private fun Variable.javaTypeName(packageName: String) =
-        JavaTypeResolver(packageName).resolve(type, !type.endsWith("!"))
+    private fun Variable.javaTypeName(customScalarTypeMap: Map<String, String>, packageName: String) =
+        JavaTypeResolver(customScalarTypeMap, packageName).resolve(type, !type.endsWith("!"))
   }
 }

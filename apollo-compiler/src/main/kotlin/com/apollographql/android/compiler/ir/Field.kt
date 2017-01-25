@@ -18,33 +18,32 @@ data class Field(
     val fragmentSpreads: List<String>?,
     val inlineFragments: List<InlineFragment>?
 ) : CodeGenerator {
-  override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
-      typeDeclarations: List<TypeDeclaration>, fragmentsPackage: String, typesPackage: String): TypeSpec =
+  override fun toTypeSpec(context: CodeGenerationContext): TypeSpec =
       SchemaTypeSpecBuilder(normalizedName(), fields ?: emptyList(), fragmentSpreads ?: emptyList(),
-          inlineFragments ?: emptyList(), abstractClass, reservedTypeNames, typeDeclarations, fragmentsPackage,
-          typesPackage)
-          .build(Modifier.PUBLIC, Modifier.STATIC)
+          inlineFragments ?: emptyList(), context).build(Modifier.PUBLIC, Modifier.STATIC)
 
-  fun accessorMethodSpec(abstract: Boolean, typesPackage: String = ""): MethodSpec {
+  fun accessorMethodSpec(abstract: Boolean, typesPackage: String = "",
+      customScalarTypeMap: Map<String, String>): MethodSpec {
     val methodSpecBuilder = MethodSpec
         .methodBuilder(responseName)
         .addModifiers(Modifier.PUBLIC)
         .addModifiers(if (abstract) listOf(Modifier.ABSTRACT) else emptyList())
-        .returns(toTypeName(methodResponseType(), typesPackage))
+        .returns(toTypeName(methodResponseType(), typesPackage, customScalarTypeMap))
     if (!abstract) {
       methodSpecBuilder.addStatement("return this.\$L", responseName)
     }
     return methodSpecBuilder.build()
   }
 
-  fun fieldSpec(typesPackage: String = ""): FieldSpec = FieldSpec
-      .builder(toTypeName(methodResponseType(), typesPackage), responseName)
+  fun fieldSpec(customScalarTypeMap: Map<String, String>, typesPackage: String = ""): FieldSpec = FieldSpec
+      .builder(toTypeName(methodResponseType(), typesPackage, customScalarTypeMap), responseName)
       .addModifiers(Modifier.PRIVATE)
       .build()
 
-  private fun toTypeName(responseType: String, typesPackage: String): TypeName {
+  private fun toTypeName(responseType: String, typesPackage: String,
+      customScalarTypeMap: Map<String, String>): TypeName {
     val packageName = if (fields?.any() ?: false || hasFragments()) "" else typesPackage
-    return JavaTypeResolver(packageName).resolve(responseType, isOptional())
+    return JavaTypeResolver(customScalarTypeMap, packageName).resolve(responseType, isOptional())
   }
 
   fun normalizedName() = responseName.capitalize().singularize()

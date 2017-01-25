@@ -1,5 +1,6 @@
 package com.apollographql.android.compiler
 
+import com.apollographql.android.compiler.ir.CodeGenerationContext
 import com.apollographql.android.compiler.ir.TypeDeclarationField
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
@@ -7,7 +8,7 @@ import javax.lang.model.element.Modifier
 class InputObjectTypeSpecBuilder(
     val name: String,
     val fields: List<TypeDeclarationField>,
-    val typesPackage: String
+    val context: CodeGenerationContext
 ) {
   private val objectClassName = ClassName.get("", name.capitalize())
 
@@ -28,7 +29,8 @@ class InputObjectTypeSpecBuilder(
     return addMethod(MethodSpec
         .constructorBuilder()
         .addParameters(fields.map {
-          ParameterSpec.builder(it.javaTypeName(typesPackage), it.name.decapitalize()).build()
+          ParameterSpec.builder(it.javaTypeName(context),
+              it.name.decapitalize()).build()
         })
         .addCode(fieldInitializeCodeBuilder.build())
         .build()
@@ -37,14 +39,14 @@ class InputObjectTypeSpecBuilder(
 
   private fun TypeSpec.Builder.addFieldDefinition(field: TypeDeclarationField): TypeSpec.Builder =
       addField(FieldSpec
-          .builder(field.javaTypeName(typesPackage), field.name.decapitalize())
+          .builder(field.javaTypeName(context), field.name.decapitalize())
           .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
           .build())
 
   private fun TypeSpec.Builder.addFieldAccessor(field: TypeDeclarationField) =
       addMethod(MethodSpec.methodBuilder(field.name.decapitalize())
           .addModifiers(Modifier.PUBLIC)
-          .returns(field.javaTypeName(typesPackage))
+          .returns(field.javaTypeName(context))
           .addStatement("return this.\$L", field.name.decapitalize())
           .build())
 
@@ -52,11 +54,10 @@ class InputObjectTypeSpecBuilder(
     if (fields.isEmpty()) {
       return this
     } else {
-      val builderFields = fields.map { it.name.decapitalize() to it.javaTypeName(typesPackage) }
+      val builderFields = fields.map { it.name.decapitalize() to it.javaTypeName(context) }
       val builderFieldDefaultValues = fields.associate { it.name.decapitalize() to it.defaultValue }
       return addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
-          .addType(BuilderTypeSpecBuilder(objectClassName, builderFields, builderFieldDefaultValues, typesPackage)
-              .build())
+          .addType(BuilderTypeSpecBuilder(objectClassName, builderFields, builderFieldDefaultValues).build())
     }
   }
 
@@ -69,7 +70,7 @@ class InputObjectTypeSpecBuilder(
   }
 
   companion object {
-    private fun TypeDeclarationField.javaTypeName(packageName: String) =
-        JavaTypeResolver(packageName).resolve(type, !type.endsWith("!"))
+    private fun TypeDeclarationField.javaTypeName(context: CodeGenerationContext) =
+        JavaTypeResolver(context.customScalarTypeMap, context.typesPackage).resolve(type, !type.endsWith("!"))
   }
 }

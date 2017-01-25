@@ -11,8 +11,7 @@ class OperationTypeSpecBuilder(
   private val OPERATION_TYPE_NAME = operation.operationName.capitalize()
   private val OPERATION_VARIABLES_CLASS_NAME = ClassName.get("", "$OPERATION_TYPE_NAME.Variables")
 
-  override fun toTypeSpec(abstractClass: Boolean, reservedTypeNames: List<String>,
-      typeDeclarations: List<TypeDeclaration>, fragmentsPackage: String, typesPackage: String): TypeSpec {
+  override fun toTypeSpec(context: CodeGenerationContext): TypeSpec {
     return TypeSpec.classBuilder(OPERATION_TYPE_NAME)
         .addAnnotation(Annotations.GENERATED_BY_APOLLO)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
@@ -20,9 +19,8 @@ class OperationTypeSpecBuilder(
         .addOperationDefinition(operation)
         .addQueryDocumentDefinition(fragments)
         .addQueryConstructor(operation.variables.isNotEmpty())
-        .addVariablesDefinition(operation.variables, typesPackage)
-        .addType(operation.toTypeSpec(abstractClass, reservedTypeNames, typeDeclarations, fragmentsPackage,
-            typesPackage))
+        .addVariablesDefinition(operation.variables, context.typesPackage, context.customScalarTypeMap)
+        .addType(operation.toTypeSpec(context))
         .build()
   }
 
@@ -70,7 +68,7 @@ class OperationTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addVariablesDefinition(variables: List<Variable>,
-      typesPackage: String): TypeSpec.Builder {
+      typesPackage: String, customScalarTypeMap: Map<String, String>): TypeSpec.Builder {
     val queryFieldClassName =
         if (variables.isNotEmpty()) OPERATION_VARIABLES_CLASS_NAME else ClassNames.GRAPHQL_OPERATION_VARIABLES
     addField(FieldSpec.builder(queryFieldClassName, VARIABLES_FIELD_NAME)
@@ -87,7 +85,7 @@ class OperationTypeSpecBuilder(
     )
 
     if (variables.isNotEmpty()) {
-      addType(VariablesTypeSpecBuilder(variables, typesPackage).build())
+      addType(VariablesTypeSpecBuilder(variables, typesPackage, customScalarTypeMap).build())
     }
 
     return this

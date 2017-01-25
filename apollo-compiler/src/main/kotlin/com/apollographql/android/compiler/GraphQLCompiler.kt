@@ -1,9 +1,6 @@
 package com.apollographql.android.compiler
 
-import com.apollographql.android.compiler.ir.CodeGenerator
-import com.apollographql.android.compiler.ir.Fragment
-import com.apollographql.android.compiler.ir.OperationIntermediateRepresentation
-import com.apollographql.android.compiler.ir.TypeDeclaration
+import com.apollographql.android.compiler.ir.*
 import com.squareup.javapoet.JavaFile
 import com.squareup.moshi.Moshi
 import java.io.File
@@ -12,18 +9,24 @@ open class GraphQLCompiler {
   private val moshi = Moshi.Builder().build()
   private val irAdapter = moshi.adapter(OperationIntermediateRepresentation::class.java)
 
-  fun write(irFile: File, outputDir: File, generateClasses: Boolean = false) {
+  fun write(irFile: File, outputDir: File, generateClasses: Boolean = false,
+      customScalarTypeMap: Map<String, String> = emptyMap()) {
     val ir = irAdapter.fromJson(irFile.readText())
     val irPackageName = irFile.absolutePath.formatPackageName()
-    val fragmentsPackage = if(irPackageName.length > 0) "$irPackageName.fragment" else "fragment"
-    val typesPackage = if(irPackageName.length > 0) "$irPackageName.type" else "type"
-
+    val fragmentsPackage = if (irPackageName.length > 0) "$irPackageName.fragment" else "fragment"
+    val typesPackage = if (irPackageName.length > 0) "$irPackageName.type" else "type"
+    val codeGenerationContext = CodeGenerationContext(!generateClasses, emptyList(), ir.typesUsed, fragmentsPackage,
+        typesPackage, customScalarTypeMap)
     val operationTypeBuilders = ir.operations.map { OperationTypeSpecBuilder(it, ir.fragments) }
     (operationTypeBuilders + ir.fragments + ir.typesUsed).forEach {
-      JavaFile.builder(javaFilePackageName(it, irPackageName, fragmentsPackage, typesPackage),
-          it.toTypeSpec(!generateClasses, emptyList(), ir.typesUsed, fragmentsPackage, typesPackage))
-          .build()
-          .writeTo(outputDir)
+      val packageName = javaFilePackageName(it, irPackageName, fragmentsPackage, typesPackage)
+      val typeSpec = it.toTypeSpec(codeGenerationContext)
+      JavaFile.builder(packageName, typeSpec).build().writeTo(outputDir)
+    }
+
+    if (customScalarTypeMap.isNotEmpty()) {
+      val typeSpec = CustomScalarEnumTypeSpecBuilder(typesPackage, customScalarTypeMap).build()
+      JavaFile.builder(typesPackage, typeSpec).build().writeTo(outputDir)
     }
   }
 
