@@ -26,7 +26,8 @@ public class ApolloClassGenTask extends SourceTask {
 
   @TaskAction void generateClasses(IncrementalTaskInputs inputs) {
     inputs.outOfDate { inputFileDetails ->
-      new GraphQLCompiler().write(inputFileDetails.file, outputDir, generateClasses)
+      //TODO: update when we decide how to handle custom scalar types
+      new GraphQLCompiler().write(inputFileDetails.file, outputDir, generateClasses, [:])
     }
   }
 }
