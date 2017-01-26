@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 public final class ProductsWithDate implements Query<Operation.Variables> {
   public static final String OPERATION_DEFINITION = "query ProductsWithDate {\n"
       + "  shop {\n"
-      + "    products(first: 50) {\n"
+      + "    products(first: 10) {\n"
       + "      edges {\n"
       + "        node {\n"
       + "          title\n"

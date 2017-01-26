@@ -154,7 +154,7 @@ public class IntegrationTest {
     assertThat(server.takeRequest().getBody().readString(Charsets.UTF_8))
         .isEqualTo("{\"query\":\"query ProductsWithDate {" +
             "  shop {" +
-            "    products(first: 50) {" +
+            "    products(first: 10) {" +
             "      edges {" +
             "        node {" +
             "          title" +
@@ -165,7 +165,7 @@ public class IntegrationTest {
             "  }}\",\"variables\":{}}");
 
     ProductsWithDate.Data data = body.data();
-    assertThat(data.shop().products().edges().size()).isEqualTo(50);
+    assertThat(data.shop().products().edges().size()).isEqualTo(10);
 
     final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
 
@@ -177,19 +177,9 @@ public class IntegrationTest {
         }).toList();
 
     assertThat(dates).isEqualTo(Arrays.asList(
-        "2013-11-18T19:35:35Z", "2013-11-18T19:35:40Z", "2013-11-18T19:35:54Z",
-        "2013-11-18T19:35:56Z", "2013-11-18T19:36:33Z", "2013-11-18T19:36:45Z", "2013-11-18T19:37:08Z",
-        "2013-11-18T19:37:24Z", "2013-11-18T19:37:26Z", "2013-11-18T19:37:28Z", "2013-11-18T19:37:50Z",
-        "2013-11-18T19:37:59Z", "2013-11-18T19:38:17Z", "2013-11-18T19:38:21Z", "2013-11-18T19:38:23Z",
-        "2013-11-18T19:38:35Z", "2013-11-18T19:38:37Z", "2013-11-18T19:38:54Z", "2013-11-18T19:39:07Z",
-        "2013-11-18T19:39:13Z", "2013-11-18T19:39:35Z", "2013-11-18T19:39:37Z", "2013-11-18T19:39:39Z",
-        "2013-11-18T19:39:41Z", "2013-11-18T19:39:44Z", "2013-11-18T19:39:46Z", "2013-11-18T19:39:48Z",
-        "2013-11-18T19:39:50Z", "2013-11-18T19:39:52Z", "2013-11-18T19:39:54Z", "2013-11-18T19:40:01Z",
-        "2013-11-18T19:40:08Z", "2013-11-18T19:41:00Z", "2013-11-18T19:41:07Z", "2013-11-18T19:41:40Z",
-        "2013-11-18T19:41:43Z", "2013-11-18T19:41:50Z", "2013-11-18T19:41:52Z", "2013-11-18T19:42:02Z",
-        "2013-11-18T19:42:08Z", "2013-11-18T19:42:10Z", "2013-11-18T19:42:44Z", "2013-11-18T19:43:11Z",
-        "2013-11-18T19:43:13Z", "2013-11-18T19:43:24Z", "2013-11-18T19:43:26Z", "2013-11-18T19:43:29Z",
-        "2013-11-18T19:43:35Z", "2013-11-18T19:43:40Z", "2013-11-18T19:43:48Z"));
+        "2013-11-18T19:35:35Z", "2013-11-18T19:35:40Z", "2013-11-18T19:35:54Z", "2013-11-18T19:35:56Z",
+        "2013-11-18T19:36:33Z", "2013-11-18T19:36:45Z", "2013-11-18T19:37:08Z", "2013-11-18T19:37:24Z",
+        "2013-11-18T19:37:26Z", "2013-11-18T19:37:28Z"));
   }
 
   private static MockResponse mockResponse(String fileName) throws IOException {
