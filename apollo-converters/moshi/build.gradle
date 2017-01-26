@@ -5,7 +5,7 @@ sourceCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
   compile dep.moshi
-  compile dep.jsr305
+  compileOnly dep.jsr305
   compile dep.retrofitMoshiConverter
   compile project (":apollo-api")
 

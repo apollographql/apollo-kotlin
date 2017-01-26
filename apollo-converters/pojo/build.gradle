@@ -9,7 +9,7 @@ tasks.withType(Checkstyle) {
 }
 
 dependencies {
-  compile dep.jsr305
+  compileOnly dep.jsr305
   compile dep.retrofit
   compile project (":apollo-api")
 
