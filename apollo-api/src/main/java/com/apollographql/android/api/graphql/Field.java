@@ -135,6 +135,6 @@ public final class Field {
 
     Boolean readBoolean() throws IOException;
 
-    <T> T read(TypeMapping mapping) throws IOException;
+    <T> T readCustomType(TypeMapping typeMapping) throws IOException;
   }
 }

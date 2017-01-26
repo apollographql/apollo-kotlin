@@ -12,9 +12,11 @@ import java.util.Map;
 
 @SuppressWarnings("WeakerAccess") final class BufferedResponseReader implements ResponseReader {
   private final Map<String, Object> buffer;
+  private final Map<TypeMapping, CustomTypeAdapter> customTypeAdapters;
 
-  BufferedResponseReader(Map<String, Object> buffer) {
+  BufferedResponseReader(Map<String, Object> buffer, Map<TypeMapping, CustomTypeAdapter> customTypeAdapters) {
     this.buffer = buffer;
+    this.customTypeAdapters = customTypeAdapters;
   }
 
   @Override public ResponseReader toBufferedReader() throws IOException {
@@ -45,6 +47,9 @@ import java.util.Map;
           break;
         case LIST:
           handler.handle(fieldIndex, readList(field));
+          break;
+        case CUSTOM:
+          handler.handle(fieldIndex, readCustomType(field));
           break;
         default:
           throw new IllegalArgumentException("Unsupported field type");
@@ -109,7 +114,7 @@ import java.util.Map;
     if (value == null) {
       return null;
     } else {
-      return (T) field.objectReader().read(new BufferedResponseReader(value));
+      return (T) field.objectReader().read(new BufferedResponseReader(value, customTypeAdapters));
     }
   }
 
@@ -123,15 +128,31 @@ import java.util.Map;
       for (Object value : values) {
         T item;
         if (value instanceof Map) {
-          item = (T) field.objectReader().read(new BufferedResponseReader((Map<String, Object>) value));
+          item = (T) field.objectReader().read(new BufferedResponseReader((Map<String, Object>) value,
+              customTypeAdapters));
         } else {
-          item = (T) field.listReader().read(new BufferedListItemReader(value));
+          item = (T) field.listReader().read(new BufferedListItemReader(value, customTypeAdapters));
         }
         result.add(item);
       }
       return result;
     }
   }
+
+  @SuppressWarnings("unchecked") private <T> T readCustomType(Field field) {
+    Object value = buffer.get(field.responseName());
+    checkValue(value, field.optional());
+    if (value == null) {
+      return null;
+    } else {
+      CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(field.typeMapping());
+      if (typeAdapter == null) {
+        throw new RuntimeException("Can't resolve custom type adapter for " + field.typeMapping().type());
+      }
+      return typeAdapter.decode(value.toString());
+    }
+  }
+
 
   private void checkValue(Object value, boolean optional) {
     if (!optional && value == null) {
@@ -141,9 +162,11 @@ import java.util.Map;
 
   private static class BufferedListItemReader implements Field.ListItemReader {
     private final Object value;
+    private final Map<TypeMapping, CustomTypeAdapter> customTypeAdapters;
 
-    BufferedListItemReader(Object value) {
+    BufferedListItemReader(Object value, Map<TypeMapping, CustomTypeAdapter> customTypeAdapters) {
       this.value = value;
+      this.customTypeAdapters = customTypeAdapters;
     }
 
     @Override public String readString() throws IOException {
@@ -166,9 +189,12 @@ import java.util.Map;
       return (Boolean) value;
     }
 
-    //TODO
-    @Override public <T> T read(TypeMapping mapping) throws IOException {
-      throw new UnsupportedOperationException();
+    @SuppressWarnings("unchecked") @Override public <T> T readCustomType(TypeMapping typeMapping) throws IOException {
+      CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(typeMapping);
+      if (typeAdapter == null) {
+        throw new RuntimeException("Can't resolve custom type adapter for " + typeMapping.type());
+      }
+      return typeAdapter.decode(value.toString());
     }
   }
 }

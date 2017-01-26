@@ -5,27 +5,31 @@ import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.TypeMapping;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 
 class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? extends Operation.Data>> {
   private final Type type;
+  private final Map<TypeMapping, CustomTypeAdapter> customTypeAdapters;
 
-  ApolloResponseBodyConverter(Type type) {
+  ApolloResponseBodyConverter(Type type, Map<TypeMapping, CustomTypeAdapter> customTypeAdapters) {
     this.type = type;
+    this.customTypeAdapters = customTypeAdapters;
   }
 
   @Override public Response<? extends Operation.Data> convert(ResponseBody value) throws IOException {
     BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(value.source());
     jsonReader.beginObject();
 
-    ResponseJsonStreamReader responseStreamReader = new ResponseJsonStreamReader(jsonReader);
+    ResponseJsonStreamReader responseStreamReader = new ResponseJsonStreamReader(jsonReader, customTypeAdapters);
     Operation.Data data = null;
     List<Error> errors = null;
     while (responseStreamReader.hasNext()) {

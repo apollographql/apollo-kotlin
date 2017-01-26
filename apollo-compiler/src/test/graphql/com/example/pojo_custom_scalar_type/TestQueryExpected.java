@@ -88,7 +88,7 @@ public final class TestQuery implements Query<Operation.Variables> {
           Field.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE),
           Field.forList("appearanceDates", "appearanceDates", null, false, new Field.ListReader<Date>() {
             @Override public Date read(final Field.ListItemReader reader) throws IOException {
-              return reader.read(CustomType.DATE);
+              return reader.readCustomType(CustomType.DATE);
             }
           })
         };

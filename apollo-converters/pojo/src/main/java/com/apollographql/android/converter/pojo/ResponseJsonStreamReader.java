@@ -14,14 +14,16 @@ import java.util.Map;
 
 @SuppressWarnings("WeakerAccess") final class ResponseJsonStreamReader implements ResponseReader {
   private final JsonReader jsonReader;
+  private final Map<TypeMapping, CustomTypeAdapter> customTypeAdapters;
 
-  ResponseJsonStreamReader(JsonReader jsonReader) {
+  ResponseJsonStreamReader(JsonReader jsonReader, Map<TypeMapping, CustomTypeAdapter> customTypeAdapters) {
     this.jsonReader = jsonReader;
+    this.customTypeAdapters = customTypeAdapters;
   }
 
   @Override public ResponseReader toBufferedReader() throws IOException {
     Map<String, Object> buffer = toMap(this);
-    return new BufferedResponseReader(buffer);
+    return new BufferedResponseReader(buffer, customTypeAdapters);
   }
 
   @Override public void read(ValueHandler handler, Field... fields) throws IOException {
@@ -59,6 +61,9 @@ import java.util.Map;
             break;
           case LIST:
             handler.handle(fieldIndex, readList(field));
+            break;
+          case CUSTOM:
+            handler.handle(fieldIndex, readCustomType(field));
             break;
           default:
             throw new IllegalArgumentException("Unsupported field type");
@@ -170,11 +175,28 @@ import java.util.Map;
       List<T> result = new ArrayList<>();
       jsonReader.beginArray();
       while (jsonReader.hasNext()) {
+        jsonReader.beginObject();
         T item = objectReader.read(this);
+        jsonReader.endObject();
         result.add(item);
       }
       jsonReader.endArray();
       return result;
+    }
+  }
+
+  @SuppressWarnings("unchecked") <T> T nextCustomType(boolean optional, TypeMapping typeMapping) throws IOException {
+    checkNextValue(optional);
+    if (jsonReader.peek() == JsonReader.Token.NULL) {
+      jsonReader.skipValue();
+      return null;
+    } else {
+      CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(typeMapping);
+      if (typeAdapter == null) {
+        throw new RuntimeException("Can't resolve custom type adapter for " + typeMapping.type());
+      }
+      String value = jsonReader.nextString();
+      return typeAdapter.decode(value);
     }
   }
 
@@ -208,6 +230,10 @@ import java.util.Map;
     } else {
       return nextList(field.optional(), field.listReader());
     }
+  }
+
+  private <T> T readCustomType(Field field) throws IOException {
+    return nextCustomType(field.optional(), field.typeMapping());
   }
 
   private boolean isNextObject() throws IOException {
@@ -318,9 +344,8 @@ import java.util.Map;
       return streamReader.nextBoolean(false);
     }
 
-    //TODO
-    @Override public <T> T read(TypeMapping mapping) throws IOException {
-      throw new UnsupportedOperationException();
+    @Override public <T> T readCustomType(TypeMapping typeMapping) throws IOException {
+      return streamReader.nextCustomType(false, typeMapping);
     }
   }
 }
