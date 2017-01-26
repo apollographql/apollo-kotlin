@@ -2,6 +2,7 @@ package com.apollographql.android.converter.pojo;
 
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.TypeMapping;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -315,6 +316,11 @@ import java.util.Map;
 
     @Override public Boolean readBoolean() throws IOException {
       return streamReader.nextBoolean(false);
+    }
+
+    //TODO
+    @Override public <T> T read(TypeMapping mapping) throws IOException {
+      throw new UnsupportedOperationException();
     }
   }
 }

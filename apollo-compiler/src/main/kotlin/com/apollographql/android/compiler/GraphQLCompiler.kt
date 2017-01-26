@@ -10,13 +10,13 @@ open class GraphQLCompiler {
   private val irAdapter = moshi.adapter(OperationIntermediateRepresentation::class.java)
 
   fun write(irFile: File, outputDir: File, generateClasses: Boolean = false,
-      customScalarTypeMap: Map<String, String> = emptyMap()) {
+      customTypeMap: Map<String, String> = emptyMap()) {
     val ir = irAdapter.fromJson(irFile.readText())
     val irPackageName = irFile.absolutePath.formatPackageName()
     val fragmentsPackage = if (irPackageName.length > 0) "$irPackageName.fragment" else "fragment"
     val typesPackage = if (irPackageName.length > 0) "$irPackageName.type" else "type"
     val codeGenerationContext = CodeGenerationContext(!generateClasses, emptyList(), ir.typesUsed, fragmentsPackage,
-        typesPackage, customScalarTypeMap)
+        typesPackage, customTypeMap)
     val operationTypeBuilders = ir.operations.map { OperationTypeSpecBuilder(it, ir.fragments) }
     (operationTypeBuilders + ir.fragments + ir.typesUsed).forEach {
       val packageName = javaFilePackageName(it, irPackageName, fragmentsPackage, typesPackage)
@@ -24,8 +24,8 @@ open class GraphQLCompiler {
       JavaFile.builder(packageName, typeSpec).build().writeTo(outputDir)
     }
 
-    if (customScalarTypeMap.isNotEmpty()) {
-      val typeSpec = CustomScalarEnumTypeSpecBuilder(typesPackage, customScalarTypeMap).build()
+    if (customTypeMap.isNotEmpty()) {
+      val typeSpec = CustomEnumTypeSpecBuilder(codeGenerationContext).build()
       JavaFile.builder(typesPackage, typeSpec).build().writeTo(outputDir)
     }
   }

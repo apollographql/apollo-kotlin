@@ -93,7 +93,7 @@ class ResponseFieldMapperBuilder(
 
 
   private fun fieldValueCaseStatement(field: Field, index: Int): CodeBlock {
-    val fieldSpec = field.fieldSpec(context.customScalarTypeMap)
+    val fieldSpec = field.fieldSpec(context.customTypeMap)
     val fieldRawType = fieldSpec.type.withoutAnnotations().overrideTypeName(typeOverrideMap)
     return CodeBlock.builder()
         .beginControlFlow("case $index:")
@@ -175,8 +175,8 @@ class ResponseFieldMapperBuilder(
   }
 
   private fun Field.responseFieldFactoryStatement(): CodeBlock {
-    val fieldTypeName = fieldSpec(context.customScalarTypeMap).type.withoutAnnotations()
-    if (fieldTypeName.isScalar()) {
+    val fieldTypeName = fieldSpec(context.customTypeMap).type.withoutAnnotations()
+    if (fieldTypeName.isScalar() || fieldTypeName.isCustomScalarType()) {
       return scalarResponseFieldFactoryStatement(fieldTypeName)
     } else if (fieldTypeName.isList()) {
       return listResponseFieldFactoryStatement(fieldTypeName)
@@ -208,6 +208,9 @@ class ResponseFieldMapperBuilder(
   private fun TypeName.isEnum() =
       ((this is ClassName) && context.typeDeclarations.count { it.kind == "EnumType" && it.name == simpleName() } > 0)
 
+  private fun TypeName.isCustomScalarType() =
+      context.customTypeMap.containsValue(toString())
+
   private fun TypeName.isScalar() = (SCALAR_TYPES.contains(this) || isEnum())
 
   private fun TypeName.listParamType() =
@@ -217,9 +220,16 @@ class ResponseFieldMapperBuilder(
           .let { if (it is WildcardTypeName) it.upperBounds.first() else it }
 
   private fun Field.scalarResponseFieldFactoryStatement(type: TypeName): CodeBlock {
-    val factoryMethod = fieldFactoryMethod(type)
-    return CodeBlock.of("\$T.\$L(\$S, \$S, null, \$L)", API_RESPONSE_FIELD, factoryMethod, responseName,
-        fieldName, isOptional())
+    if (type.isCustomScalarType()) {
+      val customScalarEnum = CustomEnumTypeSpecBuilder.className(context)
+      val customScalarEnumConst = normalizeGraphQlType(this.type).toUpperCase()
+      return CodeBlock.of("\$T.forCustomType(\$S, \$S, null, \$L, \$T.\$L)", API_RESPONSE_FIELD, responseName,
+          fieldName, isOptional(), customScalarEnum, customScalarEnumConst)
+    } else {
+      val factoryMethod = fieldFactoryMethod(type)
+      return CodeBlock.of("\$T.\$L(\$S, \$S, null, \$L)", API_RESPONSE_FIELD, factoryMethod, responseName,
+          fieldName, isOptional())
+    }
   }
 
   private fun Field.objectResponseFieldFactoryStatement(factoryMethod: String, type: TypeName) = CodeBlock
@@ -240,7 +250,9 @@ class ResponseFieldMapperBuilder(
     return CodeBlock
         .builder()
         .add(
-            if (rawFieldType.isScalar()) {
+            if (rawFieldType.isCustomScalarType()) {
+              readCustomListItemStatement(rawFieldType)
+            } else if (rawFieldType.isScalar()) {
               readScalarListItemStatement(rawFieldType)
             } else {
               objectResponseFieldFactoryStatement("forList", rawFieldType)
@@ -283,6 +295,23 @@ class ResponseFieldMapperBuilder(
         .build()
   }
 
+  private fun Field.readCustomListItemStatement(type: TypeName): CodeBlock {
+    val customScalarEnum = CustomEnumTypeSpecBuilder.className(context)
+    val customScalarEnumConst = normalizeGraphQlType(this.type).toUpperCase()
+    return CodeBlock
+        .builder()
+        .add("\$T.forList(\$S, \$S, null, \$L, new \$T() {\n", API_RESPONSE_FIELD, responseName, fieldName,
+            isOptional(), apiResponseFieldListItemReaderTypeName(type.overrideTypeName(typeOverrideMap)))
+        .indent()
+        .beginControlFlow("@Override public \$T read(final \$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
+            API_RESPONSE_FIELD_LIST_ITEM_READER, PARAM_READER, IOException::class.java)
+        .add(CodeBlock.of("return \$L.read(\$T.\$L);\n", PARAM_READER, customScalarEnum, customScalarEnumConst))
+        .endControlFlow()
+        .unindent()
+        .add("})")
+        .build()
+  }
+
   companion object {
     private val PARAM_READER = "reader"
     private val PARAM_INSTANCE = "instance"
@@ -301,5 +330,7 @@ class ResponseFieldMapperBuilder(
     private val API_RESPONSE_FIELD_LIST_ITEM_READER = ClassName.get(
         com.apollographql.android.api.graphql.Field.ListItemReader::class.java)
     private val API_RESPONSE_FIELD_MAPPER = ClassName.get(ResponseFieldMapper::class.java)
+    private fun normalizeGraphQlType(type: String) =
+        type.removeSuffix("!").removeSurrounding(prefix = "[", suffix = "]").removeSuffix("!")
   }
 }

@@ -71,6 +71,6 @@ class InputObjectTypeSpecBuilder(
 
   companion object {
     private fun TypeDeclarationField.javaTypeName(context: CodeGenerationContext) =
-        JavaTypeResolver(context.customScalarTypeMap, context.typesPackage).resolve(type, !type.endsWith("!"))
+        JavaTypeResolver(context.customTypeMap, context.typesPackage).resolve(type, !type.endsWith("!"))
   }
 }

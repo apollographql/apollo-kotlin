@@ -19,7 +19,7 @@ class OperationTypeSpecBuilder(
         .addOperationDefinition(operation)
         .addQueryDocumentDefinition(fragments)
         .addQueryConstructor(operation.variables.isNotEmpty())
-        .addVariablesDefinition(operation.variables, context.typesPackage, context.customScalarTypeMap)
+        .addVariablesDefinition(operation.variables, context.typesPackage, context.customTypeMap)
         .addType(operation.toTypeSpec(context))
         .build()
   }
