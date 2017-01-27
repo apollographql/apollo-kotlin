@@ -1,0 +1,43 @@
+buildscript {
+  repositories {
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'com.android.tools.build:gradle:2.3.0-beta2'
+  }
+}
+
+plugins {
+  id 'com.android.application'
+  id 'com.apollographql.android'
+}
+
+android {
+  compileSdkVersion 25
+  buildToolsVersion '25.0.2'
+
+  defaultConfig {
+    applicationId "com.example.apollographql.testProject.basic"
+    minSdkVersion 15
+    targetSdkVersion 25
+  }
+
+  lintOptions {
+    textReport true
+    textOutput 'stdout'
+    ignore 'InvalidPackage', 'GoogleAppIndexingWarning', 'AllowBackup'
+  }
+}
+
+repositories {
+  jcenter()
+  maven { url "https://jitpack.io" }
+  maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+}
+
+dependencies {
+  compile 'com.android.support:appcompat-v7:25.1.0'
+  compile 'com.apollographql.android:api:0.0.1-SNAPSHOT'
+}
+
