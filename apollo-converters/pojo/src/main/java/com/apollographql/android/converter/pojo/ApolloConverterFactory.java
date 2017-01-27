@@ -17,8 +17,12 @@ import retrofit2.Converter;
 import retrofit2.Retrofit;
 
 /** TODO */
-public class ApolloConverterFactory extends Converter.Factory {
-  private final Map<TypeMapping, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
+public final class ApolloConverterFactory extends Converter.Factory {
+  private final Map<TypeMapping, CustomTypeAdapter> customTypeAdapters;
+
+  private ApolloConverterFactory(Map<TypeMapping, CustomTypeAdapter> customTypeAdapters) {
+    this.customTypeAdapters = customTypeAdapters;
+  }
 
   @Override public Converter<ResponseBody, Response<? extends Operation.Data>> responseBodyConverter(Type type,
       Annotation[] annotations, Retrofit retrofit) {
@@ -31,9 +35,17 @@ public class ApolloConverterFactory extends Converter.Factory {
     return null;
   }
 
-  public ApolloConverterFactory withCustomTypeAdapter(@Nonnull TypeMapping typeMapping,
-      @Nonnull CustomTypeAdapter customTypeAdapter) {
-    customTypeAdapters.put(typeMapping, customTypeAdapter);
-    return this;
+  public static class Builder {
+    private final Map<TypeMapping, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
+
+    public Builder withCustomTypeAdapter(@Nonnull TypeMapping typeMapping,
+        @Nonnull CustomTypeAdapter customTypeAdapter) {
+      customTypeAdapters.put(typeMapping, customTypeAdapter);
+      return this;
+    }
+
+    public ApolloConverterFactory build() {
+      return new ApolloConverterFactory(customTypeAdapters);
+    }
   }
 }

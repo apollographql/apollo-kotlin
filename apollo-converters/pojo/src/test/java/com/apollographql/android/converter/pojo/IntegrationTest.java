@@ -34,6 +34,8 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class IntegrationTest {
 
+  private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+
   private Service service;
 
   interface Service {
@@ -49,11 +51,9 @@ public class IntegrationTest {
 
   @Before public void setUp() {
     CustomTypeAdapter<Date> dateCustomTypeAdapter = new CustomTypeAdapter<Date>() {
-      final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-
       @Override public Date decode(String value) {
         try {
-          return dateFormat.parse(value);
+          return DATE_FORMAT.parse(value);
         } catch (ParseException e) {
           throw new RuntimeException(e);
         }
@@ -66,8 +66,9 @@ public class IntegrationTest {
 
     Retrofit retrofit = new Retrofit.Builder()
         .baseUrl(server.url("/"))
-        .addConverterFactory(new ApolloConverterFactory()
-            .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter))
+        .addConverterFactory(new ApolloConverterFactory.Builder()
+            .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
+            .build())
         .addConverterFactory(MoshiConverterFactory.create())
         .build();
     service = retrofit.create(Service.class);
@@ -167,12 +168,10 @@ public class IntegrationTest {
     ProductsWithDate.Data data = body.data();
     assertThat(data.shop().products().edges().size()).isEqualTo(10);
 
-    final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-
     List<String> dates = FluentIterable.from(data.shop().products().edges())
         .transform(new Function<ProductsWithDate.Data.Shop.Product.Edge, String>() {
           @Override public String apply(ProductsWithDate.Data.Shop.Product.Edge productEdge) {
-            return dateFormat.format(productEdge.node().createdAt());
+            return DATE_FORMAT.format(productEdge.node().createdAt());
           }
         }).toList();
 

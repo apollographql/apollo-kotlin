@@ -20,7 +20,8 @@ class CustomEnumTypeSpecBuilder(
 
   private fun TypeSpec.Builder.addEnumConstants(): TypeSpec.Builder {
     context.customTypeMap.forEach { mapping ->
-      addEnumConstant(mapping.key.removeSuffix("!").toUpperCase(), scalarMappingTypeSpec(mapping.key, mapping.value))
+      val constantName = mapping.key.removeSuffix("!")
+      addEnumConstant(constantName, scalarMappingTypeSpec(mapping.key, mapping.value))
     }
     return this
   }
