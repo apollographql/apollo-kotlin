@@ -6,6 +6,9 @@ apply plugin: 'java-gradle-plugin'
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
+sourceSets.main.java.srcDirs = []
+sourceSets.main.groovy.srcDirs = ["src/main/java", "src/main/groovy"]
+
 dependencies {
   compileOnly gradleApi()
   compile localGroovy()

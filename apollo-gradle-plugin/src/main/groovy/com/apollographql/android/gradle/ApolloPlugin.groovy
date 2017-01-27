@@ -14,6 +14,12 @@ import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.compile.JavaCompile
 
+import com.apollographql.android.gradle.GraphQLExtension
+import com.apollographql.android.gradle.ApolloClassGenTask
+import com.apollographql.android.gradle.ApolloIRGenTask
+import com.apollographql.android.gradle.ApolloExtension
+import com.apollographql.android.gradle.ApolloCodeGenInstallTask
+
 class ApolloPlugin implements Plugin<Project> {
   private static final String NODE_VERSION = "6.7.0"
   public static final String TASK_GROUP = "apollo"
