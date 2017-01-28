@@ -16,7 +16,6 @@ import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.util.PatternSet;
-import org.gradle.internal.impldep.org.apache.commons.lang.StringUtils;
 
 import com.apollographql.android.compiler.GraphQLCompiler;
 
@@ -41,6 +40,7 @@ public class ApolloIRGenTask extends NodeTask {
   @Internal private String variant;
   @Internal private List<GraphQLExtension> config;
   private List<String> possibleGraphQLPaths;
+  private File schemaFile;
 
   /** Output directory for the generated IR, defaults to src/main/graphql **/
   @OutputDirectory private File outputDir;
@@ -50,7 +50,8 @@ public class ApolloIRGenTask extends NodeTask {
     Set<File> inputFiles = Sets.newHashSet();
     for (GraphQLExtension ext : config) {
       Set<Map.Entry<String, Collection<String>>> entrySet =
-          ext.getFiles(StringUtils.isEmpty(ext.graphQLPath) ? ext.graphQLPath : "src/" + ext.getSourceSet() + "/graphql")
+          ext.getFiles(!Strings.isNullOrEmpty(ext.graphQLPath) ? ext.graphQLPath : "src/" + ext.getSourceSet() +
+              "/graphql")
               .asMap()
               .entrySet();
       for (Map.Entry<String, Collection<String>> entry : entrySet) {
@@ -67,16 +68,16 @@ public class ApolloIRGenTask extends NodeTask {
     config = extensionsConfig;
     // TODO: change to constant once ApolloPlugin is in java
     setGroup("apollo");
-    setDescription("Generate an IR file using apollo-codegen for " + StringUtils.capitalize(variant) + " GraphQL " +
+    setDescription("Generate an IR file using apollo-codegen for " + Utils.capitalize(variant) + " GraphQL " +
         "queries");
     // TODO: change to constant once ApolloCodeGenInstallTask is in Java
     dependsOn("installApolloCodegen");
 
     possibleGraphQLPaths = buildPossibleGraphQLPaths();
-    File schemaFile = userProvidedSchemaFile() != null ? userProvidedSchemaFile() : searchForSchemaFile();
+    schemaFile = userProvidedSchemaFile() != null ? userProvidedSchemaFile() : searchForSchemaFile();
     outputDir = new File(getProject().getBuildDir() + "/" +
         Joiner.on(File.separator).join(GraphQLCompiler.Companion.getOUTPUT_DIRECTORY()) +
-        "/generatedIR" + getProject().relativePath(schemaFile.getParent()));
+        "/generatedIR/" + getProject().relativePath(schemaFile.getParent()));
   }
 
   @Override
@@ -99,15 +100,13 @@ public class ApolloIRGenTask extends NodeTask {
     Set<String> inputPathSet = Sets.newHashSet(Iterables.transform(getInputFiles(), new Function<File, String>() {
       @Nullable
       @Override
-      public String apply(@Nullable File file)
-      {
+      public String apply(@Nullable File file) {
         return getProject().file(file).getAbsolutePath();
       }
     }));
     apolloArgs.addAll(inputPathSet);
-
     apolloArgs.addAll(Lists.newArrayList("--schema", schemaFile.getAbsolutePath(),
-        "--output", outputDir.getAbsolutePath() + "/" + StringUtils.capitalize(variant) + "API.json",
+        "--output", outputDir.getAbsolutePath() + "/" + Utils.capitalize(variant) + "API.json",
         "--target", "json"));
     setArgs(apolloArgs);
     super.exec();
@@ -160,7 +159,7 @@ public class ApolloIRGenTask extends NodeTask {
   private List<String> buildPossibleGraphQLPaths() {
     List<String> graphQLPaths = new ArrayList<>();
     for (GraphQLExtension ext : config) {
-      graphQLPaths.add("src/" + ext.getSourceSet() + "graphql");
+      graphQLPaths.add("src/" + ext.getSourceSet() + "/graphql");
     }
     for (GraphQLExtension ext : config) {
       if (!Strings.isNullOrEmpty(ext.graphQLPath)) {

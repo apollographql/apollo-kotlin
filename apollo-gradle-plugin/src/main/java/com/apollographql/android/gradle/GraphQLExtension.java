@@ -8,8 +8,10 @@ import org.gradle.api.tasks.util.PatternSet;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
+import com.apollographql.android.compiler.GraphQLCompiler;
+
 public class GraphQLExtension {
-  private static final String GRAPHQL_QUERY_PATTERN = "**/*.${GraphQLCompiler.FILE_EXTENSION}";
+  private static final String GRAPHQL_QUERY_PATTERN = "**/*." + GraphQLCompiler.FILE_EXTENSION;
   static final String NAME = "graphql";
 
   private final Project project;

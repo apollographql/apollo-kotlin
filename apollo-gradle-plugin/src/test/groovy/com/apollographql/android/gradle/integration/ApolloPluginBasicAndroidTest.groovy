@@ -27,7 +27,6 @@ class ApolloPluginBasicAndroidTest extends Specification {
 
     then:
     result.task(":build").outcome == TaskOutcome.SUCCESS
-
     // IR Files generated successfully
     assert new File(testProjectDir,
         "build/generated/source/apollo/generatedIR/src/main/graphql/ReleaseAPI.json").isFile()
@@ -37,21 +36,11 @@ class ApolloPluginBasicAndroidTest extends Specification {
     // Java classes generated successfully
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").isFile()
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/Films.java").isFile()
-  }
-
-  def "installApolloCodegenTask runs incrementally and is up to date after the first run"() {
-    when:
-    def result = GradleRunner.create().withProjectDir(testProjectDir)
-        .withPluginClasspath()
-        .withArguments("installApolloCodegen")
-        .forwardStdError(new OutputStreamWriter(System.err)).build()
-
-    then:
-    result.task(":installApolloCodegen").outcome == TaskOutcome.UP_TO_DATE
+    assert new File(testProjectDir, "build/generated/source/apollo/fragment/SpeciesInformation.java").isFile()
   }
 
   def "installApolloCodegenTask gets outdated if node_modules directory is altered"() {
-    setup: "a testProject with a modified node_modules directory"
+    setup: "a testProject with a deleted node_modules directory"
     FileUtils.deleteDirectory(new File(testProjectDir, "node_modules"))
 
     when:
@@ -64,9 +53,9 @@ class ApolloPluginBasicAndroidTest extends Specification {
     result.task(":installApolloCodegen").outcome == TaskOutcome.SUCCESS
   }
 
-  def "installApolloCodegenTask gets outdated if package.json directory is missing"() {
-    setup: "a testProject with a removed package.json file"
-    new File(testProjectDir, "package.json").delete()
+  def "installApolloCodegenTask gets outdated if package.json is altered"() {
+    setup: "a testProject with a deleted package.json directory"
+    FileUtils.deleteDirectory(new File(testProjectDir, "node_modules"))
 
     when:
     def result = GradleRunner.create().withProjectDir(testProjectDir)
@@ -78,7 +67,7 @@ class ApolloPluginBasicAndroidTest extends Specification {
     result.task(":installApolloCodegen").outcome == TaskOutcome.SUCCESS
   }
 
-  def "instrumentation tests run sucessfully"() {
+  def "instrumentation tests run successfully"() {
     // TODO: run `connectedCheck` task on an emulator and have android instrumentation tests under testProject
   }
 

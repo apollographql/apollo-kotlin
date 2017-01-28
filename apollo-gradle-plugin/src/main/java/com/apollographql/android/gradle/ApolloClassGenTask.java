@@ -11,9 +11,10 @@ import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
 import org.gradle.api.tasks.incremental.InputFileDetails;
-import org.gradle.internal.impldep.org.codehaus.plexus.util.StringUtils;
 
 import com.apollographql.android.compiler.GraphQLCompiler;
+
+import com.google.common.base.Joiner;
 
 public class ApolloClassGenTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses";
@@ -29,9 +30,10 @@ public class ApolloClassGenTask extends SourceTask {
     config = extensionsConfig;
     // TODO: change to constant once ApolloPlugin is in java
     setGroup("apollo");
-    setDescription("Generate Android classes for " + StringUtils.capitalise(variantName) + " GraphQL queries");
-    outputDir = new File("${project.buildDir}/${GraphQLCompiler.OUTPUT_DIRECTORY.join(File.separator)}");
-    dependsOn(getProject().getTasks().findByName(String.format(ApolloIRGenTask.NAME, StringUtils.capitalise(variant))));
+    setDescription("Generate Android classes for " + Utils.capitalize(variant) + " GraphQL queries");
+    dependsOn(getProject().getTasks().findByName(String.format(ApolloIRGenTask.NAME, Utils.capitalize(variant))));
+    outputDir = new File(getProject().getBuildDir() + "/" + Joiner.on(File.separator).join(GraphQLCompiler.Companion
+        .getOUTPUT_DIRECTORY()));
   }
 
   @TaskAction
