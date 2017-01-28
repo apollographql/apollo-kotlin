@@ -66,6 +66,10 @@ class ApolloPluginTestHelper {
     manifest.createNewFile()
     manifest.write("<manifest package=\"com.example.apollographql\"/>")
     project.apply plugin: 'com.android.application'
+    project.repositories {
+      jcenter()
+      maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    }
   }
 
   public enum ProjectType {

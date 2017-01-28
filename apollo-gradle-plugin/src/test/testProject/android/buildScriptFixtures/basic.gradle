@@ -32,12 +32,10 @@ android {
 
 repositories {
   jcenter()
-  maven { url "https://jitpack.io" }
   maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 }
 
 dependencies {
   compile 'com.android.support:appcompat-v7:25.1.0'
-  compile 'com.apollographql.android:api:0.0.1-SNAPSHOT'
 }
 
