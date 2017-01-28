@@ -305,7 +305,7 @@ class ResponseFieldMapperBuilder(
         .indent()
         .beginControlFlow("@Override public \$T read(final \$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
             API_RESPONSE_FIELD_LIST_ITEM_READER, PARAM_READER, IOException::class.java)
-        .add(CodeBlock.of("return \$L.read(\$T.\$L);\n", PARAM_READER, customScalarEnum, customScalarEnumConst))
+        .add(CodeBlock.of("return \$L.readCustomType(\$T.\$L);\n", PARAM_READER, customScalarEnum, customScalarEnumConst))
         .endControlFlow()
         .unindent()
         .add("})")
