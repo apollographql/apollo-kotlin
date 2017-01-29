@@ -65,7 +65,6 @@ public class ApolloCodeGenInstallTask extends NpmTask {
     JsonAdapter<PackageJson> adapter = moshi.adapter(PackageJson.class);
     try {
       PackageJson packageJson = adapter.fromJson(Okio.buffer(Okio.source(packageFile)));
-      System.out.println("yay " + packageJson.version);
       return packageJson.version;
     } catch (IOException e) {
       return null;
