@@ -66,6 +66,7 @@ public class ApolloCodeGenInstallTask extends NpmTask {
       PackageJson packageJson = adapter.fromJson(Okio.buffer(Okio.source(packageFile)));
       return packageJson.version;
     } catch (IOException e) {
+      e.printStackTrace();
       return null;
     }
   }
