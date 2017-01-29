@@ -14,6 +14,8 @@ import com.google.common.collect.Lists;
 import com.moowork.gradle.node.npm.NpmTask;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
 
 import okio.Okio;
 
@@ -44,6 +46,9 @@ public class ApolloCodeGenInstallTask extends NpmTask {
     setArgs(Lists.newArrayList("install", "apollo-codegen@" + APOLLOCODEGEN_VERSION, "--save", "--save-exact"));
   }
 
+  static class PackageJson {
+    String version;
+  }
   /**
    * Returns the locally install apollo-codegen version as found in the package.json file.
    *
@@ -54,25 +59,16 @@ public class ApolloCodeGenInstallTask extends NpmTask {
     if (!packageFile.isFile()) {
       return null;
     }
-    JsonReader jsonReader;
+
+    Moshi moshi = new Moshi.Builder().build();
+    JsonAdapter<PackageJson> adapter = moshi.adapter(PackageJson.class);
     try {
-      jsonReader = JsonReader.of(Okio.buffer(Okio.source(packageFile)));
-      jsonReader.beginObject();
-
-      while (jsonReader.hasNext()) {
-        String name = jsonReader.nextName();
-        if (name.equals("version")) {
-          return jsonReader.nextString();
-        }
-      }
-      jsonReader.endObject();
-      jsonReader.close();
-
-    }
-    catch (IOException e) {
+      PackageJson packageJson = adapter.fromJson(Okio.buffer(Okio.source(packageFile)));
+      return packageJson.version;
+    } catch (IOException e) {
       e.printStackTrace();
+      return null;
     }
-    return null;
   }
 
   /**
