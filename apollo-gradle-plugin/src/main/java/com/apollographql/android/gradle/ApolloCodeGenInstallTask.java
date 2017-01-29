@@ -28,24 +28,17 @@ public class ApolloCodeGenInstallTask extends NpmTask {
     setDescription("Runs npm install for apollo-codegen");
     installDir = getProject().file(INSTALL_DIR);
 
-    File apolloPackageFile = getProject().file("package.json");
+    final File apolloPackageFile = getProject().file("package.json");
+    final String apolloVersion = getApolloVersion();
+
+    getOutputs().upToDateWhen(new Spec<Task>() {
+      public boolean isSatisfiedBy(Task element) {
+        return !(apolloPackageFile.isFile() || (apolloVersion != null && apolloVersion.equals(APOLLOCODEGEN_VERSION)));
+      }
+    });
     if (!apolloPackageFile.isFile()) {
       writePackageFile(apolloPackageFile);
-      getOutputs().upToDateWhen(new Spec<Task>() {
-        public boolean isSatisfiedBy(Task element) {
-          return false;
-        }
-      });
     }
-    String apolloVersion = getApolloVersion();
-    if (apolloVersion != null && apolloVersion.equals(APOLLOCODEGEN_VERSION)) {
-      getOutputs().upToDateWhen(new Spec<Task>() {
-        public boolean isSatisfiedBy(Task element) {
-          return false;
-        }
-      });
-    }
-
     setArgs(Lists.newArrayList("install", "apollo-codegen@" + APOLLOCODEGEN_VERSION, "--save", "--save-exact"));
   }
 
