@@ -38,7 +38,7 @@ class ApolloPluginBasicAndroidTest extends Specification {
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/Films.java").isFile()
     assert new File(testProjectDir, "build/generated/source/apollo/fragment/SpeciesInformation.java").isFile()
   }
-
+  
   def "installApolloCodegenTask gets outdated if node_modules directory is altered"() {
     setup: "a testProject with a deleted node_modules directory"
     FileUtils.deleteDirectory(new File(testProjectDir, "node_modules"))
