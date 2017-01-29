@@ -68,7 +68,7 @@ class ApolloPluginTestHelper {
     project.apply plugin: 'com.android.application'
   }
 
-  public enum ProjectType {
+  public static enum ProjectType {
     Android, Java
   }
 

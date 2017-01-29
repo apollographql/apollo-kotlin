@@ -14,12 +14,6 @@ import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.compile.JavaCompile
 
-import com.apollographql.android.gradle.GraphQLExtension
-import com.apollographql.android.gradle.ApolloClassGenTask
-import com.apollographql.android.gradle.ApolloIRGenTask
-import com.apollographql.android.gradle.ApolloExtension
-import com.apollographql.android.gradle.ApolloCodeGenInstallTask
-
 class ApolloPlugin implements Plugin<Project> {
   private static final String NODE_VERSION = "6.7.0"
   public static final String TASK_GROUP = "apollo"
@@ -73,7 +67,7 @@ class ApolloPlugin implements Plugin<Project> {
 
     ApolloIRGenTask variantIRTask = createApolloIRGenTask(variant.name, config)
     ApolloClassGenTask variantClassTask = createApolloClassGenTask(variant.name, config,
-        project.apollo.generateClasses)
+        project.apollo.generateClasses, project.apollo.customTypeMapping)
     variant.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir)
     apolloIRGenTask.dependsOn(variantIRTask)
     apolloClassGenTask.dependsOn(variantClassTask)
@@ -85,7 +79,7 @@ class ApolloPlugin implements Plugin<Project> {
 
     ApolloIRGenTask sourceSetIRTask = createApolloIRGenTask(sourceSet.name, config)
     ApolloClassGenTask sourceSetClassTask = createApolloClassGenTask(sourceSet.name, config,
-        project.apollo.generateClasses)
+        project.apollo.generateClasses, project.apollo.customTypeMapping)
     apolloIRGenTask.dependsOn(sourceSetIRTask)
     apolloClassGenTask.dependsOn(sourceSetClassTask)
 
@@ -108,12 +102,13 @@ class ApolloPlugin implements Plugin<Project> {
     return task
   }
 
-  private ApolloClassGenTask createApolloClassGenTask(String name, List<GraphQLExtension> conf, boolean generateClasses) {
+  private ApolloClassGenTask createApolloClassGenTask(String name, List<GraphQLExtension> conf, boolean generateClasses,
+                                                      Map<String, String> customTypeMapping) {
     String taskName = String.format(ApolloClassGenTask.NAME, name.capitalize())
     ApolloClassGenTask task = project.tasks.create(taskName, ApolloClassGenTask)
     task.source(project.tasks.findByName(String.format(ApolloIRGenTask.NAME, name.capitalize())).outputDir)
     task.include("**${File.separatorChar}*API.json")
-    task.init(name, conf, generateClasses)
+    task.init(name, conf, generateClasses, customTypeMapping)
     return task
   }
 
