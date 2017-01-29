@@ -28,7 +28,6 @@ public class ApolloCodeGenInstallTask extends NpmTask {
 
   public ApolloCodeGenInstallTask() {
     // TODO: set to const when ApolloPlugin is in java
-    System.out.println("ApolloCodeGenInstallTask");
     setGroup("apollo");
     setDescription("Runs npm install for apollo-codegen");
     installDir = getProject().file(INSTALL_DIR);
