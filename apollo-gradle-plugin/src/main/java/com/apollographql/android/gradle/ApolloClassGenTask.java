@@ -1,9 +1,8 @@
 package com.apollographql.android.gradle;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.common.base.Joiner;
+
+import com.apollographql.android.compiler.GraphQLCompiler;
 
 import org.gradle.api.Action;
 import org.gradle.api.tasks.Internal;
@@ -12,11 +11,10 @@ import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
 import org.gradle.api.tasks.incremental.InputFileDetails;
-import org.gradle.internal.impldep.org.codehaus.plexus.util.StringUtils;
 
-import com.apollographql.android.compiler.GraphQLCompiler;
-
-import com.google.common.base.Joiner;
+import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 public class ApolloClassGenTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses";

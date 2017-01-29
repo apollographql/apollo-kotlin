@@ -1,5 +1,7 @@
 package com.apollographql.android.gradle;
 
+import groovy.lang.Closure;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,5 +24,11 @@ public class ApolloExtension {
 
   public void setCustomTypeMapping(Map<String, String> customTypeMapping) {
     this.customTypeMapping = customTypeMapping;
+  }
+
+  public void setCustomTypeMapping(Closure closure) {
+    closure.setDelegate(customTypeMapping);
+    closure.setResolveStrategy(Closure.DELEGATE_FIRST);
+    closure.call();
   }
 }
