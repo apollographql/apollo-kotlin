@@ -8,12 +8,14 @@ import java.io.IOException;
 import org.gradle.api.Task;
 import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.internal.impldep.com.google.gson.stream.JsonReader;
 
 import com.google.common.collect.Lists;
-import com.google.gson.stream.JsonWriter;
 
 import com.moowork.gradle.node.npm.NpmTask;
+import com.squareup.moshi.JsonReader;
+import com.squareup.moshi.JsonWriter;
+
+import okio.Okio;
 
 public class ApolloCodeGenInstallTask extends NpmTask {
   static final String NAME = "installApolloCodegen";
@@ -54,7 +56,7 @@ public class ApolloCodeGenInstallTask extends NpmTask {
     }
     JsonReader jsonReader;
     try {
-      jsonReader = new JsonReader(new FileReader(packageFile));
+      jsonReader = JsonReader.of(Okio.buffer(Okio.source(packageFile)));
       jsonReader.beginObject();
 
       while (jsonReader.hasNext()) {
@@ -78,7 +80,8 @@ public class ApolloCodeGenInstallTask extends NpmTask {
    */
   private void writePackageFile(File apolloPackageFile) {
     try {
-      JsonWriter writer = new JsonWriter(new FileWriter(apolloPackageFile));
+      JsonWriter writer = JsonWriter.of(Okio.buffer(Okio.sink(apolloPackageFile)));
+
       writer.beginObject();
 
       writer.name("name").value("apollo-android");
