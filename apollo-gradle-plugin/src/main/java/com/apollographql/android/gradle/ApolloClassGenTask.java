@@ -25,11 +25,11 @@ public class ApolloClassGenTask extends SourceTask {
   @Internal private Map<String, String> customTypeMapping;
   @OutputDirectory private File outputDir;
 
-  public void init(String variant, List<GraphQLExtension> extensionsConfig, boolean generateClasses,
-      Map<String, String> customTypeMapping) {
-    this.variant = variant;
-    this.generateClasses = generateClasses;
-    this.customTypeMapping = customTypeMapping;
+  public void init(String buildVariant, List<GraphQLExtension> extensionsConfig, boolean genClasses,
+      Map<String, String> typeMapping) {
+    variant = buildVariant;
+    generateClasses = genClasses;
+    customTypeMapping = typeMapping;
     config = extensionsConfig;
     // TODO: change to constant once ApolloPlugin is in java
     setGroup("apollo");

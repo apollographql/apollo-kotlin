@@ -2,13 +2,13 @@ package com.apollographql.android.gradle;
 
 import groovy.lang.Closure;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ApolloExtension {
   static final String NAME = "apollo";
   private boolean generateClasses = false;
-  private Map<String, String> customTypeMapping = new HashMap<>();
+  private Map<String, String> customTypeMapping = new LinkedHashMap<>();
 
   public boolean isGenerateClasses() {
     return generateClasses;
