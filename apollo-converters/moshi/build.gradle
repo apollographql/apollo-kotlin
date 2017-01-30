@@ -3,11 +3,18 @@ apply plugin: 'java'
 targetCompatibility = JavaVersion.VERSION_1_7
 sourceCompatibility = JavaVersion.VERSION_1_7
 
+configurations {
+  compileOnly
+}
+
+sourceSets.test.compileClasspath += configurations.compileOnly
+sourceSets.test.runtimeClasspath += configurations.compileOnly
+
 dependencies {
   compile dep.moshi
   compile dep.jsr305
   compile dep.retrofitMoshiConverter
-  compile project (":apollo-api")
+  compileOnly project(":apollo-api")
 
   testCompile dep.junit
   testCompile dep.truth
