@@ -90,7 +90,6 @@ afterEvaluate { project ->
         }
       } else {
         mavenInstaller {
-
         }
       }
     }
