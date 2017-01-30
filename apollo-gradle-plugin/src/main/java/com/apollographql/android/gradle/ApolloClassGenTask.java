@@ -1,8 +1,8 @@
 package com.apollographql.android.gradle;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
+import com.google.common.base.Joiner;
+
+import com.apollographql.android.compiler.GraphQLCompiler;
 
 import org.gradle.api.Action;
 import org.gradle.api.tasks.Internal;
@@ -12,9 +12,9 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
 import org.gradle.api.tasks.incremental.InputFileDetails;
 
-import com.apollographql.android.compiler.GraphQLCompiler;
-
-import com.google.common.base.Joiner;
+import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 public class ApolloClassGenTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses";
@@ -22,11 +22,14 @@ public class ApolloClassGenTask extends SourceTask {
   @Internal private List<GraphQLExtension> config;
   @Internal private String variant;
   @Internal private boolean generateClasses;
+  @Internal private Map<String, String> customTypeMapping;
   @OutputDirectory private File outputDir;
 
-  public void init(String variantName, List<GraphQLExtension> extensionsConfig, boolean genClasses) {
-    variant = variantName;
+  public void init(String buildVariant, List<GraphQLExtension> extensionsConfig, boolean genClasses,
+      Map<String, String> typeMapping) {
+    variant = buildVariant;
     generateClasses = genClasses;
+    customTypeMapping = typeMapping;
     config = extensionsConfig;
     // TODO: change to constant once ApolloPlugin is in java
     setGroup("apollo");
@@ -41,8 +44,7 @@ public class ApolloClassGenTask extends SourceTask {
     inputs.outOfDate(new Action<InputFileDetails>() {
       @Override
       public void execute(InputFileDetails inputFileDetails) {
-        new GraphQLCompiler().write(inputFileDetails.getFile(), outputDir, generateClasses,
-            new HashMap<String, String>());
+        new GraphQLCompiler().write(inputFileDetails.getFile(), outputDir, generateClasses, customTypeMapping);
       }
     });
   }
@@ -77,5 +79,13 @@ public class ApolloClassGenTask extends SourceTask {
 
   public void setOutputDir(File outputDir) {
     this.outputDir = outputDir;
+  }
+
+  public Map<String, String> getCustomTypeMapping() {
+    return customTypeMapping;
+  }
+
+  public void setCustomTypeMapping(Map<String, String> customTypeMapping) {
+    this.customTypeMapping = customTypeMapping;
   }
 }

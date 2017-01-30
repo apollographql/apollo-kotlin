@@ -72,7 +72,7 @@ class ApolloPluginTestHelper {
     }
   }
 
-  public enum ProjectType {
+  public static enum ProjectType {
     Android, Java
   }
 
