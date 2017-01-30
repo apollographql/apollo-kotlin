@@ -14,7 +14,7 @@ ext {
       rxjava: 'io.reactivex:rxjava:1.2.3',
       jsr305: 'com.google.code.findbugs:jsr305:3.0.1',
       jsr205: 'javax.annotation:jsr250-api:1.0',
-      pluralizer: 'com.github.cesarferreira:kotlin-pluralizer:0.2.7',
+      pluralizer: 'com.github.cesarferreira:kotlin-pluralizer:0.2.9',
       appcompat: 'com.android.support:appcompat-v7:25.0.1',
       retrofit: 'com.squareup.retrofit2:retrofit:2.1.0',
       retrofitMoshiConverter: 'com.squareup.retrofit2:converter-moshi:2.1.0',
