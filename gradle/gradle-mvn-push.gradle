@@ -45,46 +45,51 @@ def getRepositoryPassword() {
 afterEvaluate { project ->
   uploadArchives {
     repositories {
-      mavenDeployer {
-        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+      if (project.hasProperty('SONATYPE_NEXUS_USERNAME')) {
+        mavenDeployer {
+          beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-        pom.groupId = GROUP
-        pom.artifactId = POM_ARTIFACT_ID
-        pom.version = VERSION_NAME
+          pom.groupId = GROUP
+          pom.artifactId = POM_ARTIFACT_ID
+          pom.version = VERSION_NAME
 
-        repository(url: getReleaseRepositoryUrl()) {
-          authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
-        }
-        snapshotRepository(url: getSnapshotRepositoryUrl()) {
-          authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
-        }
-
-        pom.project {
-          name POM_NAME
-          packaging POM_PACKAGING
-          description POM_DESCRIPTION
-          url POM_URL
-
-          scm {
-            url POM_SCM_URL
-            connection POM_SCM_CONNECTION
-            developerConnection POM_SCM_DEV_CONNECTION
+          repository(url: getReleaseRepositoryUrl()) {
+            authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
+          }
+          snapshotRepository(url: getSnapshotRepositoryUrl()) {
+            authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
           }
 
-          licenses {
-            license {
-              name POM_LICENCE_NAME
-              url POM_LICENCE_URL
-              distribution POM_LICENCE_DIST
+          pom.project {
+            name POM_NAME
+            packaging POM_PACKAGING
+            description POM_DESCRIPTION
+            url POM_URL
+
+            scm {
+              url POM_SCM_URL
+              connection POM_SCM_CONNECTION
+              developerConnection POM_SCM_DEV_CONNECTION
+            }
+
+            licenses {
+              license {
+                name POM_LICENCE_NAME
+                url POM_LICENCE_URL
+                distribution POM_LICENCE_DIST
+              }
+            }
+
+            developers {
+              developer {
+                id POM_DEVELOPER_ID
+                name POM_DEVELOPER_NAME
+              }
             }
           }
-
-          developers {
-            developer {
-              id POM_DEVELOPER_ID
-              name POM_DEVELOPER_NAME
-            }
-          }
+        }
+      } else {
+        mavenInstaller {
         }
       }
     }
