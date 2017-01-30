@@ -3,6 +3,7 @@ package com.apollographql.android.gradle
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.BaseVariant
+import com.apollographql.android.VersionKt
 import com.google.common.collect.Lists
 import com.moowork.gradle.node.NodeExtension
 import com.moowork.gradle.node.NodePlugin
@@ -10,15 +11,11 @@ import org.gradle.api.DomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.artifacts.DependencyResolutionListener
+import org.gradle.api.artifacts.ResolvableDependencies
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.compile.JavaCompile
-
-import com.apollographql.android.gradle.GraphQLExtension
-import com.apollographql.android.gradle.ApolloClassGenTask
-import com.apollographql.android.gradle.ApolloIRGenTask
-import com.apollographql.android.gradle.ApolloExtension
-import com.apollographql.android.gradle.ApolloCodeGenInstallTask
 
 class ApolloPlugin implements Plugin<Project> {
   private static final String NODE_VERSION = "6.7.0"
@@ -40,7 +37,18 @@ class ApolloPlugin implements Plugin<Project> {
     setupNode()
     project.extensions.create(ApolloExtension.NAME, ApolloExtension)
     createSourceSetExtensions()
-    //TODO: add dependency on apollo-runtime once we have the jars on nexus
+
+    def compileDepSet = project.configurations.getByName("compile").dependencies
+    project.getGradle().addListener(new DependencyResolutionListener() {
+      @Override
+      void beforeResolve(ResolvableDependencies resolvableDependencies) {
+        compileDepSet.add(project.dependencies.create("com.apollographql.android:api:${VersionKt.VERSION}"))
+        project.getGradle().removeListener(this)
+      }
+
+      @Override
+      void afterResolve(ResolvableDependencies resolvableDependencies) {}
+    })
 
     project.afterEvaluate {
       project.tasks.create(ApolloCodeGenInstallTask.NAME, ApolloCodeGenInstallTask.class)

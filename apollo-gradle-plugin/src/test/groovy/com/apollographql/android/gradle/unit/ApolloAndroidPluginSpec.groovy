@@ -1,10 +1,7 @@
 package com.apollographql.android.gradle.unit
 
-import com.apollographql.android.gradle.ApolloExtension
-import com.apollographql.android.gradle.ApolloIRGenTask
-import com.apollographql.android.gradle.ApolloPlugin
-import com.apollographql.android.gradle.ApolloPluginTestHelper
-import com.apollographql.android.gradle.GraphQLExtension
+import com.apollographql.android.VersionKt
+import com.apollographql.android.gradle.*
 import com.moowork.gradle.node.NodePlugin
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
@@ -110,5 +107,21 @@ class ApolloAndroidPluginSpec extends Specification {
     then:
     assert (project.extensions.findByName("apollo")) != null
     assert (project.extensions.findByType(ApolloExtension.class)) != null
+  }
+
+  def "adds apollo-api dependency"() {
+    given:
+    def project = ProjectBuilder.builder().build()
+    ApolloPluginTestHelper.setupDefaultAndroidProject(project)
+
+    when:
+    ApolloPluginTestHelper.applyApolloPlugin(project)
+    project.evaluate()
+
+    then:
+    def apolloApi = project.configurations.getByName("compile").dependencies.find {
+      it.group == "com.apollographql.android" && it.name == "api"
+    }
+    assert apolloApi != null
   }
 }
