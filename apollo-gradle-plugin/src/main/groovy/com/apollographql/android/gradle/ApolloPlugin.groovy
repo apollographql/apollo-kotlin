@@ -42,7 +42,6 @@ class ApolloPlugin implements Plugin<Project> {
     project.getGradle().addListener(new DependencyResolutionListener() {
       @Override
       void beforeResolve(ResolvableDependencies resolvableDependencies) {
-        //TODO: apollo-runtime dependency?
         compileDepSet.add(project.dependencies.create("com.apollographql.android:api:${VersionKt.VERSION}"))
         project.getGradle().removeListener(this)
       }
