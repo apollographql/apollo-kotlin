@@ -3,6 +3,13 @@ apply plugin: 'java'
 targetCompatibility = JavaVersion.VERSION_1_7
 sourceCompatibility = JavaVersion.VERSION_1_7
 
+configurations {
+  compileOnly
+}
+
+sourceSets.test.compileClasspath += configurations.compileOnly
+sourceSets.test.runtimeClasspath += configurations.compileOnly
+
 tasks.withType(Checkstyle) {
   exclude '**/pojo/BufferedSourceJsonReader.java'
   exclude '**/pojo/JsonScope.java'
@@ -11,7 +18,7 @@ tasks.withType(Checkstyle) {
 dependencies {
   compile dep.jsr305
   compile dep.retrofit
-  compile project (":apollo-api")
+  compileOnly project (":apollo-api")
 
   testCompile dep.moshi
   testCompile dep.retrofitMoshiConverter

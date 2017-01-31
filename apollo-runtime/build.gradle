@@ -34,7 +34,7 @@ dependencies {
   compile dep.jsr305
   compile dep.retrofit
   compile dep.supportAnnotations
-  compile project (":apollo-api")
+  provided project (":apollo-api")
   testCompile dep.junit
   testCompile dep.truth
 }

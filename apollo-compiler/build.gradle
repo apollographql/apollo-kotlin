@@ -15,7 +15,7 @@ dependencies {
   compile dep.moshi
   compile dep.pluralizer
   compile dep.jsr305
-  compile project (":apollo-api")
+  compile project(":apollo-api")
 
   testCompile dep.junit
   testCompile dep.truth
