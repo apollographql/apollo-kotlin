@@ -13,7 +13,7 @@ public final class Field {
   private final ObjectReader objectReader;
   private final ListReader listReader;
   private final boolean optional;
-  private final TypeMapping typeMapping;
+  private final ScalarType scalarType;
 
   public static Field forString(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional) {
@@ -55,12 +55,12 @@ public final class Field {
   }
 
   public static <T> Field forCustomType(String responseName, String fieldName, Map<String, Object> arguments,
-      boolean optional, TypeMapping typeMapping) {
-    return new Field(Type.CUSTOM, responseName, fieldName, arguments, null, null, optional, typeMapping);
+      boolean optional, ScalarType scalarType) {
+    return new Field(Type.CUSTOM, responseName, fieldName, arguments, null, null, optional, scalarType);
   }
 
   private Field(Type type, String responseName, String fieldName, Map<String, Object> arguments,
-      ObjectReader objectReader, ListReader listReader, boolean optional, TypeMapping typeMapping) {
+      ObjectReader objectReader, ListReader listReader, boolean optional, ScalarType scalarType) {
     this.type = type;
     this.responseName = responseName;
     this.fieldName = fieldName;
@@ -69,7 +69,7 @@ public final class Field {
     this.objectReader = objectReader;
     this.listReader = listReader;
     this.optional = optional;
-    this.typeMapping = typeMapping;
+    this.scalarType = scalarType;
   }
 
   public Type type() {
@@ -100,8 +100,8 @@ public final class Field {
     return listReader;
   }
 
-  public TypeMapping typeMapping() {
-    return typeMapping;
+  public ScalarType scalarType() {
+    return scalarType;
   }
 
   public static enum Type {
@@ -135,6 +135,6 @@ public final class Field {
 
     Boolean readBoolean() throws IOException;
 
-    <T> T readCustomType(TypeMapping typeMapping) throws IOException;
+    <T> T readCustomType(ScalarType scalarType) throws IOException;
   }
 }

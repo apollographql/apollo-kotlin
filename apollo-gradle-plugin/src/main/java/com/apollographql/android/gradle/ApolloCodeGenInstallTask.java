@@ -22,7 +22,7 @@ import okio.Okio;
 public class ApolloCodeGenInstallTask extends NpmTask {
   static final String NAME = "installApolloCodegen";
   private static final String INSTALL_DIR = "node_modules/apollo-codegen";
-  private static final String APOLLOCODEGEN_VERSION = "0.10.1";
+  private static final String APOLLOCODEGEN_VERSION = "0.10.3";
 
   @OutputDirectory private File installDir;
 

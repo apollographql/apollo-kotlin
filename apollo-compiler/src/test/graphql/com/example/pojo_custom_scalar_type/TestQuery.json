@@ -36,5 +36,11 @@
     }
   ],
   "fragments": [],
-  "typesUsed": []
+  "typesUsed": [
+    {
+      "kind": "ScalarType",
+      "name": "Date",
+      "description": null
+    }
+  ]
 }

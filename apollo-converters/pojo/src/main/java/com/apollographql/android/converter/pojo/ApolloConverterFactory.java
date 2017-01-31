@@ -2,7 +2,7 @@ package com.apollographql.android.converter.pojo;
 
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
-import com.apollographql.android.api.graphql.TypeMapping;
+import com.apollographql.android.api.graphql.ScalarType;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -18,9 +18,9 @@ import retrofit2.Retrofit;
 
 /** TODO */
 public final class ApolloConverterFactory extends Converter.Factory {
-  private final Map<TypeMapping, CustomTypeAdapter> customTypeAdapters;
+  private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
 
-  private ApolloConverterFactory(Map<TypeMapping, CustomTypeAdapter> customTypeAdapters) {
+  private ApolloConverterFactory(Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
     this.customTypeAdapters = customTypeAdapters;
   }
 
@@ -36,11 +36,11 @@ public final class ApolloConverterFactory extends Converter.Factory {
   }
 
   public static class Builder {
-    private final Map<TypeMapping, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
+    private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
 
-    public Builder withCustomTypeAdapter(@Nonnull TypeMapping typeMapping,
+    public Builder withCustomTypeAdapter(@Nonnull ScalarType scalarType,
         @Nonnull CustomTypeAdapter customTypeAdapter) {
-      customTypeAdapters.put(typeMapping, customTypeAdapter);
+      customTypeAdapters.put(scalarType, customTypeAdapter);
       return this;
     }
 

@@ -13,9 +13,9 @@ data class TypeDeclaration(
     val fields: List<TypeDeclarationField>?
 ) : CodeGenerator {
   override fun toTypeSpec(context: CodeGenerationContext): TypeSpec {
-    if (kind == "EnumType") {
+    if (kind == KIND_ENUM) {
       return enumTypeToTypeSpec()
-    } else if (kind == "InputObjectType") {
+    } else if (kind == KIND_INPUT_OBJECT_TYPE) {
       return inputObjectToTypeSpec(context)
     } else {
       throw UnsupportedOperationException("unsupported $kind type declaration")
@@ -42,4 +42,10 @@ data class TypeDeclaration(
 
   private fun inputObjectToTypeSpec(context: CodeGenerationContext) =
       InputObjectTypeSpecBuilder(name, fields ?: emptyList(), context).build()
+
+  companion object {
+    val KIND_INPUT_OBJECT_TYPE : String = "InputObjectType"
+    val KIND_ENUM : String = "EnumType"
+    val KIND_SCALAR_TYPE : String = "ScalarType"
+  }
 }

@@ -38,7 +38,6 @@ repositories {
 
 dependencies {
   compile 'com.android.support:appcompat-v7:25.1.0'
-  compile 'com.apollographql.android:api:0.0.1-SNAPSHOT'
   compile 'com.fernandocejas:arrow:1.0.0'
 }
 
@@ -47,6 +46,7 @@ apollo {
   customTypeMapping {
     DateTime = "java.util.Date"
     OptionalString = "com.fernandocejas.arrow.optional.Optional"
+    UnsupportedType = "java.lang.Object"
   }
 }
 

@@ -23,12 +23,12 @@ class ApolloPluginPojoAndroidTest extends Specification {
     def result = GradleRunner.create()
         .withProjectDir(testProjectDir)
         .withPluginClasspath()
-        .withArguments("build")
+        .withArguments("generateApolloClasses")
         .forwardStdError(new OutputStreamWriter(System.err))
         .build()
 
     then:
-    result.task(":build").outcome == TaskOutcome.SUCCESS
+    result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
     // IR Files generated successfully
     assert new File(testProjectDir,
         "build/generated/source/apollo/generatedIR/src/main/graphql/com/example/ReleaseAPI.json").isFile()

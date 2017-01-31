@@ -5,7 +5,7 @@ import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.api.graphql.ResponseReader;
-import com.apollographql.android.api.graphql.TypeMapping;
+import com.apollographql.android.api.graphql.ScalarType;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -18,9 +18,9 @@ import retrofit2.Converter;
 
 class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? extends Operation.Data>> {
   private final Type type;
-  private final Map<TypeMapping, CustomTypeAdapter> customTypeAdapters;
+  private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
 
-  ApolloResponseBodyConverter(Type type, Map<TypeMapping, CustomTypeAdapter> customTypeAdapters) {
+  ApolloResponseBodyConverter(Type type, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
     this.type = type;
     this.customTypeAdapters = customTypeAdapters;
   }
