@@ -15,9 +15,9 @@ open class GraphQLCompiler {
     val irPackageName = irFile.absolutePath.formatPackageName()
     val fragmentsPackage = if (irPackageName.length > 0) "$irPackageName.fragment" else "fragment"
     val typesPackage = if (irPackageName.length > 0) "$irPackageName.type" else "type"
-    val customScalarTypeMap = customScalarTypeMap(ir.typesUsed, customTypeMap)
+    val supportedScalarTypeMapping = customTypeMap.supportedScalarTypeMapping(ir.typesUsed)
     val codeGenerationContext = CodeGenerationContext(!generateClasses, emptyList(), ir.typesUsed, fragmentsPackage,
-        typesPackage, customScalarTypeMap)
+        typesPackage, supportedScalarTypeMapping)
     val operationTypeBuilders = ir.operations.map { OperationTypeSpecBuilder(it, ir.fragments) }
     (operationTypeBuilders + ir.fragments + ir.typesUsed.supportedTypeDeclarations()).forEach {
       val packageName = javaFilePackageName(it, irPackageName, fragmentsPackage, typesPackage)
@@ -25,7 +25,7 @@ open class GraphQLCompiler {
       JavaFile.builder(packageName, typeSpec).build().writeTo(outputDir)
     }
 
-    if (codeGenerationContext.customTypeMap.isNotEmpty()) {
+    if (supportedScalarTypeMapping.isNotEmpty()) {
       val typeSpec = CustomEnumTypeSpecBuilder(codeGenerationContext).build()
       JavaFile.builder(typesPackage, typeSpec).build().writeTo(outputDir)
     }
@@ -52,10 +52,9 @@ open class GraphQLCompiler {
   private fun List<TypeDeclaration>.supportedTypeDeclarations() =
     filter { it.kind == TypeDeclaration.KIND_ENUM || it.kind == TypeDeclaration.KIND_INPUT_OBJECT_TYPE }
 
-  private fun customScalarTypeMap(typeDeclarations: List<TypeDeclaration>,
-      customTypeMap: Map<String, String>): Map<String, String> {
+  private fun Map<String, String>.supportedScalarTypeMapping(typeDeclarations: List<TypeDeclaration>): Map<String, String> {
     val customScalarTypes = typeDeclarations.filter { it.kind == TypeDeclaration.KIND_SCALAR_TYPE }.map { it.name }
-    return customTypeMap.filter { customScalarTypes.contains(it.key) }
+    return filter { customScalarTypes.contains(it.key) }
   }
 
   companion object {
