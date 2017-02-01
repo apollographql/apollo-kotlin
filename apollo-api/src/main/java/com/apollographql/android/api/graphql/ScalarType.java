@@ -1,5 +1,5 @@
 package com.apollographql.android.api.graphql;
 
 public interface ScalarType {
-  String name();
+  String typeName();
 }

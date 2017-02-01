@@ -28,7 +28,7 @@ class CustomEnumTypeSpecBuilder(
 
   private fun scalarMappingTypeSpec(scalarType: String) =
       TypeSpec.anonymousClassBuilder("")
-          .addMethod(MethodSpec.methodBuilder("name")
+          .addMethod(MethodSpec.methodBuilder("typeName")
               .addModifiers(Modifier.PUBLIC)
               .returns(java.lang.String::class.java)
               .addStatement("return \$S", scalarType)

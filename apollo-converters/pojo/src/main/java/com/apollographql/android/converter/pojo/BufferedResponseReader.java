@@ -147,7 +147,7 @@ import java.util.Map;
     } else {
       CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(field.scalarType());
       if (typeAdapter == null) {
-        throw new RuntimeException("Can't resolve custom type adapter for " + field.scalarType().name());
+        throw new RuntimeException("Can't resolve custom type adapter for " + field.scalarType().typeName());
       }
       return typeAdapter.decode(value.toString());
     }
@@ -192,7 +192,7 @@ import java.util.Map;
     @SuppressWarnings("unchecked") @Override public <T> T readCustomType(ScalarType scalarType) throws IOException {
       CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(scalarType);
       if (typeAdapter == null) {
-        throw new RuntimeException("Can't resolve custom type adapter for " + scalarType.name());
+        throw new RuntimeException("Can't resolve custom type adapter for " + scalarType.typeName());
       }
       return typeAdapter.decode(value.toString());
     }

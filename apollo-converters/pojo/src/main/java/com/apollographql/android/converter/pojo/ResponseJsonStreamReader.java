@@ -193,7 +193,7 @@ import java.util.Map;
     } else {
       CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(scalarType);
       if (typeAdapter == null) {
-        throw new RuntimeException("Can't resolve custom type adapter for " + scalarType.name());
+        throw new RuntimeException("Can't resolve custom type adapter for " + scalarType.typeName());
       }
       String value = jsonReader.nextString();
       return typeAdapter.decode(value);
