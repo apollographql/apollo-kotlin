@@ -64,9 +64,58 @@ public final class TestQuery implements Query<Operation.Variables> {
 
           interface Node {
             @Nonnull String name();
+
+            interface Factory {
+              Creator creator();
+            }
+
+            interface Creator {
+              Node create(@Nonnull String name);
+            }
+          }
+
+          interface Factory {
+            Creator creator();
+
+            Node.Factory nodeFactory();
+          }
+
+          interface Creator {
+            Edge create(@Nullable Node node);
           }
         }
+
+        interface Factory {
+          Creator creator();
+
+          Edge.Factory edgeFactory();
+        }
+
+        interface Creator {
+          FriendsConnection create(@Nullable Integer totalCount,
+              @Nullable List<? extends Edge> edges);
+        }
       }
+
+      interface Factory {
+        Creator creator();
+
+        FriendsConnection.Factory friendsConnectionFactory();
+      }
+
+      interface Creator {
+        Hero create(@Nonnull String name, @Nonnull FriendsConnection friendsConnection);
+      }
+    }
+
+    interface Factory {
+      Creator creator();
+
+      Hero.Factory heroFactory();
+    }
+
+    interface Creator {
+      Data create(@Nullable Hero hero);
     }
   }
 }

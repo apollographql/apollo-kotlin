@@ -39,6 +39,24 @@ public final class TestQuery implements Query<Operation.Variables> {
 
     interface Hero {
       @Nullable String name();
+
+      interface Factory {
+        Creator creator();
+      }
+
+      interface Creator {
+        Hero create(@Nullable String name);
+      }
+    }
+
+    interface Factory {
+      Creator creator();
+
+      Hero.Factory heroFactory();
+    }
+
+    interface Creator {
+      Data create(@Nullable Hero hero);
     }
   }
 }

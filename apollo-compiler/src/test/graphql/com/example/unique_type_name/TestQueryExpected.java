@@ -67,6 +67,14 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       interface Friend {
         @Nonnull String name();
+
+        interface Factory {
+          Creator creator();
+        }
+
+        interface Creator {
+          Friend create(@Nonnull String name);
+        }
       }
 
       interface AsHuman {
@@ -88,10 +96,73 @@ public final class TestQuery implements Query<Operation.Variables> {
 
             interface Fragments {
               HeroDetails heroDetails();
+
+              interface Factory {
+                Creator creator();
+              }
+
+              interface Creator {
+                Fragments create(HeroDetails heroDetails);
+              }
+            }
+
+            interface Factory {
+              Creator creator();
+
+              Fragments.Factory fragmentsFactory();
+            }
+
+            interface Creator {
+              Friend$$ create(Fragments fragments);
             }
           }
+
+          interface Factory {
+            Creator creator();
+
+            Friend$$.Factory friend$$Factory();
+          }
+
+          interface Creator {
+            Friend$ create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
+                @Nullable List<? extends Friend$$> friends);
+          }
+        }
+
+        interface Factory {
+          Creator creator();
+
+          Friend$.Factory friend$Factory();
+        }
+
+        interface Creator {
+          AsHuman create(@Nonnull String name, @Nullable List<? extends Friend$> friends,
+              @Nullable Double height);
         }
       }
+
+      interface Factory {
+        Creator creator();
+
+        Friend.Factory friendFactory();
+
+        AsHuman.Factory asHumanFactory();
+      }
+
+      interface Creator {
+        Hero create(@Nonnull String name, @Nullable List<? extends Friend> friends,
+            @Nullable AsHuman asHuman);
+      }
+    }
+
+    interface Factory {
+      Creator creator();
+
+      Hero.Factory heroFactory();
+    }
+
+    interface Creator {
+      Data create(@Nullable Hero hero);
     }
   }
 }

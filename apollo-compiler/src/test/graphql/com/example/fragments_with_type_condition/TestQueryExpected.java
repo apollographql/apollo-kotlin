@@ -56,6 +56,24 @@ public final class TestQuery implements Query<Operation.Variables> {
         HumanDetails humanDetails();
 
         DroidDetails droidDetails();
+
+        interface Factory {
+          Creator creator();
+        }
+
+        interface Creator {
+          Fragments create(HumanDetails humanDetails, DroidDetails droidDetails);
+        }
+      }
+
+      interface Factory {
+        Creator creator();
+
+        Fragments.Factory fragmentsFactory();
+      }
+
+      interface Creator {
+        R2 create(Fragments fragments);
       }
     }
 
@@ -66,7 +84,37 @@ public final class TestQuery implements Query<Operation.Variables> {
         HumanDetails humanDetails();
 
         DroidDetails droidDetails();
+
+        interface Factory {
+          Creator creator();
+        }
+
+        interface Creator {
+          Fragments create(HumanDetails humanDetails, DroidDetails droidDetails);
+        }
       }
+
+      interface Factory {
+        Creator creator();
+
+        Fragments.Factory fragmentsFactory();
+      }
+
+      interface Creator {
+        Luke create(Fragments fragments);
+      }
+    }
+
+    interface Factory {
+      Creator creator();
+
+      R2.Factory r2Factory();
+
+      Luke.Factory lukeFactory();
+    }
+
+    interface Creator {
+      Data create(@Nullable R2 r2, @Nullable Luke luke);
     }
   }
 }

@@ -93,6 +93,24 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
       int stars();
 
       @Nullable String commentary();
+
+      interface Factory {
+        Creator creator();
+      }
+
+      interface Creator {
+        CreateReview create(int stars, @Nullable String commentary);
+      }
+    }
+
+    interface Factory {
+      Creator creator();
+
+      CreateReview.Factory createReviewFactory();
+    }
+
+    interface Creator {
+      Data create(@Nullable CreateReview createReview);
     }
   }
 }

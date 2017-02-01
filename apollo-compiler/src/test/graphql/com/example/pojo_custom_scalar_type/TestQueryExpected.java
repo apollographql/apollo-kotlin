@@ -138,6 +138,25 @@ public final class TestQuery implements Query<Operation.Variables> {
       public @Nonnull List<? extends Date> appearanceDates() {
         return this.appearanceDates;
       }
+
+      public interface Factory {
+        Creator creator();
+      }
+
+      public interface Creator {
+        Hero create(@Nonnull String name, @Nonnull Date birthDate,
+            @Nonnull List<? extends Date> appearanceDates);
+      }
+    }
+
+    public interface Factory {
+      Creator creator();
+
+      Hero.Factory heroFactory();
+    }
+
+    public interface Creator {
+      Data create(@Nullable Hero hero);
     }
   }
 }

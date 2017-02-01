@@ -73,6 +73,25 @@ public final class TestQuery implements Query<Operation.Variables> {
           @Nonnull String name();
 
           @Nonnull List<? extends Episode> appearsIn();
+
+          interface Factory {
+            Creator creator();
+          }
+
+          interface Creator {
+            Friend create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn);
+          }
+        }
+
+        interface Factory {
+          Creator creator();
+
+          Friend.Factory friendFactory();
+        }
+
+        interface Creator {
+          AsHuman create(@Nonnull String name, @Nullable List<? extends Friend> friends,
+              @Nullable Double height);
         }
       }
 
@@ -87,8 +106,49 @@ public final class TestQuery implements Query<Operation.Variables> {
           @Nonnull String name();
 
           @Nonnull String id();
+
+          interface Factory {
+            Creator creator();
+          }
+
+          interface Creator {
+            Friend create(@Nonnull String name, @Nonnull String id);
+          }
+        }
+
+        interface Factory {
+          Creator creator();
+
+          Friend.Factory friendFactory();
+        }
+
+        interface Creator {
+          AsDroid create(@Nonnull String name, @Nullable List<? extends Friend> friends,
+              @Nullable String primaryFunction);
         }
       }
+
+      interface Factory {
+        Creator creator();
+
+        AsHuman.Factory asHumanFactory();
+
+        AsDroid.Factory asDroidFactory();
+      }
+
+      interface Creator {
+        Hero create(@Nonnull String name, @Nullable AsHuman asHuman, @Nullable AsDroid asDroid);
+      }
+    }
+
+    interface Factory {
+      Creator creator();
+
+      Hero.Factory heroFactory();
+    }
+
+    interface Creator {
+      Data create(@Nullable Hero hero);
     }
   }
 }

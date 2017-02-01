@@ -153,7 +153,36 @@ public final class TestQuery implements Query<Operation.Variables> {
         public HeroDetails heroDetails() {
           return this.heroDetails;
         }
+
+        public interface Factory {
+          Creator creator();
+        }
+
+        public interface Creator {
+          Fragments create(HeroDetails heroDetails);
+        }
       }
+
+      public interface Factory {
+        Creator creator();
+
+        Fragments.Factory fragmentsFactory();
+      }
+
+      public interface Creator {
+        Hero create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
+            Fragments fragments);
+      }
+    }
+
+    public interface Factory {
+      Creator creator();
+
+      Hero.Factory heroFactory();
+    }
+
+    public interface Creator {
+      Data create(@Nullable Hero hero);
     }
   }
 }

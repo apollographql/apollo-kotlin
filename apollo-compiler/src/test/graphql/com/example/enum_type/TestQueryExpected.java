@@ -45,6 +45,24 @@ public final class TestQuery implements Query<Operation.Variables> {
       @Nonnull String name();
 
       @Nonnull List<? extends Episode> appearsIn();
+
+      interface Factory {
+        Creator creator();
+      }
+
+      interface Creator {
+        Hero create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn);
+      }
+    }
+
+    interface Factory {
+      Creator creator();
+
+      Hero.Factory heroFactory();
+    }
+
+    interface Creator {
+      Data create(@Nullable Hero hero);
     }
   }
 }

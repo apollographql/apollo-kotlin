@@ -210,7 +210,35 @@ public class HeroDetails {
         public @Nonnull String name() {
           return this.name;
         }
+
+        public interface Factory {
+          Creator creator();
+        }
+
+        public interface Creator {
+          Node create(@Nonnull String name);
+        }
       }
+
+      public interface Factory {
+        Creator creator();
+
+        Node.Factory nodeFactory();
+      }
+
+      public interface Creator {
+        Edge create(@Nullable Node node);
+      }
+    }
+
+    public interface Factory {
+      Creator creator();
+
+      Edge.Factory edgeFactory();
+    }
+
+    public interface Creator {
+      FriendsConnection create(@Nullable Integer totalCount, @Nullable List<? extends Edge> edges);
     }
   }
 
@@ -387,8 +415,61 @@ public class HeroDetails {
           public @Nonnull String name() {
             return this.name;
           }
+
+          public interface Factory {
+            Creator creator();
+          }
+
+          public interface Creator {
+            Node create(@Nonnull String name);
+          }
+        }
+
+        public interface Factory {
+          Creator creator();
+
+          Node.Factory nodeFactory();
+        }
+
+        public interface Creator {
+          Edge create(@Nullable Node node);
         }
       }
+
+      public interface Factory {
+        Creator creator();
+
+        Edge.Factory edgeFactory();
+      }
+
+      public interface Creator {
+        FriendsConnection$ create(@Nullable Integer totalCount,
+            @Nullable List<? extends Edge> edges);
+      }
     }
+
+    public interface Factory {
+      Creator creator();
+
+      FriendsConnection$.Factory friendsConnection$Factory();
+    }
+
+    public interface Creator {
+      AsDroid create(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
+          @Nullable String primaryFunction);
+    }
+  }
+
+  public interface Factory {
+    Creator creator();
+
+    FriendsConnection.Factory friendsConnectionFactory();
+
+    AsDroid.Factory asDroidFactory();
+  }
+
+  public interface Creator {
+    HeroDetails create(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
+        @Nullable AsDroid asDroid);
   }
 }
