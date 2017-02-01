@@ -2,7 +2,7 @@ package com.apollographql.android.converter.pojo;
 
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.ResponseReader;
-import com.apollographql.android.api.graphql.TypeMapping;
+import com.apollographql.android.api.graphql.ScalarType;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -12,9 +12,9 @@ import java.util.Map;
 
 @SuppressWarnings("WeakerAccess") final class BufferedResponseReader implements ResponseReader {
   private final Map<String, Object> buffer;
-  private final Map<TypeMapping, CustomTypeAdapter> customTypeAdapters;
+  private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
 
-  BufferedResponseReader(Map<String, Object> buffer, Map<TypeMapping, CustomTypeAdapter> customTypeAdapters) {
+  BufferedResponseReader(Map<String, Object> buffer, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
     this.buffer = buffer;
     this.customTypeAdapters = customTypeAdapters;
   }
@@ -145,9 +145,9 @@ import java.util.Map;
     if (value == null) {
       return null;
     } else {
-      CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(field.typeMapping());
+      CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(field.scalarType());
       if (typeAdapter == null) {
-        throw new RuntimeException("Can't resolve custom type adapter for " + field.typeMapping().type());
+        throw new RuntimeException("Can't resolve custom type adapter for " + field.scalarType().typeName());
       }
       return typeAdapter.decode(value.toString());
     }
@@ -162,9 +162,9 @@ import java.util.Map;
 
   private static class BufferedListItemReader implements Field.ListItemReader {
     private final Object value;
-    private final Map<TypeMapping, CustomTypeAdapter> customTypeAdapters;
+    private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
 
-    BufferedListItemReader(Object value, Map<TypeMapping, CustomTypeAdapter> customTypeAdapters) {
+    BufferedListItemReader(Object value, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
       this.value = value;
       this.customTypeAdapters = customTypeAdapters;
     }
@@ -189,10 +189,10 @@ import java.util.Map;
       return (Boolean) value;
     }
 
-    @SuppressWarnings("unchecked") @Override public <T> T readCustomType(TypeMapping typeMapping) throws IOException {
-      CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(typeMapping);
+    @SuppressWarnings("unchecked") @Override public <T> T readCustomType(ScalarType scalarType) throws IOException {
+      CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(scalarType);
       if (typeAdapter == null) {
-        throw new RuntimeException("Can't resolve custom type adapter for " + typeMapping.type());
+        throw new RuntimeException("Can't resolve custom type adapter for " + scalarType.typeName());
       }
       return typeAdapter.decode(value.toString());
     }

@@ -15,24 +15,20 @@ open class GraphQLCompiler {
     val irPackageName = irFile.absolutePath.formatPackageName()
     val fragmentsPackage = if (irPackageName.length > 0) "$irPackageName.fragment" else "fragment"
     val typesPackage = if (irPackageName.length > 0) "$irPackageName.type" else "type"
+    val supportedScalarTypeMapping = customTypeMap.supportedScalarTypeMapping(ir.typesUsed)
     val codeGenerationContext = CodeGenerationContext(!generateClasses, emptyList(), ir.typesUsed, fragmentsPackage,
-        typesPackage, customTypeMap)
+        typesPackage, supportedScalarTypeMapping)
     val operationTypeBuilders = ir.operations.map { OperationTypeSpecBuilder(it, ir.fragments) }
-    (operationTypeBuilders + ir.fragments + ir.typesUsed).forEach {
+    (operationTypeBuilders + ir.fragments + ir.typesUsed.supportedTypeDeclarations()).forEach {
       val packageName = javaFilePackageName(it, irPackageName, fragmentsPackage, typesPackage)
       val typeSpec = it.toTypeSpec(codeGenerationContext)
       JavaFile.builder(packageName, typeSpec).build().writeTo(outputDir)
     }
 
-    if (customTypeMap.isNotEmpty()) {
+    if (supportedScalarTypeMapping.isNotEmpty()) {
       val typeSpec = CustomEnumTypeSpecBuilder(codeGenerationContext).build()
       JavaFile.builder(typesPackage, typeSpec).build().writeTo(outputDir)
     }
-  }
-
-  companion object {
-    const val FILE_EXTENSION = "graphql"
-    val OUTPUT_DIRECTORY = listOf("generated", "source", "apollo")
   }
 
   private fun String.formatPackageName(): String {
@@ -51,5 +47,18 @@ open class GraphQLCompiler {
       is TypeDeclaration -> return typesPackage
     }
     return irPackage
+  }
+
+  private fun List<TypeDeclaration>.supportedTypeDeclarations() =
+    filter { it.kind == TypeDeclaration.KIND_ENUM || it.kind == TypeDeclaration.KIND_INPUT_OBJECT_TYPE }
+
+  private fun Map<String, String>.supportedScalarTypeMapping(typeDeclarations: List<TypeDeclaration>): Map<String, String> {
+    val customScalarTypes = typeDeclarations.filter { it.kind == TypeDeclaration.KIND_SCALAR_TYPE }.map { it.name }
+    return filter { customScalarTypes.contains(it.key) }
+  }
+
+  companion object {
+    const val FILE_EXTENSION = "graphql"
+    val OUTPUT_DIRECTORY = listOf("generated", "source", "apollo")
   }
 }

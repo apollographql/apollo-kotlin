@@ -2,7 +2,7 @@ package com.apollographql.android.converter.pojo;
 
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.ResponseReader;
-import com.apollographql.android.api.graphql.TypeMapping;
+import com.apollographql.android.api.graphql.ScalarType;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -14,9 +14,9 @@ import java.util.Map;
 
 @SuppressWarnings("WeakerAccess") final class ResponseJsonStreamReader implements ResponseReader {
   private final JsonReader jsonReader;
-  private final Map<TypeMapping, CustomTypeAdapter> customTypeAdapters;
+  private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
 
-  ResponseJsonStreamReader(JsonReader jsonReader, Map<TypeMapping, CustomTypeAdapter> customTypeAdapters) {
+  ResponseJsonStreamReader(JsonReader jsonReader, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
     this.jsonReader = jsonReader;
     this.customTypeAdapters = customTypeAdapters;
   }
@@ -185,15 +185,15 @@ import java.util.Map;
     }
   }
 
-  @SuppressWarnings("unchecked") <T> T nextCustomType(boolean optional, TypeMapping typeMapping) throws IOException {
+  @SuppressWarnings("unchecked") <T> T nextCustomType(boolean optional, ScalarType scalarType) throws IOException {
     checkNextValue(optional);
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       jsonReader.skipValue();
       return null;
     } else {
-      CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(typeMapping);
+      CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(scalarType);
       if (typeAdapter == null) {
-        throw new RuntimeException("Can't resolve custom type adapter for " + typeMapping.type());
+        throw new RuntimeException("Can't resolve custom type adapter for " + scalarType.typeName());
       }
       String value = jsonReader.nextString();
       return typeAdapter.decode(value);
@@ -233,7 +233,7 @@ import java.util.Map;
   }
 
   private <T> T readCustomType(Field field) throws IOException {
-    return nextCustomType(field.optional(), field.typeMapping());
+    return nextCustomType(field.optional(), field.scalarType());
   }
 
   private boolean isNextObject() throws IOException {
@@ -344,8 +344,8 @@ import java.util.Map;
       return streamReader.nextBoolean(false);
     }
 
-    @Override public <T> T readCustomType(TypeMapping typeMapping) throws IOException {
-      return streamReader.nextCustomType(false, typeMapping);
+    @Override public <T> T readCustomType(ScalarType scalarType) throws IOException {
+      return streamReader.nextCustomType(false, scalarType);
     }
   }
 }

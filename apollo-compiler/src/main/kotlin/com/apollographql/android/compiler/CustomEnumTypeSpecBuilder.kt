@@ -1,6 +1,6 @@
 package com.apollographql.android.compiler
 
-import com.apollographql.android.api.graphql.TypeMapping
+import com.apollographql.android.api.graphql.ScalarType
 import com.apollographql.android.compiler.ir.CodeGenerationContext
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.MethodSpec
@@ -13,7 +13,7 @@ class CustomEnumTypeSpecBuilder(
   fun build(): TypeSpec =
       TypeSpec.enumBuilder(className(context))
           .addAnnotation(Annotations.GENERATED_BY_APOLLO)
-          .addSuperinterface(TypeMapping::class.java)
+          .addSuperinterface(ScalarType::class.java)
           .addModifiers(Modifier.PUBLIC)
           .addEnumConstants()
           .build()
@@ -21,23 +21,17 @@ class CustomEnumTypeSpecBuilder(
   private fun TypeSpec.Builder.addEnumConstants(): TypeSpec.Builder {
     context.customTypeMap.forEach { mapping ->
       val constantName = mapping.key.removeSuffix("!").toUpperCase()
-      addEnumConstant(constantName, scalarMappingTypeSpec(mapping.key, mapping.value))
+      addEnumConstant(constantName, scalarMappingTypeSpec(mapping.key))
     }
     return this
   }
 
-  private fun scalarMappingTypeSpec(scalarType: String, javaClassName: String) =
+  private fun scalarMappingTypeSpec(scalarType: String) =
       TypeSpec.anonymousClassBuilder("")
-          .addMethod(MethodSpec.methodBuilder("type")
+          .addMethod(MethodSpec.methodBuilder("typeName")
               .addModifiers(Modifier.PUBLIC)
               .returns(java.lang.String::class.java)
               .addStatement("return \$S", scalarType)
-              .build())
-          .addMethod(MethodSpec.methodBuilder("clazz")
-              .addModifiers(Modifier.PUBLIC)
-              .returns(Class::class.java)
-              .addStatement("return \$T.class", ClassName.get(javaClassName.substringBeforeLast("."),
-                  javaClassName.substringAfterLast(".")))
               .build())
           .build()
 

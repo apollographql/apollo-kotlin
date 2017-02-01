@@ -1,20 +1,14 @@
 package com.example.pojo_custom_scalar_type.type;
 
-import com.apollographql.android.api.graphql.TypeMapping;
-import java.lang.Class;
+import com.apollographql.android.api.graphql.ScalarType;
 import java.lang.String;
-import java.util.Date;
 import javax.annotation.Generated;
 
 @Generated("Apollo GraphQL")
-public enum CustomType implements TypeMapping {
+public enum CustomType implements ScalarType {
   DATE {
-    public String type() {
+    public String typeName() {
       return "Date";
-    }
-
-    public Class clazz() {
-      return Date.class;
     }
   }
 }
