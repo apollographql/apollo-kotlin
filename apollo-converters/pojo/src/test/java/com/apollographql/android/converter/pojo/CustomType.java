@@ -10,7 +10,7 @@ import javax.annotation.Generated;
 @Generated("Apollo GraphQL")
 public enum CustomType implements ScalarType {
   DATETIME {
-    public String type() {
+    public String typeName() {
       return "DateTime";
     }
   }
