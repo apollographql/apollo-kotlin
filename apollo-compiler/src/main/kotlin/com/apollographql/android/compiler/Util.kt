@@ -71,6 +71,22 @@ fun TypeSpec.withFactory(): TypeSpec {
       .build()
 }
 
+fun TypeSpec.withValueInitConstructor(): TypeSpec {
+  return toBuilder()
+      .addMethod(MethodSpec.constructorBuilder()
+          .addModifiers(Modifier.PUBLIC)
+          .addParameters(fieldSpecs
+              .filter { !it.modifiers.contains(Modifier.STATIC) }
+              .map { ParameterSpec.builder(it.type, it.name).build() })
+          .addCode(fieldSpecs
+              .filter { !it.modifiers.contains(Modifier.STATIC) }
+              .map { CodeBlock.of("this.\$L = \$L;\n", it.name, it.name) }
+              .fold(CodeBlock.builder(), CodeBlock.Builder::add)
+              .build())
+          .build())
+      .build()
+}
+
 object Util {
   const val CREATOR_INTERFACE_NAME: String = "Creator"
   const val CREATOR_METHOD_CREATE: String = "create"

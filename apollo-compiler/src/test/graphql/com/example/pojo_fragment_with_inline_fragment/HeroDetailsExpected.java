@@ -83,6 +83,13 @@ public class HeroDetails {
     MAPPER.map(reader.toBufferedReader(), this);
   }
 
+  public HeroDetails(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
+      @Nullable AsDroid asDroid) {
+    this.name = name;
+    this.friendsConnection = friendsConnection;
+    this.asDroid = asDroid;
+  }
+
   public @Nonnull String name() {
     return this.name;
   }
@@ -135,6 +142,11 @@ public class HeroDetails {
       MAPPER.map(reader, this);
     }
 
+    public FriendsConnection(@Nullable Integer totalCount, @Nullable List<? extends Edge> edges) {
+      this.totalCount = totalCount;
+      this.edges = edges;
+    }
+
     public @Nullable Integer totalCount() {
       return this.totalCount;
     }
@@ -175,6 +187,10 @@ public class HeroDetails {
         MAPPER.map(reader, this);
       }
 
+      public Edge(@Nullable Node node) {
+        this.node = node;
+      }
+
       public @Nullable Node node() {
         return this.node;
       }
@@ -205,6 +221,10 @@ public class HeroDetails {
 
         public Node(ResponseReader reader) throws IOException {
           MAPPER.map(reader, this);
+        }
+
+        public Node(@Nonnull String name) {
+          this.name = name;
         }
 
         public @Nonnull String name() {
@@ -288,6 +308,13 @@ public class HeroDetails {
       MAPPER.map(reader, this);
     }
 
+    public AsDroid(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
+        @Nullable String primaryFunction) {
+      this.name = name;
+      this.friendsConnection = friendsConnection;
+      this.primaryFunction = primaryFunction;
+    }
+
     public @Nonnull String name() {
       return this.name;
     }
@@ -340,6 +367,12 @@ public class HeroDetails {
         MAPPER.map(reader, this);
       }
 
+      public FriendsConnection$(@Nullable Integer totalCount,
+          @Nullable List<? extends Edge> edges) {
+        this.totalCount = totalCount;
+        this.edges = edges;
+      }
+
       public @Nullable Integer totalCount() {
         return this.totalCount;
       }
@@ -380,6 +413,10 @@ public class HeroDetails {
           MAPPER.map(reader, this);
         }
 
+        public Edge(@Nullable Node node) {
+          this.node = node;
+        }
+
         public @Nullable Node node() {
           return this.node;
         }
@@ -410,6 +447,10 @@ public class HeroDetails {
 
           public Node(ResponseReader reader) throws IOException {
             MAPPER.map(reader, this);
+          }
+
+          public Node(@Nonnull String name) {
+            this.name = name;
           }
 
           public @Nonnull String name() {

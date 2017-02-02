@@ -77,6 +77,10 @@ public final class TestQuery implements Query<Operation.Variables> {
       MAPPER.map(reader, this);
     }
 
+    public Data(@Nullable Hero hero) {
+      this.hero = hero;
+    }
+
     public @Nullable Hero hero() {
       return this.hero;
     }
@@ -125,6 +129,13 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       public Hero(ResponseReader reader) throws IOException {
         MAPPER.map(reader, this);
+      }
+
+      public Hero(@Nonnull String name, @Nonnull Date birthDate,
+          @Nonnull List<? extends Date> appearanceDates) {
+        this.name = name;
+        this.birthDate = birthDate;
+        this.appearanceDates = appearanceDates;
       }
 
       public @Nonnull String name() {
