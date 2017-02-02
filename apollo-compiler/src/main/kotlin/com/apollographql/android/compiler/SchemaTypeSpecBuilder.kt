@@ -43,13 +43,8 @@ class SchemaTypeSpecBuilder(
         .addInlineFragments(inlineFragments)
         .addInnerFragmentTypes(fragmentSpreads)
         .build()
-        .let {
-          it
-              .toBuilder()
-              .addType(it.factoryTypeSpec())
-              .addType(it.creatorTypeSpec())
-              .build()
-        }
+        .withFactory()
+        .withCreator()
   }
 
   private fun TypeSpec.Builder.addFields(fields: List<Field>, abstractClass: Boolean): TypeSpec.Builder {
@@ -153,13 +148,8 @@ class SchemaTypeSpecBuilder(
         .addFragmentFields()
         .addFragmentAccessorMethods()
         .build()
-        .let {
-          it
-              .toBuilder()
-              .addType(it.factoryTypeSpec())
-              .addType(it.creatorTypeSpec())
-              .build()
-        }
+        .withFactory()
+        .withCreator()
   }
 
   private fun buildUniqueTypeNameMap(reservedTypeNames: List<String>) =
