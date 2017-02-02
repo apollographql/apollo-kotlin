@@ -77,6 +77,10 @@ public final class TestQuery implements Query<Operation.Variables> {
       MAPPER.map(reader, this);
     }
 
+    public Data(@Nullable Hero hero) {
+      this.hero = hero;
+    }
+
     public @Nullable Hero hero() {
       return this.hero;
     }
@@ -127,6 +131,13 @@ public final class TestQuery implements Query<Operation.Variables> {
         MAPPER.map(reader, this);
       }
 
+      public Hero(@Nonnull String name, @Nonnull Date birthDate,
+          @Nonnull List<? extends Date> appearanceDates) {
+        this.name = name;
+        this.birthDate = birthDate;
+        this.appearanceDates = appearanceDates;
+      }
+
       public @Nonnull String name() {
         return this.name;
       }
@@ -138,6 +149,25 @@ public final class TestQuery implements Query<Operation.Variables> {
       public @Nonnull List<? extends Date> appearanceDates() {
         return this.appearanceDates;
       }
+
+      public interface Factory {
+        Creator creator();
+      }
+
+      public interface Creator {
+        Hero create(@Nonnull String name, @Nonnull Date birthDate,
+            @Nonnull List<? extends Date> appearanceDates);
+      }
+    }
+
+    public interface Factory {
+      Creator creator();
+
+      Hero.Factory heroFactory();
+    }
+
+    public interface Creator {
+      Data create(@Nullable Hero hero);
     }
   }
 }

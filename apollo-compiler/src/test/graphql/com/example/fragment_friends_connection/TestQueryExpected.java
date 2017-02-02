@@ -44,7 +44,35 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       interface Fragments {
         HeroDetails heroDetails();
+
+        interface Factory {
+          Creator creator();
+        }
+
+        interface Creator {
+          Fragments create(HeroDetails heroDetails);
+        }
       }
+
+      interface Factory {
+        Creator creator();
+
+        Fragments.Factory fragmentsFactory();
+      }
+
+      interface Creator {
+        Hero create(Fragments fragments);
+      }
+    }
+
+    interface Factory {
+      Creator creator();
+
+      Hero.Factory heroFactory();
+    }
+
+    interface Creator {
+      Data create(@Nullable Hero hero);
     }
   }
 }

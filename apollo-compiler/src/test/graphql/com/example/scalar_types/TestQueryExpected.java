@@ -61,6 +61,30 @@ public final class TestQuery implements Query<Operation.Variables> {
 
     interface GraphQlListOfObject {
       int someField();
+
+      interface Factory {
+        Creator creator();
+      }
+
+      interface Creator {
+        GraphQlListOfObject create(int someField);
+      }
+    }
+
+    interface Factory {
+      Creator creator();
+
+      GraphQlListOfObject.Factory graphQlListOfObjectFactory();
+    }
+
+    interface Creator {
+      Data create(@Nullable String graphQlString, @Nullable String graphQlIdNullable,
+          @Nonnull String graphQlIdNonNullable, @Nullable Integer graphQlIntNullable,
+          int graphQlIntNonNullable, @Nullable Double graphQlFloatNullable,
+          double graphQlFloatNonNullable, @Nullable Boolean graphQlBooleanNullable,
+          boolean graphQlBooleanNonNullable, @Nullable List<? extends Integer> graphQlListOfInt,
+          @Nullable List<? extends GraphQlListOfObject> graphQlListOfObjects,
+          @Nullable List<? extends List<? extends Integer>> graphQlNestedList);
     }
   }
 }

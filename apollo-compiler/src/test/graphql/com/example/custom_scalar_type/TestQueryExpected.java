@@ -47,6 +47,24 @@ public final class TestQuery implements Query<Operation.Variables> {
       @Nonnull Date birthDate();
 
       @Nullable Date deathDate();
+
+      interface Factory {
+        Creator creator();
+      }
+
+      interface Creator {
+        Hero create(@Nonnull String name, @Nonnull Date birthDate, @Nullable Date deathDate);
+      }
+    }
+
+    interface Factory {
+      Creator creator();
+
+      Hero.Factory heroFactory();
+    }
+
+    interface Creator {
+      Data create(@Nullable Hero hero);
     }
   }
 }

@@ -56,13 +56,51 @@ public final class TestQuery implements Query<Operation.Variables> {
         @Nonnull String name();
 
         @Nullable Double height();
+
+        interface Factory {
+          Creator creator();
+        }
+
+        interface Creator {
+          AsHuman create(@Nonnull String name, @Nullable Double height);
+        }
       }
 
       interface AsDroid {
         @Nonnull String name();
 
         @Nullable String primaryFunction();
+
+        interface Factory {
+          Creator creator();
+        }
+
+        interface Creator {
+          AsDroid create(@Nonnull String name, @Nullable String primaryFunction);
+        }
       }
+
+      interface Factory {
+        Creator creator();
+
+        AsHuman.Factory asHumanFactory();
+
+        AsDroid.Factory asDroidFactory();
+      }
+
+      interface Creator {
+        Hero create(@Nonnull String name, @Nullable AsHuman asHuman, @Nullable AsDroid asDroid);
+      }
+    }
+
+    interface Factory {
+      Creator creator();
+
+      Hero.Factory heroFactory();
+    }
+
+    interface Creator {
+      Data create(@Nullable Hero hero);
     }
   }
 }

@@ -46,10 +46,38 @@ public final class TestQuery implements Query<Operation.Variables> {
 
     interface R2 {
       @Nonnull String name();
+
+      interface Factory {
+        Creator creator();
+      }
+
+      interface Creator {
+        R2 create(@Nonnull String name);
+      }
     }
 
     interface Luke {
       @Nonnull String name();
+
+      interface Factory {
+        Creator creator();
+      }
+
+      interface Creator {
+        Luke create(@Nonnull String name);
+      }
+    }
+
+    interface Factory {
+      Creator creator();
+
+      R2.Factory r2Factory();
+
+      Luke.Factory lukeFactory();
+    }
+
+    interface Creator {
+      Data create(@Nullable R2 r2, @Nullable Luke luke);
     }
   }
 }

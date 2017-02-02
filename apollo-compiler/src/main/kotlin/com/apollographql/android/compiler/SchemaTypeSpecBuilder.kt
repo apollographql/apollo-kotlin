@@ -43,6 +43,9 @@ class SchemaTypeSpecBuilder(
         .addInlineFragments(inlineFragments)
         .addInnerFragmentTypes(fragmentSpreads)
         .build()
+        .withFactory()
+        .withCreator()
+        .let { if (context.abstractType) it else it.withValueInitConstructor() }
   }
 
   private fun TypeSpec.Builder.addFields(fields: List<Field>, abstractClass: Boolean): TypeSpec.Builder {
@@ -56,7 +59,6 @@ class SchemaTypeSpecBuilder(
         .addMethods(methodSpecs.map { it.overrideReturnType(innerTypeNameOverrideMap) })
   }
 
-  /** Returns a list of fragment types referenced by the provided list of fields */
   private fun TypeSpec.Builder.addInnerFragmentTypes(fragments: List<String>): TypeSpec.Builder {
     if (fragments.isNotEmpty()) {
       addMethod(fragmentsAccessorMethodSpec(context.abstractType))
@@ -66,7 +68,6 @@ class SchemaTypeSpecBuilder(
     return this
   }
 
-  /** Returns a list of types referenced by the inner fields in the provided fields */
   private fun TypeSpec.Builder.addInnerTypes(fields: List<Field>): TypeSpec.Builder {
     val reservedTypeNames = context.reservedTypeNames + typeName + fields.filter(Field::isNonScalar).map(
         Field::normalizedName)
@@ -148,6 +149,9 @@ class SchemaTypeSpecBuilder(
         .addFragmentFields()
         .addFragmentAccessorMethods()
         .build()
+        .withFactory()
+        .withCreator()
+        .let { if (abstractClass) it else it.withValueInitConstructor() }
   }
 
   private fun buildUniqueTypeNameMap(reservedTypeNames: List<String>) =

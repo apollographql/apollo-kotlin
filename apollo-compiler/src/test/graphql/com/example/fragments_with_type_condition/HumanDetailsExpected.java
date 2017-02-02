@@ -18,4 +18,12 @@ public interface HumanDetails {
   @Nonnull String name();
 
   @Nullable Double height();
+
+  interface Factory {
+    Creator creator();
+  }
+
+  interface Creator {
+    HumanDetails create(@Nonnull String name, @Nullable Double height);
+  }
 }

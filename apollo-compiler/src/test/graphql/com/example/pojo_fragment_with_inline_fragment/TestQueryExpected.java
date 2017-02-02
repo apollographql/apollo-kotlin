@@ -78,6 +78,10 @@ public final class TestQuery implements Query<Operation.Variables> {
       MAPPER.map(reader, this);
     }
 
+    public Data(@Nullable Hero hero) {
+      this.hero = hero;
+    }
+
     public @Nullable Hero hero() {
       return this.hero;
     }
@@ -129,6 +133,13 @@ public final class TestQuery implements Query<Operation.Variables> {
         MAPPER.map(reader.toBufferedReader(), this);
       }
 
+      public Hero(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
+          Fragments fragments) {
+        this.name = name;
+        this.appearsIn = appearsIn;
+        this.fragments = fragments;
+      }
+
       public @Nonnull String name() {
         return this.name;
       }
@@ -150,10 +161,43 @@ public final class TestQuery implements Query<Operation.Variables> {
           }
         }
 
+        public Fragments(HeroDetails heroDetails) {
+          this.heroDetails = heroDetails;
+        }
+
         public HeroDetails heroDetails() {
           return this.heroDetails;
         }
+
+        public interface Factory {
+          Creator creator();
+        }
+
+        public interface Creator {
+          Fragments create(HeroDetails heroDetails);
+        }
       }
+
+      public interface Factory {
+        Creator creator();
+
+        Fragments.Factory fragmentsFactory();
+      }
+
+      public interface Creator {
+        Hero create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
+            Fragments fragments);
+      }
+    }
+
+    public interface Factory {
+      Creator creator();
+
+      Hero.Factory heroFactory();
+    }
+
+    public interface Creator {
+      Data create(@Nullable Hero hero);
     }
   }
 }

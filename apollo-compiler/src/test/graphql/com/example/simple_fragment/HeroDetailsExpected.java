@@ -14,4 +14,12 @@ public interface HeroDetails {
   String TYPE_CONDITION = "Character";
 
   @Nonnull String name();
+
+  interface Factory {
+    Creator creator();
+  }
+
+  interface Creator {
+    HeroDetails create(@Nonnull String name);
+  }
 }

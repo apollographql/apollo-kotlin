@@ -17,4 +17,12 @@ public interface DroidDetails {
   @Nonnull String name();
 
   @Nullable String primaryFunction();
+
+  interface Factory {
+    Creator creator();
+  }
+
+  interface Creator {
+    DroidDetails create(@Nonnull String name, @Nullable String primaryFunction);
+  }
 }
