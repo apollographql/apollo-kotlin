@@ -72,6 +72,25 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
     };
 
+    public static final Creator CREATOR = new Creator() {
+      @Override
+      public Data create(@Nullable Hero hero) {
+        return new Data(hero);
+      }
+    };
+
+    public static final Factory FACTORY = new Factory() {
+      @Override
+      public Creator creator() {
+        return CREATOR;
+      }
+
+      @Override
+      public Hero.Factory heroFactory() {
+        return Hero.FACTORY;
+      }
+    };
+
     private @Nullable Hero hero;
 
     public Data(ResponseReader reader) throws IOException {
@@ -123,6 +142,26 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
       };
 
+      public static final Creator CREATOR = new Creator() {
+        @Override
+        public Hero create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
+            Fragments fragments) {
+          return new Hero(name, appearsIn, fragments);
+        }
+      };
+
+      public static final Factory FACTORY = new Factory() {
+        @Override
+        public Creator creator() {
+          return CREATOR;
+        }
+
+        @Override
+        public Fragments.Factory fragmentsFactory() {
+          return Fragments.FACTORY;
+        }
+      };
+
       private @Nonnull String name;
 
       private @Nonnull List<? extends Episode> appearsIn;
@@ -153,6 +192,20 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       public static class Fragments {
+        public static final Creator CREATOR = new Creator() {
+          @Override
+          public Fragments create(HeroDetails heroDetails) {
+            return new Fragments(heroDetails);
+          }
+        };
+
+        public static final Factory FACTORY = new Factory() {
+          @Override
+          public Creator creator() {
+            return CREATOR;
+          }
+        };
+
         private HeroDetails heroDetails;
 
         Fragments(ResponseReader reader, String typename) throws IOException {

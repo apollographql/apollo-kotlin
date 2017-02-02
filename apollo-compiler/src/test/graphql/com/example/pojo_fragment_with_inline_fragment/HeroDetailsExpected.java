@@ -53,6 +53,31 @@ public class HeroDetails {
     }
   };
 
+  public static final Creator CREATOR = new Creator() {
+    @Override
+    public HeroDetails create(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
+        @Nullable AsDroid asDroid) {
+      return new HeroDetails(name, friendsConnection, asDroid);
+    }
+  };
+
+  public static final Factory FACTORY = new Factory() {
+    @Override
+    public Creator creator() {
+      return CREATOR;
+    }
+
+    @Override
+    public FriendsConnection.Factory friendsConnectionFactory() {
+      return FriendsConnection.FACTORY;
+    }
+
+    @Override
+    public AsDroid.Factory asDroidFactory() {
+      return AsDroid.FACTORY;
+    }
+  };
+
   public static final String FRAGMENT_DEFINITION = "fragment HeroDetails on Character {\n"
       + "  __typename\n"
       + "  name\n"
@@ -134,6 +159,26 @@ public class HeroDetails {
       }
     };
 
+    public static final Creator CREATOR = new Creator() {
+      @Override
+      public FriendsConnection create(@Nullable Integer totalCount,
+          @Nullable List<? extends Edge> edges) {
+        return new FriendsConnection(totalCount, edges);
+      }
+    };
+
+    public static final Factory FACTORY = new Factory() {
+      @Override
+      public Creator creator() {
+        return CREATOR;
+      }
+
+      @Override
+      public Edge.Factory edgeFactory() {
+        return Edge.FACTORY;
+      }
+    };
+
     private @Nullable Integer totalCount;
 
     private @Nullable List<? extends Edge> edges;
@@ -181,6 +226,25 @@ public class HeroDetails {
         }
       };
 
+      public static final Creator CREATOR = new Creator() {
+        @Override
+        public Edge create(@Nullable Node node) {
+          return new Edge(node);
+        }
+      };
+
+      public static final Factory FACTORY = new Factory() {
+        @Override
+        public Creator creator() {
+          return CREATOR;
+        }
+
+        @Override
+        public Node.Factory nodeFactory() {
+          return Node.FACTORY;
+        }
+      };
+
       private @Nullable Node node;
 
       public Edge(ResponseReader reader) throws IOException {
@@ -214,6 +278,20 @@ public class HeroDetails {
                 }
               }
             }, FIELDS);
+          }
+        };
+
+        public static final Creator CREATOR = new Creator() {
+          @Override
+          public Node create(@Nonnull String name) {
+            return new Node(name);
+          }
+        };
+
+        public static final Factory FACTORY = new Factory() {
+          @Override
+          public Creator creator() {
+            return CREATOR;
           }
         };
 
@@ -298,6 +376,26 @@ public class HeroDetails {
       }
     };
 
+    public static final Creator CREATOR = new Creator() {
+      @Override
+      public AsDroid create(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
+          @Nullable String primaryFunction) {
+        return new AsDroid(name, friendsConnection, primaryFunction);
+      }
+    };
+
+    public static final Factory FACTORY = new Factory() {
+      @Override
+      public Creator creator() {
+        return CREATOR;
+      }
+
+      @Override
+      public FriendsConnection$.Factory friendsConnection$Factory() {
+        return FriendsConnection$.FACTORY;
+      }
+    };
+
     private @Nonnull String name;
 
     private @Nonnull FriendsConnection$ friendsConnection;
@@ -359,6 +457,26 @@ public class HeroDetails {
         }
       };
 
+      public static final Creator CREATOR = new Creator() {
+        @Override
+        public FriendsConnection$ create(@Nullable Integer totalCount,
+            @Nullable List<? extends Edge> edges) {
+          return new FriendsConnection$(totalCount, edges);
+        }
+      };
+
+      public static final Factory FACTORY = new Factory() {
+        @Override
+        public Creator creator() {
+          return CREATOR;
+        }
+
+        @Override
+        public Edge.Factory edgeFactory() {
+          return Edge.FACTORY;
+        }
+      };
+
       private @Nullable Integer totalCount;
 
       private @Nullable List<? extends Edge> edges;
@@ -407,6 +525,25 @@ public class HeroDetails {
           }
         };
 
+        public static final Creator CREATOR = new Creator() {
+          @Override
+          public Edge create(@Nullable Node node) {
+            return new Edge(node);
+          }
+        };
+
+        public static final Factory FACTORY = new Factory() {
+          @Override
+          public Creator creator() {
+            return CREATOR;
+          }
+
+          @Override
+          public Node.Factory nodeFactory() {
+            return Node.FACTORY;
+          }
+        };
+
         private @Nullable Node node;
 
         public Edge(ResponseReader reader) throws IOException {
@@ -440,6 +577,20 @@ public class HeroDetails {
                   }
                 }
               }, FIELDS);
+            }
+          };
+
+          public static final Creator CREATOR = new Creator() {
+            @Override
+            public Node create(@Nonnull String name) {
+              return new Node(name);
+            }
+          };
+
+          public static final Factory FACTORY = new Factory() {
+            @Override
+            public Creator creator() {
+              return CREATOR;
             }
           };
 
