@@ -35,7 +35,7 @@ query DroidDetails {
 }
 ```
 
-From this, Apollo will generate a `DroidDetails` Java class with nested classes from reading from the network response.
+From this, Apollo will generate a `DroidDetails` Java class with nested classes for reading from the network response.
 
 ```java
 @Generated("Apollo GraphQL")
@@ -166,8 +166,7 @@ You can then use the genrated classes with Retrofit to make requests to your Gra
 
 ```java
 interface ApiService {
-  @POST("/") Observable<Response<DroidDetails.Data>> droidDetails(
-      @Body OperationRequest<Operation.Variables> query);
+  @POST("/") Call<Response<DroidDetails.Data>> droidDetails(@Body OperationRequest<Operation.Variables> query);
 }
 ```
 
@@ -176,29 +175,24 @@ OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
 Retrofit retrofit = new Retrofit.Builder()
     .baseUrl(BASE_URL)
     .client(okHttpClient)
-    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
     .addConverterFactory(new ApolloConverterFactory.Builder().build())
     .addConverterFactory(MoshiConverterFactory.create())
     .build();
 ApiService service = retrofit.create(ApiService.class);
 service.droidDetails(new OperationRequest<>(new DroidDetails()))
-    .subscribeOn(Schedulers.io())
-    .observeOn(AndroidSchedulers.mainThread())
-    .subscribe(new Observer<Response<DroidDetails.Data>>() {
-      @Override public void onSubscribe(Disposable d) {
-      }
+    application.service()
+            .droidDetails(new OperationRequest<>(new DroidDetails()))
+            .enqueue(new Callback<Response<DroidDetails.Data>>() {
+              @Override
+              public void onResponse(Call<Response<DroidDetails.Data>> call,
+                  retrofit2.Response<Response<DroidDetails.Data>> response) {
+                // parse the response
+              }
 
-      @Override public void onNext(Response<DroidDetails.Data> response) {
-        // parse the response
-      }
-
-      @Override public void onError(Throwable e) {
-        // parse the error
-      }
-
-      @Override public void onComplete() {
-      }
-    });
+              @Override public void onFailure(Call<Response<DroidDetails.Data>> call, Throwable t) {
+                // handle error
+              }
+            });
 ```
 
 ## License
