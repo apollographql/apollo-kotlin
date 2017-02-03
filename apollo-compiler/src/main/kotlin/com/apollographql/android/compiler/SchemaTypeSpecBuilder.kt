@@ -45,7 +45,15 @@ class SchemaTypeSpecBuilder(
         .build()
         .withFactory()
         .withCreator()
-        .let { if (context.abstractType) it else it.withValueInitConstructor() }
+        .let {
+          if (context.abstractType)
+            it
+          else
+            it
+                .withValueInitConstructor()
+                .withCreatorImplementation()
+                .withFactoryImplementation()
+        }
   }
 
   private fun TypeSpec.Builder.addFields(fields: List<Field>, abstractClass: Boolean): TypeSpec.Builder {
@@ -151,7 +159,15 @@ class SchemaTypeSpecBuilder(
         .build()
         .withFactory()
         .withCreator()
-        .let { if (abstractClass) it else it.withValueInitConstructor() }
+        .let {
+          if (context.abstractType)
+            it
+          else
+            it
+                .withValueInitConstructor()
+                .withCreatorImplementation()
+                .withFactoryImplementation()
+        }
   }
 
   private fun buildUniqueTypeNameMap(reservedTypeNames: List<String>) =

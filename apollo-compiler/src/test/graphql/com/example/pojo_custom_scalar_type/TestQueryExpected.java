@@ -71,6 +71,25 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
     };
 
+    public static final Creator CREATOR = new Creator() {
+      @Override
+      public Data create(@Nullable Hero hero) {
+        return new Data(hero);
+      }
+    };
+
+    public static final Factory FACTORY = new Factory() {
+      @Override
+      public Creator creator() {
+        return CREATOR;
+      }
+
+      @Override
+      public Hero.Factory heroFactory() {
+        return Hero.FACTORY;
+      }
+    };
+
     private @Nullable Hero hero;
 
     public Data(ResponseReader reader) throws IOException {
@@ -118,6 +137,21 @@ public final class TestQuery implements Query<Operation.Variables> {
               }
             }
           }, FIELDS);
+        }
+      };
+
+      public static final Creator CREATOR = new Creator() {
+        @Override
+        public Hero create(@Nonnull String name, @Nonnull Date birthDate,
+            @Nonnull List<? extends Date> appearanceDates) {
+          return new Hero(name, birthDate, appearanceDates);
+        }
+      };
+
+      public static final Factory FACTORY = new Factory() {
+        @Override
+        public Creator creator() {
+          return CREATOR;
         }
       };
 
