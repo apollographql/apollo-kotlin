@@ -158,6 +158,7 @@ public final class DroidDetails implements Query<Operation.Variables> {
     }
   }
 }
+```
 
 ## Consuming Code
 
