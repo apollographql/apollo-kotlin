@@ -3,7 +3,7 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://raw.githubusercontent.com/apollographql/apollo-android/master/LICENSE) [![Get on Slack](https://img.shields.io/badge/slack-join-orange.svg)](http://www.apollostack.com/#slack)
 [![Build status](https://travis-ci.org/apollographql/apollo-android.svg?branch=master)](https://travis-ci.org/apollographql/apollo-android)
 
-Apollo-Android is a GraphQL compliant client that generates Java models from your standard GraphQL queries. These models give you a typesafe API to work with GraphQL servers. Apollo will help you keep your GraphQL query statements together, organized, and easy to access from Java.  Change a query and recompile your project - Apollo code gen will remake your data model.  Code generation also allows Apollo to read and unmarshal responses from the network without the need of any reflection (see code gen example below).   Feature versions of Apollo-Android will also work with AutoValue and other Value Object generators.
+Apollo-Android is a GraphQL compliant client that generates Java models from your standard GraphQL queries. These models give you a typesafe API to work with GraphQL servers. Apollo will help you keep your GraphQL query statements together, organized, and easy to access from Java.  Change a query and recompile your project - Apollo code gen will rebuild your data model.  Code generation also allows Apollo to read and unmarshal responses from the network without the need of any reflection (see code gen example below).   Future versions of Apollo-Android will also work with AutoValue and other value object generators.
 
 
 
