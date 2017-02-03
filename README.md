@@ -25,7 +25,7 @@ apply plugin: 'com.apollographql.android'
 
 To use Apollo, put your GraphQL queries in a `.graphql` file, like `src/main/graphql/com/example/DroidDetails.grapqhl`.  There is nothing special about this query, it can be shared with other GraphQL clients as well
 
-```json
+```
 query DroidDetails {
   species(id: "c3BlY2llczoy") {
     id
