@@ -91,26 +91,7 @@ public final class DroidDetails implements Query<Operation.Variables> {
         }, FIELDS);
       }
     };
-
-    public static final Creator CREATOR = new Creator() {
-      @Override
-      public Data create(@Nullable Species species) {
-        return new Data(species);
-      }
-    };
-
-    public static final Factory FACTORY = new Factory() {
-      @Override
-      public Creator creator() {
-        return CREATOR;
-      }
-
-      @Override
-      public Species.Factory speciesFactory() {
-        return Species.FACTORY;
-      }
-    };
-
+    
     private @Nullable Species species;
 
     public Data(ResponseReader reader) throws IOException {
@@ -157,21 +138,6 @@ public final class DroidDetails implements Query<Operation.Variables> {
         }
       };
 
-      public static final Creator CREATOR = new Creator() {
-        @Override
-        public Species create(@Nonnull String id, @Nullable String name,
-            @Nullable String classification) {
-          return new Species(id, name, classification);
-        }
-      };
-
-      public static final Factory FACTORY = new Factory() {
-        @Override
-        public Creator creator() {
-          return CREATOR;
-        }
-      };
-
       private @Nonnull String id;
 
       private @Nullable String name;
@@ -181,13 +147,7 @@ public final class DroidDetails implements Query<Operation.Variables> {
       public Species(ResponseReader reader) throws IOException {
         MAPPER.map(reader, this);
       }
-
-      public Species(@Nonnull String id, @Nullable String name, @Nullable String classification) {
-        this.id = id;
-        this.name = name;
-        this.classification = classification;
-      }
-
+      
       public @Nonnull String id() {
         return this.id;
       }
