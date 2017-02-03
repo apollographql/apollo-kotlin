@@ -27,7 +27,7 @@ apollo {
 }
 ```
 
-To use SQLDelight, put your GraphQL queries in a `.graphql` file, like `src/main/graphql/com/example/DroidDetails.grapqhl`.
+To use Apollo, put your GraphQL queries in a `.graphql` file, like `src/main/graphql/com/example/DroidDetails.grapqhl`.
 
 ```
 query DroidDetails {
