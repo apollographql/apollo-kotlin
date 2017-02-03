@@ -172,10 +172,7 @@ interface ApiService {
 ```
 
 ```java
-OkHttpClient okHttpClient = new OkHttpClient.Builder()
-    .cache(new Cache(new File(getCacheDir(), "okhttp"), 10 * 1024))
-    .addNetworkInterceptor(loggingInterceptor)
-    .build();
+OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
 Retrofit retrofit = new Retrofit.Builder()
     .baseUrl(BASE_URL)
     .client(okHttpClient)
@@ -192,20 +189,16 @@ service.droidDetails(new OperationRequest<>(new DroidDetails()))
       }
 
       @Override public void onNext(Response<DroidDetails.Data> response) {
-        txtResponse.setText(response.data().toString());
+        // parse the response
       }
 
       @Override public void onError(Throwable e) {
-        Log.e(TAG, "", e);
-        Toast.makeText(MainActivity.this, "onError(): " + e.getMessage(), Toast.LENGTH_LONG)
-            .show();
+        // parse the error
       }
 
       @Override public void onComplete() {
       }
     });
-```
-
 ```
 
 ## License
