@@ -3,8 +3,8 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://raw.githubusercontent.com/apollographql/apollo-android/master/LICENSE) [![Get on Slack](https://img.shields.io/badge/slack-join-orange.svg)](http://www.apollostack.com/#slack)
 [![Build status](https://travis-ci.org/apollographql/apollo-android.svg?branch=master)](https://travis-ci.org/apollographql/apollo-android)
 
-This is a Gradle plugin and set of libraries that generate Java code based on a GraphQL schema and query documents.
-The plugin uses `apollo-codegen` under the hood.
+Apollo-Android is a GraphQL compliant client that generates Java models from your standard GraphQL queries. These models give you a typesafe API to work with GraphQL servers. Apollo will help you keep your GraphQL query statements together, organized, and easy to access from Java.  Change a query and recompile your project - Apollo code gen will remake your data model.  Code generation also allows Apollo to read and unmarshal responses from the network without the need of any reflection (see code gen example below).   Feature versions of Apollo-Android will also work with AutoValue and other Value Object generators.
+
 
 
 
@@ -16,14 +16,14 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.apollographql.android:gradle-plugin:0.1.0'
+    classpath 'com.apollographql.android:gradle-plugin:$CURRENT_APOLLO_VERSION'
   }
 }
 
 apply plugin: 'com.apollographql.android'
 ```
 
-To use Apollo, put your GraphQL queries in a `.graphql` file, like `src/main/graphql/com/example/DroidDetails.grapqhl`.
+To use Apollo, put your GraphQL queries in a `.graphql` file, like `src/main/graphql/com/example/DroidDetails.grapqhl`.  There is nothing special about this query (it can be shared with other GraphQL clients as well)
 
 ```
 query DroidDetails {
@@ -162,7 +162,7 @@ public final class DroidDetails implements Query<Operation.Variables> {
 
 ## Consuming Code
 
-You can then use the genrated classes with Retrofit to make requests to your GraphQL API:
+You can then use the genrated classes with Retrofit to make requests to your GraphQL API, Apollo includes a `ApolloConverterFactory` which will tie into auto generated response mapping code.
 
 ```java
 interface ApiService {
@@ -186,7 +186,7 @@ service.droidDetails(new OperationRequest<>(new DroidDetails()))
               @Override
               public void onResponse(Call<Response<DroidDetails.Data>> call,
                   retrofit2.Response<Response<DroidDetails.Data>> response) {
-                // parse the response
+                // use the graphql response which is now in Java Models.
               }
 
               @Override public void onFailure(Call<Response<DroidDetails.Data>> call, Throwable t) {
@@ -201,22 +201,4 @@ service.droidDetails(new OperationRequest<>(new DroidDetails()))
 The MIT License (MIT)
 
 Copyright (c) 2016 Meteor Development Group, Inc.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 ```
