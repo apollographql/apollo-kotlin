@@ -7,6 +7,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apollographql.android.api.graphql.Response;
+import com.apollographql.android.converter.pojo.OperationRequest;
 import com.example.DroidDetails;
 
 import io.reactivex.Observer;
@@ -23,14 +24,14 @@ public class MainActivity extends AppCompatActivity {
     final TextView txtResponse = (TextView) findViewById(R.id.txt_response);
     SampleApplication application = (SampleApplication) getApplication();
     application.service()
-        .droidDetails(new DroidDetails())
+        .droidDetails(new OperationRequest<>(new DroidDetails()))
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Observer<Response<DroidDetailsData>>() {
+        .subscribe(new Observer<Response<DroidDetails.Data>>() {
           @Override public void onSubscribe(Disposable d) {
           }
 
-          @Override public void onNext(Response<DroidDetailsData> response) {
+          @Override public void onNext(Response<DroidDetails.Data> response) {
             txtResponse.setText(response.data().toString());
           }
 

@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class ApolloExtension {
   static final String NAME = "apollo";
-  private boolean generateClasses = false;
+  private boolean generateClasses = true;
   private Map<String, String> customTypeMapping = new LinkedHashMap<>();
 
   public boolean isGenerateClasses() {
