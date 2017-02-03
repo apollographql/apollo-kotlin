@@ -21,10 +21,6 @@ buildscript {
 }
 
 apply plugin: 'com.apollographql.android'
-
-apollo {
-  generateClasses = true
-}
 ```
 
 To use Apollo, put your GraphQL queries in a `.graphql` file, like `src/main/graphql/com/example/DroidDetails.grapqhl`.
