@@ -40,10 +40,10 @@ public class IntegrationTest {
 
   interface Service {
     @POST("graphql")
-    Call<Response<AllPlanets.Data>> heroDetails(@Body GraphQlOperationRequest<AllPlanets.Variables> query);
+    Call<Response<AllPlanets.Data>> heroDetails(@Body OperationRequest<AllPlanets.Variables> query);
 
     @POST("graphql")
-    Call<Response<ProductsWithDate.Data>> productsWithDate(@Body GraphQlOperationRequest<ProductsWithDate.Variables>
+    Call<Response<ProductsWithDate.Data>> productsWithDate(@Body OperationRequest<ProductsWithDate.Variables>
         query);
   }
 
@@ -74,10 +74,10 @@ public class IntegrationTest {
     service = retrofit.create(Service.class);
   }
 
-  @Test public void allPlanetQuery() throws Exception {
+  @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
 
-    Call<Response<AllPlanets.Data>> call = service.heroDetails(new GraphQlOperationRequest<>(new AllPlanets()));
+    Call<Response<AllPlanets.Data>> call = service.heroDetails(new OperationRequest<>(new AllPlanets()));
     Response<AllPlanets.Data> body = call.execute().body();
     assertThat(body.isSuccessful()).isTrue();
 
@@ -125,8 +125,8 @@ public class IntegrationTest {
     ));
 
     AllPlanets.Data.AllPlanet.Planet firstPlanet = data.allPlanets().planets().get(0);
-    assertThat(firstPlanet.fragments().planetFargment().climates()).isEqualTo(Arrays.asList("arid"));
-    assertThat(firstPlanet.fragments().planetFargment().surfaceWater()).isEqualTo(Double.valueOf(1));
+    assertThat(firstPlanet.fragments().planetFargment().climates()).isEqualTo(Collections.singletonList("arid"));
+    assertThat(firstPlanet.fragments().planetFargment().surfaceWater()).isWithin(1d);
     assertThat(firstPlanet.filmConnection().totalCount()).isEqualTo(5);
     assertThat(firstPlanet.filmConnection().films().size()).isEqualTo(5);
     assertThat(firstPlanet.filmConnection().films().get(0).fragments().filmFragment().title()).isEqualTo("A New Hope");
@@ -136,7 +136,7 @@ public class IntegrationTest {
 
   @Test public void errorResponse() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/errorResponse.json"));
-    Call<Response<AllPlanets.Data>> call = service.heroDetails(new GraphQlOperationRequest<>(new AllPlanets()));
+    Call<Response<AllPlanets.Data>> call = service.heroDetails(new OperationRequest<>(new AllPlanets()));
     Response<AllPlanets.Data> body = call.execute().body();
     assertThat(body.isSuccessful()).isFalse();
     //noinspection ConstantConditions
@@ -148,7 +148,7 @@ public class IntegrationTest {
   @Test public void productsWithDates() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/productsWithDate.json"));
 
-    Call<Response<ProductsWithDate.Data>> call = service.productsWithDate(new GraphQlOperationRequest<>(new ProductsWithDate()));
+    Call<Response<ProductsWithDate.Data>> call = service.productsWithDate(new OperationRequest<>(new ProductsWithDate()));
     Response<ProductsWithDate.Data> body = call.execute().body();
     assertThat(body.isSuccessful()).isTrue();
 

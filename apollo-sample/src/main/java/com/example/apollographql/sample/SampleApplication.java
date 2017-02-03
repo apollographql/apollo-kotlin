@@ -2,8 +2,7 @@ package com.example.apollographql.sample;
 
 import android.app.Application;
 
-import com.apollographql.android.ApolloConverterFactory;
-import com.squareup.moshi.Moshi;
+import com.apollographql.android.converter.pojo.ApolloConverterFactory;
 
 import java.io.File;
 
@@ -15,10 +14,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 
 public class SampleApplication extends Application {
-  private static final String BASE_URL = "https://graphql-swapi.parseapp.com";
-  private final Moshi moshi = new Moshi.Builder()
-      .add(AutoValueAdapterFactory.create())
-      .build();
+  private static final String BASE_URL = "http://graphql.org/swapi-graphql/";
   private OkHttpClient okHttpClient;
   private Retrofit retrofit;
   private ApiService service;
@@ -35,8 +31,8 @@ public class SampleApplication extends Application {
         .baseUrl(BASE_URL)
         .client(okHttpClient)
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-        .addConverterFactory(new ApolloConverterFactory(moshi))
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .addConverterFactory(new ApolloConverterFactory.Builder().build())
+        .addConverterFactory(MoshiConverterFactory.create())
         .build();
     service = retrofit.create(ApiService.class);
   }
