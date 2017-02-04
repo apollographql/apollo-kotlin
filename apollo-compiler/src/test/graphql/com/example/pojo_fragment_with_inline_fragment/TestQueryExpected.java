@@ -174,11 +174,11 @@ public final class TestQuery implements Query<Operation.Variables> {
 
           @Override
           public Fragments map(ResponseReader reader) throws IOException {
-            HeroDetails herodetails = null;
+            HeroDetails heroDetails = null;
             if (conditionalType.equals(HeroDetails.TYPE_CONDITION)) {
-              herodetails = new HeroDetails.Mapper(factory.heroDetailsFactory()).map(reader);
+              heroDetails = new HeroDetails.Mapper(factory.heroDetailsFactory()).map(reader);
             }
-            return factory.creator().create(herodetails);
+            return factory.creator().create(heroDetails);
           }
         }
       }
