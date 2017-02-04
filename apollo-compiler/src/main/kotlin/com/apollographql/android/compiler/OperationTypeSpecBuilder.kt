@@ -17,7 +17,7 @@ class OperationTypeSpecBuilder(
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
         .addQuerySuperInterface(operation.variables.isNotEmpty())
         .addOperationDefinition(operation)
-        .addQueryDocumentDefinition(fragments)
+        .addQueryDocumentDefinition(fragments, context)
         .addQueryConstructor(operation.variables.isNotEmpty())
         .addVariablesDefinition(operation.variables, context.typesPackage, context.customTypeMap)
         .addType(operation.toTypeSpec(context))
@@ -42,12 +42,14 @@ class OperationTypeSpecBuilder(
     )
   }
 
-  private fun TypeSpec.Builder.addQueryDocumentDefinition(fragments: List<Fragment>): TypeSpec.Builder {
+  private fun TypeSpec.Builder.addQueryDocumentDefinition(fragments: List<Fragment>,
+      context: CodeGenerationContext): TypeSpec.Builder {
     val initializeCodeBuilder = CodeBlock.builder().add(OPERATION_DEFINITION_FIELD_NAME)
     fragments.filter { operation.fragmentsReferenced.contains(it.fragmentName) }.forEach {
+      val className = ClassName.get(context.fragmentsPackage, it.interfaceTypeName());
       initializeCodeBuilder
           .add(" + \$S\n", "\n")
-          .add(" + \$L.\$L", it.interfaceTypeName(), Fragment.FRAGMENT_DEFINITION_FIELD_NAME)
+          .add(" + \$T.\$L", className, Fragment.FRAGMENT_DEFINITION_FIELD_NAME)
     }
 
     addField(FieldSpec.builder(ClassNames.STRING, QUERY_DOCUMENT_FIELD_NAME)
