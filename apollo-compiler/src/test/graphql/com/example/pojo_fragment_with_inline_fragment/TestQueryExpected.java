@@ -204,6 +204,11 @@ public final class TestQuery implements Query<Operation.Variables> {
           public Creator creator() {
             return CREATOR;
           }
+
+          @Override
+          public HeroDetails.Factory heroDetailsFactory() {
+            return HeroDetails.FACTORY;
+          }
         };
 
         private HeroDetails heroDetails;
@@ -224,6 +229,8 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         public interface Factory {
           Creator creator();
+
+          HeroDetails.Factory heroDetailsFactory();
         }
 
         public interface Creator {

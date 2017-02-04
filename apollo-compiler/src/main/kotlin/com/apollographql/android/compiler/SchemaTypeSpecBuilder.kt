@@ -102,18 +102,18 @@ class SchemaTypeSpecBuilder(
 
   private fun fragmentsAccessorMethodSpec(abstract: Boolean): MethodSpec {
     val methodSpecBuilder = MethodSpec
-        .methodBuilder(FRAGMENTS_INTERFACE_NAME.decapitalize())
-        .returns(ClassName.get("", FRAGMENTS_INTERFACE_NAME))
+        .methodBuilder(FRAGMENTS_TYPE_NAME.decapitalize())
+        .returns(ClassName.get("", FRAGMENTS_TYPE_NAME))
         .addModifiers(Modifier.PUBLIC)
         .addModifiers(if (abstract) listOf(Modifier.ABSTRACT) else emptyList())
     if (!abstract) {
-      methodSpecBuilder.addCode(CodeBlock.of("return this.${FRAGMENTS_INTERFACE_NAME.toLowerCase()};\n"))
+      methodSpecBuilder.addCode(CodeBlock.of("return this.${FRAGMENTS_TYPE_NAME.toLowerCase()};\n"))
     }
     return methodSpecBuilder.build()
   }
 
   private fun fragmentsFieldSpec(): FieldSpec = FieldSpec
-      .builder(ClassName.get("", FRAGMENTS_INTERFACE_NAME.capitalize()), FRAGMENTS_INTERFACE_NAME.decapitalize())
+      .builder(ClassName.get("", FRAGMENTS_TYPE_NAME.capitalize()), FRAGMENTS_TYPE_NAME.decapitalize())
       .addModifiers(Modifier.PRIVATE)
       .build()
 
@@ -147,9 +147,9 @@ class SchemaTypeSpecBuilder(
     }
 
     val typeSpecBuilder = if (abstractClass) {
-      TypeSpec.interfaceBuilder(FRAGMENTS_INTERFACE_NAME)
+      TypeSpec.interfaceBuilder(FRAGMENTS_TYPE_NAME)
     } else {
-      TypeSpec.classBuilder(FRAGMENTS_INTERFACE_NAME)
+      TypeSpec.classBuilder(FRAGMENTS_TYPE_NAME)
           .addMethod(SchemaFragmentsConstructorBuilder(fragmentSpreads).build())
     }
     return typeSpecBuilder
@@ -157,7 +157,7 @@ class SchemaTypeSpecBuilder(
         .addFragmentFields()
         .addFragmentAccessorMethods()
         .build()
-        .withFactory()
+        .withFactory(fragments)
         .withCreator()
         .let {
           if (context.abstractType)
@@ -166,7 +166,7 @@ class SchemaTypeSpecBuilder(
             it
                 .withValueInitConstructor()
                 .withCreatorImplementation()
-                .withFactoryImplementation()
+                .withFactoryImplementation(fragments)
         }
   }
 
@@ -181,7 +181,7 @@ class SchemaTypeSpecBuilder(
   }
 
   companion object {
-    val FRAGMENTS_INTERFACE_NAME: String = "Fragments"
+    val FRAGMENTS_TYPE_NAME: String = "Fragments"
     private val PARAM_READER = "reader"
     private val PARAM_SPEC_READER = ParameterSpec.builder(ClassNames.API_RESPONSE_READER, PARAM_READER).build()
   }

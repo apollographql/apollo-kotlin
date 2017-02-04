@@ -59,6 +59,10 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         interface Factory {
           Creator creator();
+
+          HumanDetails.Factory humanDetailsFactory();
+
+          DroidDetails.Factory droidDetailsFactory();
         }
 
         interface Creator {
@@ -87,6 +91,10 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         interface Factory {
           Creator creator();
+
+          HumanDetails.Factory humanDetailsFactory();
+
+          DroidDetails.Factory droidDetailsFactory();
         }
 
         interface Creator {
