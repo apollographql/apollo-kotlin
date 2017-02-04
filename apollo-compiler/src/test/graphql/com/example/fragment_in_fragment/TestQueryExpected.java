@@ -59,6 +59,8 @@ public final class TestQuery implements Query<Operation.Variables> {
 
             interface Factory {
               Creator creator();
+
+              StarshipFragment.Factory starshipFragmentFactory();
             }
 
             interface Creator {

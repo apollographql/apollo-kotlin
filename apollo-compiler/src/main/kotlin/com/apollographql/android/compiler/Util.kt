@@ -32,10 +32,10 @@ fun MethodSpec.overrideReturnType(typeNameOverrideMap: Map<String, String>): Met
 
 fun TypeSpec.withCreator(): TypeSpec {
   return toBuilder()
-      .addType(TypeSpec.interfaceBuilder(Util.CREATOR_INTERFACE_NAME)
+      .addType(TypeSpec.interfaceBuilder(Util.CREATOR_TYPE_NAME)
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
           .addMethod(MethodSpec
-              .methodBuilder(Util.CREATOR_METHOD_CREATE)
+              .methodBuilder(Util.CREATOR_CREATE_METHOD_NAME)
               .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
               .addParameters(
                   methodSpecs.filter { !it.isConstructor }.map {
@@ -70,9 +70,9 @@ fun TypeSpec.withCreatorImplementation(): TypeSpec {
 
   fun creatorInitializer(constructorClassName: String, fieldSpecs: List<FieldSpec>) =
       TypeSpec.anonymousClassBuilder("")
-          .superclass(ClassName.get("", Util.CREATOR_INTERFACE_NAME))
+          .superclass(ClassName.get("", Util.CREATOR_TYPE_NAME))
           .addMethod(MethodSpec
-              .methodBuilder(Util.CREATOR_METHOD_CREATE)
+              .methodBuilder(Util.CREATOR_CREATE_METHOD_NAME)
               .addModifiers(Modifier.PUBLIC)
               .addAnnotation(Override::class.java)
               .addParameters(methodSpecs.toParameterSpecs())
@@ -83,64 +83,67 @@ fun TypeSpec.withCreatorImplementation(): TypeSpec {
 
   return toBuilder()
       .addField(FieldSpec
-          .builder(ClassName.get("", Util.CREATOR_INTERFACE_NAME), Util.CREATOR_INTERFACE_NAME.toUpperCase())
+          .builder(ClassName.get("", Util.CREATOR_TYPE_NAME), Util.CREATOR_TYPE_NAME.toUpperCase())
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
           .initializer("\$L", creatorInitializer(name, fieldSpecs))
           .build())
       .build()
 }
 
-fun TypeSpec.withFactory(): TypeSpec {
+fun TypeSpec.withFactory(plusFactories: List<String> = emptyList()): TypeSpec {
   return toBuilder()
-      .addType(TypeSpec.interfaceBuilder(Util.FACTORY_INTERFACE_NAME)
+      .addType(TypeSpec.interfaceBuilder(Util.FACTORY_TYPE_NAME)
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-          .addMethod(MethodSpec
-              .methodBuilder(Util.CREATOR_INTERFACE_NAME.decapitalize())
-              .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-              .returns(ClassName.get("", Util.CREATOR_INTERFACE_NAME))
-              .build())
+          .addMethod(
+              MethodSpec.methodBuilder(Util.FACTORY_CREATOR_ACCESS_METHOD_NAME)
+                  .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                  .returns(ClassName.get("", Util.CREATOR_TYPE_NAME))
+                  .build())
           .addMethods(typeSpecs
-              .filter { it.name != Util.CREATOR_INTERFACE_NAME }
+              .map { it.name }
+              .filter { it != Util.CREATOR_TYPE_NAME }
+              .plus(plusFactories.map(String::capitalize))
               .map {
-                MethodSpec
-                    .methodBuilder("${it.name.decapitalize()}${Util.FACTORY_INTERFACE_NAME}")
+                MethodSpec.methodBuilder("${it.decapitalize()}${Util.FACTORY_TYPE_NAME}")
                     .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                    .returns(ClassName.get("", "${it.name}.${Util.FACTORY_INTERFACE_NAME}"))
+                    .returns(ClassName.get("", "$it.${Util.FACTORY_TYPE_NAME}"))
                     .build()
               })
           .build())
       .build()
 }
 
-fun TypeSpec.withFactoryImplementation(): TypeSpec {
+fun TypeSpec.withFactoryImplementation(plusFactories: List<String> = emptyList()): TypeSpec {
   fun factoryInitializer(typeSpecs: List<TypeSpec>) =
       TypeSpec.anonymousClassBuilder("")
-          .superclass(ClassName.get("", Util.FACTORY_INTERFACE_NAME))
+          .superclass(Util.FACTORY_INTERFACE_TYPE)
           .addMethod(MethodSpec
-              .methodBuilder(Util.CREATOR_INTERFACE_NAME.decapitalize())
+              .methodBuilder(Util.FACTORY_CREATOR_ACCESS_METHOD_NAME)
               .addModifiers(Modifier.PUBLIC)
               .addAnnotation(Override::class.java)
-              .returns(ClassName.get("", Util.CREATOR_INTERFACE_NAME))
-              .addStatement("return \$L", Util.CREATOR_INTERFACE_NAME.toUpperCase())
+              .returns(ClassName.get("", Util.CREATOR_TYPE_NAME))
+              .addStatement("return \$L", Util.CREATOR_TYPE_NAME.toUpperCase())
               .build())
           .addMethods(typeSpecs
+              .map { it.name }
+              .plus(plusFactories.map(String::capitalize))
               .map {
                 MethodSpec
-                    .methodBuilder("${it.name.decapitalize()}${Util.FACTORY_INTERFACE_NAME}")
+                    .methodBuilder("${it.decapitalize()}${Util.FACTORY_TYPE_NAME}")
                     .addModifiers(Modifier.PUBLIC)
                     .addAnnotation(Override::class.java)
-                    .returns(ClassName.get("", "${it.name}.${Util.FACTORY_INTERFACE_NAME}"))
-                    .addStatement("return \$L.\$L", it.name, Util.FACTORY_INTERFACE_NAME.toUpperCase())
+                    .returns(ClassName.get("", "$it.${Util.FACTORY_TYPE_NAME}"))
+                    .addStatement("return \$L.\$L", it, Util.FACTORY_TYPE_NAME.toUpperCase())
                     .build()
               })
           .build()
 
   return toBuilder()
       .addField(FieldSpec
-          .builder(ClassName.get("", Util.FACTORY_INTERFACE_NAME), Util.FACTORY_INTERFACE_NAME.toUpperCase())
+          .builder(Util.FACTORY_INTERFACE_TYPE, Util.FACTORY_TYPE_NAME.toUpperCase())
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
           .initializer("\$L", factoryInitializer(
-              typeSpecs.filter { it.name != Util.CREATOR_INTERFACE_NAME && it.name != Util.FACTORY_INTERFACE_NAME }))
+              typeSpecs.filter { it.name != Util.CREATOR_TYPE_NAME && it.name != Util.FACTORY_TYPE_NAME }))
           .build())
       .build()
 }
@@ -162,7 +165,9 @@ fun TypeSpec.withValueInitConstructor(): TypeSpec {
 }
 
 object Util {
-  const val CREATOR_INTERFACE_NAME: String = "Creator"
-  const val CREATOR_METHOD_CREATE: String = "create"
-  const val FACTORY_INTERFACE_NAME: String = "Factory"
+  const val CREATOR_TYPE_NAME: String = "Creator"
+  const val CREATOR_CREATE_METHOD_NAME: String = "create"
+  const val FACTORY_CREATOR_ACCESS_METHOD_NAME: String = "creator"
+  const val FACTORY_TYPE_NAME: String = "Factory"
+  val FACTORY_INTERFACE_TYPE: ClassName = ClassName.get("", FACTORY_TYPE_NAME)
 }

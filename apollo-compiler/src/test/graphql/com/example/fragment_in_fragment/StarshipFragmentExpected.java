@@ -42,6 +42,8 @@ public interface StarshipFragment {
 
           interface Factory {
             Creator creator();
+
+            PilotFragment.Factory pilotFragmentFactory();
           }
 
           interface Creator {

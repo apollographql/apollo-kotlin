@@ -146,8 +146,8 @@ class ResponseFieldMapperBuilder(
     if (fragmentSpreads.isNotEmpty()) {
       return CodeBlock.builder()
           .addStatement("\$L.\$L = new \$L(\$L, \$L)", PARAM_INSTANCE,
-              SchemaTypeSpecBuilder.FRAGMENTS_INTERFACE_NAME.decapitalize(),
-              SchemaTypeSpecBuilder.FRAGMENTS_INTERFACE_NAME, PARAM_READER, PARAM_TYPE_NAME)
+              SchemaTypeSpecBuilder.FRAGMENTS_TYPE_NAME.decapitalize(),
+              SchemaTypeSpecBuilder.FRAGMENTS_TYPE_NAME, PARAM_READER, PARAM_TYPE_NAME)
           .build()
     } else {
       return CodeBlock.of("")
