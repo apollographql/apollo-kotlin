@@ -67,6 +67,9 @@ public class IntegrationTest {
     Retrofit retrofit = new Retrofit.Builder()
         .baseUrl(server.url("/"))
         .addConverterFactory(new ApolloConverterFactory.Builder()
+            .withResponseFieldMapper(AllPlanets.Data.class, new AllPlanets.Data.Mapper(AllPlanets.Data.FACTORY))
+            .withResponseFieldMapper(ProductsWithDate.Data.class, new ProductsWithDate.Data.Mapper(ProductsWithDate
+                .Data.FACTORY))
             .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
             .build())
         .addConverterFactory(MoshiConverterFactory.create())

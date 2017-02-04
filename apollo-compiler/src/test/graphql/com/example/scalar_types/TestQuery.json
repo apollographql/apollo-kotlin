@@ -91,13 +91,6 @@
           ],
           "fragmentSpreads": [],
           "inlineFragments": []
-        },
-        {
-          "responseName": "graphQlNestedList",
-          "fieldName": "graphQlNestedList",
-          "type": "[[Int]]",
-          "fragmentSpreads": [],
-          "inlineFragments": []
         }
       ],
       "fragmentsReferenced": [],

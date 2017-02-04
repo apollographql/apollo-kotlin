@@ -1,0 +1,68 @@
+{
+  "operations": [
+    {
+      "operationName": "TestQuery",
+      "operationType": "query",
+      "variables": [],
+      "source": "query TestQuery {\n  shop {\n    products(first: 50) {\n      edges {\n        node {\n          title\n          createdAt\n        }\n      }\n    }\n  }\n}",
+      "fields": [
+        {
+          "responseName": "shop",
+          "fieldName": "shop",
+          "type": "Shop!",
+          "fields": [
+            {
+              "responseName": "products",
+              "fieldName": "products",
+              "type": "ProductConnection!",
+              "fields": [
+                {
+                  "responseName": "edges",
+                  "fieldName": "edges",
+                  "type": "[ProductEdge!]!",
+                  "fields": [
+                    {
+                      "responseName": "node",
+                      "fieldName": "node",
+                      "type": "Product!",
+                      "fields": [
+                        {
+                          "responseName": "title",
+                          "fieldName": "title",
+                          "type": "String!"
+                        },
+                        {
+                          "responseName": "createdAt",
+                          "fieldName": "createdAt",
+                          "type": "DateTime!"
+                        }
+                      ],
+                      "fragmentSpreads": [],
+                      "inlineFragments": []
+                    }
+                  ],
+                  "fragmentSpreads": [],
+                  "inlineFragments": []
+                }
+              ],
+              "fragmentSpreads": [],
+              "inlineFragments": []
+            }
+          ],
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentsReferenced": [],
+      "filePath": "src/test/graphql/com/example/products_with_dates/TestQuery.json"
+    }
+  ],
+  "fragments": [],
+  "typesUsed": [
+    {
+      "kind": "ScalarType",
+      "name": "DateTime",
+      "description": null
+    }
+  ]
+}

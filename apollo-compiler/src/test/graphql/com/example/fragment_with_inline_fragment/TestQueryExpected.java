@@ -56,6 +56,8 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         interface Factory {
           Creator creator();
+
+          HeroDetails.Factory heroDetailsFactory();
         }
 
         interface Creator {

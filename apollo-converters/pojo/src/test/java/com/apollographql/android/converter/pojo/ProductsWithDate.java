@@ -48,35 +48,29 @@ public final class ProductsWithDate implements Query<Operation.Variables> {
   }
 
   public static class Data implements Operation.Data {
-    private static final ResponseFieldMapper<Data> MAPPER = new ResponseFieldMapper<Data>() {
-      private final Field[] FIELDS = {
-        Field.forObject("shop", "shop", null, false, new Field.ObjectReader<Shop>() {
-          @Override public Shop read(final ResponseReader reader) throws IOException {
-            return new Shop(reader);
-          }
-        })
-      };
+    public static final Creator CREATOR = new Creator() {
+      @Override
+      public Data create(@Nonnull Shop shop) {
+        return new Data(shop);
+      }
+    };
+
+    public static final Factory FACTORY = new Factory() {
+      @Override
+      public Creator creator() {
+        return CREATOR;
+      }
 
       @Override
-      public void map(final ResponseReader reader, final Data instance) throws IOException {
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                instance.shop = (Shop) value;
-                break;
-              }
-            }
-          }
-        }, FIELDS);
+      public Shop.Factory shopFactory() {
+        return Shop.FACTORY;
       }
     };
 
     private @Nonnull Shop shop;
 
-    public Data(ResponseReader reader) throws IOException {
-      MAPPER.map(reader, this);
+    public Data(@Nonnull Shop shop) {
+      this.shop = shop;
     }
 
     public @Nonnull Shop shop() {
@@ -84,35 +78,29 @@ public final class ProductsWithDate implements Query<Operation.Variables> {
     }
 
     public static class Shop {
-      private static final ResponseFieldMapper<Shop> MAPPER = new ResponseFieldMapper<Shop>() {
-        private final Field[] FIELDS = {
-          Field.forObject("products", "products", null, false, new Field.ObjectReader<Product>() {
-            @Override public Product read(final ResponseReader reader) throws IOException {
-              return new Product(reader);
-            }
-          })
-        };
+      public static final Creator CREATOR = new Creator() {
+        @Override
+        public Shop create(@Nonnull Product products) {
+          return new Shop(products);
+        }
+      };
+
+      public static final Factory FACTORY = new Factory() {
+        @Override
+        public Creator creator() {
+          return CREATOR;
+        }
 
         @Override
-        public void map(final ResponseReader reader, final Shop instance) throws IOException {
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  instance.products = (Product) value;
-                  break;
-                }
-              }
-            }
-          }, FIELDS);
+        public Product.Factory productFactory() {
+          return Product.FACTORY;
         }
       };
 
       private @Nonnull Product products;
 
-      public Shop(ResponseReader reader) throws IOException {
-        MAPPER.map(reader, this);
+      public Shop(@Nonnull Product products) {
+        this.products = products;
       }
 
       public @Nonnull Product products() {
@@ -120,35 +108,29 @@ public final class ProductsWithDate implements Query<Operation.Variables> {
       }
 
       public static class Product {
-        private static final ResponseFieldMapper<Product> MAPPER = new ResponseFieldMapper<Product>() {
-          private final Field[] FIELDS = {
-            Field.forList("edges", "edges", null, false, new Field.ObjectReader<Edge>() {
-              @Override public Edge read(final ResponseReader reader) throws IOException {
-                return new Edge(reader);
-              }
-            })
-          };
+        public static final Creator CREATOR = new Creator() {
+          @Override
+          public Product create(@Nonnull List<? extends Edge> edges) {
+            return new Product(edges);
+          }
+        };
+
+        public static final Factory FACTORY = new Factory() {
+          @Override
+          public Creator creator() {
+            return CREATOR;
+          }
 
           @Override
-          public void map(final ResponseReader reader, final Product instance) throws IOException {
-            reader.read(new ResponseReader.ValueHandler() {
-              @Override
-              public void handle(final int fieldIndex, final Object value) throws IOException {
-                switch (fieldIndex) {
-                  case 0: {
-                    instance.edges = (List<? extends Edge>) value;
-                    break;
-                  }
-                }
-              }
-            }, FIELDS);
+          public Edge.Factory edgeFactory() {
+            return Edge.FACTORY;
           }
         };
 
         private @Nonnull List<? extends Edge> edges;
 
-        public Product(ResponseReader reader) throws IOException {
-          MAPPER.map(reader, this);
+        public Product(@Nonnull List<? extends Edge> edges) {
+          this.edges = edges;
         }
 
         public @Nonnull List<? extends Edge> edges() {
@@ -156,35 +138,29 @@ public final class ProductsWithDate implements Query<Operation.Variables> {
         }
 
         public static class Edge {
-          private static final ResponseFieldMapper<Edge> MAPPER = new ResponseFieldMapper<Edge>() {
-            private final Field[] FIELDS = {
-              Field.forObject("node", "node", null, false, new Field.ObjectReader<Node>() {
-                @Override public Node read(final ResponseReader reader) throws IOException {
-                  return new Node(reader);
-                }
-              })
-            };
+          public static final Creator CREATOR = new Creator() {
+            @Override
+            public Edge create(@Nonnull Node node) {
+              return new Edge(node);
+            }
+          };
+
+          public static final Factory FACTORY = new Factory() {
+            @Override
+            public Creator creator() {
+              return CREATOR;
+            }
 
             @Override
-            public void map(final ResponseReader reader, final Edge instance) throws IOException {
-              reader.read(new ResponseReader.ValueHandler() {
-                @Override
-                public void handle(final int fieldIndex, final Object value) throws IOException {
-                  switch (fieldIndex) {
-                    case 0: {
-                      instance.node = (Node) value;
-                      break;
-                    }
-                  }
-                }
-              }, FIELDS);
+            public Node.Factory nodeFactory() {
+              return Node.FACTORY;
             }
           };
 
           private @Nonnull Node node;
 
-          public Edge(ResponseReader reader) throws IOException {
-            MAPPER.map(reader, this);
+          public Edge(@Nonnull Node node) {
+            this.node = node;
           }
 
           public @Nonnull Node node() {
@@ -192,29 +168,17 @@ public final class ProductsWithDate implements Query<Operation.Variables> {
           }
 
           public static class Node {
-            private static final ResponseFieldMapper<Node> MAPPER = new ResponseFieldMapper<Node>() {
-              private final Field[] FIELDS = {
-                Field.forString("title", "title", null, false),
-                Field.forCustomType("createdAt", "createdAt", null, false, CustomType.DATETIME)
-              };
-
+            public static final Creator CREATOR = new Creator() {
               @Override
-              public void map(final ResponseReader reader, final Node instance) throws IOException {
-                reader.read(new ResponseReader.ValueHandler() {
-                  @Override
-                  public void handle(final int fieldIndex, final Object value) throws IOException {
-                    switch (fieldIndex) {
-                      case 0: {
-                        instance.title = (String) value;
-                        break;
-                      }
-                      case 1: {
-                        instance.createdAt = (Date) value;
-                        break;
-                      }
-                    }
-                  }
-                }, FIELDS);
+              public Node create(@Nonnull String title, @Nonnull Date createdAt) {
+                return new Node(title, createdAt);
+              }
+            };
+
+            public static final Factory FACTORY = new Factory() {
+              @Override
+              public Creator creator() {
+                return CREATOR;
               }
             };
 
@@ -222,8 +186,9 @@ public final class ProductsWithDate implements Query<Operation.Variables> {
 
             private @Nonnull Date createdAt;
 
-            public Node(ResponseReader reader) throws IOException {
-              MAPPER.map(reader, this);
+            public Node(@Nonnull String title, @Nonnull Date createdAt) {
+              this.title = title;
+              this.createdAt = createdAt;
             }
 
             public @Nonnull String title() {
@@ -233,8 +198,244 @@ public final class ProductsWithDate implements Query<Operation.Variables> {
             public @Nonnull Date createdAt() {
               return this.createdAt;
             }
+
+            public interface Factory {
+              Creator creator();
+            }
+
+            public interface Creator {
+              Node create(@Nonnull String title, @Nonnull Date createdAt);
+            }
+
+            public static final class Mapper implements ResponseFieldMapper<Node> {
+              final Factory factory;
+
+              final Field[] fields = {
+                Field.forString("title", "title", null, false),
+                Field.forCustomType("createdAt", "createdAt", null, false, CustomType.DATETIME)
+              };
+
+              public Mapper(@Nonnull Factory factory) {
+                this.factory = factory;
+              }
+
+              @Override
+              public Node map(ResponseReader reader) throws IOException {
+                final __ContentValues contentValues = new __ContentValues();
+                reader.read(new ResponseReader.ValueHandler() {
+                  @Override
+                  public void handle(final int fieldIndex, final Object value) throws IOException {
+                    switch (fieldIndex) {
+                      case 0: {
+                        contentValues.title = (String) value;
+                        break;
+                      }
+                      case 1: {
+                        contentValues.createdAt = (Date) value;
+                        break;
+                      }
+                    }
+                  }
+                }, fields);
+                return factory.creator().create(contentValues.title, contentValues.createdAt);
+              }
+
+              static final class __ContentValues {
+                String title;
+
+                Date createdAt;
+              }
+            }
+          }
+
+          public interface Factory {
+            Creator creator();
+
+            Node.Factory nodeFactory();
+          }
+
+          public interface Creator {
+            Edge create(@Nonnull Node node);
+          }
+
+          public static final class Mapper implements ResponseFieldMapper<Edge> {
+            final Factory factory;
+
+            final Field[] fields = {
+              Field.forObject("node", "node", null, false, new Field.ObjectReader<Node>() {
+                @Override public Node read(final ResponseReader reader) throws IOException {
+                  return new Node.Mapper(factory.nodeFactory()).map(reader);
+                }
+              })
+            };
+
+            public Mapper(@Nonnull Factory factory) {
+              this.factory = factory;
+            }
+
+            @Override
+            public Edge map(ResponseReader reader) throws IOException {
+              final __ContentValues contentValues = new __ContentValues();
+              reader.read(new ResponseReader.ValueHandler() {
+                @Override
+                public void handle(final int fieldIndex, final Object value) throws IOException {
+                  switch (fieldIndex) {
+                    case 0: {
+                      contentValues.node = (Node) value;
+                      break;
+                    }
+                  }
+                }
+              }, fields);
+              return factory.creator().create(contentValues.node);
+            }
+
+            static final class __ContentValues {
+              Node node;
+            }
           }
         }
+
+        public interface Factory {
+          Creator creator();
+
+          Edge.Factory edgeFactory();
+        }
+
+        public interface Creator {
+          Product create(@Nonnull List<? extends Edge> edges);
+        }
+
+        public static final class Mapper implements ResponseFieldMapper<Product> {
+          final Factory factory;
+
+          final Field[] fields = {
+            Field.forList("edges", "edges", null, false, new Field.ObjectReader<Edge>() {
+              @Override public Edge read(final ResponseReader reader) throws IOException {
+                return new Edge.Mapper(factory.edgeFactory()).map(reader);
+              }
+            })
+          };
+
+          public Mapper(@Nonnull Factory factory) {
+            this.factory = factory;
+          }
+
+          @Override
+          public Product map(ResponseReader reader) throws IOException {
+            final __ContentValues contentValues = new __ContentValues();
+            reader.read(new ResponseReader.ValueHandler() {
+              @Override
+              public void handle(final int fieldIndex, final Object value) throws IOException {
+                switch (fieldIndex) {
+                  case 0: {
+                    contentValues.edges = (List<? extends Edge>) value;
+                    break;
+                  }
+                }
+              }
+            }, fields);
+            return factory.creator().create(contentValues.edges);
+          }
+
+          static final class __ContentValues {
+            List<? extends Edge> edges;
+          }
+        }
+      }
+
+      public interface Factory {
+        Creator creator();
+
+        Product.Factory productFactory();
+      }
+
+      public interface Creator {
+        Shop create(@Nonnull Product products);
+      }
+
+      public static final class Mapper implements ResponseFieldMapper<Shop> {
+        final Factory factory;
+
+        final Field[] fields = {
+          Field.forObject("products", "products", null, false, new Field.ObjectReader<Product>() {
+            @Override public Product read(final ResponseReader reader) throws IOException {
+              return new Product.Mapper(factory.productFactory()).map(reader);
+            }
+          })
+        };
+
+        public Mapper(@Nonnull Factory factory) {
+          this.factory = factory;
+        }
+
+        @Override
+        public Shop map(ResponseReader reader) throws IOException {
+          final __ContentValues contentValues = new __ContentValues();
+          reader.read(new ResponseReader.ValueHandler() {
+            @Override
+            public void handle(final int fieldIndex, final Object value) throws IOException {
+              switch (fieldIndex) {
+                case 0: {
+                  contentValues.products = (Product) value;
+                  break;
+                }
+              }
+            }
+          }, fields);
+          return factory.creator().create(contentValues.products);
+        }
+
+        static final class __ContentValues {
+          Product products;
+        }
+      }
+    }
+
+    public interface Factory {
+      Creator creator();
+
+      Shop.Factory shopFactory();
+    }
+
+    public interface Creator {
+      Data create(@Nonnull Shop shop);
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Data> {
+      final Factory factory;
+
+      final Field[] fields = {
+        Field.forObject("shop", "shop", null, false, new Field.ObjectReader<Shop>() {
+          @Override public Shop read(final ResponseReader reader) throws IOException {
+            return new Shop.Mapper(factory.shopFactory()).map(reader);
+          }
+        })
+      };
+
+      public Mapper(@Nonnull Factory factory) {
+        this.factory = factory;
+      }
+
+      @Override
+      public Data map(ResponseReader reader) throws IOException {
+        final __ContentValues contentValues = new __ContentValues();
+        reader.read(new ResponseReader.ValueHandler() {
+          @Override
+          public void handle(final int fieldIndex, final Object value) throws IOException {
+            switch (fieldIndex) {
+              case 0: {
+                contentValues.shop = (Shop) value;
+                break;
+              }
+            }
+          }
+        }, fields);
+        return factory.creator().create(contentValues.shop);
+      }
+
+      static final class __ContentValues {
+        Shop shop;
       }
     }
   }

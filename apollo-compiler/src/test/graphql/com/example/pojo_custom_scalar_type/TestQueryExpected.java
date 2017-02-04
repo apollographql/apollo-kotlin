@@ -46,31 +46,6 @@ public final class TestQuery implements Query<Operation.Variables> {
   }
 
   public static class Data implements Operation.Data {
-    private static final ResponseFieldMapper<Data> MAPPER = new ResponseFieldMapper<Data>() {
-      private final Field[] FIELDS = {
-        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
-          @Override public Hero read(final ResponseReader reader) throws IOException {
-            return new Hero(reader);
-          }
-        })
-      };
-
-      @Override
-      public void map(final ResponseReader reader, final Data instance) throws IOException {
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                instance.hero = (Hero) value;
-                break;
-              }
-            }
-          }
-        }, FIELDS);
-      }
-    };
-
     public static final Creator CREATOR = new Creator() {
       @Override
       public Data create(@Nullable Hero hero) {
@@ -92,10 +67,6 @@ public final class TestQuery implements Query<Operation.Variables> {
 
     private @Nullable Hero hero;
 
-    public Data(ResponseReader reader) throws IOException {
-      MAPPER.map(reader, this);
-    }
-
     public Data(@Nullable Hero hero) {
       this.hero = hero;
     }
@@ -105,41 +76,6 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     public static class Hero {
-      private static final ResponseFieldMapper<Hero> MAPPER = new ResponseFieldMapper<Hero>() {
-        private final Field[] FIELDS = {
-          Field.forString("name", "name", null, false),
-          Field.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE),
-          Field.forList("appearanceDates", "appearanceDates", null, false, new Field.ListReader<Date>() {
-            @Override public Date read(final Field.ListItemReader reader) throws IOException {
-              return reader.readCustomType(CustomType.DATE);
-            }
-          })
-        };
-
-        @Override
-        public void map(final ResponseReader reader, final Hero instance) throws IOException {
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  instance.name = (String) value;
-                  break;
-                }
-                case 1: {
-                  instance.birthDate = (Date) value;
-                  break;
-                }
-                case 2: {
-                  instance.appearanceDates = (List<? extends Date>) value;
-                  break;
-                }
-              }
-            }
-          }, FIELDS);
-        }
-      };
-
       public static final Creator CREATOR = new Creator() {
         @Override
         public Hero create(@Nonnull String name, @Nonnull Date birthDate,
@@ -160,10 +96,6 @@ public final class TestQuery implements Query<Operation.Variables> {
       private @Nonnull Date birthDate;
 
       private @Nonnull List<? extends Date> appearanceDates;
-
-      public Hero(ResponseReader reader) throws IOException {
-        MAPPER.map(reader, this);
-      }
 
       public Hero(@Nonnull String name, @Nonnull Date birthDate,
           @Nonnull List<? extends Date> appearanceDates) {
@@ -192,6 +124,57 @@ public final class TestQuery implements Query<Operation.Variables> {
         Hero create(@Nonnull String name, @Nonnull Date birthDate,
             @Nonnull List<? extends Date> appearanceDates);
       }
+
+      public static final class Mapper implements ResponseFieldMapper<Hero> {
+        final Factory factory;
+
+        final Field[] fields = {
+          Field.forString("name", "name", null, false),
+          Field.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE),
+          Field.forList("appearanceDates", "appearanceDates", null, false, new Field.ListReader<Date>() {
+            @Override public Date read(final Field.ListItemReader reader) throws IOException {
+              return reader.readCustomType(CustomType.DATE);
+            }
+          })
+        };
+
+        public Mapper(@Nonnull Factory factory) {
+          this.factory = factory;
+        }
+
+        @Override
+        public Hero map(ResponseReader reader) throws IOException {
+          final __ContentValues contentValues = new __ContentValues();
+          reader.read(new ResponseReader.ValueHandler() {
+            @Override
+            public void handle(final int fieldIndex, final Object value) throws IOException {
+              switch (fieldIndex) {
+                case 0: {
+                  contentValues.name = (String) value;
+                  break;
+                }
+                case 1: {
+                  contentValues.birthDate = (Date) value;
+                  break;
+                }
+                case 2: {
+                  contentValues.appearanceDates = (List<? extends Date>) value;
+                  break;
+                }
+              }
+            }
+          }, fields);
+          return factory.creator().create(contentValues.name, contentValues.birthDate, contentValues.appearanceDates);
+        }
+
+        static final class __ContentValues {
+          String name;
+
+          Date birthDate;
+
+          List<? extends Date> appearanceDates;
+        }
+      }
     }
 
     public interface Factory {
@@ -202,6 +185,43 @@ public final class TestQuery implements Query<Operation.Variables> {
 
     public interface Creator {
       Data create(@Nullable Hero hero);
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Data> {
+      final Factory factory;
+
+      final Field[] fields = {
+        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
+          @Override public Hero read(final ResponseReader reader) throws IOException {
+            return new Hero.Mapper(factory.heroFactory()).map(reader);
+          }
+        })
+      };
+
+      public Mapper(@Nonnull Factory factory) {
+        this.factory = factory;
+      }
+
+      @Override
+      public Data map(ResponseReader reader) throws IOException {
+        final __ContentValues contentValues = new __ContentValues();
+        reader.read(new ResponseReader.ValueHandler() {
+          @Override
+          public void handle(final int fieldIndex, final Object value) throws IOException {
+            switch (fieldIndex) {
+              case 0: {
+                contentValues.hero = (Hero) value;
+                break;
+              }
+            }
+          }
+        }, fields);
+        return factory.creator().create(contentValues.hero);
+      }
+
+      static final class __ContentValues {
+        Hero hero;
+      }
     }
   }
 }
