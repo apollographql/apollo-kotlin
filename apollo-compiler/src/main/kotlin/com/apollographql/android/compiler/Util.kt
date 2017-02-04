@@ -102,7 +102,7 @@ fun TypeSpec.withFactory(plusFactories: List<String> = emptyList()): TypeSpec {
           .addMethods(typeSpecs
               .map { it.name }
               .filter { it != Util.CREATOR_TYPE_NAME }
-              .plus(plusFactories)
+              .plus(plusFactories.map(String::capitalize))
               .map {
                 MethodSpec.methodBuilder("${it.decapitalize()}${Util.FACTORY_TYPE_NAME}")
                     .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
@@ -126,7 +126,7 @@ fun TypeSpec.withFactoryImplementation(plusFactories: List<String> = emptyList()
               .build())
           .addMethods(typeSpecs
               .map { it.name }
-              .plus(plusFactories)
+              .plus(plusFactories.map(String::capitalize))
               .map {
                 MethodSpec
                     .methodBuilder("${it.decapitalize()}${Util.FACTORY_TYPE_NAME}")
