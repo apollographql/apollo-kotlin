@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
-/** TODO add javadocs */
 public class Field {
   private final Type type;
   private final String responseName;
