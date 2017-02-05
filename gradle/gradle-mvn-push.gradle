@@ -42,6 +42,8 @@ def getRepositoryPassword() {
   return hasProperty('SONATYPE_NEXUS_PASSWORD') ? SONATYPE_NEXUS_PASSWORD : ""
 }
 
+archivesBaseName = POM_ARTIFACT_ID
+
 afterEvaluate { project ->
   uploadArchives {
     repositories {
@@ -90,6 +92,9 @@ afterEvaluate { project ->
         }
       } else {
         mavenInstaller {
+          pom.groupId = GROUP
+          pom.artifactId = POM_ARTIFACT_ID
+          pom.version = VERSION_NAME
         }
       }
     }
