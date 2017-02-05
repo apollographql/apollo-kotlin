@@ -35,8 +35,8 @@ public final class ApolloConverterFactory extends Converter.Factory {
       if (Response.class.isAssignableFrom((Class<?>) parameterizedType.getRawType())) {
         ResponseFieldMapper responseMapper = responseFieldMappers.get(parameterizedType.getActualTypeArguments()[0]);
         if (responseMapper == null) {
-          throw new RuntimeException("failed to resolve response field mapper for: " + type + ". Did you forget to " +
-              "register one");
+          throw new RuntimeException("failed to resolve response field mapper for: " + type + ". Did you forget to "
+              + "register one");
         }
         return new ApolloResponseBodyConverter(responseMapper, customTypeAdapters);
       }
