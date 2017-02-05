@@ -1,0 +1,127 @@
+{
+  "operations": [
+    {
+      "operationName": "TestQuery",
+      "operationType": "query",
+      "variables": [],
+      "source": "query AllStarships {\n  allStarships(first: 7) {\n    edges {\n      node {\n        ...starshipFragment\n      }\n    }\n  }\n}",
+      "fields": [
+        {
+          "responseName": "allStarships",
+          "fieldName": "allStarships",
+          "type": "StarshipsConnection",
+          "fields": [
+            {
+              "responseName": "edges",
+              "fieldName": "edges",
+              "type": "[StarshipsEdge]",
+              "fields": [
+                {
+                  "responseName": "node",
+                  "fieldName": "node",
+                  "type": "Starship",
+                  "fields": [],
+                  "fragmentSpreads": [
+                    "starshipFragment"
+                  ],
+                  "inlineFragments": []
+                }
+              ],
+              "fragmentSpreads": [],
+              "inlineFragments": []
+            }
+          ],
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentsReferenced": [
+        "starshipFragment",
+        "pilotFragment"
+      ],
+      "filePath": "src/test/graphql/com/example/fragment_in_fragment/TestQuery.json"
+    }
+  ],
+  "fragments": [
+    {
+      "fragmentName": "starshipFragment",
+      "source": "fragment starshipFragment on Starship {\n  id\n  name\n  pilotConnection {\n    edges {\n      node {\n        ...pilotFragment\n      }\n    }\n  }\n}",
+      "typeCondition": "Starship",
+      "fields": [
+        {
+          "responseName": "id",
+          "fieldName": "id",
+          "type": "ID!"
+        },
+        {
+          "responseName": "name",
+          "fieldName": "name",
+          "type": "String"
+        },
+        {
+          "responseName": "pilotConnection",
+          "fieldName": "pilotConnection",
+          "type": "StarshipPilotsConnection",
+          "fields": [
+            {
+              "responseName": "edges",
+              "fieldName": "edges",
+              "type": "[StarshipPilotsEdge]",
+              "fields": [
+                {
+                  "responseName": "node",
+                  "fieldName": "node",
+                  "type": "Person",
+                  "fields": [],
+                  "fragmentSpreads": [
+                    "pilotFragment"
+                  ],
+                  "inlineFragments": []
+                }
+              ],
+              "fragmentSpreads": [],
+              "inlineFragments": []
+            }
+          ],
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentSpreads": [],
+      "inlineFragments": [],
+      "fragmentsReferenced": [
+        "pilotFragment"
+      ]
+    },
+    {
+      "fragmentName": "pilotFragment",
+      "source": "fragment pilotFragment on Person {\n  name\n  homeworld {\n    name\n  }\n}",
+      "typeCondition": "Person",
+      "fields": [
+        {
+          "responseName": "name",
+          "fieldName": "name",
+          "type": "String"
+        },
+        {
+          "responseName": "homeworld",
+          "fieldName": "homeworld",
+          "type": "Planet",
+          "fields": [
+            {
+              "responseName": "name",
+              "fieldName": "name",
+              "type": "String"
+            }
+          ],
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentSpreads": [],
+      "inlineFragments": [],
+      "fragmentsReferenced": []
+    }
+  ],
+  "typesUsed": []
+}
