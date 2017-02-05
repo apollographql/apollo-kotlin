@@ -4,8 +4,8 @@ targetCompatibility = JavaVersion.VERSION_1_7
 sourceCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
-  compile dep.jsr305
-  compile dep.jsr205
+  compileOnly dep.jsr305
+  compileOnly dep.jsr205
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

@@ -12,7 +12,7 @@ sourceSets.test.runtimeClasspath += configurations.compileOnly
 
 dependencies {
   compile dep.moshi
-  compile dep.jsr305
+  compileOnly dep.jsr305
   compile dep.retrofitMoshiConverter
   compileOnly project(":apollo-api")
 
