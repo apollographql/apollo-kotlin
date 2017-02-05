@@ -69,9 +69,9 @@ public final class DroidDetails implements Query<Operation.Variables> {
   public static class Data implements Operation.Data {
     private static final ResponseFieldMapper<Data> MAPPER = new ResponseFieldMapper<Data>() {
       private final Field[] FIELDS = {
-        Field.forObject("species", "species", null, true, new Field.ObjectReader<Specy>() {
-          @Override public Specy read(final ResponseReader reader) throws IOException {
-            return new Specy(reader);
+        Field.forObject("species", "species", null, true, new Field.ObjectReader<Species>() {
+          @Override public Species read(final ResponseReader reader) throws IOException {
+            return new Species(reader);
           }
         })
       };
@@ -83,7 +83,7 @@ public final class DroidDetails implements Query<Operation.Variables> {
           public void handle(final int fieldIndex, final Object value) throws IOException {
             switch (fieldIndex) {
               case 0: {
-                instance.species = (Specy) value;
+                instance.species = (Species) value;
                 break;
               }
             }
@@ -91,19 +91,23 @@ public final class DroidDetails implements Query<Operation.Variables> {
         }, FIELDS);
       }
     };
-
-    private @Nullable Specy species;
+    
+    private @Nullable Species species;
 
     public Data(ResponseReader reader) throws IOException {
       MAPPER.map(reader, this);
     }
 
-    public @Nullable Specy species() {
+    public Data(@Nullable Species species) {
+      this.species = species;
+    }
+
+    public @Nullable Species species() {
       return this.species;
     }
 
-    public static class Specy {
-      private static final ResponseFieldMapper<Specy> MAPPER = new ResponseFieldMapper<Specy>() {
+    public static class Species {
+      private static final ResponseFieldMapper<Species> MAPPER = new ResponseFieldMapper<Species>() {
         private final Field[] FIELDS = {
           Field.forString("id", "id", null, false),
           Field.forString("name", "name", null, true),
@@ -111,7 +115,7 @@ public final class DroidDetails implements Query<Operation.Variables> {
         };
 
         @Override
-        public void map(final ResponseReader reader, final Specy instance) throws IOException {
+        public void map(final ResponseReader reader, final Species instance) throws IOException {
           reader.read(new ResponseReader.ValueHandler() {
             @Override
             public void handle(final int fieldIndex, final Object value) throws IOException {
@@ -140,10 +144,10 @@ public final class DroidDetails implements Query<Operation.Variables> {
 
       private @Nullable String classification;
 
-      public Specy(ResponseReader reader) throws IOException {
+      public Species(ResponseReader reader) throws IOException {
         MAPPER.map(reader, this);
       }
-
+      
       public @Nonnull String id() {
         return this.id;
       }
@@ -155,7 +159,6 @@ public final class DroidDetails implements Query<Operation.Variables> {
       public @Nullable String classification() {
         return this.classification;
       }
-    }
   }
 }
 ```
