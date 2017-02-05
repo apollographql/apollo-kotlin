@@ -47,31 +47,6 @@ public final class TestQuery implements Query<Operation.Variables> {
   }
 
   public static class Data implements Operation.Data {
-    private static final ResponseFieldMapper<Data> MAPPER = new ResponseFieldMapper<Data>() {
-      private final Field[] FIELDS = {
-        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
-          @Override public Hero read(final ResponseReader reader) throws IOException {
-            return new Hero(reader);
-          }
-        })
-      };
-
-      @Override
-      public void map(final ResponseReader reader, final Data instance) throws IOException {
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                instance.hero = (Hero) value;
-                break;
-              }
-            }
-          }
-        }, FIELDS);
-      }
-    };
-
     public static final Creator CREATOR = new Creator() {
       @Override
       public Data create(@Nullable Hero hero) {
@@ -93,10 +68,6 @@ public final class TestQuery implements Query<Operation.Variables> {
 
     private @Nullable Hero hero;
 
-    public Data(ResponseReader reader) throws IOException {
-      MAPPER.map(reader, this);
-    }
-
     public Data(@Nullable Hero hero) {
       this.hero = hero;
     }
@@ -106,42 +77,6 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     public static class Hero {
-      private static final ResponseFieldMapper<Hero> MAPPER = new ResponseFieldMapper<Hero>() {
-        private final Field[] FIELDS = {
-          Field.forString("name", "name", null, false),
-          Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
-            @Override public Episode read(final Field.ListItemReader reader) throws IOException {
-              return Episode.valueOf(reader.readString());
-            }
-          }),
-          Field.forString("__typename", "__typename", null, false)
-        };
-
-        @Override
-        public void map(final ResponseReader reader, final Hero instance) throws IOException {
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  instance.name = (String) value;
-                  break;
-                }
-                case 1: {
-                  instance.appearsIn = (List<? extends Episode>) value;
-                  break;
-                }
-                case 2: {
-                  String typename = (String) value;
-                  instance.fragments = new Fragments(reader, typename);
-                  break;
-                }
-              }
-            }
-          }, FIELDS);
-        }
-      };
-
       public static final Creator CREATOR = new Creator() {
         @Override
         public Hero create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
@@ -167,10 +102,6 @@ public final class TestQuery implements Query<Operation.Variables> {
       private @Nonnull List<? extends Episode> appearsIn;
 
       private Fragments fragments;
-
-      public Hero(ResponseReader reader) throws IOException {
-        MAPPER.map(reader.toBufferedReader(), this);
-      }
 
       public Hero(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
           Fragments fragments) {
@@ -213,12 +144,6 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         private HeroDetails heroDetails;
 
-        Fragments(ResponseReader reader, String typename) throws IOException {
-          if (typename.equals(HeroDetails.TYPE_CONDITION)) {
-            this.heroDetails = new HeroDetails(reader);
-          }
-        }
-
         public Fragments(HeroDetails heroDetails) {
           this.heroDetails = heroDetails;
         }
@@ -236,6 +161,26 @@ public final class TestQuery implements Query<Operation.Variables> {
         public interface Creator {
           Fragments create(HeroDetails heroDetails);
         }
+
+        public static final class Mapper implements ResponseFieldMapper<Fragments> {
+          final Factory factory;
+
+          String conditionalType;
+
+          public Mapper(@Nonnull Factory factory, @Nonnull String conditionalType) {
+            this.factory = factory;
+            this.conditionalType = conditionalType;
+          }
+
+          @Override
+          public Fragments map(ResponseReader reader) throws IOException {
+            HeroDetails heroDetails = null;
+            if (conditionalType.equals(HeroDetails.TYPE_CONDITION)) {
+              heroDetails = new HeroDetails.Mapper(factory.heroDetailsFactory()).map(reader);
+            }
+            return factory.creator().create(heroDetails);
+          }
+        }
       }
 
       public interface Factory {
@@ -248,6 +193,63 @@ public final class TestQuery implements Query<Operation.Variables> {
         Hero create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
             Fragments fragments);
       }
+
+      public static final class Mapper implements ResponseFieldMapper<Hero> {
+        final Factory factory;
+
+        final Field[] fields = {
+          Field.forString("name", "name", null, false),
+          Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
+            @Override public Episode read(final Field.ListItemReader reader) throws IOException {
+              return Episode.valueOf(reader.readString());
+            }
+          }),
+          Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
+            @Override
+            public Fragments read(String conditionalType, ResponseReader reader) throws
+                IOException {
+              return new Fragments.Mapper(factory.fragmentsFactory(), conditionalType).map(reader);
+            }
+          })
+        };
+
+        public Mapper(@Nonnull Factory factory) {
+          this.factory = factory;
+        }
+
+        @Override
+        public Hero map(ResponseReader reader) throws IOException {
+          final __ContentValues contentValues = new __ContentValues();
+          reader.toBufferedReader().read(new ResponseReader.ValueHandler() {
+            @Override
+            public void handle(final int fieldIndex, final Object value) throws IOException {
+              switch (fieldIndex) {
+                case 0: {
+                  contentValues.name = (String) value;
+                  break;
+                }
+                case 1: {
+                  contentValues.appearsIn = (List<? extends Episode>) value;
+                  break;
+                }
+                case 2: {
+                  contentValues.fragments = (Fragments) value;
+                  break;
+                }
+              }
+            }
+          }, fields);
+          return factory.creator().create(contentValues.name, contentValues.appearsIn, contentValues.fragments);
+        }
+
+        static final class __ContentValues {
+          String name;
+
+          List<? extends Episode> appearsIn;
+
+          Fragments fragments;
+        }
+      }
     }
 
     public interface Factory {
@@ -258,6 +260,43 @@ public final class TestQuery implements Query<Operation.Variables> {
 
     public interface Creator {
       Data create(@Nullable Hero hero);
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Data> {
+      final Factory factory;
+
+      final Field[] fields = {
+        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
+          @Override public Hero read(final ResponseReader reader) throws IOException {
+            return new Hero.Mapper(factory.heroFactory()).map(reader);
+          }
+        })
+      };
+
+      public Mapper(@Nonnull Factory factory) {
+        this.factory = factory;
+      }
+
+      @Override
+      public Data map(ResponseReader reader) throws IOException {
+        final __ContentValues contentValues = new __ContentValues();
+        reader.read(new ResponseReader.ValueHandler() {
+          @Override
+          public void handle(final int fieldIndex, final Object value) throws IOException {
+            switch (fieldIndex) {
+              case 0: {
+                contentValues.hero = (Hero) value;
+                break;
+              }
+            }
+          }
+        }, fields);
+        return factory.creator().create(contentValues.hero);
+      }
+
+      static final class __ContentValues {
+        Hero hero;
+      }
     }
   }
 }

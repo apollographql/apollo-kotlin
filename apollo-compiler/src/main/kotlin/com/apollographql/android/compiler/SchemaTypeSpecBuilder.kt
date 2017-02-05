@@ -4,7 +4,6 @@ import com.apollographql.android.compiler.ir.CodeGenerationContext
 import com.apollographql.android.compiler.ir.Field
 import com.apollographql.android.compiler.ir.InlineFragment
 import com.squareup.javapoet.*
-import java.io.IOException
 import javax.lang.model.element.Modifier
 
 class SchemaTypeSpecBuilder(
@@ -16,25 +15,14 @@ class SchemaTypeSpecBuilder(
 ) {
   private val uniqueTypeName = formatUniqueTypeName(typeName, context.reservedTypeNames)
   private val innerTypeNameOverrideMap = buildUniqueTypeNameMap(context.reservedTypeNames + typeName)
-  private val hasFragments = inlineFragments.isNotEmpty() || fragmentSpreads.isNotEmpty()
 
   fun build(vararg modifiers: Modifier): TypeSpec {
+    val mapper = SchemaTypeResponseMapperBuilder(uniqueTypeName, fields, fragmentSpreads, inlineFragments,
+        innerTypeNameOverrideMap, context).build()
     val typeSpecBuilder = if (context.abstractType) {
       TypeSpec.interfaceBuilder(uniqueTypeName)
     } else {
-      val mapperField = ResponseFieldMapperBuilder(uniqueTypeName, fields, fragmentSpreads, inlineFragments,
-          innerTypeNameOverrideMap, context).build()
       TypeSpec.classBuilder(uniqueTypeName)
-          .addField(mapperField)
-          .addMethod(MethodSpec
-              .constructorBuilder()
-              .addModifiers(Modifier.PUBLIC)
-              .addParameter(PARAM_SPEC_READER)
-              .addException(IOException::class.java)
-              .addStatement("\$L.map(\$L, this)", mapperField.name,
-                  if (hasFragments) "$PARAM_READER.toBufferedReader()" else PARAM_READER)
-              .build()
-          )
     }
     return typeSpecBuilder
         .addModifiers(*modifiers)
@@ -53,6 +41,9 @@ class SchemaTypeSpecBuilder(
                 .withValueInitConstructor()
                 .withCreatorImplementation()
                 .withFactoryImplementation()
+                .toBuilder()
+                .addType(mapper)
+                .build()
         }
   }
 
@@ -146,11 +137,11 @@ class SchemaTypeSpecBuilder(
       })
     }
 
+    val mapper = FragmentsResponseMapperBuilder(fragments, context).build()
     val typeSpecBuilder = if (abstractClass) {
       TypeSpec.interfaceBuilder(FRAGMENTS_TYPE_NAME)
     } else {
       TypeSpec.classBuilder(FRAGMENTS_TYPE_NAME)
-          .addMethod(SchemaFragmentsConstructorBuilder(fragmentSpreads).build())
     }
     return typeSpecBuilder
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -167,6 +158,9 @@ class SchemaTypeSpecBuilder(
                 .withValueInitConstructor()
                 .withCreatorImplementation()
                 .withFactoryImplementation(fragments)
+                .toBuilder()
+                .addType(mapper)
+                .build()
         }
   }
 
@@ -182,7 +176,6 @@ class SchemaTypeSpecBuilder(
 
   companion object {
     val FRAGMENTS_TYPE_NAME: String = "Fragments"
-    private val PARAM_READER = "reader"
-    private val PARAM_SPEC_READER = ParameterSpec.builder(ClassNames.API_RESPONSE_READER, PARAM_READER).build()
+    val FRAGMENTS_TYPE: ClassName = ClassName.get("", SchemaTypeSpecBuilder.FRAGMENTS_TYPE_NAME)
   }
 }

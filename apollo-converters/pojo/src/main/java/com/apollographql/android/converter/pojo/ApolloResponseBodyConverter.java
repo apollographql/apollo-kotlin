@@ -4,12 +4,11 @@ import com.apollographql.android.api.graphql.Error;
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
+import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
 import com.apollographql.android.api.graphql.ScalarType;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
@@ -17,11 +16,12 @@ import okhttp3.ResponseBody;
 import retrofit2.Converter;
 
 class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? extends Operation.Data>> {
-  private final Type type;
+  private final ResponseFieldMapper responseFieldMapper;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
 
-  ApolloResponseBodyConverter(Type type, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
-    this.type = type;
+  ApolloResponseBodyConverter(ResponseFieldMapper responseFieldMapper,
+      Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+    this.responseFieldMapper = responseFieldMapper;
     this.customTypeAdapters = customTypeAdapters;
   }
 
@@ -35,7 +35,11 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
     while (responseStreamReader.hasNext()) {
       String name = responseStreamReader.nextName();
       if ("data".equals(name)) {
-        data = readResponseData(responseStreamReader);
+        data = (Operation.Data) responseStreamReader.nextObject(false, new Field.ObjectReader<Object>() {
+          @Override public Object read(ResponseReader reader) throws IOException {
+            return responseFieldMapper.map(reader);
+          }
+        });
       } else if ("errors".equals(name)) {
         errors = readResponseErrors(responseStreamReader);
       } else {
@@ -45,25 +49,6 @@ class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? 
     jsonReader.endObject();
 
     return new Response<>(data, errors);
-  }
-
-  private Operation.Data readResponseData(ResponseJsonStreamReader reader) throws IOException {
-    return reader.nextObject(true, new Field.ObjectReader<Operation.Data>() {
-      @Override public Operation.Data read(ResponseReader reader) throws IOException {
-        //noinspection TryWithIdenticalCatches
-        try {
-          return (Operation.Data) ((Class<?>) type).getConstructor(ResponseReader.class).newInstance(reader);
-        } catch (InstantiationException e) {
-          throw new RuntimeException("Can't instantiate " + type, e);
-        } catch (IllegalAccessException e) {
-          throw new RuntimeException("Can't instantiate " + type, e);
-        } catch (InvocationTargetException e) {
-          throw new RuntimeException("Can't instantiate " + type, e);
-        } catch (NoSuchMethodException e) {
-          throw new RuntimeException("Can't instantiate " + type, e);
-        }
-      }
-    });
   }
 
   private List<Error> readResponseErrors(ResponseJsonStreamReader reader) throws IOException {

@@ -57,8 +57,6 @@ public final class TestQuery implements Query<Operation.Variables> {
 
     @Nullable List<? extends GraphQlListOfObject> graphQlListOfObjects();
 
-    @Nullable List<? extends List<? extends Integer>> graphQlNestedList();
-
     interface GraphQlListOfObject {
       int someField();
 
@@ -83,8 +81,7 @@ public final class TestQuery implements Query<Operation.Variables> {
           int graphQlIntNonNullable, @Nullable Double graphQlFloatNullable,
           double graphQlFloatNonNullable, @Nullable Boolean graphQlBooleanNullable,
           boolean graphQlBooleanNonNullable, @Nullable List<? extends Integer> graphQlListOfInt,
-          @Nullable List<? extends GraphQlListOfObject> graphQlListOfObjects,
-          @Nullable List<? extends List<? extends Integer>> graphQlNestedList);
+          @Nullable List<? extends GraphQlListOfObject> graphQlListOfObjects);
     }
   }
 }

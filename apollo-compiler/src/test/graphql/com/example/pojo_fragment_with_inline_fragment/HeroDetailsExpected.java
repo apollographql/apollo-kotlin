@@ -15,44 +15,6 @@ import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
 public class HeroDetails {
-  private static final ResponseFieldMapper<HeroDetails> MAPPER = new ResponseFieldMapper<HeroDetails>() {
-    private final Field[] FIELDS = {
-      Field.forString("name", "name", null, false),
-      Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection>() {
-        @Override public FriendsConnection read(final ResponseReader reader) throws IOException {
-          return new FriendsConnection(reader);
-        }
-      }),
-      Field.forString("__typename", "__typename", null, false)
-    };
-
-    @Override
-    public void map(final ResponseReader reader, final HeroDetails instance) throws IOException {
-      reader.read(new ResponseReader.ValueHandler() {
-        @Override
-        public void handle(final int fieldIndex, final Object value) throws IOException {
-          switch (fieldIndex) {
-            case 0: {
-              instance.name = (String) value;
-              break;
-            }
-            case 1: {
-              instance.friendsConnection = (FriendsConnection) value;
-              break;
-            }
-            case 2: {
-              String typename = (String) value;
-              if (typename.equals("Droid")) {
-                instance.asDroid = new AsDroid(reader);
-              }
-              break;
-            }
-          }
-        }
-      }, FIELDS);
-    }
-  };
-
   public static final Creator CREATOR = new Creator() {
     @Override
     public HeroDetails create(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
@@ -104,10 +66,6 @@ public class HeroDetails {
 
   private @Nullable AsDroid asDroid;
 
-  public HeroDetails(ResponseReader reader) throws IOException {
-    MAPPER.map(reader.toBufferedReader(), this);
-  }
-
   public HeroDetails(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
       @Nullable AsDroid asDroid) {
     this.name = name;
@@ -128,37 +86,6 @@ public class HeroDetails {
   }
 
   public static class FriendsConnection {
-    private static final ResponseFieldMapper<FriendsConnection> MAPPER = new ResponseFieldMapper<FriendsConnection>() {
-      private final Field[] FIELDS = {
-        Field.forInt("totalCount", "totalCount", null, true),
-        Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
-          @Override public Edge read(final ResponseReader reader) throws IOException {
-            return new Edge(reader);
-          }
-        })
-      };
-
-      @Override
-      public void map(final ResponseReader reader, final FriendsConnection instance) throws
-          IOException {
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                instance.totalCount = (Integer) value;
-                break;
-              }
-              case 1: {
-                instance.edges = (List<? extends Edge>) value;
-                break;
-              }
-            }
-          }
-        }, FIELDS);
-      }
-    };
-
     public static final Creator CREATOR = new Creator() {
       @Override
       public FriendsConnection create(@Nullable Integer totalCount,
@@ -183,10 +110,6 @@ public class HeroDetails {
 
     private @Nullable List<? extends Edge> edges;
 
-    public FriendsConnection(ResponseReader reader) throws IOException {
-      MAPPER.map(reader, this);
-    }
-
     public FriendsConnection(@Nullable Integer totalCount, @Nullable List<? extends Edge> edges) {
       this.totalCount = totalCount;
       this.edges = edges;
@@ -201,31 +124,6 @@ public class HeroDetails {
     }
 
     public static class Edge {
-      private static final ResponseFieldMapper<Edge> MAPPER = new ResponseFieldMapper<Edge>() {
-        private final Field[] FIELDS = {
-          Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
-            @Override public Node read(final ResponseReader reader) throws IOException {
-              return new Node(reader);
-            }
-          })
-        };
-
-        @Override
-        public void map(final ResponseReader reader, final Edge instance) throws IOException {
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  instance.node = (Node) value;
-                  break;
-                }
-              }
-            }
-          }, FIELDS);
-        }
-      };
-
       public static final Creator CREATOR = new Creator() {
         @Override
         public Edge create(@Nullable Node node) {
@@ -247,10 +145,6 @@ public class HeroDetails {
 
       private @Nullable Node node;
 
-      public Edge(ResponseReader reader) throws IOException {
-        MAPPER.map(reader, this);
-      }
-
       public Edge(@Nullable Node node) {
         this.node = node;
       }
@@ -260,27 +154,6 @@ public class HeroDetails {
       }
 
       public static class Node {
-        private static final ResponseFieldMapper<Node> MAPPER = new ResponseFieldMapper<Node>() {
-          private final Field[] FIELDS = {
-            Field.forString("name", "name", null, false)
-          };
-
-          @Override
-          public void map(final ResponseReader reader, final Node instance) throws IOException {
-            reader.read(new ResponseReader.ValueHandler() {
-              @Override
-              public void handle(final int fieldIndex, final Object value) throws IOException {
-                switch (fieldIndex) {
-                  case 0: {
-                    instance.name = (String) value;
-                    break;
-                  }
-                }
-              }
-            }, FIELDS);
-          }
-        };
-
         public static final Creator CREATOR = new Creator() {
           @Override
           public Node create(@Nonnull String name) {
@@ -297,10 +170,6 @@ public class HeroDetails {
 
         private @Nonnull String name;
 
-        public Node(ResponseReader reader) throws IOException {
-          MAPPER.map(reader, this);
-        }
-
         public Node(@Nonnull String name) {
           this.name = name;
         }
@@ -316,6 +185,39 @@ public class HeroDetails {
         public interface Creator {
           Node create(@Nonnull String name);
         }
+
+        public static final class Mapper implements ResponseFieldMapper<Node> {
+          final Factory factory;
+
+          final Field[] fields = {
+            Field.forString("name", "name", null, false)
+          };
+
+          public Mapper(@Nonnull Factory factory) {
+            this.factory = factory;
+          }
+
+          @Override
+          public Node map(ResponseReader reader) throws IOException {
+            final __ContentValues contentValues = new __ContentValues();
+            reader.read(new ResponseReader.ValueHandler() {
+              @Override
+              public void handle(final int fieldIndex, final Object value) throws IOException {
+                switch (fieldIndex) {
+                  case 0: {
+                    contentValues.name = (String) value;
+                    break;
+                  }
+                }
+              }
+            }, fields);
+            return factory.creator().create(contentValues.name);
+          }
+
+          static final class __ContentValues {
+            String name;
+          }
+        }
       }
 
       public interface Factory {
@@ -326,6 +228,43 @@ public class HeroDetails {
 
       public interface Creator {
         Edge create(@Nullable Node node);
+      }
+
+      public static final class Mapper implements ResponseFieldMapper<Edge> {
+        final Factory factory;
+
+        final Field[] fields = {
+          Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
+            @Override public Node read(final ResponseReader reader) throws IOException {
+              return new Node.Mapper(factory.nodeFactory()).map(reader);
+            }
+          })
+        };
+
+        public Mapper(@Nonnull Factory factory) {
+          this.factory = factory;
+        }
+
+        @Override
+        public Edge map(ResponseReader reader) throws IOException {
+          final __ContentValues contentValues = new __ContentValues();
+          reader.read(new ResponseReader.ValueHandler() {
+            @Override
+            public void handle(final int fieldIndex, final Object value) throws IOException {
+              switch (fieldIndex) {
+                case 0: {
+                  contentValues.node = (Node) value;
+                  break;
+                }
+              }
+            }
+          }, fields);
+          return factory.creator().create(contentValues.node);
+        }
+
+        static final class __ContentValues {
+          Node node;
+        }
       }
     }
 
@@ -338,44 +277,53 @@ public class HeroDetails {
     public interface Creator {
       FriendsConnection create(@Nullable Integer totalCount, @Nullable List<? extends Edge> edges);
     }
-  }
 
-  public static class AsDroid {
-    private static final ResponseFieldMapper<AsDroid> MAPPER = new ResponseFieldMapper<AsDroid>() {
-      private final Field[] FIELDS = {
-        Field.forString("name", "name", null, false),
-        Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection$>() {
-          @Override public FriendsConnection$ read(final ResponseReader reader) throws IOException {
-            return new FriendsConnection$(reader);
+    public static final class Mapper implements ResponseFieldMapper<FriendsConnection> {
+      final Factory factory;
+
+      final Field[] fields = {
+        Field.forInt("totalCount", "totalCount", null, true),
+        Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
+          @Override public Edge read(final ResponseReader reader) throws IOException {
+            return new Edge.Mapper(factory.edgeFactory()).map(reader);
           }
-        }),
-        Field.forString("primaryFunction", "primaryFunction", null, true)
+        })
       };
 
+      public Mapper(@Nonnull Factory factory) {
+        this.factory = factory;
+      }
+
       @Override
-      public void map(final ResponseReader reader, final AsDroid instance) throws IOException {
+      public FriendsConnection map(ResponseReader reader) throws IOException {
+        final __ContentValues contentValues = new __ContentValues();
         reader.read(new ResponseReader.ValueHandler() {
           @Override
           public void handle(final int fieldIndex, final Object value) throws IOException {
             switch (fieldIndex) {
               case 0: {
-                instance.name = (String) value;
+                contentValues.totalCount = (Integer) value;
                 break;
               }
               case 1: {
-                instance.friendsConnection = (FriendsConnection$) value;
-                break;
-              }
-              case 2: {
-                instance.primaryFunction = (String) value;
+                contentValues.edges = (List<? extends Edge>) value;
                 break;
               }
             }
           }
-        }, FIELDS);
+        }, fields);
+        return factory.creator().create(contentValues.totalCount, contentValues.edges);
       }
-    };
 
+      static final class __ContentValues {
+        Integer totalCount;
+
+        List<? extends Edge> edges;
+      }
+    }
+  }
+
+  public static class AsDroid {
     public static final Creator CREATOR = new Creator() {
       @Override
       public AsDroid create(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
@@ -402,10 +350,6 @@ public class HeroDetails {
 
     private @Nullable String primaryFunction;
 
-    public AsDroid(ResponseReader reader) throws IOException {
-      MAPPER.map(reader, this);
-    }
-
     public AsDroid(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
         @Nullable String primaryFunction) {
       this.name = name;
@@ -426,37 +370,6 @@ public class HeroDetails {
     }
 
     public static class FriendsConnection$ {
-      private static final ResponseFieldMapper<FriendsConnection$> MAPPER = new ResponseFieldMapper<FriendsConnection$>() {
-        private final Field[] FIELDS = {
-          Field.forInt("totalCount", "totalCount", null, true),
-          Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
-            @Override public Edge read(final ResponseReader reader) throws IOException {
-              return new Edge(reader);
-            }
-          })
-        };
-
-        @Override
-        public void map(final ResponseReader reader, final FriendsConnection$ instance) throws
-            IOException {
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  instance.totalCount = (Integer) value;
-                  break;
-                }
-                case 1: {
-                  instance.edges = (List<? extends Edge>) value;
-                  break;
-                }
-              }
-            }
-          }, FIELDS);
-        }
-      };
-
       public static final Creator CREATOR = new Creator() {
         @Override
         public FriendsConnection$ create(@Nullable Integer totalCount,
@@ -481,10 +394,6 @@ public class HeroDetails {
 
       private @Nullable List<? extends Edge> edges;
 
-      public FriendsConnection$(ResponseReader reader) throws IOException {
-        MAPPER.map(reader, this);
-      }
-
       public FriendsConnection$(@Nullable Integer totalCount,
           @Nullable List<? extends Edge> edges) {
         this.totalCount = totalCount;
@@ -500,31 +409,6 @@ public class HeroDetails {
       }
 
       public static class Edge {
-        private static final ResponseFieldMapper<Edge> MAPPER = new ResponseFieldMapper<Edge>() {
-          private final Field[] FIELDS = {
-            Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
-              @Override public Node read(final ResponseReader reader) throws IOException {
-                return new Node(reader);
-              }
-            })
-          };
-
-          @Override
-          public void map(final ResponseReader reader, final Edge instance) throws IOException {
-            reader.read(new ResponseReader.ValueHandler() {
-              @Override
-              public void handle(final int fieldIndex, final Object value) throws IOException {
-                switch (fieldIndex) {
-                  case 0: {
-                    instance.node = (Node) value;
-                    break;
-                  }
-                }
-              }
-            }, FIELDS);
-          }
-        };
-
         public static final Creator CREATOR = new Creator() {
           @Override
           public Edge create(@Nullable Node node) {
@@ -546,10 +430,6 @@ public class HeroDetails {
 
         private @Nullable Node node;
 
-        public Edge(ResponseReader reader) throws IOException {
-          MAPPER.map(reader, this);
-        }
-
         public Edge(@Nullable Node node) {
           this.node = node;
         }
@@ -559,27 +439,6 @@ public class HeroDetails {
         }
 
         public static class Node {
-          private static final ResponseFieldMapper<Node> MAPPER = new ResponseFieldMapper<Node>() {
-            private final Field[] FIELDS = {
-              Field.forString("name", "name", null, false)
-            };
-
-            @Override
-            public void map(final ResponseReader reader, final Node instance) throws IOException {
-              reader.read(new ResponseReader.ValueHandler() {
-                @Override
-                public void handle(final int fieldIndex, final Object value) throws IOException {
-                  switch (fieldIndex) {
-                    case 0: {
-                      instance.name = (String) value;
-                      break;
-                    }
-                  }
-                }
-              }, FIELDS);
-            }
-          };
-
           public static final Creator CREATOR = new Creator() {
             @Override
             public Node create(@Nonnull String name) {
@@ -596,10 +455,6 @@ public class HeroDetails {
 
           private @Nonnull String name;
 
-          public Node(ResponseReader reader) throws IOException {
-            MAPPER.map(reader, this);
-          }
-
           public Node(@Nonnull String name) {
             this.name = name;
           }
@@ -615,6 +470,39 @@ public class HeroDetails {
           public interface Creator {
             Node create(@Nonnull String name);
           }
+
+          public static final class Mapper implements ResponseFieldMapper<Node> {
+            final Factory factory;
+
+            final Field[] fields = {
+              Field.forString("name", "name", null, false)
+            };
+
+            public Mapper(@Nonnull Factory factory) {
+              this.factory = factory;
+            }
+
+            @Override
+            public Node map(ResponseReader reader) throws IOException {
+              final __ContentValues contentValues = new __ContentValues();
+              reader.read(new ResponseReader.ValueHandler() {
+                @Override
+                public void handle(final int fieldIndex, final Object value) throws IOException {
+                  switch (fieldIndex) {
+                    case 0: {
+                      contentValues.name = (String) value;
+                      break;
+                    }
+                  }
+                }
+              }, fields);
+              return factory.creator().create(contentValues.name);
+            }
+
+            static final class __ContentValues {
+              String name;
+            }
+          }
         }
 
         public interface Factory {
@@ -625,6 +513,43 @@ public class HeroDetails {
 
         public interface Creator {
           Edge create(@Nullable Node node);
+        }
+
+        public static final class Mapper implements ResponseFieldMapper<Edge> {
+          final Factory factory;
+
+          final Field[] fields = {
+            Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
+              @Override public Node read(final ResponseReader reader) throws IOException {
+                return new Node.Mapper(factory.nodeFactory()).map(reader);
+              }
+            })
+          };
+
+          public Mapper(@Nonnull Factory factory) {
+            this.factory = factory;
+          }
+
+          @Override
+          public Edge map(ResponseReader reader) throws IOException {
+            final __ContentValues contentValues = new __ContentValues();
+            reader.read(new ResponseReader.ValueHandler() {
+              @Override
+              public void handle(final int fieldIndex, final Object value) throws IOException {
+                switch (fieldIndex) {
+                  case 0: {
+                    contentValues.node = (Node) value;
+                    break;
+                  }
+                }
+              }
+            }, fields);
+            return factory.creator().create(contentValues.node);
+          }
+
+          static final class __ContentValues {
+            Node node;
+          }
         }
       }
 
@@ -638,6 +563,50 @@ public class HeroDetails {
         FriendsConnection$ create(@Nullable Integer totalCount,
             @Nullable List<? extends Edge> edges);
       }
+
+      public static final class Mapper implements ResponseFieldMapper<FriendsConnection$> {
+        final Factory factory;
+
+        final Field[] fields = {
+          Field.forInt("totalCount", "totalCount", null, true),
+          Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
+            @Override public Edge read(final ResponseReader reader) throws IOException {
+              return new Edge.Mapper(factory.edgeFactory()).map(reader);
+            }
+          })
+        };
+
+        public Mapper(@Nonnull Factory factory) {
+          this.factory = factory;
+        }
+
+        @Override
+        public FriendsConnection$ map(ResponseReader reader) throws IOException {
+          final __ContentValues contentValues = new __ContentValues();
+          reader.read(new ResponseReader.ValueHandler() {
+            @Override
+            public void handle(final int fieldIndex, final Object value) throws IOException {
+              switch (fieldIndex) {
+                case 0: {
+                  contentValues.totalCount = (Integer) value;
+                  break;
+                }
+                case 1: {
+                  contentValues.edges = (List<? extends Edge>) value;
+                  break;
+                }
+              }
+            }
+          }, fields);
+          return factory.creator().create(contentValues.totalCount, contentValues.edges);
+        }
+
+        static final class __ContentValues {
+          Integer totalCount;
+
+          List<? extends Edge> edges;
+        }
+      }
     }
 
     public interface Factory {
@@ -649,6 +618,57 @@ public class HeroDetails {
     public interface Creator {
       AsDroid create(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
           @Nullable String primaryFunction);
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<AsDroid> {
+      final Factory factory;
+
+      final Field[] fields = {
+        Field.forString("name", "name", null, false),
+        Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection$>() {
+          @Override public FriendsConnection$ read(final ResponseReader reader) throws IOException {
+            return new FriendsConnection$.Mapper(factory.friendsConnection$Factory()).map(reader);
+          }
+        }),
+        Field.forString("primaryFunction", "primaryFunction", null, true)
+      };
+
+      public Mapper(@Nonnull Factory factory) {
+        this.factory = factory;
+      }
+
+      @Override
+      public AsDroid map(ResponseReader reader) throws IOException {
+        final __ContentValues contentValues = new __ContentValues();
+        reader.read(new ResponseReader.ValueHandler() {
+          @Override
+          public void handle(final int fieldIndex, final Object value) throws IOException {
+            switch (fieldIndex) {
+              case 0: {
+                contentValues.name = (String) value;
+                break;
+              }
+              case 1: {
+                contentValues.friendsConnection = (FriendsConnection$) value;
+                break;
+              }
+              case 2: {
+                contentValues.primaryFunction = (String) value;
+                break;
+              }
+            }
+          }
+        }, fields);
+        return factory.creator().create(contentValues.name, contentValues.friendsConnection, contentValues.primaryFunction);
+      }
+
+      static final class __ContentValues {
+        String name;
+
+        FriendsConnection$ friendsConnection;
+
+        String primaryFunction;
+      }
     }
   }
 
@@ -663,5 +683,65 @@ public class HeroDetails {
   public interface Creator {
     HeroDetails create(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
         @Nullable AsDroid asDroid);
+  }
+
+  public static final class Mapper implements ResponseFieldMapper<HeroDetails> {
+    final Factory factory;
+
+    final Field[] fields = {
+      Field.forString("name", "name", null, false),
+      Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection>() {
+        @Override public FriendsConnection read(final ResponseReader reader) throws IOException {
+          return new FriendsConnection.Mapper(factory.friendsConnectionFactory()).map(reader);
+        }
+      }),
+      Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsDroid>() {
+        @Override
+        public AsDroid read(String conditionalType, ResponseReader reader) throws IOException {
+          if (conditionalType.equals("Droid")) {
+            return new AsDroid.Mapper(factory.asDroidFactory()).map(reader);
+          } else {
+            return null;
+          }
+        }
+      })
+    };
+
+    public Mapper(@Nonnull Factory factory) {
+      this.factory = factory;
+    }
+
+    @Override
+    public HeroDetails map(ResponseReader reader) throws IOException {
+      final __ContentValues contentValues = new __ContentValues();
+      reader.toBufferedReader().read(new ResponseReader.ValueHandler() {
+        @Override
+        public void handle(final int fieldIndex, final Object value) throws IOException {
+          switch (fieldIndex) {
+            case 0: {
+              contentValues.name = (String) value;
+              break;
+            }
+            case 1: {
+              contentValues.friendsConnection = (FriendsConnection) value;
+              break;
+            }
+            case 2: {
+              contentValues.asDroid = (AsDroid) value;
+              break;
+            }
+          }
+        }
+      }, fields);
+      return factory.creator().create(contentValues.name, contentValues.friendsConnection, contentValues.asDroid);
+    }
+
+    static final class __ContentValues {
+      String name;
+
+      FriendsConnection friendsConnection;
+
+      AsDroid asDroid;
+    }
   }
 }
