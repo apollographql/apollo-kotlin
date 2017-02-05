@@ -43,13 +43,19 @@ import java.util.Map;
           handler.handle(fieldIndex, readBoolean(field));
           break;
         case OBJECT:
-          handler.handle(fieldIndex, readObject(field));
+          handler.handle(fieldIndex, readObject((Field.ObjectField) field));
           break;
-        case LIST:
-          handler.handle(fieldIndex, readList(field));
+        case SCALAR_LIST:
+          handler.handle(fieldIndex, readScalarList((Field.ScalarListField) field));
+          break;
+        case OBJECT_LIST:
+          handler.handle(fieldIndex, readObjectList((Field.ObjectListField) field));
           break;
         case CUSTOM:
-          handler.handle(fieldIndex, readCustomType(field));
+          handler.handle(fieldIndex, readCustomType((Field.CustomTypeField) field));
+          break;
+        case CONDITIONAL:
+          handler.handle(fieldIndex, readConditional((Field.ConditionalTypeField) field));
           break;
         default:
           throw new IllegalArgumentException("Unsupported field type");
@@ -108,7 +114,7 @@ import java.util.Map;
     }
   }
 
-  @SuppressWarnings("unchecked") <T> T readObject(Field field) throws IOException {
+  @SuppressWarnings("unchecked") <T> T readObject(Field.ObjectField field) throws IOException {
     Map<String, Object> value = (Map<String, Object>) buffer.get(field.responseName());
     checkValue(value, field.optional());
     if (value == null) {
@@ -118,7 +124,7 @@ import java.util.Map;
     }
   }
 
-  @SuppressWarnings("unchecked") <T> List<T> readList(Field field) throws IOException {
+  @SuppressWarnings("unchecked") <T> List<T> readScalarList(Field.ScalarListField field) throws IOException {
     List values = (List) buffer.get(field.responseName());
     checkValue(values, field.optional());
     if (values == null) {
@@ -126,20 +132,30 @@ import java.util.Map;
     } else {
       List<T> result = new ArrayList<>();
       for (Object value : values) {
-        T item;
-        if (value instanceof Map) {
-          item = (T) field.objectReader().read(new BufferedResponseReader((Map<String, Object>) value,
-              customTypeAdapters));
-        } else {
-          item = (T) field.listReader().read(new BufferedListItemReader(value, customTypeAdapters));
-        }
+        T item = (T) field.listReader().read(new BufferedListItemReader(value, customTypeAdapters));
         result.add(item);
       }
       return result;
     }
   }
 
-  @SuppressWarnings("unchecked") private <T> T readCustomType(Field field) {
+  @SuppressWarnings("unchecked") <T> List<T> readObjectList(Field.ObjectListField field) throws IOException {
+    List values = (List) buffer.get(field.responseName());
+    checkValue(values, field.optional());
+    if (values == null) {
+      return null;
+    } else {
+      List<T> result = new ArrayList<>();
+      for (Object value : values) {
+        T item = (T) field.objectReader().read(new BufferedResponseReader((Map<String, Object>) value,
+            customTypeAdapters));
+        result.add(item);
+      }
+      return result;
+    }
+  }
+
+  @SuppressWarnings("unchecked") private <T> T readCustomType(Field.CustomTypeField field) {
     Object value = buffer.get(field.responseName());
     checkValue(value, field.optional());
     if (value == null) {
@@ -147,12 +163,22 @@ import java.util.Map;
     } else {
       CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(field.scalarType());
       if (typeAdapter == null) {
-        throw new RuntimeException("Can't resolve custom type adapter for " + field.scalarType().typeName());
+        throw new RuntimeException("Can't resolve custom type adapter for "
+            + field.scalarType().typeName());
       }
       return typeAdapter.decode(value.toString());
     }
   }
 
+  @SuppressWarnings("unchecked") private <T> T readConditional(Field.ConditionalTypeField field) throws IOException {
+    String value = (String) buffer.get(field.responseName());
+    checkValue(value, field.optional());
+    if (value == null) {
+      return null;
+    } else {
+      return (T) field.conditionalTypeReader().read(value, this);
+    }
+  }
 
   private void checkValue(Object value, boolean optional) {
     if (!optional && value == null) {

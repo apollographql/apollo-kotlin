@@ -57,13 +57,16 @@ import java.util.Map;
             handler.handle(fieldIndex, readBoolean(field));
             break;
           case OBJECT:
-            handler.handle(fieldIndex, readObject(field));
+            handler.handle(fieldIndex, readObject((Field.ObjectField) field));
             break;
-          case LIST:
-            handler.handle(fieldIndex, readList(field));
+          case SCALAR_LIST:
+            handler.handle(fieldIndex, readScalarList((Field.ScalarListField) field));
+            break;
+          case OBJECT_LIST:
+            handler.handle(fieldIndex, readObjectList((Field.ObjectListField) field));
             break;
           case CUSTOM:
-            handler.handle(fieldIndex, readCustomType(field));
+            handler.handle(fieldIndex, readCustomType((Field.CustomTypeField) field));
             break;
           default:
             throw new IllegalArgumentException("Unsupported field type");
@@ -220,19 +223,19 @@ import java.util.Map;
     return nextBoolean(field.optional());
   }
 
-  @SuppressWarnings("unchecked") private <T> T readObject(Field field) throws IOException {
+  @SuppressWarnings("unchecked") private <T> T readObject(Field.ObjectField field) throws IOException {
     return (T) nextObject(field.optional(), field.objectReader());
   }
 
-  @SuppressWarnings("unchecked") private <T> List<T> readList(Field field) throws IOException {
-    if (field.objectReader() != null) {
-      return nextList(field.optional(), field.objectReader());
-    } else {
-      return nextList(field.optional(), field.listReader());
-    }
+  @SuppressWarnings("unchecked") private <T> List<T> readScalarList(Field.ScalarListField field) throws IOException {
+    return nextList(field.optional(), field.listReader());
   }
 
-  private <T> T readCustomType(Field field) throws IOException {
+  @SuppressWarnings("unchecked") private <T> List<T> readObjectList(Field.ObjectListField field) throws IOException {
+    return nextList(field.optional(), field.objectReader());
+  }
+
+  private <T> T readCustomType(Field.CustomTypeField field) throws IOException {
     return nextCustomType(field.optional(), field.scalarType());
   }
 
@@ -275,7 +278,7 @@ import java.util.Map;
       } else if (streamReader.isNextObject()) {
         result.put(name, readObject(streamReader));
       } else if (streamReader.isNextList()) {
-        result.put(name, readList(streamReader));
+        result.put(name, readScalarList(streamReader));
       } else {
         result.put(name, readScalar(streamReader));
       }
@@ -291,7 +294,7 @@ import java.util.Map;
     });
   }
 
-  private static List<?> readList(final ResponseJsonStreamReader streamReader) throws IOException {
+  private static List<?> readScalarList(final ResponseJsonStreamReader streamReader) throws IOException {
     return streamReader.nextList(false, new Field.ListReader<Object>() {
       @Override public Object read(Field.ListItemReader reader) throws IOException {
         if (streamReader.isNextObject()) {
