@@ -1,9 +1,7 @@
 buildscript {
   dependencies {
     classpath dep.androidPlugin
-    classpath(dep.apolloPlugin) {
-      changing = true
-    }
+    classpath dep.apolloPlugin
   }
 }
 
