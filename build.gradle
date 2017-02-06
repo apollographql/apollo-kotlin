@@ -3,10 +3,12 @@ ext {
 
   compileSdkVersion = 25
   buildToolsVersion = '25.0.2'
+  apolloVersion = '0.2.1-SNAPSHOT'
 
   dep = [
       androidPlugin: 'com.android.tools.build:gradle:2.3.0-beta3',
-      apolloPlugin: "com.apollographql.android:gradle-plugin:0.2.0-SNAPSHOT",
+      apolloPlugin: "com.apollographql.android:gradle-plugin:$apolloVersion",
+      apolloConverterPojo: "com.apollographql.android:converter-pojo:$apolloVersion",
       supportAnnotations: 'com.android.support:support-annotations:25.1.0',
       compiletesting: 'com.google.testing.compile:compile-testing:0.10',
       javaPoet: 'com.squareup:javapoet:1.8.0',
@@ -20,6 +22,7 @@ ext {
       appcompat: 'com.android.support:appcompat-v7:25.0.1',
       retrofit: 'com.squareup.retrofit2:retrofit:2.1.0',
       retrofitMoshiConverter: 'com.squareup.retrofit2:converter-moshi:2.1.0',
+      retrofitRx2Adapter: 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0',
       kotlinStdLib: "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion",
       kotlinReflect: "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion",
       kotlinGradlePlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
@@ -27,7 +30,8 @@ ext {
       junit: 'junit:junit:4.12',
       spock: 'org.spockframework:spock-core:0.7-groovy-2.0',
       truth: 'com.google.truth:truth:0.30',
-      mockWebServer: 'com.squareup.okhttp3:mockwebserver:3.5.0'
+      mockWebServer: 'com.squareup.okhttp3:mockwebserver:3.5.0',
+      okhttpLoggingInterceptor: 'com.squareup.okhttp3:logging-interceptor:3.5.0'
   ]
 
   isCi = "true" == System.getenv('CI')
