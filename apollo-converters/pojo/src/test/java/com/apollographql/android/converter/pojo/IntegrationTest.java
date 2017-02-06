@@ -7,6 +7,7 @@ import com.google.common.io.Files;
 
 import com.apollographql.android.api.graphql.Error;
 import com.apollographql.android.api.graphql.Response;
+import com.apollographql.android.converter.pojo.type.CustomType;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -26,7 +27,6 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import retrofit2.Call;
 import retrofit2.Retrofit;
-import retrofit2.converter.moshi.MoshiConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
@@ -60,7 +60,7 @@ public class IntegrationTest {
       }
 
       @Override public String encode(Date value) {
-        return null;
+        return DATE_FORMAT.format(value);
       }
     };
 
@@ -72,7 +72,6 @@ public class IntegrationTest {
                 .Data.FACTORY))
             .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
             .build())
-        .addConverterFactory(MoshiConverterFactory.create())
         .build();
     service = retrofit.create(Service.class);
   }

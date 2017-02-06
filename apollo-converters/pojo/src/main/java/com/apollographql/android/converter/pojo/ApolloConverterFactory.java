@@ -4,7 +4,12 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ScalarType;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.JsonReader;
+import com.squareup.moshi.JsonWriter;
+import com.squareup.moshi.Moshi;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -13,6 +18,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
@@ -21,11 +27,26 @@ import retrofit2.Retrofit;
 public final class ApolloConverterFactory extends Converter.Factory {
   private final Map<Type, ResponseFieldMapper> responseFieldMappers;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  private final Moshi moshi;
 
-  public ApolloConverterFactory(Map<Type, ResponseFieldMapper> responseFieldMappers,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+  ApolloConverterFactory(Map<Type, ResponseFieldMapper> responseFieldMappers,
+      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, Moshi moshi) {
     this.responseFieldMappers = responseFieldMappers;
     this.customTypeAdapters = customTypeAdapters;
+    this.moshi = moshi;
+  }
+
+  @Override
+  public Converter<OperationRequest, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations,
+      Annotation[] methodAnnotations, Retrofit retrofit) {
+    if (type instanceof ParameterizedType) {
+      ParameterizedType parameterizedType = (ParameterizedType) type;
+      if (OperationRequest.class.isAssignableFrom((Class<?>) parameterizedType.getRawType())) {
+        JsonAdapter<OperationRequest> adapter = moshi.adapter(type);
+        return new ApolloRequestBodyConverter<>(adapter);
+      }
+    }
+    return null;
   }
 
   @Override public Converter<ResponseBody, Response<? extends Operation.Data>> responseBodyConverter(Type type,
@@ -47,20 +68,31 @@ public final class ApolloConverterFactory extends Converter.Factory {
   public static class Builder {
     private final Map<Type, ResponseFieldMapper> responseFieldMappers = new LinkedHashMap<>();
     private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
+    private final Moshi.Builder moshiBuilder = new Moshi.Builder();
 
-    public Builder withCustomTypeAdapter(@Nonnull ScalarType scalarType,
-        @Nonnull CustomTypeAdapter customTypeAdapter) {
+    public <T> Builder withCustomTypeAdapter(@Nonnull ScalarType scalarType,
+        @Nonnull final CustomTypeAdapter<T> customTypeAdapter) {
       customTypeAdapters.put(scalarType, customTypeAdapter);
+      moshiBuilder.add(scalarType.javaType(), new JsonAdapter<T>() {
+        @Override public T fromJson(JsonReader reader) throws IOException {
+          return customTypeAdapter.decode(reader.nextString());
+        }
+
+        @Override public void toJson(JsonWriter writer, T value) throws IOException {
+          writer.value(customTypeAdapter.encode(value));
+        }
+      });
       return this;
     }
 
-    public Builder withResponseFieldMapper(@Nonnull Type type, @Nonnull ResponseFieldMapper responseFieldMapper) {
+    public <T> Builder withResponseFieldMapper(@Nonnull Class<T> type,
+        @Nonnull ResponseFieldMapper<T> responseFieldMapper) {
       responseFieldMappers.put(type, responseFieldMapper);
       return this;
     }
 
     public ApolloConverterFactory build() {
-      return new ApolloConverterFactory(responseFieldMappers, customTypeAdapters);
+      return new ApolloConverterFactory(responseFieldMappers, customTypeAdapters, moshiBuilder.build());
     }
   }
 }

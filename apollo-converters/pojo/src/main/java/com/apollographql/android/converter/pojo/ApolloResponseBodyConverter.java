@@ -15,7 +15,7 @@ import java.util.Map;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 
-class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? extends Operation.Data>> {
+final class ApolloResponseBodyConverter implements Converter<ResponseBody, Response<? extends Operation.Data>> {
   private final ResponseFieldMapper responseFieldMapper;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
 
