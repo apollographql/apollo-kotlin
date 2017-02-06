@@ -11,6 +11,8 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 interface ApiService {
-  @POST("swapi-graphql") Observable<Response<DroidDetails.Data>> droidDetails(@Body OperationRequest<Operation.Variables> query);
+  @POST("swapi-graphql") Observable<Response<DroidDetails.Data>> droidDetails(
+      @Body OperationRequest<Operation.Variables> query);
+
   @POST("swapi-graphql") Observable<Response<Films.Data>> allFilms(@Body OperationRequest<Operation.Variables> query);
 }
