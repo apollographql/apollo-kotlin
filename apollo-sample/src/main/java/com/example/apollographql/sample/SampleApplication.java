@@ -3,6 +3,8 @@ package com.example.apollographql.sample;
 import android.app.Application;
 
 import com.apollographql.android.converter.pojo.ApolloConverterFactory;
+import com.example.DroidDetails;
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.io.File;
 
@@ -10,7 +12,6 @@ import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 
 public class SampleApplication extends Application {
@@ -31,7 +32,8 @@ public class SampleApplication extends Application {
         .baseUrl(BASE_URL)
         .client(okHttpClient)
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-        .addConverterFactory(new ApolloConverterFactory.Builder().build())
+//        .addConverterFactory(new ApolloConverterFactory.Builder()
+//            .withResponseFieldMapper(DroidDetails.Data.class, new DroidDetails.Data.).build())
         .addConverterFactory(MoshiConverterFactory.create())
         .build();
     service = retrofit.create(ApiService.class);
