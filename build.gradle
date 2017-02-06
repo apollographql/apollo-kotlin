@@ -3,11 +3,12 @@ ext {
 
   compileSdkVersion = 25
   buildToolsVersion = '25.0.2'
+  apolloVersion = '0.2.1-SNAPSHOT'
 
   dep = [
       androidPlugin: 'com.android.tools.build:gradle:2.3.0-beta3',
-      apolloPlugin: "com.apollographql.android:gradle-plugin:0.2.0-SNAPSHOT",
-      apolloConverterPojo: 'com.apollographql.android:converter-pojo:0.2.0-SNAPSHOT',
+      apolloPlugin: "com.apollographql.android:gradle-plugin:$apolloVersion",
+      apolloConverterPojo: "com.apollographql.android:converter-pojo:$apolloVersion",
       supportAnnotations: 'com.android.support:support-annotations:25.1.0',
       compiletesting: 'com.google.testing.compile:compile-testing:0.10',
       javaPoet: 'com.squareup:javapoet:1.8.0',

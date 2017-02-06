@@ -24,15 +24,9 @@ android {
   }
 }
 
-configurations.all {
-  resolutionStrategy.cacheChangingModulesFor 1, 'hours'
-}
-
 dependencies {
   compile dep.appcompat
-  compile(dep.apolloConverterPojo) {
-    changing = true
-  }
+  compile dep.apolloConverterPojo
   compile dep.rxjava2
   compile dep.rxandroid
   compile dep.retrofitRx2Adapter
