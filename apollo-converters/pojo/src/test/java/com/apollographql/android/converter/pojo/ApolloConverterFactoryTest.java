@@ -47,7 +47,7 @@ public class ApolloConverterFactoryTest {
     converterFactory = new ApolloConverterFactory.Builder()
         .withResponseFieldMapper(TestData.class, new ResponseFieldMapper<TestData>() {
           @Override public TestData map(ResponseReader responseReader) throws IOException {
-            return null;
+            return new TestData();
           }
         })
         .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
