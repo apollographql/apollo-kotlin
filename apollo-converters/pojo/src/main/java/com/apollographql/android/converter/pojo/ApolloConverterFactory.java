@@ -8,6 +8,7 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -36,17 +37,14 @@ public final class ApolloConverterFactory extends Converter.Factory {
     this.moshi = moshi;
   }
 
-  @Override
-  public Converter<OperationRequest, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations,
+  @Override public Converter<Operation, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations,
       Annotation[] methodAnnotations, Retrofit retrofit) {
-    if (type instanceof ParameterizedType) {
-      ParameterizedType parameterizedType = (ParameterizedType) type;
-      if (OperationRequest.class.isAssignableFrom((Class<?>) parameterizedType.getRawType())) {
-        JsonAdapter<OperationRequest> adapter = moshi.adapter(type);
-        return new ApolloRequestBodyConverter<>(adapter);
-      }
+    if (Operation.class.isAssignableFrom(Types.getRawType(type))) {
+      JsonAdapter<Operation> adapter = new OperationJsonAdapter(moshi);
+      return new ApolloRequestBodyConverter(adapter);
+    } else {
+      return null;
     }
-    return null;
   }
 
   @Override public Converter<ResponseBody, Response<? extends Operation.Data>> responseBodyConverter(Type type,

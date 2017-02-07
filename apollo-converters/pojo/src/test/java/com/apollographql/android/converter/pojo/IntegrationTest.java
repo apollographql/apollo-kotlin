@@ -40,11 +40,10 @@ public class IntegrationTest {
 
   interface Service {
     @POST("graphql")
-    Call<Response<AllPlanets.Data>> heroDetails(@Body OperationRequest<AllPlanets.Variables> query);
+    Call<Response<AllPlanets.Data>> heroDetails(@Body AllPlanets query);
 
     @POST("graphql")
-    Call<Response<ProductsWithDate.Data>> productsWithDate(@Body OperationRequest<ProductsWithDate.Variables>
-        query);
+    Call<Response<ProductsWithDate.Data>> productsWithDate(@Body ProductsWithDate query);
   }
 
   @Rule public final MockWebServer server = new MockWebServer();
@@ -79,7 +78,7 @@ public class IntegrationTest {
   @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
 
-    Call<Response<AllPlanets.Data>> call = service.heroDetails(new OperationRequest<>(new AllPlanets()));
+    Call<Response<AllPlanets.Data>> call = service.heroDetails(new AllPlanets());
     Response<AllPlanets.Data> body = call.execute().body();
     assertThat(body.isSuccessful()).isTrue();
 
@@ -138,7 +137,7 @@ public class IntegrationTest {
 
   @Test public void errorResponse() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/errorResponse.json"));
-    Call<Response<AllPlanets.Data>> call = service.heroDetails(new OperationRequest<>(new AllPlanets()));
+    Call<Response<AllPlanets.Data>> call = service.heroDetails(new AllPlanets());
     Response<AllPlanets.Data> body = call.execute().body();
     assertThat(body.isSuccessful()).isFalse();
     //noinspection ConstantConditions
@@ -150,7 +149,7 @@ public class IntegrationTest {
   @Test public void productsWithDates() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/productsWithDate.json"));
 
-    Call<Response<ProductsWithDate.Data>> call = service.productsWithDate(new OperationRequest<>(new ProductsWithDate()));
+    Call<Response<ProductsWithDate.Data>> call = service.productsWithDate(new ProductsWithDate());
     Response<ProductsWithDate.Data> body = call.execute().body();
     assertThat(body.isSuccessful()).isTrue();
 
