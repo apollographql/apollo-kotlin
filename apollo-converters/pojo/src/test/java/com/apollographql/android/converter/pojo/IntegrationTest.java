@@ -7,6 +7,7 @@ import com.google.common.io.Files;
 
 import com.apollographql.android.api.graphql.Error;
 import com.apollographql.android.api.graphql.Response;
+import com.apollographql.android.converter.pojo.type.CustomType;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -26,7 +27,6 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import retrofit2.Call;
 import retrofit2.Retrofit;
-import retrofit2.converter.moshi.MoshiConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
@@ -40,11 +40,10 @@ public class IntegrationTest {
 
   interface Service {
     @POST("graphql")
-    Call<Response<AllPlanets.Data>> heroDetails(@Body OperationRequest<AllPlanets.Variables> query);
+    Call<Response<AllPlanets.Data>> heroDetails(@Body AllPlanets query);
 
     @POST("graphql")
-    Call<Response<ProductsWithDate.Data>> productsWithDate(@Body OperationRequest<ProductsWithDate.Variables>
-        query);
+    Call<Response<ProductsWithDate.Data>> productsWithDate(@Body ProductsWithDate query);
   }
 
   @Rule public final MockWebServer server = new MockWebServer();
@@ -60,7 +59,7 @@ public class IntegrationTest {
       }
 
       @Override public String encode(Date value) {
-        return null;
+        return DATE_FORMAT.format(value);
       }
     };
 
@@ -72,7 +71,6 @@ public class IntegrationTest {
                 .Data.FACTORY))
             .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
             .build())
-        .addConverterFactory(MoshiConverterFactory.create())
         .build();
     service = retrofit.create(Service.class);
   }
@@ -80,7 +78,7 @@ public class IntegrationTest {
   @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
 
-    Call<Response<AllPlanets.Data>> call = service.heroDetails(new OperationRequest<>(new AllPlanets()));
+    Call<Response<AllPlanets.Data>> call = service.heroDetails(new AllPlanets());
     Response<AllPlanets.Data> body = call.execute().body();
     assertThat(body.isSuccessful()).isTrue();
 
@@ -139,7 +137,7 @@ public class IntegrationTest {
 
   @Test public void errorResponse() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/errorResponse.json"));
-    Call<Response<AllPlanets.Data>> call = service.heroDetails(new OperationRequest<>(new AllPlanets()));
+    Call<Response<AllPlanets.Data>> call = service.heroDetails(new AllPlanets());
     Response<AllPlanets.Data> body = call.execute().body();
     assertThat(body.isSuccessful()).isFalse();
     //noinspection ConstantConditions
@@ -151,7 +149,7 @@ public class IntegrationTest {
   @Test public void productsWithDates() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/productsWithDate.json"));
 
-    Call<Response<ProductsWithDate.Data>> call = service.productsWithDate(new OperationRequest<>(new ProductsWithDate()));
+    Call<Response<ProductsWithDate.Data>> call = service.productsWithDate(new ProductsWithDate());
     Response<ProductsWithDate.Data> body = call.execute().body();
     assertThat(body.isSuccessful()).isTrue();
 
