@@ -11,8 +11,8 @@ sourceSets.test.compileClasspath += configurations.compileOnly
 sourceSets.test.runtimeClasspath += configurations.compileOnly
 
 tasks.withType(Checkstyle) {
-  exclude '**/pojo/BufferedSourceJsonReader.java'
-  exclude '**/pojo/JsonScope.java'
+  exclude '**/BufferedSourceJsonReader.java'
+  exclude '**/JsonScope.java'
 }
 
 dependencies {
