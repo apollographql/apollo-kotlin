@@ -16,8 +16,8 @@
       "source": "mutation TestQuery($ep: Episode!, $review: ReviewInput!) {\n  createReview(episode: $ep, review: $review) {\n    stars\n    commentary\n  }\n}",
       "fields": [
         {
-          "responseName": "createReview",
-          "fieldName": "createReview",
+          "responseName": "testQuery",
+          "fieldName": "testQuery",
           "type": "Review",
           "fields": [
             {
