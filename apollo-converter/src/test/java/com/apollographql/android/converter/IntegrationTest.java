@@ -1,4 +1,4 @@
-package com.apollographql.android.converter.pojo;
+package com.apollographql.android.converter;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
@@ -7,9 +7,7 @@ import com.google.common.io.Files;
 
 import com.apollographql.android.api.graphql.Error;
 import com.apollographql.android.api.graphql.Response;
-import com.apollographql.android.converter.ApolloConverterFactory;
-import com.apollographql.android.converter.CustomTypeAdapter;
-import com.apollographql.android.converter.pojo.type.CustomType;
+import com.apollographql.android.converter.type.CustomType;
 
 import org.junit.Before;
 import org.junit.Rule;

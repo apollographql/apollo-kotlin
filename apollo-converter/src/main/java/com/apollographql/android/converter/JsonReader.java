@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apollographql.android.converter.pojo;
+package com.apollographql.android.converter;
 
 import java.io.Closeable;
 import java.io.IOException;

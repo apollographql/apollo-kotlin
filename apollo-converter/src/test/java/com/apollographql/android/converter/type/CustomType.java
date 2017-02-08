@@ -1,4 +1,4 @@
-package com.apollographql.android.converter.pojo.type;
+package com.apollographql.android.converter.type;
 
 import com.apollographql.android.api.graphql.ScalarType;
 import java.lang.String;

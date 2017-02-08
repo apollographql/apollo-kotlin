@@ -1,4 +1,4 @@
-package com.apollographql.android.converter.pojo;
+package com.apollographql.android.converter;
 
 public interface CustomTypeAdapter<T> {
 

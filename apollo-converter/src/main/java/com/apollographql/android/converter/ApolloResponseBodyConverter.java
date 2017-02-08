@@ -1,4 +1,4 @@
-package com.apollographql.android.converter.pojo;
+package com.apollographql.android.converter;
 
 import com.apollographql.android.api.graphql.Error;
 import com.apollographql.android.api.graphql.Field;

@@ -1,12 +1,12 @@
-package com.apollographql.android.converter.pojo;
+package com.apollographql.android.converter;
 
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
-import com.apollographql.android.converter.pojo.fragment.FilmFragment;
-import com.apollographql.android.converter.pojo.fragment.PlanetFragment;
+import com.apollographql.android.converter.fragment.FilmFragment;
+import com.apollographql.android.converter.fragment.PlanetFragment;
 
 import java.io.IOException;
 import java.lang.Integer;
