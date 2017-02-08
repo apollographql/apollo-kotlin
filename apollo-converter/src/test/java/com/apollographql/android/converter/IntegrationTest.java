@@ -7,6 +7,8 @@ import com.google.common.io.Files;
 
 import com.apollographql.android.api.graphql.Error;
 import com.apollographql.android.api.graphql.Response;
+import com.apollographql.android.converter.ApolloConverterFactory;
+import com.apollographql.android.converter.CustomTypeAdapter;
 import com.apollographql.android.converter.pojo.type.CustomType;
 
 import org.junit.Before;

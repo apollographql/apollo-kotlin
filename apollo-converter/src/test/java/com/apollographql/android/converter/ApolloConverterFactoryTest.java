@@ -4,6 +4,8 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.converter.ApolloConverterFactory;
+import com.apollographql.android.converter.CustomTypeAdapter;
 import com.apollographql.android.converter.pojo.type.CustomType;
 import com.squareup.moshi.Types;
 
