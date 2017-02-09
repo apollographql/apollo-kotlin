@@ -26,11 +26,10 @@ android {
 
 dependencies {
   compile dep.appcompat
-  compile dep.apolloConverterPojo
+  compile dep.apolloConverter
   compile dep.rxjava2
   compile dep.rxandroid
   compile dep.retrofitRx2Adapter
-  compile dep.retrofitMoshiConverter
   compile dep.okhttpLoggingInterceptor
 
   testCompile dep.junit
