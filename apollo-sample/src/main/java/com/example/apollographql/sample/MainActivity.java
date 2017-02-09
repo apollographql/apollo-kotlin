@@ -13,96 +13,111 @@ import com.apollographql.android.api.graphql.Response;
 import com.example.AllPosts;
 import com.example.Upvote;
 
-import io.reactivex.Observer;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
   private static final String TAG = "MainActivity";
 
-  private final PostsAdapter postsAdapter = new PostsAdapter();
+  @Nonnull private final List<Disposable> disposables = new ArrayList<Disposable>();
+  @Nonnull private final PostsAdapter postsAdapter = new PostsAdapter();
+
+  @Nullable private TextView txtResponse;
+  @Nullable private RecyclerView responses;
+
+  private final Consumer<Response<AllPosts.Data>> onAllPostsData = new Consumer<Response<AllPosts.Data>>() {
+    @Override public void accept(Response<AllPosts.Data> response) {
+      final TextView txtResponse = MainActivity.this.txtResponse;
+      if (txtResponse != null) {
+        txtResponse.setVisibility(View.GONE);
+      }
+
+      final RecyclerView responses = MainActivity.this.responses;
+      if (responses != null) {
+        responses.setVisibility(View.VISIBLE);
+      }
+
+      postsAdapter.allPosts(response.data().posts());
+    }
+  };
+
+  private final Consumer<Response<Upvote.Data>> onUpvoteData = new Consumer<Response<Upvote.Data>>() {
+    @Override public void accept(Response<Upvote.Data> response) {
+      postsAdapter.upvotePost(response.data().upvotePost());
+    }
+  };
+
+  private final Consumer<Integer> onClickUpvote = new Consumer<Integer>() {
+    @Override public void accept(Integer postId) {
+      final Upvote.Variables variables = Upvote.Variables.builder()
+          .postId(postId)
+          .build();
+
+      final SampleApplication application = (SampleApplication) getApplication();
+      final Disposable upvoteDataDisposable = application.frontPageService()
+          .upvote(new Upvote(variables))
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(onUpvoteData, onError);
+
+      disposables.add(upvoteDataDisposable);
+    }
+  };
+
+  private final Consumer<Throwable> onError = new Consumer<Throwable>() {
+    @Override public void accept(Throwable e) {
+      Log.e(TAG, "", e);
+      Toast.makeText(MainActivity.this, "onError(): " + e.getMessage(), Toast.LENGTH_LONG)
+          .show();
+    }
+  };
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    final TextView txtResponse = (TextView) findViewById(R.id.txt_response);
-    final RecyclerView responses = (RecyclerView) findViewById(R.id.responses);
+    txtResponse = (TextView) findViewById(R.id.txt_response);
+    responses = (RecyclerView) findViewById(R.id.responses);
 
     responses.setAdapter(postsAdapter);
     responses.setLayoutManager(new LinearLayoutManager(this));
+  }
 
-    postsAdapter.getUpvoteObservable().subscribe(new Observer<Integer>() {
-      @Override public void onSubscribe(Disposable d) {
-      }
+  @Override protected void onResume() {
+    super.onResume();
 
-      @Override public void onNext(Integer postId) {
-        upvotePost(postId);
-      }
+    txtResponse.setVisibility(View.VISIBLE);
+    responses.setVisibility(View.GONE);
 
-      @Override public void onError(Throwable e) {
-        showErrorToast(e);
-      }
-
-      @Override public void onComplete() {
-      }
-    });
+    final Disposable upvoteClickDisposable = postsAdapter.getUpvoteObservable()
+        .subscribe(onClickUpvote, onError);
+    disposables.add(upvoteClickDisposable);
 
     final SampleApplication application = (SampleApplication) getApplication();
-    application.frontPageService()
+    final Disposable allPostsDataDisposable = application.frontPageService()
         .allPosts(new AllPosts())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Observer<Response<AllPosts.Data>>() {
-          @Override public void onSubscribe(Disposable d) {
-          }
-
-          @Override public void onError(Throwable e) {
-            showErrorToast(e);
-          }
-
-          @Override public void onComplete() {
-          }
-
-          @Override public void onNext(Response<AllPosts.Data> response) {
-            txtResponse.setVisibility(View.GONE);
-            responses.setVisibility(View.VISIBLE);
-
-            postsAdapter.allPosts(response.data().posts());
-          }
-        });
+        .subscribe(onAllPostsData, onError);
+    disposables.add(allPostsDataDisposable);
   }
 
-  private void upvotePost(Integer postId) {
-    final Upvote.Variables variables = Upvote.Variables.builder()
-        .postId(postId)
-        .build();
+  @Override protected void onPause() {
+    for (final Disposable disposable : disposables) {
+      if (!disposable.isDisposed()) {
+        disposable.dispose();
+      }
+    }
 
-    final SampleApplication application = (SampleApplication) getApplication();
-    application.frontPageService()
-        .upvote(new Upvote(variables))
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Observer<Response<Upvote.Data>>() {
-          @Override public void onSubscribe(Disposable d) {
-          }
+    disposables.clear();
 
-          @Override public void onNext(Response<Upvote.Data> response) {
-            postsAdapter.upvotePost(response.data().upvotePost());
-          }
-
-          @Override public void onError(Throwable e) {
-            showErrorToast(e);
-          }
-
-          @Override public void onComplete() {
-          }
-        });
-  }
-
-  private void showErrorToast(Throwable e) {
-    Log.e(TAG, "", e);
-    Toast.makeText(this, "onError(): " + e.getMessage(), Toast.LENGTH_LONG)
-        .show();
+    super.onPause();
   }
 }
