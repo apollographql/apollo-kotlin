@@ -50,12 +50,11 @@ open class GraphQLCompiler {
   }
 
   private fun List<TypeDeclaration>.supportedTypeDeclarations() =
-    filter { it.kind == TypeDeclaration.KIND_ENUM || it.kind == TypeDeclaration.KIND_INPUT_OBJECT_TYPE }
+      filter { it.kind == TypeDeclaration.KIND_ENUM || it.kind == TypeDeclaration.KIND_INPUT_OBJECT_TYPE }
 
-  private fun Map<String, String>.supportedScalarTypeMapping(typeDeclarations: List<TypeDeclaration>): Map<String, String> {
-    val customScalarTypes = typeDeclarations.filter { it.kind == TypeDeclaration.KIND_SCALAR_TYPE }.map { it.name }
-    return filter { customScalarTypes.contains(it.key) }
-  }
+  private fun Map<String, String>.supportedScalarTypeMapping(typeDeclarations: List<TypeDeclaration>) =
+      typeDeclarations.filter { it.kind == TypeDeclaration.KIND_SCALAR_TYPE }
+          .associate { it.name to (this[it.name] ?: "Object") }
 
   companion object {
     const val FILE_EXTENSION = "graphql"

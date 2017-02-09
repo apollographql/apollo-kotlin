@@ -163,10 +163,10 @@ import java.util.Map;
     } else {
       CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(field.scalarType());
       if (typeAdapter == null) {
-        throw new RuntimeException("Can't resolve custom type adapter for "
-            + field.scalarType().typeName());
+        return (T) value;
+      } else {
+        return typeAdapter.decode(value.toString());
       }
-      return typeAdapter.decode(value.toString());
     }
   }
 

@@ -79,8 +79,9 @@ public final class TestQuery implements Query<Operation.Variables> {
       public static final Creator CREATOR = new Creator() {
         @Override
         public Hero create(@Nonnull String name, @Nonnull Date birthDate,
-            @Nonnull List<? extends Date> appearanceDates) {
-          return new Hero(name, birthDate, appearanceDates);
+            @Nonnull List<? extends Date> appearanceDates,
+            @Nonnull Object fieldWithUnsupportedType) {
+          return new Hero(name, birthDate, appearanceDates, fieldWithUnsupportedType);
         }
       };
 
@@ -97,11 +98,14 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       private @Nonnull List<? extends Date> appearanceDates;
 
+      private @Nonnull Object fieldWithUnsupportedType;
+
       public Hero(@Nonnull String name, @Nonnull Date birthDate,
-          @Nonnull List<? extends Date> appearanceDates) {
+          @Nonnull List<? extends Date> appearanceDates, @Nonnull Object fieldWithUnsupportedType) {
         this.name = name;
         this.birthDate = birthDate;
         this.appearanceDates = appearanceDates;
+        this.fieldWithUnsupportedType = fieldWithUnsupportedType;
       }
 
       public @Nonnull String name() {
@@ -116,13 +120,18 @@ public final class TestQuery implements Query<Operation.Variables> {
         return this.appearanceDates;
       }
 
+      public @Nonnull Object fieldWithUnsupportedType() {
+        return this.fieldWithUnsupportedType;
+      }
+
       public interface Factory {
         Creator creator();
       }
 
       public interface Creator {
         Hero create(@Nonnull String name, @Nonnull Date birthDate,
-            @Nonnull List<? extends Date> appearanceDates);
+            @Nonnull List<? extends Date> appearanceDates,
+            @Nonnull Object fieldWithUnsupportedType);
       }
 
       public static final class Mapper implements ResponseFieldMapper<Hero> {
@@ -135,7 +144,8 @@ public final class TestQuery implements Query<Operation.Variables> {
             @Override public Date read(final Field.ListItemReader reader) throws IOException {
               return reader.readCustomType(CustomType.DATE);
             }
-          })
+          }),
+          Field.forCustomType("fieldWithUnsupportedType", "fieldWithUnsupportedType", null, false, CustomType.UNSUPPORTEDTYPE)
         };
 
         public Mapper(@Nonnull Factory factory) {
@@ -161,10 +171,14 @@ public final class TestQuery implements Query<Operation.Variables> {
                   contentValues.appearanceDates = (List<? extends Date>) value;
                   break;
                 }
+                case 3: {
+                  contentValues.fieldWithUnsupportedType = (Object) value;
+                  break;
+                }
               }
             }
           }, fields);
-          return factory.creator().create(contentValues.name, contentValues.birthDate, contentValues.appearanceDates);
+          return factory.creator().create(contentValues.name, contentValues.birthDate, contentValues.appearanceDates, contentValues.fieldWithUnsupportedType);
         }
 
         static final class __ContentValues {
@@ -173,6 +187,8 @@ public final class TestQuery implements Query<Operation.Variables> {
           Date birthDate;
 
           List<? extends Date> appearanceDates;
+
+          Object fieldWithUnsupportedType;
         }
       }
     }

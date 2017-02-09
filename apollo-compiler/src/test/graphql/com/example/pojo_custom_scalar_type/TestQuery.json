@@ -25,6 +25,11 @@
               "responseName": "appearanceDates",
               "fieldName": "appearanceDates",
               "type": "[Date!]!"
+            },
+            {
+              "responseName": "fieldWithUnsupportedType",
+              "fieldName": "fieldWithUnsupportedType",
+              "type": "UnsupportedType!"
             }
           ],
           "fragmentSpreads": [],
@@ -40,6 +45,11 @@
     {
       "kind": "ScalarType",
       "name": "Date",
+      "description": null
+    },
+    {
+      "kind": "ScalarType",
+      "name": "UnsupportedType",
       "description": null
     }
   ]
