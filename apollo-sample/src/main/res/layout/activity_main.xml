@@ -15,6 +15,13 @@
     android:id="@+id/txt_response"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="Response will show up here!"
+    android:text="@string/response"
+    />
+
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/responses"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone"
     />
 </RelativeLayout>

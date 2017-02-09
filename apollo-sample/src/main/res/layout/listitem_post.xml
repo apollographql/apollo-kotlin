@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:padding="8dp"
+  >
+
+  <Button
+    android:id="@+id/upvote"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentRight="true"
+    android:layout_centerVertical="true"
+    android:text="@string/upvote"
+    />
+
+  <TextView
+    android:id="@+id/title"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textStyle="bold"
+    />
+
+  <TextView
+    android:id="@+id/byline"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/title"
+    />
+
+  <TextView
+    android:id="@+id/vote_count"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignBaseline="@id/byline"
+    android:layout_toEndOf="@id/byline"
+    android:layout_toRightOf="@id/byline"
+    android:layout_marginLeft="8dp"
+    android:layout_marginStart="8dp"
+    android:textColor="@android:color/darker_gray"
+    />
+
+</RelativeLayout>

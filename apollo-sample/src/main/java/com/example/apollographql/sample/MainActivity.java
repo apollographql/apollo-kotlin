@@ -2,14 +2,16 @@ package com.example.apollographql.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apollographql.android.api.graphql.Response;
 import com.example.AllPosts;
 
-import fragment.PostDetails;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -22,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     final TextView txtResponse = (TextView) findViewById(R.id.txt_response);
+    final RecyclerView responses = (RecyclerView) findViewById(R.id.responses);
+    responses.setLayoutManager(new LinearLayoutManager(this));
+
     SampleApplication application = (SampleApplication) getApplication();
     application.postsService()
         .allPosts(new AllPosts())
@@ -32,18 +37,9 @@ public class MainActivity extends AppCompatActivity {
           }
 
           @Override public void onNext(Response<AllPosts.Data> response) {
-            final StringBuilder builder = new StringBuilder();
-            for (AllPosts.Data.Post post : response.data().posts()) {
-              final PostDetails details = post.fragments().postDetails();
-              final PostDetails.Author author = details.author();
-              builder.append("title: ").append(details.title());
-              if (author != null) {
-                builder.append(" author.firstName: ").append(author.firstName());
-                builder.append(" author.lastName: ").append(author.lastName());
-              }
-              builder.append("\n~~~~~~~~~~~\n\n");
-            }
-            txtResponse.setText(builder.toString());
+            txtResponse.setVisibility(View.GONE);
+            responses.setVisibility(View.VISIBLE);
+            responses.setAdapter(new PostsAdapter(response.data().posts()));
           }
 
           @Override public void onError(Throwable e) {

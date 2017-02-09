@@ -1,3 +1,6 @@
 <resources>
   <string name="app_name">apollo-sample</string>
+  <string name="upvote">Upvote</string>
+  <string name="byline_format">by %1$s %2$s</string>
+  <string name="response">Response will show up here!</string>
 </resources>
