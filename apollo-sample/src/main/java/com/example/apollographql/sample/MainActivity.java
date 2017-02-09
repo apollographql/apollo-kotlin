@@ -21,62 +21,88 @@ import io.reactivex.schedulers.Schedulers;
 public class MainActivity extends AppCompatActivity {
   private static final String TAG = "MainActivity";
 
+  private final PostsAdapter postsAdapter = new PostsAdapter();
+
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     final TextView txtResponse = (TextView) findViewById(R.id.txt_response);
     final RecyclerView responses = (RecyclerView) findViewById(R.id.responses);
 
-    final SampleApplication application = (SampleApplication) getApplication();
-
-    final PostsAdapter adapter = new PostsAdapter();
-    responses.setAdapter(adapter);
+    responses.setAdapter(postsAdapter);
     responses.setLayoutManager(new LinearLayoutManager(this));
 
-    adapter.getUpvoteObservable().subscribe(new SimpleObserver<Integer>() {
-      @Override public void onNext(Integer postId) {
-        final Upvote.Variables variables = Upvote.Variables.builder()
-            .postId(postId)
-            .build();
+    postsAdapter.getUpvoteObservable().subscribe(new Observer<Integer>() {
+      @Override public void onSubscribe(Disposable d) {
+      }
 
-        application.frontPageService()
-            .upvote(new Upvote(variables))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new SimpleObserver<Response<Upvote.Data>>() {
-              @Override public void onNext(Response<Upvote.Data> response) {
-                adapter.upvotePost(response.data().upvotePost());
-              }
-            });
+      @Override public void onNext(Integer postId) {
+        upvotePost(postId);
+      }
+
+      @Override public void onError(Throwable e) {
+        showErrorToast(e);
+      }
+
+      @Override public void onComplete() {
       }
     });
 
+    final SampleApplication application = (SampleApplication) getApplication();
     application.frontPageService()
         .allPosts(new AllPosts())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new SimpleObserver<Response<AllPosts.Data>>() {
+        .subscribe(new Observer<Response<AllPosts.Data>>() {
+          @Override public void onSubscribe(Disposable d) {
+          }
+
+          @Override public void onError(Throwable e) {
+            showErrorToast(e);
+          }
+
+          @Override public void onComplete() {
+          }
+
           @Override public void onNext(Response<AllPosts.Data> response) {
             txtResponse.setVisibility(View.GONE);
             responses.setVisibility(View.VISIBLE);
 
-            adapter.allPosts(response.data().posts());
+            postsAdapter.allPosts(response.data().posts());
           }
         });
   }
 
-  private abstract class SimpleObserver<T> implements Observer<T> {
-    @Override public void onSubscribe(Disposable d) {
-    }
+  private void upvotePost(Integer postId) {
+    final Upvote.Variables variables = Upvote.Variables.builder()
+        .postId(postId)
+        .build();
 
-    @Override public void onError(Throwable e) {
-      Log.e(TAG, "", e);
-      Toast.makeText(MainActivity.this, "onError(): " + e.getMessage(), Toast.LENGTH_LONG)
-          .show();
-    }
+    final SampleApplication application = (SampleApplication) getApplication();
+    application.frontPageService()
+        .upvote(new Upvote(variables))
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Observer<Response<Upvote.Data>>() {
+          @Override public void onSubscribe(Disposable d) {
+          }
 
-    @Override public void onComplete() {
+          @Override public void onNext(Response<Upvote.Data> response) {
+            postsAdapter.upvotePost(response.data().upvotePost());
+          }
 
-    }
+          @Override public void onError(Throwable e) {
+            showErrorToast(e);
+          }
+
+          @Override public void onComplete() {
+          }
+        });
+  }
+
+  private void showErrorToast(Throwable e) {
+    Log.e(TAG, "", e);
+    Toast.makeText(this, "onError(): " + e.getMessage(), Toast.LENGTH_LONG)
+        .show();
   }
 }
