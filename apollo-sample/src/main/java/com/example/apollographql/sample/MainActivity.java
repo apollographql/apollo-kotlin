@@ -7,7 +7,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apollographql.android.api.graphql.Response;
-import com.apollographql.android.converter.pojo.OperationRequest;
 import com.example.FeedQuery;
 
 import io.reactivex.Observer;
@@ -25,11 +24,10 @@ public class MainActivity extends AppCompatActivity {
     final TextView txtResponse = (TextView) findViewById(R.id.txt_response);
     SampleApplication application = (SampleApplication) getApplication();
     application.githuntApiService()
-        .githuntFeed(new OperationRequest<>(
-            new FeedQuery(FeedQuery.Variables.builder()
+        .githuntFeed(new FeedQuery(FeedQuery.Variables.builder()
                 .limit(10)
                 .type(FeedType.HOT)
-                .build())))
+                .build()))
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<Response<FeedQuery.Data>>() {
@@ -58,4 +56,6 @@ public class MainActivity extends AppCompatActivity {
           }
         });
   }
+
+
 }

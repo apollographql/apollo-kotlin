@@ -2,7 +2,7 @@ package com.example.apollographql.sample;
 
 import android.app.Application;
 
-import com.apollographql.android.converter.pojo.ApolloConverterFactory;
+import com.apollographql.android.converter.ApolloConverterFactory;
 import com.example.FeedQuery;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
@@ -12,7 +12,6 @@ import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.converter.moshi.MoshiConverterFactory;
 
 public class SampleApplication extends Application {
   private static final String BASE_URL = "https://githunt-api.herokuapp.com";
@@ -35,7 +34,6 @@ public class SampleApplication extends Application {
         .addConverterFactory(new ApolloConverterFactory.Builder()
             .withResponseFieldMapper(FeedQuery.Data.class, new FeedQuery.Data.Mapper(FeedQuery.Data.FACTORY))
             .build())
-        .addConverterFactory(MoshiConverterFactory.create())
         .build();
     githuntApiService = retrofit.create(GithuntApiService.class);
   }
