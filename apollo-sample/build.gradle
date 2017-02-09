@@ -29,6 +29,7 @@ dependencies {
   compile dep.apolloConverter
   compile dep.rxjava2
   compile dep.rxandroid
+  compile dep.recyclerView
   compile dep.retrofitRx2Adapter
   compile dep.okhttpLoggingInterceptor
 
