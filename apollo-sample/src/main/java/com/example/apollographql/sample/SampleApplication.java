@@ -3,6 +3,8 @@ package com.example.apollographql.sample;
 import android.app.Application;
 
 import com.apollographql.android.converter.ApolloConverterFactory;
+import com.example.AllPosts;
+import com.example.Upvote;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.io.File;
@@ -17,6 +19,7 @@ public class SampleApplication extends Application {
   private static final String BASE_URL = "http://127.0.0.1:8080";
   private OkHttpClient okHttpClient;
   private Retrofit retrofit;
+  private PostsService postsService;
 
   @Override public void onCreate() {
     super.onCreate();
@@ -31,8 +34,11 @@ public class SampleApplication extends Application {
         .client(okHttpClient)
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(new ApolloConverterFactory.Builder()
+            .withResponseFieldMapper(AllPosts.Data.class, new AllPosts.Data.Mapper(AllPosts.Data.FACTORY))
+            .withResponseFieldMapper(Upvote.Data.class, new Upvote.Data.Mapper(Upvote.Data.FACTORY))
             .build())
         .build();
+    postsService = retrofit.create(PostsService.class);
   }
 
   public OkHttpClient okHttpClient() {
@@ -41,5 +47,9 @@ public class SampleApplication extends Application {
 
   public Retrofit retrofit() {
     return retrofit;
+  }
+
+  public PostsService postsService() {
+    return postsService;
   }
 }
