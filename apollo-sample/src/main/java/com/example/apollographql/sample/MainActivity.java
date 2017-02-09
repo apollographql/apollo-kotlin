@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
             .postId(postId)
             .build();
 
-        application.postsService()
+        application.frontPageService()
             .upvote(new Upvote(variables))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
       }
     });
 
-    application.postsService()
+    application.frontPageService()
         .allPosts(new AllPosts())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())

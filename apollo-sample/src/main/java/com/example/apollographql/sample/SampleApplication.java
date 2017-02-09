@@ -19,7 +19,7 @@ public class SampleApplication extends Application {
   private static final String BASE_URL = "http://127.0.0.1:8080";
   private OkHttpClient okHttpClient;
   private Retrofit retrofit;
-  private PostsService postsService;
+  private FrontPageService frontPageService;
 
   @Override public void onCreate() {
     super.onCreate();
@@ -38,7 +38,7 @@ public class SampleApplication extends Application {
             .withResponseFieldMapper(Upvote.Data.class, new Upvote.Data.Mapper(Upvote.Data.FACTORY))
             .build())
         .build();
-    postsService = retrofit.create(PostsService.class);
+    frontPageService = retrofit.create(FrontPageService.class);
   }
 
   public OkHttpClient okHttpClient() {
@@ -49,7 +49,7 @@ public class SampleApplication extends Application {
     return retrofit;
   }
 
-  public PostsService postsService() {
-    return postsService;
+  public FrontPageService frontPageService() {
+    return frontPageService;
   }
 }
