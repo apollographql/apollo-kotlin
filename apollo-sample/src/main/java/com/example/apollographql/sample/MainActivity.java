@@ -17,8 +17,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.Subject;
 
 public class MainActivity extends AppCompatActivity {
   private static final String TAG = "MainActivity";
@@ -31,13 +29,11 @@ public class MainActivity extends AppCompatActivity {
 
     final SampleApplication application = (SampleApplication) getApplication();
 
-    final Subject<Integer> upvoteObserver = PublishSubject.create();
-
-    final PostsAdapter adapter = new PostsAdapter(upvoteObserver);
+    final PostsAdapter adapter = new PostsAdapter();
     responses.setAdapter(adapter);
     responses.setLayoutManager(new LinearLayoutManager(this));
 
-    upvoteObserver.subscribe(new SimpleObserver<Integer>() {
+    adapter.getUpvoteObservable().subscribe(new SimpleObserver<Integer>() {
       @Override public void onNext(Integer postId) {
         final Upvote.Variables variables = Upvote.Variables.builder()
             .postId(postId)

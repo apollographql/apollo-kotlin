@@ -18,20 +18,21 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import fragment.PostDetails;
-import io.reactivex.Observer;
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 
 class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
-  @Nonnull private final Observer<Integer> upvoteObserver;
   @Nonnull private final List<AllPosts.Data.Post> posts;
+  @Nonnull private final Subject<Integer> upvotePublisher = PublishSubject.create();
   @Nonnull private final NumberFormat numberFormat = NumberFormat.getIntegerInstance();
   @Nonnull private final View.OnClickListener upvoteClickedListener = new View.OnClickListener() {
     @Override public void onClick(View v) {
-      upvoteObserver.onNext((Integer)v.getTag());
+      upvotePublisher.onNext((Integer) v.getTag());
     }
   };
 
-  PostsAdapter(@Nonnull Observer<Integer> upvoteObserver) {
-    this.upvoteObserver = upvoteObserver;
+  PostsAdapter() {
     this.posts = new ArrayList<>();
   }
 
@@ -63,6 +64,10 @@ class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
 
   @Nonnull private static String getByline(@Nonnull Resources resources, @Nonnull PostDetails.Author author) {
     return resources.getString(R.string.byline_format, author.firstName(), author.lastName());
+  }
+
+  @Nonnull Observable<Integer> getUpvoteObservable() {
+    return upvotePublisher;
   }
 
   void allPosts(@Nonnull List<? extends AllPosts.Data.Post> posts) {
