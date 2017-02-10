@@ -1,10 +1,15 @@
 package com.example.input_object_type;
 
+import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Mutation;
 import com.apollographql.android.api.graphql.Operation;
+import com.apollographql.android.api.graphql.ResponseFieldMapper;
+import com.apollographql.android.api.graphql.ResponseReader;
 import com.example.input_object_type.type.Episode;
 import com.example.input_object_type.type.ReviewInput;
+import java.io.IOException;
 import java.lang.IllegalStateException;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import javax.annotation.Generated;
@@ -94,12 +99,89 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
 
       @Nullable String commentary();
 
+      final class Mapper implements ResponseFieldMapper<CreateReview> {
+        final Factory factory;
+
+        final Field[] fields = {
+          Field.forInt("stars", "stars", null, false),
+          Field.forString("commentary", "commentary", null, true)
+        };
+
+        public Mapper(@Nonnull Factory factory) {
+          this.factory = factory;
+        }
+
+        @Override
+        public CreateReview map(ResponseReader reader) throws IOException {
+          final __ContentValues contentValues = new __ContentValues();
+          reader.read(new ResponseReader.ValueHandler() {
+            @Override
+            public void handle(final int fieldIndex, final Object value) throws IOException {
+              switch (fieldIndex) {
+                case 0: {
+                  contentValues.stars = (int) value;
+                  break;
+                }
+                case 1: {
+                  contentValues.commentary = (String) value;
+                  break;
+                }
+              }
+            }
+          }, fields);
+          return factory.creator().create(contentValues.stars, contentValues.commentary);
+        }
+
+        static final class __ContentValues {
+          int stars;
+
+          String commentary;
+        }
+      }
+
       interface Factory {
         Creator creator();
       }
 
       interface Creator {
         CreateReview create(int stars, @Nullable String commentary);
+      }
+    }
+
+    final class Mapper implements ResponseFieldMapper<Data> {
+      final Factory factory;
+
+      final Field[] fields = {
+        Field.forObject("createReview", "createReview", null, true, new Field.ObjectReader<CreateReview>() {
+          @Override public CreateReview read(final ResponseReader reader) throws IOException {
+            return new CreateReview.Mapper(factory.createReviewFactory()).map(reader);
+          }
+        })
+      };
+
+      public Mapper(@Nonnull Factory factory) {
+        this.factory = factory;
+      }
+
+      @Override
+      public Data map(ResponseReader reader) throws IOException {
+        final __ContentValues contentValues = new __ContentValues();
+        reader.read(new ResponseReader.ValueHandler() {
+          @Override
+          public void handle(final int fieldIndex, final Object value) throws IOException {
+            switch (fieldIndex) {
+              case 0: {
+                contentValues.createReview = (CreateReview) value;
+                break;
+              }
+            }
+          }
+        }, fields);
+        return factory.creator().create(contentValues.createReview);
+      }
+
+      static final class __ContentValues {
+        CreateReview createReview;
       }
     }
 

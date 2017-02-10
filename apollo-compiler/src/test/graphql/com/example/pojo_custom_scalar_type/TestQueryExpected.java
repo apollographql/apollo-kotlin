@@ -124,16 +124,6 @@ public final class TestQuery implements Query<Operation.Variables> {
         return this.fieldWithUnsupportedType;
       }
 
-      public interface Factory {
-        Creator creator();
-      }
-
-      public interface Creator {
-        Hero create(@Nonnull String name, @Nonnull Date birthDate,
-            @Nonnull List<? extends Date> appearanceDates,
-            @Nonnull Object fieldWithUnsupportedType);
-      }
-
       public static final class Mapper implements ResponseFieldMapper<Hero> {
         final Factory factory;
 
@@ -191,16 +181,16 @@ public final class TestQuery implements Query<Operation.Variables> {
           Object fieldWithUnsupportedType;
         }
       }
-    }
 
-    public interface Factory {
-      Creator creator();
+      public interface Factory {
+        Creator creator();
+      }
 
-      Hero.Factory heroFactory();
-    }
-
-    public interface Creator {
-      Data create(@Nullable Hero hero);
+      public interface Creator {
+        Hero create(@Nonnull String name, @Nonnull Date birthDate,
+            @Nonnull List<? extends Date> appearanceDates,
+            @Nonnull Object fieldWithUnsupportedType);
+      }
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
@@ -238,6 +228,16 @@ public final class TestQuery implements Query<Operation.Variables> {
       static final class __ContentValues {
         Hero hero;
       }
+    }
+
+    public interface Factory {
+      Creator creator();
+
+      Hero.Factory heroFactory();
+    }
+
+    public interface Creator {
+      Data create(@Nullable Hero hero);
     }
   }
 }

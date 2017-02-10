@@ -1,7 +1,12 @@
 package com.example.two_heroes;
 
+import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
+import com.apollographql.android.api.graphql.ResponseFieldMapper;
+import com.apollographql.android.api.graphql.ResponseReader;
+import java.io.IOException;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import javax.annotation.Generated;
@@ -47,6 +52,39 @@ public final class TestQuery implements Query<Operation.Variables> {
     interface R2 {
       @Nonnull String name();
 
+      final class Mapper implements ResponseFieldMapper<R2> {
+        final Factory factory;
+
+        final Field[] fields = {
+          Field.forString("name", "name", null, false)
+        };
+
+        public Mapper(@Nonnull Factory factory) {
+          this.factory = factory;
+        }
+
+        @Override
+        public R2 map(ResponseReader reader) throws IOException {
+          final __ContentValues contentValues = new __ContentValues();
+          reader.read(new ResponseReader.ValueHandler() {
+            @Override
+            public void handle(final int fieldIndex, final Object value) throws IOException {
+              switch (fieldIndex) {
+                case 0: {
+                  contentValues.name = (String) value;
+                  break;
+                }
+              }
+            }
+          }, fields);
+          return factory.creator().create(contentValues.name);
+        }
+
+        static final class __ContentValues {
+          String name;
+        }
+      }
+
       interface Factory {
         Creator creator();
       }
@@ -59,12 +97,93 @@ public final class TestQuery implements Query<Operation.Variables> {
     interface Luke {
       @Nonnull String name();
 
+      final class Mapper implements ResponseFieldMapper<Luke> {
+        final Factory factory;
+
+        final Field[] fields = {
+          Field.forString("name", "name", null, false)
+        };
+
+        public Mapper(@Nonnull Factory factory) {
+          this.factory = factory;
+        }
+
+        @Override
+        public Luke map(ResponseReader reader) throws IOException {
+          final __ContentValues contentValues = new __ContentValues();
+          reader.read(new ResponseReader.ValueHandler() {
+            @Override
+            public void handle(final int fieldIndex, final Object value) throws IOException {
+              switch (fieldIndex) {
+                case 0: {
+                  contentValues.name = (String) value;
+                  break;
+                }
+              }
+            }
+          }, fields);
+          return factory.creator().create(contentValues.name);
+        }
+
+        static final class __ContentValues {
+          String name;
+        }
+      }
+
       interface Factory {
         Creator creator();
       }
 
       interface Creator {
         Luke create(@Nonnull String name);
+      }
+    }
+
+    final class Mapper implements ResponseFieldMapper<Data> {
+      final Factory factory;
+
+      final Field[] fields = {
+        Field.forObject("r2", "hero", null, true, new Field.ObjectReader<R2>() {
+          @Override public R2 read(final ResponseReader reader) throws IOException {
+            return new R2.Mapper(factory.r2Factory()).map(reader);
+          }
+        }),
+        Field.forObject("luke", "hero", null, true, new Field.ObjectReader<Luke>() {
+          @Override public Luke read(final ResponseReader reader) throws IOException {
+            return new Luke.Mapper(factory.lukeFactory()).map(reader);
+          }
+        })
+      };
+
+      public Mapper(@Nonnull Factory factory) {
+        this.factory = factory;
+      }
+
+      @Override
+      public Data map(ResponseReader reader) throws IOException {
+        final __ContentValues contentValues = new __ContentValues();
+        reader.read(new ResponseReader.ValueHandler() {
+          @Override
+          public void handle(final int fieldIndex, final Object value) throws IOException {
+            switch (fieldIndex) {
+              case 0: {
+                contentValues.r2 = (R2) value;
+                break;
+              }
+              case 1: {
+                contentValues.luke = (Luke) value;
+                break;
+              }
+            }
+          }
+        }, fields);
+        return factory.creator().create(contentValues.r2, contentValues.luke);
+      }
+
+      static final class __ContentValues {
+        R2 r2;
+
+        Luke luke;
       }
     }
 
