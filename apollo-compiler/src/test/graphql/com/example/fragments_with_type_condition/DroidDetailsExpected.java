@@ -65,10 +65,10 @@ public interface DroidDetails {
   }
 
   interface Factory {
-    Creator creator();
+    @Nonnull Creator creator();
   }
 
   interface Creator {
-    DroidDetails create(@Nonnull String name, @Nullable String primaryFunction);
+    @Nonnull DroidDetails create(@Nonnull String name, @Nullable String primaryFunction);
   }
 }

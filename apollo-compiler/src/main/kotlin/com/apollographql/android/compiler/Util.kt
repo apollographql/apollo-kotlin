@@ -43,7 +43,7 @@ fun TypeSpec.withCreator(): TypeSpec {
                     val paramName = it.name
                     ParameterSpec.builder(paramType, paramName).build()
                   })
-              .returns(ClassName.get("", name))
+              .returns(ClassName.get("", name).annotated(listOf(Annotations.NONNULL)))
               .build())
           .build())
       .build()
@@ -76,7 +76,7 @@ fun TypeSpec.withCreatorImplementation(): TypeSpec {
               .addModifiers(Modifier.PUBLIC)
               .addAnnotation(Override::class.java)
               .addParameters(methodSpecs.toParameterSpecs())
-              .returns(ClassName.get("", name))
+              .returns(ClassName.get("", name).annotated(listOf(Annotations.NONNULL)))
               .addCode(createMethodCodeBlock(constructorClassName, fieldSpecs))
               .build())
           .build()
@@ -97,7 +97,7 @@ fun TypeSpec.withFactory(exclude: List<String> = emptyList(), include: List<Stri
           .addMethod(
               MethodSpec.methodBuilder(Util.FACTORY_CREATOR_ACCESS_METHOD_NAME)
                   .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                  .returns(ClassName.get("", Util.CREATOR_TYPE_NAME))
+                  .returns(ClassName.get("", Util.CREATOR_TYPE_NAME).annotated(listOf(Annotations.NONNULL)))
                   .build())
           .addMethods(typeSpecs
               .map { it.name }
@@ -106,7 +106,7 @@ fun TypeSpec.withFactory(exclude: List<String> = emptyList(), include: List<Stri
               .map {
                 MethodSpec.methodBuilder("${it.decapitalize()}${Util.FACTORY_TYPE_NAME}")
                     .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                    .returns(ClassName.get("", "$it.${Util.FACTORY_TYPE_NAME}"))
+                    .returns(ClassName.get("", "$it.${Util.FACTORY_TYPE_NAME}").annotated(listOf(Annotations.NONNULL)))
                     .build()
               })
           .build())
@@ -122,7 +122,7 @@ fun TypeSpec.withFactoryImplementation(exclude: List<String> = emptyList(),
               .methodBuilder(Util.FACTORY_CREATOR_ACCESS_METHOD_NAME)
               .addModifiers(Modifier.PUBLIC)
               .addAnnotation(Override::class.java)
-              .returns(ClassName.get("", Util.CREATOR_TYPE_NAME))
+              .returns(ClassName.get("", Util.CREATOR_TYPE_NAME).annotated(listOf(Annotations.NONNULL)))
               .addStatement("return \$L", Util.CREATOR_TYPE_NAME.toUpperCase())
               .build())
           .addMethods(typeSpecs
@@ -134,7 +134,7 @@ fun TypeSpec.withFactoryImplementation(exclude: List<String> = emptyList(),
                     .methodBuilder("${it.decapitalize()}${Util.FACTORY_TYPE_NAME}")
                     .addModifiers(Modifier.PUBLIC)
                     .addAnnotation(Override::class.java)
-                    .returns(ClassName.get("", "$it.${Util.FACTORY_TYPE_NAME}"))
+                    .returns(ClassName.get("", "$it.${Util.FACTORY_TYPE_NAME}").annotated(listOf(Annotations.NONNULL)))
                     .addStatement("return \$L.\$L", it, Util.FACTORY_TYPE_NAME.toUpperCase())
                     .build()
               })

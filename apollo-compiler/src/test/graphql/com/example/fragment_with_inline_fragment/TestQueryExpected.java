@@ -54,10 +54,10 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       @Nonnull List<? extends Episode> appearsIn();
 
-      Fragments fragments();
+      @Nonnull Fragments fragments();
 
       interface Fragments {
-        HeroDetails heroDetails();
+        @Nullable HeroDetails heroDetails();
 
         final class Mapper implements ResponseFieldMapper<Fragments> {
           final Factory factory;
@@ -70,7 +70,7 @@ public final class TestQuery implements Query<Operation.Variables> {
           }
 
           @Override
-          public Fragments map(ResponseReader reader) throws IOException {
+          public @Nonnull Fragments map(ResponseReader reader) throws IOException {
             HeroDetails heroDetails = null;
             if (conditionalType.equals(HeroDetails.TYPE_CONDITION)) {
               heroDetails = new HeroDetails.Mapper(factory.heroDetailsFactory()).map(reader);
@@ -80,13 +80,13 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         interface Factory {
-          Creator creator();
+          @Nonnull Creator creator();
 
-          HeroDetails.Factory heroDetailsFactory();
+          @Nonnull HeroDetails.Factory heroDetailsFactory();
         }
 
         interface Creator {
-          Fragments create(HeroDetails heroDetails);
+          @Nonnull Fragments create(@Nullable HeroDetails heroDetails);
         }
       }
 
@@ -148,14 +148,14 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
 
-        Fragments.Factory fragmentsFactory();
+        @Nonnull Fragments.Factory fragmentsFactory();
       }
 
       interface Creator {
-        Hero create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
-            Fragments fragments);
+        @Nonnull Hero create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
+            @Nonnull Fragments fragments);
       }
     }
 
@@ -197,13 +197,13 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
 
-      Hero.Factory heroFactory();
+      @Nonnull Hero.Factory heroFactory();
     }
 
     interface Creator {
-      Data create(@Nullable Hero hero);
+      @Nonnull Data create(@Nullable Hero hero);
     }
   }
 }

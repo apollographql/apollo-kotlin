@@ -55,10 +55,10 @@ public interface HeroDetails {
   }
 
   interface Factory {
-    Creator creator();
+    @Nonnull Creator creator();
   }
 
   interface Creator {
-    HeroDetails create(@Nonnull String name);
+    @Nonnull HeroDetails create(@Nonnull String name);
   }
 }

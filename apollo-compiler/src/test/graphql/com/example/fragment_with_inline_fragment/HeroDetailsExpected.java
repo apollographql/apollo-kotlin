@@ -86,11 +86,11 @@ public interface HeroDetails {
         }
 
         interface Factory {
-          Creator creator();
+          @Nonnull Creator creator();
         }
 
         interface Creator {
-          Node create(@Nonnull String name);
+          @Nonnull Node create(@Nonnull String name);
         }
       }
 
@@ -132,13 +132,13 @@ public interface HeroDetails {
       }
 
       interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
 
-        Node.Factory nodeFactory();
+        @Nonnull Node.Factory nodeFactory();
       }
 
       interface Creator {
-        Edge create(@Nullable Node node);
+        @Nonnull Edge create(@Nullable Node node);
       }
     }
 
@@ -187,13 +187,14 @@ public interface HeroDetails {
     }
 
     interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
 
-      Edge.Factory edgeFactory();
+      @Nonnull Edge.Factory edgeFactory();
     }
 
     interface Creator {
-      FriendsConnection create(@Nullable Integer totalCount, @Nullable List<? extends Edge> edges);
+      @Nonnull FriendsConnection create(@Nullable Integer totalCount,
+          @Nullable List<? extends Edge> edges);
     }
   }
 
@@ -249,11 +250,11 @@ public interface HeroDetails {
           }
 
           interface Factory {
-            Creator creator();
+            @Nonnull Creator creator();
           }
 
           interface Creator {
-            Node create(@Nonnull String name);
+            @Nonnull Node create(@Nonnull String name);
           }
         }
 
@@ -295,13 +296,13 @@ public interface HeroDetails {
         }
 
         interface Factory {
-          Creator creator();
+          @Nonnull Creator creator();
 
-          Node.Factory nodeFactory();
+          @Nonnull Node.Factory nodeFactory();
         }
 
         interface Creator {
-          Edge create(@Nullable Node node);
+          @Nonnull Edge create(@Nullable Node node);
         }
       }
 
@@ -350,13 +351,13 @@ public interface HeroDetails {
       }
 
       interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
 
-        Edge.Factory edgeFactory();
+        @Nonnull Edge.Factory edgeFactory();
       }
 
       interface Creator {
-        FriendsConnection$ create(@Nullable Integer totalCount,
+        @Nonnull FriendsConnection$ create(@Nullable Integer totalCount,
             @Nullable List<? extends Edge> edges);
       }
     }
@@ -413,13 +414,13 @@ public interface HeroDetails {
     }
 
     interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
 
-      FriendsConnection$.Factory friendsConnection$Factory();
+      @Nonnull FriendsConnection$.Factory friendsConnection$Factory();
     }
 
     interface Creator {
-      AsDroid create(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
+      @Nonnull AsDroid create(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
           @Nullable String primaryFunction);
     }
   }
@@ -485,15 +486,15 @@ public interface HeroDetails {
   }
 
   interface Factory {
-    Creator creator();
+    @Nonnull Creator creator();
 
-    FriendsConnection.Factory friendsConnectionFactory();
+    @Nonnull FriendsConnection.Factory friendsConnectionFactory();
 
-    AsDroid.Factory asDroidFactory();
+    @Nonnull AsDroid.Factory asDroidFactory();
   }
 
   interface Creator {
-    HeroDetails create(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
+    @Nonnull HeroDetails create(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
         @Nullable AsDroid asDroid);
   }
 }

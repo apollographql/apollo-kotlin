@@ -107,11 +107,11 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         interface Factory {
-          Creator creator();
+          @Nonnull Creator creator();
         }
 
         interface Creator {
-          Friend create(@Nonnull String name);
+          @Nonnull Friend create(@Nonnull String name);
         }
       }
 
@@ -130,10 +130,10 @@ public final class TestQuery implements Query<Operation.Variables> {
           @Nullable List<? extends Friend$$> friends();
 
           interface Friend$$ {
-            Fragments fragments();
+            @Nonnull Fragments fragments();
 
             interface Fragments {
-              HeroDetails heroDetails();
+              @Nullable HeroDetails heroDetails();
 
               final class Mapper implements ResponseFieldMapper<Fragments> {
                 final Factory factory;
@@ -146,7 +146,7 @@ public final class TestQuery implements Query<Operation.Variables> {
                 }
 
                 @Override
-                public Fragments map(ResponseReader reader) throws IOException {
+                public @Nonnull Fragments map(ResponseReader reader) throws IOException {
                   HeroDetails heroDetails = null;
                   if (conditionalType.equals(HeroDetails.TYPE_CONDITION)) {
                     heroDetails = new HeroDetails.Mapper(factory.heroDetailsFactory()).map(reader);
@@ -156,13 +156,13 @@ public final class TestQuery implements Query<Operation.Variables> {
               }
 
               interface Factory {
-                Creator creator();
+                @Nonnull Creator creator();
 
-                HeroDetails.Factory heroDetailsFactory();
+                @Nonnull HeroDetails.Factory heroDetailsFactory();
               }
 
               interface Creator {
-                Fragments create(HeroDetails heroDetails);
+                @Nonnull Fragments create(@Nullable HeroDetails heroDetails);
               }
             }
 
@@ -206,13 +206,13 @@ public final class TestQuery implements Query<Operation.Variables> {
             }
 
             interface Factory {
-              Creator creator();
+              @Nonnull Creator creator();
 
-              Fragments.Factory fragmentsFactory();
+              @Nonnull Fragments.Factory fragmentsFactory();
             }
 
             interface Creator {
-              Friend$$ create(Fragments fragments);
+              @Nonnull Friend$$ create(@Nonnull Fragments fragments);
             }
           }
 
@@ -272,13 +272,14 @@ public final class TestQuery implements Query<Operation.Variables> {
           }
 
           interface Factory {
-            Creator creator();
+            @Nonnull Creator creator();
 
-            Friend$$.Factory friend$$Factory();
+            @Nonnull Friend$$.Factory friend$$Factory();
           }
 
           interface Creator {
-            Friend$ create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
+            @Nonnull Friend$ create(@Nonnull String name,
+                @Nonnull List<? extends Episode> appearsIn,
                 @Nullable List<? extends Friend$$> friends);
           }
         }
@@ -335,13 +336,13 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         interface Factory {
-          Creator creator();
+          @Nonnull Creator creator();
 
-          Friend$.Factory friend$Factory();
+          @Nonnull Friend$.Factory friend$Factory();
         }
 
         interface Creator {
-          AsHuman create(@Nonnull String name, @Nullable List<? extends Friend$> friends,
+          @Nonnull AsHuman create(@Nonnull String name, @Nullable List<? extends Friend$> friends,
               @Nullable Double height);
         }
       }
@@ -407,15 +408,15 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
 
-        Friend.Factory friendFactory();
+        @Nonnull Friend.Factory friendFactory();
 
-        AsHuman.Factory asHumanFactory();
+        @Nonnull AsHuman.Factory asHumanFactory();
       }
 
       interface Creator {
-        Hero create(@Nonnull String name, @Nullable List<? extends Friend> friends,
+        @Nonnull Hero create(@Nonnull String name, @Nullable List<? extends Friend> friends,
             @Nullable AsHuman asHuman);
       }
     }
@@ -458,13 +459,13 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
 
-      Hero.Factory heroFactory();
+      @Nonnull Hero.Factory heroFactory();
     }
 
     interface Creator {
-      Data create(@Nullable Hero hero);
+      @Nonnull Data create(@Nullable Hero hero);
     }
   }
 }

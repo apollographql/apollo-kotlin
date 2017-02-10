@@ -17,25 +17,25 @@ import javax.annotation.Nullable;
 public class HeroDetails {
   public static final Creator CREATOR = new Creator() {
     @Override
-    public HeroDetails create(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
-        @Nullable AsDroid asDroid) {
+    public @Nonnull HeroDetails create(@Nonnull String name,
+        @Nonnull FriendsConnection friendsConnection, @Nullable AsDroid asDroid) {
       return new HeroDetails(name, friendsConnection, asDroid);
     }
   };
 
   public static final Factory FACTORY = new Factory() {
     @Override
-    public Creator creator() {
+    public @Nonnull Creator creator() {
       return CREATOR;
     }
 
     @Override
-    public FriendsConnection.Factory friendsConnectionFactory() {
+    public @Nonnull FriendsConnection.Factory friendsConnectionFactory() {
       return FriendsConnection.FACTORY;
     }
 
     @Override
-    public AsDroid.Factory asDroidFactory() {
+    public @Nonnull AsDroid.Factory asDroidFactory() {
       return AsDroid.FACTORY;
     }
   };
@@ -88,7 +88,7 @@ public class HeroDetails {
   public static class FriendsConnection {
     public static final Creator CREATOR = new Creator() {
       @Override
-      public FriendsConnection create(@Nullable Integer totalCount,
+      public @Nonnull FriendsConnection create(@Nullable Integer totalCount,
           @Nullable List<? extends Edge> edges) {
         return new FriendsConnection(totalCount, edges);
       }
@@ -96,12 +96,12 @@ public class HeroDetails {
 
     public static final Factory FACTORY = new Factory() {
       @Override
-      public Creator creator() {
+      public @Nonnull Creator creator() {
         return CREATOR;
       }
 
       @Override
-      public Edge.Factory edgeFactory() {
+      public @Nonnull Edge.Factory edgeFactory() {
         return Edge.FACTORY;
       }
     };
@@ -126,19 +126,19 @@ public class HeroDetails {
     public static class Edge {
       public static final Creator CREATOR = new Creator() {
         @Override
-        public Edge create(@Nullable Node node) {
+        public @Nonnull Edge create(@Nullable Node node) {
           return new Edge(node);
         }
       };
 
       public static final Factory FACTORY = new Factory() {
         @Override
-        public Creator creator() {
+        public @Nonnull Creator creator() {
           return CREATOR;
         }
 
         @Override
-        public Node.Factory nodeFactory() {
+        public @Nonnull Node.Factory nodeFactory() {
           return Node.FACTORY;
         }
       };
@@ -156,14 +156,14 @@ public class HeroDetails {
       public static class Node {
         public static final Creator CREATOR = new Creator() {
           @Override
-          public Node create(@Nonnull String name) {
+          public @Nonnull Node create(@Nonnull String name) {
             return new Node(name);
           }
         };
 
         public static final Factory FACTORY = new Factory() {
           @Override
-          public Creator creator() {
+          public @Nonnull Creator creator() {
             return CREATOR;
           }
         };
@@ -212,11 +212,11 @@ public class HeroDetails {
         }
 
         public interface Factory {
-          Creator creator();
+          @Nonnull Creator creator();
         }
 
         public interface Creator {
-          Node create(@Nonnull String name);
+          @Nonnull Node create(@Nonnull String name);
         }
       }
 
@@ -258,13 +258,13 @@ public class HeroDetails {
       }
 
       public interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
 
-        Node.Factory nodeFactory();
+        @Nonnull Node.Factory nodeFactory();
       }
 
       public interface Creator {
-        Edge create(@Nullable Node node);
+        @Nonnull Edge create(@Nullable Node node);
       }
     }
 
@@ -313,33 +313,34 @@ public class HeroDetails {
     }
 
     public interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
 
-      Edge.Factory edgeFactory();
+      @Nonnull Edge.Factory edgeFactory();
     }
 
     public interface Creator {
-      FriendsConnection create(@Nullable Integer totalCount, @Nullable List<? extends Edge> edges);
+      @Nonnull FriendsConnection create(@Nullable Integer totalCount,
+          @Nullable List<? extends Edge> edges);
     }
   }
 
   public static class AsDroid {
     public static final Creator CREATOR = new Creator() {
       @Override
-      public AsDroid create(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
-          @Nullable String primaryFunction) {
+      public @Nonnull AsDroid create(@Nonnull String name,
+          @Nonnull FriendsConnection$ friendsConnection, @Nullable String primaryFunction) {
         return new AsDroid(name, friendsConnection, primaryFunction);
       }
     };
 
     public static final Factory FACTORY = new Factory() {
       @Override
-      public Creator creator() {
+      public @Nonnull Creator creator() {
         return CREATOR;
       }
 
       @Override
-      public FriendsConnection$.Factory friendsConnection$Factory() {
+      public @Nonnull FriendsConnection$.Factory friendsConnection$Factory() {
         return FriendsConnection$.FACTORY;
       }
     };
@@ -372,7 +373,7 @@ public class HeroDetails {
     public static class FriendsConnection$ {
       public static final Creator CREATOR = new Creator() {
         @Override
-        public FriendsConnection$ create(@Nullable Integer totalCount,
+        public @Nonnull FriendsConnection$ create(@Nullable Integer totalCount,
             @Nullable List<? extends Edge> edges) {
           return new FriendsConnection$(totalCount, edges);
         }
@@ -380,12 +381,12 @@ public class HeroDetails {
 
       public static final Factory FACTORY = new Factory() {
         @Override
-        public Creator creator() {
+        public @Nonnull Creator creator() {
           return CREATOR;
         }
 
         @Override
-        public Edge.Factory edgeFactory() {
+        public @Nonnull Edge.Factory edgeFactory() {
           return Edge.FACTORY;
         }
       };
@@ -411,19 +412,19 @@ public class HeroDetails {
       public static class Edge {
         public static final Creator CREATOR = new Creator() {
           @Override
-          public Edge create(@Nullable Node node) {
+          public @Nonnull Edge create(@Nullable Node node) {
             return new Edge(node);
           }
         };
 
         public static final Factory FACTORY = new Factory() {
           @Override
-          public Creator creator() {
+          public @Nonnull Creator creator() {
             return CREATOR;
           }
 
           @Override
-          public Node.Factory nodeFactory() {
+          public @Nonnull Node.Factory nodeFactory() {
             return Node.FACTORY;
           }
         };
@@ -441,14 +442,14 @@ public class HeroDetails {
         public static class Node {
           public static final Creator CREATOR = new Creator() {
             @Override
-            public Node create(@Nonnull String name) {
+            public @Nonnull Node create(@Nonnull String name) {
               return new Node(name);
             }
           };
 
           public static final Factory FACTORY = new Factory() {
             @Override
-            public Creator creator() {
+            public @Nonnull Creator creator() {
               return CREATOR;
             }
           };
@@ -497,11 +498,11 @@ public class HeroDetails {
           }
 
           public interface Factory {
-            Creator creator();
+            @Nonnull Creator creator();
           }
 
           public interface Creator {
-            Node create(@Nonnull String name);
+            @Nonnull Node create(@Nonnull String name);
           }
         }
 
@@ -543,13 +544,13 @@ public class HeroDetails {
         }
 
         public interface Factory {
-          Creator creator();
+          @Nonnull Creator creator();
 
-          Node.Factory nodeFactory();
+          @Nonnull Node.Factory nodeFactory();
         }
 
         public interface Creator {
-          Edge create(@Nullable Node node);
+          @Nonnull Edge create(@Nullable Node node);
         }
       }
 
@@ -598,13 +599,13 @@ public class HeroDetails {
       }
 
       public interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
 
-        Edge.Factory edgeFactory();
+        @Nonnull Edge.Factory edgeFactory();
       }
 
       public interface Creator {
-        FriendsConnection$ create(@Nullable Integer totalCount,
+        @Nonnull FriendsConnection$ create(@Nullable Integer totalCount,
             @Nullable List<? extends Edge> edges);
       }
     }
@@ -661,13 +662,13 @@ public class HeroDetails {
     }
 
     public interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
 
-      FriendsConnection$.Factory friendsConnection$Factory();
+      @Nonnull FriendsConnection$.Factory friendsConnection$Factory();
     }
 
     public interface Creator {
-      AsDroid create(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
+      @Nonnull AsDroid create(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
           @Nullable String primaryFunction);
     }
   }
@@ -733,15 +734,15 @@ public class HeroDetails {
   }
 
   public interface Factory {
-    Creator creator();
+    @Nonnull Creator creator();
 
-    FriendsConnection.Factory friendsConnectionFactory();
+    @Nonnull FriendsConnection.Factory friendsConnectionFactory();
 
-    AsDroid.Factory asDroidFactory();
+    @Nonnull AsDroid.Factory asDroidFactory();
   }
 
   public interface Creator {
-    HeroDetails create(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
+    @Nonnull HeroDetails create(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
         @Nullable AsDroid asDroid);
   }
 }

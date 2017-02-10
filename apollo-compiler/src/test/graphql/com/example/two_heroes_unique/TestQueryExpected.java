@@ -87,11 +87,11 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
       }
 
       interface Creator {
-        R2 create(@Nonnull String name);
+        @Nonnull R2 create(@Nonnull String name);
       }
     }
 
@@ -141,11 +141,11 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
       }
 
       interface Creator {
-        Luke create(@Nonnull String id, @Nonnull String name);
+        @Nonnull Luke create(@Nonnull String id, @Nonnull String name);
       }
     }
 
@@ -198,15 +198,15 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
 
-      R2.Factory r2Factory();
+      @Nonnull R2.Factory r2Factory();
 
-      Luke.Factory lukeFactory();
+      @Nonnull Luke.Factory lukeFactory();
     }
 
     interface Creator {
-      Data create(@Nullable R2 r2, @Nullable Luke luke);
+      @Nonnull Data create(@Nullable R2 r2, @Nullable Luke luke);
     }
   }
 }

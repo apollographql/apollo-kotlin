@@ -99,11 +99,11 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
       }
 
       interface Creator {
-        GraphQlListOfObject create(int someField);
+        @Nonnull GraphQlListOfObject create(int someField);
       }
     }
 
@@ -219,13 +219,13 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
 
-      GraphQlListOfObject.Factory graphQlListOfObjectFactory();
+      @Nonnull GraphQlListOfObject.Factory graphQlListOfObjectFactory();
     }
 
     interface Creator {
-      Data create(@Nullable String graphQlString, @Nullable String graphQlIdNullable,
+      @Nonnull Data create(@Nullable String graphQlString, @Nullable String graphQlIdNullable,
           @Nonnull String graphQlIdNonNullable, @Nullable Integer graphQlIntNullable,
           int graphQlIntNonNullable, @Nullable Double graphQlFloatNullable,
           double graphQlFloatNonNullable, @Nullable Boolean graphQlBooleanNullable,
