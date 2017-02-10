@@ -18,8 +18,7 @@ class JavaTypeResolver(
       normalizedTypeName == "Int" -> if (isOptional) TypeName.INT.box() else TypeName.INT
       normalizedTypeName == "Boolean" -> if (isOptional) TypeName.BOOLEAN.box() else TypeName.BOOLEAN
       normalizedTypeName == "Float" -> if (isOptional) TypeName.DOUBLE.box() else TypeName.DOUBLE
-      customScalarType != null -> ClassName.get(customScalarType.substringBeforeLast("."),
-          customScalarType.substringAfterLast("."))
+      customScalarType != null -> customScalarType.toJavaType()
       else -> ClassName.get(if (packageName.isEmpty()) "" else packageName, normalizedTypeName)
     }
 

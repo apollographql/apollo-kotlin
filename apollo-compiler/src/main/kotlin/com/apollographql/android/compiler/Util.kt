@@ -166,6 +166,9 @@ fun TypeSpec.withValueInitConstructor(): TypeSpec {
       .build()
 }
 
+fun String.toJavaType(): ClassName =
+    ClassName.get(substringBeforeLast(delimiter = ".", missingDelimiterValue = ""), substringAfterLast("."))
+
 object Util {
   const val CREATOR_TYPE_NAME: String = "Creator"
   const val CREATOR_CREATE_METHOD_NAME: String = "create"

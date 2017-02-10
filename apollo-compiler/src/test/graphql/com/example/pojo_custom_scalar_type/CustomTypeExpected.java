@@ -2,7 +2,6 @@ package com.example.pojo_custom_scalar_type.type;
 
 import com.apollographql.android.api.graphql.ScalarType;
 import java.lang.Class;
-import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Date;
