@@ -152,16 +152,6 @@ public final class TestQuery implements Query<Operation.Variables> {
           return this.heroDetails;
         }
 
-        public interface Factory {
-          Creator creator();
-
-          HeroDetails.Factory heroDetailsFactory();
-        }
-
-        public interface Creator {
-          Fragments create(HeroDetails heroDetails);
-        }
-
         public static final class Mapper implements ResponseFieldMapper<Fragments> {
           final Factory factory;
 
@@ -181,17 +171,16 @@ public final class TestQuery implements Query<Operation.Variables> {
             return factory.creator().create(heroDetails);
           }
         }
-      }
 
-      public interface Factory {
-        Creator creator();
+        public interface Factory {
+          Creator creator();
 
-        Fragments.Factory fragmentsFactory();
-      }
+          HeroDetails.Factory heroDetailsFactory();
+        }
 
-      public interface Creator {
-        Hero create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
-            Fragments fragments);
+        public interface Creator {
+          Fragments create(HeroDetails heroDetails);
+        }
       }
 
       public static final class Mapper implements ResponseFieldMapper<Hero> {
@@ -250,16 +239,17 @@ public final class TestQuery implements Query<Operation.Variables> {
           Fragments fragments;
         }
       }
-    }
 
-    public interface Factory {
-      Creator creator();
+      public interface Factory {
+        Creator creator();
 
-      Hero.Factory heroFactory();
-    }
+        Fragments.Factory fragmentsFactory();
+      }
 
-    public interface Creator {
-      Data create(@Nullable Hero hero);
+      public interface Creator {
+        Hero create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
+            Fragments fragments);
+      }
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
@@ -297,6 +287,16 @@ public final class TestQuery implements Query<Operation.Variables> {
       static final class __ContentValues {
         Hero hero;
       }
+    }
+
+    public interface Factory {
+      Creator creator();
+
+      Hero.Factory heroFactory();
+    }
+
+    public interface Creator {
+      Data create(@Nullable Hero hero);
     }
   }
 }

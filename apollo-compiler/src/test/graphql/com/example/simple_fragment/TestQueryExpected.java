@@ -1,11 +1,17 @@
 package com.example.simple_fragment;
 
+import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
+import com.apollographql.android.api.graphql.ResponseFieldMapper;
+import com.apollographql.android.api.graphql.ResponseReader;
 import com.example.simple_fragment.fragment.HeroDetails;
+import java.io.IOException;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import javax.annotation.Generated;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
@@ -45,6 +51,26 @@ public final class TestQuery implements Query<Operation.Variables> {
       interface Fragments {
         HeroDetails heroDetails();
 
+        final class Mapper implements ResponseFieldMapper<Fragments> {
+          final Factory factory;
+
+          String conditionalType;
+
+          public Mapper(@Nonnull Factory factory, @Nonnull String conditionalType) {
+            this.factory = factory;
+            this.conditionalType = conditionalType;
+          }
+
+          @Override
+          public Fragments map(ResponseReader reader) throws IOException {
+            HeroDetails heroDetails = null;
+            if (conditionalType.equals(HeroDetails.TYPE_CONDITION)) {
+              heroDetails = new HeroDetails.Mapper(factory.heroDetailsFactory()).map(reader);
+            }
+            return factory.creator().create(heroDetails);
+          }
+        }
+
         interface Factory {
           Creator creator();
 
@@ -56,6 +82,45 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
       }
 
+      final class Mapper implements ResponseFieldMapper<Hero> {
+        final Factory factory;
+
+        final Field[] fields = {
+          Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
+            @Override
+            public Fragments read(String conditionalType, ResponseReader reader) throws
+                IOException {
+              return new Fragments.Mapper(factory.fragmentsFactory(), conditionalType).map(reader);
+            }
+          })
+        };
+
+        public Mapper(@Nonnull Factory factory) {
+          this.factory = factory;
+        }
+
+        @Override
+        public Hero map(ResponseReader reader) throws IOException {
+          final __ContentValues contentValues = new __ContentValues();
+          reader.toBufferedReader().read(new ResponseReader.ValueHandler() {
+            @Override
+            public void handle(final int fieldIndex, final Object value) throws IOException {
+              switch (fieldIndex) {
+                case 0: {
+                  contentValues.fragments = (Fragments) value;
+                  break;
+                }
+              }
+            }
+          }, fields);
+          return factory.creator().create(contentValues.fragments);
+        }
+
+        static final class __ContentValues {
+          Fragments fragments;
+        }
+      }
+
       interface Factory {
         Creator creator();
 
@@ -64,6 +129,43 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       interface Creator {
         Hero create(Fragments fragments);
+      }
+    }
+
+    final class Mapper implements ResponseFieldMapper<Data> {
+      final Factory factory;
+
+      final Field[] fields = {
+        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
+          @Override public Hero read(final ResponseReader reader) throws IOException {
+            return new Hero.Mapper(factory.heroFactory()).map(reader);
+          }
+        })
+      };
+
+      public Mapper(@Nonnull Factory factory) {
+        this.factory = factory;
+      }
+
+      @Override
+      public Data map(ResponseReader reader) throws IOException {
+        final __ContentValues contentValues = new __ContentValues();
+        reader.read(new ResponseReader.ValueHandler() {
+          @Override
+          public void handle(final int fieldIndex, final Object value) throws IOException {
+            switch (fieldIndex) {
+              case 0: {
+                contentValues.hero = (Hero) value;
+                break;
+              }
+            }
+          }
+        }, fields);
+        return factory.creator().create(contentValues.hero);
+      }
+
+      static final class __ContentValues {
+        Hero hero;
       }
     }
 

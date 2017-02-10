@@ -90,7 +90,7 @@ fun TypeSpec.withCreatorImplementation(): TypeSpec {
       .build()
 }
 
-fun TypeSpec.withFactory(plusFactories: List<String> = emptyList()): TypeSpec {
+fun TypeSpec.withFactory(exclude: List<String> = emptyList(), include: List<String> = emptyList()): TypeSpec {
   return toBuilder()
       .addType(TypeSpec.interfaceBuilder(Util.FACTORY_TYPE_NAME)
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -101,8 +101,8 @@ fun TypeSpec.withFactory(plusFactories: List<String> = emptyList()): TypeSpec {
                   .build())
           .addMethods(typeSpecs
               .map { it.name }
-              .filter { it != Util.CREATOR_TYPE_NAME }
-              .plus(plusFactories.map(String::capitalize))
+              .filter { it != Util.CREATOR_TYPE_NAME && !exclude.contains(it) }
+              .plus(include.map(String::capitalize))
               .map {
                 MethodSpec.methodBuilder("${it.decapitalize()}${Util.FACTORY_TYPE_NAME}")
                     .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
@@ -113,7 +113,8 @@ fun TypeSpec.withFactory(plusFactories: List<String> = emptyList()): TypeSpec {
       .build()
 }
 
-fun TypeSpec.withFactoryImplementation(plusFactories: List<String> = emptyList()): TypeSpec {
+fun TypeSpec.withFactoryImplementation(exclude: List<String> = emptyList(),
+    include: List<String> = emptyList()): TypeSpec {
   fun factoryInitializer(typeSpecs: List<TypeSpec>) =
       TypeSpec.anonymousClassBuilder("")
           .superclass(Util.FACTORY_INTERFACE_TYPE)
@@ -126,7 +127,8 @@ fun TypeSpec.withFactoryImplementation(plusFactories: List<String> = emptyList()
               .build())
           .addMethods(typeSpecs
               .map { it.name }
-              .plus(plusFactories.map(String::capitalize))
+              .filter { it != Util.CREATOR_TYPE_NAME && !exclude.contains(it) }
+              .plus(include.map(String::capitalize))
               .map {
                 MethodSpec
                     .methodBuilder("${it.decapitalize()}${Util.FACTORY_TYPE_NAME}")

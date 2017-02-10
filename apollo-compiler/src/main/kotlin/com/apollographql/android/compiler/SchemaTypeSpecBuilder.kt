@@ -30,8 +30,9 @@ class SchemaTypeSpecBuilder(
         .addInnerTypes(fields)
         .addInlineFragments(inlineFragments)
         .addInnerFragmentTypes(fragmentSpreads)
+        .addType(mapper)
         .build()
-        .withFactory()
+        .withFactory(exclude = listOf(mapper.name))
         .withCreator()
         .let {
           if (context.abstractType)
@@ -40,10 +41,7 @@ class SchemaTypeSpecBuilder(
             it
                 .withValueInitConstructor()
                 .withCreatorImplementation()
-                .withFactoryImplementation()
-                .toBuilder()
-                .addType(mapper)
-                .build()
+                .withFactoryImplementation(exclude = listOf(mapper.name))
         }
   }
 
@@ -147,8 +145,9 @@ class SchemaTypeSpecBuilder(
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
         .addFragmentFields()
         .addFragmentAccessorMethods()
+        .addType(mapper)
         .build()
-        .withFactory(fragments)
+        .withFactory(exclude = listOf(mapper.name), include = fragments)
         .withCreator()
         .let {
           if (context.abstractType)
@@ -157,10 +156,7 @@ class SchemaTypeSpecBuilder(
             it
                 .withValueInitConstructor()
                 .withCreatorImplementation()
-                .withFactoryImplementation(fragments)
-                .toBuilder()
-                .addType(mapper)
-                .build()
+                .withFactoryImplementation(exclude = listOf(mapper.name), include = fragments)
         }
   }
 

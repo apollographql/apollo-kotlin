@@ -178,14 +178,6 @@ public class HeroDetails {
           return this.name;
         }
 
-        public interface Factory {
-          Creator creator();
-        }
-
-        public interface Creator {
-          Node create(@Nonnull String name);
-        }
-
         public static final class Mapper implements ResponseFieldMapper<Node> {
           final Factory factory;
 
@@ -218,16 +210,14 @@ public class HeroDetails {
             String name;
           }
         }
-      }
 
-      public interface Factory {
-        Creator creator();
+        public interface Factory {
+          Creator creator();
+        }
 
-        Node.Factory nodeFactory();
-      }
-
-      public interface Creator {
-        Edge create(@Nullable Node node);
+        public interface Creator {
+          Node create(@Nonnull String name);
+        }
       }
 
       public static final class Mapper implements ResponseFieldMapper<Edge> {
@@ -266,16 +256,16 @@ public class HeroDetails {
           Node node;
         }
       }
-    }
 
-    public interface Factory {
-      Creator creator();
+      public interface Factory {
+        Creator creator();
 
-      Edge.Factory edgeFactory();
-    }
+        Node.Factory nodeFactory();
+      }
 
-    public interface Creator {
-      FriendsConnection create(@Nullable Integer totalCount, @Nullable List<? extends Edge> edges);
+      public interface Creator {
+        Edge create(@Nullable Node node);
+      }
     }
 
     public static final class Mapper implements ResponseFieldMapper<FriendsConnection> {
@@ -320,6 +310,16 @@ public class HeroDetails {
 
         List<? extends Edge> edges;
       }
+    }
+
+    public interface Factory {
+      Creator creator();
+
+      Edge.Factory edgeFactory();
+    }
+
+    public interface Creator {
+      FriendsConnection create(@Nullable Integer totalCount, @Nullable List<? extends Edge> edges);
     }
   }
 
@@ -463,14 +463,6 @@ public class HeroDetails {
             return this.name;
           }
 
-          public interface Factory {
-            Creator creator();
-          }
-
-          public interface Creator {
-            Node create(@Nonnull String name);
-          }
-
           public static final class Mapper implements ResponseFieldMapper<Node> {
             final Factory factory;
 
@@ -503,16 +495,14 @@ public class HeroDetails {
               String name;
             }
           }
-        }
 
-        public interface Factory {
-          Creator creator();
+          public interface Factory {
+            Creator creator();
+          }
 
-          Node.Factory nodeFactory();
-        }
-
-        public interface Creator {
-          Edge create(@Nullable Node node);
+          public interface Creator {
+            Node create(@Nonnull String name);
+          }
         }
 
         public static final class Mapper implements ResponseFieldMapper<Edge> {
@@ -551,17 +541,16 @@ public class HeroDetails {
             Node node;
           }
         }
-      }
 
-      public interface Factory {
-        Creator creator();
+        public interface Factory {
+          Creator creator();
 
-        Edge.Factory edgeFactory();
-      }
+          Node.Factory nodeFactory();
+        }
 
-      public interface Creator {
-        FriendsConnection$ create(@Nullable Integer totalCount,
-            @Nullable List<? extends Edge> edges);
+        public interface Creator {
+          Edge create(@Nullable Node node);
+        }
       }
 
       public static final class Mapper implements ResponseFieldMapper<FriendsConnection$> {
@@ -607,17 +596,17 @@ public class HeroDetails {
           List<? extends Edge> edges;
         }
       }
-    }
 
-    public interface Factory {
-      Creator creator();
+      public interface Factory {
+        Creator creator();
 
-      FriendsConnection$.Factory friendsConnection$Factory();
-    }
+        Edge.Factory edgeFactory();
+      }
 
-    public interface Creator {
-      AsDroid create(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
-          @Nullable String primaryFunction);
+      public interface Creator {
+        FriendsConnection$ create(@Nullable Integer totalCount,
+            @Nullable List<? extends Edge> edges);
+      }
     }
 
     public static final class Mapper implements ResponseFieldMapper<AsDroid> {
@@ -670,19 +659,17 @@ public class HeroDetails {
         String primaryFunction;
       }
     }
-  }
 
-  public interface Factory {
-    Creator creator();
+    public interface Factory {
+      Creator creator();
 
-    FriendsConnection.Factory friendsConnectionFactory();
+      FriendsConnection$.Factory friendsConnection$Factory();
+    }
 
-    AsDroid.Factory asDroidFactory();
-  }
-
-  public interface Creator {
-    HeroDetails create(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
-        @Nullable AsDroid asDroid);
+    public interface Creator {
+      AsDroid create(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
+          @Nullable String primaryFunction);
+    }
   }
 
   public static final class Mapper implements ResponseFieldMapper<HeroDetails> {
@@ -743,5 +730,18 @@ public class HeroDetails {
 
       AsDroid asDroid;
     }
+  }
+
+  public interface Factory {
+    Creator creator();
+
+    FriendsConnection.Factory friendsConnectionFactory();
+
+    AsDroid.Factory asDroidFactory();
+  }
+
+  public interface Creator {
+    HeroDetails create(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
+        @Nullable AsDroid asDroid);
   }
 }
