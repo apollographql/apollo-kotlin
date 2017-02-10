@@ -92,9 +92,9 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
   }
 
   public interface Data extends Operation.Data {
-    @Nullable CreateReview createReview();
+    @Nullable TestQuery testQuery();
 
-    interface CreateReview {
+    interface TestQuery {
       int stars();
 
       @Nullable String commentary();
@@ -144,7 +144,7 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
       }
 
       interface Creator {
-        CreateReview create(int stars, @Nullable String commentary);
+        TestQuery create(int stars, @Nullable String commentary);
       }
     }
 
@@ -188,11 +188,11 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
     interface Factory {
       Creator creator();
 
-      CreateReview.Factory createReviewFactory();
+      TestQuery.Factory testQueryFactory();
     }
 
     interface Creator {
-      Data create(@Nullable CreateReview createReview);
+      Data create(@Nullable TestQuery testQuery);
     }
   }
 }
