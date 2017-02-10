@@ -4,7 +4,6 @@ import com.apollographql.android.compiler.ir.CodeGenerationContext
 import com.apollographql.android.compiler.ir.Field
 import com.apollographql.android.compiler.ir.InlineFragment
 import com.squareup.javapoet.*
-import javax.annotation.Nonnull
 import javax.lang.model.element.Modifier
 
 class SchemaTypeSpecBuilder(
