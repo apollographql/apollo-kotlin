@@ -16,5 +16,33 @@ public enum CustomType implements ScalarType {
     @Override public Class javaType() {
       return Date.class;
     }
+  },
+  UNSUPPORTEDCUSTOMSCALARTYPENUMBER {
+    public String typeName() {
+      return "UnsupportedCustomScalarTypeNumber";
+    }
+
+    @Override public Class javaType() {
+      return Object.class;
+    }
+  },
+  UNSUPPORTEDCUSTOMSCALARTYPEBOOL {
+    public String typeName() {
+      return "UnsupportedCustomScalarTypeBool";
+    }
+
+    @Override public Class javaType() {
+      return Object.class;
+    }
+  },
+  UNSUPPORTEDCUSTOMSCALARTYPESTRING {
+    public String typeName() {
+      return "UnsupportedCustomScalarTypeString";
+    }
+
+    @Override public Class javaType() {
+      return Object.class;
+    }
   }
+
 }

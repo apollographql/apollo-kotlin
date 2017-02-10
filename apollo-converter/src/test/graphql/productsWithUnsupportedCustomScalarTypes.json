@@ -1,0 +1,18 @@
+{
+  "data": {
+    "shop": {
+      "products": {
+        "edges": [
+          {
+            "node": {
+              "title": "Breast Cancer Awareness",
+              "unsupportedCustomScalarTypeNumber": 1,
+              "unsupportedCustomScalarTypeBool": true,
+              "unsupportedCustomScalarTypeString": "something"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -44,6 +45,10 @@ public class IntegrationTest {
 
     @POST("graphql")
     Call<Response<ProductsWithDate.Data>> productsWithDate(@Body ProductsWithDate query);
+
+    @POST("graphql")
+    Call<Response<ProductsWithUnsupportedCustomScalarTypes.Data>> productsWithUnsupportedCustomScalarTypes(
+        @Body ProductsWithUnsupportedCustomScalarTypes query);
   }
 
   @Rule public final MockWebServer server = new MockWebServer();
@@ -69,6 +74,8 @@ public class IntegrationTest {
             .withResponseFieldMapper(AllPlanets.Data.class, new AllPlanets.Data.Mapper(AllPlanets.Data.FACTORY))
             .withResponseFieldMapper(ProductsWithDate.Data.class, new ProductsWithDate.Data.Mapper(ProductsWithDate
                 .Data.FACTORY))
+            .withResponseFieldMapper(ProductsWithUnsupportedCustomScalarTypes.Data.class,
+                new ProductsWithUnsupportedCustomScalarTypes.Data.Mapper(ProductsWithUnsupportedCustomScalarTypes.Data.FACTORY))
             .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
             .build())
         .build();
@@ -180,6 +187,25 @@ public class IntegrationTest {
         "2013-11-18T19:35:35Z", "2013-11-18T19:35:40Z", "2013-11-18T19:35:54Z", "2013-11-18T19:35:56Z",
         "2013-11-18T19:36:33Z", "2013-11-18T19:36:45Z", "2013-11-18T19:37:08Z", "2013-11-18T19:37:24Z",
         "2013-11-18T19:37:26Z", "2013-11-18T19:37:28Z"));
+  }
+
+  @Test public void productsWithUnsupportedCustomScalarTypes() throws Exception {
+    server.enqueue(mockResponse("src/test/graphql/productsWithUnsupportedCustomScalarTypes.json"));
+
+    Call<Response<ProductsWithUnsupportedCustomScalarTypes.Data>> call = service
+        .productsWithUnsupportedCustomScalarTypes(new ProductsWithUnsupportedCustomScalarTypes());
+    Response<ProductsWithUnsupportedCustomScalarTypes.Data> body = call.execute().body();
+    assertThat(body.isSuccessful()).isTrue();
+
+    ProductsWithUnsupportedCustomScalarTypes.Data data = body.data();
+    assertThat(data.shop().products().edges().size()).isEqualTo(1);
+    assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeNumber()).isInstanceOf(BigDecimal.class);
+    assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeNumber()).isEqualTo
+        (BigDecimal.valueOf(1));
+    assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeBool()).isInstanceOf(Boolean.class);
+    assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeBool()).isEqualTo(Boolean.TRUE);
+    assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeString()).isInstanceOf(String.class);
+    assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeString()).isEqualTo("something");
   }
 
   private static MockResponse mockResponse(String fileName) throws IOException {
