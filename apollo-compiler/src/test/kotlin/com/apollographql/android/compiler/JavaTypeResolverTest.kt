@@ -71,11 +71,13 @@ class JavaTypeResolverTest {
 
   @Test
   fun resolveCustomScalarType() {
-    val customScalarTypeMap = mapOf("Date" to "java.util.Date")
+    val customScalarTypeMap = mapOf("Date" to "java.util.Date", "UnsupportedType" to "Object")
     Assert.assertEquals(ClassName.get(Date::class.java).annotated(Annotations.NONNULL),
         JavaTypeResolver(customScalarTypeMap, packageName).resolve("Date", false))
     Assert.assertEquals(ClassName.get(Date::class.java).annotated(Annotations.NULLABLE),
         JavaTypeResolver(customScalarTypeMap, packageName).resolve("Date", true))
+    Assert.assertEquals(ClassName.get("", "Object").annotated(Annotations.NULLABLE),
+        JavaTypeResolver(customScalarTypeMap, packageName).resolve("UnsupportedType", true))
   }
 
   companion object {
