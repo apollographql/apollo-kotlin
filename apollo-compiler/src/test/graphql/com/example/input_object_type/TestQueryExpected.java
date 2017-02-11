@@ -140,11 +140,11 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
       }
 
       interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
       }
 
       interface Creator {
-        CreateReview create(int stars, @Nullable String commentary);
+        @Nonnull CreateReview create(int stars, @Nullable String commentary);
       }
     }
 
@@ -186,13 +186,13 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
     }
 
     interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
 
-      CreateReview.Factory createReviewFactory();
+      @Nonnull CreateReview.Factory createReviewFactory();
     }
 
     interface Creator {
-      Data create(@Nullable CreateReview createReview);
+      @Nonnull Data create(@Nullable CreateReview createReview);
     }
   }
 }

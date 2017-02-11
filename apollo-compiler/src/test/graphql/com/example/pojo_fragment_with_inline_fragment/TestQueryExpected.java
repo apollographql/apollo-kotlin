@@ -49,19 +49,19 @@ public final class TestQuery implements Query<Operation.Variables> {
   public static class Data implements Operation.Data {
     public static final Creator CREATOR = new Creator() {
       @Override
-      public Data create(@Nullable Hero hero) {
+      public @Nonnull Data create(@Nullable Hero hero) {
         return new Data(hero);
       }
     };
 
     public static final Factory FACTORY = new Factory() {
       @Override
-      public Creator creator() {
+      public @Nonnull Creator creator() {
         return CREATOR;
       }
 
       @Override
-      public Hero.Factory heroFactory() {
+      public @Nonnull Hero.Factory heroFactory() {
         return Hero.FACTORY;
       }
     };
@@ -79,20 +79,20 @@ public final class TestQuery implements Query<Operation.Variables> {
     public static class Hero {
       public static final Creator CREATOR = new Creator() {
         @Override
-        public Hero create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
-            Fragments fragments) {
+        public @Nonnull Hero create(@Nonnull String name,
+            @Nonnull List<? extends Episode> appearsIn, @Nonnull Fragments fragments) {
           return new Hero(name, appearsIn, fragments);
         }
       };
 
       public static final Factory FACTORY = new Factory() {
         @Override
-        public Creator creator() {
+        public @Nonnull Creator creator() {
           return CREATOR;
         }
 
         @Override
-        public Fragments.Factory fragmentsFactory() {
+        public @Nonnull Fragments.Factory fragmentsFactory() {
           return Fragments.FACTORY;
         }
       };
@@ -118,26 +118,26 @@ public final class TestQuery implements Query<Operation.Variables> {
         return this.appearsIn;
       }
 
-      public Fragments fragments() {
+      public @Nonnull Fragments fragments() {
         return this.fragments;
       }
 
       public static class Fragments {
         public static final Creator CREATOR = new Creator() {
           @Override
-          public Fragments create(HeroDetails heroDetails) {
+          public @Nonnull Fragments create(@Nullable HeroDetails heroDetails) {
             return new Fragments(heroDetails);
           }
         };
 
         public static final Factory FACTORY = new Factory() {
           @Override
-          public Creator creator() {
+          public @Nonnull Creator creator() {
             return CREATOR;
           }
 
           @Override
-          public HeroDetails.Factory heroDetailsFactory() {
+          public @Nonnull HeroDetails.Factory heroDetailsFactory() {
             return HeroDetails.FACTORY;
           }
         };
@@ -148,7 +148,7 @@ public final class TestQuery implements Query<Operation.Variables> {
           this.heroDetails = heroDetails;
         }
 
-        public HeroDetails heroDetails() {
+        public @Nullable HeroDetails heroDetails() {
           return this.heroDetails;
         }
 
@@ -163,7 +163,7 @@ public final class TestQuery implements Query<Operation.Variables> {
           }
 
           @Override
-          public Fragments map(ResponseReader reader) throws IOException {
+          public @Nonnull Fragments map(ResponseReader reader) throws IOException {
             HeroDetails heroDetails = null;
             if (conditionalType.equals(HeroDetails.TYPE_CONDITION)) {
               heroDetails = new HeroDetails.Mapper(factory.heroDetailsFactory()).map(reader);
@@ -173,13 +173,13 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         public interface Factory {
-          Creator creator();
+          @Nonnull Creator creator();
 
-          HeroDetails.Factory heroDetailsFactory();
+          @Nonnull HeroDetails.Factory heroDetailsFactory();
         }
 
         public interface Creator {
-          Fragments create(HeroDetails heroDetails);
+          @Nonnull Fragments create(@Nullable HeroDetails heroDetails);
         }
       }
 
@@ -241,14 +241,14 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       public interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
 
-        Fragments.Factory fragmentsFactory();
+        @Nonnull Fragments.Factory fragmentsFactory();
       }
 
       public interface Creator {
-        Hero create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
-            Fragments fragments);
+        @Nonnull Hero create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
+            @Nonnull Fragments fragments);
       }
     }
 
@@ -290,13 +290,13 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     public interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
 
-      Hero.Factory heroFactory();
+      @Nonnull Hero.Factory heroFactory();
     }
 
     public interface Creator {
-      Data create(@Nullable Hero hero);
+      @Nonnull Data create(@Nullable Hero hero);
     }
   }
 }

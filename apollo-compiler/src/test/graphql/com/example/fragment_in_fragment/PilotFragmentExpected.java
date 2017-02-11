@@ -63,11 +63,11 @@ public interface PilotFragment {
     }
 
     interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
     }
 
     interface Creator {
-      Homeworld create(@Nullable String name);
+      @Nonnull Homeworld create(@Nullable String name);
     }
   }
 
@@ -116,12 +116,12 @@ public interface PilotFragment {
   }
 
   interface Factory {
-    Creator creator();
+    @Nonnull Creator creator();
 
-    Homeworld.Factory homeworldFactory();
+    @Nonnull Homeworld.Factory homeworldFactory();
   }
 
   interface Creator {
-    PilotFragment create(@Nullable String name, @Nullable Homeworld homeworld);
+    @Nonnull PilotFragment create(@Nullable String name, @Nullable Homeworld homeworld);
   }
 }

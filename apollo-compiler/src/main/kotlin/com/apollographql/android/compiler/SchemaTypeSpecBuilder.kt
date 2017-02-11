@@ -92,7 +92,7 @@ class SchemaTypeSpecBuilder(
   private fun fragmentsAccessorMethodSpec(abstract: Boolean): MethodSpec {
     val methodSpecBuilder = MethodSpec
         .methodBuilder(FRAGMENTS_TYPE_NAME.decapitalize())
-        .returns(ClassName.get("", FRAGMENTS_TYPE_NAME))
+        .returns(FRAGMENTS_TYPE)
         .addModifiers(Modifier.PUBLIC)
         .addModifiers(if (abstract) listOf(Modifier.ABSTRACT) else emptyList())
     if (!abstract) {
@@ -125,7 +125,7 @@ class SchemaTypeSpecBuilder(
       return addMethods(fragments.map {
         val methodSpecBuilder = MethodSpec
             .methodBuilder(it.decapitalize())
-            .returns(ClassName.get(fragmentsPackage, it.capitalize()))
+            .returns(ClassName.get(fragmentsPackage, it.capitalize()).annotated(listOf(Annotations.NULLABLE)))
             .addModifiers(Modifier.PUBLIC)
             .addModifiers(if (abstractClass) listOf(Modifier.ABSTRACT) else emptyList())
         if (!abstractClass) {
@@ -172,6 +172,6 @@ class SchemaTypeSpecBuilder(
 
   companion object {
     val FRAGMENTS_TYPE_NAME: String = "Fragments"
-    val FRAGMENTS_TYPE: ClassName = ClassName.get("", SchemaTypeSpecBuilder.FRAGMENTS_TYPE_NAME)
+    val FRAGMENTS_TYPE: ClassName = ClassName.get("", FRAGMENTS_TYPE_NAME).annotated(listOf(Annotations.NONNULL))
   }
 }

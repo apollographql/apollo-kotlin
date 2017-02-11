@@ -127,11 +127,11 @@ public final class TestQuery implements Query<TestQuery.Variables> {
       }
 
       interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
       }
 
       interface Creator {
-        Hero create(@Nullable String name);
+        @Nonnull Hero create(@Nullable String name);
       }
     }
 
@@ -173,13 +173,13 @@ public final class TestQuery implements Query<TestQuery.Variables> {
     }
 
     interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
 
-      Hero.Factory heroFactory();
+      @Nonnull Hero.Factory heroFactory();
     }
 
     interface Creator {
-      Data create(@Nullable Hero hero);
+      @Nonnull Data create(@Nullable Hero hero);
     }
   }
 }

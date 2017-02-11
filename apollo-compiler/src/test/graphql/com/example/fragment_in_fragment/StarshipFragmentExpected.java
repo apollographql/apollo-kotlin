@@ -41,10 +41,10 @@ public interface StarshipFragment {
       @Nullable Node node();
 
       interface Node {
-        Fragments fragments();
+        @Nonnull Fragments fragments();
 
         interface Fragments {
-          PilotFragment pilotFragment();
+          @Nullable PilotFragment pilotFragment();
 
           final class Mapper implements ResponseFieldMapper<Fragments> {
             final Factory factory;
@@ -57,7 +57,7 @@ public interface StarshipFragment {
             }
 
             @Override
-            public Fragments map(ResponseReader reader) throws IOException {
+            public @Nonnull Fragments map(ResponseReader reader) throws IOException {
               PilotFragment pilotFragment = null;
               if (conditionalType.equals(PilotFragment.TYPE_CONDITION)) {
                 pilotFragment = new PilotFragment.Mapper(factory.pilotFragmentFactory()).map(reader);
@@ -67,13 +67,13 @@ public interface StarshipFragment {
           }
 
           interface Factory {
-            Creator creator();
+            @Nonnull Creator creator();
 
-            PilotFragment.Factory pilotFragmentFactory();
+            @Nonnull PilotFragment.Factory pilotFragmentFactory();
           }
 
           interface Creator {
-            Fragments create(PilotFragment pilotFragment);
+            @Nonnull Fragments create(@Nullable PilotFragment pilotFragment);
           }
         }
 
@@ -117,13 +117,13 @@ public interface StarshipFragment {
         }
 
         interface Factory {
-          Creator creator();
+          @Nonnull Creator creator();
 
-          Fragments.Factory fragmentsFactory();
+          @Nonnull Fragments.Factory fragmentsFactory();
         }
 
         interface Creator {
-          Node create(Fragments fragments);
+          @Nonnull Node create(@Nonnull Fragments fragments);
         }
       }
 
@@ -165,13 +165,13 @@ public interface StarshipFragment {
       }
 
       interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
 
-        Node.Factory nodeFactory();
+        @Nonnull Node.Factory nodeFactory();
       }
 
       interface Creator {
-        Edge create(@Nullable Node node);
+        @Nonnull Edge create(@Nullable Node node);
       }
     }
 
@@ -213,13 +213,13 @@ public interface StarshipFragment {
     }
 
     interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
 
-      Edge.Factory edgeFactory();
+      @Nonnull Edge.Factory edgeFactory();
     }
 
     interface Creator {
-      PilotConnection create(@Nullable List<? extends Edge> edges);
+      @Nonnull PilotConnection create(@Nullable List<? extends Edge> edges);
     }
   }
 
@@ -275,13 +275,13 @@ public interface StarshipFragment {
   }
 
   interface Factory {
-    Creator creator();
+    @Nonnull Creator creator();
 
-    PilotConnection.Factory pilotConnectionFactory();
+    @Nonnull PilotConnection.Factory pilotConnectionFactory();
   }
 
   interface Creator {
-    StarshipFragment create(@Nonnull String id, @Nullable String name,
+    @Nonnull StarshipFragment create(@Nonnull String id, @Nullable String name,
         @Nullable PilotConnection pilotConnection);
   }
 }

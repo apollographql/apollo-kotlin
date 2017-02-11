@@ -66,10 +66,10 @@ public interface HumanDetails {
   }
 
   interface Factory {
-    Creator creator();
+    @Nonnull Creator creator();
   }
 
   interface Creator {
-    HumanDetails create(@Nonnull String name, @Nullable Double height);
+    @Nonnull HumanDetails create(@Nonnull String name, @Nullable Double height);
   }
 }

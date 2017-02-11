@@ -104,11 +104,11 @@ public final class TestQuery implements Query<Operation.Variables> {
             }
 
             interface Factory {
-              Creator creator();
+              @Nonnull Creator creator();
             }
 
             interface Creator {
-              Node create(@Nonnull String name);
+              @Nonnull Node create(@Nonnull String name);
             }
           }
 
@@ -150,13 +150,13 @@ public final class TestQuery implements Query<Operation.Variables> {
           }
 
           interface Factory {
-            Creator creator();
+            @Nonnull Creator creator();
 
-            Node.Factory nodeFactory();
+            @Nonnull Node.Factory nodeFactory();
           }
 
           interface Creator {
-            Edge create(@Nullable Node node);
+            @Nonnull Edge create(@Nullable Node node);
           }
         }
 
@@ -205,13 +205,13 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         interface Factory {
-          Creator creator();
+          @Nonnull Creator creator();
 
-          Edge.Factory edgeFactory();
+          @Nonnull Edge.Factory edgeFactory();
         }
 
         interface Creator {
-          FriendsConnection create(@Nullable Integer totalCount,
+          @Nonnull FriendsConnection create(@Nullable Integer totalCount,
               @Nullable List<? extends Edge> edges);
         }
       }
@@ -261,13 +261,13 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
 
-        FriendsConnection.Factory friendsConnectionFactory();
+        @Nonnull FriendsConnection.Factory friendsConnectionFactory();
       }
 
       interface Creator {
-        Hero create(@Nonnull String name, @Nonnull FriendsConnection friendsConnection);
+        @Nonnull Hero create(@Nonnull String name, @Nonnull FriendsConnection friendsConnection);
       }
     }
 
@@ -309,13 +309,13 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
 
-      Hero.Factory heroFactory();
+      @Nonnull Hero.Factory heroFactory();
     }
 
     interface Creator {
-      Data create(@Nullable Hero hero);
+      @Nonnull Data create(@Nullable Hero hero);
     }
   }
 }

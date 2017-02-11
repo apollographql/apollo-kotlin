@@ -58,10 +58,10 @@ public final class TestQuery implements Query<Operation.Variables> {
         @Nullable Node node();
 
         interface Node {
-          Fragments fragments();
+          @Nonnull Fragments fragments();
 
           interface Fragments {
-            StarshipFragment starshipFragment();
+            @Nullable StarshipFragment starshipFragment();
 
             final class Mapper implements ResponseFieldMapper<Fragments> {
               final Factory factory;
@@ -74,7 +74,7 @@ public final class TestQuery implements Query<Operation.Variables> {
               }
 
               @Override
-              public Fragments map(ResponseReader reader) throws IOException {
+              public @Nonnull Fragments map(ResponseReader reader) throws IOException {
                 StarshipFragment starshipFragment = null;
                 if (conditionalType.equals(StarshipFragment.TYPE_CONDITION)) {
                   starshipFragment = new StarshipFragment.Mapper(factory.starshipFragmentFactory()).map(reader);
@@ -84,13 +84,13 @@ public final class TestQuery implements Query<Operation.Variables> {
             }
 
             interface Factory {
-              Creator creator();
+              @Nonnull Creator creator();
 
-              StarshipFragment.Factory starshipFragmentFactory();
+              @Nonnull StarshipFragment.Factory starshipFragmentFactory();
             }
 
             interface Creator {
-              Fragments create(StarshipFragment starshipFragment);
+              @Nonnull Fragments create(@Nullable StarshipFragment starshipFragment);
             }
           }
 
@@ -134,13 +134,13 @@ public final class TestQuery implements Query<Operation.Variables> {
           }
 
           interface Factory {
-            Creator creator();
+            @Nonnull Creator creator();
 
-            Fragments.Factory fragmentsFactory();
+            @Nonnull Fragments.Factory fragmentsFactory();
           }
 
           interface Creator {
-            Node create(Fragments fragments);
+            @Nonnull Node create(@Nonnull Fragments fragments);
           }
         }
 
@@ -182,13 +182,13 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         interface Factory {
-          Creator creator();
+          @Nonnull Creator creator();
 
-          Node.Factory nodeFactory();
+          @Nonnull Node.Factory nodeFactory();
         }
 
         interface Creator {
-          Edge create(@Nullable Node node);
+          @Nonnull Edge create(@Nullable Node node);
         }
       }
 
@@ -230,13 +230,13 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
 
-        Edge.Factory edgeFactory();
+        @Nonnull Edge.Factory edgeFactory();
       }
 
       interface Creator {
-        AllStarship create(@Nullable List<? extends Edge> edges);
+        @Nonnull AllStarship create(@Nullable List<? extends Edge> edges);
       }
     }
 
@@ -278,13 +278,13 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
 
-      AllStarship.Factory allStarshipFactory();
+      @Nonnull AllStarship.Factory allStarshipFactory();
     }
 
     interface Creator {
-      Data create(@Nullable AllStarship allStarships);
+      @Nonnull Data create(@Nullable AllStarship allStarships);
     }
   }
 }

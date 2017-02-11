@@ -102,11 +102,12 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
       }
 
       interface Creator {
-        Hero create(@Nonnull String name, @Nonnull Date birthDate, @Nullable Date deathDate);
+        @Nonnull Hero create(@Nonnull String name, @Nonnull Date birthDate,
+            @Nullable Date deathDate);
       }
     }
 
@@ -148,13 +149,13 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
 
-      Hero.Factory heroFactory();
+      @Nonnull Hero.Factory heroFactory();
     }
 
     interface Creator {
-      Data create(@Nullable Hero hero);
+      @Nonnull Data create(@Nullable Hero hero);
     }
   }
 }

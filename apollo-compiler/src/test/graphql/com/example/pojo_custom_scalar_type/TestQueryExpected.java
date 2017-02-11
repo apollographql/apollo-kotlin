@@ -48,19 +48,19 @@ public final class TestQuery implements Query<Operation.Variables> {
   public static class Data implements Operation.Data {
     public static final Creator CREATOR = new Creator() {
       @Override
-      public Data create(@Nullable Hero hero) {
+      public @Nonnull Data create(@Nullable Hero hero) {
         return new Data(hero);
       }
     };
 
     public static final Factory FACTORY = new Factory() {
       @Override
-      public Creator creator() {
+      public @Nonnull Creator creator() {
         return CREATOR;
       }
 
       @Override
-      public Hero.Factory heroFactory() {
+      public @Nonnull Hero.Factory heroFactory() {
         return Hero.FACTORY;
       }
     };
@@ -78,7 +78,7 @@ public final class TestQuery implements Query<Operation.Variables> {
     public static class Hero {
       public static final Creator CREATOR = new Creator() {
         @Override
-        public Hero create(@Nonnull String name, @Nonnull Date birthDate,
+        public @Nonnull Hero create(@Nonnull String name, @Nonnull Date birthDate,
             @Nonnull List<? extends Date> appearanceDates,
             @Nonnull Object fieldWithUnsupportedType) {
           return new Hero(name, birthDate, appearanceDates, fieldWithUnsupportedType);
@@ -87,7 +87,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       public static final Factory FACTORY = new Factory() {
         @Override
-        public Creator creator() {
+        public @Nonnull Creator creator() {
           return CREATOR;
         }
       };
@@ -183,11 +183,11 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       public interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
       }
 
       public interface Creator {
-        Hero create(@Nonnull String name, @Nonnull Date birthDate,
+        @Nonnull Hero create(@Nonnull String name, @Nonnull Date birthDate,
             @Nonnull List<? extends Date> appearanceDates,
             @Nonnull Object fieldWithUnsupportedType);
       }
@@ -231,13 +231,13 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     public interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
 
-      Hero.Factory heroFactory();
+      @Nonnull Hero.Factory heroFactory();
     }
 
     public interface Creator {
-      Data create(@Nullable Hero hero);
+      @Nonnull Data create(@Nullable Hero hero);
     }
   }
 }

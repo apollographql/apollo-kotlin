@@ -56,12 +56,12 @@ public final class TestQuery implements Query<Operation.Variables> {
     @Nullable Luke luke();
 
     interface R2 {
-      Fragments fragments();
+      @Nonnull Fragments fragments();
 
       interface Fragments {
-        HumanDetails humanDetails();
+        @Nullable HumanDetails humanDetails();
 
-        DroidDetails droidDetails();
+        @Nullable DroidDetails droidDetails();
 
         final class Mapper implements ResponseFieldMapper<Fragments> {
           final Factory factory;
@@ -74,7 +74,7 @@ public final class TestQuery implements Query<Operation.Variables> {
           }
 
           @Override
-          public Fragments map(ResponseReader reader) throws IOException {
+          public @Nonnull Fragments map(ResponseReader reader) throws IOException {
             HumanDetails humanDetails = null;
             DroidDetails droidDetails = null;
             if (conditionalType.equals(HumanDetails.TYPE_CONDITION)) {
@@ -88,15 +88,16 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         interface Factory {
-          Creator creator();
+          @Nonnull Creator creator();
 
-          HumanDetails.Factory humanDetailsFactory();
+          @Nonnull HumanDetails.Factory humanDetailsFactory();
 
-          DroidDetails.Factory droidDetailsFactory();
+          @Nonnull DroidDetails.Factory droidDetailsFactory();
         }
 
         interface Creator {
-          Fragments create(HumanDetails humanDetails, DroidDetails droidDetails);
+          @Nonnull Fragments create(@Nullable HumanDetails humanDetails,
+              @Nullable DroidDetails droidDetails);
         }
       }
 
@@ -140,23 +141,23 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
 
-        Fragments.Factory fragmentsFactory();
+        @Nonnull Fragments.Factory fragmentsFactory();
       }
 
       interface Creator {
-        R2 create(Fragments fragments);
+        @Nonnull R2 create(@Nonnull Fragments fragments);
       }
     }
 
     interface Luke {
-      Fragments fragments();
+      @Nonnull Fragments fragments();
 
       interface Fragments {
-        HumanDetails humanDetails();
+        @Nullable HumanDetails humanDetails();
 
-        DroidDetails droidDetails();
+        @Nullable DroidDetails droidDetails();
 
         final class Mapper implements ResponseFieldMapper<Fragments> {
           final Factory factory;
@@ -169,7 +170,7 @@ public final class TestQuery implements Query<Operation.Variables> {
           }
 
           @Override
-          public Fragments map(ResponseReader reader) throws IOException {
+          public @Nonnull Fragments map(ResponseReader reader) throws IOException {
             HumanDetails humanDetails = null;
             DroidDetails droidDetails = null;
             if (conditionalType.equals(HumanDetails.TYPE_CONDITION)) {
@@ -183,15 +184,16 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         interface Factory {
-          Creator creator();
+          @Nonnull Creator creator();
 
-          HumanDetails.Factory humanDetailsFactory();
+          @Nonnull HumanDetails.Factory humanDetailsFactory();
 
-          DroidDetails.Factory droidDetailsFactory();
+          @Nonnull DroidDetails.Factory droidDetailsFactory();
         }
 
         interface Creator {
-          Fragments create(HumanDetails humanDetails, DroidDetails droidDetails);
+          @Nonnull Fragments create(@Nullable HumanDetails humanDetails,
+              @Nullable DroidDetails droidDetails);
         }
       }
 
@@ -235,13 +237,13 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       interface Factory {
-        Creator creator();
+        @Nonnull Creator creator();
 
-        Fragments.Factory fragmentsFactory();
+        @Nonnull Fragments.Factory fragmentsFactory();
       }
 
       interface Creator {
-        Luke create(Fragments fragments);
+        @Nonnull Luke create(@Nonnull Fragments fragments);
       }
     }
 
@@ -294,15 +296,15 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     interface Factory {
-      Creator creator();
+      @Nonnull Creator creator();
 
-      R2.Factory r2Factory();
+      @Nonnull R2.Factory r2Factory();
 
-      Luke.Factory lukeFactory();
+      @Nonnull Luke.Factory lukeFactory();
     }
 
     interface Creator {
-      Data create(@Nullable R2 r2, @Nullable Luke luke);
+      @Nonnull Data create(@Nullable R2 r2, @Nullable Luke luke);
     }
   }
 }

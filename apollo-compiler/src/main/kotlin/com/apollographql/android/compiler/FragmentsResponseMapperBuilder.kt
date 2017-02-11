@@ -116,7 +116,7 @@ class FragmentsResponseMapperBuilder(
   companion object {
     private val API_RESPONSE_FIELD_MAPPER_TYPE = ClassName.get(ResponseFieldMapper::class.java)
     private val RESPONSE_FIELD_MAPPER_TYPE = ParameterizedTypeName.get(API_RESPONSE_FIELD_MAPPER_TYPE,
-        SchemaTypeSpecBuilder.FRAGMENTS_TYPE)
+        SchemaTypeSpecBuilder.FRAGMENTS_TYPE.withoutAnnotations())
     private val FACTORY_VAR = Util.FACTORY_TYPE_NAME.decapitalize()
     private val FACTORY_PARAM = ParameterSpec.builder(Util.FACTORY_INTERFACE_TYPE, FACTORY_VAR)
         .addAnnotation(Nonnull::class.java).build()
