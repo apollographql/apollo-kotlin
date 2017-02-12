@@ -66,7 +66,7 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
     };
 
-    private @Nullable Hero hero;
+    private final @Nullable Hero hero;
 
     public Data(@Nullable Hero hero) {
       this.hero = hero;
@@ -97,9 +97,9 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
       };
 
-      private @Nonnull String name;
+      private final @Nonnull String name;
 
-      private @Nonnull List<? extends Episode> appearsIn;
+      private final @Nonnull List<? extends Episode> appearsIn;
 
       private Fragments fragments;
 

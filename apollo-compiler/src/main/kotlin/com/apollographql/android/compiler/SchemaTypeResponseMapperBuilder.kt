@@ -107,7 +107,7 @@ class SchemaTypeResponseMapperBuilder(
 
   fun build(): TypeSpec {
     val contentValueFields = fields
-        .map { it.fieldSpec(context.customTypeMap) }
+        .map { it.fieldSpec(customScalarTypeMap = context.customTypeMap) }
         .map { FieldSpec.builder(it.type.overrideTypeName(typeOverrideMap), it.name).build() }
         .plus(inlineFragments
             .map { it.fieldSpec() }
@@ -162,7 +162,7 @@ class SchemaTypeResponseMapperBuilder(
           .build()
 
   private fun fieldFactoryCode(field: Field): CodeBlock {
-    val fieldTypeName = field.fieldSpec(context.customTypeMap).type.withoutAnnotations()
+    val fieldTypeName = field.fieldSpec(customScalarTypeMap = context.customTypeMap).type.withoutAnnotations()
     if (fieldTypeName.isScalar() || fieldTypeName.isCustomScalarType()) {
       return scalarFieldFactoryCode(field, fieldTypeName)
     } else if (fieldTypeName.isList()) {
