@@ -47,7 +47,7 @@ class SchemaTypeSpecBuilder(
 
   private fun TypeSpec.Builder.addFields(fields: List<Field>, abstractClass: Boolean): TypeSpec.Builder {
     val fieldSpecs = if (abstractClass) emptyList() else fields.map {
-      it.fieldSpec(context.customTypeMap, context.typesPackage)
+      it.fieldSpec(customScalarTypeMap = context.customTypeMap, typesPackage = context.typesPackage)
     }
     val methodSpecs = fields.map {
       it.accessorMethodSpec(abstractClass, context.typesPackage, context.customTypeMap)

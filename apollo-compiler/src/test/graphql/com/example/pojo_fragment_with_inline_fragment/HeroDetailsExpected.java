@@ -60,9 +60,9 @@ public class HeroDetails {
 
   public static final String TYPE_CONDITION = "Character";
 
-  private @Nonnull String name;
+  private final @Nonnull String name;
 
-  private @Nonnull FriendsConnection friendsConnection;
+  private final @Nonnull FriendsConnection friendsConnection;
 
   private @Nullable AsDroid asDroid;
 
@@ -106,9 +106,9 @@ public class HeroDetails {
       }
     };
 
-    private @Nullable Integer totalCount;
+    private final @Nullable Integer totalCount;
 
-    private @Nullable List<? extends Edge> edges;
+    private final @Nullable List<? extends Edge> edges;
 
     public FriendsConnection(@Nullable Integer totalCount, @Nullable List<? extends Edge> edges) {
       this.totalCount = totalCount;
@@ -143,7 +143,7 @@ public class HeroDetails {
         }
       };
 
-      private @Nullable Node node;
+      private final @Nullable Node node;
 
       public Edge(@Nullable Node node) {
         this.node = node;
@@ -168,7 +168,7 @@ public class HeroDetails {
           }
         };
 
-        private @Nonnull String name;
+        private final @Nonnull String name;
 
         public Node(@Nonnull String name) {
           this.name = name;
@@ -345,11 +345,11 @@ public class HeroDetails {
       }
     };
 
-    private @Nonnull String name;
+    private final @Nonnull String name;
 
-    private @Nonnull FriendsConnection$ friendsConnection;
+    private final @Nonnull FriendsConnection$ friendsConnection;
 
-    private @Nullable String primaryFunction;
+    private final @Nullable String primaryFunction;
 
     public AsDroid(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
         @Nullable String primaryFunction) {
@@ -391,9 +391,9 @@ public class HeroDetails {
         }
       };
 
-      private @Nullable Integer totalCount;
+      private final @Nullable Integer totalCount;
 
-      private @Nullable List<? extends Edge> edges;
+      private final @Nullable List<? extends Edge> edges;
 
       public FriendsConnection$(@Nullable Integer totalCount,
           @Nullable List<? extends Edge> edges) {
@@ -429,7 +429,7 @@ public class HeroDetails {
           }
         };
 
-        private @Nullable Node node;
+        private final @Nullable Node node;
 
         public Edge(@Nullable Node node) {
           this.node = node;
@@ -454,7 +454,7 @@ public class HeroDetails {
             }
           };
 
-          private @Nonnull String name;
+          private final @Nonnull String name;
 
           public Node(@Nonnull String name) {
             this.name = name;

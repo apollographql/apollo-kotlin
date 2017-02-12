@@ -65,7 +65,7 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
     };
 
-    private @Nullable Hero hero;
+    private final @Nullable Hero hero;
 
     public Data(@Nullable Hero hero) {
       this.hero = hero;
@@ -92,13 +92,13 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
       };
 
-      private @Nonnull String name;
+      private final @Nonnull String name;
 
-      private @Nonnull Date birthDate;
+      private final @Nonnull Date birthDate;
 
-      private @Nonnull List<? extends Date> appearanceDates;
+      private final @Nonnull List<? extends Date> appearanceDates;
 
-      private @Nonnull Object fieldWithUnsupportedType;
+      private final @Nonnull Object fieldWithUnsupportedType;
 
       public Hero(@Nonnull String name, @Nonnull Date birthDate,
           @Nonnull List<? extends Date> appearanceDates, @Nonnull Object fieldWithUnsupportedType) {
