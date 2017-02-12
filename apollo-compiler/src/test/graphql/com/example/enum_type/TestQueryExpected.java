@@ -22,6 +22,7 @@ public final class TestQuery implements Query<Operation.Variables> {
       + "    __typename\n"
       + "    name\n"
       + "    appearsIn\n"
+      + "    firstAppearsIn\n"
       + "  }\n"
       + "}";
 
@@ -51,6 +52,8 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       @Nonnull List<? extends Episode> appearsIn();
 
+      @Nonnull Episode firstAppearsIn();
+
       final class Mapper implements ResponseFieldMapper<Hero> {
         final Factory factory;
 
@@ -60,7 +63,8 @@ public final class TestQuery implements Query<Operation.Variables> {
             @Override public Episode read(final Field.ListItemReader reader) throws IOException {
               return Episode.valueOf(reader.readString());
             }
-          })
+          }),
+          Field.forString("firstAppearsIn", "firstAppearsIn", null, false)
         };
 
         public Mapper(@Nonnull Factory factory) {
@@ -82,16 +86,24 @@ public final class TestQuery implements Query<Operation.Variables> {
                   contentValues.appearsIn = (List<? extends Episode>) value;
                   break;
                 }
+                case 2: {
+                  if (value != null) {
+                    contentValues.firstAppearsIn = Episode.valueOf((String) value);
+                  }
+                  break;
+                }
               }
             }
           }, fields);
-          return factory.creator().create(contentValues.name, contentValues.appearsIn);
+          return factory.creator().create(contentValues.name, contentValues.appearsIn, contentValues.firstAppearsIn);
         }
 
         static final class __ContentValues {
           String name;
 
           List<? extends Episode> appearsIn;
+
+          Episode firstAppearsIn;
         }
       }
 
@@ -100,7 +112,8 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       interface Creator {
-        @Nonnull Hero create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn);
+        @Nonnull Hero create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
+            @Nonnull Episode firstAppearsIn);
       }
     }
 

@@ -346,7 +346,8 @@ class SchemaTypeResponseMapperBuilder(
     val setContentValueCode = if (fieldSpec.type.isEnum()) {
       CodeBlock.builder()
           .beginControlFlow("if (\$L != null)", VALUE_PARAM)
-          .addStatement("\$L.\$L = \$T.valueOf(\$L)", CONTENT_VALUES_VAR, fieldSpec.name, fieldRawType, VALUE_PARAM)
+          .addStatement("\$L.\$L = \$T.valueOf((\$T) \$L)", CONTENT_VALUES_VAR, fieldSpec.name, fieldRawType,
+              ClassNames.STRING, VALUE_PARAM)
           .endControlFlow()
           .build()
     } else {
