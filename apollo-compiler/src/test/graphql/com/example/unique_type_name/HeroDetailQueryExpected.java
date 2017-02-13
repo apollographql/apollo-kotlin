@@ -18,9 +18,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
-public final class TestQuery implements Query<Operation.Variables> {
-  public static final String OPERATION_DEFINITION = "query TestQuery {\n"
-      + "  hero {\n"
+public final class HeroDetailQuery implements Query<Operation.Variables> {
+  public static final String OPERATION_DEFINITION = "query HeroDetailQuery {\n"
+      + "  heroDetailQuery {\n"
       + "    __typename\n"
       + "    name\n"
       + "    friends {\n"
@@ -46,7 +46,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
   private final Operation.Variables variables;
 
-  public TestQuery() {
+  public HeroDetailQuery() {
     this.variables = Operation.EMPTY_VARIABLES;
   }
 
@@ -61,9 +61,9 @@ public final class TestQuery implements Query<Operation.Variables> {
   }
 
   public interface Data extends Operation.Data {
-    @Nullable Hero hero();
+    @Nullable HeroDetailQuery$ heroDetailQuery();
 
-    interface Hero {
+    interface HeroDetailQuery$ {
       @Nonnull String name();
 
       @Nullable List<? extends Friend> friends();
@@ -347,7 +347,7 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
       }
 
-      final class Mapper implements ResponseFieldMapper<Hero> {
+      final class Mapper implements ResponseFieldMapper<HeroDetailQuery$> {
         final Factory factory;
 
         final Field[] fields = {
@@ -374,7 +374,7 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         @Override
-        public Hero map(ResponseReader reader) throws IOException {
+        public HeroDetailQuery$ map(ResponseReader reader) throws IOException {
           final __ContentValues contentValues = new __ContentValues();
           reader.toBufferedReader().read(new ResponseReader.ValueHandler() {
             @Override
@@ -416,8 +416,8 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       interface Creator {
-        @Nonnull Hero create(@Nonnull String name, @Nullable List<? extends Friend> friends,
-            @Nullable AsHuman asHuman);
+        @Nonnull HeroDetailQuery$ create(@Nonnull String name,
+            @Nullable List<? extends Friend> friends, @Nullable AsHuman asHuman);
       }
     }
 
@@ -425,9 +425,9 @@ public final class TestQuery implements Query<Operation.Variables> {
       final Factory factory;
 
       final Field[] fields = {
-        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
-          @Override public Hero read(final ResponseReader reader) throws IOException {
-            return new Hero.Mapper(factory.heroFactory()).map(reader);
+        Field.forObject("heroDetailQuery", "heroDetail", null, true, new Field.ObjectReader<HeroDetailQuery$>() {
+          @Override public HeroDetailQuery$ read(final ResponseReader reader) throws IOException {
+            return new HeroDetailQuery$.Mapper(factory.heroDetailQuery$Factory()).map(reader);
           }
         })
       };
@@ -444,28 +444,28 @@ public final class TestQuery implements Query<Operation.Variables> {
           public void handle(final int fieldIndex, final Object value) throws IOException {
             switch (fieldIndex) {
               case 0: {
-                contentValues.hero = (Hero) value;
+                contentValues.heroDetailQuery = (HeroDetailQuery$) value;
                 break;
               }
             }
           }
         }, fields);
-        return factory.creator().create(contentValues.hero);
+        return factory.creator().create(contentValues.heroDetailQuery);
       }
 
       static final class __ContentValues {
-        Hero hero;
+        HeroDetailQuery$ heroDetailQuery;
       }
     }
 
     interface Factory {
       @Nonnull Creator creator();
 
-      @Nonnull Hero.Factory heroFactory();
+      @Nonnull HeroDetailQuery$.Factory heroDetailQuery$Factory();
     }
 
     interface Creator {
-      @Nonnull Data create(@Nullable Hero hero);
+      @Nonnull Data create(@Nullable HeroDetailQuery$ heroDetailQuery);
     }
   }
 }

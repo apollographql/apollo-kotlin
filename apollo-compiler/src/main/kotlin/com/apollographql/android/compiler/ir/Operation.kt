@@ -2,7 +2,6 @@ package com.apollographql.android.compiler.ir
 
 import com.apollographql.android.api.graphql.Operation
 import com.apollographql.android.compiler.SchemaTypeSpecBuilder
-import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
@@ -19,7 +18,7 @@ data class Operation(
       SchemaTypeSpecBuilder(INTERFACE_TYPE_SPEC_NAME, fields, emptyList(), emptyList(), context)
           .build(Modifier.PUBLIC, Modifier.STATIC)
           .toBuilder()
-          .addSuperinterface(ClassName.get(Operation.Data::class.java))
+          .addSuperinterface(Operation.Data::class.java)
           .build()
 
   companion object {

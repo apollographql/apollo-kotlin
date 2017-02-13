@@ -68,9 +68,8 @@ class SchemaTypeSpecBuilder(
   private fun TypeSpec.Builder.addInnerTypes(fields: List<Field>): TypeSpec.Builder {
     val reservedTypeNames = context.reservedTypeNames + typeName + fields.filter(Field::isNonScalar).map(
         Field::normalizedName)
-    val typeSpecs = fields.filter(Field::isNonScalar).map {
-      it.toTypeSpec(CodeGenerationContext(context.abstractType, reservedTypeNames.minus(it.normalizedName()),
-          context.typeDeclarations, context.fragmentsPackage, context.typesPackage, context.customTypeMap))
+    val typeSpecs = fields.filter(Field::isNonScalar).map { field ->
+      field.toTypeSpec(context.withReservedTypeNames(reservedTypeNames.minus(field.normalizedName())))
     }
     return addTypes(typeSpecs)
   }
@@ -78,10 +77,7 @@ class SchemaTypeSpecBuilder(
   private fun TypeSpec.Builder.addInlineFragments(fragments: List<InlineFragment>): TypeSpec.Builder {
     val reservedTypeNames = context.reservedTypeNames + typeName + fields.filter(Field::isNonScalar).map(
         Field::normalizedName)
-    val typeSpecs = fragments.map {
-      it.toTypeSpec(CodeGenerationContext(context.abstractType, reservedTypeNames, context.typeDeclarations,
-          context.fragmentsPackage, context.typesPackage, context.customTypeMap))
-    }
+    val typeSpecs = fragments.map { it.toTypeSpec(context.withReservedTypeNames(reservedTypeNames)) }
     val methodSpecs = fragments.map { it.accessorMethodSpec(context.abstractType) }
     val fieldSpecs = if (context.abstractType) emptyList() else fragments.map { it.fieldSpec() }
     return addTypes(typeSpecs)

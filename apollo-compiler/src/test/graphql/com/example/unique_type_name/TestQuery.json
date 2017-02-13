@@ -1,14 +1,14 @@
 {
   "operations": [
     {
-      "operationName": "TestQuery",
+      "operationName": "HeroDetailQuery",
       "operationType": "query",
       "variables": [],
-      "source": "query TestQuery {\n  hero {\n    __typename\n    name\n    friends {\n      __typename\n      name\n    }\n    ... on Human {\n      height\n      friends {\n        __typename\n        appearsIn\n        friends {\n          __typename\n          ...HeroDetails\n        }\n      }\n    }\n  }\n}",
+      "source": "query HeroDetailQuery {\n  heroDetailQuery {\n    __typename\n    name\n    friends {\n      __typename\n      name\n    }\n    ... on Human {\n      height\n      friends {\n        __typename\n        appearsIn\n        friends {\n          __typename\n          ...HeroDetails\n        }\n      }\n    }\n  }\n}",
       "fields": [
         {
-          "responseName": "hero",
-          "fieldName": "hero",
+          "responseName": "heroDetailQuery",
+          "fieldName": "heroDetail",
           "type": "Character",
           "fields": [
             {
