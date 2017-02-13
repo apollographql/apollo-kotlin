@@ -85,6 +85,15 @@ public class HeroDetails {
     return this.asDroid;
   }
 
+  @Override
+  public String toString() {
+    return "HeroDetails{"
+      + "name=" + name + ", "
+      + "friendsConnection=" + friendsConnection + ", "
+      + "asDroid=" + asDroid
+      + "}";
+  }
+
   public static class FriendsConnection {
     public static final Creator CREATOR = new Creator() {
       @Override
@@ -123,6 +132,14 @@ public class HeroDetails {
       return this.edges;
     }
 
+    @Override
+    public String toString() {
+      return "FriendsConnection{"
+        + "totalCount=" + totalCount + ", "
+        + "edges=" + edges
+        + "}";
+    }
+
     public static class Edge {
       public static final Creator CREATOR = new Creator() {
         @Override
@@ -153,6 +170,13 @@ public class HeroDetails {
         return this.node;
       }
 
+      @Override
+      public String toString() {
+        return "Edge{"
+          + "node=" + node
+          + "}";
+      }
+
       public static class Node {
         public static final Creator CREATOR = new Creator() {
           @Override
@@ -176,6 +200,13 @@ public class HeroDetails {
 
         public @Nonnull String name() {
           return this.name;
+        }
+
+        @Override
+        public String toString() {
+          return "Node{"
+            + "name=" + name
+            + "}";
         }
 
         public static final class Mapper implements ResponseFieldMapper<Node> {
@@ -370,6 +401,15 @@ public class HeroDetails {
       return this.primaryFunction;
     }
 
+    @Override
+    public String toString() {
+      return "AsDroid{"
+        + "name=" + name + ", "
+        + "friendsConnection=" + friendsConnection + ", "
+        + "primaryFunction=" + primaryFunction
+        + "}";
+    }
+
     public static class FriendsConnection$ {
       public static final Creator CREATOR = new Creator() {
         @Override
@@ -409,6 +449,14 @@ public class HeroDetails {
         return this.edges;
       }
 
+      @Override
+      public String toString() {
+        return "FriendsConnection${"
+          + "totalCount=" + totalCount + ", "
+          + "edges=" + edges
+          + "}";
+      }
+
       public static class Edge {
         public static final Creator CREATOR = new Creator() {
           @Override
@@ -439,6 +487,13 @@ public class HeroDetails {
           return this.node;
         }
 
+        @Override
+        public String toString() {
+          return "Edge{"
+            + "node=" + node
+            + "}";
+        }
+
         public static class Node {
           public static final Creator CREATOR = new Creator() {
             @Override
@@ -462,6 +517,13 @@ public class HeroDetails {
 
           public @Nonnull String name() {
             return this.name;
+          }
+
+          @Override
+          public String toString() {
+            return "Node{"
+              + "name=" + name
+              + "}";
           }
 
           public static final class Mapper implements ResponseFieldMapper<Node> {
