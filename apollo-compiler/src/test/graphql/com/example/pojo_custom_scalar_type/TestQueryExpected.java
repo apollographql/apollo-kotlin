@@ -75,6 +75,13 @@ public final class TestQuery implements Query<Operation.Variables> {
       return this.hero;
     }
 
+    @Override
+    public String toString() {
+      return "Data{"
+        + "hero=" + hero
+        + "}";
+    }
+
     public static class Hero {
       public static final Creator CREATOR = new Creator() {
         @Override
@@ -122,6 +129,16 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       public @Nonnull Object fieldWithUnsupportedType() {
         return this.fieldWithUnsupportedType;
+      }
+
+      @Override
+      public String toString() {
+        return "Hero{"
+          + "name=" + name + ", "
+          + "birthDate=" + birthDate + ", "
+          + "appearanceDates=" + appearanceDates + ", "
+          + "fieldWithUnsupportedType=" + fieldWithUnsupportedType
+          + "}";
       }
 
       public static final class Mapper implements ResponseFieldMapper<Hero> {

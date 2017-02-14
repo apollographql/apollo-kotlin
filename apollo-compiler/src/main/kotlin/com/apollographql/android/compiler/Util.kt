@@ -169,6 +169,35 @@ fun TypeSpec.withValueInitConstructor(): TypeSpec {
 fun String.toJavaType(): ClassName =
     ClassName.get(substringBeforeLast(delimiter = ".", missingDelimiterValue = ""), substringAfterLast("."))
 
+fun TypeSpec.withToStringImplementation(): TypeSpec {
+  return toBuilder()
+      .addMethod(MethodSpec.methodBuilder("toString")
+          .addAnnotation(Override::class.java)
+          .addModifiers(Modifier.PUBLIC)
+          .returns(java.lang.String::class.java)
+          .addCode("return \$S", "$name{")
+          .addCode(fieldSpecs
+              .filter { !it.hasModifier(Modifier.STATIC) }
+              .map { it.name }
+              .mapIndexed { index, field ->
+                CodeBlock.builder()
+                    .let { if (index > 0) it.add(" + \", \"\n") else it.add("\n") }
+                    .indent()
+                    .add("+ \$S + \$L", "$field=", field)
+                    .unindent()
+                    .build()
+              }
+              .fold(CodeBlock.builder(), CodeBlock.Builder::add)
+              .build())
+          .addCode(CodeBlock.builder()
+              .indent()
+              .add("\n+ \$S;\n", "}")
+              .unindent()
+              .build())
+          .build())
+      .build()
+}
+
 object Util {
   const val CREATOR_TYPE_NAME: String = "Creator"
   const val CREATOR_CREATE_METHOD_NAME: String = "create"

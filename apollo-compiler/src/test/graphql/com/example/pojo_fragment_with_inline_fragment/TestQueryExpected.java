@@ -76,6 +76,13 @@ public final class TestQuery implements Query<Operation.Variables> {
       return this.hero;
     }
 
+    @Override
+    public String toString() {
+      return "Data{"
+        + "hero=" + hero
+        + "}";
+    }
+
     public static class Hero {
       public static final Creator CREATOR = new Creator() {
         @Override
@@ -101,7 +108,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       private final @Nonnull List<? extends Episode> appearsIn;
 
-      private Fragments fragments;
+      private final Fragments fragments;
 
       public Hero(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
           Fragments fragments) {
@@ -120,6 +127,15 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       public @Nonnull Fragments fragments() {
         return this.fragments;
+      }
+
+      @Override
+      public String toString() {
+        return "Hero{"
+          + "name=" + name + ", "
+          + "appearsIn=" + appearsIn + ", "
+          + "fragments=" + fragments
+          + "}";
       }
 
       public static class Fragments {
@@ -150,6 +166,13 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         public @Nullable HeroDetails heroDetails() {
           return this.heroDetails;
+        }
+
+        @Override
+        public String toString() {
+          return "Fragments{"
+            + "heroDetails=" + heroDetails
+            + "}";
         }
 
         public static final class Mapper implements ResponseFieldMapper<Fragments> {
