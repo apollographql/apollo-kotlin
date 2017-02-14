@@ -101,7 +101,7 @@
                 {
                   "responseName": "totalCount",
                   "fieldName": "totalCount",
-                  "type": "Int"
+                  "type": "Int!"
                 },
                 {
                   "responseName": "edges",

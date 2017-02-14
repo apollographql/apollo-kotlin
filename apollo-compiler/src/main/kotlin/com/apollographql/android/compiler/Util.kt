@@ -170,30 +170,124 @@ fun String.toJavaType(): ClassName =
     ClassName.get(substringBeforeLast(delimiter = ".", missingDelimiterValue = ""), substringAfterLast("."))
 
 fun TypeSpec.withToStringImplementation(): TypeSpec {
+  fun printFieldCode(fieldIndex: Int, fieldName: String) =
+      CodeBlock.builder()
+          .let { if (fieldIndex > 0) it.add(" + \", \"\n") else it.add("\n") }
+          .indent()
+          .add("+ \$S + \$L", "$fieldName=", fieldName)
+          .unindent()
+          .build()
+
+  fun methodCode() =
+      CodeBlock.builder()
+          .add("return \$S", "$name{")
+          .add(fieldSpecs
+              .filter { !it.hasModifier(Modifier.STATIC) }
+              .map { it.name }
+              .mapIndexed(::printFieldCode)
+              .fold(CodeBlock.builder(), CodeBlock.Builder::add)
+              .build())
+          .add(CodeBlock.builder()
+              .indent()
+              .add("\n+ \$S;\n", "}")
+              .unindent()
+              .build())
+          .build()
+
   return toBuilder()
       .addMethod(MethodSpec.methodBuilder("toString")
           .addAnnotation(Override::class.java)
           .addModifiers(Modifier.PUBLIC)
           .returns(java.lang.String::class.java)
-          .addCode("return \$S", "$name{")
-          .addCode(fieldSpecs
-              .filter { !it.hasModifier(Modifier.STATIC) }
-              .map { it.name }
-              .mapIndexed { index, field ->
-                CodeBlock.builder()
-                    .let { if (index > 0) it.add(" + \", \"\n") else it.add("\n") }
-                    .indent()
-                    .add("+ \$S + \$L", "$field=", field)
-                    .unindent()
-                    .build()
+          .addCode(methodCode())
+          .build())
+      .build()
+}
+
+fun TypeSpec.withEqualsImplementation(): TypeSpec {
+  fun equalsFieldCode(fieldIndex: Int, field: FieldSpec) =
+      CodeBlock.builder()
+          .let { if (fieldIndex > 0) it.add("\n && ") else it }
+          .let {
+            if (field.type.isPrimitive) {
+              if (field.type == TypeName.DOUBLE) {
+                it.add("Double.doubleToLongBits(this.\$L) == Double.doubleToLongBits(that.\$L)",
+                    field.name, field.name)
+              } else {
+                it.add("this.\$L == that.\$L", field.name, field.name)
               }
+            } else {
+              it.add("((this.\$L == null) ? (that.\$L == null) : this.\$L.equals(that.\$L))", field.name,
+                  field.name, field.name, field.name)
+            }
+          }
+          .build()
+
+  fun methodCode(typeJavaClass: ClassName) =
+      CodeBlock.builder()
+          .beginControlFlow("if (o == this)")
+          .addStatement("return true")
+          .endControlFlow()
+          .beginControlFlow("if (o instanceof \$T)", typeJavaClass)
+          .addStatement("\$T that = (\$T) o", typeJavaClass, typeJavaClass)
+          .add("return ")
+          .add(fieldSpecs
+              .filter { !it.hasModifier(Modifier.STATIC) }
+              .mapIndexed(::equalsFieldCode)
               .fold(CodeBlock.builder(), CodeBlock.Builder::add)
               .build())
-          .addCode(CodeBlock.builder()
-              .indent()
-              .add("\n+ \$S;\n", "}")
-              .unindent()
+          .add(";\n")
+          .endControlFlow()
+          .addStatement("return false")
+          .build()
+
+  return toBuilder()
+      .addMethod(MethodSpec.methodBuilder("equals")
+          .addAnnotation(Override::class.java)
+          .addModifiers(Modifier.PUBLIC)
+          .returns(TypeName.BOOLEAN)
+          .addParameter(ParameterSpec.builder(TypeName.OBJECT, "o").build())
+          .addCode(methodCode(ClassName.get("", name)))
+          .build())
+      .build()
+}
+
+fun TypeSpec.withHashCodeImplementation(): TypeSpec {
+  fun hashCodeFieldCode(field: FieldSpec) =
+      CodeBlock.builder()
+          .addStatement("h *= 1000003")
+          .let {
+            if (field.type.isPrimitive) {
+              if (field.type == TypeName.DOUBLE) {
+                it.addStatement("h ^= Double.valueOf(\$L).hashCode()", field.name)
+              } else if (field.type == TypeName.BOOLEAN) {
+                it.addStatement("h ^= Boolean.valueOf(\$L).hashCode()", field.name)
+              } else {
+                it.addStatement("h ^= \$L", field.name)
+              }
+            } else {
+              it.addStatement("h ^= (\$L == null) ? 0 : \$L.hashCode()", field.name, field.name)
+            }
+          }
+          .build()
+
+  fun methodCode() =
+      CodeBlock.builder()
+          .addStatement("int h = 1")
+          .add(fieldSpecs
+              .filter { !it.hasModifier(Modifier.STATIC) }
+              .map(::hashCodeFieldCode)
+              .fold(CodeBlock.builder(), CodeBlock.Builder::add)
               .build())
+          .addStatement("return h")
+          .build()
+
+  return toBuilder()
+      .addMethod(MethodSpec.methodBuilder("hashCode")
+          .addAnnotation(Override::class.java)
+          .addModifiers(Modifier.PUBLIC)
+          .returns(TypeName.INT)
+          .addCode(methodCode())
           .build())
       .build()
 }
