@@ -14,8 +14,6 @@ Add the following to your project's top level `build.gradle` file
 ```groovy
 
 ext {
-    kotlinVersion = '1.0.6'
-
     compileSdkVersion = 25
     buildToolsVersion = '25.0.2'
     apolloVersion = '0.2.1-SNAPSHOT'
@@ -24,9 +22,7 @@ ext {
             androidPlugin: 'com.android.tools.build:gradle:2.3.0-beta3',
             apolloPlugin: "com.apollographql.android:gradle-plugin:$apolloVersion",
             apolloConverter: "com.apollographql.android:converter:$apolloVersion",
-            retrofit: 'com.squareup.retrofit2:retrofit:2.1.0',
-            kotlinGradlePlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
-    ]
+            retrofit: 'com.squareup.retrofit2:retrofit:2.1.0']
 }
 
 subprojects {
@@ -36,17 +32,13 @@ subprojects {
             maven { url "https://jitpack.io" }
             maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
         }
-
-        dependencies {
-            classpath dep.kotlinGradlePlugin
-        }
     }
     repositories {
         jcenter()
-        maven { url "https://jitpack.io" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
 }
+
 
 ```
 
@@ -63,7 +55,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.apollographql.android'
 
 dependencies {
-    compile 'com.apollographql.android:api:0.1.0'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.apollographql.android:converter-pojo:0.1.0'
 }
@@ -75,11 +66,6 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 25
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
