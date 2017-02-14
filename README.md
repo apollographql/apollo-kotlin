@@ -9,18 +9,83 @@ Apollo-Android is a GraphQL compliant client that generates Java models from sta
 
 
 ## Usage
+Add the following to your project's top level `build.gradle` file
 
 ```groovy
-buildscript {
-  repositories {
-    mavenCentral()
-  }
-  dependencies {
-    classpath 'com.apollographql.android:gradle-plugin:$CURRENT_APOLLO_VERSION'
-  }
+
+ext {
+    kotlinVersion = '1.0.6'
+
+    compileSdkVersion = 25
+    buildToolsVersion = '25.0.2'
+    apolloVersion = '0.2.1-SNAPSHOT'
+
+    dep = [
+            androidPlugin: 'com.android.tools.build:gradle:2.3.0-beta3',
+            apolloPlugin: "com.apollographql.android:gradle-plugin:$apolloVersion",
+            apolloConverter: "com.apollographql.android:converter:$apolloVersion",
+            retrofit: 'com.squareup.retrofit2:retrofit:2.1.0',
+            kotlinGradlePlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
+    ]
 }
 
+subprojects {
+    buildscript {
+        repositories {
+            jcenter()
+            maven { url "https://jitpack.io" }
+            maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        }
+
+        dependencies {
+            classpath dep.kotlinGradlePlugin
+        }
+    }
+    repositories {
+        jcenter()
+        maven { url "https://jitpack.io" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    }
+}
+
+```
+
+within your app module's `build.gradle` add the following:
+```
+buildscript {
+    dependencies {
+        classpath dep.androidPlugin
+        classpath dep.apolloPlugin
+    }
+}
+
+apply plugin: 'com.android.application'
 apply plugin: 'com.apollographql.android'
+
+dependencies {
+    compile 'com.apollographql.android:api:0.1.0'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.apollographql.android:converter-pojo:0.1.0'
+}
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 25
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+apollo {
+    generateClasses = true
+}
 ```
 
 To use Apollo, put your GraphQL queries in a `.graphql` file, like `src/main/graphql/com/example/DroidDetails.grapqhl`.  There is nothing special about this query, it can be shared with other GraphQL clients as well
