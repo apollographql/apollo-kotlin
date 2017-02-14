@@ -82,6 +82,26 @@ public final class TestQuery implements Query<Operation.Variables> {
         + "}";
     }
 
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (hero == null) ? 0 : hero.hashCode();
+      return h;
+    }
+
     public static class Hero {
       public static final Creator CREATOR = new Creator() {
         @Override
@@ -139,6 +159,35 @@ public final class TestQuery implements Query<Operation.Variables> {
           + "appearanceDates=" + appearanceDates + ", "
           + "fieldWithUnsupportedType=" + fieldWithUnsupportedType
           + "}";
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (o instanceof Hero) {
+          Hero that = (Hero) o;
+          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+           && ((this.birthDate == null) ? (that.birthDate == null) : this.birthDate.equals(that.birthDate))
+           && ((this.appearanceDates == null) ? (that.appearanceDates == null) : this.appearanceDates.equals(that.appearanceDates))
+           && ((this.fieldWithUnsupportedType == null) ? (that.fieldWithUnsupportedType == null) : this.fieldWithUnsupportedType.equals(that.fieldWithUnsupportedType));
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (birthDate == null) ? 0 : birthDate.hashCode();
+        h *= 1000003;
+        h ^= (appearanceDates == null) ? 0 : appearanceDates.hashCode();
+        h *= 1000003;
+        h ^= (fieldWithUnsupportedType == null) ? 0 : fieldWithUnsupportedType.hashCode();
+        return h;
       }
 
       public static final class Mapper implements ResponseFieldMapper<Hero> {

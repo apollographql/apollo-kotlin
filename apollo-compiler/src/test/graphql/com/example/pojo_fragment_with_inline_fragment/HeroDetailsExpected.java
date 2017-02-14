@@ -94,6 +94,32 @@ public class HeroDetails {
       + "}";
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof HeroDetails) {
+      HeroDetails that = (HeroDetails) o;
+      return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+       && ((this.friendsConnection == null) ? (that.friendsConnection == null) : this.friendsConnection.equals(that.friendsConnection))
+       && ((this.asDroid == null) ? (that.asDroid == null) : this.asDroid.equals(that.asDroid));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    int h = 1;
+    h *= 1000003;
+    h ^= (name == null) ? 0 : name.hashCode();
+    h *= 1000003;
+    h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
+    h *= 1000003;
+    h ^= (asDroid == null) ? 0 : asDroid.hashCode();
+    return h;
+  }
+
   public static class FriendsConnection {
     public static final Creator CREATOR = new Creator() {
       @Override
@@ -140,6 +166,29 @@ public class HeroDetails {
         + "}";
     }
 
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof FriendsConnection) {
+        FriendsConnection that = (FriendsConnection) o;
+        return ((this.totalCount == null) ? (that.totalCount == null) : this.totalCount.equals(that.totalCount))
+         && ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (totalCount == null) ? 0 : totalCount.hashCode();
+      h *= 1000003;
+      h ^= (edges == null) ? 0 : edges.hashCode();
+      return h;
+    }
+
     public static class Edge {
       public static final Creator CREATOR = new Creator() {
         @Override
@@ -177,6 +226,26 @@ public class HeroDetails {
           + "}";
       }
 
+      @Override
+      public boolean equals(Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (o instanceof Edge) {
+          Edge that = (Edge) o;
+          return ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        int h = 1;
+        h *= 1000003;
+        h ^= (node == null) ? 0 : node.hashCode();
+        return h;
+      }
+
       public static class Node {
         public static final Creator CREATOR = new Creator() {
           @Override
@@ -207,6 +276,26 @@ public class HeroDetails {
           return "Node{"
             + "name=" + name
             + "}";
+        }
+
+        @Override
+        public boolean equals(Object o) {
+          if (o == this) {
+            return true;
+          }
+          if (o instanceof Node) {
+            Node that = (Node) o;
+            return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+          }
+          return false;
+        }
+
+        @Override
+        public int hashCode() {
+          int h = 1;
+          h *= 1000003;
+          h ^= (name == null) ? 0 : name.hashCode();
+          return h;
         }
 
         public static final class Mapper implements ResponseFieldMapper<Node> {
@@ -410,10 +499,36 @@ public class HeroDetails {
         + "}";
     }
 
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof AsDroid) {
+        AsDroid that = (AsDroid) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         && ((this.friendsConnection == null) ? (that.friendsConnection == null) : this.friendsConnection.equals(that.friendsConnection))
+         && ((this.primaryFunction == null) ? (that.primaryFunction == null) : this.primaryFunction.equals(that.primaryFunction));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (name == null) ? 0 : name.hashCode();
+      h *= 1000003;
+      h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
+      h *= 1000003;
+      h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
+      return h;
+    }
+
     public static class FriendsConnection$ {
       public static final Creator CREATOR = new Creator() {
         @Override
-        public @Nonnull FriendsConnection$ create(@Nullable Integer totalCount,
+        public @Nonnull FriendsConnection$ create(int totalCount,
             @Nullable List<? extends Edge> edges) {
           return new FriendsConnection$(totalCount, edges);
         }
@@ -431,17 +546,16 @@ public class HeroDetails {
         }
       };
 
-      private final @Nullable Integer totalCount;
+      private final int totalCount;
 
       private final @Nullable List<? extends Edge> edges;
 
-      public FriendsConnection$(@Nullable Integer totalCount,
-          @Nullable List<? extends Edge> edges) {
+      public FriendsConnection$(int totalCount, @Nullable List<? extends Edge> edges) {
         this.totalCount = totalCount;
         this.edges = edges;
       }
 
-      public @Nullable Integer totalCount() {
+      public int totalCount() {
         return this.totalCount;
       }
 
@@ -455,6 +569,29 @@ public class HeroDetails {
           + "totalCount=" + totalCount + ", "
           + "edges=" + edges
           + "}";
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (o instanceof FriendsConnection$) {
+          FriendsConnection$ that = (FriendsConnection$) o;
+          return this.totalCount == that.totalCount
+           && ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        int h = 1;
+        h *= 1000003;
+        h ^= totalCount;
+        h *= 1000003;
+        h ^= (edges == null) ? 0 : edges.hashCode();
+        return h;
       }
 
       public static class Edge {
@@ -494,6 +631,26 @@ public class HeroDetails {
             + "}";
         }
 
+        @Override
+        public boolean equals(Object o) {
+          if (o == this) {
+            return true;
+          }
+          if (o instanceof Edge) {
+            Edge that = (Edge) o;
+            return ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
+          }
+          return false;
+        }
+
+        @Override
+        public int hashCode() {
+          int h = 1;
+          h *= 1000003;
+          h ^= (node == null) ? 0 : node.hashCode();
+          return h;
+        }
+
         public static class Node {
           public static final Creator CREATOR = new Creator() {
             @Override
@@ -524,6 +681,26 @@ public class HeroDetails {
             return "Node{"
               + "name=" + name
               + "}";
+          }
+
+          @Override
+          public boolean equals(Object o) {
+            if (o == this) {
+              return true;
+            }
+            if (o instanceof Node) {
+              Node that = (Node) o;
+              return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+            }
+            return false;
+          }
+
+          @Override
+          public int hashCode() {
+            int h = 1;
+            h *= 1000003;
+            h ^= (name == null) ? 0 : name.hashCode();
+            return h;
           }
 
           public static final class Mapper implements ResponseFieldMapper<Node> {
@@ -620,7 +797,7 @@ public class HeroDetails {
         final Factory factory;
 
         final Field[] fields = {
-          Field.forInt("totalCount", "totalCount", null, true),
+          Field.forInt("totalCount", "totalCount", null, false),
           Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
             @Override public Edge read(final ResponseReader reader) throws IOException {
               return new Edge.Mapper(factory.edgeFactory()).map(reader);
@@ -640,7 +817,7 @@ public class HeroDetails {
             public void handle(final int fieldIndex, final Object value) throws IOException {
               switch (fieldIndex) {
                 case 0: {
-                  contentValues.totalCount = (Integer) value;
+                  contentValues.totalCount = (int) value;
                   break;
                 }
                 case 1: {
@@ -654,7 +831,7 @@ public class HeroDetails {
         }
 
         static final class __ContentValues {
-          Integer totalCount;
+          int totalCount;
 
           List<? extends Edge> edges;
         }
@@ -667,8 +844,7 @@ public class HeroDetails {
       }
 
       public interface Creator {
-        @Nonnull FriendsConnection$ create(@Nullable Integer totalCount,
-            @Nullable List<? extends Edge> edges);
+        @Nonnull FriendsConnection$ create(int totalCount, @Nullable List<? extends Edge> edges);
       }
     }
 

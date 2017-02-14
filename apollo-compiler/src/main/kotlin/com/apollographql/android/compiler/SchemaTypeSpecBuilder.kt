@@ -43,6 +43,8 @@ class SchemaTypeSpecBuilder(
                 .withCreatorImplementation()
                 .withFactoryImplementation(exclude = listOf(mapper.name))
                 .withToStringImplementation()
+                .withEqualsImplementation()
+                .withHashCodeImplementation()
         }
   }
 
@@ -159,6 +161,8 @@ class SchemaTypeSpecBuilder(
                 .withCreatorImplementation()
                 .withFactoryImplementation(exclude = listOf(mapper.name), include = fragments)
                 .withToStringImplementation()
+                .withEqualsImplementation()
+                .withHashCodeImplementation()
         }
   }
 
