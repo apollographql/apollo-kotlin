@@ -42,7 +42,7 @@ data class Field(
 
   private fun toTypeName(responseType: String, typesPackage: String,
       customScalarTypeMap: Map<String, String>): TypeName {
-    val packageName = if (fields?.any() ?: false || hasFragments()) "" else typesPackage
+    val packageName = if (isNonScalar()) "" else typesPackage
     return JavaTypeResolver(customScalarTypeMap, packageName).resolve(responseType, isOptional())
   }
 
@@ -71,7 +71,7 @@ data class Field(
 
   fun isNonScalar() = hasFragments() || (fields?.any() ?: false)
 
-  fun hasFragments() = fragmentSpreads?.any() ?: false
+  fun hasFragments() = (fragmentSpreads?.any() ?: false) || (inlineFragments?.any() ?: false)
 
   fun isOptional(): Boolean = isConditional || !methodResponseType().endsWith("!")
 }
