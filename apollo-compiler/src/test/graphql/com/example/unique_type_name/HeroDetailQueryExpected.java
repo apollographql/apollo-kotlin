@@ -61,9 +61,9 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
   }
 
   public interface Data extends Operation.Data {
-    @Nullable HeroDetailQuery$ heroDetailQuery();
+    @Nullable HeroDetailQuery1 heroDetailQuery();
 
-    interface HeroDetailQuery$ {
+    interface HeroDetailQuery1 {
       @Nonnull String name();
 
       @Nullable List<? extends Friend> friends();
@@ -118,18 +118,18 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
       interface AsHuman {
         @Nonnull String name();
 
-        @Nullable List<? extends Friend$> friends();
+        @Nullable List<? extends Friend1> friends();
 
         @Nullable Double height();
 
-        interface Friend$ {
+        interface Friend1 {
           @Nonnull String name();
 
           @Nonnull List<? extends Episode> appearsIn();
 
-          @Nullable List<? extends Friend$$> friends();
+          @Nullable List<? extends Friend2> friends();
 
-          interface Friend$$ {
+          interface Friend2 {
             @Nonnull Fragments fragments();
 
             interface Fragments {
@@ -166,7 +166,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
               }
             }
 
-            final class Mapper implements ResponseFieldMapper<Friend$$> {
+            final class Mapper implements ResponseFieldMapper<Friend2> {
               final Factory factory;
 
               final Field[] fields = {
@@ -184,7 +184,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
               }
 
               @Override
-              public Friend$$ map(ResponseReader reader) throws IOException {
+              public Friend2 map(ResponseReader reader) throws IOException {
                 final __ContentValues contentValues = new __ContentValues();
                 reader.toBufferedReader().read(new ResponseReader.ValueHandler() {
                   @Override
@@ -212,11 +212,11 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
             }
 
             interface Creator {
-              @Nonnull Friend$$ create(@Nonnull Fragments fragments);
+              @Nonnull Friend2 create(@Nonnull Fragments fragments);
             }
           }
 
-          final class Mapper implements ResponseFieldMapper<Friend$> {
+          final class Mapper implements ResponseFieldMapper<Friend1> {
             final Factory factory;
 
             final Field[] fields = {
@@ -226,9 +226,9 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
                   return Episode.valueOf(reader.readString());
                 }
               }),
-              Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend$$>() {
-                @Override public Friend$$ read(final ResponseReader reader) throws IOException {
-                  return new Friend$$.Mapper(factory.friend$$Factory()).map(reader);
+              Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend2>() {
+                @Override public Friend2 read(final ResponseReader reader) throws IOException {
+                  return new Friend2.Mapper(factory.friend2Factory()).map(reader);
                 }
               })
             };
@@ -238,7 +238,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
             }
 
             @Override
-            public Friend$ map(ResponseReader reader) throws IOException {
+            public Friend1 map(ResponseReader reader) throws IOException {
               final __ContentValues contentValues = new __ContentValues();
               reader.read(new ResponseReader.ValueHandler() {
                 @Override
@@ -253,7 +253,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
                       break;
                     }
                     case 2: {
-                      contentValues.friends = (List<? extends Friend$$>) value;
+                      contentValues.friends = (List<? extends Friend2>) value;
                       break;
                     }
                   }
@@ -267,20 +267,20 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
 
               List<? extends Episode> appearsIn;
 
-              List<? extends Friend$$> friends;
+              List<? extends Friend2> friends;
             }
           }
 
           interface Factory {
             @Nonnull Creator creator();
 
-            @Nonnull Friend$$.Factory friend$$Factory();
+            @Nonnull Friend2.Factory friend2Factory();
           }
 
           interface Creator {
-            @Nonnull Friend$ create(@Nonnull String name,
+            @Nonnull Friend1 create(@Nonnull String name,
                 @Nonnull List<? extends Episode> appearsIn,
-                @Nullable List<? extends Friend$$> friends);
+                @Nullable List<? extends Friend2> friends);
           }
         }
 
@@ -289,9 +289,9 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
 
           final Field[] fields = {
             Field.forString("name", "name", null, false),
-            Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend$>() {
-              @Override public Friend$ read(final ResponseReader reader) throws IOException {
-                return new Friend$.Mapper(factory.friend$Factory()).map(reader);
+            Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend1>() {
+              @Override public Friend1 read(final ResponseReader reader) throws IOException {
+                return new Friend1.Mapper(factory.friend1Factory()).map(reader);
               }
             }),
             Field.forDouble("height", "height", null, true)
@@ -313,7 +313,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
                     break;
                   }
                   case 1: {
-                    contentValues.friends = (List<? extends Friend$>) value;
+                    contentValues.friends = (List<? extends Friend1>) value;
                     break;
                   }
                   case 2: {
@@ -329,7 +329,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
           static final class __ContentValues {
             String name;
 
-            List<? extends Friend$> friends;
+            List<? extends Friend1> friends;
 
             Double height;
           }
@@ -338,16 +338,16 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
         interface Factory {
           @Nonnull Creator creator();
 
-          @Nonnull Friend$.Factory friend$Factory();
+          @Nonnull Friend1.Factory friend1Factory();
         }
 
         interface Creator {
-          @Nonnull AsHuman create(@Nonnull String name, @Nullable List<? extends Friend$> friends,
+          @Nonnull AsHuman create(@Nonnull String name, @Nullable List<? extends Friend1> friends,
               @Nullable Double height);
         }
       }
 
-      final class Mapper implements ResponseFieldMapper<HeroDetailQuery$> {
+      final class Mapper implements ResponseFieldMapper<HeroDetailQuery1> {
         final Factory factory;
 
         final Field[] fields = {
@@ -374,7 +374,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
         }
 
         @Override
-        public HeroDetailQuery$ map(ResponseReader reader) throws IOException {
+        public HeroDetailQuery1 map(ResponseReader reader) throws IOException {
           final __ContentValues contentValues = new __ContentValues();
           reader.toBufferedReader().read(new ResponseReader.ValueHandler() {
             @Override
@@ -416,7 +416,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
       }
 
       interface Creator {
-        @Nonnull HeroDetailQuery$ create(@Nonnull String name,
+        @Nonnull HeroDetailQuery1 create(@Nonnull String name,
             @Nullable List<? extends Friend> friends, @Nullable AsHuman asHuman);
       }
     }
@@ -425,9 +425,9 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
       final Factory factory;
 
       final Field[] fields = {
-        Field.forObject("heroDetailQuery", "heroDetail", null, true, new Field.ObjectReader<HeroDetailQuery$>() {
-          @Override public HeroDetailQuery$ read(final ResponseReader reader) throws IOException {
-            return new HeroDetailQuery$.Mapper(factory.heroDetailQuery$Factory()).map(reader);
+        Field.forObject("heroDetailQuery", "heroDetail", null, true, new Field.ObjectReader<HeroDetailQuery1>() {
+          @Override public HeroDetailQuery1 read(final ResponseReader reader) throws IOException {
+            return new HeroDetailQuery1.Mapper(factory.heroDetailQuery1Factory()).map(reader);
           }
         })
       };
@@ -444,7 +444,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
           public void handle(final int fieldIndex, final Object value) throws IOException {
             switch (fieldIndex) {
               case 0: {
-                contentValues.heroDetailQuery = (HeroDetailQuery$) value;
+                contentValues.heroDetailQuery = (HeroDetailQuery1) value;
                 break;
               }
             }
@@ -454,18 +454,18 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
       }
 
       static final class __ContentValues {
-        HeroDetailQuery$ heroDetailQuery;
+        HeroDetailQuery1 heroDetailQuery;
       }
     }
 
     interface Factory {
       @Nonnull Creator creator();
 
-      @Nonnull HeroDetailQuery$.Factory heroDetailQuery$Factory();
+      @Nonnull HeroDetailQuery1.Factory heroDetailQuery1Factory();
     }
 
     interface Creator {
-      @Nonnull Data create(@Nullable HeroDetailQuery$ heroDetailQuery);
+      @Nonnull Data create(@Nullable HeroDetailQuery1 heroDetailQuery);
     }
   }
 }

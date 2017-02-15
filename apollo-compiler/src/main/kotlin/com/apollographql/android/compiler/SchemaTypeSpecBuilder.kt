@@ -162,7 +162,7 @@ class SchemaTypeSpecBuilder(
       }
 
   private fun formatUniqueTypeName(typeName: String, reservedTypeNames: List<String>): String {
-    val suffix = reservedTypeNames.count { it == typeName }.let { if (it > 0) "$".repeat(it) else "" }
+    val suffix = reservedTypeNames.count { it == typeName }.let { if (it > 0) "$it" else "" }
     return "$typeName$suffix"
   }
 

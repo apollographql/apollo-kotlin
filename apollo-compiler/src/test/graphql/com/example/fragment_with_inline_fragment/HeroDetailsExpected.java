@@ -201,11 +201,11 @@ public interface HeroDetails {
   interface AsDroid {
     @Nonnull String name();
 
-    @Nonnull FriendsConnection$ friendsConnection();
+    @Nonnull FriendsConnection1 friendsConnection();
 
     @Nullable String primaryFunction();
 
-    interface FriendsConnection$ {
+    interface FriendsConnection1 {
       @Nullable Integer totalCount();
 
       @Nullable List<? extends Edge> edges();
@@ -306,7 +306,7 @@ public interface HeroDetails {
         }
       }
 
-      final class Mapper implements ResponseFieldMapper<FriendsConnection$> {
+      final class Mapper implements ResponseFieldMapper<FriendsConnection1> {
         final Factory factory;
 
         final Field[] fields = {
@@ -323,7 +323,7 @@ public interface HeroDetails {
         }
 
         @Override
-        public FriendsConnection$ map(ResponseReader reader) throws IOException {
+        public FriendsConnection1 map(ResponseReader reader) throws IOException {
           final __ContentValues contentValues = new __ContentValues();
           reader.read(new ResponseReader.ValueHandler() {
             @Override
@@ -357,7 +357,7 @@ public interface HeroDetails {
       }
 
       interface Creator {
-        @Nonnull FriendsConnection$ create(@Nullable Integer totalCount,
+        @Nonnull FriendsConnection1 create(@Nullable Integer totalCount,
             @Nullable List<? extends Edge> edges);
       }
     }
@@ -367,9 +367,9 @@ public interface HeroDetails {
 
       final Field[] fields = {
         Field.forString("name", "name", null, false),
-        Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection$>() {
-          @Override public FriendsConnection$ read(final ResponseReader reader) throws IOException {
-            return new FriendsConnection$.Mapper(factory.friendsConnection$Factory()).map(reader);
+        Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection1>() {
+          @Override public FriendsConnection1 read(final ResponseReader reader) throws IOException {
+            return new FriendsConnection1.Mapper(factory.friendsConnection1Factory()).map(reader);
           }
         }),
         Field.forString("primaryFunction", "primaryFunction", null, true)
@@ -391,7 +391,7 @@ public interface HeroDetails {
                 break;
               }
               case 1: {
-                contentValues.friendsConnection = (FriendsConnection$) value;
+                contentValues.friendsConnection = (FriendsConnection1) value;
                 break;
               }
               case 2: {
@@ -407,7 +407,7 @@ public interface HeroDetails {
       static final class __ContentValues {
         String name;
 
-        FriendsConnection$ friendsConnection;
+        FriendsConnection1 friendsConnection;
 
         String primaryFunction;
       }
@@ -416,11 +416,11 @@ public interface HeroDetails {
     interface Factory {
       @Nonnull Creator creator();
 
-      @Nonnull FriendsConnection$.Factory friendsConnection$Factory();
+      @Nonnull FriendsConnection1.Factory friendsConnection1Factory();
     }
 
     interface Creator {
-      @Nonnull AsDroid create(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
+      @Nonnull AsDroid create(@Nonnull String name, @Nonnull FriendsConnection1 friendsConnection,
           @Nullable String primaryFunction);
     }
   }
