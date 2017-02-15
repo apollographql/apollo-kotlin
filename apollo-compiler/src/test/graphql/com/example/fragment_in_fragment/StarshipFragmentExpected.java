@@ -35,7 +35,7 @@ public interface StarshipFragment {
   @Nullable PilotConnection pilotConnection();
 
   interface PilotConnection {
-    @Nullable List<? extends Edge> edges();
+    @Nullable List<Edge> edges();
 
     interface Edge {
       @Nullable Node node();
@@ -198,7 +198,7 @@ public interface StarshipFragment {
           public void handle(final int fieldIndex, final Object value) throws IOException {
             switch (fieldIndex) {
               case 0: {
-                contentValues.edges = (List<? extends Edge>) value;
+                contentValues.edges = (List<Edge>) value;
                 break;
               }
             }
@@ -208,7 +208,7 @@ public interface StarshipFragment {
       }
 
       static final class __ContentValues {
-        List<? extends Edge> edges;
+        List<Edge> edges;
       }
     }
 
@@ -219,7 +219,7 @@ public interface StarshipFragment {
     }
 
     interface Creator {
-      @Nonnull PilotConnection create(@Nullable List<? extends Edge> edges);
+      @Nonnull PilotConnection create(@Nullable List<Edge> edges);
     }
   }
 

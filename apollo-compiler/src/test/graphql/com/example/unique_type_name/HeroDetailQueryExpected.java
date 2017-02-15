@@ -66,7 +66,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
     interface HeroDetailQuery1 {
       @Nonnull String name();
 
-      @Nullable List<? extends Friend> friends();
+      @Nullable List<Friend> friends();
 
       @Nullable AsHuman asHuman();
 
@@ -118,16 +118,16 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
       interface AsHuman {
         @Nonnull String name();
 
-        @Nullable List<? extends Friend1> friends();
+        @Nullable List<Friend1> friends();
 
         @Nullable Double height();
 
         interface Friend1 {
           @Nonnull String name();
 
-          @Nonnull List<? extends Episode> appearsIn();
+          @Nonnull List<Episode> appearsIn();
 
-          @Nullable List<? extends Friend2> friends();
+          @Nullable List<Friend2> friends();
 
           interface Friend2 {
             @Nonnull Fragments fragments();
@@ -249,11 +249,11 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
                       break;
                     }
                     case 1: {
-                      contentValues.appearsIn = (List<? extends Episode>) value;
+                      contentValues.appearsIn = (List<Episode>) value;
                       break;
                     }
                     case 2: {
-                      contentValues.friends = (List<? extends Friend2>) value;
+                      contentValues.friends = (List<Friend2>) value;
                       break;
                     }
                   }
@@ -265,9 +265,9 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
             static final class __ContentValues {
               String name;
 
-              List<? extends Episode> appearsIn;
+              List<Episode> appearsIn;
 
-              List<? extends Friend2> friends;
+              List<Friend2> friends;
             }
           }
 
@@ -278,9 +278,8 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
           }
 
           interface Creator {
-            @Nonnull Friend1 create(@Nonnull String name,
-                @Nonnull List<? extends Episode> appearsIn,
-                @Nullable List<? extends Friend2> friends);
+            @Nonnull Friend1 create(@Nonnull String name, @Nonnull List<Episode> appearsIn,
+                @Nullable List<Friend2> friends);
           }
         }
 
@@ -313,7 +312,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
                     break;
                   }
                   case 1: {
-                    contentValues.friends = (List<? extends Friend1>) value;
+                    contentValues.friends = (List<Friend1>) value;
                     break;
                   }
                   case 2: {
@@ -329,7 +328,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
           static final class __ContentValues {
             String name;
 
-            List<? extends Friend1> friends;
+            List<Friend1> friends;
 
             Double height;
           }
@@ -342,7 +341,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
         }
 
         interface Creator {
-          @Nonnull AsHuman create(@Nonnull String name, @Nullable List<? extends Friend1> friends,
+          @Nonnull AsHuman create(@Nonnull String name, @Nullable List<Friend1> friends,
               @Nullable Double height);
         }
       }
@@ -385,7 +384,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
                   break;
                 }
                 case 1: {
-                  contentValues.friends = (List<? extends Friend>) value;
+                  contentValues.friends = (List<Friend>) value;
                   break;
                 }
                 case 2: {
@@ -401,7 +400,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
         static final class __ContentValues {
           String name;
 
-          List<? extends Friend> friends;
+          List<Friend> friends;
 
           AsHuman asHuman;
         }
@@ -416,8 +415,8 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
       }
 
       interface Creator {
-        @Nonnull HeroDetailQuery1 create(@Nonnull String name,
-            @Nullable List<? extends Friend> friends, @Nullable AsHuman asHuman);
+        @Nonnull HeroDetailQuery1 create(@Nonnull String name, @Nullable List<Friend> friends,
+            @Nullable AsHuman asHuman);
       }
     }
 

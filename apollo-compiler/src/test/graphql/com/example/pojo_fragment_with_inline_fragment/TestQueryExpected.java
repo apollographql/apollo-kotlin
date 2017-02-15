@@ -106,8 +106,8 @@ public final class TestQuery implements Query<Operation.Variables> {
     public static class Hero {
       public static final Creator CREATOR = new Creator() {
         @Override
-        public @Nonnull Hero create(@Nonnull String name,
-            @Nonnull List<? extends Episode> appearsIn, @Nonnull Fragments fragments) {
+        public @Nonnull Hero create(@Nonnull String name, @Nonnull List<Episode> appearsIn,
+            @Nonnull Fragments fragments) {
           return new Hero(name, appearsIn, fragments);
         }
       };
@@ -126,12 +126,11 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       private final @Nonnull String name;
 
-      private final @Nonnull List<? extends Episode> appearsIn;
+      private final @Nonnull List<Episode> appearsIn;
 
       private final Fragments fragments;
 
-      public Hero(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
-          Fragments fragments) {
+      public Hero(@Nonnull String name, @Nonnull List<Episode> appearsIn, Fragments fragments) {
         this.name = name;
         this.appearsIn = appearsIn;
         this.fragments = fragments;
@@ -141,7 +140,7 @@ public final class TestQuery implements Query<Operation.Variables> {
         return this.name;
       }
 
-      public @Nonnull List<? extends Episode> appearsIn() {
+      public @Nonnull List<Episode> appearsIn() {
         return this.appearsIn;
       }
 
@@ -307,7 +306,7 @@ public final class TestQuery implements Query<Operation.Variables> {
                   break;
                 }
                 case 1: {
-                  contentValues.appearsIn = (List<? extends Episode>) value;
+                  contentValues.appearsIn = (List<Episode>) value;
                   break;
                 }
                 case 2: {
@@ -323,7 +322,7 @@ public final class TestQuery implements Query<Operation.Variables> {
         static final class __ContentValues {
           String name;
 
-          List<? extends Episode> appearsIn;
+          List<Episode> appearsIn;
 
           Fragments fragments;
         }
@@ -336,7 +335,7 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       public interface Creator {
-        @Nonnull Hero create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
+        @Nonnull Hero create(@Nonnull String name, @Nonnull List<Episode> appearsIn,
             @Nonnull Fragments fragments);
       }
     }

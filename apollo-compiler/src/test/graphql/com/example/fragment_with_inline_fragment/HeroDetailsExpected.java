@@ -44,7 +44,7 @@ public interface HeroDetails {
   interface FriendsConnection {
     @Nullable Integer totalCount();
 
-    @Nullable List<? extends Edge> edges();
+    @Nullable List<Edge> edges();
 
     interface Edge {
       @Nullable Node node();
@@ -170,7 +170,7 @@ public interface HeroDetails {
                 break;
               }
               case 1: {
-                contentValues.edges = (List<? extends Edge>) value;
+                contentValues.edges = (List<Edge>) value;
                 break;
               }
             }
@@ -182,7 +182,7 @@ public interface HeroDetails {
       static final class __ContentValues {
         Integer totalCount;
 
-        List<? extends Edge> edges;
+        List<Edge> edges;
       }
     }
 
@@ -193,8 +193,7 @@ public interface HeroDetails {
     }
 
     interface Creator {
-      @Nonnull FriendsConnection create(@Nullable Integer totalCount,
-          @Nullable List<? extends Edge> edges);
+      @Nonnull FriendsConnection create(@Nullable Integer totalCount, @Nullable List<Edge> edges);
     }
   }
 
@@ -208,7 +207,7 @@ public interface HeroDetails {
     interface FriendsConnection1 {
       @Nullable Integer totalCount();
 
-      @Nullable List<? extends Edge> edges();
+      @Nullable List<Edge> edges();
 
       interface Edge {
         @Nullable Node node();
@@ -334,7 +333,7 @@ public interface HeroDetails {
                   break;
                 }
                 case 1: {
-                  contentValues.edges = (List<? extends Edge>) value;
+                  contentValues.edges = (List<Edge>) value;
                   break;
                 }
               }
@@ -346,7 +345,7 @@ public interface HeroDetails {
         static final class __ContentValues {
           Integer totalCount;
 
-          List<? extends Edge> edges;
+          List<Edge> edges;
         }
       }
 
@@ -358,7 +357,7 @@ public interface HeroDetails {
 
       interface Creator {
         @Nonnull FriendsConnection1 create(@Nullable Integer totalCount,
-            @Nullable List<? extends Edge> edges);
+            @Nullable List<Edge> edges);
       }
     }
 

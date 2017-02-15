@@ -21,5 +21,5 @@ object ClassNames {
   val API_RESPONSE_READER: ClassName = ClassName.get(ResponseReader::class.java)
 
   fun parameterizedListOf(typeArgument: TypeName): TypeName =
-      ParameterizedTypeName.get(LIST, WildcardTypeName.subtypeOf(typeArgument.withoutAnnotations()))
+      ParameterizedTypeName.get(LIST, typeArgument.withoutAnnotations())
 }

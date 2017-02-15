@@ -52,7 +52,7 @@ public final class TestQuery implements Query<Operation.Variables> {
     interface Hero {
       @Nonnull String name();
 
-      @Nonnull List<? extends Episode> appearsIn();
+      @Nonnull List<Episode> appearsIn();
 
       @Nonnull Fragments fragments();
 
@@ -125,7 +125,7 @@ public final class TestQuery implements Query<Operation.Variables> {
                   break;
                 }
                 case 1: {
-                  contentValues.appearsIn = (List<? extends Episode>) value;
+                  contentValues.appearsIn = (List<Episode>) value;
                   break;
                 }
                 case 2: {
@@ -141,7 +141,7 @@ public final class TestQuery implements Query<Operation.Variables> {
         static final class __ContentValues {
           String name;
 
-          List<? extends Episode> appearsIn;
+          List<Episode> appearsIn;
 
           Fragments fragments;
         }
@@ -154,7 +154,7 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       interface Creator {
-        @Nonnull Hero create(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
+        @Nonnull Hero create(@Nonnull String name, @Nonnull List<Episode> appearsIn,
             @Nonnull Fragments fragments);
       }
     }
