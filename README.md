@@ -83,6 +83,8 @@ query DroidDetails {
 }
 ```
 
+You will also need to add your schema to the project, see instructions [HERE](http://dev.apollodata.com/ios/downloading-schema.html)
+
 From this, Apollo will generate a `DroidDetails` Java class with nested classes for reading from the network response.
 
 ```java
