@@ -49,14 +49,15 @@ buildscript {
         classpath dep.androidPlugin
         classpath dep.apolloPlugin
     }
+
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.apollographql.android'
 
 dependencies {
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.apollographql.android:converter-pojo:0.1.0'
+    dep.apolloConverter
+    dep.retrofit
 }
 
 android {
@@ -67,10 +68,6 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
     }
-}
-
-apollo {
-    generateClasses = true
 }
 ```
 
@@ -230,12 +227,11 @@ Retrofit retrofit = new Retrofit.Builder()
     .baseUrl(BASE_URL)
     .client(okHttpClient)
     .addConverterFactory(new ApolloConverterFactory.Builder().build())
-    .addConverterFactory(MoshiConverterFactory.create())
     .build();
 ApiService service = retrofit.create(ApiService.class);
 service.droidDetails(new OperationRequest<>(new DroidDetails()))
     application.service()
-            .droidDetails(new OperationRequest<>(new DroidDetails()))
+            .droidDetails(new new DroidDetails())
             .enqueue(new Callback<Response<DroidDetails.Data>>() {
               @Override
               public void onResponse(Call<Response<DroidDetails.Data>> call,
