@@ -42,6 +42,9 @@ class SchemaTypeSpecBuilder(
                 .withValueInitConstructor()
                 .withCreatorImplementation()
                 .withFactoryImplementation(exclude = listOf(mapper.name))
+                .withToStringImplementation()
+                .withEqualsImplementation()
+                .withHashCodeImplementation()
         }
   }
 
@@ -99,7 +102,7 @@ class SchemaTypeSpecBuilder(
 
   private fun fragmentsFieldSpec(): FieldSpec = FieldSpec
       .builder(ClassName.get("", FRAGMENTS_TYPE_NAME.capitalize()), FRAGMENTS_TYPE_NAME.decapitalize())
-      .addModifiers(Modifier.PRIVATE)
+      .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
       .build()
 
   /** Returns a generic `Fragments` interface with methods for each of the provided fragments */
@@ -153,6 +156,9 @@ class SchemaTypeSpecBuilder(
                 .withValueInitConstructor()
                 .withCreatorImplementation()
                 .withFactoryImplementation(exclude = listOf(mapper.name), include = fragments)
+                .withToStringImplementation()
+                .withEqualsImplementation()
+                .withHashCodeImplementation()
         }
   }
 

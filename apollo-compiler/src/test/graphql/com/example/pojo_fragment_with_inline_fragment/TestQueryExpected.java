@@ -76,6 +76,33 @@ public final class TestQuery implements Query<Operation.Variables> {
       return this.hero;
     }
 
+    @Override
+    public String toString() {
+      return "Data{"
+        + "hero=" + hero
+        + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (hero == null) ? 0 : hero.hashCode();
+      return h;
+    }
+
     public static class Hero {
       public static final Creator CREATOR = new Creator() {
         @Override
@@ -101,7 +128,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       private final @Nonnull List<? extends Episode> appearsIn;
 
-      private Fragments fragments;
+      private final Fragments fragments;
 
       public Hero(@Nonnull String name, @Nonnull List<? extends Episode> appearsIn,
           Fragments fragments) {
@@ -120,6 +147,41 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       public @Nonnull Fragments fragments() {
         return this.fragments;
+      }
+
+      @Override
+      public String toString() {
+        return "Hero{"
+          + "name=" + name + ", "
+          + "appearsIn=" + appearsIn + ", "
+          + "fragments=" + fragments
+          + "}";
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (o instanceof Hero) {
+          Hero that = (Hero) o;
+          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+           && ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn))
+           && ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
+        h *= 1000003;
+        h ^= (fragments == null) ? 0 : fragments.hashCode();
+        return h;
       }
 
       public static class Fragments {
@@ -150,6 +212,33 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         public @Nullable HeroDetails heroDetails() {
           return this.heroDetails;
+        }
+
+        @Override
+        public String toString() {
+          return "Fragments{"
+            + "heroDetails=" + heroDetails
+            + "}";
+        }
+
+        @Override
+        public boolean equals(Object o) {
+          if (o == this) {
+            return true;
+          }
+          if (o instanceof Fragments) {
+            Fragments that = (Fragments) o;
+            return ((this.heroDetails == null) ? (that.heroDetails == null) : this.heroDetails.equals(that.heroDetails));
+          }
+          return false;
+        }
+
+        @Override
+        public int hashCode() {
+          int h = 1;
+          h *= 1000003;
+          h ^= (heroDetails == null) ? 0 : heroDetails.hashCode();
+          return h;
         }
 
         public static final class Mapper implements ResponseFieldMapper<Fragments> {
