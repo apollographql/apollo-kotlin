@@ -58,9 +58,9 @@ public final class TestQuery implements Query<Operation.Variables> {
 
     boolean graphQlBooleanNonNullable();
 
-    @Nullable List<? extends Integer> graphQlListOfInt();
+    @Nullable List<Integer> graphQlListOfInt();
 
-    @Nullable List<? extends GraphQlListOfObject> graphQlListOfObjects();
+    @Nullable List<GraphQlListOfObject> graphQlListOfObjects();
 
     interface GraphQlListOfObject {
       int someField();
@@ -180,11 +180,11 @@ public final class TestQuery implements Query<Operation.Variables> {
                 break;
               }
               case 9: {
-                contentValues.graphQlListOfInt = (List<? extends Integer>) value;
+                contentValues.graphQlListOfInt = (List<Integer>) value;
                 break;
               }
               case 10: {
-                contentValues.graphQlListOfObjects = (List<? extends GraphQlListOfObject>) value;
+                contentValues.graphQlListOfObjects = (List<GraphQlListOfObject>) value;
                 break;
               }
             }
@@ -212,9 +212,9 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         boolean graphQlBooleanNonNullable;
 
-        List<? extends Integer> graphQlListOfInt;
+        List<Integer> graphQlListOfInt;
 
-        List<? extends GraphQlListOfObject> graphQlListOfObjects;
+        List<GraphQlListOfObject> graphQlListOfObjects;
       }
     }
 
@@ -229,8 +229,8 @@ public final class TestQuery implements Query<Operation.Variables> {
           @Nonnull String graphQlIdNonNullable, @Nullable Integer graphQlIntNullable,
           int graphQlIntNonNullable, @Nullable Double graphQlFloatNullable,
           double graphQlFloatNonNullable, @Nullable Boolean graphQlBooleanNullable,
-          boolean graphQlBooleanNonNullable, @Nullable List<? extends Integer> graphQlListOfInt,
-          @Nullable List<? extends GraphQlListOfObject> graphQlListOfObjects);
+          boolean graphQlBooleanNonNullable, @Nullable List<Integer> graphQlListOfInt,
+          @Nullable List<GraphQlListOfObject> graphQlListOfObjects);
     }
   }
 }

@@ -52,7 +52,7 @@ public final class TestQuery implements Query<Operation.Variables> {
     @Nullable AllStarship allStarships();
 
     interface AllStarship {
-      @Nullable List<? extends Edge> edges();
+      @Nullable List<Edge> edges();
 
       interface Edge {
         @Nullable Node node();
@@ -215,7 +215,7 @@ public final class TestQuery implements Query<Operation.Variables> {
             public void handle(final int fieldIndex, final Object value) throws IOException {
               switch (fieldIndex) {
                 case 0: {
-                  contentValues.edges = (List<? extends Edge>) value;
+                  contentValues.edges = (List<Edge>) value;
                   break;
                 }
               }
@@ -225,7 +225,7 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         static final class __ContentValues {
-          List<? extends Edge> edges;
+          List<Edge> edges;
         }
       }
 
@@ -236,7 +236,7 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       interface Creator {
-        @Nonnull AllStarship create(@Nullable List<? extends Edge> edges);
+        @Nonnull AllStarship create(@Nullable List<Edge> edges);
       }
     }
 

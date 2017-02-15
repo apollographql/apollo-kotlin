@@ -62,7 +62,7 @@ public final class TestQuery implements Query<Operation.Variables> {
       interface FriendsConnection {
         @Nullable Integer totalCount();
 
-        @Nullable List<? extends Edge> edges();
+        @Nullable List<Edge> edges();
 
         interface Edge {
           @Nullable Node node();
@@ -188,7 +188,7 @@ public final class TestQuery implements Query<Operation.Variables> {
                     break;
                   }
                   case 1: {
-                    contentValues.edges = (List<? extends Edge>) value;
+                    contentValues.edges = (List<Edge>) value;
                     break;
                   }
                 }
@@ -200,7 +200,7 @@ public final class TestQuery implements Query<Operation.Variables> {
           static final class __ContentValues {
             Integer totalCount;
 
-            List<? extends Edge> edges;
+            List<Edge> edges;
           }
         }
 
@@ -212,7 +212,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         interface Creator {
           @Nonnull FriendsConnection create(@Nullable Integer totalCount,
-              @Nullable List<? extends Edge> edges);
+              @Nullable List<Edge> edges);
         }
       }
 

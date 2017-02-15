@@ -106,8 +106,7 @@ public final class TestQuery implements Query<Operation.Variables> {
       public static final Creator CREATOR = new Creator() {
         @Override
         public @Nonnull Hero create(@Nonnull String name, @Nonnull Date birthDate,
-            @Nonnull List<? extends Date> appearanceDates,
-            @Nonnull Object fieldWithUnsupportedType) {
+            @Nonnull List<Date> appearanceDates, @Nonnull Object fieldWithUnsupportedType) {
           return new Hero(name, birthDate, appearanceDates, fieldWithUnsupportedType);
         }
       };
@@ -123,12 +122,12 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       private final @Nonnull Date birthDate;
 
-      private final @Nonnull List<? extends Date> appearanceDates;
+      private final @Nonnull List<Date> appearanceDates;
 
       private final @Nonnull Object fieldWithUnsupportedType;
 
       public Hero(@Nonnull String name, @Nonnull Date birthDate,
-          @Nonnull List<? extends Date> appearanceDates, @Nonnull Object fieldWithUnsupportedType) {
+          @Nonnull List<Date> appearanceDates, @Nonnull Object fieldWithUnsupportedType) {
         this.name = name;
         this.birthDate = birthDate;
         this.appearanceDates = appearanceDates;
@@ -143,7 +142,7 @@ public final class TestQuery implements Query<Operation.Variables> {
         return this.birthDate;
       }
 
-      public @Nonnull List<? extends Date> appearanceDates() {
+      public @Nonnull List<Date> appearanceDates() {
         return this.appearanceDates;
       }
 
@@ -224,7 +223,7 @@ public final class TestQuery implements Query<Operation.Variables> {
                   break;
                 }
                 case 2: {
-                  contentValues.appearanceDates = (List<? extends Date>) value;
+                  contentValues.appearanceDates = (List<Date>) value;
                   break;
                 }
                 case 3: {
@@ -242,7 +241,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
           Date birthDate;
 
-          List<? extends Date> appearanceDates;
+          List<Date> appearanceDates;
 
           Object fieldWithUnsupportedType;
         }
@@ -254,8 +253,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       public interface Creator {
         @Nonnull Hero create(@Nonnull String name, @Nonnull Date birthDate,
-            @Nonnull List<? extends Date> appearanceDates,
-            @Nonnull Object fieldWithUnsupportedType);
+            @Nonnull List<Date> appearanceDates, @Nonnull Object fieldWithUnsupportedType);
       }
     }
 

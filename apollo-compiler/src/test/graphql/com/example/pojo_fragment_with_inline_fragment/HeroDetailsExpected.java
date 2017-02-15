@@ -124,7 +124,7 @@ public class HeroDetails {
     public static final Creator CREATOR = new Creator() {
       @Override
       public @Nonnull FriendsConnection create(@Nullable Integer totalCount,
-          @Nullable List<? extends Edge> edges) {
+          @Nullable List<Edge> edges) {
         return new FriendsConnection(totalCount, edges);
       }
     };
@@ -143,9 +143,9 @@ public class HeroDetails {
 
     private final @Nullable Integer totalCount;
 
-    private final @Nullable List<? extends Edge> edges;
+    private final @Nullable List<Edge> edges;
 
-    public FriendsConnection(@Nullable Integer totalCount, @Nullable List<? extends Edge> edges) {
+    public FriendsConnection(@Nullable Integer totalCount, @Nullable List<Edge> edges) {
       this.totalCount = totalCount;
       this.edges = edges;
     }
@@ -154,7 +154,7 @@ public class HeroDetails {
       return this.totalCount;
     }
 
-    public @Nullable List<? extends Edge> edges() {
+    public @Nullable List<Edge> edges() {
       return this.edges;
     }
 
@@ -416,7 +416,7 @@ public class HeroDetails {
                 break;
               }
               case 1: {
-                contentValues.edges = (List<? extends Edge>) value;
+                contentValues.edges = (List<Edge>) value;
                 break;
               }
             }
@@ -428,7 +428,7 @@ public class HeroDetails {
       static final class __ContentValues {
         Integer totalCount;
 
-        List<? extends Edge> edges;
+        List<Edge> edges;
       }
     }
 
@@ -439,8 +439,7 @@ public class HeroDetails {
     }
 
     public interface Creator {
-      @Nonnull FriendsConnection create(@Nullable Integer totalCount,
-          @Nullable List<? extends Edge> edges);
+      @Nonnull FriendsConnection create(@Nullable Integer totalCount, @Nullable List<Edge> edges);
     }
   }
 
@@ -528,8 +527,7 @@ public class HeroDetails {
     public static class FriendsConnection1 {
       public static final Creator CREATOR = new Creator() {
         @Override
-        public @Nonnull FriendsConnection1 create(int totalCount,
-            @Nullable List<? extends Edge> edges) {
+        public @Nonnull FriendsConnection1 create(int totalCount, @Nullable List<Edge> edges) {
           return new FriendsConnection1(totalCount, edges);
         }
       };
@@ -548,9 +546,9 @@ public class HeroDetails {
 
       private final int totalCount;
 
-      private final @Nullable List<? extends Edge> edges;
+      private final @Nullable List<Edge> edges;
 
-      public FriendsConnection1(int totalCount, @Nullable List<? extends Edge> edges) {
+      public FriendsConnection1(int totalCount, @Nullable List<Edge> edges) {
         this.totalCount = totalCount;
         this.edges = edges;
       }
@@ -559,7 +557,7 @@ public class HeroDetails {
         return this.totalCount;
       }
 
-      public @Nullable List<? extends Edge> edges() {
+      public @Nullable List<Edge> edges() {
         return this.edges;
       }
 
@@ -821,7 +819,7 @@ public class HeroDetails {
                   break;
                 }
                 case 1: {
-                  contentValues.edges = (List<? extends Edge>) value;
+                  contentValues.edges = (List<Edge>) value;
                   break;
                 }
               }
@@ -833,7 +831,7 @@ public class HeroDetails {
         static final class __ContentValues {
           int totalCount;
 
-          List<? extends Edge> edges;
+          List<Edge> edges;
         }
       }
 
@@ -844,7 +842,7 @@ public class HeroDetails {
       }
 
       public interface Creator {
-        @Nonnull FriendsConnection1 create(int totalCount, @Nullable List<? extends Edge> edges);
+        @Nonnull FriendsConnection1 create(int totalCount, @Nullable List<Edge> edges);
       }
     }
 

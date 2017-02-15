@@ -70,14 +70,14 @@ public final class TestQuery implements Query<Operation.Variables> {
       interface AsHuman {
         @Nonnull String name();
 
-        @Nullable List<? extends Friend> friends();
+        @Nullable List<Friend> friends();
 
         @Nullable Double height();
 
         interface Friend {
           @Nonnull String name();
 
-          @Nonnull List<? extends Episode> appearsIn();
+          @Nonnull List<Episode> appearsIn();
 
           final class Mapper implements ResponseFieldMapper<Friend> {
             final Factory factory;
@@ -107,7 +107,7 @@ public final class TestQuery implements Query<Operation.Variables> {
                       break;
                     }
                     case 1: {
-                      contentValues.appearsIn = (List<? extends Episode>) value;
+                      contentValues.appearsIn = (List<Episode>) value;
                       break;
                     }
                   }
@@ -119,7 +119,7 @@ public final class TestQuery implements Query<Operation.Variables> {
             static final class __ContentValues {
               String name;
 
-              List<? extends Episode> appearsIn;
+              List<Episode> appearsIn;
             }
           }
 
@@ -128,8 +128,7 @@ public final class TestQuery implements Query<Operation.Variables> {
           }
 
           interface Creator {
-            @Nonnull Friend create(@Nonnull String name,
-                @Nonnull List<? extends Episode> appearsIn);
+            @Nonnull Friend create(@Nonnull String name, @Nonnull List<Episode> appearsIn);
           }
         }
 
@@ -162,7 +161,7 @@ public final class TestQuery implements Query<Operation.Variables> {
                     break;
                   }
                   case 1: {
-                    contentValues.friends = (List<? extends Friend>) value;
+                    contentValues.friends = (List<Friend>) value;
                     break;
                   }
                   case 2: {
@@ -178,7 +177,7 @@ public final class TestQuery implements Query<Operation.Variables> {
           static final class __ContentValues {
             String name;
 
-            List<? extends Friend> friends;
+            List<Friend> friends;
 
             Double height;
           }
@@ -191,7 +190,7 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         interface Creator {
-          @Nonnull AsHuman create(@Nonnull String name, @Nullable List<? extends Friend> friends,
+          @Nonnull AsHuman create(@Nonnull String name, @Nullable List<Friend> friends,
               @Nullable Double height);
         }
       }
@@ -199,7 +198,7 @@ public final class TestQuery implements Query<Operation.Variables> {
       interface AsDroid {
         @Nonnull String name();
 
-        @Nullable List<? extends Friend> friends();
+        @Nullable List<Friend> friends();
 
         @Nullable String primaryFunction();
 
@@ -286,7 +285,7 @@ public final class TestQuery implements Query<Operation.Variables> {
                     break;
                   }
                   case 1: {
-                    contentValues.friends = (List<? extends Friend>) value;
+                    contentValues.friends = (List<Friend>) value;
                     break;
                   }
                   case 2: {
@@ -302,7 +301,7 @@ public final class TestQuery implements Query<Operation.Variables> {
           static final class __ContentValues {
             String name;
 
-            List<? extends Friend> friends;
+            List<Friend> friends;
 
             String primaryFunction;
           }
@@ -315,7 +314,7 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         interface Creator {
-          @Nonnull AsDroid create(@Nonnull String name, @Nullable List<? extends Friend> friends,
+          @Nonnull AsDroid create(@Nonnull String name, @Nullable List<Friend> friends,
               @Nullable String primaryFunction);
         }
       }
