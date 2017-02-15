@@ -9,18 +9,66 @@ Apollo-Android is a GraphQL compliant client that generates Java models from sta
 
 
 ## Usage
+Add the following to your project's top level `build.gradle` file
 
 ```groovy
-buildscript {
-  repositories {
-    mavenCentral()
-  }
-  dependencies {
-    classpath 'com.apollographql.android:gradle-plugin:$CURRENT_APOLLO_VERSION'
-  }
+
+ext {
+    compileSdkVersion = 25
+    buildToolsVersion = '25.0.2'
+    apolloVersion = '0.2.1-SNAPSHOT'
+
+    dep = [
+            androidPlugin: 'com.android.tools.build:gradle:2.3.0-beta3',
+            apolloPlugin: "com.apollographql.android:gradle-plugin:$apolloVersion",
+            apolloConverter: "com.apollographql.android:converter:$apolloVersion",
+            retrofit: 'com.squareup.retrofit2:retrofit:2.1.0']
 }
 
+subprojects {
+    buildscript {
+        repositories {
+            jcenter()
+            maven { url "https://jitpack.io" }
+            maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        }
+    }
+    repositories {
+        jcenter()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    }
+}
+
+
+```
+
+within your app module's `build.gradle` add the following:
+```
+buildscript {
+    dependencies {
+        classpath dep.androidPlugin
+        classpath dep.apolloPlugin
+    }
+
+}
+
+apply plugin: 'com.android.application'
 apply plugin: 'com.apollographql.android'
+
+dependencies {
+    dep.apolloConverter
+    dep.retrofit
+}
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 25
+    }
+}
 ```
 
 To use Apollo, put your GraphQL queries in a `.graphql` file, like `src/main/graphql/com/example/DroidDetails.grapqhl`.  There is nothing special about this query, it can be shared with other GraphQL clients as well
@@ -34,6 +82,8 @@ query DroidDetails {
   }
 }
 ```
+
+You will also need to add your schema to the project, see instructions [HERE](http://dev.apollodata.com/ios/downloading-schema.html)
 
 From this, Apollo will generate a `DroidDetails` Java class with nested classes for reading from the network response.
 
@@ -179,12 +229,11 @@ Retrofit retrofit = new Retrofit.Builder()
     .baseUrl(BASE_URL)
     .client(okHttpClient)
     .addConverterFactory(new ApolloConverterFactory.Builder().build())
-    .addConverterFactory(MoshiConverterFactory.create())
     .build();
 ApiService service = retrofit.create(ApiService.class);
 service.droidDetails(new OperationRequest<>(new DroidDetails()))
     application.service()
-            .droidDetails(new OperationRequest<>(new DroidDetails()))
+            .droidDetails(new new DroidDetails())
             .enqueue(new Callback<Response<DroidDetails.Data>>() {
               @Override
               public void onResponse(Call<Response<DroidDetails.Data>> call,
