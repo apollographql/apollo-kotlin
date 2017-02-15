@@ -448,7 +448,7 @@ public class HeroDetails {
     public static final Creator CREATOR = new Creator() {
       @Override
       public @Nonnull AsDroid create(@Nonnull String name,
-          @Nonnull FriendsConnection$ friendsConnection, @Nullable String primaryFunction) {
+          @Nonnull FriendsConnection1 friendsConnection, @Nullable String primaryFunction) {
         return new AsDroid(name, friendsConnection, primaryFunction);
       }
     };
@@ -460,18 +460,18 @@ public class HeroDetails {
       }
 
       @Override
-      public @Nonnull FriendsConnection$.Factory friendsConnection$Factory() {
-        return FriendsConnection$.FACTORY;
+      public @Nonnull FriendsConnection1.Factory friendsConnection1Factory() {
+        return FriendsConnection1.FACTORY;
       }
     };
 
     private final @Nonnull String name;
 
-    private final @Nonnull FriendsConnection$ friendsConnection;
+    private final @Nonnull FriendsConnection1 friendsConnection;
 
     private final @Nullable String primaryFunction;
 
-    public AsDroid(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
+    public AsDroid(@Nonnull String name, @Nonnull FriendsConnection1 friendsConnection,
         @Nullable String primaryFunction) {
       this.name = name;
       this.friendsConnection = friendsConnection;
@@ -482,7 +482,7 @@ public class HeroDetails {
       return this.name;
     }
 
-    public @Nonnull FriendsConnection$ friendsConnection() {
+    public @Nonnull FriendsConnection1 friendsConnection() {
       return this.friendsConnection;
     }
 
@@ -525,12 +525,12 @@ public class HeroDetails {
       return h;
     }
 
-    public static class FriendsConnection$ {
+    public static class FriendsConnection1 {
       public static final Creator CREATOR = new Creator() {
         @Override
-        public @Nonnull FriendsConnection$ create(int totalCount,
+        public @Nonnull FriendsConnection1 create(int totalCount,
             @Nullable List<? extends Edge> edges) {
-          return new FriendsConnection$(totalCount, edges);
+          return new FriendsConnection1(totalCount, edges);
         }
       };
 
@@ -550,7 +550,7 @@ public class HeroDetails {
 
       private final @Nullable List<? extends Edge> edges;
 
-      public FriendsConnection$(int totalCount, @Nullable List<? extends Edge> edges) {
+      public FriendsConnection1(int totalCount, @Nullable List<? extends Edge> edges) {
         this.totalCount = totalCount;
         this.edges = edges;
       }
@@ -565,7 +565,7 @@ public class HeroDetails {
 
       @Override
       public String toString() {
-        return "FriendsConnection${"
+        return "FriendsConnection1{"
           + "totalCount=" + totalCount + ", "
           + "edges=" + edges
           + "}";
@@ -576,8 +576,8 @@ public class HeroDetails {
         if (o == this) {
           return true;
         }
-        if (o instanceof FriendsConnection$) {
-          FriendsConnection$ that = (FriendsConnection$) o;
+        if (o instanceof FriendsConnection1) {
+          FriendsConnection1 that = (FriendsConnection1) o;
           return this.totalCount == that.totalCount
            && ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
         }
@@ -793,7 +793,7 @@ public class HeroDetails {
         }
       }
 
-      public static final class Mapper implements ResponseFieldMapper<FriendsConnection$> {
+      public static final class Mapper implements ResponseFieldMapper<FriendsConnection1> {
         final Factory factory;
 
         final Field[] fields = {
@@ -810,7 +810,7 @@ public class HeroDetails {
         }
 
         @Override
-        public FriendsConnection$ map(ResponseReader reader) throws IOException {
+        public FriendsConnection1 map(ResponseReader reader) throws IOException {
           final __ContentValues contentValues = new __ContentValues();
           reader.read(new ResponseReader.ValueHandler() {
             @Override
@@ -844,7 +844,7 @@ public class HeroDetails {
       }
 
       public interface Creator {
-        @Nonnull FriendsConnection$ create(int totalCount, @Nullable List<? extends Edge> edges);
+        @Nonnull FriendsConnection1 create(int totalCount, @Nullable List<? extends Edge> edges);
       }
     }
 
@@ -853,9 +853,9 @@ public class HeroDetails {
 
       final Field[] fields = {
         Field.forString("name", "name", null, false),
-        Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection$>() {
-          @Override public FriendsConnection$ read(final ResponseReader reader) throws IOException {
-            return new FriendsConnection$.Mapper(factory.friendsConnection$Factory()).map(reader);
+        Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection1>() {
+          @Override public FriendsConnection1 read(final ResponseReader reader) throws IOException {
+            return new FriendsConnection1.Mapper(factory.friendsConnection1Factory()).map(reader);
           }
         }),
         Field.forString("primaryFunction", "primaryFunction", null, true)
@@ -877,7 +877,7 @@ public class HeroDetails {
                 break;
               }
               case 1: {
-                contentValues.friendsConnection = (FriendsConnection$) value;
+                contentValues.friendsConnection = (FriendsConnection1) value;
                 break;
               }
               case 2: {
@@ -893,7 +893,7 @@ public class HeroDetails {
       static final class __ContentValues {
         String name;
 
-        FriendsConnection$ friendsConnection;
+        FriendsConnection1 friendsConnection;
 
         String primaryFunction;
       }
@@ -902,11 +902,11 @@ public class HeroDetails {
     public interface Factory {
       @Nonnull Creator creator();
 
-      @Nonnull FriendsConnection$.Factory friendsConnection$Factory();
+      @Nonnull FriendsConnection1.Factory friendsConnection1Factory();
     }
 
     public interface Creator {
-      @Nonnull AsDroid create(@Nonnull String name, @Nonnull FriendsConnection$ friendsConnection,
+      @Nonnull AsDroid create(@Nonnull String name, @Nonnull FriendsConnection1 friendsConnection,
           @Nullable String primaryFunction);
     }
   }

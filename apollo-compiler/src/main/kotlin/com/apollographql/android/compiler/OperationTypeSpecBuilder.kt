@@ -12,15 +12,16 @@ class OperationTypeSpecBuilder(
   private val OPERATION_VARIABLES_CLASS_NAME = ClassName.get("", "$OPERATION_TYPE_NAME.Variables")
 
   override fun toTypeSpec(context: CodeGenerationContext): TypeSpec {
+    val newContext = context.plusReservedTypes(OPERATION_TYPE_NAME)
     return TypeSpec.classBuilder(OPERATION_TYPE_NAME)
         .addAnnotation(Annotations.GENERATED_BY_APOLLO)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
         .addQuerySuperInterface(operation.variables.isNotEmpty())
         .addOperationDefinition(operation)
-        .addQueryDocumentDefinition(fragments, context)
+        .addQueryDocumentDefinition(fragments, newContext)
         .addQueryConstructor(operation.variables.isNotEmpty())
-        .addVariablesDefinition(operation.variables, context.typesPackage, context.customTypeMap)
-        .addType(operation.toTypeSpec(context))
+        .addVariablesDefinition(operation.variables, newContext.typesPackage, newContext.customTypeMap)
+        .addType(operation.toTypeSpec(newContext))
         .build()
   }
 
