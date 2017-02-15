@@ -490,10 +490,45 @@ public class HeroDetails {
       return this.primaryFunction;
     }
 
-    public static class FriendsConnection$ {
+    @Override
+    public String toString() {
+      return "AsDroid{"
+        + "name=" + name + ", "
+        + "friendsConnection=" + friendsConnection + ", "
+        + "primaryFunction=" + primaryFunction
+        + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof AsDroid) {
+        AsDroid that = (AsDroid) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         && ((this.friendsConnection == null) ? (that.friendsConnection == null) : this.friendsConnection.equals(that.friendsConnection))
+         && ((this.primaryFunction == null) ? (that.primaryFunction == null) : this.primaryFunction.equals(that.primaryFunction));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (name == null) ? 0 : name.hashCode();
+      h *= 1000003;
+      h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
+      h *= 1000003;
+      h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
+      return h;
+    }
+
+    public static class FriendsConnection1 {
       public static final Creator CREATOR = new Creator() {
         @Override
-        public @Nonnull FriendsConnection$ create(@Nullable Integer totalCount,
+        public @Nonnull FriendsConnection1 create(int totalCount,
             @Nullable List<? extends Edge> edges) {
           return new FriendsConnection1(totalCount, edges);
         }
@@ -515,8 +550,7 @@ public class HeroDetails {
 
       private final @Nullable List<? extends Edge> edges;
 
-      public FriendsConnection$(@Nullable Integer totalCount,
-          @Nullable List<? extends Edge> edges) {
+      public FriendsConnection1(int totalCount, @Nullable List<? extends Edge> edges) {
         this.totalCount = totalCount;
         this.edges = edges;
       }
@@ -531,7 +565,7 @@ public class HeroDetails {
 
       @Override
       public String toString() {
-        return "FriendsConnection${"
+        return "FriendsConnection1{"
           + "totalCount=" + totalCount + ", "
           + "edges=" + edges
           + "}";
@@ -542,8 +576,8 @@ public class HeroDetails {
         if (o == this) {
           return true;
         }
-        if (o instanceof FriendsConnection$) {
-          FriendsConnection$ that = (FriendsConnection$) o;
+        if (o instanceof FriendsConnection1) {
+          FriendsConnection1 that = (FriendsConnection1) o;
           return this.totalCount == that.totalCount
            && ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
         }
@@ -810,8 +844,7 @@ public class HeroDetails {
       }
 
       public interface Creator {
-        @Nonnull FriendsConnection$ create(@Nullable Integer totalCount,
-            @Nullable List<? extends Edge> edges);
+        @Nonnull FriendsConnection1 create(int totalCount, @Nullable List<? extends Edge> edges);
       }
     }
 
