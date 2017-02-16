@@ -89,6 +89,11 @@ public final class ApolloConverterFactory extends Converter.Factory {
       return this;
     }
 
+    public Builder withResponseFieldMappers(@Nonnull Map<Type, ResponseFieldMapper> mappers) {
+      responseFieldMappers.putAll(mappers);
+      return this;
+    }
+
     public ApolloConverterFactory build() {
       return new ApolloConverterFactory(responseFieldMappers, customTypeAdapters, moshiBuilder.build());
     }

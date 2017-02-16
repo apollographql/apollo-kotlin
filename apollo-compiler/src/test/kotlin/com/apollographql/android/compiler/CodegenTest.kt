@@ -17,7 +17,7 @@ import javax.tools.JavaFileObject
 class CodeGenTest(val testDir: File, val pkgName: String, val generatePOJO: Boolean,
     val customScalarTypeMap: Map<String, String>) {
   private val testDirPath = testDir.toPath()
-  private val expectedFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**Expected.java")
+  private val expectedFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.java")
 
   private val compiler = GraphQLCompiler()
   private val outputDir = GraphQLCompiler.Companion.OUTPUT_DIRECTORY.fold(File("build"), ::File)
