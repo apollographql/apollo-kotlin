@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class ResponseFieldMappers {
+public final class ResponseFieldMappers {
   public static final Map<Type, ResponseFieldMapper> MAPPERS = Collections.unmodifiableMap(
     new HashMap<Type, ResponseFieldMapper>() {
       {

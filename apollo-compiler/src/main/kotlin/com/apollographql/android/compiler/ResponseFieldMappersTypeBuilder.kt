@@ -12,7 +12,7 @@ import javax.lang.model.element.Modifier
  * Example of generated class:
  *
  * ```
- * public abstract class ResponseFieldMappers {
+ * public final class ResponseFieldMappers {
  *   public static final Map<Type, ResponseFieldMapper> MAPPERS = Collections.unmodifiableMap(
  *     new HashMap<Type, ResponseFieldMapper>() {
  *       {
@@ -30,7 +30,7 @@ import javax.lang.model.element.Modifier
 class ResponseFieldMappersTypeBuilder(val operationJavaClasses: List<ClassName>) {
   fun build(): TypeSpec {
     return TypeSpec.classBuilder("ResponseFieldMappers")
-        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
         .addMethod(MethodSpec.constructorBuilder()
             .addModifiers(Modifier.PRIVATE)
             .build())
