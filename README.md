@@ -247,6 +247,55 @@ service.droidDetails(new OperationRequest<>(new DroidDetails()))
             });
 ```
 
+## Custom Scalar Types
+
+Apollo supports Custom Scalar Types like `DateTime` for an example.
+
+You first need to define the mapping in your build.gradle file. This will tell the compiler what type to use when generating the classes.
+
+```
+apollo {
+    generateClasses = true
+    customTypeMapping {
+        DateTime = "java.util.Date"
+    }
+}
+```
+
+Then register your custom adapter:
+
+```
+CustomTypeAdapter<Date> dateCustomTypeAdapter = new CustomTypeAdapter<Date>() {
+    @Override
+    public Date decode(String value) {
+        try {
+            return ISO8601_DATE_FORMAT.parse(value);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @Override
+    public String encode(Date value) {
+        return ISO8601_DATE_FORMAT.format(value);
+    }
+};
+
+ApolloConverterFactory apolloConverterFactory = new ApolloConverterFactory.Builder()
+        .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
+        .withResponseFieldMapper(FeedQuery.Data.class, new FeedQuery.Data.Mapper(FeedQuery.Data.FACTORY))
+        .build();
+```
+
+## Generate interfaces instead of classes
+
+You can have the compiler generate interfaces instead of classes if it's easier to integrate with your existing framework:. More on that soon.
+
+```
+{
+  generateClasses=false
+}
+```
+
 ## License
 
 ```
