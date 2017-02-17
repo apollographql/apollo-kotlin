@@ -3,7 +3,8 @@ package com.example.apollographql.sample;
 import android.app.Application;
 
 import com.apollographql.android.converter.ApolloConverterFactory;
-import com.example.FeedQuery;
+import com.example.AllPosts;
+import com.example.Upvote;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.io.File;
@@ -14,10 +15,11 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 public class SampleApplication extends Application {
-  private static final String BASE_URL = "https://githunt-api.herokuapp.com";
+  // Change localhost to your machine's local IP address when running from a device
+  private static final String BASE_URL = "http://127.0.0.1:8080";
   private OkHttpClient okHttpClient;
   private Retrofit retrofit;
-  private GithuntApiService githuntApiService;
+  private FrontPageService frontPageService;
 
   @Override public void onCreate() {
     super.onCreate();
@@ -32,10 +34,11 @@ public class SampleApplication extends Application {
         .client(okHttpClient)
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(new ApolloConverterFactory.Builder()
-            .withResponseFieldMapper(FeedQuery.Data.class, new FeedQuery.Data.Mapper(FeedQuery.Data.FACTORY))
+            .withResponseFieldMapper(AllPosts.Data.class, new AllPosts.Data.Mapper(AllPosts.Data.FACTORY))
+            .withResponseFieldMapper(Upvote.Data.class, new Upvote.Data.Mapper(Upvote.Data.FACTORY))
             .build())
         .build();
-    githuntApiService = retrofit.create(GithuntApiService.class);
+    frontPageService = retrofit.create(FrontPageService.class);
   }
 
   public OkHttpClient okHttpClient() {
@@ -46,7 +49,7 @@ public class SampleApplication extends Application {
     return retrofit;
   }
 
-  public GithuntApiService githuntApiService() {
-    return githuntApiService;
+  public FrontPageService frontPageService() {
+    return frontPageService;
   }
 }
