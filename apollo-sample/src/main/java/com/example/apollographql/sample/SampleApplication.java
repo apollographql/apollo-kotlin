@@ -3,7 +3,6 @@ package com.example.apollographql.sample;
 import android.app.Application;
 
 import com.apollographql.android.converter.ApolloConverterFactory;
-import com.example.FeedQuery;
 import com.example.ResponseFieldMappers;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
