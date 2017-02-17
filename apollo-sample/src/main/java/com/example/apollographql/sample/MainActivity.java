@@ -8,12 +8,12 @@ import android.widget.Toast;
 
 import com.apollographql.android.api.graphql.Response;
 import com.example.FeedQuery;
+import com.example.type.FeedType;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import type.FeedType;
 
 public class MainActivity extends AppCompatActivity {
   private static final String TAG = "MainActivity";
