@@ -282,7 +282,7 @@ CustomTypeAdapter<Date> dateCustomTypeAdapter = new CustomTypeAdapter<Date>() {
 
 ApolloConverterFactory apolloConverterFactory = new ApolloConverterFactory.Builder()
         .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
-        .withResponseFieldMapper(FeedQuery.Data.class, new FeedQuery.Data.Mapper(FeedQuery.Data.FACTORY))
+        .withResponseFieldMappers(ResponseFieldMappers.MAPPERS)
         .build();
 ```
 
