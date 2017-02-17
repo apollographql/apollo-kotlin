@@ -40,19 +40,19 @@
     {
       "kind": "EnumType",
       "name": "Episode",
-      "description": "The episodes in the Star War$S trilogy",
+      "description": "The episodes in the Star Wars trilogy (with special symbol $S)",
       "values": [
         {
           "name": "NEWHOPE",
-          "description": "Star War$S Episode IV: A New Hope, released in 1977."
+          "description": "Star Wars Episode IV: A New Hope, released in 1977. (with special symbol $S)"
         },
         {
           "name": "EMPIRE",
           "description": "Star Wars Episode V: The Empire Strikes Back, released in 1980."
         },
         {
-          "name": "JEDI",
-          "description": "Star Wars Episode VI: Return of the Jedi, released in 1983."
+          "name": "jedi",
+          "description": "Star Wars Episode VI: Return of the Jedi, released in 1983. (JEDI in lowercase)"
         }
       ]
     }

@@ -33,9 +33,9 @@ data class TypeDeclaration(
     fun TypeSpec.Builder.addEnumConstants(): TypeSpec.Builder {
       values?.forEach {
         if (it.description.isNullOrEmpty()) {
-          addEnumConstant(it.name.toUpperCase())
+          addEnumConstant(it.name)
         } else {
-          addEnumConstant(it.name.toUpperCase(), TypeSpec.anonymousClassBuilder("")
+          addEnumConstant(it.name, TypeSpec.anonymousClassBuilder("")
               .addJavadoc("\$L\n", it.description)
               .build())
         }
