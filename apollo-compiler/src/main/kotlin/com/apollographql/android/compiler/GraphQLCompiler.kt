@@ -1,33 +1,68 @@
 package com.apollographql.android.compiler
 
-import com.apollographql.android.compiler.ir.*
+import com.apollographql.android.compiler.ir.CodeGenerationContext
+import com.apollographql.android.compiler.ir.CodeGenerationIR
+import com.apollographql.android.compiler.ir.TypeDeclaration
+import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.JavaFile
 import com.squareup.moshi.Moshi
 import java.io.File
 
 open class GraphQLCompiler {
   private val moshi = Moshi.Builder().build()
-  private val irAdapter = moshi.adapter(OperationIntermediateRepresentation::class.java)
+  private val irAdapter = moshi.adapter(CodeGenerationIR::class.java)
 
   fun write(irFile: File, outputDir: File, generateClasses: Boolean = false,
       customTypeMap: Map<String, String> = emptyMap()) {
     val ir = irAdapter.fromJson(irFile.readText())
     val irPackageName = irFile.absolutePath.formatPackageName()
-    val fragmentsPackage = if (irPackageName.length > 0) "$irPackageName.fragment" else "fragment"
-    val typesPackage = if (irPackageName.length > 0) "$irPackageName.type" else "type"
+    val fragmentsPackage = if (irPackageName.isNotEmpty()) "$irPackageName.fragment" else "fragment"
+    val typesPackage = if (irPackageName.isNotEmpty()) "$irPackageName.type" else "type"
     val supportedScalarTypeMapping = customTypeMap.supportedScalarTypeMapping(ir.typesUsed)
-    val codeGenerationContext = CodeGenerationContext(!generateClasses, emptyList(), ir.typesUsed, fragmentsPackage,
-        typesPackage, supportedScalarTypeMapping)
-    val operationTypeBuilders = ir.operations.map { OperationTypeSpecBuilder(it, ir.fragments) }
-    (operationTypeBuilders + ir.fragments + ir.typesUsed.supportedTypeDeclarations()).forEach {
-      val packageName = javaFilePackageName(it, irPackageName, fragmentsPackage, typesPackage)
-      val typeSpec = it.toTypeSpec(codeGenerationContext)
-      JavaFile.builder(packageName, typeSpec).build().writeTo(outputDir)
+    val context = CodeGenerationContext(
+        abstractType = !generateClasses,
+        reservedTypeNames = emptyList(),
+        typeDeclarations = ir.typesUsed,
+        fragmentsPackage = fragmentsPackage,
+        typesPackage = typesPackage,
+        customTypeMap = supportedScalarTypeMapping
+    )
+    ir.writeTypeUsed(context, outputDir)
+    ir.writeFragments(context, outputDir)
+    ir.writeOperations(context, irPackageName, outputDir)
+  }
+
+  private fun CodeGenerationIR.writeFragments(context: CodeGenerationContext, outputDir: File) {
+    fragments.forEach {
+      val typeSpec = it.toTypeSpec(context)
+      JavaFile.builder(context.fragmentsPackage, typeSpec).build().writeTo(outputDir)
+    }
+  }
+
+  private fun CodeGenerationIR.writeTypeUsed(context: CodeGenerationContext, outputDir: File) {
+    typesUsed.supportedTypeDeclarations().forEach {
+      val typeSpec = it.toTypeSpec(context)
+      JavaFile.builder(context.typesPackage, typeSpec).build().writeTo(outputDir)
     }
 
-    if (supportedScalarTypeMapping.isNotEmpty()) {
-      val typeSpec = CustomEnumTypeSpecBuilder(codeGenerationContext).build()
-      JavaFile.builder(typesPackage, typeSpec).build().writeTo(outputDir)
+    if (context.customTypeMap.isNotEmpty()) {
+      val typeSpec = CustomEnumTypeSpecBuilder(context).build()
+      JavaFile.builder(context.typesPackage, typeSpec).build().writeTo(outputDir)
+    }
+  }
+
+  private fun CodeGenerationIR.writeOperations(context: CodeGenerationContext, irPackageName: String, outputDir: File) {
+    val operationJavaClasses = operations.map { OperationTypeSpecBuilder(it, fragments) }
+        .map {
+          val packageName = it.operation.filePath.formatPackageName()
+          val typeSpec = it.toTypeSpec(context)
+          JavaFile.builder(packageName, typeSpec).build().writeTo(outputDir)
+          ClassName.get(packageName, typeSpec.name)
+        }
+
+    if (!context.abstractType) {
+      val typeSpec = ResponseFieldMappersTypeBuilder(operationJavaClasses).build()
+      JavaFile.builder(irPackageName, typeSpec).build().writeTo(outputDir)
     }
   }
 
@@ -37,16 +72,6 @@ open class GraphQLCompiler {
         .filter { parts[it - 2] == "src" && parts[it] == "graphql" }
         .forEach { return parts.subList(it + 1, parts.size).dropLast(1).joinToString(".") }
     throw IllegalArgumentException("Files must be organized like src/main/graphql/...")
-  }
-
-  private fun javaFilePackageName(generator: CodeGenerator, irPackage: String, fragmentsPackage: String,
-      typesPackage: String): String {
-    when (generator) {
-      is OperationTypeSpecBuilder -> return generator.operation.filePath.formatPackageName()
-      is Fragment -> return fragmentsPackage
-      is TypeDeclaration -> return typesPackage
-    }
-    return irPackage
   }
 
   private fun List<TypeDeclaration>.supportedTypeDeclarations() =
