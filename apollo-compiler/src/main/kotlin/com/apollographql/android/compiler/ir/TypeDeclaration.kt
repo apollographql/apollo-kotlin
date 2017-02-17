@@ -23,21 +23,32 @@ data class TypeDeclaration(
   }
 
   private fun enumTypeToTypeSpec(): TypeSpec {
-    fun TypeSpec.Builder.addTypeDeclarationValue(value: TypeDeclarationValue) {
-      val enumConstBuilder = TypeSpec.anonymousClassBuilder("")
-      if (!value.description.isNullOrEmpty()) {
-        enumConstBuilder.addJavadoc("${value.description}\n")
+    fun TypeSpec.Builder.addEnumJavaDoc(): TypeSpec.Builder {
+      if (!description.isNullOrEmpty()) {
+        addJavadoc("\$L\n", description)
       }
-      this.addEnumConstant(value.name.toUpperCase(), enumConstBuilder.build())
+      return this
     }
 
-    val builder = TypeSpec.enumBuilder(name).addAnnotation(Annotations.GENERATED_BY_APOLLO)
-        .addModifiers(Modifier.PUBLIC)
-    values?.forEach { builder.addTypeDeclarationValue(it) }
-    if (!description.isNullOrEmpty()) {
-      builder.addJavadoc("$description\n")
+    fun TypeSpec.Builder.addEnumConstants(): TypeSpec.Builder {
+      values?.forEach {
+        if (it.description.isNullOrEmpty()) {
+          addEnumConstant(it.name.toUpperCase())
+        } else {
+          addEnumConstant(it.name.toUpperCase(), TypeSpec.anonymousClassBuilder("")
+              .addJavadoc("\$L\n", it.description)
+              .build())
+        }
+      }
+      return this
     }
-    return builder.build()
+
+    return TypeSpec.enumBuilder(name)
+        .addAnnotation(Annotations.GENERATED_BY_APOLLO)
+        .addModifiers(Modifier.PUBLIC)
+        .addEnumConstants()
+        .addEnumJavaDoc()
+        .build()
   }
 
   private fun inputObjectToTypeSpec(context: CodeGenerationContext) =

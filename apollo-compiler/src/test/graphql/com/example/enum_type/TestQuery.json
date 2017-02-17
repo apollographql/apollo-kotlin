@@ -40,11 +40,11 @@
     {
       "kind": "EnumType",
       "name": "Episode",
-      "description": "The episodes in the Star Wars trilogy",
+      "description": "The episodes in the Star War$S trilogy",
       "values": [
         {
           "name": "NEWHOPE",
-          "description": "Star Wars Episode IV: A New Hope, released in 1977."
+          "description": "Star War$S Episode IV: A New Hope, released in 1977."
         },
         {
           "name": "EMPIRE",

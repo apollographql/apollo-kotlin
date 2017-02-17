@@ -3,12 +3,12 @@ package com.example.enum_type.type;
 import javax.annotation.Generated;
 
 /**
- * The episodes in the Star Wars trilogy
+ * The episodes in the Star War$S trilogy
  */
 @Generated("Apollo GraphQL")
 public enum Episode {
   /**
-   * Star Wars Episode IV: A New Hope, released in 1977.
+   * Star War$S Episode IV: A New Hope, released in 1977.
    */
   NEWHOPE,
 
