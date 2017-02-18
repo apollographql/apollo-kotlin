@@ -3,6 +3,7 @@ query Films {
     films {
       id
       title
+      releaseDate
     }
   }
 }

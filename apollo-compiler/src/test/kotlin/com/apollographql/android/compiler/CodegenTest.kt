@@ -14,8 +14,7 @@ import java.util.*
 import javax.tools.JavaFileObject
 
 @RunWith(Parameterized::class)
-class CodeGenTest(val testDir: File, val pkgName: String, val generatePOJO: Boolean,
-    val customScalarTypeMap: Map<String, String>) {
+class CodeGenTest(val testDir: File, val pkgName: String, val customScalarTypeMap: Map<String, String>) {
   private val testDirPath = testDir.toPath()
   private val expectedFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.java")
 
@@ -26,7 +25,7 @@ class CodeGenTest(val testDir: File, val pkgName: String, val generatePOJO: Bool
   @Test
   fun generateExpectedClasses() {
     val irFile = File(testDir, "TestQuery.json")
-    compiler.write(irFile, outputDir, generatePOJO, customScalarTypeMap)
+    compiler.write(irFile, outputDir, customScalarTypeMap)
 
     Files.walkFileTree(testDirPath, object : SimpleFileVisitor<Path>() {
       override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
@@ -71,11 +70,9 @@ class CodeGenTest(val testDir: File, val pkgName: String, val generatePOJO: Bool
           .filter { it.isDirectory }
           .map {
             if (it.name == "custom_scalar_type") {
-              arrayOf(it, it.name, false, mapOf("Date" to "java.util.Date"))
-            } else if (it.name == "pojo_custom_scalar_type") {
-              arrayOf(it, it.name, true, mapOf("Date" to "java.util.Date"))
+              arrayOf(it, it.name, mapOf("Date" to "java.util.Date"))
             } else {
-              arrayOf(it, it.name, it.name.startsWith("pojo"), emptyMap<String, String>())
+              arrayOf(it, it.name, emptyMap<String, String>())
             }
           }
     }
