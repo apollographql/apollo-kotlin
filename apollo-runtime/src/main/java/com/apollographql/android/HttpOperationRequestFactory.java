@@ -34,7 +34,7 @@ final class HttpOperationRequestFactory {
     this.moshi = moshi(customTypeAdapters);
   }
 
-  <T extends Operation.Data> HttpOperationRequest<T> newRequest(Operation operation) {
+  <T extends Operation.Data> HttpOperationRequest<T> createRequest(Operation operation) {
     ResponseFieldMapper responseFieldMapper = responseFieldMappers.get(operation.getClass());
     if (responseFieldMapper == null) {
       throw new RuntimeException("failed to resolve response field mapper for: " + operation.getClass());

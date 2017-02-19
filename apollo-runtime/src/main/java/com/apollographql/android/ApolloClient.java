@@ -34,17 +34,17 @@ public final class ApolloClient {
 
   public <T extends Query.Data> OperationRequest<T> fetch(@Nonnull Query query, OperationRequest.Callback callback) {
     //noinspection unchecked
-    return httpRequestFactory.newRequest(query).enqueue(callback);
+    return httpRequestFactory.createRequest(query).enqueue(callback);
   }
 
   public <T extends Mutation.Data> OperationRequest<T> perform(@Nonnull Mutation mutation,
       OperationRequest.Callback callback) {
     //noinspection unchecked
-    return httpRequestFactory.newRequest(mutation).enqueue(callback);
+    return httpRequestFactory.createRequest(mutation).enqueue(callback);
   }
 
   public <T extends Operation.Data> OperationRequest<T> request(@Nonnull Operation operation) {
-    return httpRequestFactory.newRequest(operation);
+    return httpRequestFactory.createRequest(operation);
   }
 
   public static class Builder {

@@ -12,6 +12,8 @@ import com.apollographql.android.api.graphql.Error;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.converter.type.CustomType;
 
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,6 +28,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CountDownLatch;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -188,6 +191,25 @@ public class IntegrationTest {
     assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeBool()).isEqualTo(Boolean.TRUE);
     assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeString()).isInstanceOf(String.class);
     assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeString()).isEqualTo("something");
+  }
+
+  @Test public void allPlanetQueryAsync() throws Exception {
+    server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
+
+    OperationRequest<AllPlanets.Data> request = apolloClient.request(new AllPlanets());
+    final CountDownLatch latch = new CountDownLatch(1);
+    request.enqueue(new OperationRequest.Callback<AllPlanets.Data>() {
+      @Override public void onResponse(Response<AllPlanets.Data> response) {
+        assertThat(response.isSuccessful()).isTrue();
+        assertThat(response.data().allPlanets().planets().size()).isEqualTo(60);
+        latch.countDown();
+      }
+
+      @Override public void onFailure(Exception e) {
+        Assert.fail("expected success");
+      }
+    });
+    latch.await();
   }
 
   private static MockResponse mockResponse(String fileName) throws IOException {

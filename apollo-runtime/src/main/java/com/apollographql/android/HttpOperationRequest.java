@@ -22,7 +22,7 @@ final class HttpOperationRequest<T extends Operation.Data> implements OperationR
 
   private final Operation operation;
   private final Moshi moshi;
-  private Request baseRequest;
+  private final Request baseRequest;
   private final okhttp3.Call.Factory callFactory;
   private final ResponseBodyConverter responseBodyConverter;
   private final AtomicReference<Call> callRef = new AtomicReference<>(null);
