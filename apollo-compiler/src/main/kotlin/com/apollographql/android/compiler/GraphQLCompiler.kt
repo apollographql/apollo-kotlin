@@ -12,15 +12,14 @@ open class GraphQLCompiler {
   private val moshi = Moshi.Builder().build()
   private val irAdapter = moshi.adapter(CodeGenerationIR::class.java)
 
-  fun write(irFile: File, outputDir: File, generateClasses: Boolean = false,
-      customTypeMap: Map<String, String> = emptyMap()) {
+  fun write(irFile: File, outputDir: File, customTypeMap: Map<String, String> = emptyMap()) {
     val ir = irAdapter.fromJson(irFile.readText())
     val irPackageName = irFile.absolutePath.formatPackageName()
     val fragmentsPackage = if (irPackageName.isNotEmpty()) "$irPackageName.fragment" else "fragment"
     val typesPackage = if (irPackageName.isNotEmpty()) "$irPackageName.type" else "type"
     val supportedScalarTypeMapping = customTypeMap.supportedScalarTypeMapping(ir.typesUsed)
     val context = CodeGenerationContext(
-        abstractType = !generateClasses,
+        abstractType = false,
         reservedTypeNames = emptyList(),
         typeDeclarations = ir.typesUsed,
         fragmentsPackage = fragmentsPackage,

@@ -21,14 +21,11 @@ public class ApolloClassGenTask extends SourceTask {
 
   @Internal private List<GraphQLExtension> config;
   @Internal private String variant;
-  @Internal private boolean generateClasses;
   @Internal private Map<String, String> customTypeMapping;
   @OutputDirectory private File outputDir;
 
-  public void init(String buildVariant, List<GraphQLExtension> extensionsConfig, boolean genClasses,
-      Map<String, String> typeMapping) {
+  public void init(String buildVariant, List<GraphQLExtension> extensionsConfig, Map<String, String> typeMapping) {
     variant = buildVariant;
-    generateClasses = genClasses;
     customTypeMapping = typeMapping;
     config = extensionsConfig;
     // TODO: change to constant once ApolloPlugin is in java
@@ -44,7 +41,7 @@ public class ApolloClassGenTask extends SourceTask {
     inputs.outOfDate(new Action<InputFileDetails>() {
       @Override
       public void execute(InputFileDetails inputFileDetails) {
-        new GraphQLCompiler().write(inputFileDetails.getFile(), outputDir, generateClasses, customTypeMapping);
+        new GraphQLCompiler().write(inputFileDetails.getFile(), outputDir, customTypeMapping);
       }
     });
   }
@@ -63,14 +60,6 @@ public class ApolloClassGenTask extends SourceTask {
 
   public void setVariant(String variant) {
     this.variant = variant;
-  }
-
-  public boolean isGenerateClasses() {
-    return generateClasses;
-  }
-
-  public void setGenerateClasses(boolean generateClasses) {
-    this.generateClasses = generateClasses;
   }
 
   public File getOutputDir() {

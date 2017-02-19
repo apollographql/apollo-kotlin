@@ -20,10 +20,12 @@ class ApolloPluginBasicAndroidTest extends Specification {
 
   def "builds successfully and generates expected outputs"() {
     when:
-    def result = GradleRunner.create().withProjectDir(testProjectDir)
+    def result = GradleRunner.create()
+        .withProjectDir(testProjectDir)
         .withPluginClasspath()
         .withArguments("generateApolloClasses")
-        .forwardStdError(new OutputStreamWriter(System.err)).build()
+        .forwardStdError(new OutputStreamWriter(System.err))
+        .build()
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS

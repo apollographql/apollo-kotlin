@@ -39,3 +39,11 @@ dependencies {
   compile 'com.android.support:appcompat-v7:25.1.1'
 }
 
+apollo {
+  customTypeMapping {
+    DateTime = "java.util.Date"
+    OptionalString = "com.fernandocejas.arrow.optional.Optional"
+    UnsupportedType = "java.lang.Object"
+  }
+}
+

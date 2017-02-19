@@ -1,0 +1,908 @@
+package com.example.unique_type_name;
+
+import com.apollographql.android.api.graphql.Field;
+import com.apollographql.android.api.graphql.Operation;
+import com.apollographql.android.api.graphql.Query;
+import com.apollographql.android.api.graphql.ResponseFieldMapper;
+import com.apollographql.android.api.graphql.ResponseReader;
+import com.example.unique_type_name.fragment.HeroDetails;
+import com.example.unique_type_name.type.Episode;
+import java.io.IOException;
+import java.lang.Double;
+import java.lang.Object;
+import java.lang.Override;
+import java.lang.String;
+import java.util.List;
+import javax.annotation.Generated;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+@Generated("Apollo GraphQL")
+public final class HeroDetailQuery implements Query<Operation.Variables> {
+  public static final String OPERATION_DEFINITION = "query HeroDetailQuery {\n"
+      + "  heroDetailQuery {\n"
+      + "    __typename\n"
+      + "    name\n"
+      + "    friends {\n"
+      + "      __typename\n"
+      + "      name\n"
+      + "    }\n"
+      + "    ... on Human {\n"
+      + "      height\n"
+      + "      friends {\n"
+      + "        __typename\n"
+      + "        appearsIn\n"
+      + "        friends {\n"
+      + "          __typename\n"
+      + "          ...HeroDetails\n"
+      + "        }\n"
+      + "      }\n"
+      + "    }\n"
+      + "  }\n"
+      + "}";
+
+  public static final String QUERY_DOCUMENT = OPERATION_DEFINITION + "\n"
+   + HeroDetails.FRAGMENT_DEFINITION;
+
+  private final Operation.Variables variables;
+
+  public HeroDetailQuery() {
+    this.variables = Operation.EMPTY_VARIABLES;
+  }
+
+  @Override
+  public String queryDocument() {
+    return QUERY_DOCUMENT;
+  }
+
+  @Override
+  public Operation.Variables variables() {
+    return variables;
+  }
+
+  public static class Data implements Operation.Data {
+    public static final Creator CREATOR = new Creator() {
+      @Override
+      public @Nonnull Data create(@Nullable HeroDetailQuery1 heroDetailQuery) {
+        return new Data(heroDetailQuery);
+      }
+    };
+
+    public static final Factory FACTORY = new Factory() {
+      @Override
+      public @Nonnull Creator creator() {
+        return CREATOR;
+      }
+
+      @Override
+      public @Nonnull HeroDetailQuery1.Factory heroDetailQuery1Factory() {
+        return HeroDetailQuery1.FACTORY;
+      }
+    };
+
+    private final @Nullable HeroDetailQuery1 heroDetailQuery;
+
+    public Data(@Nullable HeroDetailQuery1 heroDetailQuery) {
+      this.heroDetailQuery = heroDetailQuery;
+    }
+
+    public @Nullable HeroDetailQuery1 heroDetailQuery() {
+      return this.heroDetailQuery;
+    }
+
+    @Override
+    public String toString() {
+      return "Data{"
+        + "heroDetailQuery=" + heroDetailQuery
+        + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return ((this.heroDetailQuery == null) ? (that.heroDetailQuery == null) : this.heroDetailQuery.equals(that.heroDetailQuery));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (heroDetailQuery == null) ? 0 : heroDetailQuery.hashCode();
+      return h;
+    }
+
+    public static class HeroDetailQuery1 {
+      public static final Creator CREATOR = new Creator() {
+        @Override
+        public @Nonnull HeroDetailQuery1 create(@Nonnull String name,
+            @Nullable List<Friend> friends, @Nullable AsHuman asHuman) {
+          return new HeroDetailQuery1(name, friends, asHuman);
+        }
+      };
+
+      public static final Factory FACTORY = new Factory() {
+        @Override
+        public @Nonnull Creator creator() {
+          return CREATOR;
+        }
+
+        @Override
+        public @Nonnull Friend.Factory friendFactory() {
+          return Friend.FACTORY;
+        }
+
+        @Override
+        public @Nonnull AsHuman.Factory asHumanFactory() {
+          return AsHuman.FACTORY;
+        }
+      };
+
+      private final @Nonnull String name;
+
+      private final @Nullable List<Friend> friends;
+
+      private @Nullable AsHuman asHuman;
+
+      public HeroDetailQuery1(@Nonnull String name, @Nullable List<Friend> friends,
+          @Nullable AsHuman asHuman) {
+        this.name = name;
+        this.friends = friends;
+        this.asHuman = asHuman;
+      }
+
+      public @Nonnull String name() {
+        return this.name;
+      }
+
+      public @Nullable List<Friend> friends() {
+        return this.friends;
+      }
+
+      public @Nullable AsHuman asHuman() {
+        return this.asHuman;
+      }
+
+      @Override
+      public String toString() {
+        return "HeroDetailQuery1{"
+          + "name=" + name + ", "
+          + "friends=" + friends + ", "
+          + "asHuman=" + asHuman
+          + "}";
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (o instanceof HeroDetailQuery1) {
+          HeroDetailQuery1 that = (HeroDetailQuery1) o;
+          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+           && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends))
+           && ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman));
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (friends == null) ? 0 : friends.hashCode();
+        h *= 1000003;
+        h ^= (asHuman == null) ? 0 : asHuman.hashCode();
+        return h;
+      }
+
+      public static class Friend {
+        public static final Creator CREATOR = new Creator() {
+          @Override
+          public @Nonnull Friend create(@Nonnull String name) {
+            return new Friend(name);
+          }
+        };
+
+        public static final Factory FACTORY = new Factory() {
+          @Override
+          public @Nonnull Creator creator() {
+            return CREATOR;
+          }
+        };
+
+        private final @Nonnull String name;
+
+        public Friend(@Nonnull String name) {
+          this.name = name;
+        }
+
+        public @Nonnull String name() {
+          return this.name;
+        }
+
+        @Override
+        public String toString() {
+          return "Friend{"
+            + "name=" + name
+            + "}";
+        }
+
+        @Override
+        public boolean equals(Object o) {
+          if (o == this) {
+            return true;
+          }
+          if (o instanceof Friend) {
+            Friend that = (Friend) o;
+            return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+          }
+          return false;
+        }
+
+        @Override
+        public int hashCode() {
+          int h = 1;
+          h *= 1000003;
+          h ^= (name == null) ? 0 : name.hashCode();
+          return h;
+        }
+
+        public static final class Mapper implements ResponseFieldMapper<Friend> {
+          final Factory factory;
+
+          final Field[] fields = {
+            Field.forString("name", "name", null, false)
+          };
+
+          public Mapper(@Nonnull Factory factory) {
+            this.factory = factory;
+          }
+
+          @Override
+          public Friend map(ResponseReader reader) throws IOException {
+            final __ContentValues contentValues = new __ContentValues();
+            reader.read(new ResponseReader.ValueHandler() {
+              @Override
+              public void handle(final int fieldIndex, final Object value) throws IOException {
+                switch (fieldIndex) {
+                  case 0: {
+                    contentValues.name = (String) value;
+                    break;
+                  }
+                }
+              }
+            }, fields);
+            return factory.creator().create(contentValues.name);
+          }
+
+          static final class __ContentValues {
+            String name;
+          }
+        }
+
+        public interface Factory {
+          @Nonnull Creator creator();
+        }
+
+        public interface Creator {
+          @Nonnull Friend create(@Nonnull String name);
+        }
+      }
+
+      public static class AsHuman {
+        public static final Creator CREATOR = new Creator() {
+          @Override
+          public @Nonnull AsHuman create(@Nonnull String name, @Nullable List<Friend1> friends,
+              @Nullable Double height) {
+            return new AsHuman(name, friends, height);
+          }
+        };
+
+        public static final Factory FACTORY = new Factory() {
+          @Override
+          public @Nonnull Creator creator() {
+            return CREATOR;
+          }
+
+          @Override
+          public @Nonnull Friend1.Factory friend1Factory() {
+            return Friend1.FACTORY;
+          }
+        };
+
+        private final @Nonnull String name;
+
+        private final @Nullable List<Friend1> friends;
+
+        private final @Nullable Double height;
+
+        public AsHuman(@Nonnull String name, @Nullable List<Friend1> friends,
+            @Nullable Double height) {
+          this.name = name;
+          this.friends = friends;
+          this.height = height;
+        }
+
+        public @Nonnull String name() {
+          return this.name;
+        }
+
+        public @Nullable List<Friend1> friends() {
+          return this.friends;
+        }
+
+        public @Nullable Double height() {
+          return this.height;
+        }
+
+        @Override
+        public String toString() {
+          return "AsHuman{"
+            + "name=" + name + ", "
+            + "friends=" + friends + ", "
+            + "height=" + height
+            + "}";
+        }
+
+        @Override
+        public boolean equals(Object o) {
+          if (o == this) {
+            return true;
+          }
+          if (o instanceof AsHuman) {
+            AsHuman that = (AsHuman) o;
+            return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+             && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends))
+             && ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
+          }
+          return false;
+        }
+
+        @Override
+        public int hashCode() {
+          int h = 1;
+          h *= 1000003;
+          h ^= (name == null) ? 0 : name.hashCode();
+          h *= 1000003;
+          h ^= (friends == null) ? 0 : friends.hashCode();
+          h *= 1000003;
+          h ^= (height == null) ? 0 : height.hashCode();
+          return h;
+        }
+
+        public static class Friend1 {
+          public static final Creator CREATOR = new Creator() {
+            @Override
+            public @Nonnull Friend1 create(@Nonnull String name, @Nonnull List<Episode> appearsIn,
+                @Nullable List<Friend2> friends) {
+              return new Friend1(name, appearsIn, friends);
+            }
+          };
+
+          public static final Factory FACTORY = new Factory() {
+            @Override
+            public @Nonnull Creator creator() {
+              return CREATOR;
+            }
+
+            @Override
+            public @Nonnull Friend2.Factory friend2Factory() {
+              return Friend2.FACTORY;
+            }
+          };
+
+          private final @Nonnull String name;
+
+          private final @Nonnull List<Episode> appearsIn;
+
+          private final @Nullable List<Friend2> friends;
+
+          public Friend1(@Nonnull String name, @Nonnull List<Episode> appearsIn,
+              @Nullable List<Friend2> friends) {
+            this.name = name;
+            this.appearsIn = appearsIn;
+            this.friends = friends;
+          }
+
+          public @Nonnull String name() {
+            return this.name;
+          }
+
+          public @Nonnull List<Episode> appearsIn() {
+            return this.appearsIn;
+          }
+
+          public @Nullable List<Friend2> friends() {
+            return this.friends;
+          }
+
+          @Override
+          public String toString() {
+            return "Friend1{"
+              + "name=" + name + ", "
+              + "appearsIn=" + appearsIn + ", "
+              + "friends=" + friends
+              + "}";
+          }
+
+          @Override
+          public boolean equals(Object o) {
+            if (o == this) {
+              return true;
+            }
+            if (o instanceof Friend1) {
+              Friend1 that = (Friend1) o;
+              return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+               && ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn))
+               && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends));
+            }
+            return false;
+          }
+
+          @Override
+          public int hashCode() {
+            int h = 1;
+            h *= 1000003;
+            h ^= (name == null) ? 0 : name.hashCode();
+            h *= 1000003;
+            h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
+            h *= 1000003;
+            h ^= (friends == null) ? 0 : friends.hashCode();
+            return h;
+          }
+
+          public static class Friend2 {
+            public static final Creator CREATOR = new Creator() {
+              @Override
+              public @Nonnull Friend2 create(@Nonnull Fragments fragments) {
+                return new Friend2(fragments);
+              }
+            };
+
+            public static final Factory FACTORY = new Factory() {
+              @Override
+              public @Nonnull Creator creator() {
+                return CREATOR;
+              }
+
+              @Override
+              public @Nonnull Fragments.Factory fragmentsFactory() {
+                return Fragments.FACTORY;
+              }
+            };
+
+            private final Fragments fragments;
+
+            public Friend2(Fragments fragments) {
+              this.fragments = fragments;
+            }
+
+            public @Nonnull Fragments fragments() {
+              return this.fragments;
+            }
+
+            @Override
+            public String toString() {
+              return "Friend2{"
+                + "fragments=" + fragments
+                + "}";
+            }
+
+            @Override
+            public boolean equals(Object o) {
+              if (o == this) {
+                return true;
+              }
+              if (o instanceof Friend2) {
+                Friend2 that = (Friend2) o;
+                return ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+              }
+              return false;
+            }
+
+            @Override
+            public int hashCode() {
+              int h = 1;
+              h *= 1000003;
+              h ^= (fragments == null) ? 0 : fragments.hashCode();
+              return h;
+            }
+
+            public static class Fragments {
+              public static final Creator CREATOR = new Creator() {
+                @Override
+                public @Nonnull Fragments create(@Nullable HeroDetails heroDetails) {
+                  return new Fragments(heroDetails);
+                }
+              };
+
+              public static final Factory FACTORY = new Factory() {
+                @Override
+                public @Nonnull Creator creator() {
+                  return CREATOR;
+                }
+
+                @Override
+                public @Nonnull HeroDetails.Factory heroDetailsFactory() {
+                  return HeroDetails.FACTORY;
+                }
+              };
+
+              private HeroDetails heroDetails;
+
+              public Fragments(HeroDetails heroDetails) {
+                this.heroDetails = heroDetails;
+              }
+
+              public @Nullable HeroDetails heroDetails() {
+                return this.heroDetails;
+              }
+
+              @Override
+              public String toString() {
+                return "Fragments{"
+                  + "heroDetails=" + heroDetails
+                  + "}";
+              }
+
+              @Override
+              public boolean equals(Object o) {
+                if (o == this) {
+                  return true;
+                }
+                if (o instanceof Fragments) {
+                  Fragments that = (Fragments) o;
+                  return ((this.heroDetails == null) ? (that.heroDetails == null) : this.heroDetails.equals(that.heroDetails));
+                }
+                return false;
+              }
+
+              @Override
+              public int hashCode() {
+                int h = 1;
+                h *= 1000003;
+                h ^= (heroDetails == null) ? 0 : heroDetails.hashCode();
+                return h;
+              }
+
+              public static final class Mapper implements ResponseFieldMapper<Fragments> {
+                final Factory factory;
+
+                String conditionalType;
+
+                public Mapper(@Nonnull Factory factory, @Nonnull String conditionalType) {
+                  this.factory = factory;
+                  this.conditionalType = conditionalType;
+                }
+
+                @Override
+                public @Nonnull Fragments map(ResponseReader reader) throws IOException {
+                  HeroDetails heroDetails = null;
+                  if (conditionalType.equals(HeroDetails.TYPE_CONDITION)) {
+                    heroDetails = new HeroDetails.Mapper(factory.heroDetailsFactory()).map(reader);
+                  }
+                  return factory.creator().create(heroDetails);
+                }
+              }
+
+              public interface Factory {
+                @Nonnull Creator creator();
+
+                @Nonnull HeroDetails.Factory heroDetailsFactory();
+              }
+
+              public interface Creator {
+                @Nonnull Fragments create(@Nullable HeroDetails heroDetails);
+              }
+            }
+
+            public static final class Mapper implements ResponseFieldMapper<Friend2> {
+              final Factory factory;
+
+              final Field[] fields = {
+                Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
+                  @Override
+                  public Fragments read(String conditionalType, ResponseReader reader) throws
+                      IOException {
+                    return new Fragments.Mapper(factory.fragmentsFactory(), conditionalType).map(reader);
+                  }
+                })
+              };
+
+              public Mapper(@Nonnull Factory factory) {
+                this.factory = factory;
+              }
+
+              @Override
+              public Friend2 map(ResponseReader reader) throws IOException {
+                final __ContentValues contentValues = new __ContentValues();
+                reader.toBufferedReader().read(new ResponseReader.ValueHandler() {
+                  @Override
+                  public void handle(final int fieldIndex, final Object value) throws IOException {
+                    switch (fieldIndex) {
+                      case 0: {
+                        contentValues.fragments = (Fragments) value;
+                        break;
+                      }
+                    }
+                  }
+                }, fields);
+                return factory.creator().create(contentValues.fragments);
+              }
+
+              static final class __ContentValues {
+                Fragments fragments;
+              }
+            }
+
+            public interface Factory {
+              @Nonnull Creator creator();
+
+              @Nonnull Fragments.Factory fragmentsFactory();
+            }
+
+            public interface Creator {
+              @Nonnull Friend2 create(@Nonnull Fragments fragments);
+            }
+          }
+
+          public static final class Mapper implements ResponseFieldMapper<Friend1> {
+            final Factory factory;
+
+            final Field[] fields = {
+              Field.forString("name", "name", null, false),
+              Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
+                @Override public Episode read(final Field.ListItemReader reader) throws IOException {
+                  return Episode.valueOf(reader.readString());
+                }
+              }),
+              Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend2>() {
+                @Override public Friend2 read(final ResponseReader reader) throws IOException {
+                  return new Friend2.Mapper(factory.friend2Factory()).map(reader);
+                }
+              })
+            };
+
+            public Mapper(@Nonnull Factory factory) {
+              this.factory = factory;
+            }
+
+            @Override
+            public Friend1 map(ResponseReader reader) throws IOException {
+              final __ContentValues contentValues = new __ContentValues();
+              reader.read(new ResponseReader.ValueHandler() {
+                @Override
+                public void handle(final int fieldIndex, final Object value) throws IOException {
+                  switch (fieldIndex) {
+                    case 0: {
+                      contentValues.name = (String) value;
+                      break;
+                    }
+                    case 1: {
+                      contentValues.appearsIn = (List<Episode>) value;
+                      break;
+                    }
+                    case 2: {
+                      contentValues.friends = (List<Friend2>) value;
+                      break;
+                    }
+                  }
+                }
+              }, fields);
+              return factory.creator().create(contentValues.name, contentValues.appearsIn, contentValues.friends);
+            }
+
+            static final class __ContentValues {
+              String name;
+
+              List<Episode> appearsIn;
+
+              List<Friend2> friends;
+            }
+          }
+
+          public interface Factory {
+            @Nonnull Creator creator();
+
+            @Nonnull Friend2.Factory friend2Factory();
+          }
+
+          public interface Creator {
+            @Nonnull Friend1 create(@Nonnull String name, @Nonnull List<Episode> appearsIn,
+                @Nullable List<Friend2> friends);
+          }
+        }
+
+        public static final class Mapper implements ResponseFieldMapper<AsHuman> {
+          final Factory factory;
+
+          final Field[] fields = {
+            Field.forString("name", "name", null, false),
+            Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend1>() {
+              @Override public Friend1 read(final ResponseReader reader) throws IOException {
+                return new Friend1.Mapper(factory.friend1Factory()).map(reader);
+              }
+            }),
+            Field.forDouble("height", "height", null, true)
+          };
+
+          public Mapper(@Nonnull Factory factory) {
+            this.factory = factory;
+          }
+
+          @Override
+          public AsHuman map(ResponseReader reader) throws IOException {
+            final __ContentValues contentValues = new __ContentValues();
+            reader.read(new ResponseReader.ValueHandler() {
+              @Override
+              public void handle(final int fieldIndex, final Object value) throws IOException {
+                switch (fieldIndex) {
+                  case 0: {
+                    contentValues.name = (String) value;
+                    break;
+                  }
+                  case 1: {
+                    contentValues.friends = (List<Friend1>) value;
+                    break;
+                  }
+                  case 2: {
+                    contentValues.height = (Double) value;
+                    break;
+                  }
+                }
+              }
+            }, fields);
+            return factory.creator().create(contentValues.name, contentValues.friends, contentValues.height);
+          }
+
+          static final class __ContentValues {
+            String name;
+
+            List<Friend1> friends;
+
+            Double height;
+          }
+        }
+
+        public interface Factory {
+          @Nonnull Creator creator();
+
+          @Nonnull Friend1.Factory friend1Factory();
+        }
+
+        public interface Creator {
+          @Nonnull AsHuman create(@Nonnull String name, @Nullable List<Friend1> friends,
+              @Nullable Double height);
+        }
+      }
+
+      public static final class Mapper implements ResponseFieldMapper<HeroDetailQuery1> {
+        final Factory factory;
+
+        final Field[] fields = {
+          Field.forString("name", "name", null, false),
+          Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend>() {
+            @Override public Friend read(final ResponseReader reader) throws IOException {
+              return new Friend.Mapper(factory.friendFactory()).map(reader);
+            }
+          }),
+          Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman>() {
+            @Override
+            public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
+              if (conditionalType.equals("Human")) {
+                return new AsHuman.Mapper(factory.asHumanFactory()).map(reader);
+              } else {
+                return null;
+              }
+            }
+          })
+        };
+
+        public Mapper(@Nonnull Factory factory) {
+          this.factory = factory;
+        }
+
+        @Override
+        public HeroDetailQuery1 map(ResponseReader reader) throws IOException {
+          final __ContentValues contentValues = new __ContentValues();
+          reader.toBufferedReader().read(new ResponseReader.ValueHandler() {
+            @Override
+            public void handle(final int fieldIndex, final Object value) throws IOException {
+              switch (fieldIndex) {
+                case 0: {
+                  contentValues.name = (String) value;
+                  break;
+                }
+                case 1: {
+                  contentValues.friends = (List<Friend>) value;
+                  break;
+                }
+                case 2: {
+                  contentValues.asHuman = (AsHuman) value;
+                  break;
+                }
+              }
+            }
+          }, fields);
+          return factory.creator().create(contentValues.name, contentValues.friends, contentValues.asHuman);
+        }
+
+        static final class __ContentValues {
+          String name;
+
+          List<Friend> friends;
+
+          AsHuman asHuman;
+        }
+      }
+
+      public interface Factory {
+        @Nonnull Creator creator();
+
+        @Nonnull Friend.Factory friendFactory();
+
+        @Nonnull AsHuman.Factory asHumanFactory();
+      }
+
+      public interface Creator {
+        @Nonnull HeroDetailQuery1 create(@Nonnull String name, @Nullable List<Friend> friends,
+            @Nullable AsHuman asHuman);
+      }
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Data> {
+      final Factory factory;
+
+      final Field[] fields = {
+        Field.forObject("heroDetailQuery", "heroDetail", null, true, new Field.ObjectReader<HeroDetailQuery1>() {
+          @Override public HeroDetailQuery1 read(final ResponseReader reader) throws IOException {
+            return new HeroDetailQuery1.Mapper(factory.heroDetailQuery1Factory()).map(reader);
+          }
+        })
+      };
+
+      public Mapper(@Nonnull Factory factory) {
+        this.factory = factory;
+      }
+
+      @Override
+      public Data map(ResponseReader reader) throws IOException {
+        final __ContentValues contentValues = new __ContentValues();
+        reader.read(new ResponseReader.ValueHandler() {
+          @Override
+          public void handle(final int fieldIndex, final Object value) throws IOException {
+            switch (fieldIndex) {
+              case 0: {
+                contentValues.heroDetailQuery = (HeroDetailQuery1) value;
+                break;
+              }
+            }
+          }
+        }, fields);
+        return factory.creator().create(contentValues.heroDetailQuery);
+      }
+
+      static final class __ContentValues {
+        HeroDetailQuery1 heroDetailQuery;
+      }
+    }
+
+    public interface Factory {
+      @Nonnull Creator creator();
+
+      @Nonnull HeroDetailQuery1.Factory heroDetailQuery1Factory();
+    }
+
+    public interface Creator {
+      @Nonnull Data create(@Nullable HeroDetailQuery1 heroDetailQuery);
+    }
+  }
+}
