@@ -31,7 +31,8 @@ ext {
       spock: 'org.spockframework:spock-core:0.7-groovy-2.0',
       truth: 'com.google.truth:truth:0.30',
       mockWebServer: 'com.squareup.okhttp3:mockwebserver:3.5.0',
-      okhttpLoggingInterceptor: 'com.squareup.okhttp3:logging-interceptor:3.5.0'
+      okhttpLoggingInterceptor: 'com.squareup.okhttp3:logging-interceptor:3.5.0',
+      okHttp: 'com.squareup.okhttp3:okhttp:3.6.0'
   ]
 
   isCi = "true" == System.getenv('CI')
