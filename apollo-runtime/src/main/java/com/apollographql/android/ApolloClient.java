@@ -18,7 +18,7 @@ import static com.apollographql.android.Utils.checkNotNull;
 
 /** TODO */
 public final class ApolloClient {
-  private final RealApolloCallFactory httpRequestFactory;
+  private final ApolloCallFactory apolloCallFactory;
 
   public static Builder builder() {
     return new Builder();
@@ -26,12 +26,11 @@ public final class ApolloClient {
 
   private ApolloClient(HttpUrl baseUrl, Call.Factory callFactory, Map<Type, ResponseFieldMapper> responseFieldMappers,
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
-    httpRequestFactory = new RealApolloCallFactory(baseUrl, callFactory, responseFieldMappers,
-        customTypeAdapters);
+    apolloCallFactory = new ApolloCallFactory(baseUrl, callFactory, responseFieldMappers, customTypeAdapters);
   }
 
   public <T extends Operation> ApolloCall newCall(@Nonnull T operation) {
-    return httpRequestFactory.newCall(operation);
+    return apolloCallFactory.newCall(operation);
   }
 
   public static class Builder {
