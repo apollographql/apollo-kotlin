@@ -35,7 +35,7 @@ dependencies {
   compile dep.supportAnnotations
   compile dep.okHttp
   compile dep.moshi
-  provided project (":apollo-api")
+  provided project(":apollo-api")
 
   testCompile dep.junit
   testCompile dep.truth
@@ -43,3 +43,8 @@ dependencies {
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
+
+tasks.withType(Checkstyle) {
+  exclude '**/BufferedSourceJsonReader.java'
+  exclude '**/JsonScope.java'
+}

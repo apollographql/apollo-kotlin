@@ -11,37 +11,40 @@ import java.io.IOException;
 import java.util.Map;
 
 import okhttp3.Call;
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okio.Buffer;
 
 final class RealApolloCall implements ApolloCall {
+  private static final String ACCEPT_TYPE = "application/json";
+  private static final String CONTENT_TYPE = "application/graphql";
   private static final MediaType MEDIA_TYPE = MediaType.parse("application/graphql; charset=utf-8");
 
   private final Operation operation;
-  private final Moshi moshi;
-  private final Request baseRequest;
+  private final HttpUrl baseUrl;
   private final okhttp3.Call.Factory httpCallFactory;
+  private final Moshi moshi;
   private final ResponseBodyConverter responseBodyConverter;
   private volatile Call httpCall;
   private boolean executed;
 
-  RealApolloCall(Operation operation, Moshi moshi, okhttp3.Call.Factory httpCallFactory, Request baseRequest,
+  RealApolloCall(Operation operation, HttpUrl baseUrl, Call.Factory httpCallFactory, Moshi moshi,
       ResponseFieldMapper responseFieldMapper, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
     this.operation = operation;
+    this.baseUrl = baseUrl;
     this.moshi = moshi;
     this.httpCallFactory = httpCallFactory;
-    this.baseRequest = baseRequest;
     this.responseBodyConverter = new ResponseBodyConverter(operation, responseFieldMapper, customTypeAdapters);
   }
 
-  private RealApolloCall(Operation operation, Moshi moshi, okhttp3.Call.Factory httpCallFactory, Request baseRequest,
+  private RealApolloCall(Operation operation, HttpUrl baseUrl, Call.Factory httpCallFactory, Moshi moshi,
       ResponseBodyConverter responseBodyConverter) {
     this.operation = operation;
+    this.baseUrl = baseUrl;
     this.moshi = moshi;
     this.httpCallFactory = httpCallFactory;
-    this.baseRequest = baseRequest;
     this.responseBodyConverter = responseBodyConverter;
   }
 
@@ -57,9 +60,7 @@ final class RealApolloCall implements ApolloCall {
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
-    RequestBody requestBody = requestBody(operation);
-    Request request = baseRequest.newBuilder().post(requestBody).build();
-    httpCall = httpCallFactory.newCall(request);
+    httpCall = httpCallFactory.newCall(request(operation));
     return parse(httpCall.execute());
   }
 
@@ -71,8 +72,7 @@ final class RealApolloCall implements ApolloCall {
 
     Request request;
     try {
-      RequestBody requestBody = requestBody(operation);
-      request = baseRequest.newBuilder().post(requestBody).build();
+      request = request(operation);
     } catch (Exception e) {
       if (callback != null) {
         callback.onFailure(e);
@@ -105,7 +105,7 @@ final class RealApolloCall implements ApolloCall {
   }
 
   @Override public ApolloCall clone() {
-    return new RealApolloCall(operation, moshi, httpCallFactory, baseRequest, responseBodyConverter);
+    return new RealApolloCall(operation, baseUrl, httpCallFactory, moshi, responseBodyConverter);
   }
 
   private <T extends Operation.Data> Response<T> parse(okhttp3.Response response) throws IOException {
@@ -115,6 +115,16 @@ final class RealApolloCall implements ApolloCall {
     } else {
       return responseBodyConverter.convert(response.body());
     }
+  }
+
+  private Request request(Operation operation) throws IOException {
+    RequestBody requestBody = requestBody(operation);
+    return new Request.Builder()
+        .url(baseUrl)
+        .post(requestBody)
+        .header("Accept", ACCEPT_TYPE)
+        .header("Content-Type", CONTENT_TYPE)
+        .build();
   }
 
   private RequestBody requestBody(Operation operation) throws IOException {
