@@ -1,18 +1,15 @@
 package com.apollographql.android.gradle;
 
+import com.google.common.collect.Lists;
+
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import org.gradle.api.Task;
 import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.OutputDirectory;
 
-import com.google.common.collect.Lists;
-
 import com.moowork.gradle.node.npm.NpmTask;
-import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -37,16 +34,17 @@ public class ApolloCodeGenInstallTask extends NpmTask {
 
     getOutputs().upToDateWhen(new Spec<Task>() {
       public boolean isSatisfiedBy(Task element) {
-        return !(apolloPackageFile.isFile() || (apolloVersion != null && apolloVersion.equals(APOLLOCODEGEN_VERSION)));
+        return apolloPackageFile.isFile() && apolloVersion != null && apolloVersion.equals(APOLLOCODEGEN_VERSION);
       }
     });
+
     if (!apolloPackageFile.isFile()) {
       writePackageFile(apolloPackageFile);
     }
     setArgs(Lists.newArrayList("install", "apollo-codegen@" + APOLLOCODEGEN_VERSION, "--save", "--save-exact"));
   }
 
-  static class PackageJson {
+  private static class PackageJson {
     String version;
   }
   /**
