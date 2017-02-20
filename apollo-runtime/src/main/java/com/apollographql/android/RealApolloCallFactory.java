@@ -15,7 +15,7 @@ import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 
-final class HttpApolloCallFactory {
+final class RealApolloCallFactory {
   private static final String ACCEPT_TYPE = "application/json";
   private static final String CONTENT_TYPE = "application/graphql";
 
@@ -25,7 +25,7 @@ final class HttpApolloCallFactory {
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final Moshi moshi;
 
-  HttpApolloCallFactory(HttpUrl baseUrl, Call.Factory callFactory,
+  RealApolloCallFactory(HttpUrl baseUrl, Call.Factory callFactory,
       Map<Type, ResponseFieldMapper> responseFieldMappers, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
     this.baseUrl = baseUrl;
     this.callFactory = callFactory;
