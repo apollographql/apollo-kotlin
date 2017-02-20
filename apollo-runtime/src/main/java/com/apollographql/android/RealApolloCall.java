@@ -10,6 +10,8 @@ import com.squareup.moshi.Moshi;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
@@ -55,7 +57,7 @@ final class RealApolloCall implements ApolloCall {
     }
   }
 
-  @Override public <T extends Operation.Data> Response<T> execute() throws IOException {
+  @Override @Nonnull public <T extends Operation.Data> Response<T> execute() throws IOException {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
@@ -64,7 +66,7 @@ final class RealApolloCall implements ApolloCall {
     return parseHttpResponse(httpCall.execute());
   }
 
-  @Override public <T extends Operation.Data> ApolloCall enqueue(final Callback<T> callback) {
+  @Override @Nonnull public <T extends Operation.Data> ApolloCall enqueue(final Callback<T> callback) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
@@ -104,7 +106,7 @@ final class RealApolloCall implements ApolloCall {
     return this;
   }
 
-  @Override public ApolloCall clone() {
+  @Override @Nonnull public ApolloCall clone() {
     return new RealApolloCall(operation, serverUrl, httpCallFactory, moshi, responseBodyConverter);
   }
 
