@@ -32,8 +32,9 @@ public final class ApolloClient implements ApolloCallFactory {
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final Moshi moshi;
 
-  private ApolloClient(HttpUrl serverUrl, Call.Factory httpCallFactory, Map<Type, ResponseFieldMapper> responseFieldMappers,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, Moshi moshi) {
+  private ApolloClient(HttpUrl serverUrl, Call.Factory httpCallFactory,
+      Map<Type, ResponseFieldMapper> responseFieldMappers, Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
+      Moshi moshi) {
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
     this.responseFieldMappers = responseFieldMappers;
