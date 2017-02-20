@@ -17,7 +17,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okio.Buffer;
 
-final class HttpOperationRequest<T extends Operation.Data> implements OperationRequest<T> {
+final class RealApolloCall implements ApolloCall {
   private static final MediaType MEDIA_TYPE = MediaType.parse("application/graphql; charset=utf-8");
 
   private final Operation operation;
@@ -27,13 +27,22 @@ final class HttpOperationRequest<T extends Operation.Data> implements OperationR
   private final ResponseBodyConverter responseBodyConverter;
   private final AtomicReference<Call> callRef = new AtomicReference<>(null);
 
-  HttpOperationRequest(Operation operation, Moshi moshi, okhttp3.Call.Factory callFactory, Request baseRequest,
+  RealApolloCall(Operation operation, Moshi moshi, okhttp3.Call.Factory callFactory, Request baseRequest,
       ResponseFieldMapper responseFieldMapper, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
     this.operation = operation;
     this.moshi = moshi;
     this.callFactory = callFactory;
     this.baseRequest = baseRequest;
-    responseBodyConverter = new ResponseBodyConverter(operation, responseFieldMapper, customTypeAdapters);
+    this.responseBodyConverter = new ResponseBodyConverter(operation, responseFieldMapper, customTypeAdapters);
+  }
+
+  RealApolloCall(Operation operation, Moshi moshi, okhttp3.Call.Factory callFactory, Request baseRequest,
+      ResponseBodyConverter responseBodyConverter) {
+    this.operation = operation;
+    this.moshi = moshi;
+    this.callFactory = callFactory;
+    this.baseRequest = baseRequest;
+    this.responseBodyConverter = responseBodyConverter;
   }
 
   @Override public void cancel() {
@@ -43,7 +52,7 @@ final class HttpOperationRequest<T extends Operation.Data> implements OperationR
     }
   }
 
-  @Override public Response<T> execute() throws IOException {
+  @Override public <T extends Operation.Data> Response<T> execute() throws IOException {
     RequestBody requestBody = requestBody(operation);
     Request request = baseRequest.newBuilder()
         .post(requestBody)
@@ -58,7 +67,7 @@ final class HttpOperationRequest<T extends Operation.Data> implements OperationR
     }
   }
 
-  @Override public OperationRequest<T> enqueue(final Callback<T> callback) {
+  @Override public <T extends Operation.Data> ApolloCall enqueue(final Callback<T> callback) {
     Request request;
     try {
       RequestBody requestBody = requestBody(operation);
@@ -103,7 +112,11 @@ final class HttpOperationRequest<T extends Operation.Data> implements OperationR
     }
   }
 
-  private Response<T> parse(okhttp3.Response response) throws IOException {
+  @Override public ApolloCall clone() {
+    return new RealApolloCall(operation, moshi, callFactory, baseRequest, responseBodyConverter);
+  }
+
+  private <T extends Operation.Data> Response<T> parse(okhttp3.Response response) throws IOException {
     int code = response.code();
     if (code < 200 || code >= 300) {
       throw new HttpException(response);

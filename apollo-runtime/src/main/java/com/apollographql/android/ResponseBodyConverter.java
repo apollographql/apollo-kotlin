@@ -50,7 +50,7 @@ final class ResponseBodyConverter {
     }
     jsonReader.endObject();
 
-    return new Response<T>(data, errors);
+    return new Response<T>(operation, data, errors);
   }
 
   private List<Error> readResponseErrors(ResponseJsonStreamReader reader) throws IOException {

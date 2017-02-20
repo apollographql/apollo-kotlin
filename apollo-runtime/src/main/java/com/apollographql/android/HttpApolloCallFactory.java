@@ -15,7 +15,7 @@ import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 
-final class HttpOperationRequestFactory {
+final class HttpApolloCallFactory {
   private static final String ACCEPT_TYPE = "application/json";
   private static final String CONTENT_TYPE = "application/graphql";
 
@@ -25,7 +25,7 @@ final class HttpOperationRequestFactory {
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final Moshi moshi;
 
-  HttpOperationRequestFactory(HttpUrl baseUrl, Call.Factory callFactory,
+  HttpApolloCallFactory(HttpUrl baseUrl, Call.Factory callFactory,
       Map<Type, ResponseFieldMapper> responseFieldMappers, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
     this.baseUrl = baseUrl;
     this.callFactory = callFactory;
@@ -34,13 +34,12 @@ final class HttpOperationRequestFactory {
     this.moshi = moshi(customTypeAdapters);
   }
 
-  <T extends Operation.Data> HttpOperationRequest<T> createRequest(Operation operation) {
+  <T extends Operation> RealApolloCall createRequest(T operation) {
     ResponseFieldMapper responseFieldMapper = responseFieldMappers.get(operation.getClass());
     if (responseFieldMapper == null) {
       throw new RuntimeException("failed to resolve response field mapper for: " + operation.getClass());
     }
-    return new HttpOperationRequest<>(operation, moshi, callFactory, baseRequest(), responseFieldMapper,
-        customTypeAdapters);
+    return new RealApolloCall(operation, moshi, callFactory, baseRequest(), responseFieldMapper, customTypeAdapters);
   }
 
   private Moshi moshi(Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {

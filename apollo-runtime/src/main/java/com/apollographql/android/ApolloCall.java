@@ -7,13 +7,15 @@ import java.io.IOException;
 
 import javax.annotation.Nullable;
 
-public interface OperationRequest<T extends Operation.Data> {
+public interface ApolloCall {
 
   void cancel();
 
-  Response<T> execute() throws IOException;
+  <T extends Operation.Data> Response<T> execute() throws IOException;
 
-  OperationRequest<T> enqueue(@Nullable Callback<T> callback);
+  <T extends Operation.Data> ApolloCall enqueue(@Nullable Callback<T> callback);
+
+  ApolloCall clone();
 
   public interface Callback<T extends Operation.Data> {
     void onResponse(Response<T> response);
