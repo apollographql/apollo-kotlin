@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 
 /** Represents either a successful or failed response received from the GraphQL server. */
 public class Response<T extends Operation.Data> {
-  @Nonnull private Operation operation;
+  @Nonnull private final Operation operation;
   @Nullable private final T data;
   @Nullable private final List<Error> errors;
 
