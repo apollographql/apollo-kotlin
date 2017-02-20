@@ -24,7 +24,7 @@ final class RealApolloCall implements ApolloCall {
   private final Request baseRequest;
   private final okhttp3.Call.Factory httpCallFactory;
   private final ResponseBodyConverter responseBodyConverter;
-  private Call httpCall;
+  private volatile Call httpCall;
   private boolean executed;
 
   RealApolloCall(Operation operation, Moshi moshi, okhttp3.Call.Factory httpCallFactory, Request baseRequest,
