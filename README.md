@@ -16,7 +16,7 @@ Add the following to your project's top level `build.gradle` file
 ext {
     compileSdkVersion = 25
     buildToolsVersion = '25.0.2'
-    apolloVersion = '0.2.1-SNAPSHOT'
+    apolloVersion = '0.2.1'
 
     dep = [
             androidPlugin: 'com.android.tools.build:gradle:2.3.0-beta3',
