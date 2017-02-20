@@ -30,11 +30,14 @@ public class ApolloCodeGenInstallTask extends NpmTask {
     installDir = getProject().file(INSTALL_DIR);
 
     final File apolloPackageFile = getProject().file("package.json");
-    final String apolloVersion = getApolloVersion();
+    final boolean isDifferentCodegenVersion = isDifferentCodegenVersion(getApolloVersion());
 
+    if (isDifferentCodegenVersion) {
+      Utils.deleteDirectory(new File(INSTALL_DIR));
+    }
     getOutputs().upToDateWhen(new Spec<Task>() {
       public boolean isSatisfiedBy(Task element) {
-        return apolloPackageFile.isFile() && apolloVersion != null && apolloVersion.equals(APOLLOCODEGEN_VERSION);
+        return apolloPackageFile.isFile() && isDifferentCodegenVersion;
       }
     });
 
@@ -67,6 +70,9 @@ public class ApolloCodeGenInstallTask extends NpmTask {
       e.printStackTrace();
       return null;
     }
+  }
+  private boolean isDifferentCodegenVersion(String packageVersion) {
+    return packageVersion != null && packageVersion.equals(APOLLOCODEGEN_VERSION);
   }
 
   /**
