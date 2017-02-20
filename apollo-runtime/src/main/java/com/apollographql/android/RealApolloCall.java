@@ -23,26 +23,26 @@ final class RealApolloCall implements ApolloCall {
   private static final MediaType MEDIA_TYPE = MediaType.parse("application/graphql; charset=utf-8");
 
   private final Operation operation;
-  private final HttpUrl baseUrl;
+  private final HttpUrl serverUrl;
   private final okhttp3.Call.Factory httpCallFactory;
   private final Moshi moshi;
   private final ResponseBodyConverter responseBodyConverter;
   private volatile Call httpCall;
   private boolean executed;
 
-  RealApolloCall(Operation operation, HttpUrl baseUrl, Call.Factory httpCallFactory, Moshi moshi,
+  RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, Moshi moshi,
       ResponseFieldMapper responseFieldMapper, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
     this.operation = operation;
-    this.baseUrl = baseUrl;
+    this.serverUrl = serverUrl;
     this.moshi = moshi;
     this.httpCallFactory = httpCallFactory;
     this.responseBodyConverter = new ResponseBodyConverter(operation, responseFieldMapper, customTypeAdapters);
   }
 
-  private RealApolloCall(Operation operation, HttpUrl baseUrl, Call.Factory httpCallFactory, Moshi moshi,
+  private RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, Moshi moshi,
       ResponseBodyConverter responseBodyConverter) {
     this.operation = operation;
-    this.baseUrl = baseUrl;
+    this.serverUrl = serverUrl;
     this.moshi = moshi;
     this.httpCallFactory = httpCallFactory;
     this.responseBodyConverter = responseBodyConverter;
@@ -60,8 +60,8 @@ final class RealApolloCall implements ApolloCall {
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
-    httpCall = httpCallFactory.newCall(request(operation));
-    return parse(httpCall.execute());
+    httpCall = httpCallFactory.newCall(httpRequest(operation));
+    return parseHttpResponse(httpCall.execute());
   }
 
   @Override public <T extends Operation.Data> ApolloCall enqueue(final Callback<T> callback) {
@@ -72,7 +72,7 @@ final class RealApolloCall implements ApolloCall {
 
     Request request;
     try {
-      request = request(operation);
+      request = httpRequest(operation);
     } catch (Exception e) {
       if (callback != null) {
         callback.onFailure(e);
@@ -90,7 +90,7 @@ final class RealApolloCall implements ApolloCall {
 
       @Override public void onResponse(Call call, okhttp3.Response httpResponse) throws IOException {
         try {
-          Response<T> response = parse(httpResponse);
+          Response<T> response = parseHttpResponse(httpResponse);
           if (callback != null) {
             callback.onResponse(response);
           }
@@ -105,10 +105,10 @@ final class RealApolloCall implements ApolloCall {
   }
 
   @Override public ApolloCall clone() {
-    return new RealApolloCall(operation, baseUrl, httpCallFactory, moshi, responseBodyConverter);
+    return new RealApolloCall(operation, serverUrl, httpCallFactory, moshi, responseBodyConverter);
   }
 
-  private <T extends Operation.Data> Response<T> parse(okhttp3.Response response) throws IOException {
+  private <T extends Operation.Data> Response<T> parseHttpResponse(okhttp3.Response response) throws IOException {
     int code = response.code();
     if (code < 200 || code >= 300) {
       throw new HttpException(response);
@@ -117,17 +117,17 @@ final class RealApolloCall implements ApolloCall {
     }
   }
 
-  private Request request(Operation operation) throws IOException {
-    RequestBody requestBody = requestBody(operation);
+  private Request httpRequest(Operation operation) throws IOException {
+    RequestBody requestBody = httpRequestBody(operation);
     return new Request.Builder()
-        .url(baseUrl)
+        .url(serverUrl)
         .post(requestBody)
         .header("Accept", ACCEPT_TYPE)
         .header("Content-Type", CONTENT_TYPE)
         .build();
   }
 
-  private RequestBody requestBody(Operation operation) throws IOException {
+  private RequestBody httpRequestBody(Operation operation) throws IOException {
     JsonAdapter<Operation> adapter = new OperationJsonAdapter(moshi);
     Buffer buffer = new Buffer();
     adapter.toJson(buffer, operation);

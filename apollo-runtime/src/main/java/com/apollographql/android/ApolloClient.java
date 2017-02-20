@@ -26,15 +26,15 @@ public final class ApolloClient implements ApolloCallFactory {
     return new Builder();
   }
 
-  private final HttpUrl baseUrl;
+  private final HttpUrl serverUrl;
   private final Call.Factory httpCallFactory;
   private final Map<Type, ResponseFieldMapper> responseFieldMappers;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final Moshi moshi;
 
-  private ApolloClient(HttpUrl baseUrl, Call.Factory httpCallFactory, Map<Type, ResponseFieldMapper> responseFieldMappers,
+  private ApolloClient(HttpUrl serverUrl, Call.Factory httpCallFactory, Map<Type, ResponseFieldMapper> responseFieldMappers,
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters, Moshi moshi) {
-    this.baseUrl = baseUrl;
+    this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
     this.responseFieldMappers = responseFieldMappers;
     this.customTypeAdapters = customTypeAdapters;
@@ -46,12 +46,12 @@ public final class ApolloClient implements ApolloCallFactory {
     if (responseFieldMapper == null) {
       throw new RuntimeException("failed to resolve response field mapper for: " + operation.getClass());
     }
-    return new RealApolloCall(operation, baseUrl, httpCallFactory, moshi, responseFieldMapper, customTypeAdapters);
+    return new RealApolloCall(operation, serverUrl, httpCallFactory, moshi, responseFieldMapper, customTypeAdapters);
   }
 
   public static class Builder {
     private OkHttpClient okHttpClient;
-    private HttpUrl baseUrl;
+    private HttpUrl serverUrl;
     private final Map<Type, ResponseFieldMapper> responseFieldMappers = new LinkedHashMap<>();
     private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
     private Moshi.Builder moshiBuilder = new Moshi.Builder();
@@ -61,14 +61,14 @@ public final class ApolloClient implements ApolloCallFactory {
       return this;
     }
 
-    public Builder baseUrl(@Nonnull HttpUrl baseUrl) {
-      this.baseUrl = checkNotNull(baseUrl, "baseUrl == null");
+    public Builder serverUrl(@Nonnull HttpUrl serverUrl) {
+      this.serverUrl = checkNotNull(serverUrl, "serverUrl == null");
       return this;
     }
 
-    public Builder baseUrl(@Nonnull String baseUrl) {
+    public Builder serverUrl(@Nonnull String baseUrl) {
       checkNotNull(baseUrl, "baseUrl == null");
-      this.baseUrl = HttpUrl.parse(baseUrl);
+      this.serverUrl = HttpUrl.parse(baseUrl);
       return this;
     }
 
@@ -101,8 +101,8 @@ public final class ApolloClient implements ApolloCallFactory {
 
     public ApolloClient build() {
       checkNotNull(okHttpClient, "okHttpClient == null");
-      checkNotNull(baseUrl, "baseUrl == null");
-      return new ApolloClient(baseUrl, okHttpClient, responseFieldMappers, customTypeAdapters, moshiBuilder.build());
+      checkNotNull(serverUrl, "serverUrl == null");
+      return new ApolloClient(serverUrl, okHttpClient, responseFieldMappers, customTypeAdapters, moshiBuilder.build());
     }
   }
 }

@@ -58,7 +58,7 @@ public class IntegrationTest {
     };
 
     apolloClient = ApolloClient.builder()
-        .baseUrl(server.url("/"))
+        .serverUrl(server.url("/"))
         .okHttpClient(new OkHttpClient.Builder().build())
         .withResponseFieldMapper(AllPlanets.class, new AllPlanets.Data.Mapper(AllPlanets.Data.FACTORY))
         .withResponseFieldMapper(ProductsWithDate.class, new ProductsWithDate.Data.Mapper(ProductsWithDate.Data.FACTORY))
