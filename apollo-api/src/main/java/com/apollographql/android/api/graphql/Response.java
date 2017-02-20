@@ -21,7 +21,7 @@ public class Response<T extends Operation.Data> {
     return errors == null || errors.isEmpty();
   }
 
-  @Nonnull public Operation getOperation() {
+  @Nonnull public Operation operation() {
     return operation;
   }
 
