@@ -34,7 +34,7 @@ final class RealApolloCallFactory {
     this.moshi = moshi(customTypeAdapters);
   }
 
-  <T extends Operation> RealApolloCall createRequest(T operation) {
+  <T extends Operation> RealApolloCall newCall(T operation) {
     ResponseFieldMapper responseFieldMapper = responseFieldMappers.get(operation.getClass());
     if (responseFieldMapper == null) {
       throw new RuntimeException("failed to resolve response field mapper for: " + operation.getClass());

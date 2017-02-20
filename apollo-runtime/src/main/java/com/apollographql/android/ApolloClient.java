@@ -31,7 +31,7 @@ public final class ApolloClient {
   }
 
   public <T extends Operation> ApolloCall newCall(@Nonnull T operation) {
-    return httpRequestFactory.createRequest(operation);
+    return httpRequestFactory.newCall(operation);
   }
 
   public static class Builder {
