@@ -9,7 +9,6 @@ import com.apollographql.android.ApolloClient;
 import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.ApolloCall;
 import com.apollographql.android.api.graphql.Error;
-import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.converter.type.CustomType;
 
@@ -72,7 +71,7 @@ public class IntegrationTest {
   @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
 
-    Response<AllPlanets.Data> body = apolloClient.request(new AllPlanets()).execute();
+    Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
     assertThat(body.isSuccessful()).isTrue();
 
     assertThat(server.takeRequest().getBody().readString(Charsets.UTF_8))
@@ -130,7 +129,7 @@ public class IntegrationTest {
 
   @Test public void errorResponse() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/errorResponse.json"));
-    Response<AllPlanets.Data> body = apolloClient.request(new AllPlanets()).execute();
+    Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
     assertThat(body.isSuccessful()).isFalse();
     //noinspection ConstantConditions
     assertThat(body.errors()).containsExactly(new Error(
@@ -141,7 +140,7 @@ public class IntegrationTest {
   @Test public void productsWithDates() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/productsWithDate.json"));
 
-    Response<ProductsWithDate.Data> body = apolloClient.request(new ProductsWithDate()).execute();
+    Response<ProductsWithDate.Data> body = apolloClient.newCall(new ProductsWithDate()).execute();
     assertThat(body.isSuccessful()).isTrue();
 
     assertThat(server.takeRequest().getBody().readString(Charsets.UTF_8))
@@ -177,7 +176,7 @@ public class IntegrationTest {
     server.enqueue(mockResponse("src/test/graphql/productsWithUnsupportedCustomScalarTypes.json"));
 
     Response<ProductsWithUnsupportedCustomScalarTypes.Data> body = apolloClient
-        .request(new ProductsWithUnsupportedCustomScalarTypes()).execute();
+        .newCall(new ProductsWithUnsupportedCustomScalarTypes()).execute();
     assertThat(body.isSuccessful()).isTrue();
 
     ProductsWithUnsupportedCustomScalarTypes.Data data = body.data();
@@ -195,7 +194,7 @@ public class IntegrationTest {
     server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
 
     final CountDownLatch latch = new CountDownLatch(1);
-    apolloClient.request(new AllPlanets()).enqueue(new ApolloCall.Callback<AllPlanets.Data>() {
+    apolloClient.newCall(new AllPlanets()).enqueue(new ApolloCall.Callback<AllPlanets.Data>() {
       @Override public void onResponse(Response<AllPlanets.Data> response) {
         assertThat(response.isSuccessful()).isTrue();
         assertThat(response.data().allPlanets().planets().size()).isEqualTo(60);

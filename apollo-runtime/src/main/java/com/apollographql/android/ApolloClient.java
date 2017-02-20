@@ -30,7 +30,7 @@ public final class ApolloClient {
         customTypeAdapters);
   }
 
-  public <T extends Operation> ApolloCall request(@Nonnull T operation) {
+  public <T extends Operation> ApolloCall newCall(@Nonnull T operation) {
     return httpRequestFactory.createRequest(operation);
   }
 
