@@ -21,8 +21,8 @@ import okio.Buffer;
 
 final class RealApolloCall implements ApolloCall {
   private static final String ACCEPT_TYPE = "application/json";
-  private static final String CONTENT_TYPE = "application/graphql";
-  private static final MediaType MEDIA_TYPE = MediaType.parse("application/graphql; charset=utf-8");
+  private static final String CONTENT_TYPE = "application/json";
+  private static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
 
   private final Operation operation;
   private final HttpUrl serverUrl;
