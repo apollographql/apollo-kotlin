@@ -42,7 +42,7 @@ public final class ApolloClient implements ApolloCallFactory {
     this.moshi = moshi;
   }
 
-  public <T extends Operation> ApolloCall newCall(@Nonnull T operation) {
+  @Nonnull public <T extends Operation> ApolloCall newCall(@Nonnull T operation) {
     ResponseFieldMapper responseFieldMapper = responseFieldMappers.get(operation.getClass());
     if (responseFieldMapper == null) {
       throw new RuntimeException("failed to resolve response field mapper for: " + operation.getClass());

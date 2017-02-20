@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
+import javax.annotation.Nonnull;
+
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -195,13 +197,13 @@ public class IntegrationTest {
 
     final CountDownLatch latch = new CountDownLatch(1);
     apolloClient.newCall(new AllPlanets()).enqueue(new ApolloCall.Callback<AllPlanets.Data>() {
-      @Override public void onResponse(Response<AllPlanets.Data> response) {
+      @Override public void onResponse(@Nonnull Response<AllPlanets.Data> response) {
         assertThat(response.isSuccessful()).isTrue();
         assertThat(response.data().allPlanets().planets().size()).isEqualTo(60);
         latch.countDown();
       }
 
-      @Override public void onFailure(Exception e) {
+      @Override public void onFailure(@Nonnull Exception e) {
         Assert.fail("expected success");
       }
     });
