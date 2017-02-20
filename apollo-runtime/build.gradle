@@ -32,11 +32,19 @@ android {
 
 dependencies {
   compile dep.jsr305
-  compile dep.retrofit
   compile dep.supportAnnotations
-  provided project (":apollo-api")
+  compile dep.okHttp
+  compile dep.moshi
+  provided project(":apollo-api")
+
   testCompile dep.junit
   testCompile dep.truth
+  testCompile dep.mockWebServer
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
+
+tasks.withType(Checkstyle) {
+  exclude '**/BufferedSourceJsonReader.java'
+  exclude '**/JsonScope.java'
+}
