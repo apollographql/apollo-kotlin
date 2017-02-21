@@ -1,0 +1,3 @@
+// Invalid schema.json file. This stub exists to make sure that the the task picks the
+// schema file in the highest priority source set if one exists.
+

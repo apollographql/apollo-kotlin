@@ -14,7 +14,7 @@ jdk:
   - oraclejdk8
 
 script:
-  - ./gradlew clean check -x checkstyleTest -x :apollo-gradle-plugin:test --stacktrace
+  - ./gradlew clean check -x checkstyleTest --stacktrace
 
 after_success:
   - .buildscript/deploy_snapshot.sh

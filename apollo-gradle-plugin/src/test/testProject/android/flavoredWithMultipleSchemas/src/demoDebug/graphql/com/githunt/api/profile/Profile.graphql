@@ -1,0 +1,6 @@
+query CurrentUserForLayout {
+  currentUser {
+    login
+    avatar_url
+  }
+}
