@@ -50,26 +50,11 @@ public final class AllPlanets implements Query<Operation.Variables> {
     return variables;
   }
 
+  @Override public ResponseFieldMapper<? extends Operation.Data> responseFieldMapper() {
+    return new Data.Mapper();
+  }
+
   public static class Data implements Operation.Data {
-    public static final Creator CREATOR = new Creator() {
-      @Override
-      public Data create(@Nullable AllPlanet allPlanets) {
-        return new Data(allPlanets);
-      }
-    };
-
-    public static final Factory FACTORY = new Factory() {
-      @Override
-      public Creator creator() {
-        return CREATOR;
-      }
-
-      @Override
-      public AllPlanet.Factory allPlanetFactory() {
-        return AllPlanet.FACTORY;
-      }
-    };
-
     private @Nullable AllPlanet allPlanets;
 
     public Data(@Nullable AllPlanet allPlanets) {
@@ -81,25 +66,6 @@ public final class AllPlanets implements Query<Operation.Variables> {
     }
 
     public static class AllPlanet {
-      public static final Creator CREATOR = new Creator() {
-        @Override
-        public AllPlanet create(@Nullable List<? extends Planet> planets) {
-          return new AllPlanet(planets);
-        }
-      };
-
-      public static final Factory FACTORY = new Factory() {
-        @Override
-        public Creator creator() {
-          return CREATOR;
-        }
-
-        @Override
-        public Planet.Factory planetFactory() {
-          return Planet.FACTORY;
-        }
-      };
-
       private @Nullable List<? extends Planet> planets;
 
       public AllPlanet(@Nullable List<? extends Planet> planets) {
@@ -111,30 +77,6 @@ public final class AllPlanets implements Query<Operation.Variables> {
       }
 
       public static class Planet {
-        public static final Creator CREATOR = new Creator() {
-          @Override
-          public Planet create(@Nullable FilmConnection filmConnection, Fragments fragments) {
-            return new Planet(filmConnection, fragments);
-          }
-        };
-
-        public static final Factory FACTORY = new Factory() {
-          @Override
-          public Creator creator() {
-            return CREATOR;
-          }
-
-          @Override
-          public FilmConnection.Factory filmConnectionFactory() {
-            return FilmConnection.FACTORY;
-          }
-
-          @Override
-          public Fragments.Factory fragmentsFactory() {
-            return Fragments.FACTORY;
-          }
-        };
-
         private @Nullable FilmConnection filmConnection;
 
         private Fragments fragments;
@@ -153,26 +95,6 @@ public final class AllPlanets implements Query<Operation.Variables> {
         }
 
         public static class FilmConnection {
-          public static final Creator CREATOR = new Creator() {
-            @Override
-            public FilmConnection create(@Nullable Integer totalCount,
-                @Nullable List<? extends Film> films) {
-              return new FilmConnection(totalCount, films);
-            }
-          };
-
-          public static final Factory FACTORY = new Factory() {
-            @Override
-            public Creator creator() {
-              return CREATOR;
-            }
-
-            @Override
-            public Film.Factory filmFactory() {
-              return Film.FACTORY;
-            }
-          };
-
           private @Nullable Integer totalCount;
 
           private @Nullable List<? extends Film> films;
@@ -192,25 +114,6 @@ public final class AllPlanets implements Query<Operation.Variables> {
           }
 
           public static class Film {
-            public static final Creator CREATOR = new Creator() {
-              @Override
-              public Film create(@Nullable String title, Fragments fragments) {
-                return new Film(title, fragments);
-              }
-            };
-
-            public static final Factory FACTORY = new Factory() {
-              @Override
-              public Creator creator() {
-                return CREATOR;
-              }
-
-              @Override
-              public Fragments.Factory fragmentsFactory() {
-                return Fragments.FACTORY;
-              }
-            };
-
             private @Nullable String title;
 
             private Fragments fragments;
@@ -229,25 +132,6 @@ public final class AllPlanets implements Query<Operation.Variables> {
             }
 
             public static class Fragments {
-              public static final Creator CREATOR = new Creator() {
-                @Override
-                public Fragments create(FilmFragment filmFragment) {
-                  return new Fragments(filmFragment);
-                }
-              };
-
-              public static final Factory FACTORY = new Factory() {
-                @Override
-                public Creator creator() {
-                  return CREATOR;
-                }
-
-                @Override
-                public FilmFragment.Factory filmFragmentFactory() {
-                  return FilmFragment.FACTORY;
-                }
-              };
-
               private FilmFragment filmFragment;
 
               public Fragments(FilmFragment filmFragment) {
@@ -258,23 +142,10 @@ public final class AllPlanets implements Query<Operation.Variables> {
                 return this.filmFragment;
               }
 
-              public interface Factory {
-                Creator creator();
-
-                FilmFragment.Factory filmFragmentFactory();
-              }
-
-              public interface Creator {
-                Fragments create(FilmFragment filmFragment);
-              }
-
               public static final class Mapper implements ResponseFieldMapper<Fragments> {
-                final Factory factory;
-
                 String conditionalType;
 
-                public Mapper(@Nonnull Factory factory, @Nonnull String conditionalType) {
-                  this.factory = factory;
+                public Mapper(@Nonnull String conditionalType) {
                   this.conditionalType = conditionalType;
                 }
 
@@ -282,40 +153,24 @@ public final class AllPlanets implements Query<Operation.Variables> {
                 public Fragments map(ResponseReader reader) throws IOException {
                   FilmFragment filmfragment = null;
                   if (conditionalType.equals(FilmFragment.TYPE_CONDITION)) {
-                    filmfragment = new FilmFragment.Mapper(factory.filmFragmentFactory()).map(reader);
+                    filmfragment = new FilmFragment.Mapper().map(reader);
                   }
-                  return factory.creator().create(filmfragment);
+                  return new Fragments(filmfragment);
                 }
               }
             }
 
-            public interface Factory {
-              Creator creator();
-
-              Fragments.Factory fragmentsFactory();
-            }
-
-            public interface Creator {
-              Film create(@Nullable String title, Fragments fragments);
-            }
-
             public static final class Mapper implements ResponseFieldMapper<Film> {
-              final Factory factory;
-
               final Field[] fields = {
                 Field.forString("title", "title", null, true),
                 Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
                   @Override
                   public Fragments read(String conditionalType, ResponseReader reader) throws
                       IOException {
-                    return new Fragments.Mapper(factory.fragmentsFactory(), conditionalType).map(reader);
+                    return new Fragments.Mapper(conditionalType).map(reader);
                   }
                 })
               };
-
-              public Mapper(@Nonnull Factory factory) {
-                this.factory = factory;
-              }
 
               @Override
               public Film map(ResponseReader reader) throws IOException {
@@ -335,7 +190,7 @@ public final class AllPlanets implements Query<Operation.Variables> {
                     }
                   }
                 }, fields);
-                return factory.creator().create(contentValues.title, contentValues.fragments);
+                return new Film(contentValues.title, contentValues.fragments);
               }
 
               static final class __ContentValues {
@@ -346,32 +201,15 @@ public final class AllPlanets implements Query<Operation.Variables> {
             }
           }
 
-          public interface Factory {
-            Creator creator();
-
-            Film.Factory filmFactory();
-          }
-
-          public interface Creator {
-            FilmConnection create(@Nullable Integer totalCount,
-                @Nullable List<? extends Film> films);
-          }
-
           public static final class Mapper implements ResponseFieldMapper<FilmConnection> {
-            final Factory factory;
-
             final Field[] fields = {
               Field.forInt("totalCount", "totalCount", null, true),
               Field.forList("films", "films", null, true, new Field.ObjectReader<Film>() {
                 @Override public Film read(final ResponseReader reader) throws IOException {
-                  return new Film.Mapper(factory.filmFactory()).map(reader);
+                  return new Film.Mapper().map(reader);
                 }
               })
             };
-
-            public Mapper(@Nonnull Factory factory) {
-              this.factory = factory;
-            }
 
             @Override
             public FilmConnection map(ResponseReader reader) throws IOException {
@@ -391,7 +229,7 @@ public final class AllPlanets implements Query<Operation.Variables> {
                   }
                 }
               }, fields);
-              return factory.creator().create(contentValues.totalCount, contentValues.films);
+              return new FilmConnection(contentValues.totalCount, contentValues.films);
             }
 
             static final class __ContentValues {
@@ -403,25 +241,6 @@ public final class AllPlanets implements Query<Operation.Variables> {
         }
 
         public static class Fragments {
-          public static final Creator CREATOR = new Creator() {
-            @Override
-            public Fragments create(PlanetFragment planetFargment) {
-              return new Fragments(planetFargment);
-            }
-          };
-
-          public static final Factory FACTORY = new Factory() {
-            @Override
-            public Creator creator() {
-              return CREATOR;
-            }
-
-            @Override
-            public PlanetFragment.Factory planetFargmentFactory() {
-              return PlanetFragment.FACTORY;
-            }
-          };
-
           private PlanetFragment planetFargment;
 
           public Fragments(PlanetFragment planetFargment) {
@@ -432,23 +251,10 @@ public final class AllPlanets implements Query<Operation.Variables> {
             return this.planetFargment;
           }
 
-          public interface Factory {
-            Creator creator();
-
-            PlanetFragment.Factory planetFargmentFactory();
-          }
-
-          public interface Creator {
-            Fragments create(PlanetFragment planetFargment);
-          }
-
           public static final class Mapper implements ResponseFieldMapper<Fragments> {
-            final Factory factory;
+            private final String conditionalType;
 
-            String conditionalType;
-
-            public Mapper(@Nonnull Factory factory, @Nonnull String conditionalType) {
-              this.factory = factory;
+            public Mapper(@Nonnull String conditionalType) {
               this.conditionalType = conditionalType;
             }
 
@@ -456,46 +262,28 @@ public final class AllPlanets implements Query<Operation.Variables> {
             public Fragments map(ResponseReader reader) throws IOException {
               PlanetFragment planetfargment = null;
               if (conditionalType.equals(PlanetFragment.TYPE_CONDITION)) {
-                planetfargment = new PlanetFragment.Mapper(factory.planetFargmentFactory()).map(reader);
+                planetfargment = new PlanetFragment.Mapper().map(reader);
               }
-              return factory.creator().create(planetfargment);
+              return new Fragments(planetfargment);
             }
           }
         }
 
-        public interface Factory {
-          Creator creator();
-
-          FilmConnection.Factory filmConnectionFactory();
-
-          Fragments.Factory fragmentsFactory();
-        }
-
-        public interface Creator {
-          Planet create(@Nullable FilmConnection filmConnection, Fragments fragments);
-        }
-
         public static final class Mapper implements ResponseFieldMapper<Planet> {
-          final Factory factory;
-
           final Field[] fields = {
             Field.forObject("filmConnection", "filmConnection", null, true, new Field.ObjectReader<FilmConnection>() {
               @Override public FilmConnection read(final ResponseReader reader) throws IOException {
-                return new FilmConnection.Mapper(factory.filmConnectionFactory()).map(reader);
+                return new FilmConnection.Mapper().map(reader);
               }
             }),
             Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
               @Override
               public Fragments read(String conditionalType, ResponseReader reader) throws
                   IOException {
-                return new Fragments.Mapper(factory.fragmentsFactory(), conditionalType).map(reader);
+                return new Fragments.Mapper(conditionalType).map(reader);
               }
             })
           };
-
-          public Mapper(@Nonnull Factory factory) {
-            this.factory = factory;
-          }
 
           @Override
           public Planet map(ResponseReader reader) throws IOException {
@@ -515,7 +303,7 @@ public final class AllPlanets implements Query<Operation.Variables> {
                 }
               }
             }, fields);
-            return factory.creator().create(contentValues.filmConnection, contentValues.fragments);
+            return new Planet(contentValues.filmConnection, contentValues.fragments);
           }
 
           static final class __ContentValues {
@@ -526,30 +314,14 @@ public final class AllPlanets implements Query<Operation.Variables> {
         }
       }
 
-      public interface Factory {
-        Creator creator();
-
-        Planet.Factory planetFactory();
-      }
-
-      public interface Creator {
-        AllPlanet create(@Nullable List<? extends Planet> planets);
-      }
-
       public static final class Mapper implements ResponseFieldMapper<AllPlanet> {
-        final Factory factory;
-
         final Field[] fields = {
           Field.forList("planets", "planets", null, true, new Field.ObjectReader<Planet>() {
             @Override public Planet read(final ResponseReader reader) throws IOException {
-              return new Planet.Mapper(factory.planetFactory()).map(reader);
+              return new Planet.Mapper().map(reader);
             }
           })
         };
-
-        public Mapper(@Nonnull Factory factory) {
-          this.factory = factory;
-        }
 
         @Override
         public AllPlanet map(ResponseReader reader) throws IOException {
@@ -565,7 +337,7 @@ public final class AllPlanets implements Query<Operation.Variables> {
               }
             }
           }, fields);
-          return factory.creator().create(contentValues.planets);
+          return new AllPlanet(contentValues.planets);
         }
 
         static final class __ContentValues {
@@ -574,30 +346,14 @@ public final class AllPlanets implements Query<Operation.Variables> {
       }
     }
 
-    public interface Factory {
-      Creator creator();
-
-      AllPlanet.Factory allPlanetFactory();
-    }
-
-    public interface Creator {
-      Data create(@Nullable AllPlanet allPlanets);
-    }
-
     public static final class Mapper implements ResponseFieldMapper<Data> {
-      final Factory factory;
-
       final Field[] fields = {
         Field.forObject("allPlanets", "allPlanets", null, true, new Field.ObjectReader<AllPlanet>() {
           @Override public AllPlanet read(final ResponseReader reader) throws IOException {
-            return new AllPlanet.Mapper(factory.allPlanetFactory()).map(reader);
+            return new AllPlanet.Mapper().map(reader);
           }
         })
       };
-
-      public Mapper(@Nonnull Factory factory) {
-        this.factory = factory;
-      }
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
@@ -613,7 +369,7 @@ public final class AllPlanets implements Query<Operation.Variables> {
             }
           }
         }, fields);
-        return factory.creator().create(contentValues.allPlanets);
+        return new Data(contentValues.allPlanets);
       }
 
       static final class __ContentValues {

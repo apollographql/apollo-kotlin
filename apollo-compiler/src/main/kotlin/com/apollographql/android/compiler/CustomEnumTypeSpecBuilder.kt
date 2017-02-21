@@ -5,6 +5,7 @@ import com.apollographql.android.compiler.ir.CodeGenerationContext
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeSpec
+import java.util.*
 import javax.lang.model.element.Modifier
 
 class CustomEnumTypeSpecBuilder(
@@ -20,7 +21,7 @@ class CustomEnumTypeSpecBuilder(
 
   private fun TypeSpec.Builder.addEnumConstants(): TypeSpec.Builder {
     context.customTypeMap.forEach { mapping ->
-      val constantName = mapping.key.removeSuffix("!").toUpperCase()
+      val constantName = mapping.key.removeSuffix("!").toUpperCase(Locale.ENGLISH)
       val javaTypeName = mapping.value
       addEnumConstant(constantName, scalarMappingTypeSpec(mapping.key, javaTypeName))
     }

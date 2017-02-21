@@ -14,20 +14,6 @@ import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
 public class HumanDetails {
-  public static final Creator CREATOR = new Creator() {
-    @Override
-    public @Nonnull HumanDetails create(@Nonnull String name, @Nullable Double height) {
-      return new HumanDetails(name, height);
-    }
-  };
-
-  public static final Factory FACTORY = new Factory() {
-    @Override
-    public @Nonnull Creator creator() {
-      return CREATOR;
-    }
-  };
-
   public static final String FRAGMENT_DEFINITION = "fragment HumanDetails on Human {\n"
       + "  name\n"
       + "  height\n"
@@ -84,16 +70,10 @@ public class HumanDetails {
   }
 
   public static final class Mapper implements ResponseFieldMapper<HumanDetails> {
-    final Factory factory;
-
     final Field[] fields = {
       Field.forString("name", "name", null, false),
       Field.forDouble("height", "height", null, true)
     };
-
-    public Mapper(@Nonnull Factory factory) {
-      this.factory = factory;
-    }
 
     @Override
     public HumanDetails map(ResponseReader reader) throws IOException {
@@ -113,7 +93,7 @@ public class HumanDetails {
           }
         }
       }, fields);
-      return factory.creator().create(contentValues.name, contentValues.height);
+      return new HumanDetails(contentValues.name, contentValues.height);
     }
 
     static final class __ContentValues {
@@ -121,13 +101,5 @@ public class HumanDetails {
 
       Double height;
     }
-  }
-
-  public interface Factory {
-    @Nonnull Creator creator();
-  }
-
-  public interface Creator {
-    @Nonnull HumanDetails create(@Nonnull String name, @Nullable Double height);
   }
 }

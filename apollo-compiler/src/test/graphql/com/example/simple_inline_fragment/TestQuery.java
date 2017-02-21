@@ -47,26 +47,12 @@ public final class TestQuery implements Query<Operation.Variables> {
     return variables;
   }
 
+  @Override
+  public ResponseFieldMapper<? extends Operation.Data> responseFieldMapper() {
+    return new Data.Mapper();
+  }
+
   public static class Data implements Operation.Data {
-    public static final Creator CREATOR = new Creator() {
-      @Override
-      public @Nonnull Data create(@Nullable Hero hero) {
-        return new Data(hero);
-      }
-    };
-
-    public static final Factory FACTORY = new Factory() {
-      @Override
-      public @Nonnull Creator creator() {
-        return CREATOR;
-      }
-
-      @Override
-      public @Nonnull Hero.Factory heroFactory() {
-        return Hero.FACTORY;
-      }
-    };
-
     private final @Nullable Hero hero;
 
     public Data(@Nullable Hero hero) {
@@ -105,31 +91,6 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     public static class Hero {
-      public static final Creator CREATOR = new Creator() {
-        @Override
-        public @Nonnull Hero create(@Nonnull String name, @Nullable AsHuman asHuman,
-            @Nullable AsDroid asDroid) {
-          return new Hero(name, asHuman, asDroid);
-        }
-      };
-
-      public static final Factory FACTORY = new Factory() {
-        @Override
-        public @Nonnull Creator creator() {
-          return CREATOR;
-        }
-
-        @Override
-        public @Nonnull AsHuman.Factory asHumanFactory() {
-          return AsHuman.FACTORY;
-        }
-
-        @Override
-        public @Nonnull AsDroid.Factory asDroidFactory() {
-          return AsDroid.FACTORY;
-        }
-      };
-
       private final @Nonnull String name;
 
       private @Nullable AsHuman asHuman;
@@ -190,20 +151,6 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       public static class AsHuman {
-        public static final Creator CREATOR = new Creator() {
-          @Override
-          public @Nonnull AsHuman create(@Nonnull String name, @Nullable Double height) {
-            return new AsHuman(name, height);
-          }
-        };
-
-        public static final Factory FACTORY = new Factory() {
-          @Override
-          public @Nonnull Creator creator() {
-            return CREATOR;
-          }
-        };
-
         private final @Nonnull String name;
 
         private final @Nullable Double height;
@@ -253,16 +200,10 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         public static final class Mapper implements ResponseFieldMapper<AsHuman> {
-          final Factory factory;
-
           final Field[] fields = {
             Field.forString("name", "name", null, false),
             Field.forDouble("height", "height", null, true)
           };
-
-          public Mapper(@Nonnull Factory factory) {
-            this.factory = factory;
-          }
 
           @Override
           public AsHuman map(ResponseReader reader) throws IOException {
@@ -282,7 +223,7 @@ public final class TestQuery implements Query<Operation.Variables> {
                 }
               }
             }, fields);
-            return factory.creator().create(contentValues.name, contentValues.height);
+            return new AsHuman(contentValues.name, contentValues.height);
           }
 
           static final class __ContentValues {
@@ -291,31 +232,9 @@ public final class TestQuery implements Query<Operation.Variables> {
             Double height;
           }
         }
-
-        public interface Factory {
-          @Nonnull Creator creator();
-        }
-
-        public interface Creator {
-          @Nonnull AsHuman create(@Nonnull String name, @Nullable Double height);
-        }
       }
 
       public static class AsDroid {
-        public static final Creator CREATOR = new Creator() {
-          @Override
-          public @Nonnull AsDroid create(@Nonnull String name, @Nullable String primaryFunction) {
-            return new AsDroid(name, primaryFunction);
-          }
-        };
-
-        public static final Factory FACTORY = new Factory() {
-          @Override
-          public @Nonnull Creator creator() {
-            return CREATOR;
-          }
-        };
-
         private final @Nonnull String name;
 
         private final @Nullable String primaryFunction;
@@ -365,16 +284,10 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         public static final class Mapper implements ResponseFieldMapper<AsDroid> {
-          final Factory factory;
-
           final Field[] fields = {
             Field.forString("name", "name", null, false),
             Field.forString("primaryFunction", "primaryFunction", null, true)
           };
-
-          public Mapper(@Nonnull Factory factory) {
-            this.factory = factory;
-          }
 
           @Override
           public AsDroid map(ResponseReader reader) throws IOException {
@@ -394,7 +307,7 @@ public final class TestQuery implements Query<Operation.Variables> {
                 }
               }
             }, fields);
-            return factory.creator().create(contentValues.name, contentValues.primaryFunction);
+            return new AsDroid(contentValues.name, contentValues.primaryFunction);
           }
 
           static final class __ContentValues {
@@ -403,26 +316,16 @@ public final class TestQuery implements Query<Operation.Variables> {
             String primaryFunction;
           }
         }
-
-        public interface Factory {
-          @Nonnull Creator creator();
-        }
-
-        public interface Creator {
-          @Nonnull AsDroid create(@Nonnull String name, @Nullable String primaryFunction);
-        }
       }
 
       public static final class Mapper implements ResponseFieldMapper<Hero> {
-        final Factory factory;
-
         final Field[] fields = {
           Field.forString("name", "name", null, false),
           Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman>() {
             @Override
             public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
               if (conditionalType.equals("Human")) {
-                return new AsHuman.Mapper(factory.asHumanFactory()).map(reader);
+                return new AsHuman.Mapper().map(reader);
               } else {
                 return null;
               }
@@ -432,17 +335,13 @@ public final class TestQuery implements Query<Operation.Variables> {
             @Override
             public AsDroid read(String conditionalType, ResponseReader reader) throws IOException {
               if (conditionalType.equals("Droid")) {
-                return new AsDroid.Mapper(factory.asDroidFactory()).map(reader);
+                return new AsDroid.Mapper().map(reader);
               } else {
                 return null;
               }
             }
           })
         };
-
-        public Mapper(@Nonnull Factory factory) {
-          this.factory = factory;
-        }
 
         @Override
         public Hero map(ResponseReader reader) throws IOException {
@@ -466,7 +365,7 @@ public final class TestQuery implements Query<Operation.Variables> {
               }
             }
           }, fields);
-          return factory.creator().create(contentValues.name, contentValues.asHuman, contentValues.asDroid);
+          return new Hero(contentValues.name, contentValues.asHuman, contentValues.asDroid);
         }
 
         static final class __ContentValues {
@@ -477,35 +376,16 @@ public final class TestQuery implements Query<Operation.Variables> {
           AsDroid asDroid;
         }
       }
-
-      public interface Factory {
-        @Nonnull Creator creator();
-
-        @Nonnull AsHuman.Factory asHumanFactory();
-
-        @Nonnull AsDroid.Factory asDroidFactory();
-      }
-
-      public interface Creator {
-        @Nonnull Hero create(@Nonnull String name, @Nullable AsHuman asHuman,
-            @Nullable AsDroid asDroid);
-      }
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
-      final Factory factory;
-
       final Field[] fields = {
         Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
           @Override public Hero read(final ResponseReader reader) throws IOException {
-            return new Hero.Mapper(factory.heroFactory()).map(reader);
+            return new Hero.Mapper().map(reader);
           }
         })
       };
-
-      public Mapper(@Nonnull Factory factory) {
-        this.factory = factory;
-      }
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
@@ -521,22 +401,12 @@ public final class TestQuery implements Query<Operation.Variables> {
             }
           }
         }, fields);
-        return factory.creator().create(contentValues.hero);
+        return new Data(contentValues.hero);
       }
 
       static final class __ContentValues {
         Hero hero;
       }
-    }
-
-    public interface Factory {
-      @Nonnull Creator creator();
-
-      @Nonnull Hero.Factory heroFactory();
-    }
-
-    public interface Creator {
-      @Nonnull Data create(@Nullable Hero hero);
     }
   }
 }

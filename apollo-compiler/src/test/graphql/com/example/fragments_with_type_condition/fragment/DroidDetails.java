@@ -13,20 +13,6 @@ import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
 public class DroidDetails {
-  public static final Creator CREATOR = new Creator() {
-    @Override
-    public @Nonnull DroidDetails create(@Nonnull String name, @Nullable String primaryFunction) {
-      return new DroidDetails(name, primaryFunction);
-    }
-  };
-
-  public static final Factory FACTORY = new Factory() {
-    @Override
-    public @Nonnull Creator creator() {
-      return CREATOR;
-    }
-  };
-
   public static final String FRAGMENT_DEFINITION = "fragment DroidDetails on Droid {\n"
       + "  name\n"
       + "  primaryFunction\n"
@@ -83,16 +69,10 @@ public class DroidDetails {
   }
 
   public static final class Mapper implements ResponseFieldMapper<DroidDetails> {
-    final Factory factory;
-
     final Field[] fields = {
       Field.forString("name", "name", null, false),
       Field.forString("primaryFunction", "primaryFunction", null, true)
     };
-
-    public Mapper(@Nonnull Factory factory) {
-      this.factory = factory;
-    }
 
     @Override
     public DroidDetails map(ResponseReader reader) throws IOException {
@@ -112,7 +92,7 @@ public class DroidDetails {
           }
         }
       }, fields);
-      return factory.creator().create(contentValues.name, contentValues.primaryFunction);
+      return new DroidDetails(contentValues.name, contentValues.primaryFunction);
     }
 
     static final class __ContentValues {
@@ -120,13 +100,5 @@ public class DroidDetails {
 
       String primaryFunction;
     }
-  }
-
-  public interface Factory {
-    @Nonnull Creator creator();
-  }
-
-  public interface Creator {
-    @Nonnull DroidDetails create(@Nonnull String name, @Nullable String primaryFunction);
   }
 }

@@ -1,7 +1,6 @@
 package com.apollographql.android.compiler.ir
 
 data class CodeGenerationContext(
-    val abstractType: Boolean,
     val reservedTypeNames: List<String>,
     val typeDeclarations: List<TypeDeclaration>,
     val fragmentsPackage: String = "",
@@ -12,7 +11,6 @@ data class CodeGenerationContext(
 
   fun plusReservedTypes(typeNames: List<String>): CodeGenerationContext =
       CodeGenerationContext(
-          abstractType = abstractType,
           reservedTypeNames = reservedTypeNames.plus(typeNames),
           typeDeclarations = typeDeclarations,
           fragmentsPackage = fragmentsPackage,
@@ -24,7 +22,6 @@ data class CodeGenerationContext(
 
   fun withReservedTypeNames(reservedTypeNames: List<String>): CodeGenerationContext =
       CodeGenerationContext(
-          abstractType = abstractType,
           reservedTypeNames = reservedTypeNames,
           typeDeclarations = typeDeclarations,
           fragmentsPackage = fragmentsPackage,

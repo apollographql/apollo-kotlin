@@ -43,6 +43,11 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
     return variables;
   }
 
+  @Override
+  public ResponseFieldMapper<? extends Operation.Data> responseFieldMapper() {
+    return new Data.Mapper();
+  }
+
   public static final class Variables extends Operation.Variables {
     private final @Nonnull Episode ep;
 
@@ -92,25 +97,6 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
   }
 
   public static class Data implements Operation.Data {
-    public static final Creator CREATOR = new Creator() {
-      @Override
-      public @Nonnull Data create(@Nullable CreateReview createReview) {
-        return new Data(createReview);
-      }
-    };
-
-    public static final Factory FACTORY = new Factory() {
-      @Override
-      public @Nonnull Creator creator() {
-        return CREATOR;
-      }
-
-      @Override
-      public @Nonnull CreateReview.Factory createReviewFactory() {
-        return CreateReview.FACTORY;
-      }
-    };
-
     private final @Nullable CreateReview createReview;
 
     public Data(@Nullable CreateReview createReview) {
@@ -149,20 +135,6 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
     }
 
     public static class CreateReview {
-      public static final Creator CREATOR = new Creator() {
-        @Override
-        public @Nonnull CreateReview create(int stars, @Nullable String commentary) {
-          return new CreateReview(stars, commentary);
-        }
-      };
-
-      public static final Factory FACTORY = new Factory() {
-        @Override
-        public @Nonnull Creator creator() {
-          return CREATOR;
-        }
-      };
-
       private final int stars;
 
       private final @Nullable String commentary;
@@ -212,16 +184,10 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
       }
 
       public static final class Mapper implements ResponseFieldMapper<CreateReview> {
-        final Factory factory;
-
         final Field[] fields = {
           Field.forInt("stars", "stars", null, false),
           Field.forString("commentary", "commentary", null, true)
         };
-
-        public Mapper(@Nonnull Factory factory) {
-          this.factory = factory;
-        }
 
         @Override
         public CreateReview map(ResponseReader reader) throws IOException {
@@ -241,7 +207,7 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
               }
             }
           }, fields);
-          return factory.creator().create(contentValues.stars, contentValues.commentary);
+          return new CreateReview(contentValues.stars, contentValues.commentary);
         }
 
         static final class __ContentValues {
@@ -250,30 +216,16 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
           String commentary;
         }
       }
-
-      public interface Factory {
-        @Nonnull Creator creator();
-      }
-
-      public interface Creator {
-        @Nonnull CreateReview create(int stars, @Nullable String commentary);
-      }
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
-      final Factory factory;
-
       final Field[] fields = {
         Field.forObject("createReview", "createReview", null, true, new Field.ObjectReader<CreateReview>() {
           @Override public CreateReview read(final ResponseReader reader) throws IOException {
-            return new CreateReview.Mapper(factory.createReviewFactory()).map(reader);
+            return new CreateReview.Mapper().map(reader);
           }
         })
       };
-
-      public Mapper(@Nonnull Factory factory) {
-        this.factory = factory;
-      }
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
@@ -289,22 +241,12 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
             }
           }
         }, fields);
-        return factory.creator().create(contentValues.createReview);
+        return new Data(contentValues.createReview);
       }
 
       static final class __ContentValues {
         CreateReview createReview;
       }
-    }
-
-    public interface Factory {
-      @Nonnull Creator creator();
-
-      @Nonnull CreateReview.Factory createReviewFactory();
-    }
-
-    public interface Creator {
-      @Nonnull Data create(@Nullable CreateReview createReview);
     }
   }
 }

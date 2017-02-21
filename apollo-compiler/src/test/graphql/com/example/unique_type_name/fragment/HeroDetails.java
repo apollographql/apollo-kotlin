@@ -15,26 +15,6 @@ import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
 public class HeroDetails {
-  public static final Creator CREATOR = new Creator() {
-    @Override
-    public @Nonnull HeroDetails create(@Nonnull String name,
-        @Nonnull FriendsConnection friendsConnection) {
-      return new HeroDetails(name, friendsConnection);
-    }
-  };
-
-  public static final Factory FACTORY = new Factory() {
-    @Override
-    public @Nonnull Creator creator() {
-      return CREATOR;
-    }
-
-    @Override
-    public @Nonnull FriendsConnection.Factory friendsConnectionFactory() {
-      return FriendsConnection.FACTORY;
-    }
-  };
-
   public static final String FRAGMENT_DEFINITION = "fragment HeroDetails on Character {\n"
       + "  __typename\n"
       + "  name\n"
@@ -100,26 +80,6 @@ public class HeroDetails {
   }
 
   public static class FriendsConnection {
-    public static final Creator CREATOR = new Creator() {
-      @Override
-      public @Nonnull FriendsConnection create(@Nullable Integer totalCount,
-          @Nullable List<Edge> edges) {
-        return new FriendsConnection(totalCount, edges);
-      }
-    };
-
-    public static final Factory FACTORY = new Factory() {
-      @Override
-      public @Nonnull Creator creator() {
-        return CREATOR;
-      }
-
-      @Override
-      public @Nonnull Edge.Factory edgeFactory() {
-        return Edge.FACTORY;
-      }
-    };
-
     private final @Nullable Integer totalCount;
 
     private final @Nullable List<Edge> edges;
@@ -169,25 +129,6 @@ public class HeroDetails {
     }
 
     public static class Edge {
-      public static final Creator CREATOR = new Creator() {
-        @Override
-        public @Nonnull Edge create(@Nullable Node node) {
-          return new Edge(node);
-        }
-      };
-
-      public static final Factory FACTORY = new Factory() {
-        @Override
-        public @Nonnull Creator creator() {
-          return CREATOR;
-        }
-
-        @Override
-        public @Nonnull Node.Factory nodeFactory() {
-          return Node.FACTORY;
-        }
-      };
-
       private final @Nullable Node node;
 
       public Edge(@Nullable Node node) {
@@ -226,20 +167,6 @@ public class HeroDetails {
       }
 
       public static class Node {
-        public static final Creator CREATOR = new Creator() {
-          @Override
-          public @Nonnull Node create(@Nonnull String name) {
-            return new Node(name);
-          }
-        };
-
-        public static final Factory FACTORY = new Factory() {
-          @Override
-          public @Nonnull Creator creator() {
-            return CREATOR;
-          }
-        };
-
         private final @Nonnull String name;
 
         public Node(@Nonnull String name) {
@@ -278,15 +205,9 @@ public class HeroDetails {
         }
 
         public static final class Mapper implements ResponseFieldMapper<Node> {
-          final Factory factory;
-
           final Field[] fields = {
             Field.forString("name", "name", null, false)
           };
-
-          public Mapper(@Nonnull Factory factory) {
-            this.factory = factory;
-          }
 
           @Override
           public Node map(ResponseReader reader) throws IOException {
@@ -302,37 +223,23 @@ public class HeroDetails {
                 }
               }
             }, fields);
-            return factory.creator().create(contentValues.name);
+            return new Node(contentValues.name);
           }
 
           static final class __ContentValues {
             String name;
           }
         }
-
-        public interface Factory {
-          @Nonnull Creator creator();
-        }
-
-        public interface Creator {
-          @Nonnull Node create(@Nonnull String name);
-        }
       }
 
       public static final class Mapper implements ResponseFieldMapper<Edge> {
-        final Factory factory;
-
         final Field[] fields = {
           Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
             @Override public Node read(final ResponseReader reader) throws IOException {
-              return new Node.Mapper(factory.nodeFactory()).map(reader);
+              return new Node.Mapper().map(reader);
             }
           })
         };
-
-        public Mapper(@Nonnull Factory factory) {
-          this.factory = factory;
-        }
 
         @Override
         public Edge map(ResponseReader reader) throws IOException {
@@ -348,40 +255,24 @@ public class HeroDetails {
               }
             }
           }, fields);
-          return factory.creator().create(contentValues.node);
+          return new Edge(contentValues.node);
         }
 
         static final class __ContentValues {
           Node node;
         }
       }
-
-      public interface Factory {
-        @Nonnull Creator creator();
-
-        @Nonnull Node.Factory nodeFactory();
-      }
-
-      public interface Creator {
-        @Nonnull Edge create(@Nullable Node node);
-      }
     }
 
     public static final class Mapper implements ResponseFieldMapper<FriendsConnection> {
-      final Factory factory;
-
       final Field[] fields = {
         Field.forInt("totalCount", "totalCount", null, true),
         Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
           @Override public Edge read(final ResponseReader reader) throws IOException {
-            return new Edge.Mapper(factory.edgeFactory()).map(reader);
+            return new Edge.Mapper().map(reader);
           }
         })
       };
-
-      public Mapper(@Nonnull Factory factory) {
-        this.factory = factory;
-      }
 
       @Override
       public FriendsConnection map(ResponseReader reader) throws IOException {
@@ -401,7 +292,7 @@ public class HeroDetails {
             }
           }
         }, fields);
-        return factory.creator().create(contentValues.totalCount, contentValues.edges);
+        return new FriendsConnection(contentValues.totalCount, contentValues.edges);
       }
 
       static final class __ContentValues {
@@ -410,33 +301,17 @@ public class HeroDetails {
         List<Edge> edges;
       }
     }
-
-    public interface Factory {
-      @Nonnull Creator creator();
-
-      @Nonnull Edge.Factory edgeFactory();
-    }
-
-    public interface Creator {
-      @Nonnull FriendsConnection create(@Nullable Integer totalCount, @Nullable List<Edge> edges);
-    }
   }
 
   public static final class Mapper implements ResponseFieldMapper<HeroDetails> {
-    final Factory factory;
-
     final Field[] fields = {
       Field.forString("name", "name", null, false),
       Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection>() {
         @Override public FriendsConnection read(final ResponseReader reader) throws IOException {
-          return new FriendsConnection.Mapper(factory.friendsConnectionFactory()).map(reader);
+          return new FriendsConnection.Mapper().map(reader);
         }
       })
     };
-
-    public Mapper(@Nonnull Factory factory) {
-      this.factory = factory;
-    }
 
     @Override
     public HeroDetails map(ResponseReader reader) throws IOException {
@@ -456,7 +331,7 @@ public class HeroDetails {
           }
         }
       }, fields);
-      return factory.creator().create(contentValues.name, contentValues.friendsConnection);
+      return new HeroDetails(contentValues.name, contentValues.friendsConnection);
     }
 
     static final class __ContentValues {
@@ -464,15 +339,5 @@ public class HeroDetails {
 
       FriendsConnection friendsConnection;
     }
-  }
-
-  public interface Factory {
-    @Nonnull Creator creator();
-
-    @Nonnull FriendsConnection.Factory friendsConnectionFactory();
-  }
-
-  public interface Creator {
-    @Nonnull HeroDetails create(@Nonnull String name, @Nonnull FriendsConnection friendsConnection);
   }
 }

@@ -51,26 +51,12 @@ public final class TestQuery implements Query<Operation.Variables> {
     return variables;
   }
 
+  @Override
+  public ResponseFieldMapper<? extends Operation.Data> responseFieldMapper() {
+    return new Data.Mapper();
+  }
+
   public static class Data implements Operation.Data {
-    public static final Creator CREATOR = new Creator() {
-      @Override
-      public @Nonnull Data create(@Nullable Hero hero) {
-        return new Data(hero);
-      }
-    };
-
-    public static final Factory FACTORY = new Factory() {
-      @Override
-      public @Nonnull Creator creator() {
-        return CREATOR;
-      }
-
-      @Override
-      public @Nonnull Hero.Factory heroFactory() {
-        return Hero.FACTORY;
-      }
-    };
-
     private final @Nullable Hero hero;
 
     public Data(@Nullable Hero hero) {
@@ -109,26 +95,6 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     public static class Hero {
-      public static final Creator CREATOR = new Creator() {
-        @Override
-        public @Nonnull Hero create(@Nonnull String name,
-            @Nonnull FriendsConnection friendsConnection) {
-          return new Hero(name, friendsConnection);
-        }
-      };
-
-      public static final Factory FACTORY = new Factory() {
-        @Override
-        public @Nonnull Creator creator() {
-          return CREATOR;
-        }
-
-        @Override
-        public @Nonnull FriendsConnection.Factory friendsConnectionFactory() {
-          return FriendsConnection.FACTORY;
-        }
-      };
-
       private final @Nonnull String name;
 
       private final @Nonnull FriendsConnection friendsConnection;
@@ -178,26 +144,6 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       public static class FriendsConnection {
-        public static final Creator CREATOR = new Creator() {
-          @Override
-          public @Nonnull FriendsConnection create(@Nullable Integer totalCount,
-              @Nullable List<Edge> edges) {
-            return new FriendsConnection(totalCount, edges);
-          }
-        };
-
-        public static final Factory FACTORY = new Factory() {
-          @Override
-          public @Nonnull Creator creator() {
-            return CREATOR;
-          }
-
-          @Override
-          public @Nonnull Edge.Factory edgeFactory() {
-            return Edge.FACTORY;
-          }
-        };
-
         private final @Nullable Integer totalCount;
 
         private final @Nullable List<Edge> edges;
@@ -247,25 +193,6 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         public static class Edge {
-          public static final Creator CREATOR = new Creator() {
-            @Override
-            public @Nonnull Edge create(@Nullable Node node) {
-              return new Edge(node);
-            }
-          };
-
-          public static final Factory FACTORY = new Factory() {
-            @Override
-            public @Nonnull Creator creator() {
-              return CREATOR;
-            }
-
-            @Override
-            public @Nonnull Node.Factory nodeFactory() {
-              return Node.FACTORY;
-            }
-          };
-
           private final @Nullable Node node;
 
           public Edge(@Nullable Node node) {
@@ -304,20 +231,6 @@ public final class TestQuery implements Query<Operation.Variables> {
           }
 
           public static class Node {
-            public static final Creator CREATOR = new Creator() {
-              @Override
-              public @Nonnull Node create(@Nonnull String name) {
-                return new Node(name);
-              }
-            };
-
-            public static final Factory FACTORY = new Factory() {
-              @Override
-              public @Nonnull Creator creator() {
-                return CREATOR;
-              }
-            };
-
             private final @Nonnull String name;
 
             public Node(@Nonnull String name) {
@@ -356,15 +269,9 @@ public final class TestQuery implements Query<Operation.Variables> {
             }
 
             public static final class Mapper implements ResponseFieldMapper<Node> {
-              final Factory factory;
-
               final Field[] fields = {
                 Field.forString("name", "name", null, false)
               };
-
-              public Mapper(@Nonnull Factory factory) {
-                this.factory = factory;
-              }
 
               @Override
               public Node map(ResponseReader reader) throws IOException {
@@ -380,37 +287,23 @@ public final class TestQuery implements Query<Operation.Variables> {
                     }
                   }
                 }, fields);
-                return factory.creator().create(contentValues.name);
+                return new Node(contentValues.name);
               }
 
               static final class __ContentValues {
                 String name;
               }
             }
-
-            public interface Factory {
-              @Nonnull Creator creator();
-            }
-
-            public interface Creator {
-              @Nonnull Node create(@Nonnull String name);
-            }
           }
 
           public static final class Mapper implements ResponseFieldMapper<Edge> {
-            final Factory factory;
-
             final Field[] fields = {
               Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
                 @Override public Node read(final ResponseReader reader) throws IOException {
-                  return new Node.Mapper(factory.nodeFactory()).map(reader);
+                  return new Node.Mapper().map(reader);
                 }
               })
             };
-
-            public Mapper(@Nonnull Factory factory) {
-              this.factory = factory;
-            }
 
             @Override
             public Edge map(ResponseReader reader) throws IOException {
@@ -426,40 +319,24 @@ public final class TestQuery implements Query<Operation.Variables> {
                   }
                 }
               }, fields);
-              return factory.creator().create(contentValues.node);
+              return new Edge(contentValues.node);
             }
 
             static final class __ContentValues {
               Node node;
             }
           }
-
-          public interface Factory {
-            @Nonnull Creator creator();
-
-            @Nonnull Node.Factory nodeFactory();
-          }
-
-          public interface Creator {
-            @Nonnull Edge create(@Nullable Node node);
-          }
         }
 
         public static final class Mapper implements ResponseFieldMapper<FriendsConnection> {
-          final Factory factory;
-
           final Field[] fields = {
             Field.forInt("totalCount", "totalCount", null, true),
             Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
               @Override public Edge read(final ResponseReader reader) throws IOException {
-                return new Edge.Mapper(factory.edgeFactory()).map(reader);
+                return new Edge.Mapper().map(reader);
               }
             })
           };
-
-          public Mapper(@Nonnull Factory factory) {
-            this.factory = factory;
-          }
 
           @Override
           public FriendsConnection map(ResponseReader reader) throws IOException {
@@ -479,7 +356,7 @@ public final class TestQuery implements Query<Operation.Variables> {
                 }
               }
             }, fields);
-            return factory.creator().create(contentValues.totalCount, contentValues.edges);
+            return new FriendsConnection(contentValues.totalCount, contentValues.edges);
           }
 
           static final class __ContentValues {
@@ -488,34 +365,17 @@ public final class TestQuery implements Query<Operation.Variables> {
             List<Edge> edges;
           }
         }
-
-        public interface Factory {
-          @Nonnull Creator creator();
-
-          @Nonnull Edge.Factory edgeFactory();
-        }
-
-        public interface Creator {
-          @Nonnull FriendsConnection create(@Nullable Integer totalCount,
-              @Nullable List<Edge> edges);
-        }
       }
 
       public static final class Mapper implements ResponseFieldMapper<Hero> {
-        final Factory factory;
-
         final Field[] fields = {
           Field.forString("name", "name", null, false),
           Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection>() {
             @Override public FriendsConnection read(final ResponseReader reader) throws IOException {
-              return new FriendsConnection.Mapper(factory.friendsConnectionFactory()).map(reader);
+              return new FriendsConnection.Mapper().map(reader);
             }
           })
         };
-
-        public Mapper(@Nonnull Factory factory) {
-          this.factory = factory;
-        }
 
         @Override
         public Hero map(ResponseReader reader) throws IOException {
@@ -535,7 +395,7 @@ public final class TestQuery implements Query<Operation.Variables> {
               }
             }
           }, fields);
-          return factory.creator().create(contentValues.name, contentValues.friendsConnection);
+          return new Hero(contentValues.name, contentValues.friendsConnection);
         }
 
         static final class __ContentValues {
@@ -544,32 +404,16 @@ public final class TestQuery implements Query<Operation.Variables> {
           FriendsConnection friendsConnection;
         }
       }
-
-      public interface Factory {
-        @Nonnull Creator creator();
-
-        @Nonnull FriendsConnection.Factory friendsConnectionFactory();
-      }
-
-      public interface Creator {
-        @Nonnull Hero create(@Nonnull String name, @Nonnull FriendsConnection friendsConnection);
-      }
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
-      final Factory factory;
-
       final Field[] fields = {
         Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
           @Override public Hero read(final ResponseReader reader) throws IOException {
-            return new Hero.Mapper(factory.heroFactory()).map(reader);
+            return new Hero.Mapper().map(reader);
           }
         })
       };
-
-      public Mapper(@Nonnull Factory factory) {
-        this.factory = factory;
-      }
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
@@ -585,22 +429,12 @@ public final class TestQuery implements Query<Operation.Variables> {
             }
           }
         }, fields);
-        return factory.creator().create(contentValues.hero);
+        return new Data(contentValues.hero);
       }
 
       static final class __ContentValues {
         Hero hero;
       }
-    }
-
-    public interface Factory {
-      @Nonnull Creator creator();
-
-      @Nonnull Hero.Factory heroFactory();
-    }
-
-    public interface Creator {
-      @Nonnull Data create(@Nullable Hero hero);
     }
   }
 }

@@ -1,6 +1,7 @@
 package com.apollographql.android.compiler
 
 import com.squareup.javapoet.*
+import java.util.*
 import javax.lang.model.element.Modifier
 
 fun TypeName.overrideTypeName(typeNameOverrideMap: Map<String, String>): TypeName {
@@ -83,7 +84,7 @@ fun TypeSpec.withCreatorImplementation(): TypeSpec {
 
   return toBuilder()
       .addField(FieldSpec
-          .builder(ClassName.get("", Util.CREATOR_TYPE_NAME), Util.CREATOR_TYPE_NAME.toUpperCase())
+          .builder(ClassName.get("", Util.CREATOR_TYPE_NAME), Util.CREATOR_TYPE_NAME.toUpperCase(Locale.ENGLISH))
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
           .initializer("\$L", creatorInitializer(name, fieldSpecs))
           .build())
@@ -135,14 +136,14 @@ fun TypeSpec.withFactoryImplementation(exclude: List<String> = emptyList(),
                     .addModifiers(Modifier.PUBLIC)
                     .addAnnotation(Override::class.java)
                     .returns(ClassName.get("", "$it.${Util.FACTORY_TYPE_NAME}").annotated(listOf(Annotations.NONNULL)))
-                    .addStatement("return \$L.\$L", it, Util.FACTORY_TYPE_NAME.toUpperCase())
+                    .addStatement("return \$L.\$L", it, Util.FACTORY_TYPE_NAME.toUpperCase(Locale.ENGLISH))
                     .build()
               })
           .build()
 
   return toBuilder()
       .addField(FieldSpec
-          .builder(Util.FACTORY_INTERFACE_TYPE, Util.FACTORY_TYPE_NAME.toUpperCase())
+          .builder(Util.FACTORY_INTERFACE_TYPE, Util.FACTORY_TYPE_NAME.toUpperCase(Locale.ENGLISH))
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
           .initializer("\$L", factoryInitializer(
               typeSpecs.filter { it.name != Util.CREATOR_TYPE_NAME && it.name != Util.FACTORY_TYPE_NAME }))

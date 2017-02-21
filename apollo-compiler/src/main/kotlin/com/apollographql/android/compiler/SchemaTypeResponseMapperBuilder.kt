@@ -7,6 +7,7 @@ import com.apollographql.android.compiler.ir.Field
 import com.apollographql.android.compiler.ir.InlineFragment
 import com.squareup.javapoet.*
 import java.io.IOException
+import java.util.*
 import javax.annotation.Nonnull
 import javax.lang.model.element.Modifier
 
@@ -17,8 +18,6 @@ import javax.lang.model.element.Modifier
  *
  * ```
  *public static final class Mapper implements ResponseFieldMapper<Hero> {
- *  final Factory factory;
- *
  *  final Field[] fields = {
  *    Field.forString("name", "name", null, false),
  *    Field.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE),
@@ -30,19 +29,15 @@ import javax.lang.model.element.Modifier
  *    Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
  *      @Override
  *      public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
- *        return new Fragments.Mapper(factory.fragmentsFactory(), conditionalType).map(reader);
+ *        return new Fragments.Mapper(conditionalType).map(reader);
  *      }
  *    }),
  *    Field.forObject("film", "film", null, true, new Field.ObjectReader<Hero>() {
  *      @Override public Film read(final ResponseReader reader) throws IOException {
- *        return new Film.Mapper(factory.filmFactory()).map(reader);
+ *        return new Film.Mapper().map(reader);
  *      }
  *    })
  *  };
- *
- *  public Mapper(@Nonnull Factory factory) {
- *    this.factory = factory;
- *  }
  *
  *  @Override
  *  public Hero map(ResponseReader reader) throws IOException {
@@ -74,7 +69,7 @@ import javax.lang.model.element.Modifier
  *        }
  *      }
  *    }, fields);
- *    return factory.creator().create(contentValues.name, contentValues.birthDate, contentValues.appearanceDates,
+ *    return new Hero(contentValues.name, contentValues.birthDate, contentValues.appearanceDates,
  *      fragments, film);
  *  }
  *
@@ -114,23 +109,14 @@ class SchemaTypeResponseMapperBuilder(
             .map { FieldSpec.builder(it.type.overrideTypeName(typeOverrideMap), it.name).build() })
         .let { if (fragmentSpreads.isNotEmpty()) it.plus(FRAGMENTS_FIELD) else it }
 
-    return TypeSpec.classBuilder("Mapper")
+    return TypeSpec.classBuilder(MAPPER_TYPE_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
         .addSuperinterface(responseFieldMapperType)
-        .addMethod(constructor())
         .addType(contentValuesType(contentValueFields))
-        .addField(FACTORY_FIELD)
         .addField(fieldArray(fields))
         .addMethod(mapMethod(contentValueFields))
         .build()
   }
-
-  private fun constructor() =
-      MethodSpec.constructorBuilder()
-          .addModifiers(Modifier.PUBLIC)
-          .addParameter(FACTORY_PARAM)
-          .addStatement("this.$FACTORY_VAR = $FACTORY_VAR")
-          .build()
 
   private fun contentValuesType(contentValueFields: List<FieldSpec>) =
       TypeSpec.classBuilder(CONTENT_VALUES_TYPE)
@@ -175,7 +161,7 @@ class SchemaTypeResponseMapperBuilder(
   private fun scalarFieldFactoryCode(field: Field, type: TypeName): CodeBlock {
     if (type.isCustomScalarType()) {
       val customScalarEnum = CustomEnumTypeSpecBuilder.className(context)
-      val customScalarEnumConst = normalizeGraphQlType(field.type).toUpperCase()
+      val customScalarEnumConst = normalizeGraphQlType(field.type).toUpperCase(Locale.ENGLISH)
       return CodeBlock.of("\$T.forCustomType(\$S, \$S, null, \$L, \$T.\$L)", API_RESPONSE_FIELD_TYPE,
           field.responseName, field.fieldName, field.isOptional(), customScalarEnum, customScalarEnumConst)
     } else {
@@ -216,7 +202,7 @@ class SchemaTypeResponseMapperBuilder(
 
   private fun customTypeListFieldFactoryCode(field: Field, type: TypeName): CodeBlock {
     val customScalarEnum = CustomEnumTypeSpecBuilder.className(context)
-    val customScalarEnumConst = normalizeGraphQlType(field.type).toUpperCase()
+    val customScalarEnumConst = normalizeGraphQlType(field.type).toUpperCase(Locale.ENGLISH)
     return CodeBlock
         .builder()
         .add("\$T.forList(\$S, \$S, null, \$L, new \$T() {\n", API_RESPONSE_FIELD_TYPE, field.responseName,
@@ -283,8 +269,7 @@ class SchemaTypeResponseMapperBuilder(
         .indent()
         .beginControlFlow("@Override public \$T read(final \$T \$L) throws \$T", type,
             ClassNames.API_RESPONSE_READER, READER_VAR, IOException::class.java)
-        .add(CodeBlock.of("return new \$T.Mapper(\$L.\$L()).map(\$L);\n", type, FACTORY_VAR, typeFactoryMethod,
-            READER_VAR))
+        .add(CodeBlock.of("return new \$T.Mapper().map(\$L);\n", type, READER_VAR))
         .endControlFlow()
         .unindent()
         .add("})")
@@ -310,8 +295,7 @@ class SchemaTypeResponseMapperBuilder(
               .addMethod(valueHandleMethod(contentValueFields))
               .build())
           .add(", \$L);\n", FIELDS_VAR)
-          .add("return \$L.\$L().\$L(", FACTORY_VAR, Util.FACTORY_CREATOR_ACCESS_METHOD_NAME,
-              Util.CREATOR_CREATE_METHOD_NAME)
+          .add("return new \$T(", typeClassName)
           .add(contentValueFields
               .mapIndexed { i, fieldSpec ->
                 CodeBlock.of("\$L\$L.\$L", if (i > 0) ", " else "", CONTENT_VALUES_VAR, fieldSpec.name)
@@ -383,8 +367,7 @@ class SchemaTypeResponseMapperBuilder(
     fun readCodeBlock(): CodeBlock {
       return CodeBlock.builder()
           .beginControlFlow("if (\$L.equals(\$S))", CONDITIONAL_TYPE_VAR, fragment.typeCondition)
-          .add(CodeBlock.of("return new \$T.Mapper(\$L.\$LFactory()).map(\$L);\n", type,
-              FACTORY_VAR, (type as ClassName).simpleName().decapitalize(), READER_PARAM.name))
+          .add(CodeBlock.of("return new \$T.Mapper().map(\$L);\n", type, READER_PARAM.name))
           .nextControlFlow("else")
           .addStatement("return null")
           .endControlFlow()
@@ -413,8 +396,7 @@ class SchemaTypeResponseMapperBuilder(
   private fun fragmentsFieldFactoryCode(): CodeBlock {
     fun readCodeBlock(): CodeBlock {
       return CodeBlock.builder()
-          .add(CodeBlock.of("return new Fragments.Mapper(\$L.fragmentsFactory(), \$L).map(\$L);\n", FACTORY_VAR,
-              CONDITIONAL_TYPE_VAR, READER_PARAM.name))
+          .add(CodeBlock.of("return new Fragments.Mapper(\$L).map(\$L);\n", CONDITIONAL_TYPE_VAR, READER_PARAM.name))
           .build()
     }
 
@@ -444,13 +426,9 @@ class SchemaTypeResponseMapperBuilder(
       ParameterizedTypeName.get(API_RESPONSE_FIELD_CONDITIONAL_TYPE_READER_TYPE, type)
 
   companion object {
+    val MAPPER_TYPE_NAME: String = "Mapper"
     private val CONTENT_VALUES_TYPE = ClassName.get("", "__ContentValues")
     private val CONTENT_VALUES_VAR = "contentValues"
-    private val FACTORY_VAR = Util.FACTORY_TYPE_NAME.decapitalize()
-    private val FACTORY_PARAM = ParameterSpec.builder(Util.FACTORY_INTERFACE_TYPE, FACTORY_VAR)
-        .addAnnotation(Nonnull::class.java).build()
-    private val FACTORY_FIELD =
-        FieldSpec.builder(FACTORY_PARAM.type, FACTORY_PARAM.name, Modifier.FINAL).build()
     private val FRAGMENTS_FIELD = FieldSpec.builder(ClassName.get("", SchemaTypeSpecBuilder.FRAGMENTS_TYPE_NAME),
         SchemaTypeSpecBuilder.FRAGMENTS_TYPE_NAME.decapitalize()).build()
     private val FIELDS_VAR = "fields"

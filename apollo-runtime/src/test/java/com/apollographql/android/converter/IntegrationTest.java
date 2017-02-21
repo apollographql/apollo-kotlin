@@ -5,9 +5,9 @@ import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
 
+import com.apollographql.android.ApolloCall;
 import com.apollographql.android.ApolloClient;
 import com.apollographql.android.CustomTypeAdapter;
-import com.apollographql.android.ApolloCall;
 import com.apollographql.android.api.graphql.Error;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.converter.type.CustomType;
@@ -62,10 +62,6 @@ public class IntegrationTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(new OkHttpClient.Builder().build())
-        .withResponseFieldMapper(AllPlanets.class, new AllPlanets.Data.Mapper(AllPlanets.Data.FACTORY))
-        .withResponseFieldMapper(ProductsWithDate.class, new ProductsWithDate.Data.Mapper(ProductsWithDate.Data.FACTORY))
-        .withResponseFieldMapper(ProductsWithUnsupportedCustomScalarTypes.class,
-            new ProductsWithUnsupportedCustomScalarTypes.Data.Mapper(ProductsWithUnsupportedCustomScalarTypes.Data.FACTORY))
         .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
         .build();
   }

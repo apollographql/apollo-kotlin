@@ -48,26 +48,12 @@ public final class TestQuery implements Query<Operation.Variables> {
     return variables;
   }
 
+  @Override
+  public ResponseFieldMapper<? extends Operation.Data> responseFieldMapper() {
+    return new Data.Mapper();
+  }
+
   public static class Data implements Operation.Data {
-    public static final Creator CREATOR = new Creator() {
-      @Override
-      public @Nonnull Data create(@Nullable AllStarship allStarships) {
-        return new Data(allStarships);
-      }
-    };
-
-    public static final Factory FACTORY = new Factory() {
-      @Override
-      public @Nonnull Creator creator() {
-        return CREATOR;
-      }
-
-      @Override
-      public @Nonnull AllStarship.Factory allStarshipFactory() {
-        return AllStarship.FACTORY;
-      }
-    };
-
     private final @Nullable AllStarship allStarships;
 
     public Data(@Nullable AllStarship allStarships) {
@@ -106,25 +92,6 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     public static class AllStarship {
-      public static final Creator CREATOR = new Creator() {
-        @Override
-        public @Nonnull AllStarship create(@Nullable List<Edge> edges) {
-          return new AllStarship(edges);
-        }
-      };
-
-      public static final Factory FACTORY = new Factory() {
-        @Override
-        public @Nonnull Creator creator() {
-          return CREATOR;
-        }
-
-        @Override
-        public @Nonnull Edge.Factory edgeFactory() {
-          return Edge.FACTORY;
-        }
-      };
-
       private final @Nullable List<Edge> edges;
 
       public AllStarship(@Nullable List<Edge> edges) {
@@ -163,25 +130,6 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       public static class Edge {
-        public static final Creator CREATOR = new Creator() {
-          @Override
-          public @Nonnull Edge create(@Nullable Node node) {
-            return new Edge(node);
-          }
-        };
-
-        public static final Factory FACTORY = new Factory() {
-          @Override
-          public @Nonnull Creator creator() {
-            return CREATOR;
-          }
-
-          @Override
-          public @Nonnull Node.Factory nodeFactory() {
-            return Node.FACTORY;
-          }
-        };
-
         private final @Nullable Node node;
 
         public Edge(@Nullable Node node) {
@@ -220,25 +168,6 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         public static class Node {
-          public static final Creator CREATOR = new Creator() {
-            @Override
-            public @Nonnull Node create(@Nonnull Fragments fragments) {
-              return new Node(fragments);
-            }
-          };
-
-          public static final Factory FACTORY = new Factory() {
-            @Override
-            public @Nonnull Creator creator() {
-              return CREATOR;
-            }
-
-            @Override
-            public @Nonnull Fragments.Factory fragmentsFactory() {
-              return Fragments.FACTORY;
-            }
-          };
-
           private final Fragments fragments;
 
           public Node(Fragments fragments) {
@@ -277,25 +206,6 @@ public final class TestQuery implements Query<Operation.Variables> {
           }
 
           public static class Fragments {
-            public static final Creator CREATOR = new Creator() {
-              @Override
-              public @Nonnull Fragments create(@Nullable StarshipFragment starshipFragment) {
-                return new Fragments(starshipFragment);
-              }
-            };
-
-            public static final Factory FACTORY = new Factory() {
-              @Override
-              public @Nonnull Creator creator() {
-                return CREATOR;
-              }
-
-              @Override
-              public @Nonnull StarshipFragment.Factory starshipFragmentFactory() {
-                return StarshipFragment.FACTORY;
-              }
-            };
-
             private StarshipFragment starshipFragment;
 
             public Fragments(StarshipFragment starshipFragment) {
@@ -334,12 +244,9 @@ public final class TestQuery implements Query<Operation.Variables> {
             }
 
             public static final class Mapper implements ResponseFieldMapper<Fragments> {
-              final Factory factory;
+              private final String conditionalType;
 
-              String conditionalType;
-
-              public Mapper(@Nonnull Factory factory, @Nonnull String conditionalType) {
-                this.factory = factory;
+              public Mapper(@Nonnull String conditionalType) {
                 this.conditionalType = conditionalType;
               }
 
@@ -347,39 +254,23 @@ public final class TestQuery implements Query<Operation.Variables> {
               public @Nonnull Fragments map(ResponseReader reader) throws IOException {
                 StarshipFragment starshipFragment = null;
                 if (conditionalType.equals(StarshipFragment.TYPE_CONDITION)) {
-                  starshipFragment = new StarshipFragment.Mapper(factory.starshipFragmentFactory()).map(reader);
+                  starshipFragment = new StarshipFragment.Mapper().map(reader);
                 }
-                return factory.creator().create(starshipFragment);
+                return new Fragments(starshipFragment);
               }
-            }
-
-            public interface Factory {
-              @Nonnull Creator creator();
-
-              @Nonnull StarshipFragment.Factory starshipFragmentFactory();
-            }
-
-            public interface Creator {
-              @Nonnull Fragments create(@Nullable StarshipFragment starshipFragment);
             }
           }
 
           public static final class Mapper implements ResponseFieldMapper<Node> {
-            final Factory factory;
-
             final Field[] fields = {
               Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
                 @Override
                 public Fragments read(String conditionalType, ResponseReader reader) throws
                     IOException {
-                  return new Fragments.Mapper(factory.fragmentsFactory(), conditionalType).map(reader);
+                  return new Fragments.Mapper(conditionalType).map(reader);
                 }
               })
             };
-
-            public Mapper(@Nonnull Factory factory) {
-              this.factory = factory;
-            }
 
             @Override
             public Node map(ResponseReader reader) throws IOException {
@@ -395,39 +286,23 @@ public final class TestQuery implements Query<Operation.Variables> {
                   }
                 }
               }, fields);
-              return factory.creator().create(contentValues.fragments);
+              return new Node(contentValues.fragments);
             }
 
             static final class __ContentValues {
               Fragments fragments;
             }
           }
-
-          public interface Factory {
-            @Nonnull Creator creator();
-
-            @Nonnull Fragments.Factory fragmentsFactory();
-          }
-
-          public interface Creator {
-            @Nonnull Node create(@Nonnull Fragments fragments);
-          }
         }
 
         public static final class Mapper implements ResponseFieldMapper<Edge> {
-          final Factory factory;
-
           final Field[] fields = {
             Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
               @Override public Node read(final ResponseReader reader) throws IOException {
-                return new Node.Mapper(factory.nodeFactory()).map(reader);
+                return new Node.Mapper().map(reader);
               }
             })
           };
-
-          public Mapper(@Nonnull Factory factory) {
-            this.factory = factory;
-          }
 
           @Override
           public Edge map(ResponseReader reader) throws IOException {
@@ -443,39 +318,23 @@ public final class TestQuery implements Query<Operation.Variables> {
                 }
               }
             }, fields);
-            return factory.creator().create(contentValues.node);
+            return new Edge(contentValues.node);
           }
 
           static final class __ContentValues {
             Node node;
           }
         }
-
-        public interface Factory {
-          @Nonnull Creator creator();
-
-          @Nonnull Node.Factory nodeFactory();
-        }
-
-        public interface Creator {
-          @Nonnull Edge create(@Nullable Node node);
-        }
       }
 
       public static final class Mapper implements ResponseFieldMapper<AllStarship> {
-        final Factory factory;
-
         final Field[] fields = {
           Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
             @Override public Edge read(final ResponseReader reader) throws IOException {
-              return new Edge.Mapper(factory.edgeFactory()).map(reader);
+              return new Edge.Mapper().map(reader);
             }
           })
         };
-
-        public Mapper(@Nonnull Factory factory) {
-          this.factory = factory;
-        }
 
         @Override
         public AllStarship map(ResponseReader reader) throws IOException {
@@ -491,39 +350,23 @@ public final class TestQuery implements Query<Operation.Variables> {
               }
             }
           }, fields);
-          return factory.creator().create(contentValues.edges);
+          return new AllStarship(contentValues.edges);
         }
 
         static final class __ContentValues {
           List<Edge> edges;
         }
       }
-
-      public interface Factory {
-        @Nonnull Creator creator();
-
-        @Nonnull Edge.Factory edgeFactory();
-      }
-
-      public interface Creator {
-        @Nonnull AllStarship create(@Nullable List<Edge> edges);
-      }
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
-      final Factory factory;
-
       final Field[] fields = {
         Field.forObject("allStarships", "allStarships", null, true, new Field.ObjectReader<AllStarship>() {
           @Override public AllStarship read(final ResponseReader reader) throws IOException {
-            return new AllStarship.Mapper(factory.allStarshipFactory()).map(reader);
+            return new AllStarship.Mapper().map(reader);
           }
         })
       };
-
-      public Mapper(@Nonnull Factory factory) {
-        this.factory = factory;
-      }
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
@@ -539,22 +382,12 @@ public final class TestQuery implements Query<Operation.Variables> {
             }
           }
         }, fields);
-        return factory.creator().create(contentValues.allStarships);
+        return new Data(contentValues.allStarships);
       }
 
       static final class __ContentValues {
         AllStarship allStarships;
       }
-    }
-
-    public interface Factory {
-      @Nonnull Creator creator();
-
-      @Nonnull AllStarship.Factory allStarshipFactory();
-    }
-
-    public interface Creator {
-      @Nonnull Data create(@Nullable AllStarship allStarships);
     }
   }
 }

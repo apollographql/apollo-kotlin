@@ -14,16 +14,12 @@ data class InlineFragment(
       SchemaTypeSpecBuilder(interfaceName(), fields, fragmentSpreads ?: emptyList(), emptyList(), context)
           .build(Modifier.PUBLIC, Modifier.STATIC)
 
-  fun accessorMethodSpec(abstract: Boolean): MethodSpec {
-    val methodSpecBuilder = MethodSpec
-        .methodBuilder(interfaceName().decapitalize())
+  fun accessorMethodSpec(): MethodSpec {
+    return MethodSpec.methodBuilder(interfaceName().decapitalize())
         .addModifiers(Modifier.PUBLIC)
-        .addModifiers(if (abstract) listOf(Modifier.ABSTRACT) else emptyList())
         .returns(typeName())
-    if (!abstract) {
-      methodSpecBuilder.addStatement("return this.\$L", interfaceName().decapitalize())
-    }
-    return methodSpecBuilder.build()
+        .addStatement("return this.\$L", interfaceName().decapitalize())
+        .build()
   }
 
   fun fieldSpec(): FieldSpec =

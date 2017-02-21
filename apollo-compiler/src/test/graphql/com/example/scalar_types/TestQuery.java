@@ -39,32 +39,12 @@ public final class TestQuery implements Query<Operation.Variables> {
     return variables;
   }
 
+  @Override
+  public ResponseFieldMapper<? extends Operation.Data> responseFieldMapper() {
+    return new Data.Mapper();
+  }
+
   public static class Data implements Operation.Data {
-    public static final Creator CREATOR = new Creator() {
-      @Override
-      public @Nonnull Data create(@Nullable String graphQlString,
-          @Nullable String graphQlIdNullable, @Nonnull String graphQlIdNonNullable,
-          @Nullable Integer graphQlIntNullable, int graphQlIntNonNullable,
-          @Nullable Double graphQlFloatNullable, double graphQlFloatNonNullable,
-          @Nullable Boolean graphQlBooleanNullable, boolean graphQlBooleanNonNullable,
-          @Nullable List<Integer> graphQlListOfInt,
-          @Nullable List<GraphQlListOfObject> graphQlListOfObjects) {
-        return new Data(graphQlString, graphQlIdNullable, graphQlIdNonNullable, graphQlIntNullable, graphQlIntNonNullable, graphQlFloatNullable, graphQlFloatNonNullable, graphQlBooleanNullable, graphQlBooleanNonNullable, graphQlListOfInt, graphQlListOfObjects);
-      }
-    };
-
-    public static final Factory FACTORY = new Factory() {
-      @Override
-      public @Nonnull Creator creator() {
-        return CREATOR;
-      }
-
-      @Override
-      public @Nonnull GraphQlListOfObject.Factory graphQlListOfObjectFactory() {
-        return GraphQlListOfObject.FACTORY;
-      }
-    };
-
     private final @Nullable String graphQlString;
 
     private final @Nullable String graphQlIdNullable;
@@ -218,20 +198,6 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     public static class GraphQlListOfObject {
-      public static final Creator CREATOR = new Creator() {
-        @Override
-        public @Nonnull GraphQlListOfObject create(int someField) {
-          return new GraphQlListOfObject(someField);
-        }
-      };
-
-      public static final Factory FACTORY = new Factory() {
-        @Override
-        public @Nonnull Creator creator() {
-          return CREATOR;
-        }
-      };
-
       private final int someField;
 
       public GraphQlListOfObject(int someField) {
@@ -270,15 +236,9 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       public static final class Mapper implements ResponseFieldMapper<GraphQlListOfObject> {
-        final Factory factory;
-
         final Field[] fields = {
           Field.forInt("someField", "someField", null, false)
         };
-
-        public Mapper(@Nonnull Factory factory) {
-          this.factory = factory;
-        }
 
         @Override
         public GraphQlListOfObject map(ResponseReader reader) throws IOException {
@@ -294,26 +254,16 @@ public final class TestQuery implements Query<Operation.Variables> {
               }
             }
           }, fields);
-          return factory.creator().create(contentValues.someField);
+          return new GraphQlListOfObject(contentValues.someField);
         }
 
         static final class __ContentValues {
           int someField;
         }
       }
-
-      public interface Factory {
-        @Nonnull Creator creator();
-      }
-
-      public interface Creator {
-        @Nonnull GraphQlListOfObject create(int someField);
-      }
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
-      final Factory factory;
-
       final Field[] fields = {
         Field.forString("graphQlString", "graphQlString", null, true),
         Field.forString("graphQlIdNullable", "graphQlIdNullable", null, true),
@@ -331,14 +281,10 @@ public final class TestQuery implements Query<Operation.Variables> {
         }),
         Field.forList("graphQlListOfObjects", "graphQlListOfObjects", null, true, new Field.ObjectReader<GraphQlListOfObject>() {
           @Override public GraphQlListOfObject read(final ResponseReader reader) throws IOException {
-            return new GraphQlListOfObject.Mapper(factory.graphQlListOfObjectFactory()).map(reader);
+            return new GraphQlListOfObject.Mapper().map(reader);
           }
         })
       };
-
-      public Mapper(@Nonnull Factory factory) {
-        this.factory = factory;
-      }
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
@@ -394,7 +340,7 @@ public final class TestQuery implements Query<Operation.Variables> {
             }
           }
         }, fields);
-        return factory.creator().create(contentValues.graphQlString, contentValues.graphQlIdNullable, contentValues.graphQlIdNonNullable, contentValues.graphQlIntNullable, contentValues.graphQlIntNonNullable, contentValues.graphQlFloatNullable, contentValues.graphQlFloatNonNullable, contentValues.graphQlBooleanNullable, contentValues.graphQlBooleanNonNullable, contentValues.graphQlListOfInt, contentValues.graphQlListOfObjects);
+        return new Data(contentValues.graphQlString, contentValues.graphQlIdNullable, contentValues.graphQlIdNonNullable, contentValues.graphQlIntNullable, contentValues.graphQlIntNonNullable, contentValues.graphQlFloatNullable, contentValues.graphQlFloatNonNullable, contentValues.graphQlBooleanNullable, contentValues.graphQlBooleanNonNullable, contentValues.graphQlListOfInt, contentValues.graphQlListOfObjects);
       }
 
       static final class __ContentValues {
@@ -420,21 +366,6 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         List<GraphQlListOfObject> graphQlListOfObjects;
       }
-    }
-
-    public interface Factory {
-      @Nonnull Creator creator();
-
-      @Nonnull GraphQlListOfObject.Factory graphQlListOfObjectFactory();
-    }
-
-    public interface Creator {
-      @Nonnull Data create(@Nullable String graphQlString, @Nullable String graphQlIdNullable,
-          @Nonnull String graphQlIdNonNullable, @Nullable Integer graphQlIntNullable,
-          int graphQlIntNonNullable, @Nullable Double graphQlFloatNullable,
-          double graphQlFloatNonNullable, @Nullable Boolean graphQlBooleanNullable,
-          boolean graphQlBooleanNonNullable, @Nullable List<Integer> graphQlListOfInt,
-          @Nullable List<GraphQlListOfObject> graphQlListOfObjects);
     }
   }
 }

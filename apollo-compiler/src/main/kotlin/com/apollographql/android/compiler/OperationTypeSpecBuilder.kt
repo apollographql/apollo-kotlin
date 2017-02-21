@@ -1,5 +1,6 @@
 package com.apollographql.android.compiler
 
+import com.apollographql.android.api.graphql.ResponseFieldMapper
 import com.apollographql.android.compiler.ir.*
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
@@ -22,6 +23,7 @@ class OperationTypeSpecBuilder(
         .addQueryConstructor(operation.variables.isNotEmpty())
         .addVariablesDefinition(operation.variables, newContext.typesPackage, newContext.customTypeMap)
         .addType(operation.toTypeSpec(newContext))
+        .addResponseFieldMapperMethod()
         .build()
   }
 
@@ -111,6 +113,17 @@ class OperationTypeSpecBuilder(
       codeBuilder.addStatement("this.\$L = \$T.EMPTY_VARIABLES", VARIABLES_FIELD_NAME, ClassNames.GRAPHQL_OPERATION)
     }
     return addCode(codeBuilder.build())
+  }
+
+  private fun TypeSpec.Builder.addResponseFieldMapperMethod(): TypeSpec.Builder {
+    return addMethod(MethodSpec.methodBuilder("responseFieldMapper")
+        .addAnnotation(Annotations.OVERRIDE)
+        .addModifiers(Modifier.PUBLIC)
+        .returns(ParameterizedTypeName.get(ClassName.get(ResponseFieldMapper::class.java),
+            WildcardTypeName.subtypeOf(com.apollographql.android.api.graphql.Operation.Data::class.java)))
+        .addStatement("return new \$L.\$L()", Operation.DATA_TYPE_NAME,
+            SchemaTypeResponseMapperBuilder.MAPPER_TYPE_NAME)
+        .build())
   }
 
   companion object {

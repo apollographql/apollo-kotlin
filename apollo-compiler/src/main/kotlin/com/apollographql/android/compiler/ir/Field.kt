@@ -22,17 +22,12 @@ data class Field(
       SchemaTypeSpecBuilder(normalizedName(), fields ?: emptyList(), fragmentSpreads ?: emptyList(),
           inlineFragments ?: emptyList(), context).build(Modifier.PUBLIC, Modifier.STATIC)
 
-  fun accessorMethodSpec(abstract: Boolean, typesPackage: String = "",
-      customScalarTypeMap: Map<String, String>): MethodSpec {
-    val methodSpecBuilder = MethodSpec
-        .methodBuilder(responseName)
+  fun accessorMethodSpec(typesPackage: String = "", customScalarTypeMap: Map<String, String>): MethodSpec {
+    return MethodSpec.methodBuilder(responseName)
         .addModifiers(Modifier.PUBLIC)
-        .addModifiers(if (abstract) listOf(Modifier.ABSTRACT) else emptyList())
         .returns(toTypeName(methodResponseType(), typesPackage, customScalarTypeMap))
-    if (!abstract) {
-      methodSpecBuilder.addStatement("return this.\$L", responseName)
-    }
-    return methodSpecBuilder.build()
+        .addStatement("return this.\$L", responseName)
+        .build()
   }
 
   fun fieldSpec(customScalarTypeMap: Map<String, String>, typesPackage: String = ""): FieldSpec =

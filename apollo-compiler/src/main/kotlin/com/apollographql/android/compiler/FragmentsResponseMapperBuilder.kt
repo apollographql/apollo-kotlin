@@ -16,12 +16,9 @@ import javax.lang.model.element.Modifier
  *
  * ```
  * public static final class Mapper implements ResponseFieldMapper<Fragments> {
- *   final Factory factory;
+ *   private final String conditionalType;
  *
- *   String conditionalType;
- *
- *   public Mapper(@Nonnull Factory factory, @Nonnull String conditionalType) {
- *     this.factory = factory;
+ *   public Mapper(@Nonnull String conditionalType) {
  *     this.conditionalType = conditionalType;
  *   }
  *
@@ -29,9 +26,9 @@ import javax.lang.model.element.Modifier
  *   public Fragments map(ResponseReader reader) throws IOException {
  *     HeroDetails heroDetails = null;
  *     if (conditionalType.equals(HeroDetails.TYPE_CONDITION)) {
- *       heroDetails = new HeroDetails.Mapper(factory.heroDetailsFactory()).map(reader);
+ *       heroDetails = new HeroDetails.Mapper().map(reader);
  *     }
- *     return factory.creator().create(heroDetails);
+ *     return new Fragments(heroDetails);
  *   }
  * }
  *
@@ -43,12 +40,13 @@ class FragmentsResponseMapperBuilder(
 ) {
   fun build(): TypeSpec {
     val fragmentFields = fragments.map { FieldSpec.builder(fragmentType(it), it.decapitalize()).build() }
-    return TypeSpec.classBuilder("Mapper")
+    return TypeSpec.classBuilder(MAPPER_TYPE_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
         .addSuperinterface(RESPONSE_FIELD_MAPPER_TYPE)
         .addMethod(constructor())
-        .addField(FACTORY_FIELD)
-        .addField(FieldSpec.builder(CONDITIONAL_TYPE_PARAM.type, CONDITIONAL_TYPE_PARAM.name).build())
+        .addField(FieldSpec.builder(CONDITIONAL_TYPE_PARAM.type, CONDITIONAL_TYPE_PARAM.name)
+            .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+            .build())
         .addMethod(mapMethod(fragmentFields))
         .build()
   }
@@ -59,9 +57,7 @@ class FragmentsResponseMapperBuilder(
   private fun constructor(): MethodSpec =
       MethodSpec.constructorBuilder()
           .addModifiers(Modifier.PUBLIC)
-          .addParameter(FACTORY_PARAM)
           .addParameter(CONDITIONAL_TYPE_PARAM)
-          .addStatement("this.$FACTORY_VAR = $FACTORY_VAR")
           .addStatement("this.$CONDITIONAL_TYPE_VAR = $CONDITIONAL_TYPE_VAR")
           .build()
 
@@ -93,20 +89,17 @@ class FragmentsResponseMapperBuilder(
           .build()
 
   private fun initFragmentCode(fragmentField: FieldSpec): CodeBlock {
-    val fragmentFieldTypeName = (fragmentField.type as ClassName).simpleName()
-    val factoryAccessorMethodName = fragmentFieldTypeName.decapitalize() + Util.FACTORY_TYPE_NAME
     return CodeBlock.builder()
         .beginControlFlow("if ($CONDITIONAL_TYPE_VAR.equals(\$T.${Fragment.TYPE_CONDITION_FIELD_NAME}))",
             fragmentField.type)
-        .addStatement("\$N = new \$T.Mapper($FACTORY_VAR.$factoryAccessorMethodName()).map($READER_VAR)", fragmentField,
-            fragmentField.type)
+        .addStatement("\$N = new \$T.Mapper().map(\$L)", fragmentField, fragmentField.type, READER_VAR)
         .endControlFlow()
         .build()
   }
 
   private fun createFragmentsCode(fragmentFields: List<FieldSpec>) =
       CodeBlock.builder()
-          .add("return $FACTORY_VAR.${Util.FACTORY_CREATOR_ACCESS_METHOD_NAME}().${Util.CREATOR_CREATE_METHOD_NAME}(")
+          .add("return new \$L(", SchemaTypeSpecBuilder.FRAGMENTS_TYPE.withoutAnnotations())
           .add(fragmentFields
               .mapIndexed { i, fieldSpec -> CodeBlock.of("\$L\$L", if (i > 0) ", " else "", fieldSpec.name) }
               .fold(CodeBlock.builder(), CodeBlock.Builder::add)
@@ -114,17 +107,13 @@ class FragmentsResponseMapperBuilder(
           .build()
 
   companion object {
+    val MAPPER_TYPE_NAME: String = "Mapper"
     private val API_RESPONSE_FIELD_MAPPER_TYPE = ClassName.get(ResponseFieldMapper::class.java)
     private val RESPONSE_FIELD_MAPPER_TYPE = ParameterizedTypeName.get(API_RESPONSE_FIELD_MAPPER_TYPE,
         SchemaTypeSpecBuilder.FRAGMENTS_TYPE.withoutAnnotations())
-    private val FACTORY_VAR = Util.FACTORY_TYPE_NAME.decapitalize()
-    private val FACTORY_PARAM = ParameterSpec.builder(Util.FACTORY_INTERFACE_TYPE, FACTORY_VAR)
-        .addAnnotation(Nonnull::class.java).build()
     private val CONDITIONAL_TYPE_VAR = "conditionalType"
     private val CONDITIONAL_TYPE_PARAM = ParameterSpec.builder(String::class.java, CONDITIONAL_TYPE_VAR)
         .addAnnotation(Nonnull::class.java).build()
-    private val FACTORY_FIELD = FieldSpec.builder(Util.FACTORY_INTERFACE_TYPE, Util.FACTORY_TYPE_NAME.decapitalize(),
-        Modifier.FINAL).build()
     private val READER_VAR = "reader"
     private val READER_PARAM = ParameterSpec.builder(ResponseReader::class.java, READER_VAR).build()
   }
