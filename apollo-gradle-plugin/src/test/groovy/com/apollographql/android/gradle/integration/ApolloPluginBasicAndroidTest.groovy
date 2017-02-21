@@ -31,9 +31,9 @@ class ApolloPluginBasicAndroidTest extends Specification {
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
     // IR Files generated successfully
     assert new File(testProjectDir,
-        "build/generated/source/apollo/generatedIR/src/main/graphql/ReleaseAPI.json").isFile()
+        "build/generated/source/apollo/generatedIR/release/src/main/graphql/ReleaseAPI.json").isFile()
     assert new File(testProjectDir,
-        "build/generated/source/apollo/generatedIR/src/main/graphql/DebugAPI.json").isFile()
+        "build/generated/source/apollo/generatedIR/debug/src/main/graphql/DebugAPI.json").isFile()
 
     // Java classes generated successfully
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").isFile()

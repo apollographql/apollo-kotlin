@@ -90,19 +90,22 @@ public class ApolloIRGenTask extends NodeTask {
       }
     });
 
+    if (schemaFiles.isEmpty()) {
+      throw new GradleException("Couldn't find schema files for the variant " + Utils.capitalize(variant) + ". Please" +
+          " ensure a valid schema.json exists under the varian't source sets");
+    }
+
     if (illegalSchemasFound(schemaFiles)) {
             throw new GradleException("Found an ancestor directory to a schema file that contains another schema file." +
                 " Please ensure no schema files exist on the path to another one");
     }
 
     Map<String, ApolloCodegenArgs> schemaQueryMap = new HashMap<>();
-
     for (final File f : schemaFiles) {
       final String normalizedSchemaFileName = normalizeFileName(f);
       if (schemaQueryMap.containsKey(normalizedSchemaFileName)) {
         continue;
       }
-      final Path schemaFileParentPath = Paths.get(f.getParent()).toAbsolutePath();
       schemaQueryMap.put(normalizedSchemaFileName, new ApolloCodegenArgs(f, FluentIterable.from(files).filter(new Predicate<File>() {
         @Override public boolean apply(@Nullable File file) {
           return file != null && !schemaFiles.contains(file) && file.getParent().contains(normalizeFileName(f.getParentFile()));
@@ -142,6 +145,12 @@ public class ApolloIRGenTask extends NodeTask {
     return file.getAbsolutePath().split("src/")[1].split("/")[0];
   }
 
+  /**
+   * Returns file path relative to the sourceSet directory
+   *
+   * @param file - file to normalize its path
+   * @return path relative to sourceSet directory
+   */
   private String normalizeFileName(File file) {
     return file.getAbsolutePath().split("src/")[1].split("/", 2)[1];
   }
