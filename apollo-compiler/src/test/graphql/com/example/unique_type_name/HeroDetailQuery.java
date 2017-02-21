@@ -60,26 +60,12 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
     return variables;
   }
 
+  @Override
+  public ResponseFieldMapper<? extends Operation.Data> responseFieldMapper() {
+    return new Data.Mapper();
+  }
+
   public static class Data implements Operation.Data {
-    public static final Creator CREATOR = new Creator() {
-      @Override
-      public @Nonnull Data create(@Nullable HeroDetailQuery1 heroDetailQuery) {
-        return new Data(heroDetailQuery);
-      }
-    };
-
-    public static final Factory FACTORY = new Factory() {
-      @Override
-      public @Nonnull Creator creator() {
-        return CREATOR;
-      }
-
-      @Override
-      public @Nonnull HeroDetailQuery1.Factory heroDetailQuery1Factory() {
-        return HeroDetailQuery1.FACTORY;
-      }
-    };
-
     private final @Nullable HeroDetailQuery1 heroDetailQuery;
 
     public Data(@Nullable HeroDetailQuery1 heroDetailQuery) {
@@ -118,31 +104,6 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
     }
 
     public static class HeroDetailQuery1 {
-      public static final Creator CREATOR = new Creator() {
-        @Override
-        public @Nonnull HeroDetailQuery1 create(@Nonnull String name,
-            @Nullable List<Friend> friends, @Nullable AsHuman asHuman) {
-          return new HeroDetailQuery1(name, friends, asHuman);
-        }
-      };
-
-      public static final Factory FACTORY = new Factory() {
-        @Override
-        public @Nonnull Creator creator() {
-          return CREATOR;
-        }
-
-        @Override
-        public @Nonnull Friend.Factory friendFactory() {
-          return Friend.FACTORY;
-        }
-
-        @Override
-        public @Nonnull AsHuman.Factory asHumanFactory() {
-          return AsHuman.FACTORY;
-        }
-      };
-
       private final @Nonnull String name;
 
       private final @Nullable List<Friend> friends;
@@ -204,20 +165,6 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
       }
 
       public static class Friend {
-        public static final Creator CREATOR = new Creator() {
-          @Override
-          public @Nonnull Friend create(@Nonnull String name) {
-            return new Friend(name);
-          }
-        };
-
-        public static final Factory FACTORY = new Factory() {
-          @Override
-          public @Nonnull Creator creator() {
-            return CREATOR;
-          }
-        };
-
         private final @Nonnull String name;
 
         public Friend(@Nonnull String name) {
@@ -256,15 +203,9 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
         }
 
         public static final class Mapper implements ResponseFieldMapper<Friend> {
-          final Factory factory;
-
           final Field[] fields = {
             Field.forString("name", "name", null, false)
           };
-
-          public Mapper(@Nonnull Factory factory) {
-            this.factory = factory;
-          }
 
           @Override
           public Friend map(ResponseReader reader) throws IOException {
@@ -280,44 +221,16 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
                 }
               }
             }, fields);
-            return factory.creator().create(contentValues.name);
+            return new Friend(contentValues.name);
           }
 
           static final class __ContentValues {
             String name;
           }
         }
-
-        public interface Factory {
-          @Nonnull Creator creator();
-        }
-
-        public interface Creator {
-          @Nonnull Friend create(@Nonnull String name);
-        }
       }
 
       public static class AsHuman {
-        public static final Creator CREATOR = new Creator() {
-          @Override
-          public @Nonnull AsHuman create(@Nonnull String name, @Nullable List<Friend1> friends,
-              @Nullable Double height) {
-            return new AsHuman(name, friends, height);
-          }
-        };
-
-        public static final Factory FACTORY = new Factory() {
-          @Override
-          public @Nonnull Creator creator() {
-            return CREATOR;
-          }
-
-          @Override
-          public @Nonnull Friend1.Factory friend1Factory() {
-            return Friend1.FACTORY;
-          }
-        };
-
         private final @Nonnull String name;
 
         private final @Nullable List<Friend1> friends;
@@ -379,26 +292,6 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
         }
 
         public static class Friend1 {
-          public static final Creator CREATOR = new Creator() {
-            @Override
-            public @Nonnull Friend1 create(@Nonnull String name, @Nonnull List<Episode> appearsIn,
-                @Nullable List<Friend2> friends) {
-              return new Friend1(name, appearsIn, friends);
-            }
-          };
-
-          public static final Factory FACTORY = new Factory() {
-            @Override
-            public @Nonnull Creator creator() {
-              return CREATOR;
-            }
-
-            @Override
-            public @Nonnull Friend2.Factory friend2Factory() {
-              return Friend2.FACTORY;
-            }
-          };
-
           private final @Nonnull String name;
 
           private final @Nonnull List<Episode> appearsIn;
@@ -460,25 +353,6 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
           }
 
           public static class Friend2 {
-            public static final Creator CREATOR = new Creator() {
-              @Override
-              public @Nonnull Friend2 create(@Nonnull Fragments fragments) {
-                return new Friend2(fragments);
-              }
-            };
-
-            public static final Factory FACTORY = new Factory() {
-              @Override
-              public @Nonnull Creator creator() {
-                return CREATOR;
-              }
-
-              @Override
-              public @Nonnull Fragments.Factory fragmentsFactory() {
-                return Fragments.FACTORY;
-              }
-            };
-
             private final Fragments fragments;
 
             public Friend2(Fragments fragments) {
@@ -517,25 +391,6 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
             }
 
             public static class Fragments {
-              public static final Creator CREATOR = new Creator() {
-                @Override
-                public @Nonnull Fragments create(@Nullable HeroDetails heroDetails) {
-                  return new Fragments(heroDetails);
-                }
-              };
-
-              public static final Factory FACTORY = new Factory() {
-                @Override
-                public @Nonnull Creator creator() {
-                  return CREATOR;
-                }
-
-                @Override
-                public @Nonnull HeroDetails.Factory heroDetailsFactory() {
-                  return HeroDetails.FACTORY;
-                }
-              };
-
               private HeroDetails heroDetails;
 
               public Fragments(HeroDetails heroDetails) {
@@ -574,12 +429,9 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
               }
 
               public static final class Mapper implements ResponseFieldMapper<Fragments> {
-                final Factory factory;
+                private final String conditionalType;
 
-                String conditionalType;
-
-                public Mapper(@Nonnull Factory factory, @Nonnull String conditionalType) {
-                  this.factory = factory;
+                public Mapper(@Nonnull String conditionalType) {
                   this.conditionalType = conditionalType;
                 }
 
@@ -587,39 +439,23 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
                 public @Nonnull Fragments map(ResponseReader reader) throws IOException {
                   HeroDetails heroDetails = null;
                   if (conditionalType.equals(HeroDetails.TYPE_CONDITION)) {
-                    heroDetails = new HeroDetails.Mapper(factory.heroDetailsFactory()).map(reader);
+                    heroDetails = new HeroDetails.Mapper().map(reader);
                   }
-                  return factory.creator().create(heroDetails);
+                  return new Fragments(heroDetails);
                 }
-              }
-
-              public interface Factory {
-                @Nonnull Creator creator();
-
-                @Nonnull HeroDetails.Factory heroDetailsFactory();
-              }
-
-              public interface Creator {
-                @Nonnull Fragments create(@Nullable HeroDetails heroDetails);
               }
             }
 
             public static final class Mapper implements ResponseFieldMapper<Friend2> {
-              final Factory factory;
-
               final Field[] fields = {
                 Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
                   @Override
                   public Fragments read(String conditionalType, ResponseReader reader) throws
                       IOException {
-                    return new Fragments.Mapper(factory.fragmentsFactory(), conditionalType).map(reader);
+                    return new Fragments.Mapper(conditionalType).map(reader);
                   }
                 })
               };
-
-              public Mapper(@Nonnull Factory factory) {
-                this.factory = factory;
-              }
 
               @Override
               public Friend2 map(ResponseReader reader) throws IOException {
@@ -635,28 +471,16 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
                     }
                   }
                 }, fields);
-                return factory.creator().create(contentValues.fragments);
+                return new Friend2(contentValues.fragments);
               }
 
               static final class __ContentValues {
                 Fragments fragments;
               }
             }
-
-            public interface Factory {
-              @Nonnull Creator creator();
-
-              @Nonnull Fragments.Factory fragmentsFactory();
-            }
-
-            public interface Creator {
-              @Nonnull Friend2 create(@Nonnull Fragments fragments);
-            }
           }
 
           public static final class Mapper implements ResponseFieldMapper<Friend1> {
-            final Factory factory;
-
             final Field[] fields = {
               Field.forString("name", "name", null, false),
               Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
@@ -666,14 +490,10 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
               }),
               Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend2>() {
                 @Override public Friend2 read(final ResponseReader reader) throws IOException {
-                  return new Friend2.Mapper(factory.friend2Factory()).map(reader);
+                  return new Friend2.Mapper().map(reader);
                 }
               })
             };
-
-            public Mapper(@Nonnull Factory factory) {
-              this.factory = factory;
-            }
 
             @Override
             public Friend1 map(ResponseReader reader) throws IOException {
@@ -697,7 +517,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
                   }
                 }
               }, fields);
-              return factory.creator().create(contentValues.name, contentValues.appearsIn, contentValues.friends);
+              return new Friend1(contentValues.name, contentValues.appearsIn, contentValues.friends);
             }
 
             static final class __ContentValues {
@@ -708,35 +528,18 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
               List<Friend2> friends;
             }
           }
-
-          public interface Factory {
-            @Nonnull Creator creator();
-
-            @Nonnull Friend2.Factory friend2Factory();
-          }
-
-          public interface Creator {
-            @Nonnull Friend1 create(@Nonnull String name, @Nonnull List<Episode> appearsIn,
-                @Nullable List<Friend2> friends);
-          }
         }
 
         public static final class Mapper implements ResponseFieldMapper<AsHuman> {
-          final Factory factory;
-
           final Field[] fields = {
             Field.forString("name", "name", null, false),
             Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend1>() {
               @Override public Friend1 read(final ResponseReader reader) throws IOException {
-                return new Friend1.Mapper(factory.friend1Factory()).map(reader);
+                return new Friend1.Mapper().map(reader);
               }
             }),
             Field.forDouble("height", "height", null, true)
           };
-
-          public Mapper(@Nonnull Factory factory) {
-            this.factory = factory;
-          }
 
           @Override
           public AsHuman map(ResponseReader reader) throws IOException {
@@ -760,7 +563,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
                 }
               }
             }, fields);
-            return factory.creator().create(contentValues.name, contentValues.friends, contentValues.height);
+            return new AsHuman(contentValues.name, contentValues.friends, contentValues.height);
           }
 
           static final class __ContentValues {
@@ -771,44 +574,27 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
             Double height;
           }
         }
-
-        public interface Factory {
-          @Nonnull Creator creator();
-
-          @Nonnull Friend1.Factory friend1Factory();
-        }
-
-        public interface Creator {
-          @Nonnull AsHuman create(@Nonnull String name, @Nullable List<Friend1> friends,
-              @Nullable Double height);
-        }
       }
 
       public static final class Mapper implements ResponseFieldMapper<HeroDetailQuery1> {
-        final Factory factory;
-
         final Field[] fields = {
           Field.forString("name", "name", null, false),
           Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend>() {
             @Override public Friend read(final ResponseReader reader) throws IOException {
-              return new Friend.Mapper(factory.friendFactory()).map(reader);
+              return new Friend.Mapper().map(reader);
             }
           }),
           Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman>() {
             @Override
             public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
               if (conditionalType.equals("Human")) {
-                return new AsHuman.Mapper(factory.asHumanFactory()).map(reader);
+                return new AsHuman.Mapper().map(reader);
               } else {
                 return null;
               }
             }
           })
         };
-
-        public Mapper(@Nonnull Factory factory) {
-          this.factory = factory;
-        }
 
         @Override
         public HeroDetailQuery1 map(ResponseReader reader) throws IOException {
@@ -832,7 +618,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
               }
             }
           }, fields);
-          return factory.creator().create(contentValues.name, contentValues.friends, contentValues.asHuman);
+          return new HeroDetailQuery1(contentValues.name, contentValues.friends, contentValues.asHuman);
         }
 
         static final class __ContentValues {
@@ -843,35 +629,16 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
           AsHuman asHuman;
         }
       }
-
-      public interface Factory {
-        @Nonnull Creator creator();
-
-        @Nonnull Friend.Factory friendFactory();
-
-        @Nonnull AsHuman.Factory asHumanFactory();
-      }
-
-      public interface Creator {
-        @Nonnull HeroDetailQuery1 create(@Nonnull String name, @Nullable List<Friend> friends,
-            @Nullable AsHuman asHuman);
-      }
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
-      final Factory factory;
-
       final Field[] fields = {
         Field.forObject("heroDetailQuery", "heroDetail", null, true, new Field.ObjectReader<HeroDetailQuery1>() {
           @Override public HeroDetailQuery1 read(final ResponseReader reader) throws IOException {
-            return new HeroDetailQuery1.Mapper(factory.heroDetailQuery1Factory()).map(reader);
+            return new HeroDetailQuery1.Mapper().map(reader);
           }
         })
       };
-
-      public Mapper(@Nonnull Factory factory) {
-        this.factory = factory;
-      }
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
@@ -887,22 +654,12 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
             }
           }
         }, fields);
-        return factory.creator().create(contentValues.heroDetailQuery);
+        return new Data(contentValues.heroDetailQuery);
       }
 
       static final class __ContentValues {
         HeroDetailQuery1 heroDetailQuery;
       }
-    }
-
-    public interface Factory {
-      @Nonnull Creator creator();
-
-      @Nonnull HeroDetailQuery1.Factory heroDetailQuery1Factory();
-    }
-
-    public interface Creator {
-      @Nonnull Data create(@Nullable HeroDetailQuery1 heroDetailQuery);
     }
   }
 }

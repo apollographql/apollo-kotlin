@@ -10,7 +10,6 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
@@ -40,26 +39,12 @@ public final class TestQuery implements Query<Operation.Variables> {
     return variables;
   }
 
+  @Override
+  public ResponseFieldMapper<? extends Operation.Data> responseFieldMapper() {
+    return new Data.Mapper();
+  }
+
   public static class Data implements Operation.Data {
-    public static final Creator CREATOR = new Creator() {
-      @Override
-      public @Nonnull Data create(@Nullable Hero hero) {
-        return new Data(hero);
-      }
-    };
-
-    public static final Factory FACTORY = new Factory() {
-      @Override
-      public @Nonnull Creator creator() {
-        return CREATOR;
-      }
-
-      @Override
-      public @Nonnull Hero.Factory heroFactory() {
-        return Hero.FACTORY;
-      }
-    };
-
     private final @Nullable Hero hero;
 
     public Data(@Nullable Hero hero) {
@@ -98,20 +83,6 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     public static class Hero {
-      public static final Creator CREATOR = new Creator() {
-        @Override
-        public @Nonnull Hero create(@Nullable String name) {
-          return new Hero(name);
-        }
-      };
-
-      public static final Factory FACTORY = new Factory() {
-        @Override
-        public @Nonnull Creator creator() {
-          return CREATOR;
-        }
-      };
-
       private final @Nullable String name;
 
       public Hero(@Nullable String name) {
@@ -150,15 +121,9 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       public static final class Mapper implements ResponseFieldMapper<Hero> {
-        final Factory factory;
-
         final Field[] fields = {
           Field.forString("name", "name", null, true)
         };
-
-        public Mapper(@Nonnull Factory factory) {
-          this.factory = factory;
-        }
 
         @Override
         public Hero map(ResponseReader reader) throws IOException {
@@ -174,37 +139,23 @@ public final class TestQuery implements Query<Operation.Variables> {
               }
             }
           }, fields);
-          return factory.creator().create(contentValues.name);
+          return new Hero(contentValues.name);
         }
 
         static final class __ContentValues {
           String name;
         }
       }
-
-      public interface Factory {
-        @Nonnull Creator creator();
-      }
-
-      public interface Creator {
-        @Nonnull Hero create(@Nullable String name);
-      }
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
-      final Factory factory;
-
       final Field[] fields = {
         Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
           @Override public Hero read(final ResponseReader reader) throws IOException {
-            return new Hero.Mapper(factory.heroFactory()).map(reader);
+            return new Hero.Mapper().map(reader);
           }
         })
       };
-
-      public Mapper(@Nonnull Factory factory) {
-        this.factory = factory;
-      }
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
@@ -220,22 +171,12 @@ public final class TestQuery implements Query<Operation.Variables> {
             }
           }
         }, fields);
-        return factory.creator().create(contentValues.hero);
+        return new Data(contentValues.hero);
       }
 
       static final class __ContentValues {
         Hero hero;
       }
-    }
-
-    public interface Factory {
-      @Nonnull Creator creator();
-
-      @Nonnull Hero.Factory heroFactory();
-    }
-
-    public interface Creator {
-      @Nonnull Data create(@Nullable Hero hero);
     }
   }
 }

@@ -3,7 +3,6 @@ package com.apollographql.android.compiler
 import com.apollographql.android.compiler.ir.CodeGenerationContext
 import com.apollographql.android.compiler.ir.CodeGenerationIR
 import com.apollographql.android.compiler.ir.TypeDeclaration
-import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.JavaFile
 import com.squareup.moshi.Moshi
 import java.io.File
@@ -19,7 +18,6 @@ open class GraphQLCompiler {
     val typesPackage = if (irPackageName.isNotEmpty()) "$irPackageName.type" else "type"
     val supportedScalarTypeMapping = customTypeMap.supportedScalarTypeMapping(ir.typesUsed)
     val context = CodeGenerationContext(
-        abstractType = false,
         reservedTypeNames = emptyList(),
         typeDeclarations = ir.typesUsed,
         fragmentsPackage = fragmentsPackage,
@@ -51,18 +49,12 @@ open class GraphQLCompiler {
   }
 
   private fun CodeGenerationIR.writeOperations(context: CodeGenerationContext, irPackageName: String, outputDir: File) {
-    val operationJavaClasses = operations.map { OperationTypeSpecBuilder(it, fragments) }
-        .map {
+    operations.map { OperationTypeSpecBuilder(it, fragments) }
+        .forEach {
           val packageName = it.operation.filePath.formatPackageName()
           val typeSpec = it.toTypeSpec(context)
           JavaFile.builder(packageName, typeSpec).build().writeTo(outputDir)
-          ClassName.get(packageName, typeSpec.name)
         }
-
-    if (!context.abstractType) {
-      val typeSpec = ResponseFieldMappersTypeBuilder(operationJavaClasses).build()
-      JavaFile.builder(irPackageName, typeSpec).build().writeTo(outputDir)
-    }
   }
 
   private fun String.formatPackageName(): String {

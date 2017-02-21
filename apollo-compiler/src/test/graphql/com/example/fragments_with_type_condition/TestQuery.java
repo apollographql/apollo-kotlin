@@ -50,31 +50,12 @@ public final class TestQuery implements Query<Operation.Variables> {
     return variables;
   }
 
+  @Override
+  public ResponseFieldMapper<? extends Operation.Data> responseFieldMapper() {
+    return new Data.Mapper();
+  }
+
   public static class Data implements Operation.Data {
-    public static final Creator CREATOR = new Creator() {
-      @Override
-      public @Nonnull Data create(@Nullable R2 r2, @Nullable Luke luke) {
-        return new Data(r2, luke);
-      }
-    };
-
-    public static final Factory FACTORY = new Factory() {
-      @Override
-      public @Nonnull Creator creator() {
-        return CREATOR;
-      }
-
-      @Override
-      public @Nonnull R2.Factory r2Factory() {
-        return R2.FACTORY;
-      }
-
-      @Override
-      public @Nonnull Luke.Factory lukeFactory() {
-        return Luke.FACTORY;
-      }
-    };
-
     private final @Nullable R2 r2;
 
     private final @Nullable Luke luke;
@@ -124,25 +105,6 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     public static class R2 {
-      public static final Creator CREATOR = new Creator() {
-        @Override
-        public @Nonnull R2 create(@Nonnull Fragments fragments) {
-          return new R2(fragments);
-        }
-      };
-
-      public static final Factory FACTORY = new Factory() {
-        @Override
-        public @Nonnull Creator creator() {
-          return CREATOR;
-        }
-
-        @Override
-        public @Nonnull Fragments.Factory fragmentsFactory() {
-          return Fragments.FACTORY;
-        }
-      };
-
       private final Fragments fragments;
 
       public R2(Fragments fragments) {
@@ -181,31 +143,6 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       public static class Fragments {
-        public static final Creator CREATOR = new Creator() {
-          @Override
-          public @Nonnull Fragments create(@Nullable HumanDetails humanDetails,
-              @Nullable DroidDetails droidDetails) {
-            return new Fragments(humanDetails, droidDetails);
-          }
-        };
-
-        public static final Factory FACTORY = new Factory() {
-          @Override
-          public @Nonnull Creator creator() {
-            return CREATOR;
-          }
-
-          @Override
-          public @Nonnull HumanDetails.Factory humanDetailsFactory() {
-            return HumanDetails.FACTORY;
-          }
-
-          @Override
-          public @Nonnull DroidDetails.Factory droidDetailsFactory() {
-            return DroidDetails.FACTORY;
-          }
-        };
-
         private HumanDetails humanDetails;
 
         private DroidDetails droidDetails;
@@ -255,12 +192,9 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         public static final class Mapper implements ResponseFieldMapper<Fragments> {
-          final Factory factory;
+          private final String conditionalType;
 
-          String conditionalType;
-
-          public Mapper(@Nonnull Factory factory, @Nonnull String conditionalType) {
-            this.factory = factory;
+          public Mapper(@Nonnull String conditionalType) {
             this.conditionalType = conditionalType;
           }
 
@@ -269,45 +203,26 @@ public final class TestQuery implements Query<Operation.Variables> {
             HumanDetails humanDetails = null;
             DroidDetails droidDetails = null;
             if (conditionalType.equals(HumanDetails.TYPE_CONDITION)) {
-              humanDetails = new HumanDetails.Mapper(factory.humanDetailsFactory()).map(reader);
+              humanDetails = new HumanDetails.Mapper().map(reader);
             }
             if (conditionalType.equals(DroidDetails.TYPE_CONDITION)) {
-              droidDetails = new DroidDetails.Mapper(factory.droidDetailsFactory()).map(reader);
+              droidDetails = new DroidDetails.Mapper().map(reader);
             }
-            return factory.creator().create(humanDetails, droidDetails);
+            return new Fragments(humanDetails, droidDetails);
           }
-        }
-
-        public interface Factory {
-          @Nonnull Creator creator();
-
-          @Nonnull HumanDetails.Factory humanDetailsFactory();
-
-          @Nonnull DroidDetails.Factory droidDetailsFactory();
-        }
-
-        public interface Creator {
-          @Nonnull Fragments create(@Nullable HumanDetails humanDetails,
-              @Nullable DroidDetails droidDetails);
         }
       }
 
       public static final class Mapper implements ResponseFieldMapper<R2> {
-        final Factory factory;
-
         final Field[] fields = {
           Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
             @Override
             public Fragments read(String conditionalType, ResponseReader reader) throws
                 IOException {
-              return new Fragments.Mapper(factory.fragmentsFactory(), conditionalType).map(reader);
+              return new Fragments.Mapper(conditionalType).map(reader);
             }
           })
         };
-
-        public Mapper(@Nonnull Factory factory) {
-          this.factory = factory;
-        }
 
         @Override
         public R2 map(ResponseReader reader) throws IOException {
@@ -323,45 +238,16 @@ public final class TestQuery implements Query<Operation.Variables> {
               }
             }
           }, fields);
-          return factory.creator().create(contentValues.fragments);
+          return new R2(contentValues.fragments);
         }
 
         static final class __ContentValues {
           Fragments fragments;
         }
       }
-
-      public interface Factory {
-        @Nonnull Creator creator();
-
-        @Nonnull Fragments.Factory fragmentsFactory();
-      }
-
-      public interface Creator {
-        @Nonnull R2 create(@Nonnull Fragments fragments);
-      }
     }
 
     public static class Luke {
-      public static final Creator CREATOR = new Creator() {
-        @Override
-        public @Nonnull Luke create(@Nonnull Fragments fragments) {
-          return new Luke(fragments);
-        }
-      };
-
-      public static final Factory FACTORY = new Factory() {
-        @Override
-        public @Nonnull Creator creator() {
-          return CREATOR;
-        }
-
-        @Override
-        public @Nonnull Fragments.Factory fragmentsFactory() {
-          return Fragments.FACTORY;
-        }
-      };
-
       private final Fragments fragments;
 
       public Luke(Fragments fragments) {
@@ -400,31 +286,6 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       public static class Fragments {
-        public static final Creator CREATOR = new Creator() {
-          @Override
-          public @Nonnull Fragments create(@Nullable HumanDetails humanDetails,
-              @Nullable DroidDetails droidDetails) {
-            return new Fragments(humanDetails, droidDetails);
-          }
-        };
-
-        public static final Factory FACTORY = new Factory() {
-          @Override
-          public @Nonnull Creator creator() {
-            return CREATOR;
-          }
-
-          @Override
-          public @Nonnull HumanDetails.Factory humanDetailsFactory() {
-            return HumanDetails.FACTORY;
-          }
-
-          @Override
-          public @Nonnull DroidDetails.Factory droidDetailsFactory() {
-            return DroidDetails.FACTORY;
-          }
-        };
-
         private HumanDetails humanDetails;
 
         private DroidDetails droidDetails;
@@ -474,12 +335,9 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         public static final class Mapper implements ResponseFieldMapper<Fragments> {
-          final Factory factory;
+          private final String conditionalType;
 
-          String conditionalType;
-
-          public Mapper(@Nonnull Factory factory, @Nonnull String conditionalType) {
-            this.factory = factory;
+          public Mapper(@Nonnull String conditionalType) {
             this.conditionalType = conditionalType;
           }
 
@@ -488,45 +346,26 @@ public final class TestQuery implements Query<Operation.Variables> {
             HumanDetails humanDetails = null;
             DroidDetails droidDetails = null;
             if (conditionalType.equals(HumanDetails.TYPE_CONDITION)) {
-              humanDetails = new HumanDetails.Mapper(factory.humanDetailsFactory()).map(reader);
+              humanDetails = new HumanDetails.Mapper().map(reader);
             }
             if (conditionalType.equals(DroidDetails.TYPE_CONDITION)) {
-              droidDetails = new DroidDetails.Mapper(factory.droidDetailsFactory()).map(reader);
+              droidDetails = new DroidDetails.Mapper().map(reader);
             }
-            return factory.creator().create(humanDetails, droidDetails);
+            return new Fragments(humanDetails, droidDetails);
           }
-        }
-
-        public interface Factory {
-          @Nonnull Creator creator();
-
-          @Nonnull HumanDetails.Factory humanDetailsFactory();
-
-          @Nonnull DroidDetails.Factory droidDetailsFactory();
-        }
-
-        public interface Creator {
-          @Nonnull Fragments create(@Nullable HumanDetails humanDetails,
-              @Nullable DroidDetails droidDetails);
         }
       }
 
       public static final class Mapper implements ResponseFieldMapper<Luke> {
-        final Factory factory;
-
         final Field[] fields = {
           Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
             @Override
             public Fragments read(String conditionalType, ResponseReader reader) throws
                 IOException {
-              return new Fragments.Mapper(factory.fragmentsFactory(), conditionalType).map(reader);
+              return new Fragments.Mapper(conditionalType).map(reader);
             }
           })
         };
-
-        public Mapper(@Nonnull Factory factory) {
-          this.factory = factory;
-        }
 
         @Override
         public Luke map(ResponseReader reader) throws IOException {
@@ -542,44 +381,28 @@ public final class TestQuery implements Query<Operation.Variables> {
               }
             }
           }, fields);
-          return factory.creator().create(contentValues.fragments);
+          return new Luke(contentValues.fragments);
         }
 
         static final class __ContentValues {
           Fragments fragments;
         }
       }
-
-      public interface Factory {
-        @Nonnull Creator creator();
-
-        @Nonnull Fragments.Factory fragmentsFactory();
-      }
-
-      public interface Creator {
-        @Nonnull Luke create(@Nonnull Fragments fragments);
-      }
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
-      final Factory factory;
-
       final Field[] fields = {
         Field.forObject("r2", "hero", null, true, new Field.ObjectReader<R2>() {
           @Override public R2 read(final ResponseReader reader) throws IOException {
-            return new R2.Mapper(factory.r2Factory()).map(reader);
+            return new R2.Mapper().map(reader);
           }
         }),
         Field.forObject("luke", "hero", null, true, new Field.ObjectReader<Luke>() {
           @Override public Luke read(final ResponseReader reader) throws IOException {
-            return new Luke.Mapper(factory.lukeFactory()).map(reader);
+            return new Luke.Mapper().map(reader);
           }
         })
       };
-
-      public Mapper(@Nonnull Factory factory) {
-        this.factory = factory;
-      }
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
@@ -599,7 +422,7 @@ public final class TestQuery implements Query<Operation.Variables> {
             }
           }
         }, fields);
-        return factory.creator().create(contentValues.r2, contentValues.luke);
+        return new Data(contentValues.r2, contentValues.luke);
       }
 
       static final class __ContentValues {
@@ -607,18 +430,6 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         Luke luke;
       }
-    }
-
-    public interface Factory {
-      @Nonnull Creator creator();
-
-      @Nonnull R2.Factory r2Factory();
-
-      @Nonnull Luke.Factory lukeFactory();
-    }
-
-    public interface Creator {
-      @Nonnull Data create(@Nullable R2 r2, @Nullable Luke luke);
     }
   }
 }

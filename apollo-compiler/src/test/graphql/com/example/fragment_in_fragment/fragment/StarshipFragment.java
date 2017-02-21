@@ -14,26 +14,6 @@ import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
 public class StarshipFragment {
-  public static final Creator CREATOR = new Creator() {
-    @Override
-    public @Nonnull StarshipFragment create(@Nonnull String id, @Nullable String name,
-        @Nullable PilotConnection pilotConnection) {
-      return new StarshipFragment(id, name, pilotConnection);
-    }
-  };
-
-  public static final Factory FACTORY = new Factory() {
-    @Override
-    public @Nonnull Creator creator() {
-      return CREATOR;
-    }
-
-    @Override
-    public @Nonnull PilotConnection.Factory pilotConnectionFactory() {
-      return PilotConnection.FACTORY;
-    }
-  };
-
   public static final String FRAGMENT_DEFINITION = "fragment starshipFragment on Starship {\n"
       + "  id\n"
       + "  name\n"
@@ -109,25 +89,6 @@ public class StarshipFragment {
   }
 
   public static class PilotConnection {
-    public static final Creator CREATOR = new Creator() {
-      @Override
-      public @Nonnull PilotConnection create(@Nullable List<Edge> edges) {
-        return new PilotConnection(edges);
-      }
-    };
-
-    public static final Factory FACTORY = new Factory() {
-      @Override
-      public @Nonnull Creator creator() {
-        return CREATOR;
-      }
-
-      @Override
-      public @Nonnull Edge.Factory edgeFactory() {
-        return Edge.FACTORY;
-      }
-    };
-
     private final @Nullable List<Edge> edges;
 
     public PilotConnection(@Nullable List<Edge> edges) {
@@ -166,25 +127,6 @@ public class StarshipFragment {
     }
 
     public static class Edge {
-      public static final Creator CREATOR = new Creator() {
-        @Override
-        public @Nonnull Edge create(@Nullable Node node) {
-          return new Edge(node);
-        }
-      };
-
-      public static final Factory FACTORY = new Factory() {
-        @Override
-        public @Nonnull Creator creator() {
-          return CREATOR;
-        }
-
-        @Override
-        public @Nonnull Node.Factory nodeFactory() {
-          return Node.FACTORY;
-        }
-      };
-
       private final @Nullable Node node;
 
       public Edge(@Nullable Node node) {
@@ -223,25 +165,6 @@ public class StarshipFragment {
       }
 
       public static class Node {
-        public static final Creator CREATOR = new Creator() {
-          @Override
-          public @Nonnull Node create(@Nonnull Fragments fragments) {
-            return new Node(fragments);
-          }
-        };
-
-        public static final Factory FACTORY = new Factory() {
-          @Override
-          public @Nonnull Creator creator() {
-            return CREATOR;
-          }
-
-          @Override
-          public @Nonnull Fragments.Factory fragmentsFactory() {
-            return Fragments.FACTORY;
-          }
-        };
-
         private final Fragments fragments;
 
         public Node(Fragments fragments) {
@@ -280,25 +203,6 @@ public class StarshipFragment {
         }
 
         public static class Fragments {
-          public static final Creator CREATOR = new Creator() {
-            @Override
-            public @Nonnull Fragments create(@Nullable PilotFragment pilotFragment) {
-              return new Fragments(pilotFragment);
-            }
-          };
-
-          public static final Factory FACTORY = new Factory() {
-            @Override
-            public @Nonnull Creator creator() {
-              return CREATOR;
-            }
-
-            @Override
-            public @Nonnull PilotFragment.Factory pilotFragmentFactory() {
-              return PilotFragment.FACTORY;
-            }
-          };
-
           private PilotFragment pilotFragment;
 
           public Fragments(PilotFragment pilotFragment) {
@@ -337,12 +241,9 @@ public class StarshipFragment {
           }
 
           public static final class Mapper implements ResponseFieldMapper<Fragments> {
-            final Factory factory;
+            private final String conditionalType;
 
-            String conditionalType;
-
-            public Mapper(@Nonnull Factory factory, @Nonnull String conditionalType) {
-              this.factory = factory;
+            public Mapper(@Nonnull String conditionalType) {
               this.conditionalType = conditionalType;
             }
 
@@ -350,39 +251,23 @@ public class StarshipFragment {
             public @Nonnull Fragments map(ResponseReader reader) throws IOException {
               PilotFragment pilotFragment = null;
               if (conditionalType.equals(PilotFragment.TYPE_CONDITION)) {
-                pilotFragment = new PilotFragment.Mapper(factory.pilotFragmentFactory()).map(reader);
+                pilotFragment = new PilotFragment.Mapper().map(reader);
               }
-              return factory.creator().create(pilotFragment);
+              return new Fragments(pilotFragment);
             }
-          }
-
-          public interface Factory {
-            @Nonnull Creator creator();
-
-            @Nonnull PilotFragment.Factory pilotFragmentFactory();
-          }
-
-          public interface Creator {
-            @Nonnull Fragments create(@Nullable PilotFragment pilotFragment);
           }
         }
 
         public static final class Mapper implements ResponseFieldMapper<Node> {
-          final Factory factory;
-
           final Field[] fields = {
             Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
               @Override
               public Fragments read(String conditionalType, ResponseReader reader) throws
                   IOException {
-                return new Fragments.Mapper(factory.fragmentsFactory(), conditionalType).map(reader);
+                return new Fragments.Mapper(conditionalType).map(reader);
               }
             })
           };
-
-          public Mapper(@Nonnull Factory factory) {
-            this.factory = factory;
-          }
 
           @Override
           public Node map(ResponseReader reader) throws IOException {
@@ -398,39 +283,23 @@ public class StarshipFragment {
                 }
               }
             }, fields);
-            return factory.creator().create(contentValues.fragments);
+            return new Node(contentValues.fragments);
           }
 
           static final class __ContentValues {
             Fragments fragments;
           }
         }
-
-        public interface Factory {
-          @Nonnull Creator creator();
-
-          @Nonnull Fragments.Factory fragmentsFactory();
-        }
-
-        public interface Creator {
-          @Nonnull Node create(@Nonnull Fragments fragments);
-        }
       }
 
       public static final class Mapper implements ResponseFieldMapper<Edge> {
-        final Factory factory;
-
         final Field[] fields = {
           Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
             @Override public Node read(final ResponseReader reader) throws IOException {
-              return new Node.Mapper(factory.nodeFactory()).map(reader);
+              return new Node.Mapper().map(reader);
             }
           })
         };
-
-        public Mapper(@Nonnull Factory factory) {
-          this.factory = factory;
-        }
 
         @Override
         public Edge map(ResponseReader reader) throws IOException {
@@ -446,39 +315,23 @@ public class StarshipFragment {
               }
             }
           }, fields);
-          return factory.creator().create(contentValues.node);
+          return new Edge(contentValues.node);
         }
 
         static final class __ContentValues {
           Node node;
         }
       }
-
-      public interface Factory {
-        @Nonnull Creator creator();
-
-        @Nonnull Node.Factory nodeFactory();
-      }
-
-      public interface Creator {
-        @Nonnull Edge create(@Nullable Node node);
-      }
     }
 
     public static final class Mapper implements ResponseFieldMapper<PilotConnection> {
-      final Factory factory;
-
       final Field[] fields = {
         Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
           @Override public Edge read(final ResponseReader reader) throws IOException {
-            return new Edge.Mapper(factory.edgeFactory()).map(reader);
+            return new Edge.Mapper().map(reader);
           }
         })
       };
-
-      public Mapper(@Nonnull Factory factory) {
-        this.factory = factory;
-      }
 
       @Override
       public PilotConnection map(ResponseReader reader) throws IOException {
@@ -494,41 +347,25 @@ public class StarshipFragment {
             }
           }
         }, fields);
-        return factory.creator().create(contentValues.edges);
+        return new PilotConnection(contentValues.edges);
       }
 
       static final class __ContentValues {
         List<Edge> edges;
       }
     }
-
-    public interface Factory {
-      @Nonnull Creator creator();
-
-      @Nonnull Edge.Factory edgeFactory();
-    }
-
-    public interface Creator {
-      @Nonnull PilotConnection create(@Nullable List<Edge> edges);
-    }
   }
 
   public static final class Mapper implements ResponseFieldMapper<StarshipFragment> {
-    final Factory factory;
-
     final Field[] fields = {
       Field.forString("id", "id", null, false),
       Field.forString("name", "name", null, true),
       Field.forObject("pilotConnection", "pilotConnection", null, true, new Field.ObjectReader<PilotConnection>() {
         @Override public PilotConnection read(final ResponseReader reader) throws IOException {
-          return new PilotConnection.Mapper(factory.pilotConnectionFactory()).map(reader);
+          return new PilotConnection.Mapper().map(reader);
         }
       })
     };
-
-    public Mapper(@Nonnull Factory factory) {
-      this.factory = factory;
-    }
 
     @Override
     public StarshipFragment map(ResponseReader reader) throws IOException {
@@ -552,7 +389,7 @@ public class StarshipFragment {
           }
         }
       }, fields);
-      return factory.creator().create(contentValues.id, contentValues.name, contentValues.pilotConnection);
+      return new StarshipFragment(contentValues.id, contentValues.name, contentValues.pilotConnection);
     }
 
     static final class __ContentValues {
@@ -562,16 +399,5 @@ public class StarshipFragment {
 
       PilotConnection pilotConnection;
     }
-  }
-
-  public interface Factory {
-    @Nonnull Creator creator();
-
-    @Nonnull PilotConnection.Factory pilotConnectionFactory();
-  }
-
-  public interface Creator {
-    @Nonnull StarshipFragment create(@Nonnull String id, @Nullable String name,
-        @Nullable PilotConnection pilotConnection);
   }
 }

@@ -7,25 +7,9 @@ import com.apollographql.android.api.graphql.ResponseReader;
 import java.io.IOException;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class PlanetFragment {
-  public static final Creator CREATOR = new Creator() {
-    @Override
-    public PlanetFragment create(@Nullable String name, @Nullable List<? extends String> climates,
-        @Nullable Double surfaceWater) {
-      return new PlanetFragment(name, climates, surfaceWater);
-    }
-  };
-
-  public static final Factory FACTORY = new Factory() {
-    @Override
-    public Creator creator() {
-      return CREATOR;
-    }
-  };
-
   public static final String FRAGMENT_DEFINITION = "fragment PlanetFragment on Planet {\n"
       + "  name\n"
       + "  climates\n"
@@ -59,18 +43,7 @@ public class PlanetFragment {
     return this.surfaceWater;
   }
 
-  public interface Factory {
-    Creator creator();
-  }
-
-  public interface Creator {
-    PlanetFragment create(@Nullable String name, @Nullable List<? extends String> climates,
-        @Nullable Double surfaceWater);
-  }
-
   public static final class Mapper implements ResponseFieldMapper<PlanetFragment> {
-    final Factory factory;
-
     final Field[] fields = {
       Field.forString("name", "name", null, true),
       Field.forList("climates", "climates", null, true, new Field.ListReader<String>() {
@@ -80,10 +53,6 @@ public class PlanetFragment {
       }),
       Field.forDouble("surfaceWater", "surfaceWater", null, true)
     };
-
-    public Mapper(@Nonnull Factory factory) {
-      this.factory = factory;
-    }
 
     @Override
     public PlanetFragment map(ResponseReader reader) throws IOException {
@@ -107,7 +76,7 @@ public class PlanetFragment {
           }
         }
       }, fields);
-      return factory.creator().create(contentValues.name, contentValues.climates, contentValues.surfaceWater);
+      return new PlanetFragment(contentValues.name, contentValues.climates, contentValues.surfaceWater);
     }
 
     static final class __ContentValues {

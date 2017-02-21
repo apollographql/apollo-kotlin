@@ -11,20 +11,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class FilmFragment {
-  public static final Creator CREATOR = new Creator() {
-    @Override
-    public FilmFragment create(@Nullable String title, @Nullable List<? extends String> producers) {
-      return new FilmFragment(title, producers);
-    }
-  };
-
-  public static final Factory FACTORY = new Factory() {
-    @Override
-    public Creator creator() {
-      return CREATOR;
-    }
-  };
-
   public static final String FRAGMENT_DEFINITION = "fragment FilmFragment on Film {\n"
       + "  title\n"
       + "  producers\n"
@@ -49,17 +35,7 @@ public class FilmFragment {
     return this.producers;
   }
 
-  public interface Factory {
-    Creator creator();
-  }
-
-  public interface Creator {
-    FilmFragment create(@Nullable String title, @Nullable List<? extends String> producers);
-  }
-
   public static final class Mapper implements ResponseFieldMapper<FilmFragment> {
-    final Factory factory;
-
     final Field[] fields = {
       Field.forString("title", "title", null, true),
       Field.forList("producers", "producers", null, true, new Field.ListReader<String>() {
@@ -68,10 +44,6 @@ public class FilmFragment {
         }
       })
     };
-
-    public Mapper(@Nonnull Factory factory) {
-      this.factory = factory;
-    }
 
     @Override
     public FilmFragment map(ResponseReader reader) throws IOException {
@@ -91,7 +63,7 @@ public class FilmFragment {
           }
         }
       }, fields);
-      return factory.creator().create(contentValues.title, contentValues.producers);
+      return new FilmFragment(contentValues.title, contentValues.producers);
     }
 
     static final class __ContentValues {

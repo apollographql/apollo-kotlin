@@ -8,30 +8,10 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
 public class PilotFragment {
-  public static final Creator CREATOR = new Creator() {
-    @Override
-    public @Nonnull PilotFragment create(@Nullable String name, @Nullable Homeworld homeworld) {
-      return new PilotFragment(name, homeworld);
-    }
-  };
-
-  public static final Factory FACTORY = new Factory() {
-    @Override
-    public @Nonnull Creator creator() {
-      return CREATOR;
-    }
-
-    @Override
-    public @Nonnull Homeworld.Factory homeworldFactory() {
-      return Homeworld.FACTORY;
-    }
-  };
-
   public static final String FRAGMENT_DEFINITION = "fragment pilotFragment on Person {\n"
       + "  name\n"
       + "  homeworld {\n"
@@ -90,20 +70,6 @@ public class PilotFragment {
   }
 
   public static class Homeworld {
-    public static final Creator CREATOR = new Creator() {
-      @Override
-      public @Nonnull Homeworld create(@Nullable String name) {
-        return new Homeworld(name);
-      }
-    };
-
-    public static final Factory FACTORY = new Factory() {
-      @Override
-      public @Nonnull Creator creator() {
-        return CREATOR;
-      }
-    };
-
     private final @Nullable String name;
 
     public Homeworld(@Nullable String name) {
@@ -142,15 +108,9 @@ public class PilotFragment {
     }
 
     public static final class Mapper implements ResponseFieldMapper<Homeworld> {
-      final Factory factory;
-
       final Field[] fields = {
         Field.forString("name", "name", null, true)
       };
-
-      public Mapper(@Nonnull Factory factory) {
-        this.factory = factory;
-      }
 
       @Override
       public Homeworld map(ResponseReader reader) throws IOException {
@@ -166,38 +126,24 @@ public class PilotFragment {
             }
           }
         }, fields);
-        return factory.creator().create(contentValues.name);
+        return new Homeworld(contentValues.name);
       }
 
       static final class __ContentValues {
         String name;
       }
     }
-
-    public interface Factory {
-      @Nonnull Creator creator();
-    }
-
-    public interface Creator {
-      @Nonnull Homeworld create(@Nullable String name);
-    }
   }
 
   public static final class Mapper implements ResponseFieldMapper<PilotFragment> {
-    final Factory factory;
-
     final Field[] fields = {
       Field.forString("name", "name", null, true),
       Field.forObject("homeworld", "homeworld", null, true, new Field.ObjectReader<Homeworld>() {
         @Override public Homeworld read(final ResponseReader reader) throws IOException {
-          return new Homeworld.Mapper(factory.homeworldFactory()).map(reader);
+          return new Homeworld.Mapper().map(reader);
         }
       })
     };
-
-    public Mapper(@Nonnull Factory factory) {
-      this.factory = factory;
-    }
 
     @Override
     public PilotFragment map(ResponseReader reader) throws IOException {
@@ -217,7 +163,7 @@ public class PilotFragment {
           }
         }
       }, fields);
-      return factory.creator().create(contentValues.name, contentValues.homeworld);
+      return new PilotFragment(contentValues.name, contentValues.homeworld);
     }
 
     static final class __ContentValues {
@@ -225,15 +171,5 @@ public class PilotFragment {
 
       Homeworld homeworld;
     }
-  }
-
-  public interface Factory {
-    @Nonnull Creator creator();
-
-    @Nonnull Homeworld.Factory homeworldFactory();
-  }
-
-  public interface Creator {
-    @Nonnull PilotFragment create(@Nullable String name, @Nullable Homeworld homeworld);
   }
 }

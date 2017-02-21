@@ -12,20 +12,6 @@ import javax.annotation.Nonnull;
 
 @Generated("Apollo GraphQL")
 public class HeroDetails {
-  public static final Creator CREATOR = new Creator() {
-    @Override
-    public @Nonnull HeroDetails create(@Nonnull String name) {
-      return new HeroDetails(name);
-    }
-  };
-
-  public static final Factory FACTORY = new Factory() {
-    @Override
-    public @Nonnull Creator creator() {
-      return CREATOR;
-    }
-  };
-
   public static final String FRAGMENT_DEFINITION = "fragment HeroDetails on Character {\n"
       + "  __typename\n"
       + "  name\n"
@@ -71,15 +57,9 @@ public class HeroDetails {
   }
 
   public static final class Mapper implements ResponseFieldMapper<HeroDetails> {
-    final Factory factory;
-
     final Field[] fields = {
       Field.forString("name", "name", null, false)
     };
-
-    public Mapper(@Nonnull Factory factory) {
-      this.factory = factory;
-    }
 
     @Override
     public HeroDetails map(ResponseReader reader) throws IOException {
@@ -95,19 +75,11 @@ public class HeroDetails {
           }
         }
       }, fields);
-      return factory.creator().create(contentValues.name);
+      return new HeroDetails(contentValues.name);
     }
 
     static final class __ContentValues {
       String name;
     }
-  }
-
-  public interface Factory {
-    @Nonnull Creator creator();
-  }
-
-  public interface Creator {
-    @Nonnull HeroDetails create(@Nonnull String name);
   }
 }

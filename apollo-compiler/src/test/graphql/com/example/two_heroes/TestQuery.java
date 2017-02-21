@@ -44,31 +44,12 @@ public final class TestQuery implements Query<Operation.Variables> {
     return variables;
   }
 
+  @Override
+  public ResponseFieldMapper<? extends Operation.Data> responseFieldMapper() {
+    return new Data.Mapper();
+  }
+
   public static class Data implements Operation.Data {
-    public static final Creator CREATOR = new Creator() {
-      @Override
-      public @Nonnull Data create(@Nullable R2 r2, @Nullable Luke luke) {
-        return new Data(r2, luke);
-      }
-    };
-
-    public static final Factory FACTORY = new Factory() {
-      @Override
-      public @Nonnull Creator creator() {
-        return CREATOR;
-      }
-
-      @Override
-      public @Nonnull R2.Factory r2Factory() {
-        return R2.FACTORY;
-      }
-
-      @Override
-      public @Nonnull Luke.Factory lukeFactory() {
-        return Luke.FACTORY;
-      }
-    };
-
     private final @Nullable R2 r2;
 
     private final @Nullable Luke luke;
@@ -118,20 +99,6 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     public static class R2 {
-      public static final Creator CREATOR = new Creator() {
-        @Override
-        public @Nonnull R2 create(@Nonnull String name) {
-          return new R2(name);
-        }
-      };
-
-      public static final Factory FACTORY = new Factory() {
-        @Override
-        public @Nonnull Creator creator() {
-          return CREATOR;
-        }
-      };
-
       private final @Nonnull String name;
 
       public R2(@Nonnull String name) {
@@ -170,15 +137,9 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       public static final class Mapper implements ResponseFieldMapper<R2> {
-        final Factory factory;
-
         final Field[] fields = {
           Field.forString("name", "name", null, false)
         };
-
-        public Mapper(@Nonnull Factory factory) {
-          this.factory = factory;
-        }
 
         @Override
         public R2 map(ResponseReader reader) throws IOException {
@@ -194,38 +155,16 @@ public final class TestQuery implements Query<Operation.Variables> {
               }
             }
           }, fields);
-          return factory.creator().create(contentValues.name);
+          return new R2(contentValues.name);
         }
 
         static final class __ContentValues {
           String name;
         }
       }
-
-      public interface Factory {
-        @Nonnull Creator creator();
-      }
-
-      public interface Creator {
-        @Nonnull R2 create(@Nonnull String name);
-      }
     }
 
     public static class Luke {
-      public static final Creator CREATOR = new Creator() {
-        @Override
-        public @Nonnull Luke create(@Nonnull String name) {
-          return new Luke(name);
-        }
-      };
-
-      public static final Factory FACTORY = new Factory() {
-        @Override
-        public @Nonnull Creator creator() {
-          return CREATOR;
-        }
-      };
-
       private final @Nonnull String name;
 
       public Luke(@Nonnull String name) {
@@ -264,15 +203,9 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       public static final class Mapper implements ResponseFieldMapper<Luke> {
-        final Factory factory;
-
         final Field[] fields = {
           Field.forString("name", "name", null, false)
         };
-
-        public Mapper(@Nonnull Factory factory) {
-          this.factory = factory;
-        }
 
         @Override
         public Luke map(ResponseReader reader) throws IOException {
@@ -288,42 +221,28 @@ public final class TestQuery implements Query<Operation.Variables> {
               }
             }
           }, fields);
-          return factory.creator().create(contentValues.name);
+          return new Luke(contentValues.name);
         }
 
         static final class __ContentValues {
           String name;
         }
       }
-
-      public interface Factory {
-        @Nonnull Creator creator();
-      }
-
-      public interface Creator {
-        @Nonnull Luke create(@Nonnull String name);
-      }
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
-      final Factory factory;
-
       final Field[] fields = {
         Field.forObject("r2", "hero", null, true, new Field.ObjectReader<R2>() {
           @Override public R2 read(final ResponseReader reader) throws IOException {
-            return new R2.Mapper(factory.r2Factory()).map(reader);
+            return new R2.Mapper().map(reader);
           }
         }),
         Field.forObject("luke", "hero", null, true, new Field.ObjectReader<Luke>() {
           @Override public Luke read(final ResponseReader reader) throws IOException {
-            return new Luke.Mapper(factory.lukeFactory()).map(reader);
+            return new Luke.Mapper().map(reader);
           }
         })
       };
-
-      public Mapper(@Nonnull Factory factory) {
-        this.factory = factory;
-      }
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
@@ -343,7 +262,7 @@ public final class TestQuery implements Query<Operation.Variables> {
             }
           }
         }, fields);
-        return factory.creator().create(contentValues.r2, contentValues.luke);
+        return new Data(contentValues.r2, contentValues.luke);
       }
 
       static final class __ContentValues {
@@ -351,18 +270,6 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         Luke luke;
       }
-    }
-
-    public interface Factory {
-      @Nonnull Creator creator();
-
-      @Nonnull R2.Factory r2Factory();
-
-      @Nonnull Luke.Factory lukeFactory();
-    }
-
-    public interface Creator {
-      @Nonnull Data create(@Nullable R2 r2, @Nullable Luke luke);
     }
   }
 }

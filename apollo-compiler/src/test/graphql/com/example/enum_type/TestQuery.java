@@ -44,26 +44,12 @@ public final class TestQuery implements Query<Operation.Variables> {
     return variables;
   }
 
+  @Override
+  public ResponseFieldMapper<? extends Operation.Data> responseFieldMapper() {
+    return new Data.Mapper();
+  }
+
   public static class Data implements Operation.Data {
-    public static final Creator CREATOR = new Creator() {
-      @Override
-      public @Nonnull Data create(@Nullable Hero hero) {
-        return new Data(hero);
-      }
-    };
-
-    public static final Factory FACTORY = new Factory() {
-      @Override
-      public @Nonnull Creator creator() {
-        return CREATOR;
-      }
-
-      @Override
-      public @Nonnull Hero.Factory heroFactory() {
-        return Hero.FACTORY;
-      }
-    };
-
     private final @Nullable Hero hero;
 
     public Data(@Nullable Hero hero) {
@@ -102,21 +88,6 @@ public final class TestQuery implements Query<Operation.Variables> {
     }
 
     public static class Hero {
-      public static final Creator CREATOR = new Creator() {
-        @Override
-        public @Nonnull Hero create(@Nonnull String name, @Nonnull List<Episode> appearsIn,
-            @Nonnull Episode firstAppearsIn) {
-          return new Hero(name, appearsIn, firstAppearsIn);
-        }
-      };
-
-      public static final Factory FACTORY = new Factory() {
-        @Override
-        public @Nonnull Creator creator() {
-          return CREATOR;
-        }
-      };
-
       private final @Nonnull String name;
 
       private final @Nonnull List<Episode> appearsIn;
@@ -178,8 +149,6 @@ public final class TestQuery implements Query<Operation.Variables> {
       }
 
       public static final class Mapper implements ResponseFieldMapper<Hero> {
-        final Factory factory;
-
         final Field[] fields = {
           Field.forString("name", "name", null, false),
           Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
@@ -189,10 +158,6 @@ public final class TestQuery implements Query<Operation.Variables> {
           }),
           Field.forString("firstAppearsIn", "firstAppearsIn", null, false)
         };
-
-        public Mapper(@Nonnull Factory factory) {
-          this.factory = factory;
-        }
 
         @Override
         public Hero map(ResponseReader reader) throws IOException {
@@ -218,7 +183,7 @@ public final class TestQuery implements Query<Operation.Variables> {
               }
             }
           }, fields);
-          return factory.creator().create(contentValues.name, contentValues.appearsIn, contentValues.firstAppearsIn);
+          return new Hero(contentValues.name, contentValues.appearsIn, contentValues.firstAppearsIn);
         }
 
         static final class __ContentValues {
@@ -229,31 +194,16 @@ public final class TestQuery implements Query<Operation.Variables> {
           Episode firstAppearsIn;
         }
       }
-
-      public interface Factory {
-        @Nonnull Creator creator();
-      }
-
-      public interface Creator {
-        @Nonnull Hero create(@Nonnull String name, @Nonnull List<Episode> appearsIn,
-            @Nonnull Episode firstAppearsIn);
-      }
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
-      final Factory factory;
-
       final Field[] fields = {
         Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
           @Override public Hero read(final ResponseReader reader) throws IOException {
-            return new Hero.Mapper(factory.heroFactory()).map(reader);
+            return new Hero.Mapper().map(reader);
           }
         })
       };
-
-      public Mapper(@Nonnull Factory factory) {
-        this.factory = factory;
-      }
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
@@ -269,22 +219,12 @@ public final class TestQuery implements Query<Operation.Variables> {
             }
           }
         }, fields);
-        return factory.creator().create(contentValues.hero);
+        return new Data(contentValues.hero);
       }
 
       static final class __ContentValues {
         Hero hero;
       }
-    }
-
-    public interface Factory {
-      @Nonnull Creator creator();
-
-      @Nonnull Hero.Factory heroFactory();
-    }
-
-    public interface Creator {
-      @Nonnull Data create(@Nullable Hero hero);
     }
   }
 }

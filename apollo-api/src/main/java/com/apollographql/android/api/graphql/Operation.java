@@ -8,6 +8,8 @@ public interface Operation<V extends Operation.Variables> {
   /** TODO */
   V variables();
 
+  ResponseFieldMapper<? extends Operation.Data> responseFieldMapper();
+
   /** TODO */
   interface Data {
   }
