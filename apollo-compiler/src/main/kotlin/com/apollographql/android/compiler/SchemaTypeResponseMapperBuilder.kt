@@ -7,6 +7,7 @@ import com.apollographql.android.compiler.ir.Field
 import com.apollographql.android.compiler.ir.InlineFragment
 import com.squareup.javapoet.*
 import java.io.IOException
+import java.util.*
 import javax.annotation.Nonnull
 import javax.lang.model.element.Modifier
 
@@ -160,7 +161,7 @@ class SchemaTypeResponseMapperBuilder(
   private fun scalarFieldFactoryCode(field: Field, type: TypeName): CodeBlock {
     if (type.isCustomScalarType()) {
       val customScalarEnum = CustomEnumTypeSpecBuilder.className(context)
-      val customScalarEnumConst = normalizeGraphQlType(field.type).toUpperCase()
+      val customScalarEnumConst = normalizeGraphQlType(field.type).toUpperCase(Locale.ENGLISH)
       return CodeBlock.of("\$T.forCustomType(\$S, \$S, null, \$L, \$T.\$L)", API_RESPONSE_FIELD_TYPE,
           field.responseName, field.fieldName, field.isOptional(), customScalarEnum, customScalarEnumConst)
     } else {
@@ -201,7 +202,7 @@ class SchemaTypeResponseMapperBuilder(
 
   private fun customTypeListFieldFactoryCode(field: Field, type: TypeName): CodeBlock {
     val customScalarEnum = CustomEnumTypeSpecBuilder.className(context)
-    val customScalarEnumConst = normalizeGraphQlType(field.type).toUpperCase()
+    val customScalarEnumConst = normalizeGraphQlType(field.type).toUpperCase(Locale.ENGLISH)
     return CodeBlock
         .builder()
         .add("\$T.forList(\$S, \$S, null, \$L, new \$T() {\n", API_RESPONSE_FIELD_TYPE, field.responseName,

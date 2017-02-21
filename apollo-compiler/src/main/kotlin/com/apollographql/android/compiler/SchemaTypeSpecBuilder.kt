@@ -4,6 +4,7 @@ import com.apollographql.android.compiler.ir.CodeGenerationContext
 import com.apollographql.android.compiler.ir.Field
 import com.apollographql.android.compiler.ir.InlineFragment
 import com.squareup.javapoet.*
+import java.util.*
 import javax.lang.model.element.Modifier
 
 class SchemaTypeSpecBuilder(
@@ -78,7 +79,7 @@ class SchemaTypeSpecBuilder(
         .returns(FRAGMENTS_TYPE)
         .addModifiers(Modifier.PUBLIC)
         .addModifiers(emptyList())
-        .addCode(CodeBlock.of("return this.${FRAGMENTS_TYPE_NAME.toLowerCase()};\n"))
+        .addCode(CodeBlock.of("return this.${FRAGMENTS_TYPE_NAME.toLowerCase(Locale.ENGLISH)};\n"))
         .build()
   }
 
