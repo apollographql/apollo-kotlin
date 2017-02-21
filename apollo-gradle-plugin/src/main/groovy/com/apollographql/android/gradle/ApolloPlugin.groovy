@@ -4,6 +4,7 @@ import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.BaseVariant
 import com.apollographql.android.VersionKt
+import com.google.common.collect.ImmutableList
 import com.google.common.collect.Lists
 import com.moowork.gradle.node.NodeExtension
 import com.moowork.gradle.node.NodePlugin
@@ -13,14 +14,23 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.DependencyResolutionListener
 import org.gradle.api.artifacts.ResolvableDependencies
+import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.compile.JavaCompile
+
+import javax.inject.Inject
 
 class ApolloPlugin implements Plugin<Project> {
   private static final String NODE_VERSION = "6.7.0"
   public static final String TASK_GROUP = "apollo"
   private Project project
+  private final FileResolver fileResolver
+
+  @Inject
+  public ApolloPlugin(FileResolver fileResolver) {
+    this.fileResolver = fileResolver
+  }
 
   @Override void apply(Project project) {
     this.project = project
@@ -74,14 +84,9 @@ class ApolloPlugin implements Plugin<Project> {
   }
 
   private void addVariantTasks(Object variant, Task apolloIRGenTask, Task apolloClassGenTask, Collection<?> sourceSets) {
-    List<GraphQLExtension> config = Lists.newArrayListWithCapacity(sourceSets.size())
-    sourceSets.each { sourceSet ->
-      config.add((GraphQLExtension) sourceSet.extensions[GraphQLExtension.NAME])
-    }
-
-    ApolloIRGenTask variantIRTask = createApolloIRGenTask(variant.name, config)
-    ApolloClassGenTask variantClassTask = createApolloClassGenTask(variant.name, config,
-        project.apollo.customTypeMapping)
+    ApolloIRGenTask variantIRTask = createApolloIRGenTask(variant.name, sourceSets)
+    ApolloClassGenTask variantClassTask = createApolloClassGenTask(variant.name, project.apollo.customTypeMapping)
+    
     variant.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir)
     apolloIRGenTask.dependsOn(variantIRTask)
     apolloClassGenTask.dependsOn(variantClassTask)
@@ -89,10 +94,9 @@ class ApolloPlugin implements Plugin<Project> {
 
   private void addSourceSetTasks(SourceSet sourceSet, Task apolloIRGenTask, Task apolloClassGenTask) {
     String taskName = "main".equals(sourceSet.name) ? "" : sourceSet.name
-    def config = [(GraphQLExtension) sourceSet.extensions[GraphQLExtension.NAME]]
 
-    ApolloIRGenTask sourceSetIRTask = createApolloIRGenTask(sourceSet.name, config)
-    ApolloClassGenTask sourceSetClassTask = createApolloClassGenTask(sourceSet.name, config, project.apollo.customTypeMapping)
+    ApolloIRGenTask sourceSetIRTask = createApolloIRGenTask(sourceSet.name, [sourceSet])
+    ApolloClassGenTask sourceSetClassTask = createApolloClassGenTask(sourceSet.name, project.apollo.customTypeMapping)
     apolloIRGenTask.dependsOn(sourceSetIRTask)
     apolloClassGenTask.dependsOn(sourceSetClassTask)
 
@@ -108,26 +112,40 @@ class ApolloPlugin implements Plugin<Project> {
     nodeConfig.version = NODE_VERSION
   }
 
-  private ApolloIRGenTask createApolloIRGenTask(String name, List<GraphQLExtension> config) {
-    String taskName = String.format(ApolloIRGenTask.NAME, name.capitalize())
-    ApolloIRGenTask task = project.tasks.create(taskName, ApolloIRGenTask)
-    task.init(name, config)
+  private ApolloIRGenTask createApolloIRGenTask(String sourceSetOrVariantName, Collection<Object> sourceSets) {
+    String taskName = String.format(ApolloIRGenTask.NAME, sourceSetOrVariantName.capitalize())
+    ApolloIRGenTask task = project.tasks.create(taskName, ApolloIRGenTask) {
+      group = TASK_GROUP
+      description = "Generate an IR file using apollo-codegen for ${sourceSetOrVariantName.capitalize()} GraphQL queries"
+      dependsOn(ApolloCodeGenInstallTask.NAME)
+      sourceSets.each { sourceSet ->
+        inputs.file(sourceSet.graphql).skipWhenEmpty()
+      }
+    }
+
+    ImmutableList.Builder<String> sourceSetNamesList = ImmutableList.builder();
+    sourceSets.each { sourceSet -> sourceSetNamesList.add(sourceSet.name) }
+
+    task.init(sourceSetOrVariantName, sourceSetNamesList.build())
     return task
   }
 
-  private ApolloClassGenTask createApolloClassGenTask(String name, List<GraphQLExtension> conf,
-                                                      Map<String, String> customTypeMapping) {
+  private ApolloClassGenTask createApolloClassGenTask(String name, Map<String, String> customTypeMapping) {
     String taskName = String.format(ApolloClassGenTask.NAME, name.capitalize())
-    ApolloClassGenTask task = project.tasks.create(taskName, ApolloClassGenTask)
-    task.source(project.tasks.findByName(String.format(ApolloIRGenTask.NAME, name.capitalize())).outputDir)
-    task.include("**${File.separatorChar}*API.json")
-    task.init(name, conf, customTypeMapping)
+    ApolloClassGenTask task = project.tasks.create(taskName, ApolloClassGenTask) {
+      group = TASK_GROUP
+      description = "Generate Android classes for ${name.capitalize()} GraphQL queries"
+      dependsOn(getProject().getTasks().findByName(String.format(ApolloIRGenTask.NAME, name.capitalize())));
+      source = project.tasks.findByName(String.format(ApolloIRGenTask.NAME, name.capitalize())).outputDir
+      include "**${File.separatorChar}*API.json"
+    }
+    task.init(name, customTypeMapping)
     return task
   }
 
   private void createSourceSetExtensions() {
     getSourceSets().all { sourceSet ->
-      sourceSet.extensions.create(GraphQLExtension.NAME, GraphQLExtension, project, sourceSet.name)
+      sourceSet.extensions.create(GraphQLSourceDirectorySet.NAME, GraphQLSourceDirectorySet, sourceSet.name, fileResolver)
     }
   }
 

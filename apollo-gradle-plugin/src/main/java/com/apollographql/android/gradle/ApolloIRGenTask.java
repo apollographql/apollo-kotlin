@@ -1,172 +1,149 @@
 package com.apollographql.android.gradle;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import org.gradle.api.Action;
 import org.gradle.api.GradleException;
-import org.gradle.api.file.FileVisitDetails;
-import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.util.PatternSet;
 
 import com.apollographql.android.compiler.GraphQLCompiler;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Predicates;
-import com.google.common.base.Strings;
+import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 import com.moowork.gradle.node.task.NodeTask;
 
 public class ApolloIRGenTask extends NodeTask {
   private static final String APOLLO_CODEGEN = "node_modules/apollo-codegen/lib/cli.js";
-  private static final String DEFAULT_OUTPUT_DIR = "src/main/graphql";
-  private static final String DEFAULT_SCHEMA_FILE_PATTERN = "**/schema.json";
   static final String NAME = "generate%sApolloIR";
 
   @Internal private String variant;
-  @Internal private List<GraphQLExtension> config;
-  private List<String> possibleGraphQLPaths;
-  private File schemaFile;
+  @Internal private ImmutableList<String> sourceSetPriority;
 
-  /** Output directory for the generated IR, defaults to src/main/graphql **/
   @OutputDirectory private File outputDir;
 
-  @InputFiles
-  private Set<File> getInputFiles() {
-    Set<File> inputFiles = Sets.newHashSet();
-    for (GraphQLExtension ext : config) {
-      Set<Map.Entry<String, Collection<String>>> entrySet =
-          ext.getFiles(!Strings.isNullOrEmpty(ext.graphQLPath) ? ext.graphQLPath : "src/" + ext.getSourceSet() +
-              "/graphql")
-              .asMap()
-              .entrySet();
-      for (Map.Entry<String, Collection<String>> entry : entrySet) {
-        for (String file : entry.getValue()) {
-          inputFiles.add(new File(entry.getKey(), file));
-        }
-      }
-    }
-    return inputFiles;
-  }
-
-  public void init(String variantName, List<GraphQLExtension> extensionsConfig) {
+  public void init(String variantName, ImmutableList<String> variantSourceSets) {
     variant = variantName;
-    config = extensionsConfig;
-    // TODO: change to constant once ApolloPlugin is in java
-    setGroup("apollo");
-    setDescription("Generate an IR file using apollo-codegen for " + Utils.capitalize(variant) + " GraphQL " +
-        "queries");
-    // TODO: change to constant once ApolloCodeGenInstallTask is in Java
-    dependsOn("installApolloCodegen");
-
-    possibleGraphQLPaths = buildPossibleGraphQLPaths();
-    schemaFile = userProvidedSchemaFile() != null ? userProvidedSchemaFile() : searchForSchemaFile();
+    sourceSetPriority = variantSourceSets.reverse();
     outputDir = new File(getProject().getBuildDir() + "/" +
-        Joiner.on(File.separator).join(GraphQLCompiler.Companion.getOUTPUT_DIRECTORY()) +
-        "/generatedIR/" + getProject().relativePath(schemaFile.getParent()));
+        Joiner.on(File.separator).join(GraphQLCompiler.Companion.getOUTPUT_DIRECTORY()) + "/generatedIR/" + variant);
   }
 
   @Override
   public void exec() {
     File apolloScript = getProject().file(APOLLO_CODEGEN);
-    File schemaFile = userProvidedSchemaFile() != null ? userProvidedSchemaFile() : searchForSchemaFile();
-
     if (!apolloScript.isFile()) {
-      throw new GradleException("Apollo-codegen was not found in node_modules. Please run 'gradle " +
-          "installApolloCodegen");
+      throw new GradleException("Apollo-codegen was not found in node_modules. Please run the installApolloCodegen task.");
     }
-
-    if (!schemaFile.isFile()) {
-      throw new GradleException("Couldn't find a schema file. Please ensure a valid schema.json files exists in the " +
-          "sourceSet directory");
-    }
-
     setScript(apolloScript);
-    List<String> apolloArgs = Lists.newArrayList("generate");
-    Set<String> inputPathSet = Sets.newHashSet(Iterables.transform(getInputFiles(), new Function<File, String>() {
-      @Nullable
-      @Override
-      public String apply(@Nullable File file) {
-        return getProject().file(file).getAbsolutePath();
-      }
-    }));
-    apolloArgs.addAll(inputPathSet);
-    apolloArgs.addAll(Lists.newArrayList("--schema", schemaFile.getAbsolutePath(),
-        "--output", outputDir.getAbsolutePath() + "/" + Utils.capitalize(variant) + "API.json",
-        "--target", "json"));
-    setArgs(apolloArgs);
-    super.exec();
-  }
 
-  private File userProvidedSchemaFile() {
-    File schemaFile = null;
-    ImmutableList<String> schemaFiles = FluentIterable.from(config)
-        .transform(new Function<GraphQLExtension, String>() {
-          @Nullable
-          @Override
-          public String apply(@Nullable GraphQLExtension graphQLExtension) {
-            return (graphQLExtension != null ? graphQLExtension.getSchemaFile() : null);
-          }
-        })
-        .filter(Predicates.notNull())
-        .toList();
+    Map<String, ApolloCodegenArgs> schemaQueryMap = buildSchemaQueryMap(getInputs().getSourceFiles().getFiles());
+    for (Map.Entry<String, ApolloCodegenArgs> entry : schemaQueryMap.entrySet()) {
+      String irOutput = outputDir.getAbsolutePath() + "/" + getProject().relativePath(entry.getValue().getSchemaFile().getParent());
+      new File(irOutput).mkdirs();
 
-    if (!schemaFiles.isEmpty()) {
-      if (schemaFiles.size() > 1) {
-        throw new IllegalArgumentException("More than two schema files were specified for the build variant "
-            + variant + ". Please ensure that only one schema field is specified for $variant's source sets");
-      }
-      schemaFile = getProject().file(schemaFiles.get(0));
+      List<String> apolloArgs = Lists.newArrayList("generate");
+      apolloArgs.addAll(entry.getValue().getQueryFiles());
+      apolloArgs.addAll(Lists.newArrayList("--schema", entry.getValue().getSchemaFile().getAbsolutePath(),
+          "--output", irOutput + "/" + Utils.capitalize(variant) + "API.json", "--target", "json"));
+      setArgs(apolloArgs);
+      super.exec();
     }
-    return schemaFile;
   }
 
-  private File searchForSchemaFile() {
-    final File[] schemaFile = {null};
+  /**
+   * Extracts schema files from the task inputs and sorts them in a way similar to the Gradle lookup priority.
+   * That is, build variant source set, build type source set, product flavor source set and finally main
+   * source set.
+   *
+   * The schema file under the source set with the highest priority is used and all the graphql query files under the
+   * schema file's subdirectories from all source sets are used to generate the IR.
+   *
+   * If any of the schema file's ancestor directories contain a schema file, a GradleException is
+   * thrown. This is considered to be an ambiguous case.
+   *
+   * @param files - task input files which consist of .graphql query files and schema.json files
+   * @return - a map with schema files as a key and associated query files as a value
+   */
+  private Map<String, ApolloCodegenArgs> buildSchemaQueryMap(Set<File> files) {
+    final List<File> schemaFiles = FluentIterable.from(files).filter(new Predicate<File>() {
+      @Override public boolean apply(@Nullable File file) {
+        return file != null && file.getName().equals(GraphQLSourceDirectorySet.SCHEMA_FILE_NAME);
+      }
+    }).toSortedList(new Comparator<File>() {
+      @Override public int compare(File o1, File o2) {
+        return sourceSetPriority.indexOf(getSourceSetNameFromFile(o1)) - sourceSetPriority.indexOf(getSourceSetNameFromFile(o2));
+      }
+    });
 
-    PatternSet patternSet = new PatternSet().include(DEFAULT_SCHEMA_FILE_PATTERN);
+    if (illegalSchemasFound(schemaFiles)) {
+            throw new GradleException("Found an ancestor directory to a schema file that contains another schema file." +
+                " Please ensure no schema files exist on the path to another one");
+    }
 
-    for (String path : possibleGraphQLPaths) {
-      getProject().files(path).getAsFileTree().matching(patternSet).visit(new Action<FileVisitDetails>() {
-        @Override
-        public void execute(FileVisitDetails fileVisitDetails) {
-          if (!fileVisitDetails.isDirectory()) {
-            schemaFile[0] = fileVisitDetails.getFile();
-          }
+    Map<String, ApolloCodegenArgs> schemaQueryMap = new HashMap<>();
+
+    for (final File f : schemaFiles) {
+      final String normalizedSchemaFileName = normalizeFileName(f);
+      if (schemaQueryMap.containsKey(normalizedSchemaFileName)) {
+        continue;
+      }
+      final Path schemaFileParentPath = Paths.get(f.getParent()).toAbsolutePath();
+      schemaQueryMap.put(normalizedSchemaFileName, new ApolloCodegenArgs(f, FluentIterable.from(files).filter(new Predicate<File>() {
+        @Override public boolean apply(@Nullable File file) {
+          return file != null && !schemaFiles.contains(file) && file.getParent().contains(normalizeFileName(f.getParentFile()));
         }
-      });
-      if (schemaFile[0] != null && schemaFile[0].isFile()) {
-        return schemaFile[0];
-      }
+      }).transform(new Function<File, String>() {
+        @Nullable @Override public String apply(@Nullable File file) {
+          return file.getAbsolutePath();
+        }
+      }).toSet()));
     }
-    return getProject().file(DEFAULT_OUTPUT_DIR + "/schema.json");
+    return schemaQueryMap;
   }
 
-  private List<String> buildPossibleGraphQLPaths() {
-    List<String> graphQLPaths = new ArrayList<>();
-    for (GraphQLExtension ext : config) {
-      graphQLPaths.add("src/" + ext.getSourceSet() + "/graphql");
-    }
-    for (GraphQLExtension ext : config) {
-      if (!Strings.isNullOrEmpty(ext.graphQLPath)) {
-        graphQLPaths.add(ext.graphQLPath);
+  /**
+   * Checks whether a schema file share an ancestor directory that also contains a schema file
+   *
+   * @param schemaFiles - task's input that have been identified as schema file
+   * @return - whether illegal schema files were found
+   */
+  private boolean illegalSchemasFound(Collection<File> schemaFiles) {
+    for (final File f : schemaFiles) {
+      final Path parent = Paths.get(f.getParent()).toAbsolutePath();
+      List<File> matches = FluentIterable.from(schemaFiles).filter(new Predicate<File>() {
+        @Override public boolean apply(@Nullable File file) {
+          return file != null && file != f && Paths.get(file.getParent()).startsWith(parent);
+        }
+      }).toList();
+
+      if (!matches.isEmpty()) {
+        return true;
       }
     }
-    return Lists.reverse(graphQLPaths);
+    return false;
+  }
+
+  private String getSourceSetNameFromFile(File file) {
+    return file.getAbsolutePath().split("src/")[1].split("/")[0];
+  }
+
+  private String normalizeFileName(File file) {
+    return file.getAbsolutePath().split("src/")[1].split("/", 2)[1];
   }
 
   public File getOutputDir() {
