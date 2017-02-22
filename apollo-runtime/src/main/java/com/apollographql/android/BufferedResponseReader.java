@@ -12,60 +12,64 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("WeakerAccess") final class BufferedResponseReader implements ResponseReader {
-  private final Operation operation;
   private final Map<String, Object> buffer;
+  private final Operation operation;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
 
-  BufferedResponseReader(Operation operation, Map<String, Object> buffer,
+  BufferedResponseReader(Map<String, Object> buffer, Operation operation,
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
-    this.operation = operation;
     this.buffer = buffer;
+    this.operation = operation;
     this.customTypeAdapters = customTypeAdapters;
-  }
-
-  @Override public ResponseReader toBufferedReader() throws IOException {
-    return this;
   }
 
   @Override public void read(ValueHandler handler, Field... fields) throws IOException {
     int fieldIndex = 0;
     for (Field field : fields) {
-      switch (field.type()) {
-        case STRING:
-          handler.handle(fieldIndex, readString(field));
-          break;
-        case INT:
-          handler.handle(fieldIndex, readInt(field));
-          break;
-        case LONG:
-          handler.handle(fieldIndex, readLong(field));
-          break;
-        case DOUBLE:
-          handler.handle(fieldIndex, readDouble(field));
-          break;
-        case BOOLEAN:
-          handler.handle(fieldIndex, readBoolean(field));
-          break;
-        case OBJECT:
-          handler.handle(fieldIndex, readObject((Field.ObjectField) field));
-          break;
-        case SCALAR_LIST:
-          handler.handle(fieldIndex, readScalarList((Field.ScalarListField) field));
-          break;
-        case OBJECT_LIST:
-          handler.handle(fieldIndex, readObjectList((Field.ObjectListField) field));
-          break;
-        case CUSTOM:
-          handler.handle(fieldIndex, readCustomType((Field.CustomTypeField) field));
-          break;
-        case CONDITIONAL:
-          handler.handle(fieldIndex, readConditional((Field.ConditionalTypeField) field));
-          break;
-        default:
-          throw new IllegalArgumentException("Unsupported field type");
-      }
+      Object value = read(field);
+      handler.handle(fieldIndex, value);
       fieldIndex++;
     }
+  }
+
+  @Override public <T> T read(Field field) throws IOException {
+    final Object value;
+    switch (field.type()) {
+      case STRING:
+        value = readString(field);
+        break;
+      case INT:
+        value = readInt(field);
+        break;
+      case LONG:
+        value = readLong(field);
+        break;
+      case DOUBLE:
+        value = readDouble(field);
+        break;
+      case BOOLEAN:
+        value = readBoolean(field);
+        break;
+      case OBJECT:
+        value = readObject((Field.ObjectField) field);
+        break;
+      case SCALAR_LIST:
+        value = readScalarList((Field.ScalarListField) field);
+        break;
+      case OBJECT_LIST:
+        value = readObjectList((Field.ObjectListField) field);
+        break;
+      case CUSTOM:
+        value = readCustomType((Field.CustomTypeField) field);
+        break;
+      case CONDITIONAL:
+        value = readConditional((Field.ConditionalTypeField) field);
+        break;
+      default:
+        throw new IllegalArgumentException("Unsupported field type");
+    }
+    //noinspection unchecked
+    return (T) value;
   }
 
   @Override public Operation operation() {
@@ -128,7 +132,7 @@ import java.util.Map;
     if (value == null) {
       return null;
     } else {
-      return (T) field.objectReader().read(new BufferedResponseReader(operation, value, customTypeAdapters));
+      return (T) field.objectReader().read(new BufferedResponseReader(value, operation, customTypeAdapters));
     }
   }
 
@@ -155,7 +159,7 @@ import java.util.Map;
     } else {
       List<T> result = new ArrayList<>();
       for (Object value : values) {
-        T item = (T) field.objectReader().read(new BufferedResponseReader(operation, (Map<String, Object>) value,
+        T item = (T) field.objectReader().read(new BufferedResponseReader((Map<String, Object>) value, operation,
             customTypeAdapters));
         result.add(item);
       }

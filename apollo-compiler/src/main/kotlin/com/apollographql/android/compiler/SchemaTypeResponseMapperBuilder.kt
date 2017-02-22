@@ -289,7 +289,7 @@ class SchemaTypeResponseMapperBuilder(
   private fun mapMethodCode(contentValueFields: List<FieldSpec>) =
       CodeBlock.builder()
           .addStatement("final \$T $CONTENT_VALUES_VAR = new \$T()", CONTENT_VALUES_TYPE, CONTENT_VALUES_TYPE)
-          .add("${READER_PARAM.name}\$L.read(", if (hasFragments) ".toBufferedReader()" else "")
+          .add("${READER_PARAM.name}.read(")
           .add("\$L", TypeSpec.anonymousClassBuilder("")
               .superclass(ResponseReader.ValueHandler::class.java)
               .addMethod(valueHandleMethod(contentValueFields))

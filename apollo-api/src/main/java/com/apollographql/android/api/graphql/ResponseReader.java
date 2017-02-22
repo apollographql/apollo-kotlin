@@ -4,9 +4,9 @@ import java.io.IOException;
 
 /** TODO **/
 public interface ResponseReader {
-  ResponseReader toBufferedReader() throws IOException;
-
   void read(ValueHandler handler, Field... fields) throws IOException;
+
+  <T> T read(Field field) throws IOException;
 
   Operation operation();
 
