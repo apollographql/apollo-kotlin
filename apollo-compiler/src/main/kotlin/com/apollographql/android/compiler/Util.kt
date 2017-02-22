@@ -124,7 +124,7 @@ fun TypeSpec.withFactoryImplementation(exclude: List<String> = emptyList(),
               .addModifiers(Modifier.PUBLIC)
               .addAnnotation(Override::class.java)
               .returns(ClassName.get("", Util.CREATOR_TYPE_NAME).annotated(listOf(Annotations.NONNULL)))
-              .addStatement("return \$L", Util.CREATOR_TYPE_NAME.toUpperCase())
+              .addStatement("return \$L", Util.CREATOR_TYPE_NAME.toUpperCase(Locale.ENGLISH))
               .build())
           .addMethods(typeSpecs
               .map { it.name }
