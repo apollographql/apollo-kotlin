@@ -1,10 +1,11 @@
 {
   "operations": [
     {
+      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/custom_scalar_type/TestQuery.graphql",
       "operationName": "TestQuery",
       "operationType": "query",
       "variables": [],
-      "source": "query TestQuery {\n  hero {\n    __typename\n    name\n    birthDate\n    deathDate\n  }\n}",
+      "source": "query TestQuery {\n  hero {\n    __typename\n    name\n    birthDate\n    appearanceDates\n  }\n}",
       "fields": [
         {
           "responseName": "hero",
@@ -24,20 +25,14 @@
             {
               "responseName": "appearanceDates",
               "fieldName": "appearanceDates",
-              "type": "[Date!]!"
-            },
-            {
-              "responseName": "fieldWithUnsupportedType",
-              "fieldName": "fieldWithUnsupportedType",
-              "type": "UnsupportedType!"
+              "type": "[Date]!"
             }
           ],
           "fragmentSpreads": [],
           "inlineFragments": []
         }
       ],
-      "fragmentsReferenced": [],
-      "filePath": "src/test/graphql/com/example/custom_scalar_type/TestQuery.json"
+      "fragmentsReferenced": []
     }
   ],
   "fragments": [],
@@ -45,12 +40,7 @@
     {
       "kind": "ScalarType",
       "name": "Date",
-      "description": null
-    },
-    {
-      "kind": "ScalarType",
-      "name": "UnsupportedType",
-      "description": null
+      "description": "The `Date` scalar type represents date format."
     }
   ]
 }

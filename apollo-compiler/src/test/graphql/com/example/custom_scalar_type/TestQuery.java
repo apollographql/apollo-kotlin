@@ -23,7 +23,7 @@ public final class TestQuery implements Query<Operation.Variables> {
       + "    __typename\n"
       + "    name\n"
       + "    birthDate\n"
-      + "    deathDate\n"
+      + "    appearanceDates\n"
       + "  }\n"
       + "}";
 
@@ -95,14 +95,11 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       private final @Nonnull List<Date> appearanceDates;
 
-      private final @Nonnull Object fieldWithUnsupportedType;
-
       public Hero(@Nonnull String name, @Nonnull Date birthDate,
-          @Nonnull List<Date> appearanceDates, @Nonnull Object fieldWithUnsupportedType) {
+          @Nonnull List<Date> appearanceDates) {
         this.name = name;
         this.birthDate = birthDate;
         this.appearanceDates = appearanceDates;
-        this.fieldWithUnsupportedType = fieldWithUnsupportedType;
       }
 
       public @Nonnull String name() {
@@ -117,17 +114,12 @@ public final class TestQuery implements Query<Operation.Variables> {
         return this.appearanceDates;
       }
 
-      public @Nonnull Object fieldWithUnsupportedType() {
-        return this.fieldWithUnsupportedType;
-      }
-
       @Override
       public String toString() {
         return "Hero{"
           + "name=" + name + ", "
           + "birthDate=" + birthDate + ", "
-          + "appearanceDates=" + appearanceDates + ", "
-          + "fieldWithUnsupportedType=" + fieldWithUnsupportedType
+          + "appearanceDates=" + appearanceDates
           + "}";
       }
 
@@ -140,8 +132,7 @@ public final class TestQuery implements Query<Operation.Variables> {
           Hero that = (Hero) o;
           return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
            && ((this.birthDate == null) ? (that.birthDate == null) : this.birthDate.equals(that.birthDate))
-           && ((this.appearanceDates == null) ? (that.appearanceDates == null) : this.appearanceDates.equals(that.appearanceDates))
-           && ((this.fieldWithUnsupportedType == null) ? (that.fieldWithUnsupportedType == null) : this.fieldWithUnsupportedType.equals(that.fieldWithUnsupportedType));
+           && ((this.appearanceDates == null) ? (that.appearanceDates == null) : this.appearanceDates.equals(that.appearanceDates));
         }
         return false;
       }
@@ -155,8 +146,6 @@ public final class TestQuery implements Query<Operation.Variables> {
         h ^= (birthDate == null) ? 0 : birthDate.hashCode();
         h *= 1000003;
         h ^= (appearanceDates == null) ? 0 : appearanceDates.hashCode();
-        h *= 1000003;
-        h ^= (fieldWithUnsupportedType == null) ? 0 : fieldWithUnsupportedType.hashCode();
         return h;
       }
 
@@ -168,8 +157,7 @@ public final class TestQuery implements Query<Operation.Variables> {
             @Override public Date read(final Field.ListItemReader reader) throws IOException {
               return reader.readCustomType(CustomType.DATE);
             }
-          }),
-          Field.forCustomType("fieldWithUnsupportedType", "fieldWithUnsupportedType", null, false, CustomType.UNSUPPORTEDTYPE)
+          })
         };
 
         @Override
@@ -191,14 +179,10 @@ public final class TestQuery implements Query<Operation.Variables> {
                   contentValues.appearanceDates = (List<Date>) value;
                   break;
                 }
-                case 3: {
-                  contentValues.fieldWithUnsupportedType = (Object) value;
-                  break;
-                }
               }
             }
           }, fields);
-          return new Hero(contentValues.name, contentValues.birthDate, contentValues.appearanceDates, contentValues.fieldWithUnsupportedType);
+          return new Hero(contentValues.name, contentValues.birthDate, contentValues.appearanceDates);
         }
 
         static final class __ContentValues {
@@ -207,8 +191,6 @@ public final class TestQuery implements Query<Operation.Variables> {
           Date birthDate;
 
           List<Date> appearanceDates;
-
-          Object fieldWithUnsupportedType;
         }
       }
     }

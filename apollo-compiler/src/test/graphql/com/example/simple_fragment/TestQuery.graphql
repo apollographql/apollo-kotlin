@@ -1,0 +1,9 @@
+query TestQuery {
+  hero {
+    ...HeroDetails
+  }
+}
+
+fragment HeroDetails on Character {
+  name
+}

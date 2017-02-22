@@ -1,0 +1,29 @@
+query HeroDetailQuery {
+  heroDetailQuery {
+    name
+    friends {
+      name
+    }
+    ... on Human {
+      height
+      friends {
+        appearsIn
+        friends {
+          ...HeroDetails
+        }
+      }
+    }
+  }
+}
+
+fragment HeroDetails on Character {
+  name
+  friendsConnection {
+    totalCount
+    edges {
+      node {
+        name
+      }
+    }
+  }
+}

@@ -28,6 +28,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
       + "      name\n"
       + "    }\n"
       + "    ... on Human {\n"
+      + "      __typename\n"
       + "      height\n"
       + "      friends {\n"
       + "        __typename\n"
@@ -633,7 +634,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final Field[] fields = {
-        Field.forObject("heroDetailQuery", "heroDetail", null, true, new Field.ObjectReader<HeroDetailQuery1>() {
+        Field.forObject("heroDetailQuery", "heroDetailQuery", null, true, new Field.ObjectReader<HeroDetailQuery1>() {
           @Override public HeroDetailQuery1 read(final ResponseReader reader) throws IOException {
             return new HeroDetailQuery1.Mapper().map(reader);
           }

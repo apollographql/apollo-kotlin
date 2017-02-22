@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.gradle.api.Task;
+import org.gradle.api.logging.LogLevel;
 import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.OutputDirectory;
 
@@ -19,7 +20,7 @@ import okio.Okio;
 public class ApolloCodeGenInstallTask extends NpmTask {
   static final String NAME = "installApolloCodegen";
   private static final String INSTALL_DIR = "node_modules/apollo-codegen";
-  private static final String APOLLOCODEGEN_VERSION = "0.10.5";
+  private static final String APOLLOCODEGEN_VERSION = "0.10.8";
 
   @OutputDirectory private File installDir;
 

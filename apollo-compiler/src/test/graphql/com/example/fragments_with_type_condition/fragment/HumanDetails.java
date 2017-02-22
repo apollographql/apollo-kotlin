@@ -15,6 +15,7 @@ import javax.annotation.Nullable;
 @Generated("Apollo GraphQL")
 public class HumanDetails {
   public static final String FRAGMENT_DEFINITION = "fragment HumanDetails on Human {\n"
+      + "  __typename\n"
       + "  name\n"
       + "  height\n"
       + "}";
