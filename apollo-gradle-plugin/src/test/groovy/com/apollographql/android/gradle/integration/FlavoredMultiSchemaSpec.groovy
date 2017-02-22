@@ -65,7 +65,7 @@ class FlavoredMultiSchemaSpec extends Specification {
 
   def "build task runs succesfully and generates the expected outputs"() {
     setup: "a project with no invalid schema files and one query file under a release source set"
-    FileUtils.forceDelete(new File(testProjectDir.getAbsolutePath() + "/src/main/graphql/com/githunt"))
+    new File(testProjectDir.getAbsolutePath() + "/src/main/graphql/com/githunt/schema.json").delete()
 
     when:
     def result = GradleRunner.create()
