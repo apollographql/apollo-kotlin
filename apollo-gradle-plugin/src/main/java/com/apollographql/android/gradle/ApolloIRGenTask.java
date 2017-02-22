@@ -32,13 +32,13 @@ public class ApolloIRGenTask extends NodeTask {
   static final String NAME = "generate%sApolloIR";
 
   @Internal private String variant;
-  @Internal private ImmutableList<String> sourceSetPriority;
+  @Internal private ImmutableList<String> sourceSets;
 
   @OutputDirectory private File outputDir;
 
   public void init(String variantName, ImmutableList<String> variantSourceSets) {
     variant = variantName;
-    sourceSetPriority = variantSourceSets.reverse();
+    sourceSets = variantSourceSets;
     outputDir = new File(getProject().getBuildDir() + "/" +
         Joiner.on(File.separator).join(GraphQLCompiler.Companion.getOUTPUT_DIRECTORY()) + "/generatedIR/" + variant);
   }
@@ -86,7 +86,10 @@ public class ApolloIRGenTask extends NodeTask {
       }
     }).toSortedList(new Comparator<File>() {
       @Override public int compare(File o1, File o2) {
-        return sourceSetPriority.indexOf(getSourceSetNameFromFile(o1)) - sourceSetPriority.indexOf(getSourceSetNameFromFile(o2));
+        String sourceSet1 = getSourceSetNameFromFile(o1);
+        String sourceSet2 = getSourceSetNameFromFile(o2);
+        // negative because the sourceSets list is in reverse order
+        return -(sourceSets.indexOf(sourceSet1) - sourceSets.indexOf(sourceSet2));
       }
     });
 
@@ -102,13 +105,14 @@ public class ApolloIRGenTask extends NodeTask {
 
     Map<String, ApolloCodegenArgs> schemaQueryMap = new HashMap<>();
     for (final File f : schemaFiles) {
-      final String normalizedSchemaFileName = normalizeFileName(f);
+      final String normalizedSchemaFileName = getPathRelativeToSourceSet(f);
+      // ensures that only the highest priority schema file is used
       if (schemaQueryMap.containsKey(normalizedSchemaFileName)) {
         continue;
       }
       schemaQueryMap.put(normalizedSchemaFileName, new ApolloCodegenArgs(f, FluentIterable.from(files).filter(new Predicate<File>() {
         @Override public boolean apply(@Nullable File file) {
-          return file != null && !schemaFiles.contains(file) && file.getParent().contains(normalizeFileName(f.getParentFile()));
+          return file != null && !schemaFiles.contains(file) && file.getParent().contains(getPathRelativeToSourceSet(f.getParentFile()));
         }
       }).transform(new Function<File, String>() {
         @Nullable @Override public String apply(@Nullable File file) {
@@ -141,18 +145,29 @@ public class ApolloIRGenTask extends NodeTask {
     return false;
   }
 
+  /**
+   * Returns the source set folder name given a file path. Assumes the source set name
+   * follows the "src" folder based on the inputs received from GraphQLSourceDirectorySet.
+   *
+   * @return - sourceSet name
+   */
   private String getSourceSetNameFromFile(File file) {
-    return file.getAbsolutePath().split("src/")[1].split("/")[0];
+    Path absolutePath = Paths.get(file.getAbsolutePath());
+    Path basePath = Paths.get(getProject().file("src").getAbsolutePath());
+
+    return basePath.relativize(absolutePath).toString().split("/")[0];
   }
 
   /**
-   * Returns file path relative to the sourceSet directory
+   * Returns the file path relative to the sourceSet directory
    *
-   * @param file - file to normalize its path
    * @return path relative to sourceSet directory
    */
-  private String normalizeFileName(File file) {
-    return file.getAbsolutePath().split("src/")[1].split("/", 2)[1];
+  private String getPathRelativeToSourceSet(File file) {
+    Path absolutePath = Paths.get(file.getAbsolutePath());
+    Path basePath = Paths.get(getProject().file("src").getAbsolutePath() + "/" + getSourceSetNameFromFile(file));
+
+    return basePath.relativize(absolutePath).toString();
   }
 
   public File getOutputDir() {
