@@ -1,6 +1,7 @@
 package com.apollographql.android;
 
 import com.apollographql.android.api.graphql.Field;
+import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.ResponseReader;
 import com.apollographql.android.api.graphql.ScalarType;
 
@@ -13,17 +14,20 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("WeakerAccess") final class ResponseJsonStreamReader implements ResponseReader {
+  private final Operation operation;
   private final JsonReader jsonReader;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
 
-  ResponseJsonStreamReader(JsonReader jsonReader, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+  ResponseJsonStreamReader(Operation operation, JsonReader jsonReader, Map<ScalarType, CustomTypeAdapter>
+      customTypeAdapters) {
+    this.operation = operation;
     this.jsonReader = jsonReader;
     this.customTypeAdapters = customTypeAdapters;
   }
 
   @Override public ResponseReader toBufferedReader() throws IOException {
     Map<String, Object> buffer = toMap(this);
-    return new BufferedResponseReader(buffer, customTypeAdapters);
+    return new BufferedResponseReader(operation, buffer, customTypeAdapters);
   }
 
   @Override public void read(ValueHandler handler, Field... fields) throws IOException {
@@ -75,6 +79,10 @@ import java.util.Map;
         skipNext();
       }
     }
+  }
+
+  @Override public Operation operation() {
+    return operation;
   }
 
   boolean hasNext() throws IOException {

@@ -8,6 +8,8 @@ public interface ResponseReader {
 
   void read(ValueHandler handler, Field... fields) throws IOException;
 
+  Operation operation();
+
   interface ValueHandler {
     void handle(int fieldIndex, Object value) throws IOException;
   }

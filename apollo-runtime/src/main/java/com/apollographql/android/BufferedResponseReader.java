@@ -1,6 +1,7 @@
 package com.apollographql.android;
 
 import com.apollographql.android.api.graphql.Field;
+import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.ResponseReader;
 import com.apollographql.android.api.graphql.ScalarType;
 
@@ -11,10 +12,13 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("WeakerAccess") final class BufferedResponseReader implements ResponseReader {
+  private final Operation operation;
   private final Map<String, Object> buffer;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
 
-  BufferedResponseReader(Map<String, Object> buffer, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+  BufferedResponseReader(Operation operation, Map<String, Object> buffer,
+      Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+    this.operation = operation;
     this.buffer = buffer;
     this.customTypeAdapters = customTypeAdapters;
   }
@@ -62,6 +66,10 @@ import java.util.Map;
       }
       fieldIndex++;
     }
+  }
+
+  @Override public Operation operation() {
+    return operation;
   }
 
   String readString(Field field) throws IOException {
@@ -120,7 +128,7 @@ import java.util.Map;
     if (value == null) {
       return null;
     } else {
-      return (T) field.objectReader().read(new BufferedResponseReader(value, customTypeAdapters));
+      return (T) field.objectReader().read(new BufferedResponseReader(operation, value, customTypeAdapters));
     }
   }
 
@@ -147,7 +155,7 @@ import java.util.Map;
     } else {
       List<T> result = new ArrayList<>();
       for (Object value : values) {
-        T item = (T) field.objectReader().read(new BufferedResponseReader((Map<String, Object>) value,
+        T item = (T) field.objectReader().read(new BufferedResponseReader(operation, (Map<String, Object>) value,
             customTypeAdapters));
         result.add(item);
       }
