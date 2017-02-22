@@ -175,7 +175,7 @@ public final class AllPlanets implements Query<Operation.Variables> {
               @Override
               public Film map(ResponseReader reader) throws IOException {
                 final __ContentValues contentValues = new __ContentValues();
-                reader.toBufferedReader().read(new ResponseReader.ValueHandler() {
+                reader.read(new ResponseReader.ValueHandler() {
                   @Override
                   public void handle(final int fieldIndex, final Object value) throws IOException {
                     switch (fieldIndex) {
@@ -288,7 +288,7 @@ public final class AllPlanets implements Query<Operation.Variables> {
           @Override
           public Planet map(ResponseReader reader) throws IOException {
             final __ContentValues contentValues = new __ContentValues();
-            reader.toBufferedReader().read(new ResponseReader.ValueHandler() {
+            reader.read(new ResponseReader.ValueHandler() {
               @Override
               public void handle(final int fieldIndex, final Object value) throws IOException {
                 switch (fieldIndex) {
