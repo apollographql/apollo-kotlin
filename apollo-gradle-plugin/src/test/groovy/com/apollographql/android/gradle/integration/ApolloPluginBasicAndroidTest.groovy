@@ -40,7 +40,20 @@ class ApolloPluginBasicAndroidTest extends Specification {
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/Films.java").isFile()
     assert new File(testProjectDir, "build/generated/source/apollo/fragment/SpeciesInformation.java").isFile()
   }
-  
+
+  def "installApolloCodegenTask is up to date if no changes occur to node_modules and package.json"() {
+    setup: "a testProject with a previous build run"
+
+    when:
+    def result = GradleRunner.create().withProjectDir(testProjectDir)
+        .withPluginClasspath()
+        .withArguments("installApolloCodegen")
+        .forwardStdError(new OutputStreamWriter(System.err)).build()
+
+    then:
+    result.task(":installApolloCodegen").outcome == TaskOutcome.UP_TO_DATE
+  }
+
   def "installApolloCodegenTask gets outdated if node_modules directory is altered"() {
     setup: "a testProject with a deleted node_modules directory"
     FileUtils.deleteDirectory(new File(testProjectDir, "node_modules"))

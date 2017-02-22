@@ -37,35 +37,6 @@ class ApolloCodeGenInstallTaskSpec extends Specification {
     task.dependsOn.contains("nodeSetup")
   }
 
-  def "configures the npm install params"() {
-    setup:
-    def project = ProjectBuilder.builder().build()
-    ApolloPluginTestHelper.setupDefaultAndroidProject(project)
-
-    when:
-    ApolloPluginTestHelper.applyApolloPlugin(project)
-    project.evaluate()
-
-    then:
-    project.tasks.getByName(ApolloCodeGenInstallTask.NAME).args.equals(
-        ["install", "apollo-codegen@$ApolloCodeGenInstallTask.APOLLOCODEGEN_VERSION", "--save", "--save-exact"])
-  }
-
-  def "task creates node_modules/apollo-codegen output dir"() {
-    setup:
-    def project = ProjectBuilder.builder().build()
-    ApolloPluginTestHelper.setupDefaultAndroidProject(project)
-
-    when:
-    ApolloPluginTestHelper.applyApolloPlugin(project)
-    project.evaluate()
-
-    then:
-    project.tasks.getByName(ApolloCodeGenInstallTask.NAME).outputs.hasOutput
-    project.tasks.getByName(ApolloCodeGenInstallTask.NAME).outputs.files
-        .contains(project.file(ApolloCodeGenInstallTask.INSTALL_DIR))
-  }
-
   def "task creates a package.json file in project root"() {
     setup:
     def project = ProjectBuilder.builder().build()
