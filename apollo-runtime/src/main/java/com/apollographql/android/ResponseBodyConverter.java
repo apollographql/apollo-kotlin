@@ -30,7 +30,8 @@ final class ResponseBodyConverter {
     BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(responseBody.source());
     jsonReader.beginObject();
 
-    ResponseJsonStreamReader responseStreamReader = new ResponseJsonStreamReader(jsonReader, customTypeAdapters);
+    ResponseJsonStreamReader responseStreamReader = new ResponseJsonStreamReader(operation, jsonReader,
+        customTypeAdapters);
     T data = null;
     List<Error> errors = null;
     while (responseStreamReader.hasNext()) {
