@@ -23,6 +23,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 import com.moowork.gradle.node.task.NodeTask;
@@ -51,7 +52,7 @@ public class ApolloIRGenTask extends NodeTask {
     }
     setScript(apolloScript);
 
-    Map<String, ApolloCodegenArgs> schemaQueryMap = buildSchemaQueryMap(getInputs().getSourceFiles().getFiles());
+    ImmutableMap<String, ApolloCodegenArgs> schemaQueryMap = buildSchemaQueryMap(getInputs().getSourceFiles().getFiles());
     for (Map.Entry<String, ApolloCodegenArgs> entry : schemaQueryMap.entrySet()) {
       String irOutput = outputDir.getAbsolutePath() + "/" + getProject().relativePath(entry.getValue().getSchemaFile().getParent());
       new File(irOutput).mkdirs();
@@ -79,19 +80,8 @@ public class ApolloIRGenTask extends NodeTask {
    * @param files - task input files which consist of .graphql query files and schema.json files
    * @return - a map with schema files as a key and associated query files as a value
    */
-  private Map<String, ApolloCodegenArgs> buildSchemaQueryMap(Set<File> files) {
-    final List<File> schemaFiles = FluentIterable.from(files).filter(new Predicate<File>() {
-      @Override public boolean apply(@Nullable File file) {
-        return file != null && file.getName().equals(GraphQLSourceDirectorySet.SCHEMA_FILE_NAME);
-      }
-    }).toSortedList(new Comparator<File>() {
-      @Override public int compare(File o1, File o2) {
-        String sourceSet1 = getSourceSetNameFromFile(o1);
-        String sourceSet2 = getSourceSetNameFromFile(o2);
-        // negative because the sourceSets list is in reverse order
-        return -(sourceSets.indexOf(sourceSet1) - sourceSets.indexOf(sourceSet2));
-      }
-    });
+  private ImmutableMap<String, ApolloCodegenArgs> buildSchemaQueryMap(Set<File> files) {
+    final List<File> schemaFiles = getSchemaFilesFrom(files);
 
     if (schemaFiles.isEmpty()) {
       throw new GradleException("Couldn't find schema files for the variant " + Utils.capitalize(variant) + ". Please" +
@@ -103,11 +93,11 @@ public class ApolloIRGenTask extends NodeTask {
                 " Please ensure no schema files exist on the path to another one");
     }
 
-    Map<String, ApolloCodegenArgs> schemaQueryMap = new HashMap<>();
+    ImmutableMap.Builder<String, ApolloCodegenArgs> schemaQueryMap = ImmutableMap.builder();
     for (final File f : schemaFiles) {
       final String normalizedSchemaFileName = getPathRelativeToSourceSet(f);
       // ensures that only the highest priority schema file is used
-      if (schemaQueryMap.containsKey(normalizedSchemaFileName)) {
+      if (schemaQueryMap.build().containsKey(normalizedSchemaFileName)) {
         continue;
       }
       schemaQueryMap.put(normalizedSchemaFileName, new ApolloCodegenArgs(f, FluentIterable.from(files).filter(new Predicate<File>() {
@@ -120,9 +110,28 @@ public class ApolloIRGenTask extends NodeTask {
         }
       }).toSet()));
     }
-    return schemaQueryMap;
+    return schemaQueryMap.build();
   }
 
+  /**
+   * Returns "schema.json" files and sorts them based on their source set priorities.
+   *
+   * @return - schema files sorted by priority based on source set priority
+   */
+  private List<File> getSchemaFilesFrom(Set<File> files) {
+    return FluentIterable.from(files).filter(new Predicate<File>() {
+      @Override public boolean apply(@Nullable File file) {
+        return file != null && file.getName().equals(GraphQLSourceDirectorySet.SCHEMA_FILE_NAME);
+      }
+    }).toSortedList(new Comparator<File>() {
+      @Override public int compare(File o1, File o2) {
+        String sourceSet1 = getSourceSetNameFromFile(o1);
+        String sourceSet2 = getSourceSetNameFromFile(o2);
+        // negative because the sourceSets list is in reverse order
+        return -(sourceSets.indexOf(sourceSet1) - sourceSets.indexOf(sourceSet2));
+      }
+    });
+  }
   /**
    * Checks whether a schema file share an ancestor directory that also contains a schema file
    *

@@ -3,29 +3,21 @@ package com.apollographql.android.gradle;
 import java.io.File;
 import java.util.Set;
 
+final class ApolloCodegenArgs {
+  private final File schemaFile;
+  private final Set<String> queryFiles;
 
-public class ApolloCodegenArgs {
-  private File schemaFile;
-  private Set<String> queryFiles;
-
-  public ApolloCodegenArgs(File schema, Set<String> queries) {
+  ApolloCodegenArgs(File schema, Set<String> queries) {
       schemaFile = schema;
       queryFiles = queries;
     }
 
-  public File getSchemaFile() {
+  File getSchemaFile() {
     return schemaFile;
   }
 
-  public void setSchemaFile(File schemaFile) {
-    this.schemaFile = schemaFile;
-  }
-
-  public Set<String> getQueryFiles() {
+  Set<String> getQueryFiles() {
     return queryFiles;
   }
 
-  public void setQueryFiles(Set<String> queryFiles) {
-    this.queryFiles = queryFiles;
-  }
 }
