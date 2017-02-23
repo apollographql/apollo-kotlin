@@ -1,88 +1,21 @@
 package com.apollographql.android;
 
-import com.apollographql.android.api.graphql.Field;
-import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.api.graphql.ResponseReader;
-import com.apollographql.android.api.graphql.ScalarType;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("WeakerAccess") final class ResponseJsonStreamReader implements ResponseReader {
-  private final Operation operation;
+final class ResponseJsonStreamReader {
   private final JsonReader jsonReader;
-  private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
 
-  ResponseJsonStreamReader(Operation operation, JsonReader jsonReader, Map<ScalarType, CustomTypeAdapter>
-      customTypeAdapters) {
-    this.operation = operation;
+  ResponseJsonStreamReader(JsonReader jsonReader) {
     this.jsonReader = jsonReader;
-    this.customTypeAdapters = customTypeAdapters;
   }
 
-  @Override public ResponseReader toBufferedReader() throws IOException {
-    Map<String, Object> buffer = toMap(this);
-    return new BufferedResponseReader(operation, buffer, customTypeAdapters);
-  }
-
-  @Override public void read(ValueHandler handler, Field... fields) throws IOException {
-    Map<String, Integer> fieldIndexMap = new HashMap<>();
-    Map<String, Field> fieldMap = new HashMap<>();
-    int index = 0;
-    for (Field field : fields) {
-      fieldMap.put(field.responseName(), field);
-      fieldIndexMap.put(field.responseName(), index++);
-    }
-
-    while (hasNext()) {
-      String nextName = nextName();
-      Field field = fieldMap.get(nextName);
-      if (field != null) {
-        int fieldIndex = fieldIndexMap.get(nextName);
-        switch (field.type()) {
-          case STRING:
-            handler.handle(fieldIndex, readString(field));
-            break;
-          case INT:
-            handler.handle(fieldIndex, readInt(field));
-            break;
-          case LONG:
-            handler.handle(fieldIndex, readLong(field));
-            break;
-          case DOUBLE:
-            handler.handle(fieldIndex, readDouble(field));
-            break;
-          case BOOLEAN:
-            handler.handle(fieldIndex, readBoolean(field));
-            break;
-          case OBJECT:
-            handler.handle(fieldIndex, readObject((Field.ObjectField) field));
-            break;
-          case SCALAR_LIST:
-            handler.handle(fieldIndex, readScalarList((Field.ScalarListField) field));
-            break;
-          case OBJECT_LIST:
-            handler.handle(fieldIndex, readObjectList((Field.ObjectListField) field));
-            break;
-          case CUSTOM:
-            handler.handle(fieldIndex, readCustomType((Field.CustomTypeField) field));
-            break;
-          default:
-            throw new IllegalArgumentException("Unsupported field type");
-        }
-      } else {
-        skipNext();
-      }
-    }
-  }
-
-  @Override public Operation operation() {
-    return operation;
+  public Map<String, Object> buffer() throws IOException {
+    return toMap(this);
   }
 
   boolean hasNext() throws IOException {
@@ -147,7 +80,7 @@ import java.util.Map;
     }
   }
 
-  <T> T nextObject(boolean optional, Field.ObjectReader<T> objectReader) throws IOException {
+  <T> T nextObject(boolean optional, ObjectReader<T> objectReader) throws IOException {
     checkNextValue(optional);
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       jsonReader.skipValue();
@@ -160,7 +93,7 @@ import java.util.Map;
     }
   }
 
-  <T> List<T> nextList(boolean optional, Field.ListReader<T> listReader) throws IOException {
+  <T> List<T> nextList(boolean optional, ListReader<T> listReader) throws IOException {
     checkNextValue(optional);
     if (jsonReader.peek() == JsonReader.Token.NULL) {
       jsonReader.skipValue();
@@ -169,83 +102,12 @@ import java.util.Map;
       List<T> result = new ArrayList<>();
       jsonReader.beginArray();
       while (jsonReader.hasNext()) {
-        T item = listReader.read(new JsonListItemReader(this));
+        T item = listReader.read(this);
         result.add(item);
       }
       jsonReader.endArray();
       return result;
     }
-  }
-
-  <T> List<T> nextList(boolean optional, Field.ObjectReader<T> objectReader) throws IOException {
-    checkNextValue(optional);
-    if (jsonReader.peek() == JsonReader.Token.NULL) {
-      jsonReader.skipValue();
-      return null;
-    } else {
-      List<T> result = new ArrayList<>();
-      jsonReader.beginArray();
-      while (jsonReader.hasNext()) {
-        jsonReader.beginObject();
-        T item = objectReader.read(this);
-        jsonReader.endObject();
-        result.add(item);
-      }
-      jsonReader.endArray();
-      return result;
-    }
-  }
-
-  @SuppressWarnings("unchecked") <T> T nextCustomType(boolean optional, ScalarType scalarType) throws IOException {
-    checkNextValue(optional);
-    if (jsonReader.peek() == JsonReader.Token.NULL) {
-      jsonReader.skipValue();
-      return null;
-    } else {
-      CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(scalarType);
-      if (typeAdapter == null) {
-        return (T) readScalar(this);
-      } else {
-        String value = jsonReader.nextString();
-        return typeAdapter.decode(value);
-      }
-    }
-  }
-
-  private String readString(Field field) throws IOException {
-    return nextString(field.optional());
-  }
-
-  private Integer readInt(Field field) throws IOException {
-    return nextInt(field.optional());
-  }
-
-  private Long readLong(Field field) throws IOException {
-    return nextLong(field.optional());
-  }
-
-  private Double readDouble(Field field) throws IOException {
-    return nextDouble(field.optional());
-  }
-
-  private Boolean readBoolean(Field field) throws IOException {
-    return nextBoolean(field.optional());
-  }
-
-  @SuppressWarnings("unchecked") private <T> T readObject(Field.ObjectField field) throws IOException {
-    return (T) nextObject(field.optional(), field.objectReader());
-  }
-
-  @SuppressWarnings("unchecked") private <T> List<T> readScalarList(Field.ScalarListField field) throws IOException {
-    return nextList(field.optional(), field.listReader());
-  }
-
-  @SuppressWarnings("unchecked") private <T> List<T> readObjectList(Field.ObjectListField field) throws IOException {
-    return nextList(field.optional(), field.objectReader());
-  }
-
-  private <T> T readCustomType(Field.CustomTypeField field) throws IOException {
-    return nextCustomType(field.optional(), field.scalarType());
   }
 
   private boolean isNextObject() throws IOException {
@@ -296,20 +158,20 @@ import java.util.Map;
   }
 
   private static Map<String, Object> readObject(final ResponseJsonStreamReader streamReader) throws IOException {
-    return streamReader.nextObject(false, new Field.ObjectReader<Map<String, Object>>() {
-      @Override public Map<String, Object> read(ResponseReader streamReader) throws IOException {
-        return toMap((ResponseJsonStreamReader) streamReader);
+    return streamReader.nextObject(false, new ObjectReader<Map<String, Object>>() {
+      @Override public Map<String, Object> read(ResponseJsonStreamReader streamReader) throws IOException {
+        return toMap(streamReader);
       }
     });
   }
 
   private static List<?> readScalarList(final ResponseJsonStreamReader streamReader) throws IOException {
-    return streamReader.nextList(false, new Field.ListReader<Object>() {
-      @Override public Object read(Field.ListItemReader reader) throws IOException {
+    return streamReader.nextList(false, new ListReader<Object>() {
+      @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
         if (streamReader.isNextObject()) {
-          return readObject(streamReader);
+          return readObject(reader);
         } else {
-          return readScalar(streamReader);
+          return readScalar(reader);
         }
       }
     });
@@ -328,36 +190,11 @@ import java.util.Map;
     }
   }
 
-  private static class JsonListItemReader implements Field.ListItemReader {
+  public interface ObjectReader<T> {
+    T read(ResponseJsonStreamReader reader) throws IOException;
+  }
 
-    final ResponseJsonStreamReader streamReader;
-
-    JsonListItemReader(ResponseJsonStreamReader streamReader) {
-      this.streamReader = streamReader;
-    }
-
-    @Override public String readString() throws IOException {
-      return streamReader.nextString(false);
-    }
-
-    @Override public Integer readInt() throws IOException {
-      return streamReader.nextInt(false);
-    }
-
-    @Override public Long readLong() throws IOException {
-      return streamReader.nextLong(false);
-    }
-
-    @Override public Double readDouble() throws IOException {
-      return streamReader.nextDouble(false);
-    }
-
-    @Override public Boolean readBoolean() throws IOException {
-      return streamReader.nextBoolean(false);
-    }
-
-    @Override public <T> T readCustomType(ScalarType scalarType) throws IOException {
-      return streamReader.nextCustomType(false, scalarType);
-    }
+  public interface ListReader<T> {
+    T read(ResponseJsonStreamReader reader) throws IOException;
   }
 }

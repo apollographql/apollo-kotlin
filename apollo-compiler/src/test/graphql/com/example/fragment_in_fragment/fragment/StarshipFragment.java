@@ -276,7 +276,7 @@ public class StarshipFragment {
           @Override
           public Node map(ResponseReader reader) throws IOException {
             final __ContentValues contentValues = new __ContentValues();
-            reader.toBufferedReader().read(new ResponseReader.ValueHandler() {
+            reader.read(new ResponseReader.ValueHandler() {
               @Override
               public void handle(final int fieldIndex, final Object value) throws IOException {
                 switch (fieldIndex) {

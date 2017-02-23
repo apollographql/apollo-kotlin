@@ -461,7 +461,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
               @Override
               public Friend2 map(ResponseReader reader) throws IOException {
                 final __ContentValues contentValues = new __ContentValues();
-                reader.toBufferedReader().read(new ResponseReader.ValueHandler() {
+                reader.read(new ResponseReader.ValueHandler() {
                   @Override
                   public void handle(final int fieldIndex, final Object value) throws IOException {
                     switch (fieldIndex) {
@@ -600,7 +600,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
         @Override
         public HeroDetailQuery1 map(ResponseReader reader) throws IOException {
           final __ContentValues contentValues = new __ContentValues();
-          reader.toBufferedReader().read(new ResponseReader.ValueHandler() {
+          reader.read(new ResponseReader.ValueHandler() {
             @Override
             public void handle(final int fieldIndex, final Object value) throws IOException {
               switch (fieldIndex) {
