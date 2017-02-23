@@ -19,19 +19,13 @@ import java.util.Map;
 public class ApolloClassGenTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses";
 
-  @Internal private List<GraphQLExtension> config;
   @Internal private String variant;
   @Internal private Map<String, String> customTypeMapping;
   @OutputDirectory private File outputDir;
 
-  public void init(String buildVariant, List<GraphQLExtension> extensionsConfig, Map<String, String> typeMapping) {
+  public void init(String buildVariant, Map<String, String> typeMapping) {
     variant = buildVariant;
     customTypeMapping = typeMapping;
-    config = extensionsConfig;
-    // TODO: change to constant once ApolloPlugin is in java
-    setGroup("apollo");
-    setDescription("Generate Android classes for " + Utils.capitalize(variant) + " GraphQL queries");
-    dependsOn(getProject().getTasks().findByName(String.format(ApolloIRGenTask.NAME, Utils.capitalize(variant))));
     outputDir = new File(getProject().getBuildDir() + "/" + Joiner.on(File.separator).join(GraphQLCompiler.Companion
         .getOUTPUT_DIRECTORY()));
   }
@@ -44,14 +38,6 @@ public class ApolloClassGenTask extends SourceTask {
         new GraphQLCompiler().write(inputFileDetails.getFile(), outputDir, customTypeMapping);
       }
     });
-  }
-
-  public List<GraphQLExtension> getConfig() {
-    return config;
-  }
-
-  public void setConfig(List<GraphQLExtension> config) {
-    this.config = config;
   }
 
   public String getVariant() {

@@ -1,0 +1,60 @@
+buildscript {
+  repositories {
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'com.android.tools.build:gradle:2.3.0-beta3'
+  }
+}
+
+plugins {
+  id 'com.android.application'
+  id 'com.apollographql.android'
+}
+
+android {
+  compileSdkVersion 25
+  buildToolsVersion '25.0.2'
+
+  defaultConfig {
+    applicationId "com.example.apollographql.testProject.basic"
+    minSdkVersion 15
+    targetSdkVersion 25
+  }
+
+  lintOptions {
+    textReport true
+    textOutput 'stdout'
+    ignore 'InvalidPackage', 'GoogleAppIndexingWarning', 'AllowBackup'
+  }
+
+  productFlavors {
+        demo {
+            applicationIdSuffix ".demo"
+            versionNameSuffix "-demo"
+        }
+        full {
+            applicationIdSuffix ".full"
+            versionNameSuffix "-full"
+        }
+    }
+}
+
+repositories {
+  jcenter()
+  maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+}
+
+dependencies {
+  compile 'com.android.support:appcompat-v7:25.1.1'
+}
+
+apollo {
+  customTypeMapping {
+    DateTime = "java.util.Date"
+    OptionalString = "com.fernandocejas.arrow.optional.Optional"
+    UnsupportedType = "java.lang.Object"
+  }
+}
+

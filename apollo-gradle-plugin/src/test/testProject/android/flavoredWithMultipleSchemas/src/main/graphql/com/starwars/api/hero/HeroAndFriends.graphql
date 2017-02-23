@@ -1,0 +1,23 @@
+query HeroAndFriends($episode: Episode) {
+  hero(episode: $episode) {
+    name
+    ... on Droid {
+      appearsIn
+    }
+    ...HeroDetails
+    friends {
+      name
+      ...HeroDetails
+    }
+  }
+}
+
+fragment HeroDetails on Character {
+  name
+  ... on Droid {
+    primaryFunction
+  }
+  ... on Human {
+    height
+  }
+}
