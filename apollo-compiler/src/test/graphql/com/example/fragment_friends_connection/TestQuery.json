@@ -1,82 +1,82 @@
 {
-  "operations": [
-    {
-      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/fragment_friends_connection/TestQuery.graphql",
-      "operationName": "TestQuery",
-      "operationType": "query",
-      "variables": [],
-      "source": "query TestQuery {\n  hero {\n    __typename\n    ...HeroDetails\n  }\n}",
-      "fields": [
-        {
-          "responseName": "hero",
-          "fieldName": "hero",
-          "type": "Character",
-          "fields": [],
-          "fragmentSpreads": [
-            "HeroDetails"
-          ],
-          "inlineFragments": []
-        }
-      ],
-      "fragmentsReferenced": [
-        "HeroDetails"
-      ]
-    }
-  ],
-  "fragments": [
-    {
-      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/fragment_friends_connection/TestQuery.graphql",
-      "fragmentName": "HeroDetails",
-      "source": "fragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n}",
-      "typeCondition": "Character",
-      "fields": [
-        {
-          "responseName": "name",
-          "fieldName": "name",
-          "type": "String!"
-        },
-        {
-          "responseName": "friendsConnection",
-          "fieldName": "friendsConnection",
-          "type": "FriendsConnection!",
-          "fields": [
-            {
-              "responseName": "totalCount",
-              "fieldName": "totalCount",
-              "type": "Int"
-            },
-            {
-              "responseName": "edges",
-              "fieldName": "edges",
-              "type": "[FriendsEdge]",
-              "fields": [
-                {
-                  "responseName": "node",
-                  "fieldName": "node",
-                  "type": "Character",
-                  "fields": [
-                    {
-                      "responseName": "name",
-                      "fieldName": "name",
-                      "type": "String!"
-                    }
-                  ],
-                  "fragmentSpreads": [],
-                  "inlineFragments": []
-                }
-              ],
-              "fragmentSpreads": [],
-              "inlineFragments": []
-            }
-          ],
-          "fragmentSpreads": [],
-          "inlineFragments": []
-        }
-      ],
-      "fragmentSpreads": [],
-      "inlineFragments": [],
-      "fragmentsReferenced": []
-    }
-  ],
-  "typesUsed": []
+	"operations": [
+		{
+			"filePath": "src/test/graphql/com/example/fragment_friends_connection/TestQuery.graphql",
+			"operationName": "TestQuery",
+			"operationType": "query",
+			"variables": [],
+			"source": "query TestQuery {\n  hero {\n    __typename\n    ...HeroDetails\n  }\n}",
+			"fields": [
+				{
+					"responseName": "hero",
+					"fieldName": "hero",
+					"type": "Character",
+					"fields": [],
+					"fragmentSpreads": [
+						"HeroDetails"
+					],
+					"inlineFragments": []
+				}
+			],
+			"fragmentsReferenced": [
+				"HeroDetails"
+			]
+		}
+	],
+	"fragments": [
+		{
+			"filePath": "src/test/graphql/com/example/fragment_friends_connection/TestQuery.graphql",
+			"fragmentName": "HeroDetails",
+			"source": "fragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n}",
+			"typeCondition": "Character",
+			"fields": [
+				{
+					"responseName": "name",
+					"fieldName": "name",
+					"type": "String!"
+				},
+				{
+					"responseName": "friendsConnection",
+					"fieldName": "friendsConnection",
+					"type": "FriendsConnection!",
+					"fields": [
+						{
+							"responseName": "totalCount",
+							"fieldName": "totalCount",
+							"type": "Int"
+						},
+						{
+							"responseName": "edges",
+							"fieldName": "edges",
+							"type": "[FriendsEdge]",
+							"fields": [
+								{
+									"responseName": "node",
+									"fieldName": "node",
+									"type": "Character",
+									"fields": [
+										{
+											"responseName": "name",
+											"fieldName": "name",
+											"type": "String!"
+										}
+									],
+									"fragmentSpreads": [],
+									"inlineFragments": []
+								}
+							],
+							"fragmentSpreads": [],
+							"inlineFragments": []
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				}
+			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
+			"fragmentsReferenced": []
+		}
+	],
+	"typesUsed": []
 }

@@ -1,135 +1,135 @@
 {
-  "operations": [
-    {
-      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/fragment_in_fragment/TestQuery.graphql",
-      "operationName": "AllStarships",
-      "operationType": "query",
-      "variables": [],
-      "source": "query AllStarships {\n  allStarships(first: 7) {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        ...starshipFragment\n      }\n    }\n  }\n}",
-      "fields": [
-        {
-          "responseName": "allStarships",
-          "fieldName": "allStarships",
-          "type": "StarshipsConnection",
-          "args": [
-            {
-              "name": "first",
-              "value": 7
-            }
-          ],
-          "fields": [
-            {
-              "responseName": "edges",
-              "fieldName": "edges",
-              "type": "[StarshipsEdge]",
-              "fields": [
-                {
-                  "responseName": "node",
-                  "fieldName": "node",
-                  "type": "Starship",
-                  "fields": [],
-                  "fragmentSpreads": [
-                    "starshipFragment"
-                  ],
-                  "inlineFragments": []
-                }
-              ],
-              "fragmentSpreads": [],
-              "inlineFragments": []
-            }
-          ],
-          "fragmentSpreads": [],
-          "inlineFragments": []
-        }
-      ],
-      "fragmentsReferenced": [
-        "starshipFragment",
-        "pilotFragment"
-      ]
-    }
-  ],
-  "fragments": [
-    {
-      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/fragment_in_fragment/TestQuery.graphql",
-      "fragmentName": "starshipFragment",
-      "source": "fragment starshipFragment on Starship {\n  __typename\n  id\n  name\n  pilotConnection {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        ...pilotFragment\n      }\n    }\n  }\n}",
-      "typeCondition": "Starship",
-      "fields": [
-        {
-          "responseName": "id",
-          "fieldName": "id",
-          "type": "ID!"
-        },
-        {
-          "responseName": "name",
-          "fieldName": "name",
-          "type": "String"
-        },
-        {
-          "responseName": "pilotConnection",
-          "fieldName": "pilotConnection",
-          "type": "StarshipPilotsConnection",
-          "fields": [
-            {
-              "responseName": "edges",
-              "fieldName": "edges",
-              "type": "[StarshipPilotsEdge]",
-              "fields": [
-                {
-                  "responseName": "node",
-                  "fieldName": "node",
-                  "type": "Person",
-                  "fields": [],
-                  "fragmentSpreads": [
-                    "pilotFragment"
-                  ],
-                  "inlineFragments": []
-                }
-              ],
-              "fragmentSpreads": [],
-              "inlineFragments": []
-            }
-          ],
-          "fragmentSpreads": [],
-          "inlineFragments": []
-        }
-      ],
-      "fragmentSpreads": [],
-      "inlineFragments": [],
-      "fragmentsReferenced": [
-        "pilotFragment"
-      ]
-    },
-    {
-      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/fragment_in_fragment/TestQuery.graphql",
-      "fragmentName": "pilotFragment",
-      "source": "fragment pilotFragment on Person {\n  __typename\n  name\n  homeworld {\n    __typename\n    name\n  }\n}",
-      "typeCondition": "Person",
-      "fields": [
-        {
-          "responseName": "name",
-          "fieldName": "name",
-          "type": "String"
-        },
-        {
-          "responseName": "homeworld",
-          "fieldName": "homeworld",
-          "type": "Planet",
-          "fields": [
-            {
-              "responseName": "name",
-              "fieldName": "name",
-              "type": "String"
-            }
-          ],
-          "fragmentSpreads": [],
-          "inlineFragments": []
-        }
-      ],
-      "fragmentSpreads": [],
-      "inlineFragments": [],
-      "fragmentsReferenced": []
-    }
-  ],
-  "typesUsed": []
+	"operations": [
+		{
+			"filePath": "src/test/graphql/com/example/fragment_in_fragment/TestQuery.graphql",
+			"operationName": "AllStarships",
+			"operationType": "query",
+			"variables": [],
+			"source": "query AllStarships {\n  allStarships(first: 7) {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        ...starshipFragment\n      }\n    }\n  }\n}",
+			"fields": [
+				{
+					"responseName": "allStarships",
+					"fieldName": "allStarships",
+					"type": "StarshipsConnection",
+					"args": [
+						{
+							"name": "first",
+							"value": 7
+						}
+					],
+					"fields": [
+						{
+							"responseName": "edges",
+							"fieldName": "edges",
+							"type": "[StarshipsEdge]",
+							"fields": [
+								{
+									"responseName": "node",
+									"fieldName": "node",
+									"type": "Starship",
+									"fields": [],
+									"fragmentSpreads": [
+										"starshipFragment"
+									],
+									"inlineFragments": []
+								}
+							],
+							"fragmentSpreads": [],
+							"inlineFragments": []
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				}
+			],
+			"fragmentsReferenced": [
+				"starshipFragment",
+				"pilotFragment"
+			]
+		}
+	],
+	"fragments": [
+		{
+			"filePath": "src/test/graphql/com/example/fragment_in_fragment/TestQuery.graphql",
+			"fragmentName": "starshipFragment",
+			"source": "fragment starshipFragment on Starship {\n  __typename\n  id\n  name\n  pilotConnection {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        ...pilotFragment\n      }\n    }\n  }\n}",
+			"typeCondition": "Starship",
+			"fields": [
+				{
+					"responseName": "id",
+					"fieldName": "id",
+					"type": "ID!"
+				},
+				{
+					"responseName": "name",
+					"fieldName": "name",
+					"type": "String"
+				},
+				{
+					"responseName": "pilotConnection",
+					"fieldName": "pilotConnection",
+					"type": "StarshipPilotsConnection",
+					"fields": [
+						{
+							"responseName": "edges",
+							"fieldName": "edges",
+							"type": "[StarshipPilotsEdge]",
+							"fields": [
+								{
+									"responseName": "node",
+									"fieldName": "node",
+									"type": "Person",
+									"fields": [],
+									"fragmentSpreads": [
+										"pilotFragment"
+									],
+									"inlineFragments": []
+								}
+							],
+							"fragmentSpreads": [],
+							"inlineFragments": []
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				}
+			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
+			"fragmentsReferenced": [
+				"pilotFragment"
+			]
+		},
+		{
+			"filePath": "src/test/graphql/com/example/fragment_in_fragment/TestQuery.graphql",
+			"fragmentName": "pilotFragment",
+			"source": "fragment pilotFragment on Person {\n  __typename\n  name\n  homeworld {\n    __typename\n    name\n  }\n}",
+			"typeCondition": "Person",
+			"fields": [
+				{
+					"responseName": "name",
+					"fieldName": "name",
+					"type": "String"
+				},
+				{
+					"responseName": "homeworld",
+					"fieldName": "homeworld",
+					"type": "Planet",
+					"fields": [
+						{
+							"responseName": "name",
+							"fieldName": "name",
+							"type": "String"
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				}
+			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
+			"fragmentsReferenced": []
+		}
+	],
+	"typesUsed": []
 }
