@@ -1,46 +1,56 @@
 {
-  "operations": [
-    {
-      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/custom_scalar_type/TestQuery.graphql",
-      "operationName": "TestQuery",
-      "operationType": "query",
-      "variables": [],
-      "source": "query TestQuery {\n  hero {\n    __typename\n    name\n    birthDate\n    appearanceDates\n  }\n}",
-      "fields": [
-        {
-          "responseName": "hero",
-          "fieldName": "hero",
-          "type": "Character",
-          "fields": [
-            {
-              "responseName": "name",
-              "fieldName": "name",
-              "type": "String!"
-            },
-            {
-              "responseName": "birthDate",
-              "fieldName": "birthDate",
-              "type": "Date!"
-            },
-            {
-              "responseName": "appearanceDates",
-              "fieldName": "appearanceDates",
-              "type": "[Date]!"
-            }
-          ],
-          "fragmentSpreads": [],
-          "inlineFragments": []
-        }
-      ],
-      "fragmentsReferenced": []
-    }
-  ],
-  "fragments": [],
-  "typesUsed": [
-    {
-      "kind": "ScalarType",
-      "name": "Date",
-      "description": "The `Date` scalar type represents date format."
-    }
-  ]
+	"operations": [
+		{
+			"filePath": "src/test/graphql/com/example/custom_scalar_type/TestQuery.graphql",
+			"operationName": "TestQuery",
+			"operationType": "query",
+			"variables": [],
+			"source": "query TestQuery {\n  hero {\n    __typename\n    name\n    birthDate\n    appearanceDates\n    fieldWithUnsupportedType\n  }\n}",
+			"fields": [
+				{
+					"responseName": "hero",
+					"fieldName": "hero",
+					"type": "Character",
+					"fields": [
+						{
+							"responseName": "name",
+							"fieldName": "name",
+							"type": "String!"
+						},
+						{
+							"responseName": "birthDate",
+							"fieldName": "birthDate",
+							"type": "Date!"
+						},
+						{
+							"responseName": "appearanceDates",
+							"fieldName": "appearanceDates",
+							"type": "[Date!]!"
+						},
+						{
+							"responseName": "fieldWithUnsupportedType",
+							"fieldName": "fieldWithUnsupportedType",
+							"type": "UnsupportedType!"
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				}
+			],
+			"fragmentsReferenced": []
+		}
+	],
+	"fragments": [],
+	"typesUsed": [
+		{
+			"kind": "ScalarType",
+			"name": "Date",
+			"description": "The `Date` scalar type represents date format."
+		},
+		{
+			"kind": "ScalarType",
+			"name": "UnsupportedType",
+			"description": "UnsupportedType for testing"
+		}
+	]
 }

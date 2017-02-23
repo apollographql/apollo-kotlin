@@ -18,7 +18,7 @@ ext {
       rxjava2                 : 'io.reactivex.rxjava2:rxjava:2.0.5',
       rxandroid               : 'io.reactivex.rxjava2:rxandroid:2.0.1',
       jsr305                  : 'com.google.code.findbugs:jsr305:3.0.1',
-      jsr205                  : 'javax.annotation:jsr250-api:1.0',
+      jsr250                  : 'javax.annotation:jsr250-api:1.0',
       pluralizer              : 'com.github.cesarferreira:kotlin-pluralizer:0.2.9',
       appcompat               : 'com.android.support:appcompat-v7:25.0.1',
       retrofitRx2Adapter      : 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0',

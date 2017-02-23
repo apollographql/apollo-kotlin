@@ -1,63 +1,63 @@
 {
-  "operations": [
-    {
-      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/simple_inline_fragment/TestQuery.graphql",
-      "operationName": "TestQuery",
-      "operationType": "query",
-      "variables": [],
-      "source": "query TestQuery {\n  hero {\n    __typename\n    name\n    ... on Human {\n      __typename\n      height\n    }\n    ... on Droid {\n      __typename\n      primaryFunction\n    }\n  }\n}",
-      "fields": [
-        {
-          "responseName": "hero",
-          "fieldName": "hero",
-          "type": "Character",
-          "fields": [
-            {
-              "responseName": "name",
-              "fieldName": "name",
-              "type": "String!"
-            }
-          ],
-          "fragmentSpreads": [],
-          "inlineFragments": [
-            {
-              "typeCondition": "Human",
-              "fields": [
-                {
-                  "responseName": "name",
-                  "fieldName": "name",
-                  "type": "String!"
-                },
-                {
-                  "responseName": "height",
-                  "fieldName": "height",
-                  "type": "Float"
-                }
-              ],
-              "fragmentSpreads": []
-            },
-            {
-              "typeCondition": "Droid",
-              "fields": [
-                {
-                  "responseName": "name",
-                  "fieldName": "name",
-                  "type": "String!"
-                },
-                {
-                  "responseName": "primaryFunction",
-                  "fieldName": "primaryFunction",
-                  "type": "String"
-                }
-              ],
-              "fragmentSpreads": []
-            }
-          ]
-        }
-      ],
-      "fragmentsReferenced": []
-    }
-  ],
-  "fragments": [],
-  "typesUsed": []
+	"operations": [
+		{
+			"filePath": "src/test/graphql/com/example/simple_inline_fragment/TestQuery.graphql",
+			"operationName": "TestQuery",
+			"operationType": "query",
+			"variables": [],
+			"source": "query TestQuery {\n  hero {\n    __typename\n    name\n    ... on Human {\n      __typename\n      height\n    }\n    ... on Droid {\n      __typename\n      primaryFunction\n    }\n  }\n}",
+			"fields": [
+				{
+					"responseName": "hero",
+					"fieldName": "hero",
+					"type": "Character",
+					"fields": [
+						{
+							"responseName": "name",
+							"fieldName": "name",
+							"type": "String!"
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": [
+						{
+							"typeCondition": "Human",
+							"fields": [
+								{
+									"responseName": "name",
+									"fieldName": "name",
+									"type": "String!"
+								},
+								{
+									"responseName": "height",
+									"fieldName": "height",
+									"type": "Float"
+								}
+							],
+							"fragmentSpreads": []
+						},
+						{
+							"typeCondition": "Droid",
+							"fields": [
+								{
+									"responseName": "name",
+									"fieldName": "name",
+									"type": "String!"
+								},
+								{
+									"responseName": "primaryFunction",
+									"fieldName": "primaryFunction",
+									"type": "String"
+								}
+							],
+							"fragmentSpreads": []
+						}
+					]
+				}
+			],
+			"fragmentsReferenced": []
+		}
+	],
+	"fragments": [],
+	"typesUsed": []
 }
