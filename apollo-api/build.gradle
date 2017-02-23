@@ -5,7 +5,7 @@ sourceCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
   compile dep.jsr305
-  compile dep.jsr205
+  compile dep.jsr250
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
