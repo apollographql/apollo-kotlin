@@ -2,8 +2,6 @@ package com.example.apollographql.sample;
 
 import android.app.Application;
 
-import com.apollographql.android.converter.ApolloConverterFactory;
-import com.example.ResponseFieldMappers;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.io.File;
@@ -31,9 +29,6 @@ public class SampleApplication extends Application {
         .baseUrl(BASE_URL)
         .client(okHttpClient)
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-        .addConverterFactory(new ApolloConverterFactory.Builder()
-            .withResponseFieldMappers(ResponseFieldMappers.MAPPERS)
-            .build())
         .build();
     githuntApiService = retrofit.create(GithuntApiService.class);
   }
