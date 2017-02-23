@@ -71,7 +71,7 @@ class FlavoredMultiSchemaSpec extends Specification {
     def result = GradleRunner.create()
         .withProjectDir(testProjectDir)
         .withPluginClasspath()
-        .withArguments("build")
+        .withArguments("build", "-Dapollographql.skipApi=true")
         .forwardStdError(new OutputStreamWriter(System.err))
         .build()
 

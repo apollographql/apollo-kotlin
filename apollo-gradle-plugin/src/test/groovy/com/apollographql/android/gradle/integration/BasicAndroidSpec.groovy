@@ -23,12 +23,12 @@ class BasicAndroidSpec extends Specification {
     def result = GradleRunner.create()
         .withProjectDir(testProjectDir)
         .withPluginClasspath()
-        .withArguments("generateApolloClasses")
+        .withArguments("build", "-Dapollographql.skipApi=true")
         .forwardStdError(new OutputStreamWriter(System.err))
         .build()
 
     then:
-    result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
+    result.task(":build").outcome == TaskOutcome.SUCCESS
     // IR Files generated successfully
     assert new File(testProjectDir,
         "build/generated/source/apollo/generatedIR/release/src/main/graphql/ReleaseAPI.json").isFile()
@@ -38,6 +38,7 @@ class BasicAndroidSpec extends Specification {
     // Java classes generated successfully
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").isFile()
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/Films.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/type/CustomType.java").isFile()
     assert new File(testProjectDir, "build/generated/source/apollo/fragment/SpeciesInformation.java").isFile()
   }
 
