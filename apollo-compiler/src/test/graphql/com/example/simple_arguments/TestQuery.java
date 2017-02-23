@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.annotation.Generated;
 import javax.annotation.Nullable;
 
@@ -50,9 +53,13 @@ public final class TestQuery implements Query<TestQuery.Variables> {
 
     private final boolean includeName;
 
+    private final Map<String, Object> valueMap = new LinkedHashMap<>();
+
     Variables(@Nullable Episode episode, boolean includeName) {
       this.episode = episode;
       this.includeName = includeName;
+      this.valueMap.put("episode", episode);
+      this.valueMap.put("includeName", includeName);
     }
 
     public @Nullable Episode episode() {
@@ -61,6 +68,11 @@ public final class TestQuery implements Query<TestQuery.Variables> {
 
     public boolean includeName() {
       return includeName;
+    }
+
+    @Override
+    public Map<String, Object> valueMap() {
+      return Collections.unmodifiableMap(valueMap);
     }
 
     public static Builder builder() {

@@ -12,6 +12,9 @@ import java.lang.IllegalStateException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -54,9 +57,13 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
 
     private final @Nonnull ReviewInput review;
 
+    private final Map<String, Object> valueMap = new LinkedHashMap<>();
+
     Variables(@Nonnull Episode ep, @Nonnull ReviewInput review) {
       this.ep = ep;
       this.review = review;
+      this.valueMap.put("ep", ep);
+      this.valueMap.put("review", review);
     }
 
     public @Nonnull Episode ep() {
@@ -65,6 +72,11 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
 
     public @Nonnull ReviewInput review() {
       return review;
+    }
+
+    @Override
+    public Map<String, Object> valueMap() {
+      return Collections.unmodifiableMap(valueMap);
     }
 
     public static Builder builder() {
