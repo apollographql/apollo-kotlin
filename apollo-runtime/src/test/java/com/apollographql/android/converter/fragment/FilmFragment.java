@@ -20,9 +20,9 @@ public class FilmFragment {
 
   private @Nullable String title;
 
-  private @Nullable List<? extends String> producers;
+  private @Nullable List<String> producers;
 
-  public FilmFragment(@Nullable String title, @Nullable List<? extends String> producers) {
+  public FilmFragment(@Nullable String title, @Nullable List<String> producers) {
     this.title = title;
     this.producers = producers;
   }
@@ -31,45 +31,25 @@ public class FilmFragment {
     return this.title;
   }
 
-  public @Nullable List<? extends String> producers() {
+  public @Nullable List<String> producers() {
     return this.producers;
   }
 
   public static final class Mapper implements ResponseFieldMapper<FilmFragment> {
     final Field[] fields = {
-      Field.forString("title", "title", null, true),
-      Field.forList("producers", "producers", null, true, new Field.ListReader<String>() {
-        @Override public String read(final Field.ListItemReader reader) throws IOException {
-          return reader.readString();
-        }
-      })
+        Field.forString("title", "title", null, true),
+        Field.forList("producers", "producers", null, true, new Field.ListReader<String>() {
+          @Override public String read(final Field.ListItemReader reader) throws IOException {
+            return reader.readString();
+          }
+        })
     };
 
     @Override
-    public FilmFragment map(ResponseReader reader) throws IOException {
-      final __ContentValues contentValues = new __ContentValues();
-      reader.read(new ResponseReader.ValueHandler() {
-        @Override
-        public void handle(final int fieldIndex, final Object value) throws IOException {
-          switch (fieldIndex) {
-            case 0: {
-              contentValues.title = (String) value;
-              break;
-            }
-            case 1: {
-              contentValues.producers = (List<? extends String>) value;
-              break;
-            }
-          }
-        }
-      }, fields);
-      return new FilmFragment(contentValues.title, contentValues.producers);
-    }
-
-    static final class __ContentValues {
-      String title;
-
-      List<? extends String> producers;
+    public FilmFragment map(final ResponseReader reader) throws IOException {
+      final String title = reader.read(fields[0]);
+      final List<String> producers = reader.read(fields[1]);
+      return new FilmFragment(title, producers);
     }
   }
 }

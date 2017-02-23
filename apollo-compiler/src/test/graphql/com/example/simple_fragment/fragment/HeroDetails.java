@@ -63,7 +63,7 @@ public class HeroDetails {
 
     @Override
     public HeroDetails map(ResponseReader reader) throws IOException {
-      final String name = (String) reader.read(fields[0]);
+      final String name = reader.read(fields[0]);
       return new HeroDetails(name);
     }
   }

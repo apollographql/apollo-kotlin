@@ -143,7 +143,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         @Override
         public R2 map(ResponseReader reader) throws IOException {
-          final String name = (String) reader.read(fields[0]);
+          final String name = reader.read(fields[0]);
           return new R2(name);
         }
       }
@@ -194,7 +194,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         @Override
         public Luke map(ResponseReader reader) throws IOException {
-          final String name = (String) reader.read(fields[0]);
+          final String name = reader.read(fields[0]);
           return new Luke(name);
         }
       }
@@ -216,8 +216,8 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final R2 r2 = (R2) reader.read(fields[0]);
-        final Luke luke = (Luke) reader.read(fields[1]);
+        final R2 r2 = reader.read(fields[0]);
+        final Luke luke = reader.read(fields[1]);
         return new Data(r2, luke);
       }
     }

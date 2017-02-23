@@ -116,7 +116,7 @@ public class PilotFragment {
 
       @Override
       public Homeworld map(ResponseReader reader) throws IOException {
-        final String name = (String) reader.read(fields[0]);
+        final String name = reader.read(fields[0]);
         return new Homeworld(name);
       }
     }
@@ -134,8 +134,8 @@ public class PilotFragment {
 
     @Override
     public PilotFragment map(ResponseReader reader) throws IOException {
-      final String name = (String) reader.read(fields[0]);
-      final Homeworld homeworld = (Homeworld) reader.read(fields[1]);
+      final String name = reader.read(fields[0]);
+      final Homeworld homeworld = reader.read(fields[1]);
       return new PilotFragment(name, homeworld);
     }
   }

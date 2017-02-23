@@ -272,7 +272,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
             @Override
             public Friend map(ResponseReader reader) throws IOException {
-              final List<Episode> appearsIn = (List<Episode>) reader.read(fields[0]);
+              final List<Episode> appearsIn = reader.read(fields[0]);
               return new Friend(appearsIn);
             }
           }
@@ -291,9 +291,9 @@ public final class TestQuery implements Query<Operation.Variables> {
 
           @Override
           public AsHuman map(ResponseReader reader) throws IOException {
-            final String name = (String) reader.read(fields[0]);
-            final Double height = (Double) reader.read(fields[1]);
-            final List<Friend> friends = (List<Friend>) reader.read(fields[2]);
+            final String name = reader.read(fields[0]);
+            final Double height = reader.read(fields[1]);
+            final List<Friend> friends = reader.read(fields[2]);
             return new AsHuman(name, height, friends);
           }
         }
@@ -405,7 +405,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
             @Override
             public Friend map(ResponseReader reader) throws IOException {
-              final String id = (String) reader.read(fields[0]);
+              final String id = reader.read(fields[0]);
               return new Friend(id);
             }
           }
@@ -424,9 +424,9 @@ public final class TestQuery implements Query<Operation.Variables> {
 
           @Override
           public AsDroid map(ResponseReader reader) throws IOException {
-            final String name = (String) reader.read(fields[0]);
-            final List<Friend> friends = (List<Friend>) reader.read(fields[1]);
-            final String primaryFunction = (String) reader.read(fields[2]);
+            final String name = reader.read(fields[0]);
+            final List<Friend> friends = reader.read(fields[1]);
+            final String primaryFunction = reader.read(fields[2]);
             return new AsDroid(name, friends, primaryFunction);
           }
         }
@@ -459,9 +459,9 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         @Override
         public Hero map(ResponseReader reader) throws IOException {
-          final String name = (String) reader.read(fields[0]);
-          final AsHuman asHuman = (AsHuman) reader.read(fields[1]);
-          final AsDroid asDroid = (AsDroid) reader.read(fields[2]);
+          final String name = reader.read(fields[0]);
+          final AsHuman asHuman = reader.read(fields[1]);
+          final AsDroid asDroid = reader.read(fields[2]);
           return new Hero(name, asHuman, asDroid);
         }
       }
@@ -478,7 +478,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = (Hero) reader.read(fields[0]);
+        final Hero hero = reader.read(fields[0]);
         return new Data(hero);
       }
     }

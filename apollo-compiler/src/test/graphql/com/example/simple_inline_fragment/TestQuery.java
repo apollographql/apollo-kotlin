@@ -209,8 +209,8 @@ public final class TestQuery implements Query<Operation.Variables> {
 
           @Override
           public AsHuman map(ResponseReader reader) throws IOException {
-            final String name = (String) reader.read(fields[0]);
-            final Double height = (Double) reader.read(fields[1]);
+            final String name = reader.read(fields[0]);
+            final Double height = reader.read(fields[1]);
             return new AsHuman(name, height);
           }
         }
@@ -273,8 +273,8 @@ public final class TestQuery implements Query<Operation.Variables> {
 
           @Override
           public AsDroid map(ResponseReader reader) throws IOException {
-            final String name = (String) reader.read(fields[0]);
-            final String primaryFunction = (String) reader.read(fields[1]);
+            final String name = reader.read(fields[0]);
+            final String primaryFunction = reader.read(fields[1]);
             return new AsDroid(name, primaryFunction);
           }
         }
@@ -307,9 +307,9 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         @Override
         public Hero map(ResponseReader reader) throws IOException {
-          final String name = (String) reader.read(fields[0]);
-          final AsHuman asHuman = (AsHuman) reader.read(fields[1]);
-          final AsDroid asDroid = (AsDroid) reader.read(fields[2]);
+          final String name = reader.read(fields[0]);
+          final AsHuman asHuman = reader.read(fields[1]);
+          final AsDroid asDroid = reader.read(fields[2]);
           return new Hero(name, asHuman, asDroid);
         }
       }
@@ -326,7 +326,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = (Hero) reader.read(fields[0]);
+        final Hero hero = reader.read(fields[0]);
         return new Data(hero);
       }
     }

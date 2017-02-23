@@ -226,7 +226,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         @Override
         public R2 map(ResponseReader reader) throws IOException {
-          final Fragments fragments = (Fragments) reader.read(fields[0]);
+          final Fragments fragments = reader.read(fields[0]);
           return new R2(fragments);
         }
       }
@@ -354,7 +354,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         @Override
         public Luke map(ResponseReader reader) throws IOException {
-          final Fragments fragments = (Fragments) reader.read(fields[0]);
+          final Fragments fragments = reader.read(fields[0]);
           return new Luke(fragments);
         }
       }
@@ -376,8 +376,8 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final R2 r2 = (R2) reader.read(fields[0]);
-        final Luke luke = (Luke) reader.read(fields[1]);
+        final R2 r2 = reader.read(fields[0]);
+        final Luke luke = reader.read(fields[1]);
         return new Data(r2, luke);
       }
     }

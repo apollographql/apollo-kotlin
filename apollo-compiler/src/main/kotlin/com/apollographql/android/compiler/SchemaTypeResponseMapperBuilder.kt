@@ -287,8 +287,8 @@ class SchemaTypeResponseMapperBuilder(
     val fieldRawType = fieldSpec.type.withoutAnnotations()
     return if (fieldSpec.type.isEnum()) {
       CodeBlock.builder()
-          .addStatement("final \$T \$LStr = (\$T) \$L.read(\$L[\$L])", ClassNames.STRING, fieldSpec.name,
-              ClassNames.STRING, READER_VAR, FIELDS_VAR, index)
+          .addStatement("final \$T \$LStr = \$L.read(\$L[\$L])", ClassNames.STRING, fieldSpec.name, READER_VAR,
+              FIELDS_VAR, index)
           .addStatement("final \$T \$L", fieldRawType, fieldSpec.name)
           .beginControlFlow("if (\$LStr != null)", fieldSpec.name)
           .addStatement("\$L = \$T.valueOf(\$LStr)", fieldSpec.name, fieldRawType, fieldSpec.name)
@@ -297,8 +297,7 @@ class SchemaTypeResponseMapperBuilder(
           .endControlFlow()
           .build()
     } else {
-      CodeBlock.of("final \$T \$L = (\$T) \$L.read(\$L[\$L]);\n", fieldRawType, fieldSpec.name,
-          fieldRawType, READER_VAR, FIELDS_VAR, index)
+      CodeBlock.of("final \$T \$L = \$L.read(\$L[\$L]);\n", fieldRawType, fieldSpec.name, READER_VAR, FIELDS_VAR, index)
     }
   }
 

@@ -72,13 +72,13 @@ public final class ProductsWithDate implements Query<Operation.Variables> {
       }
 
       public static class Product {
-        private @Nonnull List<? extends Edge> edges;
+        private @Nonnull List<Edge> edges;
 
-        public Product(@Nonnull List<? extends Edge> edges) {
+        public Product(@Nonnull List<Edge> edges) {
           this.edges = edges;
         }
 
-        public @Nonnull List<? extends Edge> edges() {
+        public @Nonnull List<Edge> edges() {
           return this.edges;
         }
 
@@ -113,163 +113,83 @@ public final class ProductsWithDate implements Query<Operation.Variables> {
 
             public static final class Mapper implements ResponseFieldMapper<Node> {
               final Field[] fields = {
-                Field.forString("title", "title", null, false),
-                Field.forCustomType("createdAt", "createdAt", null, false, CustomType.DATETIME)
+                  Field.forString("title", "title", null, false),
+                  Field.forCustomType("createdAt", "createdAt", null, false, CustomType.DATETIME)
               };
 
               @Override
               public Node map(ResponseReader reader) throws IOException {
-                final __ContentValues contentValues = new __ContentValues();
-                reader.read(new ResponseReader.ValueHandler() {
-                  @Override
-                  public void handle(final int fieldIndex, final Object value) throws IOException {
-                    switch (fieldIndex) {
-                      case 0: {
-                        contentValues.title = (String) value;
-                        break;
-                      }
-                      case 1: {
-                        contentValues.createdAt = (Date) value;
-                        break;
-                      }
-                    }
-                  }
-                }, fields);
-                return new Node(contentValues.title, contentValues.createdAt);
-              }
-
-              static final class __ContentValues {
-                String title;
-
-                Date createdAt;
+                final String title = reader.read(fields[0]);
+                final Date createdAt = reader.read(fields[1]);
+                return new Node(title, createdAt);
               }
             }
           }
 
           public static final class Mapper implements ResponseFieldMapper<Edge> {
             final Field[] fields = {
-              Field.forObject("node", "node", null, false, new Field.ObjectReader<Node>() {
-                @Override public Node read(final ResponseReader reader) throws IOException {
-                  return new Node.Mapper().map(reader);
-                }
-              })
+                Field.forObject("node", "node", null, false, new Field.ObjectReader<Node>() {
+                  @Override public Node read(final ResponseReader reader) throws IOException {
+                    return new Node.Mapper().map(reader);
+                  }
+                })
             };
 
             @Override
             public Edge map(ResponseReader reader) throws IOException {
-              final __ContentValues contentValues = new __ContentValues();
-              reader.read(new ResponseReader.ValueHandler() {
-                @Override
-                public void handle(final int fieldIndex, final Object value) throws IOException {
-                  switch (fieldIndex) {
-                    case 0: {
-                      contentValues.node = (Node) value;
-                      break;
-                    }
-                  }
-                }
-              }, fields);
-              return new Edge(contentValues.node);
-            }
-
-            static final class __ContentValues {
-              Node node;
+              final Node node = reader.read(fields[0]);
+              return new Edge(node);
             }
           }
         }
 
         public static final class Mapper implements ResponseFieldMapper<Product> {
           final Field[] fields = {
-            Field.forList("edges", "edges", null, false, new Field.ObjectReader<Edge>() {
-              @Override public Edge read(final ResponseReader reader) throws IOException {
-                return new Edge.Mapper().map(reader);
-              }
-            })
+              Field.forList("edges", "edges", null, false, new Field.ObjectReader<Edge>() {
+                @Override public Edge read(final ResponseReader reader) throws IOException {
+                  return new Edge.Mapper().map(reader);
+                }
+              })
           };
 
           @Override
           public Product map(ResponseReader reader) throws IOException {
-            final __ContentValues contentValues = new __ContentValues();
-            reader.read(new ResponseReader.ValueHandler() {
-              @Override
-              public void handle(final int fieldIndex, final Object value) throws IOException {
-                switch (fieldIndex) {
-                  case 0: {
-                    contentValues.edges = (List<? extends Edge>) value;
-                    break;
-                  }
-                }
-              }
-            }, fields);
-            return new Product(contentValues.edges);
-          }
-
-          static final class __ContentValues {
-            List<? extends Edge> edges;
+            final List<Edge> edges = reader.read(fields[0]);
+            return new Product(edges);
           }
         }
       }
 
       public static final class Mapper implements ResponseFieldMapper<Shop> {
         final Field[] fields = {
-          Field.forObject("products", "products", null, false, new Field.ObjectReader<Product>() {
-            @Override public Product read(final ResponseReader reader) throws IOException {
-              return new Product.Mapper().map(reader);
-            }
-          })
+            Field.forObject("products", "products", null, false, new Field.ObjectReader<Product>() {
+              @Override public Product read(final ResponseReader reader) throws IOException {
+                return new Product.Mapper().map(reader);
+              }
+            })
         };
 
         @Override
         public Shop map(ResponseReader reader) throws IOException {
-          final __ContentValues contentValues = new __ContentValues();
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  contentValues.products = (Product) value;
-                  break;
-                }
-              }
-            }
-          }, fields);
-          return new Shop(contentValues.products);
-        }
-
-        static final class __ContentValues {
-          Product products;
+          final Product products = reader.read(fields[0]);
+          return new Shop(products);
         }
       }
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final Field[] fields = {
-        Field.forObject("shop", "shop", null, false, new Field.ObjectReader<Shop>() {
-          @Override public Shop read(final ResponseReader reader) throws IOException {
-            return new Shop.Mapper().map(reader);
-          }
-        })
+          Field.forObject("shop", "shop", null, false, new Field.ObjectReader<Shop>() {
+            @Override public Shop read(final ResponseReader reader) throws IOException {
+              return new Shop.Mapper().map(reader);
+            }
+          })
       };
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final __ContentValues contentValues = new __ContentValues();
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                contentValues.shop = (Shop) value;
-                break;
-              }
-            }
-          }
-        }, fields);
-        return new Data(contentValues.shop);
-      }
-
-      static final class __ContentValues {
-        Shop shop;
+        final Shop shop = reader.read(fields[0]);
+        return new Data(shop);
       }
     }
   }

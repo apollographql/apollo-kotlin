@@ -275,7 +275,7 @@ public class StarshipFragment {
 
           @Override
           public Node map(ResponseReader reader) throws IOException {
-            final Fragments fragments = (Fragments) reader.read(fields[0]);
+            final Fragments fragments = reader.read(fields[0]);
             return new Node(fragments);
           }
         }
@@ -292,7 +292,7 @@ public class StarshipFragment {
 
         @Override
         public Edge map(ResponseReader reader) throws IOException {
-          final Node node = (Node) reader.read(fields[0]);
+          final Node node = reader.read(fields[0]);
           return new Edge(node);
         }
       }
@@ -309,7 +309,7 @@ public class StarshipFragment {
 
       @Override
       public PilotConnection map(ResponseReader reader) throws IOException {
-        final List<Edge> edges = (List<Edge>) reader.read(fields[0]);
+        final List<Edge> edges = reader.read(fields[0]);
         return new PilotConnection(edges);
       }
     }
@@ -328,9 +328,9 @@ public class StarshipFragment {
 
     @Override
     public StarshipFragment map(ResponseReader reader) throws IOException {
-      final String id = (String) reader.read(fields[0]);
-      final String name = (String) reader.read(fields[1]);
-      final PilotConnection pilotConnection = (PilotConnection) reader.read(fields[2]);
+      final String id = reader.read(fields[0]);
+      final String name = reader.read(fields[1]);
+      final PilotConnection pilotConnection = reader.read(fields[2]);
       return new StarshipFragment(id, name, pilotConnection);
     }
   }

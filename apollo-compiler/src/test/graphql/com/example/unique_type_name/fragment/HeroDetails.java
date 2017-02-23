@@ -213,7 +213,7 @@ public class HeroDetails {
 
           @Override
           public Node map(ResponseReader reader) throws IOException {
-            final String name = (String) reader.read(fields[0]);
+            final String name = reader.read(fields[0]);
             return new Node(name);
           }
         }
@@ -230,7 +230,7 @@ public class HeroDetails {
 
         @Override
         public Edge map(ResponseReader reader) throws IOException {
-          final Node node = (Node) reader.read(fields[0]);
+          final Node node = reader.read(fields[0]);
           return new Edge(node);
         }
       }
@@ -248,8 +248,8 @@ public class HeroDetails {
 
       @Override
       public FriendsConnection map(ResponseReader reader) throws IOException {
-        final Integer totalCount = (Integer) reader.read(fields[0]);
-        final List<Edge> edges = (List<Edge>) reader.read(fields[1]);
+        final Integer totalCount = reader.read(fields[0]);
+        final List<Edge> edges = reader.read(fields[1]);
         return new FriendsConnection(totalCount, edges);
       }
     }
@@ -267,8 +267,8 @@ public class HeroDetails {
 
     @Override
     public HeroDetails map(ResponseReader reader) throws IOException {
-      final String name = (String) reader.read(fields[0]);
-      final FriendsConnection friendsConnection = (FriendsConnection) reader.read(fields[1]);
+      final String name = reader.read(fields[0]);
+      final FriendsConnection friendsConnection = reader.read(fields[1]);
       return new HeroDetails(name, friendsConnection);
     }
   }

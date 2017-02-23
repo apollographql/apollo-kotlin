@@ -224,9 +224,9 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         @Override
         public Hero map(ResponseReader reader) throws IOException {
-          final String name = (String) reader.read(fields[0]);
-          final List<Episode> appearsIn = (List<Episode>) reader.read(fields[1]);
-          final Fragments fragments = (Fragments) reader.read(fields[2]);
+          final String name = reader.read(fields[0]);
+          final List<Episode> appearsIn = reader.read(fields[1]);
+          final Fragments fragments = reader.read(fields[2]);
           return new Hero(name, appearsIn, fragments);
         }
       }
@@ -243,7 +243,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = (Hero) reader.read(fields[0]);
+        final Hero hero = reader.read(fields[0]);
         return new Data(hero);
       }
     }

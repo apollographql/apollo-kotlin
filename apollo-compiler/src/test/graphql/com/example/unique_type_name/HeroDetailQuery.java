@@ -210,7 +210,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
 
           @Override
           public Friend map(ResponseReader reader) throws IOException {
-            final String name = (String) reader.read(fields[0]);
+            final String name = reader.read(fields[0]);
             return new Friend(name);
           }
         }
@@ -445,7 +445,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
 
               @Override
               public Friend2 map(ResponseReader reader) throws IOException {
-                final Fragments fragments = (Fragments) reader.read(fields[0]);
+                final Fragments fragments = reader.read(fields[0]);
                 return new Friend2(fragments);
               }
             }
@@ -468,9 +468,9 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
 
             @Override
             public Friend1 map(ResponseReader reader) throws IOException {
-              final String name = (String) reader.read(fields[0]);
-              final List<Episode> appearsIn = (List<Episode>) reader.read(fields[1]);
-              final List<Friend2> friends = (List<Friend2>) reader.read(fields[2]);
+              final String name = reader.read(fields[0]);
+              final List<Episode> appearsIn = reader.read(fields[1]);
+              final List<Friend2> friends = reader.read(fields[2]);
               return new Friend1(name, appearsIn, friends);
             }
           }
@@ -489,9 +489,9 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
 
           @Override
           public AsHuman map(ResponseReader reader) throws IOException {
-            final String name = (String) reader.read(fields[0]);
-            final List<Friend1> friends = (List<Friend1>) reader.read(fields[1]);
-            final Double height = (Double) reader.read(fields[2]);
+            final String name = reader.read(fields[0]);
+            final List<Friend1> friends = reader.read(fields[1]);
+            final Double height = reader.read(fields[2]);
             return new AsHuman(name, friends, height);
           }
         }
@@ -519,9 +519,9 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
 
         @Override
         public HeroDetailQuery1 map(ResponseReader reader) throws IOException {
-          final String name = (String) reader.read(fields[0]);
-          final List<Friend> friends = (List<Friend>) reader.read(fields[1]);
-          final AsHuman asHuman = (AsHuman) reader.read(fields[2]);
+          final String name = reader.read(fields[0]);
+          final List<Friend> friends = reader.read(fields[1]);
+          final AsHuman asHuman = reader.read(fields[2]);
           return new HeroDetailQuery1(name, friends, asHuman);
         }
       }
@@ -538,7 +538,7 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final HeroDetailQuery1 heroDetailQuery = (HeroDetailQuery1) reader.read(fields[0]);
+        final HeroDetailQuery1 heroDetailQuery = reader.read(fields[0]);
         return new Data(heroDetailQuery);
       }
     }

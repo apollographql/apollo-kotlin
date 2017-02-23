@@ -77,8 +77,8 @@ public class DroidDetails {
 
     @Override
     public DroidDetails map(ResponseReader reader) throws IOException {
-      final String name = (String) reader.read(fields[0]);
-      final String primaryFunction = (String) reader.read(fields[1]);
+      final String name = reader.read(fields[0]);
+      final String primaryFunction = reader.read(fields[1]);
       return new DroidDetails(name, primaryFunction);
     }
   }

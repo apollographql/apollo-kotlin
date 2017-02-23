@@ -78,8 +78,8 @@ public class HumanDetails {
 
     @Override
     public HumanDetails map(ResponseReader reader) throws IOException {
-      final String name = (String) reader.read(fields[0]);
-      final Double height = (Double) reader.read(fields[1]);
+      final String name = reader.read(fields[0]);
+      final Double height = reader.read(fields[1]);
       return new HumanDetails(name, height);
     }
   }

@@ -277,7 +277,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
               @Override
               public Node map(ResponseReader reader) throws IOException {
-                final String name = (String) reader.read(fields[0]);
+                final String name = reader.read(fields[0]);
                 return new Node(name);
               }
             }
@@ -294,7 +294,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
             @Override
             public Edge map(ResponseReader reader) throws IOException {
-              final Node node = (Node) reader.read(fields[0]);
+              final Node node = reader.read(fields[0]);
               return new Edge(node);
             }
           }
@@ -312,8 +312,8 @@ public final class TestQuery implements Query<Operation.Variables> {
 
           @Override
           public FriendsConnection map(ResponseReader reader) throws IOException {
-            final Integer totalCount = (Integer) reader.read(fields[0]);
-            final List<Edge> edges = (List<Edge>) reader.read(fields[1]);
+            final Integer totalCount = reader.read(fields[0]);
+            final List<Edge> edges = reader.read(fields[1]);
             return new FriendsConnection(totalCount, edges);
           }
         }
@@ -331,8 +331,8 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         @Override
         public Hero map(ResponseReader reader) throws IOException {
-          final String name = (String) reader.read(fields[0]);
-          final FriendsConnection friendsConnection = (FriendsConnection) reader.read(fields[1]);
+          final String name = reader.read(fields[0]);
+          final FriendsConnection friendsConnection = reader.read(fields[1]);
           return new Hero(name, friendsConnection);
         }
       }
@@ -349,7 +349,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = (Hero) reader.read(fields[0]);
+        final Hero hero = reader.read(fields[0]);
         return new Data(hero);
       }
     }

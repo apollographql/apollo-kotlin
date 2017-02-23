@@ -242,7 +242,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         @Override
         public GraphQlListOfObject map(ResponseReader reader) throws IOException {
-          final int someField = (int) reader.read(fields[0]);
+          final int someField = reader.read(fields[0]);
           return new GraphQlListOfObject(someField);
         }
       }
@@ -273,17 +273,17 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final String graphQlString = (String) reader.read(fields[0]);
-        final String graphQlIdNullable = (String) reader.read(fields[1]);
-        final String graphQlIdNonNullable = (String) reader.read(fields[2]);
-        final Integer graphQlIntNullable = (Integer) reader.read(fields[3]);
-        final int graphQlIntNonNullable = (int) reader.read(fields[4]);
-        final Double graphQlFloatNullable = (Double) reader.read(fields[5]);
-        final double graphQlFloatNonNullable = (double) reader.read(fields[6]);
-        final Boolean graphQlBooleanNullable = (Boolean) reader.read(fields[7]);
-        final boolean graphQlBooleanNonNullable = (boolean) reader.read(fields[8]);
-        final List<Integer> graphQlListOfInt = (List<Integer>) reader.read(fields[9]);
-        final List<GraphQlListOfObject> graphQlListOfObjects = (List<GraphQlListOfObject>) reader.read(fields[10]);
+        final String graphQlString = reader.read(fields[0]);
+        final String graphQlIdNullable = reader.read(fields[1]);
+        final String graphQlIdNonNullable = reader.read(fields[2]);
+        final Integer graphQlIntNullable = reader.read(fields[3]);
+        final int graphQlIntNonNullable = reader.read(fields[4]);
+        final Double graphQlFloatNullable = reader.read(fields[5]);
+        final double graphQlFloatNonNullable = reader.read(fields[6]);
+        final Boolean graphQlBooleanNullable = reader.read(fields[7]);
+        final boolean graphQlBooleanNonNullable = reader.read(fields[8]);
+        final List<Integer> graphQlListOfInt = reader.read(fields[9]);
+        final List<GraphQlListOfObject> graphQlListOfObjects = reader.read(fields[10]);
         return new Data(graphQlString, graphQlIdNullable, graphQlIdNonNullable, graphQlIntNullable, graphQlIntNonNullable, graphQlFloatNullable, graphQlFloatNonNullable, graphQlBooleanNullable, graphQlBooleanNonNullable, graphQlListOfInt, graphQlListOfObjects);
       }
     }

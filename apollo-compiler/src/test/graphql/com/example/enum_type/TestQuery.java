@@ -161,9 +161,9 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         @Override
         public Hero map(ResponseReader reader) throws IOException {
-          final String name = (String) reader.read(fields[0]);
-          final List<Episode> appearsIn = (List<Episode>) reader.read(fields[1]);
-          final String firstAppearsInStr = (String) reader.read(fields[2]);
+          final String name = reader.read(fields[0]);
+          final List<Episode> appearsIn = reader.read(fields[1]);
+          final String firstAppearsInStr = reader.read(fields[2]);
           final Episode firstAppearsIn;
           if (firstAppearsInStr != null) {
             firstAppearsIn = Episode.valueOf(firstAppearsInStr);
@@ -186,7 +186,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = (Hero) reader.read(fields[0]);
+        final Hero hero = reader.read(fields[0]);
         return new Data(hero);
       }
     }

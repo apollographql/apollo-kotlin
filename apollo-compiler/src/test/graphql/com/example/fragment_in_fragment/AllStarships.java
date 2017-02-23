@@ -277,7 +277,7 @@ public final class AllStarships implements Query<Operation.Variables> {
 
             @Override
             public Node map(ResponseReader reader) throws IOException {
-              final Fragments fragments = (Fragments) reader.read(fields[0]);
+              final Fragments fragments = reader.read(fields[0]);
               return new Node(fragments);
             }
           }
@@ -294,7 +294,7 @@ public final class AllStarships implements Query<Operation.Variables> {
 
           @Override
           public Edge map(ResponseReader reader) throws IOException {
-            final Node node = (Node) reader.read(fields[0]);
+            final Node node = reader.read(fields[0]);
             return new Edge(node);
           }
         }
@@ -311,7 +311,7 @@ public final class AllStarships implements Query<Operation.Variables> {
 
         @Override
         public AllStarship map(ResponseReader reader) throws IOException {
-          final List<Edge> edges = (List<Edge>) reader.read(fields[0]);
+          final List<Edge> edges = reader.read(fields[0]);
           return new AllStarship(edges);
         }
       }
@@ -328,7 +328,7 @@ public final class AllStarships implements Query<Operation.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final AllStarship allStarships = (AllStarship) reader.read(fields[0]);
+        final AllStarship allStarships = reader.read(fields[0]);
         return new Data(allStarships);
       }
     }

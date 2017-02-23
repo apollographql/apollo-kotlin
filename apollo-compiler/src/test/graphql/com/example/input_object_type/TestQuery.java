@@ -204,8 +204,8 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
 
         @Override
         public CreateReview map(ResponseReader reader) throws IOException {
-          final int stars = (int) reader.read(fields[0]);
-          final String commentary = (String) reader.read(fields[1]);
+          final int stars = reader.read(fields[0]);
+          final String commentary = reader.read(fields[1]);
           return new CreateReview(stars, commentary);
         }
       }
@@ -222,7 +222,7 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final CreateReview createReview = (CreateReview) reader.read(fields[0]);
+        final CreateReview createReview = reader.read(fields[0]);
         return new Data(createReview);
       }
     }

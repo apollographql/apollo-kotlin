@@ -73,13 +73,13 @@ public final class ProductsWithUnsupportedCustomScalarTypes implements Query<Ope
       }
 
       public static class Product {
-        private @Nonnull List<? extends Edge> edges;
+        private @Nonnull List<Edge> edges;
 
-        public Product(@Nonnull List<? extends Edge> edges) {
+        public Product(@Nonnull List<Edge> edges) {
           this.edges = edges;
         }
 
-        public @Nonnull List<? extends Edge> edges() {
+        public @Nonnull List<Edge> edges() {
           return this.edges;
         }
 
@@ -140,43 +140,12 @@ public final class ProductsWithUnsupportedCustomScalarTypes implements Query<Ope
 
               @Override
               public Node map(ResponseReader reader) throws IOException {
-                final __ContentValues contentValues = new __ContentValues();
-                reader.read(new ResponseReader.ValueHandler() {
-                  @Override
-                  public void handle(final int fieldIndex, final Object value) throws IOException {
-                    switch (fieldIndex) {
-                      case 0: {
-                        contentValues.title = (String) value;
-                        break;
-                      }
-                      case 1: {
-                        contentValues.unsupportedCustomScalarTypeNumber = (Object) value;
-                        break;
-                      }
-                      case 2: {
-                        contentValues.unsupportedCustomScalarTypeBool = (Object) value;
-                        break;
-                      }
-                      case 3: {
-                        contentValues.unsupportedCustomScalarTypeString = (Object) value;
-                        break;
-                      }
-                    }
-                  }
-                }, fields);
-                return new Node(contentValues.title, contentValues
-                    .unsupportedCustomScalarTypeNumber,
-                    contentValues.unsupportedCustomScalarTypeBool, contentValues.unsupportedCustomScalarTypeString);
-              }
-
-              static final class __ContentValues {
-                String title;
-
-                Object unsupportedCustomScalarTypeNumber;
-
-                Object unsupportedCustomScalarTypeBool;
-
-                Object unsupportedCustomScalarTypeString;
+                final String title = reader.read(fields[0]);
+                final Object unsupportedCustomScalarTypeNumber = reader.read(fields[1]);
+                final Object unsupportedCustomScalarTypeBool = reader.read(fields[2]);
+                final Object unsupportedCustomScalarTypeString = reader.read(fields[3]);
+                return new Node(title, unsupportedCustomScalarTypeNumber,
+                    unsupportedCustomScalarTypeBool, unsupportedCustomScalarTypeString);
               }
             }
           }
@@ -192,23 +161,8 @@ public final class ProductsWithUnsupportedCustomScalarTypes implements Query<Ope
 
             @Override
             public Edge map(ResponseReader reader) throws IOException {
-              final __ContentValues contentValues = new __ContentValues();
-              reader.read(new ResponseReader.ValueHandler() {
-                @Override
-                public void handle(final int fieldIndex, final Object value) throws IOException {
-                  switch (fieldIndex) {
-                    case 0: {
-                      contentValues.node = (Node) value;
-                      break;
-                    }
-                  }
-                }
-              }, fields);
-              return new Edge(contentValues.node);
-            }
-
-            static final class __ContentValues {
-              Node node;
+              final Node node = reader.read(fields[0]);
+              return new Edge(node);
             }
           }
         }
@@ -224,23 +178,8 @@ public final class ProductsWithUnsupportedCustomScalarTypes implements Query<Ope
 
           @Override
           public Product map(ResponseReader reader) throws IOException {
-            final __ContentValues contentValues = new __ContentValues();
-            reader.read(new ResponseReader.ValueHandler() {
-              @Override
-              public void handle(final int fieldIndex, final Object value) throws IOException {
-                switch (fieldIndex) {
-                  case 0: {
-                    contentValues.edges = (List<? extends Edge>) value;
-                    break;
-                  }
-                }
-              }
-            }, fields);
-            return new Product(contentValues.edges);
-          }
-
-          static final class __ContentValues {
-            List<? extends Edge> edges;
+            final List<Edge> edges = reader.read(fields[0]);
+            return new Product(edges);
           }
         }
       }
@@ -256,23 +195,8 @@ public final class ProductsWithUnsupportedCustomScalarTypes implements Query<Ope
 
         @Override
         public Shop map(ResponseReader reader) throws IOException {
-          final __ContentValues contentValues = new __ContentValues();
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  contentValues.products = (Product) value;
-                  break;
-                }
-              }
-            }
-          }, fields);
-          return new Shop(contentValues.products);
-        }
-
-        static final class __ContentValues {
-          Product products;
+          final Product products = reader.read(fields[0]);
+          return new Shop(products);
         }
       }
     }
@@ -288,23 +212,8 @@ public final class ProductsWithUnsupportedCustomScalarTypes implements Query<Ope
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final __ContentValues contentValues = new __ContentValues();
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                contentValues.shop = (Shop) value;
-                break;
-              }
-            }
-          }
-        }, fields);
-        return new Data(contentValues.shop);
-      }
-
-      static final class __ContentValues {
-        Shop shop;
+        final Shop shop = reader.read(fields[0]);
+        return new Data(shop);
       }
     }
   }
