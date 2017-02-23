@@ -11,7 +11,7 @@ import spock.lang.Specification
  * The ordering of the tests in this file matters, cleanup only happens after all feature
  * methods run.
  */
-class ApolloPluginBasicAndroidTest extends Specification {
+class BasicAndroidSpec extends Specification {
   @Shared File testProjectDir
 
   def setupSpec() {
@@ -31,9 +31,9 @@ class ApolloPluginBasicAndroidTest extends Specification {
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
     // IR Files generated successfully
     assert new File(testProjectDir,
-        "build/generated/source/apollo/generatedIR/src/main/graphql/ReleaseAPI.json").isFile()
+        "build/generated/source/apollo/generatedIR/release/src/main/graphql/ReleaseAPI.json").isFile()
     assert new File(testProjectDir,
-        "build/generated/source/apollo/generatedIR/src/main/graphql/DebugAPI.json").isFile()
+        "build/generated/source/apollo/generatedIR/debug/src/main/graphql/DebugAPI.json").isFile()
 
     // Java classes generated successfully
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").isFile()
@@ -94,6 +94,8 @@ class ApolloPluginBasicAndroidTest extends Specification {
     def destDir = ApolloPluginTestHelper.createTempTestDirectory("basic")
     ApolloPluginTestHelper.prepareProjectTestDir(destDir, ApolloPluginTestHelper.ProjectType.Android, "basic",
         "basic")
+    String schemaFilesFixtures = "src/test/testProject/android/schemaFilesFixtures"
+    FileUtils.copyFile(new File(schemaFilesFixtures + "/oldswapi.json"), new File("$destDir/src/main/graphql/schema.json"))
     return destDir
   }
 }
