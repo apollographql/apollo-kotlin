@@ -16,14 +16,16 @@ import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<Operation.Variables> {
-  public static final String OPERATION_DEFINITION = "query Query {\n"
+  public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  hero {\n"
       + "    __typename\n"
       + "    name\n"
       + "    ... on Human {\n"
+      + "      __typename\n"
       + "      height\n"
       + "    }\n"
       + "    ... on Droid {\n"
+      + "      __typename\n"
       + "      primaryFunction\n"
       + "    }\n"
       + "  }\n"

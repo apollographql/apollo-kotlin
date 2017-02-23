@@ -1,4 +1,4 @@
-query Query {
+query TestQuery {
   hero {
     name
     ... on Human {
