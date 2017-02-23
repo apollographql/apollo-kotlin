@@ -2,6 +2,7 @@ package com.apollographql.android.compiler
 
 import com.apollographql.android.compiler.ir.Variable
 import com.squareup.javapoet.*
+import java.util.*
 import javax.lang.model.element.Modifier
 
 class VariablesTypeSpecBuilder(
@@ -14,8 +15,10 @@ class VariablesTypeSpecBuilder(
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
           .superclass(ClassNames.GRAPHQL_OPERATION_VARIABLES)
           .addVariableFields()
+          .addValueMapField()
           .addConstructor()
           .addVariableAccessors()
+          .addValueMapAccessor()
           .addBuilder()
           .build()
 
@@ -27,9 +30,21 @@ class VariablesTypeSpecBuilder(
             .build()
       })
 
+  @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
+  private fun TypeSpec.Builder.addValueMapField(): TypeSpec.Builder =
+      addField(FieldSpec.builder(ClassNames.parameterizedMapOf(java.lang.String::class.java, Object::class.java),
+          VALUE_MAP_FIELD_NAME)
+          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+          .initializer("new \$T<>()", LinkedHashMap::class.java)
+          .build())
+
   private fun TypeSpec.Builder.addConstructor(): TypeSpec.Builder {
-    val fieldInitializeCodeBuilder = variables.map {
+    val fieldInitializeCode = variables.map {
       CodeBlock.of("this.\$L = \$L;\n", it.name.decapitalize(), it.name.decapitalize())
+    }.fold(CodeBlock.builder(), CodeBlock.Builder::add)
+
+    val fieldMapInitializeCode = variables.map {
+      CodeBlock.of("this.valueMap.put(\$S, \$L);\n", it.name, it.name.decapitalize())
     }.fold(CodeBlock.builder(), CodeBlock.Builder::add)
 
     return addMethod(MethodSpec
@@ -37,7 +52,8 @@ class VariablesTypeSpecBuilder(
         .addParameters(variables.map {
           ParameterSpec.builder(it.javaTypeName(customScalarTypeMap, typesPackage), it.name.decapitalize()).build()
         })
-        .addCode(fieldInitializeCodeBuilder.build())
+        .addCode(fieldInitializeCode.build())
+        .addCode(fieldMapInitializeCode.build())
         .build()
     )
   }
@@ -51,6 +67,15 @@ class VariablesTypeSpecBuilder(
             .addStatement("return \$L", variable.name.decapitalize())
             .build()
       })
+
+  @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
+  private fun TypeSpec.Builder.addValueMapAccessor(): TypeSpec.Builder =
+      addMethod(MethodSpec.methodBuilder(VALUE_MAP_FIELD_NAME)
+          .addModifiers(Modifier.PUBLIC)
+          .addAnnotation(Override::class.java)
+          .returns(ClassNames.parameterizedMapOf(java.lang.String::class.java, Object::class.java))
+          .addStatement("return \$T.unmodifiableMap(\$L)", Collections::class.java, VALUE_MAP_FIELD_NAME)
+          .build())
 
   private fun TypeSpec.Builder.addBuilder(): TypeSpec.Builder {
     if (variables.isEmpty()) {
@@ -67,5 +92,7 @@ class VariablesTypeSpecBuilder(
     private val VARIABLES_TYPE_NAME: ClassName = ClassName.get("", VARIABLES_CLASS_NAME)
     private fun Variable.javaTypeName(customScalarTypeMap: Map<String, String>, packageName: String) =
         JavaTypeResolver(customScalarTypeMap, packageName).resolve(type, !type.endsWith("!"))
+
+    private val VALUE_MAP_FIELD_NAME = "valueMap"
   }
 }
