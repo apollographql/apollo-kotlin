@@ -1,166 +1,166 @@
 {
-  "operations": [
-    {
-      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/unique_type_name/TestQuery.graphql",
-      "operationName": "HeroDetailQuery",
-      "operationType": "query",
-      "variables": [],
-      "source": "query HeroDetailQuery {\n  heroDetailQuery {\n    __typename\n    name\n    friends {\n      __typename\n      name\n    }\n    ... on Human {\n      __typename\n      height\n      friends {\n        __typename\n        appearsIn\n        friends {\n          __typename\n          ...HeroDetails\n        }\n      }\n    }\n  }\n}",
-      "fields": [
-        {
-          "responseName": "heroDetailQuery",
-          "fieldName": "heroDetailQuery",
-          "type": "Character",
-          "fields": [
-            {
-              "responseName": "name",
-              "fieldName": "name",
-              "type": "String!"
-            },
-            {
-              "responseName": "friends",
-              "fieldName": "friends",
-              "type": "[Character]",
-              "fields": [
-                {
-                  "responseName": "name",
-                  "fieldName": "name",
-                  "type": "String!"
-                }
-              ],
-              "fragmentSpreads": [],
-              "inlineFragments": []
-            }
-          ],
-          "fragmentSpreads": [],
-          "inlineFragments": [
-            {
-              "typeCondition": "Human",
-              "fields": [
-                {
-                  "responseName": "name",
-                  "fieldName": "name",
-                  "type": "String!"
-                },
-                {
-                  "responseName": "friends",
-                  "fieldName": "friends",
-                  "type": "[Character]",
-                  "fields": [
-                    {
-                      "responseName": "name",
-                      "fieldName": "name",
-                      "type": "String!"
-                    },
-                    {
-                      "responseName": "appearsIn",
-                      "fieldName": "appearsIn",
-                      "type": "[Episode]!"
-                    },
-                    {
-                      "responseName": "friends",
-                      "fieldName": "friends",
-                      "type": "[Character]",
-                      "fields": [],
-                      "fragmentSpreads": [
-                        "HeroDetails"
-                      ],
-                      "inlineFragments": []
-                    }
-                  ],
-                  "fragmentSpreads": [],
-                  "inlineFragments": []
-                },
-                {
-                  "responseName": "height",
-                  "fieldName": "height",
-                  "type": "Float"
-                }
-              ],
-              "fragmentSpreads": []
-            }
-          ]
-        }
-      ],
-      "fragmentsReferenced": [
-        "HeroDetails"
-      ]
-    }
-  ],
-  "fragments": [
-    {
-      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/unique_type_name/TestQuery.graphql",
-      "fragmentName": "HeroDetails",
-      "source": "fragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n}",
-      "typeCondition": "Character",
-      "fields": [
-        {
-          "responseName": "name",
-          "fieldName": "name",
-          "type": "String!"
-        },
-        {
-          "responseName": "friendsConnection",
-          "fieldName": "friendsConnection",
-          "type": "FriendsConnection!",
-          "fields": [
-            {
-              "responseName": "totalCount",
-              "fieldName": "totalCount",
-              "type": "Int"
-            },
-            {
-              "responseName": "edges",
-              "fieldName": "edges",
-              "type": "[FriendsEdge]",
-              "fields": [
-                {
-                  "responseName": "node",
-                  "fieldName": "node",
-                  "type": "Character",
-                  "fields": [
-                    {
-                      "responseName": "name",
-                      "fieldName": "name",
-                      "type": "String!"
-                    }
-                  ],
-                  "fragmentSpreads": [],
-                  "inlineFragments": []
-                }
-              ],
-              "fragmentSpreads": [],
-              "inlineFragments": []
-            }
-          ],
-          "fragmentSpreads": [],
-          "inlineFragments": []
-        }
-      ],
-      "fragmentSpreads": [],
-      "inlineFragments": [],
-      "fragmentsReferenced": []
-    }
-  ],
-  "typesUsed": [
-    {
-      "kind": "EnumType",
-      "name": "Episode",
-      "description": "The episodes in the Star Wars trilogy",
-      "values": [
-        {
-          "name": "NEWHOPE",
-          "description": "Star Wars Episode IV: A New Hope, released in 1977."
-        },
-        {
-          "name": "EMPIRE",
-          "description": "Star Wars Episode V: The Empire Strikes Back, released in 1980."
-        },
-        {
-          "name": "JEDI",
-          "description": "Star Wars Episode VI: Return of the Jedi, released in 1983."
-        }
-      ]
-    }
-  ]
+	"operations": [
+		{
+			"filePath": "src/test/graphql/com/example/unique_type_name/TestQuery.graphql",
+			"operationName": "HeroDetailQuery",
+			"operationType": "query",
+			"variables": [],
+			"source": "query HeroDetailQuery {\n  heroDetailQuery {\n    __typename\n    name\n    friends {\n      __typename\n      name\n    }\n    ... on Human {\n      __typename\n      height\n      friends {\n        __typename\n        appearsIn\n        friends {\n          __typename\n          ...HeroDetails\n        }\n      }\n    }\n  }\n}",
+			"fields": [
+				{
+					"responseName": "heroDetailQuery",
+					"fieldName": "heroDetailQuery",
+					"type": "Character",
+					"fields": [
+						{
+							"responseName": "name",
+							"fieldName": "name",
+							"type": "String!"
+						},
+						{
+							"responseName": "friends",
+							"fieldName": "friends",
+							"type": "[Character]",
+							"fields": [
+								{
+									"responseName": "name",
+									"fieldName": "name",
+									"type": "String!"
+								}
+							],
+							"fragmentSpreads": [],
+							"inlineFragments": []
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": [
+						{
+							"typeCondition": "Human",
+							"fields": [
+								{
+									"responseName": "name",
+									"fieldName": "name",
+									"type": "String!"
+								},
+								{
+									"responseName": "friends",
+									"fieldName": "friends",
+									"type": "[Character]",
+									"fields": [
+										{
+											"responseName": "name",
+											"fieldName": "name",
+											"type": "String!"
+										},
+										{
+											"responseName": "appearsIn",
+											"fieldName": "appearsIn",
+											"type": "[Episode]!"
+										},
+										{
+											"responseName": "friends",
+											"fieldName": "friends",
+											"type": "[Character]",
+											"fields": [],
+											"fragmentSpreads": [
+												"HeroDetails"
+											],
+											"inlineFragments": []
+										}
+									],
+									"fragmentSpreads": [],
+									"inlineFragments": []
+								},
+								{
+									"responseName": "height",
+									"fieldName": "height",
+									"type": "Float"
+								}
+							],
+							"fragmentSpreads": []
+						}
+					]
+				}
+			],
+			"fragmentsReferenced": [
+				"HeroDetails"
+			]
+		}
+	],
+	"fragments": [
+		{
+			"filePath": "src/test/graphql/com/example/unique_type_name/TestQuery.graphql",
+			"fragmentName": "HeroDetails",
+			"source": "fragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n}",
+			"typeCondition": "Character",
+			"fields": [
+				{
+					"responseName": "name",
+					"fieldName": "name",
+					"type": "String!"
+				},
+				{
+					"responseName": "friendsConnection",
+					"fieldName": "friendsConnection",
+					"type": "FriendsConnection!",
+					"fields": [
+						{
+							"responseName": "totalCount",
+							"fieldName": "totalCount",
+							"type": "Int"
+						},
+						{
+							"responseName": "edges",
+							"fieldName": "edges",
+							"type": "[FriendsEdge]",
+							"fields": [
+								{
+									"responseName": "node",
+									"fieldName": "node",
+									"type": "Character",
+									"fields": [
+										{
+											"responseName": "name",
+											"fieldName": "name",
+											"type": "String!"
+										}
+									],
+									"fragmentSpreads": [],
+									"inlineFragments": []
+								}
+							],
+							"fragmentSpreads": [],
+							"inlineFragments": []
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				}
+			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
+			"fragmentsReferenced": []
+		}
+	],
+	"typesUsed": [
+		{
+			"kind": "EnumType",
+			"name": "Episode",
+			"description": "The episodes in the Star Wars trilogy",
+			"values": [
+				{
+					"name": "NEWHOPE",
+					"description": "Star Wars Episode IV: A New Hope, released in 1977."
+				},
+				{
+					"name": "EMPIRE",
+					"description": "Star Wars Episode V: The Empire Strikes Back, released in 1980."
+				},
+				{
+					"name": "JEDI",
+					"description": "Star Wars Episode VI: Return of the Jedi, released in 1983."
+				}
+			]
+		}
+	]
 }
