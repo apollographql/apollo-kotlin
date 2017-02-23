@@ -162,35 +162,10 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         @Override
         public Hero map(ResponseReader reader) throws IOException {
-          final __ContentValues contentValues = new __ContentValues();
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  contentValues.name = (String) value;
-                  break;
-                }
-                case 1: {
-                  contentValues.birthDate = (Date) value;
-                  break;
-                }
-                case 2: {
-                  contentValues.appearanceDates = (List<Date>) value;
-                  break;
-                }
-              }
-            }
-          }, fields);
-          return new Hero(contentValues.name, contentValues.birthDate, contentValues.appearanceDates);
-        }
-
-        static final class __ContentValues {
-          String name;
-
-          Date birthDate;
-
-          List<Date> appearanceDates;
+          final String name = (String) reader.read(fields[0]);
+          final Date birthDate = (Date) reader.read(fields[1]);
+          final List<Date> appearanceDates = (List<Date>) reader.read(fields[2]);
+          return new Hero(name, birthDate, appearanceDates);
         }
       }
     }
@@ -206,23 +181,8 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final __ContentValues contentValues = new __ContentValues();
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                contentValues.hero = (Hero) value;
-                break;
-              }
-            }
-          }
-        }, fields);
-        return new Data(contentValues.hero);
-      }
-
-      static final class __ContentValues {
-        Hero hero;
+        final Hero hero = (Hero) reader.read(fields[0]);
+        return new Data(hero);
       }
     }
   }
