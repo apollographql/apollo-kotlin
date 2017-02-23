@@ -22,7 +22,8 @@ public final class TestQuery implements Query<Operation.Variables> {
       + "  hero {\n"
       + "    __typename\n"
       + "    name\n"
-      + "  ... on Human {\n"
+      + "    ... on Human {\n"
+      + "      __typename\n"
       + "      height\n"
       + "      friends {\n"
       + "        __typename\n"
@@ -30,6 +31,7 @@ public final class TestQuery implements Query<Operation.Variables> {
       + "      }\n"
       + "    }\n"
       + "    ... on Droid {\n"
+      + "      __typename\n"
       + "      primaryFunction\n"
       + "      friends {\n"
       + "        __typename\n"
@@ -163,35 +165,35 @@ public final class TestQuery implements Query<Operation.Variables> {
       public static class AsHuman {
         private final @Nonnull String name;
 
-        private final @Nullable List<Friend> friends;
-
         private final @Nullable Double height;
 
-        public AsHuman(@Nonnull String name, @Nullable List<Friend> friends,
-            @Nullable Double height) {
+        private final @Nullable List<Friend> friends;
+
+        public AsHuman(@Nonnull String name, @Nullable Double height,
+            @Nullable List<Friend> friends) {
           this.name = name;
-          this.friends = friends;
           this.height = height;
+          this.friends = friends;
         }
 
         public @Nonnull String name() {
           return this.name;
         }
 
-        public @Nullable List<Friend> friends() {
-          return this.friends;
-        }
-
         public @Nullable Double height() {
           return this.height;
+        }
+
+        public @Nullable List<Friend> friends() {
+          return this.friends;
         }
 
         @Override
         public String toString() {
           return "AsHuman{"
             + "name=" + name + ", "
-            + "friends=" + friends + ", "
-            + "height=" + height
+            + "height=" + height + ", "
+            + "friends=" + friends
             + "}";
         }
 
@@ -203,8 +205,8 @@ public final class TestQuery implements Query<Operation.Variables> {
           if (o instanceof AsHuman) {
             AsHuman that = (AsHuman) o;
             return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-             && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends))
-             && ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
+             && ((this.height == null) ? (that.height == null) : this.height.equals(that.height))
+             && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends));
           }
           return false;
         }
@@ -215,24 +217,17 @@ public final class TestQuery implements Query<Operation.Variables> {
           h *= 1000003;
           h ^= (name == null) ? 0 : name.hashCode();
           h *= 1000003;
-          h ^= (friends == null) ? 0 : friends.hashCode();
-          h *= 1000003;
           h ^= (height == null) ? 0 : height.hashCode();
+          h *= 1000003;
+          h ^= (friends == null) ? 0 : friends.hashCode();
           return h;
         }
 
         public static class Friend {
-          private final @Nonnull String name;
-
           private final @Nonnull List<Episode> appearsIn;
 
-          public Friend(@Nonnull String name, @Nonnull List<Episode> appearsIn) {
-            this.name = name;
+          public Friend(@Nonnull List<Episode> appearsIn) {
             this.appearsIn = appearsIn;
-          }
-
-          public @Nonnull String name() {
-            return this.name;
           }
 
           public @Nonnull List<Episode> appearsIn() {
@@ -242,7 +237,6 @@ public final class TestQuery implements Query<Operation.Variables> {
           @Override
           public String toString() {
             return "Friend{"
-              + "name=" + name + ", "
               + "appearsIn=" + appearsIn
               + "}";
           }
@@ -254,8 +248,7 @@ public final class TestQuery implements Query<Operation.Variables> {
             }
             if (o instanceof Friend) {
               Friend that = (Friend) o;
-              return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-               && ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn));
+              return ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn));
             }
             return false;
           }
@@ -264,15 +257,12 @@ public final class TestQuery implements Query<Operation.Variables> {
           public int hashCode() {
             int h = 1;
             h *= 1000003;
-            h ^= (name == null) ? 0 : name.hashCode();
-            h *= 1000003;
             h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
             return h;
           }
 
           public static final class Mapper implements ResponseFieldMapper<Friend> {
             final Field[] fields = {
-              Field.forString("name", "name", null, false),
               Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
                 @Override public Episode read(final Field.ListItemReader reader) throws IOException {
                   return Episode.valueOf(reader.readString());
@@ -288,22 +278,16 @@ public final class TestQuery implements Query<Operation.Variables> {
                 public void handle(final int fieldIndex, final Object value) throws IOException {
                   switch (fieldIndex) {
                     case 0: {
-                      contentValues.name = (String) value;
-                      break;
-                    }
-                    case 1: {
                       contentValues.appearsIn = (List<Episode>) value;
                       break;
                     }
                   }
                 }
               }, fields);
-              return new Friend(contentValues.name, contentValues.appearsIn);
+              return new Friend(contentValues.appearsIn);
             }
 
             static final class __ContentValues {
-              String name;
-
               List<Episode> appearsIn;
             }
           }
@@ -312,12 +296,12 @@ public final class TestQuery implements Query<Operation.Variables> {
         public static final class Mapper implements ResponseFieldMapper<AsHuman> {
           final Field[] fields = {
             Field.forString("name", "name", null, false),
+            Field.forDouble("height", "height", null, true),
             Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend>() {
               @Override public Friend read(final ResponseReader reader) throws IOException {
                 return new Friend.Mapper().map(reader);
               }
-            }),
-            Field.forDouble("height", "height", null, true)
+            })
           };
 
           @Override
@@ -332,25 +316,25 @@ public final class TestQuery implements Query<Operation.Variables> {
                     break;
                   }
                   case 1: {
-                    contentValues.friends = (List<Friend>) value;
+                    contentValues.height = (Double) value;
                     break;
                   }
                   case 2: {
-                    contentValues.height = (Double) value;
+                    contentValues.friends = (List<Friend>) value;
                     break;
                   }
                 }
               }
             }, fields);
-            return new AsHuman(contentValues.name, contentValues.friends, contentValues.height);
+            return new AsHuman(contentValues.name, contentValues.height, contentValues.friends);
           }
 
           static final class __ContentValues {
             String name;
 
-            List<Friend> friends;
-
             Double height;
+
+            List<Friend> friends;
           }
         }
       }
@@ -417,17 +401,10 @@ public final class TestQuery implements Query<Operation.Variables> {
         }
 
         public static class Friend {
-          private final @Nonnull String name;
-
           private final @Nonnull String id;
 
-          public Friend(@Nonnull String name, @Nonnull String id) {
-            this.name = name;
+          public Friend(@Nonnull String id) {
             this.id = id;
-          }
-
-          public @Nonnull String name() {
-            return this.name;
           }
 
           public @Nonnull String id() {
@@ -437,7 +414,6 @@ public final class TestQuery implements Query<Operation.Variables> {
           @Override
           public String toString() {
             return "Friend{"
-              + "name=" + name + ", "
               + "id=" + id
               + "}";
           }
@@ -449,8 +425,7 @@ public final class TestQuery implements Query<Operation.Variables> {
             }
             if (o instanceof Friend) {
               Friend that = (Friend) o;
-              return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-               && ((this.id == null) ? (that.id == null) : this.id.equals(that.id));
+              return ((this.id == null) ? (that.id == null) : this.id.equals(that.id));
             }
             return false;
           }
@@ -459,15 +434,12 @@ public final class TestQuery implements Query<Operation.Variables> {
           public int hashCode() {
             int h = 1;
             h *= 1000003;
-            h ^= (name == null) ? 0 : name.hashCode();
-            h *= 1000003;
             h ^= (id == null) ? 0 : id.hashCode();
             return h;
           }
 
           public static final class Mapper implements ResponseFieldMapper<Friend> {
             final Field[] fields = {
-              Field.forString("name", "name", null, false),
               Field.forString("id", "id", null, false)
             };
 
@@ -479,22 +451,16 @@ public final class TestQuery implements Query<Operation.Variables> {
                 public void handle(final int fieldIndex, final Object value) throws IOException {
                   switch (fieldIndex) {
                     case 0: {
-                      contentValues.name = (String) value;
-                      break;
-                    }
-                    case 1: {
                       contentValues.id = (String) value;
                       break;
                     }
                   }
                 }
               }, fields);
-              return new Friend(contentValues.name, contentValues.id);
+              return new Friend(contentValues.id);
             }
 
             static final class __ContentValues {
-              String name;
-
               String id;
             }
           }

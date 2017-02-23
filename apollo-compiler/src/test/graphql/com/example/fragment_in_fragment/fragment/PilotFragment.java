@@ -13,8 +13,10 @@ import javax.annotation.Nullable;
 @Generated("Apollo GraphQL")
 public class PilotFragment {
   public static final String FRAGMENT_DEFINITION = "fragment pilotFragment on Person {\n"
+      + "  __typename\n"
       + "  name\n"
       + "  homeworld {\n"
+      + "    __typename\n"
       + "    name\n"
       + "  }\n"
       + "}";

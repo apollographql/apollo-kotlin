@@ -1,10 +1,11 @@
 {
   "operations": [
     {
+      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/inline_fragments_with_friends/TestQuery.graphql",
       "operationName": "TestQuery",
       "operationType": "query",
       "variables": [],
-      "source": "query TestQuery {\n  hero {\n    __typename\n    name\n  ... on Human {\n      height\n      friends {\n        __typename\n        appearsIn\n      }\n    }\n    ... on Droid {\n      primaryFunction\n      friends {\n        __typename\n        id\n      }\n    }\n  }\n}",
+      "source": "query TestQuery {\n  hero {\n    __typename\n    name\n    ... on Human {\n      __typename\n      height\n      friends {\n        __typename\n        appearsIn\n      }\n    }\n    ... on Droid {\n      __typename\n      primaryFunction\n      friends {\n        __typename\n        id\n      }\n    }\n  }\n}",
       "fields": [
         {
           "responseName": "hero",
@@ -28,15 +29,15 @@
                   "type": "String!"
                 },
                 {
+                  "responseName": "height",
+                  "fieldName": "height",
+                  "type": "Float"
+                },
+                {
                   "responseName": "friends",
                   "fieldName": "friends",
                   "type": "[Character]",
                   "fields": [
-                    {
-                      "responseName": "name",
-                      "fieldName": "name",
-                      "type": "String!"
-                    },
                     {
                       "responseName": "appearsIn",
                       "fieldName": "appearsIn",
@@ -45,11 +46,6 @@
                   ],
                   "fragmentSpreads": [],
                   "inlineFragments": []
-                },
-                {
-                  "responseName": "height",
-                  "fieldName": "height",
-                  "type": "Float"
                 }
               ],
               "fragmentSpreads": []
@@ -67,11 +63,6 @@
                   "fieldName": "friends",
                   "type": "[Character]",
                   "fields": [
-                    {
-                      "responseName": "name",
-                      "fieldName": "name",
-                      "type": "String!"
-                    },
                     {
                       "responseName": "id",
                       "fieldName": "id",
@@ -92,8 +83,7 @@
           ]
         }
       ],
-      "fragmentsReferenced": [],
-      "filePath": "src/test/graphql/com/example/inline_fragments_with_friends/TestQuery.json"
+      "fragmentsReferenced": []
     }
   ],
   "fragments": [],

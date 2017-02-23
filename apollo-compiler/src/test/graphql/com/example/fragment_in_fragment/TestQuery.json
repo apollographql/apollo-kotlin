@@ -1,15 +1,22 @@
 {
   "operations": [
     {
-      "operationName": "TestQuery",
+      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/fragment_in_fragment/TestQuery.graphql",
+      "operationName": "AllStarships",
       "operationType": "query",
       "variables": [],
-      "source": "query AllStarships {\n  allStarships(first: 7) {\n    edges {\n      node {\n        ...starshipFragment\n      }\n    }\n  }\n}",
+      "source": "query AllStarships {\n  allStarships(first: 7) {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        ...starshipFragment\n      }\n    }\n  }\n}",
       "fields": [
         {
           "responseName": "allStarships",
           "fieldName": "allStarships",
           "type": "StarshipsConnection",
+          "args": [
+            {
+              "name": "first",
+              "value": 7
+            }
+          ],
           "fields": [
             {
               "responseName": "edges",
@@ -38,14 +45,14 @@
       "fragmentsReferenced": [
         "starshipFragment",
         "pilotFragment"
-      ],
-      "filePath": "src/test/graphql/com/example/fragment_in_fragment/TestQuery.json"
+      ]
     }
   ],
   "fragments": [
     {
+      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/fragment_in_fragment/TestQuery.graphql",
       "fragmentName": "starshipFragment",
-      "source": "fragment starshipFragment on Starship {\n  id\n  name\n  pilotConnection {\n    edges {\n      node {\n        ...pilotFragment\n      }\n    }\n  }\n}",
+      "source": "fragment starshipFragment on Starship {\n  __typename\n  id\n  name\n  pilotConnection {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        ...pilotFragment\n      }\n    }\n  }\n}",
       "typeCondition": "Starship",
       "fields": [
         {
@@ -94,8 +101,9 @@
       ]
     },
     {
+      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/fragment_in_fragment/TestQuery.graphql",
       "fragmentName": "pilotFragment",
-      "source": "fragment pilotFragment on Person {\n  name\n  homeworld {\n    name\n  }\n}",
+      "source": "fragment pilotFragment on Person {\n  __typename\n  name\n  homeworld {\n    __typename\n    name\n  }\n}",
       "typeCondition": "Person",
       "fields": [
         {

@@ -1,0 +1,17 @@
+query TestQuery {
+  hero {
+    name
+    ... on Human {
+      height
+      friends {
+        appearsIn
+      }
+    }
+    ... on Droid {
+      primaryFunction
+      friends {
+        id
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 {
   "operations": [
     {
+      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/enum_type/TestQuery.graphql",
       "operationName": "TestQuery",
       "operationType": "query",
       "variables": [],
@@ -31,8 +32,7 @@
           "inlineFragments": []
         }
       ],
-      "fragmentsReferenced": [],
-      "filePath": "src/test/graphql/com/example/enum_type/TestQuery.json"
+      "fragmentsReferenced": []
     }
   ],
   "fragments": [],

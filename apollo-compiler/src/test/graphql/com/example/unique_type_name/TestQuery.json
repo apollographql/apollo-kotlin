@@ -1,14 +1,15 @@
 {
   "operations": [
     {
+      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/unique_type_name/TestQuery.graphql",
       "operationName": "HeroDetailQuery",
       "operationType": "query",
       "variables": [],
-      "source": "query HeroDetailQuery {\n  heroDetailQuery {\n    __typename\n    name\n    friends {\n      __typename\n      name\n    }\n    ... on Human {\n      height\n      friends {\n        __typename\n        appearsIn\n        friends {\n          __typename\n          ...HeroDetails\n        }\n      }\n    }\n  }\n}",
+      "source": "query HeroDetailQuery {\n  heroDetailQuery {\n    __typename\n    name\n    friends {\n      __typename\n      name\n    }\n    ... on Human {\n      __typename\n      height\n      friends {\n        __typename\n        appearsIn\n        friends {\n          __typename\n          ...HeroDetails\n        }\n      }\n    }\n  }\n}",
       "fields": [
         {
           "responseName": "heroDetailQuery",
-          "fieldName": "heroDetail",
+          "fieldName": "heroDetailQuery",
           "type": "Character",
           "fields": [
             {
@@ -83,14 +84,14 @@
       ],
       "fragmentsReferenced": [
         "HeroDetails"
-      ],
-      "filePath": "src/test/graphql/com/example/unique_type_name/TestQuery.json"
+      ]
     }
   ],
   "fragments": [
     {
+      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/unique_type_name/TestQuery.graphql",
       "fragmentName": "HeroDetails",
-      "source": "fragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    totalCount\n    edges {\n      node {\n        __typename\n        name\n      }\n    }\n  }\n}",
+      "source": "fragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n}",
       "typeCondition": "Character",
       "fields": [
         {

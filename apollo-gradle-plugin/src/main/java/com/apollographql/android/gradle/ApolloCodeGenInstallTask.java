@@ -9,6 +9,7 @@ import org.gradle.api.Task;
 import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.OutputDirectory;
 
+import com.apollographql.android.compiler.GraphQLCompiler;
 import com.moowork.gradle.node.npm.NpmTask;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.JsonAdapter;
@@ -19,7 +20,6 @@ import okio.Okio;
 public class ApolloCodeGenInstallTask extends NpmTask {
   static final String NAME = "installApolloCodegen";
   private static final String INSTALL_DIR = "node_modules/apollo-codegen";
-  private static final String APOLLOCODEGEN_VERSION = "0.10.5";
 
   @OutputDirectory private File installDir;
 
@@ -44,7 +44,8 @@ public class ApolloCodeGenInstallTask extends NpmTask {
     if (!apolloPackageFile.isFile()) {
       writePackageFile(apolloPackageFile);
     }
-    setArgs(Lists.newArrayList("install", "apollo-codegen@" + APOLLOCODEGEN_VERSION, "--save", "--save-exact"));
+    setArgs(Lists.newArrayList("install", "apollo-codegen@" + GraphQLCompiler.APOLLOCODEGEN_VERSION, "--save",
+        "--save-exact"));
   }
 
   private static class PackageJson {
@@ -72,7 +73,7 @@ public class ApolloCodeGenInstallTask extends NpmTask {
     }
   }
   private boolean isSameApolloCodegenVersion(String packageVersion) {
-    return packageVersion != null && packageVersion.equals(APOLLOCODEGEN_VERSION);
+    return packageVersion != null && packageVersion.equals(GraphQLCompiler.APOLLOCODEGEN_VERSION);
   }
 
   /**
