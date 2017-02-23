@@ -46,14 +46,11 @@ dependencies {
   compile 'com.android.support:appcompat-v7:25.1.1'
   compile 'com.google.code.findbugs:jsr305:3.0.1'
   compile 'javax.annotation:jsr250-api:1.0'
-  compile 'com.fernandocejas:arrow:1.0.0'
 }
 
 apollo {
   customTypeMapping {
     DateTime = "java.util.Date"
-    OptionalString = "com.fernandocejas.arrow.optional.Optional"
-    UnsupportedType = "java.lang.Object"
   }
 }
 

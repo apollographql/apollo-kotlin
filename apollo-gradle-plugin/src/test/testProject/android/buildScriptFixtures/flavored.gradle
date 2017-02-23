@@ -62,8 +62,6 @@ dependencies {
 apollo {
   customTypeMapping {
     DateTime = "java.util.Date"
-    OptionalString = "com.fernandocejas.arrow.optional.Optional"
-    UnsupportedType = "java.lang.Object"
   }
 }
 
