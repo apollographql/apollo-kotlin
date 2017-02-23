@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.gradle.api.Task;
-import org.gradle.api.logging.LogLevel;
 import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.OutputDirectory;
 
