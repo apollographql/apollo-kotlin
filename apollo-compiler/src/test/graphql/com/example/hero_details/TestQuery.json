@@ -1,10 +1,11 @@
 {
   "operations": [
     {
+      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/hero_details/TestQuery.graphql",
       "operationName": "TestQuery",
       "operationType": "query",
       "variables": [],
-      "source": "query TestQuery {\n  hero {\n    __typename\n    name\n    friendsConnection {\n      totalCount\n      edges {\n        node {\n          __typename\n          name\n        }\n      }\n    }\n  }\n}",
+      "source": "query TestQuery {\n  hero {\n    __typename\n    name\n    friendsConnection {\n      __typename\n      totalCount\n      edges {\n        __typename\n        node {\n          __typename\n          name\n        }\n      }\n    }\n  }\n}",
       "fields": [
         {
           "responseName": "hero",
@@ -58,8 +59,7 @@
           "inlineFragments": []
         }
       ],
-      "fragmentsReferenced": [],
-      "filePath": "src/test/graphql/com/example/hero_details/TestQuery.json"
+      "fragmentsReferenced": []
     }
   ],
   "fragments": [],

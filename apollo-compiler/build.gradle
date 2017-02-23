@@ -39,4 +39,6 @@ val VERSION = "${project.version}"
 }
 tasks.getByName('compileKotlin').dependsOn('pluginVersion')
 
+apply from: 'gradle/update-test-IR-files.gradle'
+
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

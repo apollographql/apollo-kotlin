@@ -1,6 +1,7 @@
 {
   "operations": [
     {
+      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/two_heroes_unique/TestQuery.graphql",
       "operationName": "TestQuery",
       "operationType": "query",
       "variables": [],
@@ -24,6 +25,12 @@
           "responseName": "luke",
           "fieldName": "hero",
           "type": "Character",
+          "args": [
+            {
+              "name": "episode",
+              "value": "EMPIRE"
+            }
+          ],
           "fields": [
             {
               "responseName": "id",
@@ -40,8 +47,7 @@
           "inlineFragments": []
         }
       ],
-      "fragmentsReferenced": [],
-      "filePath": "src/test/graphql/com/example/two_heroes_unique/TestQuery.json"
+      "fragmentsReferenced": []
     }
   ],
   "fragments": [],

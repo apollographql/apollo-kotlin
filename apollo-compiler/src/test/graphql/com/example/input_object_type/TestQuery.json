@@ -1,6 +1,7 @@
 {
   "operations": [
     {
+      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/input_object_type/TestQuery.graphql",
       "operationName": "TestQuery",
       "operationType": "mutation",
       "variables": [
@@ -13,12 +14,28 @@
           "type": "ReviewInput!"
         }
       ],
-      "source": "mutation TestQuery($ep: Episode!, $review: ReviewInput!) {\n  createReview(episode: $ep, review: $review) {\n    stars\n    commentary\n  }\n}",
+      "source": "mutation TestQuery($ep: Episode!, $review: ReviewInput!) {\n  createReview(episode: $ep, review: $review) {\n    __typename\n    stars\n    commentary\n  }\n}",
       "fields": [
         {
           "responseName": "createReview",
           "fieldName": "createReview",
           "type": "Review",
+          "args": [
+            {
+              "name": "episode",
+              "value": {
+                "kind": "Variable",
+                "variableName": "ep"
+              }
+            },
+            {
+              "name": "review",
+              "value": {
+                "kind": "Variable",
+                "variableName": "review"
+              }
+            }
+          ],
           "fields": [
             {
               "responseName": "stars",
@@ -35,8 +52,7 @@
           "inlineFragments": []
         }
       ],
-      "fragmentsReferenced": [],
-      "filePath": "src/test/graphql/com/example/input_object_type/TestQuery.json"
+      "fragmentsReferenced": []
     }
   ],
   "fragments": [],
@@ -68,20 +84,17 @@
         {
           "name": "stars",
           "description": "0-5 stars",
-          "type": "Int",
-          "defaultValue": null
+          "type": "Int!"
         },
         {
           "name": "commentary",
           "description": "Comment about the movie, optional",
-          "type": "String!",
-          "defaultValue": null
+          "type": "String"
         },
         {
           "name": "favoriteColor",
           "description": "Favorite color, optional",
-          "type": "ColorInput!",
-          "defaultValue": null
+          "type": "ColorInput!"
         }
       ]
     },

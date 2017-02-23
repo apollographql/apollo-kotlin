@@ -17,11 +17,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
-public final class TestQuery implements Query<Operation.Variables> {
+public final class AllStarships implements Query<Operation.Variables> {
   public static final String OPERATION_DEFINITION = "query AllStarships {\n"
       + "  allStarships(first: 7) {\n"
+      + "    __typename\n"
       + "    edges {\n"
+      + "      __typename\n"
       + "      node {\n"
+      + "        __typename\n"
       + "        ...starshipFragment\n"
       + "      }\n"
       + "    }\n"
@@ -34,7 +37,7 @@ public final class TestQuery implements Query<Operation.Variables> {
 
   private final Operation.Variables variables;
 
-  public TestQuery() {
+  public AllStarships() {
     this.variables = Operation.EMPTY_VARIABLES;
   }
 

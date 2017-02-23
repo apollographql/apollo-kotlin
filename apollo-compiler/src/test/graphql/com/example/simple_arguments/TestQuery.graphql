@@ -1,0 +1,5 @@
+query TestQuery($episode: Episode, $includeName: Boolean!) {
+  hero(episode: $episode) {
+    name @include(if: $includeName)
+  }
+}

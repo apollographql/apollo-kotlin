@@ -1,0 +1,68 @@
+import groovy.io.FileType
+
+//A convenience plugin for re-generating IR files after updating the apollo-codegen version.
+//The plugin will use your local code-gen version, which must have been installed globally.
+//Your local version must match the project version for the plug-in to run.
+task updateTestIRFiles(type: UpdateTestIRFilesTask)
+
+class UpdateTestIRFilesTask extends DefaultTask {
+
+  @TaskAction
+  def updateIRFiles() {
+    def apolloVersion = getLocalApolloVersion()
+    if (apolloVersion == -1) {
+      return
+    }
+    def dir = new File("apollo-compiler/src/test/graphql/com/example")
+    dir.eachFile(FileType.DIRECTORIES) {
+      testDir -> generateIRFile(testDir)
+    }
+    logApolloVersion(apolloVersion)
+  }
+
+  private static def logApolloVersion(apolloVersion) {
+    File outputFile = new File('apollo-compiler/src/test/graphql/apollo-codegen.properties')
+    outputFile.write("apollo-codegen version=${apolloVersion}")
+  }
+
+  private def getLocalApolloVersion() {
+    def apolloCodeGenVersionProcess = 'apollo-codegen --version'.execute()
+    apolloCodeGenVersionProcess.waitFor()
+    def error = apolloCodeGenVersionProcess.err.text
+    if (error != null && !error.isEmpty()) {
+      logger.error("Error running apollo-codgen. Please verify it is globally accessible, reason: ${error}")
+      return -1
+    }
+    def localCodeGenVersion = apolloCodeGenVersionProcess.in.text.trim()
+    return localCodeGenVersion
+  }
+
+  def generateIRFile(testDir) {
+    logger.info("Generating IR file for: ${testDir.name}")
+    File queryFile = new File(testDir, 'TestQuery.graphql')
+    if (!queryFile.exists()) {
+      logger.warn("Skipping generating IR file for test: ${testDir.name} Expected file TestQuery.json")
+      return
+    }
+    File outputFile = new File(testDir, 'TestQuery.json')
+    File schema = new File(testDir, 'schema.json') //Check for custom schema
+    if (!schema.exists()) {
+      schema = new File('apollo-compiler/src/test/graphql/schema.json')
+    }
+    def apolloCodeGenProcess = """apollo-codegen generate ${queryFile.absoluteFile}
+          --schema ${schema.absoluteFile}
+          --output ${outputFile.absoluteFile}
+          --target json""".execute()
+    apolloCodeGenProcess.waitFor()
+    def error = apolloCodeGenProcess.err.text
+    if (error != null && !error.isEmpty()) {
+      logger.error("Failed to generate IR file for: ${testDir.name} reason:" +runtimeError)
+    }
+    //apollo code-gen has not std output if successful.
+    def runtimeError = apolloCodeGenProcess.in.text
+    if (runtimeError != null && !runtimeError.isEmpty()) {
+      logger.error("Failed to generate IR file for: ${testDir.name} reason:" + runtimeError)
+    }
+  }
+
+}

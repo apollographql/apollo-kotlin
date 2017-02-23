@@ -1,10 +1,11 @@
 {
   "operations": [
     {
+      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/simple_inline_fragment/TestQuery.graphql",
       "operationName": "TestQuery",
       "operationType": "query",
       "variables": [],
-      "source": "query Query {\n  hero {\n    __typename\n    name\n    ... on Human {\n      height\n    }\n    ... on Droid {\n      primaryFunction\n    }\n  }\n}",
+      "source": "query TestQuery {\n  hero {\n    __typename\n    name\n    ... on Human {\n      __typename\n      height\n    }\n    ... on Droid {\n      __typename\n      primaryFunction\n    }\n  }\n}",
       "fields": [
         {
           "responseName": "hero",
@@ -54,8 +55,7 @@
           ]
         }
       ],
-      "fragmentsReferenced": [],
-      "filePath": "src/test/graphql/com/example/simple_inline_fragment/TestQuery.json"
+      "fragmentsReferenced": []
     }
   ],
   "fragments": [],
