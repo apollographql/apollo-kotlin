@@ -3,5 +3,6 @@ query TestQuery {
     name
     birthDate
     appearanceDates
+    fieldWithUnsupportedType
   }
 }
