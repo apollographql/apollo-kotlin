@@ -39,9 +39,10 @@ class UpdateTestIRFilesTask extends DefaultTask {
 
   def generateIRFile(testDir) {
     logger.info("Generating IR file for: ${testDir.name}")
-    File queryFile = new File(testDir, 'TestQuery.graphql')
+    def testQueryFileName = 'TestQuery.graphql'
+    File queryFile = new File(testDir, testQueryFileName)
     if (!queryFile.exists()) {
-      logger.warn("Skipping generating IR file for test: ${testDir.name} Expected file TestQuery.json")
+      logger.warn("Skipping generating IR file for test: ${testDir.name}. Expected file `TestQuery.json` not found.")
       return
     }
     File outputFile = new File(testDir, 'TestQuery.json')
@@ -62,6 +63,14 @@ class UpdateTestIRFilesTask extends DefaultTask {
     def runtimeError = apolloCodeGenProcess.in.text
     if (runtimeError != null && !runtimeError.isEmpty()) {
       logger.error("Failed to generate IR file for: ${testDir.name} reason:" + runtimeError)
+    }
+
+    //Remove the "filePath" lines in the IR file. They are not needed by the compiler
+    //and pollute git history.
+    def outputFileContents = outputFile.text
+    outputFile.withWriter { w ->
+      w << outputFileContents.replaceAll("\"filePath\": \".*\"",
+          "\"filePath\": \"src/test/graphql/com/example/${testDir.name}/${testQueryFileName}\"")
     }
   }
 

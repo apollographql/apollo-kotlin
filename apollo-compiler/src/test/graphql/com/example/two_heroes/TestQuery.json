@@ -1,50 +1,50 @@
 {
-  "operations": [
-    {
-      "filePath": "/Users/ben_schwab/airapps/apollo-android/apollo-compiler/src/test/graphql/com/example/two_heroes/TestQuery.graphql",
-      "operationName": "TestQuery",
-      "operationType": "query",
-      "variables": [],
-      "source": "query TestQuery {\n  r2: hero {\n    __typename\n    name\n  }\n  luke: hero(episode: EMPIRE) {\n    __typename\n    name\n  }\n}",
-      "fields": [
-        {
-          "responseName": "r2",
-          "fieldName": "hero",
-          "type": "Character",
-          "fields": [
-            {
-              "responseName": "name",
-              "fieldName": "name",
-              "type": "String!"
-            }
-          ],
-          "fragmentSpreads": [],
-          "inlineFragments": []
-        },
-        {
-          "responseName": "luke",
-          "fieldName": "hero",
-          "type": "Character",
-          "args": [
-            {
-              "name": "episode",
-              "value": "EMPIRE"
-            }
-          ],
-          "fields": [
-            {
-              "responseName": "name",
-              "fieldName": "name",
-              "type": "String!"
-            }
-          ],
-          "fragmentSpreads": [],
-          "inlineFragments": []
-        }
-      ],
-      "fragmentsReferenced": []
-    }
-  ],
-  "fragments": [],
-  "typesUsed": []
+	"operations": [
+		{
+			"filePath": "src/test/graphql/com/example/two_heroes/TestQuery.graphql",
+			"operationName": "TestQuery",
+			"operationType": "query",
+			"variables": [],
+			"source": "query TestQuery {\n  r2: hero {\n    __typename\n    name\n  }\n  luke: hero(episode: EMPIRE) {\n    __typename\n    name\n  }\n}",
+			"fields": [
+				{
+					"responseName": "r2",
+					"fieldName": "hero",
+					"type": "Character",
+					"fields": [
+						{
+							"responseName": "name",
+							"fieldName": "name",
+							"type": "String!"
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				},
+				{
+					"responseName": "luke",
+					"fieldName": "hero",
+					"type": "Character",
+					"args": [
+						{
+							"name": "episode",
+							"value": "EMPIRE"
+						}
+					],
+					"fields": [
+						{
+							"responseName": "name",
+							"fieldName": "name",
+							"type": "String!"
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				}
+			],
+			"fragmentsReferenced": []
+		}
+	],
+	"fragments": [],
+	"typesUsed": []
 }
