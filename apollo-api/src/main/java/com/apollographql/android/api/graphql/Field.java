@@ -9,7 +9,7 @@ public class Field {
   private final Type type;
   private final String responseName;
   private final String fieldName;
-  final List<Map<String, Object>> arguments;
+  private final List<Map<String, Object>> arguments;
   private final boolean optional;
 
   public static Field forString(String responseName, String fieldName, List<Map<String, Object>> arguments,
