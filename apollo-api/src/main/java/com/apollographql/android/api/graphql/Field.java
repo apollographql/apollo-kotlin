@@ -62,12 +62,12 @@ public class Field {
     return new ConditionalTypeField(responseName, fieldName, conditionalTypeReader);
   }
 
-  private Field(Type type, String responseName, String fieldName, List<Map<String, Object>> arguments, boolean
-      optional) {
+  private Field(Type type, String responseName, String fieldName, List<Map<String, Object>> arguments,
+      boolean optional) {
     this.type = type;
     this.responseName = responseName;
     this.fieldName = fieldName;
-    this.arguments = arguments == null ? Collections.<Map<String,Object>>emptyList()
+    this.arguments = arguments == null ? Collections.<Map<String, Object>>emptyList()
         : Collections.unmodifiableList(arguments);
     this.optional = optional;
   }
