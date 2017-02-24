@@ -30,7 +30,7 @@ dependencies {
   compile dep.rxjava2
   compile dep.rxandroid
   compile dep.okhttpLoggingInterceptor
-  compile project(path: ':apollo-runtime')
+  compile dep.apolloRuntime
 
   testCompile dep.junit
 
