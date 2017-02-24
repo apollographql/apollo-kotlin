@@ -8,7 +8,6 @@ import com.apollographql.android.compiler.ir.InlineFragment
 import com.squareup.javapoet.*
 import java.io.IOException
 import java.util.*
-import javax.annotation.Nonnull
 import javax.lang.model.element.Modifier
 
 /**
@@ -154,12 +153,13 @@ class SchemaTypeResponseMapperBuilder(
     if (type.isCustomScalarType()) {
       val customScalarEnum = CustomEnumTypeSpecBuilder.className(context)
       val customScalarEnumConst = normalizeGraphQlType(field.type).toUpperCase(Locale.ENGLISH)
-      return CodeBlock.of("\$T.forCustomType(\$S, \$S, null, \$L, \$T.\$L)", API_RESPONSE_FIELD_TYPE,
-          field.responseName, field.fieldName, field.isOptional(), customScalarEnum, customScalarEnumConst)
+      return CodeBlock.of("\$T.forCustomType(\$S, \$S, \$L, \$L, \$T.\$L)", API_RESPONSE_FIELD_TYPE,
+          field.responseName, field.fieldName, field.argumentCodeBlock(), field.isOptional(), customScalarEnum,
+          customScalarEnumConst)
     } else {
       val factoryMethod = scalarFieldFactoryMethod(type)
-      return CodeBlock.of("\$T.\$L(\$S, \$S, null, \$L)", API_RESPONSE_FIELD_TYPE, factoryMethod, field.responseName,
-          field.fieldName, field.isOptional())
+      return CodeBlock.of("\$T.\$L(\$S, \$S, \$L, \$L)", API_RESPONSE_FIELD_TYPE, factoryMethod, field.responseName,
+          field.fieldName, field.argumentCodeBlock(), field.isOptional())
     }
   }
 
@@ -197,8 +197,8 @@ class SchemaTypeResponseMapperBuilder(
     val customScalarEnumConst = normalizeGraphQlType(field.type).toUpperCase(Locale.ENGLISH)
     return CodeBlock
         .builder()
-        .add("\$T.forList(\$S, \$S, null, \$L, new \$T() {\n", API_RESPONSE_FIELD_TYPE, field.responseName,
-            field.fieldName, field.isOptional(),
+        .add("\$T.forList(\$S, \$S, \$L, \$L, new \$T() {\n", API_RESPONSE_FIELD_TYPE, field.responseName,
+            field.fieldName, field.argumentCodeBlock(), field.isOptional(),
             apiResponseFieldListItemReaderType(type.overrideTypeName(typeOverrideMap)))
         .indent()
         .beginControlFlow("@Override public \$T read(final \$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
@@ -231,8 +231,8 @@ class SchemaTypeResponseMapperBuilder(
 
     return CodeBlock
         .builder()
-        .add("\$T.forList(\$S, \$S, null, \$L, new \$T() {\n", API_RESPONSE_FIELD_TYPE, field.responseName,
-            field.fieldName, field.isOptional(),
+        .add("\$T.forList(\$S, \$S, \$L, \$L, new \$T() {\n", API_RESPONSE_FIELD_TYPE, field.responseName,
+            field.fieldName, field.argumentCodeBlock(), field.isOptional(),
             apiResponseFieldListItemReaderType(type.overrideTypeName(typeOverrideMap)))
         .indent()
         .beginControlFlow("@Override public \$T read(final \$T \$L) throws \$T", type.overrideTypeName(typeOverrideMap),
@@ -246,8 +246,8 @@ class SchemaTypeResponseMapperBuilder(
 
   private fun objectFieldFactoryCode(field: Field, factoryMethod: String, type: TypeName): CodeBlock {
     return CodeBlock.builder()
-        .add("\$T.$factoryMethod(\$S, \$S, null, \$L, new \$T() {\n", API_RESPONSE_FIELD_TYPE, field.responseName,
-            field.fieldName, field.isOptional(), apiResponseFieldObjectReaderTypeName(type))
+        .add("\$T.$factoryMethod(\$S, \$S, \$L, \$L, new \$T() {\n", API_RESPONSE_FIELD_TYPE, field.responseName,
+            field.fieldName, field.argumentCodeBlock(), field.isOptional(), apiResponseFieldObjectReaderTypeName(type))
         .indent()
         .beginControlFlow("@Override public \$T read(final \$T \$L) throws \$T", type,
             ClassNames.API_RESPONSE_READER, READER_VAR, IOException::class.java)
