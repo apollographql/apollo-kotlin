@@ -27,11 +27,8 @@ android {
 
 dependencies {
   compile dep.appcompat
-  compile dep.rxjava2
-  compile dep.rxandroid
   compile dep.okhttpLoggingInterceptor
   compile dep.apolloRuntime
 
   testCompile dep.junit
-
 }
