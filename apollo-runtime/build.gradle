@@ -7,8 +7,8 @@ buildscript {
 apply plugin: 'com.android.library'
 
 android {
-  compileSdkVersion rootProject.ext.compileSdkVersion
-  buildToolsVersion rootProject.ext.buildToolsVersion
+  compileSdkVersion androidConfig.compileSdkVersion
+  buildToolsVersion androidConfig.buildToolsVersion
 
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_7
@@ -22,7 +22,7 @@ android {
   }
 
   dexOptions {
-    preDexLibraries = !rootProject.ext.isCi
+    preDexLibraries = isCi
   }
 
   defaultConfig {

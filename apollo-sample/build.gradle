@@ -6,15 +6,16 @@ buildscript {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.apollographql.android'
 
 android {
-  compileSdkVersion rootProject.ext.compileSdkVersion
-  buildToolsVersion rootProject.ext.buildToolsVersion
+  compileSdkVersion androidConfig.compileSdkVersion
+  buildToolsVersion androidConfig.buildToolsVersion
 
   defaultConfig {
     applicationId "com.example.apollographql.sample"
-    minSdkVersion 15
-    targetSdkVersion 25
+    minSdkVersion androidConfig.minSdkVersion
+    targetSdkVersion androidConfig.targetSdkVersion
   }
 
   lintOptions {
@@ -35,7 +36,6 @@ dependencies {
   testCompile dep.junit
 }
 
-apply plugin: 'com.apollographql.android'
 
 apollo {
   generateClasses = true
