@@ -29,8 +29,9 @@ dependencies {
   compile dep.appcompat
   compile dep.rxjava2
   compile dep.rxandroid
-  compile dep.retrofitRx2Adapter
   compile dep.okhttpLoggingInterceptor
+  compile project(path: ':apollo-runtime')
 
   testCompile dep.junit
+
 }
