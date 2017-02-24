@@ -4,9 +4,6 @@ import android.app.Application;
 
 import com.apollographql.android.ApolloClient;
 
-import java.io.File;
-
-import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
@@ -20,7 +17,6 @@ public class SampleApplication extends Application {
     HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
     loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .cache(new Cache(new File(getCacheDir(), "okhttp"), 10 * 1024))
         .addNetworkInterceptor(loggingInterceptor)
         .build();
 
