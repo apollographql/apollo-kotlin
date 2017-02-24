@@ -1,5 +1,5 @@
 subprojects {
-  apply from: "../dependencies.gradle"
+  apply from: "../gradle/dependencies.gradle"
 
   buildscript {
     repositories {
