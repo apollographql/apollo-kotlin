@@ -1,4 +1,4 @@
-package com.example.simple_arguments.type;
+package com.example.arguments_simple.type;
 
 import javax.annotation.Generated;
 
