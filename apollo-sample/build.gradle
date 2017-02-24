@@ -27,16 +27,10 @@ android {
 
 dependencies {
   compile dep.appcompat
-  compile dep.apolloConverter
   compile dep.rxjava2
   compile dep.rxandroid
   compile dep.retrofitRx2Adapter
   compile dep.okhttpLoggingInterceptor
 
   testCompile dep.junit
-}
-
-
-apollo {
-  generateClasses = true
 }
