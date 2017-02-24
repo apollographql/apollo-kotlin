@@ -38,5 +38,6 @@ ext.dep = [
     truth                   : 'com.google.truth:truth:0.30',
     mockWebServer           : "com.squareup.okhttp3:mockwebserver:$versions.okHttpVersion",
     okhttpLoggingInterceptor: "com.squareup.okhttp3:logging-interceptor:$versions.okHttpVersion",
-    okHttp                  : "com.squareup.okhttp3:okhttp:$versions.okHttpVersion"
+    okHttp                  : "com.squareup.okhttp3:okhttp:$versions.okHttpVersion",
+    okhttpTestSupport       : "com.squareup.okhttp3:okhttp-testing-support:$versions.okHttpVersion"
 ]

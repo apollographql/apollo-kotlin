@@ -50,7 +50,7 @@ final class ResponseBodyConverter {
       }
     }
     jsonReader.endObject();
-
+    jsonReader.close();
     return new Response<T>(operation, data, errors);
   }
 

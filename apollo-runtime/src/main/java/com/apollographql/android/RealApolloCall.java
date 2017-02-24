@@ -29,7 +29,7 @@ final class RealApolloCall implements ApolloCall {
   private final okhttp3.Call.Factory httpCallFactory;
   private final Moshi moshi;
   private final ResponseBodyConverter responseBodyConverter;
-  private volatile Call httpCall;
+  volatile Call httpCall;
   private boolean executed;
 
   RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, Moshi moshi,
@@ -126,6 +126,7 @@ final class RealApolloCall implements ApolloCall {
         .post(requestBody)
         .header("Accept", ACCEPT_TYPE)
         .header("Content-Type", CONTENT_TYPE)
+        .header(HttpCacheInterceptor.CACHE_CONTROL_HEADER, "cache")
         .build();
   }
 

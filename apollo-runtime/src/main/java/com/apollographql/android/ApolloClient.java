@@ -47,6 +47,7 @@ public final class ApolloClient implements ApolloCallFactory {
     private HttpUrl serverUrl;
     private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
     private Moshi.Builder moshiBuilder = new Moshi.Builder();
+    private HttpCache httpCache;
 
     public Builder okHttpClient(@Nonnull OkHttpClient okHttpClient) {
       this.okHttpClient = checkNotNull(okHttpClient, "okHttpClient == null");
@@ -80,9 +81,19 @@ public final class ApolloClient implements ApolloCallFactory {
       return this;
     }
 
+    public Builder httpCache(HttpCache httpCache) {
+      this.httpCache = httpCache;
+      return this;
+    }
+
     public ApolloClient build() {
       checkNotNull(okHttpClient, "okHttpClient == null");
       checkNotNull(serverUrl, "serverUrl == null");
+
+      if (httpCache != null) {
+        okHttpClient = okHttpClient.newBuilder().addInterceptor(new HttpCacheInterceptor(httpCache)).build();
+      }
+
       return new ApolloClient(serverUrl, okHttpClient, customTypeAdapters, moshiBuilder.build());
     }
   }

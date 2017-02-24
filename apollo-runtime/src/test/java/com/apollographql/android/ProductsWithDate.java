@@ -1,11 +1,11 @@
-package com.apollographql.android.converter;
+package com.apollographql.android;
 
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
-import com.apollographql.android.converter.type.CustomType;
+import com.apollographql.android.type.CustomType;
 
 import java.io.IOException;
 import java.util.Date;
