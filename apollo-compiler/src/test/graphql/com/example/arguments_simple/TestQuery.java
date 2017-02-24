@@ -1,15 +1,17 @@
-package com.example.simple_arguments;
+package com.example.arguments_simple;
 
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
-import com.example.simple_arguments.type.Episode;
+import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder;
+import com.example.arguments_simple.type.Episode;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -186,15 +188,36 @@ public final class TestQuery implements Query<TestQuery.Variables> {
 
         @Override
         public Hero map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          return new Hero(name);
+          final __ContentValues contentValues = new __ContentValues();
+          reader.read(new ResponseReader.ValueHandler() {
+            @Override
+            public void handle(final int fieldIndex, final Object value) throws IOException {
+              switch (fieldIndex) {
+                case 0: {
+                  contentValues.name = (String) value;
+                  break;
+                }
+              }
+            }
+          }, fields);
+          return new Hero(contentValues.name);
+        }
+
+        static final class __ContentValues {
+          String name;
         }
       }
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final Field[] fields = {
-        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
+        Field.forObject("hero", "hero", Arrays.asList(new UnmodifiableMapBuilder<String, Object>(2)
+          .put("name", "episode")
+          .put("value", new UnmodifiableMapBuilder<String, Object>(2)
+            .put("kind", "Variable")
+            .put("variableName", "episode")
+          .build())
+        .build()), true, new Field.ObjectReader<Hero>() {
           @Override public Hero read(final ResponseReader reader) throws IOException {
             return new Hero.Mapper().map(reader);
           }
@@ -203,8 +226,23 @@ public final class TestQuery implements Query<TestQuery.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = reader.read(fields[0]);
-        return new Data(hero);
+        final __ContentValues contentValues = new __ContentValues();
+        reader.read(new ResponseReader.ValueHandler() {
+          @Override
+          public void handle(final int fieldIndex, final Object value) throws IOException {
+            switch (fieldIndex) {
+              case 0: {
+                contentValues.hero = (Hero) value;
+                break;
+              }
+            }
+          }
+        }, fields);
+        return new Data(contentValues.hero);
+      }
+
+      static final class __ContentValues {
+        Hero hero;
       }
     }
   }

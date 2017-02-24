@@ -5,10 +5,12 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -221,7 +223,10 @@ public final class TestQuery implements Query<Operation.Variables> {
             return new R2.Mapper().map(reader);
           }
         }),
-        Field.forObject("luke", "hero", null, true, new Field.ObjectReader<Luke>() {
+        Field.forObject("luke", "hero", Arrays.asList(new UnmodifiableMapBuilder<String, Object>(2)
+          .put("name", "episode")
+          .put("value", "EMPIRE")
+        .build()), true, new Field.ObjectReader<Luke>() {
           @Override public Luke read(final ResponseReader reader) throws IOException {
             return new Luke.Mapper().map(reader);
           }
