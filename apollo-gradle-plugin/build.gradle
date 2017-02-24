@@ -1,6 +1,5 @@
 apply plugin: 'groovy'
 apply plugin: 'idea'
-apply plugin: 'kotlin'
 apply plugin: 'java-gradle-plugin'
 
 sourceCompatibility = JavaVersion.VERSION_1_7
