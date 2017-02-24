@@ -31,8 +31,8 @@ public final class AllPlanets implements Query<Operation.Variables> {
       + "}";
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION + "\n"
-   + PlanetFragment.FRAGMENT_DEFINITION + "\n"
-   + FilmFragment.FRAGMENT_DEFINITION;
+      + PlanetFragment.FRAGMENT_DEFINITION + "\n"
+      + FilmFragment.FRAGMENT_DEFINITION;
 
   private final Variables variables;
 
@@ -66,13 +66,13 @@ public final class AllPlanets implements Query<Operation.Variables> {
     }
 
     public static class AllPlanet {
-      private @Nullable List<? extends Planet> planets;
+      private @Nullable List<Planet> planets;
 
-      public AllPlanet(@Nullable List<? extends Planet> planets) {
+      public AllPlanet(@Nullable List<Planet> planets) {
         this.planets = planets;
       }
 
-      public @Nullable List<? extends Planet> planets() {
+      public @Nullable List<Planet> planets() {
         return this.planets;
       }
 
@@ -97,10 +97,10 @@ public final class AllPlanets implements Query<Operation.Variables> {
         public static class FilmConnection {
           private @Nullable Integer totalCount;
 
-          private @Nullable List<? extends Film> films;
+          private @Nullable List<Film> films;
 
           public FilmConnection(@Nullable Integer totalCount,
-              @Nullable List<? extends Film> films) {
+              @Nullable List<Film> films) {
             this.totalCount = totalCount;
             this.films = films;
           }
@@ -109,7 +109,7 @@ public final class AllPlanets implements Query<Operation.Variables> {
             return this.totalCount;
           }
 
-          public @Nullable List<? extends Film> films() {
+          public @Nullable List<Film> films() {
             return this.films;
           }
 
@@ -162,80 +162,40 @@ public final class AllPlanets implements Query<Operation.Variables> {
 
             public static final class Mapper implements ResponseFieldMapper<Film> {
               final Field[] fields = {
-                Field.forString("title", "title", null, true),
-                Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
-                  @Override
-                  public Fragments read(String conditionalType, ResponseReader reader) throws
-                      IOException {
-                    return new Fragments.Mapper(conditionalType).map(reader);
-                  }
-                })
+                  Field.forString("title", "title", null, true),
+                  Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
+                    @Override
+                    public Fragments read(String conditionalType, ResponseReader reader) throws
+                        IOException {
+                      return new Fragments.Mapper(conditionalType).map(reader);
+                    }
+                  })
               };
 
               @Override
               public Film map(ResponseReader reader) throws IOException {
-                final __ContentValues contentValues = new __ContentValues();
-                reader.read(new ResponseReader.ValueHandler() {
-                  @Override
-                  public void handle(final int fieldIndex, final Object value) throws IOException {
-                    switch (fieldIndex) {
-                      case 0: {
-                        contentValues.title = (String) value;
-                        break;
-                      }
-                      case 1: {
-                        contentValues.fragments = (Fragments) value;
-                        break;
-                      }
-                    }
-                  }
-                }, fields);
-                return new Film(contentValues.title, contentValues.fragments);
-              }
-
-              static final class __ContentValues {
-                String title;
-
-                Fragments fragments;
+                final String title = reader.read(fields[0]);
+                final Fragments fragments = reader.read(fields[1]);
+                return new Film(title, fragments);
               }
             }
           }
 
           public static final class Mapper implements ResponseFieldMapper<FilmConnection> {
             final Field[] fields = {
-              Field.forInt("totalCount", "totalCount", null, true),
-              Field.forList("films", "films", null, true, new Field.ObjectReader<Film>() {
-                @Override public Film read(final ResponseReader reader) throws IOException {
-                  return new Film.Mapper().map(reader);
-                }
-              })
+                Field.forInt("totalCount", "totalCount", null, true),
+                Field.forList("films", "films", null, true, new Field.ObjectReader<Film>() {
+                  @Override public Film read(final ResponseReader reader) throws IOException {
+                    return new Film.Mapper().map(reader);
+                  }
+                })
             };
 
             @Override
             public FilmConnection map(ResponseReader reader) throws IOException {
-              final __ContentValues contentValues = new __ContentValues();
-              reader.read(new ResponseReader.ValueHandler() {
-                @Override
-                public void handle(final int fieldIndex, final Object value) throws IOException {
-                  switch (fieldIndex) {
-                    case 0: {
-                      contentValues.totalCount = (Integer) value;
-                      break;
-                    }
-                    case 1: {
-                      contentValues.films = (List<? extends Film>) value;
-                      break;
-                    }
-                  }
-                }
-              }, fields);
-              return new FilmConnection(contentValues.totalCount, contentValues.films);
-            }
-
-            static final class __ContentValues {
-              Integer totalCount;
-
-              List<? extends Film> films;
+              final Integer totalCount = reader.read(fields[0]);
+              final List<Film> films = reader.read(fields[1]);
+              return new FilmConnection(totalCount, films);
             }
           }
         }
@@ -271,109 +231,59 @@ public final class AllPlanets implements Query<Operation.Variables> {
 
         public static final class Mapper implements ResponseFieldMapper<Planet> {
           final Field[] fields = {
-            Field.forObject("filmConnection", "filmConnection", null, true, new Field.ObjectReader<FilmConnection>() {
-              @Override public FilmConnection read(final ResponseReader reader) throws IOException {
-                return new FilmConnection.Mapper().map(reader);
-              }
-            }),
-            Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
-              @Override
-              public Fragments read(String conditionalType, ResponseReader reader) throws
-                  IOException {
-                return new Fragments.Mapper(conditionalType).map(reader);
-              }
-            })
+              Field.forObject("filmConnection", "filmConnection", null, true, new Field.ObjectReader<FilmConnection>() {
+                @Override public FilmConnection read(final ResponseReader reader) throws IOException {
+                  return new FilmConnection.Mapper().map(reader);
+                }
+              }),
+              Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
+                @Override
+                public Fragments read(String conditionalType, ResponseReader reader) throws
+                    IOException {
+                  return new Fragments.Mapper(conditionalType).map(reader);
+                }
+              })
           };
 
           @Override
           public Planet map(ResponseReader reader) throws IOException {
-            final __ContentValues contentValues = new __ContentValues();
-            reader.read(new ResponseReader.ValueHandler() {
-              @Override
-              public void handle(final int fieldIndex, final Object value) throws IOException {
-                switch (fieldIndex) {
-                  case 0: {
-                    contentValues.filmConnection = (FilmConnection) value;
-                    break;
-                  }
-                  case 1: {
-                    contentValues.fragments = (Fragments) value;
-                    break;
-                  }
-                }
-              }
-            }, fields);
-            return new Planet(contentValues.filmConnection, contentValues.fragments);
-          }
-
-          static final class __ContentValues {
-            FilmConnection filmConnection;
-
-            Fragments fragments;
+            final FilmConnection filmConnection = reader.read(fields[0]);
+            final Fragments fragments = reader.read(fields[1]);
+            return new Planet(filmConnection, fragments);
           }
         }
       }
 
       public static final class Mapper implements ResponseFieldMapper<AllPlanet> {
         final Field[] fields = {
-          Field.forList("planets", "planets", null, true, new Field.ObjectReader<Planet>() {
-            @Override public Planet read(final ResponseReader reader) throws IOException {
-              return new Planet.Mapper().map(reader);
-            }
-          })
+            Field.forList("planets", "planets", null, true, new Field.ObjectReader<Planet>() {
+              @Override public Planet read(final ResponseReader reader) throws IOException {
+                return new Planet.Mapper().map(reader);
+              }
+            })
         };
 
         @Override
         public AllPlanet map(ResponseReader reader) throws IOException {
-          final __ContentValues contentValues = new __ContentValues();
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  contentValues.planets = (List<? extends Planet>) value;
-                  break;
-                }
-              }
-            }
-          }, fields);
-          return new AllPlanet(contentValues.planets);
-        }
-
-        static final class __ContentValues {
-          List<? extends Planet> planets;
+          final List<Planet> planets = reader.read(fields[0]);
+          return new AllPlanet(planets);
         }
       }
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final Field[] fields = {
-        Field.forObject("allPlanets", "allPlanets", null, true, new Field.ObjectReader<AllPlanet>() {
-          @Override public AllPlanet read(final ResponseReader reader) throws IOException {
-            return new AllPlanet.Mapper().map(reader);
-          }
-        })
+          Field.forObject("allPlanets", "allPlanets", null, true, new Field.ObjectReader<AllPlanet>() {
+            @Override public AllPlanet read(final ResponseReader reader) throws IOException {
+              return new AllPlanet.Mapper().map(reader);
+            }
+          })
       };
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final __ContentValues contentValues = new __ContentValues();
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                contentValues.allPlanets = (AllPlanet) value;
-                break;
-              }
-            }
-          }
-        }, fields);
-        return new Data(contentValues.allPlanets);
-      }
-
-      static final class __ContentValues {
-        AllPlanet allPlanets;
+        final AllPlanet allPlanets = reader.read(fields[0]);
+        return new Data(allPlanets);
       }
     }
   }

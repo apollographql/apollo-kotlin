@@ -242,23 +242,8 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         @Override
         public GraphQlListOfObject map(ResponseReader reader) throws IOException {
-          final __ContentValues contentValues = new __ContentValues();
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  contentValues.someField = (int) value;
-                  break;
-                }
-              }
-            }
-          }, fields);
-          return new GraphQlListOfObject(contentValues.someField);
-        }
-
-        static final class __ContentValues {
-          int someField;
+          final int someField = reader.read(fields[0]);
+          return new GraphQlListOfObject(someField);
         }
       }
     }
@@ -288,83 +273,18 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final __ContentValues contentValues = new __ContentValues();
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                contentValues.graphQlString = (String) value;
-                break;
-              }
-              case 1: {
-                contentValues.graphQlIdNullable = (String) value;
-                break;
-              }
-              case 2: {
-                contentValues.graphQlIdNonNullable = (String) value;
-                break;
-              }
-              case 3: {
-                contentValues.graphQlIntNullable = (Integer) value;
-                break;
-              }
-              case 4: {
-                contentValues.graphQlIntNonNullable = (int) value;
-                break;
-              }
-              case 5: {
-                contentValues.graphQlFloatNullable = (Double) value;
-                break;
-              }
-              case 6: {
-                contentValues.graphQlFloatNonNullable = (double) value;
-                break;
-              }
-              case 7: {
-                contentValues.graphQlBooleanNullable = (Boolean) value;
-                break;
-              }
-              case 8: {
-                contentValues.graphQlBooleanNonNullable = (boolean) value;
-                break;
-              }
-              case 9: {
-                contentValues.graphQlListOfInt = (List<Integer>) value;
-                break;
-              }
-              case 10: {
-                contentValues.graphQlListOfObjects = (List<GraphQlListOfObject>) value;
-                break;
-              }
-            }
-          }
-        }, fields);
-        return new Data(contentValues.graphQlString, contentValues.graphQlIdNullable, contentValues.graphQlIdNonNullable, contentValues.graphQlIntNullable, contentValues.graphQlIntNonNullable, contentValues.graphQlFloatNullable, contentValues.graphQlFloatNonNullable, contentValues.graphQlBooleanNullable, contentValues.graphQlBooleanNonNullable, contentValues.graphQlListOfInt, contentValues.graphQlListOfObjects);
-      }
-
-      static final class __ContentValues {
-        String graphQlString;
-
-        String graphQlIdNullable;
-
-        String graphQlIdNonNullable;
-
-        Integer graphQlIntNullable;
-
-        int graphQlIntNonNullable;
-
-        Double graphQlFloatNullable;
-
-        double graphQlFloatNonNullable;
-
-        Boolean graphQlBooleanNullable;
-
-        boolean graphQlBooleanNonNullable;
-
-        List<Integer> graphQlListOfInt;
-
-        List<GraphQlListOfObject> graphQlListOfObjects;
+        final String graphQlString = reader.read(fields[0]);
+        final String graphQlIdNullable = reader.read(fields[1]);
+        final String graphQlIdNonNullable = reader.read(fields[2]);
+        final Integer graphQlIntNullable = reader.read(fields[3]);
+        final int graphQlIntNonNullable = reader.read(fields[4]);
+        final Double graphQlFloatNullable = reader.read(fields[5]);
+        final double graphQlFloatNonNullable = reader.read(fields[6]);
+        final Boolean graphQlBooleanNullable = reader.read(fields[7]);
+        final boolean graphQlBooleanNonNullable = reader.read(fields[8]);
+        final List<Integer> graphQlListOfInt = reader.read(fields[9]);
+        final List<GraphQlListOfObject> graphQlListOfObjects = reader.read(fields[10]);
+        return new Data(graphQlString, graphQlIdNullable, graphQlIdNonNullable, graphQlIntNullable, graphQlIntNonNullable, graphQlFloatNullable, graphQlFloatNonNullable, graphQlBooleanNullable, graphQlBooleanNonNullable, graphQlListOfInt, graphQlListOfObjects);
       }
     }
   }

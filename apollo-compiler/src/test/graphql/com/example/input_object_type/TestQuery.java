@@ -204,29 +204,9 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
 
         @Override
         public CreateReview map(ResponseReader reader) throws IOException {
-          final __ContentValues contentValues = new __ContentValues();
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  contentValues.stars = (int) value;
-                  break;
-                }
-                case 1: {
-                  contentValues.commentary = (String) value;
-                  break;
-                }
-              }
-            }
-          }, fields);
-          return new CreateReview(contentValues.stars, contentValues.commentary);
-        }
-
-        static final class __ContentValues {
-          int stars;
-
-          String commentary;
+          final int stars = reader.read(fields[0]);
+          final String commentary = reader.read(fields[1]);
+          return new CreateReview(stars, commentary);
         }
       }
     }
@@ -242,23 +222,8 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final __ContentValues contentValues = new __ContentValues();
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                contentValues.createReview = (CreateReview) value;
-                break;
-              }
-            }
-          }
-        }, fields);
-        return new Data(contentValues.createReview);
-      }
-
-      static final class __ContentValues {
-        CreateReview createReview;
+        final CreateReview createReview = reader.read(fields[0]);
+        return new Data(createReview);
       }
     }
   }

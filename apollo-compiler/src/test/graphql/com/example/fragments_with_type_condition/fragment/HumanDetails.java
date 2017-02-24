@@ -78,29 +78,9 @@ public class HumanDetails {
 
     @Override
     public HumanDetails map(ResponseReader reader) throws IOException {
-      final __ContentValues contentValues = new __ContentValues();
-      reader.read(new ResponseReader.ValueHandler() {
-        @Override
-        public void handle(final int fieldIndex, final Object value) throws IOException {
-          switch (fieldIndex) {
-            case 0: {
-              contentValues.name = (String) value;
-              break;
-            }
-            case 1: {
-              contentValues.height = (Double) value;
-              break;
-            }
-          }
-        }
-      }, fields);
-      return new HumanDetails(contentValues.name, contentValues.height);
-    }
-
-    static final class __ContentValues {
-      String name;
-
-      Double height;
+      final String name = reader.read(fields[0]);
+      final Double height = reader.read(fields[1]);
+      return new HumanDetails(name, height);
     }
   }
 }

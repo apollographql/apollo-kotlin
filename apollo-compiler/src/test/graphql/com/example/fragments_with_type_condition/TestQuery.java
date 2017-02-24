@@ -226,23 +226,8 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         @Override
         public R2 map(ResponseReader reader) throws IOException {
-          final __ContentValues contentValues = new __ContentValues();
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  contentValues.fragments = (Fragments) value;
-                  break;
-                }
-              }
-            }
-          }, fields);
-          return new R2(contentValues.fragments);
-        }
-
-        static final class __ContentValues {
-          Fragments fragments;
+          final Fragments fragments = reader.read(fields[0]);
+          return new R2(fragments);
         }
       }
     }
@@ -369,23 +354,8 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         @Override
         public Luke map(ResponseReader reader) throws IOException {
-          final __ContentValues contentValues = new __ContentValues();
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  contentValues.fragments = (Fragments) value;
-                  break;
-                }
-              }
-            }
-          }, fields);
-          return new Luke(contentValues.fragments);
-        }
-
-        static final class __ContentValues {
-          Fragments fragments;
+          final Fragments fragments = reader.read(fields[0]);
+          return new Luke(fragments);
         }
       }
     }
@@ -406,29 +376,9 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final __ContentValues contentValues = new __ContentValues();
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                contentValues.r2 = (R2) value;
-                break;
-              }
-              case 1: {
-                contentValues.luke = (Luke) value;
-                break;
-              }
-            }
-          }
-        }, fields);
-        return new Data(contentValues.r2, contentValues.luke);
-      }
-
-      static final class __ContentValues {
-        R2 r2;
-
-        Luke luke;
+        final R2 r2 = reader.read(fields[0]);
+        final Luke luke = reader.read(fields[1]);
+        return new Data(r2, luke);
       }
     }
   }

@@ -230,23 +230,8 @@ public class HeroDetails {
 
           @Override
           public Node map(ResponseReader reader) throws IOException {
-            final __ContentValues contentValues = new __ContentValues();
-            reader.read(new ResponseReader.ValueHandler() {
-              @Override
-              public void handle(final int fieldIndex, final Object value) throws IOException {
-                switch (fieldIndex) {
-                  case 0: {
-                    contentValues.name = (String) value;
-                    break;
-                  }
-                }
-              }
-            }, fields);
-            return new Node(contentValues.name);
-          }
-
-          static final class __ContentValues {
-            String name;
+            final String name = reader.read(fields[0]);
+            return new Node(name);
           }
         }
       }
@@ -262,23 +247,8 @@ public class HeroDetails {
 
         @Override
         public Edge map(ResponseReader reader) throws IOException {
-          final __ContentValues contentValues = new __ContentValues();
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  contentValues.node = (Node) value;
-                  break;
-                }
-              }
-            }
-          }, fields);
-          return new Edge(contentValues.node);
-        }
-
-        static final class __ContentValues {
-          Node node;
+          final Node node = reader.read(fields[0]);
+          return new Edge(node);
         }
       }
     }
@@ -295,29 +265,9 @@ public class HeroDetails {
 
       @Override
       public FriendsConnection map(ResponseReader reader) throws IOException {
-        final __ContentValues contentValues = new __ContentValues();
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                contentValues.totalCount = (Integer) value;
-                break;
-              }
-              case 1: {
-                contentValues.edges = (List<Edge>) value;
-                break;
-              }
-            }
-          }
-        }, fields);
-        return new FriendsConnection(contentValues.totalCount, contentValues.edges);
-      }
-
-      static final class __ContentValues {
-        Integer totalCount;
-
-        List<Edge> edges;
+        final Integer totalCount = reader.read(fields[0]);
+        final List<Edge> edges = reader.read(fields[1]);
+        return new FriendsConnection(totalCount, edges);
       }
     }
   }
@@ -515,23 +465,8 @@ public class HeroDetails {
 
             @Override
             public Node map(ResponseReader reader) throws IOException {
-              final __ContentValues contentValues = new __ContentValues();
-              reader.read(new ResponseReader.ValueHandler() {
-                @Override
-                public void handle(final int fieldIndex, final Object value) throws IOException {
-                  switch (fieldIndex) {
-                    case 0: {
-                      contentValues.name = (String) value;
-                      break;
-                    }
-                  }
-                }
-              }, fields);
-              return new Node(contentValues.name);
-            }
-
-            static final class __ContentValues {
-              String name;
+              final String name = reader.read(fields[0]);
+              return new Node(name);
             }
           }
         }
@@ -547,23 +482,8 @@ public class HeroDetails {
 
           @Override
           public Edge map(ResponseReader reader) throws IOException {
-            final __ContentValues contentValues = new __ContentValues();
-            reader.read(new ResponseReader.ValueHandler() {
-              @Override
-              public void handle(final int fieldIndex, final Object value) throws IOException {
-                switch (fieldIndex) {
-                  case 0: {
-                    contentValues.node = (Node) value;
-                    break;
-                  }
-                }
-              }
-            }, fields);
-            return new Edge(contentValues.node);
-          }
-
-          static final class __ContentValues {
-            Node node;
+            final Node node = reader.read(fields[0]);
+            return new Edge(node);
           }
         }
       }
@@ -580,29 +500,9 @@ public class HeroDetails {
 
         @Override
         public FriendsConnection1 map(ResponseReader reader) throws IOException {
-          final __ContentValues contentValues = new __ContentValues();
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  contentValues.totalCount = (Integer) value;
-                  break;
-                }
-                case 1: {
-                  contentValues.edges = (List<Edge>) value;
-                  break;
-                }
-              }
-            }
-          }, fields);
-          return new FriendsConnection1(contentValues.totalCount, contentValues.edges);
-        }
-
-        static final class __ContentValues {
-          Integer totalCount;
-
-          List<Edge> edges;
+          final Integer totalCount = reader.read(fields[0]);
+          final List<Edge> edges = reader.read(fields[1]);
+          return new FriendsConnection1(totalCount, edges);
         }
       }
     }
@@ -620,35 +520,10 @@ public class HeroDetails {
 
       @Override
       public AsDroid map(ResponseReader reader) throws IOException {
-        final __ContentValues contentValues = new __ContentValues();
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                contentValues.name = (String) value;
-                break;
-              }
-              case 1: {
-                contentValues.friendsConnection = (FriendsConnection1) value;
-                break;
-              }
-              case 2: {
-                contentValues.primaryFunction = (String) value;
-                break;
-              }
-            }
-          }
-        }, fields);
-        return new AsDroid(contentValues.name, contentValues.friendsConnection, contentValues.primaryFunction);
-      }
-
-      static final class __ContentValues {
-        String name;
-
-        FriendsConnection1 friendsConnection;
-
-        String primaryFunction;
+        final String name = reader.read(fields[0]);
+        final FriendsConnection1 friendsConnection = reader.read(fields[1]);
+        final String primaryFunction = reader.read(fields[2]);
+        return new AsDroid(name, friendsConnection, primaryFunction);
       }
     }
   }
@@ -675,35 +550,10 @@ public class HeroDetails {
 
     @Override
     public HeroDetails map(ResponseReader reader) throws IOException {
-      final __ContentValues contentValues = new __ContentValues();
-      reader.read(new ResponseReader.ValueHandler() {
-        @Override
-        public void handle(final int fieldIndex, final Object value) throws IOException {
-          switch (fieldIndex) {
-            case 0: {
-              contentValues.name = (String) value;
-              break;
-            }
-            case 1: {
-              contentValues.friendsConnection = (FriendsConnection) value;
-              break;
-            }
-            case 2: {
-              contentValues.asDroid = (AsDroid) value;
-              break;
-            }
-          }
-        }
-      }, fields);
-      return new HeroDetails(contentValues.name, contentValues.friendsConnection, contentValues.asDroid);
-    }
-
-    static final class __ContentValues {
-      String name;
-
-      FriendsConnection friendsConnection;
-
-      AsDroid asDroid;
+      final String name = reader.read(fields[0]);
+      final FriendsConnection friendsConnection = reader.read(fields[1]);
+      final AsDroid asDroid = reader.read(fields[2]);
+      return new HeroDetails(name, friendsConnection, asDroid);
     }
   }
 }

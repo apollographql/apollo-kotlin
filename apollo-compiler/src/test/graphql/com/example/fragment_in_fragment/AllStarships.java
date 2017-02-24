@@ -277,23 +277,8 @@ public final class AllStarships implements Query<Operation.Variables> {
 
             @Override
             public Node map(ResponseReader reader) throws IOException {
-              final __ContentValues contentValues = new __ContentValues();
-              reader.read(new ResponseReader.ValueHandler() {
-                @Override
-                public void handle(final int fieldIndex, final Object value) throws IOException {
-                  switch (fieldIndex) {
-                    case 0: {
-                      contentValues.fragments = (Fragments) value;
-                      break;
-                    }
-                  }
-                }
-              }, fields);
-              return new Node(contentValues.fragments);
-            }
-
-            static final class __ContentValues {
-              Fragments fragments;
+              final Fragments fragments = reader.read(fields[0]);
+              return new Node(fragments);
             }
           }
         }
@@ -309,23 +294,8 @@ public final class AllStarships implements Query<Operation.Variables> {
 
           @Override
           public Edge map(ResponseReader reader) throws IOException {
-            final __ContentValues contentValues = new __ContentValues();
-            reader.read(new ResponseReader.ValueHandler() {
-              @Override
-              public void handle(final int fieldIndex, final Object value) throws IOException {
-                switch (fieldIndex) {
-                  case 0: {
-                    contentValues.node = (Node) value;
-                    break;
-                  }
-                }
-              }
-            }, fields);
-            return new Edge(contentValues.node);
-          }
-
-          static final class __ContentValues {
-            Node node;
+            final Node node = reader.read(fields[0]);
+            return new Edge(node);
           }
         }
       }
@@ -341,23 +311,8 @@ public final class AllStarships implements Query<Operation.Variables> {
 
         @Override
         public AllStarship map(ResponseReader reader) throws IOException {
-          final __ContentValues contentValues = new __ContentValues();
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  contentValues.edges = (List<Edge>) value;
-                  break;
-                }
-              }
-            }
-          }, fields);
-          return new AllStarship(contentValues.edges);
-        }
-
-        static final class __ContentValues {
-          List<Edge> edges;
+          final List<Edge> edges = reader.read(fields[0]);
+          return new AllStarship(edges);
         }
       }
     }
@@ -373,23 +328,8 @@ public final class AllStarships implements Query<Operation.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final __ContentValues contentValues = new __ContentValues();
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                contentValues.allStarships = (AllStarship) value;
-                break;
-              }
-            }
-          }
-        }, fields);
-        return new Data(contentValues.allStarships);
-      }
-
-      static final class __ContentValues {
-        AllStarship allStarships;
+        final AllStarship allStarships = reader.read(fields[0]);
+        return new Data(allStarships);
       }
     }
   }

@@ -20,11 +20,11 @@ public class PlanetFragment {
 
   private @Nullable String name;
 
-  private @Nullable List<? extends String> climates;
+  private @Nullable List<String> climates;
 
   private @Nullable Double surfaceWater;
 
-  public PlanetFragment(@Nullable String name, @Nullable List<? extends String> climates,
+  public PlanetFragment(@Nullable String name, @Nullable List<String> climates,
       @Nullable Double surfaceWater) {
     this.name = name;
     this.climates = climates;
@@ -35,7 +35,7 @@ public class PlanetFragment {
     return this.name;
   }
 
-  public @Nullable List<? extends String> climates() {
+  public @Nullable List<String> climates() {
     return this.climates;
   }
 
@@ -45,46 +45,21 @@ public class PlanetFragment {
 
   public static final class Mapper implements ResponseFieldMapper<PlanetFragment> {
     final Field[] fields = {
-      Field.forString("name", "name", null, true),
-      Field.forList("climates", "climates", null, true, new Field.ListReader<String>() {
-        @Override public String read(final Field.ListItemReader reader) throws IOException {
-          return reader.readString();
-        }
-      }),
-      Field.forDouble("surfaceWater", "surfaceWater", null, true)
+        Field.forString("name", "name", null, true),
+        Field.forList("climates", "climates", null, true, new Field.ListReader<String>() {
+          @Override public String read(final Field.ListItemReader reader) throws IOException {
+            return reader.readString();
+          }
+        }),
+        Field.forDouble("surfaceWater", "surfaceWater", null, true)
     };
 
     @Override
     public PlanetFragment map(ResponseReader reader) throws IOException {
-      final __ContentValues contentValues = new __ContentValues();
-      reader.read(new ResponseReader.ValueHandler() {
-        @Override
-        public void handle(final int fieldIndex, final Object value) throws IOException {
-          switch (fieldIndex) {
-            case 0: {
-              contentValues.name = (String) value;
-              break;
-            }
-            case 1: {
-              contentValues.climates = (List<? extends String>) value;
-              break;
-            }
-            case 2: {
-              contentValues.surfaceWater = (Double) value;
-              break;
-            }
-          }
-        }
-      }, fields);
-      return new PlanetFragment(contentValues.name, contentValues.climates, contentValues.surfaceWater);
-    }
-
-    static final class __ContentValues {
-      String name;
-
-      List<? extends String> climates;
-
-      Double surfaceWater;
+      final String name = reader.read(fields[0]);
+      final List<String> climates = reader.read(fields[1]);
+      final Double surfaceWater = reader.read(fields[2]);
+      return new PlanetFragment(name, climates, surfaceWater);
     }
   }
 }

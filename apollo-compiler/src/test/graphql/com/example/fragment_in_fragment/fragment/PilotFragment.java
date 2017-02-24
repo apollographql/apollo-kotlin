@@ -116,23 +116,8 @@ public class PilotFragment {
 
       @Override
       public Homeworld map(ResponseReader reader) throws IOException {
-        final __ContentValues contentValues = new __ContentValues();
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                contentValues.name = (String) value;
-                break;
-              }
-            }
-          }
-        }, fields);
-        return new Homeworld(contentValues.name);
-      }
-
-      static final class __ContentValues {
-        String name;
+        final String name = reader.read(fields[0]);
+        return new Homeworld(name);
       }
     }
   }
@@ -149,29 +134,9 @@ public class PilotFragment {
 
     @Override
     public PilotFragment map(ResponseReader reader) throws IOException {
-      final __ContentValues contentValues = new __ContentValues();
-      reader.read(new ResponseReader.ValueHandler() {
-        @Override
-        public void handle(final int fieldIndex, final Object value) throws IOException {
-          switch (fieldIndex) {
-            case 0: {
-              contentValues.name = (String) value;
-              break;
-            }
-            case 1: {
-              contentValues.homeworld = (Homeworld) value;
-              break;
-            }
-          }
-        }
-      }, fields);
-      return new PilotFragment(contentValues.name, contentValues.homeworld);
-    }
-
-    static final class __ContentValues {
-      String name;
-
-      Homeworld homeworld;
+      final String name = reader.read(fields[0]);
+      final Homeworld homeworld = reader.read(fields[1]);
+      return new PilotFragment(name, homeworld);
     }
   }
 }

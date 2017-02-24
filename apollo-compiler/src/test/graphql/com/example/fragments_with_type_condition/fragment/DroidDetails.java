@@ -77,29 +77,9 @@ public class DroidDetails {
 
     @Override
     public DroidDetails map(ResponseReader reader) throws IOException {
-      final __ContentValues contentValues = new __ContentValues();
-      reader.read(new ResponseReader.ValueHandler() {
-        @Override
-        public void handle(final int fieldIndex, final Object value) throws IOException {
-          switch (fieldIndex) {
-            case 0: {
-              contentValues.name = (String) value;
-              break;
-            }
-            case 1: {
-              contentValues.primaryFunction = (String) value;
-              break;
-            }
-          }
-        }
-      }, fields);
-      return new DroidDetails(contentValues.name, contentValues.primaryFunction);
-    }
-
-    static final class __ContentValues {
-      String name;
-
-      String primaryFunction;
+      final String name = reader.read(fields[0]);
+      final String primaryFunction = reader.read(fields[1]);
+      return new DroidDetails(name, primaryFunction);
     }
   }
 }

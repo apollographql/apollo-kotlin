@@ -128,23 +128,8 @@ public final class TestQuery implements Query<Operation.Variables> {
 
         @Override
         public Hero map(ResponseReader reader) throws IOException {
-          final __ContentValues contentValues = new __ContentValues();
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  contentValues.name = (String) value;
-                  break;
-                }
-              }
-            }
-          }, fields);
-          return new Hero(contentValues.name);
-        }
-
-        static final class __ContentValues {
-          String name;
+          final String name = reader.read(fields[0]);
+          return new Hero(name);
         }
       }
     }
@@ -160,23 +145,8 @@ public final class TestQuery implements Query<Operation.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final __ContentValues contentValues = new __ContentValues();
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                contentValues.hero = (Hero) value;
-                break;
-              }
-            }
-          }
-        }, fields);
-        return new Data(contentValues.hero);
-      }
-
-      static final class __ContentValues {
-        Hero hero;
+        final Hero hero = reader.read(fields[0]);
+        return new Data(hero);
       }
     }
   }

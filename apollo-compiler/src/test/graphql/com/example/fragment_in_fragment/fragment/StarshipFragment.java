@@ -275,23 +275,8 @@ public class StarshipFragment {
 
           @Override
           public Node map(ResponseReader reader) throws IOException {
-            final __ContentValues contentValues = new __ContentValues();
-            reader.read(new ResponseReader.ValueHandler() {
-              @Override
-              public void handle(final int fieldIndex, final Object value) throws IOException {
-                switch (fieldIndex) {
-                  case 0: {
-                    contentValues.fragments = (Fragments) value;
-                    break;
-                  }
-                }
-              }
-            }, fields);
-            return new Node(contentValues.fragments);
-          }
-
-          static final class __ContentValues {
-            Fragments fragments;
+            final Fragments fragments = reader.read(fields[0]);
+            return new Node(fragments);
           }
         }
       }
@@ -307,23 +292,8 @@ public class StarshipFragment {
 
         @Override
         public Edge map(ResponseReader reader) throws IOException {
-          final __ContentValues contentValues = new __ContentValues();
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  contentValues.node = (Node) value;
-                  break;
-                }
-              }
-            }
-          }, fields);
-          return new Edge(contentValues.node);
-        }
-
-        static final class __ContentValues {
-          Node node;
+          final Node node = reader.read(fields[0]);
+          return new Edge(node);
         }
       }
     }
@@ -339,23 +309,8 @@ public class StarshipFragment {
 
       @Override
       public PilotConnection map(ResponseReader reader) throws IOException {
-        final __ContentValues contentValues = new __ContentValues();
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                contentValues.edges = (List<Edge>) value;
-                break;
-              }
-            }
-          }
-        }, fields);
-        return new PilotConnection(contentValues.edges);
-      }
-
-      static final class __ContentValues {
-        List<Edge> edges;
+        final List<Edge> edges = reader.read(fields[0]);
+        return new PilotConnection(edges);
       }
     }
   }
@@ -373,35 +328,10 @@ public class StarshipFragment {
 
     @Override
     public StarshipFragment map(ResponseReader reader) throws IOException {
-      final __ContentValues contentValues = new __ContentValues();
-      reader.read(new ResponseReader.ValueHandler() {
-        @Override
-        public void handle(final int fieldIndex, final Object value) throws IOException {
-          switch (fieldIndex) {
-            case 0: {
-              contentValues.id = (String) value;
-              break;
-            }
-            case 1: {
-              contentValues.name = (String) value;
-              break;
-            }
-            case 2: {
-              contentValues.pilotConnection = (PilotConnection) value;
-              break;
-            }
-          }
-        }
-      }, fields);
-      return new StarshipFragment(contentValues.id, contentValues.name, contentValues.pilotConnection);
-    }
-
-    static final class __ContentValues {
-      String id;
-
-      String name;
-
-      PilotConnection pilotConnection;
+      final String id = reader.read(fields[0]);
+      final String name = reader.read(fields[1]);
+      final PilotConnection pilotConnection = reader.read(fields[2]);
+      return new StarshipFragment(id, name, pilotConnection);
     }
   }
 }

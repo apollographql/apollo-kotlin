@@ -97,7 +97,6 @@ class SchemaTypeResponseMapperBuilder(
     val context: CodeGenerationContext
 ) {
   private val typeClassName = ClassName.get("", typeName)
-  private val hasFragments = inlineFragments.isNotEmpty() || fragmentSpreads.isNotEmpty()
   private val responseFieldMapperType = ParameterizedTypeName.get(API_RESPONSE_FIELD_MAPPER_TYPE, typeClassName)
 
   fun build(): TypeSpec {
@@ -112,17 +111,10 @@ class SchemaTypeResponseMapperBuilder(
     return TypeSpec.classBuilder(MAPPER_TYPE_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
         .addSuperinterface(responseFieldMapperType)
-        .addType(contentValuesType(contentValueFields))
         .addField(fieldArray(fields))
         .addMethod(mapMethod(contentValueFields))
         .build()
   }
-
-  private fun contentValuesType(contentValueFields: List<FieldSpec>) =
-      TypeSpec.classBuilder(CONTENT_VALUES_TYPE)
-          .addModifiers(Modifier.STATIC, Modifier.FINAL)
-          .addFields(contentValueFields)
-          .build()
 
   private fun fieldArray(fields: List<Field>) =
       FieldSpec.builder(Array<com.apollographql.android.api.graphql.Field>::class.java, FIELDS_VAR)
@@ -253,16 +245,6 @@ class SchemaTypeResponseMapperBuilder(
   }
 
   private fun objectFieldFactoryCode(field: Field, factoryMethod: String, type: TypeName): CodeBlock {
-    val typeFactoryMethod = if (type is ParameterizedTypeName) {
-      val typeArgument = type.typeArguments[0]
-      if (typeArgument is WildcardTypeName) {
-        (typeArgument.upperBounds[0] as ClassName).simpleName().decapitalize()
-      } else {
-        (typeArgument as ClassName).simpleName().decapitalize()
-      }
-    } else {
-      (type as ClassName).simpleName().decapitalize()
-    } + "Factory"
     return CodeBlock.builder()
         .add("\$T.$factoryMethod(\$S, \$S, null, \$L, new \$T() {\n", API_RESPONSE_FIELD_TYPE, field.responseName,
             field.fieldName, field.isOptional(), apiResponseFieldObjectReaderTypeName(type))
@@ -288,61 +270,35 @@ class SchemaTypeResponseMapperBuilder(
 
   private fun mapMethodCode(contentValueFields: List<FieldSpec>) =
       CodeBlock.builder()
-          .addStatement("final \$T $CONTENT_VALUES_VAR = new \$T()", CONTENT_VALUES_TYPE, CONTENT_VALUES_TYPE)
-          .add("${READER_PARAM.name}.read(")
-          .add("\$L", TypeSpec.anonymousClassBuilder("")
-              .superclass(ResponseReader.ValueHandler::class.java)
-              .addMethod(valueHandleMethod(contentValueFields))
+          .add(contentValueFields
+              .mapIndexed { i, fieldSpec -> readFieldValueCode(fieldSpec, i) }
+              .fold(CodeBlock.builder(), CodeBlock.Builder::add)
               .build())
-          .add(", \$L);\n", FIELDS_VAR)
           .add("return new \$T(", typeClassName)
           .add(contentValueFields
-              .mapIndexed { i, fieldSpec ->
-                CodeBlock.of("\$L\$L.\$L", if (i > 0) ", " else "", CONTENT_VALUES_VAR, fieldSpec.name)
-              }
+              .mapIndexed { i, fieldSpec -> CodeBlock.of("\$L\$L", if (i > 0) ", " else "", fieldSpec.name) }
               .fold(CodeBlock.builder(), CodeBlock.Builder::add)
               .build())
           .add(");\n")
           .build()
 
-  private fun valueHandleMethod(contentValueFields: List<FieldSpec>) =
-      MethodSpec.methodBuilder("handle")
-          .addAnnotation(Override::class.java)
-          .addModifiers(Modifier.PUBLIC)
-          .addParameter(TypeName.INT, FIELD_INDEX_PARAM, Modifier.FINAL)
-          .addParameter(TypeName.OBJECT, VALUE_PARAM, Modifier.FINAL)
-          .addException(IOException::class.java)
-          .addCode(valueHandleSwitchCode(contentValueFields))
-          .build()
 
-  private fun valueHandleSwitchCode(contentValueFields: List<FieldSpec>) =
-      CodeBlock.builder()
-          .beginControlFlow("switch (\$L)", FIELD_INDEX_PARAM)
-          .add(contentValueFields
-              .mapIndexed { i, field -> fieldValueCaseStatement(field, i) }
-              .fold(CodeBlock.builder(), CodeBlock.Builder::add)
-              .build())
-          .endControlFlow()
-          .build()
-
-  private fun fieldValueCaseStatement(fieldSpec: FieldSpec, index: Int): CodeBlock {
+  private fun readFieldValueCode(fieldSpec: FieldSpec, index: Int): CodeBlock {
     val fieldRawType = fieldSpec.type.withoutAnnotations()
-    val setContentValueCode = if (fieldSpec.type.isEnum()) {
+    return if (fieldSpec.type.isEnum()) {
       CodeBlock.builder()
-          .beginControlFlow("if (\$L != null)", VALUE_PARAM)
-          .addStatement("\$L.\$L = \$T.valueOf((\$T) \$L)", CONTENT_VALUES_VAR, fieldSpec.name, fieldRawType,
-              ClassNames.STRING, VALUE_PARAM)
+          .addStatement("final \$T \$LStr = \$L.read(\$L[\$L])", ClassNames.STRING, fieldSpec.name, READER_VAR,
+              FIELDS_VAR, index)
+          .addStatement("final \$T \$L", fieldRawType, fieldSpec.name)
+          .beginControlFlow("if (\$LStr != null)", fieldSpec.name)
+          .addStatement("\$L = \$T.valueOf(\$LStr)", fieldSpec.name, fieldRawType, fieldSpec.name)
+          .nextControlFlow("else")
+          .addStatement("\$L = null", fieldSpec.name)
           .endControlFlow()
           .build()
     } else {
-      CodeBlock.of("\$L.\$L = (\$T) \$L;\n", CONTENT_VALUES_VAR, fieldSpec.name, fieldRawType, VALUE_PARAM)
+      CodeBlock.of("final \$T \$L = \$L.read(\$L[\$L]);\n", fieldRawType, fieldSpec.name, READER_VAR, FIELDS_VAR, index)
     }
-    return CodeBlock.builder()
-        .beginControlFlow("case $index:")
-        .add(setContentValueCode)
-        .addStatement("break")
-        .endControlFlow()
-        .build()
   }
 
   private fun TypeName.isList() =
@@ -427,13 +383,10 @@ class SchemaTypeResponseMapperBuilder(
 
   companion object {
     val MAPPER_TYPE_NAME: String = "Mapper"
-    private val CONTENT_VALUES_TYPE = ClassName.get("", "__ContentValues")
-    private val CONTENT_VALUES_VAR = "contentValues"
     private val FRAGMENTS_FIELD = FieldSpec.builder(ClassName.get("", SchemaTypeSpecBuilder.FRAGMENTS_TYPE_NAME),
         SchemaTypeSpecBuilder.FRAGMENTS_TYPE_NAME.decapitalize()).build()
     private val FIELDS_VAR = "fields"
     private val CONDITIONAL_TYPE_VAR = "conditionalType"
-    private val FIELD_INDEX_PARAM = "fieldIndex"
     private val VALUE_PARAM = "value"
     private val READER_VAR = "reader"
     private val READER_PARAM = ParameterSpec.builder(ResponseReader::class.java, READER_VAR).build()

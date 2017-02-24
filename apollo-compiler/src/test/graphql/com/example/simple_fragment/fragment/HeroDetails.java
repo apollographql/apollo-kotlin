@@ -63,23 +63,8 @@ public class HeroDetails {
 
     @Override
     public HeroDetails map(ResponseReader reader) throws IOException {
-      final __ContentValues contentValues = new __ContentValues();
-      reader.read(new ResponseReader.ValueHandler() {
-        @Override
-        public void handle(final int fieldIndex, final Object value) throws IOException {
-          switch (fieldIndex) {
-            case 0: {
-              contentValues.name = (String) value;
-              break;
-            }
-          }
-        }
-      }, fields);
-      return new HeroDetails(contentValues.name);
-    }
-
-    static final class __ContentValues {
-      String name;
+      final String name = reader.read(fields[0]);
+      return new HeroDetails(name);
     }
   }
 }

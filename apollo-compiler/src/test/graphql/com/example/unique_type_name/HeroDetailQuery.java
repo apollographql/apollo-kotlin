@@ -210,23 +210,8 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
 
           @Override
           public Friend map(ResponseReader reader) throws IOException {
-            final __ContentValues contentValues = new __ContentValues();
-            reader.read(new ResponseReader.ValueHandler() {
-              @Override
-              public void handle(final int fieldIndex, final Object value) throws IOException {
-                switch (fieldIndex) {
-                  case 0: {
-                    contentValues.name = (String) value;
-                    break;
-                  }
-                }
-              }
-            }, fields);
-            return new Friend(contentValues.name);
-          }
-
-          static final class __ContentValues {
-            String name;
+            final String name = reader.read(fields[0]);
+            return new Friend(name);
           }
         }
       }
@@ -460,23 +445,8 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
 
               @Override
               public Friend2 map(ResponseReader reader) throws IOException {
-                final __ContentValues contentValues = new __ContentValues();
-                reader.read(new ResponseReader.ValueHandler() {
-                  @Override
-                  public void handle(final int fieldIndex, final Object value) throws IOException {
-                    switch (fieldIndex) {
-                      case 0: {
-                        contentValues.fragments = (Fragments) value;
-                        break;
-                      }
-                    }
-                  }
-                }, fields);
-                return new Friend2(contentValues.fragments);
-              }
-
-              static final class __ContentValues {
-                Fragments fragments;
+                final Fragments fragments = reader.read(fields[0]);
+                return new Friend2(fragments);
               }
             }
           }
@@ -498,35 +468,10 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
 
             @Override
             public Friend1 map(ResponseReader reader) throws IOException {
-              final __ContentValues contentValues = new __ContentValues();
-              reader.read(new ResponseReader.ValueHandler() {
-                @Override
-                public void handle(final int fieldIndex, final Object value) throws IOException {
-                  switch (fieldIndex) {
-                    case 0: {
-                      contentValues.name = (String) value;
-                      break;
-                    }
-                    case 1: {
-                      contentValues.appearsIn = (List<Episode>) value;
-                      break;
-                    }
-                    case 2: {
-                      contentValues.friends = (List<Friend2>) value;
-                      break;
-                    }
-                  }
-                }
-              }, fields);
-              return new Friend1(contentValues.name, contentValues.appearsIn, contentValues.friends);
-            }
-
-            static final class __ContentValues {
-              String name;
-
-              List<Episode> appearsIn;
-
-              List<Friend2> friends;
+              final String name = reader.read(fields[0]);
+              final List<Episode> appearsIn = reader.read(fields[1]);
+              final List<Friend2> friends = reader.read(fields[2]);
+              return new Friend1(name, appearsIn, friends);
             }
           }
         }
@@ -544,35 +489,10 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
 
           @Override
           public AsHuman map(ResponseReader reader) throws IOException {
-            final __ContentValues contentValues = new __ContentValues();
-            reader.read(new ResponseReader.ValueHandler() {
-              @Override
-              public void handle(final int fieldIndex, final Object value) throws IOException {
-                switch (fieldIndex) {
-                  case 0: {
-                    contentValues.name = (String) value;
-                    break;
-                  }
-                  case 1: {
-                    contentValues.friends = (List<Friend1>) value;
-                    break;
-                  }
-                  case 2: {
-                    contentValues.height = (Double) value;
-                    break;
-                  }
-                }
-              }
-            }, fields);
-            return new AsHuman(contentValues.name, contentValues.friends, contentValues.height);
-          }
-
-          static final class __ContentValues {
-            String name;
-
-            List<Friend1> friends;
-
-            Double height;
+            final String name = reader.read(fields[0]);
+            final List<Friend1> friends = reader.read(fields[1]);
+            final Double height = reader.read(fields[2]);
+            return new AsHuman(name, friends, height);
           }
         }
       }
@@ -599,35 +519,10 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
 
         @Override
         public HeroDetailQuery1 map(ResponseReader reader) throws IOException {
-          final __ContentValues contentValues = new __ContentValues();
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  contentValues.name = (String) value;
-                  break;
-                }
-                case 1: {
-                  contentValues.friends = (List<Friend>) value;
-                  break;
-                }
-                case 2: {
-                  contentValues.asHuman = (AsHuman) value;
-                  break;
-                }
-              }
-            }
-          }, fields);
-          return new HeroDetailQuery1(contentValues.name, contentValues.friends, contentValues.asHuman);
-        }
-
-        static final class __ContentValues {
-          String name;
-
-          List<Friend> friends;
-
-          AsHuman asHuman;
+          final String name = reader.read(fields[0]);
+          final List<Friend> friends = reader.read(fields[1]);
+          final AsHuman asHuman = reader.read(fields[2]);
+          return new HeroDetailQuery1(name, friends, asHuman);
         }
       }
     }
@@ -643,23 +538,8 @@ public final class HeroDetailQuery implements Query<Operation.Variables> {
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final __ContentValues contentValues = new __ContentValues();
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                contentValues.heroDetailQuery = (HeroDetailQuery1) value;
-                break;
-              }
-            }
-          }
-        }, fields);
-        return new Data(contentValues.heroDetailQuery);
-      }
-
-      static final class __ContentValues {
-        HeroDetailQuery1 heroDetailQuery;
+        final HeroDetailQuery1 heroDetailQuery = reader.read(fields[0]);
+        return new Data(heroDetailQuery);
       }
     }
   }
