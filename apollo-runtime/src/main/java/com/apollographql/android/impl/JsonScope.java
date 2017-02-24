@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.android;
+package com.apollographql.android.impl;
 
 /** Lexical scoping elements within a JSON reader or writer. */
 final class JsonScope {

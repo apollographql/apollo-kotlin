@@ -18,9 +18,13 @@ public interface ApolloCall {
 
   @Nonnull ApolloCall clone();
 
-  public interface Callback<T extends Operation.Data> {
+  interface Callback<T extends Operation.Data> {
     void onResponse(@Nonnull Response<T> response);
 
     void onFailure(@Nonnull Exception e);
+  }
+
+  interface Factory<R> {
+    @Nonnull <T extends Operation> R newCall(@Nonnull T operation);
   }
 }

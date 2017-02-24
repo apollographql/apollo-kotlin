@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.android;
-
+package com.apollographql.android.impl.util;
 
 /**
  * Thrown when the data in a JSON document doesn't match the data expected by the caller. For

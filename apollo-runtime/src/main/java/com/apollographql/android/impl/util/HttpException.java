@@ -1,4 +1,4 @@
-package com.apollographql.android;
+package com.apollographql.android.impl.util;
 
 import okhttp3.Response;
 

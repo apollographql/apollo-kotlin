@@ -1,5 +1,6 @@
-package com.apollographql.android;
+package com.apollographql.android.impl;
 
+import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.ResponseReader;

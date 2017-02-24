@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.android;
+package com.apollographql.android.impl;
+
+import com.apollographql.android.impl.util.JsonDataException;
+import com.apollographql.android.impl.util.JsonEncodingException;
 
 import java.io.EOFException;
 import java.io.IOException;

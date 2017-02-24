@@ -1,4 +1,4 @@
-package com.apollographql.android;
+package com.apollographql.android.impl;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -14,7 +14,7 @@ final class ResponseJsonStreamReader {
     this.jsonReader = jsonReader;
   }
 
-  public Map<String, Object> buffer() throws IOException {
+  Map<String, Object> buffer() throws IOException {
     return toMap(this);
   }
 

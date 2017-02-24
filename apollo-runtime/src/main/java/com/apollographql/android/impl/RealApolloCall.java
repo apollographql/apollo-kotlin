@@ -1,9 +1,12 @@
-package com.apollographql.android;
+package com.apollographql.android.impl;
 
+import com.apollographql.android.ApolloCall;
+import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ScalarType;
+import com.apollographql.android.impl.util.HttpException;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
