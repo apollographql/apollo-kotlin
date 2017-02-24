@@ -100,7 +100,7 @@ public final class ApolloClient<R> implements ApolloCall.Factory<R> {
     public ApolloClient<B> build() {
       checkNotNull(okHttpClient, "okHttpClient is null");
       checkNotNull(serverUrl, "serverUrl is null");
-      checkNotNull(callAdapter, "serverUrl is null");
+      checkNotNull(callAdapter, "callAdapter is null");
       return new ApolloClient<>(serverUrl,
           okHttpClient,
           customTypeAdapters,
