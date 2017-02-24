@@ -4,6 +4,7 @@ import com.apollographql.android.api.graphql.Mutation
 import com.apollographql.android.api.graphql.Operation
 import com.apollographql.android.api.graphql.Query
 import com.apollographql.android.api.graphql.ResponseReader
+import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
@@ -20,6 +21,7 @@ object ClassNames {
   val API_RESPONSE_READER: ClassName = ClassName.get(ResponseReader::class.java)
   val MAP: ClassName = ClassName.get(Map::class.java)
   val HASH_MAP: ClassName = ClassName.get(HashMap::class.java)
+  val UNMODIFIABLE_MAP_BUILDER: ClassName = ClassName.get(UnmodifiableMapBuilder::class.java)
 
   fun parameterizedListOf(typeArgument: TypeName): TypeName =
       ParameterizedTypeName.get(LIST, typeArgument.withoutAnnotations())
@@ -31,4 +33,10 @@ object ClassNames {
   fun <K : Any, V : Any> parameterizedHashMapOf(keyTypeArgument: Class<K>, valueTypeArgument: Class<V>): TypeName =
       ParameterizedTypeName.get(HASH_MAP, ClassName.get(keyTypeArgument).withoutAnnotations(),
           ClassName.get(valueTypeArgument).withoutAnnotations())
+
+  fun <K : Any, V : Any> parameterizedUnmodifiableMapBuilderOf(keyTypeArgument: Class<K>,
+      valueTypeArgument: Class<V>): TypeName =
+      ParameterizedTypeName.get(UNMODIFIABLE_MAP_BUILDER, ClassName.get(keyTypeArgument).withoutAnnotations(),
+          ClassName.get(valueTypeArgument).withoutAnnotations())
+
 }
