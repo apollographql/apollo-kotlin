@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.Arrays;
-import java.util.Map;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -224,11 +222,9 @@ public final class TestQuery implements Query<Operation.Variables> {
             return new R2.Mapper().map(reader);
           }
         }),
-        Field.forObject("luke", "hero", Arrays.<Map<String, Object>>asList(
-          new UnmodifiableMapBuilder<String, Object>(2)
-            .put("name", "episode")
-            .put("value", "EMPIRE")
-          .build()), true, new Field.ObjectReader<Luke>() {
+        Field.forObject("luke", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+          .put("episode", "EMPIRE")
+        .build(), true, new Field.ObjectReader<Luke>() {
           @Override public Luke read(final ResponseReader reader) throws IOException {
             return new Luke.Mapper().map(reader);
           }

@@ -12,7 +12,6 @@ import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -213,11 +212,9 @@ public final class TestQuery implements Query<TestQuery.Variables> {
       public static final class Mapper implements ResponseFieldMapper<HeroWithReview> {
         final Field[] fields = {
           Field.forString("name", "name", null, false),
-          Field.forDouble("height", "height", Arrays.<Map<String, Object>>asList(
-            new UnmodifiableMapBuilder<String, Object>(2)
-              .put("name", "unit")
-              .put("value", "FOOT")
-            .build()), true)
+          Field.forDouble("height", "height", new UnmodifiableMapBuilder<String, Object>(1)
+            .put("unit", "FOOT")
+          .build(), true)
         };
 
         @Override
@@ -231,31 +228,26 @@ public final class TestQuery implements Query<TestQuery.Variables> {
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final Field[] fields = {
-        Field.forObject("heroWithReview", "heroWithReview", Arrays.<Map<String, Object>>asList(
-          new UnmodifiableMapBuilder<String, Object>(2)
-            .put("name", "episode")
-            .put("value", new UnmodifiableMapBuilder<String, Object>(2)
+        Field.forObject("heroWithReview", "heroWithReview", new UnmodifiableMapBuilder<String, Object>(2)
+          .put("review", new UnmodifiableMapBuilder<String, Object>(2)
+            .put("stars", new UnmodifiableMapBuilder<String, Object>(2)
               .put("kind", "Variable")
-              .put("variableName", "episode")
+              .put("variableName", "stars")
             .build())
-          .build(),
-          new UnmodifiableMapBuilder<String, Object>(2)
-            .put("name", "review")
-            .put("value", new UnmodifiableMapBuilder<String, Object>(2)
-              .put("stars", new UnmodifiableMapBuilder<String, Object>(2)
+            .put("favoriteColor", new UnmodifiableMapBuilder<String, Object>(3)
+              .put("red", "0.0")
+              .put("green", new UnmodifiableMapBuilder<String, Object>(2)
                 .put("kind", "Variable")
-                .put("variableName", "stars")
+                .put("variableName", "greenValue")
               .build())
-              .put("favoriteColor", new UnmodifiableMapBuilder<String, Object>(3)
-                .put("red", "0.0")
-                .put("green", new UnmodifiableMapBuilder<String, Object>(2)
-                  .put("kind", "Variable")
-                  .put("variableName", "greenValue")
-                .build())
-                .put("blue", "0.0")
-              .build())
+              .put("blue", "0.0")
             .build())
-          .build()), true, new Field.ObjectReader<HeroWithReview>() {
+          .build())
+          .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
+            .put("kind", "Variable")
+            .put("variableName", "episode")
+          .build())
+        .build(), true, new Field.ObjectReader<HeroWithReview>() {
           @Override public HeroWithReview read(final ResponseReader reader) throws IOException {
             return new HeroWithReview.Mapper().map(reader);
           }

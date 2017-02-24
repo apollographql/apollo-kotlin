@@ -12,9 +12,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -322,11 +320,9 @@ public final class AllStarships implements Query<Operation.Variables> {
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final Field[] fields = {
-        Field.forObject("allStarships", "allStarships", Arrays.<Map<String, Object>>asList(
-          new UnmodifiableMapBuilder<String, Object>(2)
-            .put("name", "first")
-            .put("value", "7.0")
-          .build()), true, new Field.ObjectReader<AllStarship>() {
+        Field.forObject("allStarships", "allStarships", new UnmodifiableMapBuilder<String, Object>(1)
+          .put("first", "7.0")
+        .build(), true, new Field.ObjectReader<AllStarship>() {
           @Override public AllStarship read(final ResponseReader reader) throws IOException {
             return new AllStarship.Mapper().map(reader);
           }

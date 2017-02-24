@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -196,14 +195,12 @@ public final class TestQuery implements Query<TestQuery.Variables> {
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final Field[] fields = {
-        Field.forObject("hero", "hero", Arrays.<Map<String, Object>>asList(
-          new UnmodifiableMapBuilder<String, Object>(2)
-            .put("name", "episode")
-            .put("value", new UnmodifiableMapBuilder<String, Object>(2)
-              .put("kind", "Variable")
-              .put("variableName", "episode")
-            .build())
-          .build()), true, new Field.ObjectReader<Hero>() {
+        Field.forObject("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+          .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
+            .put("kind", "Variable")
+            .put("variableName", "episode")
+          .build())
+        .build(), true, new Field.ObjectReader<Hero>() {
           @Override public Hero read(final ResponseReader reader) throws IOException {
             return new Hero.Mapper().map(reader);
           }
