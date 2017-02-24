@@ -5,7 +5,7 @@ import com.apollographql.android.compiler.JavaTypeResolver
 import com.apollographql.android.compiler.SchemaTypeSpecBuilder
 import com.cesarferreira.pluralize.singularize
 import com.squareup.javapoet.*
-import java.util.Arrays
+import java.util.*
 import javax.lang.model.element.Modifier
 
 data class Field(
@@ -39,22 +39,10 @@ data class Field(
     if (args == null || args.isEmpty()) {
       return CodeBlock.builder().add("null").build()
     }
-    return args
-        .mapIndexed { i, arg ->
-          var jsonMapCodeBlock = jsonMapToCodeBlock(arg)
-          if (i != args.size - 1) {
-            jsonMapCodeBlock = jsonMapCodeBlock.toBuilder().add(",\n").build()
-          }
-          jsonMapCodeBlock
-        }
-        .fold(CodeBlock.builder()
-            .add("\$T.<\$T>asList(\n", Arrays::class.java,
-                ClassNames.parameterizedMapOf(String::class.java, Any::class.java)).indent(),
-            CodeBlock.Builder::add)
-        .unindent()
-        .add(")")
-        .build()
-
+    return jsonMapToCodeBlock(args.fold(HashMap<String, Any>(), { map, arg ->
+      map.put(arg["name"].toString(), arg["value"]!!)
+      return@fold map
+    }))
   }
 
   private fun jsonMapToCodeBlock(jsonMap: Map<String, Any?>): CodeBlock {
