@@ -51,8 +51,6 @@ public final class ApolloClient<R> implements ApolloCall.Factory<R> {
     return adapter.adapt(call);
   }
 
-
-
   public static class Builder<B> {
     OkHttpClient okHttpClient;
     HttpUrl serverUrl;
