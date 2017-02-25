@@ -2,7 +2,6 @@ package com.apollographql.android.cache;
 
 import javax.annotation.Nonnull;
 
-import okio.Sink;
 import okio.Source;
 
 public interface ResponseCacheRecord {

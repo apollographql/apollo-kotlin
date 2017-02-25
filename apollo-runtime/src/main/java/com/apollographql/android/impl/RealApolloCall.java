@@ -130,6 +130,7 @@ final class RealApolloCall implements ApolloCall {
         try {
           httpCache.remove(response.request().header(HttpCacheInterceptor.CACHE_KEY_HEADER));
         } catch (IOException ignore) {
+          throw e;
         }
         throw e;
       }
