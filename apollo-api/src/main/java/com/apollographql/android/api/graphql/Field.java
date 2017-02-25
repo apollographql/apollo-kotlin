@@ -105,17 +105,8 @@ public class Field {
 
   private String orderIndependentKey(Map<String, Object> objectMap, Operation.Variables variables) {
     if (isArgumentValueVariableType(objectMap)) {
-      Object variable = objectMap.get(VARIABLE_NAME_KEY);
-      //noinspection SuspiciousMethodCalls
-      Object resolvedVariable = variables.valueMap().get(variable);
-      if (resolvedVariable instanceof Map) {
-        //noinspection unchecked
-        return orderIndependentKey((Map<String, Object>) resolvedVariable, variables);
-      } else {
-        return resolvedVariable.toString();
-      }
+      return orderIndependentKeyForVariableArgument(objectMap, variables);
     }
-
     List<Map.Entry<String, Object>> sortedArguments = new ArrayList<>(objectMap.entrySet());
     Collections.sort(sortedArguments, new Comparator<Map.Entry<String, Object>>() {
       @Override public int compare(Map.Entry<String, Object> argumentOne, Map.Entry<String, Object> argumentTwo) {
@@ -151,6 +142,18 @@ public class Field {
     return objectMap.containsKey(VARIABLE_IDENTIFIER_KEY)
         && objectMap.get(VARIABLE_IDENTIFIER_KEY).equals(VARIABLE_IDENTIFIER_VALUE)
         && objectMap.containsKey(VARIABLE_NAME_KEY);
+  }
+
+  private String orderIndependentKeyForVariableArgument(Map<String, Object> objectMap, Operation.Variables variables) {
+    Object variable = objectMap.get(VARIABLE_NAME_KEY);
+    //noinspection SuspiciousMethodCalls
+    Object resolvedVariable = variables.valueMap().get(variable);
+    if (resolvedVariable instanceof Map) {
+      //noinspection unchecked
+      return orderIndependentKey((Map<String, Object>) resolvedVariable, variables);
+    } else {
+      return resolvedVariable.toString();
+    }
   }
 
   public enum Type {

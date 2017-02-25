@@ -1,10 +1,6 @@
-package com.apollographql.android.converter;
+package com.apollographql.android.api.graphql;
 
-import com.apollographql.android.api.graphql.Field;
-import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder;
-
-import junit.framework.Assert;
 
 import org.junit.Test;
 
@@ -12,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+
+import static com.google.common.truth.Truth.assertThat;
 
 public class CacheKeyForFieldTest {
 
@@ -27,7 +25,7 @@ public class CacheKeyForFieldTest {
         return super.valueMap();
       }
     };
-    Assert.assertEquals("hero", field.cacheKey(variables));
+    assertThat(field.cacheKey(variables)).isEqualTo("hero");
   }
 
   @Test
@@ -38,7 +36,7 @@ public class CacheKeyForFieldTest {
         return super.valueMap();
       }
     };
-    Assert.assertEquals("hero", field.cacheKey(variables));
+    assertThat(field.cacheKey(variables)).isEqualTo("hero");
   }
 
   @Test
@@ -53,7 +51,7 @@ public class CacheKeyForFieldTest {
         return super.valueMap();
       }
     };
-    Assert.assertEquals("hero(episode:JEDI)", field.cacheKey(variables));
+    assertThat(field.cacheKey(variables)).isEqualTo("hero(episode:JEDI)");
   }
 
   @Test
@@ -68,7 +66,7 @@ public class CacheKeyForFieldTest {
         return super.valueMap();
       }
     };
-    Assert.assertEquals("hero(episode:JEDI)", field.cacheKey(variables));
+    assertThat(field.cacheKey(variables)).isEqualTo("hero(episode:JEDI)");
   }
 
   @Test
@@ -88,7 +86,7 @@ public class CacheKeyForFieldTest {
         return map;
       }
     };
-    Assert.assertEquals("hero(episode:JEDI)", field.cacheKey(variables));
+    assertThat(field.cacheKey(variables)).isEqualTo("hero(episode:JEDI)");
   }
 
   @Test
@@ -104,7 +102,7 @@ public class CacheKeyForFieldTest {
         return super.valueMap();
       }
     };
-    Assert.assertEquals("hero(color:blue,episode:JEDI)", field.cacheKey(variables));
+    assertThat(field.cacheKey(variables)).isEqualTo("hero(color:blue,episode:JEDI)");
   }
 
   @Test
@@ -127,7 +125,7 @@ public class CacheKeyForFieldTest {
         .put("episode", "JEDI")
         .build(), false);
 
-    Assert.assertEquals(fieldTwo.cacheKey(variables), field.cacheKey(variables));
+    assertThat(fieldTwo.cacheKey(variables)).isEqualTo(field.cacheKey(variables));
   }
 
   @Test
@@ -146,7 +144,7 @@ public class CacheKeyForFieldTest {
         return super.valueMap();
       }
     };
-    Assert.assertEquals("hero(episode:JEDI,nested:[bar:2,foo:1])", field.cacheKey(variables));
+    assertThat(field.cacheKey(variables)).isEqualTo("hero(episode:JEDI,nested:[bar:2,foo:1])");
   }
 
   @Test
@@ -170,7 +168,7 @@ public class CacheKeyForFieldTest {
         return map;
       }
     };
-    Assert.assertEquals("hero(episode:JEDI,nested:[bar:2,foo:1])", field.cacheKey(variables));
+    assertThat(field.cacheKey(variables)).isEqualTo("hero(episode:JEDI,nested:[bar:2,foo:1])");
   }
 
 }
