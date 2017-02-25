@@ -5,6 +5,8 @@ import com.apollographql.android.CallAdapter;
 import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.ScalarType;
+import com.apollographql.android.cache.HttpCache;
+import com.apollographql.android.cache.HttpCacheInterceptor;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
@@ -21,7 +23,6 @@ import okhttp3.OkHttpClient;
 
 import static com.apollographql.android.impl.util.Utils.checkNotNull;
 
-
 public final class ApolloClient<R> implements ApolloCall.Factory<R> {
   public static <B> Builder<B> builder() {
     return new Builder<>();
@@ -29,32 +30,37 @@ public final class ApolloClient<R> implements ApolloCall.Factory<R> {
 
   private final HttpUrl serverUrl;
   private final Call.Factory httpCallFactory;
+  private final HttpCache httpCache;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final Moshi moshi;
   private CallAdapter<R> adapter;
 
-  private ApolloClient(HttpUrl serverUrl, Call.Factory httpCallFactory,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, Moshi moshi, CallAdapter<R> adapter) {
-    this.serverUrl = serverUrl;
-    this.httpCallFactory = httpCallFactory;
-    this.customTypeAdapters = customTypeAdapters;
-    this.moshi = moshi;
-    this.adapter = adapter;
+  private ApolloClient(Builder<R> builder) {
+    this.serverUrl = builder.serverUrl;
+    this.httpCallFactory = builder.okHttpClient;
+    this.httpCache = builder.httpCache;
+    this.customTypeAdapters = builder.customTypeAdapters;
+    this.moshi = builder.moshiBuilder.build();
+    this.adapter = builder.callAdapter;
   }
 
   @Nonnull
   public <T extends Operation> R newCall(@Nonnull T operation) {
-    RealApolloCall call = new RealApolloCall(operation, serverUrl, httpCallFactory,
-        moshi, operation.responseFieldMapper(), customTypeAdapters);
+    RealApolloCall call = new RealApolloCall(operation, serverUrl, httpCallFactory, httpCache, moshi,
+        operation.responseFieldMapper(), customTypeAdapters);
     return adapter.adapt(call);
   }
 
   public static class Builder<B> {
-    private OkHttpClient okHttpClient;
-    private HttpUrl serverUrl;
-    private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
-    private Moshi.Builder moshiBuilder = new Moshi.Builder();
-    private CallAdapter<B> callAdapter;
+    OkHttpClient okHttpClient;
+    HttpUrl serverUrl;
+    HttpCache httpCache;
+    final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
+    Moshi.Builder moshiBuilder = new Moshi.Builder();
+    CallAdapter<B> callAdapter;
+
+    private Builder() {
+    }
 
     public Builder<B> okHttpClient(@Nonnull OkHttpClient okHttpClient) {
       this.okHttpClient = checkNotNull(okHttpClient, "okHttpClient is null");
@@ -70,6 +76,11 @@ public final class ApolloClient<R> implements ApolloCall.Factory<R> {
     public Builder<B> serverUrl(@Nonnull String baseUrl) {
       checkNotNull(baseUrl, "baseUrl == null");
       this.serverUrl = HttpUrl.parse(baseUrl);
+      return this;
+    }
+
+    public Builder<B> httpCache(HttpCache httpCache) {
+      this.httpCache = httpCache;
       return this;
     }
 
@@ -101,11 +112,12 @@ public final class ApolloClient<R> implements ApolloCall.Factory<R> {
       checkNotNull(okHttpClient, "okHttpClient is null");
       checkNotNull(serverUrl, "serverUrl is null");
       checkNotNull(callAdapter, "callAdapter is null");
-      return new ApolloClient<>(serverUrl,
-          okHttpClient,
-          customTypeAdapters,
-          moshiBuilder.build(),
-          callAdapter);
+
+      if (httpCache != null) {
+        okHttpClient = okHttpClient.newBuilder().addInterceptor(new HttpCacheInterceptor(httpCache)).build();
+      }
+
+      return new ApolloClient<>(this);
     }
   }
 }

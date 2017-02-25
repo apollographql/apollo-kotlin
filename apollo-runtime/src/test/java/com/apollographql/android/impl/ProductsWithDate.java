@@ -1,27 +1,26 @@
-package com.apollographql.android.converter;
+package com.apollographql.android.impl;
 
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
-import com.apollographql.android.converter.type.CustomType;
+import com.apollographql.android.impl.type.CustomType;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
-public final class ProductsWithUnsupportedCustomScalarTypes implements Query<Operation.Variables> {
+public final class ProductsWithDate implements Query<Operation.Variables> {
   public static final String OPERATION_DEFINITION = "query ProductsWithDate {\n"
       + "  shop {\n"
       + "    products(first: 10) {\n"
       + "      edges {\n"
       + "        node {\n"
       + "          title\n"
-      + "          unsupportedCustomScalarTypeNumber\n"
-      + "          unsupportedCustomScalarTypeBool\n"
-      + "          unsupportedCustomScalarTypeString\n"
+      + "          createdAt\n"
       + "        }\n"
       + "      }\n"
       + "    }\n"
@@ -32,7 +31,7 @@ public final class ProductsWithUnsupportedCustomScalarTypes implements Query<Ope
 
   private final Variables variables;
 
-  public ProductsWithUnsupportedCustomScalarTypes() {
+  public ProductsWithDate() {
     this.variables = Operation.EMPTY_VARIABLES;
   }
 
@@ -97,55 +96,32 @@ public final class ProductsWithUnsupportedCustomScalarTypes implements Query<Ope
           public static class Node {
             private @Nonnull String title;
 
-            private @Nonnull Object unsupportedCustomScalarTypeNumber;
+            private @Nonnull Date createdAt;
 
-            private @Nonnull Object unsupportedCustomScalarTypeBool;
-
-            private @Nonnull Object unsupportedCustomScalarTypeString;
-
-            public Node(@Nonnull String title, @Nonnull Object unsupportedCustomScalarTypeNumber,
-                @Nonnull Object unsupportedCustomScalarTypeBool, @Nonnull Object unsupportedCustomScalarTypeString) {
+            public Node(@Nonnull String title, @Nonnull Date createdAt) {
               this.title = title;
-              this.unsupportedCustomScalarTypeNumber = unsupportedCustomScalarTypeNumber;
-              this.unsupportedCustomScalarTypeBool = unsupportedCustomScalarTypeBool;
-              this.unsupportedCustomScalarTypeString = unsupportedCustomScalarTypeString;
+              this.createdAt = createdAt;
             }
 
             public @Nonnull String title() {
               return this.title;
             }
 
-            public @Nonnull Object unsupportedCustomScalarTypeNumber() {
-              return unsupportedCustomScalarTypeNumber;
-            }
-
-            public @Nonnull Object unsupportedCustomScalarTypeBool() {
-              return unsupportedCustomScalarTypeBool;
-            }
-
-            public @Nonnull Object unsupportedCustomScalarTypeString() {
-              return unsupportedCustomScalarTypeString;
+            public @Nonnull Date createdAt() {
+              return this.createdAt;
             }
 
             public static final class Mapper implements ResponseFieldMapper<Node> {
               final Field[] fields = {
                   Field.forString("title", "title", null, false),
-                  Field.forCustomType("unsupportedCustomScalarTypeNumber", "unsupportedCustomScalarTypeNumber", null,
-                      false, CustomType.UNSUPPORTEDCUSTOMSCALARTYPENUMBER),
-                  Field.forCustomType("unsupportedCustomScalarTypeBool", "unsupportedCustomScalarTypeBool", null, false,
-                      CustomType.UNSUPPORTEDCUSTOMSCALARTYPEBOOL),
-                  Field.forCustomType("unsupportedCustomScalarTypeString", "unsupportedCustomScalarTypeString", null,
-                      false, CustomType.UNSUPPORTEDCUSTOMSCALARTYPESTRING)
+                  Field.forCustomType("createdAt", "createdAt", null, false, CustomType.DATETIME)
               };
 
               @Override
               public Node map(ResponseReader reader) throws IOException {
                 final String title = reader.read(fields[0]);
-                final Object unsupportedCustomScalarTypeNumber = reader.read(fields[1]);
-                final Object unsupportedCustomScalarTypeBool = reader.read(fields[2]);
-                final Object unsupportedCustomScalarTypeString = reader.read(fields[3]);
-                return new Node(title, unsupportedCustomScalarTypeNumber,
-                    unsupportedCustomScalarTypeBool, unsupportedCustomScalarTypeString);
+                final Date createdAt = reader.read(fields[1]);
+                return new Node(title, createdAt);
               }
             }
           }

@@ -26,33 +26,39 @@ final class ResponseBodyConverter {
   }
 
   <T extends Operation.Data> Response<T> convert(ResponseBody responseBody) throws IOException {
-    BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(responseBody.source());
-    jsonReader.beginObject();
+    BufferedSourceJsonReader jsonReader = null;
+    try {
+      jsonReader = new BufferedSourceJsonReader(responseBody.source());
+      jsonReader.beginObject();
 
-    ResponseJsonStreamReader responseStreamReader = new ResponseJsonStreamReader(jsonReader);
-    T data = null;
-    List<Error> errors = null;
-    while (responseStreamReader.hasNext()) {
-      String name = responseStreamReader.nextName();
-      if ("data".equals(name)) {
-        //noinspection unchecked
-        data = (T) responseStreamReader.nextObject(false, new ResponseJsonStreamReader.ObjectReader<Object>() {
-          @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
-            Map<String, Object> buffer = reader.buffer();
-            BufferedResponseReader bufferedResponseReader = new BufferedResponseReader(buffer, operation,
-                customTypeAdapters);
-            return responseFieldMapper.map(bufferedResponseReader);
-          }
-        });
-      } else if ("errors".equals(name)) {
-        errors = readResponseErrors(responseStreamReader);
-      } else {
-        responseStreamReader.skipNext();
+      ResponseJsonStreamReader responseStreamReader = new ResponseJsonStreamReader(jsonReader);
+      T data = null;
+      List<Error> errors = null;
+      while (responseStreamReader.hasNext()) {
+        String name = responseStreamReader.nextName();
+        if ("data".equals(name)) {
+          //noinspection unchecked
+          data = (T) responseStreamReader.nextObject(false, new ResponseJsonStreamReader.ObjectReader<Object>() {
+            @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
+              Map<String, Object> buffer = reader.buffer();
+              BufferedResponseReader bufferedResponseReader = new BufferedResponseReader(buffer, operation,
+                  customTypeAdapters);
+              return responseFieldMapper.map(bufferedResponseReader);
+            }
+          });
+        } else if ("errors".equals(name)) {
+          errors = readResponseErrors(responseStreamReader);
+        } else {
+          responseStreamReader.skipNext();
+        }
+      }
+      jsonReader.endObject();
+      return new Response<>(operation, data, errors);
+    } finally {
+      if (jsonReader != null) {
+        jsonReader.close();
       }
     }
-    jsonReader.endObject();
-
-    return new Response<>(operation, data, errors);
   }
 
   private List<Error> readResponseErrors(ResponseJsonStreamReader reader) throws IOException {

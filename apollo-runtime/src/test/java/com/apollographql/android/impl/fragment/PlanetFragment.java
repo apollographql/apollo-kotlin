@@ -1,4 +1,4 @@
-package com.apollographql.android.converter.fragment;
+package com.apollographql.android.impl.fragment;
 
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;

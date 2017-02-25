@@ -1,4 +1,4 @@
-package com.apollographql.android.converter.type;
+package com.apollographql.android.impl.type;
 
 import com.apollographql.android.api.graphql.ScalarType;
 

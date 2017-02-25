@@ -6,6 +6,8 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ScalarType;
+import com.apollographql.android.cache.HttpCache;
+import com.apollographql.android.cache.HttpCacheInterceptor;
 import com.apollographql.android.impl.util.HttpException;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -30,24 +32,27 @@ final class RealApolloCall implements ApolloCall {
   private final Operation operation;
   private final HttpUrl serverUrl;
   private final okhttp3.Call.Factory httpCallFactory;
+  private final HttpCache httpCache;
   private final Moshi moshi;
   private final ResponseBodyConverter responseBodyConverter;
-  private volatile Call httpCall;
+  volatile Call httpCall;
   private boolean executed;
 
-  RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, Moshi moshi,
+  RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache, Moshi moshi,
       ResponseFieldMapper responseFieldMapper, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
     this.operation = operation;
     this.serverUrl = serverUrl;
+    this.httpCache = httpCache;
     this.moshi = moshi;
     this.httpCallFactory = httpCallFactory;
     this.responseBodyConverter = new ResponseBodyConverter(operation, responseFieldMapper, customTypeAdapters);
   }
 
-  private RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, Moshi moshi,
-      ResponseBodyConverter responseBodyConverter) {
+  private RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
+      Moshi moshi, ResponseBodyConverter responseBodyConverter) {
     this.operation = operation;
     this.serverUrl = serverUrl;
+    this.httpCache = httpCache;
     this.moshi = moshi;
     this.httpCallFactory = httpCallFactory;
     this.responseBodyConverter = responseBodyConverter;
@@ -65,7 +70,8 @@ final class RealApolloCall implements ApolloCall {
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
-    httpCall = httpCallFactory.newCall(httpRequest(operation));
+    Request request = httpRequest(operation);
+    httpCall = httpCallFactory.newCall(request);
     return parseHttpResponse(httpCall.execute());
   }
 
@@ -110,7 +116,7 @@ final class RealApolloCall implements ApolloCall {
   }
 
   @Override @Nonnull public ApolloCall clone() {
-    return new RealApolloCall(operation, serverUrl, httpCallFactory, moshi, responseBodyConverter);
+    return new RealApolloCall(operation, serverUrl, httpCallFactory, httpCache, moshi, responseBodyConverter);
   }
 
   private <T extends Operation.Data> Response<T> parseHttpResponse(okhttp3.Response response) throws IOException {
@@ -118,17 +124,29 @@ final class RealApolloCall implements ApolloCall {
     if (code < 200 || code >= 300) {
       throw new HttpException(response);
     } else {
-      return responseBodyConverter.convert(response.body());
+      try {
+        return responseBodyConverter.convert(response.body());
+      } catch (Exception e) {
+        try {
+          httpCache.remove(response.request().header(HttpCacheInterceptor.CACHE_KEY_HEADER));
+        } catch (IOException ignore) {
+          throw e;
+        }
+        throw e;
+      }
     }
   }
 
   private Request httpRequest(Operation operation) throws IOException {
     RequestBody requestBody = httpRequestBody(operation);
+    String cacheKey = cacheKey(requestBody);
     return new Request.Builder()
         .url(serverUrl)
         .post(requestBody)
         .header("Accept", ACCEPT_TYPE)
         .header("Content-Type", CONTENT_TYPE)
+        .header(HttpCacheInterceptor.CACHE_KEY_HEADER, cacheKey)
+        .header(HttpCacheInterceptor.CACHE_CONTROL_HEADER, "cache")
         .build();
   }
 
@@ -137,5 +155,11 @@ final class RealApolloCall implements ApolloCall {
     Buffer buffer = new Buffer();
     adapter.toJson(buffer, operation);
     return RequestBody.create(MEDIA_TYPE, buffer.readByteString());
+  }
+
+  static String cacheKey(RequestBody requestBody) throws IOException {
+    Buffer hashBuffer = new Buffer();
+    requestBody.writeTo(hashBuffer);
+    return hashBuffer.readByteString().md5().hex();
   }
 }

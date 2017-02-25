@@ -1,4 +1,4 @@
-package com.apollographql.android.converter.fragment;
+package com.apollographql.android.impl.fragment;
 
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
@@ -7,7 +7,6 @@ import com.apollographql.android.api.graphql.ResponseReader;
 import java.io.IOException;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class FilmFragment {
