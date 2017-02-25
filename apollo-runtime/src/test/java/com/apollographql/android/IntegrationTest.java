@@ -7,6 +7,8 @@ import com.google.common.io.Files;
 
 import com.apollographql.android.api.graphql.Error;
 import com.apollographql.android.api.graphql.Response;
+import com.apollographql.android.cache.DiskLruCacheStore;
+import com.apollographql.android.cache.HttpCache;
 import com.apollographql.android.type.CustomType;
 
 import junit.framework.Assert;
@@ -61,7 +63,8 @@ public class IntegrationTest {
       }
     };
 
-    httpCache = new HttpCache(new File("/cache/"), Integer.MAX_VALUE, fileSystem);
+    DiskLruCacheStore diskLruCacheStore = new DiskLruCacheStore(fileSystem, new File("/cache/"), Integer.MAX_VALUE);
+    httpCache = new HttpCache(diskLruCacheStore);
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))

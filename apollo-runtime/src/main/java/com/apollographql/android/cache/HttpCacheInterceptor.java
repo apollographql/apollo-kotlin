@@ -1,4 +1,4 @@
-package com.apollographql.android;
+package com.apollographql.android.cache;
 
 import java.io.IOException;
 
@@ -6,12 +6,12 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
-final class HttpCacheInterceptor implements Interceptor {
-  static final String CACHE_CONTROL_HEADER = "APOLLO-CACHE-CONTROL";
+public final class HttpCacheInterceptor implements Interceptor {
+  public static final String CACHE_CONTROL_HEADER = "APOLLO-CACHE-CONTROL";
 
   private final HttpCache cache;
 
-  HttpCacheInterceptor(HttpCache cache) {
+  public HttpCacheInterceptor(HttpCache cache) {
     this.cache = cache;
   }
 
