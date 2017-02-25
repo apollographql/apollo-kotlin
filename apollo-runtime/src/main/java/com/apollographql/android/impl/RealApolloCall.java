@@ -37,7 +37,7 @@ final class RealApolloCall implements ApolloCall {
   private final ResponseBodyConverter responseBodyConverter;
   volatile Call httpCall;
   private boolean executed;
-  private CachePolicy cachePolicy = CachePolicy.DEFAULT;
+  private HttpCacheInterceptor.CacheControl cacheControl = HttpCacheInterceptor.CacheControl.DEFAULT;
 
   RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache, Moshi moshi,
       ResponseFieldMapper responseFieldMapper, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
@@ -50,10 +50,11 @@ final class RealApolloCall implements ApolloCall {
   }
 
   private RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
-      Moshi moshi, ResponseBodyConverter responseBodyConverter) {
+      HttpCacheInterceptor.CacheControl cacheControl, Moshi moshi, ResponseBodyConverter responseBodyConverter) {
     this.operation = operation;
     this.serverUrl = serverUrl;
     this.httpCache = httpCache;
+    this.cacheControl = cacheControl;
     this.moshi = moshi;
     this.httpCallFactory = httpCallFactory;
     this.responseBodyConverter = responseBodyConverter;
@@ -113,7 +114,7 @@ final class RealApolloCall implements ApolloCall {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
-    cachePolicy = CachePolicy.NETWORK_ONLY;
+    cacheControl = HttpCacheInterceptor.CacheControl.NETWORK_ONLY;
     return this;
   }
 
@@ -121,7 +122,7 @@ final class RealApolloCall implements ApolloCall {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
-    cachePolicy = CachePolicy.CACHE_ONLY;
+    cacheControl = HttpCacheInterceptor.CacheControl.CACHE_ONLY;
     return this;
   }
 
@@ -129,7 +130,7 @@ final class RealApolloCall implements ApolloCall {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
-    cachePolicy = CachePolicy.NETWORK_BEFORE_STALE;
+    cacheControl = HttpCacheInterceptor.CacheControl.NETWORK_BEFORE_STALE;
     return this;
   }
 
@@ -141,7 +142,8 @@ final class RealApolloCall implements ApolloCall {
   }
 
   @Override @Nonnull public ApolloCall clone() {
-    return new RealApolloCall(operation, serverUrl, httpCallFactory, httpCache, moshi, responseBodyConverter);
+    return new RealApolloCall(operation, serverUrl, httpCallFactory, httpCache, cacheControl, moshi,
+        responseBodyConverter);
   }
 
   private <T extends Operation.Data> Response<T> parseHttpResponse(okhttp3.Response response) throws IOException {
@@ -171,7 +173,7 @@ final class RealApolloCall implements ApolloCall {
         .header("Accept", ACCEPT_TYPE)
         .header("Content-Type", CONTENT_TYPE)
         .header(HttpCacheInterceptor.CACHE_KEY_HEADER, cacheKey)
-        .header(HttpCacheInterceptor.CACHE_CONTROL_HEADER, cacheControlHeader(cachePolicy))
+        .header(HttpCacheInterceptor.CACHE_CONTROL_HEADER, cacheControl.httpHeader)
         .build();
   }
 
@@ -186,30 +188,5 @@ final class RealApolloCall implements ApolloCall {
     Buffer hashBuffer = new Buffer();
     requestBody.writeTo(hashBuffer);
     return hashBuffer.readByteString().md5().hex();
-  }
-
-  private static String cacheControlHeader(CachePolicy cachePolicy) {
-    switch (cachePolicy) {
-      case DEFAULT:
-        return HttpCacheInterceptor.CACHE_CONTROL_DEFAULT;
-
-      case NETWORK_ONLY:
-        return HttpCacheInterceptor.CACHE_CONTROL_NETWORK_ONLY;
-
-      case CACHE_ONLY:
-        return HttpCacheInterceptor.CACHE_CONTROL_CACHE_ONLY;
-
-      case NETWORK_BEFORE_STALE:
-        return HttpCacheInterceptor.CACHE_CONTROL_NETWORK_BEFORE_STALE;
-    }
-
-    throw new IllegalStateException("should never happen");
-  }
-
-  private enum CachePolicy {
-    DEFAULT,
-    NETWORK_ONLY,
-    CACHE_ONLY,
-    NETWORK_BEFORE_STALE
   }
 }

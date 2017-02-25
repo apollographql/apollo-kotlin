@@ -9,11 +9,6 @@ import okhttp3.Response;
 import okhttp3.internal.Util;
 
 public final class HttpCacheInterceptor implements Interceptor {
-  public static final String CACHE_CONTROL_DEFAULT = "default";
-  public static final String CACHE_CONTROL_NETWORK_ONLY = "network-only";
-  public static final String CACHE_CONTROL_CACHE_ONLY = "cache-only";
-  public static final String CACHE_CONTROL_NETWORK_BEFORE_STALE = "network-before-stale";
-
   public static final String CACHE_KEY_HEADER = "APOLLO-CACHE-KEY";
   public static final String CACHE_CONTROL_HEADER = "APOLLO-CACHE-CONTROL";
 
@@ -25,37 +20,79 @@ public final class HttpCacheInterceptor implements Interceptor {
 
   @Override public Response intercept(Chain chain) throws IOException {
     Request request = chain.request();
-
-    String cacheControl = request.header(CACHE_CONTROL_HEADER);
-    String cacheKey = request.header(CACHE_KEY_HEADER);
-    if (cacheControl == null
-        || CACHE_CONTROL_NETWORK_ONLY.equals(cacheControl)
-        || cacheKey == null) {
+    if (isSkipCache(request)) {
       return chain.proceed(request);
     }
 
-    if (CACHE_CONTROL_CACHE_ONLY.equals(cacheControl)) {
-      Response cachedResponse = cache.read(cacheKey);
-      if (cachedResponse != null) {
-        return cachedResponse;
-      }
-
-      return new Response.Builder()
-          .request(chain.request())
-          .protocol(Protocol.HTTP_1_1)
-          .code(504)
-          .message("Unsatisfiable Request (cache-only)")
-          .body(Util.EMPTY_RESPONSE)
-          .sentRequestAtMillis(-1L)
-          .receivedResponseAtMillis(System.currentTimeMillis())
-          .build();
+    if (isSkipNetwork(request)) {
+      return cacheOnlyResponse(request);
     }
 
     Response response = chain.proceed(request);
-    if (response.isSuccessful() && CACHE_CONTROL_DEFAULT.equals(cacheControl)) {
-      return cache.cacheProxy(response, cacheKey);
-    } else {
-      return response;
+    if (isCacheEnable(request)) {
+      String cacheKey = request.header(CACHE_KEY_HEADER);
+      if (response.isSuccessful()) {
+        return cache.cacheProxy(response, cacheKey);
+      }
+    }
+
+    return response;
+  }
+
+  private boolean isSkipCache(Request request) {
+    CacheControl cacheControl = CacheControl.valueOfHttpHeader(request.header(CACHE_CONTROL_HEADER));
+    String cacheKey = request.header(CACHE_KEY_HEADER);
+    return cacheControl == null
+        || cacheControl == CacheControl.CACHE_ONLY
+        || cacheKey == null;
+  }
+
+  private boolean isSkipNetwork(Request request) {
+    CacheControl cacheControl = CacheControl.valueOfHttpHeader(request.header(CACHE_CONTROL_HEADER));
+    return cacheControl == CacheControl.CACHE_ONLY;
+  }
+
+  private Response cacheOnlyResponse(Request request) throws IOException {
+    String cacheKey = request.header(CACHE_KEY_HEADER);
+    Response cachedResponse = cache.read(cacheKey);
+    if (cachedResponse != null) {
+      return cachedResponse;
+    }
+    return new Response.Builder()
+        .request(request)
+        .protocol(Protocol.HTTP_1_1)
+        .code(504)
+        .message("Unsatisfiable Request (cache-only)")
+        .body(Util.EMPTY_RESPONSE)
+        .sentRequestAtMillis(-1L)
+        .receivedResponseAtMillis(System.currentTimeMillis())
+        .build();
+  }
+
+  private boolean isCacheEnable(Request request) {
+    CacheControl cacheControl = CacheControl.valueOfHttpHeader(request.header(CACHE_CONTROL_HEADER));
+    return cacheControl == CacheControl.DEFAULT;
+  }
+
+  public enum CacheControl {
+    DEFAULT("default"),
+    NETWORK_ONLY("network-only"),
+    CACHE_ONLY("cache-only"),
+    NETWORK_BEFORE_STALE("network-before-stale");
+
+    public final String httpHeader;
+
+    CacheControl(String httpHeader) {
+      this.httpHeader = httpHeader;
+    }
+
+    static CacheControl valueOfHttpHeader(String header) {
+      for (CacheControl value : values()) {
+        if (value.httpHeader.equals(header)) {
+          return value;
+        }
+      }
+      return null;
     }
   }
 }
