@@ -1,11 +1,12 @@
-package com.example.simple_arguments;
+package com.example.arguments_simple;
 
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
-import com.example.simple_arguments.type.Episode;
+import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder;
+import com.example.arguments_simple.type.Episode;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
@@ -194,7 +195,12 @@ public final class TestQuery implements Query<TestQuery.Variables> {
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final Field[] fields = {
-        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
+        Field.forObject("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+          .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
+            .put("kind", "Variable")
+            .put("variableName", "episode")
+          .build())
+        .build(), true, new Field.ObjectReader<Hero>() {
           @Override public Hero read(final ResponseReader reader) throws IOException {
             return new Hero.Mapper().map(reader);
           }

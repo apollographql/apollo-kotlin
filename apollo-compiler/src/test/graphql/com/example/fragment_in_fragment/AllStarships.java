@@ -5,6 +5,7 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder;
 import com.example.fragment_in_fragment.fragment.PilotFragment;
 import com.example.fragment_in_fragment.fragment.StarshipFragment;
 import java.io.IOException;
@@ -319,7 +320,9 @@ public final class AllStarships implements Query<Operation.Variables> {
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final Field[] fields = {
-        Field.forObject("allStarships", "allStarships", null, true, new Field.ObjectReader<AllStarship>() {
+        Field.forObject("allStarships", "allStarships", new UnmodifiableMapBuilder<String, Object>(1)
+          .put("first", "7.0")
+        .build(), true, new Field.ObjectReader<AllStarship>() {
           @Override public AllStarship read(final ResponseReader reader) throws IOException {
             return new AllStarship.Mapper().map(reader);
           }

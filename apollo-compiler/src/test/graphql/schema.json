@@ -50,6 +50,39 @@
               "deprecationReason": null
             },
             {
+              "name": "heroWithReview",
+              "description": "",
+              "args": [
+                {
+                  "name": "episode",
+                  "description": "",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "Episode",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "review",
+                   "description": "",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "ReviewInput",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "INTERFACE",
+                "name": "Human",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "reviews",
               "description": "",
               "args": [

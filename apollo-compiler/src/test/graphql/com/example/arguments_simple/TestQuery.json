@@ -1,7 +1,7 @@
 {
 	"operations": [
 		{
-			"filePath": "src/test/graphql/com/example/simple_arguments/TestQuery.graphql",
+			"filePath": "src/test/graphql/com/example/arguments_simple/TestQuery.graphql",
 			"operationName": "TestQuery",
 			"operationType": "query",
 			"variables": [
