@@ -2,55 +2,57 @@ package com.apollographql.android.api.graphql;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class Field {
   private final Type type;
   private final String responseName;
   private final String fieldName;
-  private final Map<String, Object> arguments;
+  final List<Map<String, Object>> arguments;
   private final boolean optional;
 
-  public static Field forString(String responseName, String fieldName, Map<String, Object> arguments,
+  public static Field forString(String responseName, String fieldName, List<Map<String, Object>> arguments,
       boolean optional) {
     return new Field(Type.STRING, responseName, fieldName, arguments, optional);
   }
 
-  public static Field forInt(String responseName, String fieldName, Map<String, Object> arguments, boolean optional) {
+  public static Field forInt(String responseName, String fieldName, List<Map<String, Object>> arguments, boolean
+      optional) {
     return new Field(Type.INT, responseName, fieldName, arguments, optional);
   }
 
-  public static <T> Field forLong(String responseName, String fieldName, Map<String, Object> arguments,
+  public static <T> Field forLong(String responseName, String fieldName, List<Map<String, Object>> arguments,
       boolean optional) {
     return new Field(Type.LONG, responseName, fieldName, arguments, optional);
   }
 
-  public static Field forDouble(String responseName, String fieldName, Map<String, Object> arguments,
+  public static Field forDouble(String responseName, String fieldName, List<Map<String, Object>> arguments,
       boolean optional) {
     return new Field(Type.DOUBLE, responseName, fieldName, arguments, optional);
   }
 
-  public static Field forBoolean(String responseName, String fieldName, Map<String, Object> arguments,
+  public static Field forBoolean(String responseName, String fieldName, List<Map<String, Object>> arguments,
       boolean optional) {
     return new Field(Type.BOOLEAN, responseName, fieldName, arguments, optional);
   }
 
-  public static <T> Field forObject(String responseName, String fieldName, Map<String, Object> arguments,
+  public static <T> Field forObject(String responseName, String fieldName, List<Map<String, Object>> arguments,
       boolean optional, ObjectReader<T> objectReader) {
     return new ObjectField(responseName, fieldName, arguments, optional, objectReader);
   }
 
-  public static <T> Field forList(String responseName, String fieldName, Map<String, Object> arguments,
+  public static <T> Field forList(String responseName, String fieldName, List<Map<String, Object>> arguments,
       boolean optional, ListReader<T> listReader) {
     return new ScalarListField(responseName, fieldName, arguments, optional, listReader);
   }
 
-  public static <T> Field forList(String responseName, String fieldName, Map<String, Object> arguments,
+  public static <T> Field forList(String responseName, String fieldName, List<Map<String, Object>> arguments,
       boolean optional, ObjectReader<T> objectReader) {
     return new ObjectListField(responseName, fieldName, arguments, optional, objectReader);
   }
 
-  public static <T> Field forCustomType(String responseName, String fieldName, Map<String, Object> arguments,
+  public static <T> Field forCustomType(String responseName, String fieldName, List<Map<String, Object>> arguments,
       boolean optional, ScalarType scalarType) {
     return new CustomTypeField(responseName, fieldName, arguments, optional, scalarType);
   }
@@ -60,12 +62,13 @@ public class Field {
     return new ConditionalTypeField(responseName, fieldName, conditionalTypeReader);
   }
 
-  private Field(Type type, String responseName, String fieldName, Map<String, Object> arguments, boolean optional) {
+  private Field(Type type, String responseName, String fieldName, List<Map<String, Object>> arguments, boolean
+      optional) {
     this.type = type;
     this.responseName = responseName;
     this.fieldName = fieldName;
-    this.arguments = arguments == null ? Collections.<String, Object>emptyMap()
-        : Collections.unmodifiableMap(arguments);
+    this.arguments = arguments == null ? Collections.<Map<String,Object>>emptyList()
+        : Collections.unmodifiableList(arguments);
     this.optional = optional;
   }
 
@@ -81,7 +84,7 @@ public class Field {
     return fieldName;
   }
 
-  public Map<String, Object> arguments() {
+  public List<Map<String, Object>> arguments() {
     return arguments;
   }
 
@@ -132,7 +135,7 @@ public class Field {
   public static final class ObjectField extends Field {
     private final ObjectReader objectReader;
 
-    ObjectField(String responseName, String fieldName, Map<String, Object> arguments, boolean optional,
+    ObjectField(String responseName, String fieldName, List<Map<String, Object>> arguments, boolean optional,
         ObjectReader objectReader) {
       super(Type.OBJECT, responseName, fieldName, arguments, optional);
       this.objectReader = objectReader;
@@ -146,7 +149,7 @@ public class Field {
   public static final class ScalarListField extends Field {
     private final ListReader listReader;
 
-    ScalarListField(String responseName, String fieldName, Map<String, Object> arguments, boolean optional,
+    ScalarListField(String responseName, String fieldName, List<Map<String, Object>> arguments, boolean optional,
         ListReader listReader) {
       super(Type.SCALAR_LIST, responseName, fieldName, arguments, optional);
       this.listReader = listReader;
@@ -160,7 +163,7 @@ public class Field {
   public static final class ObjectListField extends Field {
     private final ObjectReader objectReader;
 
-    ObjectListField(String responseName, String fieldName, Map<String, Object> arguments, boolean optional,
+    ObjectListField(String responseName, String fieldName, List<Map<String, Object>> arguments, boolean optional,
         ObjectReader objectReader) {
       super(Type.OBJECT_LIST, responseName, fieldName, arguments, optional);
       this.objectReader = objectReader;
@@ -174,7 +177,7 @@ public class Field {
   public static final class CustomTypeField extends Field {
     private final ScalarType scalarType;
 
-    CustomTypeField(String responseName, String fieldName, Map<String, Object> arguments, boolean optional,
+    CustomTypeField(String responseName, String fieldName, List<Map<String, Object>> arguments, boolean optional,
         ScalarType scalarType) {
       super(Type.CUSTOM, responseName, fieldName, arguments, optional);
       this.scalarType = scalarType;

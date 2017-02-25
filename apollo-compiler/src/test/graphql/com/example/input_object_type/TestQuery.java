@@ -5,6 +5,7 @@ import com.apollographql.android.api.graphql.Mutation;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder;
 import com.example.input_object_type.type.Episode;
 import com.example.input_object_type.type.ReviewInput;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.lang.IllegalStateException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -213,7 +215,20 @@ public final class TestQuery implements Mutation<TestQuery.Variables> {
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final Field[] fields = {
-        Field.forObject("createReview", "createReview", null, true, new Field.ObjectReader<CreateReview>() {
+        Field.forObject("createReview", "createReview", Arrays.asList(new UnmodifiableMapBuilder<String, Object>(2)
+          .put("name", "episode")
+          .put("value", new UnmodifiableMapBuilder<String, Object>(2)
+            .put("kind", "Variable")
+            .put("variableName", "ep")
+          .build())
+        .build(),
+        new UnmodifiableMapBuilder<String, Object>(2)
+          .put("name", "review")
+          .put("value", new UnmodifiableMapBuilder<String, Object>(2)
+            .put("kind", "Variable")
+            .put("variableName", "review")
+          .build())
+        .build()), true, new Field.ObjectReader<CreateReview>() {
           @Override public CreateReview read(final ResponseReader reader) throws IOException {
             return new CreateReview.Mapper().map(reader);
           }
