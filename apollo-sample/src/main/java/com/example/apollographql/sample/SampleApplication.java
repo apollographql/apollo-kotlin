@@ -2,7 +2,10 @@ package com.example.apollographql.sample;
 
 import android.app.Application;
 
-import com.apollographql.android.ApolloClient;
+
+import com.apollographql.android.ApolloCall;
+import com.apollographql.android.impl.ApolloCallAdapter;
+import com.apollographql.android.impl.ApolloClient;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -10,7 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class SampleApplication extends Application {
 
   private static final String BASE_URL = "https://githunt-api.herokuapp.com/graphql";
-  private ApolloClient apolloClient;
+  private ApolloClient<ApolloCall> apolloClient;
 
   @Override public void onCreate() {
     super.onCreate();
@@ -20,13 +23,14 @@ public class SampleApplication extends Application {
         .addNetworkInterceptor(loggingInterceptor)
         .build();
 
-    apolloClient = ApolloClient.builder()
+    apolloClient = ApolloClient.<ApolloCall>builder()
             .serverUrl(BASE_URL)
             .okHttpClient(okHttpClient)
+            .withCallAdapter(new ApolloCallAdapter())
             .build();
   }
 
-  public ApolloClient apolloClient() {
+  public ApolloClient<ApolloCall> apolloClient() {
     return apolloClient;
   }
 }
