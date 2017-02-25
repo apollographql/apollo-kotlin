@@ -10,6 +10,7 @@ import com.apollographql.android.cache.DiskLruCacheStore;
 import com.apollographql.android.cache.HttpCache;
 import com.apollographql.android.cache.HttpCacheInterceptor;
 import com.apollographql.android.impl.type.CustomType;
+import com.apollographql.android.impl.util.HttpException;
 
 import junit.framework.Assert;
 
@@ -165,7 +166,7 @@ public class CacheTest {
     checkNoCachedResponse(call);
   }
 
-  @Test public void cacheOnly() throws Exception {
+  @Test public void cacheOnlyHit() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
 
     ApolloCall call = apolloClient.newCall(new AllPlanets());
@@ -181,6 +182,18 @@ public class CacheTest {
     assertThat(server.getRequestCount()).isEqualTo(1);
     assertThat(body.isSuccessful()).isTrue();
     checkCachedResponse(call, new File("src/test/graphql/allPlanetsResponse.json"));
+  }
+
+  @Test public void cacheOnlyMiss() throws Exception {
+    server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
+    ApolloCall call = apolloClient.newCall(new AllPlanets()).cache();
+    try {
+      Response<AllPlanets.Data> body = call.execute();
+      Assert.fail("expected to fail with HttpException");
+    } catch (HttpException expected) {
+    } catch (Exception e) {
+      Assert.fail("expected to fail with HttpException");
+    }
   }
 
   private void checkCachedResponse(ApolloCall call, File content) throws IOException {
