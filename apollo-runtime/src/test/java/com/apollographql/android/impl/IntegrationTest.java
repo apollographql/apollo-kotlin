@@ -51,7 +51,7 @@ public class IntegrationTest {
   @Rule public InMemoryFileSystem fileSystem = new InMemoryFileSystem();
 
   @Before public void setUp() {
-    CustomTypeAdapter dateCustomTypeAdapter = new CustomTypeAdapter<Date>() {
+    CustomTypeAdapter<Date> dateCustomTypeAdapter = new CustomTypeAdapter<Date>() {
       @Override public Date decode(String value) {
         try {
           return DATE_FORMAT.parse(value);

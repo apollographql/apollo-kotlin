@@ -23,7 +23,6 @@ import okhttp3.OkHttpClient;
 
 import static com.apollographql.android.impl.util.Utils.checkNotNull;
 
-
 public final class ApolloClient<R> implements ApolloCall.Factory<R> {
   public static <B> Builder<B> builder() {
     return new Builder<>();
@@ -59,6 +58,9 @@ public final class ApolloClient<R> implements ApolloCall.Factory<R> {
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
     Moshi.Builder moshiBuilder = new Moshi.Builder();
     CallAdapter<B> callAdapter;
+
+    private Builder() {
+    }
 
     public Builder<B> okHttpClient(@Nonnull OkHttpClient okHttpClient) {
       this.okHttpClient = checkNotNull(okHttpClient, "okHttpClient is null");
