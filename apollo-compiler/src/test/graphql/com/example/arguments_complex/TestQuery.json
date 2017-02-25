@@ -1,0 +1,100 @@
+{
+	"operations": [
+		{
+			"filePath": "src/test/graphql/com/example/arguments_complex/TestQuery.graphql",
+			"operationName": "TestQuery",
+			"operationType": "query",
+			"variables": [
+				{
+					"name": "episode",
+					"type": "Episode"
+				},
+				{
+					"name": "stars",
+					"type": "Int!"
+				},
+				{
+					"name": "greenValue",
+					"type": "Float!"
+				}
+			],
+			"source": "query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {\n  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}}) {\n    __typename\n    name\n    height(unit: FOOT)\n  }\n}",
+			"fields": [
+				{
+					"responseName": "heroWithReview",
+					"fieldName": "heroWithReview",
+					"type": "Human",
+					"args": [
+						{
+							"name": "episode",
+							"value": {
+								"kind": "Variable",
+								"variableName": "episode"
+							}
+						},
+						{
+							"name": "review",
+							"value": {
+								"stars": {
+									"kind": "Variable",
+									"variableName": "stars"
+								},
+								"favoriteColor": {
+									"red": 0,
+									"green": {
+										"kind": "Variable",
+										"variableName": "greenValue"
+									},
+									"blue": 0
+								}
+							}
+						}
+					],
+					"fields": [
+						{
+							"responseName": "name",
+							"fieldName": "name",
+							"type": "String!"
+						},
+						{
+							"responseName": "height",
+							"fieldName": "height",
+							"type": "Float",
+							"args": [
+								{
+									"name": "unit",
+									"value": "FOOT"
+								}
+							]
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				}
+			],
+			"fragmentsReferenced": []
+		}
+	],
+	"fragments": [],
+	"typesUsed": [
+		{
+			"kind": "EnumType",
+			"name": "Episode",
+			"description": "The episodes in the Star Wars trilogy",
+			"values": [
+				{
+					"name": "NEWHOPE",
+					"description": "Star Wars Episode IV: A New Hope, released in 1977."
+				},
+				{
+					"name": "EMPIRE",
+					"description": "Star Wars Episode V: The Empire Strikes Back, released in 1980."
+				},
+				{
+					"name": "JEDI",
+					"description": "Star Wars Episode VI: Return of the Jedi, released in 1983."
+				}
+			]
+		}
+	]
+}
