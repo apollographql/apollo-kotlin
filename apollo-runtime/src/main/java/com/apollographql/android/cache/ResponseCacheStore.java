@@ -9,5 +9,7 @@ public interface ResponseCacheStore {
 
   ResponseCacheRecordEditor cacheRecordEditor(@Nonnull String cacheKey) throws IOException;
 
+  void remove(@Nonnull String cacheKey) throws IOException;
+
   void delete() throws IOException;
 }

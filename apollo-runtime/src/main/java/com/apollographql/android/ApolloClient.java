@@ -28,28 +28,29 @@ public final class ApolloClient implements ApolloCallFactory {
 
   private final HttpUrl serverUrl;
   private final Call.Factory httpCallFactory;
+  private final HttpCache httpCache;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final Moshi moshi;
 
-  private ApolloClient(HttpUrl serverUrl, Call.Factory httpCallFactory,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, Moshi moshi) {
-    this.serverUrl = serverUrl;
-    this.httpCallFactory = httpCallFactory;
-    this.customTypeAdapters = customTypeAdapters;
-    this.moshi = moshi;
+  private ApolloClient(Builder builder) {
+    this.serverUrl = builder.serverUrl;
+    this.httpCallFactory = builder.okHttpClient;
+    this.httpCache = builder.httpCache;
+    this.customTypeAdapters = builder.customTypeAdapters;
+    this.moshi = builder.moshiBuilder.build();
   }
 
   @Nonnull public <T extends Operation> ApolloCall newCall(@Nonnull T operation) {
-    return new RealApolloCall(operation, serverUrl, httpCallFactory, moshi, operation.responseFieldMapper(),
+    return new RealApolloCall(operation, serverUrl, httpCallFactory, httpCache, moshi, operation.responseFieldMapper(),
         customTypeAdapters);
   }
 
   public static class Builder {
-    private OkHttpClient okHttpClient;
-    private HttpUrl serverUrl;
-    private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
-    private Moshi.Builder moshiBuilder = new Moshi.Builder();
-    private HttpCache httpCache;
+    OkHttpClient okHttpClient;
+    HttpUrl serverUrl;
+    Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
+    Moshi.Builder moshiBuilder = new Moshi.Builder();
+    HttpCache httpCache;
 
     public Builder okHttpClient(@Nonnull OkHttpClient okHttpClient) {
       this.okHttpClient = checkNotNull(okHttpClient, "okHttpClient == null");
@@ -96,7 +97,7 @@ public final class ApolloClient implements ApolloCallFactory {
         okHttpClient = okHttpClient.newBuilder().addInterceptor(new HttpCacheInterceptor(httpCache)).build();
       }
 
-      return new ApolloClient(serverUrl, okHttpClient, customTypeAdapters, moshiBuilder.build());
+      return new ApolloClient(this);
     }
   }
 }

@@ -9,6 +9,7 @@ import com.apollographql.android.api.graphql.Error;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.cache.DiskLruCacheStore;
 import com.apollographql.android.cache.HttpCache;
+import com.apollographql.android.cache.HttpCacheInterceptor;
 import com.apollographql.android.type.CustomType;
 
 import junit.framework.Assert;
@@ -137,9 +138,10 @@ public class IntegrationTest {
     assertThat(firstPlanet.filmConnection().films().get(0).fragments().filmFragment().producers()).isEqualTo(Arrays
         .asList("Gary Kurtz", "Rick McCallum"));
 
-    okhttp3.Response cachedResponse = httpCache.read(((RealApolloCall) call).httpCall.request());
+    String cacheKey = ((RealApolloCall) call).httpCall.request().header(HttpCacheInterceptor.CACHE_KEY_HEADER);
+    okhttp3.Response cachedResponse = httpCache.read(cacheKey);
     assertThat(cachedResponse).isNotNull();
-    assertThat(cachedResponse.body().source().readString(Charsets.UTF_8))
+    assertThat(cachedResponse.body().source().readUtf8())
         .isEqualTo(Files.toString(new File("src/test/graphql/allPlanetsResponse.json"), Charsets.UTF_8));
 
     cachedResponse.body().source().close();
@@ -190,7 +192,8 @@ public class IntegrationTest {
         "2013-11-18T19:36:33Z", "2013-11-18T19:36:45Z", "2013-11-18T19:37:08Z", "2013-11-18T19:37:24Z",
         "2013-11-18T19:37:26Z", "2013-11-18T19:37:28Z"));
 
-    okhttp3.Response cachedResponse = httpCache.read(((RealApolloCall) call).httpCall.request());
+    String cacheKey = ((RealApolloCall) call).httpCall.request().header(HttpCacheInterceptor.CACHE_KEY_HEADER);
+    okhttp3.Response cachedResponse = httpCache.read(cacheKey);
     assertThat(cachedResponse).isNotNull();
     assertThat(cachedResponse.body().source().readString(Charsets.UTF_8))
         .isEqualTo(Files.toString(new File("src/test/graphql/productsWithDate.json"), Charsets.UTF_8));
@@ -215,7 +218,8 @@ public class IntegrationTest {
     assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeString()).isInstanceOf(String.class);
     assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeString()).isEqualTo("something");
 
-    okhttp3.Response cachedResponse = httpCache.read(((RealApolloCall) call).httpCall.request());
+    String cacheKey = ((RealApolloCall) call).httpCall.request().header(HttpCacheInterceptor.CACHE_KEY_HEADER);
+    okhttp3.Response cachedResponse = httpCache.read(cacheKey);
     assertThat(cachedResponse).isNotNull();
     assertThat(cachedResponse.body().source().readString(Charsets.UTF_8))
         .isEqualTo(Files.toString(new File("src/test/graphql/productsWithUnsupportedCustomScalarTypes.json"), Charsets.UTF_8));
@@ -225,12 +229,6 @@ public class IntegrationTest {
 
   @Test public void allPlanetQueryAsync() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
-
-    ApolloClient apolloClient = ApolloClient.builder()
-        .serverUrl(server.url("/"))
-        .okHttpClient(new OkHttpClient.Builder().build())
-        .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
-        .build();
 
     final CountDownLatch latch = new CountDownLatch(1);
     ApolloCall call = apolloClient.newCall(new AllPlanets());
@@ -248,11 +246,16 @@ public class IntegrationTest {
     });
     latch.await();
 
-    okhttp3.Response cachedResponse = httpCache.read(((RealApolloCall) call).httpCall.request());
-    assertThat(cachedResponse).isNull();
+    String cacheKey = ((RealApolloCall) call).httpCall.request().header(HttpCacheInterceptor.CACHE_KEY_HEADER);
+    okhttp3.Response cachedResponse = httpCache.read(cacheKey);
+    assertThat(cachedResponse).isNotNull();
+    assertThat(cachedResponse.body().source().readString(Charsets.UTF_8))
+        .isEqualTo(Files.toString(new File("src/test/graphql/allPlanetsResponse.json"), Charsets.UTF_8));
+
+    cachedResponse.body().source().close();
   }
 
   private static MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setBody(Files.toString(new File(fileName), Charsets.UTF_8));
+    return new MockResponse().setChunkedBody(Files.toString(new File(fileName), Charsets.UTF_8), 32);
   }
 }

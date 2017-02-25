@@ -71,4 +71,8 @@ public final class DiskLruCacheStore implements ResponseCacheStore {
   @Override public void delete() throws IOException {
     cache.delete();
   }
+
+  @Override public void remove(@Nonnull String cacheKey) throws IOException {
+    cache.remove(cacheKey);
+  }
 }

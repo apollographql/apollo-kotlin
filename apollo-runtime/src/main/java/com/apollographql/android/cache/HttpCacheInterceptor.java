@@ -7,6 +7,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public final class HttpCacheInterceptor implements Interceptor {
+  public static final String CACHE_KEY_HEADER = "APOLLO-CACHE-KEY";
   public static final String CACHE_CONTROL_HEADER = "APOLLO-CACHE-CONTROL";
 
   private final HttpCache cache;
@@ -18,10 +19,14 @@ public final class HttpCacheInterceptor implements Interceptor {
   @Override public Response intercept(Chain chain) throws IOException {
     Request request = chain.request();
     Response response = chain.proceed(request);
-    if (request.header(CACHE_CONTROL_HEADER) == null) {
+    if (request.header(CACHE_CONTROL_HEADER) == null || request.header(CACHE_KEY_HEADER) == null) {
       return response;
     } else {
-      return cache.cacheProxy(response);
+      if (response.isSuccessful()) {
+        return cache.cacheProxy(response, request.header(CACHE_KEY_HEADER));
+      } else {
+        return response;
+      }
     }
   }
 }
