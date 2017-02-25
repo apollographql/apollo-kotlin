@@ -46,7 +46,6 @@ public final class ApolloClient<R> implements ApolloCall.Factory<R> {
   public <T extends Operation> R newCall(@Nonnull T operation) {
     RealApolloCall call = new RealApolloCall(operation, serverUrl, httpCallFactory,
         moshi, operation.responseFieldMapper(), customTypeAdapters);
-
     return adapter.adapt(call);
   }
 
@@ -65,6 +64,7 @@ public final class ApolloClient<R> implements ApolloCall.Factory<R> {
     public Builder<B> serverUrl(@Nonnull HttpUrl serverUrl) {
       this.serverUrl = checkNotNull(serverUrl, "serverUrl is null");
       return this;
+
     }
 
     public Builder<B> serverUrl(@Nonnull String baseUrl) {
