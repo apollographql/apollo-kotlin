@@ -18,7 +18,6 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 
-import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.internal.io.InMemoryFileSystem;
@@ -51,7 +50,11 @@ public class CacheTest {
 
   @Test public void prematureDisconnect() throws Exception {
     MockResponse mockResponse = mockResponse("src/test/graphql/allPlanetsResponse.json");
-    server.enqueue(truncateViolently(mockResponse, 16));
+    Buffer truncatedBody = new Buffer();
+    truncatedBody.write(mockResponse.getBody(), 16);
+    mockResponse.setBody(truncatedBody);
+
+    server.enqueue(mockResponse);
 
     ApolloCall call = apolloClient.newCall(new AllPlanets());
     try {
@@ -100,15 +103,6 @@ public class CacheTest {
     String cacheKey = RealApolloCall.cacheKey(request.body());
     okhttp3.Response cachedResponse = httpCache.read(cacheKey);
     assertThat(cachedResponse).isNull();
-  }
-
-  private MockResponse truncateViolently(MockResponse response, int numBytesToKeep) {
-    Headers headers = response.getHeaders();
-    Buffer truncatedBody = new Buffer();
-    truncatedBody.write(response.getBody(), numBytesToKeep);
-    response.setBody(truncatedBody);
-    response.setHeaders(headers);
-    return response;
   }
 
   private static MockResponse mockResponse(String fileName) throws IOException {
