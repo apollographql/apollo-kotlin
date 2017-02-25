@@ -1,5 +1,6 @@
-package com.apollographql.android;
+package com.apollographql.android.impl;
 
+import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Error;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
@@ -51,7 +52,7 @@ final class ResponseBodyConverter {
     }
     jsonReader.endObject();
 
-    return new Response<T>(operation, data, errors);
+    return new Response<>(operation, data, errors);
   }
 
   private List<Error> readResponseErrors(ResponseJsonStreamReader reader) throws IOException {

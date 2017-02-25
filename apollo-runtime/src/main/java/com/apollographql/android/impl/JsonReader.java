@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.apollographql.android;
+package com.apollographql.android.impl;
+
+import com.apollographql.android.impl.util.JsonDataException;
 
 import java.io.Closeable;
 import java.io.IOException;

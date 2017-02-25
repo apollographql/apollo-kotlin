@@ -6,7 +6,8 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
 
 import com.apollographql.android.ApolloCall;
-import com.apollographql.android.ApolloClient;
+import com.apollographql.android.impl.ApolloCallAdapter;
+import com.apollographql.android.impl.ApolloClient;
 import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Error;
 import com.apollographql.android.api.graphql.Response;
@@ -41,7 +42,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class IntegrationTest {
   private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
 
-  private ApolloClient apolloClient;
+  private ApolloClient<ApolloCall> apolloClient;
   @Rule public final MockWebServer server = new MockWebServer();
 
   @Before public void setUp() {
@@ -59,10 +60,11 @@ public class IntegrationTest {
       }
     };
 
-    apolloClient = ApolloClient.builder()
+    apolloClient = ApolloClient.<ApolloCall>builder()
         .serverUrl(server.url("/"))
         .okHttpClient(new OkHttpClient.Builder().build())
         .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
+        .withCallAdapter(new ApolloCallAdapter())
         .build();
   }
 
