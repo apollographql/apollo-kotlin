@@ -13,7 +13,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-public final class ProductsWithDate implements Query<Operation.Variables> {
+public final class ProductsWithDate implements Query<ProductsWithDate.Data, Operation.Variables> {
   public static final String OPERATION_DEFINITION = "query ProductsWithDate {\n"
       + "  shop {\n"
       + "    products(first: 10) {\n"

@@ -9,14 +9,10 @@ import com.apollographql.android.ApolloCall;
 import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Error;
 import com.apollographql.android.api.graphql.Response;
-import com.apollographql.android.cache.DiskLruCacheStore;
-import com.apollographql.android.cache.HttpCache;
-import com.apollographql.android.cache.HttpCacheInterceptor;
 import com.apollographql.android.impl.type.CustomType;
 
 import junit.framework.Assert;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,7 +32,6 @@ import java.util.concurrent.CountDownLatch;
 import javax.annotation.Nonnull;
 
 import okhttp3.OkHttpClient;
-import okhttp3.internal.io.InMemoryFileSystem;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
@@ -45,7 +40,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class IntegrationTest {
   private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
 
-  private ApolloClient<ApolloCall> apolloClient;
+  private ApolloClient apolloClient;
   @Rule public final MockWebServer server = new MockWebServer();
 
   @Before public void setUp() {
@@ -67,7 +62,6 @@ public class IntegrationTest {
         .serverUrl(server.url("/"))
         .okHttpClient(new OkHttpClient.Builder().build())
         .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
-        .withCallAdapter(new ApolloCallAdapter())
         .build();
   }
 

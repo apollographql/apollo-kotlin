@@ -1,4 +1,4 @@
 package com.apollographql.android.api.graphql;
 
-public interface Mutation<V extends Operation.Variables> extends Operation<V> {
+public interface Mutation<D extends Operation.Data, V extends Operation.Variables> extends Operation<D, V> {
 }

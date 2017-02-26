@@ -12,7 +12,8 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-public final class ProductsWithUnsupportedCustomScalarTypes implements Query<Operation.Variables> {
+public final class ProductsWithUnsupportedCustomScalarTypes implements Query<ProductsWithUnsupportedCustomScalarTypes
+    .Data, Operation.Variables> {
   public static final String OPERATION_DEFINITION = "query ProductsWithDate {\n"
       + "  shop {\n"
       + "    products(first: 10) {\n"
