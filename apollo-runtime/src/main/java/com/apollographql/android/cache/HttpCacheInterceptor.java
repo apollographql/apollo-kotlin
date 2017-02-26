@@ -20,11 +20,11 @@ public final class HttpCacheInterceptor implements Interceptor {
 
   @Override public Response intercept(Chain chain) throws IOException {
     Request request = chain.request();
-    if (isSkipCache(request)) {
+    if (shouldSkipCache(request)) {
       return chain.proceed(request);
     }
 
-    if (isSkipNetwork(request)) {
+    if (shouldSkipNetwork(request)) {
       return cacheOnlyResponse(request);
     }
 
@@ -39,7 +39,7 @@ public final class HttpCacheInterceptor implements Interceptor {
     return response;
   }
 
-  private boolean isSkipCache(Request request) {
+  private boolean shouldSkipCache(Request request) {
     CacheControl cacheControl = cacheControl(request);
     String cacheKey = request.header(CACHE_KEY_HEADER);
     return cacheControl == null
@@ -47,7 +47,7 @@ public final class HttpCacheInterceptor implements Interceptor {
         || cacheKey == null;
   }
 
-  private boolean isSkipNetwork(Request request) {
+  private boolean shouldSkipNetwork(Request request) {
     CacheControl cacheControl = cacheControl(request);
     return cacheControl == CacheControl.CACHE_ONLY;
   }
