@@ -24,7 +24,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okio.Buffer;
 
-final class RealApolloCall implements ApolloCall {
+final class RealApolloCall<T extends Operation.Data> implements ApolloCall<T> {
   private static final String ACCEPT_TYPE = "application/json";
   private static final String CONTENT_TYPE = "application/json";
   private static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
@@ -60,7 +60,7 @@ final class RealApolloCall implements ApolloCall {
     this.responseBodyConverter = responseBodyConverter;
   }
 
-  @Override @Nonnull public <T extends Operation.Data> Response<T> execute() throws IOException {
+  @Nonnull @Override public Response<T> execute() throws IOException {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
@@ -70,7 +70,7 @@ final class RealApolloCall implements ApolloCall {
     return parseHttpResponse(httpCall.execute());
   }
 
-  @Override @Nonnull public <T extends Operation.Data> ApolloCall enqueue(final Callback<T> callback) {
+  @Nonnull @Override public ApolloCall enqueue(@Nullable final Callback<T> callback) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;

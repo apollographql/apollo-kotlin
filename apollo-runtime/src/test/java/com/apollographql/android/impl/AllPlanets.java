@@ -14,8 +14,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class AllPlanets implements Query<Operation.Variables> {
-  public static final String OPERATION_DEFINITION = "query TestQuery {\n"
+final class AllPlanets implements Query<AllPlanets.Data, Operation.Variables>{
+    public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  allPlanets(first: 300) {\n"
       + "    planets {\n"
       + "      ...PlanetFragment\n"

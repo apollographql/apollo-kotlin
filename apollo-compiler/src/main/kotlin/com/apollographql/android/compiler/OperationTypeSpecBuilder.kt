@@ -11,6 +11,7 @@ class OperationTypeSpecBuilder(
 ) : CodeGenerator {
   private val OPERATION_TYPE_NAME = operation.operationName.capitalize()
   private val OPERATION_VARIABLES_CLASS_NAME = ClassName.get("", "$OPERATION_TYPE_NAME.Variables")
+  private val DATA_VARIABLES_CLASS_NAME = ClassName.get("", "$OPERATION_TYPE_NAME.Data")
 
   override fun toTypeSpec(context: CodeGenerationContext): TypeSpec {
     val newContext = context.plusReservedTypes(OPERATION_TYPE_NAME)
@@ -31,9 +32,9 @@ class OperationTypeSpecBuilder(
     val isMutation = operation.operationType == "mutation"
     val superInterfaceClassName = if (isMutation) ClassNames.GRAPHQL_MUTATION else ClassNames.GRAPHQL_QUERY
     return if (hasVariables) {
-      addSuperinterface(ParameterizedTypeName.get(superInterfaceClassName, OPERATION_VARIABLES_CLASS_NAME))
+      addSuperinterface(ParameterizedTypeName.get(superInterfaceClassName, DATA_VARIABLES_CLASS_NAME, OPERATION_VARIABLES_CLASS_NAME))
     } else {
-      addSuperinterface(ParameterizedTypeName.get(superInterfaceClassName, ClassNames.GRAPHQL_OPERATION_VARIABLES))
+      addSuperinterface(ParameterizedTypeName.get(superInterfaceClassName, DATA_VARIABLES_CLASS_NAME, ClassNames.GRAPHQL_OPERATION_VARIABLES))
     }
   }
 
