@@ -129,6 +129,7 @@ public class CacheTest {
   }
 
   //TODO we need resolution for this as we get GraphQL error (not http) and in some cases there can be response with data and error
+  //https://github.com/apollographql/apollo-android/issues/251
 //  @Test public void cacheErrorResponse() throws Exception {
 //    MockResponse mockResponse = mockResponse("src/test/graphql/errorResponse.json");
 //    server.enqueue(mockResponse);
