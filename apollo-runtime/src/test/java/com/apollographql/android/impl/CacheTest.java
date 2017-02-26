@@ -63,7 +63,7 @@ public class CacheTest {
     };
 
     DiskLruCacheStore diskLruCacheStore = new DiskLruCacheStore(fileSystem, new File("/cache/"),
-        Integer.MAX_VALUE, new TimeoutEvictionStrategy(TimeUnit.SECONDS.toMillis(2)));
+        Integer.MAX_VALUE, new TimeoutEvictionStrategy(2, TimeUnit.SECONDS));
     httpCache = new HttpCache(diskLruCacheStore);
 
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
