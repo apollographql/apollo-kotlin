@@ -9,6 +9,7 @@ import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.cache.DiskLruCacheStore;
 import com.apollographql.android.cache.HttpCache;
 import com.apollographql.android.cache.HttpCacheInterceptor;
+import com.apollographql.android.cache.TimeoutEvictionStrategy;
 import com.apollographql.android.impl.type.CustomType;
 import com.apollographql.android.impl.util.HttpException;
 
@@ -25,9 +26,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
 import okhttp3.Request;
+import okhttp3.internal.Util;
 import okhttp3.internal.io.InMemoryFileSystem;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -40,6 +45,7 @@ public class CacheTest {
 
   private ApolloClient<ApolloCall> apolloClient;
   private HttpCache httpCache;
+  private okhttp3.Response lastHttResponse;
   @Rule public final MockWebServer server = new MockWebServer();
   @Rule public InMemoryFileSystem fileSystem = new InMemoryFileSystem();
 
@@ -58,12 +64,24 @@ public class CacheTest {
       }
     };
 
-    DiskLruCacheStore diskLruCacheStore = new DiskLruCacheStore(fileSystem, new File("/cache/"), Integer.MAX_VALUE);
+    DiskLruCacheStore diskLruCacheStore = new DiskLruCacheStore(fileSystem, new File("/cache/"),
+        Integer.MAX_VALUE, new TimeoutEvictionStrategy(TimeUnit.SECONDS.toMillis(2)));
     httpCache = new HttpCache(diskLruCacheStore);
+
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .addInterceptor(new Interceptor() {
+          @Override public okhttp3.Response intercept(Chain chain) throws IOException {
+            Request request = chain.request();
+            okhttp3.Response response = chain.proceed(request);
+            lastHttResponse = response;
+            return response;
+          }
+        })
+        .build();
 
     apolloClient = ApolloClient.<ApolloCall>builder()
         .serverUrl(server.url("/"))
-        .okHttpClient(new OkHttpClient.Builder().build())
+        .okHttpClient(okHttpClient)
         .httpCache(httpCache)
         .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
         .withCallAdapter(new ApolloCallAdapter())
@@ -165,24 +183,25 @@ public class CacheTest {
     assertThat(body.isSuccessful()).isTrue();
 
     checkNoCachedResponse(call);
+
+    assertThat(lastHttResponse.networkResponse()).isNotNull();
+    assertThat(lastHttResponse.cacheResponse()).isNull();
   }
 
   @Test public void cacheOnlyHit() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
 
-    ApolloCall call = apolloClient.newCall(new AllPlanets());
-    Response<AllPlanets.Data> body = call.execute();
+    apolloClient.newCall(new AllPlanets()).execute();
     assertThat(server.takeRequest()).isNotNull();
-    assertThat(body.isSuccessful()).isTrue();
-    checkCachedResponse(call, new File("src/test/graphql/allPlanetsResponse.json"));
 
     server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
 
-    call = apolloClient.newCall(new AllPlanets()).cache();
-    body = call.execute();
+    ApolloCall call = apolloClient.newCall(new AllPlanets()).cache();
+    call.execute();
     assertThat(server.getRequestCount()).isEqualTo(1);
-    assertThat(body.isSuccessful()).isTrue();
     checkCachedResponse(call, new File("src/test/graphql/allPlanetsResponse.json"));
+    assertThat(lastHttResponse.networkResponse()).isNull();
+    assertThat(lastHttResponse.cacheResponse()).isNotNull();
   }
 
   @Test public void cacheOnlyMiss() throws Exception {
@@ -195,6 +214,104 @@ public class CacheTest {
     } catch (Exception e) {
       Assert.fail("expected to fail with HttpException");
     }
+  }
+
+  @Test public void cacheNonStale() throws Exception {
+    server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
+
+    apolloClient.newCall(new AllPlanets()).execute();
+    assertThat(server.takeRequest()).isNotNull();
+
+    server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
+
+    ApolloCall call = apolloClient.newCall(new AllPlanets());
+    call.execute();
+    assertThat(server.getRequestCount()).isEqualTo(1);
+    checkCachedResponse(call, new File("src/test/graphql/allPlanetsResponse.json"));
+    assertThat(lastHttResponse.networkResponse()).isNull();
+    assertThat(lastHttResponse.cacheResponse()).isNotNull();
+  }
+
+  @Test public void cacheStale() throws Exception {
+    server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
+
+    apolloClient.newCall(new AllPlanets()).execute();
+    assertThat(server.getRequestCount()).isEqualTo(1);
+
+    server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
+
+    Thread.sleep(TimeUnit.SECONDS.toMillis(3));
+
+    ApolloCall call = apolloClient.newCall(new AllPlanets());
+    call.execute();
+    assertThat(server.getRequestCount()).isEqualTo(2);
+    checkCachedResponse(call, new File("src/test/graphql/allPlanetsResponse.json"));
+    assertThat(lastHttResponse.networkResponse()).isNotNull();
+    assertThat(lastHttResponse.cacheResponse()).isNotNull();
+  }
+
+  @Test public void cacheStaleBeforeNetwork() throws Exception {
+    server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
+
+    apolloClient.newCall(new AllPlanets()).execute();
+    assertThat(server.getRequestCount()).isEqualTo(1);
+
+    server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
+
+    Thread.sleep(TimeUnit.SECONDS.toMillis(3));
+
+    ApolloCall call = apolloClient.newCall(new AllPlanets()).networkBeforeStale();
+    call.execute();
+    assertThat(server.getRequestCount()).isEqualTo(2);
+    checkCachedResponse(call, new File("src/test/graphql/allPlanetsResponse.json"));
+    assertThat(lastHttResponse.networkResponse()).isNotNull();
+    assertThat(lastHttResponse.cacheResponse()).isNotNull();
+  }
+
+  @Test public void cacheStaleBeforeNetworkError() throws Exception {
+    server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
+    apolloClient.newCall(new AllPlanets()).execute();
+    assertThat(server.getRequestCount()).isEqualTo(1);
+
+    server.enqueue(new MockResponse().setResponseCode(504).setBody(""));
+
+    Thread.sleep(TimeUnit.SECONDS.toMillis(3));
+
+    ApolloCall call = apolloClient.newCall(new AllPlanets()).networkBeforeStale();
+    call.execute();
+    assertThat(server.getRequestCount()).isEqualTo(2);
+    checkCachedResponse(call, new File("src/test/graphql/allPlanetsResponse.json"));
+    assertThat(lastHttResponse.networkResponse()).isNotNull();
+    assertThat(lastHttResponse.cacheResponse()).isNotNull();
+  }
+
+  @Test public void cacheUpdate() throws Exception {
+    server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
+
+    ApolloCall call = apolloClient.newCall(new AllPlanets());
+    call.execute();
+    assertThat(server.getRequestCount()).isEqualTo(1);
+    checkCachedResponse(call, new File("src/test/graphql/allPlanetsResponse.json"));
+
+    server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse2.json"));
+
+    Thread.sleep(TimeUnit.SECONDS.toMillis(3));
+
+    call = apolloClient.newCall(new AllPlanets());
+    call.execute();
+    assertThat(server.getRequestCount()).isEqualTo(2);
+    checkCachedResponse(call, new File("src/test/graphql/allPlanetsResponse2.json"));
+    assertThat(lastHttResponse.networkResponse()).isNotNull();
+    assertThat(lastHttResponse.cacheResponse()).isNotNull();
+
+    server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse2.json"));
+
+    call = apolloClient.newCall(new AllPlanets());
+    call.execute();
+    assertThat(server.getRequestCount()).isEqualTo(2);
+    checkCachedResponse(call, new File("src/test/graphql/allPlanetsResponse2.json"));
+    assertThat(lastHttResponse.networkResponse()).isNull();
+    assertThat(lastHttResponse.cacheResponse()).isNotNull();
   }
 
   private void checkCachedResponse(ApolloCall call, File content) throws IOException {

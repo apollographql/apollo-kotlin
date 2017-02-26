@@ -1,0 +1,61 @@
+{
+  "data": {
+    "allPlanets": {
+      "__typename": "PlanetsConnection",
+      "planets": [
+        {
+          "__typename": "Planet",
+          "name": "Tatooine",
+          "climates": [
+            "arid"
+          ],
+          "surfaceWater": 1,
+          "filmConnection": {
+            "__typename": "PlanetFilmsConnection",
+            "totalCount": 5,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "A New Hope",
+                "producers": [
+                  "Gary Kurtz",
+                  "Rick McCallum"
+                ]
+              },
+              {
+                "__typename": "Film",
+                "title": "Return of the Jedi",
+                "producers": [
+                  "Howard G. Kazanjian",
+                  "George Lucas",
+                  "Rick McCallum"
+                ]
+              },
+              {
+                "__typename": "Film",
+                "title": "The Phantom Menace",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              },
+              {
+                "__typename": "Film",
+                "title": "Attack of the Clones",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              },
+              {
+                "__typename": "Film",
+                "title": "Revenge of the Sith",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

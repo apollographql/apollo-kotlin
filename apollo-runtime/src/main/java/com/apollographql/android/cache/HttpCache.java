@@ -2,12 +2,14 @@ package com.apollographql.android.cache;
 
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 import okhttp3.Response;
 
 public final class HttpCache {
   private final ResponseCacheStore cacheStore;
 
-  public HttpCache(ResponseCacheStore cacheStore) {
+  public HttpCache(@Nonnull ResponseCacheStore cacheStore) {
     this.cacheStore = cacheStore;
   }
 
@@ -15,11 +17,11 @@ public final class HttpCache {
     cacheStore.delete();
   }
 
-  public void remove(String cacheKey) throws IOException {
+  public void remove(@Nonnull String cacheKey) throws IOException {
     cacheStore.remove(cacheKey);
   }
 
-  public Response read(String cacheKey) throws IOException {
+  public Response read(@Nonnull String cacheKey) throws IOException {
     ResponseCacheRecord cacheRecord = cacheStore.cacheRecord(cacheKey);
     if (cacheRecord == null) {
       return null;
@@ -31,7 +33,11 @@ public final class HttpCache {
         .build();
   }
 
-  Response cacheProxy(Response response, String cacheKey) throws IOException {
+  boolean isStale(@Nonnull Response response) {
+    return cacheStore.evictionStrategy().isStale(response);
+  }
+
+  Response cacheProxy(@Nonnull Response response, @Nonnull String cacheKey) throws IOException {
     ResponseCacheRecordEditor cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey);
     new ResponseHeaderRecord(response).writeTo(cacheRecordEditor);
     return response.newBuilder()

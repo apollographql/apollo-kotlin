@@ -17,9 +17,12 @@ public final class DiskLruCacheStore implements ResponseCacheStore {
   private static final int ENTRY_COUNT = 2;
 
   private final DiskLruCache cache;
+  private final EvictionStrategy evictionStrategy;
 
-  public DiskLruCacheStore(FileSystem fileSystem, File directory, long maxSize) {
+  public DiskLruCacheStore(@Nonnull FileSystem fileSystem, @Nonnull File directory, long maxSize,
+      @Nonnull EvictionStrategy evictionStrategy) {
     this.cache = DiskLruCache.create(fileSystem, directory, VERSION, ENTRY_COUNT, maxSize);
+    this.evictionStrategy = evictionStrategy;
   }
 
   @Override public ResponseCacheRecord cacheRecord(@Nonnull String cacheKey) throws IOException {
@@ -74,5 +77,9 @@ public final class DiskLruCacheStore implements ResponseCacheStore {
 
   @Override public void remove(@Nonnull String cacheKey) throws IOException {
     cache.remove(cacheKey);
+  }
+
+  @Nonnull @Override public EvictionStrategy evictionStrategy() {
+    return evictionStrategy;
   }
 }

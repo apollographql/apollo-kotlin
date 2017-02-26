@@ -1,16 +1,19 @@
 package com.apollographql.android.cache;
 
 import java.io.IOException;
+import java.util.Date;
 
 import okhttp3.Interceptor;
 import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.internal.Util;
+import okhttp3.internal.http.HttpDate;
 
 public final class HttpCacheInterceptor implements Interceptor {
   public static final String CACHE_KEY_HEADER = "APOLLO-CACHE-KEY";
   public static final String CACHE_CONTROL_HEADER = "APOLLO-CACHE-CONTROL";
+  public static final String CACHE_SERVED_DATE_HEADER = "APOLLO-SERVED-DATE";
 
   private final HttpCache cache;
 
@@ -28,15 +31,26 @@ public final class HttpCacheInterceptor implements Interceptor {
       return cacheOnlyResponse(request);
     }
 
-    Response response = chain.proceed(request);
-    if (isCacheEnable(request)) {
-      String cacheKey = request.header(CACHE_KEY_HEADER);
-      if (response.isSuccessful()) {
-        return cache.cacheProxy(response, cacheKey);
-      }
+    if (!isCacheEnable(request)) {
+      return chain.proceed(request);
     }
 
-    return response;
+    String cacheKey = request.header(CACHE_KEY_HEADER);
+    Response cacheResponse = cache.read(cacheKey);
+    if (cacheResponse == null) {
+      Response networkResponse = withServedDateHeader(chain.proceed(request));
+      return cache.cacheProxy(networkResponse, cacheKey);
+    }
+
+    if (!cache.isStale(cacheResponse)) {
+      return cacheResponse.newBuilder()
+          .cacheResponse(strip(cacheResponse))
+          .request(request)
+          .build();
+    }
+
+    Response networkResponse = withServedDateHeader(chain.proceed(request));
+    return resolve(networkResponse, cacheResponse, cacheKey, cacheControl(request));
   }
 
   private boolean shouldSkipCache(Request request) {
@@ -54,9 +68,15 @@ public final class HttpCacheInterceptor implements Interceptor {
 
   private Response cacheOnlyResponse(Request request) throws IOException {
     String cacheKey = request.header(CACHE_KEY_HEADER);
-    Response cachedResponse = cache.read(cacheKey);
-    if (cachedResponse != null) {
-      return cachedResponse;
+    Response cacheResponse = cache.read(cacheKey);
+    if (cacheResponse != null) {
+      if (cache.isStale(cacheResponse)) {
+        cache.remove(cacheKey);
+      } else {
+        return cacheResponse.newBuilder()
+            .cacheResponse(strip(cacheResponse))
+            .build();
+      }
     }
     return new Response.Builder()
         .request(request)
@@ -71,11 +91,46 @@ public final class HttpCacheInterceptor implements Interceptor {
 
   private boolean isCacheEnable(Request request) {
     CacheControl cacheControl = cacheControl(request);
-    return cacheControl == CacheControl.DEFAULT;
+    return cacheControl == CacheControl.DEFAULT || cacheControl == CacheControl.NETWORK_BEFORE_STALE;
   }
 
   private CacheControl cacheControl(Request request) {
-    return  CacheControl.valueOfHttpHeader(request.header(CACHE_CONTROL_HEADER));
+    return CacheControl.valueOfHttpHeader(request.header(CACHE_CONTROL_HEADER));
+  }
+
+  private static Response strip(Response response) {
+    return response != null && response.body() != null
+        ? response.newBuilder().body(null).networkResponse(null).cacheResponse(null).build()
+        : response;
+  }
+
+  private Response resolve(Response networkResponse, Response cacheResponse, String cacheKey,
+      CacheControl cacheControl) throws IOException {
+    if (networkResponse.isSuccessful()) {
+      cacheResponse.close();
+      return cache.cacheProxy(networkResponse, cacheKey)
+          .newBuilder()
+          .cacheResponse(strip(cacheResponse))
+          .build();
+    }
+
+    if (cacheControl == CacheControl.NETWORK_BEFORE_STALE) {
+      return cacheResponse.newBuilder()
+          .cacheResponse(strip(cacheResponse))
+          .networkResponse(strip(networkResponse))
+          .build();
+    }
+
+    cacheResponse.close();
+    return networkResponse.newBuilder()
+        .cacheResponse(strip(cacheResponse))
+        .build();
+  }
+
+  private Response withServedDateHeader(Response response) throws IOException {
+    return response.newBuilder()
+        .addHeader(CACHE_SERVED_DATE_HEADER, HttpDate.format(new Date()))
+        .build();
   }
 
   public enum CacheControl {
