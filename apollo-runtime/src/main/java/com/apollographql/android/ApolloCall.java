@@ -10,11 +10,17 @@ import javax.annotation.Nullable;
 
 public interface ApolloCall {
 
-  void cancel();
-
   @Nonnull <T extends Operation.Data> Response<T> execute() throws IOException;
 
   @Nonnull <T extends Operation.Data> ApolloCall enqueue(@Nullable Callback<T> callback);
+
+  @Nonnull ApolloCall network();
+
+  @Nonnull ApolloCall cache();
+
+  @Nonnull ApolloCall networkBeforeStale();
+
+  void cancel();
 
   @Nonnull ApolloCall clone();
 

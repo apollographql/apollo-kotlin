@@ -46,9 +46,7 @@ public class IntegrationTest {
   private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
 
   private ApolloClient<ApolloCall> apolloClient;
-  private HttpCache httpCache;
   @Rule public final MockWebServer server = new MockWebServer();
-  @Rule public InMemoryFileSystem fileSystem = new InMemoryFileSystem();
 
   @Before public void setUp() {
     CustomTypeAdapter<Date> dateCustomTypeAdapter = new CustomTypeAdapter<Date>() {
@@ -65,20 +63,12 @@ public class IntegrationTest {
       }
     };
 
-    DiskLruCacheStore diskLruCacheStore = new DiskLruCacheStore(fileSystem, new File("/cache/"), Integer.MAX_VALUE);
-    httpCache = new HttpCache(diskLruCacheStore);
-
     apolloClient = ApolloClient.<ApolloCall>builder()
         .serverUrl(server.url("/"))
         .okHttpClient(new OkHttpClient.Builder().build())
-        .httpCache(httpCache)
         .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
         .withCallAdapter(new ApolloCallAdapter())
         .build();
-  }
-
-  @After public void tearDown() throws Exception {
-    httpCache.delete();
   }
 
   @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
@@ -139,14 +129,6 @@ public class IntegrationTest {
     assertThat(firstPlanet.filmConnection().films().get(0).fragments().filmFragment().title()).isEqualTo("A New Hope");
     assertThat(firstPlanet.filmConnection().films().get(0).fragments().filmFragment().producers()).isEqualTo(Arrays
         .asList("Gary Kurtz", "Rick McCallum"));
-
-    String cacheKey = ((RealApolloCall) call).httpCall.request().header(HttpCacheInterceptor.CACHE_KEY_HEADER);
-    okhttp3.Response cachedResponse = httpCache.read(cacheKey);
-    assertThat(cachedResponse).isNotNull();
-    assertThat(cachedResponse.body().source().readUtf8())
-        .isEqualTo(Files.toString(new File("src/test/graphql/allPlanetsResponse.json"), Charsets.UTF_8));
-
-    cachedResponse.body().source().close();
   }
 
   @Test public void errorResponse() throws Exception {
@@ -193,14 +175,6 @@ public class IntegrationTest {
         "2013-11-18T19:35:35Z", "2013-11-18T19:35:40Z", "2013-11-18T19:35:54Z", "2013-11-18T19:35:56Z",
         "2013-11-18T19:36:33Z", "2013-11-18T19:36:45Z", "2013-11-18T19:37:08Z", "2013-11-18T19:37:24Z",
         "2013-11-18T19:37:26Z", "2013-11-18T19:37:28Z"));
-
-    String cacheKey = ((RealApolloCall) call).httpCall.request().header(HttpCacheInterceptor.CACHE_KEY_HEADER);
-    okhttp3.Response cachedResponse = httpCache.read(cacheKey);
-    assertThat(cachedResponse).isNotNull();
-    assertThat(cachedResponse.body().source().readString(Charsets.UTF_8))
-        .isEqualTo(Files.toString(new File("src/test/graphql/productsWithDate.json"), Charsets.UTF_8));
-
-    cachedResponse.body().source().close();
   }
 
   @Test public void productsWithUnsupportedCustomScalarTypes() throws Exception {
@@ -219,14 +193,6 @@ public class IntegrationTest {
     assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeBool()).isEqualTo(Boolean.TRUE);
     assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeString()).isInstanceOf(String.class);
     assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeString()).isEqualTo("something");
-
-    String cacheKey = ((RealApolloCall) call).httpCall.request().header(HttpCacheInterceptor.CACHE_KEY_HEADER);
-    okhttp3.Response cachedResponse = httpCache.read(cacheKey);
-    assertThat(cachedResponse).isNotNull();
-    assertThat(cachedResponse.body().source().readString(Charsets.UTF_8))
-        .isEqualTo(Files.toString(new File("src/test/graphql/productsWithUnsupportedCustomScalarTypes.json"), Charsets.UTF_8));
-
-    cachedResponse.body().source().close();
   }
 
   @Test public void allPlanetQueryAsync() throws Exception {
@@ -247,14 +213,6 @@ public class IntegrationTest {
       }
     });
     latch.await();
-
-    String cacheKey = ((RealApolloCall) call).httpCall.request().header(HttpCacheInterceptor.CACHE_KEY_HEADER);
-    okhttp3.Response cachedResponse = httpCache.read(cacheKey);
-    assertThat(cachedResponse).isNotNull();
-    assertThat(cachedResponse.body().source().readString(Charsets.UTF_8))
-        .isEqualTo(Files.toString(new File("src/test/graphql/allPlanetsResponse.json"), Charsets.UTF_8));
-
-    cachedResponse.body().source().close();
   }
 
   private static MockResponse mockResponse(String fileName) throws IOException {
