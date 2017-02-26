@@ -8,7 +8,7 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface ApolloCall {
+public interface ApolloCall<T extends Operation.Data> {
 
   @Nonnull <T extends Operation.Data> Response<T> execute() throws IOException;
 

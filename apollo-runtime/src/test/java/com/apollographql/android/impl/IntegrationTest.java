@@ -63,12 +63,11 @@ public class IntegrationTest {
       }
     };
 
-    apolloClient = ApolloClient.<ApolloCall>builder()
+    apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(new OkHttpClient.Builder().build())
         .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
-        .withCallAdapter(new ApolloCallAdapter())
-        .build();
+        .build(new ApolloCallAdapter());
   }
 
   @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {

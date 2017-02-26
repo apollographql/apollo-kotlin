@@ -50,7 +50,7 @@ public final class HttpCacheInterceptor implements Interceptor {
     }
 
     Response networkResponse = withServedDateHeader(chain.proceed(request));
-    return resolve(networkResponse, cacheResponse, cacheKey, cacheControl(request));
+    return resolveResponse(networkResponse, cacheResponse, cacheKey, cacheControl(request));
   }
 
   private boolean shouldSkipCache(Request request) {
@@ -104,7 +104,7 @@ public final class HttpCacheInterceptor implements Interceptor {
         : response;
   }
 
-  private Response resolve(Response networkResponse, Response cacheResponse, String cacheKey,
+  private Response resolveResponse(Response networkResponse, Response cacheResponse, String cacheKey,
       CacheControl cacheControl) throws IOException {
     if (networkResponse.isSuccessful()) {
       cacheResponse.close();

@@ -30,9 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Protocol;
 import okhttp3.Request;
-import okhttp3.internal.Util;
 import okhttp3.internal.io.InMemoryFileSystem;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -79,13 +77,12 @@ public class CacheTest {
         })
         .build();
 
-    apolloClient = ApolloClient.<ApolloCall>builder()
+    apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .httpCache(httpCache)
         .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
-        .withCallAdapter(new ApolloCallAdapter())
-        .build();
+        .build(new ApolloCallAdapter());
   }
 
   @After public void tearDown() throws Exception {
@@ -164,8 +161,7 @@ public class CacheTest {
     ApolloClient<ApolloCall> apolloClient = ApolloClient.<ApolloCall>builder()
         .serverUrl(server.url("/"))
         .okHttpClient(new OkHttpClient.Builder().build())
-        .withCallAdapter(new ApolloCallAdapter())
-        .build();
+        .build(new ApolloCallAdapter());
 
     ApolloCall call = apolloClient.newCall(new AllPlanets());
     Response<AllPlanets.Data> body = call.execute();

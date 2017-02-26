@@ -24,7 +24,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okio.Buffer;
 
-final class RealApolloCall implements ApolloCall {
+final class RealApolloCall<T extends Operation.Data> implements ApolloCall<T> {
   private static final String ACCEPT_TYPE = "application/json";
   private static final String CONTENT_TYPE = "application/json";
   private static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
