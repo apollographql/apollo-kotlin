@@ -32,6 +32,7 @@ android {
     main {
       java {
         srcDirs += '../../../../apollo-api/src/main/java'
+        srcDirs += '../../../../apollo-api/src/main/java'
       }
     }
   }
@@ -44,8 +45,8 @@ repositories {
 
 dependencies {
   compile dep.appcompat
-  compile dep.jsr305
-  compile dep.jsr250
+  compile apolloApiCompileDeps
+  compile apolloRuntimeCompileDeps
 }
 
 apollo {

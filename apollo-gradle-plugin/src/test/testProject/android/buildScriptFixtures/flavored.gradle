@@ -19,7 +19,7 @@ android {
   buildToolsVersion androidConfig.buildToolsVersion
 
   defaultConfig {
-    applicationId "com.example.apollographql.testProject.basic"
+    applicationId "com.example.apollographql.testProject.flavored"
     minSdkVersion androidConfig.minSdkVersion
     targetSdkVersion androidConfig.targetSdkVersion
   }
@@ -43,6 +43,7 @@ android {
   sourceSets {
     main {
       java {
+        srcDirs += '../../../../apollo-runtime/src/main/java'
         srcDirs += '../../../../apollo-api/src/main/java'
       }
     }
@@ -56,8 +57,8 @@ repositories {
 
 dependencies {
   compile dep.appcompat
-  compile dep.jsr305
-  compile dep.jsr250
+  compile apolloApiCompileDeps
+  compile apolloRuntimeCompileDeps
 }
 
 apollo {
