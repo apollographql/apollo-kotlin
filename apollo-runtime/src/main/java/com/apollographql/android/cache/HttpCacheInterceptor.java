@@ -40,15 +40,15 @@ public final class HttpCacheInterceptor implements Interceptor {
   }
 
   private boolean isSkipCache(Request request) {
-    CacheControl cacheControl = CacheControl.valueOfHttpHeader(request.header(CACHE_CONTROL_HEADER));
+    CacheControl cacheControl = cacheControl(request);
     String cacheKey = request.header(CACHE_KEY_HEADER);
     return cacheControl == null
-        || cacheControl == CacheControl.CACHE_ONLY
+        || cacheControl == CacheControl.NETWORK_ONLY
         || cacheKey == null;
   }
 
   private boolean isSkipNetwork(Request request) {
-    CacheControl cacheControl = CacheControl.valueOfHttpHeader(request.header(CACHE_CONTROL_HEADER));
+    CacheControl cacheControl = cacheControl(request);
     return cacheControl == CacheControl.CACHE_ONLY;
   }
 
@@ -70,8 +70,12 @@ public final class HttpCacheInterceptor implements Interceptor {
   }
 
   private boolean isCacheEnable(Request request) {
-    CacheControl cacheControl = CacheControl.valueOfHttpHeader(request.header(CACHE_CONTROL_HEADER));
+    CacheControl cacheControl = cacheControl(request);
     return cacheControl == CacheControl.DEFAULT;
+  }
+
+  private CacheControl cacheControl(Request request) {
+    return  CacheControl.valueOfHttpHeader(request.header(CACHE_CONTROL_HEADER));
   }
 
   public enum CacheControl {
