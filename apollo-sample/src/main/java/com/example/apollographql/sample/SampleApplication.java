@@ -13,7 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class SampleApplication extends Application {
 
   private static final String BASE_URL = "https://githunt-api.herokuapp.com/graphql";
-  private ApolloClient<ApolloCall> apolloClient;
+  private ApolloClient apolloClient;
 
   @Override public void onCreate() {
     super.onCreate();
@@ -26,11 +26,10 @@ public class SampleApplication extends Application {
     apolloClient = ApolloClient.<ApolloCall>builder()
             .serverUrl(BASE_URL)
             .okHttpClient(okHttpClient)
-            .withCallAdapter(new ApolloCallAdapter())
             .build();
   }
 
-  public ApolloClient<ApolloCall> apolloClient() {
+  public ApolloClient apolloClient() {
     return apolloClient;
   }
 }
