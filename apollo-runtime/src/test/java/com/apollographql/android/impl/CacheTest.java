@@ -42,7 +42,6 @@ public class CacheTest {
   private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
 
   private ApolloClient apolloClient;
-  private HttpCache httpCache;
   private okhttp3.Response lastHttResponse;
   @Rule public final MockWebServer server = new MockWebServer();
   @Rule public InMemoryFileSystem fileSystem = new InMemoryFileSystem();
@@ -63,7 +62,6 @@ public class CacheTest {
     };
 
     DiskLruCacheStore diskLruCacheStore = new DiskLruCacheStore(fileSystem, new File("/cache/"), Integer.MAX_VALUE);
-    httpCache = new HttpCache(diskLruCacheStore, new TimeoutEvictionStrategy(2, TimeUnit.SECONDS));
 
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
         .addInterceptor(new Interceptor() {
@@ -79,13 +77,13 @@ public class CacheTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .httpCache(httpCache)
+        .httpCache(diskLruCacheStore, new TimeoutEvictionStrategy(2, TimeUnit.SECONDS))
         .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
         .build();
   }
 
   @After public void tearDown() throws Exception {
-    httpCache.delete();
+    apolloClient.clearCache();
   }
 
   @Test public void prematureDisconnect() throws Exception {
@@ -312,7 +310,7 @@ public class CacheTest {
   private void checkCachedResponse(ApolloCall call, File content) throws IOException {
     Request request = ((RealApolloCall) call).httpCall.request();
     String cacheKey = RealApolloCall.cacheKey(request.body());
-    okhttp3.Response response = httpCache.read(cacheKey);
+    okhttp3.Response response = apolloClient.cachedHttpResponse(cacheKey);
     assertThat(response).isNotNull();
     assertThat(response.body().source().readUtf8()).isEqualTo(Files.toString(content, Charsets.UTF_8));
     response.body().source().close();
@@ -321,7 +319,7 @@ public class CacheTest {
   private void checkNoCachedResponse(ApolloCall call) throws IOException {
     Request request = ((RealApolloCall) call).httpCall.request();
     String cacheKey = request.header(HttpCacheInterceptor.CACHE_KEY_HEADER);
-    okhttp3.Response cachedResponse = httpCache.read(cacheKey);
+    okhttp3.Response cachedResponse = apolloClient.cachedHttpResponse(cacheKey);
     assertThat(cachedResponse).isNull();
   }
 

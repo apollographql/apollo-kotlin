@@ -4,8 +4,10 @@ import com.apollographql.android.ApolloCall;
 import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.ScalarType;
+import com.apollographql.android.cache.EvictionStrategy;
 import com.apollographql.android.cache.HttpCache;
 import com.apollographql.android.cache.HttpCacheInterceptor;
+import com.apollographql.android.cache.ResponseCacheStore;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
@@ -19,6 +21,7 @@ import javax.annotation.Nonnull;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
+import okhttp3.Response;
 
 import static com.apollographql.android.impl.util.Utils.checkNotNull;
 
@@ -48,6 +51,20 @@ public final class ApolloClient implements ApolloCall.Factory {
         operation.responseFieldMapper(), customTypeAdapters);
   }
 
+  void clearCache() {
+    if (httpCache != null) {
+      httpCache.clear();
+    }
+  }
+
+  Response cachedHttpResponse(String cacheKey) throws IOException {
+    if (httpCache != null) {
+      return httpCache.read(cacheKey);
+    } else {
+      return null;
+    }
+  }
+
   public static class Builder {
     OkHttpClient okHttpClient;
     HttpUrl serverUrl;
@@ -75,11 +92,12 @@ public final class ApolloClient implements ApolloCall.Factory {
       return this;
     }
 
-    public Builder httpCache(HttpCache httpCache) {
-      this.httpCache = httpCache;
+    public Builder httpCache(@Nonnull ResponseCacheStore cacheStore, @Nonnull EvictionStrategy evictionStrategy) {
+      checkNotNull(cacheStore, "baseUrl == null");
+      checkNotNull(evictionStrategy, "baseUrl == null");
+      this.httpCache = new HttpCache(cacheStore, evictionStrategy);
       return this;
     }
-
 
     public <T> Builder withCustomTypeAdapter(@Nonnull ScalarType scalarType,
         @Nonnull final CustomTypeAdapter<T> customTypeAdapter) {

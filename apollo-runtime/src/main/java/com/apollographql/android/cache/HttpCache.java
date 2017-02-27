@@ -15,8 +15,12 @@ public final class HttpCache {
     this.evictionStrategy = evictionStrategy;
   }
 
-  public void delete() throws IOException {
-    cacheStore.delete();
+  public void clear() {
+    try {
+      cacheStore.delete();
+    } catch (IOException e) {
+      // ignore
+    }
   }
 
   public void remove(@Nonnull String cacheKey) throws IOException {
@@ -45,9 +49,5 @@ public final class HttpCache {
     return response.newBuilder()
         .body(new ResponseBodyProxy(cacheRecordEditor, response))
         .build();
-  }
-
-  public interface EvictionStrategy {
-    boolean isStale(@Nonnull Response response);
   }
 }
