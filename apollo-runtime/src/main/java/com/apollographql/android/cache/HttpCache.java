@@ -23,8 +23,7 @@ public final class HttpCache {
   public void clear() {
     try {
       cacheStore.delete();
-    } catch (IOException e) {
-      // ignore
+    } catch (IOException ignore) {
     }
   }
 
@@ -60,7 +59,7 @@ public final class HttpCache {
         .build();
   }
 
-   public enum CacheControl {
+  public enum CacheControl {
     DEFAULT("default"),
     NETWORK_ONLY("network-only"),
     CACHE_ONLY("cache-only"),
