@@ -69,14 +69,10 @@ public final class HttpCacheInterceptor implements Interceptor {
   private Response cacheOnlyResponse(Request request) throws IOException {
     String cacheKey = request.header(CACHE_KEY_HEADER);
     Response cacheResponse = cache.read(cacheKey);
-    if (cacheResponse != null) {
-      if (cache.isStale(cacheResponse)) {
-        cache.remove(cacheKey);
-      } else {
-        return cacheResponse.newBuilder()
-            .cacheResponse(strip(cacheResponse))
-            .build();
-      }
+    if (cacheResponse != null && !cache.isStale(cacheResponse)) {
+      return cacheResponse.newBuilder()
+          .cacheResponse(strip(cacheResponse))
+          .build();
     }
     return new Response.Builder()
         .request(request)
