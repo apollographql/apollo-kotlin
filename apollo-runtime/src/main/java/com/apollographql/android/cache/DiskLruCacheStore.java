@@ -18,7 +18,7 @@ public final class DiskLruCacheStore implements ResponseCacheStore {
 
   private final DiskLruCache cache;
 
-  public DiskLruCacheStore(FileSystem fileSystem, File directory, long maxSize) {
+  public DiskLruCacheStore(@Nonnull FileSystem fileSystem, @Nonnull File directory, long maxSize) {
     this.cache = DiskLruCache.create(fileSystem, directory, VERSION, ENTRY_COUNT, maxSize);
   }
 

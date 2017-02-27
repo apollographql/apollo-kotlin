@@ -10,7 +10,6 @@ import javax.annotation.Nullable;
 
 public interface ApolloCall<T extends Operation.Data> {
 
-
   @Nonnull Response<T> execute() throws IOException;
 
   @Nonnull ApolloCall enqueue(@Nullable Callback<T> callback);
@@ -25,7 +24,6 @@ public interface ApolloCall<T extends Operation.Data> {
 
   void cancel();
 
-
   interface Callback<T extends Operation.Data> {
     void onResponse(@Nonnull Response<T> response);
 
@@ -33,7 +31,6 @@ public interface ApolloCall<T extends Operation.Data> {
   }
 
   interface Factory {
-    <D extends Operation.Data, V extends Operation.Variables> ApolloCall<D> newCall(@Nonnull Operation<D, V>
-        operation);
+    <D extends Operation.Data, V extends Operation.Variables> ApolloCall<D> newCall(@Nonnull Operation<D, V> operation);
   }
 }

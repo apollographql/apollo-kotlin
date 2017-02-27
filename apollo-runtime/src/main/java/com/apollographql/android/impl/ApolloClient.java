@@ -4,8 +4,9 @@ import com.apollographql.android.ApolloCall;
 import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.ScalarType;
+import com.apollographql.android.cache.EvictionStrategy;
 import com.apollographql.android.cache.HttpCache;
-import com.apollographql.android.cache.HttpCacheInterceptor;
+import com.apollographql.android.cache.ResponseCacheStore;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
@@ -19,6 +20,7 @@ import javax.annotation.Nonnull;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
+import okhttp3.Response;
 
 import static com.apollographql.android.impl.util.Utils.checkNotNull;
 
@@ -41,12 +43,25 @@ public final class ApolloClient implements ApolloCall.Factory {
     this.moshi = builder.moshiBuilder.build();
   }
 
-
   @Override
   public <D extends Operation.Data, V extends Operation.Variables>
   ApolloCall<D> newCall(@Nonnull Operation<D, V> operation) {
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, moshi,
         operation.responseFieldMapper(), customTypeAdapters);
+  }
+
+  void clearCache() {
+    if (httpCache != null) {
+      httpCache.clear();
+    }
+  }
+
+  Response cachedHttpResponse(String cacheKey) throws IOException {
+    if (httpCache != null) {
+      return httpCache.read(cacheKey);
+    } else {
+      return null;
+    }
   }
 
   public static class Builder {
@@ -76,11 +91,12 @@ public final class ApolloClient implements ApolloCall.Factory {
       return this;
     }
 
-    public Builder httpCache(HttpCache httpCache) {
-      this.httpCache = httpCache;
+    public Builder httpCache(@Nonnull ResponseCacheStore cacheStore, @Nonnull EvictionStrategy evictionStrategy) {
+      checkNotNull(cacheStore, "baseUrl == null");
+      checkNotNull(evictionStrategy, "baseUrl == null");
+      this.httpCache = new HttpCache(cacheStore, evictionStrategy);
       return this;
     }
-
 
     public <T> Builder withCustomTypeAdapter(@Nonnull ScalarType scalarType,
         @Nonnull final CustomTypeAdapter<T> customTypeAdapter) {
@@ -105,7 +121,7 @@ public final class ApolloClient implements ApolloCall.Factory {
       checkNotNull(serverUrl, "serverUrl is null");
 
       if (httpCache != null) {
-        okHttpClient = okHttpClient.newBuilder().addInterceptor(new HttpCacheInterceptor(httpCache)).build();
+        okHttpClient = okHttpClient.newBuilder().addInterceptor(httpCache.interceptor()).build();
       }
 
       return new ApolloClient(this);

@@ -58,7 +58,7 @@ public class IntegrationTest {
       }
     };
 
-    apolloClient = ApolloClient.<ApolloCall>builder()
+    apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(new OkHttpClient.Builder().build())
         .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
