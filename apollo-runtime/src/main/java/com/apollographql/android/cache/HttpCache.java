@@ -4,9 +4,14 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
+import okhttp3.Interceptor;
 import okhttp3.Response;
 
 public final class HttpCache {
+  public static final String CACHE_KEY_HEADER = "APOLLO-CACHE-KEY";
+  public static final String CACHE_CONTROL_HEADER = "APOLLO-CACHE-CONTROL";
+  public static final String CACHE_SERVED_DATE_HEADER = "APOLLO-SERVED-DATE";
+
   private final ResponseCacheStore cacheStore;
   private final EvictionStrategy evictionStrategy;
 
@@ -39,6 +44,10 @@ public final class HttpCache {
         .build();
   }
 
+  public Interceptor interceptor() {
+    return new CacheInterceptor(this);
+  }
+
   boolean isStale(@Nonnull Response response) {
     return evictionStrategy.isStale(response);
   }
@@ -49,5 +58,27 @@ public final class HttpCache {
     return response.newBuilder()
         .body(new ResponseBodyProxy(cacheRecordEditor, response))
         .build();
+  }
+
+   public enum CacheControl {
+    DEFAULT("default"),
+    NETWORK_ONLY("network-only"),
+    CACHE_ONLY("cache-only"),
+    NETWORK_BEFORE_STALE("network-before-stale");
+
+    public final String httpHeader;
+
+    CacheControl(String httpHeader) {
+      this.httpHeader = httpHeader;
+    }
+
+    static CacheControl valueOfHttpHeader(String header) {
+      for (CacheControl value : values()) {
+        if (value.httpHeader.equals(header)) {
+          return value;
+        }
+      }
+      return null;
+    }
   }
 }

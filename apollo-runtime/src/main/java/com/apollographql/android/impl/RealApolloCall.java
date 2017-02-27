@@ -7,7 +7,6 @@ import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ScalarType;
 import com.apollographql.android.cache.HttpCache;
-import com.apollographql.android.cache.HttpCacheInterceptor;
 import com.apollographql.android.impl.util.HttpException;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -25,6 +24,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okio.Buffer;
 
+import static com.apollographql.android.cache.HttpCache.CacheControl;
+
 final class RealApolloCall<T extends Operation.Data> implements ApolloCall<T> {
   private static final String ACCEPT_TYPE = "application/json";
   private static final String CONTENT_TYPE = "application/json";
@@ -38,7 +39,7 @@ final class RealApolloCall<T extends Operation.Data> implements ApolloCall<T> {
   private final ResponseBodyConverter responseBodyConverter;
   volatile Call httpCall;
   private boolean executed;
-  private HttpCacheInterceptor.CacheControl cacheControl = HttpCacheInterceptor.CacheControl.DEFAULT;
+  private CacheControl cacheControl = CacheControl.DEFAULT;
 
   RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache, Moshi moshi,
       ResponseFieldMapper responseFieldMapper, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
@@ -51,7 +52,7 @@ final class RealApolloCall<T extends Operation.Data> implements ApolloCall<T> {
   }
 
   private RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
-      HttpCacheInterceptor.CacheControl cacheControl, Moshi moshi, ResponseBodyConverter responseBodyConverter) {
+      CacheControl cacheControl, Moshi moshi, ResponseBodyConverter responseBodyConverter) {
     this.operation = operation;
     this.serverUrl = serverUrl;
     this.httpCache = httpCache;
@@ -115,7 +116,7 @@ final class RealApolloCall<T extends Operation.Data> implements ApolloCall<T> {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
-    cacheControl = HttpCacheInterceptor.CacheControl.NETWORK_ONLY;
+    cacheControl = CacheControl.NETWORK_ONLY;
     return this;
   }
 
@@ -123,7 +124,7 @@ final class RealApolloCall<T extends Operation.Data> implements ApolloCall<T> {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
-    cacheControl = HttpCacheInterceptor.CacheControl.CACHE_ONLY;
+    cacheControl = CacheControl.CACHE_ONLY;
     return this;
   }
 
@@ -131,7 +132,7 @@ final class RealApolloCall<T extends Operation.Data> implements ApolloCall<T> {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
-    cacheControl = HttpCacheInterceptor.CacheControl.NETWORK_BEFORE_STALE;
+    cacheControl = CacheControl.NETWORK_BEFORE_STALE;
     return this;
   }
 
@@ -156,7 +157,7 @@ final class RealApolloCall<T extends Operation.Data> implements ApolloCall<T> {
         return responseBodyConverter.convert(response.body());
       } catch (Exception e) {
         try {
-          httpCache.remove(response.request().header(HttpCacheInterceptor.CACHE_KEY_HEADER));
+          httpCache.remove(response.request().header(HttpCache.CACHE_KEY_HEADER));
         } catch (IOException ignore) {
           throw e;
         }
@@ -173,8 +174,8 @@ final class RealApolloCall<T extends Operation.Data> implements ApolloCall<T> {
         .post(requestBody)
         .header("Accept", ACCEPT_TYPE)
         .header("Content-Type", CONTENT_TYPE)
-        .header(HttpCacheInterceptor.CACHE_KEY_HEADER, cacheKey)
-        .header(HttpCacheInterceptor.CACHE_CONTROL_HEADER, cacheControl.httpHeader)
+        .header(HttpCache.CACHE_KEY_HEADER, cacheKey)
+        .header(HttpCache.CACHE_CONTROL_HEADER, cacheControl.httpHeader)
         .build();
   }
 

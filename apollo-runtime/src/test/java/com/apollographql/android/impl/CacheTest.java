@@ -8,7 +8,6 @@ import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.cache.DiskLruCacheStore;
 import com.apollographql.android.cache.HttpCache;
-import com.apollographql.android.cache.HttpCacheInterceptor;
 import com.apollographql.android.cache.TimeoutEvictionStrategy;
 import com.apollographql.android.impl.type.CustomType;
 import com.apollographql.android.impl.util.HttpException;
@@ -318,7 +317,7 @@ public class CacheTest {
 
   private void checkNoCachedResponse(ApolloCall call) throws IOException {
     Request request = ((RealApolloCall) call).httpCall.request();
-    String cacheKey = request.header(HttpCacheInterceptor.CACHE_KEY_HEADER);
+    String cacheKey = request.header(HttpCache.CACHE_KEY_HEADER);
     okhttp3.Response cachedResponse = apolloClient.cachedHttpResponse(cacheKey);
     assertThat(cachedResponse).isNull();
   }

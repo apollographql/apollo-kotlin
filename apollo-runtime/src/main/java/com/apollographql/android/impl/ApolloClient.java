@@ -6,7 +6,6 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.ScalarType;
 import com.apollographql.android.cache.EvictionStrategy;
 import com.apollographql.android.cache.HttpCache;
-import com.apollographql.android.cache.HttpCacheInterceptor;
 import com.apollographql.android.cache.ResponseCacheStore;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonWriter;
@@ -122,7 +121,7 @@ public final class ApolloClient implements ApolloCall.Factory {
       checkNotNull(serverUrl, "serverUrl is null");
 
       if (httpCache != null) {
-        okHttpClient = okHttpClient.newBuilder().addInterceptor(new HttpCacheInterceptor(httpCache)).build();
+        okHttpClient = okHttpClient.newBuilder().addInterceptor(httpCache.interceptor()).build();
       }
 
       return new ApolloClient(this);

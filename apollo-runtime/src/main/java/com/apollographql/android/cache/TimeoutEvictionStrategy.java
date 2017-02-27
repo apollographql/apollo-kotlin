@@ -16,7 +16,7 @@ public final class TimeoutEvictionStrategy implements EvictionStrategy {
   }
 
   @Override public boolean isStale(@Nonnull Response response) {
-    String servedDateStr = response.header(HttpCacheInterceptor.CACHE_SERVED_DATE_HEADER);
+    String servedDateStr = response.header(HttpCache.CACHE_SERVED_DATE_HEADER);
     if (servedDateStr == null) {
       return true;
     }
