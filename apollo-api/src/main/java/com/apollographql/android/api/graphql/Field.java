@@ -1,7 +1,10 @@
 package com.apollographql.android.api.graphql;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 public class Field {
@@ -10,6 +13,10 @@ public class Field {
   private final String fieldName;
   private final Map<String, Object> arguments;
   private final boolean optional;
+
+  private static final String VARIABLE_IDENTIFIER_KEY = "kind";
+  private static final String VARIABLE_IDENTIFIER_VALUE = "Variable";
+  private static final String VARIABLE_NAME_KEY = "variableName";
 
   public static Field forString(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional) {
@@ -89,7 +96,67 @@ public class Field {
     return optional;
   }
 
-  public static enum Type {
+  public String cacheKey(Operation.Variables variables) {
+    if (arguments.isEmpty()) {
+      return fieldName();
+    }
+    return String.format("%s(%s)", fieldName(), orderIndependentKey(arguments, variables));
+  }
+
+  private String orderIndependentKey(Map<String, Object> objectMap, Operation.Variables variables) {
+    if (isArgumentValueVariableType(objectMap)) {
+      return orderIndependentKeyForVariableArgument(objectMap, variables);
+    }
+    List<Map.Entry<String, Object>> sortedArguments = new ArrayList<>(objectMap.entrySet());
+    Collections.sort(sortedArguments, new Comparator<Map.Entry<String, Object>>() {
+      @Override public int compare(Map.Entry<String, Object> argumentOne, Map.Entry<String, Object> argumentTwo) {
+        return argumentOne.getKey().compareTo(argumentTwo.getKey());
+      }
+    });
+    StringBuilder independentKey = new StringBuilder();
+    for (int i = 0; i < sortedArguments.size(); i++) {
+      Map.Entry<String, Object> argument = sortedArguments.get(i);
+      if (argument.getValue() instanceof Map) {
+        //noinspection unchecked
+        final Map<String, Object> objectArg = (Map<String, Object>) argument.getValue();
+        boolean isArgumentVariable = isArgumentValueVariableType(objectArg);
+        independentKey
+            .append(argument.getKey())
+            .append(":")
+            .append(isArgumentVariable ? "" : "[")
+            .append(orderIndependentKey(objectArg, variables))
+            .append(isArgumentVariable ? "" : "]");
+      } else {
+        independentKey.append(argument.getKey())
+            .append(":")
+            .append(argument.getValue().toString());
+      }
+      if (i < sortedArguments.size() - 1) {
+        independentKey.append(",");
+      }
+    }
+    return independentKey.toString();
+  }
+
+  private boolean isArgumentValueVariableType(Map<String, Object> objectMap) {
+    return objectMap.containsKey(VARIABLE_IDENTIFIER_KEY)
+        && objectMap.get(VARIABLE_IDENTIFIER_KEY).equals(VARIABLE_IDENTIFIER_VALUE)
+        && objectMap.containsKey(VARIABLE_NAME_KEY);
+  }
+
+  private String orderIndependentKeyForVariableArgument(Map<String, Object> objectMap, Operation.Variables variables) {
+    Object variable = objectMap.get(VARIABLE_NAME_KEY);
+    //noinspection SuspiciousMethodCalls
+    Object resolvedVariable = variables.valueMap().get(variable);
+    if (resolvedVariable instanceof Map) {
+      //noinspection unchecked
+      return orderIndependentKey((Map<String, Object>) resolvedVariable, variables);
+    } else {
+      return resolvedVariable.toString();
+    }
+  }
+
+  public enum Type {
     STRING,
     INT,
     LONG,

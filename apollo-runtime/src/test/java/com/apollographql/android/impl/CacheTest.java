@@ -41,7 +41,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class CacheTest {
   private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
 
-  private ApolloClient<ApolloCall> apolloClient;
+  private ApolloClient apolloClient;
   private HttpCache httpCache;
   private okhttp3.Response lastHttResponse;
   @Rule public final MockWebServer server = new MockWebServer();
@@ -82,7 +82,7 @@ public class CacheTest {
         .okHttpClient(okHttpClient)
         .httpCache(httpCache)
         .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
-        .build(new ApolloCallAdapter());
+        .build();
   }
 
   @After public void tearDown() throws Exception {
@@ -158,10 +158,10 @@ public class CacheTest {
   @Test public void noCacheStore() throws Exception {
     server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
 
-    ApolloClient<ApolloCall> apolloClient = ApolloClient.<ApolloCall>builder()
+    ApolloClient apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(new OkHttpClient.Builder().build())
-        .build(new ApolloCallAdapter());
+        .build();
 
     ApolloCall call = apolloClient.newCall(new AllPlanets());
     Response<AllPlanets.Data> body = call.execute();

@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 /** TODO */
-public interface Operation<V extends Operation.Variables> {
+public interface Operation<T extends Operation.Data, V extends Operation.Variables> {
   /** TODO */
   String queryDocument();
 

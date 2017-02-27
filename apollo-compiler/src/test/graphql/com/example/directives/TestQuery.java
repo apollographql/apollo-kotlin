@@ -13,7 +13,7 @@ import javax.annotation.Generated;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
-public final class TestQuery implements Query<Operation.Variables> {
+public final class TestQuery implements Query<TestQuery.Data, Operation.Variables> {
   public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  hero {\n"
       + "    __typename\n"

@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
-public final class AllStarships implements Query<Operation.Variables> {
+public final class AllStarships implements Query<AllStarships.Data, Operation.Variables> {
   public static final String OPERATION_DEFINITION = "query AllStarships {\n"
       + "  allStarships(first: 7) {\n"
       + "    __typename\n"

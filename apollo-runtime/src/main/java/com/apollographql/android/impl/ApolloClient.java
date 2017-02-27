@@ -1,7 +1,6 @@
 package com.apollographql.android.impl;
 
 import com.apollographql.android.ApolloCall;
-import com.apollographql.android.CallAdapter;
 import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.ScalarType;
@@ -23,7 +22,7 @@ import okhttp3.OkHttpClient;
 
 import static com.apollographql.android.impl.util.Utils.checkNotNull;
 
-public final class ApolloClient<R> implements ApolloCall.Factory<R> {
+public final class ApolloClient implements ApolloCall.Factory {
   public static Builder builder() {
     return new Builder();
   }
@@ -33,22 +32,20 @@ public final class ApolloClient<R> implements ApolloCall.Factory<R> {
   private final HttpCache httpCache;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final Moshi moshi;
-  private CallAdapter<R> adapter;
 
-  private ApolloClient(Builder builder, CallAdapter<R> callAdapter) {
+  private ApolloClient(Builder builder) {
     this.serverUrl = builder.serverUrl;
     this.httpCallFactory = builder.okHttpClient;
     this.httpCache = builder.httpCache;
     this.customTypeAdapters = builder.customTypeAdapters;
     this.moshi = builder.moshiBuilder.build();
-    this.adapter = callAdapter;
   }
 
-  @Nonnull
-  public <T extends Operation> R newCall(@Nonnull T operation) {
-    RealApolloCall call = new RealApolloCall(operation, serverUrl, httpCallFactory, httpCache, moshi,
+  @Override
+  public <D extends Operation.Data, V extends Operation.Variables>
+  ApolloCall<D> newCall(@Nonnull Operation<D, V> operation) {
+    return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, moshi,
         operation.responseFieldMapper(), customTypeAdapters);
-    return adapter.adapt(call);
   }
 
   public static class Builder {
@@ -83,6 +80,7 @@ public final class ApolloClient<R> implements ApolloCall.Factory<R> {
       return this;
     }
 
+
     public <T> Builder withCustomTypeAdapter(@Nonnull ScalarType scalarType,
         @Nonnull final CustomTypeAdapter<T> customTypeAdapter) {
       customTypeAdapters.put(scalarType, customTypeAdapter);
@@ -101,16 +99,15 @@ public final class ApolloClient<R> implements ApolloCall.Factory<R> {
       return this;
     }
 
-    public <T> ApolloClient<T> build(CallAdapter<T> callAdapter) {
+    public ApolloClient build() {
       checkNotNull(okHttpClient, "okHttpClient is null");
       checkNotNull(serverUrl, "serverUrl is null");
-      checkNotNull(callAdapter, "callAdapter is null");
 
       if (httpCache != null) {
         okHttpClient = okHttpClient.newBuilder().addInterceptor(new HttpCacheInterceptor(httpCache)).build();
       }
 
-      return new ApolloClient<>(this, callAdapter);
+      return new ApolloClient(this);
     }
   }
 }
