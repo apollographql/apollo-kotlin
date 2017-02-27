@@ -8,9 +8,11 @@ import okhttp3.Response;
 
 public final class HttpCache {
   private final ResponseCacheStore cacheStore;
+  private final EvictionStrategy evictionStrategy;
 
-  public HttpCache(@Nonnull ResponseCacheStore cacheStore) {
+  public HttpCache(@Nonnull ResponseCacheStore cacheStore, @Nonnull EvictionStrategy evictionStrategy) {
     this.cacheStore = cacheStore;
+    this.evictionStrategy = evictionStrategy;
   }
 
   public void delete() throws IOException {
@@ -34,7 +36,7 @@ public final class HttpCache {
   }
 
   boolean isStale(@Nonnull Response response) {
-    return cacheStore.evictionStrategy().isStale(response);
+    return evictionStrategy.isStale(response);
   }
 
   Response cacheProxy(@Nonnull Response response, @Nonnull String cacheKey) throws IOException {
@@ -43,5 +45,9 @@ public final class HttpCache {
     return response.newBuilder()
         .body(new ResponseBodyProxy(cacheRecordEditor, response))
         .build();
+  }
+
+  public interface EvictionStrategy {
+    boolean isStale(@Nonnull Response response);
   }
 }

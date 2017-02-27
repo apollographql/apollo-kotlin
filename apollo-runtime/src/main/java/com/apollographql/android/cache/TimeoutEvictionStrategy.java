@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 import okhttp3.Response;
 import okhttp3.internal.http.HttpDate;
 
-public final class TimeoutEvictionStrategy implements ResponseCacheStore.EvictionStrategy {
+public final class TimeoutEvictionStrategy implements HttpCache.EvictionStrategy {
   private final long timeout;
 
   public TimeoutEvictionStrategy(long timeout, @Nonnull TimeUnit timeUnit) {
