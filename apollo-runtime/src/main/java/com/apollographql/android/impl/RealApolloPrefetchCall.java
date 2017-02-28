@@ -54,6 +54,9 @@ final class RealApolloPrefetchCall extends BaseApolloCall implements ApolloPrefe
 
       @Override public void onResponse(Call call, okhttp3.Response response) throws IOException {
         response.close();
+        if (callback != null) {
+          callback.onSuccess();
+        }
       }
     });
     return this;
