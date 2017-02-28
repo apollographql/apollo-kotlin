@@ -178,7 +178,7 @@ public class CacheTest {
     enqueueResponse("src/test/graphql/allPlanetsResponse.json");
     try {
       apolloClient.newCall(new AllPlanets()).cache().execute();
-      fail("expected to fail with HttpException");
+      Assert.fail("expected to fail with HttpException");
     } catch (HttpException expected) {
     } catch (Exception e) {
       fail("expected to fail with HttpException");
