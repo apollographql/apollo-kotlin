@@ -150,18 +150,15 @@ final class RealApolloCall<T extends Operation.Data> implements ApolloCall<T> {
 
   private <T extends Operation.Data> Response<T> parseHttpResponse(okhttp3.Response response) throws IOException {
     int code = response.code();
+    String cacheKey = response.request().header(HttpCache.CACHE_KEY_HEADER);
     if (code < 200 || code >= 300) {
       throw new HttpException(response);
     } else {
       try {
         return responseBodyConverter.convert(response.body());
-      } catch (Exception e) {
-        try {
-          httpCache.remove(response.request().header(HttpCache.CACHE_KEY_HEADER));
-        } catch (IOException ignore) {
-          throw e;
-        }
-        throw e;
+      } catch (Exception rethrown) {
+        httpCache.removeQuietly(cacheKey);
+        throw rethrown;
       }
     }
   }

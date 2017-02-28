@@ -31,6 +31,14 @@ public final class HttpCache {
     cacheStore.remove(cacheKey);
   }
 
+  public void removeQuietly(@Nonnull String cacheKey) {
+    try {
+      remove(cacheKey);
+    } catch (Exception ignore) {
+      //TODO log me
+    }
+  }
+
   public Response read(@Nonnull String cacheKey) {
     ResponseCacheRecord cacheRecord = null;
     try {
