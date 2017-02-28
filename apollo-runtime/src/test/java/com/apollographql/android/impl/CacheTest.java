@@ -320,6 +320,18 @@ public class CacheTest {
     assertThat(apolloClient.newCall(new AllPlanets()).cache().execute().isSuccessful()).isTrue();
   }
 
+  @Test public void prefetchNoCacheStore() throws IOException {
+     ApolloClient apolloClient = ApolloClient.builder()
+        .serverUrl(server.url("/"))
+        .okHttpClient(okHttpClient)
+        .build();
+
+    enqueueResponse("src/test/graphql/allPlanetsResponse.json");
+    apolloClient.newPrefetchCall(new AllPlanets()).execute();
+    enqueueResponse("src/test/graphql/allPlanetsResponse.json");
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+  }
+
   @Test public void prefetchFileSystemWriteFailure() throws IOException {
     FaultyCacheStore faultyCacheStore = new FaultyCacheStore(FileSystem.SYSTEM);
     cacheStore.delegate = faultyCacheStore;
