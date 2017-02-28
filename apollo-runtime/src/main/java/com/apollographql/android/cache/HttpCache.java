@@ -23,7 +23,8 @@ public final class HttpCache {
   public void clear() {
     try {
       cacheStore.delete();
-    } catch (Exception ignore) {
+    } catch (IOException ignore) {
+      //TODO log me
     }
   }
 
@@ -89,9 +90,8 @@ public final class HttpCache {
       if (cacheRecord != null) {
         cacheRecord.close();
       }
-    } catch (RuntimeException rethrown) {
-      throw rethrown;
     } catch (Exception ignore) {
+      //TODO log me
     }
   }
 
@@ -100,9 +100,8 @@ public final class HttpCache {
       if (cacheRecordEditor != null) {
         cacheRecordEditor.abort();
       }
-    } catch (RuntimeException rethrown) {
-      throw rethrown;
     } catch (Exception ignore) {
+      //TODO log me
     }
   }
 
