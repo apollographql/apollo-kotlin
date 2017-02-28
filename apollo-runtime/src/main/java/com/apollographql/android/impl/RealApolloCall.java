@@ -72,7 +72,7 @@ final class RealApolloCall<T extends Operation.Data> implements ApolloCall<T> {
     return parseHttpResponse(httpCall.execute());
   }
 
-  @Nonnull @Override public ApolloCall enqueue(@Nullable final Callback<T> callback) {
+  @Nonnull @Override public ApolloCall<T> enqueue(@Nullable final Callback<T> callback) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
@@ -112,7 +112,7 @@ final class RealApolloCall<T extends Operation.Data> implements ApolloCall<T> {
     return this;
   }
 
-  @Nonnull @Override public ApolloCall network() {
+  @Nonnull @Override public ApolloCall<T> network() {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
@@ -120,7 +120,7 @@ final class RealApolloCall<T extends Operation.Data> implements ApolloCall<T> {
     return this;
   }
 
-  @Nonnull @Override public ApolloCall cache() {
+  @Nonnull @Override public ApolloCall<T> cache() {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
@@ -128,7 +128,7 @@ final class RealApolloCall<T extends Operation.Data> implements ApolloCall<T> {
     return this;
   }
 
-  @Nonnull @Override public ApolloCall networkBeforeStale() {
+  @Nonnull @Override public ApolloCall<T> networkBeforeStale() {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
@@ -143,25 +143,22 @@ final class RealApolloCall<T extends Operation.Data> implements ApolloCall<T> {
     }
   }
 
-  @Override @Nonnull public ApolloCall clone() {
-    return new RealApolloCall(operation, serverUrl, httpCallFactory, httpCache, cacheControl, moshi,
+  @Override @Nonnull public ApolloCall<T> clone() {
+    return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, cacheControl, moshi,
         responseBodyConverter);
   }
 
   private <T extends Operation.Data> Response<T> parseHttpResponse(okhttp3.Response response) throws IOException {
     int code = response.code();
+    String cacheKey = response.request().header(HttpCache.CACHE_KEY_HEADER);
     if (code < 200 || code >= 300) {
       throw new HttpException(response);
     } else {
       try {
         return responseBodyConverter.convert(response.body());
-      } catch (Exception e) {
-        try {
-          httpCache.remove(response.request().header(HttpCache.CACHE_KEY_HEADER));
-        } catch (IOException ignore) {
-          throw e;
-        }
-        throw e;
+      } catch (Exception rethrown) {
+        httpCache.removeQuietly(cacheKey);
+        throw rethrown;
       }
     }
   }
