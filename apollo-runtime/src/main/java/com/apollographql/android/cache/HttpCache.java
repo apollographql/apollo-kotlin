@@ -35,18 +35,10 @@ public final class HttpCache {
     ResponseCacheRecord cacheRecord = null;
     try {
       cacheRecord = cacheStore.cacheRecord(cacheKey);
-    } catch (Exception e) {
-      //TODO log
-      return null;
-    } finally {
-      closeQuietly(cacheRecord);
-    }
+      if (cacheRecord == null) {
+        return null;
+      }
 
-    if (cacheRecord == null) {
-      return null;
-    }
-
-    try {
       Response response = new ResponseHeaderRecord(cacheRecord.headerSource()).response();
       return response.newBuilder()
           .body(new CacheResponseBody(cacheRecord, response))
