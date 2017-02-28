@@ -55,7 +55,7 @@ final class ResponseBodyProxy extends ResponseBody {
     final Source responseBodySource;
     final BufferedSink cacheResponseBodySink;
     boolean closed;
-    boolean cacheBroken;
+    boolean cacheFail;
 
     ProxySource(ResponseCacheRecordEditor cacheRecordEditor, Source responseBodySource) {
       this.cacheRecordEditor = cacheRecordEditor;
@@ -86,13 +86,13 @@ final class ResponseBodyProxy extends ResponseBody {
       }
 
       try {
-        if (!cacheBroken) {
+        if (!cacheFail) {
           sink.copyTo(cacheResponseBodySink.buffer(), sink.size() - bytesRead, bytesRead);
           cacheResponseBodySink.emitCompleteSegments();
         }
       } catch (Exception e) {
         //TODO log me
-        cacheBroken = true;
+        cacheFail = true;
         abortCacheQuietly();
       }
 
