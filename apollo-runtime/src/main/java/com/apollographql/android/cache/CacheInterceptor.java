@@ -37,7 +37,11 @@ final class CacheInterceptor implements Interceptor {
     Response cacheResponse = cache.read(cacheKey);
     if (cacheResponse == null) {
       Response networkResponse = withServedDateHeader(chain.proceed(request));
-      return cache.cacheProxy(networkResponse, cacheKey);
+      if (isPrefetchResponse(request)) {
+        return prefetch(networkResponse, cacheKey);
+      } else {
+        return cache.cacheProxy(networkResponse, cacheKey);
+      }
     }
 
     if (!cache.isStale(cacheResponse)) {
@@ -48,7 +52,8 @@ final class CacheInterceptor implements Interceptor {
     }
 
     Response networkResponse = withServedDateHeader(chain.proceed(request));
-    return resolveResponse(networkResponse, cacheResponse, cacheKey, cacheControl(request));
+    return resolveResponse(networkResponse, cacheResponse, cacheKey, cacheControl(request),
+        isPrefetchResponse(request));
   }
 
   private boolean shouldSkipCache(Request request) {
@@ -93,13 +98,17 @@ final class CacheInterceptor implements Interceptor {
   }
 
   private Response resolveResponse(Response networkResponse, Response cacheResponse, String cacheKey,
-      CacheControl cacheControl) throws IOException {
+      CacheControl cacheControl, boolean prefetch) throws IOException {
     if (networkResponse.isSuccessful()) {
       cacheResponse.close();
-      return cache.cacheProxy(networkResponse, cacheKey)
-          .newBuilder()
-          .cacheResponse(strip(cacheResponse))
-          .build();
+      if (prefetch) {
+        return prefetch(networkResponse, cacheKey);
+      } else {
+        return cache.cacheProxy(networkResponse, cacheKey)
+            .newBuilder()
+            .cacheResponse(strip(cacheResponse))
+            .build();
+      }
     }
 
     if (cacheControl == CacheControl.NETWORK_BEFORE_STALE) {
@@ -119,6 +128,22 @@ final class CacheInterceptor implements Interceptor {
     return response.newBuilder()
         .addHeader(HttpCache.CACHE_SERVED_DATE_HEADER, HttpDate.format(new Date()))
         .build();
+  }
+
+  private Response prefetch(Response networkResponse, String cacheKey) throws IOException {
+    cache.write(networkResponse, cacheKey);
+    Response cacheResponse = cache.read(cacheKey);
+    if (cacheResponse == null) {
+      throw new IOException("failed to read prefetch cache response");
+    }
+    return cacheResponse
+        .newBuilder()
+        .networkResponse(strip(networkResponse))
+        .build();
+  }
+
+  private static boolean isPrefetchResponse(Request request) {
+    return Boolean.TRUE.toString().equals(request.header(HttpCache.CACHE_PREFETCH_HEADER));
   }
 
   private static Response strip(Response response) {

@@ -6,11 +6,18 @@ import javax.annotation.Nonnull;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
+import okio.Buffer;
+import okio.BufferedSink;
+import okio.BufferedSource;
+import okio.Okio;
+import okio.Sink;
+import okio.Timeout;
 
 public final class HttpCache {
   public static final String CACHE_KEY_HEADER = "APOLLO-CACHE-KEY";
   public static final String CACHE_CONTROL_HEADER = "APOLLO-CACHE-CONTROL";
   public static final String CACHE_SERVED_DATE_HEADER = "APOLLO-SERVED-DATE";
+  public static final String CACHE_PREFETCH_HEADER = "APOLLO-PREFETCH";
 
   private final ResponseCacheStore cacheStore;
   private final EvictionStrategy evictionStrategy;
@@ -83,6 +90,44 @@ public final class HttpCache {
       abortQuietly(cacheRecordEditor);
     }
     return response;
+  }
+
+  void write(@Nonnull Response response, @Nonnull String cacheKey) {
+    ResponseCacheRecordEditor cacheRecordEditor = null;
+    try {
+      cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey);
+      if (cacheRecordEditor != null) {
+        new ResponseHeaderRecord(response).writeTo(cacheRecordEditor);
+
+        final int bufferSize = 8 * 1024;
+        ResponseBodyProxy responseBody = new ResponseBodyProxy(cacheRecordEditor, response);
+        BufferedSource responseBodySource = responseBody.source();
+        BufferedSink bufferSink = Okio.buffer(new Sink() {
+          @Override public void write(Buffer source, long byteCount) throws IOException {
+          }
+
+          @Override public void flush() throws IOException {
+          }
+
+          @Override public Timeout timeout() {
+            return new Timeout();
+          }
+
+          @Override public void close() throws IOException {
+          }
+        });
+
+        while (responseBodySource.read(bufferSink.buffer(), bufferSize) > 0) {
+          bufferSink.emit();
+        }
+        bufferSink.close();
+        responseBodySource.close();
+        cacheRecordEditor.commit();
+      }
+    } catch (Exception ignore) {
+      //TODO log me
+      abortQuietly(cacheRecordEditor);
+    }
   }
 
   private static void closeQuietly(ResponseCacheRecord cacheRecord) {
