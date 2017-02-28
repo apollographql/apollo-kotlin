@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
+import okhttp3.internal.Util;
 import okio.Buffer;
 import okio.BufferedSink;
 import okio.BufferedSource;
@@ -100,28 +101,13 @@ public final class HttpCache {
         new ResponseHeaderRecord(response).writeTo(cacheRecordEditor);
 
         final int bufferSize = 8 * 1024;
-        ResponseBodyProxy responseBody = new ResponseBodyProxy(cacheRecordEditor, response);
-        BufferedSource responseBodySource = responseBody.source();
-        BufferedSink bufferSink = Okio.buffer(new Sink() {
-          @Override public void write(Buffer source, long byteCount) throws IOException {
-          }
-
-          @Override public void flush() throws IOException {
-          }
-
-          @Override public Timeout timeout() {
-            return new Timeout();
-          }
-
-          @Override public void close() throws IOException {
-          }
-        });
-
-        while (responseBodySource.read(bufferSink.buffer(), bufferSize) > 0) {
-          bufferSink.emit();
+        BufferedSource responseBodySource = response.body().source();
+        BufferedSink cacheResponseBody = Okio.buffer(cacheRecordEditor.bodySink());
+        while (responseBodySource.read(cacheResponseBody.buffer(), bufferSize) > 0) {
+          cacheResponseBody.emit();
         }
-        bufferSink.close();
-        responseBodySource.close();
+        Util.closeQuietly(responseBodySource);
+        cacheResponseBody.close();
         cacheRecordEditor.commit();
       }
     } catch (Exception ignore) {
