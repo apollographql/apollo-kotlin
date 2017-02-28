@@ -84,7 +84,10 @@ public class CacheTest {
   }
 
   @After public void tearDown() {
-    apolloClient.clearCache();
+    try {
+      apolloClient.clearCache();
+    } catch (Exception ignore) {
+    }
   }
 
   @Test public void prematureDisconnect() throws Exception {
