@@ -12,15 +12,15 @@ public interface ApolloCall<T extends Operation.Data> {
 
   @Nonnull Response<T> execute() throws IOException;
 
-  @Nonnull ApolloCall enqueue(@Nullable Callback<T> callback);
+  @Nonnull ApolloCall<T> enqueue(@Nullable Callback<T> callback);
 
-  @Nonnull ApolloCall network();
+  @Nonnull ApolloCall<T> network();
 
-  @Nonnull ApolloCall cache();
+  @Nonnull ApolloCall<T> cache();
 
-  @Nonnull ApolloCall networkBeforeStale();
+  @Nonnull ApolloCall<T> networkBeforeStale();
 
-  @Nonnull ApolloCall clone();
+  @Nonnull ApolloCall<T> clone();
 
   void cancel();
 

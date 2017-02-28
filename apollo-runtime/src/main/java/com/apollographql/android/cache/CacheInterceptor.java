@@ -92,12 +92,6 @@ final class CacheInterceptor implements Interceptor {
     return CacheControl.valueOfHttpHeader(request.header(HttpCache.CACHE_CONTROL_HEADER));
   }
 
-  private static Response strip(Response response) {
-    return response != null && response.body() != null
-        ? response.newBuilder().body(null).networkResponse(null).cacheResponse(null).build()
-        : response;
-  }
-
   private Response resolveResponse(Response networkResponse, Response cacheResponse, String cacheKey,
       CacheControl cacheControl) throws IOException {
     if (networkResponse.isSuccessful()) {
@@ -125,5 +119,11 @@ final class CacheInterceptor implements Interceptor {
     return response.newBuilder()
         .addHeader(HttpCache.CACHE_SERVED_DATE_HEADER, HttpDate.format(new Date()))
         .build();
+  }
+
+  private static Response strip(Response response) {
+    return response != null && response.body() != null
+        ? response.newBuilder().body(null).networkResponse(null).cacheResponse(null).build()
+        : response;
   }
 }

@@ -23,7 +23,7 @@ public final class HttpCache {
   public void clear() {
     try {
       cacheStore.delete();
-    } catch (IOException ignore) {
+    } catch (Exception ignore) {
     }
   }
 
@@ -31,16 +31,32 @@ public final class HttpCache {
     cacheStore.remove(cacheKey);
   }
 
-  public Response read(@Nonnull String cacheKey) throws IOException {
-    ResponseCacheRecord cacheRecord = cacheStore.cacheRecord(cacheKey);
+  public Response read(@Nonnull String cacheKey) {
+    ResponseCacheRecord cacheRecord = null;
+    try {
+      cacheRecord = cacheStore.cacheRecord(cacheKey);
+    } catch (Exception e) {
+      //TODO log
+      return null;
+    } finally {
+      closeQuietly(cacheRecord);
+    }
+
     if (cacheRecord == null) {
       return null;
     }
 
-    Response response = new ResponseHeaderRecord(cacheRecord.headerSource()).response();
-    return response.newBuilder()
-        .body(new CacheResponseBody(cacheRecord, response))
-        .build();
+    try {
+      Response response = new ResponseHeaderRecord(cacheRecord.headerSource()).response();
+      return response.newBuilder()
+          .body(new CacheResponseBody(cacheRecord, response))
+          .build();
+    } catch (Exception e) {
+      //TODO log
+      return null;
+    } finally {
+      closeQuietly(cacheRecord);
+    }
   }
 
   public Interceptor interceptor() {
@@ -51,12 +67,43 @@ public final class HttpCache {
     return evictionStrategy.isStale(response);
   }
 
-  Response cacheProxy(@Nonnull Response response, @Nonnull String cacheKey) throws IOException {
-    ResponseCacheRecordEditor cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey);
-    new ResponseHeaderRecord(response).writeTo(cacheRecordEditor);
-    return response.newBuilder()
-        .body(new ResponseBodyProxy(cacheRecordEditor, response))
-        .build();
+  Response cacheProxy(@Nonnull Response response, @Nonnull String cacheKey) {
+    ResponseCacheRecordEditor cacheRecordEditor = null;
+    try {
+      cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey);
+      if (cacheRecordEditor != null) {
+        new ResponseHeaderRecord(response).writeTo(cacheRecordEditor);
+        return response.newBuilder()
+            .body(new ResponseBodyProxy(cacheRecordEditor, response))
+            .build();
+      }
+    } catch (Exception ignore) {
+      //TODO log me
+      abortQuietly(cacheRecordEditor);
+    }
+    return response;
+  }
+
+  private static void closeQuietly(ResponseCacheRecord cacheRecord) {
+    try {
+      if (cacheRecord != null) {
+        cacheRecord.close();
+      }
+    } catch (RuntimeException rethrown) {
+      throw rethrown;
+    } catch (Exception ignore) {
+    }
+  }
+
+  private static void abortQuietly(ResponseCacheRecordEditor cacheRecordEditor) {
+    try {
+      if (cacheRecordEditor != null) {
+        cacheRecordEditor.abort();
+      }
+    } catch (RuntimeException rethrown) {
+      throw rethrown;
+    } catch (Exception ignore) {
+    }
   }
 
   public enum CacheControl {
