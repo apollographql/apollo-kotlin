@@ -6,6 +6,7 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ScalarType;
+import com.apollographql.android.cache.Cache;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,15 +18,20 @@ final class ResponseBodyConverter {
   private final Operation operation;
   private final ResponseFieldMapper responseFieldMapper;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  private final Cache cache;
+  private final ResponseNormalizer responseNormalizer;
 
   ResponseBodyConverter(Operation operation, ResponseFieldMapper responseFieldMapper,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, Cache cache) {
     this.operation = operation;
     this.responseFieldMapper = responseFieldMapper;
     this.customTypeAdapters = customTypeAdapters;
+    this.cache = cache;
+    this.responseNormalizer = cache.responseNormalizer();
   }
 
   <T extends Operation.Data> Response<T> convert(ResponseBody responseBody) throws IOException {
+    responseNormalizer.willResolveRootQuery(operation);
     BufferedSourceJsonReader jsonReader = null;
     try {
       jsonReader = new BufferedSourceJsonReader(responseBody.source());
@@ -42,7 +48,7 @@ final class ResponseBodyConverter {
             @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
               Map<String, Object> buffer = reader.buffer();
               BufferedResponseReader bufferedResponseReader = new BufferedResponseReader(buffer, operation,
-                  customTypeAdapters);
+                  customTypeAdapters, responseNormalizer);
               return responseFieldMapper.map(bufferedResponseReader);
             }
           });
@@ -53,6 +59,7 @@ final class ResponseBodyConverter {
         }
       }
       jsonReader.endObject();
+      this.cache.cacheStore().merge(responseNormalizer.records());
       return new Response<>(operation, data, errors);
     } finally {
       if (jsonReader != null) {

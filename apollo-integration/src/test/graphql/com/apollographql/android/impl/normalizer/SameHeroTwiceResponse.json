@@ -1,0 +1,14 @@
+{
+  "data": {
+    "hero": {
+      "name": "R2-D2"
+    },
+    "r2": {
+      "appearsIn": [
+        "NEWHOPE",
+        "EMPIRE",
+        "JEDI"
+      ]
+    }
+  }
+}

@@ -29,4 +29,6 @@ dependencies {
   compile dep.appcompat
   testCompile dep.junit
   testCompile dep.truth
+  testCompile dep.mockWebServer
+  testCompile dep.okhttpTestSupport
 }

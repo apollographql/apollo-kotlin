@@ -1,0 +1,9 @@
+query HeroAndFriendsNamesWithIDForParentOnly($episode: Episode) {
+  hero(episode: $episode) {
+    id
+    name
+    friends {
+      name
+    }
+  }
+}

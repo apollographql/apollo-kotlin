@@ -16,12 +16,14 @@ import java.util.Map;
   private final Map<String, Object> buffer;
   private final Operation operation;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  private final ResponseReaderShadow readerShadow;
 
   BufferedResponseReader(Map<String, Object> buffer, Operation operation,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ResponseReaderShadow readerShadow) {
     this.buffer = buffer;
     this.operation = operation;
     this.customTypeAdapters = customTypeAdapters;
+    this.readerShadow = readerShadow;
   }
 
   @Override public void read(ValueHandler handler, Field... fields) throws IOException {
@@ -35,6 +37,7 @@ import java.util.Map;
 
   @Override public <T> T read(Field field) throws IOException {
     final Object value;
+    willResolve(field);
     switch (field.type()) {
       case STRING:
         value = readString(field);
@@ -64,13 +67,26 @@ import java.util.Map;
         value = readCustomType((Field.CustomTypeField) field);
         break;
       case CONDITIONAL:
-        value = readConditional((Field.ConditionalTypeField) field);
+        value = readConditional((Field.ConditionalTypeField) field, operation.variables());
         break;
       default:
         throw new IllegalArgumentException("Unsupported field type");
     }
+    didResolve(field);
     //noinspection unchecked
     return (T) value;
+  }
+
+  private void willResolve(Field field) {
+    if (field.type() != Field.Type.CONDITIONAL) {
+      readerShadow.willResolve(field, operation.variables());
+    }
+  }
+
+  private void didResolve(Field field) {
+    if (field.type() != Field.Type.CONDITIONAL) {
+      readerShadow.didResolve(field, operation.variables());
+    }
   }
 
   @Override public Operation operation() {
@@ -81,8 +97,10 @@ import java.util.Map;
     String value = (String) buffer.get(field.responseName());
     checkValue(value, field.optional());
     if (value == null) {
+      readerShadow.didParseNull();
       return null;
     } else {
+      readerShadow.didParseScalar(value);
       return value;
     }
   }
@@ -91,8 +109,10 @@ import java.util.Map;
     BigDecimal value = (BigDecimal) buffer.get(field.responseName());
     checkValue(value, field.optional());
     if (value == null) {
+      readerShadow.didParseNull();
       return null;
     } else {
+      readerShadow.didParseScalar(value);
       return value.intValue();
     }
   }
@@ -101,8 +121,10 @@ import java.util.Map;
     BigDecimal value = (BigDecimal) buffer.get(field.responseName());
     checkValue(value, field.optional());
     if (value == null) {
+      readerShadow.didParseNull();
       return null;
     } else {
+      readerShadow.didParseScalar(value);
       return value.longValue();
     }
   }
@@ -110,9 +132,12 @@ import java.util.Map;
   Double readDouble(Field field) throws IOException {
     BigDecimal value = (BigDecimal) buffer.get(field.responseName());
     checkValue(value, field.optional());
+    readerShadow.didParseScalar(value);
     if (value == null) {
+      readerShadow.didParseNull();
       return null;
     } else {
+      readerShadow.didParseScalar(value);
       return value.doubleValue();
     }
   }
@@ -121,8 +146,10 @@ import java.util.Map;
     Boolean value = (Boolean) buffer.get(field.responseName());
     checkValue(value, field.optional());
     if (value == null) {
+      readerShadow.didParseNull();
       return null;
     } else {
+      readerShadow.didParseScalar(value);
       return value;
     }
   }
@@ -130,10 +157,15 @@ import java.util.Map;
   @SuppressWarnings("unchecked") <T> T readObject(Field.ObjectField field) throws IOException {
     Map<String, Object> value = (Map<String, Object>) buffer.get(field.responseName());
     checkValue(value, field.optional());
+    readerShadow.willParseObject(value);
     if (value == null) {
+      readerShadow.didParseNull();
       return null;
     } else {
-      return (T) field.objectReader().read(new BufferedResponseReader(value, operation, customTypeAdapters));
+      final T parsedValue = (T) field.objectReader().read(new BufferedResponseReader(value, operation,
+          customTypeAdapters, readerShadow));
+      readerShadow.didParseObject(value);
+      return parsedValue;
     }
   }
 
@@ -141,13 +173,19 @@ import java.util.Map;
     List values = (List) buffer.get(field.responseName());
     checkValue(values, field.optional());
     if (values == null) {
+      readerShadow.didParseNull();
       return null;
     } else {
       List<T> result = new ArrayList<>();
-      for (Object value : values) {
+      for (int i = 0; i < values.size(); i++) {
+        readerShadow.willParseElement(i);
+        Object value = values.get(i);
         T item = (T) field.listReader().read(new BufferedListItemReader(value, customTypeAdapters));
+        readerShadow.didParseScalar(value);
+        readerShadow.didParseElement(i);
         result.add(item);
       }
+      readerShadow.didParseList(values);
       return result;
     }
   }
@@ -159,11 +197,18 @@ import java.util.Map;
       return null;
     } else {
       List<T> result = new ArrayList<>();
-      for (Object value : values) {
-        T item = (T) field.objectReader().read(new BufferedResponseReader((Map<String, Object>) value, operation,
-            customTypeAdapters));
+      for (int i = 0; i < values.size(); i++) {
+        readerShadow.willParseElement(i);
+        Object value = values.get(i);
+        final Map<String, Object> objectMap = (Map<String, Object>) value;
+        readerShadow.willParseObject(objectMap);
+        T item = (T) field.objectReader().read(new BufferedResponseReader(objectMap, operation,
+            customTypeAdapters, readerShadow));
+        readerShadow.didParseObject(objectMap);
+        readerShadow.didParseElement(i);
         result.add(item);
       }
+      readerShadow.didParseList(values);
       return result;
     }
   }
@@ -176,19 +221,27 @@ import java.util.Map;
     } else {
       CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(field.scalarType());
       if (typeAdapter == null) {
+        readerShadow.didParseScalar(value);
         return (T) value;
       } else {
+        readerShadow.didParseScalar(value);
         return typeAdapter.decode(value.toString());
       }
     }
   }
 
-  @SuppressWarnings("unchecked") private <T> T readConditional(Field.ConditionalTypeField field) throws IOException {
+  @SuppressWarnings("unchecked") private <T> T readConditional(Field.ConditionalTypeField field,
+      Operation.Variables variables) throws
+      IOException {
+    readerShadow.willResolve(field, variables);
     String value = (String) buffer.get(field.responseName());
     checkValue(value, field.optional());
     if (value == null) {
+      readerShadow.didParseNull();
       return null;
     } else {
+      readerShadow.didParseScalar(value);
+      readerShadow.didResolve(field, variables);
       return (T) field.conditionalTypeReader().read(value, this);
     }
   }
@@ -209,6 +262,7 @@ import java.util.Map;
     }
 
     @Override public String readString() throws IOException {
+
       return (String) value;
     }
 

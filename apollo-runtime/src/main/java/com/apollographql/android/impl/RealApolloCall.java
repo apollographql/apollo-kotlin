@@ -7,6 +7,7 @@ import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ScalarType;
 import com.apollographql.android.cache.http.HttpCache;
+import com.apollographql.android.cache.Cache;
 import com.apollographql.android.impl.util.HttpException;
 import com.squareup.moshi.Moshi;
 
@@ -29,10 +30,11 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
   private CacheControl cacheControl = CacheControl.DEFAULT;
 
   RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache, Moshi moshi,
-      ResponseFieldMapper responseFieldMapper, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+      ResponseFieldMapper responseFieldMapper, Map<ScalarType, CustomTypeAdapter> customTypeAdapters, Cache cache) {
     super(operation, serverUrl, httpCallFactory, moshi);
     this.httpCache = httpCache;
-    this.responseBodyConverter = new ResponseBodyConverter(operation, responseFieldMapper, customTypeAdapters);
+    this.responseBodyConverter = new ResponseBodyConverter(operation, responseFieldMapper, customTypeAdapters,
+        cache);
   }
 
   private RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,

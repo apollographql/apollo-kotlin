@@ -498,7 +498,7 @@ final class BufferedSourceJsonReader extends JsonReader {
       }
     }
 
-    // We've read a complete number. Decide if it's a PEEKED_LONG or a PEEKED_NUMBER.
+    // We've get a complete number. Decide if it's a PEEKED_LONG or a PEEKED_NUMBER.
     if (last == NUMBER_CHAR_DIGIT && fitsInLong && (value != Long.MIN_VALUE || negative)) {
       peekedLong = negative ? value : -value;
       buffer.skip(i);
@@ -709,7 +709,7 @@ final class BufferedSourceJsonReader extends JsonReader {
 
   /**
    * Returns the string up to but not including {@code quote}, unescaping any character escape
-   * sequences encountered along the way. The opening quote should have already been read. This
+   * sequences encountered along the way. The opening quote should have already been get. This
    * consumes the closing quote, but does not include it in the returned string.
    *
    * @throws IOException if any unicode escape sequences are malformed.
@@ -991,7 +991,7 @@ final class BufferedSourceJsonReader extends JsonReader {
 
   /**
    * Unescapes the character identified by the character or characters that immediately follow a
-   * backslash. The backslash '\' should have already been read. This supports both unicode escapes
+   * backslash. The backslash '\' should have already been get. This supports both unicode escapes
    * "u000A" and two-character escapes "\n".
    *
    * @throws IOException if any unicode escape sequences are malformed.
