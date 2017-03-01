@@ -8,6 +8,10 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.internal.Util;
 import okhttp3.internal.http.HttpDate;
+import okio.BufferedSink;
+import okio.BufferedSource;
+import okio.Okio;
+import okio.Sink;
 
 final class Utils {
 
@@ -19,7 +23,8 @@ final class Utils {
 
   static boolean isCacheEnable(Request request) {
     HttpCache.CacheControl cacheControl = cacheControl(request);
-    return cacheControl == HttpCache.CacheControl.DEFAULT || cacheControl == HttpCache.CacheControl.NETWORK_BEFORE_STALE;
+    return cacheControl == HttpCache.CacheControl.DEFAULT
+        || cacheControl == HttpCache.CacheControl.NETWORK_BEFORE_STALE;
   }
 
   static HttpCache.CacheControl cacheControl(Request request) {
@@ -59,6 +64,17 @@ final class Utils {
         .sentRequestAtMillis(-1L)
         .receivedResponseAtMillis(System.currentTimeMillis())
         .build();
+  }
+
+  static void copyResponseBody(Response response, Sink sink) throws IOException {
+    final int bufferSize = 8 * 1024;
+    BufferedSource responseBodySource = response.body().source();
+    BufferedSink cacheResponseBody = Okio.buffer(sink);
+    while (responseBodySource.read(cacheResponseBody.buffer(), bufferSize) > 0) {
+      cacheResponseBody.emit();
+    }
+    Util.closeQuietly(responseBodySource);
+    cacheResponseBody.close();
   }
 
   private Utils() {

@@ -6,10 +6,6 @@ import javax.annotation.Nonnull;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
-import okhttp3.internal.Util;
-import okio.BufferedSink;
-import okio.BufferedSource;
-import okio.Okio;
 
 public final class HttpCache {
   public static final String CACHE_KEY_HEADER = "APOLLO-CACHE-KEY";
@@ -96,15 +92,7 @@ public final class HttpCache {
       cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey);
       if (cacheRecordEditor != null) {
         new ResponseHeaderRecord(response).writeTo(cacheRecordEditor);
-
-        final int bufferSize = 8 * 1024;
-        BufferedSource responseBodySource = response.body().source();
-        BufferedSink cacheResponseBody = Okio.buffer(cacheRecordEditor.bodySink());
-        while (responseBodySource.read(cacheResponseBody.buffer(), bufferSize) > 0) {
-          cacheResponseBody.emit();
-        }
-        Util.closeQuietly(responseBodySource);
-        cacheResponseBody.close();
+        Utils.copyResponseBody(response, cacheRecordEditor.bodySink());
         cacheRecordEditor.commit();
       }
     } catch (Exception ignore) {
