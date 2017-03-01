@@ -5,9 +5,9 @@ import com.google.common.io.Files;
 
 import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Response;
-import com.apollographql.android.cache.DiskLruCacheStore;
-import com.apollographql.android.cache.HttpCache;
-import com.apollographql.android.cache.TimeoutEvictionStrategy;
+import com.apollographql.android.cache.http.DiskLruCacheStore;
+import com.apollographql.android.cache.http.HttpCache;
+import com.apollographql.android.cache.http.TimeoutEvictionStrategy;
 import com.apollographql.android.impl.type.CustomType;
 import com.apollographql.android.impl.util.HttpException;
 

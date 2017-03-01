@@ -1,4 +1,4 @@
-package com.apollographql.android.cache;
+package com.apollographql.android.cache.http;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;

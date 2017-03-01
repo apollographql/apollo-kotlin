@@ -1,8 +1,8 @@
 package com.apollographql.android.impl;
 
-import com.apollographql.android.cache.ResponseCacheRecord;
-import com.apollographql.android.cache.ResponseCacheRecordEditor;
-import com.apollographql.android.cache.ResponseCacheStore;
+import com.apollographql.android.cache.http.ResponseCacheRecord;
+import com.apollographql.android.cache.http.ResponseCacheRecordEditor;
+import com.apollographql.android.cache.http.ResponseCacheStore;
 
 import java.io.IOException;
 
