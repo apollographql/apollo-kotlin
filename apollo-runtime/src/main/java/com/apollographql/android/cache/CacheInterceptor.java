@@ -1,16 +1,20 @@
 package com.apollographql.android.cache;
 
 import java.io.IOException;
-import java.util.Date;
 
 import okhttp3.Interceptor;
-import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.internal.Util;
-import okhttp3.internal.http.HttpDate;
 
 import static com.apollographql.android.cache.HttpCache.CacheControl;
+import static com.apollographql.android.cache.Utils.cacheControl;
+import static com.apollographql.android.cache.Utils.isCacheEnable;
+import static com.apollographql.android.cache.Utils.isPrefetchResponse;
+import static com.apollographql.android.cache.Utils.shouldSkipCache;
+import static com.apollographql.android.cache.Utils.shouldSkipNetwork;
+import static com.apollographql.android.cache.Utils.strip;
+import static com.apollographql.android.cache.Utils.unsatisfiableCacheRequest;
+import static com.apollographql.android.cache.Utils.withServedDateHeader;
 
 final class CacheInterceptor implements Interceptor {
   private final HttpCache cache;
@@ -56,19 +60,6 @@ final class CacheInterceptor implements Interceptor {
         isPrefetchResponse(request));
   }
 
-  private boolean shouldSkipCache(Request request) {
-    HttpCache.CacheControl cacheControl = cacheControl(request);
-    String cacheKey = request.header(HttpCache.CACHE_KEY_HEADER);
-    return cacheControl == null
-        || cacheControl == CacheControl.NETWORK_ONLY
-        || cacheKey == null;
-  }
-
-  private boolean shouldSkipNetwork(Request request) {
-    CacheControl cacheControl = cacheControl(request);
-    return cacheControl == CacheControl.CACHE_ONLY;
-  }
-
   private Response cacheOnlyResponse(Request request) throws IOException {
     String cacheKey = request.header(HttpCache.CACHE_KEY_HEADER);
     Response cacheResponse = cache.read(cacheKey);
@@ -77,24 +68,7 @@ final class CacheInterceptor implements Interceptor {
           .cacheResponse(strip(cacheResponse))
           .build();
     }
-    return new Response.Builder()
-        .request(request)
-        .protocol(Protocol.HTTP_1_1)
-        .code(504)
-        .message("Unsatisfiable Request (cache-only)")
-        .body(Util.EMPTY_RESPONSE)
-        .sentRequestAtMillis(-1L)
-        .receivedResponseAtMillis(System.currentTimeMillis())
-        .build();
-  }
-
-  private boolean isCacheEnable(Request request) {
-    CacheControl cacheControl = cacheControl(request);
-    return cacheControl == CacheControl.DEFAULT || cacheControl == CacheControl.NETWORK_BEFORE_STALE;
-  }
-
-  private CacheControl cacheControl(Request request) {
-    return CacheControl.valueOfHttpHeader(request.header(HttpCache.CACHE_CONTROL_HEADER));
+    return unsatisfiableCacheRequest(request);
   }
 
   private Response resolveResponse(Response networkResponse, Response cacheResponse, String cacheKey,
@@ -124,12 +98,6 @@ final class CacheInterceptor implements Interceptor {
         .build();
   }
 
-  private Response withServedDateHeader(Response response) throws IOException {
-    return response.newBuilder()
-        .addHeader(HttpCache.CACHE_SERVED_DATE_HEADER, HttpDate.format(new Date()))
-        .build();
-  }
-
   private Response prefetch(Response networkResponse, String cacheKey) throws IOException {
     cache.write(networkResponse, cacheKey);
     Response cacheResponse = cache.read(cacheKey);
@@ -140,15 +108,5 @@ final class CacheInterceptor implements Interceptor {
         .newBuilder()
         .networkResponse(strip(networkResponse))
         .build();
-  }
-
-  private static boolean isPrefetchResponse(Request request) {
-    return Boolean.TRUE.toString().equals(request.header(HttpCache.CACHE_PREFETCH_HEADER));
-  }
-
-  private static Response strip(Response response) {
-    return response != null && response.body() != null
-        ? response.newBuilder().body(null).networkResponse(null).cacheResponse(null).build()
-        : response;
   }
 }
