@@ -6,7 +6,7 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ScalarType;
-import com.apollographql.android.cache.HttpCache;
+import com.apollographql.android.cache.http.HttpCache;
 import com.apollographql.android.impl.util.HttpException;
 import com.squareup.moshi.Moshi;
 
@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 
-import static com.apollographql.android.cache.HttpCache.CacheControl;
+import static com.apollographql.android.cache.http.HttpCache.CacheControl;
 
 final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall implements ApolloCall<T> {
   volatile Call httpCall;

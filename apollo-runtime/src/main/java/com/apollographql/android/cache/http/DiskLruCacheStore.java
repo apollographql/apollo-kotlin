@@ -1,4 +1,4 @@
-package com.apollographql.android.cache;
+package com.apollographql.android.cache.http;
 
 import java.io.File;
 import java.io.IOException;

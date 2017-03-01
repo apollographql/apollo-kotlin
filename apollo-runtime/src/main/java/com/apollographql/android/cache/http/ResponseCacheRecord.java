@@ -1,4 +1,4 @@
-package com.apollographql.android.cache;
+package com.apollographql.android.cache.http;
 
 import javax.annotation.Nonnull;
 

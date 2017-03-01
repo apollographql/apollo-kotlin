@@ -1,7 +1,7 @@
 package com.apollographql.android.impl;
 
 import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.cache.HttpCache;
+import com.apollographql.android.cache.http.HttpCache;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
