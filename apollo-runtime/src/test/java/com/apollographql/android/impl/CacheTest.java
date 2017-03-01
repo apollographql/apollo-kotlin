@@ -35,6 +35,7 @@ import okhttp3.mockwebserver.MockWebServer;
 import okio.Buffer;
 
 import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.Assert.fail;
 
 public class CacheTest {
   private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
@@ -100,7 +101,7 @@ public class CacheTest {
     try {
       Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).network().execute();
       assertThat(body.isSuccessful()).isTrue();
-      Assert.fail("expected IOException");
+      fail("expected IOException");
     } catch (IOException expected) {
     }
 
@@ -180,7 +181,7 @@ public class CacheTest {
       Assert.fail("expected to fail with HttpException");
     } catch (HttpException expected) {
     } catch (Exception e) {
-      Assert.fail("expected to fail with HttpException");
+      fail("expected to fail with HttpException");
     }
   }
 
@@ -304,10 +305,54 @@ public class CacheTest {
     faultyCacheStore.failStrategy(FaultyCacheStore.FailStrategy.FAIL_BODY_READ);
     try {
       apolloClient.newCall(new AllPlanets()).execute();
-      Assert.fail("expected exception");
+      fail("expected exception");
     } catch (Exception expected) {
     }
     assertThat(server.getRequestCount()).isEqualTo(2);
+  }
+
+  @Test public void prefetchDefault() throws IOException {
+    enqueueResponse("src/test/graphql/allPlanetsResponse.json");
+    apolloClient.prefetch(new AllPlanets()).execute();
+    checkCachedResponse("src/test/graphql/allPlanetsResponse.json");
+
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new AllPlanets()).cache().execute().isSuccessful()).isTrue();
+  }
+
+  @Test public void prefetchNoCacheStore() throws IOException {
+     ApolloClient apolloClient = ApolloClient.builder()
+        .serverUrl(server.url("/"))
+        .okHttpClient(okHttpClient)
+        .build();
+
+    enqueueResponse("src/test/graphql/allPlanetsResponse.json");
+    apolloClient.prefetch(new AllPlanets()).execute();
+    enqueueResponse("src/test/graphql/allPlanetsResponse.json");
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+  }
+
+  @Test public void prefetchFileSystemWriteFailure() throws IOException {
+    FaultyCacheStore faultyCacheStore = new FaultyCacheStore(FileSystem.SYSTEM);
+    cacheStore.delegate = faultyCacheStore;
+
+    enqueueResponse("src/test/graphql/allPlanetsResponse.json");
+    faultyCacheStore.failStrategy(FaultyCacheStore.FailStrategy.FAIL_HEADER_WRITE);
+    try {
+      apolloClient.prefetch(new AllPlanets()).execute();
+      fail("exception expected");
+    } catch (Exception expected) {
+    }
+    checkNoCachedResponse();
+
+    enqueueResponse("src/test/graphql/allPlanetsResponse.json");
+    faultyCacheStore.failStrategy(FaultyCacheStore.FailStrategy.FAIL_BODY_WRITE);
+    try {
+      apolloClient.prefetch(new AllPlanets()).execute();
+      fail("exception expected");
+    } catch (Exception expected) {
+    }
+    checkNoCachedResponse();
   }
 
   private void enqueueResponse(String fileName) throws IOException {
@@ -315,7 +360,7 @@ public class CacheTest {
   }
 
   private void checkCachedResponse(String fileName) throws IOException {
-    String cacheKey = RealApolloCall.cacheKey(lastHttRequest.body());
+    String cacheKey = BaseApolloCall.cacheKey(lastHttRequest.body());
     okhttp3.Response response = apolloClient.cachedHttpResponse(cacheKey);
     assertThat(response).isNotNull();
     assertThat(response.body().source().readUtf8()).isEqualTo(Files.toString(new File(fileName), Charsets.UTF_8));
