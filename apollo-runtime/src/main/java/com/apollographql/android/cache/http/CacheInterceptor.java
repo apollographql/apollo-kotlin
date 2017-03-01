@@ -25,23 +25,23 @@ final class CacheInterceptor implements Interceptor {
 
   @Override public Response intercept(Chain chain) throws IOException {
     Request request = chain.request();
-    if (shouldSkipCache(request)) {
+    if (Utils.shouldSkipCache(request)) {
       return chain.proceed(request);
     }
 
-    if (shouldSkipNetwork(request)) {
+    if (Utils.shouldSkipNetwork(request)) {
       return cacheOnlyResponse(request);
     }
 
-    if (!isCacheEnable(request)) {
+    if (!Utils.isCacheEnable(request)) {
       return chain.proceed(request);
     }
 
     String cacheKey = request.header(HttpCache.CACHE_KEY_HEADER);
     Response cacheResponse = cache.read(cacheKey, shouldExpireAfterRead(request));
     if (cacheResponse == null) {
-      Response networkResponse = withServedDateHeader(chain.proceed(request));
-      if (isPrefetchResponse(request)) {
+      Response networkResponse = Utils.withServedDateHeader(chain.proceed(request));
+      if (Utils.isPrefetchResponse(request)) {
         return prefetch(networkResponse, cacheKey);
       } else {
         return cache.cacheProxy(networkResponse, cacheKey);
@@ -50,14 +50,14 @@ final class CacheInterceptor implements Interceptor {
 
     if (!cache.isStale(cacheResponse)) {
       return cacheResponse.newBuilder()
-          .cacheResponse(strip(cacheResponse))
+          .cacheResponse(Utils.strip(cacheResponse))
           .request(request)
           .build();
     }
 
-    Response networkResponse = withServedDateHeader(chain.proceed(request));
-    return resolveResponse(networkResponse, cacheResponse, cacheKey, cacheControl(request),
-        isPrefetchResponse(request));
+    Response networkResponse = Utils.withServedDateHeader(chain.proceed(request));
+    return resolveResponse(networkResponse, cacheResponse, cacheKey, Utils.cacheControl(request),
+        Utils.isPrefetchResponse(request));
   }
 
   private Response cacheOnlyResponse(Request request) throws IOException {
@@ -65,10 +65,10 @@ final class CacheInterceptor implements Interceptor {
     Response cacheResponse = cache.read(cacheKey, shouldExpireAfterRead(request));
     if (cacheResponse != null && !cache.isStale(cacheResponse)) {
       return cacheResponse.newBuilder()
-          .cacheResponse(strip(cacheResponse))
+          .cacheResponse(Utils.strip(cacheResponse))
           .build();
     }
-    return unsatisfiableCacheRequest(request);
+    return Utils.unsatisfiableCacheRequest(request);
   }
 
   private Response resolveResponse(Response networkResponse, Response cacheResponse, String cacheKey,
@@ -80,21 +80,21 @@ final class CacheInterceptor implements Interceptor {
       } else {
         return cache.cacheProxy(networkResponse, cacheKey)
             .newBuilder()
-            .cacheResponse(strip(cacheResponse))
+            .cacheResponse(Utils.strip(cacheResponse))
             .build();
       }
     }
 
     if (cacheControl == HttpCache.CacheControl.NETWORK_BEFORE_STALE) {
       return cacheResponse.newBuilder()
-          .cacheResponse(strip(cacheResponse))
-          .networkResponse(strip(networkResponse))
+          .cacheResponse(Utils.strip(cacheResponse))
+          .networkResponse(Utils.strip(networkResponse))
           .build();
     }
 
     cacheResponse.close();
     return networkResponse.newBuilder()
-        .cacheResponse(strip(cacheResponse))
+        .cacheResponse(Utils.strip(cacheResponse))
         .build();
   }
 
@@ -106,7 +106,7 @@ final class CacheInterceptor implements Interceptor {
     }
     return cacheResponse
         .newBuilder()
-        .networkResponse(strip(networkResponse))
+        .networkResponse(Utils.strip(networkResponse))
         .build();
   }
 }
