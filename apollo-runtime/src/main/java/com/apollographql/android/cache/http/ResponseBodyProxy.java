@@ -52,15 +52,19 @@ final class ResponseBodyProxy extends ResponseBody {
 
   private static class ProxySource implements Source {
     final ResponseCacheRecordEditor cacheRecordEditor;
+    final ResponseBodyCacheSink responseBodyCacheSink;
     final Source responseBodySource;
-    final BufferedSink cacheResponseBodySink;
     boolean closed;
-    boolean cacheFail;
 
     ProxySource(ResponseCacheRecordEditor cacheRecordEditor, Source responseBodySource) {
       this.cacheRecordEditor = cacheRecordEditor;
       this.responseBodySource = responseBodySource;
-      cacheResponseBodySink = Okio.buffer(cacheRecordEditor.bodySink());
+      responseBodyCacheSink = new ResponseBodyCacheSink(Okio.buffer(cacheRecordEditor.bodySink())) {
+        @Override void onException(Exception e) {
+          //TODO log me
+          abortCacheQuietly();
+        }
+      };
     }
 
     @Override public long read(Buffer sink, long byteCount) throws IOException {
@@ -85,17 +89,7 @@ final class ResponseBodyProxy extends ResponseBody {
         return -1;
       }
 
-      try {
-        if (!cacheFail) {
-          sink.copyTo(cacheResponseBodySink.buffer(), sink.size() - bytesRead, bytesRead);
-          cacheResponseBodySink.emitCompleteSegments();
-        }
-      } catch (Exception e) {
-        //TODO log me
-        cacheFail = true;
-        abortCacheQuietly();
-      }
-
+      responseBodyCacheSink.copyFrom(sink, sink.size() - bytesRead, bytesRead);
       return bytesRead;
     }
 
@@ -104,9 +98,7 @@ final class ResponseBodyProxy extends ResponseBody {
     }
 
     @Override public void close() throws IOException {
-      if (closed) {
-        return;
-      }
+      if (closed) return;
       closed = true;
 
       if (discard(this, HttpCodec.DISCARD_STREAM_TIMEOUT_MILLIS, MILLISECONDS)) {
@@ -120,17 +112,17 @@ final class ResponseBodyProxy extends ResponseBody {
 
     private void commitCache() {
       try {
-        cacheResponseBodySink.close();
+        responseBodyCacheSink.close();
         cacheRecordEditor.commit();
       } catch (Exception e) {
         //TODO log me
-        closeQuietly(cacheResponseBodySink);
+        closeQuietly(responseBodyCacheSink);
         abortCacheQuietly();
       }
     }
 
     private void abortCacheQuietly() {
-      closeQuietly(cacheResponseBodySink);
+      closeQuietly(responseBodyCacheSink);
       try {
         cacheRecordEditor.abort();
       } catch (Exception ignore) {
