@@ -7,12 +7,9 @@ import javax.annotation.Nonnull;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import okhttp3.internal.Util;
-import okio.Buffer;
 import okio.BufferedSink;
 import okio.BufferedSource;
 import okio.Okio;
-import okio.Sink;
-import okio.Timeout;
 
 public final class HttpCache {
   public static final String CACHE_KEY_HEADER = "APOLLO-CACHE-KEY";

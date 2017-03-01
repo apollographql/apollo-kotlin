@@ -5,13 +5,13 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface ApolloPrefetchCall {
+public interface ApolloPrefetch {
 
   void execute() throws IOException;
 
-  @Nonnull ApolloPrefetchCall enqueue(@Nullable Callback callback);
+  @Nonnull ApolloPrefetch enqueue(@Nullable Callback callback);
 
-  ApolloPrefetchCall clone();
+  ApolloPrefetch clone();
 
   void cancel();
 
@@ -20,5 +20,4 @@ public interface ApolloPrefetchCall {
 
     void onFailure(@Nonnull Exception e);
   }
-
 }

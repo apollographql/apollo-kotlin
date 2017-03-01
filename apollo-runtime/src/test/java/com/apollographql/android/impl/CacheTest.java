@@ -313,7 +313,7 @@ public class CacheTest {
 
   @Test public void prefetchDefault() throws IOException {
     enqueueResponse("src/test/graphql/allPlanetsResponse.json");
-    apolloClient.newPrefetchCall(new AllPlanets()).execute();
+    apolloClient.prefetch(new AllPlanets()).execute();
     checkCachedResponse("src/test/graphql/allPlanetsResponse.json");
 
     assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
@@ -327,7 +327,7 @@ public class CacheTest {
         .build();
 
     enqueueResponse("src/test/graphql/allPlanetsResponse.json");
-    apolloClient.newPrefetchCall(new AllPlanets()).execute();
+    apolloClient.prefetch(new AllPlanets()).execute();
     enqueueResponse("src/test/graphql/allPlanetsResponse.json");
     assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
   }
@@ -339,7 +339,7 @@ public class CacheTest {
     enqueueResponse("src/test/graphql/allPlanetsResponse.json");
     faultyCacheStore.failStrategy(FaultyCacheStore.FailStrategy.FAIL_HEADER_WRITE);
     try {
-      apolloClient.newPrefetchCall(new AllPlanets()).execute();
+      apolloClient.prefetch(new AllPlanets()).execute();
       fail("exception expected");
     } catch (Exception expected) {
     }
@@ -348,7 +348,7 @@ public class CacheTest {
     enqueueResponse("src/test/graphql/allPlanetsResponse.json");
     faultyCacheStore.failStrategy(FaultyCacheStore.FailStrategy.FAIL_BODY_WRITE);
     try {
-      apolloClient.newPrefetchCall(new AllPlanets()).execute();
+      apolloClient.prefetch(new AllPlanets()).execute();
       fail("exception expected");
     } catch (Exception expected) {
     }

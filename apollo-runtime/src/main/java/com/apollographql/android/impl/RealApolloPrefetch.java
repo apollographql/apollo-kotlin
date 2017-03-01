@@ -1,6 +1,6 @@
 package com.apollographql.android.impl;
 
-import com.apollographql.android.ApolloPrefetchCall;
+import com.apollographql.android.ApolloPrefetch;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.cache.HttpCache;
 import com.squareup.moshi.Moshi;
@@ -13,11 +13,11 @@ import javax.annotation.Nullable;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 
-final class RealApolloPrefetchCall extends BaseApolloCall implements ApolloPrefetchCall {
+final class RealApolloPrefetch extends BaseApolloCall implements ApolloPrefetch {
   volatile Call httpCall;
   private boolean executed;
 
-  RealApolloPrefetchCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, Moshi moshi) {
+  RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, Moshi moshi) {
     super(operation, serverUrl, httpCallFactory, moshi);
   }
 
@@ -27,10 +27,10 @@ final class RealApolloPrefetchCall extends BaseApolloCall implements ApolloPrefe
       executed = true;
     }
     httpCall = prepareHttpCall(HttpCache.CacheControl.DEFAULT, true);
-    httpCall.execute().code();
+    httpCall.execute();
   }
 
-  @Nonnull @Override public ApolloPrefetchCall enqueue(@Nullable final Callback callback) {
+  @Nonnull @Override public ApolloPrefetch enqueue(@Nullable final Callback callback) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
@@ -62,8 +62,8 @@ final class RealApolloPrefetchCall extends BaseApolloCall implements ApolloPrefe
     return this;
   }
 
-  @Override public ApolloPrefetchCall clone() {
-    return new RealApolloPrefetchCall(operation, serverUrl, httpCallFactory, moshi);
+  @Override public ApolloPrefetch clone() {
+    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, moshi);
   }
 
   @Override public void cancel() {

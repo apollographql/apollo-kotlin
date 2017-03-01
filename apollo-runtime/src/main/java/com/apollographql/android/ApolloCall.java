@@ -33,7 +33,7 @@ public interface ApolloCall<T extends Operation.Data> {
   interface Factory {
     <D extends Operation.Data, V extends Operation.Variables> ApolloCall<D> newCall(@Nonnull Operation<D, V> operation);
 
-    <D extends Operation.Data, V extends Operation.Variables> ApolloPrefetchCall newPrefetchCall(
+    <D extends Operation.Data, V extends Operation.Variables> ApolloPrefetch prefetch(
         @Nonnull Operation<D, V> operation);
   }
 }

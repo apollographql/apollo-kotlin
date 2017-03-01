@@ -1,7 +1,7 @@
 package com.apollographql.android.impl;
 
 import com.apollographql.android.ApolloCall;
-import com.apollographql.android.ApolloPrefetchCall;
+import com.apollographql.android.ApolloPrefetch;
 import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.ScalarType;
@@ -52,9 +52,9 @@ public final class ApolloClient implements ApolloCall.Factory {
   }
 
   @Override
-  public <D extends Operation.Data, V extends Operation.Variables> ApolloPrefetchCall newPrefetchCall(
+  public <D extends Operation.Data, V extends Operation.Variables> ApolloPrefetch prefetch(
       @Nonnull Operation<D, V> operation) {
-    return new RealApolloPrefetchCall(operation, serverUrl, httpCallFactory, moshi);
+    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, moshi);
   }
 
   void clearCache() {
