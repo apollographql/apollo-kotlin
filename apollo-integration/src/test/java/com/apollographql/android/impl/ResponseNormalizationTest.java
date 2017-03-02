@@ -310,7 +310,7 @@ public class ResponseNormalizationTest {
   }
 
 
-//
+//  TODO: Add these tests once https://github.com/apollographql/apollo-android/issues/263 is fixed
 //  func testHeroParentTypeDependentFieldDroid() throws {
 //    let query = HeroParentTypeDependentFieldQuery()
 //
