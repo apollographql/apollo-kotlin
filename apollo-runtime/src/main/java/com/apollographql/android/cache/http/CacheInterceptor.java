@@ -6,15 +6,7 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import static com.apollographql.android.cache.http.Utils.cacheControl;
-import static com.apollographql.android.cache.http.Utils.isCacheEnable;
-import static com.apollographql.android.cache.http.Utils.isPrefetchResponse;
 import static com.apollographql.android.cache.http.Utils.shouldExpireAfterRead;
-import static com.apollographql.android.cache.http.Utils.shouldSkipCache;
-import static com.apollographql.android.cache.http.Utils.shouldSkipNetwork;
-import static com.apollographql.android.cache.http.Utils.strip;
-import static com.apollographql.android.cache.http.Utils.unsatisfiableCacheRequest;
-import static com.apollographql.android.cache.http.Utils.withServedDateHeader;
 
 final class CacheInterceptor implements Interceptor {
   private final HttpCache cache;
