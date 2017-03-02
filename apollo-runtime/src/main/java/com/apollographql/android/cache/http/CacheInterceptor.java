@@ -6,6 +6,8 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.apollographql.android.cache.http.Utils.shouldExpireAfterRead;
+
 final class CacheInterceptor implements Interceptor {
   private final HttpCache cache;
 
@@ -28,7 +30,7 @@ final class CacheInterceptor implements Interceptor {
     }
 
     String cacheKey = request.header(HttpCache.CACHE_KEY_HEADER);
-    Response cacheResponse = cache.read(cacheKey);
+    Response cacheResponse = cache.read(cacheKey, shouldExpireAfterRead(request));
     if (cacheResponse == null) {
       Response networkResponse = Utils.withServedDateHeader(chain.proceed(request));
       if (Utils.isPrefetchResponse(request)) {
@@ -52,7 +54,7 @@ final class CacheInterceptor implements Interceptor {
 
   private Response cacheOnlyResponse(Request request) throws IOException {
     String cacheKey = request.header(HttpCache.CACHE_KEY_HEADER);
-    Response cacheResponse = cache.read(cacheKey);
+    Response cacheResponse = cache.read(cacheKey, shouldExpireAfterRead(request));
     if (cacheResponse != null && !cache.isStale(cacheResponse)) {
       return cacheResponse.newBuilder()
           .cacheResponse(Utils.strip(cacheResponse))

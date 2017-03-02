@@ -114,6 +114,14 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     return this;
   }
 
+  @Nonnull @Override public ApolloCall<T> expireAfterRead() {
+    synchronized (this) {
+      if (executed) throw new IllegalStateException("Already Executed");
+    }
+    cacheControl = CacheControl.EXPIRE_AFTER_READ;
+    return this;
+  }
+
   @Override public void cancel() {
     Call call = httpCall;
     if (call != null) {

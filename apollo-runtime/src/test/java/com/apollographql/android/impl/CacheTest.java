@@ -355,6 +355,24 @@ public class CacheTest {
     checkNoCachedResponse();
   }
 
+  @Test public void expireAfterRead() throws IOException {
+    enqueueResponse("src/test/graphql/allPlanetsResponse.json");
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    checkCachedResponse("src/test/graphql/allPlanetsResponse.json");
+
+    assertThat(apolloClient.newCall(new AllPlanets()).expireAfterRead().execute().isSuccessful()).isTrue();
+    checkNoCachedResponse();
+    try {
+      apolloClient.newCall(new AllPlanets()).cache().execute();
+      fail("exception expected");
+    } catch (Exception expected) {
+    }
+
+    enqueueResponse("src/test/graphql/allPlanetsResponse.json");
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    checkCachedResponse("src/test/graphql/allPlanetsResponse.json");
+  }
+
   private void enqueueResponse(String fileName) throws IOException {
     server.enqueue(mockResponse(fileName));
   }

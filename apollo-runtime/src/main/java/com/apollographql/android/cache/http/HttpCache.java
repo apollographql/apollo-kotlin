@@ -6,6 +6,8 @@ import javax.annotation.Nonnull;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
+import okio.ForwardingSource;
+import okio.Source;
 
 public final class HttpCache {
   public static final String CACHE_KEY_HEADER = "APOLLO-CACHE-KEY";
@@ -41,23 +43,40 @@ public final class HttpCache {
     }
   }
 
-  public Response read(@Nonnull String cacheKey) {
-    ResponseCacheRecord cacheRecord = null;
+  public Response read(@Nonnull final String cacheKey) {
+    return read(cacheKey, false);
+  }
+
+  public Response read(@Nonnull final String cacheKey, final boolean expireAfterRead) {
+    ResponseCacheRecord responseCacheRecord = null;
     try {
-      cacheRecord = cacheStore.cacheRecord(cacheKey);
-      if (cacheRecord == null) {
+      responseCacheRecord = cacheStore.cacheRecord(cacheKey);
+      if (responseCacheRecord == null) {
         return null;
       }
 
-      Response response = new ResponseHeaderRecord(cacheRecord.headerSource()).response();
+      final ResponseCacheRecord cacheRecord = responseCacheRecord;
+      Source cacheResponseSource = new ForwardingSource(responseCacheRecord.bodySource()) {
+        @Override public void close() throws IOException {
+          super.close();
+          closeQuietly(cacheRecord);
+          if (expireAfterRead) {
+            removeQuietly(cacheKey);
+          }
+        }
+      };
+
+      Response response = new ResponseHeaderRecord(responseCacheRecord.headerSource()).response();
+      String contentType = response.header("Content-Type");
+      String contentLength = response.header("Content-Length");
       return response.newBuilder()
-          .body(new CacheResponseBody(cacheRecord, response))
+          .body(new CacheResponseBody(cacheResponseSource, contentType, contentLength))
           .build();
     } catch (Exception e) {
       //TODO log
       return null;
     } finally {
-      closeQuietly(cacheRecord);
+      closeQuietly(responseCacheRecord);
     }
   }
 
@@ -125,7 +144,8 @@ public final class HttpCache {
     DEFAULT("default"),
     NETWORK_ONLY("network-only"),
     CACHE_ONLY("cache-only"),
-    NETWORK_BEFORE_STALE("network-before-stale");
+    NETWORK_BEFORE_STALE("network-before-stale"),
+    EXPIRE_AFTER_READ("expire-after-read");
 
     public final String httpHeader;
 

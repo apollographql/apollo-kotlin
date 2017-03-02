@@ -20,6 +20,8 @@ public interface ApolloCall<T extends Operation.Data> {
 
   @Nonnull ApolloCall<T> networkBeforeStale();
 
+  @Nonnull ApolloCall<T> expireAfterRead();
+
   @Nonnull ApolloCall<T> clone();
 
   void cancel();

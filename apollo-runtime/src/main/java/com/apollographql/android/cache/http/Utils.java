@@ -24,7 +24,8 @@ final class Utils {
   static boolean isCacheEnable(Request request) {
     HttpCache.CacheControl cacheControl = cacheControl(request);
     return cacheControl == HttpCache.CacheControl.DEFAULT
-        || cacheControl == HttpCache.CacheControl.NETWORK_BEFORE_STALE;
+        || cacheControl == HttpCache.CacheControl.NETWORK_BEFORE_STALE
+        || cacheControl == HttpCache.CacheControl.EXPIRE_AFTER_READ;
   }
 
   static HttpCache.CacheControl cacheControl(Request request) {
@@ -52,6 +53,11 @@ final class Utils {
   static boolean shouldSkipNetwork(Request request) {
     HttpCache.CacheControl cacheControl = cacheControl(request);
     return cacheControl == HttpCache.CacheControl.CACHE_ONLY;
+  }
+
+  static boolean shouldExpireAfterRead(Request request) {
+    HttpCache.CacheControl cacheControl = cacheControl(request);
+    return cacheControl == HttpCache.CacheControl.EXPIRE_AFTER_READ;
   }
 
   static Response unsatisfiableCacheRequest(Request request) {
