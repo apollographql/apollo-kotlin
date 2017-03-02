@@ -1,6 +1,7 @@
 package com.apollographql.android.cache;
 
-//Todo: provide serializable reference to differentiate between a reference and regular string (Issue #)
+//Todo: provide serializable reference to differentiate between a reference and regular string
+// (Issue: https://github.com/apollographql/apollo-android/issues/265)
 public final class CacheReference {
 
   private final String key;
