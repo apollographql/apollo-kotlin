@@ -1,4 +1,4 @@
-package com.apollographql.android.cache;
+package com.apollographql.android.cache.normalized;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;

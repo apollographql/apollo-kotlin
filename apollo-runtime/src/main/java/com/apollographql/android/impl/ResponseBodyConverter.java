@@ -6,7 +6,7 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ScalarType;
-import com.apollographql.android.cache.Cache;
+import com.apollographql.android.cache.normalized.Cache;
 
 import java.io.IOException;
 import java.util.List;

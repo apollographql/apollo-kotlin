@@ -1,4 +1,4 @@
-package com.apollographql.android.cache;
+package com.apollographql.android.cache.normalized;
 
 //Todo: provide serializable reference to differentiate between a reference and regular string
 // (Issue: https://github.com/apollographql/apollo-android/issues/265)

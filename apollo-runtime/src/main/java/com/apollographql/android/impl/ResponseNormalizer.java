@@ -2,10 +2,10 @@ package com.apollographql.android.impl;
 
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.cache.CacheKeyResolver;
-import com.apollographql.android.cache.CacheReference;
-import com.apollographql.android.cache.Record;
-import com.apollographql.android.cache.RecordSet;
+import com.apollographql.android.cache.normalized.CacheKeyResolver;
+import com.apollographql.android.cache.normalized.CacheReference;
+import com.apollographql.android.cache.normalized.Record;
+import com.apollographql.android.cache.normalized.RecordSet;
 import com.apollographql.android.impl.util.SimpleStack;
 
 import java.util.ArrayList;
