@@ -13,6 +13,7 @@ android {
   buildToolsVersion androidConfig.buildToolsVersion
 
   defaultConfig {
+    applicationId "com.example.apollographql.integration"
     minSdkVersion androidConfig.minSdkVersion
     targetSdkVersion androidConfig.targetSdkVersion
   }
@@ -27,6 +28,7 @@ android {
 dependencies {
   compile project(':apollo-runtime')
   compile dep.appcompat
+
   testCompile dep.junit
   testCompile dep.truth
   testCompile dep.mockWebServer
