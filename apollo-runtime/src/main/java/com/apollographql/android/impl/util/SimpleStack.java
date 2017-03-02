@@ -24,6 +24,9 @@ public class SimpleStack<E> {
   }
 
   public E pop() {
+    if (isEmpty()) {
+      throw new IllegalStateException("Stack is empty.");
+    }
     return backing.remove(backing.size() - 1);
   }
 

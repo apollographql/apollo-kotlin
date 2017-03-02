@@ -6,4 +6,3 @@ query HeroAndFriendsNames($episode: Episode) {
     }
   }
 }
-

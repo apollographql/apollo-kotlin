@@ -43,7 +43,7 @@ public class ResponseNormalizer implements ResponseReaderShadow {
   }
 
   private static String rootKeyForOperation(Operation operation) {
-    //Todo : differentiate queries and mutations ISSUE___
+    //Todo : differentiate queries and mutations https://github.com/apollographql/apollo-android/issues/264
     return "QUERY_ROOT";
   }
 
@@ -74,7 +74,6 @@ public class ResponseNormalizer implements ResponseReaderShadow {
     if (recordStack.isEmpty()) {
       recordSet.merge(currentRecord);
     }
-
   }
 
   @Override public void didParseScalar(@Nullable Object value) {

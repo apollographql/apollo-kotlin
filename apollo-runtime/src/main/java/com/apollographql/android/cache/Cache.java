@@ -48,6 +48,6 @@ public final class Cache {
     }
   });
 
-  //Todo: add interceptor for reading (ISSUE # ____)
+  //Todo: add interceptor for reading (https://github.com/apollographql/apollo-android/issues/266)
 
 }

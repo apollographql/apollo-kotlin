@@ -8,4 +8,3 @@ query HeroAndFriendsNamesWithIDs($episode: Episode) {
     }
   }
 }
-

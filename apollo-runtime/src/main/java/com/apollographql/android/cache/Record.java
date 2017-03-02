@@ -3,7 +3,8 @@ package com.apollographql.android.cache;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-//Todo: Enhance this class to better support generalized serialization ISSUE____
+//Todo: Enhance this class to better support generalized serialization
+// https://github.com/apollographql/apollo-android/issues/265
 public final class Record {
 
   private final String key;
