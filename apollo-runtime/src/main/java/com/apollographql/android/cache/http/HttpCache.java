@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 import okio.ForwardingSource;
 import okio.Source;
 

@@ -367,6 +367,10 @@ public class CacheTest {
       fail("exception expected");
     } catch (Exception expected) {
     }
+
+    enqueueResponse("src/test/graphql/allPlanetsResponse.json");
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    checkCachedResponse("src/test/graphql/allPlanetsResponse.json");
   }
 
   private void enqueueResponse(String fileName) throws IOException {
