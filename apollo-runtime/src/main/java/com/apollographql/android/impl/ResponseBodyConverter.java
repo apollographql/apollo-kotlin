@@ -18,19 +18,16 @@ final class ResponseBodyConverter {
   private final Operation operation;
   private final ResponseFieldMapper responseFieldMapper;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
-  private final Cache cache;
-  private final ResponseNormalizer responseNormalizer;
 
   ResponseBodyConverter(Operation operation, ResponseFieldMapper responseFieldMapper,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, Cache cache) {
+      Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
     this.operation = operation;
     this.responseFieldMapper = responseFieldMapper;
     this.customTypeAdapters = customTypeAdapters;
-    this.cache = cache;
-    this.responseNormalizer = cache.responseNormalizer();
   }
 
-  <T extends Operation.Data> Response<T> convert(ResponseBody responseBody) throws IOException {
+  <T extends Operation.Data> Response<T> convert(ResponseBody responseBody,
+      final ResponseNormalizer responseNormalizer) throws IOException {
     responseNormalizer.willResolveRootQuery(operation);
     BufferedSourceJsonReader jsonReader = null;
     try {
@@ -59,7 +56,6 @@ final class ResponseBodyConverter {
         }
       }
       jsonReader.endObject();
-      this.cache.cacheStore().merge(responseNormalizer.records());
       return new Response<>(operation, data, errors);
     } finally {
       if (jsonReader != null) {

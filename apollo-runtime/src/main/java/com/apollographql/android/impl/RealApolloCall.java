@@ -24,6 +24,7 @@ import static com.apollographql.android.cache.http.HttpCache.CacheControl;
 
 final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall implements ApolloCall<T> {
   volatile Call httpCall;
+  private final Cache cache;
   private final HttpCache httpCache;
   private final ResponseBodyConverter responseBodyConverter;
   private boolean executed;
@@ -32,14 +33,15 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
   RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache, Moshi moshi,
       ResponseFieldMapper responseFieldMapper, Map<ScalarType, CustomTypeAdapter> customTypeAdapters, Cache cache) {
     super(operation, serverUrl, httpCallFactory, moshi);
+    this.cache = cache;
     this.httpCache = httpCache;
-    this.responseBodyConverter = new ResponseBodyConverter(operation, responseFieldMapper, customTypeAdapters,
-        cache);
+    this.responseBodyConverter = new ResponseBodyConverter(operation, responseFieldMapper, customTypeAdapters);
   }
 
   private RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
-      CacheControl cacheControl, Moshi moshi, ResponseBodyConverter responseBodyConverter) {
+      CacheControl cacheControl, Moshi moshi, ResponseBodyConverter responseBodyConverter, Cache cache) {
     super(operation, serverUrl, httpCallFactory, moshi);
+    this.cache = cache;
     this.httpCache = httpCache;
     this.cacheControl = cacheControl;
     this.responseBodyConverter = responseBodyConverter;
@@ -125,7 +127,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
 
   @Override @Nonnull public ApolloCall<T> clone() {
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, cacheControl, moshi,
-        responseBodyConverter);
+        responseBodyConverter, cache);
   }
 
   private <T extends Operation.Data> Response<T> handleResponse(okhttp3.Response response) throws IOException {
@@ -135,7 +137,10 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
       throw new HttpException(response);
     } else {
       try {
-        return responseBodyConverter.convert(response.body());
+        ResponseNormalizer normalizer = cache.responseNormalizer();
+        Response<T> convertedResponse = responseBodyConverter.convert(response.body(), normalizer);
+        cache.cacheStore().merge(normalizer.records());
+        return convertedResponse;
       } catch (Exception rethrown) {
         httpCache.removeQuietly(cacheKey);
         throw rethrown;
