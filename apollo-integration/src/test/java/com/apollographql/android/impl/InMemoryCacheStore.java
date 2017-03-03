@@ -1,4 +1,8 @@
-package com.apollographql.android.cache.normalized;
+package com.apollographql.android.impl;
+
+import com.apollographql.android.cache.normalized.CacheStore;
+import com.apollographql.android.cache.normalized.Record;
+import com.apollographql.android.cache.normalized.RecordSet;
 
 import java.util.Collection;
 
