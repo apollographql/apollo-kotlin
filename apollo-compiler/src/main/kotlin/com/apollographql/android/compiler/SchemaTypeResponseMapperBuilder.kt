@@ -319,7 +319,7 @@ class SchemaTypeResponseMapperBuilder(
           .let { if (it is WildcardTypeName) it.upperBounds.first() else it }
 
   private fun inlineFragmentFieldFactoryCode(fragment: InlineFragment): CodeBlock {
-    val type = fragment.fieldSpec().type.withoutAnnotations()
+    val type = fragment.fieldSpec().type.withoutAnnotations().overrideTypeName(typeOverrideMap)
     fun readCodeBlock(): CodeBlock {
       return CodeBlock.builder()
           .beginControlFlow("if (\$L.equals(\$S))", CONDITIONAL_TYPE_VAR, fragment.typeCondition)
