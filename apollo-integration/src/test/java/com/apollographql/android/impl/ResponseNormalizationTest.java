@@ -9,7 +9,6 @@ import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.cache.normalized.Record;
 import com.apollographql.android.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.cache.normalized.CacheReference;
-import com.apollographql.android.cache.normalized.InMemoryCacheStore;
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNames;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDForParentOnly;
