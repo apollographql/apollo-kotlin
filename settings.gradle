@@ -1,3 +1,4 @@
+include ':apollo-integration'
 rootProject.name = 'apollo-android'
 
 include 'apollo-compiler'

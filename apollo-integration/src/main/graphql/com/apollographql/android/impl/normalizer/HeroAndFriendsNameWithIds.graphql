@@ -1,0 +1,10 @@
+query HeroAndFriendsNamesWithIDs($episode: Episode) {
+  hero(episode: $episode) {
+    id
+    name
+    friends {
+      id
+      name
+    }
+  }
+}

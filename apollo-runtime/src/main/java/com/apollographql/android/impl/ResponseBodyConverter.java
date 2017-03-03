@@ -25,7 +25,9 @@ final class ResponseBodyConverter {
     this.customTypeAdapters = customTypeAdapters;
   }
 
-  <T extends Operation.Data> Response<T> convert(ResponseBody responseBody) throws IOException {
+  <T extends Operation.Data> Response<T> convert(ResponseBody responseBody,
+      final ResponseNormalizer responseNormalizer) throws IOException {
+    responseNormalizer.willResolveRootQuery(operation);
     BufferedSourceJsonReader jsonReader = null;
     try {
       jsonReader = new BufferedSourceJsonReader(responseBody.source());
@@ -42,7 +44,7 @@ final class ResponseBodyConverter {
             @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
               Map<String, Object> buffer = reader.buffer();
               BufferedResponseReader bufferedResponseReader = new BufferedResponseReader(buffer, operation,
-                  customTypeAdapters);
+                  customTypeAdapters, responseNormalizer);
               return responseFieldMapper.map(bufferedResponseReader);
             }
           });

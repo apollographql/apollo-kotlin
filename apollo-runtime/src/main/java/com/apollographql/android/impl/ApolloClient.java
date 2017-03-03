@@ -8,6 +8,9 @@ import com.apollographql.android.api.graphql.ScalarType;
 import com.apollographql.android.cache.http.EvictionStrategy;
 import com.apollographql.android.cache.http.HttpCache;
 import com.apollographql.android.cache.http.ResponseCacheStore;
+import com.apollographql.android.cache.normalized.Cache;
+import com.apollographql.android.cache.normalized.CacheKeyResolver;
+import com.apollographql.android.cache.normalized.CacheStore;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
@@ -33,6 +36,7 @@ public final class ApolloClient implements ApolloCall.Factory {
   private final HttpUrl serverUrl;
   private final Call.Factory httpCallFactory;
   private final HttpCache httpCache;
+  private final Cache cache;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final Moshi moshi;
 
@@ -40,6 +44,7 @@ public final class ApolloClient implements ApolloCall.Factory {
     this.serverUrl = builder.serverUrl;
     this.httpCallFactory = builder.okHttpClient;
     this.httpCache = builder.httpCache;
+    this.cache = builder.cache;
     this.customTypeAdapters = builder.customTypeAdapters;
     this.moshi = builder.moshiBuilder.build();
   }
@@ -48,7 +53,7 @@ public final class ApolloClient implements ApolloCall.Factory {
   public <D extends Operation.Data, V extends Operation.Variables> ApolloCall<D> newCall(
       @Nonnull Operation<D, V> operation) {
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, moshi,
-        operation.responseFieldMapper(), customTypeAdapters);
+        operation.responseFieldMapper(), customTypeAdapters, cache);
   }
 
   @Override
@@ -75,6 +80,7 @@ public final class ApolloClient implements ApolloCall.Factory {
     OkHttpClient okHttpClient;
     HttpUrl serverUrl;
     HttpCache httpCache;
+    Cache cache = Cache.NO_OP_NORMALIZED_CACHE;
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
     Moshi.Builder moshiBuilder = new Moshi.Builder();
 
@@ -89,7 +95,6 @@ public final class ApolloClient implements ApolloCall.Factory {
     public Builder serverUrl(@Nonnull HttpUrl serverUrl) {
       this.serverUrl = checkNotNull(serverUrl, "serverUrl is null");
       return this;
-
     }
 
     public Builder serverUrl(@Nonnull String baseUrl) {
@@ -102,6 +107,14 @@ public final class ApolloClient implements ApolloCall.Factory {
       checkNotNull(cacheStore, "baseUrl == null");
       checkNotNull(evictionStrategy, "baseUrl == null");
       this.httpCache = new HttpCache(cacheStore, evictionStrategy);
+      return this;
+    }
+
+    public Builder normalizedCache(@Nonnull CacheStore cacheStore,
+        @Nonnull CacheKeyResolver cacheKeyResolver) {
+      checkNotNull(cacheStore, "cacheStore == null");
+      checkNotNull(cacheKeyResolver, "cacheKeyResolver == null");
+      this.cache = new Cache(cacheStore, cacheKeyResolver);
       return this;
     }
 

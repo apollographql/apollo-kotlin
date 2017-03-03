@@ -1,0 +1,23 @@
+{
+  "data": {
+    "hero": {
+      "name": "Luke Skywalker",
+      "friends": [
+        {
+          "name": "Han Solo",
+          "height": 5.905512
+        },
+        {
+          "name": "Leia Organa",
+          "height": 4.92126
+        },
+        {
+          "name": "C-3PO"
+        },
+        {
+          "name": "R2-D2"
+        }
+      ]
+    }
+  }
+}

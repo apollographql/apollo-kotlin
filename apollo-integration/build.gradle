@@ -1,0 +1,36 @@
+buildscript {
+  dependencies {
+    classpath dep.androidPlugin
+    classpath dep.apolloPlugin
+  }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'com.apollographql.android'
+
+android {
+  compileSdkVersion androidConfig.compileSdkVersion
+  buildToolsVersion androidConfig.buildToolsVersion
+
+  defaultConfig {
+    applicationId "com.example.apollographql.integration"
+    minSdkVersion androidConfig.minSdkVersion
+    targetSdkVersion androidConfig.targetSdkVersion
+  }
+
+  lintOptions {
+    textReport true
+    textOutput 'stdout'
+    ignore 'InvalidPackage', 'GoogleAppIndexingWarning', 'AllowBackup'
+  }
+}
+
+dependencies {
+  compile project(':apollo-runtime')
+  compile dep.appcompat
+
+  testCompile dep.junit
+  testCompile dep.truth
+  testCompile dep.mockWebServer
+  testCompile dep.okhttpTestSupport
+}
