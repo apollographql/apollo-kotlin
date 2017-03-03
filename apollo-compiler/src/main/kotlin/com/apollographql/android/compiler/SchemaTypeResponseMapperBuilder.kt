@@ -106,6 +106,7 @@ class SchemaTypeResponseMapperBuilder(
             .map { it.fieldSpec() }
             .map { FieldSpec.builder(it.type.overrideTypeName(typeOverrideMap), it.name).build() })
         .let { if (fragmentSpreads.isNotEmpty()) it.plus(FRAGMENTS_FIELD) else it }
+
     return TypeSpec.classBuilder(MAPPER_TYPE_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
         .addSuperinterface(responseFieldMapperType)
