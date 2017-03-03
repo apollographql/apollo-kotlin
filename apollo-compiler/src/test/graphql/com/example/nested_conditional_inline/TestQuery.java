@@ -379,12 +379,12 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Variable
           public static final class Mapper implements ResponseFieldMapper<Friend> {
             final Field[] fields = {
               Field.forString("name", "name", null, false),
-              Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman>() {
+              Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman1>() {
                 @Override
-                public AsHuman read(String conditionalType, ResponseReader reader) throws
+                public AsHuman1 read(String conditionalType, ResponseReader reader) throws
                     IOException {
                   if (conditionalType.equals("Human")) {
-                    return new AsHuman.Mapper().map(reader);
+                    return new AsHuman1.Mapper().map(reader);
                   } else {
                     return null;
                   }
