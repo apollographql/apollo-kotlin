@@ -19,6 +19,7 @@ import javax.annotation.Nullable;
 
 import okhttp3.Call;
 import okhttp3.HttpUrl;
+import okhttp3.internal.Util;
 
 import static com.apollographql.android.cache.http.HttpCache.CacheControl;
 
@@ -139,20 +140,23 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
   }
 
   private <T extends Operation.Data> Response<T> handleResponse(okhttp3.Response response) throws IOException {
-    int code = response.code();
     String cacheKey = response.request().header(HttpCache.CACHE_KEY_HEADER);
-    if (code < 200 || code >= 300) {
-      throw new HttpException(response);
-    } else {
+    if (response.isSuccessful()) {
       try {
         ResponseNormalizer normalizer = cache.responseNormalizer();
         Response<T> convertedResponse = responseBodyConverter.convert(response.body(), normalizer);
         cache.cacheStore().merge(normalizer.records());
         return convertedResponse;
       } catch (Exception rethrown) {
-        httpCache.removeQuietly(cacheKey);
+        Util.closeQuietly(response);
+        if (httpCache != null) {
+          httpCache.removeQuietly(cacheKey);
+        }
         throw rethrown;
       }
+    } else {
+      Util.closeQuietly(response);
+      throw new HttpException(response);
     }
   }
 }

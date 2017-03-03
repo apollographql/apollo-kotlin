@@ -373,6 +373,22 @@ public class CacheTest {
     checkCachedResponse("src/test/graphql/allPlanetsResponse.json");
   }
 
+  @Test public void cacheNetworkError() throws IOException {
+    server.enqueue(new MockResponse().setResponseCode(504).setBody(""));
+    try {
+      apolloClient.newCall(new AllPlanets()).execute();
+      fail("exception expected");
+    } catch (Exception expected) {
+    }
+    checkNoCachedResponse();
+
+    enqueueResponse("src/test/graphql/allPlanetsResponse.json");
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    checkCachedResponse("src/test/graphql/allPlanetsResponse.json");
+
+    assertThat(apolloClient.newCall(new AllPlanets()).cache().execute().isSuccessful()).isTrue();
+  }
+
   private void enqueueResponse(String fileName) throws IOException {
     server.enqueue(mockResponse(fileName));
   }
