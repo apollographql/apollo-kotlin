@@ -36,7 +36,11 @@ final class CacheInterceptor implements Interceptor {
       if (Utils.isPrefetchResponse(request)) {
         return prefetch(networkResponse, cacheKey);
       } else {
-        return cache.cacheProxy(networkResponse, cacheKey);
+        if (networkResponse.isSuccessful()) {
+          return cache.cacheProxy(networkResponse, cacheKey);
+        } else {
+          return networkResponse;
+        }
       }
     }
 
