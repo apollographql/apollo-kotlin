@@ -27,7 +27,7 @@ data class InlineFragment(
           .addModifiers(Modifier.PRIVATE)
           .build()
 
-  private fun interfaceName() = "${INTERFACE_PREFIX}${typeCondition.capitalize()}"
+  private fun interfaceName() = "$INTERFACE_PREFIX${typeCondition.capitalize()}"
 
   private fun typeName() = ClassName.get("", interfaceName()).annotated(Annotations.NULLABLE)
 
