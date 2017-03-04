@@ -1,5 +1,8 @@
 package com.apollographql.android.cache.normalized;
 
+import com.apollographql.android.api.graphql.Mutation;
+import com.apollographql.android.api.graphql.Operation;
+import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.impl.ResponseNormalizer;
 
 import java.util.Collection;
@@ -12,9 +15,21 @@ public final class Cache {
   private final CacheStore cacheStore;
   private final CacheKeyResolver cacheKeyResolver;
 
+  private static final String QUERY_ROOT_KEY = "QUERY_ROOT";
+  private static final String MUTATION_ROOT_KEY = "MUTATION_ROOT";
+
   public Cache(CacheStore cacheStore, CacheKeyResolver cacheKeyResolver) {
     this.cacheStore = cacheStore;
     this.cacheKeyResolver = cacheKeyResolver;
+  }
+
+  public static String rootKeyForOperation(Operation operation) {
+    if (operation instanceof Query) {
+      return QUERY_ROOT_KEY;
+    } else if (operation instanceof Mutation) {
+      return MUTATION_ROOT_KEY;
+    }
+    throw new IllegalArgumentException("Unknown operation type.");
   }
 
   public CacheStore cacheStore() {

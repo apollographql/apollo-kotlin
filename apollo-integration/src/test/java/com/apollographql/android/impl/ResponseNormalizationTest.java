@@ -82,6 +82,11 @@ public class ResponseNormalizationTest {
         .build();
   }
 
+  private static MockResponse mockResponse(String normalizerFileName) throws IOException {
+    return new MockResponse().setChunkedBody(Files.toString(new File(NORMALIZER_TEST_PATH + normalizerFileName),
+        Charsets.UTF_8), 32);
+  }
+
   @Test public void testHeroName() throws IOException {
     MockResponse mockResponse = mockResponse("HeroNameResponse.json");
     server.enqueue(mockResponse);
@@ -116,10 +121,6 @@ public class ResponseNormalizationTest {
     assertThat(heroRecord.field("name")).isEqualTo("R2-D2");
   }
 
-  private static MockResponse mockResponse(String normalizerFileName) throws IOException {
-    return new MockResponse().setChunkedBody(Files.toString(new File(NORMALIZER_TEST_PATH + normalizerFileName),
-        Charsets.UTF_8), 32);
-  }
 
   @Test
   public void testHeroAppearsInQuery() throws IOException {

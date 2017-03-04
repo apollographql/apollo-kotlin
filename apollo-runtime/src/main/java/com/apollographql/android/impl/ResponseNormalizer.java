@@ -4,6 +4,7 @@ import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Mutation;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
+import com.apollographql.android.cache.normalized.Cache;
 import com.apollographql.android.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.cache.normalized.CacheReference;
 import com.apollographql.android.cache.normalized.Record;
@@ -19,6 +20,8 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import static com.apollographql.android.cache.normalized.Cache.rootKeyForOperation;
+
 public class ResponseNormalizer implements ResponseReaderShadow {
 
   private SimpleStack<List<String>> pathStack;
@@ -30,9 +33,6 @@ public class ResponseNormalizer implements ResponseReaderShadow {
   private List<String> path;
   private Record currentRecord;
   private RecordSet recordSet;
-
-  private static final String QUERY_ROOT_KEY = "QUERY_ROOT";
-  private static final String MUTATION_ROOT_KEY = "MUTATION_ROOT";
 
   public Collection<Record> records() {
     return recordSet.allRecords();
@@ -46,15 +46,6 @@ public class ResponseNormalizer implements ResponseReaderShadow {
     this.cacheKeyResolver = cacheKeyResolver;
   }
 
-  private static String rootKeyForOperation(Operation operation) {
-    if (operation instanceof Query) {
-      return QUERY_ROOT_KEY;
-    } else if (operation instanceof Mutation) {
-      return MUTATION_ROOT_KEY;
-    }
-    throw new IllegalArgumentException("Unknown operation type.");
-  }
-
   @Override public void willResolveRootQuery(Operation operation) {
     pathStack = new SimpleStack<>();
     recordStack = new SimpleStack<>();
@@ -62,7 +53,7 @@ public class ResponseNormalizer implements ResponseReaderShadow {
     dependentKeys = new HashSet<>();
 
     path = new ArrayList<>();
-    currentRecord = new Record(rootKeyForOperation(operation));
+    currentRecord = new Record(Cache.rootKeyForOperation(operation));
     recordSet = new RecordSet();
   }
 
