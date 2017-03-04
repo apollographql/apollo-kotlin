@@ -293,10 +293,16 @@ fun TypeSpec.withHashCodeImplementation(): TypeSpec {
       .build()
 }
 
+fun ClassName.mapper(): ClassName = ClassName.get(packageName(), simpleName(), Util.MAPPER_TYPE_NAME)
+
+fun ClassName.mapperFieldName(): String = "${simpleName().decapitalize()}${Util.FIELD_MAPPER_VAR}"
+
 object Util {
   const val CREATOR_TYPE_NAME: String = "Creator"
   const val CREATOR_CREATE_METHOD_NAME: String = "create"
   const val FACTORY_CREATOR_ACCESS_METHOD_NAME: String = "creator"
   const val FACTORY_TYPE_NAME: String = "Factory"
+  const val MAPPER_TYPE_NAME: String = "Mapper"
+  const val FIELD_MAPPER_VAR: String = "FieldMapper"
   val FACTORY_INTERFACE_TYPE: ClassName = ClassName.get("", FACTORY_TYPE_NAME)
 }

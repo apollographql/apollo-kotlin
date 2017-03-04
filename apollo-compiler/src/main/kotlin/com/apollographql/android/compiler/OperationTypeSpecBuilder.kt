@@ -122,8 +122,7 @@ class OperationTypeSpecBuilder(
         .addModifiers(Modifier.PUBLIC)
         .returns(ParameterizedTypeName.get(ClassName.get(ResponseFieldMapper::class.java),
             WildcardTypeName.subtypeOf(com.apollographql.android.api.graphql.Operation.Data::class.java)))
-        .addStatement("return new \$L.\$L()", Operation.DATA_TYPE_NAME,
-            SchemaTypeResponseMapperBuilder.MAPPER_TYPE_NAME)
+        .addStatement("return new \$L.\$L()", Operation.DATA_TYPE_NAME, Util.MAPPER_TYPE_NAME)
         .build())
   }
 

@@ -32,20 +32,20 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
   private CacheControl cacheControl = CacheControl.DEFAULT;
 
   RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache, Moshi moshi,
-      ResponseFieldMapper responseFieldMapper, Map<ScalarType, CustomTypeAdapter> customTypeAdapters, Cache cache) {
+      ResponseBodyConverter responseBodyConverter, Cache cache) {
     super(operation, serverUrl, httpCallFactory, moshi);
     this.cache = cache;
     this.httpCache = httpCache;
-    this.responseBodyConverter = new ResponseBodyConverter(operation, responseFieldMapper, customTypeAdapters);
+    this.responseBodyConverter = responseBodyConverter;
   }
 
   private RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
-      CacheControl cacheControl, Moshi moshi, ResponseBodyConverter responseBodyConverter, Cache cache) {
+      Moshi moshi, ResponseBodyConverter responseBodyConverter, Cache cache, CacheControl cacheControl) {
     super(operation, serverUrl, httpCallFactory, moshi);
-    this.cache = cache;
     this.httpCache = httpCache;
-    this.cacheControl = cacheControl;
     this.responseBodyConverter = responseBodyConverter;
+    this.cache = cache;
+    this.cacheControl = cacheControl;
   }
 
   @Nonnull @Override public Response<T> execute() throws IOException {
@@ -135,8 +135,8 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
   }
 
   @Override @Nonnull public ApolloCall<T> clone() {
-    return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, cacheControl, moshi,
-        responseBodyConverter, cache);
+    return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, moshi, responseBodyConverter, cache,
+        cacheControl);
   }
 
   private <T extends Operation.Data> Response<T> handleResponse(okhttp3.Response response) throws IOException {

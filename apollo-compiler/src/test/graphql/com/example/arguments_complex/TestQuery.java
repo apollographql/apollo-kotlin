@@ -227,6 +227,8 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Variable
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
+      final HeroWithReview.Mapper heroWithReviewFieldMapper = new HeroWithReview.Mapper();
+
       final Field[] fields = {
         Field.forObject("heroWithReview", "heroWithReview", new UnmodifiableMapBuilder<String, Object>(2)
           .put("review", new UnmodifiableMapBuilder<String, Object>(2)
@@ -249,7 +251,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Variable
           .build())
         .build(), true, new Field.ObjectReader<HeroWithReview>() {
           @Override public HeroWithReview read(final ResponseReader reader) throws IOException {
-            return new HeroWithReview.Mapper().map(reader);
+            return heroWithReviewFieldMapper.map(reader);
           }
         })
       };

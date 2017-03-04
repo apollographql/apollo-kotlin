@@ -123,11 +123,13 @@ public class PilotFragment {
   }
 
   public static final class Mapper implements ResponseFieldMapper<PilotFragment> {
+    final Homeworld.Mapper homeworldFieldMapper = new Homeworld.Mapper();
+
     final Field[] fields = {
       Field.forString("name", "name", null, true),
       Field.forObject("homeworld", "homeworld", null, true, new Field.ObjectReader<Homeworld>() {
         @Override public Homeworld read(final ResponseReader reader) throws IOException {
-          return new Homeworld.Mapper().map(reader);
+          return homeworldFieldMapper.map(reader);
         }
       })
     };
