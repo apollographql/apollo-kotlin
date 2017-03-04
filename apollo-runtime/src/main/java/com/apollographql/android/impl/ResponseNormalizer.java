@@ -1,9 +1,7 @@
 package com.apollographql.android.impl;
 
 import com.apollographql.android.api.graphql.Field;
-import com.apollographql.android.api.graphql.Mutation;
 import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.cache.normalized.Cache;
 import com.apollographql.android.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.cache.normalized.CacheReference;
@@ -19,8 +17,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
-
-import static com.apollographql.android.cache.normalized.Cache.rootKeyForOperation;
 
 public class ResponseNormalizer implements ResponseReaderShadow {
 
