@@ -112,8 +112,9 @@ import java.util.Map;
       readerShadow.didParseNull();
       return null;
     } else {
-      readerShadow.didParseScalar(value);
-      return value.intValue();
+      Integer intValue = value.intValue();
+      readerShadow.didParseScalar(value.intValue());
+      return intValue;
     }
   }
 
@@ -124,8 +125,9 @@ import java.util.Map;
       readerShadow.didParseNull();
       return null;
     } else {
-      readerShadow.didParseScalar(value);
-      return value.longValue();
+      Long longValue = value.longValue();
+      readerShadow.didParseScalar(longValue);
+      return longValue;
     }
   }
 
@@ -137,8 +139,9 @@ import java.util.Map;
       readerShadow.didParseNull();
       return null;
     } else {
-      readerShadow.didParseScalar(value);
-      return value.doubleValue();
+      Double doubleValue = value.doubleValue();
+      readerShadow.didParseScalar(doubleValue);
+      return doubleValue;
     }
   }
 

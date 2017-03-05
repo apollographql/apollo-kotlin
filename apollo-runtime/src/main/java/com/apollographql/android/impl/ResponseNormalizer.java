@@ -2,6 +2,7 @@ package com.apollographql.android.impl;
 
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Operation;
+import com.apollographql.android.cache.normalized.Cache;
 import com.apollographql.android.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.cache.normalized.CacheReference;
 import com.apollographql.android.cache.normalized.Record;
@@ -27,7 +28,6 @@ public class ResponseNormalizer implements ResponseReaderShadow {
 
   private List<String> path;
   private Record currentRecord;
-
   private RecordSet recordSet;
 
   public Collection<Record> records() {
@@ -42,11 +42,6 @@ public class ResponseNormalizer implements ResponseReaderShadow {
     this.cacheKeyResolver = cacheKeyResolver;
   }
 
-  private static String rootKeyForOperation(Operation operation) {
-    //Todo : differentiate queries and mutations https://github.com/apollographql/apollo-android/issues/264
-    return "QUERY_ROOT";
-  }
-
   @Override public void willResolveRootQuery(Operation operation) {
     pathStack = new SimpleStack<>();
     recordStack = new SimpleStack<>();
@@ -54,7 +49,7 @@ public class ResponseNormalizer implements ResponseReaderShadow {
     dependentKeys = new HashSet<>();
 
     path = new ArrayList<>();
-    currentRecord = new Record(rootKeyForOperation(operation));
+    currentRecord = new Record(Cache.rootKeyForOperation(operation));
     recordSet = new RecordSet();
   }
 
