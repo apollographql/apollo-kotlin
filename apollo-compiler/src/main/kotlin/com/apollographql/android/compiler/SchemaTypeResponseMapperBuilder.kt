@@ -334,8 +334,7 @@ class SchemaTypeResponseMapperBuilder(
           .map { it.type.withoutAnnotations() }
           .map { it.let { if (it.isList()) it.listParamType() else it } }
           .filter { !it.isScalar() && !it.isCustomScalarType() }
-          .map { it.overrideTypeName(typeOverrideMap) }
-          .map { it as ClassName }
+          .map { it.overrideTypeName(typeOverrideMap) as ClassName }
           .plus(if (fragmentSpreads.isEmpty()) emptyList<ClassName>() else listOf(FRAGMENTS_CLASS))
           .map {
             val mapperClassName = it.mapper()
