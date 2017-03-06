@@ -4,9 +4,8 @@ import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Operation;
 
 import java.util.List;
-import java.util.Map;
 
-interface ResponseReaderShadow {
+public interface ResponseReaderShadow<R> {
 
   void willResolveRootQuery(Operation operation);
 
@@ -16,9 +15,9 @@ interface ResponseReaderShadow {
 
   void didParseScalar(Object value);
 
-  void willParseObject(Map<String, Object> objectMap);
+  void willParseObject(R objectMap);
 
-  void didParseObject(Map<String, Object> objectMap);
+  void didParseObject(R objectMap);
 
   void didParseList(List array);
 

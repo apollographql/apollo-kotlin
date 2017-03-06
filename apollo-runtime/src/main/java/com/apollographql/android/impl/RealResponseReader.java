@@ -12,27 +12,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("WeakerAccess") final class BufferedResponseReader implements ResponseReader {
-  private final Map<String, Object> buffer;
+@SuppressWarnings("WeakerAccess") final class RealResponseReader<R> implements ResponseReader {
   private final Operation operation;
+  private final R recordSet;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
-  private final ResponseReaderShadow readerShadow;
+  private final FieldValueResolver<R> fieldValueResolver;
+  private final ResponseReaderShadow<R> readerShadow;
 
-  BufferedResponseReader(Map<String, Object> buffer, Operation operation,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ResponseReaderShadow readerShadow) {
-    this.buffer = buffer;
+  RealResponseReader(Operation operation, R recordSet, FieldValueResolver<R> fieldValueResolver,
+      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ResponseReaderShadow<R> readerShadow) {
     this.operation = operation;
+    this.recordSet = recordSet;
+    this.fieldValueResolver = fieldValueResolver;
     this.customTypeAdapters = customTypeAdapters;
     this.readerShadow = readerShadow;
-  }
-
-  @Override public void read(ValueHandler handler, Field... fields) throws IOException {
-    int fieldIndex = 0;
-    for (Field field : fields) {
-      Object value = read(field);
-      handler.handle(fieldIndex, value);
-      fieldIndex++;
-    }
   }
 
   @Override public <T> T read(Field field) throws IOException {
@@ -89,12 +82,8 @@ import java.util.Map;
     }
   }
 
-  @Override public Operation operation() {
-    return operation;
-  }
-
   String readString(Field field) throws IOException {
-    String value = (String) buffer.get(field.responseName());
+    String value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
     if (value == null) {
       readerShadow.didParseNull();
@@ -106,7 +95,7 @@ import java.util.Map;
   }
 
   Integer readInt(Field field) throws IOException {
-    BigDecimal value = (BigDecimal) buffer.get(field.responseName());
+    BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
     if (value == null) {
       readerShadow.didParseNull();
@@ -119,7 +108,7 @@ import java.util.Map;
   }
 
   Long readLong(Field field) throws IOException {
-    BigDecimal value = (BigDecimal) buffer.get(field.responseName());
+    BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
     if (value == null) {
       readerShadow.didParseNull();
@@ -132,7 +121,7 @@ import java.util.Map;
   }
 
   Double readDouble(Field field) throws IOException {
-    BigDecimal value = (BigDecimal) buffer.get(field.responseName());
+    BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
     readerShadow.didParseScalar(value);
     if (value == null) {
@@ -146,7 +135,7 @@ import java.util.Map;
   }
 
   Boolean readBoolean(Field field) throws IOException {
-    Boolean value = (Boolean) buffer.get(field.responseName());
+    Boolean value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
     if (value == null) {
       readerShadow.didParseNull();
@@ -158,22 +147,22 @@ import java.util.Map;
   }
 
   @SuppressWarnings("unchecked") <T> T readObject(Field.ObjectField field) throws IOException {
-    Map<String, Object> value = (Map<String, Object>) buffer.get(field.responseName());
+    R value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
     readerShadow.willParseObject(value);
     if (value == null) {
       readerShadow.didParseNull();
       return null;
     } else {
-      final T parsedValue = (T) field.objectReader().read(new BufferedResponseReader(value, operation,
-          customTypeAdapters, readerShadow));
+      final T parsedValue = (T) field.objectReader().read(new RealResponseReader(operation, value,
+          fieldValueResolver, customTypeAdapters, readerShadow));
       readerShadow.didParseObject(value);
       return parsedValue;
     }
   }
 
   @SuppressWarnings("unchecked") <T> List<T> readScalarList(Field.ScalarListField field) throws IOException {
-    List values = (List) buffer.get(field.responseName());
+    List values = fieldValueResolver.valueFor(recordSet, field);
     checkValue(values, field.optional());
     if (values == null) {
       readerShadow.didParseNull();
@@ -183,7 +172,7 @@ import java.util.Map;
       for (int i = 0; i < values.size(); i++) {
         readerShadow.willParseElement(i);
         Object value = values.get(i);
-        T item = (T) field.listReader().read(new BufferedListItemReader(value, customTypeAdapters));
+        T item = (T) field.listReader().read(new ListItemReader(value, customTypeAdapters));
         readerShadow.didParseScalar(value);
         readerShadow.didParseElement(i);
         result.add(item);
@@ -194,7 +183,7 @@ import java.util.Map;
   }
 
   @SuppressWarnings("unchecked") <T> List<T> readObjectList(Field.ObjectListField field) throws IOException {
-    List values = (List) buffer.get(field.responseName());
+    List<R> values = fieldValueResolver.valueFor(recordSet, field);
     checkValue(values, field.optional());
     if (values == null) {
       return null;
@@ -202,12 +191,11 @@ import java.util.Map;
       List<T> result = new ArrayList<>();
       for (int i = 0; i < values.size(); i++) {
         readerShadow.willParseElement(i);
-        Object value = values.get(i);
-        final Map<String, Object> objectMap = (Map<String, Object>) value;
-        readerShadow.willParseObject(objectMap);
-        T item = (T) field.objectReader().read(new BufferedResponseReader(objectMap, operation,
+        R value = values.get(i);
+        readerShadow.willParseObject(value);
+        T item = (T) field.objectReader().read(new RealResponseReader(operation, value, fieldValueResolver,
             customTypeAdapters, readerShadow));
-        readerShadow.didParseObject(objectMap);
+        readerShadow.didParseObject(value);
         readerShadow.didParseElement(i);
         result.add(item);
       }
@@ -217,7 +205,7 @@ import java.util.Map;
   }
 
   @SuppressWarnings("unchecked") private <T> T readCustomType(Field.CustomTypeField field) {
-    Object value = buffer.get(field.responseName());
+    Object value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
     if (value == null) {
       return null;
@@ -234,10 +222,9 @@ import java.util.Map;
   }
 
   @SuppressWarnings("unchecked") private <T> T readConditional(Field.ConditionalTypeField field,
-      Operation.Variables variables) throws
-      IOException {
+      Operation.Variables variables) throws IOException {
     readerShadow.willResolve(field, variables);
-    String value = (String) buffer.get(field.responseName());
+    String value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
     if (value == null) {
       readerShadow.didParseNull();
@@ -255,11 +242,11 @@ import java.util.Map;
     }
   }
 
-  private static class BufferedListItemReader implements Field.ListItemReader {
+  private static class ListItemReader implements Field.ListItemReader {
     private final Object value;
     private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
 
-    BufferedListItemReader(Object value, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+    ListItemReader(Object value, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
       this.value = value;
       this.customTypeAdapters = customTypeAdapters;
     }
