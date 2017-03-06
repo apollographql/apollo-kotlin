@@ -26,8 +26,8 @@ final class ResponseBodyConverter {
   }
 
   <T extends Operation.Data> Response<T> convert(ResponseBody responseBody,
-      final ResponseNormalizer responseNormalizer) throws IOException {
-    responseNormalizer.willResolveRootQuery(operation);
+      final ResponseReaderShadow<Map<String, Object>> responseReaderShadow) throws IOException {
+    responseReaderShadow.willResolveRootQuery(operation);
     BufferedSourceJsonReader jsonReader = null;
     try {
       jsonReader = new BufferedSourceJsonReader(responseBody.source());
@@ -43,9 +43,9 @@ final class ResponseBodyConverter {
           data = (T) responseStreamReader.nextObject(false, new ResponseJsonStreamReader.ObjectReader<Object>() {
             @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
               Map<String, Object> buffer = reader.buffer();
-              BufferedResponseReader bufferedResponseReader = new BufferedResponseReader(buffer, operation,
-                  customTypeAdapters, responseNormalizer);
-              return responseFieldMapper.map(bufferedResponseReader);
+              RealResponseReader<Map<String, Object>> realResponseReader = new RealResponseReader<>(operation, buffer,
+                  new MapFieldValueResolver(), customTypeAdapters, responseReaderShadow);
+              return responseFieldMapper.map(realResponseReader);
             }
           });
         } else if ("errors".equals(name)) {

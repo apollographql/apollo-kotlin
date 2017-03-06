@@ -1,6 +1,7 @@
 package com.example.fragment_in_fragment.fragment;
 
 import com.apollographql.android.api.graphql.Field;
+import com.apollographql.android.api.graphql.FragmentResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
 import java.io.IOException;
@@ -244,18 +245,15 @@ public class StarshipFragment {
             return h;
           }
 
-          public static final class Mapper implements ResponseFieldMapper<Fragments> {
-            private final String conditionalType;
-
-            public Mapper(@Nonnull String conditionalType) {
-              this.conditionalType = conditionalType;
-            }
+          public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+            final PilotFragment.Mapper pilotFragmentFieldMapper = new PilotFragment.Mapper();
 
             @Override
-            public @Nonnull Fragments map(ResponseReader reader) throws IOException {
+            public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType)
+                throws IOException {
               PilotFragment pilotFragment = null;
               if (conditionalType.equals(PilotFragment.TYPE_CONDITION)) {
-                pilotFragment = new PilotFragment.Mapper().map(reader);
+                pilotFragment = pilotFragmentFieldMapper.map(reader);
               }
               return new Fragments(pilotFragment);
             }
@@ -263,12 +261,14 @@ public class StarshipFragment {
         }
 
         public static final class Mapper implements ResponseFieldMapper<Node> {
+          final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
+
           final Field[] fields = {
             Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
               @Override
               public Fragments read(String conditionalType, ResponseReader reader) throws
                   IOException {
-                return new Fragments.Mapper(conditionalType).map(reader);
+                return fragmentsFieldMapper.map(reader, conditionalType);
               }
             })
           };
@@ -282,10 +282,12 @@ public class StarshipFragment {
       }
 
       public static final class Mapper implements ResponseFieldMapper<Edge> {
+        final Node.Mapper nodeFieldMapper = new Node.Mapper();
+
         final Field[] fields = {
           Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
             @Override public Node read(final ResponseReader reader) throws IOException {
-              return new Node.Mapper().map(reader);
+              return nodeFieldMapper.map(reader);
             }
           })
         };
@@ -299,10 +301,12 @@ public class StarshipFragment {
     }
 
     public static final class Mapper implements ResponseFieldMapper<PilotConnection> {
+      final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
+
       final Field[] fields = {
         Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
           @Override public Edge read(final ResponseReader reader) throws IOException {
-            return new Edge.Mapper().map(reader);
+            return edgeFieldMapper.map(reader);
           }
         })
       };
@@ -316,12 +320,14 @@ public class StarshipFragment {
   }
 
   public static final class Mapper implements ResponseFieldMapper<StarshipFragment> {
+    final PilotConnection.Mapper pilotConnectionFieldMapper = new PilotConnection.Mapper();
+
     final Field[] fields = {
       Field.forString("id", "id", null, false),
       Field.forString("name", "name", null, true),
       Field.forObject("pilotConnection", "pilotConnection", null, true, new Field.ObjectReader<PilotConnection>() {
         @Override public PilotConnection read(final ResponseReader reader) throws IOException {
-          return new PilotConnection.Mapper().map(reader);
+          return pilotConnectionFieldMapper.map(reader);
         }
       })
     };
