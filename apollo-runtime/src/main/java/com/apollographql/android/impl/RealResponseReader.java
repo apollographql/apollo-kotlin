@@ -123,7 +123,6 @@ import java.util.Map;
   Double readDouble(Field field) throws IOException {
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
-    readerShadow.didParseScalar(value);
     if (value == null) {
       readerShadow.didParseNull();
       return null;
@@ -228,6 +227,7 @@ import java.util.Map;
     checkValue(value, field.optional());
     if (value == null) {
       readerShadow.didParseNull();
+      readerShadow.didResolve(field, variables);
       return null;
     } else {
       readerShadow.didParseScalar(value);
