@@ -15,6 +15,7 @@ import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDForPar
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDs;
 import com.apollographql.android.impl.normalizer.HeroAppearsIn;
 import com.apollographql.android.impl.normalizer.HeroName;
+import com.apollographql.android.impl.normalizer.HeroParentTypeDependentField;
 import com.apollographql.android.impl.normalizer.HeroTypeDependentAliasedField;
 import com.apollographql.android.impl.normalizer.SameHeroTwice;
 
@@ -81,6 +82,11 @@ public class ResponseNormalizationTest {
         .build();
   }
 
+  private static MockResponse mockResponse(String normalizerFileName) throws IOException {
+    return new MockResponse().setChunkedBody(Files.toString(new File(NORMALIZER_TEST_PATH + normalizerFileName),
+        Charsets.UTF_8), 32);
+  }
+
   @Test public void testHeroName() throws IOException {
     MockResponse mockResponse = mockResponse("HeroNameResponse.json");
     server.enqueue(mockResponse);
@@ -115,10 +121,6 @@ public class ResponseNormalizationTest {
     assertThat(heroRecord.field("name")).isEqualTo("R2-D2");
   }
 
-  private static MockResponse mockResponse(String normalizerFileName) throws IOException {
-    return new MockResponse().setChunkedBody(Files.toString(new File(NORMALIZER_TEST_PATH + normalizerFileName),
-        Charsets.UTF_8), 32);
-  }
 
   @Test
   public void testHeroAppearsInQuery() throws IOException {
@@ -307,49 +309,38 @@ public class ResponseNormalizationTest {
     assertThat(hero.field("__typename")).isEqualTo("Human");
   }
 
+  @Test
+  public void testHeroParentTypeDependentFieldDroid() throws IOException {
+    MockResponse mockResponse = mockResponse("HeroParentTypeDependentFieldDroidResponse.json");
+    server.enqueue(mockResponse);
+    final HeroParentTypeDependentField aliasedQuery = new HeroParentTypeDependentField(
+        HeroParentTypeDependentField.Variables.builder().episode(JEDI).build()
+    );
 
-//  TODO: Add these tests once https://github.com/apollographql/apollo-android/issues/263 is fixed
-//  func testHeroParentTypeDependentFieldDroid() throws {
-//    let query = HeroParentTypeDependentFieldQuery()
-//
-//    let response = GraphQLResponse(operation: query, body: [
-//    "data": [
-//    "hero": [
-//    "name": "R2-D2",
-//        "__typename": "Droid",
-//        "friends": [
-//    ["__typename": "Human", "name": "Luke Skywalker", "height": 1.72],
-//    ]
-//    ]
-//    ]
-//    ])
-//
-//    let (_, records) = try response.parseResult()
-//
-//    guard let luke = records?["hero.friends.0"] else { XCTFail(); return }
-//    XCTAssertEqual(luke["height(unit:METER)"] as? Double, 1.72)
-//  }
-//
-//  func testHeroParentTypeDependentFieldHuman() throws {
-//    let query = HeroParentTypeDependentFieldQuery()
-//
-//    let response = GraphQLResponse(operation: query, body: [
-//    "data": [
-//    "hero": [
-//    "name": "Luke Skywalker",
-//        "__typename": "Human",
-//        "friends": [
-//    ["__typename": "Human", "name": "Han Solo", "height": 5.905512],
-//    ]
-//    ]
-//    ]
-//    ])
-//
-//    let (_, records) = try response.parseResult()
-//
-//    guard let han = records?["hero.friends.0"] else { XCTFail(); return }
-//    XCTAssertEqual(han["height(unit:FOOT)"] as? Double, 5.905512)
-//  }
+    ApolloCall<HeroParentTypeDependentField.Data> call = apolloClient.newCall(aliasedQuery);
+    Response<HeroParentTypeDependentField.Data> body = call.execute();
+    assertThat(body.isSuccessful()).isTrue();
 
+    Record lukeRecord = cacheStore.loadRecord("hero(episode:JEDI).friends.0");
+    assertThat(lukeRecord.field("name")).isEqualTo("Luke Skywalker");
+    assertThat(lukeRecord.field("height(unit:METER)")).isEqualTo(1.72);
+  }
+
+  @Test
+  public void testHeroParentTypeDependentFieldHuman() throws IOException {
+    MockResponse mockResponse = mockResponse("HeroParentTypeDependentFieldHumanResponse.json");
+    server.enqueue(mockResponse);
+    final HeroParentTypeDependentField aliasedQuery = new HeroParentTypeDependentField(
+        HeroParentTypeDependentField.Variables.builder().episode(EMPIRE).build()
+    );
+
+    ApolloCall<HeroParentTypeDependentField.Data> call = apolloClient.newCall(aliasedQuery);
+    Response<HeroParentTypeDependentField.Data> body = call.execute();
+    assertThat(body.isSuccessful()).isTrue();
+
+    Record lukeRecord = cacheStore.loadRecord("hero(episode:EMPIRE).friends.0");
+    assertThat(lukeRecord.field("name")).isEqualTo("Han Solo");
+    assertThat(lukeRecord.field("height(unit:FOOT)")).isEqualTo(5.905512);
+  }
 
 }
