@@ -17,7 +17,7 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-public class ResponseNormalizer implements ResponseReaderShadow {
+public class ResponseNormalizer implements ResponseReaderShadow<Map<String, Object>> {
 
   private SimpleStack<List<String>> pathStack;
   private SimpleStack<Record> recordStack;

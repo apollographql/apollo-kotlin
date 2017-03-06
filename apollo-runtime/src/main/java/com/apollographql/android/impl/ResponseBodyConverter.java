@@ -43,9 +43,9 @@ final class ResponseBodyConverter {
           data = (T) responseStreamReader.nextObject(false, new ResponseJsonStreamReader.ObjectReader<Object>() {
             @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
               Map<String, Object> buffer = reader.buffer();
-              BufferedResponseReader bufferedResponseReader = new BufferedResponseReader(buffer, operation,
-                  customTypeAdapters, responseNormalizer);
-              return responseFieldMapper.map(bufferedResponseReader);
+              RealResponseReader<Map<String, Object>> realResponseReader = new RealResponseReader<>(operation, buffer,
+                  new MapFieldValueResolver(), customTypeAdapters, responseNormalizer);
+              return responseFieldMapper.map(realResponseReader);
             }
           });
         } else if ("errors".equals(name)) {
