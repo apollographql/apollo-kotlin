@@ -220,6 +220,7 @@ import java.util.Map;
     Object value = buffer.get(field.responseName());
     checkValue(value, field.optional());
     if (value == null) {
+      readerShadow.didParseNull();
       return null;
     } else {
       CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(field.scalarType());

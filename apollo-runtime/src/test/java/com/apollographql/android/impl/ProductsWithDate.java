@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public final class ProductsWithDate implements Query<ProductsWithDate.Data, Operation.Variables> {
   public static final String OPERATION_DEFINITION = "query ProductsWithDate {\n"
@@ -96,9 +97,9 @@ public final class ProductsWithDate implements Query<ProductsWithDate.Data, Oper
           public static class Node {
             private @Nonnull String title;
 
-            private @Nonnull Date createdAt;
+            private @Nullable Date createdAt;
 
-            public Node(@Nonnull String title, @Nonnull Date createdAt) {
+            public Node(@Nonnull String title, @Nullable Date createdAt) {
               this.title = title;
               this.createdAt = createdAt;
             }
@@ -107,14 +108,14 @@ public final class ProductsWithDate implements Query<ProductsWithDate.Data, Oper
               return this.title;
             }
 
-            public @Nonnull Date createdAt() {
+            public @Nullable Date createdAt() {
               return this.createdAt;
             }
 
             public static final class Mapper implements ResponseFieldMapper<Node> {
               final Field[] fields = {
                   Field.forString("title", "title", null, false),
-                  Field.forCustomType("createdAt", "createdAt", null, false, CustomType.DATETIME)
+                  Field.forCustomType("createdAt", "createdAt", null, true, CustomType.DATETIME)
               };
 
               @Override
