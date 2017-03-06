@@ -249,6 +249,8 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
+      final GraphQlListOfObject.Mapper graphQlListOfObjectFieldMapper = new GraphQlListOfObject.Mapper();
+
       final Field[] fields = {
         Field.forString("graphQlString", "graphQlString", null, true),
         Field.forString("graphQlIdNullable", "graphQlIdNullable", null, true),
@@ -266,7 +268,7 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
         }),
         Field.forList("graphQlListOfObjects", "graphQlListOfObjects", null, true, new Field.ObjectReader<GraphQlListOfObject>() {
           @Override public GraphQlListOfObject read(final ResponseReader reader) throws IOException {
-            return new GraphQlListOfObject.Mapper().map(reader);
+            return graphQlListOfObjectFieldMapper.map(reader);
           }
         })
       };

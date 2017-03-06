@@ -1,6 +1,7 @@
 package com.example.fragment_friends_connection;
 
 import com.apollographql.android.api.graphql.Field;
+import com.apollographql.android.api.graphql.FragmentResponseFieldMapper;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
@@ -161,18 +162,15 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
           return h;
         }
 
-        public static final class Mapper implements ResponseFieldMapper<Fragments> {
-          private final String conditionalType;
-
-          public Mapper(@Nonnull String conditionalType) {
-            this.conditionalType = conditionalType;
-          }
+        public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+          final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();
 
           @Override
-          public @Nonnull Fragments map(ResponseReader reader) throws IOException {
+          public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType)
+              throws IOException {
             HeroDetails heroDetails = null;
             if (conditionalType.equals(HeroDetails.TYPE_CONDITION)) {
-              heroDetails = new HeroDetails.Mapper().map(reader);
+              heroDetails = heroDetailsFieldMapper.map(reader);
             }
             return new Fragments(heroDetails);
           }
@@ -180,12 +178,14 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
       }
 
       public static final class Mapper implements ResponseFieldMapper<Hero> {
+        final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
+
         final Field[] fields = {
           Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
             @Override
             public Fragments read(String conditionalType, ResponseReader reader) throws
                 IOException {
-              return new Fragments.Mapper(conditionalType).map(reader);
+              return fragmentsFieldMapper.map(reader, conditionalType);
             }
           })
         };
@@ -199,10 +199,12 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
+      final Hero.Mapper heroFieldMapper = new Hero.Mapper();
+
       final Field[] fields = {
         Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
           @Override public Hero read(final ResponseReader reader) throws IOException {
-            return new Hero.Mapper().map(reader);
+            return heroFieldMapper.map(reader);
           }
         })
       };

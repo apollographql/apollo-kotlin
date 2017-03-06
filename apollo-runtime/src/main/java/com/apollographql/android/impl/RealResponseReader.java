@@ -106,9 +106,8 @@ import java.util.Map;
       readerShadow.didParseNull();
       return null;
     } else {
-      Integer intValue = value.intValue();
-      readerShadow.didParseScalar(value.intValue());
-      return intValue;
+      readerShadow.didParseScalar(value);
+      return value.intValue();
     }
   }
 
@@ -119,23 +118,20 @@ import java.util.Map;
       readerShadow.didParseNull();
       return null;
     } else {
-      Long longValue = value.longValue();
-      readerShadow.didParseScalar(longValue);
-      return longValue;
+      readerShadow.didParseScalar(value);
+      return value.longValue();
     }
   }
 
   Double readDouble(Field field) throws IOException {
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
-    readerShadow.didParseScalar(value);
     if (value == null) {
       readerShadow.didParseNull();
       return null;
     } else {
-      Double doubleValue = value.doubleValue();
-      readerShadow.didParseScalar(doubleValue);
-      return doubleValue;
+      readerShadow.didParseScalar(value);
+      return value.doubleValue();
     }
   }
 
@@ -233,6 +229,7 @@ import java.util.Map;
     checkValue(value, field.optional());
     if (value == null) {
       readerShadow.didParseNull();
+      readerShadow.didResolve(field, variables);
       return null;
     } else {
       readerShadow.didParseScalar(value);

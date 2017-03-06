@@ -202,17 +202,21 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
+      final R2.Mapper r2FieldMapper = new R2.Mapper();
+
+      final Luke.Mapper lukeFieldMapper = new Luke.Mapper();
+
       final Field[] fields = {
         Field.forObject("r2", "hero", null, true, new Field.ObjectReader<R2>() {
           @Override public R2 read(final ResponseReader reader) throws IOException {
-            return new R2.Mapper().map(reader);
+            return r2FieldMapper.map(reader);
           }
         }),
         Field.forObject("luke", "hero", new UnmodifiableMapBuilder<String, Object>(1)
           .put("episode", "EMPIRE")
         .build(), true, new Field.ObjectReader<Luke>() {
           @Override public Luke read(final ResponseReader reader) throws IOException {
-            return new Luke.Mapper().map(reader);
+            return lukeFieldMapper.map(reader);
           }
         })
       };

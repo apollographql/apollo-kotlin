@@ -1,6 +1,7 @@
 package com.apollographql.android.impl;
 
 import com.apollographql.android.api.graphql.Field;
+import com.apollographql.android.api.graphql.FragmentResponseFieldMapper;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
@@ -14,8 +15,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-final class AllPlanets implements Query<AllPlanets.Data, Operation.Variables>{
-    public static final String OPERATION_DEFINITION = "query TestQuery {\n"
+final class AllPlanets implements Query<AllPlanets.Data, Operation.Variables> {
+  public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  allPlanets(first: 300) {\n"
       + "    planets {\n"
       + "      ...PlanetFragment\n"
@@ -142,15 +143,11 @@ final class AllPlanets implements Query<AllPlanets.Data, Operation.Variables>{
                 return this.filmFragment;
               }
 
-              public static final class Mapper implements ResponseFieldMapper<Fragments> {
-                String conditionalType;
-
-                public Mapper(@Nonnull String conditionalType) {
-                  this.conditionalType = conditionalType;
-                }
+              public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+                final FilmFragment.Mapper filmFragmentMapper = new FilmFragment.Mapper();
 
                 @Override
-                public Fragments map(ResponseReader reader) throws IOException {
+                public Fragments map(ResponseReader reader, @Nonnull String conditionalType) throws IOException {
                   FilmFragment filmfragment = null;
                   if (conditionalType.equals(FilmFragment.TYPE_CONDITION)) {
                     filmfragment = new FilmFragment.Mapper().map(reader);
@@ -161,13 +158,15 @@ final class AllPlanets implements Query<AllPlanets.Data, Operation.Variables>{
             }
 
             public static final class Mapper implements ResponseFieldMapper<Film> {
+              final Fragments.Mapper fragmentsMapper = new Fragments.Mapper();
+
               final Field[] fields = {
                   Field.forString("title", "title", null, true),
                   Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
                     @Override
                     public Fragments read(String conditionalType, ResponseReader reader) throws
                         IOException {
-                      return new Fragments.Mapper(conditionalType).map(reader);
+                      return fragmentsMapper.map(reader, conditionalType);
                     }
                   })
               };
@@ -182,11 +181,13 @@ final class AllPlanets implements Query<AllPlanets.Data, Operation.Variables>{
           }
 
           public static final class Mapper implements ResponseFieldMapper<FilmConnection> {
+            final Film.Mapper filmMapper = new Film.Mapper();
+
             final Field[] fields = {
                 Field.forInt("totalCount", "totalCount", null, true),
                 Field.forList("films", "films", null, true, new Field.ObjectReader<Film>() {
                   @Override public Film read(final ResponseReader reader) throws IOException {
-                    return new Film.Mapper().map(reader);
+                    return filmMapper.map(reader);
                   }
                 })
             };
@@ -211,36 +212,36 @@ final class AllPlanets implements Query<AllPlanets.Data, Operation.Variables>{
             return this.planetFargment;
           }
 
-          public static final class Mapper implements ResponseFieldMapper<Fragments> {
-            private final String conditionalType;
-
-            public Mapper(@Nonnull String conditionalType) {
-              this.conditionalType = conditionalType;
-            }
+          public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+            final PlanetFragment.Mapper planetFragmentMapper = new PlanetFragment.Mapper();
 
             @Override
-            public Fragments map(ResponseReader reader) throws IOException {
-              PlanetFragment planetfargment = null;
+            public Fragments map(ResponseReader reader, @Nonnull String conditionalType) throws IOException {
+              PlanetFragment planetFragment = null;
               if (conditionalType.equals(PlanetFragment.TYPE_CONDITION)) {
-                planetfargment = new PlanetFragment.Mapper().map(reader);
+                planetFragment = planetFragmentMapper.map(reader);
               }
-              return new Fragments(planetfargment);
+              return new Fragments(planetFragment);
             }
           }
         }
 
         public static final class Mapper implements ResponseFieldMapper<Planet> {
+          final FilmConnection.Mapper filmConnectionMapper = new FilmConnection.Mapper();
+
+          final Fragments.Mapper fragmentsMapper = new Fragments.Mapper();
+
           final Field[] fields = {
               Field.forObject("filmConnection", "filmConnection", null, true, new Field.ObjectReader<FilmConnection>() {
                 @Override public FilmConnection read(final ResponseReader reader) throws IOException {
-                  return new FilmConnection.Mapper().map(reader);
+                  return filmConnectionMapper.map(reader);
                 }
               }),
               Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
                 @Override
                 public Fragments read(String conditionalType, ResponseReader reader) throws
                     IOException {
-                  return new Fragments.Mapper(conditionalType).map(reader);
+                  return fragmentsMapper.map(reader, conditionalType);
                 }
               })
           };
@@ -255,10 +256,12 @@ final class AllPlanets implements Query<AllPlanets.Data, Operation.Variables>{
       }
 
       public static final class Mapper implements ResponseFieldMapper<AllPlanet> {
+        final Planet.Mapper planetMapper = new Planet.Mapper();
+
         final Field[] fields = {
             Field.forList("planets", "planets", null, true, new Field.ObjectReader<Planet>() {
               @Override public Planet read(final ResponseReader reader) throws IOException {
-                return new Planet.Mapper().map(reader);
+                return planetMapper.map(reader);
               }
             })
         };
@@ -272,10 +275,12 @@ final class AllPlanets implements Query<AllPlanets.Data, Operation.Variables>{
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
+      final AllPlanet.Mapper allPlanetMapper = new AllPlanet.Mapper();
+
       final Field[] fields = {
           Field.forObject("allPlanets", "allPlanets", null, true, new Field.ObjectReader<AllPlanet>() {
             @Override public AllPlanet read(final ResponseReader reader) throws IOException {
-              return new AllPlanet.Mapper().map(reader);
+              return allPlanetMapper.map(reader);
             }
           })
       };

@@ -190,6 +190,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
       return (T) responseFieldMapper.map(responseReader);
     } catch (Exception e) {
       //TODO log me
+      e.printStackTrace();
       return null;
     }
   }
