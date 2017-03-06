@@ -50,7 +50,8 @@ public class ResponseNormalizationTest {
   private InMemoryCacheStore cacheStore;
 
   private final String QUERY_ROOT_KEY = "QUERY_ROOT";
-  private static final String NORMALIZER_TEST_PATH  = "src/test/graphql/com/apollographql/android/impl/normalizer/";
+  private static final String NORMALIZER_TEST_PATH  =
+      "apollo-integration/src/test/graphql/com/apollographql/android/impl/normalizer/";
 
   @Before public void setUp() {
     server = new MockWebServer();
