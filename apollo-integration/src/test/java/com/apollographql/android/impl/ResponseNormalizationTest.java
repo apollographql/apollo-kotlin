@@ -37,6 +37,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
+import static android.R.attr.src;
 import static com.apollographql.android.impl.normalizer.type.Episode.EMPIRE;
 import static com.apollographql.android.impl.normalizer.type.Episode.JEDI;
 import static com.google.common.truth.Truth.assertThat;
@@ -50,8 +51,7 @@ public class ResponseNormalizationTest {
   private InMemoryCacheStore cacheStore;
 
   private final String QUERY_ROOT_KEY = "QUERY_ROOT";
-  private static final String NORMALIZER_TEST_PATH  =
-      "apollo-integration/src/test/graphql/com/apollographql/android/impl/normalizer/";
+  private static final String NORMALIZER_TEST_PATH  = "src/test/graphql/com/apollographql/android/impl/normalizer/";
 
   @Before public void setUp() {
     server = new MockWebServer();

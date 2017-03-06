@@ -66,7 +66,7 @@ class CodeGenTest(val testDir: File, val pkgName: String, val customScalarTypeMa
     @JvmStatic
     @Parameterized.Parameters(name = "{1}")
     fun data(): Collection<Array<Any>> {
-      return File("apollo-compiler/src/test/graphql/com/example/").listFiles()
+      return File("src/test/graphql/com/example/").listFiles()
           .filter { it.isDirectory }
           .map {
             if (it.name == "custom_scalar_type") {
