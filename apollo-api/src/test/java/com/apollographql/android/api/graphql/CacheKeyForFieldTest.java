@@ -90,6 +90,26 @@ public class CacheKeyForFieldTest {
   }
 
   @Test
+  public void testFieldWithVariableArgumentNull() {
+    //noinspection unchecked
+    Field field = Field.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+        .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
+            .put("kind", "Variable")
+            .put("variableName", "episode")
+            .build())
+        .build(), false);
+
+    Operation.Variables variables = new Operation.Variables() {
+      @Nonnull @Override public Map<String, Object> valueMap() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("episode", null);
+        return map;
+      }
+    };
+    assertThat(field.cacheKey(variables)).isEqualTo("hero(episode:null)");
+  }
+
+  @Test
   public void testFieldWithMultipleArgument() {
     //noinspection unchecked
     Field field = Field.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
