@@ -1,6 +1,7 @@
 package com.example.unique_type_name;
 
 import com.apollographql.android.api.graphql.Field;
+import com.apollographql.android.api.graphql.FragmentResponseFieldMapper;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
@@ -414,18 +415,15 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Operat
                 return h;
               }
 
-              public static final class Mapper implements ResponseFieldMapper<Fragments> {
-                private final String conditionalType;
-
-                public Mapper(@Nonnull String conditionalType) {
-                  this.conditionalType = conditionalType;
-                }
+              public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+                final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();
 
                 @Override
-                public @Nonnull Fragments map(ResponseReader reader) throws IOException {
+                public @Nonnull Fragments map(ResponseReader reader,
+                    @Nonnull String conditionalType) throws IOException {
                   HeroDetails heroDetails = null;
                   if (conditionalType.equals(HeroDetails.TYPE_CONDITION)) {
-                    heroDetails = new HeroDetails.Mapper().map(reader);
+                    heroDetails = heroDetailsFieldMapper.map(reader);
                   }
                   return new Fragments(heroDetails);
                 }
@@ -433,12 +431,14 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Operat
             }
 
             public static final class Mapper implements ResponseFieldMapper<Friend2> {
+              final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
+
               final Field[] fields = {
                 Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
                   @Override
                   public Fragments read(String conditionalType, ResponseReader reader) throws
                       IOException {
-                    return new Fragments.Mapper(conditionalType).map(reader);
+                    return fragmentsFieldMapper.map(reader, conditionalType);
                   }
                 })
               };
@@ -452,6 +452,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Operat
           }
 
           public static final class Mapper implements ResponseFieldMapper<Friend1> {
+            final Friend2.Mapper friend2FieldMapper = new Friend2.Mapper();
+
             final Field[] fields = {
               Field.forString("name", "name", null, false),
               Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
@@ -461,7 +463,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Operat
               }),
               Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend2>() {
                 @Override public Friend2 read(final ResponseReader reader) throws IOException {
-                  return new Friend2.Mapper().map(reader);
+                  return friend2FieldMapper.map(reader);
                 }
               })
             };
@@ -477,11 +479,13 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Operat
         }
 
         public static final class Mapper implements ResponseFieldMapper<AsHuman> {
+          final Friend1.Mapper friend1FieldMapper = new Friend1.Mapper();
+
           final Field[] fields = {
             Field.forString("name", "name", null, false),
             Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend1>() {
               @Override public Friend1 read(final ResponseReader reader) throws IOException {
-                return new Friend1.Mapper().map(reader);
+                return friend1FieldMapper.map(reader);
               }
             }),
             Field.forDouble("height", "height", null, true)
@@ -498,18 +502,22 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Operat
       }
 
       public static final class Mapper implements ResponseFieldMapper<HeroDetailQuery1> {
+        final Friend.Mapper friendFieldMapper = new Friend.Mapper();
+
+        final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
+
         final Field[] fields = {
           Field.forString("name", "name", null, false),
           Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend>() {
             @Override public Friend read(final ResponseReader reader) throws IOException {
-              return new Friend.Mapper().map(reader);
+              return friendFieldMapper.map(reader);
             }
           }),
           Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman>() {
             @Override
             public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
               if (conditionalType.equals("Human")) {
-                return new AsHuman.Mapper().map(reader);
+                return asHumanFieldMapper.map(reader);
               } else {
                 return null;
               }
@@ -528,10 +536,12 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Operat
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
+      final HeroDetailQuery1.Mapper heroDetailQuery1FieldMapper = new HeroDetailQuery1.Mapper();
+
       final Field[] fields = {
         Field.forObject("heroDetailQuery", "heroDetailQuery", null, true, new Field.ObjectReader<HeroDetailQuery1>() {
           @Override public HeroDetailQuery1 read(final ResponseReader reader) throws IOException {
-            return new HeroDetailQuery1.Mapper().map(reader);
+            return heroDetailQuery1FieldMapper.map(reader);
           }
         })
       };

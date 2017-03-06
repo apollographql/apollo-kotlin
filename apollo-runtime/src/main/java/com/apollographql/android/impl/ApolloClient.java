@@ -4,6 +4,7 @@ import com.apollographql.android.ApolloCall;
 import com.apollographql.android.ApolloPrefetch;
 import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Operation;
+import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ScalarType;
 import com.apollographql.android.cache.http.EvictionStrategy;
 import com.apollographql.android.cache.http.HttpCache;
@@ -39,6 +40,7 @@ public final class ApolloClient implements ApolloCall.Factory {
   private final Cache cache;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final Moshi moshi;
+  private final Map<Class, ResponseFieldMapper> responseFieldMapperPool = new LinkedHashMap<>();
 
   private ApolloClient(Builder builder) {
     this.serverUrl = builder.serverUrl;
@@ -52,8 +54,16 @@ public final class ApolloClient implements ApolloCall.Factory {
   @Override
   public <D extends Operation.Data, V extends Operation.Variables> ApolloCall<D> newCall(
       @Nonnull Operation<D, V> operation) {
+    ResponseFieldMapper responseFieldMapper;
+    synchronized (responseFieldMapperPool) {
+      responseFieldMapper = responseFieldMapperPool.get(operation.getClass());
+      if (responseFieldMapper == null) {
+        responseFieldMapper = operation.responseFieldMapper();
+        responseFieldMapperPool.put(operation.getClass(), responseFieldMapper);
+      }
+    }
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, moshi,
-        operation.responseFieldMapper(), customTypeAdapters, cache);
+        new ResponseBodyConverter(operation, responseFieldMapper, customTypeAdapters), cache);
   }
 
   @Override

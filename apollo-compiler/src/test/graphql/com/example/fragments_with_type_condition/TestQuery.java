@@ -1,6 +1,7 @@
 package com.example.fragments_with_type_condition;
 
 import com.apollographql.android.api.graphql.Field;
+import com.apollographql.android.api.graphql.FragmentResponseFieldMapper;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
@@ -191,22 +192,21 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
           return h;
         }
 
-        public static final class Mapper implements ResponseFieldMapper<Fragments> {
-          private final String conditionalType;
+        public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+          final HumanDetails.Mapper humanDetailsFieldMapper = new HumanDetails.Mapper();
 
-          public Mapper(@Nonnull String conditionalType) {
-            this.conditionalType = conditionalType;
-          }
+          final DroidDetails.Mapper droidDetailsFieldMapper = new DroidDetails.Mapper();
 
           @Override
-          public @Nonnull Fragments map(ResponseReader reader) throws IOException {
+          public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType)
+              throws IOException {
             HumanDetails humanDetails = null;
             DroidDetails droidDetails = null;
             if (conditionalType.equals(HumanDetails.TYPE_CONDITION)) {
-              humanDetails = new HumanDetails.Mapper().map(reader);
+              humanDetails = humanDetailsFieldMapper.map(reader);
             }
             if (conditionalType.equals(DroidDetails.TYPE_CONDITION)) {
-              droidDetails = new DroidDetails.Mapper().map(reader);
+              droidDetails = droidDetailsFieldMapper.map(reader);
             }
             return new Fragments(humanDetails, droidDetails);
           }
@@ -214,12 +214,14 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
       }
 
       public static final class Mapper implements ResponseFieldMapper<R2> {
+        final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
+
         final Field[] fields = {
           Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
             @Override
             public Fragments read(String conditionalType, ResponseReader reader) throws
                 IOException {
-              return new Fragments.Mapper(conditionalType).map(reader);
+              return fragmentsFieldMapper.map(reader, conditionalType);
             }
           })
         };
@@ -319,22 +321,21 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
           return h;
         }
 
-        public static final class Mapper implements ResponseFieldMapper<Fragments> {
-          private final String conditionalType;
+        public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+          final HumanDetails.Mapper humanDetailsFieldMapper = new HumanDetails.Mapper();
 
-          public Mapper(@Nonnull String conditionalType) {
-            this.conditionalType = conditionalType;
-          }
+          final DroidDetails.Mapper droidDetailsFieldMapper = new DroidDetails.Mapper();
 
           @Override
-          public @Nonnull Fragments map(ResponseReader reader) throws IOException {
+          public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType)
+              throws IOException {
             HumanDetails humanDetails = null;
             DroidDetails droidDetails = null;
             if (conditionalType.equals(HumanDetails.TYPE_CONDITION)) {
-              humanDetails = new HumanDetails.Mapper().map(reader);
+              humanDetails = humanDetailsFieldMapper.map(reader);
             }
             if (conditionalType.equals(DroidDetails.TYPE_CONDITION)) {
-              droidDetails = new DroidDetails.Mapper().map(reader);
+              droidDetails = droidDetailsFieldMapper.map(reader);
             }
             return new Fragments(humanDetails, droidDetails);
           }
@@ -342,12 +343,14 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
       }
 
       public static final class Mapper implements ResponseFieldMapper<Luke> {
+        final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
+
         final Field[] fields = {
           Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
             @Override
             public Fragments read(String conditionalType, ResponseReader reader) throws
                 IOException {
-              return new Fragments.Mapper(conditionalType).map(reader);
+              return fragmentsFieldMapper.map(reader, conditionalType);
             }
           })
         };
@@ -361,15 +364,19 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
+      final R2.Mapper r2FieldMapper = new R2.Mapper();
+
+      final Luke.Mapper lukeFieldMapper = new Luke.Mapper();
+
       final Field[] fields = {
         Field.forObject("r2", "hero", null, true, new Field.ObjectReader<R2>() {
           @Override public R2 read(final ResponseReader reader) throws IOException {
-            return new R2.Mapper().map(reader);
+            return r2FieldMapper.map(reader);
           }
         }),
         Field.forObject("luke", "hero", null, true, new Field.ObjectReader<Luke>() {
           @Override public Luke read(final ResponseReader reader) throws IOException {
-            return new Luke.Mapper().map(reader);
+            return lukeFieldMapper.map(reader);
           }
         })
       };

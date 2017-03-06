@@ -377,6 +377,8 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Variable
           }
 
           public static final class Mapper implements ResponseFieldMapper<Friend> {
+            final AsHuman1.Mapper asHuman1FieldMapper = new AsHuman1.Mapper();
+
             final Field[] fields = {
               Field.forString("name", "name", null, false),
               Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman1>() {
@@ -384,7 +386,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Variable
                 public AsHuman1 read(String conditionalType, ResponseReader reader) throws
                     IOException {
                   if (conditionalType.equals("Human")) {
-                    return new AsHuman1.Mapper().map(reader);
+                    return asHuman1FieldMapper.map(reader);
                   } else {
                     return null;
                   }
@@ -402,11 +404,13 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Variable
         }
 
         public static final class Mapper implements ResponseFieldMapper<AsHuman> {
+          final Friend.Mapper friendFieldMapper = new Friend.Mapper();
+
           final Field[] fields = {
             Field.forString("name", "name", null, false),
             Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend>() {
               @Override public Friend read(final ResponseReader reader) throws IOException {
-                return new Friend.Mapper().map(reader);
+                return friendFieldMapper.map(reader);
               }
             })
           };
@@ -585,6 +589,8 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Variable
           }
 
           public static final class Mapper implements ResponseFieldMapper<Friend> {
+            final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
+
             final Field[] fields = {
               Field.forString("name", "name", null, false),
               Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman>() {
@@ -592,7 +598,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Variable
                 public AsHuman read(String conditionalType, ResponseReader reader) throws
                     IOException {
                   if (conditionalType.equals("Human")) {
-                    return new AsHuman.Mapper().map(reader);
+                    return asHumanFieldMapper.map(reader);
                   } else {
                     return null;
                   }
@@ -610,11 +616,13 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Variable
         }
 
         public static final class Mapper implements ResponseFieldMapper<AsDroid> {
+          final Friend.Mapper friendFieldMapper = new Friend.Mapper();
+
           final Field[] fields = {
             Field.forString("name", "name", null, false),
             Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend>() {
               @Override public Friend read(final ResponseReader reader) throws IOException {
-                return new Friend.Mapper().map(reader);
+                return friendFieldMapper.map(reader);
               }
             })
           };
@@ -629,13 +637,17 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Variable
       }
 
       public static final class Mapper implements ResponseFieldMapper<Hero> {
+        final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
+
+        final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
+
         final Field[] fields = {
           Field.forString("name", "name", null, false),
           Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman>() {
             @Override
             public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
               if (conditionalType.equals("Human")) {
-                return new AsHuman.Mapper().map(reader);
+                return asHumanFieldMapper.map(reader);
               } else {
                 return null;
               }
@@ -645,7 +657,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Variable
             @Override
             public AsDroid read(String conditionalType, ResponseReader reader) throws IOException {
               if (conditionalType.equals("Droid")) {
-                return new AsDroid.Mapper().map(reader);
+                return asDroidFieldMapper.map(reader);
               } else {
                 return null;
               }
@@ -664,6 +676,8 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Variable
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
+      final Hero.Mapper heroFieldMapper = new Hero.Mapper();
+
       final Field[] fields = {
         Field.forObject("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
           .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
@@ -672,7 +686,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Variable
           .build())
         .build(), true, new Field.ObjectReader<Hero>() {
           @Override public Hero read(final ResponseReader reader) throws IOException {
-            return new Hero.Mapper().map(reader);
+            return heroFieldMapper.map(reader);
           }
         })
       };

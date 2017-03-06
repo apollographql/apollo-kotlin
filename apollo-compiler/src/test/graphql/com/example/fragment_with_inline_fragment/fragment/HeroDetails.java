@@ -237,10 +237,12 @@ public class HeroDetails {
       }
 
       public static final class Mapper implements ResponseFieldMapper<Edge> {
+        final Node.Mapper nodeFieldMapper = new Node.Mapper();
+
         final Field[] fields = {
           Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
             @Override public Node read(final ResponseReader reader) throws IOException {
-              return new Node.Mapper().map(reader);
+              return nodeFieldMapper.map(reader);
             }
           })
         };
@@ -254,11 +256,13 @@ public class HeroDetails {
     }
 
     public static final class Mapper implements ResponseFieldMapper<FriendsConnection> {
+      final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
+
       final Field[] fields = {
         Field.forInt("totalCount", "totalCount", null, true),
         Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
           @Override public Edge read(final ResponseReader reader) throws IOException {
-            return new Edge.Mapper().map(reader);
+            return edgeFieldMapper.map(reader);
           }
         })
       };
@@ -472,10 +476,12 @@ public class HeroDetails {
         }
 
         public static final class Mapper implements ResponseFieldMapper<Edge> {
+          final Node.Mapper nodeFieldMapper = new Node.Mapper();
+
           final Field[] fields = {
             Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
               @Override public Node read(final ResponseReader reader) throws IOException {
-                return new Node.Mapper().map(reader);
+                return nodeFieldMapper.map(reader);
               }
             })
           };
@@ -489,11 +495,13 @@ public class HeroDetails {
       }
 
       public static final class Mapper implements ResponseFieldMapper<FriendsConnection1> {
+        final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
+
         final Field[] fields = {
           Field.forInt("totalCount", "totalCount", null, true),
           Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
             @Override public Edge read(final ResponseReader reader) throws IOException {
-              return new Edge.Mapper().map(reader);
+              return edgeFieldMapper.map(reader);
             }
           })
         };
@@ -508,11 +516,13 @@ public class HeroDetails {
     }
 
     public static final class Mapper implements ResponseFieldMapper<AsDroid> {
+      final FriendsConnection1.Mapper friendsConnection1FieldMapper = new FriendsConnection1.Mapper();
+
       final Field[] fields = {
         Field.forString("name", "name", null, false),
         Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection1>() {
           @Override public FriendsConnection1 read(final ResponseReader reader) throws IOException {
-            return new FriendsConnection1.Mapper().map(reader);
+            return friendsConnection1FieldMapper.map(reader);
           }
         }),
         Field.forString("primaryFunction", "primaryFunction", null, true)
@@ -529,18 +539,22 @@ public class HeroDetails {
   }
 
   public static final class Mapper implements ResponseFieldMapper<HeroDetails> {
+    final FriendsConnection.Mapper friendsConnectionFieldMapper = new FriendsConnection.Mapper();
+
+    final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
+
     final Field[] fields = {
       Field.forString("name", "name", null, false),
       Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection>() {
         @Override public FriendsConnection read(final ResponseReader reader) throws IOException {
-          return new FriendsConnection.Mapper().map(reader);
+          return friendsConnectionFieldMapper.map(reader);
         }
       }),
       Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsDroid>() {
         @Override
         public AsDroid read(String conditionalType, ResponseReader reader) throws IOException {
           if (conditionalType.equals("Droid")) {
-            return new AsDroid.Mapper().map(reader);
+            return asDroidFieldMapper.map(reader);
           } else {
             return null;
           }
