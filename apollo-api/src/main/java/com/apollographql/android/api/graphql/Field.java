@@ -148,7 +148,9 @@ public class Field {
     Object variable = objectMap.get(VARIABLE_NAME_KEY);
     //noinspection SuspiciousMethodCalls
     Object resolvedVariable = variables.valueMap().get(variable);
-    if (resolvedVariable instanceof Map) {
+    if (resolvedVariable == null) {
+      return null;
+    } else if (resolvedVariable instanceof Map) {
       //noinspection unchecked
       return orderIndependentKey((Map<String, Object>) resolvedVariable, variables);
     } else {
