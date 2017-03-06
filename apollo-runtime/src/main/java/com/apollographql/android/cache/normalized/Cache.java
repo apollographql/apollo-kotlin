@@ -3,7 +3,6 @@ package com.apollographql.android.cache.normalized;
 import com.apollographql.android.api.graphql.Mutation;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
-import com.apollographql.android.impl.ResponseNormalizer;
 
 import java.util.Collection;
 import java.util.Map;

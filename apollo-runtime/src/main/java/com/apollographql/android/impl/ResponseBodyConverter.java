@@ -6,6 +6,7 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ScalarType;
+import com.apollographql.android.cache.normalized.ResponseNormalizer;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,8 +27,8 @@ final class ResponseBodyConverter {
   }
 
   <T extends Operation.Data> Response<T> convert(ResponseBody responseBody,
-      final ResponseNormalizer responseNormalizer) throws IOException {
-    responseNormalizer.willResolveRootQuery(operation);
+      final ResponseReaderShadow<Map<String, Object>> responseReaderShadow) throws IOException {
+    responseReaderShadow.willResolveRootQuery(operation);
     BufferedSourceJsonReader jsonReader = null;
     try {
       jsonReader = new BufferedSourceJsonReader(responseBody.source());
@@ -44,7 +45,7 @@ final class ResponseBodyConverter {
             @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
               Map<String, Object> buffer = reader.buffer();
               RealResponseReader<Map<String, Object>> realResponseReader = new RealResponseReader<>(operation, buffer,
-                  new MapFieldValueResolver(), customTypeAdapters, responseNormalizer);
+                  new MapFieldValueResolver(), customTypeAdapters, responseReaderShadow);
               return responseFieldMapper.map(realResponseReader);
             }
           });

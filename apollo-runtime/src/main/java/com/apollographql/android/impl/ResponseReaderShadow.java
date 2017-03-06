@@ -5,7 +5,7 @@ import com.apollographql.android.api.graphql.Operation;
 
 import java.util.List;
 
-interface ResponseReaderShadow<R> {
+public interface ResponseReaderShadow<R> {
 
   void willResolveRootQuery(Operation operation);
 

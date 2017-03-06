@@ -17,10 +17,10 @@ import java.util.Map;
   private final R recordSet;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final FieldValueResolver<R> fieldValueResolver;
-  private final ResponseReaderShadow readerShadow;
+  private final ResponseReaderShadow<R> readerShadow;
 
   RealResponseReader(Operation operation, R recordSet, FieldValueResolver<R> fieldValueResolver,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ResponseReaderShadow readerShadow) {
+      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ResponseReaderShadow<R> readerShadow) {
     this.operation = operation;
     this.recordSet = recordSet;
     this.fieldValueResolver = fieldValueResolver;

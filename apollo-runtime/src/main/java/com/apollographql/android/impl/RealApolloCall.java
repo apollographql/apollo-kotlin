@@ -8,6 +8,7 @@ import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ScalarType;
 import com.apollographql.android.cache.http.HttpCache;
 import com.apollographql.android.cache.normalized.Cache;
+import com.apollographql.android.cache.normalized.ResponseNormalizer;
 import com.apollographql.android.impl.util.HttpException;
 import com.squareup.moshi.Moshi;
 
