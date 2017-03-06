@@ -37,7 +37,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static android.R.attr.src;
 import static com.apollographql.android.impl.normalizer.type.Episode.EMPIRE;
 import static com.apollographql.android.impl.normalizer.type.Episode.JEDI;
 import static com.google.common.truth.Truth.assertThat;
