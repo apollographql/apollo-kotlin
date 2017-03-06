@@ -16,74 +16,24 @@ import javax.lang.model.element.Modifier
  * Example of generated class:
  *
  * ```
- *public static final class Mapper implements ResponseFieldMapper<Hero> {
- *  final Field[] fields = {
- *    Field.forString("name", "name", null, false),
- *    Field.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE),
- *    Field.forList("appearanceDates", "appearanceDates", null, false, new Field.ListReader<Date>() {
- *      @Override public Date read(final Field.ListItemReader reader) throws IOException {
- *        return reader.readCustomType(CustomType.DATE);
- *      }
- *    }),
- *    Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
- *      @Override
- *      public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
- *        return new Fragments.Mapper(conditionalType).map(reader);
- *      }
- *    }),
- *    Field.forObject("film", "film", null, true, new Field.ObjectReader<Hero>() {
- *      @Override public Film read(final ResponseReader reader) throws IOException {
- *        return new Film.Mapper().map(reader);
- *      }
- *    })
- *  };
+ *public static final class Mapper implements ResponseFieldMapper<Data> {
+ *     final Hero.Mapper heroFieldMapper = new Hero.Mapper();
  *
- *  @Override
- *  public Hero map(ResponseReader reader) throws IOException {
- *    final __ContentValues contentValues = new __ContentValues();
- *    reader.read(new ResponseReader.ValueHandler() {
- *      @Override
- *      public void handle(final int fieldIndex, final Object value) throws IOException {
- *        switch (fieldIndex) {
- *          case 0: {
- *            contentValues.name = (String) value;
- *            break;
- *          }
- *          case 1: {
- *            contentValues.birthDate = (Date) value;
- *            break;
- *          }
- *          case 2: {
- *            contentValues.appearanceDates = (List<? extends Date>) value;
- *            break;
- *          }
- *          case 3: {
- *            contentValues.fragments = (Fragments) value;
- *            break;
- *          }
- *          case 4: {
- *            contentValues.film = (Film) value;
- *            break;
- *          }
- *        }
- *      }
- *    }, fields);
- *    return new Hero(contentValues.name, contentValues.birthDate, contentValues.appearanceDates,
- *      fragments, film);
- *  }
+ *     final Field[] fields = {
+ *       Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
+ *         @Override public Hero read(final ResponseReader reader) throws IOException {
+ *           return heroFieldMapper.map(reader);
+ *         }
+ *       })
+ *     };
  *
- *  static final class __ContentValues {
- *    String name;
- *
- *    Date birthDate;
- *
- *    List<? extends Date> appearanceDates;
- *
- *    Fragments fragments;
- *
- *    Film film;
- *  }
- *}
+ *     @Override
+ *     public Data map(ResponseReader reader) throws IOException {
+ *       final Hero hero = reader.read(fields[0]);
+ *       return new Data(hero);
+ *     }
+ *   }
+ * }
  *
  * ```
  */
@@ -107,9 +57,10 @@ class SchemaTypeResponseMapperBuilder(
             .map { FieldSpec.builder(it.type.overrideTypeName(typeOverrideMap), it.name).build() })
         .let { if (fragmentSpreads.isNotEmpty()) it.plus(FRAGMENTS_FIELD) else it }
 
-    return TypeSpec.classBuilder(MAPPER_TYPE_NAME)
+    return TypeSpec.classBuilder(Util.MAPPER_TYPE_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
         .addSuperinterface(responseFieldMapperType)
+        .addFields(mapperFields())
         .addField(fieldArray(fields))
         .addMethod(mapMethod(contentValueFields))
         .build()
@@ -145,7 +96,7 @@ class SchemaTypeResponseMapperBuilder(
     } else if (fieldTypeName.isList()) {
       return listFieldFactoryCode(field, fieldTypeName)
     } else {
-      return objectFieldFactoryCode(field, "forObject", fieldTypeName.overrideTypeName(typeOverrideMap))
+      return objectFieldFactoryCode(field, "forObject", fieldTypeName.overrideTypeName(typeOverrideMap) as ClassName)
     }
   }
 
@@ -187,7 +138,7 @@ class SchemaTypeResponseMapperBuilder(
             } else if (rawFieldType.isScalar()) {
               scalarListFieldFactoryCode(field, rawFieldType)
             } else {
-              objectFieldFactoryCode(field, "forList", rawFieldType.overrideTypeName(typeOverrideMap))
+              objectFieldFactoryCode(field, "forList", rawFieldType.overrideTypeName(typeOverrideMap) as ClassName)
             })
         .build()
   }
@@ -244,14 +195,14 @@ class SchemaTypeResponseMapperBuilder(
         .build()
   }
 
-  private fun objectFieldFactoryCode(field: Field, factoryMethod: String, type: TypeName): CodeBlock {
+  private fun objectFieldFactoryCode(field: Field, factoryMethod: String, type: ClassName): CodeBlock {
     return CodeBlock.builder()
         .add("\$T.$factoryMethod(\$S, \$S, \$L, \$L, new \$T() {\n", API_RESPONSE_FIELD_TYPE, field.responseName,
             field.fieldName, field.argumentCodeBlock(), field.isOptional(), apiResponseFieldObjectReaderTypeName(type))
         .indent()
         .beginControlFlow("@Override public \$T read(final \$T \$L) throws \$T", type,
             ClassNames.API_RESPONSE_READER, READER_VAR, IOException::class.java)
-        .add(CodeBlock.of("return new \$T.Mapper().map(\$L);\n", type, READER_VAR))
+        .add(CodeBlock.of("return \$L.map(\$L);\n", type.mapperFieldName(), READER_VAR))
         .endControlFlow()
         .unindent()
         .add("})")
@@ -319,11 +270,11 @@ class SchemaTypeResponseMapperBuilder(
           .let { if (it is WildcardTypeName) it.upperBounds.first() else it }
 
   private fun inlineFragmentFieldFactoryCode(fragment: InlineFragment): CodeBlock {
-    val type = fragment.fieldSpec().type.withoutAnnotations().overrideTypeName(typeOverrideMap)
+    val type = fragment.fieldSpec().type.withoutAnnotations().overrideTypeName(typeOverrideMap) as ClassName
     fun readCodeBlock(): CodeBlock {
       return CodeBlock.builder()
           .beginControlFlow("if (\$L.equals(\$S))", CONDITIONAL_TYPE_VAR, fragment.typeCondition)
-          .add(CodeBlock.of("return new \$T.Mapper().map(\$L);\n", type, READER_PARAM.name))
+          .add(CodeBlock.of("return \$L.map(\$L);\n", type.mapperFieldName(), READER_PARAM.name))
           .nextControlFlow("else")
           .addStatement("return null")
           .endControlFlow()
@@ -352,19 +303,20 @@ class SchemaTypeResponseMapperBuilder(
   private fun fragmentsFieldFactoryCode(): CodeBlock {
     fun readCodeBlock(): CodeBlock {
       return CodeBlock.builder()
-          .add(CodeBlock.of("return new Fragments.Mapper(\$L).map(\$L);\n", CONDITIONAL_TYPE_VAR, READER_PARAM.name))
+          .addStatement("return \$L.map(\$L, \$L)", FRAGMENTS_CLASS.mapperFieldName(), READER_PARAM.name,
+              CONDITIONAL_TYPE_VAR)
           .build()
     }
 
     fun conditionalFieldReaderType() =
         TypeSpec.anonymousClassBuilder("")
-            .superclass(apiConditionalFieldReaderTypeName(ClassName.get("", "Fragments")))
+            .superclass(apiConditionalFieldReaderTypeName(FRAGMENTS_CLASS))
             .addMethod(MethodSpec
                 .methodBuilder("read")
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override::class.java)
                 .addException(IOException::class.java)
-                .returns(ClassName.get("", "Fragments"))
+                .returns(FRAGMENTS_CLASS)
                 .addParameter(ParameterSpec.builder(String::class.java, CONDITIONAL_TYPE_VAR).build())
                 .addParameter(READER_PARAM)
                 .addCode(readCodeBlock())
@@ -375,6 +327,22 @@ class SchemaTypeResponseMapperBuilder(
         conditionalFieldReaderType())
   }
 
+  private fun mapperFields() =
+      fields
+          .map { it.fieldSpec(customScalarTypeMap = context.customTypeMap) }
+          .plus(inlineFragments.map { it.fieldSpec() })
+          .map { it.type.withoutAnnotations() }
+          .map { it.let { if (it.isList()) it.listParamType() else it } }
+          .filter { !it.isScalar() && !it.isCustomScalarType() }
+          .map { it.overrideTypeName(typeOverrideMap) as ClassName }
+          .plus(if (fragmentSpreads.isEmpty()) emptyList<ClassName>() else listOf(FRAGMENTS_CLASS))
+          .map {
+            val mapperClassName = it.mapper()
+            FieldSpec.builder(mapperClassName, it.mapperFieldName(), Modifier.FINAL)
+                .initializer(CodeBlock.of("new \$L()", mapperClassName))
+                .build()
+          }
+
   private fun apiResponseFieldObjectReaderTypeName(type: TypeName) =
       ParameterizedTypeName.get(API_RESPONSE_FIELD_OBJECT_READER_TYPE, type)
 
@@ -382,12 +350,11 @@ class SchemaTypeResponseMapperBuilder(
       ParameterizedTypeName.get(API_RESPONSE_FIELD_CONDITIONAL_TYPE_READER_TYPE, type)
 
   companion object {
-    val MAPPER_TYPE_NAME: String = "Mapper"
     private val FRAGMENTS_FIELD = FieldSpec.builder(ClassName.get("", SchemaTypeSpecBuilder.FRAGMENTS_TYPE_NAME),
         SchemaTypeSpecBuilder.FRAGMENTS_TYPE_NAME.decapitalize()).build()
+    private val FRAGMENTS_CLASS = ClassName.get("", "Fragments")
     private val FIELDS_VAR = "fields"
     private val CONDITIONAL_TYPE_VAR = "conditionalType"
-    private val VALUE_PARAM = "value"
     private val READER_VAR = "reader"
     private val READER_PARAM = ParameterSpec.builder(ResponseReader::class.java, READER_VAR).build()
     private val SCALAR_TYPES = listOf(ClassNames.STRING, TypeName.INT, TypeName.INT.box(), TypeName.LONG,

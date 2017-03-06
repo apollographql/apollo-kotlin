@@ -1,6 +1,7 @@
 package com.example.fragment_in_fragment;
 
 import com.apollographql.android.api.graphql.Field;
+import com.apollographql.android.api.graphql.FragmentResponseFieldMapper;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
@@ -247,18 +248,15 @@ public final class AllStarships implements Query<AllStarships.Data, Operation.Va
               return h;
             }
 
-            public static final class Mapper implements ResponseFieldMapper<Fragments> {
-              private final String conditionalType;
-
-              public Mapper(@Nonnull String conditionalType) {
-                this.conditionalType = conditionalType;
-              }
+            public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+              final StarshipFragment.Mapper starshipFragmentFieldMapper = new StarshipFragment.Mapper();
 
               @Override
-              public @Nonnull Fragments map(ResponseReader reader) throws IOException {
+              public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType)
+                  throws IOException {
                 StarshipFragment starshipFragment = null;
                 if (conditionalType.equals(StarshipFragment.TYPE_CONDITION)) {
-                  starshipFragment = new StarshipFragment.Mapper().map(reader);
+                  starshipFragment = starshipFragmentFieldMapper.map(reader);
                 }
                 return new Fragments(starshipFragment);
               }
@@ -266,12 +264,14 @@ public final class AllStarships implements Query<AllStarships.Data, Operation.Va
           }
 
           public static final class Mapper implements ResponseFieldMapper<Node> {
+            final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
+
             final Field[] fields = {
               Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
                 @Override
                 public Fragments read(String conditionalType, ResponseReader reader) throws
                     IOException {
-                  return new Fragments.Mapper(conditionalType).map(reader);
+                  return fragmentsFieldMapper.map(reader, conditionalType);
                 }
               })
             };
@@ -285,10 +285,12 @@ public final class AllStarships implements Query<AllStarships.Data, Operation.Va
         }
 
         public static final class Mapper implements ResponseFieldMapper<Edge> {
+          final Node.Mapper nodeFieldMapper = new Node.Mapper();
+
           final Field[] fields = {
             Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
               @Override public Node read(final ResponseReader reader) throws IOException {
-                return new Node.Mapper().map(reader);
+                return nodeFieldMapper.map(reader);
               }
             })
           };
@@ -302,10 +304,12 @@ public final class AllStarships implements Query<AllStarships.Data, Operation.Va
       }
 
       public static final class Mapper implements ResponseFieldMapper<AllStarship> {
+        final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
+
         final Field[] fields = {
           Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
             @Override public Edge read(final ResponseReader reader) throws IOException {
-              return new Edge.Mapper().map(reader);
+              return edgeFieldMapper.map(reader);
             }
           })
         };
@@ -319,12 +323,14 @@ public final class AllStarships implements Query<AllStarships.Data, Operation.Va
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
+      final AllStarship.Mapper allStarshipFieldMapper = new AllStarship.Mapper();
+
       final Field[] fields = {
         Field.forObject("allStarships", "allStarships", new UnmodifiableMapBuilder<String, Object>(1)
           .put("first", "7.0")
         .build(), true, new Field.ObjectReader<AllStarship>() {
           @Override public AllStarship read(final ResponseReader reader) throws IOException {
-            return new AllStarship.Mapper().map(reader);
+            return allStarshipFieldMapper.map(reader);
           }
         })
       };

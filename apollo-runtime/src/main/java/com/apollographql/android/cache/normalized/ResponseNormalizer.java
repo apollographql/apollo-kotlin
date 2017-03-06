@@ -1,12 +1,8 @@
-package com.apollographql.android.impl;
+package com.apollographql.android.cache.normalized;
 
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.cache.normalized.Cache;
-import com.apollographql.android.cache.normalized.CacheKeyResolver;
-import com.apollographql.android.cache.normalized.CacheReference;
-import com.apollographql.android.cache.normalized.Record;
-import com.apollographql.android.cache.normalized.RecordSet;
+import com.apollographql.android.impl.ResponseReaderShadow;
 import com.apollographql.android.impl.util.SimpleStack;
 
 import java.util.ArrayList;
@@ -18,8 +14,7 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-public class ResponseNormalizer implements ResponseReaderShadow {
-
+public final class ResponseNormalizer implements ResponseReaderShadow<Map<String, Object>> {
   private SimpleStack<List<String>> pathStack;
   private SimpleStack<Record> recordStack;
   private SimpleStack<Object> valueStack;
@@ -30,16 +25,16 @@ public class ResponseNormalizer implements ResponseReaderShadow {
   private Record currentRecord;
   private RecordSet recordSet;
 
+  ResponseNormalizer(CacheKeyResolver cacheKeyResolver) {
+    this.cacheKeyResolver = cacheKeyResolver;
+  }
+
   public Collection<Record> records() {
     return recordSet.allRecords();
   }
 
   public Set<String> dependentKeys() {
     return dependentKeys;
-  }
-
-  public ResponseNormalizer(CacheKeyResolver cacheKeyResolver) {
-    this.cacheKeyResolver = cacheKeyResolver;
   }
 
   @Override public void willResolveRootQuery(Operation operation) {
@@ -128,5 +123,4 @@ public class ResponseNormalizer implements ResponseReaderShadow {
     }
     return stringBuilder.toString();
   }
-
 }

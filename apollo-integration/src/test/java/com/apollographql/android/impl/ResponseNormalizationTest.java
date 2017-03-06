@@ -28,6 +28,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -324,6 +325,11 @@ public class ResponseNormalizationTest {
     Record lukeRecord = cacheStore.loadRecord("hero(episode:JEDI).friends.0");
     assertThat(lukeRecord.field("name")).isEqualTo("Luke Skywalker");
     assertThat(lukeRecord.field("height(unit:METER)")).isEqualTo(1.72);
+
+    final List<Object> friends = (List<Object>) cacheStore.loadRecord("hero(episode:JEDI)").field("friends");
+    assertThat(friends.get(0)).isEqualTo(new CacheReference("hero(episode:JEDI).friends.0"));
+    assertThat(friends.get(1)).isEqualTo(new CacheReference("hero(episode:JEDI).friends.1"));
+    assertThat(friends.get(2)).isEqualTo(new CacheReference("hero(episode:JEDI).friends.2"));
   }
 
   @Test

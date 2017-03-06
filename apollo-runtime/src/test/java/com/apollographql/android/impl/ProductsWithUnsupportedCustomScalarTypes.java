@@ -152,10 +152,12 @@ public final class ProductsWithUnsupportedCustomScalarTypes implements Query<Pro
           }
 
           public static final class Mapper implements ResponseFieldMapper<Edge> {
+            final Node.Mapper nodeMapper = new Node.Mapper();
+
             final Field[] fields = {
                 Field.forObject("node", "node", null, false, new Field.ObjectReader<Node>() {
                   @Override public Node read(final ResponseReader reader) throws IOException {
-                    return new Node.Mapper().map(reader);
+                    return nodeMapper.map(reader);
                   }
                 })
             };
@@ -169,10 +171,12 @@ public final class ProductsWithUnsupportedCustomScalarTypes implements Query<Pro
         }
 
         public static final class Mapper implements ResponseFieldMapper<Product> {
+          final Edge.Mapper edgeMapper = new Edge.Mapper();
+
           final Field[] fields = {
               Field.forList("edges", "edges", null, false, new Field.ObjectReader<Edge>() {
                 @Override public Edge read(final ResponseReader reader) throws IOException {
-                  return new Edge.Mapper().map(reader);
+                  return edgeMapper.map(reader);
                 }
               })
           };
@@ -186,10 +190,12 @@ public final class ProductsWithUnsupportedCustomScalarTypes implements Query<Pro
       }
 
       public static final class Mapper implements ResponseFieldMapper<Shop> {
+        final Product.Mapper productMapper = new Product.Mapper();
+
         final Field[] fields = {
             Field.forObject("products", "products", null, false, new Field.ObjectReader<Product>() {
               @Override public Product read(final ResponseReader reader) throws IOException {
-                return new Product.Mapper().map(reader);
+                return productMapper.map(reader);
               }
             })
         };
@@ -203,10 +209,12 @@ public final class ProductsWithUnsupportedCustomScalarTypes implements Query<Pro
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
+      final Shop.Mapper shopMapper = new Shop.Mapper();
+
       final Field[] fields = {
           Field.forObject("shop", "shop", null, false, new Field.ObjectReader<Shop>() {
             @Override public Shop read(final ResponseReader reader) throws IOException {
-              return new Shop.Mapper().map(reader);
+              return shopMapper.map(reader);
             }
           })
       };

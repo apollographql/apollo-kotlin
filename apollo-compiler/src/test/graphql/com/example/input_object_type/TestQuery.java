@@ -213,6 +213,8 @@ public final class TestQuery implements Mutation<TestQuery.Data, TestQuery.Varia
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
+      final CreateReview.Mapper createReviewFieldMapper = new CreateReview.Mapper();
+
       final Field[] fields = {
         Field.forObject("createReview", "createReview", new UnmodifiableMapBuilder<String, Object>(2)
           .put("review", new UnmodifiableMapBuilder<String, Object>(2)
@@ -225,7 +227,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, TestQuery.Varia
           .build())
         .build(), true, new Field.ObjectReader<CreateReview>() {
           @Override public CreateReview read(final ResponseReader reader) throws IOException {
-            return new CreateReview.Mapper().map(reader);
+            return createReviewFieldMapper.map(reader);
           }
         })
       };

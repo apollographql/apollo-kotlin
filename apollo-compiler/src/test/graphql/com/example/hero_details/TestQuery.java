@@ -284,10 +284,12 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
           }
 
           public static final class Mapper implements ResponseFieldMapper<Edge> {
+            final Node.Mapper nodeFieldMapper = new Node.Mapper();
+
             final Field[] fields = {
               Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
                 @Override public Node read(final ResponseReader reader) throws IOException {
-                  return new Node.Mapper().map(reader);
+                  return nodeFieldMapper.map(reader);
                 }
               })
             };
@@ -301,11 +303,13 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
         }
 
         public static final class Mapper implements ResponseFieldMapper<FriendsConnection> {
+          final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
+
           final Field[] fields = {
             Field.forInt("totalCount", "totalCount", null, true),
             Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
               @Override public Edge read(final ResponseReader reader) throws IOException {
-                return new Edge.Mapper().map(reader);
+                return edgeFieldMapper.map(reader);
               }
             })
           };
@@ -320,11 +324,13 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
       }
 
       public static final class Mapper implements ResponseFieldMapper<Hero> {
+        final FriendsConnection.Mapper friendsConnectionFieldMapper = new FriendsConnection.Mapper();
+
         final Field[] fields = {
           Field.forString("name", "name", null, false),
           Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection>() {
             @Override public FriendsConnection read(final ResponseReader reader) throws IOException {
-              return new FriendsConnection.Mapper().map(reader);
+              return friendsConnectionFieldMapper.map(reader);
             }
           })
         };
@@ -339,10 +345,12 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
+      final Hero.Mapper heroFieldMapper = new Hero.Mapper();
+
       final Field[] fields = {
         Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
           @Override public Hero read(final ResponseReader reader) throws IOException {
-            return new Hero.Mapper().map(reader);
+            return heroFieldMapper.map(reader);
           }
         })
       };
