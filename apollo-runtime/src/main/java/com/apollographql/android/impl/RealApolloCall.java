@@ -76,6 +76,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     }
 
     //TODO must be called in own executor
+    //issue: https://github.com/apollographql/apollo-android/issues/280
     Response<T> cachedResponse = cachedResponse();
     if (cachedResponse != null) {
       if (callback != null) {
