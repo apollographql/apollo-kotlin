@@ -68,6 +68,4 @@ public final class Cache {
       return null;
     }
   });
-
-  //Todo: add interceptor for reading (https://github.com/apollographql/apollo-android/issues/266)
 }
