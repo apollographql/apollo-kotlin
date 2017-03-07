@@ -55,14 +55,14 @@ class ApolloPlugin implements Plugin<Project> {
     project.getGradle().addListener(new DependencyResolutionListener() {
       @Override
       void beforeResolve(ResolvableDependencies resolvableDependencies) {
-        def apolloDep = compileDepSet.find { dep ->
+        def apolloApiDep = compileDepSet.find { dep ->
           dep.group == APOLLO_GROUP
           dep.name == API_DEP_NAME
         }
-        if (apolloDep != null && apolloDep.version != VersionKt.VERSION) {
-          throw new GradleException("apollo-api version ${apolloDep.version} isn't compatible with the plugin version ${VersionKt.VERSION}")
+        if (apolloApiDep != null && apolloApiDep.version != VersionKt.VERSION) {
+          throw new GradleException("apollo-api version ${apolloApiDep.version} isn't compatible with the apollo-gradle-plugin version ${VersionKt.VERSION}")
         }
-        if (System.getProperty("apollographql.skipApi") != "true" && apolloDep == null) {
+        if (System.getProperty("apollographql.skipApi") != "true" && apolloApiDep == null) {
           compileDepSet.add(project.dependencies.create("$APOLLO_GROUP:$API_DEP_NAME:$VersionKt.VERSION"))
         }
         project.getGradle().removeListener(this)
