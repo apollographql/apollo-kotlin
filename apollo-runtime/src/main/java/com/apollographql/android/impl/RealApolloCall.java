@@ -178,7 +178,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     return null;
   }
 
-  @SuppressWarnings("unchecked") private T cachedData() {
+  @SuppressWarnings("unchecked") @Nullable private T cachedData() {
     Record rootRecord = cache.read(Cache.rootKeyForOperation(operation));
     if (rootRecord == null) {
       return null;
