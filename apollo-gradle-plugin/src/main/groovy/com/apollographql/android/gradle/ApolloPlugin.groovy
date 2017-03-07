@@ -5,10 +5,10 @@ import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.BaseVariant
 import com.apollographql.android.VersionKt
 import com.google.common.collect.ImmutableList
-import com.google.common.collect.Lists
 import com.moowork.gradle.node.NodeExtension
 import com.moowork.gradle.node.NodePlugin
 import org.gradle.api.DomainObjectCollection
+import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -24,6 +24,9 @@ import javax.inject.Inject
 class ApolloPlugin implements Plugin<Project> {
   private static final String NODE_VERSION = "6.7.0"
   public static final String TASK_GROUP = "apollo"
+  private static final String APOLLO_GROUP = "com.apollographql.android"
+  private static final String API_DEP_NAME = "api"
+
   private Project project
   private final FileResolver fileResolver
 
@@ -52,10 +55,17 @@ class ApolloPlugin implements Plugin<Project> {
     project.getGradle().addListener(new DependencyResolutionListener() {
       @Override
       void beforeResolve(ResolvableDependencies resolvableDependencies) {
-        if (System.getProperty("apollographql.skipApi") != "true") {
-          compileDepSet.add(project.dependencies.create("com.apollographql.android:api:${VersionKt.VERSION}"))
-          project.getGradle().removeListener(this)
+        def apolloApiDep = compileDepSet.find { dep ->
+          dep.group == APOLLO_GROUP
+          dep.name == API_DEP_NAME
         }
+        if (apolloApiDep != null && apolloApiDep.version != VersionKt.VERSION) {
+          throw new GradleException("apollo-api version ${apolloApiDep.version} isn't compatible with the apollo-gradle-plugin version ${VersionKt.VERSION}")
+        }
+        if (System.getProperty("apollographql.skipApi") != "true" && apolloApiDep == null) {
+          compileDepSet.add(project.dependencies.create("$APOLLO_GROUP:$API_DEP_NAME:$VersionKt.VERSION"))
+        }
+        project.getGradle().removeListener(this)
       }
 
       @Override

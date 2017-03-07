@@ -42,6 +42,9 @@
 			"fragmentName": "HumanDetails",
 			"source": "fragment HumanDetails on Human {\n  __typename\n  name\n  height\n}",
 			"typeCondition": "Human",
+			"possibleTypes": [
+				"Human"
+			],
 			"fields": [
 				{
 					"responseName": "name",
@@ -63,6 +66,9 @@
 			"fragmentName": "DroidDetails",
 			"source": "fragment DroidDetails on Droid {\n  __typename\n  name\n  primaryFunction\n}",
 			"typeCondition": "Droid",
+			"possibleTypes": [
+				"Droid"
+			],
 			"fields": [
 				{
 					"responseName": "name",
