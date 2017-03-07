@@ -207,6 +207,7 @@ import java.util.Map;
     Object value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
     if (value == null) {
+      readerShadow.didParseNull();
       return null;
     } else {
       CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(field.scalarType());

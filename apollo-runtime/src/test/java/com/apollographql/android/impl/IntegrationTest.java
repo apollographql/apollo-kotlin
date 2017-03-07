@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -41,10 +42,12 @@ public class IntegrationTest {
   private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
 
   private ApolloClient apolloClient;
+  private CustomTypeAdapter<Date> dateCustomTypeAdapter;
+
   @Rule public final MockWebServer server = new MockWebServer();
 
   @Before public void setUp() {
-    CustomTypeAdapter<Date> dateCustomTypeAdapter = new CustomTypeAdapter<Date>() {
+    dateCustomTypeAdapter = new CustomTypeAdapter<Date>() {
       @Override public Date decode(String value) {
         try {
           return DATE_FORMAT.parse(value);
@@ -156,19 +159,23 @@ public class IntegrationTest {
             "  }}\",\"variables\":{}}");
 
     ProductsWithDate.Data data = body.data();
-    assertThat(data.shop().products().edges().size()).isEqualTo(10);
+    assertThat(data.shop().products().edges().size()).isEqualTo(11);
 
     List<String> dates = FluentIterable.from(data.shop().products().edges())
         .transform(new Function<ProductsWithDate.Data.Shop.Product.Edge, String>() {
           @Override public String apply(ProductsWithDate.Data.Shop.Product.Edge productEdge) {
-            return DATE_FORMAT.format(productEdge.node().createdAt());
+            Date createdAt = productEdge.node().createdAt();
+            if(createdAt == null) {
+              return null;
+            }
+            return dateCustomTypeAdapter.encode(createdAt);
           }
-        }).toList();
+        }).copyInto(new ArrayList<String>());
 
     assertThat(dates).isEqualTo(Arrays.asList(
         "2013-11-18T19:35:35Z", "2013-11-18T19:35:40Z", "2013-11-18T19:35:54Z", "2013-11-18T19:35:56Z",
         "2013-11-18T19:36:33Z", "2013-11-18T19:36:45Z", "2013-11-18T19:37:08Z", "2013-11-18T19:37:24Z",
-        "2013-11-18T19:37:26Z", "2013-11-18T19:37:28Z"));
+        "2013-11-18T19:37:26Z", "2013-11-18T19:37:28Z", null));
   }
 
   @Test public void productsWithUnsupportedCustomScalarTypes() throws Exception {

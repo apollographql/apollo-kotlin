@@ -62,6 +62,12 @@
               "title": "Platinum Aqua",
               "createdAt": "2013-11-18T19:37:28Z"
             }
+          },
+          {
+            "node": {
+              "title": "Platinum Aqua",
+              "createdAt": null
+            }
           }
         ]
       }
