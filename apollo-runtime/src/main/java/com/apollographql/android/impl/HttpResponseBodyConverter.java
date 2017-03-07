@@ -13,12 +13,12 @@ import java.util.Map;
 
 import okhttp3.ResponseBody;
 
-final class ResponseBodyConverter {
+final class HttpResponseBodyConverter {
   private final Operation operation;
   private final ResponseFieldMapper responseFieldMapper;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
 
-  ResponseBodyConverter(Operation operation, ResponseFieldMapper responseFieldMapper,
+  HttpResponseBodyConverter(Operation operation, ResponseFieldMapper responseFieldMapper,
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
     this.operation = operation;
     this.responseFieldMapper = responseFieldMapper;

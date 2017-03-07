@@ -1,67 +1,38 @@
 package com.apollographql.android.cache.normalized;
 
-import com.apollographql.android.api.graphql.Mutation;
-import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.api.graphql.Query;
-
 import java.util.Collection;
-import java.util.Map;
+import java.util.Collections;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
-public final class Cache {
+public interface Cache {
+  ResponseNormalizer responseNormalizer();
 
-  private final CacheStore cacheStore;
-  private final CacheKeyResolver cacheKeyResolver;
+  void write(@Nonnull Record record);
 
-  private static final String QUERY_ROOT_KEY = "QUERY_ROOT";
-  private static final String MUTATION_ROOT_KEY = "MUTATION_ROOT";
+  void write(@Nonnull Collection<Record> recordSet);
 
-  public Cache(CacheStore cacheStore, CacheKeyResolver cacheKeyResolver) {
-    this.cacheStore = cacheStore;
-    this.cacheKeyResolver = cacheKeyResolver;
-  }
+  Record read(@Nonnull String key);
 
-  public static String rootKeyForOperation(Operation operation) {
-    if (operation instanceof Query) {
-      return QUERY_ROOT_KEY;
-    } else if (operation instanceof Mutation) {
-      return MUTATION_ROOT_KEY;
+  Collection<Record> read(@Nonnull Collection<String> keys);
+
+  Cache NO_CACHE = new Cache() {
+    @Override public ResponseNormalizer responseNormalizer() {
+      return ResponseNormalizer.NO_OP_NORMALIZER;
     }
-    throw new IllegalArgumentException("Unknown operation type.");
-  }
 
-  public CacheStore cacheStore() {
-    return cacheStore;
-  }
+    @Override public void write(@Nonnull Record record) {
+    }
 
-  public CacheKeyResolver cacheKeyResolver() {
-    return cacheKeyResolver;
-  }
+    @Override public void write(@Nonnull Collection<Record> recordSet) {
+    }
 
-  public ResponseNormalizer responseNormalizer() {
-    return new ResponseNormalizer(cacheKeyResolver);
-  }
-
-  public static final Cache NO_OP_NORMALIZED_CACHE = new Cache(new CacheStore() {
-    @Override public Record loadRecord(String key) {
+    @Override public Record read(@Nonnull String key) {
       return null;
     }
 
-    @Override public void merge(Record object) {
-
+    @Override public Collection<Record> read(@Nonnull Collection<String> keys) {
+      return Collections.emptyList();
     }
-
-    @Override public void merge(Collection<Record> recordSet) {
-
-    }
-
-  }, new CacheKeyResolver() {
-    @Nullable @Override public String resolve(Map<String, Object> jsonObject) {
-      return null;
-    }
-  });
-
-  //Todo: add interceptor for reading (https://github.com/apollographql/apollo-android/issues/266)
-
+  };
 }

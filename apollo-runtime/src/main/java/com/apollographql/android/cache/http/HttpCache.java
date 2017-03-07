@@ -140,6 +140,8 @@ public final class HttpCache {
     }
   }
 
+  //TODO should be generic for both http and normalized cache,
+  //issue: https://github.com/apollographql/apollo-android/issues/281
   public enum CacheControl {
     DEFAULT("default"),
     NETWORK_ONLY("network-only"),

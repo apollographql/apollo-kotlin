@@ -13,7 +13,7 @@ final class CacheFieldValueResolver implements FieldValueResolver<Record> {
   private final Cache cache;
   private final Operation.Variables variables;
 
-  public CacheFieldValueResolver(Cache cache, Operation.Variables variables) {
+  CacheFieldValueResolver(Cache cache, Operation.Variables variables) {
     this.cache = cache;
     this.variables = variables;
   }
@@ -32,14 +32,14 @@ final class CacheFieldValueResolver implements FieldValueResolver<Record> {
 
   private Record valueFor(Record record, Field.ObjectField field) {
     CacheReference cacheReference = fieldValue(record, field);
-    return cacheReference != null ? cache.cacheStore().loadRecord(cacheReference.key()) : null;
+    return cacheReference != null ? cache.read(cacheReference.key()) : null;
   }
 
   private List<Record> valueFor(Record record, Field.ObjectListField field) {
     List<CacheReference> values = fieldValue(record, field);
     List<Record> result = new ArrayList<>();
     for (CacheReference reference : values) {
-      result.add(cache.cacheStore().loadRecord(reference.key()));
+      result.add(cache.read(reference.key()));
     }
     return result;
   }

@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -324,7 +325,7 @@ public class ResponseNormalizationTest {
 
     Record lukeRecord = cacheStore.loadRecord("hero(episode:JEDI).friends.0");
     assertThat(lukeRecord.field("name")).isEqualTo("Luke Skywalker");
-    assertThat(lukeRecord.field("height(unit:METER)")).isEqualTo(1.72);
+    assertThat(lukeRecord.field("height(unit:METER)")).isEqualTo(BigDecimal.valueOf(1.72));
 
     final List<Object> friends = (List<Object>) cacheStore.loadRecord("hero(episode:JEDI)").field("friends");
     assertThat(friends.get(0)).isEqualTo(new CacheReference("hero(episode:JEDI).friends.0"));
@@ -346,7 +347,7 @@ public class ResponseNormalizationTest {
 
     Record lukeRecord = cacheStore.loadRecord("hero(episode:EMPIRE).friends.0");
     assertThat(lukeRecord.field("name")).isEqualTo("Han Solo");
-    assertThat(lukeRecord.field("height(unit:FOOT)")).isEqualTo(5.905512);
+    assertThat(lukeRecord.field("height(unit:FOOT)")).isEqualTo(BigDecimal.valueOf(5.905512));
   }
 
 }
