@@ -8,6 +8,7 @@ import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ScalarType;
 import com.apollographql.android.cache.http.HttpCache;
 import com.apollographql.android.cache.normalized.Cache;
+import com.apollographql.android.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.cache.normalized.Record;
 import com.apollographql.android.cache.normalized.ResponseNormalizer;
 import com.apollographql.android.impl.util.HttpException;
@@ -171,15 +172,11 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
       return new Response<>(operation, cachedData, null);
     }
 
-    if (cacheControl == CacheControl.CACHE_ONLY) {
-      return new Response<>(operation, null, null);
-    }
-
     return null;
   }
 
   @SuppressWarnings("unchecked") @Nullable private T cachedData() {
-    Record rootRecord = cache.read(Cache.rootKeyForOperation(operation));
+    Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation));
     if (rootRecord == null) {
       return null;
     }

@@ -10,6 +10,7 @@ import com.apollographql.android.cache.http.EvictionStrategy;
 import com.apollographql.android.cache.http.HttpCache;
 import com.apollographql.android.cache.http.ResponseCacheStore;
 import com.apollographql.android.cache.normalized.Cache;
+import com.apollographql.android.cache.normalized.RealCache;
 import com.apollographql.android.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.cache.normalized.CacheStore;
 import com.squareup.moshi.JsonAdapter;
@@ -90,7 +91,7 @@ public final class ApolloClient implements ApolloCall.Factory {
     OkHttpClient okHttpClient;
     HttpUrl serverUrl;
     HttpCache httpCache;
-    Cache cache = Cache.NO_OP_NORMALIZED_CACHE;
+    Cache cache = Cache.NO_CACHE;
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
     Moshi.Builder moshiBuilder = new Moshi.Builder();
 
@@ -124,7 +125,7 @@ public final class ApolloClient implements ApolloCall.Factory {
         @Nonnull CacheKeyResolver cacheKeyResolver) {
       checkNotNull(cacheStore, "cacheStore == null");
       checkNotNull(cacheKeyResolver, "cacheKeyResolver == null");
-      this.cache = new Cache(cacheStore, cacheKeyResolver);
+      this.cache = new RealCache(cacheStore, cacheKeyResolver);
       return this;
     }
 

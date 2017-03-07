@@ -7,14 +7,16 @@ import com.apollographql.android.impl.util.SimpleStack;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class ResponseNormalizer implements ResponseReaderShadow<Map<String, Object>> {
+public class ResponseNormalizer implements ResponseReaderShadow<Map<String, Object>> {
   private SimpleStack<List<String>> pathStack;
   private SimpleStack<Record> recordStack;
   private SimpleStack<Object> valueStack;
@@ -25,7 +27,7 @@ public final class ResponseNormalizer implements ResponseReaderShadow<Map<String
   private Record currentRecord;
   private RecordSet recordSet;
 
-  ResponseNormalizer(CacheKeyResolver cacheKeyResolver) {
+  ResponseNormalizer(@Nonnull CacheKeyResolver cacheKeyResolver) {
     this.cacheKeyResolver = cacheKeyResolver;
   }
 
@@ -44,7 +46,7 @@ public final class ResponseNormalizer implements ResponseReaderShadow<Map<String
     dependentKeys = new HashSet<>();
 
     path = new ArrayList<>();
-    currentRecord = new Record(Cache.rootKeyForOperation(operation));
+    currentRecord = new Record(CacheKeyResolver.rootKeyForOperation(operation));
     recordSet = new RecordSet();
   }
 
@@ -123,4 +125,44 @@ public final class ResponseNormalizer implements ResponseReaderShadow<Map<String
     }
     return stringBuilder.toString();
   }
+
+  static final ResponseNormalizer NO_OP_NORMALIZER = new ResponseNormalizer(CacheKeyResolver.DEFAULT) {
+    @Override public void willResolveRootQuery(Operation operation) {
+    }
+
+    @Override public void willResolve(Field field, Operation.Variables variables) {
+    }
+
+    @Override public void didResolve(Field field, Operation.Variables variables) {
+    }
+
+    @Override public void didParseScalar(Object value) {
+    }
+
+    @Override public void willParseObject(Map<String, Object> objectMap) {
+    }
+
+    @Override public void didParseObject(Map<String, Object> objectMap) {
+    }
+
+    @Override public void didParseList(List array) {
+    }
+
+    @Override public void willParseElement(int atIndex) {
+    }
+
+    @Override public void didParseElement(int atIndex) {
+    }
+
+    @Override public void didParseNull() {
+    }
+
+    @Override public Collection<Record> records() {
+      return Collections.emptyList();
+    }
+
+    @Override public Set<String> dependentKeys() {
+      return Collections.emptySet();
+    }
+  };
 }
