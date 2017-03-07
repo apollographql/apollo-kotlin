@@ -10,6 +10,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public abstract class CacheKeyResolver {
+  public final static CacheKeyResolver DEFAULT = new CacheKeyResolver() {
+    @Nullable @Override public String resolve(@Nonnull Map<String, Object> jsonObject) {
+      return null;
+    }
+  };
   private final static String QUERY_ROOT_KEY = "QUERY_ROOT";
   private final static String MUTATION_ROOT_KEY = "MUTATION_ROOT";
 
@@ -23,10 +28,4 @@ public abstract class CacheKeyResolver {
   }
 
   @Nullable public abstract String resolve(@Nonnull Map<String, Object> jsonObject);
-
-  public static final CacheKeyResolver DEFAULT = new CacheKeyResolver() {
-    @Nullable @Override public String resolve(@Nonnull Map<String, Object> jsonObject) {
-      return null;
-    }
-  };
 }
