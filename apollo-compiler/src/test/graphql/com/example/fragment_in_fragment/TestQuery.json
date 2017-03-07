@@ -54,6 +54,9 @@
 			"fragmentName": "starshipFragment",
 			"source": "fragment starshipFragment on Starship {\n  __typename\n  id\n  name\n  pilotConnection {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        ...pilotFragment\n      }\n    }\n  }\n}",
 			"typeCondition": "Starship",
+			"possibleTypes": [
+				"Starship"
+			],
 			"fields": [
 				{
 					"responseName": "id",
@@ -105,6 +108,9 @@
 			"fragmentName": "pilotFragment",
 			"source": "fragment pilotFragment on Person {\n  __typename\n  name\n  homeworld {\n    __typename\n    name\n  }\n}",
 			"typeCondition": "Person",
+			"possibleTypes": [
+				"Person"
+			],
 			"fields": [
 				{
 					"responseName": "name",

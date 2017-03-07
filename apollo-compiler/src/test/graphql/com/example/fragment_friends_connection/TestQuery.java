@@ -169,7 +169,7 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
           public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType)
               throws IOException {
             HeroDetails heroDetails = null;
-            if (conditionalType.equals(HeroDetails.TYPE_CONDITION)) {
+            if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) {
               heroDetails = heroDetailsFieldMapper.map(reader);
             }
             return new Fragments(heroDetails);

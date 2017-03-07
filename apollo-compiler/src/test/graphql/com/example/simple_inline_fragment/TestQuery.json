@@ -22,6 +22,9 @@
 					"inlineFragments": [
 						{
 							"typeCondition": "Human",
+							"possibleTypes": [
+								"Human"
+							],
 							"fields": [
 								{
 									"responseName": "name",
@@ -38,6 +41,9 @@
 						},
 						{
 							"typeCondition": "Droid",
+							"possibleTypes": [
+								"Droid"
+							],
 							"fields": [
 								{
 									"responseName": "name",

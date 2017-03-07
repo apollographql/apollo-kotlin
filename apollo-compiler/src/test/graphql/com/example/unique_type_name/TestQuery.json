@@ -36,6 +36,9 @@
 					"inlineFragments": [
 						{
 							"typeCondition": "Human",
+							"possibleTypes": [
+								"Human"
+							],
 							"fields": [
 								{
 									"responseName": "name",
@@ -93,6 +96,10 @@
 			"fragmentName": "HeroDetails",
 			"source": "fragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n}",
 			"typeCondition": "Character",
+			"possibleTypes": [
+				"Human",
+				"Droid"
+			],
 			"fields": [
 				{
 					"responseName": "name",

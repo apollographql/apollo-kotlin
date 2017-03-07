@@ -78,7 +78,7 @@ class FragmentsResponseMapperBuilder(
   private fun initFragmentCode(fragmentField: FieldSpec): CodeBlock {
     val fieldClass = fragmentField.type as ClassName
     return CodeBlock.builder()
-        .beginControlFlow("if ($CONDITIONAL_TYPE_VAR.equals(\$T.${Fragment.TYPE_CONDITION_FIELD_NAME}))", fieldClass)
+        .beginControlFlow("if (\$T.\$L.contains(\$L))", fieldClass, Fragment.POSSIBLE_TYPES_VAR, CONDITIONAL_TYPE_VAR)
         .addStatement("\$N = \$L.map(\$L)", fragmentField, fieldClass.mapperFieldName(), READER_VAR)
         .endControlFlow()
         .build()

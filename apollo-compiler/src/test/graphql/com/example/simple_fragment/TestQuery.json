@@ -29,6 +29,10 @@
 			"fragmentName": "HeroDetails",
 			"source": "fragment HeroDetails on Character {\n  __typename\n  name\n}",
 			"typeCondition": "Character",
+			"possibleTypes": [
+				"Human",
+				"Droid"
+			],
 			"fields": [
 				{
 					"responseName": "name",

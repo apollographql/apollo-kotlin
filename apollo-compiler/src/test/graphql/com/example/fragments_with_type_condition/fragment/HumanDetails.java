@@ -8,6 +8,9 @@ import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -20,7 +23,7 @@ public class HumanDetails {
       + "  height\n"
       + "}";
 
-  public static final String TYPE_CONDITION = "Human";
+  public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human"));
 
   private final @Nonnull String name;
 

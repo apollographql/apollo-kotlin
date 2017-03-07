@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Generated;
 import javax.annotation.Nullable;
 
@@ -21,7 +24,7 @@ public class PilotFragment {
       + "  }\n"
       + "}";
 
-  public static final String TYPE_CONDITION = "Person";
+  public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Person"));
 
   private final @Nullable String name;
 
