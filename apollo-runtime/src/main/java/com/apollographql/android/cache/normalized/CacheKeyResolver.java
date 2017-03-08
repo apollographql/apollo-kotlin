@@ -7,18 +7,17 @@ import com.apollographql.android.api.graphql.Query;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public abstract class CacheKeyResolver {
   public static final CacheKeyResolver DEFAULT = new CacheKeyResolver() {
-    @Nullable @Override public String resolve(@Nonnull Map<String, Object> jsonObject) {
-      return null;
+    @Nonnull @Override public CacheKey resolve(@Nonnull Map<String, Object> jsonObject) {
+      return CacheKey.NO_KEY;
     }
   };
-  private static final String QUERY_ROOT_KEY = "QUERY_ROOT";
-  private static final String MUTATION_ROOT_KEY = "MUTATION_ROOT";
+  private static final CacheKey QUERY_ROOT_KEY = CacheKey.from("QUERY_ROOT");
+  private static final CacheKey MUTATION_ROOT_KEY = CacheKey.from("MUTATION_ROOT");
 
-  public static String rootKeyForOperation(@Nonnull Operation operation) {
+  public static CacheKey rootKeyForOperation(@Nonnull Operation operation) {
     if (operation instanceof Query) {
       return QUERY_ROOT_KEY;
     } else if (operation instanceof Mutation) {
@@ -27,5 +26,5 @@ public abstract class CacheKeyResolver {
     throw new IllegalArgumentException("Unknown operation type.");
   }
 
-  @Nullable public abstract String resolve(@Nonnull Map<String, Object> jsonObject);
+  @Nonnull public abstract CacheKey resolve(@Nonnull Map<String, Object> jsonObject);
 }
