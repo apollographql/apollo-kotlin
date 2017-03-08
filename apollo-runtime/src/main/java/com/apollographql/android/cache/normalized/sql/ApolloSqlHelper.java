@@ -17,14 +17,26 @@ public class ApolloSqlHelper extends SQLiteOpenHelper {
   // Database creation sql statement
   private static final String DATABASE_CREATE = String.format(
       "create table %s( %s integer primary key autoincrement, %s text not null, %s text not null);",
-      TABLE_RECORDS, COLUMN_ID, COLUMN_KEY,COLUMN_RECORD);
+      TABLE_RECORDS, COLUMN_ID, COLUMN_KEY, COLUMN_RECORD);
 
   public static final String IDX_RECORDS_KEY = "idx_records_key";
   private static final String CREATE_KEY_INDEX =
       String.format("CREATE INDEX %s ON %s (%s)", IDX_RECORDS_KEY, TABLE_RECORDS, COLUMN_KEY);
 
-  public ApolloSqlHelper(Context context) {
+  private ApolloSqlHelper(Context context) {
     super(context, DATABASE_NAME, null, DATABASE_VERSION);
+  }
+
+  public ApolloSqlHelper(Context context, String name) {
+    super(context, name, null, DATABASE_VERSION);
+  }
+
+  public static ApolloSqlHelper create(Context context) {
+    return new ApolloSqlHelper(context);
+  }
+
+  public static ApolloSqlHelper create(Context context, String name) {
+    return new ApolloSqlHelper(context, name);
   }
 
   @Override
@@ -38,4 +50,6 @@ public class ApolloSqlHelper extends SQLiteOpenHelper {
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECORDS);
     onCreate(db);
   }
+
+
 }

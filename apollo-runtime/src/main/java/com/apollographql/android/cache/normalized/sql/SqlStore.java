@@ -7,8 +7,6 @@ import android.database.sqlite.SQLiteStatement;
 import com.apollographql.android.cache.normalized.CacheStore;
 import com.apollographql.android.cache.normalized.Record;
 
-import java.sql.SQLException;
-
 import javax.annotation.Nullable;
 
 import static com.apollographql.android.cache.normalized.sql.ApolloSqlHelper.COLUMN_KEY;
@@ -16,74 +14,83 @@ import static com.apollographql.android.cache.normalized.sql.ApolloSqlHelper.COL
 import static com.apollographql.android.cache.normalized.sql.ApolloSqlHelper.TABLE_RECORDS;
 
 final class SqlStore extends CacheStore {
-
-  // Database fields
-  SQLiteDatabase database; //exposed for testing Mike will fix if a better path can be found.
+  private static final String INSERT_STATEMENT =
+      String.format("INSERT INTO %s (%s,%s) VALUES (?,?)",
+      TABLE_RECORDS,
+      COLUMN_KEY,
+      COLUMN_RECORD);
+  SQLiteDatabase database;
+  private final FieldsAdapter parser;
   private final ApolloSqlHelper dbHelper;
   private final String[] allColumns = {ApolloSqlHelper.COLUMN_ID,
       ApolloSqlHelper.COLUMN_KEY,
       ApolloSqlHelper.COLUMN_RECORD};
   private final SQLiteStatement sqLiteStatement;
-  private static final String insertStatement = String.format("INSERT INTO+%s(%s,%s) VALUES (?,?)",
-      TABLE_RECORDS,
-      COLUMN_KEY,
-      COLUMN_RECORD);
 
-  public static SqlStore create(ApolloSqlHelper helper) {
-    return new SqlStore(helper);
+
+  public static SqlStore create(ApolloSqlHelper helper, FieldsAdapter adapter) {
+    return new SqlStore(helper, adapter);
   }
 
-  private SqlStore(ApolloSqlHelper dbHelper) {
+  private SqlStore(ApolloSqlHelper dbHelper, FieldsAdapter parser) {
     this.dbHelper = dbHelper;
-    sqLiteStatement = database.compileStatement(insertStatement);
+    database = dbHelper.getWritableDatabase();
+    this.parser = parser;
+    sqLiteStatement = database.compileStatement(INSERT_STATEMENT);
   }
 
   @Nullable @Override public Record loadRecord(String key) {
-    return null;
+    return selectRecordForKey(key);
   }
 
-  @Override public void merge(Record object) {
-
+  @Override public void merge(Record apolloRecord) {
+    Record oldRecord = selectRecordForKey(apolloRecord.key());
+    if (oldRecord == null) {
+      createRecord(apolloRecord.key(), parser.toJson(apolloRecord.fields()));
+    } else {
+      oldRecord.mergeWith(apolloRecord);
+      updateRecord(oldRecord.key(), parser.toJson(oldRecord.fields()));
+    }
   }
 
-  public Record createRecord(String key, String record) {
-    sqLiteStatement.bindString(0, key);
-    sqLiteStatement.bindString(0, record);
+  long createRecord(String key, String fields) {
+    sqLiteStatement.bindString(1, key);
+    sqLiteStatement.bindString(2, fields);
 
     long recordId = sqLiteStatement.executeInsert();
-
-    Cursor cursor = database.query(TABLE_RECORDS,
-        allColumns, ApolloSqlHelper.COLUMN_ID + " = " + recordId, null,
-        null, null, null);
-    cursor.moveToFirst();
-    Record newRecord = cursorToRecord(cursor);
-    cursor.close();
-    return newRecord;
+    return recordId;
   }
 
-  public void deleteRecord(String key) {
+  void updateRecord(String key, String fields) {
+    sqLiteStatement.bindString(1, key);
+    sqLiteStatement.bindString(2, fields);
+    sqLiteStatement.executeUpdateDelete();
+  }
+
+  Record selectRecordForKey(String key) {
+    Cursor cursor = database.query(TABLE_RECORDS,
+        allColumns, ApolloSqlHelper.COLUMN_KEY + " = " + key, null,
+        null, null, null);
+    cursor.moveToFirst();
+    Record selectedRecord = cursorToRecord(cursor);
+    cursor.close();
+    return selectedRecord;
+  }
+
+  void deleteRecord(String key) {
     System.out.println("Record deleted with key: " + key);
     database.delete(ApolloSqlHelper.TABLE_RECORDS, ApolloSqlHelper.COLUMN_ID
         + " = " + key, null);
   }
 
-  //TODO wire to RecordParser
-  private String toJson(Record record) {
-    return null;
-  }
-
-  //TODO wire to RecordParser
-  private Record cursorToRecord(Cursor cursor) {
-    Record record = new Record(cursor.getString(1));
-    throw new RuntimeException();
-  }
-
-  public void open() throws SQLException {
-    database = dbHelper.getWritableDatabase();
+  Record cursorToRecord(Cursor cursor) {
+    String key = cursor.getString(1);
+    String jsonOfFields = cursor.getString(2);
+    return new Record(key,
+        parser.fromJson(jsonOfFields));
   }
 
   public void close() {
     dbHelper.close();
   }
-
 }

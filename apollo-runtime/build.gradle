@@ -27,6 +27,7 @@ android {
 
   defaultConfig {
     minSdkVersion 11
+    testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
   }
 }
 
@@ -42,6 +43,10 @@ dependencies {
   testCompile dep.mockWebServer
   testCompile dep.okhttpTestSupport
   testCompile dep.mockito
+
+  androidTestCompile dep.truth
+  androidTestCompile dep.testRunner
+
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
