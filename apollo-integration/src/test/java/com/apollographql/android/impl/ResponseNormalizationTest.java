@@ -3,9 +3,12 @@ package com.apollographql.android.impl;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
+import android.support.annotation.NonNull;
+
 import com.apollographql.android.ApolloCall;
 import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Response;
+import com.apollographql.android.cache.normalized.CacheKey;
 import com.apollographql.android.cache.normalized.Record;
 import com.apollographql.android.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.cache.normalized.CacheReference;
@@ -33,6 +36,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import okhttp3.OkHttpClient;
@@ -42,6 +46,7 @@ import okhttp3.mockwebserver.MockWebServer;
 import static com.apollographql.android.impl.normalizer.type.Episode.EMPIRE;
 import static com.apollographql.android.impl.normalizer.type.Episode.JEDI;
 import static com.google.common.truth.Truth.assertThat;
+import static okhttp3.Protocol.get;
 
 public class ResponseNormalizationTest {
 
@@ -77,8 +82,12 @@ public class ResponseNormalizationTest {
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .normalizedCache(cacheStore, new CacheKeyResolver() {
-          @Nullable @Override public String resolve(Map<String, Object> jsonObject) {
-            return (String) jsonObject.get("id");
+          @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
+            String id = (String) jsonObject.get("id");
+            if (id == null || id.isEmpty()) {
+              return CacheKey.NO_KEY;
+            }
+            return CacheKey.from(id);
           }
         })
         .build();
