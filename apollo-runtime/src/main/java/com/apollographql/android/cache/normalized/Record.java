@@ -7,8 +7,8 @@ import java.util.Map;
 // https://github.com/apollographql/apollo-android/issues/265
 public final class Record {
 
-  final String key;
-  public final Map<String, Object> fields;
+  private final String key;
+  private final Map<String, Object> fields;
 
   public Record(String cacheKey) {
     this.key = cacheKey;
