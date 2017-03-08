@@ -18,11 +18,13 @@ import static com.apollographql.android.cache.normalized.sql.ApolloSqlHelper.TAB
 final class SqlStore extends CacheStore {
 
   // Database fields
-  private SQLiteDatabase database;
-  private ApolloSqlHelper dbHelper;
-  private String[] allColumns = {ApolloSqlHelper.COLUMN_ID, ApolloSqlHelper.COLUMN_KEY, ApolloSqlHelper.COLUMN_RECORD};
-  private SQLiteStatement sqLiteStatement;
-  private String insertStatement;
+  SQLiteDatabase database; //exposed for testing Mike will fix if a better path can be found.
+  private final ApolloSqlHelper dbHelper;
+  private final String[] allColumns = {ApolloSqlHelper.COLUMN_ID,
+      ApolloSqlHelper.COLUMN_KEY,
+      ApolloSqlHelper.COLUMN_RECORD};
+  private final SQLiteStatement sqLiteStatement;
+  private final String insertStatement;
 
   public static SqlStore create(ApolloSqlHelper helper) {
     return new SqlStore(helper);
@@ -34,8 +36,8 @@ final class SqlStore extends CacheStore {
         TABLE_RECORDS,
         COLUMN_KEY,
         COLUMN_RECORD);
+    sqLiteStatement = database.compileStatement(insertStatement);
   }
-
 
   @Nullable @Override public Record loadRecord(String key) {
     return null;
@@ -45,9 +47,7 @@ final class SqlStore extends CacheStore {
 
   }
 
-
   public Record createRecord(String key, String record) {
-    sqLiteStatement = database.compileStatement(insertStatement);
     sqLiteStatement.bindString(0, key);
     sqLiteStatement.bindString(0, record);
 

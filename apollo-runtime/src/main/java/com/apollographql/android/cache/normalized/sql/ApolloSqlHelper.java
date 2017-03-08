@@ -11,7 +11,7 @@ public class ApolloSqlHelper extends SQLiteOpenHelper {
   public static final String COLUMN_RECORD = "record";
   public static final String COLUMN_KEY = "key";
 
-  private static final String DATABASE_NAME = "records.db";
+  private static final String DATABASE_NAME = "apollo.db";
   private static final int DATABASE_VERSION = 1;
 
   // Database creation sql statement
@@ -21,7 +21,7 @@ public class ApolloSqlHelper extends SQLiteOpenHelper {
 
   public static final String IDX_RECORDS_KEY = "idx_records_key";
   private static final String CREATE_KEY_INDEX =
-      String.format(String.format("CREATE INDEX %s ON %s (%s)", IDX_RECORDS_KEY, TABLE_RECORDS, COLUMN_KEY));
+      String.format("CREATE INDEX %s ON %s (%s)", IDX_RECORDS_KEY, TABLE_RECORDS, COLUMN_KEY);
 
   public ApolloSqlHelper(Context context) {
     super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -38,5 +38,4 @@ public class ApolloSqlHelper extends SQLiteOpenHelper {
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECORDS);
     onCreate(db);
   }
-
 }
