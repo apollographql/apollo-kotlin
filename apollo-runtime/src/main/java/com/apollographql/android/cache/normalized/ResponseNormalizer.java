@@ -46,7 +46,7 @@ public class ResponseNormalizer implements ResponseReaderShadow<Map<String, Obje
     dependentKeys = new HashSet<>();
 
     path = new ArrayList<>();
-    currentRecord = new Record(CacheKeyResolver.rootKeyForOperation(operation));
+    currentRecord = new Record(CacheKeyResolver.rootKeyForOperation(operation).key());
     recordSet = new RecordSet();
   }
 
@@ -75,15 +75,16 @@ public class ResponseNormalizer implements ResponseReaderShadow<Map<String, Obje
   @Override public void willParseObject(Map<String, Object> objectMap) {
     pathStack.push(path);
 
-    String cacheKey = cacheKeyResolver.resolve(objectMap);
-    if (cacheKey == null || cacheKey.isEmpty()) {
-      cacheKey = pathToString();
+    CacheKey cacheKey = cacheKeyResolver.resolve(objectMap);
+    String cacheKeyValue = cacheKey.key();
+    if (cacheKey == CacheKey.NO_KEY) {
+      cacheKeyValue = pathToString();
     } else {
       path = new ArrayList<>();
-      path.add(cacheKey);
+      path.add(cacheKeyValue);
     }
     recordStack.push(currentRecord);
-    currentRecord = new Record(cacheKey);
+    currentRecord = new Record(cacheKeyValue);
   }
 
   @Override public void didParseObject(Map<String, Object> objectMap) {
