@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -31,7 +33,7 @@ public class StarshipFragment {
       + "  }\n"
       + "}";
 
-  public static final String TYPE_CONDITION = "Starship";
+  public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Starship"));
 
   private final @Nonnull String id;
 
@@ -252,7 +254,7 @@ public class StarshipFragment {
             public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType)
                 throws IOException {
               PilotFragment pilotFragment = null;
-              if (conditionalType.equals(PilotFragment.TYPE_CONDITION)) {
+              if (PilotFragment.POSSIBLE_TYPES.contains(conditionalType)) {
                 pilotFragment = pilotFragmentFieldMapper.map(reader);
               }
               return new Fragments(pilotFragment);

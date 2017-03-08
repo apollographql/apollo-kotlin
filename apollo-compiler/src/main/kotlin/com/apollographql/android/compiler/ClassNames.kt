@@ -23,6 +23,9 @@ object ClassNames {
   val HASH_MAP: ClassName = ClassName.get(HashMap::class.java)
   val UNMODIFIABLE_MAP_BUILDER: ClassName = ClassName.get(UnmodifiableMapBuilder::class.java)
 
+  fun <K : Any> parameterizedListOf(type: Class<K>): TypeName =
+      ParameterizedTypeName.get(LIST, ClassName.get(type))
+
   fun parameterizedListOf(typeArgument: TypeName): TypeName =
       ParameterizedTypeName.get(LIST, typeArgument.withoutAnnotations())
 
@@ -38,5 +41,4 @@ object ClassNames {
       valueTypeArgument: Class<V>): TypeName =
       ParameterizedTypeName.get(UNMODIFIABLE_MAP_BUILDER, ClassName.get(keyTypeArgument).withoutAnnotations(),
           ClassName.get(valueTypeArgument).withoutAnnotations())
-
 }

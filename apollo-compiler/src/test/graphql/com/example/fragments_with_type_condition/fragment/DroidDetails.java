@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,7 +22,7 @@ public class DroidDetails {
       + "  primaryFunction\n"
       + "}";
 
-  public static final String TYPE_CONDITION = "Droid";
+  public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Droid"));
 
   private final @Nonnull String name;
 

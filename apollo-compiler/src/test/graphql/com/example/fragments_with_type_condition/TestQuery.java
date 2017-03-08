@@ -202,10 +202,10 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
               throws IOException {
             HumanDetails humanDetails = null;
             DroidDetails droidDetails = null;
-            if (conditionalType.equals(HumanDetails.TYPE_CONDITION)) {
+            if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType)) {
               humanDetails = humanDetailsFieldMapper.map(reader);
             }
-            if (conditionalType.equals(DroidDetails.TYPE_CONDITION)) {
+            if (DroidDetails.POSSIBLE_TYPES.contains(conditionalType)) {
               droidDetails = droidDetailsFieldMapper.map(reader);
             }
             return new Fragments(humanDetails, droidDetails);
@@ -331,10 +331,10 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
               throws IOException {
             HumanDetails humanDetails = null;
             DroidDetails droidDetails = null;
-            if (conditionalType.equals(HumanDetails.TYPE_CONDITION)) {
+            if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType)) {
               humanDetails = humanDetailsFieldMapper.map(reader);
             }
-            if (conditionalType.equals(DroidDetails.TYPE_CONDITION)) {
+            if (DroidDetails.POSSIBLE_TYPES.contains(conditionalType)) {
               droidDetails = droidDetailsFieldMapper.map(reader);
             }
             return new Fragments(humanDetails, droidDetails);

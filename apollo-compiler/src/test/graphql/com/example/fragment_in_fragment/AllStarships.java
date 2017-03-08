@@ -255,7 +255,7 @@ public final class AllStarships implements Query<AllStarships.Data, Operation.Va
               public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType)
                   throws IOException {
                 StarshipFragment starshipFragment = null;
-                if (conditionalType.equals(StarshipFragment.TYPE_CONDITION)) {
+                if (StarshipFragment.POSSIBLE_TYPES.contains(conditionalType)) {
                   starshipFragment = starshipFragmentFieldMapper.map(reader);
                 }
                 return new Fragments(starshipFragment);
