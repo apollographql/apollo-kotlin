@@ -7,12 +7,17 @@ import java.util.Map;
 // https://github.com/apollographql/apollo-android/issues/265
 public final class Record {
 
-  private final String key;
-  private final Map<String, Object> fields;
+  final String key;
+  public final Map<String, Object> fields;
 
   public Record(String cacheKey) {
     this.key = cacheKey;
     fields = new LinkedHashMap<>();
+  }
+
+  public Record(String key, Map<String, Object> fields) {
+    this.key = key;
+    this.fields = fields;
   }
 
   public void addField(String key, Object value) {

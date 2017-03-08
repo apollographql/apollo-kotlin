@@ -1,5 +1,7 @@
 package com.apollographql.android.impl;
 
+import android.database.sqlite.SQLiteDatabase;
+
 import com.apollographql.android.cache.normalized.CacheStore;
 import com.apollographql.android.cache.normalized.Record;
 import com.apollographql.android.cache.normalized.RecordSet;

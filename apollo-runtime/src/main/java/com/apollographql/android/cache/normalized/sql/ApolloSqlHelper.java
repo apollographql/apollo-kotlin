@@ -5,14 +5,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class MySQLiteHelper extends SQLiteOpenHelper {
+public class ApolloSqlHelper extends SQLiteOpenHelper {
 
   public static final String TABLE_RECORDS = "records";
   public static final String COLUMN_ID = "_id";
   public static final String COLUMN_RECORD = "record";
   public static final String COLUMN_KEY = "key";
 
-  private static final String DATABASE_NAME = "commments.db";
+  private static final String DATABASE_NAME = "records.db";
   private static final int DATABASE_VERSION = 1;
 
   // Database creation sql statement
@@ -21,20 +21,21 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
           "%s text not null," +
           "%s text not null);", TABLE_RECORDS, COLUMN_ID, COLUMN_RECORD, COLUMN_KEY);
 
-  public MySQLiteHelper(Context context) {
+  public static final String IDX_RECORDS_KEY = "idx_records_key";
+  private static final String CREATE_KEY_INDEX=
+      String.format(String.format("CREATE INDEX %s ON %s (%s)", IDX_RECORDS_KEY, TABLE_RECORDS, COLUMN_KEY));
+  public ApolloSqlHelper(Context context) {
     super(context, DATABASE_NAME, null, DATABASE_VERSION);
   }
 
   @Override
   public void onCreate(SQLiteDatabase database) {
     database.execSQL(DATABASE_CREATE);
+    database.execSQL(CREATE_KEY_INDEX);
   }
 
   @Override
   public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-    Log.w(MySQLiteHelper.class.getName(),
-        "Upgrading database from version " + oldVersion + " to "
-            + newVersion + ", which will destroy all old data");
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECORDS);
     onCreate(db);
   }
