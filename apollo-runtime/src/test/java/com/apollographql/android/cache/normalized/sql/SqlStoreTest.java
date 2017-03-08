@@ -17,10 +17,6 @@ public class SqlStoreTest extends AndroidTestCase {
 
   @Before
   public void setUp() throws Exception {
-    RenamingDelegatingContext context
-        = new RenamingDelegatingContext(getContext(), "test_");
-
-    sqlStore = SqlStore.create(new ApolloSqlHelper(context));
   }
 
 
