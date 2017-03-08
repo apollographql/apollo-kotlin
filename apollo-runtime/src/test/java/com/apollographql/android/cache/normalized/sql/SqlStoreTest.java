@@ -1,7 +1,6 @@
 package com.apollographql.android.cache.normalized.sql;
 
 import android.test.AndroidTestCase;
-import android.test.RenamingDelegatingContext;
 
 import org.junit.Before;
 
@@ -17,6 +16,7 @@ public class SqlStoreTest extends AndroidTestCase {
 
   @Before
   public void setUp() throws Exception {
+    assertEquals(1,1);
   }
 
 
