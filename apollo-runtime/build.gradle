@@ -41,6 +41,7 @@ dependencies {
   testCompile dep.truth
   testCompile dep.mockWebServer
   testCompile dep.okhttpTestSupport
+  testCompile dep.mockito
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

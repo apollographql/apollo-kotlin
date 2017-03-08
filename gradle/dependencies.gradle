@@ -1,7 +1,9 @@
 def versions = [
     apolloVersion: '0.2.2-SNAPSHOT',
     okHttpVersion: '3.6.0',
-    kotlinVersion: '1.0.6'
+    kotlinVersion: '1.0.6',
+    mockito: '1.9.5'
+
 ]
 
 ext.isCi = "true" == System.getenv('CI')
@@ -37,6 +39,7 @@ ext.dep = [
     spock                   : 'org.spockframework:spock-core:0.7-groovy-2.0',
     truth                   : 'com.google.truth:truth:0.30',
     mockWebServer           : "com.squareup.okhttp3:mockwebserver:$versions.okHttpVersion",
+    mockito                 : "org.mockito:mockito-all:$versions.mockito",
     okhttpLoggingInterceptor: "com.squareup.okhttp3:logging-interceptor:$versions.okHttpVersion",
     okHttp                  : "com.squareup.okhttp3:okhttp:$versions.okHttpVersion",
     okhttpTestSupport       : "com.squareup.okhttp3:okhttp-testing-support:$versions.okHttpVersion"

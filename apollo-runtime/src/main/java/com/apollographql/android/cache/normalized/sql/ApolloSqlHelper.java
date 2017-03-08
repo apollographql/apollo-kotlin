@@ -17,7 +17,7 @@ public class ApolloSqlHelper extends SQLiteOpenHelper {
   // Database creation sql statement
   private static final String DATABASE_CREATE = String.format(
       "create table %s( %s integer primary key autoincrement, %s text not null, %s text not null);",
-      TABLE_RECORDS, COLUMN_ID, COLUMN_RECORD, COLUMN_KEY);
+      TABLE_RECORDS, COLUMN_ID, COLUMN_KEY,COLUMN_RECORD);
 
   public static final String IDX_RECORDS_KEY = "idx_records_key";
   private static final String CREATE_KEY_INDEX =

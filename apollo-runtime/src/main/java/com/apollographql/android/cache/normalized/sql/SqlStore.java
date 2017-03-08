@@ -24,7 +24,10 @@ final class SqlStore extends CacheStore {
       ApolloSqlHelper.COLUMN_KEY,
       ApolloSqlHelper.COLUMN_RECORD};
   private final SQLiteStatement sqLiteStatement;
-  private final String insertStatement;
+  private static final String insertStatement = String.format("INSERT INTO+%s(%s,%s) VALUES (?,?)",
+      TABLE_RECORDS,
+      COLUMN_KEY,
+      COLUMN_RECORD);
 
   public static SqlStore create(ApolloSqlHelper helper) {
     return new SqlStore(helper);
@@ -32,10 +35,6 @@ final class SqlStore extends CacheStore {
 
   private SqlStore(ApolloSqlHelper dbHelper) {
     this.dbHelper = dbHelper;
-    insertStatement = String.format("INSERT INTO+%s(%s,%s) VALUES (?,?)",
-        TABLE_RECORDS,
-        COLUMN_KEY,
-        COLUMN_RECORD);
     sqLiteStatement = database.compileStatement(insertStatement);
   }
 
@@ -75,9 +74,7 @@ final class SqlStore extends CacheStore {
 
   //TODO wire to RecordParser
   private Record cursorToRecord(Cursor cursor) {
-//    Record record = new Record();
-//    record.setId(cursor.getLong(0));
-//    record.setRecord(cursor.getString(1));
+    Record record = new Record(cursor.getString(1));
     throw new RuntimeException();
   }
 
