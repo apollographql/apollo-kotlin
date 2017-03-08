@@ -3,7 +3,6 @@ package com.apollographql.android.cache.normalized.sql;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class ApolloSqlHelper extends SQLiteOpenHelper {
 
@@ -17,13 +16,13 @@ public class ApolloSqlHelper extends SQLiteOpenHelper {
 
   // Database creation sql statement
   private static final String DATABASE_CREATE = String.format(
-      "create table %s( %s integer primary key autoincrement, " +
-          "%s text not null," +
-          "%s text not null);", TABLE_RECORDS, COLUMN_ID, COLUMN_RECORD, COLUMN_KEY);
+      "create table %s( %s integer primary key autoincrement, %s text not null, %s text not null);",
+      TABLE_RECORDS, COLUMN_ID, COLUMN_RECORD, COLUMN_KEY);
 
   public static final String IDX_RECORDS_KEY = "idx_records_key";
-  private static final String CREATE_KEY_INDEX=
+  private static final String CREATE_KEY_INDEX =
       String.format(String.format("CREATE INDEX %s ON %s (%s)", IDX_RECORDS_KEY, TABLE_RECORDS, COLUMN_KEY));
+
   public ApolloSqlHelper(Context context) {
     super(context, DATABASE_NAME, null, DATABASE_VERSION);
   }

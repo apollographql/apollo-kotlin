@@ -1,12 +1,13 @@
 package com.apollographql.android.cache.normalized.sql;
 
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
 import com.apollographql.android.cache.normalized.CacheStore;
 import com.apollographql.android.cache.normalized.Record;
+
+import java.sql.SQLException;
 
 import javax.annotation.Nullable;
 
