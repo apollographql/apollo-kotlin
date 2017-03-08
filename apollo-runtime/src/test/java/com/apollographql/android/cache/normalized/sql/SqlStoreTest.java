@@ -19,6 +19,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by 206847 on 3/8/17.
  */
+
 public class SqlStoreTest extends AndroidTestCase {
 
   public static final String KEY = "key";
@@ -33,9 +34,5 @@ public class SqlStoreTest extends AndroidTestCase {
     sqlStore = SqlStore.create(new ApolloSqlHelper(context));
   }
 
-  @Test
-  public void testCreate() throws Exception {
-    Record record = sqlStore.createRecord(KEY, RECORD);
-    assertThat(record.key()).isEqualTo(KEY);
-  }
+
 }
