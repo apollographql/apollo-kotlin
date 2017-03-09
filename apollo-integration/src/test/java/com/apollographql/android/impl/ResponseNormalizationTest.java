@@ -9,9 +9,9 @@ import com.apollographql.android.ApolloCall;
 import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.cache.normalized.CacheKey;
-import com.apollographql.android.cache.normalized.Record;
 import com.apollographql.android.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.cache.normalized.CacheReference;
+import com.apollographql.android.cache.normalized.Record;
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNames;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDForParentOnly;
@@ -37,7 +37,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -46,7 +45,6 @@ import okhttp3.mockwebserver.MockWebServer;
 import static com.apollographql.android.impl.normalizer.type.Episode.EMPIRE;
 import static com.apollographql.android.impl.normalizer.type.Episode.JEDI;
 import static com.google.common.truth.Truth.assertThat;
-import static okhttp3.Protocol.get;
 
 public class ResponseNormalizationTest {
 
@@ -182,7 +180,11 @@ public class ResponseNormalizationTest {
 
   @Test
   public void testHeroAndFriendsNamesQueryWithIDs() throws IOException {
-    MockResponse mockResponse = mockResponse("HeroAndFriendsNameWithIdsResponse.json");
+
+    MockResponse mockResponse = new MockResponse().setChunkedBody(Utils.readFileToString(getClass(),
+        "/HeroAndFriendsNameWithIdsResponse.json") ,32);
+
+    //MockResponse mockResponse = mockResponse("HeroAndFriendsNameWithIdsResponse.json");
     server.enqueue(mockResponse);
     final HeroAndFriendsNamesWithIDs heroAndFriendsWithIdsQuery
         = new HeroAndFriendsNamesWithIDs(HeroAndFriendsNamesWithIDs.Variables.builder().episode(JEDI).build());
