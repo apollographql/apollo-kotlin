@@ -66,7 +66,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
 
     if (cacheControl == CacheControl.CACHE_ONLY || cacheControl == CacheControl.CACHE_FIRST) {
       Response<T> cachedResponse = cachedResponse();
-      if (!cachedResponse.isEmpty() || cacheControl == CacheControl.CACHE_ONLY) {
+      if (cachedResponse.data() != null || cacheControl == CacheControl.CACHE_ONLY) {
         return cachedResponse;
       }
     }
@@ -84,7 +84,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     //issue: https://github.com/apollographql/apollo-android/issues/280
     if (cacheControl == CacheControl.CACHE_ONLY || cacheControl == CacheControl.CACHE_FIRST) {
       Response<T> cachedResponse = cachedResponse();
-      if (!cachedResponse.isEmpty() || cacheControl == CacheControl.CACHE_ONLY) {
+      if (cachedResponse.data() != null || cacheControl == CacheControl.CACHE_ONLY) {
         if (callback != null) {
           callback.onResponse(cachedResponse);
         }
@@ -105,7 +105,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
       @Override public void onFailure(Call call, IOException e) {
         if (cacheControl == CacheControl.NETWORK_FIRST) {
           Response<T> cachedResponse = cachedResponse();
-          if (!cachedResponse.isEmpty()) {
+          if (cachedResponse.data() != null) {
             if (callback != null) {
               callback.onResponse(cachedResponse);
             }
@@ -173,7 +173,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
       networkResponse = handleResponse(httpCall.execute());
       if (!networkResponse.isSuccessful()) {
         Response<T> cachedResponse = cachedResponse();
-        if (cachedResponse != null && cachedResponse.isSuccessful()) {
+        if (cachedResponse.data() != null && cachedResponse.isSuccessful()) {
           return cachedResponse;
         }
       }
