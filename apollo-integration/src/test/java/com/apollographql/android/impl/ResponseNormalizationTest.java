@@ -174,7 +174,6 @@ public class ResponseNormalizationTest {
 
   @Test
   public void testHeroAndFriendsNamesQueryWithIDs() throws IOException {
-
     MockResponse mockResponse = mockResponse("HeroAndFriendsNameWithIdsResponse.json");
     server.enqueue(mockResponse);
     final HeroAndFriendsNamesWithIDs heroAndFriendsWithIdsQuery
