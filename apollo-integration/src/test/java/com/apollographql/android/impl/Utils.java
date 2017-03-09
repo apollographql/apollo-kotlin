@@ -12,7 +12,6 @@ public final class Utils {
 
   public static String readFileToString(final Class contextClass,
       final String streamIdentifier) throws IOException {
-
     InputStreamReader inputStreamReader = null;
     try {
       inputStreamReader = new InputStreamReader(contextClass.getResourceAsStream(streamIdentifier));
