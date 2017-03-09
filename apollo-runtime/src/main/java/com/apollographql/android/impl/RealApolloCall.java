@@ -65,9 +65,9 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     }
 
     if (cacheControl == CacheControl.CACHE_ONLY || cacheControl == CacheControl.CACHE_FIRST) {
-      Response<T> cacheResponse = cacheFirstResponse();
-      if (cacheResponse != null) {
-        return cacheResponse;
+      Response<T> cachedResponse = cachedResponse();
+      if (!cachedResponse.isEmpty() || cacheControl == CacheControl.CACHE_ONLY) {
+        return cachedResponse;
       }
     }
 
@@ -83,10 +83,10 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     //TODO must be called in own executor
     //issue: https://github.com/apollographql/apollo-android/issues/280
     if (cacheControl == CacheControl.CACHE_ONLY || cacheControl == CacheControl.CACHE_FIRST) {
-      Response<T> cacheResponse = cacheFirstResponse();
-      if (cacheResponse != null) {
+      Response<T> cachedResponse = cachedResponse();
+      if (!cachedResponse.isEmpty() || cacheControl == CacheControl.CACHE_ONLY) {
         if (callback != null) {
-          callback.onResponse(cacheResponse);
+          callback.onResponse(cachedResponse);
         }
         return this;
       }
@@ -105,7 +105,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
       @Override public void onFailure(Call call, IOException e) {
         if (cacheControl == CacheControl.NETWORK_FIRST) {
           Response<T> cachedResponse = cachedResponse();
-          if (cachedResponse != null) {
+          if (!cachedResponse.isEmpty()) {
             if (callback != null) {
               callback.onResponse(cachedResponse);
             }
@@ -189,22 +189,14 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     }
   }
 
-  @Nullable private Response<T> cacheFirstResponse() {
-    Response<T> cachedResponse = cachedResponse();
-    if (cachedResponse != null) {
-      return cachedResponse;
-    } else if (cacheControl == CacheControl.CACHE_ONLY) {
-      return new Response<>(operation);
-    }
-    return null;
-  }
 
   private Response<T> cachedResponse() {
     T cachedData = cachedData();
     if (cachedData != null) {
       return new Response<>(operation, cachedData, null);
+    } else {
+      return new Response<>(operation);
     }
-    return null;
   }
 
   @SuppressWarnings("unchecked") @Nullable private T cachedData() {

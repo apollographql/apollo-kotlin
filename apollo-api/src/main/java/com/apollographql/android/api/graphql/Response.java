@@ -25,6 +25,10 @@ public class Response<T extends Operation.Data> {
     return errors == null || errors.isEmpty();
   }
 
+  public boolean isEmpty() {
+    return data == null;
+  }
+
   @Nonnull public Operation operation() {
     return operation;
   }
