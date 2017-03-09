@@ -45,7 +45,9 @@ dependencies {
   testCompile dep.mockito
 
   androidTestCompile dep.truth
-  androidTestCompile dep.testRunner
+  androidTestCompile (dep.testRunner) {
+    exclude module: 'support-annotations'
+  }
 
 }
 

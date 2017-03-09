@@ -3,7 +3,6 @@ package com.apollographql.android.impl;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
-import com.google.common.io.Files;
 
 import com.apollographql.android.ApolloCall;
 import com.apollographql.android.CustomTypeAdapter;
@@ -17,7 +16,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -69,7 +67,7 @@ public class IntegrationTest {
   }
 
   @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
-    server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
+    server.enqueue(mockResponse("/allPlanetsResponse.json"));
 
     ApolloCall call = apolloClient.newCall(new AllPlanets());
     Response<AllPlanets.Data> body = call.execute();
@@ -129,7 +127,7 @@ public class IntegrationTest {
   }
 
   @Test public void errorResponse() throws Exception {
-    server.enqueue(mockResponse("src/test/graphql/errorResponse.json"));
+    server.enqueue(mockResponse("/errorResponse.json"));
     Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
     assertThat(body.isSuccessful()).isFalse();
     //noinspection ConstantConditions
@@ -139,7 +137,7 @@ public class IntegrationTest {
   }
 
   @Test public void productsWithDates() throws Exception {
-    server.enqueue(mockResponse("src/test/graphql/productsWithDate.json"));
+    server.enqueue(mockResponse("/productsWithDate.json"));
 
     ApolloCall call = apolloClient.newCall(new ProductsWithDate());
     Response<ProductsWithDate.Data> body = call.execute();
@@ -179,7 +177,7 @@ public class IntegrationTest {
   }
 
   @Test public void productsWithUnsupportedCustomScalarTypes() throws Exception {
-    server.enqueue(mockResponse("src/test/graphql/productsWithUnsupportedCustomScalarTypes.json"));
+    server.enqueue(mockResponse("/productsWithUnsupportedCustomScalarTypes.json"));
 
     ApolloCall call = apolloClient.newCall(new ProductsWithUnsupportedCustomScalarTypes());
     Response<ProductsWithUnsupportedCustomScalarTypes.Data> body = call.execute();
@@ -197,8 +195,8 @@ public class IntegrationTest {
   }
 
   @Test public void allPlanetQueryAsync() throws Exception {
-    server.enqueue(mockResponse("src/test/graphql/allPlanetsResponse.json"));
 
+    server.enqueue(mockResponse("/allPlanetsResponse.json"));
     final CountDownLatch latch = new CountDownLatch(1);
     ApolloCall call = apolloClient.newCall(new AllPlanets());
     call.enqueue(new ApolloCall.Callback<AllPlanets.Data>() {
@@ -216,7 +214,7 @@ public class IntegrationTest {
     latch.await();
   }
 
-  private static MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setChunkedBody(Files.toString(new File(fileName), Charsets.UTF_8), 32);
+  private MockResponse mockResponse(String fileName) throws IOException {
+    return new MockResponse().setChunkedBody(TestUtils.readFileToString(getClass(),fileName), 32);
   }
 }
