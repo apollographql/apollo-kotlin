@@ -16,11 +16,12 @@ public final class TimeoutEvictionStrategy implements EvictionStrategy {
   }
 
   @Override public boolean isStale(@Nonnull Response response) {
+    long now = System.currentTimeMillis();
     String servedDateStr = response.header(HttpCache.CACHE_SERVED_DATE_HEADER);
     if (servedDateStr == null) {
       return true;
     }
     Date servedDate = HttpDate.parse(servedDateStr);
-    return servedDate == null || System.currentTimeMillis() - servedDate.getTime() > timeout;
+    return servedDate == null || now - servedDate.getTime() > timeout;
   }
 }

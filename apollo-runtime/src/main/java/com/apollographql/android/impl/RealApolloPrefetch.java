@@ -2,7 +2,7 @@ package com.apollographql.android.impl;
 
 import com.apollographql.android.ApolloPrefetch;
 import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.cache.http.HttpCache;
+import com.apollographql.android.cache.http.HttpCacheControl;
 import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ final class RealApolloPrefetch extends BaseApolloCall implements ApolloPrefetch 
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
-    httpCall = prepareHttpCall(HttpCache.CacheControl.DEFAULT, true);
+    httpCall = prepareHttpCall(HttpCacheControl.NETWORK_FIRST, true);
     httpCall.execute();
   }
 
@@ -37,7 +37,7 @@ final class RealApolloPrefetch extends BaseApolloCall implements ApolloPrefetch 
     }
 
     try {
-      httpCall = prepareHttpCall(HttpCache.CacheControl.DEFAULT, true);
+      httpCall = prepareHttpCall(HttpCacheControl.NETWORK_FIRST, true);
     } catch (Exception e) {
       if (callback != null) {
         callback.onFailure(e);

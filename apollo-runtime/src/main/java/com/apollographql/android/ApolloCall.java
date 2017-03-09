@@ -2,6 +2,7 @@ package com.apollographql.android;
 
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
+import com.apollographql.android.cache.http.HttpCacheControl;
 
 import java.io.IOException;
 
@@ -14,13 +15,7 @@ public interface ApolloCall<T extends Operation.Data> {
 
   @Nonnull ApolloCall<T> enqueue(@Nullable Callback<T> callback);
 
-  @Nonnull ApolloCall<T> network();
-
-  @Nonnull ApolloCall<T> cache();
-
-  @Nonnull ApolloCall<T> networkBeforeStale();
-
-  @Nonnull ApolloCall<T> expireAfterRead();
+  @Nonnull ApolloCall<T> httpCacheControl(@Nonnull HttpCacheControl httpCacheControl);
 
   @Nonnull ApolloCall<T> clone();
 

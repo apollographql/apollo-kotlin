@@ -6,7 +6,14 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.apollographql.android.cache.http.Utils.isNetworkFirst;
+import static com.apollographql.android.cache.http.Utils.isPrefetchResponse;
 import static com.apollographql.android.cache.http.Utils.shouldExpireAfterRead;
+import static com.apollographql.android.cache.http.Utils.shouldReturnStaleCache;
+import static com.apollographql.android.cache.http.Utils.shouldSkipCache;
+import static com.apollographql.android.cache.http.Utils.shouldSkipNetwork;
+import static com.apollographql.android.cache.http.Utils.strip;
+import static com.apollographql.android.cache.http.Utils.withServedDateHeader;
 
 final class CacheInterceptor implements Interceptor {
   private final HttpCache cache;
@@ -17,43 +24,20 @@ final class CacheInterceptor implements Interceptor {
 
   @Override public Response intercept(Chain chain) throws IOException {
     Request request = chain.request();
-    if (Utils.shouldSkipCache(request)) {
+    if (shouldSkipCache(request)) {
       return chain.proceed(request);
     }
 
-    if (Utils.shouldSkipNetwork(request)) {
+    if (shouldSkipNetwork(request)) {
       return cacheOnlyResponse(request);
     }
 
-    if (!Utils.isCacheEnable(request)) {
-      return chain.proceed(request);
-    }
-
     String cacheKey = request.header(HttpCache.CACHE_KEY_HEADER);
-    Response cacheResponse = cache.read(cacheKey, shouldExpireAfterRead(request));
-    if (cacheResponse == null) {
-      Response networkResponse = Utils.withServedDateHeader(chain.proceed(request));
-      if (Utils.isPrefetchResponse(request)) {
-        return prefetch(networkResponse, cacheKey);
-      } else {
-        if (networkResponse.isSuccessful()) {
-          return cache.cacheProxy(networkResponse, cacheKey);
-        } else {
-          return networkResponse;
-        }
-      }
+    if (isNetworkFirst(request)) {
+      return networkFirst(request, chain, cacheKey);
+    } else {
+      return cacheFirst(request, chain, cacheKey);
     }
-
-    if (!cache.isStale(cacheResponse)) {
-      return cacheResponse.newBuilder()
-          .cacheResponse(Utils.strip(cacheResponse))
-          .request(request)
-          .build();
-    }
-
-    Response networkResponse = Utils.withServedDateHeader(chain.proceed(request));
-    return resolveResponse(networkResponse, cacheResponse, cacheKey, Utils.cacheControl(request),
-        Utils.isPrefetchResponse(request));
   }
 
   private Response cacheOnlyResponse(Request request) throws IOException {
@@ -67,30 +51,48 @@ final class CacheInterceptor implements Interceptor {
     return Utils.unsatisfiableCacheRequest(request);
   }
 
-  private Response resolveResponse(Response networkResponse, Response cacheResponse, String cacheKey,
-      HttpCache.CacheControl cacheControl, boolean prefetch) throws IOException {
-    if (networkResponse.isSuccessful()) {
-      cacheResponse.close();
-      if (prefetch) {
-        return prefetch(networkResponse, cacheKey);
-      } else {
-        return cache.cacheProxy(networkResponse, cacheKey)
-            .newBuilder()
-            .cacheResponse(Utils.strip(cacheResponse))
-            .build();
-      }
+  private Response networkFirst(Request request, Chain chain, String cacheKey) throws IOException {
+    Response networkResponse = withServedDateHeader(chain.proceed(request));
+    if (isPrefetchResponse(request)) {
+      return prefetch(networkResponse, cacheKey);
+    } else if (networkResponse.isSuccessful()) {
+      return cache.cacheProxy(networkResponse, cacheKey);
     }
 
-    if (cacheControl == HttpCache.CacheControl.NETWORK_BEFORE_STALE) {
+    Response cacheResponse = cache.read(cacheKey, shouldExpireAfterRead(request));
+    if (cacheResponse == null) {
+      return networkResponse;
+    } else if (!cache.isStale(cacheResponse) || shouldReturnStaleCache(request)) {
       return cacheResponse.newBuilder()
-          .cacheResponse(Utils.strip(cacheResponse))
-          .networkResponse(Utils.strip(networkResponse))
+          .cacheResponse(strip(cacheResponse))
+          .networkResponse(strip(networkResponse))
+          .request(request)
           .build();
     }
 
-    cacheResponse.close();
     return networkResponse.newBuilder()
         .cacheResponse(Utils.strip(cacheResponse))
+        .build();
+  }
+
+  private Response cacheFirst(Request request, Chain chain, String cacheKey) throws IOException {
+    Response cacheResponse = cache.read(cacheKey, shouldExpireAfterRead(request));
+    if (cacheResponse == null || cache.isStale(cacheResponse)) {
+      Response networkResponse = withServedDateHeader(chain.proceed(request));
+      if (isPrefetchResponse(request)) {
+        return prefetch(networkResponse, cacheKey);
+      } else if (networkResponse.isSuccessful()) {
+        return cache.cacheProxy(networkResponse, cacheKey);
+      }
+      return networkResponse.newBuilder()
+          .cacheResponse(strip(cacheResponse))
+          .request(request)
+          .build();
+    }
+
+    return cacheResponse.newBuilder()
+        .cacheResponse(strip(cacheResponse))
+        .request(request)
         .build();
   }
 
