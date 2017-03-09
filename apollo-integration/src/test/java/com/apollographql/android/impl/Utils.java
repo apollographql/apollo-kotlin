@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 
 public final class Utils {
 
-
   private Utils() {
   }
 
@@ -27,6 +26,4 @@ public final class Utils {
       }
     }
   }
-
-
 }

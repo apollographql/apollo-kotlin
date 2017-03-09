@@ -1,8 +1,5 @@
 package com.apollographql.android.impl;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
-
 import android.support.annotation.NonNull;
 
 import com.apollographql.android.ApolloCall;
@@ -25,7 +22,6 @@ import com.apollographql.android.impl.normalizer.SameHeroTwice;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -55,7 +51,6 @@ public class ResponseNormalizationTest {
   private InMemoryCacheStore cacheStore;
 
   private final String QUERY_ROOT_KEY = "QUERY_ROOT";
-  private static final String NORMALIZER_TEST_PATH  = "src/test/graphql/com/apollographql/android/impl/normalizer/";
 
   @Before public void setUp() {
     server = new MockWebServer();
@@ -91,9 +86,8 @@ public class ResponseNormalizationTest {
         .build();
   }
 
-  private static MockResponse mockResponse(String normalizerFileName) throws IOException {
-    return new MockResponse().setChunkedBody(Files.toString(new File(NORMALIZER_TEST_PATH + normalizerFileName),
-        Charsets.UTF_8), 32);
+  private MockResponse mockResponse(String fileName) throws IOException {
+    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
   }
 
   @Test public void testHeroName() throws IOException {
@@ -181,10 +175,7 @@ public class ResponseNormalizationTest {
   @Test
   public void testHeroAndFriendsNamesQueryWithIDs() throws IOException {
 
-    MockResponse mockResponse = new MockResponse().setChunkedBody(Utils.readFileToString(getClass(),
-        "/HeroAndFriendsNameWithIdsResponse.json") ,32);
-
-    //MockResponse mockResponse = mockResponse("HeroAndFriendsNameWithIdsResponse.json");
+    MockResponse mockResponse = mockResponse("HeroAndFriendsNameWithIdsResponse.json");
     server.enqueue(mockResponse);
     final HeroAndFriendsNamesWithIDs heroAndFriendsWithIdsQuery
         = new HeroAndFriendsNamesWithIDs(HeroAndFriendsNamesWithIDs.Variables.builder().episode(JEDI).build());
