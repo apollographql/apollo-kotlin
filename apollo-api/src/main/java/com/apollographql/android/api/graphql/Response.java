@@ -11,6 +11,10 @@ public class Response<T extends Operation.Data> {
   @Nullable private final T data;
   @Nullable private final List<Error> errors;
 
+  public Response(@Nonnull Operation operation) {
+    this(operation, null, null);
+  }
+
   public Response(@Nonnull Operation operation, @Nullable T data, @Nullable List<Error> errors) {
     this.operation = operation;
     this.data = data;
