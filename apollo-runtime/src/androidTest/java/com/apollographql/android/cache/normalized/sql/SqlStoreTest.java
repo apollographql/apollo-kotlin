@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 
 import static com.google.common.truth.Truth.assertThat;
 
-
 @RunWith(AndroidJUnit4.class)
 public class SqlStoreTest {
 

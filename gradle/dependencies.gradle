@@ -39,7 +39,6 @@ ext.dep = [
     junit                   : 'junit:junit:4.12',
     spock                   : 'org.spockframework:spock-core:0.7-groovy-2.0',
     truth                   : 'com.google.truth:truth:0.30',
-    truth                   : 'com.google.truth:truth:0.30',
     mockWebServer           : "com.squareup.okhttp3:mockwebserver:$versions.okHttpVersion",
     mockito                 : "org.mockito:mockito-all:$versions.mockito",
     okhttpLoggingInterceptor: "com.squareup.okhttp3:logging-interceptor:$versions.okHttpVersion",

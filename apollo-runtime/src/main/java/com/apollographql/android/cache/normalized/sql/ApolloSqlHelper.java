@@ -50,6 +50,4 @@ public class ApolloSqlHelper extends SQLiteOpenHelper {
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECORDS);
     onCreate(db);
   }
-
-
 }

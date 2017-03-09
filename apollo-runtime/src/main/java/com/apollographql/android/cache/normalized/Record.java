@@ -8,8 +8,6 @@ import java.util.Map;
 public final class Record {
 
   private final String key;
-
-
   private final Map<String, Object> fields;
 
   public Record(String cacheKey) {
