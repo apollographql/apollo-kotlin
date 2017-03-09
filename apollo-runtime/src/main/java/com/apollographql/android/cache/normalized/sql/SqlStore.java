@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteStatement;
 import com.apollographql.android.cache.normalized.CacheStore;
 import com.apollographql.android.cache.normalized.Record;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.annotation.Nullable;
 
 import static com.apollographql.android.cache.normalized.sql.ApolloSqlHelper.COLUMN_KEY;
@@ -39,11 +42,11 @@ final class SqlStore extends CacheStore {
     sqLiteStatement = database.compileStatement(INSERT_STATEMENT);
   }
 
-  @Nullable @Override public Record loadRecord(String key) {
+  @Nullable public Record loadRecord(String key) {
     return selectRecordForKey(key);
   }
 
-  @Override public void merge(Record apolloRecord) {
+  public Set<String> merge(Record apolloRecord) {
     Record oldRecord = selectRecordForKey(apolloRecord.key());
     if (oldRecord == null) {
       createRecord(apolloRecord.key(), parser.toJson(apolloRecord.fields()));
@@ -51,6 +54,7 @@ final class SqlStore extends CacheStore {
       oldRecord.mergeWith(apolloRecord);
       updateRecord(oldRecord.key(), parser.toJson(oldRecord.fields()));
     }
+    return new HashSet<>(); //TODO // FIXME: 3/9/17 Return something real
   }
 
   long createRecord(String key, String fields) {

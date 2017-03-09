@@ -4,6 +4,7 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.cache.http.HttpCacheControl;
 import com.apollographql.android.cache.normalized.CacheControl;
+import com.apollographql.android.impl.RealApolloWatcher;
 
 import java.io.IOException;
 
@@ -14,7 +15,9 @@ public interface ApolloCall<T extends Operation.Data> {
 
   @Nonnull Response<T> execute() throws IOException;
 
-  @Nonnull ApolloCall<T> enqueue(@Nullable Callback<T> callback);
+  @Nonnull void enqueue(@Nullable Callback<T> callback);
+
+  @Nonnull RealApolloWatcher<T> toWatcher(); //todo: change from real to base watcher
 
   @Nonnull ApolloCall<T> httpCacheControl(@Nonnull HttpCacheControl httpCacheControl);
 

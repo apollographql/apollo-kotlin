@@ -1,7 +1,9 @@
 package com.apollographql.android.cache.normalized;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 //Todo: Enhance this class to better support generalized serialization
 // https://github.com/apollographql/apollo-android/issues/265
@@ -32,14 +34,17 @@ public final class Record {
     return key;
   }
 
-  public void mergeWith(Record otherRecord) {
+  public Set<String> mergeWith(Record otherRecord) {
+    Set<String> changedKeys = new HashSet<>();
     for (Map.Entry<String, Object> field : otherRecord.fields.entrySet()) {
       Object newFieldValue = field.getValue();
       Object oldFieldValue = this.fields.get(field.getKey());
       if (newFieldValue != null && oldFieldValue == null || !oldFieldValue.equals(newFieldValue)) {
         this.fields.put(field.getKey(), newFieldValue);
+        changedKeys.add(key() + "." + field.getKey());
       }
     }
+    return changedKeys;
   }
 
   public Map<String, Object> fields() {
