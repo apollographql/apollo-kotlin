@@ -14,22 +14,10 @@ import okio.Okio;
 import okio.Sink;
 
 final class Utils {
-
   static Response strip(Response response) {
     return response != null && response.body() != null
         ? response.newBuilder().body(null).networkResponse(null).cacheResponse(null).build()
         : response;
-  }
-
-  static boolean isCacheEnable(Request request) {
-    HttpCache.CacheControl cacheControl = cacheControl(request);
-    return cacheControl == HttpCache.CacheControl.DEFAULT
-        || cacheControl == HttpCache.CacheControl.NETWORK_BEFORE_STALE
-        || cacheControl == HttpCache.CacheControl.EXPIRE_AFTER_READ;
-  }
-
-  static HttpCache.CacheControl cacheControl(Request request) {
-    return HttpCache.CacheControl.valueOfHttpHeader(request.header(HttpCache.CACHE_CONTROL_HEADER));
   }
 
   static Response withServedDateHeader(Response response) throws IOException {
@@ -43,21 +31,32 @@ final class Utils {
   }
 
   static boolean shouldSkipCache(Request request) {
-    HttpCache.CacheControl cacheControl = cacheControl(request);
+    HttpCacheControl cacheControl = cacheControl(request);
     String cacheKey = request.header(HttpCache.CACHE_KEY_HEADER);
     return cacheControl == null
-        || cacheControl == HttpCache.CacheControl.NETWORK_ONLY
+        || cacheControl == HttpCacheControl.NETWORK_ONLY
         || cacheKey == null;
   }
 
   static boolean shouldSkipNetwork(Request request) {
-    HttpCache.CacheControl cacheControl = cacheControl(request);
-    return cacheControl == HttpCache.CacheControl.CACHE_ONLY;
+    HttpCacheControl cacheControl = cacheControl(request);
+    return cacheControl == HttpCacheControl.CACHE_ONLY;
+  }
+
+  static boolean isNetworkFirst(Request request) {
+    HttpCacheControl cacheControl = cacheControl(request);
+    return cacheControl == HttpCacheControl.NETWORK_FIRST
+        || cacheControl == HttpCacheControl.NETWORK_BEFORE_STALE;
+  }
+
+  static boolean shouldReturnStaleCache(Request request) {
+    HttpCacheControl cacheControl = cacheControl(request);
+    return cacheControl == HttpCacheControl.NETWORK_BEFORE_STALE;
   }
 
   static boolean shouldExpireAfterRead(Request request) {
-    HttpCache.CacheControl cacheControl = cacheControl(request);
-    return cacheControl == HttpCache.CacheControl.EXPIRE_AFTER_READ;
+    HttpCacheControl cacheControl = cacheControl(request);
+    return cacheControl == HttpCacheControl.EXPIRE_AFTER_READ;
   }
 
   static Response unsatisfiableCacheRequest(Request request) {
@@ -81,6 +80,10 @@ final class Utils {
     }
     Util.closeQuietly(responseBodySource);
     cacheResponseBody.close();
+  }
+
+  private static HttpCacheControl cacheControl(Request request) {
+    return HttpCacheControl.valueOfHttpHeader(request.header(HttpCache.CACHE_CONTROL_HEADER));
   }
 
   private Utils() {

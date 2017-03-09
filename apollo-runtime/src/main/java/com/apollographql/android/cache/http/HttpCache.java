@@ -139,29 +139,4 @@ public final class HttpCache {
       //TODO log me
     }
   }
-
-  //TODO should be generic for both http and normalized cache,
-  //issue: https://github.com/apollographql/apollo-android/issues/281
-  public enum CacheControl {
-    DEFAULT("default"),
-    NETWORK_ONLY("network-only"),
-    CACHE_ONLY("cache-only"),
-    NETWORK_BEFORE_STALE("network-before-stale"),
-    EXPIRE_AFTER_READ("expire-after-read");
-
-    public final String httpHeader;
-
-    CacheControl(String httpHeader) {
-      this.httpHeader = httpHeader;
-    }
-
-    static CacheControl valueOfHttpHeader(String header) {
-      for (CacheControl value : values()) {
-        if (value.httpHeader.equals(header)) {
-          return value;
-        }
-      }
-      return null;
-    }
-  }
 }

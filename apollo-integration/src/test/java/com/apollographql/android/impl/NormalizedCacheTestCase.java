@@ -6,6 +6,7 @@ import com.google.common.io.Files;
 import android.support.annotation.NonNull;
 
 import com.apollographql.android.api.graphql.Response;
+import com.apollographql.android.cache.normalized.CacheControl;
 import com.apollographql.android.cache.normalized.CacheKey;
 import com.apollographql.android.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
@@ -75,7 +76,7 @@ public class NormalizedCacheTestCase {
     Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).execute();
     assertThat(body.isSuccessful()).isTrue();
 
-    body = apolloClient.newCall(query).cache().execute();
+    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.isSuccessful()).isTrue();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
   }
@@ -89,7 +90,7 @@ public class NormalizedCacheTestCase {
     Response<HeroAndFriendsNames.Data> body = apolloClient.newCall(query).execute();
     assertThat(body.isSuccessful()).isTrue();
 
-    body = apolloClient.newCall(query).cache().execute();
+    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.isSuccessful()).isTrue();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
     assertThat(body.data().hero().friends()).hasSize(3);
@@ -107,7 +108,7 @@ public class NormalizedCacheTestCase {
     Response<HeroAndFriendsNamesWithIDs.Data> body = apolloClient.newCall(query).execute();
     assertThat(body.isSuccessful()).isTrue();
 
-    body = apolloClient.newCall(query).cache().execute();
+    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.isSuccessful()).isTrue();
     assertThat(body.data().hero().id()).isEqualTo("2001");
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
@@ -129,7 +130,7 @@ public class NormalizedCacheTestCase {
     Response<HeroAndFriendsNamesWithIDForParentOnly.Data> body = apolloClient.newCall(query).execute();
     assertThat(body.isSuccessful()).isTrue();
 
-    body = apolloClient.newCall(query).cache().execute();
+    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.isSuccessful()).isTrue();
     assertThat(body.data().hero().id()).isEqualTo("2001");
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
@@ -147,7 +148,7 @@ public class NormalizedCacheTestCase {
     Response<HeroAppearsIn.Data> body = apolloClient.newCall(query).execute();
     assertThat(body.isSuccessful()).isTrue();
 
-    body = apolloClient.newCall(query).cache().execute();
+    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.isSuccessful()).isTrue();
     assertThat(body.data().hero().appearsIn()).hasSize(3);
     assertThat(body.data().hero().appearsIn().get(0).name()).isEqualTo("NEWHOPE");
@@ -164,7 +165,7 @@ public class NormalizedCacheTestCase {
     Response<HeroParentTypeDependentField.Data> body = apolloClient.newCall(query).execute();
     assertThat(body.isSuccessful()).isTrue();
 
-    body = apolloClient.newCall(query).cache().execute();
+    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.isSuccessful()).isTrue();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
     assertThat(body.data().hero().asDroid().name()).isEqualTo("R2-D2");
@@ -183,17 +184,17 @@ public class NormalizedCacheTestCase {
     Response<HeroTypeDependentAliasedField.Data> body = apolloClient.newCall(query).execute();
     assertThat(body.isSuccessful()).isTrue();
 
-    body = apolloClient.newCall(query).cache().execute();
+    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.isSuccessful()).isTrue();
     assertThat(body.data().hero().asHuman()).isNull();
     assertThat(body.data().hero().asDroid().property()).isEqualTo("Astromech");
 
     server.enqueue(mockResponse("HeroTypeDependentAliasedFieldResponseHuman.json"));
 
-    body = apolloClient.newCall(query).network().execute();
+    body = apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
     assertThat(body.isSuccessful()).isTrue();
 
-    body = apolloClient.newCall(query).cache().execute();
+    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.isSuccessful()).isTrue();
     assertThat(body.data().hero().asDroid()).isNull();
     assertThat(body.data().hero().asHuman().property()).isEqualTo("Tatooine");
@@ -207,12 +208,74 @@ public class NormalizedCacheTestCase {
     Response<SameHeroTwice.Data> body = apolloClient.newCall(query).execute();
     assertThat(body.isSuccessful()).isTrue();
 
-    body = apolloClient.newCall(query).cache().execute();
+    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.isSuccessful()).isTrue();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
     assertThat(body.data().r2().appearsIn()).hasSize(3);
     assertThat(body.data().r2().appearsIn().get(0).name()).isEqualTo("NEWHOPE");
     assertThat(body.data().r2().appearsIn().get(1).name()).isEqualTo("EMPIRE");
     assertThat(body.data().r2().appearsIn().get(2).name()).isEqualTo("JEDI");
+  }
+
+  @Test public void cacheFirst() throws IOException {
+    server.enqueue(mockResponse("HeroNameResponse.json"));
+
+    EpisodeHeroName query = new EpisodeHeroName(EpisodeHeroName.Variables.builder().episode(Episode.EMPIRE).build());
+
+    Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).execute();
+    assertThat(body.isSuccessful()).isTrue();
+
+    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_FIRST).execute();
+    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
+  }
+
+  @Test public void cacheOnly() throws IOException {
+    server.enqueue(mockResponse("HeroNameResponse.json"));
+
+    EpisodeHeroName query = new EpisodeHeroName(EpisodeHeroName.Variables.builder().episode(Episode.EMPIRE).build());
+
+    Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).execute();
+    assertThat(body.isSuccessful()).isTrue();
+
+    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
+  }
+
+  @Test public void networkFirst() throws IOException {
+    server.enqueue(mockResponse("HeroNameResponse.json"));
+
+    EpisodeHeroName query = new EpisodeHeroName(EpisodeHeroName.Variables.builder().episode(Episode.EMPIRE).build());
+
+    Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).execute();
+    assertThat(body.isSuccessful()).isTrue();
+
+    server.enqueue(mockResponse("HeroNameResponse.json"));
+    body = apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_FIRST).execute();
+    assertThat(server.getRequestCount()).isEqualTo(2);
+    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
+
+    server.enqueue(new MockResponse().setResponseCode(504).setBody(""));
+    body = apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_FIRST).execute();
+    assertThat(server.getRequestCount()).isEqualTo(3);
+    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
+  }
+
+  @Test public void networkOnly() throws IOException {
+    server.enqueue(mockResponse("HeroNameResponse.json"));
+
+    EpisodeHeroName query = new EpisodeHeroName(EpisodeHeroName.Variables.builder().episode(Episode.EMPIRE).build());
+
+    Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).execute();
+    assertThat(body.isSuccessful()).isTrue();
+
+    server.enqueue(mockResponse("HeroNameResponse.json"));
+    body = apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    assertThat(server.getRequestCount()).isEqualTo(2);
+    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
   }
 }

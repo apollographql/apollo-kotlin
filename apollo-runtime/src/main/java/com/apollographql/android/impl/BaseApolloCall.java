@@ -2,6 +2,7 @@ package com.apollographql.android.impl;
 
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.cache.http.HttpCache;
+import com.apollographql.android.cache.http.HttpCacheControl;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
@@ -31,7 +32,7 @@ abstract class BaseApolloCall {
     this.httpCallFactory = httpCallFactory;
   }
 
-  Call prepareHttpCall(HttpCache.CacheControl cacheControl, boolean prefetch) throws IOException {
+  Call prepareHttpCall(HttpCacheControl cacheControl, boolean prefetch) throws IOException {
     RequestBody requestBody = httpRequestBody(operation);
     String cacheKey = cacheKey(requestBody);
     Request request = new Request.Builder()
