@@ -9,6 +9,6 @@
   "author": "Apollo",
   "license": "MIT",
   "dependencies": {
-    "apollo-codegen": "0.10.8"
+    "apollo-codegen": "0.10.9"
   }
 }

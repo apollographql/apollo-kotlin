@@ -15,6 +15,11 @@ public final class Record {
     fields = new LinkedHashMap<>();
   }
 
+  public Record(String key, Map<String, Object> fields) {
+    this.key = key;
+    this.fields = fields;
+  }
+
   public void addField(String key, Object value) {
     fields.put(key, value);
   }
@@ -37,4 +42,7 @@ public final class Record {
     }
   }
 
+  public Map<String, Object> fields() {
+    return fields;
+  }
 }
