@@ -190,13 +190,11 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
   }
 
   @Nullable private Response<T> cacheFirstResponse() {
-    if (cacheControl == CacheControl.CACHE_ONLY || cacheControl == CacheControl.CACHE_FIRST) {
-      Response<T> cachedResponse = cachedResponse();
-      if (cachedResponse != null) {
-        return cachedResponse;
-      } else if (cacheControl == CacheControl.CACHE_ONLY) {
-        return new Response<>(operation);
-      }
+    Response<T> cachedResponse = cachedResponse();
+    if (cachedResponse != null) {
+      return cachedResponse;
+    } else if (cacheControl == CacheControl.CACHE_ONLY) {
+      return new Response<>(operation);
     }
     return null;
   }
