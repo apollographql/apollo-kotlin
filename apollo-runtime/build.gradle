@@ -32,10 +32,7 @@ android {
 }
 
 dependencies {
-  compile dep.jsr305
-  compile dep.supportAnnotations
-  compile dep.okHttp
-  compile dep.moshi
+  compile apolloRuntimeCompileDeps
   provided project(":apollo-api")
 
   testCompile dep.junit

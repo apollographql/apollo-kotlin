@@ -1,0 +1,11 @@
+{
+  "data": {
+    "hero": {
+      "appearsIn": [
+        "NEWHOPE",
+        "EMPIRE",
+        "JEDI"
+      ]
+    }
+  }
+}

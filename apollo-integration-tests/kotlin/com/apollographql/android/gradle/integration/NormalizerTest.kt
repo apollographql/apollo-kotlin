@@ -27,7 +27,7 @@ class NormalizerTest {
     val result = GradleRunner.create()
         .withProjectDir(destDir)
         .withPluginClasspath()
-        .withArguments("build")
+        .withArguments("build", "-Dapollographql.skipApi=true")
         .forwardStdError(OutputStreamWriter(System.err))
         .build()
     assertThat(result.task(":build").outcome == TaskOutcome.SUCCESS)

@@ -50,9 +50,12 @@ class FixturesIntegrationTest(val fixtureDir: File, val fixtureName: String) {
   companion object {
     @JvmStatic
     @Parameterized.Parameters(name = "{1}")
+    // For directories we don't wish to verify the output of
     fun data(): Collection<Array<Any>> {
+      val ignoredDirs: MutableList<String> = mutableListOf("normalizer")
       return File("../apollo-integration-tests/testFixtures").listFiles()
           .filter { it.isDirectory }
+          .filter { !ignoredDirs.contains(it.name) }
           .map { arrayOf(it, it.name) }
     }
   }
