@@ -1,5 +1,7 @@
 package com.apollographql.android.impl;
 
+import com.google.common.base.Strings;
+
 import android.support.annotation.NonNull;
 
 import com.apollographql.android.ApolloCall;
@@ -44,7 +46,7 @@ public class AsyncNormalizedCacheTestCase {
         .normalizedCache(cacheStore, new CacheKeyResolver() {
           @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
             String id = (String) jsonObject.get("id");
-            if (id == null || id.isEmpty()) {
+            if (Strings.isNullOrEmpty(id)) {
               return CacheKey.NO_KEY;
             }
             return CacheKey.from(id);

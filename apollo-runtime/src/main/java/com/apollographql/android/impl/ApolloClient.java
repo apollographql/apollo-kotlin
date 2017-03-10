@@ -10,9 +10,9 @@ import com.apollographql.android.cache.http.EvictionStrategy;
 import com.apollographql.android.cache.http.HttpCache;
 import com.apollographql.android.cache.http.ResponseCacheStore;
 import com.apollographql.android.cache.normalized.Cache;
-import com.apollographql.android.cache.normalized.RealCache;
 import com.apollographql.android.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.cache.normalized.CacheStore;
+import com.apollographql.android.cache.normalized.RealCache;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
@@ -32,7 +32,6 @@ import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
-import okhttp3.internal.Util;
 
 import static com.apollographql.android.impl.util.Utils.checkNotNull;
 
