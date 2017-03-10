@@ -82,7 +82,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     return executeNetworkRequest();
   }
 
-  @Nonnull @Override public void enqueue(@Nullable final Callback<T> callback) {
+  @Override public void enqueue(@Nullable final Callback<T> callback) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
@@ -114,7 +114,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     });
   }
 
-  @Override public RealApolloWatcher<T> toWatcher() {
+  @Nonnull @Override public RealApolloWatcher<T> toWatcher() {
     return new RealApolloWatcher<>(this, cache);
   }
 
@@ -150,7 +150,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
         responseFieldMapper, customTypeAdapters, cache, cacheControl, dispatcher);
   }
 
-  public Set<String> dependentKeys() {
+  Set<String> dependentKeys() {
     return dependentKeys;
   }
 

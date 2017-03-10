@@ -15,9 +15,10 @@ final class RealApolloWatcher<T extends Operation.Data> implements ApolloWatcher
 
   private RealApolloCall<T> activeCall;
   @Nullable private ApolloCall.Callback<T> callback = null;
-  private final Cache cache;
   private CacheControl refetchCacheControl = CacheControl.CACHE_FIRST;
-  private volatile boolean isSubscribed = true;
+  private volatile boolean isActive = true;
+  private volatile boolean executed = false;
+  private final Cache cache;
   private final Cache.RecordChangeSubscriber recordChangeSubscriber = new Cache.RecordChangeSubscriber() {
     @Override public void onDependentKeysChanged() {
       refetch();
@@ -25,17 +26,20 @@ final class RealApolloWatcher<T extends Operation.Data> implements ApolloWatcher
   };
   private final WatcherSubscription watcherSubscription = new WatcherSubscription() {
     @Override public void unsubscribe() {
-      isSubscribed = false;
       cache.unsubscribe(recordChangeSubscriber);
     }
   };
 
-  public RealApolloWatcher(RealApolloCall<T> originalCall, Cache cache) {
+  RealApolloWatcher(RealApolloCall<T> originalCall, Cache cache) {
     activeCall = originalCall;
     this.cache = cache;
   }
 
   @Nonnull public WatcherSubscription enqueueAndWatch(@Nullable final ApolloCall.Callback<T> callback) {
+    if (executed) {
+      throw new IllegalStateException("Already Executed.");
+    }
+    executed = true;
     this.callback = callback;
     fetch();
     return watcherSubscription;
@@ -48,9 +52,9 @@ final class RealApolloWatcher<T extends Operation.Data> implements ApolloWatcher
   }
 
   @Nonnull public RealApolloWatcher<T> refetch() {
-    activeCall.cancel(); //Todo: is this necessary / good? We don't want people to chain refetch().refetch()
-    activeCall = activeCall.clone().cacheControl(refetchCacheControl);
     cache.unsubscribe(recordChangeSubscriber);
+    activeCall.cancel();
+    activeCall = activeCall.clone().cacheControl(refetchCacheControl);
     fetch();
     return this;
   }
@@ -59,7 +63,7 @@ final class RealApolloWatcher<T extends Operation.Data> implements ApolloWatcher
       final RealApolloCall<T> call) {
     return new ApolloCall.Callback<T>() {
       @Override public void onResponse(@Nonnull Response<T> response) {
-        if (isSubscribed) {
+        if (isActive) {
           sourceCallback.onResponse(response);
           cache.subscribe(recordChangeSubscriber, call.dependentKeys());
         }
@@ -67,7 +71,7 @@ final class RealApolloWatcher<T extends Operation.Data> implements ApolloWatcher
 
       @Override public void onFailure(@Nonnull Exception e) {
         sourceCallback.onFailure(e);
-        isSubscribed = false;
+        isActive = false;
       }
     };
   }

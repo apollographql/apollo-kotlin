@@ -9,6 +9,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import javax.annotation.Nonnull;
 
@@ -24,7 +25,7 @@ public final class RealCache implements Cache {
     this.cacheStore = cacheStore;
     this.cacheKeyResolver = cacheKeyResolver;
     this.lock = new ReentrantReadWriteLock();
-    this.subscribers = new LinkedHashMap<>();
+    this.subscribers = new WeakHashMap<>();
   }
 
   @Override @Nonnull public ResponseNormalizer responseNormalizer() {
@@ -33,6 +34,10 @@ public final class RealCache implements Cache {
 
   @Override public void subscribe(RecordChangeSubscriber subscriber, Set<String> dependentKeys) {
     subscribers.put(subscriber, dependentKeys);
+  }
+
+  @Override public void unsubscribe(RecordChangeSubscriber subscriber) {
+    subscribers.remove(subscriber);
   }
 
   @Override public void write(@Nonnull Collection<Record> recordSet) {
@@ -48,10 +53,6 @@ public final class RealCache implements Cache {
     } finally {
       lock.writeLock().unlock();
     }
-  }
-
-  @Override public void unsubscribe(RecordChangeSubscriber subscriber) {
-    subscribers.remove(subscriber);
   }
 
   @Override public Record read(@Nonnull String key) {

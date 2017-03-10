@@ -1,0 +1,22 @@
+{
+  "data": {
+    "hero": {
+      "id": "1000",
+      "name": "Luke Skywalker",
+      "friends": [
+        {
+          "id": "2001",
+          "name": "Artoo"
+        },
+        {
+          "id": "1002",
+          "name": "Han Solo"
+        },
+        {
+          "id": "1003",
+          "name": "Leia Organa"
+        }
+      ]
+    }
+  }
+}
