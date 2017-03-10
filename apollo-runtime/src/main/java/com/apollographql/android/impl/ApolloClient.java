@@ -156,8 +156,8 @@ public final class ApolloClient implements ApolloCall.Factory {
       return this;
     }
 
-    public Builder dispatcher(@Nonnull ExecutorService executorService) {
-      checkNotNull(executorService, "executorService == null");
+    public Builder dispatcher(@Nonnull ExecutorService dispatcher) {
+      checkNotNull(dispatcher, "dispatcher == null");
       this.dispatcher = dispatcher;
       return this;
     }
