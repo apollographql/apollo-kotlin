@@ -59,14 +59,15 @@ final class RealApolloWatcher<T extends Operation.Data> implements ApolloWatcher
       final RealApolloCall<T> call) {
     return new ApolloCall.Callback<T>() {
       @Override public void onResponse(@Nonnull Response<T> response) {
-        sourceCallback.onResponse(response);
         if (isSubscribed) {
+          sourceCallback.onResponse(response);
           cache.subscribe(recordChangeSubscriber, call.dependentKeys());
         }
       }
 
       @Override public void onFailure(@Nonnull Exception e) {
         sourceCallback.onFailure(e);
+        isSubscribed = false;
       }
     };
   }

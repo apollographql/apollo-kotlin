@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
@@ -77,35 +78,69 @@ public class ApolloWatcherTest {
   }
 
   @Test
-  public void testQueryWatcher() throws IOException, InterruptedException {
+  public void testQueryWatcherUpdated_SameQuery_DifferentResults() throws IOException, InterruptedException {
     server.enqueue(mockResponse("HeroNameResponse.json"));
     EpisodeHeroName query = new EpisodeHeroName(EpisodeHeroName.Variables.builder().episode(Episode.EMPIRE).build());
 
     final CountDownLatch firstResponseLatch = new CountDownLatch(1);
     final CountDownLatch secondResponseLatch = new CountDownLatch(2);
     ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).toWatcher();
-    final ApolloWatcher.WatcherSubscription watcherSubscription = watcher.enqueueAndWatch(new ApolloCall.Callback<EpisodeHeroName.Data>() {
-      @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
-        if (secondResponseLatch.getCount() == 2) {
-          assertThat(response.data().hero().name()).isEqualTo("R2-D2");
-        } else if (secondResponseLatch.getCount() == 1) {
-          assertThat(response.data().hero().name()).isEqualTo("Artoo");
-        }
-        firstResponseLatch.countDown();
-        secondResponseLatch.countDown();
-      }
+    final ApolloWatcher.WatcherSubscription watcherSubscription = watcher.enqueueAndWatch(
+        new ApolloCall.Callback<EpisodeHeroName.Data>() {
+          @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+            if (secondResponseLatch.getCount() == 2) {
+              assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            } else if (secondResponseLatch.getCount() == 1) {
+              assertThat(response.data().hero().name()).isEqualTo("Artoo");
+            }
+            firstResponseLatch.countDown();
+            secondResponseLatch.countDown();
+          }
 
-      @Override public void onFailure(@Nonnull Exception e) {
-        Assert.fail(e.getMessage());
-        firstResponseLatch.countDown();
-        secondResponseLatch.countDown();
-      }
-    });
+          @Override public void onFailure(@Nonnull Exception e) {
+            Assert.fail(e.getMessage());
+            firstResponseLatch.countDown();
+            secondResponseLatch.countDown();
+          }
+        });
 
-    firstResponseLatch.await(); // add timeout ?
+    firstResponseLatch.await();
     server.enqueue(mockResponse("HeroNameResponseNameChange.json"));
     apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null); //Another newer call gets
-    secondResponseLatch.await(); // add tiemout?
+    secondResponseLatch.await();
+    watcherSubscription.unsubscribe();
+  }
+
+  @Test
+  public void testQueryWatcherNotUpdated_SameQuery_SameResults() throws IOException, InterruptedException {
+    server.enqueue(mockResponse("HeroNameResponse.json"));
+    EpisodeHeroName query = new EpisodeHeroName(EpisodeHeroName.Variables.builder().episode(Episode.EMPIRE).build());
+
+    final CountDownLatch firstResponseLatch = new CountDownLatch(1);
+    final CountDownLatch secondResponseLatch = new CountDownLatch(2);
+    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).toWatcher();
+    final ApolloWatcher.WatcherSubscription watcherSubscription = watcher.enqueueAndWatch(
+        new ApolloCall.Callback<EpisodeHeroName.Data>() {
+          @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            firstResponseLatch.countDown();
+            secondResponseLatch.countDown();
+            if (secondResponseLatch.getCount() == 0) {
+              Assert.fail("Received two callbacks, although data should not have changed.");
+            }
+          }
+
+          @Override public void onFailure(@Nonnull Exception e) {
+            Assert.fail(e.getMessage());
+            firstResponseLatch.countDown();
+            secondResponseLatch.countDown();
+          }
+        });
+
+    firstResponseLatch.await();
+    server.enqueue(mockResponse("HeroNameResponse.json"));
+    apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
+    secondResponseLatch.await(3, TimeUnit.SECONDS); //Wait 3 seconds to make sure no double callback
     watcherSubscription.unsubscribe();
   }
 
