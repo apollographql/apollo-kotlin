@@ -2,6 +2,7 @@ package com.apollographql.android.impl;
 
 import android.support.annotation.NonNull;
 
+import com.apollographql.android.ApolloCall;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.cache.normalized.CacheControl;
 import com.apollographql.android.cache.normalized.CacheKey;
@@ -21,6 +22,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
@@ -29,6 +32,7 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
 import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.Assert.fail;
 
 public class NormalizedCacheTestCase {
 
@@ -270,5 +274,35 @@ public class NormalizedCacheTestCase {
     assertThat(server.getRequestCount()).isEqualTo(2);
     assertThat(body.isSuccessful()).isTrue();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
+  }
+
+  @Test public void testAsync() throws IOException, InterruptedException {
+    EpisodeHeroName query = new EpisodeHeroName(EpisodeHeroName.Variables.builder().episode(Episode.EMPIRE).build());
+
+    server.enqueue(mockResponse("HeroNameResponse.json"));
+    Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).execute();
+    assertThat(body.isSuccessful()).isTrue();
+
+    for (int i = 0; i < 500; i++) {
+      server.enqueue(mockResponse("HeroNameResponse.json"));
+    }
+
+    final CountDownLatch latch = new CountDownLatch(1000);
+    for (int i = 0; i < 1000; i++) {
+      apolloClient.newCall(query).cacheControl(i % 2 == 0 ? CacheControl.NETWORK_FIRST : CacheControl.CACHE_ONLY)
+          .enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
+            @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+              assertThat(response.isSuccessful()).isTrue();
+              latch.countDown();
+            }
+
+            @Override public void onFailure(@Nonnull Exception e) {
+              fail("unexpected error: " + e);
+              latch.countDown();
+            }
+          });
+    }
+
+    latch.await(5, TimeUnit.SECONDS);
   }
 }
