@@ -9,7 +9,7 @@ Apollo-Android is a GraphQL compliant client that generates Java models from sta
 
 
 ## Usage
-Add the following to your project's top level `build.gradle` file
+Add the following to your project's top level `build.gradle` file 
 
 ```groovy
 
