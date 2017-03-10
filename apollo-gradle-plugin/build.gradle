@@ -36,8 +36,7 @@ dependencies {
   testCompile(dep.spock) {
     exclude module: 'groovy-all'
   }
-  testCompile dep.truth
-
+  
   integrationTestCompile dep.junit
   integrationTestCompile dep.truth
 }
