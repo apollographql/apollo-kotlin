@@ -19,6 +19,7 @@ import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,20 +36,24 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
   private HttpCacheControl httpCacheControl = HttpCacheControl.CACHE_FIRST;
   private final ResponseFieldMapper responseFieldMapper;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  private final ExecutorService dispatcher;
   private boolean executed;
 
   RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache, Moshi moshi,
-      ResponseFieldMapper responseFieldMapper, Map<ScalarType, CustomTypeAdapter> customTypeAdapters, Cache cache) {
+      ResponseFieldMapper responseFieldMapper, Map<ScalarType, CustomTypeAdapter> customTypeAdapters, Cache cache,
+      ExecutorService dispatcher) {
     super(operation, serverUrl, httpCallFactory, moshi);
     this.httpCache = httpCache;
     this.responseFieldMapper = responseFieldMapper;
     this.customTypeAdapters = customTypeAdapters;
     this.cache = cache;
+    this.dispatcher = dispatcher;
   }
 
   private RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
       HttpCacheControl httpCacheControl, Moshi moshi, ResponseFieldMapper responseFieldMapper,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, Cache cache, CacheControl cacheControl) {
+      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, Cache cache, CacheControl cacheControl,
+      ExecutorService dispatcher) {
     super(operation, serverUrl, httpCallFactory, moshi);
     this.httpCache = httpCache;
     this.httpCacheControl = httpCacheControl;
@@ -56,6 +61,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     this.customTypeAdapters = customTypeAdapters;
     this.cache = cache;
     this.cacheControl = cacheControl;
+    this.dispatcher = dispatcher;
   }
 
   @Nonnull @Override public Response<T> execute() throws IOException {
@@ -80,32 +86,11 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
       executed = true;
     }
 
-    //TODO must be called in own executor
-    //issue: https://github.com/apollographql/apollo-android/issues/280
-    if (cacheControl == CacheControl.CACHE_ONLY || cacheControl == CacheControl.CACHE_FIRST) {
-      Response<T> cachedResponse = cachedResponse();
-      if (cachedResponse.data() != null || cacheControl == CacheControl.CACHE_ONLY) {
-        if (callback != null) {
-          callback.onResponse(cachedResponse);
-        }
-        return this;
-      }
-    }
-
-    try {
-      httpCall = prepareHttpCall(httpCacheControl, false);
-    } catch (Exception e) {
-      if (callback != null) {
-        callback.onFailure(e);
-      }
-      return this;
-    }
-
-    httpCall.enqueue(new okhttp3.Callback() {
-      @Override public void onFailure(Call call, IOException e) {
-        if (cacheControl == CacheControl.NETWORK_FIRST) {
+    dispatcher.execute(new Runnable() {
+      @Override public void run() {
+        if (cacheControl == CacheControl.CACHE_ONLY || cacheControl == CacheControl.CACHE_FIRST) {
           Response<T> cachedResponse = cachedResponse();
-          if (cachedResponse.data() != null) {
+          if (cachedResponse.data() != null || cacheControl == CacheControl.CACHE_ONLY) {
             if (callback != null) {
               callback.onResponse(cachedResponse);
             }
@@ -113,22 +98,16 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
           }
         }
 
-        if (callback != null) {
-          callback.onFailure(e);
-        }
-      }
-
-      @Override public void onResponse(Call call, okhttp3.Response httpResponse) throws IOException {
         try {
-          Response<T> response = handleResponse(httpResponse);
-          if (callback != null) {
-            callback.onResponse(response);
-          }
+          httpCall = prepareHttpCall(httpCacheControl, false);
         } catch (Exception e) {
           if (callback != null) {
             callback.onFailure(e);
           }
+          return;
         }
+
+        httpCall.enqueue(new HttCallback(callback));
       }
     });
     return this;
@@ -163,7 +142,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
 
   @Override @Nonnull public ApolloCall<T> clone() {
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCacheControl, moshi,
-        responseFieldMapper, customTypeAdapters, cache, cacheControl);
+        responseFieldMapper, customTypeAdapters, cache, cacheControl, dispatcher);
   }
 
   private Response<T> executeNetworkRequest() throws IOException {
@@ -189,29 +168,19 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     }
   }
 
-
-  private Response<T> cachedResponse() {
-    T cachedData = cachedData();
-    if (cachedData != null) {
-      return new Response<>(operation, cachedData, null);
-    } else {
-      return new Response<>(operation);
-    }
-  }
-
-  @SuppressWarnings("unchecked") @Nullable private T cachedData() {
+  @SuppressWarnings("unchecked") private Response<T> cachedResponse() {
     Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key());
     if (rootRecord == null) {
-      return null;
+      return new Response<>(operation);
     }
 
     try {
       RealResponseReader<Record> responseReader = new RealResponseReader<>(operation, rootRecord,
           new CacheFieldValueResolver(cache, operation.variables()), customTypeAdapters);
-      return (T) responseFieldMapper.map(responseReader);
+      return new Response<>(operation, (T) responseFieldMapper.map(responseReader), null);
     } catch (Exception e) {
       //TODO log me
-      return null;
+      return new Response<>(operation);
     }
   }
 
@@ -219,11 +188,17 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     String cacheKey = response.request().header(HttpCache.CACHE_KEY_HEADER);
     if (response.isSuccessful()) {
       try {
-        ResponseNormalizer normalizer = cache.responseNormalizer();
+        final ResponseNormalizer normalizer = cache.responseNormalizer();
         HttpResponseBodyConverter converter = new HttpResponseBodyConverter(operation, responseFieldMapper,
             customTypeAdapters);
         Response<T> convertedResponse = converter.convert(response.body(), normalizer);
-        cache.write(normalizer.records());
+
+        dispatcher.execute(new Runnable() {
+          @Override public void run() {
+            cache.write(normalizer.records());
+          }
+        });
+
         return convertedResponse;
       } catch (Exception rethrown) {
         Util.closeQuietly(response);
@@ -235,6 +210,43 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     } else {
       Util.closeQuietly(response);
       throw new HttpException(response);
+    }
+  }
+
+  final class HttCallback implements okhttp3.Callback {
+    final Callback<T> callback;
+
+    HttCallback(Callback<T> callback) {
+      this.callback = callback;
+    }
+
+    @Override public void onFailure(Call call, IOException e) {
+      if (cacheControl == CacheControl.NETWORK_FIRST) {
+        Response<T> cachedResponse = cachedResponse();
+        if (cachedResponse.data() != null) {
+          if (callback != null) {
+            callback.onResponse(cachedResponse);
+          }
+          return;
+        }
+      }
+
+      if (callback != null) {
+        callback.onFailure(e);
+      }
+    }
+
+    @Override public void onResponse(Call call, okhttp3.Response httpResponse) throws IOException {
+      try {
+        Response<T> response = handleResponse(httpResponse);
+        if (callback != null) {
+          callback.onResponse(response);
+        }
+      } catch (Exception e) {
+        if (callback != null) {
+          callback.onFailure(e);
+        }
+      }
     }
   }
 }

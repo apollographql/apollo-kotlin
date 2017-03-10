@@ -20,7 +20,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.AbstractExecutorService;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
@@ -28,10 +33,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
+import static com.apollographql.android.impl.Utils.immediateExecutorService;
 import static com.google.common.truth.Truth.assertThat;
 
 public class NormalizedCacheTestCase {
-
   private ApolloClient apolloClient;
   private MockWebServer server;
   private InMemoryCacheStore cacheStore;
@@ -54,6 +59,7 @@ public class NormalizedCacheTestCase {
             return CacheKey.from(id);
           }
         })
+        .dispatcher(immediateExecutorService())
         .build();
   }
 

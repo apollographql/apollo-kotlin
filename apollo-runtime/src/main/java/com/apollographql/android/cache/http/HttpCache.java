@@ -74,9 +74,8 @@ public final class HttpCache {
           .build();
     } catch (Exception e) {
       //TODO log
-      return null;
-    } finally {
       closeQuietly(responseCacheRecord);
+      return null;
     }
   }
 

@@ -10,9 +10,9 @@ import com.apollographql.android.cache.http.EvictionStrategy;
 import com.apollographql.android.cache.http.HttpCache;
 import com.apollographql.android.cache.http.ResponseCacheStore;
 import com.apollographql.android.cache.normalized.Cache;
-import com.apollographql.android.cache.normalized.RealCache;
 import com.apollographql.android.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.cache.normalized.CacheStore;
+import com.apollographql.android.cache.normalized.RealCache;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
@@ -20,6 +20,11 @@ import com.squareup.moshi.Moshi;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
@@ -42,6 +47,7 @@ public final class ApolloClient implements ApolloCall.Factory {
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final Moshi moshi;
   private final Map<Class, ResponseFieldMapper> responseFieldMapperPool = new LinkedHashMap<>();
+  private final ExecutorService dispatcher;
 
   private ApolloClient(Builder builder) {
     this.serverUrl = builder.serverUrl;
@@ -50,6 +56,7 @@ public final class ApolloClient implements ApolloCall.Factory {
     this.cache = builder.cache;
     this.customTypeAdapters = builder.customTypeAdapters;
     this.moshi = builder.moshiBuilder.build();
+    this.dispatcher = builder.dispatcher;
   }
 
   @Override
@@ -64,7 +71,7 @@ public final class ApolloClient implements ApolloCall.Factory {
       }
     }
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, moshi, responseFieldMapper,
-        customTypeAdapters, cache);
+        customTypeAdapters, cache, dispatcher);
   }
 
   @Override
@@ -87,13 +94,14 @@ public final class ApolloClient implements ApolloCall.Factory {
     }
   }
 
-  public static class Builder {
+  @SuppressWarnings("WeakerAccess") public static class Builder {
     OkHttpClient okHttpClient;
     HttpUrl serverUrl;
     HttpCache httpCache;
     Cache cache = Cache.NO_CACHE;
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
-    Moshi.Builder moshiBuilder = new Moshi.Builder();
+    final Moshi.Builder moshiBuilder = new Moshi.Builder();
+    ExecutorService dispatcher;
 
     private Builder() {
     }
@@ -147,6 +155,12 @@ public final class ApolloClient implements ApolloCall.Factory {
       return this;
     }
 
+    public Builder dispatcher(@Nonnull ExecutorService dispatcher) {
+      checkNotNull(dispatcher, "dispatcher == null");
+      this.dispatcher = dispatcher;
+      return this;
+    }
+
     public ApolloClient build() {
       checkNotNull(okHttpClient, "okHttpClient is null");
       checkNotNull(serverUrl, "serverUrl is null");
@@ -155,7 +169,20 @@ public final class ApolloClient implements ApolloCall.Factory {
         okHttpClient = okHttpClient.newBuilder().addInterceptor(httpCache.interceptor()).build();
       }
 
+      if (dispatcher == null) {
+        dispatcher = defaultDispatcher();
+      }
+
       return new ApolloClient(this);
+    }
+
+    private ExecutorService defaultDispatcher() {
+      return new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
+          new SynchronousQueue<Runnable>(), new ThreadFactory() {
+        @Override public Thread newThread(Runnable runnable) {
+          return new Thread(runnable, "Apollo Dispatcher");
+        }
+      });
     }
   }
 }
