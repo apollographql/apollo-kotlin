@@ -1,6 +1,5 @@
 package com.apollographql.android.gradle
 
-import org.apache.commons.io.FileUtils
 import org.gradle.api.Project;
 
 class ApolloPluginTestHelper {
@@ -70,44 +69,6 @@ class ApolloPluginTestHelper {
       jcenter()
       maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
-  }
-
-  public static enum ProjectType {
-    Android, Java
-  }
-
-  static def File createTempTestDirectory(String testProjectName) {
-    File dir = new File(System.getProperty("user.dir"), "build/inegrationTests/$testProjectName")
-    FileUtils.deleteDirectory(dir)
-    FileUtils.forceMkdir(dir)
-    return dir
-  }
-
-  static void prepareProjectTestDir(File destDir, ProjectType type, String testProjectName, String testBuildScriptName) {
-    String testProjectsRoot = "src/test/testProject"
-
-    File projectTypeRoot
-    if (type.equals(ProjectType.Android)) {
-      projectTypeRoot = new File("$testProjectsRoot/android")
-    } else if (type.equals(ProjectType.Java)) {
-      projectTypeRoot = new File("$testProjectsRoot/java")
-    } else {
-      throw new IllegalArgumentException("Not a valid project type")
-    }
-
-    File projectUnderTest = new File(System.getProperty("user.dir"), "$projectTypeRoot/$testProjectName")
-    if (!projectUnderTest.isDirectory()) {
-      throw new IllegalArgumentException("Couldn't find test project")
-    }
-
-    File requestedBuildScript = new File("$projectTypeRoot/buildScriptFixtures/${testBuildScriptName}.gradle")
-    if (!requestedBuildScript.isFile()) {
-      throw new IllegalArgumentException("Couldn't find the test build script")
-    }
-
-    prepareLocalProperties(destDir)
-    FileUtils.copyDirectory(projectUnderTest, destDir)
-    FileUtils.copyFile(requestedBuildScript, new File("$destDir/build.gradle"))
   }
 
   static def prepareLocalProperties(File destDir) {
