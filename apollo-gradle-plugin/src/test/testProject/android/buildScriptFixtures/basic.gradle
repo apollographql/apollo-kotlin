@@ -32,7 +32,6 @@ android {
   sourceSets {
     main {
       java {
-        srcDirs += '../../../../apollo-runtime/src/main/java'
         srcDirs += '../../../../apollo-api/src/main/java'
       }
     }
@@ -47,7 +46,6 @@ repositories {
 dependencies {
   compile dep.appcompat
   compile apolloApiCompileDeps
-  compile apolloRuntimeCompileDeps
 }
 
 apollo {
