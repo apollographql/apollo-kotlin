@@ -1,4 +1,5 @@
 apply plugin: 'groovy'
+apply plugin: 'kotlin'
 apply plugin: 'idea'
 apply plugin: 'java-gradle-plugin'
 
@@ -7,6 +8,22 @@ targetCompatibility = JavaVersion.VERSION_1_7
 
 sourceSets.main.java.srcDirs = []
 sourceSets.main.groovy.srcDirs = ["src/main/java", "src/main/groovy"]
+
+sourceSets {
+  integrationTest {
+    kotlin {
+      compileClasspath += main.output + test.output
+      runtimeClasspath += main.output + test.output
+      srcDir file('../apollo-integration-tests/kotlin')
+    }
+    resources.srcDir file('../apollo-integration-tests/resources')
+  }
+}
+
+configurations {
+  integrationTestCompile.extendsFrom testCompile
+  integrationTestRuntime.extendsFrom testRuntime
+}
 
 dependencies {
   compileOnly gradleApi()
@@ -19,6 +36,17 @@ dependencies {
   testCompile(dep.spock) {
     exclude module: 'groovy-all'
   }
+  
+  integrationTestCompile dep.junit
+  integrationTestCompile dep.truth
 }
+
+task integrationTest(type: Test) {
+  testClassesDir = sourceSets.integrationTest.output.classesDir
+  classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
