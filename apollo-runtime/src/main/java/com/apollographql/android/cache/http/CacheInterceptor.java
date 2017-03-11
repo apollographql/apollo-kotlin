@@ -78,6 +78,10 @@ final class CacheInterceptor implements Interceptor {
   private Response cacheFirst(Request request, Chain chain, String cacheKey) throws IOException {
     Response cacheResponse = cache.read(cacheKey, shouldExpireAfterRead(request));
     if (cacheResponse == null || cache.isStale(cacheResponse)) {
+      if (cacheResponse != null) {
+        cacheResponse.close();
+      }
+
       Response networkResponse = withServedDateHeader(chain.proceed(request));
       if (isPrefetchResponse(request)) {
         return prefetch(networkResponse, cacheKey);

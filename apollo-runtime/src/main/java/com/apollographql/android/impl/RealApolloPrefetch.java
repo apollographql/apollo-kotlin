@@ -27,7 +27,7 @@ final class RealApolloPrefetch extends BaseApolloCall implements ApolloPrefetch 
       executed = true;
     }
     httpCall = prepareHttpCall(HttpCacheControl.NETWORK_FIRST, true);
-    httpCall.execute();
+    httpCall.execute().close();
   }
 
   @Nonnull @Override public ApolloPrefetch enqueue(@Nullable final Callback callback) {
