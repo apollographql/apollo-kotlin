@@ -4,12 +4,13 @@ package com.apollographql.android.cache.normalized;
 import com.apollographql.android.impl.util.Utils;
 
 import java.util.Collection;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.annotation.Nonnull;
 
@@ -41,17 +42,18 @@ public final class RealCache implements Cache {
   }
 
   @Override public void write(@Nonnull Collection<Record> recordSet) {
+    Set<String> changedKeys = Collections.emptySet();
     lock.writeLock().lock();
     try {
-      final Set<String> changedKeys = cacheStore.merge(checkNotNull(recordSet, "recordSet == null"));
-      Map<RecordChangeSubscriber, Set<String>> iterableSubscribers = new LinkedHashMap<>(subscribers);
-      for (Map.Entry<RecordChangeSubscriber, Set<String>> subscriberEntry : iterableSubscribers.entrySet()) {
-        if (!Utils.areDisjoint(subscriberEntry.getValue(), changedKeys)) {
-          subscriberEntry.getKey().onDependentKeysChanged();
-        }
-      }
+      changedKeys = cacheStore.merge(checkNotNull(recordSet, "recordSet == null"));
     } finally {
       lock.writeLock().unlock();
+    }
+    Map<RecordChangeSubscriber, Set<String>> iterableSubscribers = new LinkedHashMap<>(subscribers);
+    for (Map.Entry<RecordChangeSubscriber, Set<String>> subscriberEntry : iterableSubscribers.entrySet()) {
+      if (!Utils.areDisjoint(subscriberEntry.getValue(), changedKeys)) {
+        subscriberEntry.getKey().onDependentKeysChanged();
+      }
     }
   }
 

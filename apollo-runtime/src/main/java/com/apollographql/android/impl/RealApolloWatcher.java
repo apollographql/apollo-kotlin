@@ -17,7 +17,7 @@ final class RealApolloWatcher<T extends Operation.Data> implements ApolloWatcher
   @Nullable private ApolloCall.Callback<T> callback = null;
   private CacheControl refetchCacheControl = CacheControl.CACHE_FIRST;
   private volatile boolean isActive = true;
-  private volatile boolean executed = false;
+  private boolean executed = false;
   private final Cache cache;
   private final Cache.RecordChangeSubscriber recordChangeSubscriber = new Cache.RecordChangeSubscriber() {
     @Override public void onDependentKeysChanged() {
@@ -36,10 +36,10 @@ final class RealApolloWatcher<T extends Operation.Data> implements ApolloWatcher
   }
 
   @Nonnull public WatcherSubscription enqueueAndWatch(@Nullable final ApolloCall.Callback<T> callback) {
-    if (executed) {
-      throw new IllegalStateException("Already Executed.");
+    synchronized (this) {
+      if (executed) throw new IllegalStateException("Already Executed.");
+      executed = true;
     }
-    executed = true;
     this.callback = callback;
     fetch();
     return watcherSubscription;
