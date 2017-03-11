@@ -12,8 +12,7 @@ import javax.annotation.Nullable;
 
 import okhttp3.Call;
 import okhttp3.HttpUrl;
-
-import static okhttp3.internal.Util.closeQuietly;
+import okhttp3.Response;
 
 final class RealApolloPrefetch extends BaseApolloCall implements ApolloPrefetch {
   volatile Call httpCall;
@@ -29,7 +28,10 @@ final class RealApolloPrefetch extends BaseApolloCall implements ApolloPrefetch 
       executed = true;
     }
     httpCall = prepareHttpCall(HttpCacheControl.NETWORK_FIRST, true);
-    closeQuietly(httpCall.execute());
+    Response response = httpCall.execute();
+    if (response.body() != null) {
+      response.body().close();
+    }
   }
 
   @Nonnull @Override public ApolloPrefetch enqueue(@Nullable final Callback callback) {
@@ -55,7 +57,10 @@ final class RealApolloPrefetch extends BaseApolloCall implements ApolloPrefetch 
       }
 
       @Override public void onResponse(Call call, okhttp3.Response response) throws IOException {
-        closeQuietly(response);
+        if (response.body() != null) {
+          response.body().close();
+        }
+
         if (callback != null) {
           callback.onSuccess();
         }

@@ -14,7 +14,6 @@ import static com.apollographql.android.cache.http.Utils.shouldSkipCache;
 import static com.apollographql.android.cache.http.Utils.shouldSkipNetwork;
 import static com.apollographql.android.cache.http.Utils.strip;
 import static com.apollographql.android.cache.http.Utils.withServedDateHeader;
-import static okhttp3.internal.Util.closeQuietly;
 
 final class CacheInterceptor implements Interceptor {
   private final HttpCache cache;
@@ -79,7 +78,9 @@ final class CacheInterceptor implements Interceptor {
   private Response cacheFirst(Request request, Chain chain, String cacheKey) throws IOException {
     Response cacheResponse = cache.read(cacheKey, shouldExpireAfterRead(request));
     if (cacheResponse == null || cache.isStale(cacheResponse)) {
-      closeQuietly(cacheResponse);
+      if (cacheResponse != null) {
+        cacheResponse.close();
+      }
 
       Response networkResponse = withServedDateHeader(chain.proceed(request));
       if (isPrefetchResponse(request)) {
