@@ -8,8 +8,12 @@ import javax.annotation.Nullable;
 
 public interface ApolloWatcher<T extends Operation.Data> {
 
-  @Nonnull void enqueueAndWatch(@Nullable final ApolloCall.Callback<T> callback);
+  void enqueueAndWatch(@Nullable final ApolloCall.Callback<T> callback);
 
+  /**
+   * @param cacheControl The {@link CacheControl} to use when the call is refetched due to a field changing in the
+   *                     cache.
+   */
   @Nonnull ApolloWatcher<T> refetchCacheControl(@Nonnull CacheControl cacheControl);
 
   void cancel();
