@@ -24,25 +24,19 @@ final class RealApolloWatcher<T extends Operation.Data> implements ApolloWatcher
       refetch();
     }
   };
-  private final WatcherSubscription watcherSubscription = new WatcherSubscription() {
-    @Override public void unsubscribe() {
-      cache.unsubscribe(recordChangeSubscriber);
-    }
-  };
 
   RealApolloWatcher(RealApolloCall<T> originalCall, Cache cache) {
     activeCall = originalCall;
     this.cache = cache;
   }
 
-  @Nonnull public WatcherSubscription enqueueAndWatch(@Nullable final ApolloCall.Callback<T> callback) {
+  @Nonnull public void enqueueAndWatch(@Nullable final ApolloCall.Callback<T> callback) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed.");
       executed = true;
     }
     this.callback = callback;
-    fetch();
-    return watcherSubscription;
+    activeCall.enqueue(callbackProxy(this.callback, activeCall));
   }
 
   @Nonnull public RealApolloWatcher<T> refetchCacheControl(@Nonnull CacheControl cacheControl) {
@@ -51,12 +45,17 @@ final class RealApolloWatcher<T extends Operation.Data> implements ApolloWatcher
     return this;
   }
 
-  @Nonnull public RealApolloWatcher<T> refetch() {
-    cache.unsubscribe(recordChangeSubscriber);
+  @Override public void cancel() {
+    isActive = false;
     activeCall.cancel();
+    cache.unsubscribe(recordChangeSubscriber);
+  }
+
+  private void refetch() {
+    activeCall.cancel();
+    cache.unsubscribe(recordChangeSubscriber);
     activeCall = activeCall.clone().cacheControl(refetchCacheControl);
-    fetch();
-    return this;
+    activeCall.enqueue(callbackProxy(this.callback, activeCall));
   }
 
   private ApolloCall.Callback<T> callbackProxy(final ApolloCall.Callback<T> sourceCallback,
@@ -74,10 +73,6 @@ final class RealApolloWatcher<T extends Operation.Data> implements ApolloWatcher
         isActive = false;
       }
     };
-  }
-
-  private void fetch() {
-    activeCall.enqueue(callbackProxy(callback, activeCall));
   }
 
 }

@@ -20,7 +20,7 @@ public final class RealCache implements Cache {
   private final CacheStore cacheStore;
   private final CacheKeyResolver cacheKeyResolver;
   private final ReadWriteLock lock;
-  private Map<RecordChangeSubscriber, Set<String>> subscribers;
+  private final Map<RecordChangeSubscriber, Set<String>> subscribers;
 
   public RealCache(@Nonnull CacheStore cacheStore, @Nonnull CacheKeyResolver cacheKeyResolver) {
     this.cacheStore = cacheStore;

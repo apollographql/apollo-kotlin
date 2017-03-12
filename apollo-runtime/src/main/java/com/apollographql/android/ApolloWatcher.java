@@ -8,13 +8,10 @@ import javax.annotation.Nullable;
 
 public interface ApolloWatcher<T extends Operation.Data> {
 
-  interface WatcherSubscription {
-    void unsubscribe();
-  }
-
-  @Nonnull WatcherSubscription enqueueAndWatch(@Nullable final ApolloCall.Callback<T> callback);
+  @Nonnull void enqueueAndWatch(@Nullable final ApolloCall.Callback<T> callback);
 
   @Nonnull ApolloWatcher<T> refetchCacheControl(@Nonnull CacheControl cacheControl);
 
-  @Nonnull ApolloWatcher<T> refetch();
+  void cancel();
+
 }
