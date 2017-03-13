@@ -1,5 +1,7 @@
 package com.apollographql.android.impl.util;
 
+import java.util.Set;
+
 import javax.annotation.Nullable;
 
 public final class Utils {
@@ -11,5 +13,23 @@ public final class Utils {
       throw new NullPointerException(String.valueOf(errorMessage));
     }
     return reference;
+  }
+
+  public static <E> boolean areDisjoint(Set<E> setOne, Set<E> setTwo) {
+    if (setOne == null || setTwo == null) {
+      return true;
+    }
+    Set<E> smallerSet = setOne;
+    Set<E> largerSet = setTwo;
+    if (setOne.size() > setTwo.size()) {
+      smallerSet = setTwo;
+      largerSet = setOne;
+    }
+    for (E el : smallerSet) {
+      if (largerSet.contains(el)) {
+        return false;
+      }
+    }
+    return true;
   }
 }

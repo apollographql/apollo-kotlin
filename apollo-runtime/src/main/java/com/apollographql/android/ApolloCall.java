@@ -14,7 +14,9 @@ public interface ApolloCall<T extends Operation.Data> {
 
   @Nonnull Response<T> execute() throws IOException;
 
-  @Nonnull ApolloCall<T> enqueue(@Nullable Callback<T> callback);
+  void enqueue(@Nullable Callback<T> callback);
+
+  @Nonnull ApolloWatcher<T> watcher();
 
   @Nonnull ApolloCall<T> httpCacheControl(@Nonnull HttpCacheControl httpCacheControl);
 

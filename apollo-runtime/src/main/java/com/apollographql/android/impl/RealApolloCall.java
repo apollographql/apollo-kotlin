@@ -20,6 +20,7 @@ import com.squareup.moshi.Moshi;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,6 +38,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
   private final ResponseFieldMapper responseFieldMapper;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final ExecutorService dispatcher;
+  private Set<String> dependentKeys;
   private boolean executed;
 
   RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache, Moshi moshi,
@@ -80,7 +82,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     return executeNetworkRequest();
   }
 
-  @Nonnull @Override public ApolloCall<T> enqueue(@Nullable final Callback<T> callback) {
+  @Override public void enqueue(@Nullable final Callback<T> callback) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
@@ -110,10 +112,13 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
         httpCall.enqueue(new HttCallback(callback));
       }
     });
-    return this;
   }
 
-  @Nonnull @Override public ApolloCall<T> httpCacheControl(@Nonnull HttpCacheControl httpCacheControl) {
+  @Nonnull @Override public RealApolloWatcher<T> watcher() {
+    return new RealApolloWatcher<>(clone(), cache);
+  }
+
+  @Nonnull @Override public RealApolloCall<T> httpCacheControl(@Nonnull HttpCacheControl httpCacheControl) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
@@ -123,7 +128,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     return this;
   }
 
-  @Nonnull @Override public ApolloCall<T> cacheControl(@Nonnull CacheControl cacheControl) {
+  @Nonnull @Override public RealApolloCall<T> cacheControl(@Nonnull CacheControl cacheControl) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
@@ -140,9 +145,13 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     }
   }
 
-  @Override @Nonnull public ApolloCall<T> clone() {
+  @Override @Nonnull public RealApolloCall<T> clone() {
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCacheControl, moshi,
         responseFieldMapper, customTypeAdapters, cache, cacheControl, dispatcher);
+  }
+
+  Set<String> dependentKeys() {
+    return dependentKeys;
   }
 
   private Response<T> executeNetworkRequest() throws IOException {
@@ -192,13 +201,13 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
         HttpResponseBodyConverter converter = new HttpResponseBodyConverter(operation, responseFieldMapper,
             customTypeAdapters);
         Response<T> convertedResponse = converter.convert(response.body(), normalizer);
-
         dispatcher.execute(new Runnable() {
           @Override public void run() {
             cache.write(normalizer.records());
           }
         });
-
+        cache.write(normalizer.records());
+        dependentKeys = normalizer.dependentKeys();
         return convertedResponse;
       } catch (Exception rethrown) {
         Util.closeQuietly(response);

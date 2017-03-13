@@ -1,8 +1,10 @@
 package com.apollographql.android.cache.normalized;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 public final class RecordSet {
 
@@ -12,12 +14,13 @@ public final class RecordSet {
     return recordMap.get(key);
   }
 
-  public void merge(Record apolloRecord) {
+  public Set<String> merge(Record apolloRecord) {
     final Record oldRecord = recordMap.get(apolloRecord.key());
     if (oldRecord == null) {
       recordMap.put(apolloRecord.key(), apolloRecord);
+      return Collections.emptySet();
     } else {
-      oldRecord.mergeWith(apolloRecord);
+      return oldRecord.mergeWith(apolloRecord);
     }
   }
 
