@@ -16,7 +16,7 @@ public interface ApolloCall<T extends Operation.Data> {
 
   void enqueue(@Nullable Callback<T> callback);
 
-  @Nonnull ApolloWatcher<T> toWatcher();
+  @Nonnull ApolloWatcher<T> watcher();
 
   @Nonnull ApolloCall<T> httpCacheControl(@Nonnull HttpCacheControl httpCacheControl);
 

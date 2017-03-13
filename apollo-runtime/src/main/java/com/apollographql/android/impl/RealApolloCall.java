@@ -114,7 +114,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     });
   }
 
-  @Nonnull @Override public RealApolloWatcher<T> toWatcher() {
+  @Nonnull @Override public RealApolloWatcher<T> watcher() {
     return new RealApolloWatcher<>(clone(), cache);
   }
 

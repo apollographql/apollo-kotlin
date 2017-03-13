@@ -30,7 +30,7 @@ final class RealApolloWatcher<T extends Operation.Data> implements ApolloWatcher
     this.cache = cache;
   }
 
-  public void enqueueAndWatch(@Nullable final ApolloCall.Callback<T> callback) {
+  @Override public void enqueueAndWatch(@Nullable final ApolloCall.Callback<T> callback) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed.");
       executed = true;
@@ -39,7 +39,7 @@ final class RealApolloWatcher<T extends Operation.Data> implements ApolloWatcher
     activeCall.enqueue(callbackProxy(this.callback, activeCall));
   }
 
-  @Nonnull public RealApolloWatcher<T> refetchCacheControl(@Nonnull CacheControl cacheControl) {
+  @Nonnull @Override public RealApolloWatcher<T> refetchCacheControl(@Nonnull CacheControl cacheControl) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }

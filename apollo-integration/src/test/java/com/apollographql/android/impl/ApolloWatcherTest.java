@@ -67,7 +67,7 @@ public class ApolloWatcherTest {
     EpisodeHeroName query = new EpisodeHeroName(EpisodeHeroName.Variables.builder().episode(Episode.EMPIRE).build());
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
-    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).toWatcher();
+    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).watcher();
     watcher.enqueueAndWatch(
         new ApolloCall.Callback<EpisodeHeroName.Data>() {
           @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
@@ -102,7 +102,7 @@ public class ApolloWatcherTest {
     EpisodeHeroName query = new EpisodeHeroName(EpisodeHeroName.Variables.builder().episode(Episode.EMPIRE).build());
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
-    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).toWatcher();
+    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).watcher();
     watcher.enqueueAndWatch(
         new ApolloCall.Callback<EpisodeHeroName.Data>() {
           @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
@@ -135,7 +135,7 @@ public class ApolloWatcherTest {
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
     EpisodeHeroName query = new EpisodeHeroName(EpisodeHeroName.Variables.builder().episode(Episode.EMPIRE).build());
 
-    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).toWatcher();
+    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).watcher();
     watcher.enqueueAndWatch(
         new ApolloCall.Callback<EpisodeHeroName.Data>() {
           @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
@@ -172,7 +172,7 @@ public class ApolloWatcherTest {
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
     EpisodeHeroName query = new EpisodeHeroName(EpisodeHeroName.Variables.builder().episode(Episode.EMPIRE).build());
 
-    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).toWatcher();
+    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).watcher();
     watcher.enqueueAndWatch(
         new ApolloCall.Callback<EpisodeHeroName.Data>() {
           @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
@@ -207,7 +207,7 @@ public class ApolloWatcherTest {
 
     final CountDownLatch firstResponseLatch = new CountDownLatch(1);
     final CountDownLatch secondResponseLatch = new CountDownLatch(2);
-    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).toWatcher();
+    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).watcher();
     watcher.refetchCacheControl(CacheControl.NETWORK_ONLY) //Force network instead of CACHE_FIRST default
         .enqueueAndWatch(
             new ApolloCall.Callback<EpisodeHeroName.Data>() {
