@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 public final class InMemoryCacheStore extends CacheStore {
 
   private final RecordSet recordSet;
@@ -16,15 +18,15 @@ public final class InMemoryCacheStore extends CacheStore {
     this.recordSet = new RecordSet();
   }
 
-  public Record loadRecord(String key) {
+  @Nonnull public Record loadRecord(String key) {
     return recordSet.get(key);
   }
 
-  public synchronized Set<String> merge(Record apolloRecord) {
+  @Nonnull public Set<String> merge(Record apolloRecord) {
     return recordSet.merge(apolloRecord);
   }
 
-  @Override public Set<String> merge(Collection<Record> recordSet) {
+  @Nonnull @Override public Set<String> merge(Collection<Record> recordSet) {
     Set<String> changedKeys = new LinkedHashSet<>();
     for (Record record: recordSet) {
       changedKeys.addAll(merge(record));
