@@ -20,7 +20,6 @@ package com.apollographql.android.internal;
 import java.util.Collections;
 import java.util.Set;
 
-
 import javax.annotation.Nullable;
 
 import static com.apollographql.android.impl.util.Utils.checkNotNull;
@@ -37,7 +36,8 @@ final class Absent<T> extends Optional<T> {
     return (Optional<T>) INSTANCE;
   }
 
-  private Absent() {}
+  private Absent() {
+  }
 
   @Override
   public boolean isPresent() {
