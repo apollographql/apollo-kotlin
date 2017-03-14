@@ -68,6 +68,7 @@ final class SqlStore extends CacheStore {
     try {
       database.beginTransaction();
       changedKeys = super.merge(recordSet);
+      database.setTransactionSuccessful();
     } finally {
       database.endTransaction();
     }
