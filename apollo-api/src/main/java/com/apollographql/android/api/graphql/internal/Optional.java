@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apollographql.android.internal;
+package com.apollographql.android.api.graphql.internal;
 
 
 import java.io.Serializable;
@@ -23,7 +23,7 @@ import java.util.Set;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 
-import static com.apollographql.android.impl.util.Utils.checkNotNull;
+import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
 
 
 /**
@@ -40,10 +40,12 @@ import static com.apollographql.android.impl.util.Utils.checkNotNull;
  * <ul> <li>As a method return type, as an alternative to returning {@code null} to indicate that no value was available
  * <li>To distinguish between "unknown" (for example, not present in a map) and "known to have no value" (present in the
  * map, with value {@code Optional.absent()}) <li>To wrap nullable references for storage in a collection that does not
- * support {@code null} (though there are <a href="https://github.com/google/guava/wiki/LivingWithNullHostileCollections">
+ * support {@code null} (though there are
+ * <a href="https://github.com/google/guava/wiki/LivingWithNullHostileCollections">
  * several other approaches to this</a> that should be considered first) </ul>
  *
- * <p>A common alternative to using this class is to find or create a suitable <a href="http://en.wikipedia.org/wiki/Null_Object_pattern">null
+ * <p>A common alternative to using this class is to find or create a
+ * suitable <a href="http://en.wikipedia.org/wiki/Null_Object_pattern">null
  * object</a> for the type in question.
  *
  * <p>This class is not intended as a direct analogue of any existing "option" or "maybe" construct from other
@@ -61,7 +63,8 @@ import static com.apollographql.android.impl.util.Utils.checkNotNull;
  * <p><b>There are no plans to deprecate this class in the foreseeable future.</b> However, we do gently recommend that
  * you prefer the new, standard Java class whenever possible.
  *
- * <p>See the Guava User Guide article on <a href="https://github.com/google/guava/wiki/UsingAndAvoidingNullExplained#optional">
+ * <p>See the Guava User Guide article on
+ * <a href="https://github.com/google/guava/wiki/UsingAndAvoidingNullExplained#optional">
  * using {@code Optional}</a>.
  *
  * @param <T> the type of instance that can be contained. {@code Optional} is naturally covariant on this type, so it is
@@ -201,6 +204,16 @@ public abstract class Optional<T> implements Serializable {
    * @since 11.0
    */
   public abstract Set<T> asSet();
+
+  /**
+   * If the instance is present, it is transformed with the given {@link Function}; otherwise, {@link Optional#absent}
+   * is returned. If the function returns {@code null}, a {@link NullPointerException} is thrown.
+   *
+   * @throws NullPointerException if the function returns {@code null}
+   * @since 12.0
+   */
+  public abstract <V> Optional<V> transform(Function<? super T, V> function);
+
 
   /**
    * Returns {@code true} if {@code object} is an {@code Optional} instance, and either the contained references are

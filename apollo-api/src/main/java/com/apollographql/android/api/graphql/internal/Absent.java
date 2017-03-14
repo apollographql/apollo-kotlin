@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apollographql.android.internal;
+package com.apollographql.android.api.graphql.internal;
 
 
 import java.util.Collections;
@@ -22,7 +22,7 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import static com.apollographql.android.impl.util.Utils.checkNotNull;
+import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
 
 /**
  * Implementation of an {@link Optional} not containing a reference.
@@ -64,6 +64,12 @@ final class Absent<T> extends Optional<T> {
   @Nullable
   public T orNull() {
     return null;
+  }
+
+  @Override
+  public <V> Optional<V> transform(Function<? super T, V> function) {
+    checkNotNull(function);
+    return Optional.absent();
   }
 
   @Override
