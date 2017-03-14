@@ -2,7 +2,7 @@ package com.apollographql.android.cache.normalized;
 
 import javax.annotation.Nonnull;
 
-import static com.apollographql.android.impl.util.Utils.checkNotNull;
+import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
 
 public final class CacheKey {
   public static final CacheKey NO_KEY = new CacheKey("");
