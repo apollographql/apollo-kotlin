@@ -39,7 +39,8 @@ public final class Record {
     for (Map.Entry<String, Object> field : otherRecord.fields.entrySet()) {
       Object newFieldValue = field.getValue();
       Object oldFieldValue = this.fields.get(field.getKey());
-      if (newFieldValue != null && oldFieldValue == null || !oldFieldValue.equals(newFieldValue)) {
+      if ((oldFieldValue == null && newFieldValue != null)
+          || (oldFieldValue != null && !oldFieldValue.equals(newFieldValue))) {
         this.fields.put(field.getKey(), newFieldValue);
         changedKeys.add(key() + "." + field.getKey());
       }
