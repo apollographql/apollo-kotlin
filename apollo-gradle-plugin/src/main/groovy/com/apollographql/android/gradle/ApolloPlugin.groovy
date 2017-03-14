@@ -50,6 +50,7 @@ class ApolloPlugin implements Plugin<Project> {
     setupNode()
     project.extensions.create(ApolloExtension.NAME, ApolloExtension)
     createSourceSetExtensions()
+    def hasGuava = false
 
     def compileDepSet = project.configurations.getByName("compile").dependencies
     project.getGradle().addListener(new DependencyResolutionListener() {
@@ -60,25 +61,30 @@ class ApolloPlugin implements Plugin<Project> {
           dep.name == API_DEP_NAME
         }
         if (apolloApiDep != null && apolloApiDep.version != VersionKt.VERSION) {
-          throw new GradleException("apollo-api version ${apolloApiDep.version} isn't compatible with the apollo-gradle-plugin version ${VersionKt.VERSION}")
+          throw new GradleException(
+              "apollo-api version ${apolloApiDep.version} isn't compatible with the apollo-gradle-plugin version ${VersionKt.VERSION}")
         }
         if (System.getProperty("apollographql.skipApi") != "true" && apolloApiDep == null) {
           compileDepSet.add(project.dependencies.create("$APOLLO_GROUP:$API_DEP_NAME:$VersionKt.VERSION"))
         }
-        project.getGradle().removeListener(this)
       }
 
       @Override
-      void afterResolve(ResolvableDependencies resolvableDependencies) {}
+      void afterResolve(ResolvableDependencies resolvableDependencies) {
+        hasGuava = resolvableDependencies.getResolutionResult().allDependencies.any {
+          it.toString().contains("com.google.guava:guava")
+        }
+        project.getGradle().removeListener(this)
+      }
     })
 
     project.afterEvaluate {
       project.tasks.create(ApolloCodeGenInstallTask.NAME, ApolloCodeGenInstallTask.class)
-      addApolloTasks()
+      addApolloTasks(hasGuava)
     }
   }
 
-  private void addApolloTasks() {
+  private void addApolloTasks(boolean hasGuava) {
     Task apolloIRGenTask = project.task("generateApolloIR")
     apolloIRGenTask.group(TASK_GROUP)
     Task apolloClassGenTask = project.task("generateApolloClasses")
@@ -86,28 +92,28 @@ class ApolloPlugin implements Plugin<Project> {
 
     if (isAndroidProject()) {
       getVariants().all { v ->
-        addVariantTasks(v, apolloIRGenTask, apolloClassGenTask, v.sourceSets)
+        addVariantTasks(v, apolloIRGenTask, apolloClassGenTask, v.sourceSets, hasGuava)
       }
     } else {
       getSourceSets().all { sourceSet ->
-        addSourceSetTasks(sourceSet, apolloIRGenTask, apolloClassGenTask)
+        addSourceSetTasks(sourceSet, apolloIRGenTask, apolloClassGenTask, hasGuava)
       }
     }
   }
 
-  private void addVariantTasks(Object variant, Task apolloIRGenTask, Task apolloClassGenTask, Collection<?> sourceSets) {
+  private void addVariantTasks(Object variant, Task apolloIRGenTask, Task apolloClassGenTask, Collection<?> sourceSets, boolean hasGuava) {
     ApolloIRGenTask variantIRTask = createApolloIRGenTask(variant.name, sourceSets)
-    ApolloClassGenTask variantClassTask = createApolloClassGenTask(variant.name, project.apollo.customTypeMapping)
+    ApolloClassGenTask variantClassTask = createApolloClassGenTask(variant.name, project.apollo.customTypeMapping, hasGuava)
     variant.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir)
     apolloIRGenTask.dependsOn(variantIRTask)
     apolloClassGenTask.dependsOn(variantClassTask)
   }
 
-  private void addSourceSetTasks(SourceSet sourceSet, Task apolloIRGenTask, Task apolloClassGenTask) {
+  private void addSourceSetTasks(SourceSet sourceSet, Task apolloIRGenTask, Task apolloClassGenTask, boolean hasGuava) {
     String taskName = "main".equals(sourceSet.name) ? "" : sourceSet.name
 
     ApolloIRGenTask sourceSetIRTask = createApolloIRGenTask(sourceSet.name, [sourceSet])
-    ApolloClassGenTask sourceSetClassTask = createApolloClassGenTask(sourceSet.name, project.apollo.customTypeMapping)
+    ApolloClassGenTask sourceSetClassTask = createApolloClassGenTask(sourceSet.name, project.apollo.customTypeMapping, hasGuava)
     apolloIRGenTask.dependsOn(sourceSetIRTask)
     apolloClassGenTask.dependsOn(sourceSetClassTask)
 
@@ -141,7 +147,7 @@ class ApolloPlugin implements Plugin<Project> {
     return task
   }
 
-  private ApolloClassGenTask createApolloClassGenTask(String name, Map<String, String> customTypeMapping) {
+  private ApolloClassGenTask createApolloClassGenTask(String name, Map<String, String> customTypeMapping, boolean hasGuava) {
     String taskName = String.format(ApolloClassGenTask.NAME, name.capitalize())
     ApolloClassGenTask task = project.tasks.create(taskName, ApolloClassGenTask) {
       group = TASK_GROUP
@@ -150,7 +156,7 @@ class ApolloPlugin implements Plugin<Project> {
       source = project.tasks.findByName(String.format(ApolloIRGenTask.NAME, name.capitalize())).outputDir
       include "**${File.separatorChar}*API.json"
     }
-    task.init(name, customTypeMapping)
+    task.init(name, customTypeMapping, hasGuava)
     return task
   }
 
