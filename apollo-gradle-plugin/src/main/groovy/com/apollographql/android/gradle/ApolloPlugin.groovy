@@ -71,10 +71,8 @@ class ApolloPlugin implements Plugin<Project> {
 
       @Override
       void afterResolve(ResolvableDependencies resolvableDependencies) {
-        resolvableDependencies.getResolutionResult().allDependencies.each {
-          if (it.toString().contains("com.google.guava:guava")) {
-            hasGuava = true
-          }
+        hasGuava = resolvableDependencies.getResolutionResult().allDependencies.any {
+          it.toString().contains("com.google.guava:guava")
         }
         project.getGradle().removeListener(this)
       }
