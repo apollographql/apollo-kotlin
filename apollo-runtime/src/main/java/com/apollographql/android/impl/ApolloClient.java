@@ -33,7 +33,7 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
-import static com.apollographql.android.impl.util.Utils.checkNotNull;
+import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
 
 public final class ApolloClient implements ApolloCall.Factory {
   public static Builder builder() {

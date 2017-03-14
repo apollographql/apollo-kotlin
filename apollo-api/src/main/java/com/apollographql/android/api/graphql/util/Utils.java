@@ -1,4 +1,4 @@
-package com.apollographql.android.impl.util;
+package com.apollographql.android.api.graphql.util;
 
 import java.util.Set;
 
@@ -32,4 +32,12 @@ public final class Utils {
     }
     return true;
   }
+
+  public static <T> T checkNotNull(T reference) {
+    if (reference == null) {
+      throw new NullPointerException();
+    }
+    return reference;
+  }
+
 }
