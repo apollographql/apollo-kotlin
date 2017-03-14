@@ -1,7 +1,7 @@
 package com.apollographql.android.cache.normalized;
 
 
-import com.apollographql.android.impl.util.Utils;
+import com.apollographql.android.api.graphql.util.Utils;
 
 import java.util.Collection;
 import java.util.Collections;

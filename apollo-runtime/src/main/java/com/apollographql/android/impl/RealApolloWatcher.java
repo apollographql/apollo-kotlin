@@ -4,9 +4,9 @@ import com.apollographql.android.ApolloCall;
 import com.apollographql.android.ApolloWatcher;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
+import com.apollographql.android.api.graphql.util.Utils;
 import com.apollographql.android.cache.normalized.Cache;
 import com.apollographql.android.cache.normalized.CacheControl;
-import com.apollographql.android.impl.util.Utils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
