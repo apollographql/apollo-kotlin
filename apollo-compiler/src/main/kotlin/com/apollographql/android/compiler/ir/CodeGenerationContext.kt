@@ -5,7 +5,8 @@ data class CodeGenerationContext(
     val typeDeclarations: List<TypeDeclaration>,
     val fragmentsPackage: String = "",
     val typesPackage: String = "",
-    val customTypeMap: Map<String, String>
+    val customTypeMap: Map<String, String>,
+    val hasGuava: Boolean
 ) {
   fun plusReservedTypes(vararg typeName: String): CodeGenerationContext = plusReservedTypes(typeName.toList())
 
@@ -15,7 +16,8 @@ data class CodeGenerationContext(
           typeDeclarations = typeDeclarations,
           fragmentsPackage = fragmentsPackage,
           typesPackage = typesPackage,
-          customTypeMap = customTypeMap
+          customTypeMap = customTypeMap,
+          hasGuava = hasGuava
       )
 
   fun withReservedTypeNames(vararg typeName: String): CodeGenerationContext = withReservedTypeNames(typeName.asList())
@@ -26,6 +28,7 @@ data class CodeGenerationContext(
           typeDeclarations = typeDeclarations,
           fragmentsPackage = fragmentsPackage,
           typesPackage = typesPackage,
-          customTypeMap = customTypeMap
+          customTypeMap = customTypeMap,
+          hasGuava = hasGuava
       )
 }

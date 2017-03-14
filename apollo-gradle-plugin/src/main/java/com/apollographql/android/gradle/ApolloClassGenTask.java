@@ -21,11 +21,13 @@ public class ApolloClassGenTask extends SourceTask {
 
   @Internal private String variant;
   @Internal private Map<String, String> customTypeMapping;
+  @Internal boolean hasGuavaDep;
   @OutputDirectory private File outputDir;
 
-  public void init(String buildVariant, Map<String, String> typeMapping) {
+  public void init(String buildVariant, Map<String, String> typeMapping, boolean hasGuava) {
     variant = buildVariant;
     customTypeMapping = typeMapping;
+    hasGuavaDep = hasGuava;
     outputDir = new File(getProject().getBuildDir() + "/" + Joiner.on(File.separator).join(GraphQLCompiler.Companion
         .getOUTPUT_DIRECTORY()));
   }
@@ -35,7 +37,7 @@ public class ApolloClassGenTask extends SourceTask {
     inputs.outOfDate(new Action<InputFileDetails>() {
       @Override
       public void execute(InputFileDetails inputFileDetails) {
-        new GraphQLCompiler().write(inputFileDetails.getFile(), outputDir, customTypeMapping);
+        new GraphQLCompiler().write(inputFileDetails.getFile(), outputDir, customTypeMapping, hasGuavaDep);
       }
     });
   }
