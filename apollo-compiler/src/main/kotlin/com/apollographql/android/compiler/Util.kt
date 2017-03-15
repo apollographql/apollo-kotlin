@@ -30,7 +30,7 @@ fun MethodSpec.overrideReturnType(typeNameOverrideMap: Map<String, String>): Met
         .addCode(code)
         .build()
 
-fun TypeSpec.withValueInitConstructor(): TypeSpec {
+fun TypeSpec.withValueInitConstructor(guavaSupport: Boolean): TypeSpec {
   return toBuilder()
       .addMethod(MethodSpec.constructorBuilder()
           .addModifiers(Modifier.PUBLIC)
@@ -48,7 +48,8 @@ fun TypeSpec.withValueInitConstructor(): TypeSpec {
               .filter { !it.modifiers.contains(Modifier.STATIC) }
               .map {
                 if (it.type.isOptional()) {
-                  CodeBlock.of("this.\$L = \$T.fromNullable(\$L);\n", it.name, ClassNames.OPTIONAL, it.name)
+                  CodeBlock.of("this.\$L = \$T.fromNullable(\$L);\n", it.name,
+                      if (guavaSupport) ClassNames.GUAVA_OPTIONAL else ClassNames.OPTIONAL, it.name)
                 } else {
                   CodeBlock.of("this.\$L = \$L;\n", it.name, it.name)
                 }
@@ -189,7 +190,7 @@ fun ClassName.mapperFieldName(): String = "${simpleName().decapitalize()}${Util.
 
 fun TypeName.isOptional(): Boolean {
   val rawType = (this as? ParameterizedTypeName)?.rawType ?: this
-  return rawType == ClassNames.OPTIONAL
+  return rawType == ClassNames.OPTIONAL || rawType == ClassNames.GUAVA_OPTIONAL
 }
 
 fun TypeName.unwrapOptionalType(): TypeName {

@@ -28,7 +28,7 @@ class SchemaTypeSpecBuilder(
         .addInnerFragmentTypes(fragmentSpreads)
         .addType(mapper)
         .build()
-        .withValueInitConstructor()
+        .withValueInitConstructor(context.hasGuava)
         .withToStringImplementation()
         .withEqualsImplementation()
         .withHashCodeImplementation()
@@ -36,10 +36,10 @@ class SchemaTypeSpecBuilder(
 
   private fun TypeSpec.Builder.addFields(fields: List<Field>): TypeSpec.Builder {
     val fieldSpecs = fields.map {
-      it.fieldSpec(customScalarTypeMap = context.customTypeMap, typesPackage = context.typesPackage)
+      it.fieldSpec(context)
     }
     val methodSpecs = fields.map {
-      it.accessorMethodSpec(context.typesPackage, context.customTypeMap)
+      it.accessorMethodSpec(context)
     }
     return addFields(fieldSpecs.map { it.overrideType(innerTypeNameOverrideMap) })
         .addMethods(methodSpecs.map { it.overrideReturnType(innerTypeNameOverrideMap) })
@@ -67,8 +67,8 @@ class SchemaTypeSpecBuilder(
         Field::normalizedName)
     val uniqueTypeNameMap = buildUniqueTypeNameMap(reservedTypeNames)
     val typeSpecs = fragments.map { it.toTypeSpec(context.withReservedTypeNames(reservedTypeNames)) }
-    val methodSpecs = fragments.map { it.accessorMethodSpec().overrideReturnType(uniqueTypeNameMap) }
-    val fieldSpecs = fragments.map { it.fieldSpec().overrideType(uniqueTypeNameMap) }
+    val methodSpecs = fragments.map { it.accessorMethodSpec(context).overrideReturnType(uniqueTypeNameMap) }
+    val fieldSpecs = fragments.map { it.fieldSpec(context).overrideType(uniqueTypeNameMap) }
     return addTypes(typeSpecs)
         .addMethods(methodSpecs)
         .addFields(fieldSpecs)
@@ -76,7 +76,7 @@ class SchemaTypeSpecBuilder(
 
   private fun fragmentsAccessorMethodSpec(): MethodSpec {
     return MethodSpec.methodBuilder(FRAGMENTS_TYPE_NAME.decapitalize())
-        .returns(FRAGMENTS_TYPE)
+        .returns(JavaTypeResolver(context, "").resolve(FRAGMENTS_TYPE_NAME, false))
         .addModifiers(Modifier.PUBLIC)
         .addModifiers(emptyList())
         .addCode(CodeBlock.of("return this.${FRAGMENTS_TYPE_NAME.toLowerCase(Locale.ENGLISH)};\n"))
@@ -93,7 +93,7 @@ class SchemaTypeSpecBuilder(
 
     fun TypeSpec.Builder.addFragmentFields(): TypeSpec.Builder {
       return addFields(fragments.map {
-        FieldSpec.builder(JavaTypeResolver(context.customTypeMap, context.fragmentsPackage).resolve(it.capitalize()),
+        FieldSpec.builder(JavaTypeResolver(context, context.fragmentsPackage).resolve(it.capitalize()),
             it.decapitalize())
             .addModifiers(Modifier.PRIVATE)
             .build()
@@ -103,7 +103,7 @@ class SchemaTypeSpecBuilder(
     fun TypeSpec.Builder.addFragmentAccessorMethods(): TypeSpec.Builder {
       return addMethods(fragments.map {
         MethodSpec.methodBuilder(it.decapitalize())
-            .returns(JavaTypeResolver(context.customTypeMap, context.fragmentsPackage).resolve(it.capitalize()))
+            .returns(JavaTypeResolver(context, context.fragmentsPackage).resolve(it.capitalize()))
             .addModifiers(Modifier.PUBLIC)
             .addStatement("return this.\$L", it.decapitalize())
             .build()
@@ -117,7 +117,7 @@ class SchemaTypeSpecBuilder(
         .addFragmentAccessorMethods()
         .addType(mapper)
         .build()
-        .withValueInitConstructor()
+        .withValueInitConstructor(context.hasGuava)
         .withToStringImplementation()
         .withEqualsImplementation()
         .withHashCodeImplementation()
@@ -135,6 +135,6 @@ class SchemaTypeSpecBuilder(
 
   companion object {
     val FRAGMENTS_TYPE_NAME: String = "Fragments"
-    val FRAGMENTS_TYPE: TypeName = JavaTypeResolver(emptyMap(), "").resolve(FRAGMENTS_TYPE_NAME, false)
+    val FRAGMENTS_TYPE: TypeName = ClassName.get("", FRAGMENTS_TYPE_NAME).annotated(Annotations.NONNULL)
   }
 }

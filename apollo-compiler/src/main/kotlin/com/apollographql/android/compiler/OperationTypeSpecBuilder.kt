@@ -22,7 +22,7 @@ class OperationTypeSpecBuilder(
         .addOperationDefinition(operation)
         .addQueryDocumentDefinition(fragments, newContext)
         .addQueryConstructor(operation.variables.isNotEmpty())
-        .addVariablesDefinition(operation.variables, newContext.typesPackage, newContext.customTypeMap)
+        .addVariablesDefinition(operation.variables, newContext)
         .addType(operation.toTypeSpec(newContext))
         .addResponseFieldMapperMethod()
         .build()
@@ -73,8 +73,8 @@ class OperationTypeSpecBuilder(
     return this
   }
 
-  private fun TypeSpec.Builder.addVariablesDefinition(variables: List<Variable>,
-      typesPackage: String, customScalarTypeMap: Map<String, String>): TypeSpec.Builder {
+  private fun TypeSpec.Builder.addVariablesDefinition(variables: List<Variable>, context: CodeGenerationContext):
+      TypeSpec.Builder {
     val queryFieldClassName =
         if (variables.isNotEmpty()) OPERATION_VARIABLES_CLASS_NAME else ClassNames.GRAPHQL_OPERATION_VARIABLES
     addField(FieldSpec.builder(queryFieldClassName, VARIABLES_FIELD_NAME)
@@ -91,7 +91,7 @@ class OperationTypeSpecBuilder(
     )
 
     if (variables.isNotEmpty()) {
-      addType(VariablesTypeSpecBuilder(variables, typesPackage, customScalarTypeMap).build())
+      addType(VariablesTypeSpecBuilder(variables, context).build())
     }
 
     return this

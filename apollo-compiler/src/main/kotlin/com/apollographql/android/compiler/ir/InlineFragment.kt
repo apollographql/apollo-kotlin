@@ -16,22 +16,22 @@ data class InlineFragment(
       SchemaTypeSpecBuilder(interfaceName(), fields, fragmentSpreads ?: emptyList(), emptyList(), context)
           .build(Modifier.PUBLIC, Modifier.STATIC)
 
-  fun accessorMethodSpec(): MethodSpec {
+  fun accessorMethodSpec(context: CodeGenerationContext): MethodSpec {
     return MethodSpec.methodBuilder(interfaceName().decapitalize())
         .addModifiers(Modifier.PUBLIC)
-        .returns(typeName())
+        .returns(typeName(context))
         .addStatement("return this.\$L", interfaceName().decapitalize())
         .build()
   }
 
-  fun fieldSpec(): FieldSpec =
-      FieldSpec.builder(typeName(), interfaceName().decapitalize())
+  fun fieldSpec(context: CodeGenerationContext): FieldSpec =
+      FieldSpec.builder(typeName(context), interfaceName().decapitalize())
           .addModifiers(Modifier.PRIVATE)
           .build()
 
   private fun interfaceName() = "$INTERFACE_PREFIX${typeCondition.capitalize()}"
 
-  private fun typeName() = JavaTypeResolver(emptyMap(), "").resolve(interfaceName(), true)
+  private fun typeName(context: CodeGenerationContext) = JavaTypeResolver(context, "").resolve(interfaceName(), true)
 
   companion object {
     private val INTERFACE_PREFIX = "As"

@@ -50,10 +50,10 @@ class SchemaTypeResponseMapperBuilder(
 
   fun build(): TypeSpec {
     val contentValueFields = fields
-        .map { it.fieldSpec(customScalarTypeMap = context.customTypeMap, typesPackage = context.typesPackage) }
+        .map { it.fieldSpec(context) }
         .map { FieldSpec.builder(it.type.overrideTypeName(typeOverrideMap), it.name).build() }
         .plus(inlineFragments
-            .map { it.fieldSpec() }
+            .map { it.fieldSpec(context) }
             .map { FieldSpec.builder(it.type.overrideTypeName(typeOverrideMap), it.name).build() })
         .let { if (fragmentSpreads.isNotEmpty()) it.plus(FRAGMENTS_FIELD) else it }
         .map { FieldSpec.builder(it.type.withoutAnnotations().unwrapOptionalType(), it.name).build() }
@@ -91,8 +91,7 @@ class SchemaTypeResponseMapperBuilder(
           .build()
 
   private fun fieldFactoryCode(field: Field): CodeBlock {
-    val fieldTypeName = field.fieldSpec(customScalarTypeMap = context.customTypeMap,
-        typesPackage = context.typesPackage).type.unwrapOptionalType().withoutAnnotations()
+    val fieldTypeName = field.fieldSpec(context).type.unwrapOptionalType().withoutAnnotations()
     if (fieldTypeName.isScalar() || fieldTypeName.isCustomScalarType()) {
       return scalarFieldFactoryCode(field, fieldTypeName)
     } else if (fieldTypeName.isList()) {
@@ -272,7 +271,7 @@ class SchemaTypeResponseMapperBuilder(
           .let { if (it is WildcardTypeName) it.upperBounds.first() else it }
 
   private fun inlineFragmentFieldFactoryCode(fragment: InlineFragment): CodeBlock {
-    val type = fragment.fieldSpec().type.unwrapOptionalType().withoutAnnotations()
+    val type = fragment.fieldSpec(context).type.unwrapOptionalType().withoutAnnotations()
         .overrideTypeName(typeOverrideMap) as ClassName
     fun readCodeBlock(): CodeBlock {
       return CodeBlock.builder()
@@ -332,8 +331,8 @@ class SchemaTypeResponseMapperBuilder(
 
   private fun mapperFields() =
       fields
-          .map { it.fieldSpec(customScalarTypeMap = context.customTypeMap, typesPackage = context.typesPackage) }
-          .plus(inlineFragments.map { it.fieldSpec() })
+          .map { it.fieldSpec(context) }
+          .plus(inlineFragments.map { it.fieldSpec(context) })
           .map { it.type.unwrapOptionalType().withoutAnnotations() }
           .map { it.let { if (it.isList()) it.listParamType() else it } }
           .filter { !it.isScalar() && !it.isCustomScalarType() }

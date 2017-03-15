@@ -1,5 +1,6 @@
 package com.apollographql.android.compiler
 
+import com.apollographql.android.compiler.ir.CodeGenerationContext
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeName
 import org.junit.Assert
@@ -7,7 +8,14 @@ import org.junit.Test
 import java.util.*
 
 class JavaTypeResolverTest {
-  private val defaultResolver = JavaTypeResolver(emptyMap(), packageName)
+  private val defaultContext = CodeGenerationContext(
+      reservedTypeNames = emptyList(),
+      typeDeclarations = emptyList(),
+      fragmentsPackage = "",
+      typesPackage = "",
+      customTypeMap = emptyMap(),
+      hasGuava = false)
+  private val defaultResolver = JavaTypeResolver(defaultContext, packageName)
 
   @Test
   fun resolveScalarType() {
@@ -59,9 +67,9 @@ class JavaTypeResolverTest {
   @Test
   fun resolveCustomType() {
     Assert.assertEquals(ClassName.get("", "CustomClass").annotated(Annotations.NONNULL),
-        JavaTypeResolver(emptyMap(), "").resolve("CustomClass!"))
+        JavaTypeResolver(defaultContext, "").resolve("CustomClass!"))
     Assert.assertEquals(ClassNames.parameterizedOptional(ClassName.get("", "CustomClass")),
-        JavaTypeResolver(emptyMap(), "").resolve("CustomClass", true))
+        JavaTypeResolver(defaultContext, "").resolve("CustomClass", true))
 
     Assert.assertEquals(ClassName.get(packageName, "CustomClass").annotated(Annotations.NONNULL),
         defaultResolver.resolve("CustomClass!"))
@@ -71,13 +79,13 @@ class JavaTypeResolverTest {
 
   @Test
   fun resolveCustomScalarType() {
-    val customScalarTypeMap = mapOf("Date" to "java.util.Date", "UnsupportedType" to "Object")
+    val context = defaultContext.copy(customTypeMap = mapOf("Date" to "java.util.Date", "UnsupportedType" to "Object"))
     Assert.assertEquals(ClassName.get(Date::class.java).annotated(Annotations.NONNULL),
-        JavaTypeResolver(customScalarTypeMap, packageName).resolve("Date", false))
+        JavaTypeResolver(context, packageName).resolve("Date", false))
     Assert.assertEquals(ClassNames.parameterizedOptional(Date::class.java),
-        JavaTypeResolver(customScalarTypeMap, packageName).resolve("Date", true))
+        JavaTypeResolver(context, packageName).resolve("Date", true))
     Assert.assertEquals(ClassNames.parameterizedOptional(ClassName.get("", "Object")),
-        JavaTypeResolver(customScalarTypeMap, packageName).resolve("UnsupportedType", true))
+        JavaTypeResolver(context, packageName).resolve("UnsupportedType", true))
   }
 
   companion object {

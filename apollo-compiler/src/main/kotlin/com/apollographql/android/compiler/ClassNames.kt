@@ -24,6 +24,7 @@ object ClassNames {
   val HASH_MAP: ClassName = ClassName.get(HashMap::class.java)
   val UNMODIFIABLE_MAP_BUILDER: ClassName = ClassName.get(UnmodifiableMapBuilder::class.java)
   val OPTIONAL: ClassName = ClassName.get(Optional::class.java)
+  val GUAVA_OPTIONAL: ClassName = ClassName.get("com.google.common.base", "Optional")
 
   fun <K : Any> parameterizedListOf(type: Class<K>): TypeName =
       ParameterizedTypeName.get(LIST, ClassName.get(type))
@@ -45,9 +46,15 @@ object ClassNames {
           ClassName.get(valueTypeArgument).withoutAnnotations())
 
   fun <K : Any> parameterizedOptional(type: Class<K>): TypeName =
-      ParameterizedTypeName.get(ClassName.get(Optional::class.java), ClassName.get(type))
+      ParameterizedTypeName.get(OPTIONAL, ClassName.get(type))
 
   fun parameterizedOptional(type: TypeName): TypeName =
-      ParameterizedTypeName.get(ClassName.get(Optional::class.java), type)
+      ParameterizedTypeName.get(OPTIONAL, type)
+
+  fun <K : Any> parameterizedGuavaOptional(type: Class<K>): TypeName =
+      ParameterizedTypeName.get(GUAVA_OPTIONAL, ClassName.get(type))
+
+  fun parameterizedGuavaOptional(type: TypeName): TypeName =
+      ParameterizedTypeName.get(GUAVA_OPTIONAL, type)
 
 }
