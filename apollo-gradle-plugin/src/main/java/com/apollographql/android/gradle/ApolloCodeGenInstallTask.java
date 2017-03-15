@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.gradle.api.Task;
+import org.gradle.api.logging.LogLevel;
 import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.OutputDirectory;
 
@@ -46,6 +47,7 @@ public class ApolloCodeGenInstallTask extends NpmTask {
     }
     setArgs(Lists.newArrayList("install", "apollo-codegen@" + GraphQLCompiler.APOLLOCODEGEN_VERSION, "--save",
         "--save-exact"));
+    getLogging().captureStandardOutput(LogLevel.INFO);
   }
 
   private static class PackageJson {
