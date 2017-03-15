@@ -93,7 +93,8 @@ class SchemaTypeSpecBuilder(
 
     fun TypeSpec.Builder.addFragmentFields(): TypeSpec.Builder {
       return addFields(fragments.map {
-        FieldSpec.builder(ClassName.get("", it.capitalize()), it.decapitalize())
+        FieldSpec.builder(JavaTypeResolver(context.customTypeMap, context.fragmentsPackage).resolve(it.capitalize()),
+            it.decapitalize())
             .addModifiers(Modifier.PRIVATE)
             .build()
       })
@@ -102,7 +103,7 @@ class SchemaTypeSpecBuilder(
     fun TypeSpec.Builder.addFragmentAccessorMethods(): TypeSpec.Builder {
       return addMethods(fragments.map {
         MethodSpec.methodBuilder(it.decapitalize())
-            .returns(ClassName.get(fragmentsPackage, it.capitalize()).annotated(listOf(Annotations.NULLABLE)))
+            .returns(JavaTypeResolver(context.customTypeMap, context.fragmentsPackage).resolve(it.capitalize()))
             .addModifiers(Modifier.PUBLIC)
             .addStatement("return this.\$L", it.decapitalize())
             .build()
@@ -134,6 +135,6 @@ class SchemaTypeSpecBuilder(
 
   companion object {
     val FRAGMENTS_TYPE_NAME: String = "Fragments"
-    val FRAGMENTS_TYPE: ClassName = ClassName.get("", FRAGMENTS_TYPE_NAME).annotated(listOf(Annotations.NONNULL))
+    val FRAGMENTS_TYPE: TypeName = JavaTypeResolver(emptyMap(), "").resolve(FRAGMENTS_TYPE_NAME, false)
   }
 }

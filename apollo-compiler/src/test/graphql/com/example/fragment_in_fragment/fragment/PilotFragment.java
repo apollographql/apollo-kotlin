@@ -3,6 +3,7 @@ package com.example.fragment_in_fragment.fragment;
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.internal.Optional;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
@@ -26,20 +27,20 @@ public class PilotFragment {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Person"));
 
-  private final @Nullable String name;
+  private final Optional<String> name;
 
-  private final @Nullable Homeworld homeworld;
+  private final Optional<Homeworld> homeworld;
 
   public PilotFragment(@Nullable String name, @Nullable Homeworld homeworld) {
-    this.name = name;
-    this.homeworld = homeworld;
+    this.name = Optional.fromNullable(name);
+    this.homeworld = Optional.fromNullable(homeworld);
   }
 
-  public @Nullable String name() {
+  public Optional<String> name() {
     return this.name;
   }
 
-  public @Nullable Homeworld homeworld() {
+  public Optional<Homeworld> homeworld() {
     return this.homeworld;
   }
 
@@ -75,13 +76,13 @@ public class PilotFragment {
   }
 
   public static class Homeworld {
-    private final @Nullable String name;
+    private final Optional<String> name;
 
     public Homeworld(@Nullable String name) {
-      this.name = name;
+      this.name = Optional.fromNullable(name);
     }
 
-    public @Nullable String name() {
+    public Optional<String> name() {
       return this.name;
     }
 

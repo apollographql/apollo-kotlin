@@ -6,6 +6,7 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.internal.Optional;
 import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder;
 import com.example.fragment_in_fragment.fragment.PilotFragment;
 import com.example.fragment_in_fragment.fragment.StarshipFragment;
@@ -59,13 +60,13 @@ public final class AllStarships implements Query<AllStarships.Data, Operation.Va
   }
 
   public static class Data implements Operation.Data {
-    private final @Nullable AllStarship allStarships;
+    private final Optional<AllStarship> allStarships;
 
     public Data(@Nullable AllStarship allStarships) {
-      this.allStarships = allStarships;
+      this.allStarships = Optional.fromNullable(allStarships);
     }
 
-    public @Nullable AllStarship allStarships() {
+    public Optional<AllStarship> allStarships() {
       return this.allStarships;
     }
 
@@ -97,13 +98,13 @@ public final class AllStarships implements Query<AllStarships.Data, Operation.Va
     }
 
     public static class AllStarship {
-      private final @Nullable List<Edge> edges;
+      private final Optional<List<Edge>> edges;
 
       public AllStarship(@Nullable List<Edge> edges) {
-        this.edges = edges;
+        this.edges = Optional.fromNullable(edges);
       }
 
-      public @Nullable List<Edge> edges() {
+      public Optional<List<Edge>> edges() {
         return this.edges;
       }
 
@@ -135,13 +136,13 @@ public final class AllStarships implements Query<AllStarships.Data, Operation.Va
       }
 
       public static class Edge {
-        private final @Nullable Node node;
+        private final Optional<Node> node;
 
         public Edge(@Nullable Node node) {
-          this.node = node;
+          this.node = Optional.fromNullable(node);
         }
 
-        public @Nullable Node node() {
+        public Optional<Node> node() {
           return this.node;
         }
 
@@ -211,13 +212,13 @@ public final class AllStarships implements Query<AllStarships.Data, Operation.Va
           }
 
           public static class Fragments {
-            private StarshipFragment starshipFragment;
+            private Optional<StarshipFragment> starshipFragment;
 
-            public Fragments(StarshipFragment starshipFragment) {
-              this.starshipFragment = starshipFragment;
+            public Fragments(@Nullable StarshipFragment starshipFragment) {
+              this.starshipFragment = Optional.fromNullable(starshipFragment);
             }
 
-            public @Nullable StarshipFragment starshipFragment() {
+            public Optional<StarshipFragment> starshipFragment() {
               return this.starshipFragment;
             }
 

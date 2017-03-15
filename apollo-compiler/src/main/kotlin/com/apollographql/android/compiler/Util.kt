@@ -157,10 +157,23 @@ fun TypeSpec.withValueInitConstructor(): TypeSpec {
           .addModifiers(Modifier.PUBLIC)
           .addParameters(fieldSpecs
               .filter { !it.modifiers.contains(Modifier.STATIC) }
-              .map { ParameterSpec.builder(it.type, it.name).build() })
+              .map {
+                val paramType = if (it.type.withoutAnnotations().isOptional()) {
+                  it.type.withoutAnnotations().unwrapOptionalType()
+                } else {
+                  it.type
+                }
+                ParameterSpec.builder(paramType, it.name).build()
+              })
           .addCode(fieldSpecs
               .filter { !it.modifiers.contains(Modifier.STATIC) }
-              .map { CodeBlock.of("this.\$L = \$L;\n", it.name, it.name) }
+              .map {
+                if (it.type.withoutAnnotations().isOptional()) {
+                  CodeBlock.of("this.\$L = \$T.fromNullable(\$L);\n", it.name, ClassNames.OPTIONAL, it.name)
+                } else {
+                  CodeBlock.of("this.\$L = \$L;\n", it.name, it.name)
+                }
+              }
               .fold(CodeBlock.builder(), CodeBlock.Builder::add)
               .build())
           .build())
@@ -293,9 +306,20 @@ fun TypeSpec.withHashCodeImplementation(): TypeSpec {
       .build()
 }
 
-fun ClassName.mapper(): ClassName = ClassName.get(packageName(), simpleName(), Util.MAPPER_TYPE_NAME)
-
 fun ClassName.mapperFieldName(): String = "${simpleName().decapitalize()}${Util.FIELD_MAPPER_VAR}"
+
+fun TypeName.isOptional(): Boolean {
+  val rawType = (this as? ParameterizedTypeName)?.rawType ?: this
+  return rawType == ClassNames.OPTIONAL
+}
+
+fun TypeName.unwrapOptionalType(): TypeName {
+  return if (isOptional()) {
+    (this as ParameterizedTypeName).typeArguments.first().annotated(Annotations.NULLABLE)
+  } else {
+    this
+  }
+}
 
 object Util {
   const val CREATOR_TYPE_NAME: String = "Creator"

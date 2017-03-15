@@ -6,6 +6,7 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.internal.Optional;
 import com.example.fragment_with_inline_fragment.fragment.HeroDetails;
 import com.example.fragment_with_inline_fragment.type.Episode;
 import java.io.IOException;
@@ -53,13 +54,13 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
   }
 
   public static class Data implements Operation.Data {
-    private final @Nullable Hero hero;
+    private final Optional<Hero> hero;
 
     public Data(@Nullable Hero hero) {
-      this.hero = hero;
+      this.hero = Optional.fromNullable(hero);
     }
 
-    public @Nullable Hero hero() {
+    public Optional<Hero> hero() {
       return this.hero;
     }
 
@@ -151,13 +152,13 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
       }
 
       public static class Fragments {
-        private HeroDetails heroDetails;
+        private Optional<HeroDetails> heroDetails;
 
-        public Fragments(HeroDetails heroDetails) {
-          this.heroDetails = heroDetails;
+        public Fragments(@Nullable HeroDetails heroDetails) {
+          this.heroDetails = Optional.fromNullable(heroDetails);
         }
 
-        public @Nullable HeroDetails heroDetails() {
+        public Optional<HeroDetails> heroDetails() {
           return this.heroDetails;
         }
 

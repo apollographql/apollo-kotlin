@@ -5,6 +5,7 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.internal.Optional;
 import java.io.IOException;
 import java.lang.Double;
 import java.lang.Object;
@@ -55,13 +56,13 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
   }
 
   public static class Data implements Operation.Data {
-    private final @Nullable Hero hero;
+    private final Optional<Hero> hero;
 
     public Data(@Nullable Hero hero) {
-      this.hero = hero;
+      this.hero = Optional.fromNullable(hero);
     }
 
-    public @Nullable Hero hero() {
+    public Optional<Hero> hero() {
       return this.hero;
     }
 
@@ -95,25 +96,25 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
     public static class Hero {
       private final @Nonnull String name;
 
-      private @Nullable AsHuman asHuman;
+      private Optional<AsHuman> asHuman;
 
-      private @Nullable AsDroid asDroid;
+      private Optional<AsDroid> asDroid;
 
       public Hero(@Nonnull String name, @Nullable AsHuman asHuman, @Nullable AsDroid asDroid) {
         this.name = name;
-        this.asHuman = asHuman;
-        this.asDroid = asDroid;
+        this.asHuman = Optional.fromNullable(asHuman);
+        this.asDroid = Optional.fromNullable(asDroid);
       }
 
       public @Nonnull String name() {
         return this.name;
       }
 
-      public @Nullable AsHuman asHuman() {
+      public Optional<AsHuman> asHuman() {
         return this.asHuman;
       }
 
-      public @Nullable AsDroid asDroid() {
+      public Optional<AsDroid> asDroid() {
         return this.asDroid;
       }
 
@@ -155,18 +156,18 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
       public static class AsHuman {
         private final @Nonnull String name;
 
-        private final @Nullable Double height;
+        private final Optional<Double> height;
 
         public AsHuman(@Nonnull String name, @Nullable Double height) {
           this.name = name;
-          this.height = height;
+          this.height = Optional.fromNullable(height);
         }
 
         public @Nonnull String name() {
           return this.name;
         }
 
-        public @Nullable Double height() {
+        public Optional<Double> height() {
           return this.height;
         }
 
@@ -219,18 +220,18 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
       public static class AsDroid {
         private final @Nonnull String name;
 
-        private final @Nullable String primaryFunction;
+        private final Optional<String> primaryFunction;
 
         public AsDroid(@Nonnull String name, @Nullable String primaryFunction) {
           this.name = name;
-          this.primaryFunction = primaryFunction;
+          this.primaryFunction = Optional.fromNullable(primaryFunction);
         }
 
         public @Nonnull String name() {
           return this.name;
         }
 
-        public @Nullable String primaryFunction() {
+        public Optional<String> primaryFunction() {
           return this.primaryFunction;
         }
 

@@ -5,6 +5,7 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.internal.Optional;
 import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder;
 import com.example.arguments_complex.type.Episode;
 import java.io.IOException;
@@ -123,13 +124,13 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Variable
   }
 
   public static class Data implements Operation.Data {
-    private final @Nullable HeroWithReview heroWithReview;
+    private final Optional<HeroWithReview> heroWithReview;
 
     public Data(@Nullable HeroWithReview heroWithReview) {
-      this.heroWithReview = heroWithReview;
+      this.heroWithReview = Optional.fromNullable(heroWithReview);
     }
 
-    public @Nullable HeroWithReview heroWithReview() {
+    public Optional<HeroWithReview> heroWithReview() {
       return this.heroWithReview;
     }
 
@@ -163,18 +164,18 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Variable
     public static class HeroWithReview {
       private final @Nonnull String name;
 
-      private final @Nullable Double height;
+      private final Optional<Double> height;
 
       public HeroWithReview(@Nonnull String name, @Nullable Double height) {
         this.name = name;
-        this.height = height;
+        this.height = Optional.fromNullable(height);
       }
 
       public @Nonnull String name() {
         return this.name;
       }
 
-      public @Nullable Double height() {
+      public Optional<Double> height() {
         return this.height;
       }
 

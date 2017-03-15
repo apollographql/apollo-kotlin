@@ -6,6 +6,7 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.internal.Optional;
 import com.example.unique_type_name.fragment.HeroDetails;
 import com.example.unique_type_name.type.Episode;
 import java.io.IOException;
@@ -68,13 +69,13 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Operat
   }
 
   public static class Data implements Operation.Data {
-    private final @Nullable HeroDetailQuery1 heroDetailQuery;
+    private final Optional<HeroDetailQuery1> heroDetailQuery;
 
     public Data(@Nullable HeroDetailQuery1 heroDetailQuery) {
-      this.heroDetailQuery = heroDetailQuery;
+      this.heroDetailQuery = Optional.fromNullable(heroDetailQuery);
     }
 
-    public @Nullable HeroDetailQuery1 heroDetailQuery() {
+    public Optional<HeroDetailQuery1> heroDetailQuery() {
       return this.heroDetailQuery;
     }
 
@@ -108,26 +109,26 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Operat
     public static class HeroDetailQuery1 {
       private final @Nonnull String name;
 
-      private final @Nullable List<Friend> friends;
+      private final Optional<List<Friend>> friends;
 
-      private @Nullable AsHuman asHuman;
+      private Optional<AsHuman> asHuman;
 
       public HeroDetailQuery1(@Nonnull String name, @Nullable List<Friend> friends,
           @Nullable AsHuman asHuman) {
         this.name = name;
-        this.friends = friends;
-        this.asHuman = asHuman;
+        this.friends = Optional.fromNullable(friends);
+        this.asHuman = Optional.fromNullable(asHuman);
       }
 
       public @Nonnull String name() {
         return this.name;
       }
 
-      public @Nullable List<Friend> friends() {
+      public Optional<List<Friend>> friends() {
         return this.friends;
       }
 
-      public @Nullable AsHuman asHuman() {
+      public Optional<AsHuman> asHuman() {
         return this.asHuman;
       }
 
@@ -220,26 +221,26 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Operat
       public static class AsHuman {
         private final @Nonnull String name;
 
-        private final @Nullable List<Friend1> friends;
+        private final Optional<List<Friend1>> friends;
 
-        private final @Nullable Double height;
+        private final Optional<Double> height;
 
         public AsHuman(@Nonnull String name, @Nullable List<Friend1> friends,
             @Nullable Double height) {
           this.name = name;
-          this.friends = friends;
-          this.height = height;
+          this.friends = Optional.fromNullable(friends);
+          this.height = Optional.fromNullable(height);
         }
 
         public @Nonnull String name() {
           return this.name;
         }
 
-        public @Nullable List<Friend1> friends() {
+        public Optional<List<Friend1>> friends() {
           return this.friends;
         }
 
-        public @Nullable Double height() {
+        public Optional<Double> height() {
           return this.height;
         }
 
@@ -283,13 +284,13 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Operat
 
           private final @Nonnull List<Episode> appearsIn;
 
-          private final @Nullable List<Friend2> friends;
+          private final Optional<List<Friend2>> friends;
 
           public Friend1(@Nonnull String name, @Nonnull List<Episode> appearsIn,
               @Nullable List<Friend2> friends) {
             this.name = name;
             this.appearsIn = appearsIn;
-            this.friends = friends;
+            this.friends = Optional.fromNullable(friends);
           }
 
           public @Nonnull String name() {
@@ -300,7 +301,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Operat
             return this.appearsIn;
           }
 
-          public @Nullable List<Friend2> friends() {
+          public Optional<List<Friend2>> friends() {
             return this.friends;
           }
 
@@ -378,13 +379,13 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Operat
             }
 
             public static class Fragments {
-              private HeroDetails heroDetails;
+              private Optional<HeroDetails> heroDetails;
 
-              public Fragments(HeroDetails heroDetails) {
-                this.heroDetails = heroDetails;
+              public Fragments(@Nullable HeroDetails heroDetails) {
+                this.heroDetails = Optional.fromNullable(heroDetails);
               }
 
-              public @Nullable HeroDetails heroDetails() {
+              public Optional<HeroDetails> heroDetails() {
                 return this.heroDetails;
               }
 

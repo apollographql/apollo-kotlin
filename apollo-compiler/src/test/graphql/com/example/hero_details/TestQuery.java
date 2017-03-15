@@ -5,6 +5,7 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.internal.Optional;
 import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Object;
@@ -59,13 +60,13 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
   }
 
   public static class Data implements Operation.Data {
-    private final @Nullable Hero hero;
+    private final Optional<Hero> hero;
 
     public Data(@Nullable Hero hero) {
-      this.hero = hero;
+      this.hero = Optional.fromNullable(hero);
     }
 
-    public @Nullable Hero hero() {
+    public Optional<Hero> hero() {
       return this.hero;
     }
 
@@ -146,20 +147,20 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
       }
 
       public static class FriendsConnection {
-        private final @Nullable Integer totalCount;
+        private final Optional<Integer> totalCount;
 
-        private final @Nullable List<Edge> edges;
+        private final Optional<List<Edge>> edges;
 
         public FriendsConnection(@Nullable Integer totalCount, @Nullable List<Edge> edges) {
-          this.totalCount = totalCount;
-          this.edges = edges;
+          this.totalCount = Optional.fromNullable(totalCount);
+          this.edges = Optional.fromNullable(edges);
         }
 
-        public @Nullable Integer totalCount() {
+        public Optional<Integer> totalCount() {
           return this.totalCount;
         }
 
-        public @Nullable List<Edge> edges() {
+        public Optional<List<Edge>> edges() {
           return this.edges;
         }
 
@@ -195,13 +196,13 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
         }
 
         public static class Edge {
-          private final @Nullable Node node;
+          private final Optional<Node> node;
 
           public Edge(@Nullable Node node) {
-            this.node = node;
+            this.node = Optional.fromNullable(node);
           }
 
-          public @Nullable Node node() {
+          public Optional<Node> node() {
             return this.node;
           }
 

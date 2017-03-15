@@ -4,6 +4,7 @@ import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.FragmentResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.internal.Optional;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
@@ -37,26 +38,26 @@ public class StarshipFragment {
 
   private final @Nonnull String id;
 
-  private final @Nullable String name;
+  private final Optional<String> name;
 
-  private final @Nullable PilotConnection pilotConnection;
+  private final Optional<PilotConnection> pilotConnection;
 
   public StarshipFragment(@Nonnull String id, @Nullable String name,
       @Nullable PilotConnection pilotConnection) {
     this.id = id;
-    this.name = name;
-    this.pilotConnection = pilotConnection;
+    this.name = Optional.fromNullable(name);
+    this.pilotConnection = Optional.fromNullable(pilotConnection);
   }
 
   public @Nonnull String id() {
     return this.id;
   }
 
-  public @Nullable String name() {
+  public Optional<String> name() {
     return this.name;
   }
 
-  public @Nullable PilotConnection pilotConnection() {
+  public Optional<PilotConnection> pilotConnection() {
     return this.pilotConnection;
   }
 
@@ -96,13 +97,13 @@ public class StarshipFragment {
   }
 
   public static class PilotConnection {
-    private final @Nullable List<Edge> edges;
+    private final Optional<List<Edge>> edges;
 
     public PilotConnection(@Nullable List<Edge> edges) {
-      this.edges = edges;
+      this.edges = Optional.fromNullable(edges);
     }
 
-    public @Nullable List<Edge> edges() {
+    public Optional<List<Edge>> edges() {
       return this.edges;
     }
 
@@ -134,13 +135,13 @@ public class StarshipFragment {
     }
 
     public static class Edge {
-      private final @Nullable Node node;
+      private final Optional<Node> node;
 
       public Edge(@Nullable Node node) {
-        this.node = node;
+        this.node = Optional.fromNullable(node);
       }
 
-      public @Nullable Node node() {
+      public Optional<Node> node() {
         return this.node;
       }
 
@@ -210,13 +211,13 @@ public class StarshipFragment {
         }
 
         public static class Fragments {
-          private PilotFragment pilotFragment;
+          private Optional<PilotFragment> pilotFragment;
 
-          public Fragments(PilotFragment pilotFragment) {
-            this.pilotFragment = pilotFragment;
+          public Fragments(@Nullable PilotFragment pilotFragment) {
+            this.pilotFragment = Optional.fromNullable(pilotFragment);
           }
 
-          public @Nullable PilotFragment pilotFragment() {
+          public Optional<PilotFragment> pilotFragment() {
             return this.pilotFragment;
           }
 

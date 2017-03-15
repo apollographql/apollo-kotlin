@@ -91,7 +91,7 @@ class VariablesTypeSpecBuilder(
     private val VARIABLES_CLASS_NAME: String = "Variables"
     private val VARIABLES_TYPE_NAME: ClassName = ClassName.get("", VARIABLES_CLASS_NAME)
     private fun Variable.javaTypeName(customScalarTypeMap: Map<String, String>, packageName: String) =
-        JavaTypeResolver(customScalarTypeMap, packageName).resolve(type, !type.endsWith("!"))
+        JavaTypeResolver(customScalarTypeMap, packageName).resolve(type).unwrapOptionalType()
 
     private val VALUE_MAP_FIELD_NAME = "valueMap"
   }

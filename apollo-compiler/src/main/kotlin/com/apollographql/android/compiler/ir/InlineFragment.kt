@@ -1,8 +1,10 @@
 package com.apollographql.android.compiler.ir
 
-import com.apollographql.android.compiler.Annotations
+import com.apollographql.android.compiler.JavaTypeResolver
 import com.apollographql.android.compiler.SchemaTypeSpecBuilder
-import com.squareup.javapoet.*
+import com.squareup.javapoet.FieldSpec
+import com.squareup.javapoet.MethodSpec
+import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 data class InlineFragment(
@@ -29,7 +31,7 @@ data class InlineFragment(
 
   private fun interfaceName() = "$INTERFACE_PREFIX${typeCondition.capitalize()}"
 
-  private fun typeName() = ClassName.get("", interfaceName()).annotated(Annotations.NULLABLE)
+  private fun typeName() = JavaTypeResolver(emptyMap(), "").resolve(interfaceName(), true)
 
   companion object {
     private val INTERFACE_PREFIX = "As"

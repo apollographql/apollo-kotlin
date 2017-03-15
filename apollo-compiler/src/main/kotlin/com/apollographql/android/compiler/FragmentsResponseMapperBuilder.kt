@@ -32,7 +32,7 @@ import javax.lang.model.element.Modifier
  */
 class FragmentsResponseMapperBuilder(
     val fragments: List<String>,
-    val codeGenerationContext: CodeGenerationContext
+    val context: CodeGenerationContext
 ) {
   fun build(): TypeSpec {
     val fragmentFields = fragments.map { FieldSpec.builder(fragmentType(it), it.decapitalize()).build() }
@@ -45,7 +45,7 @@ class FragmentsResponseMapperBuilder(
   }
 
   private fun fragmentType(fragmentName: String) =
-      ClassName.get(codeGenerationContext.fragmentsPackage, fragmentName.capitalize())
+      ClassName.get(context.fragmentsPackage, fragmentName.capitalize())
 
   private fun mapMethod(fragmentFields: List<FieldSpec>) =
       MethodSpec.methodBuilder("map")
@@ -97,7 +97,7 @@ class FragmentsResponseMapperBuilder(
       fragments
           .map { it.type as ClassName }
           .map {
-            val mapperClassName = it.mapper()
+            val mapperClassName = ClassName.get(context.fragmentsPackage, it.simpleName(), Util.MAPPER_TYPE_NAME)
             FieldSpec.builder(mapperClassName, it.mapperFieldName(), Modifier.FINAL)
                 .initializer(CodeBlock.of("new \$T()", mapperClassName))
                 .build()

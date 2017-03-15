@@ -5,6 +5,7 @@ import com.apollographql.android.api.graphql.Mutation;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.internal.Optional;
 import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder;
 import com.example.input_object_type.type.Episode;
 import com.example.input_object_type.type.ReviewInput;
@@ -111,13 +112,13 @@ public final class TestQuery implements Mutation<TestQuery.Data, TestQuery.Varia
   }
 
   public static class Data implements Operation.Data {
-    private final @Nullable CreateReview createReview;
+    private final Optional<CreateReview> createReview;
 
     public Data(@Nullable CreateReview createReview) {
-      this.createReview = createReview;
+      this.createReview = Optional.fromNullable(createReview);
     }
 
-    public @Nullable CreateReview createReview() {
+    public Optional<CreateReview> createReview() {
       return this.createReview;
     }
 
@@ -151,18 +152,18 @@ public final class TestQuery implements Mutation<TestQuery.Data, TestQuery.Varia
     public static class CreateReview {
       private final int stars;
 
-      private final @Nullable String commentary;
+      private final Optional<String> commentary;
 
       public CreateReview(int stars, @Nullable String commentary) {
         this.stars = stars;
-        this.commentary = commentary;
+        this.commentary = Optional.fromNullable(commentary);
       }
 
       public int stars() {
         return this.stars;
       }
 
-      public @Nullable String commentary() {
+      public Optional<String> commentary() {
         return this.commentary;
       }
 
