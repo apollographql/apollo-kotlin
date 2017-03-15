@@ -28,7 +28,7 @@ class JavaTypeResolver(
     return if (javaType.isPrimitive) {
       javaType
     } else if (isOptional) {
-      if (context.hasGuava) parameterizedGuavaOptional(javaType) else parameterizedOptional(javaType)
+      if (context.guavaSupport) parameterizedGuavaOptional(javaType) else parameterizedOptional(javaType)
     } else {
       javaType.annotated(Annotations.NONNULL)
     }

@@ -14,7 +14,7 @@ class JavaTypeResolverTest {
       fragmentsPackage = "",
       typesPackage = "",
       customTypeMap = emptyMap(),
-      hasGuava = false)
+      guavaSupport = false)
   private val defaultResolver = JavaTypeResolver(defaultContext, packageName)
 
   @Test
