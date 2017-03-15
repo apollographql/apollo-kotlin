@@ -15,7 +15,7 @@ import javax.tools.JavaFileObject
 
 @RunWith(Parameterized::class)
 class CodeGenTest(val testDir: File, val pkgName: String, val customScalarTypeMap: Map<String, String>,
-    val hasGuava: Boolean) {
+    val nullableValueType: NullableValueType) {
   private val testDirPath = testDir.toPath()
   private val expectedFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.java")
 
@@ -26,7 +26,7 @@ class CodeGenTest(val testDir: File, val pkgName: String, val customScalarTypeMa
   @Test
   fun generateExpectedClasses() {
     val irFile = File(testDir, "TestQuery.json")
-    compiler.write(irFile, outputDir, customScalarTypeMap, hasGuava)
+    compiler.write(irFile, outputDir, customScalarTypeMap, nullableValueType)
 
     Files.walkFileTree(testDirPath, object : SimpleFileVisitor<Path>() {
       override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
@@ -71,11 +71,13 @@ class CodeGenTest(val testDir: File, val pkgName: String, val customScalarTypeMa
           .filter { it.isDirectory }
           .map {
             if (it.name == "custom_scalar_type") {
-              arrayOf(it, it.name, mapOf("Date" to "java.util.Date"), false)
+              arrayOf(it, it.name, mapOf("Date" to "java.util.Date"), NullableValueType.APOLLO)
             } else if (it.name == "hero_details_guava") {
-              arrayOf(it, it.name, emptyMap<String, String>(), true)
+              arrayOf(it, it.name, emptyMap<String, String>(), NullableValueType.GUAVA)
+            } else if (it.name == "hero_details_nullable") {
+              arrayOf(it, it.name, emptyMap<String, String>(), NullableValueType.NONE)
             } else {
-              arrayOf(it, it.name, emptyMap<String, String>(), false)
+              arrayOf(it, it.name, emptyMap<String, String>(), NullableValueType.APOLLO)
             }
           }
     }

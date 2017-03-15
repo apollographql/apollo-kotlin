@@ -11,7 +11,8 @@ open class GraphQLCompiler {
   private val moshi = Moshi.Builder().build()
   private val irAdapter = moshi.adapter(CodeGenerationIR::class.java)
 
-  fun write(irFile: File, outputDir: File, customTypeMap: Map<String, String> = emptyMap(), guavaSupport: Boolean = false) {
+  fun write(irFile: File, outputDir: File, customTypeMap: Map<String, String> = emptyMap(),
+      nullableValueType: NullableValueType) {
     val ir = irAdapter.fromJson(irFile.readText())
     val irPackageName = irFile.absolutePath.formatPackageName()
     val fragmentsPackage = if (irPackageName.isNotEmpty()) "$irPackageName.fragment" else "fragment"
@@ -23,7 +24,7 @@ open class GraphQLCompiler {
         fragmentsPackage = fragmentsPackage,
         typesPackage = typesPackage,
         customTypeMap = supportedScalarTypeMapping,
-        guavaSupport = guavaSupport
+        nullableValueType = nullableValueType
     )
     ir.writeTypeUsed(context, outputDir)
     ir.writeFragments(context, outputDir)

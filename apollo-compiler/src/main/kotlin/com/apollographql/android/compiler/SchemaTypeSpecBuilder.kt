@@ -28,7 +28,7 @@ class SchemaTypeSpecBuilder(
         .addInnerFragmentTypes(fragmentSpreads)
         .addType(mapper)
         .build()
-        .withValueInitConstructor(context.guavaSupport)
+        .withValueInitConstructor(context.nullableValueType)
         .withToStringImplementation()
         .withEqualsImplementation()
         .withHashCodeImplementation()
@@ -57,7 +57,7 @@ class SchemaTypeSpecBuilder(
   private fun TypeSpec.Builder.addInnerTypes(fields: List<Field>): TypeSpec.Builder {
     val reservedTypeNames = context.reservedTypeNames + typeName + fields.map(Field::normalizedName)
     val typeSpecs = fields.map { field ->
-      field.toTypeSpec(context.withReservedTypeNames(reservedTypeNames.minus(field.normalizedName())))
+      field.toTypeSpec(context.copy(reservedTypeNames = reservedTypeNames.minus(field.normalizedName())))
     }
     return addTypes(typeSpecs)
   }
@@ -66,7 +66,7 @@ class SchemaTypeSpecBuilder(
     val reservedTypeNames = context.reservedTypeNames + typeName + fields.filter(Field::isNonScalar).map(
         Field::normalizedName)
     val uniqueTypeNameMap = buildUniqueTypeNameMap(reservedTypeNames)
-    val typeSpecs = fragments.map { it.toTypeSpec(context.withReservedTypeNames(reservedTypeNames)) }
+    val typeSpecs = fragments.map { it.toTypeSpec(context.copy(reservedTypeNames = reservedTypeNames)) }
     val methodSpecs = fragments.map { it.accessorMethodSpec(context).overrideReturnType(uniqueTypeNameMap) }
     val fieldSpecs = fragments.map { it.fieldSpec(context).overrideType(uniqueTypeNameMap) }
     return addTypes(typeSpecs)
@@ -117,7 +117,7 @@ class SchemaTypeSpecBuilder(
         .addFragmentAccessorMethods()
         .addType(mapper)
         .build()
-        .withValueInitConstructor(context.guavaSupport)
+        .withValueInitConstructor(context.nullableValueType)
         .withToStringImplementation()
         .withEqualsImplementation()
         .withHashCodeImplementation()

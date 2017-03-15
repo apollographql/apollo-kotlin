@@ -3,6 +3,7 @@ package com.apollographql.android.gradle;
 import com.google.common.base.Joiner;
 
 import com.apollographql.android.compiler.GraphQLCompiler;
+import com.apollographql.android.compiler.NullableValueType;
 
 import org.gradle.api.Action;
 import org.gradle.api.tasks.Internal;
@@ -21,12 +22,14 @@ public class ApolloClassGenTask extends SourceTask {
 
   @Internal private String variant;
   @Internal private Map<String, String> customTypeMapping;
+  @Internal boolean useOptional;
   @Internal boolean hasGuavaDep;
   @OutputDirectory private File outputDir;
 
-  public void init(String buildVariant, Map<String, String> typeMapping, boolean hasGuava) {
+  public void init(String buildVariant, Map<String, String> typeMapping, boolean optionalSupport, boolean hasGuava) {
     variant = buildVariant;
     customTypeMapping = typeMapping;
+    useOptional = optionalSupport;
     hasGuavaDep = hasGuava;
     outputDir = new File(getProject().getBuildDir() + "/" + Joiner.on(File.separator).join(GraphQLCompiler.Companion
         .getOUTPUT_DIRECTORY()));
@@ -37,7 +40,11 @@ public class ApolloClassGenTask extends SourceTask {
     inputs.outOfDate(new Action<InputFileDetails>() {
       @Override
       public void execute(InputFileDetails inputFileDetails) {
-        new GraphQLCompiler().write(inputFileDetails.getFile(), outputDir, customTypeMapping, hasGuavaDep);
+        NullableValueType nullableValueType = NullableValueType.NONE;
+        if (useOptional) {
+          nullableValueType = hasGuavaDep ? NullableValueType.GUAVA : NullableValueType.APOLLO;
+        }
+        new GraphQLCompiler().write(inputFileDetails.getFile(), outputDir, customTypeMapping, nullableValueType);
       }
     });
   }
@@ -64,5 +71,13 @@ public class ApolloClassGenTask extends SourceTask {
 
   public void setCustomTypeMapping(Map<String, String> customTypeMapping) {
     this.customTypeMapping = customTypeMapping;
+  }
+
+  public boolean isUseOptional() {
+    return useOptional;
+  }
+
+  public void setUseOptional(boolean useOptional) {
+    this.useOptional = useOptional;
   }
 }

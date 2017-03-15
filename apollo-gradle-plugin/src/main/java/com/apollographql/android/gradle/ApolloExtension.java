@@ -8,6 +8,7 @@ import java.util.Map;
 public class ApolloExtension {
   static final String NAME = "apollo";
   private Map<String, String> customTypeMapping = new LinkedHashMap<>();
+  private boolean optionalSupport = false;
 
   public Map<String, String> getCustomTypeMapping() {
     return customTypeMapping;
@@ -15,6 +16,14 @@ public class ApolloExtension {
 
   public void setCustomTypeMapping(Map<String, String> customTypeMapping) {
     this.customTypeMapping = customTypeMapping;
+  }
+
+  public boolean isOptionalSupport() {
+    return optionalSupport;
+  }
+
+  public void setOptionalSupport(boolean optionalSupport) {
+    this.optionalSupport = optionalSupport;
   }
 
   public void setCustomTypeMapping(Closure closure) {

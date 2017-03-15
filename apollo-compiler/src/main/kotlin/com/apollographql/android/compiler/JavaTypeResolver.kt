@@ -28,7 +28,11 @@ class JavaTypeResolver(
     return if (javaType.isPrimitive) {
       javaType
     } else if (isOptional) {
-      if (context.guavaSupport) parameterizedGuavaOptional(javaType) else parameterizedOptional(javaType)
+      when (context.nullableValueType) {
+        NullableValueType.APOLLO -> parameterizedOptional(javaType)
+        NullableValueType.GUAVA -> parameterizedGuavaOptional(javaType)
+        else -> javaType.annotated(Annotations.NULLABLE)
+      }
     } else {
       javaType.annotated(Annotations.NONNULL)
     }
