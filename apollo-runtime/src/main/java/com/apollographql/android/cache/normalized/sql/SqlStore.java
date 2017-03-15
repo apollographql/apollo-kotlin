@@ -7,9 +7,11 @@ import android.database.sqlite.SQLiteStatement;
 import com.apollographql.android.cache.normalized.CacheStore;
 import com.apollographql.android.cache.normalized.Record;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static com.apollographql.android.cache.normalized.sql.ApolloSqlHelper.COLUMN_KEY;
@@ -46,7 +48,7 @@ final class SqlStore extends CacheStore {
     return selectRecordForKey(key);
   }
 
-  public Set<String> merge(Record apolloRecord) {
+  @Nonnull public Set<String> merge(Record apolloRecord) {
     Record oldRecord = selectRecordForKey(apolloRecord.key());
     Set<String> changedKeys;
     if (oldRecord == null) {
@@ -54,7 +56,21 @@ final class SqlStore extends CacheStore {
       changedKeys = Collections.emptySet();
     } else {
       changedKeys = oldRecord.mergeWith(apolloRecord);
-      updateRecord(oldRecord.key(), parser.toJson(oldRecord.fields()));
+      if (!changedKeys.isEmpty()) {
+        updateRecord(oldRecord.key(), parser.toJson(oldRecord.fields()));
+      }
+    }
+    return changedKeys;
+  }
+
+  @Nonnull @Override public Set<String> merge(Collection<Record> recordSet) {
+    Set<String> changedKeys = Collections.emptySet();
+    try {
+      database.beginTransaction();
+      changedKeys = super.merge(recordSet);
+      database.setTransactionSuccessful();
+    } finally {
+      database.endTransaction();
     }
     return changedKeys;
   }
