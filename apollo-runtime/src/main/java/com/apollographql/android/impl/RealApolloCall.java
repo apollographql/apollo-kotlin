@@ -206,7 +206,6 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
             cache.write(normalizer.records());
           }
         });
-        cache.write(normalizer.records());
         dependentKeys = normalizer.dependentKeys();
         return convertedResponse;
       } catch (Exception rethrown) {
