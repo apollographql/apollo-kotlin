@@ -10,4 +10,5 @@ public interface ReadableCache {
   @Nullable Record read(@Nonnull String key);
 
   Collection<Record> read(@Nonnull Collection<String> keys);
+
 }
