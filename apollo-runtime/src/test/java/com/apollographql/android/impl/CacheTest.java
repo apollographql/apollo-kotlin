@@ -133,7 +133,7 @@ public class CacheTest {
 //    server.enqueue(mockResponse);
 //
 //    ApolloCall call = apolloClient.newCall(new AllPlanets());
-//    Response<AllPlanets.Data> body = call.call();
+//    Response<AllPlanets.Data> body = call.execute();
 //    assertThat(body.isSuccessful()).isFalse();
 //    checkNoCachedResponse(call);
 //  }
