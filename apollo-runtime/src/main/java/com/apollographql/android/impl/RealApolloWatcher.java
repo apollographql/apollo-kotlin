@@ -8,6 +8,9 @@ import com.apollographql.android.api.graphql.util.Utils;
 import com.apollographql.android.cache.normalized.Cache;
 import com.apollographql.android.cache.normalized.CacheControl;
 
+import java.util.Collections;
+import java.util.Set;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -19,9 +22,12 @@ final class RealApolloWatcher<T extends Operation.Data> implements ApolloWatcher
   private volatile boolean isActive = true;
   private boolean executed = false;
   private final Cache cache;
+  private Set<String> dependentKeys = Collections.emptySet();
   private final Cache.RecordChangeSubscriber recordChangeSubscriber = new Cache.RecordChangeSubscriber() {
-    @Override public void onDependentKeysChanged() {
-      refetch();
+    @Override public void onCacheKeysChanged(Set<String> changedCacheKeys) {
+      if (!Utils.areDisjoint(dependentKeys, changedCacheKeys)) {
+        refetch();
+      }
     }
   };
 
@@ -67,7 +73,8 @@ final class RealApolloWatcher<T extends Operation.Data> implements ApolloWatcher
       @Override public void onResponse(@Nonnull Response<T> response) {
         if (isActive) {
           sourceCallback.onResponse(response);
-          cache.subscribe(recordChangeSubscriber, call.dependentKeys());
+          dependentKeys = call.dependentKeys();
+          cache.subscribe(recordChangeSubscriber);
         }
       }
 
