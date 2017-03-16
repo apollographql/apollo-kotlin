@@ -30,7 +30,7 @@ fun MethodSpec.overrideReturnType(typeNameOverrideMap: Map<String, String>): Met
         .addCode(code)
         .build()
 
-fun TypeSpec.withValueInitConstructor(nullableValueType: NullableValueType): TypeSpec {
+fun TypeSpec.withValueInitConstructor(nullableValueGenerationType: NullableValueGenerationType): TypeSpec {
   return toBuilder()
       .addMethod(MethodSpec.constructorBuilder()
           .addModifiers(Modifier.PUBLIC)
@@ -47,8 +47,8 @@ fun TypeSpec.withValueInitConstructor(nullableValueType: NullableValueType): Typ
           .addCode(fieldSpecs
               .filter { !it.modifiers.contains(Modifier.STATIC) }
               .map {
-                if (it.type.isOptional() && nullableValueType != NullableValueType.NONE) {
-                  val optionalType = if (nullableValueType == NullableValueType.GUAVA)
+                if (it.type.isOptional() && nullableValueGenerationType != NullableValueGenerationType.ANNOTATED) {
+                  val optionalType = if (nullableValueGenerationType == NullableValueGenerationType.GUAVA_OPTIONAL)
                     ClassNames.GUAVA_OPTIONAL
                   else
                     ClassNames.OPTIONAL

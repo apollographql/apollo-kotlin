@@ -3,7 +3,7 @@ package com.apollographql.android.gradle;
 import com.google.common.base.Joiner;
 
 import com.apollographql.android.compiler.GraphQLCompiler;
-import com.apollographql.android.compiler.NullableValueType;
+import com.apollographql.android.compiler.NullableValueGenerationType;
 
 import org.gradle.api.Action;
 import org.gradle.api.tasks.Internal;
@@ -14,7 +14,6 @@ import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
 import org.gradle.api.tasks.incremental.InputFileDetails;
 
 import java.io.File;
-import java.util.List;
 import java.util.Map;
 
 public class ApolloClassGenTask extends SourceTask {
@@ -26,10 +25,10 @@ public class ApolloClassGenTask extends SourceTask {
   @Internal boolean hasGuavaDep;
   @OutputDirectory private File outputDir;
 
-  public void init(String buildVariant, Map<String, String> typeMapping, boolean optionalSupport, boolean hasGuava) {
+  public void init(String buildVariant, Map<String, String> typeMapping, boolean generateOptional, boolean hasGuava) {
     variant = buildVariant;
     customTypeMapping = typeMapping;
-    useOptional = optionalSupport;
+    useOptional = generateOptional;
     hasGuavaDep = hasGuava;
     outputDir = new File(getProject().getBuildDir() + "/" + Joiner.on(File.separator).join(GraphQLCompiler.Companion
         .getOUTPUT_DIRECTORY()));
@@ -40,11 +39,9 @@ public class ApolloClassGenTask extends SourceTask {
     inputs.outOfDate(new Action<InputFileDetails>() {
       @Override
       public void execute(InputFileDetails inputFileDetails) {
-        NullableValueType nullableValueType = NullableValueType.NONE;
-        if (useOptional) {
-          nullableValueType = hasGuavaDep ? NullableValueType.GUAVA : NullableValueType.APOLLO;
-        }
-        new GraphQLCompiler().write(inputFileDetails.getFile(), outputDir, customTypeMapping, nullableValueType);
+        GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(inputFileDetails.getFile(), outputDir,
+            customTypeMapping, useOptional, hasGuavaDep);
+        new GraphQLCompiler().write(args);
       }
     });
   }

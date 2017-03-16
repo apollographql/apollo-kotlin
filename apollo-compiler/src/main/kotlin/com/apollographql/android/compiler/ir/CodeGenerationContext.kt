@@ -1,6 +1,6 @@
 package com.apollographql.android.compiler.ir
 
-import com.apollographql.android.compiler.NullableValueType
+import com.apollographql.android.compiler.NullableValueGenerationType
 
 data class CodeGenerationContext(
     val reservedTypeNames: List<String>,
@@ -8,5 +8,5 @@ data class CodeGenerationContext(
     val fragmentsPackage: String = "",
     val typesPackage: String = "",
     val customTypeMap: Map<String, String>,
-    val nullableValueType: NullableValueType
+    val nullableValueGenerationType: NullableValueGenerationType
 )

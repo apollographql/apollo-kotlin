@@ -15,7 +15,7 @@ import javax.tools.JavaFileObject
 
 @RunWith(Parameterized::class)
 class CodeGenTest(val testDir: File, val pkgName: String, val customScalarTypeMap: Map<String, String>,
-    val nullableValueType: NullableValueType) {
+    val useOptional: Boolean, val useGuava: Boolean) {
   private val testDirPath = testDir.toPath()
   private val expectedFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.java")
 
@@ -26,7 +26,7 @@ class CodeGenTest(val testDir: File, val pkgName: String, val customScalarTypeMa
   @Test
   fun generateExpectedClasses() {
     val irFile = File(testDir, "TestQuery.json")
-    compiler.write(irFile, outputDir, customScalarTypeMap, nullableValueType)
+    compiler.write(GraphQLCompiler.Arguments(irFile, outputDir, customScalarTypeMap, useOptional, useGuava))
 
     Files.walkFileTree(testDirPath, object : SimpleFileVisitor<Path>() {
       override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
@@ -71,13 +71,13 @@ class CodeGenTest(val testDir: File, val pkgName: String, val customScalarTypeMa
           .filter { it.isDirectory }
           .map {
             if (it.name == "custom_scalar_type") {
-              arrayOf(it, it.name, mapOf("Date" to "java.util.Date"), NullableValueType.APOLLO)
+              arrayOf(it, it.name, mapOf("Date" to "java.util.Date"), true, false)
             } else if (it.name == "hero_details_guava") {
-              arrayOf(it, it.name, emptyMap<String, String>(), NullableValueType.GUAVA)
+              arrayOf(it, it.name, emptyMap<String, String>(), true, true)
             } else if (it.name == "hero_details_nullable") {
-              arrayOf(it, it.name, emptyMap<String, String>(), NullableValueType.NONE)
+              arrayOf(it, it.name, emptyMap<String, String>(), false, false)
             } else {
-              arrayOf(it, it.name, emptyMap<String, String>(), NullableValueType.APOLLO)
+              arrayOf(it, it.name, emptyMap<String, String>(), true, false)
             }
           }
     }
