@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
-public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Operation.Variables> {
+public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Optional<HeroDetailQuery.Data>, Operation.Variables> {
   public static final String OPERATION_DEFINITION = "query HeroDetailQuery {\n"
       + "  heroDetailQuery {\n"
       + "    __typename\n"
@@ -59,12 +59,17 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Operat
   }
 
   @Override
+  public Optional<HeroDetailQuery.Data> wrapData(HeroDetailQuery.Data data) {
+    return Optional.fromNullable(data);
+  }
+
+  @Override
   public Operation.Variables variables() {
     return variables;
   }
 
   @Override
-  public ResponseFieldMapper<? extends Operation.Data> responseFieldMapper() {
+  public ResponseFieldMapper<HeroDetailQuery.Data> responseFieldMapper() {
     return new Data.Mapper();
   }
 
