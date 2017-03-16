@@ -191,8 +191,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
             new CacheFieldValueResolver(cache, operation.variables()), customTypeAdapters);
         try {
           return new Response<>(operation, (T) responseFieldMapper.map(responseReader), null);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
           //TODO log me
           return new Response<>(operation);
         }

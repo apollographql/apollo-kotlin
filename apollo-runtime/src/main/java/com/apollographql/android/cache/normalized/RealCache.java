@@ -59,8 +59,7 @@ public final class RealCache implements Cache, ReadableCache, WriteableCache {
         try {
           lock.readLock().lock();
           return transactional.call(RealCache.this);
-        }
-        finally {
+        } finally {
           lock.readLock().unlock();
         }
       }
@@ -73,8 +72,7 @@ public final class RealCache implements Cache, ReadableCache, WriteableCache {
         try {
           lock.writeLock().lock();
           return transactional.call(RealCache.this);
-        }
-        finally {
+        } finally {
           lock.writeLock().unlock();
         }
       }
