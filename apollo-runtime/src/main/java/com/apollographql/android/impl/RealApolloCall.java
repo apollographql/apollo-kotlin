@@ -12,6 +12,7 @@ import com.apollographql.android.cache.http.HttpCacheControl;
 import com.apollographql.android.cache.normalized.Cache;
 import com.apollographql.android.cache.normalized.CacheControl;
 import com.apollographql.android.cache.normalized.CacheKeyResolver;
+import com.apollographql.android.cache.normalized.ReadTransaction;
 import com.apollographql.android.cache.normalized.Record;
 import com.apollographql.android.cache.normalized.ResponseNormalizer;
 import com.apollographql.android.impl.util.HttpException;
@@ -178,18 +179,20 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
   }
 
   @SuppressWarnings("unchecked") private Response<T> cachedResponse() {
-    Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key());
-    if (rootRecord == null) {
-      return new Response<>(operation);
-    }
-
+    ReadTransaction readTransaction = cache.readTransaction();
     try {
+      Record rootRecord = readTransaction.read(CacheKeyResolver.rootKeyForOperation(operation).key());
+      if (rootRecord == null) {
+        return new Response<>(operation);
+      }
       RealResponseReader<Record> responseReader = new RealResponseReader<>(operation, rootRecord,
-          new CacheFieldValueResolver(cache, operation.variables()), customTypeAdapters);
+          new CacheFieldValueResolver(readTransaction, operation.variables()), customTypeAdapters);
       return new Response<>(operation, (T) responseFieldMapper.map(responseReader), null);
     } catch (Exception e) {
       //TODO log me
       return new Response<>(operation);
+    } finally {
+      readTransaction.finishRead();
     }
   }
 
@@ -203,7 +206,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
         Response<T> convertedResponse = converter.convert(response.body(), normalizer);
         dispatcher.execute(new Runnable() {
           @Override public void run() {
-            cache.write(normalizer.records());
+            cache.writeTransaction().writeAndFinish(normalizer.records());
           }
         });
         dependentKeys = normalizer.dependentKeys();
