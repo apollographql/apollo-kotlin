@@ -20,5 +20,5 @@ public interface Cache {
 
   ResponseNormalizer responseNormalizer();
 
-  Cache NO_CACHE = new NoCache();
+  Cache NO_CACHE = new NoOpCache();
 }

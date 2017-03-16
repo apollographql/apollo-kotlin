@@ -8,10 +8,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * An alternative to {@link RealCache} for when a no operation cache
+ * An alternative to {@link RealCache} for when a no-operation cache
  * is needed.
  */
-final class NoCache implements Cache, ReadableCache, WriteableCache {
+final class NoOpCache implements Cache, ReadableCache, WriteableCache {
 
   @Override public Set<String> merge(Collection<Record> recordCollection) {
     return Collections.emptySet();
@@ -34,7 +34,7 @@ final class NoCache implements Cache, ReadableCache, WriteableCache {
   @Override public <R> Transaction<ReadableCache, R> readTransaction() {
     return new Transaction<ReadableCache, R>() {
       @Nullable @Override public R execute(Transactional<ReadableCache, R> transactional) {
-        return transactional.call(NoCache.this);
+        return transactional.call(NoOpCache.this);
       }
     };
   }
@@ -42,7 +42,7 @@ final class NoCache implements Cache, ReadableCache, WriteableCache {
   @Override public <R> Transaction<WriteableCache, R> writeTransaction() {
     return new Transaction<WriteableCache, R>() {
       @Nullable @Override public R execute(Transactional<WriteableCache, R> transactional) {
-        return transactional.call(NoCache.this);
+        return transactional.call(NoOpCache.this);
       }
     };
   }
