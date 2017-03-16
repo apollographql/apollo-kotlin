@@ -54,21 +54,21 @@ public final class RealCache implements Cache {
   }
 
   @Override public RealReadTransaction readTransaction() {
-    startRead();
+    lock.readLock().lock();
     return new RealReadTransaction(this);
   }
 
   @Override public RealReadWriteTransaction writeTransaction() {
-    startWrite();
+    lock.writeLock().lock();
     return new RealReadWriteTransaction(this);
-  }
-
-  private void startRead() {
-    lock.readLock().lock();
   }
 
   void closeRead() {
     lock.readLock().unlock();
+  }
+
+  void closeWrite() {
+    lock.writeLock().unlock();
   }
 
   @Nullable Record read(@Nonnull String key) {
@@ -77,14 +77,6 @@ public final class RealCache implements Cache {
 
   @Nonnull Collection<Record> read(@Nonnull Collection<String> keys) {
     return cacheStore.loadRecords(checkNotNull(keys, "keys == null"));
-  }
-
-  private void startWrite() {
-    lock.writeLock().lock();
-  }
-
-  void closeWrite() {
-    lock.writeLock().unlock();
   }
 
   @Nonnull Set<String> merge(@Nonnull Collection<Record> recordSet) {

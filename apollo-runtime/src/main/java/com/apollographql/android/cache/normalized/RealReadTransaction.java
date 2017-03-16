@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 
 class RealReadTransaction implements ReadTransaction {
 
-  protected RealCache cache;
+  protected final RealCache cache;
   protected volatile boolean closed;
 
   RealReadTransaction(RealCache cache) {
@@ -30,8 +30,7 @@ class RealReadTransaction implements ReadTransaction {
 
   @Override public void close() {
     cache.closeRead();
-    this.closed = true;
-
+    closed = true;
   }
 
 }

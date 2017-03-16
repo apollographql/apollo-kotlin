@@ -19,7 +19,7 @@ final class RealReadWriteTransaction extends RealReadTransaction implements Read
   }
 
   @Override public void close() {
-    this.closed = true;
+    closed = true;
     cache.closeWrite();
   }
 }
