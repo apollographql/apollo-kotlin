@@ -128,7 +128,7 @@ class FaultyCacheStore implements ResponseCacheStore {
 
   private static class FaultySink implements Sink {
     @Override public void write(Buffer source, long byteCount) throws IOException {
-      throw new IOException("failed to write");
+      throw new IOException("failed to writeAndFinish");
     }
 
     @Override public void flush() throws IOException {
