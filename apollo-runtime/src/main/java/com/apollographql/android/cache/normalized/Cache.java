@@ -29,9 +29,13 @@ public interface Cache {
 
     @Override public ReadTransaction readTransaction() {
       return new ReadTransaction() {
-        @Override public Record read(@Nonnull String key) { return null; }
+        @Override public Record read(@Nonnull String key) {
+          return null;
+        }
 
-        @Override public Collection<Record> read(@Nonnull Collection<String> keys) { return null; }
+        @Override public Collection<Record> read(@Nonnull Collection<String> keys) {
+          return null;
+        }
 
         @Override public void finishRead() { }
       };
