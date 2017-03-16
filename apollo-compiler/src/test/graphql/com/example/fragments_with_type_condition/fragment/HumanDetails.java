@@ -3,6 +3,7 @@ package com.example.fragments_with_type_condition.fragment;
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.internal.Optional;
 import java.io.IOException;
 import java.lang.Double;
 import java.lang.Object;
@@ -27,18 +28,18 @@ public class HumanDetails {
 
   private final @Nonnull String name;
 
-  private final @Nullable Double height;
+  private final Optional<Double> height;
 
   public HumanDetails(@Nonnull String name, @Nullable Double height) {
     this.name = name;
-    this.height = height;
+    this.height = Optional.fromNullable(height);
   }
 
   public @Nonnull String name() {
     return this.name;
   }
 
-  public @Nullable Double height() {
+  public Optional<Double> height() {
     return this.height;
   }
 

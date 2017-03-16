@@ -3,6 +3,7 @@ package com.example.fragment_with_inline_fragment.fragment;
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.internal.Optional;
 import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Object;
@@ -44,13 +45,13 @@ public class HeroDetails {
 
   private final @Nonnull FriendsConnection friendsConnection;
 
-  private @Nullable AsDroid asDroid;
+  private Optional<AsDroid> asDroid;
 
   public HeroDetails(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
       @Nullable AsDroid asDroid) {
     this.name = name;
     this.friendsConnection = friendsConnection;
-    this.asDroid = asDroid;
+    this.asDroid = Optional.fromNullable(asDroid);
   }
 
   public @Nonnull String name() {
@@ -61,7 +62,7 @@ public class HeroDetails {
     return this.friendsConnection;
   }
 
-  public @Nullable AsDroid asDroid() {
+  public Optional<AsDroid> asDroid() {
     return this.asDroid;
   }
 
@@ -101,20 +102,20 @@ public class HeroDetails {
   }
 
   public static class FriendsConnection {
-    private final @Nullable Integer totalCount;
+    private final Optional<Integer> totalCount;
 
-    private final @Nullable List<Edge> edges;
+    private final Optional<List<Edge>> edges;
 
     public FriendsConnection(@Nullable Integer totalCount, @Nullable List<Edge> edges) {
-      this.totalCount = totalCount;
-      this.edges = edges;
+      this.totalCount = Optional.fromNullable(totalCount);
+      this.edges = Optional.fromNullable(edges);
     }
 
-    public @Nullable Integer totalCount() {
+    public Optional<Integer> totalCount() {
       return this.totalCount;
     }
 
-    public @Nullable List<Edge> edges() {
+    public Optional<List<Edge>> edges() {
       return this.edges;
     }
 
@@ -150,13 +151,13 @@ public class HeroDetails {
     }
 
     public static class Edge {
-      private final @Nullable Node node;
+      private final Optional<Node> node;
 
       public Edge(@Nullable Node node) {
-        this.node = node;
+        this.node = Optional.fromNullable(node);
       }
 
-      public @Nullable Node node() {
+      public Optional<Node> node() {
         return this.node;
       }
 
@@ -283,13 +284,13 @@ public class HeroDetails {
 
     private final @Nonnull FriendsConnection1 friendsConnection;
 
-    private final @Nullable String primaryFunction;
+    private final Optional<String> primaryFunction;
 
     public AsDroid(@Nonnull String name, @Nonnull FriendsConnection1 friendsConnection,
         @Nullable String primaryFunction) {
       this.name = name;
       this.friendsConnection = friendsConnection;
-      this.primaryFunction = primaryFunction;
+      this.primaryFunction = Optional.fromNullable(primaryFunction);
     }
 
     public @Nonnull String name() {
@@ -300,7 +301,7 @@ public class HeroDetails {
       return this.friendsConnection;
     }
 
-    public @Nullable String primaryFunction() {
+    public Optional<String> primaryFunction() {
       return this.primaryFunction;
     }
 
@@ -340,20 +341,20 @@ public class HeroDetails {
     }
 
     public static class FriendsConnection1 {
-      private final @Nullable Integer totalCount;
+      private final Optional<Integer> totalCount;
 
-      private final @Nullable List<Edge> edges;
+      private final Optional<List<Edge>> edges;
 
       public FriendsConnection1(@Nullable Integer totalCount, @Nullable List<Edge> edges) {
-        this.totalCount = totalCount;
-        this.edges = edges;
+        this.totalCount = Optional.fromNullable(totalCount);
+        this.edges = Optional.fromNullable(edges);
       }
 
-      public @Nullable Integer totalCount() {
+      public Optional<Integer> totalCount() {
         return this.totalCount;
       }
 
-      public @Nullable List<Edge> edges() {
+      public Optional<List<Edge>> edges() {
         return this.edges;
       }
 
@@ -389,13 +390,13 @@ public class HeroDetails {
       }
 
       public static class Edge {
-        private final @Nullable Node node;
+        private final Optional<Node> node;
 
         public Edge(@Nullable Node node) {
-          this.node = node;
+          this.node = Optional.fromNullable(node);
         }
 
-        public @Nullable Node node() {
+        public Optional<Node> node() {
           return this.node;
         }
 

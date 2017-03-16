@@ -1,0 +1,67 @@
+{
+	"operations": [
+		{
+			"filePath": "src/test/graphql/com/example/hero_details_guava/TestQuery.graphql",
+			"operationName": "TestQuery",
+			"operationType": "query",
+			"variables": [],
+			"source": "query TestQuery {\n  hero {\n    __typename\n    name\n    friendsConnection {\n      __typename\n      totalCount\n      edges {\n        __typename\n        node {\n          __typename\n          name\n        }\n      }\n    }\n  }\n}",
+			"fields": [
+				{
+					"responseName": "hero",
+					"fieldName": "hero",
+					"type": "Character",
+					"fields": [
+						{
+							"responseName": "name",
+							"fieldName": "name",
+							"type": "String!"
+						},
+						{
+							"responseName": "friendsConnection",
+							"fieldName": "friendsConnection",
+							"type": "FriendsConnection!",
+							"fields": [
+								{
+									"responseName": "totalCount",
+									"fieldName": "totalCount",
+									"type": "Int"
+								},
+								{
+									"responseName": "edges",
+									"fieldName": "edges",
+									"type": "[FriendsEdge]",
+									"fields": [
+										{
+											"responseName": "node",
+											"fieldName": "node",
+											"type": "Character",
+											"fields": [
+												{
+													"responseName": "name",
+													"fieldName": "name",
+													"type": "String!"
+												}
+											],
+											"fragmentSpreads": [],
+											"inlineFragments": []
+										}
+									],
+									"fragmentSpreads": [],
+									"inlineFragments": []
+								}
+							],
+							"fragmentSpreads": [],
+							"inlineFragments": []
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				}
+			],
+			"fragmentsReferenced": []
+		}
+	],
+	"fragments": [],
+	"typesUsed": []
+}

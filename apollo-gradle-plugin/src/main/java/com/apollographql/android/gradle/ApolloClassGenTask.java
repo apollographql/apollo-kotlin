@@ -3,6 +3,7 @@ package com.apollographql.android.gradle;
 import com.google.common.base.Joiner;
 
 import com.apollographql.android.compiler.GraphQLCompiler;
+import com.apollographql.android.compiler.NullableValueGenerationType;
 
 import org.gradle.api.Action;
 import org.gradle.api.tasks.Internal;
@@ -13,7 +14,6 @@ import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
 import org.gradle.api.tasks.incremental.InputFileDetails;
 
 import java.io.File;
-import java.util.List;
 import java.util.Map;
 
 public class ApolloClassGenTask extends SourceTask {
@@ -21,12 +21,14 @@ public class ApolloClassGenTask extends SourceTask {
 
   @Internal private String variant;
   @Internal private Map<String, String> customTypeMapping;
+  @Internal boolean useOptional;
   @Internal boolean hasGuavaDep;
   @OutputDirectory private File outputDir;
 
-  public void init(String buildVariant, Map<String, String> typeMapping, boolean hasGuava) {
+  public void init(String buildVariant, Map<String, String> typeMapping, boolean generateOptional, boolean hasGuava) {
     variant = buildVariant;
     customTypeMapping = typeMapping;
+    useOptional = generateOptional;
     hasGuavaDep = hasGuava;
     outputDir = new File(getProject().getBuildDir() + "/" + Joiner.on(File.separator).join(GraphQLCompiler.Companion
         .getOUTPUT_DIRECTORY()));
@@ -37,7 +39,9 @@ public class ApolloClassGenTask extends SourceTask {
     inputs.outOfDate(new Action<InputFileDetails>() {
       @Override
       public void execute(InputFileDetails inputFileDetails) {
-        new GraphQLCompiler().write(inputFileDetails.getFile(), outputDir, customTypeMapping, hasGuavaDep);
+        GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(inputFileDetails.getFile(), outputDir,
+            customTypeMapping, useOptional, hasGuavaDep);
+        new GraphQLCompiler().write(args);
       }
     });
   }
@@ -64,5 +68,13 @@ public class ApolloClassGenTask extends SourceTask {
 
   public void setCustomTypeMapping(Map<String, String> customTypeMapping) {
     this.customTypeMapping = customTypeMapping;
+  }
+
+  public boolean isUseOptional() {
+    return useOptional;
+  }
+
+  public void setUseOptional(boolean useOptional) {
+    this.useOptional = useOptional;
   }
 }

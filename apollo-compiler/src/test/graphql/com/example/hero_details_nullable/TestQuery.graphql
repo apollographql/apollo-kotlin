@@ -1,0 +1,13 @@
+query TestQuery {
+  hero {
+    name
+    friendsConnection {
+      totalCount
+      edges {
+        node {
+          name
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,6 @@
 package com.apollographql.android.compiler
 
+import com.apollographql.android.compiler.ir.CodeGenerationContext
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeName
 import org.junit.Assert
@@ -7,77 +8,84 @@ import org.junit.Test
 import java.util.*
 
 class JavaTypeResolverTest {
-  private val defaultResolver = JavaTypeResolver(emptyMap(), packageName)
+  private val defaultContext = CodeGenerationContext(
+      reservedTypeNames = emptyList(),
+      typeDeclarations = emptyList(),
+      fragmentsPackage = "",
+      typesPackage = "",
+      customTypeMap = emptyMap(),
+      nullableValueGenerationType = NullableValueGenerationType.APOLLO_OPTIONAL)
+  private val defaultResolver = JavaTypeResolver(defaultContext, packageName)
 
   @Test
   fun resolveScalarType() {
-    Assert.assertEquals(ClassNames.STRING.annotated(Annotations.NONNULL), defaultResolver.resolve("String", false))
-    Assert.assertEquals(ClassNames.STRING.annotated(Annotations.NULLABLE), defaultResolver.resolve("String", true))
+    Assert.assertEquals(ClassNames.STRING.annotated(Annotations.NONNULL), defaultResolver.resolve("String!"))
+    Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.STRING), defaultResolver.resolve("String", true))
 
-    Assert.assertEquals(ClassNames.STRING.annotated(Annotations.NONNULL), defaultResolver.resolve("ID", false))
-    Assert.assertEquals(ClassNames.STRING.annotated(Annotations.NULLABLE), defaultResolver.resolve("ID", true))
+    Assert.assertEquals(ClassNames.STRING.annotated(Annotations.NONNULL), defaultResolver.resolve("ID!"))
+    Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.STRING), defaultResolver.resolve("ID", true))
 
-    Assert.assertEquals(TypeName.INT, defaultResolver.resolve("Int", false))
-    Assert.assertEquals(TypeName.INT.box().annotated(Annotations.NULLABLE), defaultResolver.resolve("Int", true))
+    Assert.assertEquals(TypeName.INT, defaultResolver.resolve("Int!"))
+    Assert.assertEquals(ClassNames.parameterizedOptional(TypeName.INT.box()), defaultResolver.resolve("Int", true))
 
-    Assert.assertEquals(TypeName.BOOLEAN, defaultResolver.resolve("Boolean", false))
-    Assert.assertEquals(TypeName.BOOLEAN.box().annotated(Annotations.NULLABLE),
+    Assert.assertEquals(TypeName.BOOLEAN, defaultResolver.resolve("Boolean!"))
+    Assert.assertEquals(ClassNames.parameterizedOptional(TypeName.BOOLEAN.box()),
         defaultResolver.resolve("Boolean", true))
 
-    Assert.assertEquals(TypeName.DOUBLE, defaultResolver.resolve("Float", false))
-    Assert.assertEquals(TypeName.DOUBLE.box().annotated(Annotations.NULLABLE), defaultResolver.resolve("Float", true))
+    Assert.assertEquals(TypeName.DOUBLE, defaultResolver.resolve("Float!"))
+    Assert.assertEquals(ClassNames.parameterizedOptional(TypeName.DOUBLE.box()), defaultResolver.resolve("Float", true))
   }
 
   @Test
   fun resolveListType() {
     Assert.assertEquals(ClassNames.parameterizedListOf(ClassNames.STRING).annotated(Annotations.NONNULL),
-        defaultResolver.resolve("[String!]", false))
-    Assert.assertEquals(ClassNames.parameterizedListOf(ClassNames.STRING).annotated(Annotations.NULLABLE),
+        defaultResolver.resolve("[String!]!"))
+    Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.parameterizedListOf(ClassNames.STRING)),
         defaultResolver.resolve("[String!]", true))
 
     Assert.assertEquals(ClassNames.parameterizedListOf(ClassNames.STRING).annotated(Annotations.NONNULL),
-        defaultResolver.resolve("[ID]", false))
-    Assert.assertEquals(ClassNames.parameterizedListOf(ClassNames.STRING).annotated(Annotations.NULLABLE),
+        defaultResolver.resolve("[ID]!"))
+    Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.parameterizedListOf(ClassNames.STRING)),
         defaultResolver.resolve("[ID]", true))
 
     Assert.assertEquals(ClassNames.parameterizedListOf(TypeName.INT.box()).annotated(Annotations.NONNULL),
-        defaultResolver.resolve("[Int]", false))
-    Assert.assertEquals(ClassNames.parameterizedListOf(TypeName.INT.box()).annotated(Annotations.NULLABLE),
+        defaultResolver.resolve("[Int]!"))
+    Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.parameterizedListOf(TypeName.INT.box())),
         defaultResolver.resolve("[Int]", true))
 
     Assert.assertEquals(ClassNames.parameterizedListOf(TypeName.BOOLEAN.box()).annotated(Annotations.NONNULL),
-        defaultResolver.resolve("[Boolean]", false))
-    Assert.assertEquals(ClassNames.parameterizedListOf(TypeName.BOOLEAN.box()).annotated(Annotations.NULLABLE),
+        defaultResolver.resolve("[Boolean]!"))
+    Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.parameterizedListOf(TypeName.BOOLEAN.box())),
         defaultResolver.resolve("[Boolean]", true))
 
     Assert.assertEquals(ClassNames.parameterizedListOf(TypeName.DOUBLE.box()).annotated(Annotations.NONNULL),
-        defaultResolver.resolve("[Float]", false))
-    Assert.assertEquals(ClassNames.parameterizedListOf(TypeName.DOUBLE.box()).annotated(Annotations.NULLABLE),
+        defaultResolver.resolve("[Float]!"))
+    Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.parameterizedListOf(TypeName.DOUBLE.box())),
         defaultResolver.resolve("[Float]", true))
   }
 
   @Test
   fun resolveCustomType() {
     Assert.assertEquals(ClassName.get("", "CustomClass").annotated(Annotations.NONNULL),
-        JavaTypeResolver(emptyMap(), "").resolve("CustomClass", false))
-    Assert.assertEquals(ClassName.get("", "CustomClass").annotated(Annotations.NULLABLE),
-        JavaTypeResolver(emptyMap(), "").resolve("CustomClass", true))
+        JavaTypeResolver(defaultContext, "").resolve("CustomClass!"))
+    Assert.assertEquals(ClassNames.parameterizedOptional(ClassName.get("", "CustomClass")),
+        JavaTypeResolver(defaultContext, "").resolve("CustomClass", true))
 
     Assert.assertEquals(ClassName.get(packageName, "CustomClass").annotated(Annotations.NONNULL),
-        defaultResolver.resolve("CustomClass", false))
-    Assert.assertEquals(ClassName.get(packageName, "CustomClass").annotated(Annotations.NULLABLE),
+        defaultResolver.resolve("CustomClass!"))
+    Assert.assertEquals(ClassNames.parameterizedOptional(ClassName.get(packageName, "CustomClass")),
         defaultResolver.resolve("CustomClass", true))
   }
 
   @Test
   fun resolveCustomScalarType() {
-    val customScalarTypeMap = mapOf("Date" to "java.util.Date", "UnsupportedType" to "Object")
+    val context = defaultContext.copy(customTypeMap = mapOf("Date" to "java.util.Date", "UnsupportedType" to "Object"))
     Assert.assertEquals(ClassName.get(Date::class.java).annotated(Annotations.NONNULL),
-        JavaTypeResolver(customScalarTypeMap, packageName).resolve("Date", false))
-    Assert.assertEquals(ClassName.get(Date::class.java).annotated(Annotations.NULLABLE),
-        JavaTypeResolver(customScalarTypeMap, packageName).resolve("Date", true))
-    Assert.assertEquals(ClassName.get("", "Object").annotated(Annotations.NULLABLE),
-        JavaTypeResolver(customScalarTypeMap, packageName).resolve("UnsupportedType", true))
+        JavaTypeResolver(context, packageName).resolve("Date", false))
+    Assert.assertEquals(ClassNames.parameterizedOptional(Date::class.java),
+        JavaTypeResolver(context, packageName).resolve("Date", true))
+    Assert.assertEquals(ClassNames.parameterizedOptional(ClassName.get("", "Object")),
+        JavaTypeResolver(context, packageName).resolve("UnsupportedType", true))
   }
 
   companion object {

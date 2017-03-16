@@ -5,6 +5,7 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.internal.Optional;
 import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder;
 import java.io.IOException;
 import java.lang.Object;
@@ -51,20 +52,20 @@ public final class TestQuery implements Query<TestQuery.Data, Operation.Variable
   }
 
   public static class Data implements Operation.Data {
-    private final @Nullable R2 r2;
+    private final Optional<R2> r2;
 
-    private final @Nullable Luke luke;
+    private final Optional<Luke> luke;
 
     public Data(@Nullable R2 r2, @Nullable Luke luke) {
-      this.r2 = r2;
-      this.luke = luke;
+      this.r2 = Optional.fromNullable(r2);
+      this.luke = Optional.fromNullable(luke);
     }
 
-    public @Nullable R2 r2() {
+    public Optional<R2> r2() {
       return this.r2;
     }
 
-    public @Nullable Luke luke() {
+    public Optional<Luke> luke() {
       return this.luke;
     }
 

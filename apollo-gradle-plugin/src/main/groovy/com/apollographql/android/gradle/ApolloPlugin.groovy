@@ -101,9 +101,11 @@ class ApolloPlugin implements Plugin<Project> {
     }
   }
 
-  private void addVariantTasks(Object variant, Task apolloIRGenTask, Task apolloClassGenTask, Collection<?> sourceSets, boolean hasGuava) {
+  private void addVariantTasks(Object variant, Task apolloIRGenTask, Task apolloClassGenTask, Collection<?> sourceSets,
+                               boolean hasGuava) {
     ApolloIRGenTask variantIRTask = createApolloIRGenTask(variant.name, sourceSets)
-    ApolloClassGenTask variantClassTask = createApolloClassGenTask(variant.name, project.apollo.customTypeMapping, hasGuava)
+    ApolloClassGenTask variantClassTask = createApolloClassGenTask(variant.name, project.apollo.customTypeMapping,
+        project.apollo.generateOptional, hasGuava)
     variant.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir)
     apolloIRGenTask.dependsOn(variantIRTask)
     apolloClassGenTask.dependsOn(variantClassTask)
@@ -113,7 +115,8 @@ class ApolloPlugin implements Plugin<Project> {
     String taskName = "main".equals(sourceSet.name) ? "" : sourceSet.name
 
     ApolloIRGenTask sourceSetIRTask = createApolloIRGenTask(sourceSet.name, [sourceSet])
-    ApolloClassGenTask sourceSetClassTask = createApolloClassGenTask(sourceSet.name, project.apollo.customTypeMapping, hasGuava)
+    ApolloClassGenTask sourceSetClassTask = createApolloClassGenTask(sourceSet.name, project.apollo.customTypeMapping,
+        project.apollo.generateOptional, hasGuava)
     apolloIRGenTask.dependsOn(sourceSetIRTask)
     apolloClassGenTask.dependsOn(sourceSetClassTask)
 
@@ -147,7 +150,8 @@ class ApolloPlugin implements Plugin<Project> {
     return task
   }
 
-  private ApolloClassGenTask createApolloClassGenTask(String name, Map<String, String> customTypeMapping, boolean hasGuava) {
+  private ApolloClassGenTask createApolloClassGenTask(String name, Map<String, String> customTypeMapping,
+                                                      boolean generateOptional, boolean hasGuava) {
     String taskName = String.format(ApolloClassGenTask.NAME, name.capitalize())
     ApolloClassGenTask task = project.tasks.create(taskName, ApolloClassGenTask) {
       group = TASK_GROUP
@@ -156,13 +160,14 @@ class ApolloPlugin implements Plugin<Project> {
       source = project.tasks.findByName(String.format(ApolloIRGenTask.NAME, name.capitalize())).outputDir
       include "**${File.separatorChar}*API.json"
     }
-    task.init(name, customTypeMapping, hasGuava)
+    task.init(name, customTypeMapping, generateOptional, hasGuava)
     return task
   }
 
   private void createSourceSetExtensions() {
     getSourceSets().all { sourceSet ->
-      sourceSet.extensions.create(GraphQLSourceDirectorySet.NAME, GraphQLSourceDirectorySet, sourceSet.name, fileResolver)
+      sourceSet.extensions.create(GraphQLSourceDirectorySet.NAME, GraphQLSourceDirectorySet, sourceSet.name,
+          fileResolver)
     }
   }
 
@@ -175,7 +180,8 @@ class ApolloPlugin implements Plugin<Project> {
   }
 
   private DomainObjectCollection<BaseVariant> getVariants() {
-    return project.android.hasProperty('libraryVariants') ? project.android.libraryVariants : project.android.applicationVariants
+    return project.android.hasProperty(
+        'libraryVariants') ? project.android.libraryVariants : project.android.applicationVariants
   }
 
 }

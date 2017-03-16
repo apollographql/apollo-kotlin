@@ -22,16 +22,16 @@ data class Field(
       SchemaTypeSpecBuilder(normalizedName(), fields ?: emptyList(), fragmentSpreads ?: emptyList(),
           inlineFragments ?: emptyList(), context).build(Modifier.PUBLIC, Modifier.STATIC)
 
-  fun accessorMethodSpec(typesPackage: String = "", customScalarTypeMap: Map<String, String>): MethodSpec {
+  fun accessorMethodSpec(context: CodeGenerationContext): MethodSpec {
     return MethodSpec.methodBuilder(responseName)
         .addModifiers(Modifier.PUBLIC)
-        .returns(toTypeName(methodResponseType(), typesPackage, customScalarTypeMap))
+        .returns(toTypeName(methodResponseType(), context))
         .addStatement("return this.\$L", responseName)
         .build()
   }
 
-  fun fieldSpec(customScalarTypeMap: Map<String, String>, typesPackage: String = ""): FieldSpec =
-      FieldSpec.builder(toTypeName(methodResponseType(), typesPackage, customScalarTypeMap), responseName)
+  fun fieldSpec(context: CodeGenerationContext): FieldSpec =
+      FieldSpec.builder(toTypeName(methodResponseType(), context), responseName)
           .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
           .build()
 
@@ -63,10 +63,9 @@ data class Field(
         .add(".build()").build()
   }
 
-  private fun toTypeName(responseType: String, typesPackage: String,
-      customScalarTypeMap: Map<String, String>): TypeName {
-    val packageName = if (isNonScalar()) "" else typesPackage
-    return JavaTypeResolver(customScalarTypeMap, packageName).resolve(responseType, isOptional())
+  private fun toTypeName(responseType: String, context: CodeGenerationContext): TypeName {
+    val packageName = if (isNonScalar()) "" else context.typesPackage
+    return JavaTypeResolver(context, packageName).resolve(responseType, isOptional())
   }
 
   fun normalizedName() = responseName.capitalize().singularize()

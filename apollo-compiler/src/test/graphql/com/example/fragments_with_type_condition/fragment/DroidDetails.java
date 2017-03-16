@@ -3,6 +3,7 @@ package com.example.fragments_with_type_condition.fragment;
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.internal.Optional;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
@@ -26,18 +27,18 @@ public class DroidDetails {
 
   private final @Nonnull String name;
 
-  private final @Nullable String primaryFunction;
+  private final Optional<String> primaryFunction;
 
   public DroidDetails(@Nonnull String name, @Nullable String primaryFunction) {
     this.name = name;
-    this.primaryFunction = primaryFunction;
+    this.primaryFunction = Optional.fromNullable(primaryFunction);
   }
 
   public @Nonnull String name() {
     return this.name;
   }
 
-  public @Nullable String primaryFunction() {
+  public Optional<String> primaryFunction() {
     return this.primaryFunction;
   }
 

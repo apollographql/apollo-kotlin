@@ -29,8 +29,7 @@ class InputObjectTypeSpecBuilder(
     return addMethod(MethodSpec
         .constructorBuilder()
         .addParameters(fields.map {
-          ParameterSpec.builder(it.javaTypeName(context),
-              it.name.decapitalize()).build()
+          ParameterSpec.builder(it.javaTypeName(context), it.name.decapitalize()).build()
         })
         .addCode(fieldInitializeCodeBuilder.build())
         .build()
@@ -71,6 +70,6 @@ class InputObjectTypeSpecBuilder(
 
   companion object {
     private fun TypeDeclarationField.javaTypeName(context: CodeGenerationContext) =
-        JavaTypeResolver(context.customTypeMap, context.typesPackage).resolve(type, !type.endsWith("!"))
+        JavaTypeResolver(context, context.typesPackage).resolve(type, !type.endsWith("!")).unwrapOptionalType()
   }
 }
