@@ -72,7 +72,7 @@ final class ResponseBodyProxy extends ResponseBody {
         bytesRead = responseBodySource.read(sink, byteCount);
       } catch (IOException e) {
         if (!closed) {
-          // Failed to writeAndFinish a complete cache response.
+          // Failed to write a complete cache response.
           closed = true;
           abortCacheQuietly();
         }

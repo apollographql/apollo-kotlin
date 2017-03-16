@@ -185,7 +185,6 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
       if (rootRecord == null) {
         return new Response<>(operation);
       }
-      //Todo: need a response normalizer for changed keys
       RealResponseReader<Record> responseReader = new RealResponseReader<>(operation, rootRecord,
           new CacheFieldValueResolver(readTransaction, operation.variables()), customTypeAdapters);
       return new Response<>(operation, (T) responseFieldMapper.map(responseReader), null);

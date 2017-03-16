@@ -87,7 +87,7 @@ import java.io.IOException;
  *     try {
  *       return readMessagesArray(reader);
  *     } finally {
- *       reader.closeRead();
+ *       reader.close();
  *     }
  *   }
  *
