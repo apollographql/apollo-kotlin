@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 
 import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
 
-public final class RealCache implements Cache {
+public final class RealCache implements Cache, ReadableCache, WriteableCache {
   private final CacheStore cacheStore;
   private final CacheKeyResolver cacheKeyResolver;
   private final ReadWriteLock lock;
@@ -53,33 +53,43 @@ public final class RealCache implements Cache {
     }
   }
 
-  @Override public RealReadTransaction readTransaction() {
-    lock.readLock().lock();
-    return new RealReadTransaction(this);
+  @Override public <R> Transaction<ReadableCache, R> readTransaction() {
+    return new Transaction<ReadableCache, R>() {
+      @Override public R execute(Transactional<ReadableCache, R> transactional) {
+        try {
+          lock.readLock().lock();
+          return transactional.call(RealCache.this);
+        }
+        finally {
+          lock.readLock().unlock();
+        }
+      }
+    };
   }
 
-  @Override public RealReadWriteTransaction writeTransaction() {
-    lock.writeLock().lock();
-    return new RealReadWriteTransaction(this);
+  @Override public <R> Transaction<WriteableCache, R> writeTransaction() {
+    return new Transaction<WriteableCache, R>() {
+      @Override public R execute(Transactional<WriteableCache, R> transactional) {
+        try {
+          lock.writeLock().lock();
+          return transactional.call(RealCache.this);
+        }
+        finally {
+          lock.writeLock().unlock();
+        }
+      }
+    };
   }
 
-  void closeRead() {
-    lock.readLock().unlock();
-  }
-
-  void closeWrite() {
-    lock.writeLock().unlock();
-  }
-
-  @Nullable Record read(@Nonnull String key) {
+  @Nullable public Record read(@Nonnull String key) {
     return cacheStore.loadRecord(checkNotNull(key, "key == null"));
   }
 
-  @Nonnull Collection<Record> read(@Nonnull Collection<String> keys) {
+  @Nonnull public Collection<Record> read(@Nonnull Collection<String> keys) {
     return cacheStore.loadRecords(checkNotNull(keys, "keys == null"));
   }
 
-  @Nonnull Set<String> merge(@Nonnull Collection<Record> recordSet) {
+  @Nonnull public Set<String> merge(@Nonnull Collection<Record> recordSet) {
     return cacheStore.merge(checkNotNull(recordSet, "recordSet == null"));
   }
 

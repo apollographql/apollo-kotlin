@@ -12,15 +12,15 @@ import com.apollographql.android.cache.http.HttpCacheControl;
 import com.apollographql.android.cache.normalized.Cache;
 import com.apollographql.android.cache.normalized.CacheControl;
 import com.apollographql.android.cache.normalized.CacheKeyResolver;
-import com.apollographql.android.cache.normalized.ReadTransaction;
-import com.apollographql.android.cache.normalized.ReadWriteTransaction;
+import com.apollographql.android.cache.normalized.ReadableCache;
 import com.apollographql.android.cache.normalized.Record;
 import com.apollographql.android.cache.normalized.ResponseNormalizer;
+import com.apollographql.android.cache.normalized.Transactional;
+import com.apollographql.android.cache.normalized.WriteableCache;
 import com.apollographql.android.impl.util.HttpException;
 import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -181,21 +181,23 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
   }
 
   @SuppressWarnings("unchecked") private Response<T> cachedResponse() {
-    ReadTransaction readTransaction = cache.readTransaction();
-    try {
-      Record rootRecord = readTransaction.read(CacheKeyResolver.rootKeyForOperation(operation).key());
-      if (rootRecord == null) {
-        return new Response<>(operation);
+    return cache.<Response<T>>readTransaction().execute(new Transactional<ReadableCache, Response<T>>() {
+      @Override public Response<T> call(ReadableCache cache) {
+        Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key());
+        if (rootRecord == null) {
+          return new Response<>(operation);
+        }
+        RealResponseReader<Record> responseReader = new RealResponseReader<>(operation, rootRecord,
+            new CacheFieldValueResolver(cache, operation.variables()), customTypeAdapters);
+        try {
+          return new Response<>(operation, (T) responseFieldMapper.map(responseReader), null);
+        }
+        catch (Exception e) {
+          //TODO log me
+          return new Response<>(operation);
+        }
       }
-      RealResponseReader<Record> responseReader = new RealResponseReader<>(operation, rootRecord,
-          new CacheFieldValueResolver(readTransaction, operation.variables()), customTypeAdapters);
-      return new Response<>(operation, (T) responseFieldMapper.map(responseReader), null);
-    } catch (Exception e) {
-      //TODO log me
-      return new Response<>(operation);
-    } finally {
-      readTransaction.close();
-    }
+    });
   }
 
   private <T extends Operation.Data> Response<T> handleResponse(okhttp3.Response response) throws IOException {
@@ -208,13 +210,12 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
         Response<T> convertedResponse = converter.convert(response.body(), normalizer);
         dispatcher.execute(new Runnable() {
           @Override public void run() {
-            ReadWriteTransaction readWriteTransaction = cache.writeTransaction();
-            Set<String> changedKeys = Collections.emptySet();
-            try {
-              changedKeys = readWriteTransaction.merge(normalizer.records());
-            } finally {
-              readWriteTransaction.close();
-            }
+            Set<String> changedKeys = cache.<Set<String>>writeTransaction().execute(
+                new Transactional<WriteableCache, Set<String>>() {
+                  @Override public Set<String> call(WriteableCache cache) {
+                    return cache.merge(normalizer.records());
+                  }
+                });
             cache.publish(changedKeys);
           }
         });
