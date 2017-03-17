@@ -187,9 +187,9 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
         if (rootRecord == null) {
           return new Response<>(operation);
         }
-        RealResponseReader<Record> responseReader = new RealResponseReader<>(operation, rootRecord,
-            new CacheFieldValueResolver(cache, operation.variables()), customTypeAdapters);
         try {
+          RealResponseReader<Record> responseReader = new RealResponseReader<>(operation, rootRecord,
+            new CacheFieldValueResolver(cache, operation.variables()), customTypeAdapters);
           return new Response<>(operation, (T) responseFieldMapper.map(responseReader), null);
         } catch (Exception e) {
           //TODO log me
