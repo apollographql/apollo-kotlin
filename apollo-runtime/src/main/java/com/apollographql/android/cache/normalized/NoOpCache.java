@@ -31,20 +31,12 @@ final class NoOpCache implements Cache, ReadableCache, WriteableCache {
 
   @Override public void publish(Set<String> keys) { }
 
-  @Override public <R> Transaction<ReadableCache, R> readTransaction() {
-    return new Transaction<ReadableCache, R>() {
-      @Nullable @Override public R execute(Transactional<ReadableCache, R> transactional) {
-        return transactional.call(NoOpCache.this);
-      }
-    };
+  @Override public <R> R readTransaction(Transaction<ReadableCache, R> transaction) {
+    return transaction.execute(this);
   }
 
-  @Override public <R> Transaction<WriteableCache, R> writeTransaction() {
-    return new Transaction<WriteableCache, R>() {
-      @Nullable @Override public R execute(Transactional<WriteableCache, R> transactional) {
-        return transactional.call(NoOpCache.this);
-      }
-    };
+  @Override public <R> R writeTransaction(Transaction<WriteableCache, R> transaction) {
+    return transaction.execute(this);
   }
 
   @Override public ResponseNormalizer responseNormalizer() {

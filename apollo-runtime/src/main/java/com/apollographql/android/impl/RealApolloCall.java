@@ -15,7 +15,7 @@ import com.apollographql.android.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.cache.normalized.ReadableCache;
 import com.apollographql.android.cache.normalized.Record;
 import com.apollographql.android.cache.normalized.ResponseNormalizer;
-import com.apollographql.android.cache.normalized.Transactional;
+import com.apollographql.android.cache.normalized.Transaction;
 import com.apollographql.android.cache.normalized.WriteableCache;
 import com.apollographql.android.impl.util.HttpException;
 import com.squareup.moshi.Moshi;
@@ -112,7 +112,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
           return;
         }
 
-        httpCall.enqueue(new HttCallback(callback));
+        httpCall.enqueue(new HttpCallback(callback));
       }
     });
   }
@@ -181,8 +181,8 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
   }
 
   @SuppressWarnings("unchecked") private Response<T> cachedResponse() {
-    return cache.<Response<T>>readTransaction().execute(new Transactional<ReadableCache, Response<T>>() {
-      @Override public Response<T> call(ReadableCache cache) {
+    return cache.readTransaction(new Transaction<ReadableCache, Response<T>>() {
+      @Nullable @Override public Response<T> execute(ReadableCache cache) {
         Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key());
         if (rootRecord == null) {
           return new Response<>(operation);
@@ -209,12 +209,11 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
         Response<T> convertedResponse = converter.convert(response.body(), normalizer);
         dispatcher.execute(new Runnable() {
           @Override public void run() {
-            Set<String> changedKeys = cache.<Set<String>>writeTransaction().execute(
-                new Transactional<WriteableCache, Set<String>>() {
-                  @Override public Set<String> call(WriteableCache cache) {
-                    return cache.merge(normalizer.records());
-                  }
-                });
+            Set<String> changedKeys = cache.writeTransaction(new Transaction<WriteableCache, Set<String>>() {
+              @Nullable @Override public Set<String> execute(WriteableCache cache) {
+                return cache.merge(normalizer.records());
+              }
+            });
             cache.publish(changedKeys);
           }
         });
@@ -233,10 +232,10 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     }
   }
 
-  final class HttCallback implements okhttp3.Callback {
+  final class HttpCallback implements okhttp3.Callback {
     final Callback<T> callback;
 
-    HttCallback(Callback<T> callback) {
+    HttpCallback(Callback<T> callback) {
       this.callback = callback;
     }
 

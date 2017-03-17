@@ -53,30 +53,22 @@ public final class RealCache implements Cache, ReadableCache, WriteableCache {
     }
   }
 
-  @Override public <R> Transaction<ReadableCache, R> readTransaction() {
-    return new Transaction<ReadableCache, R>() {
-      @Override public R execute(Transactional<ReadableCache, R> transactional) {
-        try {
-          lock.readLock().lock();
-          return transactional.call(RealCache.this);
-        } finally {
-          lock.readLock().unlock();
-        }
-      }
-    };
+  @Override public <R> R readTransaction(Transaction<ReadableCache, R> transaction) {
+    try {
+      lock.readLock().lock();
+      return transaction.execute(RealCache.this);
+    } finally {
+      lock.readLock().unlock();
+    }
   }
 
-  @Override public <R> Transaction<WriteableCache, R> writeTransaction() {
-    return new Transaction<WriteableCache, R>() {
-      @Override public R execute(Transactional<WriteableCache, R> transactional) {
-        try {
-          lock.writeLock().lock();
-          return transactional.call(RealCache.this);
-        } finally {
-          lock.writeLock().unlock();
-        }
-      }
-    };
+  @Override public <R> R writeTransaction(Transaction<WriteableCache, R> transaction) {
+    try {
+      lock.writeLock().lock();
+      return transaction.execute(RealCache.this);
+    } finally {
+      lock.writeLock().unlock();
+    }
   }
 
   @Nullable public Record read(@Nonnull String key) {

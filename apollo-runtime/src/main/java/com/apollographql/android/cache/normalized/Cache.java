@@ -14,9 +14,9 @@ public interface Cache {
 
   void publish(Set<String> keys);
 
-  <R> Transaction<ReadableCache, R> readTransaction();
+  <R> R readTransaction(Transaction<ReadableCache, R> transaction);
 
-  <R> Transaction<WriteableCache, R> writeTransaction();
+  <R> R writeTransaction(Transaction<WriteableCache, R> transaction);
 
   ResponseNormalizer responseNormalizer();
 
