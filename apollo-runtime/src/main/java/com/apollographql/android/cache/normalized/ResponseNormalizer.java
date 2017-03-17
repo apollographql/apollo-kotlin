@@ -10,24 +10,23 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ResponseNormalizer implements ResponseReaderShadow<Map<String, Object>> {
+public class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
   private SimpleStack<List<String>> pathStack;
   private SimpleStack<Record> recordStack;
   private SimpleStack<Object> valueStack;
   private Set<String> dependentKeys;
-  private final CacheKeyResolver cacheKeyResolver;
+  private final CacheKeyResolver<R> cacheKeyResolver;
 
   private List<String> path;
   private Record currentRecord;
   private RecordSet recordSet;
 
-  ResponseNormalizer(@Nonnull CacheKeyResolver cacheKeyResolver) {
+  public ResponseNormalizer(@Nonnull CacheKeyResolver<R> cacheKeyResolver) {
     this.cacheKeyResolver = cacheKeyResolver;
   }
 
@@ -72,10 +71,10 @@ public class ResponseNormalizer implements ResponseReaderShadow<Map<String, Obje
     valueStack.push(value);
   }
 
-  @Override public void willParseObject(Map<String, Object> objectMap) {
+  @Override public void willParseObject(R objectSource) {
     pathStack.push(path);
 
-    CacheKey cacheKey = cacheKeyResolver.resolve(objectMap);
+    CacheKey cacheKey = cacheKeyResolver.resolve(objectSource);
     String cacheKeyValue = cacheKey.key();
     if (cacheKey == CacheKey.NO_KEY) {
       cacheKeyValue = pathToString();
@@ -87,7 +86,7 @@ public class ResponseNormalizer implements ResponseReaderShadow<Map<String, Obje
     currentRecord = new Record(cacheKeyValue);
   }
 
-  @Override public void didParseObject(Map<String, Object> objectMap) {
+  @Override public void didParseObject(R objectSource) {
     path = pathStack.pop();
     valueStack.push(new CacheReference(currentRecord.key()));
     dependentKeys.add(currentRecord.key());
@@ -127,7 +126,8 @@ public class ResponseNormalizer implements ResponseReaderShadow<Map<String, Obje
     return stringBuilder.toString();
   }
 
-  static final ResponseNormalizer NO_OP_NORMALIZER = new ResponseNormalizer(CacheKeyResolver.DEFAULT) {
+  @SuppressWarnings("unchecked") static final ResponseNormalizer NO_OP_NORMALIZER
+      = new ResponseNormalizer(CacheKeyResolver.DEFAULT) {
     @Override public void willResolveRootQuery(Operation operation) {
     }
 
@@ -140,10 +140,10 @@ public class ResponseNormalizer implements ResponseReaderShadow<Map<String, Obje
     @Override public void didParseScalar(Object value) {
     }
 
-    @Override public void willParseObject(Map<String, Object> objectMap) {
+    @Override public void willParseObject(Object objectMap) {
     }
 
-    @Override public void didParseObject(Map<String, Object> objectMap) {
+    @Override public void didParseObject(Object objectMap) {
     }
 
     @Override public void didParseList(List array) {

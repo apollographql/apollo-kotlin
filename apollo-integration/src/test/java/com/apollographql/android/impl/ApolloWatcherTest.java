@@ -43,7 +43,7 @@ public class ApolloWatcherTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(cacheStore, new CacheKeyResolver() {
+        .normalizedCache(cacheStore, new CacheKeyResolver<Map<String, Object>>() {
           @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
             String id = (String) jsonObject.get("id");
             if (id == null || id.isEmpty()) {
@@ -231,6 +231,58 @@ public class ApolloWatcherTest {
     //To verify that the updated response comes from server use a different name change
     server.enqueue(mockResponse("EpisodeHeroNameResponseNameChangeTwo.json"));
     apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
+    secondResponseLatch.await();
+  }
+
+  @Test
+  public void testQueryWatcherUpdated_SameQuery_DifferentResults_cacheOnly() throws IOException, InterruptedException {
+    final CountDownLatch cacheWarmUpLatch = new CountDownLatch(1);
+    EpisodeHeroName query = new EpisodeHeroName(EpisodeHeroName.Variables.builder().episode(Episode.EMPIRE).build());
+    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+    apolloClient.newCall(query).enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
+      @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+        cacheWarmUpLatch.countDown();
+      }
+
+      @Override public void onFailure(@Nonnull Exception e) {
+        Assert.fail(e.getMessage());
+        cacheWarmUpLatch.countDown();
+      }
+    });
+    cacheWarmUpLatch.await();
+
+    //Cache is now "warm" with response data
+
+    final CountDownLatch firstResponseLatch = new CountDownLatch(1);
+    final CountDownLatch secondResponseLatch = new CountDownLatch(2);
+
+    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query)
+        .cacheControl(CacheControl.CACHE_ONLY)
+        .watcher();
+    watcher.enqueueAndWatch(
+        new ApolloCall.Callback<EpisodeHeroName.Data>() {
+          @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+            if (secondResponseLatch.getCount() == 2) {
+              assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            } else if (secondResponseLatch.getCount() == 1) {
+              assertThat(response.data().hero().name()).isEqualTo("Artoo");
+            }
+            firstResponseLatch.countDown();
+            secondResponseLatch.countDown();
+          }
+
+          @Override public void onFailure(@Nonnull Exception e) {
+            Assert.fail(e.getMessage());
+            firstResponseLatch.countDown();
+            secondResponseLatch.countDown();
+          }
+        });
+
+    firstResponseLatch.await();
+    //Another newer call gets updated information
+    server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
+    apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
+
     secondResponseLatch.await();
   }
 

@@ -1,5 +1,6 @@
 package com.apollographql.android.cache.normalized;
 
+import java.util.Map;
 import java.util.Set;
 
 public interface Cache {
@@ -14,11 +15,13 @@ public interface Cache {
 
   void publish(Set<String> keys);
 
+  ResponseNormalizer<Map<String, Object>> networkResponseNormalizer();
+
+  ResponseNormalizer<Record> cacheResponseNormalizer();
+
   <R> R readTransaction(Transaction<ReadableCache, R> transaction);
 
   <R> R writeTransaction(Transaction<WriteableCache, R> transaction);
-
-  ResponseNormalizer responseNormalizer();
 
   Cache NO_CACHE = new NoOpCache();
 }
