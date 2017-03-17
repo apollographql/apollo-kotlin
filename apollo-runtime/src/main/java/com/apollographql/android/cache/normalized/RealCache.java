@@ -54,8 +54,8 @@ public final class RealCache implements Cache, ReadableCache, WriteableCache {
   }
 
   @Override public <R> R readTransaction(Transaction<ReadableCache, R> transaction) {
+    lock.readLock().lock();
     try {
-      lock.readLock().lock();
       return transaction.execute(RealCache.this);
     } finally {
       lock.readLock().unlock();
@@ -63,8 +63,8 @@ public final class RealCache implements Cache, ReadableCache, WriteableCache {
   }
 
   @Override public <R> R writeTransaction(Transaction<WriteableCache, R> transaction) {
+    lock.writeLock().lock();
     try {
-      lock.writeLock().lock();
       return transaction.execute(RealCache.this);
     } finally {
       lock.writeLock().unlock();
