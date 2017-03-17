@@ -2,19 +2,19 @@ package com.apollographql.android.impl;
 
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.cache.normalized.Cache;
 import com.apollographql.android.cache.normalized.CacheReference;
+import com.apollographql.android.cache.normalized.ReadableCache;
 import com.apollographql.android.cache.normalized.Record;
 
 import java.util.ArrayList;
 import java.util.List;
 
 final class CacheFieldValueResolver implements FieldValueResolver<Record> {
-  private final Cache cache;
+  private final ReadableCache readableCache;
   private final Operation.Variables variables;
 
-  CacheFieldValueResolver(Cache cache, Operation.Variables variables) {
-    this.cache = cache;
+  CacheFieldValueResolver(ReadableCache readableCache, Operation.Variables variables) {
+    this.readableCache = readableCache;
     this.variables = variables;
   }
 
@@ -32,14 +32,14 @@ final class CacheFieldValueResolver implements FieldValueResolver<Record> {
 
   private Record valueFor(Record record, Field.ObjectField field) {
     CacheReference cacheReference = fieldValue(record, field);
-    return cacheReference != null ? cache.read(cacheReference.key()) : null;
+    return cacheReference != null ? readableCache.read(cacheReference.key()) : null;
   }
 
   private List<Record> valueFor(Record record, Field.ObjectListField field) {
     List<CacheReference> values = fieldValue(record, field);
     List<Record> result = new ArrayList<>();
     for (CacheReference reference : values) {
-      result.add(cache.read(reference.key()));
+      result.add(readableCache.read(reference.key()));
     }
     return result;
   }
