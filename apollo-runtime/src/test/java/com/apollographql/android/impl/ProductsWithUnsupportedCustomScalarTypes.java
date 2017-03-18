@@ -13,7 +13,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 public final class ProductsWithUnsupportedCustomScalarTypes implements Query<ProductsWithUnsupportedCustomScalarTypes
-    .Data, Operation.Variables> {
+    .Data, ProductsWithUnsupportedCustomScalarTypes.Data, Operation.Variables> {
   public static final String OPERATION_DEFINITION = "query ProductsWithDate {\n"
       + "  shop {\n"
       + "    products(first: 10) {\n"
@@ -47,7 +47,12 @@ public final class ProductsWithUnsupportedCustomScalarTypes implements Query<Pro
     return variables;
   }
 
-  @Override public ResponseFieldMapper<? extends Operation.Data> responseFieldMapper() {
+  @Override
+  public Data wrapData(Data data) {
+    return data;
+  }
+
+  @Override public ResponseFieldMapper<Data> responseFieldMapper() {
     return new Data.Mapper();
   }
 

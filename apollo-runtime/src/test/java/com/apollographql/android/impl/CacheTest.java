@@ -2,6 +2,7 @@ package com.apollographql.android.impl;
 
 import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Response;
+import com.apollographql.android.api.graphql.internal.Optional;
 import com.apollographql.android.cache.http.DiskLruCacheStore;
 import com.apollographql.android.cache.http.HttpCache;
 import com.apollographql.android.cache.http.HttpCacheControl;
@@ -97,7 +98,8 @@ public class CacheTest {
     server.enqueue(mockResponse);
 
     try {
-      Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).httpCacheControl(HttpCacheControl.NETWORK_ONLY).execute();
+      Response<Optional<AllPlanets.Data>> body = apolloClient.newCall(new AllPlanets())
+          .httpCacheControl(HttpCacheControl.NETWORK_ONLY).execute();
       assertThat(body.isSuccessful()).isTrue();
       fail("expected IOException");
     } catch (IOException expected) {

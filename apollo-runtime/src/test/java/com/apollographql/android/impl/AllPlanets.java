@@ -6,6 +6,7 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.android.api.graphql.internal.Optional;
 import com.apollographql.android.impl.fragment.FilmFragment;
 import com.apollographql.android.impl.fragment.PlanetFragment;
 
@@ -15,7 +16,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-final class AllPlanets implements Query<AllPlanets.Data, Operation.Variables> {
+final class AllPlanets implements Query<AllPlanets.Data, Optional<AllPlanets.Data>, Operation.Variables> {
   public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  allPlanets(first: 300) {\n"
       + "    planets {\n"
@@ -51,8 +52,12 @@ final class AllPlanets implements Query<AllPlanets.Data, Operation.Variables> {
     return variables;
   }
 
-  @Override public ResponseFieldMapper<? extends Operation.Data> responseFieldMapper() {
+  @Override public ResponseFieldMapper<Data> responseFieldMapper() {
     return new Data.Mapper();
+  }
+
+  @Override public Optional<Data> wrapData(Data data) {
+    return Optional.fromNullable(data);
   }
 
   public static class Data implements Operation.Data {

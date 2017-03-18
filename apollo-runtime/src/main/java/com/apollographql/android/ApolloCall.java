@@ -10,7 +10,7 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface ApolloCall<T extends Operation.Data> {
+public interface ApolloCall<T> {
 
   @Nonnull Response<T> execute() throws IOException;
 
@@ -26,16 +26,17 @@ public interface ApolloCall<T extends Operation.Data> {
 
   void cancel();
 
-  interface Callback<T extends Operation.Data> {
+  interface Callback<T> {
     void onResponse(@Nonnull Response<T> response);
 
     void onFailure(@Nonnull Exception e);
   }
 
   interface Factory {
-    <D extends Operation.Data, V extends Operation.Variables> ApolloCall<D> newCall(@Nonnull Operation<D, V> operation);
+    <D extends Operation.Data, T, V extends Operation.Variables> ApolloCall<T> newCall(
+        @Nonnull Operation<D, T, V> operation);
 
-    <D extends Operation.Data, V extends Operation.Variables> ApolloPrefetch prefetch(
-        @Nonnull Operation<D, V> operation);
+    <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
+        @Nonnull Operation<D, T, V> operation);
   }
 }

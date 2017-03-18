@@ -13,19 +13,19 @@ import java.util.Map;
 
 import okhttp3.ResponseBody;
 
-final class HttpResponseBodyConverter {
-  private final Operation operation;
+final class HttpResponseBodyConverter<D extends Operation.Data, W> {
+  private final Operation<D, W, ?> operation;
   private final ResponseFieldMapper responseFieldMapper;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
 
-  HttpResponseBodyConverter(Operation operation, ResponseFieldMapper responseFieldMapper,
+  HttpResponseBodyConverter(Operation<D, W, ?> operation, ResponseFieldMapper responseFieldMapper,
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
     this.operation = operation;
     this.responseFieldMapper = responseFieldMapper;
     this.customTypeAdapters = customTypeAdapters;
   }
 
-  <T extends Operation.Data> Response<T> convert(ResponseBody responseBody,
+   Response<W> convert(ResponseBody responseBody,
       final ResponseReaderShadow<Map<String, Object>> responseReaderShadow) throws IOException {
     responseReaderShadow.willResolveRootQuery(operation);
     BufferedSourceJsonReader jsonReader = null;
@@ -34,13 +34,13 @@ final class HttpResponseBodyConverter {
       jsonReader.beginObject();
 
       ResponseJsonStreamReader responseStreamReader = new ResponseJsonStreamReader(jsonReader);
-      T data = null;
+      D data = null;
       List<Error> errors = null;
       while (responseStreamReader.hasNext()) {
         String name = responseStreamReader.nextName();
         if ("data".equals(name)) {
           //noinspection unchecked
-          data = (T) responseStreamReader.nextObject(false, new ResponseJsonStreamReader.ObjectReader<Object>() {
+          data = (D) responseStreamReader.nextObject(false, new ResponseJsonStreamReader.ObjectReader<Object>() {
             @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
               Map<String, Object> buffer = reader.buffer();
               RealResponseReader<Map<String, Object>> realResponseReader = new RealResponseReader<>(operation, buffer,
@@ -55,7 +55,7 @@ final class HttpResponseBodyConverter {
         }
       }
       jsonReader.endObject();
-      return new Response<>(operation, data, errors);
+      return new Response<>(operation, operation.wrapData(data), errors);
     } finally {
       if (jsonReader != null) {
         jsonReader.close();

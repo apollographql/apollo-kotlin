@@ -14,7 +14,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class ProductsWithDate implements Query<ProductsWithDate.Data, Operation.Variables> {
+public final class ProductsWithDate implements Query<ProductsWithDate.Data, ProductsWithDate.Data, Operation.Variables> {
   public static final String OPERATION_DEFINITION = "query ProductsWithDate {\n"
       + "  shop {\n"
       + "    products(first: 10) {\n"
@@ -46,7 +46,11 @@ public final class ProductsWithDate implements Query<ProductsWithDate.Data, Oper
     return variables;
   }
 
-  @Override public ResponseFieldMapper<? extends Operation.Data> responseFieldMapper() {
+  @Override public Data wrapData(Data data) {
+    return data;
+  }
+
+  @Override public ResponseFieldMapper<Data> responseFieldMapper() {
     return new Data.Mapper();
   }
 

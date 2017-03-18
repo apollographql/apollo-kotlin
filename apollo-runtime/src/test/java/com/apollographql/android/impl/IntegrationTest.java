@@ -8,6 +8,7 @@ import com.apollographql.android.ApolloCall;
 import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Error;
 import com.apollographql.android.api.graphql.Response;
+import com.apollographql.android.api.graphql.internal.Optional;
 import com.apollographql.android.impl.type.CustomType;
 
 import junit.framework.Assert;
@@ -69,8 +70,7 @@ public class IntegrationTest {
   @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
     server.enqueue(mockResponse("/allPlanetsResponse.json"));
 
-    ApolloCall call = apolloClient.newCall(new AllPlanets());
-    Response<AllPlanets.Data> body = call.execute();
+    Response<Optional<AllPlanets.Data>> body = apolloClient.newCall(new AllPlanets()).execute();
     assertThat(body.isSuccessful()).isTrue();
 
     assertThat(server.takeRequest().getBody().readString(Charsets.UTF_8))
@@ -98,7 +98,7 @@ public class IntegrationTest {
             + "  producers"
             + "}\",\"variables\":{}}");
 
-    AllPlanets.Data data = body.data();
+    AllPlanets.Data data = body.data().get();
     assertThat(data.allPlanets().planets().size()).isEqualTo(60);
 
     List<String> planets = FluentIterable.from(data.allPlanets().planets())
@@ -128,7 +128,7 @@ public class IntegrationTest {
 
   @Test public void errorResponse() throws Exception {
     server.enqueue(mockResponse("/errorResponse.json"));
-    Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
+    Response<Optional<AllPlanets.Data>> body = apolloClient.newCall(new AllPlanets()).execute();
     assertThat(body.isSuccessful()).isFalse();
     //noinspection ConstantConditions
     assertThat(body.errors()).containsExactly(new Error(
@@ -139,8 +139,7 @@ public class IntegrationTest {
   @Test public void productsWithDates() throws Exception {
     server.enqueue(mockResponse("/productsWithDate.json"));
 
-    ApolloCall call = apolloClient.newCall(new ProductsWithDate());
-    Response<ProductsWithDate.Data> body = call.execute();
+    Response<ProductsWithDate.Data> body = apolloClient.newCall(new ProductsWithDate()).execute();
     assertThat(body.isSuccessful()).isTrue();
 
     assertThat(server.takeRequest().getBody().readString(Charsets.UTF_8))
@@ -163,7 +162,7 @@ public class IntegrationTest {
         .transform(new Function<ProductsWithDate.Data.Shop.Product.Edge, String>() {
           @Override public String apply(ProductsWithDate.Data.Shop.Product.Edge productEdge) {
             Date createdAt = productEdge.node().createdAt();
-            if(createdAt == null) {
+            if (createdAt == null) {
               return null;
             }
             return dateCustomTypeAdapter.encode(createdAt);
@@ -179,8 +178,7 @@ public class IntegrationTest {
   @Test public void productsWithUnsupportedCustomScalarTypes() throws Exception {
     server.enqueue(mockResponse("/productsWithUnsupportedCustomScalarTypes.json"));
 
-    ApolloCall call = apolloClient.newCall(new ProductsWithUnsupportedCustomScalarTypes());
-    Response<ProductsWithUnsupportedCustomScalarTypes.Data> body = call.execute();
+    Response<ProductsWithUnsupportedCustomScalarTypes.Data> body = apolloClient.newCall(new ProductsWithUnsupportedCustomScalarTypes()).execute();
     assertThat(body.isSuccessful()).isTrue();
 
     ProductsWithUnsupportedCustomScalarTypes.Data data = body.data();
@@ -195,14 +193,12 @@ public class IntegrationTest {
   }
 
   @Test public void allPlanetQueryAsync() throws Exception {
-
     server.enqueue(mockResponse("/allPlanetsResponse.json"));
     final CountDownLatch latch = new CountDownLatch(1);
-    ApolloCall call = apolloClient.newCall(new AllPlanets());
-    call.enqueue(new ApolloCall.Callback<AllPlanets.Data>() {
-      @Override public void onResponse(@Nonnull Response<AllPlanets.Data> response) {
+    apolloClient.newCall(new AllPlanets()).enqueue(new ApolloCall.Callback<Optional<AllPlanets.Data>>() {
+      @Override public void onResponse(@Nonnull Response<Optional<AllPlanets.Data>> response) {
         assertThat(response.isSuccessful()).isTrue();
-        assertThat(response.data().allPlanets().planets().size()).isEqualTo(60);
+        assertThat(response.data().get().allPlanets().planets().size()).isEqualTo(60);
         latch.countDown();
       }
 
@@ -215,6 +211,6 @@ public class IntegrationTest {
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setChunkedBody(TestUtils.readFileToString(getClass(),fileName), 32);
+    return new MockResponse().setChunkedBody(TestUtils.readFileToString(getClass(), fileName), 32);
   }
 }

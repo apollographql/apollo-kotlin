@@ -11,16 +11,17 @@ class OperationTypeSpecBuilder(
 ) : CodeGenerator {
   private val OPERATION_TYPE_NAME = operation.operationName.capitalize()
   private val OPERATION_VARIABLES_CLASS_NAME = ClassName.get("", "$OPERATION_TYPE_NAME.Variables")
-  private val DATA_VARIABLES_CLASS_NAME = ClassName.get("", "$OPERATION_TYPE_NAME.Data")
+  private val DATA_VAR_TYPE = ClassName.get("", "$OPERATION_TYPE_NAME.Data")
 
   override fun toTypeSpec(context: CodeGenerationContext): TypeSpec {
     val newContext = context.copy(reservedTypeNames = context.reservedTypeNames.plus(OPERATION_TYPE_NAME))
     return TypeSpec.classBuilder(OPERATION_TYPE_NAME)
         .addAnnotation(Annotations.GENERATED_BY_APOLLO)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-        .addQuerySuperInterface(operation.variables.isNotEmpty())
+        .addQuerySuperInterface(context, operation.variables.isNotEmpty())
         .addOperationDefinition(operation)
         .addQueryDocumentDefinition(fragments, newContext)
+        .addMethod(wrapDataMethod(context))
         .addQueryConstructor(operation.variables.isNotEmpty())
         .addVariablesDefinition(operation.variables, newContext)
         .addType(operation.toTypeSpec(newContext))
@@ -28,13 +29,16 @@ class OperationTypeSpecBuilder(
         .build()
   }
 
-  private fun TypeSpec.Builder.addQuerySuperInterface(hasVariables: Boolean): TypeSpec.Builder {
+  private fun TypeSpec.Builder.addQuerySuperInterface(context: CodeGenerationContext,
+      hasVariables: Boolean): TypeSpec.Builder {
     val isMutation = operation.operationType == "mutation"
     val superInterfaceClassName = if (isMutation) ClassNames.GRAPHQL_MUTATION else ClassNames.GRAPHQL_QUERY
     return if (hasVariables) {
-      addSuperinterface(ParameterizedTypeName.get(superInterfaceClassName, DATA_VARIABLES_CLASS_NAME, OPERATION_VARIABLES_CLASS_NAME))
+      addSuperinterface(ParameterizedTypeName.get(superInterfaceClassName, DATA_VAR_TYPE,
+          wrapperType(context), OPERATION_VARIABLES_CLASS_NAME))
     } else {
-      addSuperinterface(ParameterizedTypeName.get(superInterfaceClassName, DATA_VARIABLES_CLASS_NAME, ClassNames.GRAPHQL_OPERATION_VARIABLES))
+      addSuperinterface(ParameterizedTypeName.get(superInterfaceClassName, DATA_VAR_TYPE,
+          wrapperType(context), ClassNames.GRAPHQL_OPERATION_VARIABLES))
     }
   }
 
@@ -71,6 +75,21 @@ class OperationTypeSpecBuilder(
     )
 
     return this
+  }
+
+  private fun wrapDataMethod(context: CodeGenerationContext): MethodSpec {
+    return MethodSpec.methodBuilder("wrapData")
+        .addModifiers(Modifier.PUBLIC)
+        .addAnnotation(Override::class.java)
+        .addParameter(ParameterSpec.builder(DATA_VAR_TYPE, "data").build())
+        .returns(wrapperType(context))
+        .addStatement(
+            if (context.nullableValueGenerationType != NullableValueGenerationType.ANNOTATED) {
+              "return Optional.fromNullable(data)"
+            } else {
+              "return data"
+            })
+        .build()
   }
 
   private fun TypeSpec.Builder.addVariablesDefinition(variables: List<Variable>, context: CodeGenerationContext):
@@ -120,10 +139,15 @@ class OperationTypeSpecBuilder(
     return addMethod(MethodSpec.methodBuilder("responseFieldMapper")
         .addAnnotation(Annotations.OVERRIDE)
         .addModifiers(Modifier.PUBLIC)
-        .returns(ParameterizedTypeName.get(ClassName.get(ResponseFieldMapper::class.java),
-            WildcardTypeName.subtypeOf(com.apollographql.android.api.graphql.Operation.Data::class.java)))
+        .returns(ParameterizedTypeName.get(ClassName.get(ResponseFieldMapper::class.java), DATA_VAR_TYPE))
         .addStatement("return new \$L.\$L()", Operation.DATA_TYPE_NAME, Util.MAPPER_TYPE_NAME)
         .build())
+  }
+
+  private fun wrapperType(context: CodeGenerationContext) = when (context.nullableValueGenerationType) {
+    NullableValueGenerationType.GUAVA_OPTIONAL -> ClassNames.parameterizedGuavaOptional(DATA_VAR_TYPE)
+    NullableValueGenerationType.APOLLO_OPTIONAL -> ClassNames.parameterizedOptional(DATA_VAR_TYPE)
+    else -> DATA_VAR_TYPE
   }
 
   companion object {

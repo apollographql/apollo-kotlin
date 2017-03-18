@@ -2,7 +2,6 @@ package com.apollographql.android.impl;
 
 import com.apollographql.android.ApolloCall;
 import com.apollographql.android.ApolloWatcher;
-import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.api.graphql.util.Utils;
 import com.apollographql.android.cache.normalized.Cache;
@@ -14,8 +13,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-final class RealApolloWatcher<T extends Operation.Data> implements ApolloWatcher<T> {
-
+final class RealApolloWatcher<T> implements ApolloWatcher<T> {
   private RealApolloCall<T> activeCall;
   @Nullable private ApolloCall.Callback<T> callback = null;
   private CacheControl refetchCacheControl = CacheControl.CACHE_FIRST;

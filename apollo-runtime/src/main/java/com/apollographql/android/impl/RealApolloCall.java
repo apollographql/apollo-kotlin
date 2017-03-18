@@ -32,7 +32,7 @@ import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.internal.Util;
 
-final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall implements ApolloCall<T> {
+final class RealApolloCall<T> extends BaseApolloCall implements ApolloCall<T> {
   volatile Call httpCall;
   private final Cache cache;
   private CacheControl cacheControl;
@@ -199,7 +199,7 @@ final class RealApolloCall<T extends Operation.Data> extends BaseApolloCall impl
     });
   }
 
-  private <T extends Operation.Data> Response<T> handleResponse(okhttp3.Response response) throws IOException {
+  private Response<T> handleResponse(okhttp3.Response response) throws IOException {
     String cacheKey = response.request().header(HttpCache.CACHE_KEY_HEADER);
     if (response.isSuccessful()) {
       try {

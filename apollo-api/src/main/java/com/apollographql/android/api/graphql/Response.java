@@ -1,39 +1,37 @@
 package com.apollographql.android.api.graphql;
 
+import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 /** Represents either a successful or failed response received from the GraphQL server. */
-public class Response<T extends Operation.Data> {
-  @Nonnull private final Operation operation;
-  @Nullable private final T data;
-  @Nullable private final List<Error> errors;
+public class Response<T> {
+  private final Operation operation;
+  private final T data;
+  private final List<Error> errors;
 
-  public Response(@Nonnull Operation operation) {
+  public Response(Operation operation) {
     this(operation, null, null);
   }
 
-  public Response(@Nonnull Operation operation, @Nullable T data, @Nullable List<Error> errors) {
+  public Response(Operation operation, T data, List<Error> errors) {
     this.operation = operation;
     this.data = data;
-    this.errors = errors;
+    this.errors = errors != null ? errors : Collections.<Error>emptyList();
   }
 
   public boolean isSuccessful() {
-    return errors == null || errors.isEmpty();
+    return errors.isEmpty();
   }
 
-  @Nonnull public Operation operation() {
+  public Operation operation() {
     return operation;
   }
 
-  @Nullable public T data() {
+  public T data() {
     return data;
   }
 
-  @Nullable public List<Error> errors() {
+  public List<Error> errors() {
     return errors;
   }
 }

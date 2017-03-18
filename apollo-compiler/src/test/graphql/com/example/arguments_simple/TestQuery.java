@@ -19,7 +19,7 @@ import javax.annotation.Generated;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
-public final class TestQuery implements Query<TestQuery.Data, TestQuery.Variables> {
+public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
   public static final String OPERATION_DEFINITION = "query TestQuery($episode: Episode, $includeName: Boolean!) {\n"
       + "  hero(episode: $episode) {\n"
       + "    __typename\n"
@@ -41,12 +41,17 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Variable
   }
 
   @Override
+  public Optional<TestQuery.Data> wrapData(TestQuery.Data data) {
+    return Optional.fromNullable(data);
+  }
+
+  @Override
   public TestQuery.Variables variables() {
     return variables;
   }
 
   @Override
-  public ResponseFieldMapper<? extends Operation.Data> responseFieldMapper() {
+  public ResponseFieldMapper<TestQuery.Data> responseFieldMapper() {
     return new Data.Mapper();
   }
 

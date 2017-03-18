@@ -6,14 +6,16 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 /** TODO */
-public interface Operation<T extends Operation.Data, V extends Operation.Variables> {
+public interface Operation<D extends Operation.Data, T, V extends Operation.Variables> {
   /** TODO */
   String queryDocument();
 
   /** TODO */
   V variables();
 
-  ResponseFieldMapper<? extends Operation.Data> responseFieldMapper();
+  ResponseFieldMapper<D> responseFieldMapper();
+
+  T wrapData(D data);
 
   /** TODO */
   interface Data {
