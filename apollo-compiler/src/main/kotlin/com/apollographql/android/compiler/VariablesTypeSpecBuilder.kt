@@ -19,7 +19,6 @@ class VariablesTypeSpecBuilder(
           .addConstructor()
           .addVariableAccessors()
           .addValueMapAccessor()
-          .addBuilder()
           .build()
 
   private fun TypeSpec.Builder.addVariableFields(): TypeSpec.Builder =
@@ -34,7 +33,7 @@ class VariablesTypeSpecBuilder(
   private fun TypeSpec.Builder.addValueMapField(): TypeSpec.Builder =
       addField(FieldSpec.builder(ClassNames.parameterizedMapOf(java.lang.String::class.java, Object::class.java),
           VALUE_MAP_FIELD_NAME)
-          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+          .addModifiers(Modifier.PRIVATE, Modifier.FINAL, Modifier.TRANSIENT)
           .initializer("new \$T<>()", LinkedHashMap::class.java)
           .build())
 
@@ -77,7 +76,7 @@ class VariablesTypeSpecBuilder(
           .addStatement("return \$T.unmodifiableMap(\$L)", Collections::class.java, VALUE_MAP_FIELD_NAME)
           .build())
 
-  private fun TypeSpec.Builder.addBuilder(): TypeSpec.Builder {
+  fun TypeSpec.Builder.builder(): TypeSpec.Builder {
     if (variables.isEmpty()) {
       return this
     } else {

@@ -31,8 +31,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   private final TestQuery.Variables variables;
 
-  public TestQuery(TestQuery.Variables variables) {
-    this.variables = variables;
+  public TestQuery(@Nullable Episode episode, boolean includeName) {
+    variables = new TestQuery.Variables(episode, includeName);
   }
 
   @Override
@@ -55,12 +55,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     return new Data.Mapper();
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   public static final class Variables extends Operation.Variables {
     private final @Nullable Episode episode;
 
     private final boolean includeName;
 
-    private final Map<String, Object> valueMap = new LinkedHashMap<>();
+    private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
     Variables(@Nullable Episode episode, boolean includeName) {
       this.episode = episode;
@@ -81,32 +85,28 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public Map<String, Object> valueMap() {
       return Collections.unmodifiableMap(valueMap);
     }
+  }
 
-    public static Builder builder() {
-      return new Builder();
+  public static final class Builder {
+    private @Nullable Episode episode;
+
+    private boolean includeName;
+
+    Builder() {
     }
 
-    public static final class Builder {
-      private @Nullable Episode episode;
+    public Builder episode(@Nullable Episode episode) {
+      this.episode = episode;
+      return this;
+    }
 
-      private boolean includeName;
+    public Builder includeName(boolean includeName) {
+      this.includeName = includeName;
+      return this;
+    }
 
-      Builder() {
-      }
-
-      public Builder episode(@Nullable Episode episode) {
-        this.episode = episode;
-        return this;
-      }
-
-      public Builder includeName(boolean includeName) {
-        this.includeName = includeName;
-        return this;
-      }
-
-      public Variables build() {
-        return new Variables(episode, includeName);
-      }
+    public TestQuery build() {
+      return new TestQuery(episode, includeName);
     }
   }
 
