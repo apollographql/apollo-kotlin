@@ -71,7 +71,7 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
       @Override public void onResponse(@Nonnull Response<T> response) {
         if (isActive) {
           sourceCallback.onResponse(response);
-          dependentKeys = call.dependentKeys();
+          dependentKeys = response.dependentKeys();
           cache.subscribe(recordChangeSubscriber);
         }
       }

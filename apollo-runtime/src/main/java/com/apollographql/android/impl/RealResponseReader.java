@@ -20,11 +20,6 @@ import java.util.Map;
   private final ResponseReaderShadow<R> readerShadow;
 
   RealResponseReader(Operation operation, R recordSet, FieldValueResolver<R> fieldValueResolver,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
-    this(operation, recordSet, fieldValueResolver, customTypeAdapters, new EmptyResponseReaderShadow<R>());
-  }
-
-  RealResponseReader(Operation operation, R recordSet, FieldValueResolver<R> fieldValueResolver,
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ResponseReaderShadow<R> readerShadow) {
     this.operation = operation;
     this.recordSet = recordSet;
@@ -281,38 +276,6 @@ import java.util.Map;
         throw new RuntimeException("Can't resolve custom type adapter for " + scalarType.typeName());
       }
       return typeAdapter.decode(value.toString());
-    }
-  }
-
-  private static class EmptyResponseReaderShadow<R> implements ResponseReaderShadow<R> {
-    @Override public void willResolveRootQuery(Operation operation) {
-    }
-
-    @Override public void willResolve(Field field, Operation.Variables variables) {
-    }
-
-    @Override public void didResolve(Field field, Operation.Variables variables) {
-    }
-
-    @Override public void didParseScalar(Object value) {
-    }
-
-    @Override public void willParseObject(R objectMap) {
-    }
-
-    @Override public void didParseObject(R objectMap) {
-    }
-
-    @Override public void didParseList(List array) {
-    }
-
-    @Override public void willParseElement(int atIndex) {
-    }
-
-    @Override public void didParseElement(int atIndex) {
-    }
-
-    @Override public void didParseNull() {
     }
   }
 }

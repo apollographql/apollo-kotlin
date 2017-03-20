@@ -8,12 +8,19 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-public abstract class CacheKeyResolver {
-  public static final CacheKeyResolver DEFAULT = new CacheKeyResolver() {
+public abstract class CacheKeyResolver<R> {
+  public static final CacheKeyResolver DEFAULT = new CacheKeyResolver<Map<String, Object>>() {
     @Nonnull @Override public CacheKey resolve(@Nonnull Map<String, Object> jsonObject) {
       return CacheKey.NO_KEY;
     }
   };
+
+  static final CacheKeyResolver<Record> RECORD  = new CacheKeyResolver<Record>() {
+    @Nonnull @Override public CacheKey resolve(@Nonnull Record record) {
+      return CacheKey.from(record.key());
+    }
+  };
+
   private static final CacheKey QUERY_ROOT_KEY = CacheKey.from("QUERY_ROOT");
   private static final CacheKey MUTATION_ROOT_KEY = CacheKey.from("MUTATION_ROOT");
 
@@ -26,5 +33,5 @@ public abstract class CacheKeyResolver {
     throw new IllegalArgumentException("Unknown operation type.");
   }
 
-  @Nonnull public abstract CacheKey resolve(@Nonnull Map<String, Object> jsonObject);
+  @Nonnull public abstract CacheKey resolve(@Nonnull R objectSource);
 }

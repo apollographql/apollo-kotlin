@@ -130,7 +130,7 @@ public final class ApolloClient implements ApolloCall.Factory {
     }
 
     public Builder normalizedCache(@Nonnull CacheStore cacheStore,
-        @Nonnull CacheKeyResolver cacheKeyResolver) {
+        @Nonnull CacheKeyResolver<Map<String, Object>> cacheKeyResolver) {
       checkNotNull(cacheStore, "cacheStore == null");
       checkNotNull(cacheKeyResolver, "cacheKeyResolver == null");
       this.cache = new RealCache(cacheStore, cacheKeyResolver);

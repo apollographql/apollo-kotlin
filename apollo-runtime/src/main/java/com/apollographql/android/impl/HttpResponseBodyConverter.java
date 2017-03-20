@@ -6,6 +6,7 @@ import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ScalarType;
+import com.apollographql.android.cache.normalized.ResponseNormalizer;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,9 +26,9 @@ final class HttpResponseBodyConverter<D extends Operation.Data, W> {
     this.customTypeAdapters = customTypeAdapters;
   }
 
-   Response<W> convert(ResponseBody responseBody,
-      final ResponseReaderShadow<Map<String, Object>> responseReaderShadow) throws IOException {
-    responseReaderShadow.willResolveRootQuery(operation);
+  Response<W> convert(ResponseBody responseBody,
+      final ResponseNormalizer<Map<String, Object>> networkResponseNormalizer) throws IOException {
+    networkResponseNormalizer.willResolveRootQuery(operation);
     BufferedSourceJsonReader jsonReader = null;
     try {
       jsonReader = new BufferedSourceJsonReader(responseBody.source());
@@ -44,7 +45,7 @@ final class HttpResponseBodyConverter<D extends Operation.Data, W> {
             @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
               Map<String, Object> buffer = reader.buffer();
               RealResponseReader<Map<String, Object>> realResponseReader = new RealResponseReader<>(operation, buffer,
-                  new MapFieldValueResolver(), customTypeAdapters, responseReaderShadow);
+                  new MapFieldValueResolver(), customTypeAdapters, networkResponseNormalizer);
               return responseFieldMapper.map(realResponseReader);
             }
           });
@@ -55,7 +56,7 @@ final class HttpResponseBodyConverter<D extends Operation.Data, W> {
         }
       }
       jsonReader.endObject();
-      return new Response<>(operation, operation.wrapData(data), errors);
+      return new Response<>(operation, operation.wrapData(data), errors, networkResponseNormalizer.dependentKeys());
     } finally {
       if (jsonReader != null) {
         jsonReader.close();
