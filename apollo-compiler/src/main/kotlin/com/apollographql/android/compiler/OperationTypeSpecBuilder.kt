@@ -132,10 +132,21 @@ class OperationTypeSpecBuilder(
     val code = if (operation.variables.isEmpty()) {
       CodeBlock.of("this.\$L = \$T.EMPTY_VARIABLES;\n", VARIABLES_VAR, ClassNames.GRAPHQL_OPERATION)
     } else {
+      val builder = operation.variables.map {
+        val name = it.name.decapitalize()
+        val type = JavaTypeResolver(context, context.typesPackage).resolve(it.type)
+        val optional = !it.type.endsWith("!")
+        if (!type.isPrimitive && !optional) {
+          CodeBlock.of("\$T.checkNotNull(\$L, \$S);\n", ClassNames.API_UTILS, name, "$name == null")
+        } else {
+          CodeBlock.of("")
+        }
+      }.fold(CodeBlock.builder(), CodeBlock.Builder::add)
+
       operation.variables
           .map { it.name.decapitalize() }
-          .mapIndexed { i, v -> if (i > 0) CodeBlock.of(", \$L", v) else CodeBlock.of("\$L", v) }
-          .fold(CodeBlock.of("\$L = new \$T(", VARIABLES_VAR, variablesType()).toBuilder(), CodeBlock.Builder::add)
+          .mapIndexed { i, v -> CodeBlock.of("\$L\$L", if (i > 0) ", " else "", v) }
+          .fold(builder.add("\$L = new \$T(", VARIABLES_VAR, variablesType()), CodeBlock.Builder::add)
           .add(");\n")
           .build()
     }

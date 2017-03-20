@@ -7,6 +7,7 @@ import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
 import com.apollographql.android.api.graphql.internal.Optional;
 import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder;
+import com.apollographql.android.api.graphql.util.Utils;
 import com.example.input_object_type.type.Episode;
 import com.example.input_object_type.type.ReviewInput;
 import java.io.IOException;
@@ -36,6 +37,8 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
   private final TestQuery.Variables variables;
 
   public TestQuery(@Nonnull Episode ep, @Nonnull ReviewInput review) {
+    Utils.checkNotNull(ep, "ep == null");
+    Utils.checkNotNull(review, "review == null");
     variables = new TestQuery.Variables(ep, review);
   }
 

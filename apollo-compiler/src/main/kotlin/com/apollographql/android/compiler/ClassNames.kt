@@ -6,6 +6,7 @@ import com.apollographql.android.api.graphql.Query
 import com.apollographql.android.api.graphql.ResponseReader
 import com.apollographql.android.api.graphql.internal.Optional
 import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder
+import com.apollographql.android.api.graphql.util.Utils
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
@@ -25,6 +26,7 @@ object ClassNames {
   val UNMODIFIABLE_MAP_BUILDER: ClassName = ClassName.get(UnmodifiableMapBuilder::class.java)
   val OPTIONAL: ClassName = ClassName.get(Optional::class.java)
   val GUAVA_OPTIONAL: ClassName = ClassName.get("com.google.common.base", "Optional")
+  val API_UTILS: ClassName = ClassName.get(Utils::class.java)
 
   fun <K : Any> parameterizedListOf(type: Class<K>): TypeName =
       ParameterizedTypeName.get(LIST, ClassName.get(type))
