@@ -2,6 +2,7 @@ package com.apollographql.android.cache.normalized;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -31,15 +32,21 @@ final class NoOpCache implements Cache, ReadableCache, WriteableCache {
 
   @Override public void publish(Set<String> keys) { }
 
+  @Override public ResponseNormalizer<Map<String, Object>> networkResponseNormalizer() {
+    //noinspection unchecked
+    return ResponseNormalizer.NO_OP_NORMALIZER;
+  }
+
+  @Override public ResponseNormalizer<Record> cacheResponseNormalizer() {
+    //noinspection unchecked
+    return ResponseNormalizer.NO_OP_NORMALIZER;
+  }
+
   @Override public <R> R readTransaction(Transaction<ReadableCache, R> transaction) {
     return transaction.execute(this);
   }
 
   @Override public <R> R writeTransaction(Transaction<WriteableCache, R> transaction) {
     return transaction.execute(this);
-  }
-
-  @Override public ResponseNormalizer responseNormalizer() {
-    return ResponseNormalizer.NO_OP_NORMALIZER;
   }
 }

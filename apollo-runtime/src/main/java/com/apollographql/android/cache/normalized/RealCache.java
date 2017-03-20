@@ -46,19 +46,18 @@ public final class RealCache implements Cache, ReadableCache, WriteableCache {
   }
 
   @Override public void publish(@Nonnull Set<String> changedKeys) {
-      checkNotNull(changedKeys, "changedKeys == null");
-      if (changedKeys.isEmpty()) {
-        return;
-      }
-      Set<RecordChangeSubscriber> iterableSubscribers;
-      synchronized (this) {
-        iterableSubscribers = new LinkedHashSet<>(subscribers);
-      }
-      for (RecordChangeSubscriber subscriber : iterableSubscribers) {
-        subscriber.onCacheKeysChanged(changedKeys);
-      }
+    checkNotNull(changedKeys, "changedKeys == null");
+    if (changedKeys.isEmpty()) {
+      return;
     }
-
+    Set<RecordChangeSubscriber> iterableSubscribers;
+    synchronized (this) {
+      iterableSubscribers = new LinkedHashSet<>(subscribers);
+    }
+    for (RecordChangeSubscriber subscriber : iterableSubscribers) {
+      subscriber.onCacheKeysChanged(changedKeys);
+    }
+  }
 
   @Override public <R> R readTransaction(Transaction<ReadableCache, R> transaction) {
     lock.readLock().lock();

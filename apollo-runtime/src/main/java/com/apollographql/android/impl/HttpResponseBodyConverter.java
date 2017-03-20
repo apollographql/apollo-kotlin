@@ -26,10 +26,9 @@ final class HttpResponseBodyConverter<D extends Operation.Data, W> {
     this.customTypeAdapters = customTypeAdapters;
   }
 
-   Response<W> convert(ResponseBody responseBody,
+  Response<W> convert(ResponseBody responseBody,
       final ResponseNormalizer<Map<String, Object>> networkResponseNormalizer) throws IOException {
-     networkResponseNormalizer.willResolveRootQuery(operation);
-     networkResponseNormalizer.willResolveRootQuery(operation);
+    networkResponseNormalizer.willResolveRootQuery(operation);
     BufferedSourceJsonReader jsonReader = null;
     try {
       jsonReader = new BufferedSourceJsonReader(responseBody.source());
