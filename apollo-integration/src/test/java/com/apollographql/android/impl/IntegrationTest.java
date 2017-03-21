@@ -8,17 +8,16 @@ import com.apollographql.android.ApolloCall;
 import com.apollographql.android.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Error;
 import com.apollographql.android.api.graphql.Response;
-import com.apollographql.android.api.graphql.internal.Optional;
-import com.apollographql.android.impl.type.CustomType;
+import com.apollographql.android.impl.httpcache.AllFilms;
+import com.apollographql.android.impl.httpcache.AllPlanets;
+import com.apollographql.android.impl.httpcache.type.CustomType;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ import okhttp3.mockwebserver.MockWebServer;
 import static com.google.common.truth.Truth.assertThat;
 
 public class IntegrationTest {
-  private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+  private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
   private ApolloClient apolloClient;
   private CustomTypeAdapter<Date> dateCustomTypeAdapter;
@@ -63,24 +62,29 @@ public class IntegrationTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(new OkHttpClient.Builder().build())
-        .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
+        .withCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
         .build();
   }
 
-  @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
-    server.enqueue(mockResponse("/allPlanetsResponse.json"));
 
-    Response<Optional<AllPlanets.Data>> body = apolloClient.newCall(new AllPlanets()).execute();
+  @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
+    server.enqueue(mockResponse("/HttpCacheTestAllPlanets.json"));
+
+    Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
     assertThat(body.isSuccessful()).isTrue();
 
     assertThat(server.takeRequest().getBody().readString(Charsets.UTF_8))
-        .isEqualTo("{\"query\":\"query TestQuery {  "
+        .isEqualTo("{\"query\":\"query AllPlanets {  "
             + "allPlanets(first: 300) {"
+            + "    __typename"
             + "    planets {"
+            + "      __typename"
             + "      ...PlanetFragment"
             + "      filmConnection {"
+            + "        __typename"
             + "        totalCount"
             + "        films {"
+            + "          __typename"
             + "          title"
             + "          ...FilmFragment"
             + "        }"
@@ -88,23 +92,25 @@ public class IntegrationTest {
             + "    }"
             + "  }"
             + "}"
+            + "fragment FilmFragment on Film {"
+            + "  __typename"
+            + "  title"
+            + "  producers"
+            + "}"
             + "fragment PlanetFragment on Planet {"
+            + "  __typename"
             + "  name"
             + "  climates"
             + "  surfaceWater"
-            + "}"
-            + "fragment FilmFragment on Film {"
-            + "  title"
-            + "  producers"
             + "}\",\"variables\":{}}");
 
-    AllPlanets.Data data = body.data().get();
+    AllPlanets.Data data = body.data();
     assertThat(data.allPlanets().planets().size()).isEqualTo(60);
 
     List<String> planets = FluentIterable.from(data.allPlanets().planets())
         .transform(new Function<AllPlanets.Data.AllPlanet.Planet, String>() {
           @Override public String apply(AllPlanets.Data.AllPlanet.Planet planet) {
-            return planet.fragments().planetFargment().name();
+            return planet.fragments().planetFragment().name();
           }
         }).toList();
     assertThat(planets).isEqualTo(Arrays.asList(("Tatooine, Alderaan, Yavin IV, Hoth, Dagobah, Bespin, Endor, Naboo, "
@@ -117,8 +123,8 @@ public class IntegrationTest {
     ));
 
     AllPlanets.Data.AllPlanet.Planet firstPlanet = data.allPlanets().planets().get(0);
-    assertThat(firstPlanet.fragments().planetFargment().climates()).isEqualTo(Collections.singletonList("arid"));
-    assertThat(firstPlanet.fragments().planetFargment().surfaceWater()).isWithin(1d);
+    assertThat(firstPlanet.fragments().planetFragment().climates()).isEqualTo(Collections.singletonList("arid"));
+    assertThat(firstPlanet.fragments().planetFragment().surfaceWater()).isWithin(1d);
     assertThat(firstPlanet.filmConnection().totalCount()).isEqualTo(5);
     assertThat(firstPlanet.filmConnection().films().size()).isEqualTo(5);
     assertThat(firstPlanet.filmConnection().films().get(0).fragments().filmFragment().title()).isEqualTo("A New Hope");
@@ -127,8 +133,8 @@ public class IntegrationTest {
   }
 
   @Test public void errorResponse() throws Exception {
-    server.enqueue(mockResponse("/errorResponse.json"));
-    Response<Optional<AllPlanets.Data>> body = apolloClient.newCall(new AllPlanets()).execute();
+    server.enqueue(mockResponse("/HttpCacheTestError.json"));
+    Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
     assertThat(body.isSuccessful()).isFalse();
     //noinspection ConstantConditions
     assertThat(body.errors()).containsExactly(new Error(
@@ -136,69 +142,38 @@ public class IntegrationTest {
         Collections.singletonList(new Error.Location(3, 5))));
   }
 
-  @Test public void productsWithDates() throws Exception {
-    server.enqueue(mockResponse("/productsWithDate.json"));
+  @Test public void allFilmsWithDate() throws Exception {
+    server.enqueue(mockResponse("/HttpCacheTestAllFilms.json"));
 
-    Response<ProductsWithDate.Data> body = apolloClient.newCall(new ProductsWithDate()).execute();
+    Response<AllFilms.Data> body = apolloClient.newCall(new AllFilms()).execute();
     assertThat(body.isSuccessful()).isTrue();
 
-    assertThat(server.takeRequest().getBody().readString(Charsets.UTF_8))
-        .isEqualTo("{\"query\":\"query ProductsWithDate {" +
-            "  shop {" +
-            "    products(first: 10) {" +
-            "      edges {" +
-            "        node {" +
-            "          title" +
-            "          createdAt" +
-            "        }" +
-            "      }" +
-            "    }" +
-            "  }}\",\"variables\":{}}");
 
-    ProductsWithDate.Data data = body.data();
-    assertThat(data.shop().products().edges().size()).isEqualTo(11);
+    AllFilms.Data data = body.data();
+    assertThat(data.allFilms().films()).hasSize(6);
 
-    List<String> dates = FluentIterable.from(data.shop().products().edges())
-        .transform(new Function<ProductsWithDate.Data.Shop.Product.Edge, String>() {
-          @Override public String apply(ProductsWithDate.Data.Shop.Product.Edge productEdge) {
-            Date createdAt = productEdge.node().createdAt();
-            if (createdAt == null) {
+    List<String> dates = FluentIterable.from(data.allFilms().films())
+        .transform(new Function<AllFilms.Data.AllFilm.Film, String>() {
+          @Override public String apply(AllFilms.Data.AllFilm.Film film) {
+            Date releaseDate = film.releaseDate();
+            if (releaseDate == null) {
               return null;
             }
-            return dateCustomTypeAdapter.encode(createdAt);
+            return dateCustomTypeAdapter.encode(releaseDate);
           }
         }).copyInto(new ArrayList<String>());
 
-    assertThat(dates).isEqualTo(Arrays.asList(
-        "2013-11-18T19:35:35Z", "2013-11-18T19:35:40Z", "2013-11-18T19:35:54Z", "2013-11-18T19:35:56Z",
-        "2013-11-18T19:36:33Z", "2013-11-18T19:36:45Z", "2013-11-18T19:37:08Z", "2013-11-18T19:37:24Z",
-        "2013-11-18T19:37:26Z", "2013-11-18T19:37:28Z", null));
-  }
-
-  @Test public void productsWithUnsupportedCustomScalarTypes() throws Exception {
-    server.enqueue(mockResponse("/productsWithUnsupportedCustomScalarTypes.json"));
-
-    Response<ProductsWithUnsupportedCustomScalarTypes.Data> body = apolloClient.newCall(new ProductsWithUnsupportedCustomScalarTypes()).execute();
-    assertThat(body.isSuccessful()).isTrue();
-
-    ProductsWithUnsupportedCustomScalarTypes.Data data = body.data();
-    assertThat(data.shop().products().edges().size()).isEqualTo(1);
-    assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeNumber()).isInstanceOf(BigDecimal.class);
-    assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeNumber()).isEqualTo
-        (BigDecimal.valueOf(1));
-    assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeBool()).isInstanceOf(Boolean.class);
-    assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeBool()).isEqualTo(Boolean.TRUE);
-    assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeString()).isInstanceOf(String.class);
-    assertThat(data.shop().products().edges().get(0).node().unsupportedCustomScalarTypeString()).isEqualTo("something");
+    assertThat(dates).isEqualTo(Arrays.asList("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19", "2002-05-16",
+        "2005-05-19"));
   }
 
   @Test public void allPlanetQueryAsync() throws Exception {
-    server.enqueue(mockResponse("/allPlanetsResponse.json"));
+    server.enqueue(mockResponse("/HttpCacheTestAllPlanets.json"));
     final CountDownLatch latch = new CountDownLatch(1);
-    apolloClient.newCall(new AllPlanets()).enqueue(new ApolloCall.Callback<Optional<AllPlanets.Data>>() {
-      @Override public void onResponse(@Nonnull Response<Optional<AllPlanets.Data>> response) {
+    apolloClient.newCall(new AllPlanets()).enqueue(new ApolloCall.Callback<AllPlanets.Data>() {
+      @Override public void onResponse(@Nonnull Response<AllPlanets.Data> response) {
         assertThat(response.isSuccessful()).isTrue();
-        assertThat(response.data().get().allPlanets().planets().size()).isEqualTo(60);
+        assertThat(response.data().allPlanets().planets().size()).isEqualTo(60);
         latch.countDown();
       }
 
@@ -211,6 +186,6 @@ public class IntegrationTest {
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setChunkedBody(TestUtils.readFileToString(getClass(), fileName), 32);
+    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), fileName), 32);
   }
 }

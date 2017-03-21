@@ -197,7 +197,7 @@ final class RealApolloCall<T> extends BaseApolloCall implements ApolloCall<T> {
     });
   }
 
-  private Response<T> handleResponse(okhttp3.Response response) throws IOException {
+  @SuppressWarnings("unchecked") private Response<T> handleResponse(okhttp3.Response response) throws IOException {
     String cacheKey = response.request().header(HttpCache.CACHE_KEY_HEADER);
     if (response.isSuccessful()) {
       try {

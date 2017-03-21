@@ -113,7 +113,7 @@ public class ResponseNormalizationTest {
     MockResponse mockResponse = mockResponse("EpisodeHeroNameResponse.json");
     server.enqueue(mockResponse);
 
-    final EpisodeHeroName query = new EpisodeHeroName(EpisodeHeroName.Variables.builder().episode(JEDI).build());
+    final EpisodeHeroName query = EpisodeHeroName.builder().episode(JEDI).build();
     ApolloCall<EpisodeHeroName.Data> call = apolloClient.newCall(query);
     Response<EpisodeHeroName.Data> body = call.execute();
     assertThat(body.isSuccessful()).isTrue();
@@ -150,8 +150,7 @@ public class ResponseNormalizationTest {
   public void testHeroAndFriendsNamesQueryWithoutIDs() throws IOException {
     MockResponse mockResponse = mockResponse("HeroAndFriendsNameResponse.json");
     server.enqueue(mockResponse);
-    final HeroAndFriendsNames heroAndFriendsNameQuery
-        = new HeroAndFriendsNames(HeroAndFriendsNames.Variables.builder().episode(JEDI).build());
+    final HeroAndFriendsNames heroAndFriendsNameQuery = HeroAndFriendsNames.builder().episode(JEDI).build();
 
     ApolloCall<HeroAndFriendsNames.Data> call = apolloClient.newCall(heroAndFriendsNameQuery);
     Response<HeroAndFriendsNames.Data> body = call.execute();
@@ -178,8 +177,7 @@ public class ResponseNormalizationTest {
   public void testHeroAndFriendsNamesQueryWithIDs() throws IOException {
     MockResponse mockResponse = mockResponse("HeroAndFriendsNameWithIdsResponse.json");
     server.enqueue(mockResponse);
-    final HeroAndFriendsNamesWithIDs heroAndFriendsWithIdsQuery
-        = new HeroAndFriendsNamesWithIDs(HeroAndFriendsNamesWithIDs.Variables.builder().episode(JEDI).build());
+    final HeroAndFriendsNamesWithIDs heroAndFriendsWithIdsQuery = HeroAndFriendsNamesWithIDs.builder().episode(JEDI).build();
 
     ApolloCall<HeroAndFriendsNamesWithIDs.Data> call = apolloClient.newCall(heroAndFriendsWithIdsQuery);
     Response<HeroAndFriendsNamesWithIDs.Data> body = call.execute();
@@ -206,10 +204,8 @@ public class ResponseNormalizationTest {
   public void testHeroAndFriendsNamesWithIDForParentOnly() throws IOException {
     MockResponse mockResponse = mockResponse("HeroAndFriendsNameWithIdsParentOnlyResponse.json");
     server.enqueue(mockResponse);
-    final HeroAndFriendsNamesWithIDForParentOnly heroAndFriendsWithIdsQuery =
-        new HeroAndFriendsNamesWithIDForParentOnly(
-            HeroAndFriendsNamesWithIDForParentOnly.Variables.builder().episode(JEDI).build()
-        );
+    final HeroAndFriendsNamesWithIDForParentOnly heroAndFriendsWithIdsQuery = HeroAndFriendsNamesWithIDForParentOnly
+        .builder().episode(JEDI).build();
 
     ApolloCall<HeroAndFriendsNamesWithIDForParentOnly.Data> call = apolloClient.newCall(heroAndFriendsWithIdsQuery);
     Response<HeroAndFriendsNamesWithIDForParentOnly.Data> body = call.execute();
@@ -256,9 +252,7 @@ public class ResponseNormalizationTest {
     MockResponse mockResponse = mockResponse("HeroTypeDependentAliasedFieldResponse.json");
     server.enqueue(mockResponse);
 
-    final HeroTypeDependentAliasedField aliasedQuery = new HeroTypeDependentAliasedField(
-        HeroTypeDependentAliasedField.Variables.builder().episode(JEDI).build()
-    );
+    final HeroTypeDependentAliasedField aliasedQuery = HeroTypeDependentAliasedField.builder().episode(JEDI).build();
 
     ApolloCall<HeroTypeDependentAliasedField.Data> call = apolloClient.newCall(aliasedQuery);
     Response<HeroTypeDependentAliasedField.Data> body = call.execute();
@@ -277,9 +271,7 @@ public class ResponseNormalizationTest {
     MockResponse mockResponse = mockResponse("HeroTypeDependentAliasedFieldResponseHuman.json");
     server.enqueue(mockResponse);
 
-    final HeroTypeDependentAliasedField aliasedQuery = new HeroTypeDependentAliasedField(
-        HeroTypeDependentAliasedField.Variables.builder().episode(EMPIRE).build()
-    );
+    final HeroTypeDependentAliasedField aliasedQuery = HeroTypeDependentAliasedField.builder().episode(EMPIRE).build();
 
     ApolloCall<HeroTypeDependentAliasedField.Data> call = apolloClient.newCall(aliasedQuery);
     Response<HeroTypeDependentAliasedField.Data> body = call.execute();
@@ -298,9 +290,7 @@ public class ResponseNormalizationTest {
     MockResponse mockResponse = mockResponse("HeroTypeDependentAliasedFieldResponseHuman.json");
     server.enqueue(mockResponse);
 
-    final HeroTypeDependentAliasedField aliasedQuery = new HeroTypeDependentAliasedField(
-        HeroTypeDependentAliasedField.Variables.builder().episode(EMPIRE).build()
-    );
+    final HeroTypeDependentAliasedField aliasedQuery = HeroTypeDependentAliasedField.builder().episode(EMPIRE).build();
 
     ApolloCall<HeroTypeDependentAliasedField.Data> call = apolloClient.newCall(aliasedQuery);
     Response<HeroTypeDependentAliasedField.Data> body = call.execute();
@@ -318,9 +308,7 @@ public class ResponseNormalizationTest {
   public void testHeroParentTypeDependentFieldDroid() throws IOException {
     MockResponse mockResponse = mockResponse("HeroParentTypeDependentFieldDroidResponse.json");
     server.enqueue(mockResponse);
-    final HeroParentTypeDependentField aliasedQuery = new HeroParentTypeDependentField(
-        HeroParentTypeDependentField.Variables.builder().episode(JEDI).build()
-    );
+    final HeroParentTypeDependentField aliasedQuery = HeroParentTypeDependentField.builder().episode(JEDI).build();
 
     ApolloCall<HeroParentTypeDependentField.Data> call = apolloClient.newCall(aliasedQuery);
     Response<HeroParentTypeDependentField.Data> body = call.execute();
@@ -340,9 +328,7 @@ public class ResponseNormalizationTest {
   public void testHeroParentTypeDependentFieldHuman() throws IOException {
     MockResponse mockResponse = mockResponse("HeroParentTypeDependentFieldHumanResponse.json");
     server.enqueue(mockResponse);
-    final HeroParentTypeDependentField aliasedQuery = new HeroParentTypeDependentField(
-        HeroParentTypeDependentField.Variables.builder().episode(EMPIRE).build()
-    );
+    final HeroParentTypeDependentField aliasedQuery = HeroParentTypeDependentField.builder().episode(EMPIRE).build();
 
     ApolloCall<HeroParentTypeDependentField.Data> call = apolloClient.newCall(aliasedQuery);
     Response<HeroParentTypeDependentField.Data> body = call.execute();

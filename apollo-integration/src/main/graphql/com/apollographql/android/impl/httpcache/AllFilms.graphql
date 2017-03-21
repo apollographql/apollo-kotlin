@@ -1,0 +1,9 @@
+query AllFilms {
+  allFilms(first:100) {
+    totalCount
+    films {
+      title
+      releaseDate
+    }
+  }
+}
