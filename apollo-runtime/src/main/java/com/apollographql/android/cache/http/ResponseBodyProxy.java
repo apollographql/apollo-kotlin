@@ -17,16 +17,14 @@ import static okhttp3.internal.Util.closeQuietly;
 import static okhttp3.internal.Util.discard;
 
 final class ResponseBodyProxy extends ResponseBody {
-  private final ResponseCacheRecordEditor cacheRecordEditor;
   private final String contentType;
   private final String contentLength;
   private final Source responseBodySource;
 
   ResponseBodyProxy(ResponseCacheRecordEditor cacheRecordEditor, Response sourceResponse) {
-    this.cacheRecordEditor = cacheRecordEditor;
     this.contentType = sourceResponse.header("Content-Type");
     this.contentLength = sourceResponse.header("Content-Length");
-    this.responseBodySource = sourceResponse.body().source();
+    this.responseBodySource = new ProxySource(cacheRecordEditor, sourceResponse.body().source());
   }
 
   @Override public MediaType contentType() {
@@ -42,11 +40,7 @@ final class ResponseBodyProxy extends ResponseBody {
   }
 
   @Override public BufferedSource source() {
-    return Okio.buffer(proxySource());
-  }
-
-  private Source proxySource() {
-    return new ProxySource(cacheRecordEditor, responseBodySource);
+    return Okio.buffer(responseBodySource);
   }
 
   private static class ProxySource implements Source {

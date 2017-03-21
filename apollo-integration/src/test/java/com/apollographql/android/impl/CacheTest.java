@@ -9,6 +9,7 @@ import com.apollographql.android.cache.http.TimeoutEvictionStrategy;
 import com.apollographql.android.impl.httpcache.AllFilms;
 import com.apollographql.android.impl.httpcache.AllPlanets;
 import com.apollographql.android.impl.httpcache.DroidDetails;
+import com.apollographql.android.impl.httpcache.type.CustomType;
 import com.apollographql.android.impl.util.HttpException;
 
 import junit.framework.Assert;
@@ -38,7 +39,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.fail;
 
 public class CacheTest {
-  private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+  private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
   private ApolloClient apolloClient;
   private okhttp3.Request lastHttRequest;
@@ -80,6 +81,7 @@ public class CacheTest {
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .httpCache(cacheStore, new TimeoutEvictionStrategy(2, TimeUnit.SECONDS))
+        .withCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
         .build();
   }
 
