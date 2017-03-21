@@ -1,0 +1,62 @@
+{
+  "data": {
+    "species": {
+      "__typename": "Species",
+      "id": "c3BlY2llczoy",
+      "name": "Droid",
+      "filmConnection": {
+        "__typename": "SpeciesFilmsConnection",
+        "edges": [
+          {
+            "__typename": "SpeciesFilmsEdge",
+            "node": {
+              "__typename": "Film",
+              "id": "ZmlsbXM6MQ==",
+              "title": "A New Hope"
+            }
+          },
+          {
+            "__typename": "SpeciesFilmsEdge",
+            "node": {
+              "__typename": "Film",
+              "id": "ZmlsbXM6Mg==",
+              "title": "The Empire Strikes Back"
+            }
+          },
+          {
+            "__typename": "SpeciesFilmsEdge",
+            "node": {
+              "__typename": "Film",
+              "id": "ZmlsbXM6Mw==",
+              "title": "Return of the Jedi"
+            }
+          },
+          {
+            "__typename": "SpeciesFilmsEdge",
+            "node": {
+              "__typename": "Film",
+              "id": "ZmlsbXM6NA==",
+              "title": "The Phantom Menace"
+            }
+          },
+          {
+            "__typename": "SpeciesFilmsEdge",
+            "node": {
+              "__typename": "Film",
+              "id": "ZmlsbXM6NQ==",
+              "title": "Attack of the Clones"
+            }
+          },
+          {
+            "__typename": "SpeciesFilmsEdge",
+            "node": {
+              "__typename": "Film",
+              "id": "ZmlsbXM6Ng==",
+              "title": "Revenge of the Sith"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

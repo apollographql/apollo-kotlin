@@ -1,0 +1,25 @@
+query AllPlanets {
+  allPlanets(first: 300) {
+    planets {
+      ...PlanetFragment
+      filmConnection {
+        totalCount
+        films {
+          title
+          ...FilmFragment
+        }
+      }
+    }
+  }
+}
+
+fragment FilmFragment on Film {
+  title
+  producers
+}
+
+fragment PlanetFragment on Planet {
+  name
+  climates
+  surfaceWater
+}
