@@ -34,8 +34,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   private final TestQuery.Variables variables;
 
-  public TestQuery(TestQuery.Variables variables) {
-    this.variables = variables;
+  public TestQuery(@Nullable Episode episode, int stars, double greenValue) {
+    variables = new TestQuery.Variables(episode, stars, greenValue);
   }
 
   @Override
@@ -58,6 +58,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     return new Data.Mapper();
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   public static final class Variables extends Operation.Variables {
     private final @Nullable Episode episode;
 
@@ -65,7 +69,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private final double greenValue;
 
-    private final Map<String, Object> valueMap = new LinkedHashMap<>();
+    private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
     Variables(@Nullable Episode episode, int stars, double greenValue) {
       this.episode = episode;
@@ -92,39 +96,35 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public Map<String, Object> valueMap() {
       return Collections.unmodifiableMap(valueMap);
     }
+  }
 
-    public static Builder builder() {
-      return new Builder();
+  public static final class Builder {
+    private @Nullable Episode episode;
+
+    private int stars;
+
+    private double greenValue;
+
+    Builder() {
     }
 
-    public static final class Builder {
-      private @Nullable Episode episode;
+    public Builder episode(@Nullable Episode episode) {
+      this.episode = episode;
+      return this;
+    }
 
-      private int stars;
+    public Builder stars(int stars) {
+      this.stars = stars;
+      return this;
+    }
 
-      private double greenValue;
+    public Builder greenValue(double greenValue) {
+      this.greenValue = greenValue;
+      return this;
+    }
 
-      Builder() {
-      }
-
-      public Builder episode(@Nullable Episode episode) {
-        this.episode = episode;
-        return this;
-      }
-
-      public Builder stars(int stars) {
-        this.stars = stars;
-        return this;
-      }
-
-      public Builder greenValue(double greenValue) {
-        this.greenValue = greenValue;
-        return this;
-      }
-
-      public Variables build() {
-        return new Variables(episode, stars, greenValue);
-      }
+    public TestQuery build() {
+      return new TestQuery(episode, stars, greenValue);
     }
   }
 

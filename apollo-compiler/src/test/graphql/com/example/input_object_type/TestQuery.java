@@ -7,6 +7,7 @@ import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
 import com.apollographql.android.api.graphql.internal.Optional;
 import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder;
+import com.apollographql.android.api.graphql.util.Utils;
 import com.example.input_object_type.type.Episode;
 import com.example.input_object_type.type.ReviewInput;
 import java.io.IOException;
@@ -35,8 +36,10 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
   private final TestQuery.Variables variables;
 
-  public TestQuery(TestQuery.Variables variables) {
-    this.variables = variables;
+  public TestQuery(@Nonnull Episode ep, @Nonnull ReviewInput review) {
+    Utils.checkNotNull(ep, "ep == null");
+    Utils.checkNotNull(review, "review == null");
+    variables = new TestQuery.Variables(ep, review);
   }
 
   @Override
@@ -59,12 +62,16 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     return new Data.Mapper();
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   public static final class Variables extends Operation.Variables {
     private final @Nonnull Episode ep;
 
     private final @Nonnull ReviewInput review;
 
-    private final Map<String, Object> valueMap = new LinkedHashMap<>();
+    private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
     Variables(@Nonnull Episode ep, @Nonnull ReviewInput review) {
       this.ep = ep;
@@ -85,34 +92,30 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     public Map<String, Object> valueMap() {
       return Collections.unmodifiableMap(valueMap);
     }
+  }
 
-    public static Builder builder() {
-      return new Builder();
+  public static final class Builder {
+    private @Nonnull Episode ep;
+
+    private @Nonnull ReviewInput review;
+
+    Builder() {
     }
 
-    public static final class Builder {
-      private @Nonnull Episode ep;
+    public Builder ep(@Nonnull Episode ep) {
+      this.ep = ep;
+      return this;
+    }
 
-      private @Nonnull ReviewInput review;
+    public Builder review(@Nonnull ReviewInput review) {
+      this.review = review;
+      return this;
+    }
 
-      Builder() {
-      }
-
-      public Builder ep(@Nonnull Episode ep) {
-        this.ep = ep;
-        return this;
-      }
-
-      public Builder review(@Nonnull ReviewInput review) {
-        this.review = review;
-        return this;
-      }
-
-      public Variables build() {
-        if (ep == null) throw new IllegalStateException("ep can't be null");
-        if (review == null) throw new IllegalStateException("review can't be null");
-        return new Variables(ep, review);
-      }
+    public TestQuery build() {
+      if (ep == null) throw new IllegalStateException("ep can't be null");
+      if (review == null) throw new IllegalStateException("review can't be null");
+      return new TestQuery(ep, review);
     }
   }
 

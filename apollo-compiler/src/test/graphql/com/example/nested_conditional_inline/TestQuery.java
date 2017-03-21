@@ -56,8 +56,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   private final TestQuery.Variables variables;
 
-  public TestQuery(TestQuery.Variables variables) {
-    this.variables = variables;
+  public TestQuery(@Nullable Episode episode) {
+    variables = new TestQuery.Variables(episode);
   }
 
   @Override
@@ -80,10 +80,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     return new Data.Mapper();
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   public static final class Variables extends Operation.Variables {
     private final @Nullable Episode episode;
 
-    private final Map<String, Object> valueMap = new LinkedHashMap<>();
+    private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
     Variables(@Nullable Episode episode) {
       this.episode = episode;
@@ -98,25 +102,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public Map<String, Object> valueMap() {
       return Collections.unmodifiableMap(valueMap);
     }
+  }
 
-    public static Builder builder() {
-      return new Builder();
+  public static final class Builder {
+    private @Nullable Episode episode;
+
+    Builder() {
     }
 
-    public static final class Builder {
-      private @Nullable Episode episode;
+    public Builder episode(@Nullable Episode episode) {
+      this.episode = episode;
+      return this;
+    }
 
-      Builder() {
-      }
-
-      public Builder episode(@Nullable Episode episode) {
-        this.episode = episode;
-        return this;
-      }
-
-      public Variables build() {
-        return new Variables(episode);
-      }
+    public TestQuery build() {
+      return new TestQuery(episode);
     }
   }
 
