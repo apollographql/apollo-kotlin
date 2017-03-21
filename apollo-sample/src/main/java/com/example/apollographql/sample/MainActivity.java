@@ -23,10 +23,10 @@ public class MainActivity extends AppCompatActivity {
     final TextView txtResponse = (TextView) findViewById(R.id.txt_response);
     application = (SampleApplication) getApplication();
 
-    application.apolloClient().newCall(new FeedQuery(FeedQuery.Variables.builder()
+    application.apolloClient().newCall(FeedQuery.builder()
         .limit(10)
         .type(FeedType.HOT)
-        .build())).enqueue(new ApolloCall.Callback<FeedQuery.Data>() {
+        .build()).enqueue(new ApolloCall.Callback<FeedQuery.Data>() {
 
       @Override public void onResponse(@Nonnull Response<FeedQuery.Data> dataResponse) {
 
