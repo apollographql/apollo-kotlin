@@ -68,7 +68,7 @@ data class Field(
     return JavaTypeResolver(context, packageName).resolve(responseType, isOptional())
   }
 
-  fun normalizedName() = responseName.capitalize().singularize()
+  fun normalizedName() = responseName.capitalize().let { if (isList()) it.singularize() else it }
 
   private fun methodResponseType(): String {
     if (isNonScalar() || hasFragments()) {
@@ -96,4 +96,6 @@ data class Field(
   fun hasFragments() = (fragmentSpreads?.any() ?: false) || (inlineFragments?.any() ?: false)
 
   fun isOptional(): Boolean = isConditional || !methodResponseType().endsWith("!")
+
+  fun isList(): Boolean = type.removeSuffix("!").let { it.startsWith('[') && it.endsWith(']') }
 }
