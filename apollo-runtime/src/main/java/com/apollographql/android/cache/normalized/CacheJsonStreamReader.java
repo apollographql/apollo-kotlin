@@ -6,8 +6,7 @@ import com.apollographql.android.impl.ResponseJsonStreamReader;
 import java.io.IOException;
 
 /**
- * A {@link ResponseJsonStreamReader} which checks reads serialized {@link CacheReference} to strongly
- * typed {@link CacheReference} instances.
+ * A {@link ResponseJsonStreamReader} with additional support for {@link CacheReference}.
  */
 final class CacheJsonStreamReader extends ResponseJsonStreamReader {
 
