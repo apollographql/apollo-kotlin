@@ -5,12 +5,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-//Todo: Enhance this class to better support generalized serialization
-// https://github.com/apollographql/apollo-android/issues/265
 public final class Record {
 
   private final String key;
   private final Map<String, Object> fields;
+  private int sizeEstimateBytes = 0;
+  private boolean memoizedSize = false;
 
   public Record(String cacheKey) {
     this.key = cacheKey;
@@ -22,7 +22,7 @@ public final class Record {
     this.fields = fields;
   }
 
-  public void addField(String key, Object value) {
+  public void setField(String key, Object value) {
     fields.put(key, value);
   }
 
@@ -41,6 +41,7 @@ public final class Record {
       Object oldFieldValue = this.fields.get(field.getKey());
       if ((oldFieldValue == null && newFieldValue != null)
           || (oldFieldValue != null && !oldFieldValue.equals(newFieldValue))) {
+        memoizedSize = false;
         this.fields.put(field.getKey(), newFieldValue);
         changedKeys.add(key() + "." + field.getKey());
       }
@@ -50,5 +51,18 @@ public final class Record {
 
   public Map<String, Object> fields() {
     return fields;
+  }
+
+  public int sizeEstimateBytes() {
+    if (memoizedSize) {
+      return sizeEstimateBytes;
+    }
+    return calculateSizeEstimate(FieldsAdapter.create());
+  }
+
+  private int calculateSizeEstimate(FieldsAdapter adapter) {
+    String json = adapter.toJson(fields);
+    memoizedSize = true;
+    return json.getBytes().length;
   }
 }

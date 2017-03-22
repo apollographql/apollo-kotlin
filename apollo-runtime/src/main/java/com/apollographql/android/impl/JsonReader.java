@@ -171,7 +171,7 @@ import java.io.IOException;
  * of this class are not thread safe.
  */
 /** TODO add Modifications copyright **/
-abstract class JsonReader implements Closeable {
+public abstract class JsonReader implements Closeable {
   JsonReader() {
     // Package-private to control subclasses.
   }

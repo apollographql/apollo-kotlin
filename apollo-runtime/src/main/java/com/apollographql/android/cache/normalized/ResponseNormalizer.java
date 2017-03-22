@@ -60,7 +60,7 @@ public class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     String cacheKey = field.cacheKey(variables);
     String dependentKey = currentRecord.key() + "." + cacheKey;
     dependentKeys.add(dependentKey);
-    currentRecord.addField(cacheKey, value);
+    currentRecord.setField(cacheKey, value);
 
     if (recordStack.isEmpty()) {
       recordSet.merge(currentRecord);
