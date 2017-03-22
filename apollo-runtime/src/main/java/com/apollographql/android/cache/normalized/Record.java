@@ -12,6 +12,41 @@ public final class Record {
   private int sizeEstimateBytes = 0;
   private boolean memoizedSize = false;
 
+  public static class Builder {
+    private final Map<String, Object> fields;
+    private final String key;
+
+    public Builder(String key) {
+      this(key, new LinkedHashMap<String, Object>());
+    }
+
+    public Builder(String key, Map<String, Object> fields) {
+      this.key = key;
+      this.fields = fields;
+    }
+
+    public Builder addField(String key, Object value) {
+      fields.put(key, value);
+      return this;
+    }
+
+    public String key() {
+      return key;
+    }
+
+    public Record build() {
+      return new Record(key, fields);
+    }
+  }
+
+  public static Builder builder(String key) {
+    return new Builder(key);
+  }
+
+  public Builder toBuilder() {
+    return new Builder(key(), this.fields);
+  }
+
   public Record(String cacheKey) {
     this.key = cacheKey;
     fields = new LinkedHashMap<>();
@@ -20,10 +55,6 @@ public final class Record {
   public Record(String key, Map<String, Object> fields) {
     this.key = key;
     this.fields = fields;
-  }
-
-  public void setField(String key, Object value) {
-    fields.put(key, value);
   }
 
   public Object field(String fieldKey) {

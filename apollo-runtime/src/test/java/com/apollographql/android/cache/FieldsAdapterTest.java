@@ -18,7 +18,7 @@ public class FieldsAdapterTest {
 
   @Test
   public void testFieldsAdapterSerializationDeserialization() throws IOException {
-    final Record record = new Record("root");
+    Record.Builder recordBuilder = Record.builder("root");
     BigDecimal expectedBigDecimal = new BigDecimal(1.23);
     String expectedStringValue = "StringValue";
     Boolean expectedBooleanValue = true;
@@ -27,12 +27,13 @@ public class FieldsAdapterTest {
         ("baz"));
     List<Object> expectedScalarList = Arrays.<Object>asList("scalarOne", "scalarTwo");
 
-    record.setField("bigDecimal", expectedBigDecimal);
-    record.setField("string", expectedStringValue);
-    record.setField("boolean", expectedBooleanValue);
-    record.setField("cacheReference", expectedCacheReference);
-    record.setField("scalarList", expectedScalarList);
-    record.setField("referenceList", expectedCacheReferenceList);
+    recordBuilder.addField("bigDecimal", expectedBigDecimal);
+    recordBuilder.addField("string", expectedStringValue);
+    recordBuilder.addField("boolean", expectedBooleanValue);
+    recordBuilder.addField("cacheReference", expectedCacheReference);
+    recordBuilder.addField("scalarList", expectedScalarList);
+    recordBuilder.addField("referenceList", expectedCacheReferenceList);
+    Record record = recordBuilder.build();
 
     FieldsAdapter recordAdapter = FieldsAdapter.create();
     String json = recordAdapter.toJson(record.fields());
