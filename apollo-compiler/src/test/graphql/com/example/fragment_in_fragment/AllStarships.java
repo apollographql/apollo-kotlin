@@ -65,13 +65,13 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
   }
 
   public static class Data implements Operation.Data {
-    private final Optional<AllStarship> allStarships;
+    private final Optional<AllStarships1> allStarships;
 
-    public Data(@Nullable AllStarship allStarships) {
+    public Data(@Nullable AllStarships1 allStarships) {
       this.allStarships = Optional.fromNullable(allStarships);
     }
 
-    public Optional<AllStarship> allStarships() {
+    public Optional<AllStarships1> allStarships() {
       return this.allStarships;
     }
 
@@ -102,10 +102,10 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       return h;
     }
 
-    public static class AllStarship {
+    public static class AllStarships1 {
       private final Optional<List<Edge>> edges;
 
-      public AllStarship(@Nullable List<Edge> edges) {
+      public AllStarships1(@Nullable List<Edge> edges) {
         this.edges = Optional.fromNullable(edges);
       }
 
@@ -115,7 +115,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
       @Override
       public String toString() {
-        return "AllStarship{"
+        return "AllStarships1{"
           + "edges=" + edges
           + "}";
       }
@@ -125,8 +125,8 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
         if (o == this) {
           return true;
         }
-        if (o instanceof AllStarship) {
-          AllStarship that = (AllStarship) o;
+        if (o instanceof AllStarships1) {
+          AllStarships1 that = (AllStarships1) o;
           return ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
         }
         return false;
@@ -309,7 +309,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
         }
       }
 
-      public static final class Mapper implements ResponseFieldMapper<AllStarship> {
+      public static final class Mapper implements ResponseFieldMapper<AllStarships1> {
         final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
 
         final Field[] fields = {
@@ -321,29 +321,29 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
         };
 
         @Override
-        public AllStarship map(ResponseReader reader) throws IOException {
+        public AllStarships1 map(ResponseReader reader) throws IOException {
           final List<Edge> edges = reader.read(fields[0]);
-          return new AllStarship(edges);
+          return new AllStarships1(edges);
         }
       }
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
-      final AllStarship.Mapper allStarshipFieldMapper = new AllStarship.Mapper();
+      final AllStarships1.Mapper allStarships1FieldMapper = new AllStarships1.Mapper();
 
       final Field[] fields = {
         Field.forObject("allStarships", "allStarships", new UnmodifiableMapBuilder<String, Object>(1)
           .put("first", "7.0")
-        .build(), true, new Field.ObjectReader<AllStarship>() {
-          @Override public AllStarship read(final ResponseReader reader) throws IOException {
-            return allStarshipFieldMapper.map(reader);
+        .build(), true, new Field.ObjectReader<AllStarships1>() {
+          @Override public AllStarships1 read(final ResponseReader reader) throws IOException {
+            return allStarships1FieldMapper.map(reader);
           }
         })
       };
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final AllStarship allStarships = reader.read(fields[0]);
+        final AllStarships1 allStarships = reader.read(fields[0]);
         return new Data(allStarships);
       }
     }
