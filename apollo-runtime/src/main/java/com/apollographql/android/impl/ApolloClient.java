@@ -8,8 +8,10 @@ import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ScalarType;
 import com.apollographql.android.cache.http.EvictionStrategy;
 import com.apollographql.android.cache.http.HttpCache;
+import com.apollographql.android.cache.http.HttpCacheControl;
 import com.apollographql.android.cache.http.ResponseCacheStore;
 import com.apollographql.android.cache.normalized.Cache;
+import com.apollographql.android.cache.normalized.CacheControl;
 import com.apollographql.android.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.cache.normalized.CacheStore;
 import com.apollographql.android.cache.normalized.RealCache;
@@ -48,6 +50,8 @@ public final class ApolloClient implements ApolloCall.Factory {
   private final Moshi moshi;
   private final Map<Class, ResponseFieldMapper> responseFieldMapperPool = new LinkedHashMap<>();
   private final ExecutorService dispatcher;
+  private final HttpCacheControl defaultHttpCacheControl;
+  private final CacheControl defaultCacheControl;
 
   private ApolloClient(Builder builder) {
     this.serverUrl = builder.serverUrl;
@@ -57,6 +61,8 @@ public final class ApolloClient implements ApolloCall.Factory {
     this.customTypeAdapters = builder.customTypeAdapters;
     this.moshi = builder.moshiBuilder.build();
     this.dispatcher = builder.dispatcher;
+    this.defaultHttpCacheControl = builder.defaultHttpCacheControl;
+    this.defaultCacheControl = builder.defaultCacheControl;
   }
 
   @Override
@@ -70,8 +76,10 @@ public final class ApolloClient implements ApolloCall.Factory {
         responseFieldMapperPool.put(operation.getClass(), responseFieldMapper);
       }
     }
-    return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, moshi, responseFieldMapper,
-        customTypeAdapters, cache, dispatcher);
+    return new RealApolloCall<T>(operation, serverUrl, httpCallFactory, httpCache, moshi, responseFieldMapper,
+        customTypeAdapters, cache, dispatcher)
+        .httpCacheControl(defaultHttpCacheControl)
+        .cacheControl(defaultCacheControl);
   }
 
   @Override
@@ -99,6 +107,8 @@ public final class ApolloClient implements ApolloCall.Factory {
     HttpUrl serverUrl;
     HttpCache httpCache;
     Cache cache = Cache.NO_CACHE;
+    HttpCacheControl defaultHttpCacheControl = HttpCacheControl.CACHE_FIRST;
+    CacheControl defaultCacheControl = CacheControl.CACHE_FIRST;
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
     final Moshi.Builder moshiBuilder = new Moshi.Builder();
     ExecutorService dispatcher;
@@ -116,24 +126,21 @@ public final class ApolloClient implements ApolloCall.Factory {
       return this;
     }
 
-    public Builder serverUrl(@Nonnull String baseUrl) {
-      checkNotNull(baseUrl, "baseUrl == null");
-      this.serverUrl = HttpUrl.parse(baseUrl);
+    public Builder serverUrl(@Nonnull String serverUrl) {
+      this.serverUrl = HttpUrl.parse(checkNotNull(serverUrl, "serverUrl == null"));
       return this;
     }
 
     public Builder httpCache(@Nonnull ResponseCacheStore cacheStore, @Nonnull EvictionStrategy evictionStrategy) {
-      checkNotNull(cacheStore, "baseUrl == null");
-      checkNotNull(evictionStrategy, "baseUrl == null");
-      this.httpCache = new HttpCache(cacheStore, evictionStrategy);
+      this.httpCache = new HttpCache(checkNotNull(cacheStore, "cacheStore == null"),
+          checkNotNull(evictionStrategy, "baseUrl == null"));
       return this;
     }
 
     public Builder normalizedCache(@Nonnull CacheStore cacheStore,
         @Nonnull CacheKeyResolver<Map<String, Object>> cacheKeyResolver) {
-      checkNotNull(cacheStore, "cacheStore == null");
-      checkNotNull(cacheKeyResolver, "cacheKeyResolver == null");
-      this.cache = new RealCache(cacheStore, cacheKeyResolver);
+      this.cache = new RealCache(checkNotNull(cacheStore, "cacheStore == null"),
+          checkNotNull(cacheKeyResolver, "cacheKeyResolver == null"));
       return this;
     }
 
@@ -156,8 +163,17 @@ public final class ApolloClient implements ApolloCall.Factory {
     }
 
     public Builder dispatcher(@Nonnull ExecutorService dispatcher) {
-      checkNotNull(dispatcher, "dispatcher == null");
-      this.dispatcher = dispatcher;
+      this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
+      return this;
+    }
+
+    public Builder defaultHttpCacheControl(@Nonnull HttpCacheControl cacheControl) {
+      this.defaultHttpCacheControl = checkNotNull(cacheControl, "cacheControl == null");
+      return this;
+    }
+
+    public Builder defaultCacheControl(@Nonnull CacheControl cacheControl) {
+      this.defaultCacheControl = checkNotNull(cacheControl, "cacheControl == null");
       return this;
     }
 
