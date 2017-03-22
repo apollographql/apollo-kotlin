@@ -11,6 +11,8 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 
 import rx.Observable;
+import rx.Single;
+import rx.SingleSubscriber;
 import rx.Subscriber;
 import rx.exceptions.Exceptions;
 import rx.functions.Action0;
@@ -40,31 +42,34 @@ public class RxApollo {
     });
   }
 
-
-  public static <T> Observable<T> from(final ApolloCall<T> call) {
-    return Observable.create(new Observable.OnSubscribe<T>() {
-      @Override public void call(Subscriber<? super T> subscriber) {
-        cancelOnUnsubscribe(subscriber, call);
+  public static <T> Single<T> from(final ApolloCall<T> call) {
+    return Single.create(new Single.OnSubscribe<T>() {
+      @Override public void call(SingleSubscriber<? super T> subscriber) {
+        cancelOnSingleUnsubscribe(subscriber, call);
         try {
           Response<T> response = call.execute();
           if (!subscriber.isUnsubscribed()) {
-            subscriber.onNext(response.data());
+            subscriber.onSuccess(response.data());
           }
         } catch (IOException e) {
           Exceptions.throwIfFatal(e);
           if (!subscriber.isUnsubscribed()) {
             subscriber.onError(e);
           }
-          return;
-        }
-        if (!subscriber.isUnsubscribed()) {
-          subscriber.onCompleted();
         }
       }
     });
   }
 
   private static <T> void cancelOnUnsubscribe(Subscriber<? super T> subscriber, final Cancelable toCancel) {
+    subscriber.add(Subscriptions.create(new Action0() {
+      @Override public void call() {
+        toCancel.cancel();
+      }
+    }));
+  }
+
+  private static <T> void cancelOnSingleUnsubscribe(SingleSubscriber<? super T> subscriber, final Cancelable toCancel) {
     subscriber.add(Subscriptions.create(new Action0() {
       @Override public void call() {
         toCancel.cancel();
