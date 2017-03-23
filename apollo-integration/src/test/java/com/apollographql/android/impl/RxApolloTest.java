@@ -3,6 +3,7 @@ package com.apollographql.android.impl;
 
 import android.support.annotation.NonNull;
 
+import com.apollographql.android.ApolloCall;
 import com.apollographql.android.ApolloWatcher;
 import com.apollographql.android.cache.normalized.CacheControl;
 import com.apollographql.android.cache.normalized.CacheKey;
@@ -10,6 +11,7 @@ import com.apollographql.android.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDs;
 import com.apollographql.android.impl.normalizer.type.Episode;
+import com.apollographql.android.rx.RxApollo;
 
 import junit.framework.Assert;
 
@@ -27,6 +29,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import rx.Observer;
+import rx.Subscription;
+import rx.observers.TestSubscriber;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -55,8 +59,41 @@ public class RxApolloTest {
         .build();
   }
 
+
+  @Test public void testRxCallProducesValue() throws IOException {
+    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+
+    EpisodeHeroName.Data data = RxApollo
+        .from(apolloClient.newCall(query))
+        .test()
+        .awaitTerminalEvent()
+        .assertNoErrors()
+        .assertCompleted()
+        .getOnNextEvents()
+        .get(0);
+    assertThat(data.hero().name()).isEqualTo("R2-D2");
+  }
+
+  @Test public void textRxCallIsCancelledWhenUnsubscribed() throws IOException {
+    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+
+    ApolloCall<EpisodeHeroName.Data> call = apolloClient.newCall(query);
+    TestSubscriber<EpisodeHeroName.Data> subscriber = new TestSubscriber<>();
+    Subscription subscription = RxApollo
+        .from(call)
+        .delay(5, TimeUnit.SECONDS)
+        .subscribe(subscriber);
+    subscription.unsubscribe();
+    subscriber
+        .assertUnsubscribed();
+    subscriber.assertNoValues();
+
+  }
+
   @Test
-  public void testQueryWatcherUpdated_SameQuery_DifferentResults() throws IOException, InterruptedException {
+  public void testRxQueryWatcherUpdated_SameQuery_DifferentResults() throws IOException, InterruptedException {
     final CountDownLatch firstResponseLatch = new CountDownLatch(1);
     final CountDownLatch secondResponseLatch = new CountDownLatch(2);
 
@@ -94,7 +131,7 @@ public class RxApolloTest {
   }
 
   @Test
-  public void testQueryWatcherNotUpdated_SameQuery_SameResults() throws IOException, InterruptedException {
+  public void testRxQueryWatcherNotUpdated_SameQuery_SameResults() throws IOException, InterruptedException {
     final CountDownLatch firstResponseLatch = new CountDownLatch(1);
     final CountDownLatch secondResponseLatch = new CountDownLatch(2);
 
@@ -130,7 +167,7 @@ public class RxApolloTest {
   }
 
   @Test
-  public void testQueryWatcherUpdated_DifferentQuery_DifferentResults() throws IOException, InterruptedException {
+  public void testQueryRxWatcherUpdated_DifferentQuery_DifferentResults() throws IOException, InterruptedException {
     final CountDownLatch firstResponseLatch = new CountDownLatch(1);
     final CountDownLatch secondResponseLatch = new CountDownLatch(2);
 

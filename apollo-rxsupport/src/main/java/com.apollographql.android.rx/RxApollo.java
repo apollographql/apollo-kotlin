@@ -1,4 +1,4 @@
-package com.apollographql.android.impl;
+package com.apollographql.android.rx;
 
 
 import com.apollographql.android.ApolloCall;
@@ -18,7 +18,11 @@ import rx.exceptions.Exceptions;
 import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
-public class RxApollo {
+public final class RxApollo {
+
+  private RxApollo() {
+  }
+
   public static <T> Observable<T> from(final ApolloWatcher<T> watcher) {
     return Observable.create(new Observable.OnSubscribe<T>() {
       @Override public void call(final Subscriber<? super T> subscriber) {
