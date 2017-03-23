@@ -48,7 +48,7 @@ public final class CacheReference {
     return new CacheReference(matcher.group(1));
   }
 
-  public static boolean isSerializedReference(String value) {
+  public static boolean canDeserialize(String value) {
     Matcher matcher = SERIALIZATION_REGEX_PATTERN.matcher(value);
     return matcher.matches();
   }

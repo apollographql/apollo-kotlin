@@ -18,7 +18,7 @@ final class CacheJsonStreamReader extends ResponseJsonStreamReader {
     Object scalar = super.readScalar(streamReader);
     if (scalar instanceof String) {
       String scalarString = (String) scalar;
-      if (CacheReference.isSerializedReference((String) scalar)) {
+      if (CacheReference.canDeserialize(scalarString)) {
         return CacheReference.deserialize(scalarString);
       }
     }
