@@ -36,9 +36,8 @@ dependencies {
   compile dep.supportAnnotations
   compile dep.okHttp
   compile dep.moshi
-
+  compile dep.cache
   compile project(":apollo-api")
-
   testCompile dep.junit
   testCompile dep.truth
   testCompile dep.mockWebServer
