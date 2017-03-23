@@ -9,8 +9,6 @@ public final class Record {
 
   private final String key;
   private final Map<String, Object> fields;
-  private int sizeEstimateBytes = 0;
-  private boolean memoizedSize = false;
 
   public static class Builder {
     private final Map<String, Object> fields;
@@ -72,7 +70,6 @@ public final class Record {
       Object oldFieldValue = this.fields.get(field.getKey());
       if ((oldFieldValue == null && newFieldValue != null)
           || (oldFieldValue != null && !oldFieldValue.equals(newFieldValue))) {
-        memoizedSize = false;
         this.fields.put(field.getKey(), newFieldValue);
         changedKeys.add(key() + "." + field.getKey());
       }
@@ -84,16 +81,4 @@ public final class Record {
     return fields;
   }
 
-  public int sizeEstimateBytes() {
-    if (memoizedSize) {
-      return sizeEstimateBytes;
-    }
-    return calculateSizeEstimate(FieldsAdapter.create());
-  }
-
-  private int calculateSizeEstimate(FieldsAdapter adapter) {
-    String json = adapter.toJson(fields);
-    memoizedSize = true;
-    return json.getBytes().length;
-  }
 }
