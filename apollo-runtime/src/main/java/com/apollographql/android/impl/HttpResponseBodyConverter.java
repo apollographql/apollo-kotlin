@@ -14,7 +14,7 @@ import java.util.Map;
 
 import okhttp3.ResponseBody;
 
-import static com.apollographql.android.impl.ApolloReader.*;
+import static com.apollographql.android.impl.ApolloReader.responseJsonStreamReader;
 
 final class HttpResponseBodyConverter<D extends Operation.Data, W> {
   private final Operation<D, W, ?> operation;
