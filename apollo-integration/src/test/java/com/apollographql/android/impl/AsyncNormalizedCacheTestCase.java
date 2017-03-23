@@ -79,7 +79,7 @@ public class AsyncNormalizedCacheTestCase {
               latch.countDown();
             }
 
-            @Override public void onFailure(@Nonnull Exception e) {
+            @Override public void onFailure(@Nonnull Throwable e) {
               fail("unexpected error: " + e);
               latch.countDown();
             }

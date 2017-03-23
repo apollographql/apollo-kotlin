@@ -76,7 +76,7 @@ public class ApolloWatcherTest {
             secondResponseLatch.countDown();
           }
 
-          @Override public void onFailure(@Nonnull Exception e) {
+          @Override public void onFailure(@Nonnull Throwable e) {
             Assert.fail(e.getMessage());
             firstResponseLatch.countDown();
             secondResponseLatch.countDown();
@@ -110,7 +110,7 @@ public class ApolloWatcherTest {
             }
           }
 
-          @Override public void onFailure(@Nonnull Exception e) {
+          @Override public void onFailure(@Nonnull Throwable e) {
             Assert.fail(e.getMessage());
             firstResponseLatch.countDown();
             secondResponseLatch.countDown();
@@ -144,7 +144,7 @@ public class ApolloWatcherTest {
             secondResponseLatch.countDown();
           }
 
-          @Override public void onFailure(@Nonnull Exception e) {
+          @Override public void onFailure(@Nonnull Throwable e) {
             Assert.fail(e.getMessage());
             firstResponseLatch.countDown();
             secondResponseLatch.countDown();
@@ -179,7 +179,7 @@ public class ApolloWatcherTest {
             }
           }
 
-          @Override public void onFailure(@Nonnull Exception e) {
+          @Override public void onFailure(@Nonnull Throwable e) {
             Assert.fail(e.getMessage());
             firstResponseLatch.countDown();
             secondResponseLatch.countDown();
@@ -215,7 +215,7 @@ public class ApolloWatcherTest {
                 secondResponseLatch.countDown();
               }
 
-              @Override public void onFailure(@Nonnull Exception e) {
+              @Override public void onFailure(@Nonnull Throwable e) {
                 Assert.fail(e.getMessage());
                 firstResponseLatch.countDown();
                 secondResponseLatch.countDown();
@@ -242,7 +242,7 @@ public class ApolloWatcherTest {
         cacheWarmUpLatch.countDown();
       }
 
-      @Override public void onFailure(@Nonnull Exception e) {
+      @Override public void onFailure(@Nonnull Throwable e) {
         Assert.fail(e.getMessage());
         cacheWarmUpLatch.countDown();
       }
@@ -269,7 +269,7 @@ public class ApolloWatcherTest {
             secondResponseLatch.countDown();
           }
 
-          @Override public void onFailure(@Nonnull Exception e) {
+          @Override public void onFailure(@Nonnull Throwable e) {
             Assert.fail(e.getMessage());
             firstResponseLatch.countDown();
             secondResponseLatch.countDown();

@@ -29,7 +29,7 @@ public interface ApolloCall<T> {
   interface Callback<T> {
     void onResponse(@Nonnull Response<T> response);
 
-    void onFailure(@Nonnull Exception e);
+    void onFailure(@Nonnull Throwable t);
   }
 
   interface Factory {
