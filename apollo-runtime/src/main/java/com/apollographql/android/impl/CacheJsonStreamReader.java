@@ -1,16 +1,15 @@
-package com.apollographql.android.cache.normalized;
+package com.apollographql.android.impl;
 
-import com.apollographql.android.impl.JsonReader;
-import com.apollographql.android.impl.ResponseJsonStreamReader;
+import com.apollographql.android.cache.normalized.CacheReference;
 
 import java.io.IOException;
 
 /**
  * A {@link ResponseJsonStreamReader} with additional support for {@link CacheReference}.
  */
-final class CacheJsonStreamReader extends ResponseJsonStreamReader {
+public final class CacheJsonStreamReader extends ResponseJsonStreamReader {
 
-  CacheJsonStreamReader(JsonReader jsonReader) {
+  public CacheJsonStreamReader(JsonReader jsonReader) {
     super(jsonReader);
   }
 

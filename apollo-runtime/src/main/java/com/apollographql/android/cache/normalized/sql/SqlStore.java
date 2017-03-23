@@ -116,7 +116,7 @@ final class SqlStore extends CacheStore {
   Record cursorToRecord(Cursor cursor) throws IOException {
     String key = cursor.getString(1);
     String jsonOfFields = cursor.getString(2);
-    return new Record(key, parser.fromJson(jsonOfFields));
+    return new Record(key, parser.from(jsonOfFields));
   }
 
   public void close() {

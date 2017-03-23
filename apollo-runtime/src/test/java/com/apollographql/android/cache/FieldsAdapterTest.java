@@ -37,7 +37,7 @@ public class FieldsAdapterTest {
 
     FieldsAdapter recordAdapter = FieldsAdapter.create();
     String json = recordAdapter.toJson(record.fields());
-    Map<String, Object> map = recordAdapter.fromJson(json);
+    Map<String, Object> map = recordAdapter.from(json);
     assertThat(map.get("bigDecimal")).isEqualTo(expectedBigDecimal);
     assertThat(map.get("string")).isEqualTo(expectedStringValue);
     assertThat(map.get("boolean")).isEqualTo(expectedBooleanValue);

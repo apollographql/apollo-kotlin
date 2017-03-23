@@ -1,6 +1,6 @@
 package com.apollographql.android.cache.normalized;
 
-import com.apollographql.android.impl.BufferedSourceJsonReader;
+import com.apollographql.android.impl.CacheJsonStreamReader;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
@@ -15,6 +15,9 @@ import java.util.Map;
 
 import okio.BufferedSource;
 import okio.Okio;
+
+import static com.apollographql.android.impl.ApolloReader.bufferedSourceJsonReader;
+import static com.apollographql.android.impl.ApolloReader.cacheJsonStreamReader;
 
 public final class FieldsAdapter {
   private final JsonAdapter<Map<String, Object>> serializationAdapter;
@@ -36,15 +39,15 @@ public final class FieldsAdapter {
     return serializationAdapter.toJson(fields);
   }
 
-  public Map<String, Object> fromBufferedSource(BufferedSource bufferedSource) throws IOException {
-    CacheJsonStreamReader jsonStreamReader
-        = new CacheJsonStreamReader(new BufferedSourceJsonReader(bufferedSource));
-    return jsonStreamReader.buffer();
+  public Map<String, Object> from(BufferedSource bufferedFieldSource) throws IOException {
+    final CacheJsonStreamReader cacheJsonStreamReader =
+        cacheJsonStreamReader(bufferedSourceJsonReader(bufferedFieldSource));
+    return cacheJsonStreamReader.buffer();
   }
 
-  public Map<String, Object> fromJson(String fields) throws IOException {
-    final BufferedSource bufferSource = Okio.buffer(Okio.source(new ByteArrayInputStream(fields.getBytes())));
-    return fromBufferedSource(bufferSource);
+  public Map<String, Object> from(String jsonFieldSource) throws IOException {
+    final BufferedSource bufferSource = Okio.buffer(Okio.source(new ByteArrayInputStream(jsonFieldSource.getBytes())));
+    return from(bufferSource);
   }
 
   private static class CacheReferenceAdapter extends JsonAdapter<CacheReference> {
