@@ -10,7 +10,6 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-
 public interface ApolloCall<T> extends Cancelable {
 
   @Nonnull Response<T> execute() throws IOException;
