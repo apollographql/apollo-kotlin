@@ -43,7 +43,9 @@ dependencies {
   testCompile dep.mockWebServer
   testCompile dep.okhttpTestSupport
   testCompile dep.mockito
+  testCompile project(":apollo-api")
 
+  androidTestCompile project(":apollo-api")
   androidTestCompile dep.truth
   androidTestCompile (dep.testRunner) {
     exclude module: 'support-annotations'

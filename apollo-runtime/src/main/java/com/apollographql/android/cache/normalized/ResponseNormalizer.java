@@ -23,7 +23,7 @@ public class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
   private final CacheKeyResolver<R> cacheKeyResolver;
 
   private List<String> path;
-  private Record currentRecord;
+  private Record.Builder currentRecordBuilder;
   private RecordSet recordSet;
 
   public ResponseNormalizer(@Nonnull CacheKeyResolver<R> cacheKeyResolver) {
@@ -45,7 +45,7 @@ public class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     dependentKeys = new HashSet<>();
 
     path = new ArrayList<>();
-    currentRecord = new Record(CacheKeyResolver.rootKeyForOperation(operation).key());
+    currentRecordBuilder = Record.builder(CacheKeyResolver.rootKeyForOperation(operation).key());
     recordSet = new RecordSet();
   }
 
@@ -58,12 +58,12 @@ public class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     path.remove(path.size() - 1);
     Object value = valueStack.pop();
     String cacheKey = field.cacheKey(variables);
-    String dependentKey = currentRecord.key() + "." + cacheKey;
+    String dependentKey = currentRecordBuilder.key() + "." + cacheKey;
     dependentKeys.add(dependentKey);
-    currentRecord.addField(cacheKey, value);
+    currentRecordBuilder.addField(cacheKey, value);
 
     if (recordStack.isEmpty()) {
-      recordSet.merge(currentRecord);
+      recordSet.merge(currentRecordBuilder.build());
     }
   }
 
@@ -82,16 +82,17 @@ public class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
       path = new ArrayList<>();
       path.add(cacheKeyValue);
     }
-    recordStack.push(currentRecord);
-    currentRecord = new Record(cacheKeyValue);
+    recordStack.push(currentRecordBuilder.build());
+    currentRecordBuilder = Record.builder(cacheKeyValue);
   }
 
   @Override public void didParseObject(R objectSource) {
     path = pathStack.pop();
-    valueStack.push(new CacheReference(currentRecord.key()));
-    dependentKeys.add(currentRecord.key());
-    recordSet.merge(currentRecord);
-    currentRecord = recordStack.pop();
+    Record completedRecord = currentRecordBuilder.build();
+    valueStack.push(new CacheReference(completedRecord.key()));
+    dependentKeys.add(completedRecord.key());
+    recordSet.merge(completedRecord);
+    currentRecordBuilder = recordStack.pop().toBuilder();
   }
 
   @Override public void didParseList(List array) {

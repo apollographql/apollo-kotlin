@@ -7,14 +7,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-final class ResponseJsonStreamReader {
+public class ResponseJsonStreamReader {
   private final JsonReader jsonReader;
 
-  ResponseJsonStreamReader(JsonReader jsonReader) {
+  public ResponseJsonStreamReader(JsonReader jsonReader) {
     this.jsonReader = jsonReader;
   }
 
-  Map<String, Object> buffer() throws IOException {
+  public Map<String, Object> buffer() throws IOException {
     return toMap(this);
   }
 
@@ -136,7 +136,7 @@ final class ResponseJsonStreamReader {
     }
   }
 
-  private static Map<String, Object> toMap(ResponseJsonStreamReader streamReader) throws IOException {
+  private Map<String, Object> toMap(ResponseJsonStreamReader streamReader) throws IOException {
     if (streamReader.isNextObject()) {
       return readObject(streamReader);
     }
@@ -157,7 +157,7 @@ final class ResponseJsonStreamReader {
     return result;
   }
 
-  private static Map<String, Object> readObject(final ResponseJsonStreamReader streamReader) throws IOException {
+  private Map<String, Object> readObject(final ResponseJsonStreamReader streamReader) throws IOException {
     return streamReader.nextObject(false, new ObjectReader<Map<String, Object>>() {
       @Override public Map<String, Object> read(ResponseJsonStreamReader streamReader) throws IOException {
         return toMap(streamReader);
@@ -165,7 +165,7 @@ final class ResponseJsonStreamReader {
     });
   }
 
-  private static List<?> readScalarList(final ResponseJsonStreamReader streamReader) throws IOException {
+  private List<?> readScalarList(final ResponseJsonStreamReader streamReader) throws IOException {
     return streamReader.nextList(false, new ListReader<Object>() {
       @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
         if (streamReader.isNextObject()) {
@@ -177,7 +177,7 @@ final class ResponseJsonStreamReader {
     });
   }
 
-  private static Object readScalar(ResponseJsonStreamReader streamReader) throws IOException {
+  protected Object readScalar(ResponseJsonStreamReader streamReader) throws IOException {
     if (streamReader.isNextNull()) {
       streamReader.skipNext();
       return null;

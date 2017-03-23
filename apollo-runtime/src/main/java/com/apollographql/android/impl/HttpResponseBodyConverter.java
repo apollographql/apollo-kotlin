@@ -14,6 +14,8 @@ import java.util.Map;
 
 import okhttp3.ResponseBody;
 
+import static com.apollographql.android.impl.ApolloReader.responseJsonStreamReader;
+
 final class HttpResponseBodyConverter<D extends Operation.Data, W> {
   private final Operation<D, W, ?> operation;
   private final ResponseFieldMapper responseFieldMapper;
@@ -34,7 +36,7 @@ final class HttpResponseBodyConverter<D extends Operation.Data, W> {
       jsonReader = new BufferedSourceJsonReader(responseBody.source());
       jsonReader.beginObject();
 
-      ResponseJsonStreamReader responseStreamReader = new ResponseJsonStreamReader(jsonReader);
+      ResponseJsonStreamReader responseStreamReader = responseJsonStreamReader(jsonReader);
       D data = null;
       List<Error> errors = null;
       while (responseStreamReader.hasNext()) {

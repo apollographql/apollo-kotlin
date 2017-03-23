@@ -4,9 +4,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
+import com.apollographql.android.api.graphql.internal.Optional;
 import com.apollographql.android.cache.normalized.CacheStore;
+import com.apollographql.android.cache.normalized.FieldsAdapter;
 import com.apollographql.android.cache.normalized.Record;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -45,16 +48,17 @@ public final class SqlStore extends CacheStore {
   }
 
   @Nullable public Record loadRecord(String key) {
-    return selectRecordForKey(key);
+    return selectRecordForKey(key).get();
   }
 
   @Nonnull public Set<String> merge(Record apolloRecord) {
-    Record oldRecord = selectRecordForKey(apolloRecord.key());
+    Optional<Record> optionalOldRecord = selectRecordForKey(apolloRecord.key());
     Set<String> changedKeys;
-    if (oldRecord == null) {
+    if (!optionalOldRecord.isPresent()) {
       createRecord(apolloRecord.key(), parser.toJson(apolloRecord.fields()));
       changedKeys = Collections.emptySet();
     } else {
+      Record oldRecord = optionalOldRecord.get();
       changedKeys = oldRecord.mergeWith(apolloRecord);
       if (!changedKeys.isEmpty()) {
         updateRecord(oldRecord.key(), parser.toJson(oldRecord.fields()));
@@ -89,14 +93,18 @@ public final class SqlStore extends CacheStore {
     sqLiteStatement.executeUpdateDelete();
   }
 
-  Record selectRecordForKey(String key) {
+  Optional<Record> selectRecordForKey(String key) {
     Cursor cursor = database.query(TABLE_RECORDS,
         allColumns, ApolloSqlHelper.COLUMN_KEY + " = " + key, null,
         null, null, null);
     cursor.moveToFirst();
-    Record selectedRecord = cursorToRecord(cursor);
-    cursor.close();
-    return selectedRecord;
+    try {
+      return Optional.of(cursorToRecord(cursor));
+    } catch (IOException exception) {
+      return Optional.absent();
+    } finally {
+      cursor.close();
+    }
   }
 
   void deleteRecord(String key) {
@@ -105,11 +113,10 @@ public final class SqlStore extends CacheStore {
         + " = " + key, null);
   }
 
-  Record cursorToRecord(Cursor cursor) {
+  Record cursorToRecord(Cursor cursor) throws IOException {
     String key = cursor.getString(1);
     String jsonOfFields = cursor.getString(2);
-    return new Record(key,
-        parser.fromJson(jsonOfFields));
+    return new Record(key, parser.from(jsonOfFields));
   }
 
   public void close() {

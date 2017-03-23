@@ -26,7 +26,7 @@ import okio.BufferedSource;
 import okio.ByteString;
 
 /** TODO add Modifications copyright **/
-final class BufferedSourceJsonReader extends JsonReader {
+public final class BufferedSourceJsonReader extends JsonReader {
   private static final long MIN_INCOMPLETE_INTEGER = Long.MIN_VALUE / 10;
 
   private static final ByteString SINGLE_QUOTE_OR_SLASH = ByteString.encodeUtf8("'\\");
@@ -109,7 +109,7 @@ final class BufferedSourceJsonReader extends JsonReader {
   private final String[] pathNames = new String[32];
   private final int[] pathIndices = new int[32];
 
-  BufferedSourceJsonReader(BufferedSource source) {
+  public BufferedSourceJsonReader(BufferedSource source) {
     if (source == null) {
       throw new NullPointerException("source == null");
     }

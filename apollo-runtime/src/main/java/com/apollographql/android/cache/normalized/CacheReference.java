@@ -1,10 +1,13 @@
 package com.apollographql.android.cache.normalized;
 
-//Todo: provide serializable reference to differentiate between a reference and regular string
-// (Issue: https://github.com/apollographql/apollo-android/issues/265)
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public final class CacheReference {
 
   private final String key;
+  private static final Pattern SERIALIZATION_REGEX_PATTERN = Pattern.compile("ApolloCacheReference\\{(.*)\\}");
+  private static final String SERIALIZATION_TEMPLATE = "ApolloCacheReference{%s}";
 
   public CacheReference(String key) {
     this.key = key;
@@ -31,5 +34,24 @@ public final class CacheReference {
   @Override public String toString() {
     return key;
   }
+
+  public String serialize() {
+    return String.format(SERIALIZATION_TEMPLATE, key);
+  }
+
+  public static CacheReference deserialize(String serializedCacheReference) {
+    Matcher matcher = SERIALIZATION_REGEX_PATTERN.matcher(serializedCacheReference);
+    if (!matcher.find() || matcher.groupCount() != 1) {
+      throw new IllegalArgumentException("Not a cache reference: " + serializedCacheReference
+          + " Must be of the form:" + SERIALIZATION_TEMPLATE);
+    }
+    return new CacheReference(matcher.group(1));
+  }
+
+  public static boolean canDeserialize(String value) {
+    Matcher matcher = SERIALIZATION_REGEX_PATTERN.matcher(value);
+    return matcher.matches();
+  }
+
 }
 

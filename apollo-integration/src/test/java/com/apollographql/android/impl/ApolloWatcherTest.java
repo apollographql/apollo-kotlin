@@ -8,6 +8,7 @@ import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.cache.normalized.CacheControl;
 import com.apollographql.android.cache.normalized.CacheKey;
 import com.apollographql.android.cache.normalized.CacheKeyResolver;
+import com.apollographql.android.cache.normalized.CacheStore;
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDs;
 import com.apollographql.android.impl.normalizer.type.Episode;
@@ -33,7 +34,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class ApolloWatcherTest {
   private ApolloClient apolloClient;
   private MockWebServer server;
-  private InMemoryCacheStore cacheStore;
+  private CacheStore cacheStore;
 
   @Before public void setUp() {
     server = new MockWebServer();
