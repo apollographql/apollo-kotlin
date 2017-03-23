@@ -18,12 +18,17 @@ import rx.exceptions.Exceptions;
 import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
+import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
+
 public final class RxApollo {
 
   private RxApollo() {
   }
 
-  public static <T> Observable<T> from(final ApolloWatcher<T> watcher) {
+  @Nonnull
+  public static <T> Observable<T> from(@Nonnull
+  final ApolloWatcher<T> watcher) {
+    checkNotNull(watcher);
     return Observable.create(new Observable.OnSubscribe<T>() {
       @Override public void call(final Subscriber<? super T> subscriber) {
         cancelOnUnsubscribe(subscriber, watcher);
@@ -46,7 +51,9 @@ public final class RxApollo {
     });
   }
 
-  public static <T> Single<T> from(final ApolloCall<T> call) {
+  @Nonnull public static <T> Single<T> from(@Nonnull
+  final ApolloCall<T> call) {
+    checkNotNull(call);
     return Single.create(new Single.OnSubscribe<T>() {
       @Override public void call(SingleSubscriber<? super T> subscriber) {
         cancelOnSingleUnsubscribe(subscriber, call);

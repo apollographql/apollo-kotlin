@@ -18,7 +18,7 @@ import static com.apollographql.android.cache.normalized.sql.ApolloSqlHelper.COL
 import static com.apollographql.android.cache.normalized.sql.ApolloSqlHelper.COLUMN_RECORD;
 import static com.apollographql.android.cache.normalized.sql.ApolloSqlHelper.TABLE_RECORDS;
 
-final class SqlStore extends CacheStore {
+public final class SqlStore extends CacheStore {
   private static final String INSERT_STATEMENT =
       String.format("INSERT INTO %s (%s,%s) VALUES (?,?)",
       TABLE_RECORDS,
