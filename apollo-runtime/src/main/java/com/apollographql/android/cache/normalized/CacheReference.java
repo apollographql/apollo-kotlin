@@ -42,8 +42,8 @@ public final class CacheReference {
   public static CacheReference deserialize(String serializedCacheReference) {
     Matcher matcher = SERIALIZATION_REGEX_PATTERN.matcher(serializedCacheReference);
     if (!matcher.find() || matcher.groupCount() != 1) {
-      throw new IllegalArgumentException("Not a cache reference: " + serializedCacheReference +
-          " Must be of the form:" + SERIALIZATION_TEMPLATE);
+      throw new IllegalArgumentException("Not a cache reference: " + serializedCacheReference
+          + " Must be of the form:" + SERIALIZATION_TEMPLATE);
     }
     return new CacheReference(matcher.group(1));
   }
