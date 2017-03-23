@@ -28,6 +28,7 @@ android {
 dependencies {
   provided project(':apollo-api')
   compile project(':apollo-runtime')
+  compile project(':apollo-rxsupport')
   compile dep.appcompat
 
   testCompile dep.junit
