@@ -4,7 +4,8 @@ targetCompatibility = JavaVersion.VERSION_1_7
 sourceCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
-  compile apolloApiCompileDeps
+  compile dep.jsr305
+  compile dep.jsr250
 
   testCompile dep.junit
   testCompile dep.truth

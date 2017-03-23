@@ -47,14 +47,4 @@ ext.dep = [
     testRunner              : "com.android.support.test:runner:$versions.testRunner"
 ]
 
-ext.apolloRuntimeCompileDeps = [
-    dep.jsr305,
-    dep.supportAnnotations,
-    dep.okHttp,
-    dep.moshi
-]
 
-ext.apolloApiCompileDeps = [
-    dep.jsr305,
-    dep.jsr250
-]

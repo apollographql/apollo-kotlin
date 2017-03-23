@@ -1,5 +1,5 @@
 buildscript {
-  apply from: "../../../../gradle/dependencies.gradle"
+  apply from: "../../../../gradle/testFixturesDeps.gradle"
   repositories {
     jcenter()
   }
@@ -55,7 +55,7 @@ repositories {
 }
 
 dependencies {
-  compile dep.appcompat
+  compile supportDeps
   compile apolloApiCompileDeps
 }
 
