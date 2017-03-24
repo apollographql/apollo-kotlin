@@ -48,7 +48,7 @@ public class LruCacheStoreTest {
 
     List<Record> inputRecords = Arrays.asList(testRecord1, testRecord2, testRecord3);
     lruCacheStore.merge(inputRecords);
-    final Collection<Record> readRecords = lruCacheStore.loadRecords(Arrays.asList("1", "2", "3"));
+    final Collection<Record> readRecords = lruCacheStore.loadRecords(Arrays.asList("key1", "key2", "key3"));
     //noinspection ResultOfMethodCallIgnored
     assertThat(readRecords).containsExactlyElementsIn(inputRecords);
   }
@@ -57,19 +57,22 @@ public class LruCacheStoreTest {
   public void testEviction() {
     LruCacheStore lruCacheStore = LruCacheStore.createWithMaximumByteSize(2000);
 
-    Record.Builder testRecord1 = Record.builder("key1");
-    testRecord1.addField("a",  new String(new byte[1100]));
+    Record.Builder testRecord1Builder = Record.builder("key1");
+    testRecord1Builder.addField("a",  new String(new byte[1100]));
+    Record testRecord1 = testRecord1Builder.build();
 
-    Record.Builder testRecord2 = Record.builder("key2");
-    testRecord2.addField("a",  new String(new byte[1100]));
+    Record.Builder testRecord2Builder = Record.builder("key2");
+    testRecord2Builder.addField("a",  new String(new byte[1100]));
+    Record testRecord2 = testRecord2Builder.build();
 
-    Record.Builder testRecord3 = Record.builder("key3");
-    testRecord3.addField("a",  new String(new byte[10]));
+    Record.Builder testRecord3Builder = Record.builder("key3");
+    testRecord3Builder.addField("a",  new String(new byte[10]));
+    Record testRecord3 = testRecord3Builder.build();
 
     List<Record> records = Arrays.asList(
-        testRecord1.build(),
-        testRecord2.build(),
-        testRecord3.build()
+        testRecord1,
+        testRecord2,
+        testRecord3
     );
     lruCacheStore.merge(records);
 
@@ -77,6 +80,46 @@ public class LruCacheStoreTest {
     //to evict more than is strictly necessary. Regardless, any sane eviction
     //strategy should leave the third record in this test case, and evict the first record.
     assertThat(lruCacheStore.loadRecord("key1")).isNull();
+    assertThat(lruCacheStore.loadRecord("key3")).isNotNull();
+
+  }
+
+  @Test
+  public void testEviction_recordChange() {
+    LruCacheStore lruCacheStore = LruCacheStore.createWithMaximumByteSize(2000);
+
+    Record.Builder testRecord1Builder = Record.builder("key1");
+    testRecord1Builder.addField("a",  new String(new byte[10]));
+    Record testRecord1 = testRecord1Builder.build();
+
+    Record.Builder testRecord2Builder = Record.builder("key2");
+    testRecord2Builder.addField("a",  new String(new byte[10]));
+    Record testRecord2 = testRecord2Builder.build();
+
+    Record.Builder testRecord3Builder = Record.builder("key3");
+    testRecord3Builder.addField("a",  new String(new byte[10]));
+    Record testRecord3 = testRecord3Builder.build();
+
+    List<Record> records = Arrays.asList(
+        testRecord1,
+        testRecord2,
+        testRecord3
+    );
+    lruCacheStore.merge(records);
+
+    //All records should present
+    assertThat(lruCacheStore.loadRecord("key1")).isNotNull();
+    assertThat(lruCacheStore.loadRecord("key2")).isNotNull();
+    assertThat(lruCacheStore.loadRecord("key3")).isNotNull();
+
+    Record.Builder largeTestRecordBuilder = Record.builder("key1");
+    largeTestRecordBuilder.addField("a",  new String(new byte[2000]));
+    Record largeTestRecord = largeTestRecordBuilder.build();
+
+    lruCacheStore.merge(largeTestRecord);
+    //The large record (Record 1) should be evicted. the other small records should remain.
+    assertThat(lruCacheStore.loadRecord("key1")).isNull();
+    assertThat(lruCacheStore.loadRecord("key2")).isNotNull();
     assertThat(lruCacheStore.loadRecord("key3")).isNotNull();
 
   }
