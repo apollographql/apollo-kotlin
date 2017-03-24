@@ -7,7 +7,6 @@ import com.apollographql.android.cache.http.HttpCacheControl;
 import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 
