@@ -1,10 +1,10 @@
 def versions = [
     apolloVersion: '0.2.2-SNAPSHOT',
+    cacheVersion: '2.0.2',
     okHttpVersion: '3.6.0',
     kotlinVersion: '1.0.6',
     mockito: '1.9.5',
-    testRunner: '0.5',
-    cacheVersion: '2.0.2'
+    testRunner: '0.5'
 ]
 
 ext.isCi = "true" == System.getenv('CI')
