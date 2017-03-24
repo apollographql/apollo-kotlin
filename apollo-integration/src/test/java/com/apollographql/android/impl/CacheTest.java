@@ -415,7 +415,7 @@ public class CacheTest {
   }
 
   private void checkCachedResponse(String fileName) throws IOException {
-    String cacheKey = BaseApolloCall.cacheKey(lastHttRequest.body());
+    String cacheKey = ApolloServerInterceptor.cacheKey(lastHttRequest.body());
     okhttp3.Response response = apolloClient.cachedHttpResponse(cacheKey);
     assertThat(response).isNotNull();
     assertThat(response.body().source().readUtf8()).isEqualTo(Utils.readFileToString(getClass(),fileName));

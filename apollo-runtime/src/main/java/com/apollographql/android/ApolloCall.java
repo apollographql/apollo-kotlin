@@ -27,7 +27,7 @@ public interface ApolloCall<T> extends Cancelable {
   interface Callback<T> {
     void onResponse(@Nonnull Response<T> response);
 
-    void onFailure(@Nonnull Exception e);
+    void onFailure(@Nonnull Throwable t);
   }
 
   interface Factory {

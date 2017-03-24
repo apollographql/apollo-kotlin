@@ -18,6 +18,6 @@ public interface ApolloPrefetch {
   interface Callback {
     void onSuccess();
 
-    void onFailure(@Nonnull Exception e);
+    void onFailure(@Nonnull Throwable t);
   }
 }

@@ -76,8 +76,8 @@ public final class ApolloClient implements ApolloCall.Factory {
         responseFieldMapperPool.put(operation.getClass(), responseFieldMapper);
       }
     }
-    return new RealApolloCall<T>(operation, serverUrl, httpCallFactory, httpCache, moshi, responseFieldMapper,
-        customTypeAdapters, cache, dispatcher)
+    return new RealApolloCall<T>(operation, serverUrl, httpCallFactory, httpCache, defaultHttpCacheControl, moshi,
+        responseFieldMapper, customTypeAdapters, cache, defaultCacheControl, dispatcher)
         .httpCacheControl(defaultHttpCacheControl)
         .cacheControl(defaultCacheControl);
   }
@@ -85,7 +85,7 @@ public final class ApolloClient implements ApolloCall.Factory {
   @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
       @Nonnull Operation<D, T, V> operation) {
-    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, moshi);
+    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, moshi, dispatcher);
   }
 
   void clearCache() {

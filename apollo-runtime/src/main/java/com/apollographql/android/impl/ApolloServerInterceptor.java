@@ -7,32 +7,80 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+
+import javax.annotation.Nonnull;
 
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 import okio.Buffer;
 
-abstract class BaseApolloCall {
+@SuppressWarnings("WeakerAccess") final class ApolloServerInterceptor implements ApolloInterceptor {
   private static final String ACCEPT_TYPE = "application/json";
   private static final String CONTENT_TYPE = "application/json";
   private static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
 
-  final Operation operation;
   final HttpUrl serverUrl;
   final okhttp3.Call.Factory httpCallFactory;
+  final HttpCacheControl cacheControl;
+  final boolean prefetch;
   final Moshi moshi;
+  volatile Call httpCall;
 
-  BaseApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, Moshi moshi) {
-    this.operation = operation;
+  public ApolloServerInterceptor(HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCacheControl cacheControl,
+      boolean prefetch, Moshi moshi) {
     this.serverUrl = serverUrl;
-    this.moshi = moshi;
     this.httpCallFactory = httpCallFactory;
+    this.cacheControl = cacheControl;
+    this.prefetch = prefetch;
+    this.moshi = moshi;
   }
 
-  Call prepareHttpCall(HttpCacheControl cacheControl, boolean prefetch) throws IOException {
+  @Override @Nonnull public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain)
+      throws IOException {
+    httpCall = httpCall(operation);
+    return new InterceptorResponse(httpCall.execute());
+  }
+
+  @Override
+  public void interceptAsync(@Nonnull final Operation operation, @Nonnull final ApolloInterceptorChain chain,
+      @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+    dispatcher.execute(new Runnable() {
+      @Override public void run() {
+        try {
+          httpCall = httpCall(operation);
+        } catch (Exception e) {
+          callBack.onFailure(e);
+          return;
+        }
+
+        httpCall.enqueue(new Callback() {
+          @Override public void onFailure(Call call, IOException e) {
+            callBack.onFailure(e);
+          }
+
+          @Override public void onResponse(Call call, Response response) throws IOException {
+            callBack.onResponse(new ApolloInterceptor.InterceptorResponse(response));
+          }
+        });
+      }
+    });
+  }
+
+  @Override public void dispose() {
+    Call httpCall = this.httpCall;
+    if (httpCall != null) {
+      httpCall.cancel();
+    }
+    this.httpCall = null;
+  }
+
+  private Call httpCall(Operation operation) throws IOException {
     RequestBody requestBody = httpRequestBody(operation);
     String cacheKey = cacheKey(requestBody);
     Request request = new Request.Builder()

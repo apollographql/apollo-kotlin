@@ -76,8 +76,8 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
         }
       }
 
-      @Override public void onFailure(@Nonnull Exception e) {
-        sourceCallback.onFailure(e);
+      @Override public void onFailure(@Nonnull Throwable t) {
+        sourceCallback.onFailure(t);
         isActive = false;
       }
     };

@@ -16,19 +16,19 @@ import okhttp3.ResponseBody;
 
 import static com.apollographql.android.impl.ApolloReader.responseJsonStreamReader;
 
-final class HttpResponseBodyConverter<D extends Operation.Data, W> {
+final class HttpResponseBodyParser<D extends Operation.Data, W> {
   private final Operation<D, W, ?> operation;
   private final ResponseFieldMapper responseFieldMapper;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
 
-  HttpResponseBodyConverter(Operation<D, W, ?> operation, ResponseFieldMapper responseFieldMapper,
+  HttpResponseBodyParser(Operation<D, W, ?> operation, ResponseFieldMapper responseFieldMapper,
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
     this.operation = operation;
     this.responseFieldMapper = responseFieldMapper;
     this.customTypeAdapters = customTypeAdapters;
   }
 
-  Response<W> convert(ResponseBody responseBody,
+  Response<W> parse(ResponseBody responseBody,
       final ResponseNormalizer<Map<String, Object>> networkResponseNormalizer) throws IOException {
     networkResponseNormalizer.willResolveRootQuery(operation);
     BufferedSourceJsonReader jsonReader = null;

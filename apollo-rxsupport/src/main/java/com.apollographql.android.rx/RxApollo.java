@@ -39,7 +39,7 @@ public final class RxApollo {
             }
           }
 
-          @Override public void onFailure(@Nonnull Exception e) {
+          @Override public void onFailure(@Nonnull Throwable e) {
             Exceptions.throwIfFatal(e);
             if (!subscriber.isUnsubscribed()) {
               subscriber.onError(e);

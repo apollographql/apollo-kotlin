@@ -174,7 +174,7 @@ public class IntegrationTest {
         latch.countDown();
       }
 
-      @Override public void onFailure(@Nonnull Exception e) {
+      @Override public void onFailure(@Nonnull Throwable e) {
         latch.countDown();
         Assert.fail("expected success");
       }
