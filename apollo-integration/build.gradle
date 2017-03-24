@@ -4,6 +4,7 @@ buildscript {
     classpath dep.apolloPlugin
   }
 }
+skipApolloRuntimeDep()
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.apollographql.android'
@@ -39,4 +40,10 @@ dependencies {
 
 apollo {
   customTypeMapping['Date'] = "java.util.Date"
+}
+
+// This prevents the plugin from adding the snapshot version of
+// apollo-runtime dependencies to the dependencies set
+def skipApolloRuntimeDep() {
+  System.setProperty("apollographql.skipRuntimeDep", "true")
 }

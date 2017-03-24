@@ -27,7 +27,6 @@ android {
 
 dependencies {
   compile dep.appcompat
-  compile dep.apolloApi
   compile dep.okhttpLoggingInterceptor
   compile dep.apolloRuntime
 
