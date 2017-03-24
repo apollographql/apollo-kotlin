@@ -108,8 +108,8 @@ public class IntegrationTest {
     assertThat(data.allPlanets().planets().size()).isEqualTo(60);
 
     List<String> planets = FluentIterable.from(data.allPlanets().planets())
-        .transform(new Function<AllPlanets.Data.AllPlanet.Planet, String>() {
-          @Override public String apply(AllPlanets.Data.AllPlanet.Planet planet) {
+        .transform(new Function<AllPlanets.Data.AllPlanets1.Planet, String>() {
+          @Override public String apply(AllPlanets.Data.AllPlanets1.Planet planet) {
             return planet.fragments().planetFragment().name();
           }
         }).toList();
@@ -122,7 +122,7 @@ public class IntegrationTest {
         .split("\\s*,\\s*")
     ));
 
-    AllPlanets.Data.AllPlanet.Planet firstPlanet = data.allPlanets().planets().get(0);
+    AllPlanets.Data.AllPlanets1.Planet firstPlanet = data.allPlanets().planets().get(0);
     assertThat(firstPlanet.fragments().planetFragment().climates()).isEqualTo(Collections.singletonList("arid"));
     assertThat(firstPlanet.fragments().planetFragment().surfaceWater()).isWithin(1d);
     assertThat(firstPlanet.filmConnection().totalCount()).isEqualTo(5);
@@ -153,12 +153,9 @@ public class IntegrationTest {
     assertThat(data.allFilms().films()).hasSize(6);
 
     List<String> dates = FluentIterable.from(data.allFilms().films())
-        .transform(new Function<AllFilms.Data.AllFilm.Film, String>() {
-          @Override public String apply(AllFilms.Data.AllFilm.Film film) {
+        .transform(new Function<AllFilms.Data.AllFilms1.Film, String>() {
+          @Override public String apply(AllFilms.Data.AllFilms1.Film film) {
             Date releaseDate = film.releaseDate();
-            if (releaseDate == null) {
-              return null;
-            }
             return dateCustomTypeAdapter.encode(releaseDate);
           }
         }).copyInto(new ArrayList<String>());
