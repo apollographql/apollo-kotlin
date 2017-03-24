@@ -50,18 +50,18 @@ public final class LruCacheStore extends CacheStore {
     return (int) (1024L * 1024L * memoryClass / 7);
   }
 
-  private LruCacheStore(Optional<Long> maximumWeightInBytes, Optional<Long> maximumEntries) {
-    final CacheBuilder<Object, Object> lruCacheBuilder = CacheBuilder.<String, Record>newBuilder();
-    if (maximumWeightInBytes.isPresent()) {
-      lruCacheBuilder.maximumWeight(maximumWeightInBytes.get())
+  private LruCacheStore(Optional<Long> maxSizeBytes, Optional<Long> maxEntries) {
+    final CacheBuilder<Object, Object> lruCacheBuilder = CacheBuilder.newBuilder();
+    if (maxSizeBytes.isPresent()) {
+      lruCacheBuilder.maximumWeight(maxSizeBytes.get())
           .weigher(new Weigher<String, Record>() {
             @Override public int weigh(String key, Record value) {
               return key.getBytes().length + value.sizeEstimateBytes();
             }
           });
     }
-    if (maximumEntries.isPresent()) {
-      lruCacheBuilder.maximumSize(maximumEntries.get());
+    if (maxEntries.isPresent()) {
+      lruCacheBuilder.maximumSize(maxEntries.get());
     }
     lruCache = lruCacheBuilder.build();
   }

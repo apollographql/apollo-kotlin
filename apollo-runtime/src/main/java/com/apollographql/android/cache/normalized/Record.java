@@ -10,7 +10,7 @@ public final class Record {
   private final String key;
   private final Map<String, Object> fields;
   private static final int UNKNOWN_SIZE_ESTIMATE = -1;
-  private int sizeInBytes = UNKNOWN_SIZE_ESTIMATE;
+  private volatile int sizeInBytes = UNKNOWN_SIZE_ESTIMATE;
 
   public static class Builder {
     private final Map<String, Object> fields;

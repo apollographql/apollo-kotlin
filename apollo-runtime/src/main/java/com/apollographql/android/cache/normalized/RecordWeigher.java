@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-public final class RecordWeigher {
+final class RecordWeigher {
 
   private static final int SIZE_OF_BOOLEAN = 16;
   private static final int SIZE_OF_BIG_DECIMAL = 32;
@@ -12,11 +12,11 @@ public final class RecordWeigher {
   private static final int SIZE_OF_RECORD_OVERHEAD = 16;
   private static final int SIZE_OF_CACHE_REFERENCE_OVERHEAD = 16;
 
-  public static int byteChange(Object newValue, Object oldValue) {
+  static int byteChange(Object newValue, Object oldValue) {
     return weighField(newValue) - weighField(oldValue);
   }
 
-  public static int calculateBytes(Record record) {
+  static int calculateBytes(Record record) {
     int size = SIZE_OF_RECORD_OVERHEAD + record.key().getBytes().length;
     for (Map.Entry<String, Object> field : record.fields().entrySet()) {
       size += (field.getKey().getBytes().length + weighField(field.getValue()));
