@@ -27,7 +27,7 @@ class GraphQLCompiler {
     )
     ir.writeTypeUsed(context, args.outputDir)
     ir.writeFragments(context, args.outputDir)
-    ir.writeOperations(context, irPackageName, args.outputDir)
+    ir.writeOperations(context, args.outputDir)
   }
 
   private fun CodeGenerationIR.writeFragments(context: CodeGenerationContext, outputDir: File) {
@@ -49,7 +49,7 @@ class GraphQLCompiler {
     }
   }
 
-  private fun CodeGenerationIR.writeOperations(context: CodeGenerationContext, irPackageName: String, outputDir: File) {
+  private fun CodeGenerationIR.writeOperations(context: CodeGenerationContext, outputDir: File) {
     operations.map { OperationTypeSpecBuilder(it, fragments) }
         .forEach {
           val packageName = it.operation.filePath.formatPackageName()

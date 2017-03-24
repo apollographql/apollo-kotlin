@@ -32,8 +32,6 @@ android {
 }
 
 dependencies {
-  compile dep.jsr305
-  compile dep.supportAnnotations
   compile dep.okHttp
   compile dep.moshi
 
@@ -43,7 +41,6 @@ dependencies {
   testCompile dep.truth
   testCompile dep.mockWebServer
   testCompile dep.okhttpTestSupport
-  testCompile dep.mockito
 
   androidTestCompile dep.truth
   androidTestCompile (dep.testRunner) {

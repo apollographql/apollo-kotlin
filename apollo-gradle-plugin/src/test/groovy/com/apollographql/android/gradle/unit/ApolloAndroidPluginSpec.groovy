@@ -1,6 +1,5 @@
 package com.apollographql.android.gradle.unit
 
-import com.apollographql.android.VersionKt
 import com.apollographql.android.gradle.*
 import com.moowork.gradle.node.NodePlugin
 import org.gradle.testfixtures.ProjectBuilder
