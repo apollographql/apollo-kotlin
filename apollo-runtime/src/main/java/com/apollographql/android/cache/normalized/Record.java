@@ -92,7 +92,7 @@ public final class Record {
   }
 
   private void adjustSizeEstimate(Object newFieldValue, Object oldFieldValue) {
-    if (sizeInBytes != -1) {
+    if (sizeInBytes != UNKNOWN_SIZE_ESTIMATE) {
       sizeInBytes += RecordWeigher.byteChange(newFieldValue, oldFieldValue);
     }
   }
