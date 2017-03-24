@@ -13,6 +13,7 @@ import com.apollographql.android.cache.normalized.CacheControl;
 import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
@@ -35,7 +36,7 @@ import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
   final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   final Cache cache;
   final CacheControl cacheControl;
-  final CallInterceptorChain interceptorChain;
+  final ApolloInterceptorChain interceptorChain;
   final ExecutorService dispatcher;
   volatile boolean executed;
 
@@ -55,11 +56,12 @@ import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
     this.cacheControl = cacheControl;
     this.dispatcher = dispatcher;
 
-    interceptorChain = new RealCallInterceptorChain(operation)
-        .chain(new CacheCallInterceptor(cache, cacheControl, responseFieldMapper, customTypeAdapters, dispatcher))
-        .chain(new ParseCallInterceptor(httpCache, cache.networkResponseNormalizer(), responseFieldMapper,
-            customTypeAdapters))
-        .chain(new ServerCallInterceptor(serverUrl, httpCallFactory, httpCacheControl, false, moshi));
+    interceptorChain = new RealApolloInterceptorChain(operation, Arrays.asList(
+        new ApolloCacheInterceptor(cache, cacheControl, responseFieldMapper, customTypeAdapters, dispatcher),
+        new ApolloParseInterceptor(httpCache, cache.networkResponseNormalizer(), responseFieldMapper,
+            customTypeAdapters),
+        new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCacheControl, false, moshi)
+    ));
   }
 
   @SuppressWarnings("unchecked") @Nonnull @Override public Response<T> execute() throws IOException {
@@ -67,7 +69,7 @@ import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
-    return interceptorChain.proceed().parsedResponse;
+    return interceptorChain.proceed().parsedResponse.get();
   }
 
   @Override public void enqueue(@Nullable final Callback<T> callback) {
@@ -76,14 +78,15 @@ import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
       executed = true;
     }
 
-    interceptorChain.proceedAsync(dispatcher, new CallInterceptor.CallBack() {
-      @SuppressWarnings("unchecked") @Override public void onResponse(CallInterceptor.InterceptorResponse response) {
+    interceptorChain.proceedAsync(dispatcher, new ApolloInterceptor.CallBack() {
+      @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
         if (callback != null) {
-          callback.onResponse(response.parsedResponse);
+          //noinspection unchecked
+          callback.onResponse(response.parsedResponse.get());
         }
       }
 
-      @Override public void onFailure(Throwable t) {
+      @Override public void onFailure(@Nonnull Throwable t) {
         if (callback != null) {
           callback.onFailure(t);
         }

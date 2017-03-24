@@ -9,6 +9,8 @@ import com.squareup.moshi.Moshi;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 
+import javax.annotation.Nonnull;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
@@ -18,7 +20,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okio.Buffer;
 
-@SuppressWarnings("WeakerAccess") final class ServerCallInterceptor implements CallInterceptor {
+@SuppressWarnings("WeakerAccess") final class ApolloServerInterceptor implements ApolloInterceptor {
   private static final String ACCEPT_TYPE = "application/json";
   private static final String CONTENT_TYPE = "application/json";
   private static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
@@ -30,7 +32,7 @@ import okio.Buffer;
   final Moshi moshi;
   volatile Call httpCall;
 
-  public ServerCallInterceptor(HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCacheControl cacheControl,
+  public ApolloServerInterceptor(HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCacheControl cacheControl,
       boolean prefetch, Moshi moshi) {
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
@@ -39,14 +41,15 @@ import okio.Buffer;
     this.moshi = moshi;
   }
 
-  @Override public InterceptorResponse intercept(Operation operation, CallInterceptorChain chain) throws IOException {
+  @Override @Nonnull public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain)
+      throws IOException {
     httpCall = httpCall(operation);
     return new InterceptorResponse(httpCall.execute());
   }
 
   @Override
-  public void interceptAsync(final Operation operation, final CallInterceptorChain chain, ExecutorService dispatcher,
-      final CallBack callBack) {
+  public void interceptAsync(@Nonnull final Operation operation, @Nonnull final ApolloInterceptorChain chain,
+      @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
     dispatcher.execute(new Runnable() {
       @Override public void run() {
         try {
@@ -62,7 +65,7 @@ import okio.Buffer;
           }
 
           @Override public void onResponse(Call call, Response response) throws IOException {
-            callBack.onResponse(new CallInterceptor.InterceptorResponse(response));
+            callBack.onResponse(new ApolloInterceptor.InterceptorResponse(response));
           }
         });
       }

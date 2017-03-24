@@ -7,6 +7,8 @@ import com.apollographql.android.cache.http.HttpCacheControl;
 import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
@@ -22,7 +24,7 @@ import okhttp3.HttpUrl;
   final HttpCache httpCache;
   final Moshi moshi;
   final ExecutorService dispatcher;
-  final CallInterceptorChain interceptorChain;
+  final ApolloInterceptorChain interceptorChain;
   volatile boolean executed;
 
   RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
@@ -33,8 +35,9 @@ import okhttp3.HttpUrl;
     this.httpCache = httpCache;
     this.moshi = moshi;
     this.dispatcher = dispatcher;
-    interceptorChain = new RealCallInterceptorChain(operation)
-        .chain(new ServerCallInterceptor(serverUrl, httpCallFactory, HttpCacheControl.NETWORK_FIRST, true, moshi));
+    interceptorChain = new RealApolloInterceptorChain(operation, Collections.<ApolloInterceptor>singletonList(
+        new ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCacheControl.NETWORK_FIRST, true, moshi)
+    ));
   }
 
   @Override public void execute() throws IOException {
@@ -42,7 +45,7 @@ import okhttp3.HttpUrl;
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
-    interceptorChain.proceed().httpResponse.close();
+    interceptorChain.proceed().httpResponse.get().close();
   }
 
   @Nonnull @Override public ApolloPrefetch enqueue(@Nullable final Callback callback) {
@@ -51,20 +54,19 @@ import okhttp3.HttpUrl;
       executed = true;
     }
 
-    interceptorChain.proceedAsync(dispatcher, new CallInterceptor.CallBack() {
-      @SuppressWarnings("unchecked") @Override public void onResponse(CallInterceptor.InterceptorResponse response) {
+    interceptorChain.proceedAsync(dispatcher, new ApolloInterceptor.CallBack() {
+      @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
         try {
-          response.httpResponse.close();
+          response.httpResponse.get().close();
           if (callback != null) {
             callback.onSuccess();
           }
         } catch (Exception e) {
           onFailure(e);
         }
-
       }
 
-      @Override public void onFailure(Throwable t) {
+      @Override public void onFailure(@Nonnull Throwable t) {
         if (callback != null) {
           callback.onFailure(t);
         }

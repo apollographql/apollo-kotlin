@@ -14,13 +14,15 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
-final class ParseCallInterceptor implements CallInterceptor {
+import javax.annotation.Nonnull;
+
+final class ApolloParseInterceptor implements ApolloInterceptor {
   private final HttpCache httpCache;
   private final ResponseNormalizer<Map<String, Object>> normalizer;
   private final ResponseFieldMapper responseFieldMapper;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
 
-  ParseCallInterceptor(HttpCache httpCache, ResponseNormalizer<Map<String, Object>> normalizer,
+  ApolloParseInterceptor(HttpCache httpCache, ResponseNormalizer<Map<String, Object>> normalizer,
       ResponseFieldMapper responseFieldMapper, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
     this.httpCache = httpCache;
     this.normalizer = normalizer;
@@ -28,24 +30,25 @@ final class ParseCallInterceptor implements CallInterceptor {
     this.customTypeAdapters = customTypeAdapters;
   }
 
-  @Override public InterceptorResponse intercept(Operation operation, CallInterceptorChain chain) throws IOException {
+  @Override @Nonnull public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain)
+      throws IOException {
     InterceptorResponse response = chain.proceed();
-    return parse(operation, response.httpResponse);
+    return parse(operation, response.httpResponse.get());
   }
 
   @Override
-  public void interceptAsync(final Operation operation, CallInterceptorChain chain, ExecutorService dispatcher,
-      final CallBack callBack) {
+  public void interceptAsync(@Nonnull final Operation operation, @Nonnull ApolloInterceptorChain chain,
+      @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
     chain.proceedAsync(dispatcher, new CallBack() {
-      @Override public void onResponse(InterceptorResponse response) {
+      @Override public void onResponse(@Nonnull InterceptorResponse response) {
         try {
-          callBack.onResponse(parse(operation, response.httpResponse));
+          callBack.onResponse(parse(operation, response.httpResponse.get()));
         } catch (Exception e) {
           callBack.onFailure(e);
         }
       }
 
-      @Override public void onFailure(Throwable t) {
+      @Override public void onFailure(@Nonnull Throwable t) {
         callBack.onFailure(t);
       }
     });

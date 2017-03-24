@@ -15,20 +15,22 @@ import com.apollographql.android.cache.normalized.Transaction;
 import com.apollographql.android.cache.normalized.WriteableCache;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-final class CacheCallInterceptor implements CallInterceptor {
+final class ApolloCacheInterceptor implements ApolloInterceptor {
   private final Cache cache;
   private final CacheControl cacheControl;
   private final ResponseFieldMapper responseFieldMapper;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final ExecutorService dispatcher;
 
-  CacheCallInterceptor(Cache cache, CacheControl cacheControl, ResponseFieldMapper responseFieldMapper,
+  ApolloCacheInterceptor(Cache cache, CacheControl cacheControl, ResponseFieldMapper responseFieldMapper,
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ExecutorService dispatcher) {
     this.cache = cache;
     this.cacheControl = cacheControl;
@@ -37,7 +39,8 @@ final class CacheCallInterceptor implements CallInterceptor {
     this.dispatcher = dispatcher;
   }
 
-  @Override public InterceptorResponse intercept(Operation operation, CallInterceptorChain chain) throws IOException {
+  @Nonnull @Override public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain)
+      throws IOException {
     InterceptorResponse cachedResponse = resolveCacheFirstResponse(operation);
     if (cachedResponse != null) {
       return cachedResponse;
@@ -57,8 +60,8 @@ final class CacheCallInterceptor implements CallInterceptor {
   }
 
   @Override
-  public void interceptAsync(final Operation operation, final CallInterceptorChain chain,
-      final ExecutorService dispatcher, final CallBack callBack) {
+  public void interceptAsync(@Nonnull final Operation operation, @Nonnull final ApolloInterceptorChain chain,
+      @Nonnull final ExecutorService dispatcher, @Nonnull final CallBack callBack) {
     dispatcher.execute(new Runnable() {
       @Override public void run() {
         InterceptorResponse cachedResponse = resolveCacheFirstResponse(operation);
@@ -68,7 +71,7 @@ final class CacheCallInterceptor implements CallInterceptor {
         }
 
         chain.proceedAsync(dispatcher, new CallBack() {
-          @Override public void onResponse(InterceptorResponse response) {
+          @Override public void onResponse(@Nonnull InterceptorResponse response) {
             try {
               callBack.onResponse(handleNetworkResponse(operation, response));
             } catch (Exception e) {
@@ -76,7 +79,7 @@ final class CacheCallInterceptor implements CallInterceptor {
             }
           }
 
-          @Override public void onFailure(Throwable t) {
+          @Override public void onFailure(@Nonnull Throwable t) {
             InterceptorResponse response = resolveNetworkFirstCacheResponse(operation, null);
             if (response != null) {
               callBack.onResponse(response);
@@ -129,28 +132,30 @@ final class CacheCallInterceptor implements CallInterceptor {
 
   private InterceptorResponse handleNetworkResponse(Operation operation, InterceptorResponse networkResponse) {
     try {
-      if (!networkResponse.httpResponse.isSuccessful()) {
+      if (!networkResponse.httpResponse.get().isSuccessful()) {
         ResponseNormalizer<Record> responseNormalizer = cache.cacheResponseNormalizer();
         Response cachedResponse = cachedResponse(operation, responseNormalizer);
         if (cachedResponse != null && cachedResponse.data() != null && cachedResponse.isSuccessful()) {
-          return new InterceptorResponse(networkResponse.httpResponse, cachedResponse,
+          return new InterceptorResponse(networkResponse.httpResponse.get(), cachedResponse,
               responseNormalizer.records());
         }
       }
 
-      final InterceptorResponse response = networkResponse;
-      dispatcher.execute(new Runnable() {
-        @Override public void run() {
-          Set<String> changedKeys = cache.writeTransaction(new Transaction<WriteableCache, Set<String>>() {
-            @Nullable @Override public Set<String> execute(WriteableCache cache) {
-              return cache.merge(response.cacheRecords);
-            }
-          });
-          cache.publish(changedKeys);
-        }
-      });
+      final Collection<Record> records = networkResponse.cacheRecords.orNull();
+      if (records != null) {
+        dispatcher.execute(new Runnable() {
+          @Override public void run() {
+            Set<String> changedKeys = cache.writeTransaction(new Transaction<WriteableCache, Set<String>>() {
+              @Nullable @Override public Set<String> execute(WriteableCache cache) {
+                return cache.merge(records);
+              }
+            });
+            cache.publish(changedKeys);
+          }
+        });
+      }
 
-      return response;
+      return networkResponse;
     } catch (Exception e) {
       InterceptorResponse response = resolveNetworkFirstCacheResponse(operation, networkResponse);
       if (response != null) {
@@ -166,8 +171,7 @@ final class CacheCallInterceptor implements CallInterceptor {
       ResponseNormalizer<Record> responseNormalizer = cache.cacheResponseNormalizer();
       Response cachedResponse = cachedResponse(operation, responseNormalizer);
       if (cachedResponse != null && cachedResponse.data() != null && cachedResponse.isSuccessful()) {
-        okhttp3.Response httpResponse = networkResponse != null ? networkResponse.httpResponse
-            : null;
+        okhttp3.Response httpResponse = networkResponse != null ? networkResponse.httpResponse.orNull() : null;
         return new InterceptorResponse(httpResponse, cachedResponse, responseNormalizer.records());
       }
     }
