@@ -1,5 +1,5 @@
 buildscript {
-  apply from: "../../../../gradle/dependencies.gradle"
+  apply from: "../../../../gradle/testFixturesDeps.gradle"
   repositories {
     jcenter()
   }
@@ -19,7 +19,7 @@ android {
   buildToolsVersion androidConfig.buildToolsVersion
 
   defaultConfig {
-    applicationId "com.example.apollographql.testProject.basic"
+    applicationId "com.example.apollographql.testProject.flavored"
     minSdkVersion androidConfig.minSdkVersion
     targetSdkVersion androidConfig.targetSdkVersion
   }
@@ -55,9 +55,8 @@ repositories {
 }
 
 dependencies {
-  compile dep.appcompat
-  compile dep.jsr305
-  compile dep.jsr250
+  compile supportDeps
+  compile apolloApiCompileDeps
 }
 
 apollo {

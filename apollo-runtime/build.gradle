@@ -36,16 +36,15 @@ dependencies {
   compile dep.supportAnnotations
   compile dep.okHttp
   compile dep.moshi
-  provided project(":apollo-api")
+
+  compile project(":apollo-api")
 
   testCompile dep.junit
   testCompile dep.truth
   testCompile dep.mockWebServer
   testCompile dep.okhttpTestSupport
   testCompile dep.mockito
-  testCompile project(":apollo-api")
 
-  androidTestCompile project(":apollo-api")
   androidTestCompile dep.truth
   androidTestCompile (dep.testRunner) {
     exclude module: 'support-annotations'
