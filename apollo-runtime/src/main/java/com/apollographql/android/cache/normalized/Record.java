@@ -5,12 +5,45 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-//Todo: Enhance this class to better support generalized serialization
-// https://github.com/apollographql/apollo-android/issues/265
 public final class Record {
 
   private final String key;
   private final Map<String, Object> fields;
+
+  public static class Builder {
+    private final Map<String, Object> fields;
+    private final String key;
+
+    public Builder(String key) {
+      this(key, new LinkedHashMap<String, Object>());
+    }
+
+    public Builder(String key, Map<String, Object> fields) {
+      this.key = key;
+      this.fields = fields;
+    }
+
+    public Builder addField(String key, Object value) {
+      fields.put(key, value);
+      return this;
+    }
+
+    public String key() {
+      return key;
+    }
+
+    public Record build() {
+      return new Record(key, fields);
+    }
+  }
+
+  public static Builder builder(String key) {
+    return new Builder(key);
+  }
+
+  public Builder toBuilder() {
+    return new Builder(key(), this.fields);
+  }
 
   public Record(String cacheKey) {
     this.key = cacheKey;
@@ -20,10 +53,6 @@ public final class Record {
   public Record(String key, Map<String, Object> fields) {
     this.key = key;
     this.fields = fields;
-  }
-
-  public void addField(String key, Object value) {
-    fields.put(key, value);
   }
 
   public Object field(String fieldKey) {
@@ -51,4 +80,5 @@ public final class Record {
   public Map<String, Object> fields() {
     return fields;
   }
+
 }

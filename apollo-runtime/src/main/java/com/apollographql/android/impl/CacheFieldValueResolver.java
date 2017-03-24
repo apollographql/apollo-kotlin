@@ -13,7 +13,7 @@ final class CacheFieldValueResolver implements FieldValueResolver<Record> {
   private final ReadableCache readableCache;
   private final Operation.Variables variables;
 
-  CacheFieldValueResolver(ReadableCache readableCache, Operation.Variables variables) {
+  public CacheFieldValueResolver(ReadableCache readableCache, Operation.Variables variables) {
     this.readableCache = readableCache;
     this.variables = variables;
   }

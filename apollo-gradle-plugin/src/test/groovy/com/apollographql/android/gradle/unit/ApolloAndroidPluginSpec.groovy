@@ -109,7 +109,7 @@ class ApolloAndroidPluginSpec extends Specification {
     assert (project.extensions.findByType(ApolloExtension.class)) != null
   }
 
-  def "adds apollo-api dependency"() {
+  def "adds apollo-runtime dependency"() {
     given:
     def project = ProjectBuilder.builder().build()
     ApolloPluginTestHelper.setupDefaultAndroidProject(project)
@@ -120,7 +120,7 @@ class ApolloAndroidPluginSpec extends Specification {
 
     then:
     def apolloApi = project.configurations.getByName("compile").dependencies.find {
-      it.group == "com.apollographql.android" && it.name == "api"
+      it.group == "com.apollographql.android" && it.name == "runtime"
     }
     assert apolloApi != null
   }

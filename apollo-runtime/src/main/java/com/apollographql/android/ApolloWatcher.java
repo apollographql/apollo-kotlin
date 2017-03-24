@@ -5,7 +5,7 @@ import com.apollographql.android.cache.normalized.CacheControl;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface ApolloWatcher<T> {
+public interface ApolloWatcher<T> extends Cancelable {
 
   void enqueueAndWatch(@Nullable final ApolloCall.Callback<T> callback);
 
@@ -14,7 +14,5 @@ public interface ApolloWatcher<T> {
    *                     cache.
    */
   @Nonnull ApolloWatcher<T> refetchCacheControl(@Nonnull CacheControl cacheControl);
-
-  void cancel();
 
 }

@@ -10,7 +10,7 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface ApolloCall<T> {
+public interface ApolloCall<T> extends Cancelable {
 
   @Nonnull Response<T> execute() throws IOException;
 
@@ -23,8 +23,6 @@ public interface ApolloCall<T> {
   @Nonnull ApolloCall<T> cacheControl(@Nonnull CacheControl cacheControl);
 
   @Nonnull ApolloCall<T> clone();
-
-  void cancel();
 
   interface Callback<T> {
     void onResponse(@Nonnull Response<T> response);

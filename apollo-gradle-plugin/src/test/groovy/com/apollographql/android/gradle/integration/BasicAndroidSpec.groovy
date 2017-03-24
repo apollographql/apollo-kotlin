@@ -23,7 +23,7 @@ class BasicAndroidSpec extends Specification {
     def result = GradleRunner.create()
         .withProjectDir(testProjectDir)
         .withPluginClasspath()
-        .withArguments("build", "-Dapollographql.skipApi=true")
+        .withArguments("build", "-Dapollographql.skipRuntimeDep=true")
         .forwardStdError(new OutputStreamWriter(System.err))
         .build()
 
