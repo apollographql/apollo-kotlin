@@ -5,6 +5,7 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
+clearSkipApolloRuntimeDep()
 
 android {
   compileSdkVersion androidConfig.compileSdkVersion
