@@ -44,12 +44,16 @@ subprojects {
       }
     }
   }
-  // This prevents the plugin from adding the snapshot version of
-  // apollo-runtime dependencies to the dependencies set
-  // Once set, this property should to be cleared for other modules
-  if (project.name.equals('apollo-integration')) {
-    System.setProperty("apollographql.skipRuntimeDep", "true")
-  } else {
+}
+
+// This prevents the plugin from adding the snapshot version of
+// apollo-runtime dependencies to the dependencies set
+def skipApolloRuntimeDep() {
+  System.setProperty("apollographql.skipRuntimeDep", "true")
+}
+// Clears the skipRuntimeDep property for other modules
+def clearSkipApolloRuntimeDep() {
+  if (System.getProperty("apollographql.skipRuntimeDep") != null) {
     System.clearProperty("apollographql.skipRuntimeDep")
   }
 }

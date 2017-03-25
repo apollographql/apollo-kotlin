@@ -4,6 +4,7 @@ buildscript {
     classpath dep.apolloPlugin
   }
 }
+clearSkipApolloRuntimeDep()
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.apollographql.android'

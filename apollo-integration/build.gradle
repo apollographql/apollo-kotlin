@@ -4,6 +4,7 @@ buildscript {
     classpath dep.apolloPlugin
   }
 }
+skipApolloRuntimeDep()
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.apollographql.android'
@@ -24,7 +25,6 @@ android {
     ignore 'InvalidPackage', 'GoogleAppIndexingWarning', 'AllowBackup'
   }
 }
-
 dependencies {
   compile project(':apollo-api')
   compile project(':apollo-runtime')
