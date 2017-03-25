@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
       }
 
-      @Override public void onFailure(@Nonnull Exception e) {
-        Log.e(TAG, e.getMessage(), e);
+      @Override public void onFailure(@Nonnull Throwable t) {
+        Log.e(TAG, t.getMessage(), t);
       }
     });
   }
