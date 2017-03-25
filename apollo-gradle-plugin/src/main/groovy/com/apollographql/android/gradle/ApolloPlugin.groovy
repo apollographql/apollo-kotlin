@@ -105,7 +105,7 @@ class ApolloPlugin implements Plugin<Project> {
                                boolean hasGuava) {
     ApolloIRGenTask variantIRTask = createApolloIRGenTask(variant.name, sourceSets)
     ApolloClassGenTask variantClassTask = createApolloClassGenTask(variant.name, project.apollo.customTypeMapping,
-        project.apollo.generateOptional, hasGuava)
+        project.apollo.generateOptional, hasGuava, project.apollo.generateAccessors)
     variant.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir)
     apolloIRGenTask.dependsOn(variantIRTask)
     apolloClassGenTask.dependsOn(variantClassTask)
@@ -116,7 +116,7 @@ class ApolloPlugin implements Plugin<Project> {
 
     ApolloIRGenTask sourceSetIRTask = createApolloIRGenTask(sourceSet.name, [sourceSet])
     ApolloClassGenTask sourceSetClassTask = createApolloClassGenTask(sourceSet.name, project.apollo.customTypeMapping,
-        project.apollo.generateOptional, hasGuava)
+        project.apollo.generateOptional, hasGuava, project.apollo.generateAccessors)
     apolloIRGenTask.dependsOn(sourceSetIRTask)
     apolloClassGenTask.dependsOn(sourceSetClassTask)
 
@@ -151,7 +151,8 @@ class ApolloPlugin implements Plugin<Project> {
   }
 
   private ApolloClassGenTask createApolloClassGenTask(String name, Map<String, String> customTypeMapping,
-                                                      boolean generateOptional, boolean hasGuava) {
+                                                      boolean generateOptional, boolean hasGuava,
+                                                      boolean generateAccessors) {
     String taskName = String.format(ApolloClassGenTask.NAME, name.capitalize())
     ApolloClassGenTask task = project.tasks.create(taskName, ApolloClassGenTask) {
       group = TASK_GROUP
@@ -160,7 +161,7 @@ class ApolloPlugin implements Plugin<Project> {
       source = project.tasks.findByName(String.format(ApolloIRGenTask.NAME, name.capitalize())).outputDir
       include "**${File.separatorChar}*API.json"
     }
-    task.init(name, customTypeMapping, generateOptional, hasGuava)
+    task.init(name, customTypeMapping, generateOptional, hasGuava, generateAccessors)
     return task
   }
 

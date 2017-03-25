@@ -14,21 +14,14 @@ import java.util.*
 import javax.tools.JavaFileObject
 
 @RunWith(Parameterized::class)
-class CodeGenTest(val testDir: File, val pkgName: String, val customScalarTypeMap: Map<String, String>,
-    val useOptional: Boolean, val useGuava: Boolean) {
-  private val testDirPath = testDir.toPath()
+class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
   private val expectedFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.java")
-
-  private val compiler = GraphQLCompiler()
-  private val outputDir = GraphQLCompiler.Companion.OUTPUT_DIRECTORY.fold(File("build"), ::File)
   private val sourceFileObjects: MutableList<JavaFileObject> = ArrayList()
 
   @Test
   fun generateExpectedClasses() {
-    val irFile = File(testDir, "TestQuery.json")
-    compiler.write(GraphQLCompiler.Arguments(irFile, outputDir, customScalarTypeMap, useOptional, useGuava))
-
-    Files.walkFileTree(testDirPath, object : SimpleFileVisitor<Path>() {
+    GraphQLCompiler().write(args)
+    Files.walkFileTree(args.irFile.parentFile.toPath(), object : SimpleFileVisitor<Path>() {
       override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
         if (expectedFileMatcher.matches(expectedFile)) {
           val expected = expectedFile.toFile()
@@ -57,7 +50,7 @@ class CodeGenTest(val testDir: File, val pkgName: String, val customScalarTypeMa
   private fun findActual(className: String): File {
     val possiblePaths = arrayOf("$className.java", "type/$className.java", "fragment/$className.java")
     possiblePaths
-        .map { outputDir.toPath().resolve("com/example/$pkgName/$it").toFile() }
+        .map { args.outputDir.toPath().resolve("com/example/$pkgName/$it").toFile() }
         .filter { it.isFile }
         .forEach { return it }
     throw AssertionError("Couldn't find actual file: $className")
@@ -65,20 +58,27 @@ class CodeGenTest(val testDir: File, val pkgName: String, val customScalarTypeMa
 
   companion object {
     @JvmStatic
-    @Parameterized.Parameters(name = "{1}")
+    @Parameterized.Parameters(name = "{0}")
     fun data(): Collection<Array<Any>> {
       return File("src/test/graphql/com/example/").listFiles()
           .filter { it.isDirectory }
           .map {
-            if (it.name == "custom_scalar_type") {
-              arrayOf(it, it.name, mapOf("Date" to "java.util.Date"), true, false)
-            } else if (it.name == "hero_details_guava") {
-              arrayOf(it, it.name, emptyMap<String, String>(), true, true)
-            } else if (it.name == "hero_details_nullable") {
-              arrayOf(it, it.name, emptyMap<String, String>(), false, false)
+            val customTypeMap = if (it.name == "custom_scalar_type") {
+              mapOf("Date" to "java.util.Date")
             } else {
-              arrayOf(it, it.name, emptyMap<String, String>(), true, false)
+              emptyMap()
             }
+            val useOptional = (it.name != "hero_details_nullable" || it.name == "no_accessors")
+            val useGuava = (it.name == "hero_details_guava")
+            val generateAccessors = (it.name != "no_accessors")
+            val args = GraphQLCompiler.Arguments(
+                irFile = File(it, "TestQuery.json"),
+                outputDir = GraphQLCompiler.Companion.OUTPUT_DIRECTORY.fold(File("build"), ::File),
+                customTypeMap = customTypeMap,
+                useOptional = useOptional,
+                useGuava = useGuava,
+                generateAccessors = generateAccessors)
+            arrayOf(it.name, args)
           }
     }
   }

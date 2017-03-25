@@ -14,7 +14,8 @@ class JavaTypeResolverTest {
       fragmentsPackage = "",
       typesPackage = "",
       customTypeMap = emptyMap(),
-      nullableValueGenerationType = NullableValueGenerationType.APOLLO_OPTIONAL)
+      nullableValueGenerationType = NullableValueGenerationType.APOLLO_OPTIONAL,
+      generateAccessors = true)
   private val defaultResolver = JavaTypeResolver(defaultContext, packageName)
 
   @Test

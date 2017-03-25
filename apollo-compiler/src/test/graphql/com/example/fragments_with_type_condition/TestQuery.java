@@ -112,9 +112,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class R2 {
-      private final Fragments fragments;
+      private final @Nonnull Fragments fragments;
 
-      public R2(Fragments fragments) {
+      public R2(@Nonnull Fragments fragments) {
         this.fragments = fragments;
       }
 
@@ -150,9 +150,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
 
       public static class Fragments {
-        private Optional<HumanDetails> humanDetails;
+        private final Optional<HumanDetails> humanDetails;
 
-        private Optional<DroidDetails> droidDetails;
+        private final Optional<DroidDetails> droidDetails;
 
         public Fragments(@Nullable HumanDetails humanDetails, @Nullable DroidDetails droidDetails) {
           this.humanDetails = Optional.fromNullable(humanDetails);
@@ -241,9 +241,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class Luke {
-      private final Fragments fragments;
+      private final @Nonnull Fragments fragments;
 
-      public Luke(Fragments fragments) {
+      public Luke(@Nonnull Fragments fragments) {
         this.fragments = fragments;
       }
 
@@ -279,9 +279,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
 
       public static class Fragments {
-        private Optional<HumanDetails> humanDetails;
+        private final Optional<HumanDetails> humanDetails;
 
-        private Optional<DroidDetails> droidDetails;
+        private final Optional<DroidDetails> droidDetails;
 
         public Fragments(@Nullable HumanDetails humanDetails, @Nullable DroidDetails droidDetails) {
           this.humanDetails = Optional.fromNullable(humanDetails);

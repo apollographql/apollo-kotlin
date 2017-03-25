@@ -9,6 +9,7 @@ public class ApolloExtension {
   static final String NAME = "apollo";
   private Map<String, String> customTypeMapping = new LinkedHashMap<>();
   private boolean generateOptional = false;
+  private boolean generateAccessors = true;
 
   public Map<String, String> getCustomTypeMapping() {
     return customTypeMapping;
@@ -24,6 +25,14 @@ public class ApolloExtension {
 
   public void setGenerateOptional(boolean generateOptional) {
     this.generateOptional = generateOptional;
+  }
+
+  public boolean isGenerateAccessors() {
+    return generateAccessors;
+  }
+
+  public void setGenerateAccessors(boolean generateAccessors) {
+    this.generateAccessors = generateAccessors;
   }
 
   public void setCustomTypeMapping(Closure closure) {

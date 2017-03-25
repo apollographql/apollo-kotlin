@@ -161,9 +161,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static class Hero {
       private final @Nonnull String name;
 
-      private Optional<AsHuman> asHuman;
+      private final Optional<AsHuman> asHuman;
 
-      private Optional<AsDroid> asDroid;
+      private final Optional<AsDroid> asDroid;
 
       public Hero(@Nonnull String name, @Nullable AsHuman asHuman, @Nullable AsDroid asDroid) {
         this.name = name;
@@ -270,7 +270,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         public static class Friend {
           private final @Nonnull String name;
 
-          private Optional<AsHuman1> asHuman;
+          private final Optional<AsHuman1> asHuman;
 
           public Friend(@Nonnull String name, @Nullable AsHuman1 asHuman) {
             this.name = name;
@@ -482,7 +482,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         public static class Friend {
           private final @Nonnull String name;
 
-          private Optional<AsHuman> asHuman;
+          private final Optional<AsHuman> asHuman;
 
           public Friend(@Nonnull String name, @Nullable AsHuman asHuman) {
             this.name = name;

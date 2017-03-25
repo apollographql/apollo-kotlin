@@ -1,4 +1,4 @@
-package com.example.fragment_friends_connection;
+package com.example.no_accessors;
 
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.FragmentResponseFieldMapper;
@@ -7,11 +7,13 @@ import com.apollographql.android.api.graphql.Query;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ResponseReader;
 import com.apollographql.android.api.graphql.internal.Optional;
-import com.example.fragment_friends_connection.fragment.HeroDetails;
+import com.example.no_accessors.fragment.HeroDetails;
+import com.example.no_accessors.type.Episode;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.List;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,7 +23,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static final String OPERATION_DEFINITION = "query TestQuery {\n"
       + "  hero {\n"
       + "    __typename\n"
+      + "    name\n"
       + "    ...HeroDetails\n"
+      + "    appearsIn\n"
       + "  }\n"
       + "}";
 
@@ -55,14 +59,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Data implements Operation.Data {
-    private final Optional<Hero> hero;
+    public final Optional<Hero> hero;
 
     public Data(@Nullable Hero hero) {
       this.hero = Optional.fromNullable(hero);
-    }
-
-    public Optional<Hero> hero() {
-      return this.hero;
     }
 
     @Override
@@ -93,19 +93,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class Hero {
-      private final @Nonnull Fragments fragments;
+      public final @Nonnull String name;
 
-      public Hero(@Nonnull Fragments fragments) {
+      public final @Nonnull List<Episode> appearsIn;
+
+      public final @Nonnull Fragments fragments;
+
+      public Hero(@Nonnull String name, @Nonnull List<Episode> appearsIn,
+          @Nonnull Fragments fragments) {
+        this.name = name;
+        this.appearsIn = appearsIn;
         this.fragments = fragments;
-      }
-
-      public @Nonnull Fragments fragments() {
-        return this.fragments;
       }
 
       @Override
       public String toString() {
         return "Hero{"
+          + "name=" + name + ", "
+          + "appearsIn=" + appearsIn + ", "
           + "fragments=" + fragments
           + "}";
       }
@@ -117,7 +122,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         }
         if (o instanceof Hero) {
           Hero that = (Hero) o;
-          return ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+           && ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn))
+           && ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
         }
         return false;
       }
@@ -126,19 +133,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       public int hashCode() {
         int h = 1;
         h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
+        h *= 1000003;
         h ^= (fragments == null) ? 0 : fragments.hashCode();
         return h;
       }
 
       public static class Fragments {
-        private final Optional<HeroDetails> heroDetails;
+        public final Optional<HeroDetails> heroDetails;
 
         public Fragments(@Nullable HeroDetails heroDetails) {
           this.heroDetails = Optional.fromNullable(heroDetails);
-        }
-
-        public Optional<HeroDetails> heroDetails() {
-          return this.heroDetails;
         }
 
         @Override
@@ -187,6 +194,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
         final Field[] fields = {
+          Field.forString("name", "name", null, false),
+          Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
+            @Override public Episode read(final Field.ListItemReader reader) throws IOException {
+              return Episode.valueOf(reader.readString());
+            }
+          }),
           Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
             @Override
             public Fragments read(String conditionalType, ResponseReader reader) throws
@@ -198,8 +211,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
         @Override
         public Hero map(ResponseReader reader) throws IOException {
-          final Fragments fragments = reader.read(fields[0]);
-          return new Hero(fragments);
+          final String name = reader.read(fields[0]);
+          final List<Episode> appearsIn = reader.read(fields[1]);
+          final Fragments fragments = reader.read(fields[2]);
+          return new Hero(name, appearsIn, fragments);
         }
       }
     }
