@@ -116,7 +116,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
       private final Optional<List<Friend>> friends;
 
-      private Optional<AsHuman> asHuman;
+      private final Optional<AsHuman> asHuman;
 
       public HeroDetailQuery1(@Nonnull String name, @Nullable List<Friend> friends,
           @Nullable AsHuman asHuman) {
@@ -346,9 +346,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
           }
 
           public static class Friend2 {
-            private final Fragments fragments;
+            private final @Nonnull Fragments fragments;
 
-            public Friend2(Fragments fragments) {
+            public Friend2(@Nonnull Fragments fragments) {
               this.fragments = fragments;
             }
 
@@ -384,7 +384,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
             }
 
             public static class Fragments {
-              private Optional<HeroDetails> heroDetails;
+              private final Optional<HeroDetails> heroDetails;
 
               public Fragments(@Nullable HeroDetails heroDetails) {
                 this.heroDetails = Optional.fromNullable(heroDetails);

@@ -30,9 +30,9 @@ data class Field(
         .build()
   }
 
-  fun fieldSpec(context: CodeGenerationContext): FieldSpec =
+  fun fieldSpec(context: CodeGenerationContext, publicModifier: Boolean = false): FieldSpec =
       FieldSpec.builder(toTypeName(methodResponseType(), context), responseName)
-          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+          .addModifiers(if (publicModifier) Modifier.PUBLIC else Modifier.PRIVATE, Modifier.FINAL)
           .build()
 
   fun argumentCodeBlock(): CodeBlock {

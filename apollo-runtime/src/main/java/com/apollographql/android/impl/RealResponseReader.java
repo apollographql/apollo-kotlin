@@ -9,6 +9,7 @@ import com.apollographql.android.api.graphql.ScalarType;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -174,7 +175,7 @@ import java.util.Map;
         result.add(item);
       }
       readerShadow.didParseList(values);
-      return result;
+      return Collections.unmodifiableList(result);
     }
   }
 
@@ -196,7 +197,7 @@ import java.util.Map;
         result.add(item);
       }
       readerShadow.didParseList(values);
-      return result;
+      return Collections.unmodifiableList(result);
     }
   }
 

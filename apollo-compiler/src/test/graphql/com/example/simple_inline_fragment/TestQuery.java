@@ -101,9 +101,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static class Hero {
       private final @Nonnull String name;
 
-      private Optional<AsHuman> asHuman;
+      private final Optional<AsHuman> asHuman;
 
-      private Optional<AsDroid> asDroid;
+      private final Optional<AsDroid> asDroid;
 
       public Hero(@Nonnull String name, @Nullable AsHuman asHuman, @Nullable AsDroid asDroid) {
         this.name = name;

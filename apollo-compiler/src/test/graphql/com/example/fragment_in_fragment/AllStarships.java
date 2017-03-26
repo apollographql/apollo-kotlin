@@ -179,9 +179,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
         }
 
         public static class Node {
-          private final Fragments fragments;
+          private final @Nonnull Fragments fragments;
 
-          public Node(Fragments fragments) {
+          public Node(@Nonnull Fragments fragments) {
             this.fragments = fragments;
           }
 
@@ -217,7 +217,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
           }
 
           public static class Fragments {
-            private Optional<StarshipFragment> starshipFragment;
+            private final Optional<StarshipFragment> starshipFragment;
 
             public Fragments(@Nullable StarshipFragment starshipFragment) {
               this.starshipFragment = Optional.fromNullable(starshipFragment);

@@ -35,19 +35,22 @@ class SchemaTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addFields(fields: List<Field>): TypeSpec.Builder {
-    val fieldSpecs = fields.map {
-      it.fieldSpec(context)
+    addFields(fields
+        .map { it.fieldSpec(context, !context.generateAccessors) }
+        .map { it.overrideType(innerTypeNameOverrideMap) })
+    if (context.generateAccessors) {
+      addMethods(fields
+          .map { it.accessorMethodSpec(context) }
+          .map { it.overrideReturnType(innerTypeNameOverrideMap) })
     }
-    val methodSpecs = fields.map {
-      it.accessorMethodSpec(context)
-    }
-    return addFields(fieldSpecs.map { it.overrideType(innerTypeNameOverrideMap) })
-        .addMethods(methodSpecs.map { it.overrideReturnType(innerTypeNameOverrideMap) })
+    return this
   }
 
   private fun TypeSpec.Builder.addInnerFragmentTypes(fragments: List<String>): TypeSpec.Builder {
     if (fragments.isNotEmpty()) {
-      addMethod(fragmentsAccessorMethodSpec())
+      if (context.generateAccessors) {
+        addMethod(fragmentsAccessorMethodSpec())
+      }
       addFields(listOf(fragmentsFieldSpec()))
       addType(fragmentsTypeSpec(fragments))
     }
@@ -63,15 +66,19 @@ class SchemaTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addInlineFragments(fragments: List<InlineFragment>): TypeSpec.Builder {
-    val reservedTypeNames = context.reservedTypeNames + typeName + fields.filter(Field::isNonScalar).map(
-        Field::normalizedName)
+    val reservedTypeNames = context.reservedTypeNames + typeName +
+        fields.filter(Field::isNonScalar).map(Field::normalizedName)
     val uniqueTypeNameMap = buildUniqueTypeNameMap(reservedTypeNames)
-    val typeSpecs = fragments.map { it.toTypeSpec(context.copy(reservedTypeNames = reservedTypeNames)) }
-    val methodSpecs = fragments.map { it.accessorMethodSpec(context).overrideReturnType(uniqueTypeNameMap) }
-    val fieldSpecs = fragments.map { it.fieldSpec(context).overrideType(uniqueTypeNameMap) }
-    return addTypes(typeSpecs)
-        .addMethods(methodSpecs)
-        .addFields(fieldSpecs)
+
+    addTypes(fragments.map { it.toTypeSpec(context.copy(reservedTypeNames = reservedTypeNames)) })
+    addFields(fragments.map { it.fieldSpec(context, !context.generateAccessors).overrideType(uniqueTypeNameMap) })
+
+    if (context.generateAccessors) {
+      addMethods(fragments
+          .map { it.accessorMethodSpec(context).overrideReturnType(uniqueTypeNameMap) })
+    }
+
+    return this
   }
 
   private fun fragmentsAccessorMethodSpec(): MethodSpec {
@@ -84,8 +91,9 @@ class SchemaTypeSpecBuilder(
   }
 
   private fun fragmentsFieldSpec(): FieldSpec = FieldSpec
-      .builder(ClassName.get("", FRAGMENTS_TYPE_NAME.capitalize()), FRAGMENTS_TYPE_NAME.decapitalize())
-      .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+      .builder(ClassName.get("", FRAGMENTS_TYPE_NAME.capitalize()).annotated(Annotations.NONNULL),
+          FRAGMENTS_TYPE_NAME.decapitalize())
+      .addModifiers(if (context.generateAccessors) Modifier.PRIVATE else Modifier.PUBLIC, Modifier.FINAL)
       .build()
 
   /** Returns a generic `Fragments` interface with methods for each of the provided fragments */
@@ -95,19 +103,22 @@ class SchemaTypeSpecBuilder(
       return addFields(fragments.map {
         FieldSpec.builder(JavaTypeResolver(context, context.fragmentsPackage).resolve(it.capitalize()),
             it.decapitalize())
-            .addModifiers(Modifier.PRIVATE)
+            .addModifiers(if (context.generateAccessors) Modifier.PRIVATE else Modifier.PUBLIC, Modifier.FINAL)
             .build()
       })
     }
 
     fun TypeSpec.Builder.addFragmentAccessorMethods(): TypeSpec.Builder {
-      return addMethods(fragments.map {
-        MethodSpec.methodBuilder(it.decapitalize())
-            .returns(JavaTypeResolver(context, context.fragmentsPackage).resolve(it.capitalize()))
-            .addModifiers(Modifier.PUBLIC)
-            .addStatement("return this.\$L", it.decapitalize())
-            .build()
-      })
+      if (context.generateAccessors) {
+        addMethods(fragments.map {
+          MethodSpec.methodBuilder(it.decapitalize())
+              .returns(JavaTypeResolver(context, context.fragmentsPackage).resolve(it.capitalize()))
+              .addModifiers(Modifier.PUBLIC)
+              .addStatement("return this.\$L", it.decapitalize())
+              .build()
+        })
+      }
+      return this
     }
 
     val mapper = FragmentsResponseMapperBuilder(fragments, context).build()

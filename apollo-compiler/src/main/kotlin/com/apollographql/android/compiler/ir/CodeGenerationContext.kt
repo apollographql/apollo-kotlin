@@ -8,5 +8,6 @@ data class CodeGenerationContext(
     val fragmentsPackage: String = "",
     val typesPackage: String = "",
     val customTypeMap: Map<String, String>,
-    val nullableValueGenerationType: NullableValueGenerationType
+    val nullableValueGenerationType: NullableValueGenerationType,
+    val generateAccessors: Boolean
 )

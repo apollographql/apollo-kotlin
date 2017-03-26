@@ -173,9 +173,9 @@ public class StarshipFragment {
       }
 
       public static class Node {
-        private final Fragments fragments;
+        private final @Nonnull Fragments fragments;
 
-        public Node(Fragments fragments) {
+        public Node(@Nonnull Fragments fragments) {
           this.fragments = fragments;
         }
 
@@ -211,7 +211,7 @@ public class StarshipFragment {
         }
 
         public static class Fragments {
-          private Optional<PilotFragment> pilotFragment;
+          private final Optional<PilotFragment> pilotFragment;
 
           public Fragments(@Nullable PilotFragment pilotFragment) {
             this.pilotFragment = Optional.fromNullable(pilotFragment);

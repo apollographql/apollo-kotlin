@@ -23,13 +23,16 @@ public class ApolloClassGenTask extends SourceTask {
   @Internal private Map<String, String> customTypeMapping;
   @Internal boolean useOptional;
   @Internal boolean hasGuavaDep;
+  @Internal boolean generateAccessors;
   @OutputDirectory private File outputDir;
 
-  public void init(String buildVariant, Map<String, String> typeMapping, boolean generateOptional, boolean hasGuava) {
+  public void init(String buildVariant, Map<String, String> typeMapping, boolean generateOptional, boolean hasGuava,
+      boolean accessors) {
     variant = buildVariant;
     customTypeMapping = typeMapping;
     useOptional = generateOptional;
     hasGuavaDep = hasGuava;
+    generateAccessors = accessors;
     outputDir = new File(getProject().getBuildDir() + "/" + Joiner.on(File.separator).join(GraphQLCompiler.Companion
         .getOUTPUT_DIRECTORY()));
   }
@@ -40,7 +43,7 @@ public class ApolloClassGenTask extends SourceTask {
       @Override
       public void execute(InputFileDetails inputFileDetails) {
         GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(inputFileDetails.getFile(), outputDir,
-            customTypeMapping, useOptional, hasGuavaDep);
+            customTypeMapping, useOptional, hasGuavaDep, generateAccessors);
         new GraphQLCompiler().write(args);
       }
     });
@@ -76,5 +79,13 @@ public class ApolloClassGenTask extends SourceTask {
 
   public void setUseOptional(boolean useOptional) {
     this.useOptional = useOptional;
+  }
+
+  public boolean shouldGenerateAccessors() {
+    return generateAccessors;
+  }
+
+  public void setGenerateAccessors(boolean generateAccessors) {
+    this.generateAccessors = generateAccessors;
   }
 }

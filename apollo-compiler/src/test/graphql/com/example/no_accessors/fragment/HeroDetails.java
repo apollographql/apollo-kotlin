@@ -1,4 +1,4 @@
-package com.example.fragment_with_inline_fragment.fragment;
+package com.example.no_accessors.fragment;
 
 import com.apollographql.android.api.graphql.Field;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
@@ -41,29 +41,17 @@ public class HeroDetails {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
 
-  private final @Nonnull String name;
+  public final @Nonnull String name;
 
-  private final @Nonnull FriendsConnection friendsConnection;
+  public final @Nonnull FriendsConnection friendsConnection;
 
-  private final Optional<AsDroid> asDroid;
+  public final Optional<AsDroid> asDroid;
 
   public HeroDetails(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
       @Nullable AsDroid asDroid) {
     this.name = name;
     this.friendsConnection = friendsConnection;
     this.asDroid = Optional.fromNullable(asDroid);
-  }
-
-  public @Nonnull String name() {
-    return this.name;
-  }
-
-  public @Nonnull FriendsConnection friendsConnection() {
-    return this.friendsConnection;
-  }
-
-  public Optional<AsDroid> asDroid() {
-    return this.asDroid;
   }
 
   @Override
@@ -102,21 +90,13 @@ public class HeroDetails {
   }
 
   public static class FriendsConnection {
-    private final Optional<Integer> totalCount;
+    public final Optional<Integer> totalCount;
 
-    private final Optional<List<Edge>> edges;
+    public final Optional<List<Edge>> edges;
 
     public FriendsConnection(@Nullable Integer totalCount, @Nullable List<Edge> edges) {
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
-    }
-
-    public Optional<Integer> totalCount() {
-      return this.totalCount;
-    }
-
-    public Optional<List<Edge>> edges() {
-      return this.edges;
     }
 
     @Override
@@ -151,14 +131,10 @@ public class HeroDetails {
     }
 
     public static class Edge {
-      private final Optional<Node> node;
+      public final Optional<Node> node;
 
       public Edge(@Nullable Node node) {
         this.node = Optional.fromNullable(node);
-      }
-
-      public Optional<Node> node() {
-        return this.node;
       }
 
       @Override
@@ -189,14 +165,10 @@ public class HeroDetails {
       }
 
       public static class Node {
-        private final @Nonnull String name;
+        public final @Nonnull String name;
 
         public Node(@Nonnull String name) {
           this.name = name;
-        }
-
-        public @Nonnull String name() {
-          return this.name;
         }
 
         @Override
@@ -280,29 +252,17 @@ public class HeroDetails {
   }
 
   public static class AsDroid {
-    private final @Nonnull String name;
+    public final @Nonnull String name;
 
-    private final @Nonnull FriendsConnection1 friendsConnection;
+    public final @Nonnull FriendsConnection1 friendsConnection;
 
-    private final Optional<String> primaryFunction;
+    public final Optional<String> primaryFunction;
 
     public AsDroid(@Nonnull String name, @Nonnull FriendsConnection1 friendsConnection,
         @Nullable String primaryFunction) {
       this.name = name;
       this.friendsConnection = friendsConnection;
       this.primaryFunction = Optional.fromNullable(primaryFunction);
-    }
-
-    public @Nonnull String name() {
-      return this.name;
-    }
-
-    public @Nonnull FriendsConnection1 friendsConnection() {
-      return this.friendsConnection;
-    }
-
-    public Optional<String> primaryFunction() {
-      return this.primaryFunction;
     }
 
     @Override
@@ -341,21 +301,13 @@ public class HeroDetails {
     }
 
     public static class FriendsConnection1 {
-      private final Optional<Integer> totalCount;
+      public final Optional<Integer> totalCount;
 
-      private final Optional<List<Edge>> edges;
+      public final Optional<List<Edge>> edges;
 
       public FriendsConnection1(@Nullable Integer totalCount, @Nullable List<Edge> edges) {
         this.totalCount = Optional.fromNullable(totalCount);
         this.edges = Optional.fromNullable(edges);
-      }
-
-      public Optional<Integer> totalCount() {
-        return this.totalCount;
-      }
-
-      public Optional<List<Edge>> edges() {
-        return this.edges;
       }
 
       @Override
@@ -390,14 +342,10 @@ public class HeroDetails {
       }
 
       public static class Edge {
-        private final Optional<Node> node;
+        public final Optional<Node> node;
 
         public Edge(@Nullable Node node) {
           this.node = Optional.fromNullable(node);
-        }
-
-        public Optional<Node> node() {
-          return this.node;
         }
 
         @Override
@@ -428,14 +376,10 @@ public class HeroDetails {
         }
 
         public static class Node {
-          private final @Nonnull String name;
+          public final @Nonnull String name;
 
           public Node(@Nonnull String name) {
             this.name = name;
-          }
-
-          public @Nonnull String name() {
-            return this.name;
           }
 
           @Override
