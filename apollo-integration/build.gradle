@@ -25,7 +25,6 @@ android {
     ignore 'InvalidPackage', 'GoogleAppIndexingWarning', 'AllowBackup'
   }
 }
-
 dependencies {
   compile project(':apollo-api')
   compile project(':apollo-runtime')
@@ -40,10 +39,4 @@ dependencies {
 
 apollo {
   customTypeMapping['Date'] = "java.util.Date"
-}
-
-// This prevents the plugin from adding the snapshot version of
-// apollo-runtime dependencies to the dependencies set
-def skipApolloRuntimeDep() {
-  System.setProperty("apollographql.skipRuntimeDep", "true")
 }

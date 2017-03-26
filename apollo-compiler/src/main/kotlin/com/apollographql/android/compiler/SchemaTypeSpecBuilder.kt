@@ -52,7 +52,7 @@ class SchemaTypeSpecBuilder(
         addMethod(fragmentsAccessorMethodSpec())
       }
       addFields(listOf(fragmentsFieldSpec()))
-      addType(fragmentsTypeSpec(fragments, context.fragmentsPackage))
+      addType(fragmentsTypeSpec(fragments))
     }
     return this
   }
@@ -97,7 +97,7 @@ class SchemaTypeSpecBuilder(
       .build()
 
   /** Returns a generic `Fragments` interface with methods for each of the provided fragments */
-  private fun fragmentsTypeSpec(fragments: List<String>, fragmentsPackage: String): TypeSpec {
+  private fun fragmentsTypeSpec(fragments: List<String>): TypeSpec {
 
     fun TypeSpec.Builder.addFragmentFields(): TypeSpec.Builder {
       return addFields(fragments.map {

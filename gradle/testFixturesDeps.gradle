@@ -5,7 +5,6 @@ ext.supportDeps = [
 ]
 
 ext.apolloRuntimeCompileDeps = [
-    dep.jsr305,
     dep.supportAnnotations,
     dep.okHttp,
     dep.moshi
