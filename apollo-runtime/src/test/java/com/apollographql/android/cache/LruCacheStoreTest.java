@@ -179,11 +179,9 @@ public class LruCacheStoreTest {
     final Record record3 = recordBuilder.build();
 
     Collection<Record> records = Arrays.asList(record1, record2, record3);
-
+    Collection<String> keys = Arrays.asList(record1.key(), record2.key(), record3.key());
 
     primaryCacheStore.merge(records);
-
-    Collection<String> keys = Arrays.asList(record1.key(), record2.key(), record3.key());
 
     assertThat(primaryCacheStore.loadRecords(keys).size()).isEqualTo(3);
 
