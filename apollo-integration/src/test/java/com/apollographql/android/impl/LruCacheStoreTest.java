@@ -2,6 +2,7 @@ package com.apollographql.android.impl;
 
 import com.apollographql.android.cache.normalized.CacheStore;
 import com.apollographql.android.cache.normalized.Record;
+import com.apollographql.android.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.android.cache.normalized.lru.LruCacheStore;
 
 import org.junit.Test;
@@ -16,7 +17,7 @@ public class LruCacheStoreTest {
 
   @Test
   public void testSaveAndLoad_singleRecord() {
-    LruCacheStore lruCacheStore = LruCacheStore.createWithMaximumByteSize(10 * 1024);
+    LruCacheStore lruCacheStore = new LruCacheStore(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
     Record testRecord = createTestRecord("1");
 
     lruCacheStore.merge(testRecord);
@@ -26,7 +27,7 @@ public class LruCacheStoreTest {
 
   @Test
   public void testSaveAndLoad_multipleRecord_readSingle() {
-    LruCacheStore lruCacheStore = LruCacheStore.createWithMaximumByteSize(10 * 1024);
+    LruCacheStore lruCacheStore = new LruCacheStore(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
     Record testRecord1 = createTestRecord("1");
     Record testRecord2 = createTestRecord("2");
     Record testRecord3 = createTestRecord("3");
@@ -41,7 +42,7 @@ public class LruCacheStoreTest {
 
   @Test
   public void testSaveAndLoad_multipleRecord_readMultiple() {
-    LruCacheStore lruCacheStore = LruCacheStore.createWithMaximumByteSize(10 * 1024);
+    LruCacheStore lruCacheStore = new LruCacheStore(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
     Record testRecord1 = createTestRecord("1");
     Record testRecord2 = createTestRecord("2");
     Record testRecord3 = createTestRecord("3");
@@ -55,7 +56,7 @@ public class LruCacheStoreTest {
 
   @Test
   public void testEviction() {
-    LruCacheStore lruCacheStore = LruCacheStore.createWithMaximumByteSize(2000);
+    LruCacheStore lruCacheStore = new LruCacheStore(EvictionPolicy.builder().maxSizeBytes(2000).build());
 
     Record.Builder testRecord1Builder = Record.builder("key1");
     testRecord1Builder.addField("a",  new String(new byte[1100]));
@@ -86,7 +87,7 @@ public class LruCacheStoreTest {
 
   @Test
   public void testEviction_recordChange() {
-    LruCacheStore lruCacheStore = LruCacheStore.createWithMaximumByteSize(2000);
+    LruCacheStore lruCacheStore = new LruCacheStore(EvictionPolicy.builder().maxSizeBytes(2000).build());
 
     Record.Builder testRecord1Builder = Record.builder("key1");
     testRecord1Builder.addField("a",  new String(new byte[10]));
