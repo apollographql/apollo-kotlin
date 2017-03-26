@@ -10,10 +10,31 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static com.google.common.truth.Truth.assertThat;
 
 public class LruCacheStoreTest {
+
+  @Test
+  public void testEvictionPolicyBuilder() {
+    final EvictionPolicy policy = EvictionPolicy.builder()
+        .maxSizeBytes(100)
+        .maxEntries(50)
+        .expireAfterAccess(5, TimeUnit.HOURS)
+        .expireAfterWrite(10, TimeUnit.DAYS)
+        .build();
+
+    assertThat(policy.maxSizeBytes().get()).isEqualTo(100);
+
+    assertThat(policy.maxEntries().get()).isEqualTo(50);
+
+    assertThat(policy.expireAfterAccess().get()).isEqualTo(5);
+    assertThat(policy.expireAfterAccessTimeUnit().get()).isEqualTo(TimeUnit.HOURS);
+
+    assertThat(policy.expireAfterWrite().get()).isEqualTo(10);
+    assertThat(policy.expireAfterWriteTimeUnit().get()).isEqualTo(TimeUnit.DAYS);
+  }
 
   @Test
   public void testSaveAndLoad_singleRecord() {
