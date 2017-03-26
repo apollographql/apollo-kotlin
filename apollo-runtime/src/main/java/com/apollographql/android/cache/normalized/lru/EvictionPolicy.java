@@ -15,27 +15,27 @@ public final class EvictionPolicy {
   private final Optional<Long> expireAfterWrite;
   private final Optional<TimeUnit> expireAfterWriteTimeUnit;
 
-  public Optional<Long> maxSizeBytes() {
+  Optional<Long> maxSizeBytes() {
     return maxSizeBytes;
   }
 
-  public Optional<Long> maxEntries() {
+  Optional<Long> maxEntries() {
     return maxEntries;
   }
 
-  public Optional<Long> expireAfterAccess() {
+  Optional<Long> expireAfterAccess() {
     return expireAfterAccess;
   }
 
-  public Optional<TimeUnit> expireAfterAccessTimeUnit() {
+  Optional<TimeUnit> expireAfterAccessTimeUnit() {
     return expireAfterAccessTimeUnit;
   }
 
-  public Optional<Long> expireAfterWrite() {
+  Optional<Long> expireAfterWrite() {
     return expireAfterWrite;
   }
 
-  public Optional<TimeUnit> expireAfterWriteTimeUnit() {
+  Optional<TimeUnit> expireAfterWriteTimeUnit() {
     return expireAfterWriteTimeUnit;
   }
 

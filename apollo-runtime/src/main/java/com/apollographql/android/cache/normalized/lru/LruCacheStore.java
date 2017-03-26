@@ -25,11 +25,7 @@ public final class LruCacheStore extends CacheStore {
   }
 
   public LruCacheStore(EvictionPolicy evictionPolicy, CacheStore secondaryCacheStore) {
-    if (secondaryCacheStore == null) {
-      this.secondaryCacheStore = Optional.absent();
-    } else {
-      this.secondaryCacheStore = Optional.of(secondaryCacheStore);
-    }
+    this.secondaryCacheStore = Optional.fromNullable(secondaryCacheStore);
     final CacheBuilder<Object, Object> lruCacheBuilder = CacheBuilder.newBuilder();
     if (evictionPolicy.maxSizeBytes().isPresent()) {
       lruCacheBuilder.maximumWeight(evictionPolicy.maxSizeBytes().get())
