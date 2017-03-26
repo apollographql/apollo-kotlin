@@ -12,6 +12,8 @@ import static android.content.pm.ApplicationInfo.FLAG_LARGE_HEAP;
 
 public final class EvictionPolicy {
 
+  public static final EvictionPolicy NO_EVICTION = EvictionPolicy.builder().build();
+
   private final Optional<Long> maxSizeBytes;
   private final Optional<Long> maxEntries;
   private final Optional<Long> expireAfterAccess;
