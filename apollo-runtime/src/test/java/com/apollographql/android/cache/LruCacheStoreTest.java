@@ -1,4 +1,4 @@
-package com.apollographql.android.impl;
+package com.apollographql.android.cache;
 
 import com.apollographql.android.cache.normalized.CacheStore;
 import com.apollographql.android.cache.normalized.Record;
@@ -144,6 +144,52 @@ public class LruCacheStoreTest {
     assertThat(lruCacheStore.loadRecord("key2")).isNotNull();
     assertThat(lruCacheStore.loadRecord("key3")).isNotNull();
 
+  }
+
+  @Test
+  public void testDualCacheSingleRecord() {
+    LruCacheStore secondaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION);
+    LruCacheStore primaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+
+    Record.Builder recordBuilder = Record.builder("root");
+    recordBuilder.addField("bar", "bar");
+    final Record record = recordBuilder.build();
+    primaryCacheStore.merge(record);
+
+    //verify write through behavior
+    assertThat(primaryCacheStore.loadRecord("root").field("bar")).isEqualTo("bar");
+    assertThat(secondaryCacheStore.loadRecord("root").field("bar")).isEqualTo("bar");
+  }
+
+  @Test
+  public void testDualCacheMultipleRecord() {
+    LruCacheStore secondaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION);
+    LruCacheStore primaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+
+    Record.Builder recordBuilder = Record.builder("root1");
+    recordBuilder.addField("bar", "bar");
+    final Record record1 = recordBuilder.build();
+
+    recordBuilder = Record.builder("root2");
+    recordBuilder.addField("bar", "bar");
+    final Record record2 = recordBuilder.build();
+
+    recordBuilder = Record.builder("root3");
+    recordBuilder.addField("bar", "bar");
+    final Record record3 = recordBuilder.build();
+
+    Collection<Record> records = Arrays.asList(record1, record2, record3);
+
+
+    primaryCacheStore.merge(records);
+
+    Collection<String> keys = Arrays.asList(record1.key(), record2.key(), record3.key());
+
+    assertThat(primaryCacheStore.loadRecords(keys).size()).isEqualTo(3);
+
+    //verify write through behavior
+    assertThat(primaryCacheStore.loadRecords(keys).size()).isEqualTo(3);
+    assertThat(secondaryCacheStore.loadRecords(keys).size()).isEqualTo(3);
   }
 
   private void assertTestRecordPresentAndAccurate(Record testRecord, CacheStore store) {

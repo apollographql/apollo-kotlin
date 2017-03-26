@@ -1,5 +1,6 @@
 package com.apollographql.android.cache.normalized.lru;
 
+import com.apollographql.android.api.graphql.internal.Optional;
 import com.apollographql.android.cache.normalized.CacheStore;
 import com.apollographql.android.cache.normalized.Record;
 import com.nytimes.android.external.cache.Cache;
@@ -8,6 +9,8 @@ import com.nytimes.android.external.cache.Weigher;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,8 +18,18 @@ import javax.annotation.Nullable;
 public final class LruCacheStore extends CacheStore {
 
   private final Cache<String, Record> lruCache;
+  private final Optional<CacheStore> secondaryCacheStore;
 
   public LruCacheStore(EvictionPolicy evictionPolicy) {
+    this(evictionPolicy, null);
+  }
+
+  public LruCacheStore(EvictionPolicy evictionPolicy, CacheStore secondaryCacheStore) {
+    if (secondaryCacheStore == null) {
+      this.secondaryCacheStore = Optional.absent();
+    } else {
+      this.secondaryCacheStore = Optional.of(secondaryCacheStore);
+    }
     final CacheBuilder<Object, Object> lruCacheBuilder = CacheBuilder.newBuilder();
     if (evictionPolicy.maxSizeBytes().isPresent()) {
       lruCacheBuilder.maximumWeight(evictionPolicy.maxSizeBytes().get())
@@ -40,11 +53,25 @@ public final class LruCacheStore extends CacheStore {
     lruCache = lruCacheBuilder.build();
   }
 
-  @Nullable @Override public Record loadRecord(String key) {
+  @Nullable @Override public Record loadRecord(final String key) {
+    if (secondaryCacheStore.isPresent()) {
+      try {
+        return lruCache.get(key, new Callable<Record>() {
+          @Override public Record call() throws Exception {
+            return secondaryCacheStore.get().loadRecord(key);
+          }
+        });
+      } catch (ExecutionException e) {
+        return null;
+      }
+    }
     return lruCache.getIfPresent(key);
   }
 
   @Nonnull @Override public Set<String> merge(Record apolloRecord) {
+    if (secondaryCacheStore.isPresent()) {
+      secondaryCacheStore.get().merge(apolloRecord);
+    }
     final Record oldRecord = lruCache.getIfPresent(apolloRecord.key());
     if (oldRecord == null) {
       lruCache.put(apolloRecord.key(), apolloRecord);
@@ -57,5 +84,4 @@ public final class LruCacheStore extends CacheStore {
       return changedKeys;
     }
   }
-
 }
