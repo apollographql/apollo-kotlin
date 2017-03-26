@@ -81,7 +81,7 @@ public class ApolloClassGenTask extends SourceTask {
     this.useOptional = useOptional;
   }
 
-  public boolean isGenerateAccessors() {
+  public boolean shouldGenerateAccessors() {
     return generateAccessors;
   }
 
