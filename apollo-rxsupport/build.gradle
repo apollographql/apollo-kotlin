@@ -5,6 +5,7 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
+clearSkipApolloRuntimeDep()
 
 android {
   compileSdkVersion androidConfig.compileSdkVersion
@@ -40,7 +41,6 @@ dependencies {
   testCompile dep.truth
   testCompile dep.mockWebServer
   testCompile dep.okhttpTestSupport
-  testCompile dep.mockito
 
   androidTestCompile dep.truth
   androidTestCompile(dep.testRunner) {

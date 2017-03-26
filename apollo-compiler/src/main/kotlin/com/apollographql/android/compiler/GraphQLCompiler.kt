@@ -25,19 +25,15 @@ class GraphQLCompiler {
         customTypeMap = supportedScalarTypeMapping,
         nullableValueGenerationType = args.nullableValueGenerationType()
     )
-    ir.writeTypeUsed(context, args.outputDir)
-    ir.writeFragments(context, args.outputDir)
-    ir.writeOperations(context, irPackageName, args.outputDir)
+    ir.writeJavaFiles(context, args.outputDir)
   }
 
-  private fun CodeGenerationIR.writeFragments(context: CodeGenerationContext, outputDir: File) {
+  private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File) {
     fragments.forEach {
       val typeSpec = it.toTypeSpec(context)
       JavaFile.builder(context.fragmentsPackage, typeSpec).build().writeTo(outputDir)
     }
-  }
 
-  private fun CodeGenerationIR.writeTypeUsed(context: CodeGenerationContext, outputDir: File) {
     typesUsed.supportedTypeDeclarations().forEach {
       val typeSpec = it.toTypeSpec(context)
       JavaFile.builder(context.typesPackage, typeSpec).build().writeTo(outputDir)
@@ -47,9 +43,7 @@ class GraphQLCompiler {
       val typeSpec = CustomEnumTypeSpecBuilder(context).build()
       JavaFile.builder(context.typesPackage, typeSpec).build().writeTo(outputDir)
     }
-  }
 
-  private fun CodeGenerationIR.writeOperations(context: CodeGenerationContext, irPackageName: String, outputDir: File) {
     operations.map { OperationTypeSpecBuilder(it, fragments) }
         .forEach {
           val packageName = it.operation.filePath.formatPackageName()

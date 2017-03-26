@@ -4,6 +4,7 @@ buildscript {
     classpath dep.apolloPlugin
   }
 }
+clearSkipApolloRuntimeDep()
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.apollographql.android'
@@ -28,7 +29,6 @@ android {
 dependencies {
   compile dep.appcompat
   compile dep.okhttpLoggingInterceptor
-  compile dep.apolloRuntime
 
   testCompile dep.junit
 }
