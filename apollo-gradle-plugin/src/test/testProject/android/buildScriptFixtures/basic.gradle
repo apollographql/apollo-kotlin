@@ -47,9 +47,3 @@ dependencies {
   compile supportDeps
   compile apolloApiCompileDeps
 }
-
-apollo {
-  customTypeMapping {
-    DateTime = "java.util.Date"
-  }
-}

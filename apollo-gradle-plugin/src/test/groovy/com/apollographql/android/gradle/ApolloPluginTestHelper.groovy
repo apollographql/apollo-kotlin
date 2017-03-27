@@ -114,4 +114,8 @@ class ApolloPluginTestHelper {
     def localProperties = new File(destDir, "local.properties")
     localProperties.write("sdk.dir=${androidHome()}")
   }
+
+  static def replaceTextInFile(source, Closure replaceText){
+    source.write(replaceText(source.text))
+  }
 }
