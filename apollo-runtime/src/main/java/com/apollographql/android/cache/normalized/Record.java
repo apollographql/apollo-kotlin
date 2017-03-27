@@ -9,6 +9,8 @@ public final class Record {
 
   private final String key;
   private final Map<String, Object> fields;
+  private static final int UNKNOWN_SIZE_ESTIMATE = -1;
+  private volatile int sizeInBytes = UNKNOWN_SIZE_ESTIMATE;
 
   public static class Builder {
     private final Map<String, Object> fields;
@@ -72,6 +74,7 @@ public final class Record {
           || (oldFieldValue != null && !oldFieldValue.equals(newFieldValue))) {
         this.fields.put(field.getKey(), newFieldValue);
         changedKeys.add(key() + "." + field.getKey());
+        adjustSizeEstimate(newFieldValue, oldFieldValue);
       }
     }
     return changedKeys;
@@ -79,6 +82,19 @@ public final class Record {
 
   public Map<String, Object> fields() {
     return fields;
+  }
+
+  public int sizeEstimateBytes() {
+    if (sizeInBytes == UNKNOWN_SIZE_ESTIMATE) {
+      sizeInBytes = RecordWeigher.calculateBytes(this);
+    }
+    return sizeInBytes;
+  }
+
+  private void adjustSizeEstimate(Object newFieldValue, Object oldFieldValue) {
+    if (sizeInBytes != UNKNOWN_SIZE_ESTIMATE) {
+      sizeInBytes += RecordWeigher.byteChange(newFieldValue, oldFieldValue);
+    }
   }
 
 }
