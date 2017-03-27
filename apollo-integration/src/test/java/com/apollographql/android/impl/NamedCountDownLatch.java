@@ -26,6 +26,10 @@ public class NamedCountDownLatch extends CountDownLatch {
     return name;
   }
 
+  /**
+   * Waits until latch countdown goes to zero. If timeout expires before latch count has gone to zero,
+   * then a {@link TimeoutException} will be thrown.
+   */
   public void awaitOrThrowWithTimeout(long timeout, TimeUnit timeUnit)
       throws InterruptedException, TimeoutException {
     this.await(timeout, timeUnit);
