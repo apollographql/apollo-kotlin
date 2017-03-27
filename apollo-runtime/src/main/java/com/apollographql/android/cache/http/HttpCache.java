@@ -1,7 +1,5 @@
 package com.apollographql.android.cache.http;
 
-import com.apollographql.android.Logger;
-import com.apollographql.android.api.graphql.internal.Optional;
 import com.apollographql.android.internal.ApolloLogger;
 
 import java.io.IOException;
