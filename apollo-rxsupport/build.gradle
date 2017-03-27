@@ -33,6 +33,7 @@ android {
 }
 
 dependencies {
+  compile dep.jsr305
   compile dep.rxjava
   provided project(":apollo-runtime")
   provided project(":apollo-api")

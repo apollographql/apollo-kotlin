@@ -25,7 +25,7 @@ ext.dep = [
     cache                   : "com.nytimes.android:cache:$versions.cacheVersion",
     javaPoet                : 'com.squareup:javapoet:1.8.0',
     moshi                   : 'com.squareup.moshi:moshi:1.4.0',
-    rxjava                  : 'io.reactivex:rxjava:1.2.3',
+    rxjava                  : 'io.reactivex:rxjava:1.2.9',
     rxjava2                 : 'io.reactivex.rxjava2:rxjava:2.0.5',
     rxandroid               : 'io.reactivex.rxjava2:rxandroid:2.0.1',
     jsr305                  : 'com.google.code.findbugs:jsr305:3.0.1',
