@@ -58,7 +58,8 @@ public class ApolloWatcherTest {
   }
 
   @Test
-  public void testQueryWatcherUpdated_SameQuery_DifferentResults() throws IOException, InterruptedException, TimeoutException {
+  public void testQueryWatcherUpdated_SameQuery_DifferentResults() throws IOException, InterruptedException,
+      TimeoutException {
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
 
@@ -94,7 +95,8 @@ public class ApolloWatcherTest {
   }
 
   @Test
-  public void testQueryWatcherNotUpdated_SameQuery_SameResults() throws IOException, InterruptedException, TimeoutException {
+  public void testQueryWatcherNotUpdated_SameQuery_SameResults() throws IOException, InterruptedException,
+      TimeoutException {
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
 
@@ -130,7 +132,8 @@ public class ApolloWatcherTest {
   }
 
   @Test
-  public void testQueryWatcherUpdated_DifferentQuery_DifferentResults() throws IOException, InterruptedException, TimeoutException {
+  public void testQueryWatcherUpdated_DifferentQuery_DifferentResults() throws IOException, InterruptedException,
+      TimeoutException {
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
 
@@ -166,7 +169,8 @@ public class ApolloWatcherTest {
   }
 
   @Test
-  public void testQueryWatcherNotUpdated_DifferentQueries() throws IOException, InterruptedException, TimeoutException {
+  public void testQueryWatcherNotUpdated_DifferentQueries() throws IOException, InterruptedException,
+      TimeoutException {
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
 
@@ -242,7 +246,8 @@ public class ApolloWatcherTest {
   }
 
   @Test
-  public void testQueryWatcherUpdated_SameQuery_DifferentResults_cacheOnly() throws IOException, InterruptedException, TimeoutException {
+  public void testQueryWatcherUpdated_SameQuery_DifferentResults_cacheOnly() throws IOException, InterruptedException,
+      TimeoutException {
     final NamedCountDownLatch cacheWarmUpLatch = new NamedCountDownLatch("cacheWarmUpLatch", 1);
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
