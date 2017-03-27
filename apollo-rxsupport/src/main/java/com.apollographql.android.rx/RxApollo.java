@@ -36,7 +36,7 @@ public final class RxApollo {
       @Nonnull Emitter.BackpressureMode backpressureMode) {
     checkNotNull(backpressureMode, "backpressureMode == null");
     checkNotNull(watcher, "watcher == null");
-    return Observable.fromEmitter(new Action1<Emitter<T>>() {
+    return Observable.create(new Action1<Emitter<T>>() {
       @Override public void call(final Emitter<T> emitter) {
         emitter.setCancellation(new Cancellable() {
           @Override public void cancel() throws Exception {
