@@ -1,9 +1,7 @@
-package com.apollographql.android.cache.lru;
+package com.apollographql.android.cache.normalized.lru;
 
 import com.apollographql.android.cache.normalized.CacheStore;
 import com.apollographql.android.cache.normalized.Record;
-import com.apollographql.android.cache.normalized.lru.EvictionPolicy;
-import com.apollographql.android.cache.normalized.lru.LruCacheStore;
 
 import org.junit.Test;
 
