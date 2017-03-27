@@ -128,7 +128,7 @@ class BasicAndroidSpec extends Specification {
         "return Date.class;")
   }
 
-  def "changing the value of a customTypeMapping key regenerates the CustomType class with the new key"() {
+  def "changing the class for a customTypeMapping key regenerates with the new class"() {
     setup: "a testProject with a previous build and a modified apollo extension"
     replaceTextInFile(new File("$testProjectDir/build.gradle")) {
       it.replace("java.util.Date", "java.util.Currency")

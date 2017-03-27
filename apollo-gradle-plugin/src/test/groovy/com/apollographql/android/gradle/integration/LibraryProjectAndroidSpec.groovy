@@ -7,6 +7,10 @@ import org.gradle.testkit.runner.TaskOutcome
 import spock.lang.Shared
 import spock.lang.Specification
 
+import static com.apollographql.android.gradle.ApolloPluginTestHelper.createTempTestDirectory
+import static com.apollographql.android.gradle.ApolloPluginTestHelper.prepareProjectTestDir
+import static org.apache.commons.io.FileUtils.copyFile
+
 class LibraryProjectAndroidSpec extends Specification {
   @Shared File testProjectDir
 
@@ -32,11 +36,10 @@ class LibraryProjectAndroidSpec extends Specification {
   }
 
   private static File setupAndroidLibraryProject() {
-    def destDir = ApolloPluginTestHelper.createTempTestDirectory("libraryProject")
-    ApolloPluginTestHelper.prepareProjectTestDir(destDir, ApolloPluginTestHelper.ProjectType.Android, "basic",
-        "libraryProject")
+    def destDir = createTempTestDirectory("libraryProject")
+    prepareProjectTestDir(destDir, ApolloPluginTestHelper.ProjectType.Android, "basic", "libraryProject")
     String schemaFilesFixtures = "src/test/testProject/android/schemaFilesFixtures"
-    FileUtils.copyFile(new File(schemaFilesFixtures + "/oldswapi.json"), new File("$destDir/src/main/graphql/schema.json"))
+    copyFile(new File(schemaFilesFixtures + "/oldswapi.json"), new File("$destDir/src/main/graphql/schema.json"))
     return destDir
   }
 }
