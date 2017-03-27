@@ -74,6 +74,13 @@ public class LruCacheStoreTest {
   }
 
   @Test
+  public void testLoadNotPresent() {
+    LruCacheStore lruCacheStore = new LruCacheStore(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
+    final Record record = lruCacheStore.loadRecord("key1");
+    assertThat(record).isNull();
+  }
+
+  @Test
   public void testEviction() {
     LruCacheStore lruCacheStore = new LruCacheStore(EvictionPolicy.builder().maxSizeBytes(2000).build());
 

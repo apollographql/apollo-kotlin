@@ -48,7 +48,7 @@ public final class SqlStore extends CacheStore {
   }
 
   @Nullable public Record loadRecord(String key) {
-    return selectRecordForKey(key).get();
+    return selectRecordForKey(key).orNull();
   }
 
   @Nonnull public Set<String> merge(Record apolloRecord) {
@@ -97,7 +97,9 @@ public final class SqlStore extends CacheStore {
     Cursor cursor = database.query(TABLE_RECORDS,
         allColumns, ApolloSqlHelper.COLUMN_KEY + " = ?", new String[]{key},
         null, null, null);
-    cursor.moveToFirst();
+    if (cursor == null || !cursor.moveToFirst()) {
+      return Optional.absent();
+    }
     try {
       return Optional.of(cursorToRecord(cursor));
     } catch (IOException exception) {

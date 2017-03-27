@@ -67,6 +67,12 @@ public class SqlStoreTest {
     assertThat(record.get().key()).isEqualTo(QUERY_ROOT_KEY);
   }
 
+  @Test
+  public void testRecordSelection_recordNotPresent() {
+    Record record = sqlStore.loadRecord(STANDARD_KEY);
+    assertThat(record).isNull();
+  }
+
   private long createRecord(String key) {
     return sqlStore.createRecord(key, FIELDS);
   }
