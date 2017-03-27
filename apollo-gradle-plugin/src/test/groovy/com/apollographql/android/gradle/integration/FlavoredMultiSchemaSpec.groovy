@@ -1,11 +1,13 @@
 package com.apollographql.android.gradle.integration
 
-import com.apollographql.android.gradle.ApolloPluginTestHelper
 import org.apache.commons.io.FileUtils
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import spock.lang.Shared
 import spock.lang.Specification
+
+import static com.apollographql.android.gradle.ApolloPluginTestHelper.*
+import static org.apache.commons.io.FileUtils.copyFile
 
 
 class FlavoredMultiSchemaSpec extends Specification {
@@ -128,16 +130,14 @@ class FlavoredMultiSchemaSpec extends Specification {
   }
 
   private static File setupFlavoredAndroidProject() {
-    def destDir = ApolloPluginTestHelper.createTempTestDirectory("flavoredWithMultipleSchemas")
-    ApolloPluginTestHelper.prepareProjectTestDir(destDir, ApolloPluginTestHelper.ProjectType.Android,
-        "flavoredWithMultipleSchemas",
-        "flavored")
+    def destDir = createTempTestDirectory("flavoredWithMultipleSchemas")
+    prepareProjectTestDir(destDir, ProjectType.Android, "flavoredWithMultipleSchemas", "flavored")
     String schemaFilesFixtures = "src/test/testProject/android/schemaFilesFixtures"
-    FileUtils.copyFile(new File(schemaFilesFixtures + "/invalidSchema.json"), new File("$destDir/src/main/graphql/com/githunt/api/schema.json"))
-    FileUtils.copyFile(new File(schemaFilesFixtures + "/frontpage.json"), new File("$destDir/src/main/graphql/com/frontpage/api/schema.json"))
-    FileUtils.copyFile(new File(schemaFilesFixtures + "/githunt.json"), new File("$destDir/src/demoDebug/graphql/com/githunt/api/schema.json"))
-    FileUtils.copyFile(new File(schemaFilesFixtures + "/starwars.json"), new File("$destDir/src/demoDebug/graphql/com/starwars/api/schema.json"))
-    FileUtils.copyFile(new File(schemaFilesFixtures + "/starwars.json"), new File("$destDir/src/release/graphql/com/starwars/api/schema.json"))
+    copyFile(new File(schemaFilesFixtures + "/invalidSchema.json"), new File("$destDir/src/main/graphql/com/githunt/api/schema.json"))
+    copyFile(new File(schemaFilesFixtures + "/frontpage.json"), new File("$destDir/src/main/graphql/com/frontpage/api/schema.json"))
+    copyFile(new File(schemaFilesFixtures + "/githunt.json"), new File("$destDir/src/demoDebug/graphql/com/githunt/api/schema.json"))
+    copyFile(new File(schemaFilesFixtures + "/starwars.json"), new File("$destDir/src/demoDebug/graphql/com/starwars/api/schema.json"))
+    copyFile(new File(schemaFilesFixtures + "/starwars.json"), new File("$destDir/src/release/graphql/com/starwars/api/schema.json"))
     return destDir
   }
 }
