@@ -3,9 +3,9 @@ package com.apollographql.android.gradle;
 import com.google.common.base.Joiner;
 
 import com.apollographql.android.compiler.GraphQLCompiler;
-import com.apollographql.android.compiler.NullableValueGenerationType;
 
 import org.gradle.api.Action;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceTask;
@@ -20,10 +20,10 @@ public class ApolloClassGenTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses";
 
   @Internal private String variant;
-  @Internal private Map<String, String> customTypeMapping;
-  @Internal boolean useOptional;
-  @Internal boolean hasGuavaDep;
-  @Internal boolean generateAccessors;
+  @Input private Map<String, String> customTypeMapping;
+  @Input private boolean useOptional;
+  @Input private boolean hasGuavaDep;
+  @Input private boolean generateAccessors;
   @OutputDirectory private File outputDir;
 
   public void init(String buildVariant, Map<String, String> typeMapping, boolean generateOptional, boolean hasGuava,
