@@ -95,7 +95,7 @@ public final class SqlStore extends CacheStore {
 
   Optional<Record> selectRecordForKey(String key) {
     Cursor cursor = database.query(TABLE_RECORDS,
-        allColumns, ApolloSqlHelper.COLUMN_KEY + " = " + key, null,
+        allColumns, ApolloSqlHelper.COLUMN_KEY + " = ?", new String[]{key},
         null, null, null);
     cursor.moveToFirst();
     try {
@@ -110,7 +110,7 @@ public final class SqlStore extends CacheStore {
   void deleteRecord(String key) {
     System.out.println("Record deleted with key: " + key);
     database.delete(ApolloSqlHelper.TABLE_RECORDS, ApolloSqlHelper.COLUMN_ID
-        + " = " + key, null);
+        + " = ?", new String[]{key});
   }
 
   Record cursorToRecord(Cursor cursor) throws IOException {
