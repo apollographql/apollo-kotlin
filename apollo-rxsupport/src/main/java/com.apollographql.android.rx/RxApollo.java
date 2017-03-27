@@ -29,6 +29,12 @@ public final class RxApollo {
 
   @Nonnull
   public static <T> Observable<T> from(@Nonnull final ApolloWatcher<T> watcher) {
+    return from(watcher, Emitter.BackpressureMode.LATEST);
+  }
+
+  @Nonnull public static <T> Observable<T> from(@Nonnull final ApolloWatcher<T> watcher,
+      @Nonnull Emitter.BackpressureMode backpressureMode) {
+    checkNotNull(backpressureMode, "backpressureMode == null");
     checkNotNull(watcher, "watcher == null");
     return Observable.fromEmitter(new Action1<Emitter<T>>() {
       @Override public void call(final Emitter<T> emitter) {
@@ -48,7 +54,7 @@ public final class RxApollo {
           }
         });
       }
-    }, Emitter.BackpressureMode.LATEST);
+    }, backpressureMode);
   }
 
   @Nonnull public static <T> Single<T> from(@Nonnull final ApolloCall<T> call) {
