@@ -24,7 +24,7 @@ public abstract class CacheStore {
     return records;
   }
 
-  @Nonnull public abstract Set<String> merge(Record object);
+  @Nonnull public abstract Set<String> merge(Record record);
 
   @Nonnull public Set<String> merge(Collection<Record> recordSet) {
     Set<String> aggregatedDependentKeys = new LinkedHashSet<>();

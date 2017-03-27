@@ -1,10 +1,10 @@
 def versions = [
     apolloVersion: '0.2.2-SNAPSHOT',
+    cacheVersion: '2.0.2',
     okHttpVersion: '3.6.0',
     kotlinVersion: '1.0.6',
     mockito: '1.9.5',
     testRunner: '0.5'
-
 ]
 
 ext.isCi = "true" == System.getenv('CI')
@@ -22,6 +22,7 @@ ext.dep = [
     apolloRuntime           : "com.apollographql.android:runtime:$versions.apolloVersion",
     supportAnnotations      : 'com.android.support:support-annotations:25.1.0',
     compiletesting          : 'com.google.testing.compile:compile-testing:0.10',
+    cache                   : "com.nytimes.android:cache:$versions.cacheVersion",
     javaPoet                : 'com.squareup:javapoet:1.8.0',
     moshi                   : 'com.squareup.moshi:moshi:1.4.0',
     rxjava                  : 'io.reactivex:rxjava:1.2.3',

@@ -35,6 +35,7 @@ android {
 dependencies {
   compile dep.okHttp
   compile dep.moshi
+  compile dep.cache
 
   compile project(":apollo-api")
 
