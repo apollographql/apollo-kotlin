@@ -1,6 +1,10 @@
 package com.apollographql.android.cache.http;
 
+import com.apollographql.android.internal.ApolloLogger;
+
 import java.io.IOException;
+
+import javax.annotation.Nonnull;
 
 import okhttp3.MediaType;
 import okhttp3.Response;
@@ -12,6 +16,7 @@ import okio.Okio;
 import okio.Source;
 import okio.Timeout;
 
+import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static okhttp3.internal.Util.closeQuietly;
 import static okhttp3.internal.Util.discard;
@@ -21,10 +26,14 @@ final class ResponseBodyProxy extends ResponseBody {
   private final String contentLength;
   private final Source responseBodySource;
 
-  ResponseBodyProxy(ResponseCacheRecordEditor cacheRecordEditor, Response sourceResponse) {
+  ResponseBodyProxy(@Nonnull ResponseCacheRecordEditor cacheRecordEditor, @Nonnull Response sourceResponse,
+      @Nonnull ApolloLogger logger) {
+    checkNotNull(cacheRecordEditor, "cacheRecordEditor == null");
+    checkNotNull(sourceResponse, "sourceResponse == null");
+    checkNotNull(logger, "logger == null");
     this.contentType = sourceResponse.header("Content-Type");
     this.contentLength = sourceResponse.header("Content-Length");
-    this.responseBodySource = new ProxySource(cacheRecordEditor, sourceResponse.body().source());
+    this.responseBodySource = new ProxySource(cacheRecordEditor, sourceResponse.body().source(), logger);
   }
 
   @Override public MediaType contentType() {
@@ -47,15 +56,17 @@ final class ResponseBodyProxy extends ResponseBody {
     final ResponseCacheRecordEditor cacheRecordEditor;
     final ResponseBodyCacheSink responseBodyCacheSink;
     final Source responseBodySource;
+    final ApolloLogger logger;
     boolean closed;
 
-    ProxySource(ResponseCacheRecordEditor cacheRecordEditor, Source responseBodySource) {
+    ProxySource(ResponseCacheRecordEditor cacheRecordEditor, Source responseBodySource, final ApolloLogger logger) {
       this.cacheRecordEditor = cacheRecordEditor;
       this.responseBodySource = responseBodySource;
+      this.logger = logger;
       responseBodyCacheSink = new ResponseBodyCacheSink(Okio.buffer(cacheRecordEditor.bodySink())) {
         @Override void onException(Exception e) {
-          //TODO log me
           abortCacheQuietly();
+          logger.w(e, "Operation failed");
         }
       };
     }
@@ -108,9 +119,9 @@ final class ResponseBodyProxy extends ResponseBody {
         responseBodyCacheSink.close();
         cacheRecordEditor.commit();
       } catch (Exception e) {
-        //TODO log me
         closeQuietly(responseBodyCacheSink);
         abortCacheQuietly();
+        logger.e(e, "Failed to commit cache changes");
       }
     }
 
@@ -119,6 +130,7 @@ final class ResponseBodyProxy extends ResponseBody {
       try {
         cacheRecordEditor.abort();
       } catch (Exception ignore) {
+        logger.w(ignore, "Failed to abort cache edit");
       }
     }
   }
