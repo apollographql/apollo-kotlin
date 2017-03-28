@@ -1,6 +1,5 @@
 package com.apollographql.android.impl;
 
-
 import android.support.annotation.NonNull;
 
 import com.apollographql.android.ApolloCall;

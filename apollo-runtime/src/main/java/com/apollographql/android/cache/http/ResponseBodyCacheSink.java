@@ -6,7 +6,7 @@ import okio.Buffer;
 import okio.BufferedSink;
 import okio.ForwardingSink;
 
-class ResponseBodyCacheSink extends ForwardingSink {
+abstract class ResponseBodyCacheSink extends ForwardingSink {
   private boolean failed;
 
   ResponseBodyCacheSink(BufferedSink delegate) {
@@ -55,7 +55,5 @@ class ResponseBodyCacheSink extends ForwardingSink {
     }
   }
 
-  void onException(Exception e) {
-
-  }
+  abstract void onException(Exception e);
 }

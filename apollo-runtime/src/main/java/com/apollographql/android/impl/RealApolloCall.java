@@ -10,6 +10,7 @@ import com.apollographql.android.cache.http.HttpCache;
 import com.apollographql.android.cache.http.HttpCacheControl;
 import com.apollographql.android.cache.normalized.Cache;
 import com.apollographql.android.cache.normalized.CacheControl;
+import com.apollographql.android.internal.ApolloLogger;
 import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
@@ -38,12 +39,13 @@ import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
   final CacheControl cacheControl;
   final ApolloInterceptorChain interceptorChain;
   final ExecutorService dispatcher;
+  final ApolloLogger logger;
   volatile boolean executed;
 
   RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
       HttpCacheControl httpCacheControl, Moshi moshi, ResponseFieldMapper responseFieldMapper,
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters, Cache cache, CacheControl cacheControl,
-      ExecutorService dispatcher) {
+      ExecutorService dispatcher, ApolloLogger logger) {
     this.operation = operation;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
@@ -55,11 +57,12 @@ import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
     this.cache = cache;
     this.cacheControl = cacheControl;
     this.dispatcher = dispatcher;
+    this.logger = logger;
 
     interceptorChain = new RealApolloInterceptorChain(operation, Arrays.asList(
-        new ApolloCacheInterceptor(cache, cacheControl, responseFieldMapper, customTypeAdapters, dispatcher),
+        new ApolloCacheInterceptor(cache, cacheControl, responseFieldMapper, customTypeAdapters, dispatcher, logger),
         new ApolloParseInterceptor(httpCache, cache.networkResponseNormalizer(), responseFieldMapper,
-            customTypeAdapters),
+            customTypeAdapters, logger),
         new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCacheControl, false, moshi)
     ));
   }
@@ -104,7 +107,7 @@ import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
     }
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache,
         checkNotNull(httpCacheControl, "httpCacheControl == null"), moshi, responseFieldMapper, customTypeAdapters,
-        cache, cacheControl, dispatcher);
+        cache, cacheControl, dispatcher, logger);
   }
 
   @Nonnull @Override public RealApolloCall<T> cacheControl(@Nonnull CacheControl cacheControl) {
@@ -112,7 +115,8 @@ import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
       if (executed) throw new IllegalStateException("Already Executed");
     }
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCacheControl, moshi,
-        responseFieldMapper, customTypeAdapters, cache, checkNotNull(cacheControl, "cacheControl == null"), dispatcher);
+        responseFieldMapper, customTypeAdapters, cache, checkNotNull(cacheControl, "cacheControl == null"),
+        dispatcher, logger);
   }
 
   @Override public void cancel() {
@@ -121,6 +125,6 @@ import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
 
   @Override @Nonnull public RealApolloCall<T> clone() {
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCacheControl, moshi,
-        responseFieldMapper, customTypeAdapters, cache, cacheControl, dispatcher);
+        responseFieldMapper, customTypeAdapters, cache, cacheControl, dispatcher, logger);
   }
 }

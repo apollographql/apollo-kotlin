@@ -3,9 +3,11 @@ package com.apollographql.android.impl;
 import com.apollographql.android.ApolloCall;
 import com.apollographql.android.ApolloPrefetch;
 import com.apollographql.android.CustomTypeAdapter;
+import com.apollographql.android.Logger;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
 import com.apollographql.android.api.graphql.ScalarType;
+import com.apollographql.android.api.graphql.internal.Optional;
 import com.apollographql.android.cache.http.EvictionStrategy;
 import com.apollographql.android.cache.http.HttpCache;
 import com.apollographql.android.cache.http.HttpCacheControl;
@@ -15,6 +17,7 @@ import com.apollographql.android.cache.normalized.CacheControl;
 import com.apollographql.android.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.cache.normalized.CacheStore;
 import com.apollographql.android.cache.normalized.RealCache;
+import com.apollographql.android.internal.ApolloLogger;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
@@ -29,6 +32,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import okhttp3.Call;
 import okhttp3.HttpUrl;
@@ -52,6 +56,7 @@ public final class ApolloClient implements ApolloCall.Factory {
   private final ExecutorService dispatcher;
   private final HttpCacheControl defaultHttpCacheControl;
   private final CacheControl defaultCacheControl;
+  private final ApolloLogger logger;
 
   private ApolloClient(Builder builder) {
     this.serverUrl = builder.serverUrl;
@@ -63,6 +68,7 @@ public final class ApolloClient implements ApolloCall.Factory {
     this.dispatcher = builder.dispatcher;
     this.defaultHttpCacheControl = builder.defaultHttpCacheControl;
     this.defaultCacheControl = builder.defaultCacheControl;
+    this.logger = builder.apolloLogger;
   }
 
   @Override
@@ -77,7 +83,7 @@ public final class ApolloClient implements ApolloCall.Factory {
       }
     }
     return new RealApolloCall<T>(operation, serverUrl, httpCallFactory, httpCache, defaultHttpCacheControl, moshi,
-        responseFieldMapper, customTypeAdapters, cache, defaultCacheControl, dispatcher)
+        responseFieldMapper, customTypeAdapters, cache, defaultCacheControl, dispatcher, logger)
         .httpCacheControl(defaultHttpCacheControl)
         .cacheControl(defaultCacheControl);
   }
@@ -105,13 +111,17 @@ public final class ApolloClient implements ApolloCall.Factory {
   @SuppressWarnings("WeakerAccess") public static class Builder {
     OkHttpClient okHttpClient;
     HttpUrl serverUrl;
-    HttpCache httpCache;
+    ResponseCacheStore httpCacheStore;
+    EvictionStrategy httpEvictionStrategy;
     Cache cache = Cache.NO_CACHE;
     HttpCacheControl defaultHttpCacheControl = HttpCacheControl.CACHE_FIRST;
     CacheControl defaultCacheControl = CacheControl.CACHE_FIRST;
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
     final Moshi.Builder moshiBuilder = new Moshi.Builder();
     ExecutorService dispatcher;
+    Optional<Logger> logger = Optional.absent();
+    HttpCache httpCache;
+    ApolloLogger apolloLogger;
 
     private Builder() {
     }
@@ -132,8 +142,8 @@ public final class ApolloClient implements ApolloCall.Factory {
     }
 
     public Builder httpCache(@Nonnull ResponseCacheStore cacheStore, @Nonnull EvictionStrategy evictionStrategy) {
-      this.httpCache = new HttpCache(checkNotNull(cacheStore, "cacheStore == null"),
-          checkNotNull(evictionStrategy, "baseUrl == null"));
+      this.httpCacheStore = checkNotNull(cacheStore, "cacheStore == null");
+      this.httpEvictionStrategy = checkNotNull(evictionStrategy, "evictionStrategy == null");
       return this;
     }
 
@@ -177,11 +187,19 @@ public final class ApolloClient implements ApolloCall.Factory {
       return this;
     }
 
+    public Builder logger(@Nullable Logger logger) {
+      this.logger = Optional.fromNullable(logger);
+      return this;
+    }
+
     public ApolloClient build() {
       checkNotNull(okHttpClient, "okHttpClient is null");
       checkNotNull(serverUrl, "serverUrl is null");
 
-      if (httpCache != null) {
+      apolloLogger = new ApolloLogger(logger);
+
+      if (httpCacheStore != null && httpEvictionStrategy != null) {
+        httpCache = new HttpCache(httpCacheStore, httpEvictionStrategy, apolloLogger);
         okHttpClient = okHttpClient.newBuilder().addInterceptor(httpCache.interceptor()).build();
       }
 

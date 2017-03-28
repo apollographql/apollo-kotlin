@@ -1,5 +1,7 @@
 package com.apollographql.android.cache.http;
 
+import com.apollographql.android.internal.ApolloLogger;
+
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
@@ -9,7 +11,9 @@ import okhttp3.Response;
 import okio.ForwardingSource;
 import okio.Source;
 
-public final class HttpCache {
+import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
+
+@SuppressWarnings("WeakerAccess") public final class HttpCache {
   public static final String CACHE_KEY_HEADER = "APOLLO-CACHE-KEY";
   public static final String CACHE_CONTROL_HEADER = "APOLLO-CACHE-CONTROL";
   public static final String CACHE_SERVED_DATE_HEADER = "APOLLO-SERVED-DATE";
@@ -17,17 +21,20 @@ public final class HttpCache {
 
   private final ResponseCacheStore cacheStore;
   private final EvictionStrategy evictionStrategy;
+  private final ApolloLogger logger;
 
-  public HttpCache(@Nonnull ResponseCacheStore cacheStore, @Nonnull EvictionStrategy evictionStrategy) {
-    this.cacheStore = cacheStore;
-    this.evictionStrategy = evictionStrategy;
+  public HttpCache(@Nonnull ResponseCacheStore cacheStore, @Nonnull EvictionStrategy evictionStrategy,
+      @Nonnull ApolloLogger logger) {
+    this.cacheStore = checkNotNull(cacheStore, "cacheStore can't be null");
+    this.evictionStrategy = checkNotNull(evictionStrategy, "evictionStrategy can't be null");
+    this.logger = checkNotNull(logger, "logger can't be null");
   }
 
   public void clear() {
     try {
       cacheStore.delete();
-    } catch (IOException ignore) {
-      //TODO log me
+    } catch (IOException e) {
+      logger.e(e, "Failed to clear http cache");
     }
   }
 
@@ -39,7 +46,7 @@ public final class HttpCache {
     try {
       remove(cacheKey);
     } catch (Exception ignore) {
-      //TODO log me
+      logger.w(ignore, "Failed to remove cached record for key: %s", cacheKey);
     }
   }
 
@@ -73,14 +80,14 @@ public final class HttpCache {
           .body(new CacheResponseBody(cacheResponseSource, contentType, contentLength))
           .build();
     } catch (Exception e) {
-      //TODO log
       closeQuietly(responseCacheRecord);
+      logger.e(e, "Failed to read http cache entry for key: %s", cacheKey);
       return null;
     }
   }
 
   public Interceptor interceptor() {
-    return new CacheInterceptor(this);
+    return new CacheInterceptor(this, logger);
   }
 
   boolean isStale(@Nonnull Response response) {
@@ -94,12 +101,12 @@ public final class HttpCache {
       if (cacheRecordEditor != null) {
         new ResponseHeaderRecord(response).writeTo(cacheRecordEditor);
         return response.newBuilder()
-            .body(new ResponseBodyProxy(cacheRecordEditor, response))
+            .body(new ResponseBodyProxy(cacheRecordEditor, response, logger))
             .build();
       }
-    } catch (Exception ignore) {
-      //TODO log me
+    } catch (Exception e) {
       abortQuietly(cacheRecordEditor);
+      logger.e(e, "Failed to proxy http response for key: %s", cacheKey);
     }
     return response;
   }
@@ -113,29 +120,29 @@ public final class HttpCache {
         Utils.copyResponseBody(response, cacheRecordEditor.bodySink());
         cacheRecordEditor.commit();
       }
-    } catch (Exception ignore) {
-      //TODO log me
+    } catch (Exception e) {
       abortQuietly(cacheRecordEditor);
+      logger.e(e, "Failed to cache http response for key: %s", cacheKey);
     }
   }
 
-  private static void closeQuietly(ResponseCacheRecord cacheRecord) {
+  private void closeQuietly(ResponseCacheRecord cacheRecord) {
     try {
       if (cacheRecord != null) {
         cacheRecord.close();
       }
     } catch (Exception ignore) {
-      //TODO log me
+      logger.w(ignore, "Failed to close cache record");
     }
   }
 
-  private static void abortQuietly(ResponseCacheRecordEditor cacheRecordEditor) {
+  private void abortQuietly(ResponseCacheRecordEditor cacheRecordEditor) {
     try {
       if (cacheRecordEditor != null) {
         cacheRecordEditor.abort();
       }
     } catch (Exception ignore) {
-      //TODO log me
+      logger.w(ignore, "Failed to abort cache record edit");
     }
   }
 }

@@ -8,6 +8,7 @@ import com.apollographql.android.api.graphql.ScalarType;
 import com.apollographql.android.cache.http.HttpCache;
 import com.apollographql.android.cache.normalized.ResponseNormalizer;
 import com.apollographql.android.impl.util.HttpException;
+import com.apollographql.android.internal.ApolloLogger;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -21,13 +22,16 @@ final class ApolloParseInterceptor implements ApolloInterceptor {
   private final ResponseNormalizer<Map<String, Object>> normalizer;
   private final ResponseFieldMapper responseFieldMapper;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  private final ApolloLogger logger;
 
   ApolloParseInterceptor(HttpCache httpCache, ResponseNormalizer<Map<String, Object>> normalizer,
-      ResponseFieldMapper responseFieldMapper, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+      ResponseFieldMapper responseFieldMapper, Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
+      ApolloLogger logger) {
     this.httpCache = httpCache;
     this.normalizer = normalizer;
     this.responseFieldMapper = responseFieldMapper;
     this.customTypeAdapters = customTypeAdapters;
+    this.logger = logger;
   }
 
   @Override @Nonnull public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain)
@@ -67,6 +71,7 @@ final class ApolloParseInterceptor implements ApolloInterceptor {
         Response parsedResponse = parser.parse(httpResponse.body(), normalizer);
         return new InterceptorResponse(httpResponse, parsedResponse, normalizer.records());
       } catch (Exception rethrown) {
+        logger.e(rethrown, "Failed to parse network response for operation %s", operation);
         closeQuietly(httpResponse);
         if (httpCache != null) {
           httpCache.removeQuietly(cacheKey);

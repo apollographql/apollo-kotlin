@@ -13,6 +13,7 @@ import com.apollographql.android.cache.normalized.Record;
 import com.apollographql.android.cache.normalized.ResponseNormalizer;
 import com.apollographql.android.cache.normalized.Transaction;
 import com.apollographql.android.cache.normalized.WriteableCache;
+import com.apollographql.android.internal.ApolloLogger;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -23,20 +24,26 @@ import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
+
 final class ApolloCacheInterceptor implements ApolloInterceptor {
   private final Cache cache;
   private final CacheControl cacheControl;
   private final ResponseFieldMapper responseFieldMapper;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final ExecutorService dispatcher;
+  private final ApolloLogger logger;
 
-  ApolloCacheInterceptor(Cache cache, CacheControl cacheControl, ResponseFieldMapper responseFieldMapper,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ExecutorService dispatcher) {
-    this.cache = cache;
-    this.cacheControl = cacheControl;
-    this.responseFieldMapper = responseFieldMapper;
-    this.customTypeAdapters = customTypeAdapters;
-    this.dispatcher = dispatcher;
+  ApolloCacheInterceptor(@Nonnull Cache cache, @Nonnull CacheControl cacheControl,
+      @Nonnull ResponseFieldMapper responseFieldMapper,
+      @Nonnull Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
+      @Nonnull ExecutorService dispatcher, @Nonnull ApolloLogger logger) {
+    this.cache = checkNotNull(cache, "cache == null");
+    this.cacheControl = checkNotNull(cacheControl, "cacheControl == null");
+    this.responseFieldMapper = checkNotNull(responseFieldMapper, "responseFieldMapper == null");
+    this.customTypeAdapters = checkNotNull(customTypeAdapters, "customTypeAdapters == null");
+    this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
+    this.logger = checkNotNull(logger, "logger == null");
   }
 
   @Nonnull @Override public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain)
@@ -46,17 +53,18 @@ final class ApolloCacheInterceptor implements ApolloInterceptor {
       return cachedResponse;
     }
 
-    InterceptorResponse networkResponse = null;
+    InterceptorResponse networkResponse;
     try {
       networkResponse = chain.proceed();
-      return handleNetworkResponse(operation, networkResponse);
     } catch (Exception e) {
-      InterceptorResponse response = resolveNetworkFirstCacheResponse(operation, networkResponse);
-      if (response != null) {
-        return response;
+      InterceptorResponse networkFirstCacheResponse = resolveNetworkFirstCacheResponse(operation);
+      if (networkFirstCacheResponse != null) {
+        logger.e(e, "Failed to fetch network response for operation %s, return cached one", operation);
+        return networkFirstCacheResponse;
       }
       throw e;
     }
+    return handleNetworkResponse(operation, networkResponse);
   }
 
   @Override
@@ -80,8 +88,9 @@ final class ApolloCacheInterceptor implements ApolloInterceptor {
           }
 
           @Override public void onFailure(@Nonnull Throwable t) {
-            InterceptorResponse response = resolveNetworkFirstCacheResponse(operation, null);
+            InterceptorResponse response = resolveNetworkFirstCacheResponse(operation);
             if (response != null) {
+              logger.e(t, "Failed to fetch network response for operation %s, return cached one", operation);
               callBack.onResponse(response);
             } else {
               callBack.onFailure(t);
@@ -102,9 +111,11 @@ final class ApolloCacheInterceptor implements ApolloInterceptor {
       Response cachedResponse = cachedResponse(operation, responseNormalizer);
       if (cacheControl == CacheControl.CACHE_ONLY
           || (cachedResponse != null && cachedResponse.data() != null && cachedResponse.isSuccessful())) {
+        logger.d("Cache HIT for operation %s", operation);
         return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
       }
     }
+    logger.d("Cache MISS for operation %s", operation);
     return null;
   }
 
@@ -122,8 +133,8 @@ final class ApolloCacheInterceptor implements ApolloInterceptor {
               new CacheFieldValueResolver(cache, operation.variables()), customTypeAdapters, cacheResponseNormalizer);
           return new Response(operation, responseFieldMapper.map(responseReader), null,
               cacheResponseNormalizer.dependentKeys());
-        } catch (Exception e) {
-          //TODO log me
+        } catch (final Exception e) {
+          logger.e(e, "Failed to parse cached response for operation: %s", operation);
           return new Response(operation);
         }
       }
@@ -131,50 +142,44 @@ final class ApolloCacheInterceptor implements ApolloInterceptor {
   }
 
   private InterceptorResponse handleNetworkResponse(Operation operation, InterceptorResponse networkResponse) {
-    try {
-      if (!networkResponse.httpResponse.get().isSuccessful()) {
-        ResponseNormalizer<Record> responseNormalizer = cache.cacheResponseNormalizer();
-        Response cachedResponse = cachedResponse(operation, responseNormalizer);
-        if (cachedResponse != null && cachedResponse.data() != null && cachedResponse.isSuccessful()) {
-          return new InterceptorResponse(networkResponse.httpResponse.get(), cachedResponse,
-              responseNormalizer.records());
-        }
+    boolean networkFailed = (!networkResponse.httpResponse.isPresent()
+        || !networkResponse.httpResponse.get().isSuccessful());
+    if (networkFailed && cacheControl != CacheControl.NETWORK_ONLY) {
+      ResponseNormalizer<Record> responseNormalizer = cache.cacheResponseNormalizer();
+      Response cachedResponse = cachedResponse(operation, responseNormalizer);
+      if (cachedResponse != null && cachedResponse.data() != null && cachedResponse.isSuccessful()) {
+        return new InterceptorResponse(networkResponse.httpResponse.get(), cachedResponse,
+            responseNormalizer.records());
       }
-
-      final Collection<Record> records = networkResponse.cacheRecords.orNull();
-      if (records != null) {
-        dispatcher.execute(new Runnable() {
-          @Override public void run() {
-            Set<String> changedKeys = cache.writeTransaction(new Transaction<WriteableCache, Set<String>>() {
-              @Nullable @Override public Set<String> execute(WriteableCache cache) {
-                return cache.merge(records);
-              }
-            });
-            cache.publish(changedKeys);
-          }
-        });
-      }
-
-      return networkResponse;
-    } catch (Exception e) {
-      InterceptorResponse response = resolveNetworkFirstCacheResponse(operation, networkResponse);
-      if (response != null) {
-        return response;
-      }
-      throw e;
     }
+
+    final Collection<Record> records = networkResponse.cacheRecords.orNull();
+    if (records != null) {
+      dispatcher.execute(new Runnable() {
+        @Override public void run() {
+          Set<String> changedKeys = cache.writeTransaction(new Transaction<WriteableCache, Set<String>>() {
+            @Nullable @Override public Set<String> execute(WriteableCache cache) {
+              return cache.merge(records);
+            }
+          });
+          cache.publish(changedKeys);
+        }
+      });
+    }
+
+    return networkResponse;
   }
 
-  private InterceptorResponse resolveNetworkFirstCacheResponse(Operation operation,
-      InterceptorResponse networkResponse) {
+  private InterceptorResponse resolveNetworkFirstCacheResponse(Operation operation) {
     if (cacheControl == CacheControl.NETWORK_FIRST) {
       ResponseNormalizer<Record> responseNormalizer = cache.cacheResponseNormalizer();
       Response cachedResponse = cachedResponse(operation, responseNormalizer);
       if (cachedResponse != null && cachedResponse.data() != null && cachedResponse.isSuccessful()) {
-        okhttp3.Response httpResponse = networkResponse != null ? networkResponse.httpResponse.orNull() : null;
-        return new InterceptorResponse(httpResponse, cachedResponse, responseNormalizer.records());
+        logger.d("Cache HIT for operation %s", operation);
+        return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
       }
     }
+    logger.d("Cache MISS for operation %s", operation);
     return null;
   }
 }
