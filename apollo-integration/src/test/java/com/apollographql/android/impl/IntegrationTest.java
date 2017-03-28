@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
@@ -41,6 +41,8 @@ public class IntegrationTest {
 
   private ApolloClient apolloClient;
   private CustomTypeAdapter<Date> dateCustomTypeAdapter;
+
+  private static final long TIME_OUT_SECONDS = 3;
 
   @Rule public final MockWebServer server = new MockWebServer();
 
@@ -166,7 +168,7 @@ public class IntegrationTest {
 
   @Test public void allPlanetQueryAsync() throws Exception {
     server.enqueue(mockResponse("/HttpCacheTestAllPlanets.json"));
-    final CountDownLatch latch = new CountDownLatch(1);
+    final NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
     apolloClient.newCall(new AllPlanets()).enqueue(new ApolloCall.Callback<AllPlanets.Data>() {
       @Override public void onResponse(@Nonnull Response<AllPlanets.Data> response) {
         assertThat(response.isSuccessful()).isTrue();
@@ -179,7 +181,7 @@ public class IntegrationTest {
         Assert.fail("expected success");
       }
     });
-    latch.await();
+    latch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
