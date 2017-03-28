@@ -143,11 +143,9 @@ final class ApolloCacheInterceptor implements ApolloInterceptor {
   }
 
   private InterceptorResponse handleNetworkResponse(Operation operation, InterceptorResponse networkResponse) {
-    if (cacheControl == CacheControl.NETWORK_ONLY) {
-      return networkResponse;
-    }
-
-    if (!networkResponse.httpResponse.isPresent() || !networkResponse.httpResponse.get().isSuccessful()) {
+    boolean networkFailed = (!networkResponse.httpResponse.isPresent()
+        || !networkResponse.httpResponse.get().isSuccessful());
+    if (networkFailed && cacheControl != CacheControl.NETWORK_ONLY) {
       ResponseNormalizer<Record> responseNormalizer = cache.cacheResponseNormalizer();
       Response cachedResponse = cachedResponse(operation, responseNormalizer);
       if (cachedResponse != null && cachedResponse.data() != null && cachedResponse.isSuccessful()) {
