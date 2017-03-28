@@ -7,7 +7,7 @@ import okhttp3.Response;
 public class HttpException extends RuntimeException {
   private final int code;
   private final String message;
-  private final Response rawResponse;
+  private final transient Response rawResponse;
 
   public HttpException(@Nullable okhttp3.Response rawResponse) {
     super(formatMessage(rawResponse));
@@ -24,7 +24,7 @@ public class HttpException extends RuntimeException {
     return message;
   }
 
-  public @Nullable Response rawResponse() {
+  @Nullable public Response rawResponse() {
     return rawResponse;
   }
 
