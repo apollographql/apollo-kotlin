@@ -7,6 +7,7 @@ import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.cache.Weigher;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -54,7 +55,14 @@ public final class LruCacheStore extends CacheStore {
       try {
         return lruCache.get(key, new Callable<Record>() {
           @Override public Record call() throws Exception {
-            return secondaryCacheStore.get().loadRecord(key);
+            Record record = secondaryCacheStore.get().loadRecord(key);
+            // get(key, callable) requires non-null. If null, an exception should be
+            //thrown, which will be converted to null in the catch clause.
+            if (record == null) {
+              throw new ExecutionException(
+                  new IOException(String.format("Record{id=%s} not present in secondary cache", key)));
+            }
+            return record;
           }
         });
       } catch (ExecutionException e) {

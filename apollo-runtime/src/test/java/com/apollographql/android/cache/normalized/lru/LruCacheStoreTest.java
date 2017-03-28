@@ -195,6 +195,14 @@ public class LruCacheStoreTest {
     assertThat(secondaryCacheStore.loadRecords(keys).size()).isEqualTo(3);
   }
 
+  @Test
+  public void testDualCache_recordNotPresent() {
+    LruCacheStore secondaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION);
+    LruCacheStore primaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+
+    assertThat(primaryCacheStore.loadRecord("not_present_id")).isNull();
+  }
+
   private void assertTestRecordPresentAndAccurate(Record testRecord, CacheStore store) {
     final Record cacheRecord1 = store.loadRecord(testRecord.key());
     assertThat(cacheRecord1.key()).isEqualTo(testRecord.key());
