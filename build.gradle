@@ -57,13 +57,3 @@ def clearSkipApolloRuntimeDep() {
     System.clearProperty("apollographql.skipRuntimeDep")
   }
 }
-
-if (System.env.TRAVIS == 'true') {
-  // attempt to reduce memory overhead of the tests running on travis
-  tasks.withType(GroovyCompile) {
-    groovyOptions.fork = false
-  }
-  tasks.withType(Test) {
-    jvmArgs '-Xmx512m'
-  }
-}
