@@ -4,6 +4,9 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+/**
+ * Contains utility methods
+ */
 public final class Utils {
   private Utils() {
   }
