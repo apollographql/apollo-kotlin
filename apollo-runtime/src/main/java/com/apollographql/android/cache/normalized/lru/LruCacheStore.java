@@ -7,7 +7,6 @@ import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.cache.Weigher;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Callable;
