@@ -10,7 +10,6 @@ import com.nytimes.android.external.cache.Weigher;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -63,7 +62,7 @@ public final class LruCacheStore extends CacheStore {
             return record;
           }
         });
-      } catch (ExecutionException e) {
+      } catch (Exception e) {
         return null;
       }
     }
