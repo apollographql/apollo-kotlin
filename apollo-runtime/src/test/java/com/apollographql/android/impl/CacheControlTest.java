@@ -2,11 +2,14 @@ package com.apollographql.android.impl;
 
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.ResponseFieldMapper;
+import com.apollographql.android.api.graphql.ResponseReader;
 import com.apollographql.android.cache.http.HttpCacheControl;
 import com.apollographql.android.cache.normalized.CacheControl;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.IOException;
 
 import okhttp3.OkHttpClient;
 
@@ -39,7 +42,11 @@ public class CacheControlTest {
           }
 
           @Override public ResponseFieldMapper<Data> responseFieldMapper() {
-            return null;
+            return new ResponseFieldMapper<Data>() {
+              @Override public Data map(ResponseReader responseReader) throws IOException {
+                return null;
+              }
+            };
           }
 
           @Override public Object wrapData(Data data) {
@@ -68,7 +75,11 @@ public class CacheControlTest {
           }
 
           @Override public ResponseFieldMapper<Data> responseFieldMapper() {
-            return null;
+            return new ResponseFieldMapper<Data>() {
+              @Override public Data map(ResponseReader responseReader) throws IOException {
+                return null;
+              }
+            };
           }
 
           @Override public Object wrapData(Data data) {
