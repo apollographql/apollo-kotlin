@@ -74,6 +74,13 @@ public class LruCacheStoreTest {
   }
 
   @Test
+  public void testLoad_recordNotPresent() {
+    LruCacheStore lruCacheStore = new LruCacheStore(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
+    final Record record = lruCacheStore.loadRecord("key1");
+    assertThat(record).isNull();
+  }
+
+  @Test
   public void testEviction() {
     LruCacheStore lruCacheStore = new LruCacheStore(EvictionPolicy.builder().maxSizeBytes(2000).build());
 
@@ -186,6 +193,14 @@ public class LruCacheStoreTest {
     //verify write through behavior
     assertThat(primaryCacheStore.loadRecords(keys).size()).isEqualTo(3);
     assertThat(secondaryCacheStore.loadRecords(keys).size()).isEqualTo(3);
+  }
+
+  @Test
+  public void testDualCache_recordNotPresent() {
+    LruCacheStore secondaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION);
+    LruCacheStore primaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+
+    assertThat(primaryCacheStore.loadRecord("not_present_id")).isNull();
   }
 
   private void assertTestRecordPresentAndAccurate(Record testRecord, CacheStore store) {
