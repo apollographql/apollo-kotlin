@@ -126,16 +126,31 @@ public final class ApolloClient implements ApolloCall.Factory {
     private Builder() {
     }
 
+    /**
+     * The HTTP client used for making network requests.
+     *
+     * @param okHttpClient the client to use.
+     */
     public Builder okHttpClient(@Nonnull OkHttpClient okHttpClient) {
       this.okHttpClient = checkNotNull(okHttpClient, "okHttpClient is null");
       return this;
     }
 
+    /**
+     * Set the API server's base url
+     *
+     * @param serverUrl the url to set.
+     */
     public Builder serverUrl(@Nonnull HttpUrl serverUrl) {
       this.serverUrl = checkNotNull(serverUrl, "serverUrl is null");
       return this;
     }
 
+    /**
+     * Set the API server's base url
+     *
+     * @param serverUrl the url to set.
+     */
     public Builder serverUrl(@Nonnull String serverUrl) {
       this.serverUrl = HttpUrl.parse(checkNotNull(serverUrl, "serverUrl == null"));
       return this;
@@ -172,6 +187,9 @@ public final class ApolloClient implements ApolloCall.Factory {
       return this;
     }
 
+    /**
+     * The #{@link ExecutorService} to use for dispatching the requests.
+     */
     public Builder dispatcher(@Nonnull ExecutorService dispatcher) {
       this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
       return this;
@@ -187,11 +205,19 @@ public final class ApolloClient implements ApolloCall.Factory {
       return this;
     }
 
+    /**
+     * The {@link Logger} to use for logging purposes.
+     */
     public Builder logger(@Nullable Logger logger) {
       this.logger = Optional.fromNullable(logger);
       return this;
     }
 
+    /**
+     * Create the {@link ApolloClient} instance using the configured values.
+     *
+     * Note that if the {@link #dispatcher} is not called, then a default {@link ExecutorService} would be used.
+     */
     public ApolloClient build() {
       checkNotNull(okHttpClient, "okHttpClient is null");
       checkNotNull(serverUrl, "serverUrl is null");
