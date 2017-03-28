@@ -59,8 +59,7 @@ public final class LruCacheStore extends CacheStore {
             // get(key, callable) requires non-null. If null, an exception should be
             //thrown, which will be converted to null in the catch clause.
             if (record == null) {
-              throw new ExecutionException(
-                  new IOException(String.format("Record{id=%s} not present in secondary cache", key)));
+              throw new IOException(String.format("Record{id=%s} not present in secondary cache", key));
             }
             return record;
           }
