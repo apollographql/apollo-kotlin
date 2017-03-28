@@ -79,7 +79,6 @@ final class ApolloParseInterceptor implements ApolloInterceptor {
         throw rethrown;
       }
     } else {
-      closeQuietly(httpResponse);
       throw new HttpException(httpResponse);
     }
   }
