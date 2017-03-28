@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
 
 public final class ApolloLogger {
+
   private final Optional<Logger> logger;
 
   public ApolloLogger(@Nonnull Optional<Logger> logger) {
