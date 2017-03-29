@@ -25,6 +25,7 @@ class ApolloPlugin implements Plugin<Project> {
   private static final String NODE_VERSION = "6.7.0"
   public static final String TASK_GROUP = "apollo"
   private static final String APOLLO_DEP_GROUP = "com.apollographql.android"
+  //TODO change this to apollo-runtime when it will be published
   private static final String RUNTIME_DEP_NAME = "runtime"
 
   private Project project

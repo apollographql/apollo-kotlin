@@ -1,9 +1,9 @@
 package com.apollographql.android.rx;
 
 
-import com.apollographql.android.ApolloCall;
-import com.apollographql.android.ApolloWatcher;
-import com.apollographql.android.Cancelable;
+import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.ApolloWatcher;
+import com.apollographql.apollo.internal.util.Cancelable;
 import com.apollographql.android.api.graphql.Response;
 
 import java.io.IOException;
