@@ -71,6 +71,9 @@ public final class ApolloClient implements ApolloCall.Factory {
     this.logger = builder.apolloLogger;
   }
 
+  /**
+   * Prepares the request which will be executed at some point in the future.
+   */
   @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloCall<T> newCall(
       @Nonnull Operation<D, T, V> operation) {
@@ -130,6 +133,8 @@ public final class ApolloClient implements ApolloCall.Factory {
      * The HTTP client used for making network requests.
      *
      * @param okHttpClient the client to use.
+     *
+     * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder okHttpClient(@Nonnull OkHttpClient okHttpClient) {
       this.okHttpClient = checkNotNull(okHttpClient, "okHttpClient is null");
@@ -140,6 +145,8 @@ public final class ApolloClient implements ApolloCall.Factory {
      * Set the API server's base url
      *
      * @param serverUrl the url to set.
+     *
+     * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder serverUrl(@Nonnull HttpUrl serverUrl) {
       this.serverUrl = checkNotNull(serverUrl, "serverUrl is null");
@@ -150,12 +157,24 @@ public final class ApolloClient implements ApolloCall.Factory {
      * Set the API server's base url
      *
      * @param serverUrl the url to set.
+     *
+     * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder serverUrl(@Nonnull String serverUrl) {
       this.serverUrl = HttpUrl.parse(checkNotNull(serverUrl, "serverUrl == null"));
       return this;
     }
 
+    /**
+     * Sets the cache to be used for reading and writing cached responses.
+     *
+     * @param cacheStore The store to use for reading and writing cached response.
+     *
+     * @param evictionStrategy EvictionStrategy decides when the data in the cacheStore has become stale and is no
+     *                         longer valid
+     *
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
     public Builder httpCache(@Nonnull ResponseCacheStore cacheStore, @Nonnull EvictionStrategy evictionStrategy) {
       this.httpCacheStore = checkNotNull(cacheStore, "cacheStore == null");
       this.httpEvictionStrategy = checkNotNull(evictionStrategy, "evictionStrategy == null");
@@ -189,6 +208,8 @@ public final class ApolloClient implements ApolloCall.Factory {
 
     /**
      * The #{@link ExecutorService} to use for dispatching the requests.
+     *
+     * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder dispatcher(@Nonnull ExecutorService dispatcher) {
       this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
@@ -207,6 +228,8 @@ public final class ApolloClient implements ApolloCall.Factory {
 
     /**
      * The {@link Logger} to use for logging purposes.
+     *
+     * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder logger(@Nullable Logger logger) {
       this.logger = Optional.fromNullable(logger);
@@ -214,9 +237,12 @@ public final class ApolloClient implements ApolloCall.Factory {
     }
 
     /**
-     * Create the {@link ApolloClient} instance using the configured values.
+     * Builds the {@link ApolloClient} instance using the configured values.
      *
-     * Note that if the {@link #dispatcher} is not called, then a default {@link ExecutorService} would be used.
+     * Note that if the {@link #dispatcher} is not called,
+     * then a default {@link ExecutorService} is used.
+     *
+     * @return The configured {@link ApolloClient}
      */
     public ApolloClient build() {
       checkNotNull(okHttpClient, "okHttpClient is null");
