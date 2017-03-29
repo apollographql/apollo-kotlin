@@ -73,6 +73,17 @@ public class SqlStoreTest {
     assertThat(record).isNull();
   }
 
+  @Test
+  public void testRecordMerge() {
+    createRecord(STANDARD_KEY);
+    sqlStore.merge(Record.builder(STANDARD_KEY)
+        .addField("fieldKey", "valueUpdated")
+        .addField("newFieldKey", true).build());
+    Optional<Record> record = sqlStore.selectRecordForKey(STANDARD_KEY);
+    assertThat(record.get().fields().get("fieldKey")).isEqualTo("valueUpdated");
+    assertThat(record.get().fields().get("newFieldKey")).isEqualTo(true);
+  }
+
   private long createRecord(String key) {
     return sqlStore.createRecord(key, FIELDS);
   }
