@@ -1,8 +1,8 @@
 package com.apollographql.android.cache.normalized.sql;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
 
 import com.apollographql.android.api.graphql.internal.Optional;
 import com.apollographql.android.cache.normalized.CacheStore;
@@ -22,19 +22,12 @@ import static com.apollographql.android.cache.normalized.sql.ApolloSqlHelper.COL
 import static com.apollographql.android.cache.normalized.sql.ApolloSqlHelper.TABLE_RECORDS;
 
 public final class SqlStore extends CacheStore {
-  private static final String INSERT_STATEMENT =
-      String.format("INSERT INTO %s (%s,%s) VALUES (?,?)",
-      TABLE_RECORDS,
-      COLUMN_KEY,
-      COLUMN_RECORD);
   SQLiteDatabase database;
   private final FieldsAdapter parser;
   private final ApolloSqlHelper dbHelper;
   private final String[] allColumns = {ApolloSqlHelper.COLUMN_ID,
       ApolloSqlHelper.COLUMN_KEY,
       ApolloSqlHelper.COLUMN_RECORD};
-  private final SQLiteStatement sqLiteStatement;
-
 
   public static SqlStore create(ApolloSqlHelper helper, FieldsAdapter adapter) {
     return new SqlStore(helper, adapter);
@@ -44,7 +37,6 @@ public final class SqlStore extends CacheStore {
     this.dbHelper = dbHelper;
     database = dbHelper.getWritableDatabase();
     this.parser = parser;
-    sqLiteStatement = database.compileStatement(INSERT_STATEMENT);
   }
 
   @Nullable public Record loadRecord(String key) {
@@ -80,17 +72,23 @@ public final class SqlStore extends CacheStore {
   }
 
   long createRecord(String key, String fields) {
-    sqLiteStatement.bindString(1, key);
-    sqLiteStatement.bindString(2, fields);
-
-    long recordId = sqLiteStatement.executeInsert();
+    ContentValues values = contentValuesForRecord(key, fields);
+    long recordId = database.insert(TABLE_RECORDS, null, values);
     return recordId;
   }
 
   void updateRecord(String key, String fields) {
-    sqLiteStatement.bindString(1, key);
-    sqLiteStatement.bindString(2, fields);
-    sqLiteStatement.executeUpdateDelete();
+    ContentValues values = contentValuesForRecord(key, fields);
+    String selection = COLUMN_KEY + " = ?";
+    String[] selectionArgs = new String[]{key};
+    database.update(TABLE_RECORDS, values, selection, selectionArgs);
+  }
+
+  private ContentValues contentValuesForRecord(String key, String fields) {
+    ContentValues values = new ContentValues(2);
+    values.put(COLUMN_KEY, key);
+    values.put(COLUMN_RECORD, fields);
+    return values;
   }
 
   Optional<Record> selectRecordForKey(String key) {
