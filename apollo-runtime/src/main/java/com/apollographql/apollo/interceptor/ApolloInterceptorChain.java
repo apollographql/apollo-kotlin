@@ -1,4 +1,4 @@
-package com.apollographql.apollo;
+package com.apollographql.apollo.interceptor;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;

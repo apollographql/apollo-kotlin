@@ -1,8 +1,8 @@
 package com.apollographql.apollo.internal;
 
 import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.apollo.ApolloInterceptor;
-import com.apollographql.apollo.ApolloInterceptorChain;
+import com.apollographql.apollo.interceptor.ApolloInterceptor;
+import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.ApolloPrefetch;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.internal.cache.http.HttpCache;

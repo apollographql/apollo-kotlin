@@ -1,8 +1,8 @@
 package com.apollographql.apollo.internal.interceptor;
 
 import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.apollo.ApolloInterceptor;
-import com.apollographql.apollo.ApolloInterceptorChain;
+import com.apollographql.apollo.interceptor.ApolloInterceptor;
+import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 
 import java.io.IOException;
 import java.util.ArrayList;

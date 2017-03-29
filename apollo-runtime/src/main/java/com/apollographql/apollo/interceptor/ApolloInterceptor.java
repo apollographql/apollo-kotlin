@@ -1,4 +1,4 @@
-package com.apollographql.apollo;
+package com.apollographql.apollo.interceptor;
 
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;

@@ -1,8 +1,8 @@
 package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloCall;
-import com.apollographql.apollo.ApolloInterceptor;
-import com.apollographql.apollo.ApolloInterceptorChain;
+import com.apollographql.apollo.interceptor.ApolloInterceptor;
+import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.android.api.graphql.Operation;
 import com.apollographql.android.api.graphql.Response;
