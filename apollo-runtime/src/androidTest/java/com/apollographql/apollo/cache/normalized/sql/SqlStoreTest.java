@@ -3,11 +3,8 @@ package com.apollographql.apollo.cache.normalized.sql;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.apollographql.android.api.graphql.internal.Optional;
-import com.apollographql.apollo.cache.normalized.sql.FieldsAdapter;
+import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper;
-import com.apollographql.apollo.cache.normalized.sql.SqlStore;
 
 import org.junit.Before;
 import org.junit.Test;

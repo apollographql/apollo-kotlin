@@ -8,7 +8,7 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 final class CacheInterceptor implements Interceptor {
   private final HttpCache cache;

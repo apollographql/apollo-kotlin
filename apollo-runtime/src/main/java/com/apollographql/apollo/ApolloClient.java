@@ -1,9 +1,9 @@
 package com.apollographql.apollo;
 
-import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.api.graphql.ResponseFieldMapper;
-import com.apollographql.android.api.graphql.ScalarType;
-import com.apollographql.android.api.graphql.internal.Optional;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.http.EvictionStrategy;
 import com.apollographql.apollo.internal.RealApolloCall;
 import com.apollographql.apollo.internal.RealApolloPrefetch;
@@ -37,7 +37,7 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
-import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 public final class ApolloClient implements ApolloCall.Factory {
   public static Builder builder() {

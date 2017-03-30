@@ -2,8 +2,8 @@ package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloWatcher;
-import com.apollographql.android.api.graphql.Response;
-import com.apollographql.android.api.graphql.util.Utils;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.internal.Utils;
 import com.apollographql.apollo.internal.cache.normalized.Cache;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 

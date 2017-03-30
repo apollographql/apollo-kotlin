@@ -1,12 +1,12 @@
 package com.apollographql.apollo.internal.util;
 
 import com.apollographql.apollo.Logger;
-import com.apollographql.android.api.graphql.internal.Optional;
+import com.apollographql.apollo.api.internal.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 public final class ApolloLogger {
 

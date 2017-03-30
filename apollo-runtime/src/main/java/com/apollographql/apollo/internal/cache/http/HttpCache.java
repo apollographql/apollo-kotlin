@@ -15,7 +15,7 @@ import okhttp3.Response;
 import okio.ForwardingSource;
 import okio.Source;
 
-import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 @SuppressWarnings("WeakerAccess") public final class HttpCache {
   public static final String CACHE_KEY_HEADER = "APOLLO-CACHE-KEY";

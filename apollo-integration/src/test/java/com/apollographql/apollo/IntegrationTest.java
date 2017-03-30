@@ -4,11 +4,11 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
-import com.apollographql.android.api.graphql.Error;
-import com.apollographql.android.api.graphql.Response;
 import com.apollographql.android.impl.httpcache.AllFilms;
 import com.apollographql.android.impl.httpcache.AllPlanets;
 import com.apollographql.android.impl.httpcache.type.CustomType;
+import com.apollographql.apollo.api.Error;
+import com.apollographql.apollo.api.Response;
 
 import org.junit.Assert;
 import org.junit.Before;

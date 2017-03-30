@@ -1,7 +1,7 @@
 package com.apollographql.apollo.internal.field;
 
-import com.apollographql.android.api.graphql.Field;
-import com.apollographql.android.api.graphql.Operation;
+import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.cache.normalized.CacheReference;
 import com.apollographql.apollo.internal.cache.normalized.ReadableCache;
 import com.apollographql.apollo.cache.normalized.Record;

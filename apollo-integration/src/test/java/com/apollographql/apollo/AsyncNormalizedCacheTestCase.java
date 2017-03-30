@@ -4,7 +4,7 @@ import com.google.common.base.Strings;
 
 import android.support.annotation.NonNull;
 
-import com.apollographql.android.api.graphql.Response;
+import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;

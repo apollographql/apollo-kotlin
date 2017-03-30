@@ -1,12 +1,12 @@
 package com.apollographql.android.compiler
 
-import com.apollographql.android.api.graphql.Mutation
-import com.apollographql.android.api.graphql.Operation
-import com.apollographql.android.api.graphql.Query
-import com.apollographql.android.api.graphql.ResponseReader
-import com.apollographql.android.api.graphql.internal.Optional
-import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder
-import com.apollographql.android.api.graphql.util.Utils
+import com.apollographql.apollo.api.Mutation
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.internal.Optional
+import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder
+import com.apollographql.apollo.api.internal.Utils
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName

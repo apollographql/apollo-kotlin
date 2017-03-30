@@ -1,8 +1,8 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.internal.util.Cancelable;
-import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.api.graphql.Response;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 

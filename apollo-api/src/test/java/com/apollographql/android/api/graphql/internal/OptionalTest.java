@@ -19,6 +19,10 @@ package com.apollographql.android.api.graphql.internal;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 
+import com.apollographql.apollo.api.internal.Function;
+import com.apollographql.apollo.api.internal.Functions;
+import com.apollographql.apollo.api.internal.Optional;
+
 import org.junit.Test;
 
 import java.util.Collections;
@@ -173,7 +177,7 @@ public final class OptionalTest {
       Optional<String> unused =
           Optional.of("a")
               .transform(
-                  new Function<String, String>() {
+                  new com.apollographql.apollo.api.internal.Function<String, String>() {
                     @Override
                     public String apply(String input) {
                       return null;

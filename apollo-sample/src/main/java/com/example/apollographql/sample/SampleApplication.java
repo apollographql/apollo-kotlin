@@ -2,8 +2,8 @@ package com.example.apollographql.sample;
 
 import android.app.Application;
 
-import com.apollographql.android.ApolloCall;
-import com.apollographql.android.impl.ApolloClient;
+import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.ApolloClient;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;

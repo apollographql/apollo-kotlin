@@ -1,7 +1,7 @@
 package com.apollographql.android.compiler
 
-import com.apollographql.android.api.graphql.ResponseFieldMapper
-import com.apollographql.android.api.graphql.ResponseReader
+import com.apollographql.apollo.api.ResponseFieldMapper
+import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.android.compiler.ir.CodeGenerationContext
 import com.apollographql.android.compiler.ir.Field
 import com.apollographql.android.compiler.ir.InlineFragment
@@ -68,7 +68,7 @@ class SchemaTypeResponseMapperBuilder(
   }
 
   private fun fieldArray(fields: List<Field>) =
-      FieldSpec.builder(Array<com.apollographql.android.api.graphql.Field>::class.java, FIELDS_VAR)
+      FieldSpec.builder(Array<com.apollographql.apollo.api.Field>::class.java, FIELDS_VAR)
           .addModifiers(Modifier.FINAL)
           .initializer(CodeBlock.builder()
               .add("{\n")
@@ -361,16 +361,16 @@ class SchemaTypeResponseMapperBuilder(
     private val READER_PARAM = ParameterSpec.builder(ResponseReader::class.java, READER_VAR).build()
     private val SCALAR_TYPES = listOf(ClassNames.STRING, TypeName.INT, TypeName.INT.box(), TypeName.LONG,
         TypeName.LONG.box(), TypeName.DOUBLE, TypeName.DOUBLE.box(), TypeName.BOOLEAN, TypeName.BOOLEAN.box())
-    private val API_RESPONSE_FIELD_TYPE = ClassName.get(com.apollographql.android.api.graphql.Field::class.java)
+    private val API_RESPONSE_FIELD_TYPE = ClassName.get(com.apollographql.apollo.api.Field::class.java)
     private val API_RESPONSE_FIELD_OBJECT_READER_TYPE = ClassName.get(
-        com.apollographql.android.api.graphql.Field.ObjectReader::class.java)
+        com.apollographql.apollo.api.Field.ObjectReader::class.java)
     private val API_RESPONSE_FIELD_LIST_READER_TYPE = ClassName.get(
-        com.apollographql.android.api.graphql.Field.ListReader::class.java)
+        com.apollographql.apollo.api.Field.ListReader::class.java)
     private val API_RESPONSE_FIELD_LIST_ITEM_READER_TYPE = ClassName.get(
-        com.apollographql.android.api.graphql.Field.ListItemReader::class.java)
+        com.apollographql.apollo.api.Field.ListItemReader::class.java)
     private val API_RESPONSE_FIELD_MAPPER_TYPE = ClassName.get(ResponseFieldMapper::class.java)
     private val API_RESPONSE_FIELD_CONDITIONAL_TYPE_READER_TYPE = ClassName.get(
-        com.apollographql.android.api.graphql.Field.ConditionalTypeReader::class.java)
+        com.apollographql.apollo.api.Field.ConditionalTypeReader::class.java)
 
     private fun normalizeGraphQlType(type: String) =
         type.removeSuffix("!").removeSurrounding(prefix = "[", suffix = "]").removeSuffix("!")

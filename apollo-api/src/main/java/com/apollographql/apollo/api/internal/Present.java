@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.apollographql.android.api.graphql.internal;
+package com.apollographql.apollo.api.internal;
 
 
 import java.util.Collections;
 import java.util.Set;
 
 import javax.annotation.Nullable;
-
-import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
 
 /**
  * Implementation of an {@link Optional} containing a reference.
@@ -44,17 +42,17 @@ final class Present<T> extends Optional<T> {
   }
 
   @Override public T or(T defaultValue) {
-    checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)");
+    Utils.checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)");
     return reference;
   }
 
   @Override public Optional<T> or(Optional<? extends T> secondChoice) {
-    checkNotNull(secondChoice);
+    Utils.checkNotNull(secondChoice);
     return this;
   }
 
   @Override public <V> Optional<V> transform(Function<? super T, V> function) {
-    return new Present<V>(checkNotNull(function.apply(reference),
+    return new Present<V>(Utils.checkNotNull(function.apply(reference),
         "the Function passed to Optional.transform() must not return null."));
   }
 

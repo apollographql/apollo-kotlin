@@ -1,6 +1,6 @@
 package com.apollographql.android.compiler
 
-import com.apollographql.android.api.graphql.ResponseFieldMapper
+import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.android.compiler.ir.*
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier

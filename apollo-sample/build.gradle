@@ -27,6 +27,8 @@ android {
 }
 
 dependencies {
+  compile dep.jsr305
+  compile dep.apolloRuntime
   compile dep.appcompat
   compile dep.okhttpLoggingInterceptor
 

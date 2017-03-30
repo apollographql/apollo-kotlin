@@ -1,9 +1,9 @@
 package com.apollographql.apollo.internal.interceptor;
 
-import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.api.graphql.Response;
-import com.apollographql.android.api.graphql.ResponseFieldMapper;
-import com.apollographql.android.api.graphql.ScalarType;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.internal.cache.normalized.Cache;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 public final class ApolloCacheInterceptor implements ApolloInterceptor {
   private final Cache cache;

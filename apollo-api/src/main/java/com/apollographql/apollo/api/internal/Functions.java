@@ -1,9 +1,7 @@
-package com.apollographql.android.api.graphql.internal;
+package com.apollographql.apollo.api.internal;
 
 
 import javax.annotation.Nullable;
-
-import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
 
 public class Functions {
   /**
@@ -48,7 +46,7 @@ public class Functions {
 
     @Override
     public String apply(Object o) {
-      checkNotNull(o); // eager for GWT.
+      Utils.checkNotNull(o); // eager for GWT.
       return o.toString();
     }
 

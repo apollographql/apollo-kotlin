@@ -1,6 +1,8 @@
 package com.apollographql.android.api.graphql;
 
-import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 
 import org.junit.Test;
 
@@ -19,7 +21,7 @@ public class CacheKeyForFieldTest {
 
   @Test
   public void testFieldWithNoArguments() {
-    Field field = Field.forString("hero", "hero", null, false);
+    com.apollographql.apollo.api.Field field = Field.forString("hero", "hero", null, false);
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
         return super.valueMap();

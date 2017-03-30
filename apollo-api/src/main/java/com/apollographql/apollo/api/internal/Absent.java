@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.apollographql.android.api.graphql.internal;
+package com.apollographql.apollo.api.internal;
 
 
 import java.util.Collections;
 import java.util.Set;
 
 import javax.annotation.Nullable;
-
-import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
 
 /**
  * Implementation of an {@link Optional} not containing a reference.
@@ -51,13 +49,13 @@ final class Absent<T> extends Optional<T> {
 
   @Override
   public T or(T defaultValue) {
-    return checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)");
+    return Utils.checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)");
   }
 
   @SuppressWarnings("unchecked") // safe covariant cast
   @Override
   public Optional<T> or(Optional<? extends T> secondChoice) {
-    return (Optional<T>) checkNotNull(secondChoice);
+    return (Optional<T>) Utils.checkNotNull(secondChoice);
   }
 
   @Override
@@ -68,7 +66,7 @@ final class Absent<T> extends Optional<T> {
 
   @Override
   public <V> Optional<V> transform(Function<? super T, V> function) {
-    checkNotNull(function);
+    Utils.checkNotNull(function);
     return Optional.absent();
   }
 
