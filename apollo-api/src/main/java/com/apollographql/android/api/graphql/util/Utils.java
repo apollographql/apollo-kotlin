@@ -5,18 +5,19 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 /**
- * Contains utility methods
+ * Contains utility methods for checking Preconditions
  */
 public final class Utils {
   private Utils() {
   }
 
   /**
-   * Checks if the object is null. Returns the object if it is non null,
-   * else throws a NullPointerException with the errorMessage.
-   * @param reference the object whose nullability has to be checked
+   * Checks if the object is null. Returns the object if it is non null, else throws a NullPointerException with the
+   * errorMessage.
+   *
+   * @param reference    the object whose nullability has to be checked
    * @param errorMessage the message to use with the NullPointerException
-   * @param <T> the value type
+   * @param <T>          the value type
    * @return the object itself
    * @throws NullPointerException if the object is null
    */
@@ -28,14 +29,13 @@ public final class Utils {
   }
 
   /**
-   * Checks if two {@link Set} are disjoint. Returns true if the sets
-   * don't have a single common element. Also returns true if either of the sets is
-   * null.
+   * Checks if two {@link Set} are disjoint. Returns true if the sets don't have a single common element. Also returns
+   * true if either of the sets is null.
+   *
    * @param setOne the first set
    * @param setTwo the second set
-   * @param <E> the value type contained within the sets
-   * @return true if the sets don't have a single common element or if
-   *         either of the sets is null.
+   * @param <E>    the value type contained within the sets
+   * @return true if the sets don't have a single common element or if either of the sets is null.
    */
   public static <E> boolean areDisjoint(Set<E> setOne, Set<E> setTwo) {
     if (setOne == null || setTwo == null) {
@@ -56,10 +56,10 @@ public final class Utils {
   }
 
   /**
-   * Checks if the object is null. Returns the object if it is non null,
-   * else throws a NullPointerException.
+   * Checks if the object is null. Returns the object if it is non null, else throws a NullPointerException.
+   *
    * @param reference the object whose nullability has to be checked
-   * @param <T> the value type
+   * @param <T>       the value type
    * @return the object itself
    * @throws NullPointerException if the object is null
    */
