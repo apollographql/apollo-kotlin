@@ -14,7 +14,7 @@ jdk:
   - oraclejdk8
 
 script:
-  - ./gradlew clean build connectedCheck -x checkstyleTest -x :apollo-integration:compileDebugUnitTestJavaWithJavac -x :apollo-integration:compileReleaseUnitTestJavaWithJavac -x :apollo-integration:compileDebugJavaWithJavac -x :apollo-integration:compileReleaseJavaWithJavac -Dapollographql.skipRuntimeDep=true -x apollo-gradle-plugin:test --stacktrace
+  - ./gradlew clean build connectedCheck -x checkstyleTest --stacktrace
 
 before_script:
   - echo no | android create avd --force -n test -t android-15 --abi armeabi-v7a
