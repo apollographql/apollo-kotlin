@@ -1,7 +1,7 @@
 package com.apollographql.apollo.internal.reader;
 
-import com.apollographql.android.api.graphql.Field;
-import com.apollographql.android.api.graphql.Operation;
+import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.Operation;
 
 import java.util.List;
 

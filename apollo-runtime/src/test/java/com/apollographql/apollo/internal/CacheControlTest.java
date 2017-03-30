@@ -1,12 +1,11 @@
 package com.apollographql.apollo.internal;
 
-import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.api.graphql.ResponseFieldMapper;
-import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.cache.normalized.CacheControl;
-import com.apollographql.apollo.internal.RealApolloCall;
 
 import org.junit.Before;
 import org.junit.Test;

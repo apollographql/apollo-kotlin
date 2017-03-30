@@ -1,6 +1,6 @@
 package com.apollographql.apollo.internal.interceptor;
 
-import com.apollographql.android.api.graphql.Operation;
+import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 
@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
 
-import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 public final class RealApolloInterceptorChain implements ApolloInterceptorChain {
   private final Operation operation;

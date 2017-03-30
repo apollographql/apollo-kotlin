@@ -1,9 +1,9 @@
 package com.apollographql.apollo.internal.reader;
 
-import com.apollographql.android.api.graphql.Field;
-import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.api.graphql.ResponseReader;
-import com.apollographql.android.api.graphql.ScalarType;
+import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.internal.field.FieldValueResolver;
 

@@ -1,6 +1,6 @@
 package com.apollographql.apollo.cache.normalized.lru;
 
-import com.apollographql.android.api.graphql.internal.Optional;
+import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.CacheStore;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.nytimes.android.external.cache.Cache;

@@ -1,6 +1,6 @@
 package com.apollographql.apollo;
 
-import com.apollographql.android.api.graphql.Response;
+import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.http.DiskLruCacheStore;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.cache.http.HttpCacheControl;

@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.apollographql.android.api.graphql.internal.Optional;
+import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.CacheStore;
 import com.apollographql.apollo.cache.normalized.Record;
 

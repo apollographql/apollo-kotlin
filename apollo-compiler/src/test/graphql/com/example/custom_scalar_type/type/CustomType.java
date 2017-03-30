@@ -1,6 +1,6 @@
 package com.example.custom_scalar_type.type;
 
-import com.apollographql.android.api.graphql.ScalarType;
+import com.apollographql.apollo.api.ScalarType;
 import java.lang.Class;
 import java.lang.Override;
 import java.lang.String;

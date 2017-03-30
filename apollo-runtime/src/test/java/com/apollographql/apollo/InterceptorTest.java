@@ -1,10 +1,8 @@
 package com.apollographql.apollo;
 
-import com.apollographql.android.api.graphql.Query;
-import com.apollographql.android.api.graphql.ResponseFieldMapper;
-import com.apollographql.android.api.graphql.ResponseReader;
-import com.apollographql.apollo.ApolloClient;
-import com.apollographql.apollo.HttpException;
+import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseReader;
 
 import org.junit.Before;
 import org.junit.Rule;

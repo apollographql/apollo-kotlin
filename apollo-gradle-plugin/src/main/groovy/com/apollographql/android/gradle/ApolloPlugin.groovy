@@ -24,7 +24,7 @@ import javax.inject.Inject
 class ApolloPlugin implements Plugin<Project> {
   private static final String NODE_VERSION = "6.7.0"
   public static final String TASK_GROUP = "apollo"
-  private static final String APOLLO_DEP_GROUP = "com.apollographql"
+  private static final String APOLLO_DEP_GROUP = "com.apollographql.apollo"
   private static final String RUNTIME_DEP_NAME = "apollo-runtime"
 
   private Project project
@@ -65,8 +65,7 @@ class ApolloPlugin implements Plugin<Project> {
               "apollo-runtime version ${apolloRuntimeDep.version} isn't compatible with the apollo-gradle-plugin version ${VersionKt.VERSION}")
         }
         if (System.getProperty("apollographql.skipRuntimeDep") != "true" && apolloRuntimeDep == null) {
-          //TODO https://github.com/apollographql/apollo-android/issues/374
-//          compileDepSet.add(project.dependencies.create("$APOLLO_DEP_GROUP:$RUNTIME_DEP_NAME:$VersionKt.VERSION"))
+          compileDepSet.add(project.dependencies.create("$APOLLO_DEP_GROUP:$RUNTIME_DEP_NAME:$VersionKt.VERSION"))
         }
       }
 

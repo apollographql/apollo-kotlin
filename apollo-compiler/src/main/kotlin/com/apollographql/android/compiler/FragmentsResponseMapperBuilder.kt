@@ -1,7 +1,7 @@
 package com.apollographql.android.compiler
 
-import com.apollographql.android.api.graphql.FragmentResponseFieldMapper
-import com.apollographql.android.api.graphql.ResponseReader
+import com.apollographql.apollo.api.FragmentResponseFieldMapper
+import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.android.compiler.ir.CodeGenerationContext
 import com.apollographql.android.compiler.ir.Fragment
 import com.squareup.javapoet.*
@@ -104,7 +104,8 @@ class FragmentsResponseMapperBuilder(
           }
 
   companion object {
-    private val API_RESPONSE_FIELD_MAPPER_TYPE = ClassName.get(FragmentResponseFieldMapper::class.java)
+    private val API_RESPONSE_FIELD_MAPPER_TYPE = ClassName.get(
+        FragmentResponseFieldMapper::class.java)
     private val RESPONSE_FIELD_MAPPER_TYPE = ParameterizedTypeName.get(API_RESPONSE_FIELD_MAPPER_TYPE,
         SchemaTypeSpecBuilder.FRAGMENTS_TYPE.withoutAnnotations())
     private val CONDITIONAL_TYPE_VAR = "conditionalType"

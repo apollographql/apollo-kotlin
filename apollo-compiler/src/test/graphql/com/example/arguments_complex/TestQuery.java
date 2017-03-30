@@ -1,12 +1,12 @@
 package com.example.arguments_complex;
 
-import com.apollographql.android.api.graphql.Field;
-import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.api.graphql.Query;
-import com.apollographql.android.api.graphql.ResponseFieldMapper;
-import com.apollographql.android.api.graphql.ResponseReader;
-import com.apollographql.android.api.graphql.internal.Optional;
-import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder;
+import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.example.arguments_complex.type.Episode;
 import java.io.IOException;
 import java.lang.Double;

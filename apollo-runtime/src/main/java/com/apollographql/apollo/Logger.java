@@ -1,6 +1,6 @@
 package com.apollographql.apollo;
 
-import com.apollographql.android.api.graphql.internal.Optional;
+import com.apollographql.apollo.api.internal.Optional;
 
 import javax.annotation.Nonnull;
 

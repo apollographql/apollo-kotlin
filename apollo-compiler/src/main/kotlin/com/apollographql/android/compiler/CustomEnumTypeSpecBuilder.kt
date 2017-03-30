@@ -1,6 +1,6 @@
 package com.apollographql.android.compiler
 
-import com.apollographql.android.api.graphql.ScalarType
+import com.apollographql.apollo.api.ScalarType
 import com.apollographql.android.compiler.ir.CodeGenerationContext
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.MethodSpec

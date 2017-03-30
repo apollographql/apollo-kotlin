@@ -50,7 +50,7 @@ class BasicAndroidSpec extends Specification {
     // Optional is not added to the generated classes
     assert !new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").getText(
         'UTF-8').contains(
-        "import com.apollographql.android.api.graphql.internal.Optional;")
+        "import com.apollographql.apollo.api.internal.Optional;")
   }
 
   def "installApolloCodegenTask is up to date if no changes occur to node_modules and package.json"() {
@@ -164,7 +164,7 @@ class BasicAndroidSpec extends Specification {
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").isFile()
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").getText(
-        'UTF-8').contains("import com.apollographql.android.api.graphql.internal.Optional;")
+        'UTF-8').contains("import com.apollographql.apollo.api.internal.Optional;")
   }
 
   def cleanupSpec() {

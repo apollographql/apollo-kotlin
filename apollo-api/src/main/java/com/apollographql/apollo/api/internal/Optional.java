@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apollographql.android.api.graphql.internal;
+package com.apollographql.apollo.api.internal;
 
 
 import java.io.Serializable;
@@ -23,7 +23,7 @@ import java.util.Set;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 
-import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 
 /**

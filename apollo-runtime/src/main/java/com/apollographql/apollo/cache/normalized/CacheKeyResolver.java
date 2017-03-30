@@ -1,8 +1,8 @@
 package com.apollographql.apollo.cache.normalized;
 
-import com.apollographql.android.api.graphql.Mutation;
-import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.api.graphql.Query;
+import com.apollographql.apollo.api.Mutation;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.Query;
 
 import java.util.Map;
 

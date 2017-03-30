@@ -4,10 +4,10 @@ import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.CustomTypeAdapter;
-import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.api.graphql.Response;
-import com.apollographql.android.api.graphql.ResponseFieldMapper;
-import com.apollographql.android.api.graphql.ScalarType;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.internal.cache.normalized.Cache;
@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 
-import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 @SuppressWarnings("WeakerAccess") public final class RealApolloCall<T> implements ApolloCall<T> {
   final Operation operation;

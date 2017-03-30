@@ -1,10 +1,10 @@
 package com.apollographql.apollo.internal.interceptor;
 
-import com.apollographql.android.api.graphql.Error;
-import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.api.graphql.Response;
-import com.apollographql.android.api.graphql.ResponseFieldMapper;
-import com.apollographql.android.api.graphql.ScalarType;
+import com.apollographql.apollo.api.Error;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.field.MapFieldValueResolver;

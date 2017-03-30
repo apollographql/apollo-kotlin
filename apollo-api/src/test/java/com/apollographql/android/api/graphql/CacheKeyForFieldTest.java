@@ -1,6 +1,8 @@
 package com.apollographql.android.api.graphql;
 
-import com.apollographql.android.api.graphql.util.UnmodifiableMapBuilder;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 
 import org.junit.Test;
 

@@ -4,7 +4,7 @@ package com.apollographql.android.rx;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloWatcher;
 import com.apollographql.apollo.internal.util.Cancelable;
-import com.apollographql.android.api.graphql.Response;
+import com.apollographql.apollo.api.Response;
 
 import java.io.IOException;
 
@@ -20,7 +20,7 @@ import rx.functions.Action1;
 import rx.functions.Cancellable;
 import rx.subscriptions.Subscriptions;
 
-import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 public final class RxApollo {
 

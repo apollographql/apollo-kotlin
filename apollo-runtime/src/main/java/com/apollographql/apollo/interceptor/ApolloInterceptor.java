@@ -1,8 +1,8 @@
 package com.apollographql.apollo.interceptor;
 
-import com.apollographql.android.api.graphql.Operation;
-import com.apollographql.android.api.graphql.Response;
-import com.apollographql.android.api.graphql.internal.Optional;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.Record;
 
 import java.io.IOException;

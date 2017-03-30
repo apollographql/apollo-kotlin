@@ -1,4 +1,4 @@
-package com.apollographql.android.api.graphql;
+package com.apollographql.apollo.api;
 
 import java.util.ArrayList;
 import java.util.List;
