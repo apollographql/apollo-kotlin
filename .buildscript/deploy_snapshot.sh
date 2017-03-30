@@ -21,6 +21,6 @@ elif [ "$TRAVIS_BRANCH" != "$BRANCH" ]; then
   echo "Skipping snapshot deployment: wrong branch. Expected '$BRANCH' but was '$TRAVIS_BRANCH'."
 else
   echo "Deploying snapshot..."
-  ./gradlew uploadArchives -PSONATYPE_NEXUS_USERNAME="${SONATYPE_NEXUS_USERNAME}" -PSONATYPE_NEXUS_PASSWORD="${SONATYPE_NEXUS_PASSWORD}"
+  ./gradlew uploadArchives -PSONATYPE_NEXUS_USERNAME="${SONATYPE_NEXUS_USERNAME}" -PSONATYPE_NEXUS_PASSWORD="${SONATYPE_NEXUS_PASSWORD}" -x :apollo-integration:compileDebugUnitTestJavaWithJavac -x :apollo-integration:compileReleaseUnitTestJavaWithJavac -x :apollo-integration:compileDebugJavaWithJavac -x :apollo-integration:compileReleaseJavaWithJavac
   echo "Snapshot deployed!"
 fi
