@@ -29,7 +29,7 @@ fun String.singularize(): String {
   return Pattern.compile(rule.component1(), Pattern.CASE_INSENSITIVE).matcher(this).replaceAll(rule.component2())
 }
 
-fun singularizationRules(): List<Pair<String, String>> {
+private fun singularizationRules(): List<Pair<String, String>> {
   return listOf(
       "s$" to "",
       "(s|si|u)s$" to "$1s",
@@ -62,7 +62,7 @@ fun singularizationRules(): List<Pair<String, String>> {
       "(quiz)zes$" to "$1")
 }
 
-fun irregular(): List<Pair<String, String>> {
+private fun irregular(): List<Pair<String, String>> {
   return listOf(
       "person" to "people",
       "man" to "men",
@@ -72,7 +72,7 @@ fun irregular(): List<Pair<String, String>> {
       "move" to "moves")
 }
 
-fun uncountable(): List<String> {
+private fun uncountable(): List<String> {
   return listOf("equipment", "information", "rice", "money", "species", "series", "fish", "sheep")
 }
 
