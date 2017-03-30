@@ -22,6 +22,8 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+
 /**
  * Implementation of an {@link Optional} containing a reference.
  */
@@ -42,17 +44,17 @@ final class Present<T> extends Optional<T> {
   }
 
   @Override public T or(T defaultValue) {
-    Utils.checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)");
+    checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)");
     return reference;
   }
 
   @Override public Optional<T> or(Optional<? extends T> secondChoice) {
-    Utils.checkNotNull(secondChoice);
+    checkNotNull(secondChoice);
     return this;
   }
 
   @Override public <V> Optional<V> transform(Function<? super T, V> function) {
-    return new Present<V>(Utils.checkNotNull(function.apply(reference),
+    return new Present<V>(checkNotNull(function.apply(reference),
         "the Function passed to Optional.transform() must not return null."));
   }
 

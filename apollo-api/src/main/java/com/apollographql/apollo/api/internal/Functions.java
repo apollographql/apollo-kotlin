@@ -3,6 +3,8 @@ package com.apollographql.apollo.api.internal;
 
 import javax.annotation.Nullable;
 
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+
 public class Functions {
   /**
    * Returns the identity function.
@@ -46,7 +48,7 @@ public class Functions {
 
     @Override
     public String apply(Object o) {
-      Utils.checkNotNull(o); // eager for GWT.
+      checkNotNull(o); // eager for GWT.
       return o.toString();
     }
 

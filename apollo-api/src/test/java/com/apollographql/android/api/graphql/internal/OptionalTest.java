@@ -177,7 +177,7 @@ public final class OptionalTest {
       Optional<String> unused =
           Optional.of("a")
               .transform(
-                  new com.apollographql.apollo.api.internal.Function<String, String>() {
+                  new Function<String, String>() {
                     @Override
                     public String apply(String input) {
                       return null;

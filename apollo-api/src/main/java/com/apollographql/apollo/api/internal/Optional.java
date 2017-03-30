@@ -23,6 +23,8 @@ import java.util.Set;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+
 
 /**
  * An immutable object that may contain a non-null reference to another object. Each instance of this type either
@@ -91,7 +93,7 @@ public abstract class Optional<T> implements Serializable {
    * @throws NullPointerException if {@code reference} is null
    */
   public static <T> Optional<T> of(T reference) {
-    return new Present<T>(Utils.checkNotNull(reference));
+    return new Present<T>(checkNotNull(reference));
   }
 
   /**

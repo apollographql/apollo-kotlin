@@ -21,7 +21,7 @@ public class CacheKeyForFieldTest {
 
   @Test
   public void testFieldWithNoArguments() {
-    com.apollographql.apollo.api.Field field = Field.forString("hero", "hero", null, false);
+    Field field = Field.forString("hero", "hero", null, false);
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
         return super.valueMap();

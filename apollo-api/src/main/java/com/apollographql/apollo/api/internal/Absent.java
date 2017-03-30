@@ -22,6 +22,8 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+
 /**
  * Implementation of an {@link Optional} not containing a reference.
  */
@@ -49,13 +51,13 @@ final class Absent<T> extends Optional<T> {
 
   @Override
   public T or(T defaultValue) {
-    return Utils.checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)");
+    return checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)");
   }
 
   @SuppressWarnings("unchecked") // safe covariant cast
   @Override
   public Optional<T> or(Optional<? extends T> secondChoice) {
-    return (Optional<T>) Utils.checkNotNull(secondChoice);
+    return (Optional<T>) checkNotNull(secondChoice);
   }
 
   @Override
@@ -66,7 +68,7 @@ final class Absent<T> extends Optional<T> {
 
   @Override
   public <V> Optional<V> transform(Function<? super T, V> function) {
-    Utils.checkNotNull(function);
+    checkNotNull(function);
     return Optional.absent();
   }
 
