@@ -133,7 +133,6 @@ public final class ApolloClient implements ApolloCall.Factory {
      * The HTTP client used for making network requests.
      *
      * @param okHttpClient the client to use.
-     *
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder okHttpClient(@Nonnull OkHttpClient okHttpClient) {
@@ -145,7 +144,6 @@ public final class ApolloClient implements ApolloCall.Factory {
      * Set the API server's base url
      *
      * @param serverUrl the url to set.
-     *
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder serverUrl(@Nonnull HttpUrl serverUrl) {
@@ -157,7 +155,6 @@ public final class ApolloClient implements ApolloCall.Factory {
      * Set the API server's base url
      *
      * @param serverUrl the url to set.
-     *
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder serverUrl(@Nonnull String serverUrl) {
@@ -166,13 +163,11 @@ public final class ApolloClient implements ApolloCall.Factory {
     }
 
     /**
-     * Sets the cache to be used for reading and writing cached responses.
+     * Sets the cache to be used for reading and writing cached http responses.
      *
-     * @param cacheStore The store to use for reading and writing cached response.
-     *
-     * @param evictionStrategy EvictionStrategy decides when the data in the cacheStore has become stale and is no
-     *                         longer valid
-     *
+     * @param cacheStore       The store to use for reading and writing cached response.
+     * @param evictionStrategy EvictionStrategy decides when the data in the cacheStore becomes stale and is no longer
+     *                         valid
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder httpCache(@Nonnull ResponseCacheStore cacheStore, @Nonnull EvictionStrategy evictionStrategy) {
@@ -181,6 +176,13 @@ public final class ApolloClient implements ApolloCall.Factory {
       return this;
     }
 
+    /**
+     * Sets the cache to be used as a normalized cache store.
+     *
+     * @param cacheStore the cache store to use
+     * @param cacheKeyResolver the cache key resolver
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
     public Builder normalizedCache(@Nonnull CacheStore cacheStore,
         @Nonnull CacheKeyResolver<Map<String, Object>> cacheKeyResolver) {
       this.cache = new RealCache(checkNotNull(cacheStore, "cacheStore == null"),
@@ -188,6 +190,9 @@ public final class ApolloClient implements ApolloCall.Factory {
       return this;
     }
 
+    /**
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
     public <T> Builder withCustomTypeAdapter(@Nonnull ScalarType scalarType,
         @Nonnull final CustomTypeAdapter<T> customTypeAdapter) {
       customTypeAdapters.put(scalarType, customTypeAdapter);
@@ -216,11 +221,21 @@ public final class ApolloClient implements ApolloCall.Factory {
       return this;
     }
 
+    /**
+     * Sets the default {@link HttpCacheControl}strategy.
+     *
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
     public Builder defaultHttpCacheControl(@Nonnull HttpCacheControl cacheControl) {
       this.defaultHttpCacheControl = checkNotNull(cacheControl, "cacheControl == null");
       return this;
     }
 
+    /**
+     * Sets the default normalized {@link CacheControl} strategy.
+     *
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
     public Builder defaultCacheControl(@Nonnull CacheControl cacheControl) {
       this.defaultCacheControl = checkNotNull(cacheControl, "cacheControl == null");
       return this;
@@ -239,8 +254,7 @@ public final class ApolloClient implements ApolloCall.Factory {
     /**
      * Builds the {@link ApolloClient} instance using the configured values.
      *
-     * Note that if the {@link #dispatcher} is not called,
-     * then a default {@link ExecutorService} is used.
+     * Note that if the {@link #dispatcher} is not called, then a default {@link ExecutorService} is used.
      *
      * @return The configured {@link ApolloClient}
      */
