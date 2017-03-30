@@ -108,21 +108,22 @@ class ApolloAndroidPluginSpec extends Specification {
     assert (project.extensions.findByType(ApolloExtension.class)) != null
   }
 
-  def "adds apollo-runtime dependency if not skipped and not found in compile dep list"() {
-    given:
-    def project = ProjectBuilder.builder().build()
-    ApolloPluginTestHelper.setupDefaultAndroidProject(project)
-
-    when:
-    ApolloPluginTestHelper.applyApolloPlugin(project)
-    project.evaluate()
-
-    then:
-    def apolloRuntime = project.configurations.getByName("compile").dependencies.find {
-      it.group == "com.apollographql.android" && it.name == "runtime"
-    }
-    assert apolloRuntime != null
-  }
+  //TODO https://github.com/apollographql/apollo-android/issues/374
+//  def "adds apollo-runtime dependency if not skipped and not found in compile dep list"() {
+//    given:
+//    def project = ProjectBuilder.builder().build()
+//    ApolloPluginTestHelper.setupDefaultAndroidProject(project)
+//
+//    when:
+//    ApolloPluginTestHelper.applyApolloPlugin(project)
+//    project.evaluate()
+//
+//    then:
+//    def apolloRuntime = project.configurations.getByName("compile").dependencies.find {
+//      it.group == "com.apollographql.android" && it.name == "runtime"
+//    }
+//    assert apolloRuntime != null
+//  }
 
   def "doesn't add apollo-runtime dependency if skip property is set" () {
     given:
