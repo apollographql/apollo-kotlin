@@ -6,7 +6,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.apollographql.apollo.ApolloCall;
-import com.apollographql.android.api.graphql.Response;
+import com.apollographql.apollo.api.Response;
 import com.example.FeedQuery;
 import com.example.type.FeedType;
 
