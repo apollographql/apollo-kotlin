@@ -3,7 +3,7 @@ package com.apollographql.android.compiler.ir
 import com.apollographql.android.compiler.ClassNames
 import com.apollographql.android.compiler.JavaTypeResolver
 import com.apollographql.android.compiler.SchemaTypeSpecBuilder
-import com.cesarferreira.pluralize.singularize
+import com.apollographql.android.compiler.singularize
 import com.squareup.javapoet.*
 import java.util.*
 import javax.lang.model.element.Modifier
