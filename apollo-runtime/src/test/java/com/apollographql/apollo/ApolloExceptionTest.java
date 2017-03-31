@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
+import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.json.JsonEncodingException;
 
@@ -65,7 +66,6 @@ import static junit.framework.Assert.fail;
 
   @Test public void httpException() throws Exception {
     server.enqueue(new MockResponse().setResponseCode(401).setBody("Unauthorized request!"));
-
     try {
       apolloClient.newCall(emptyQuery).execute();
       fail("Expected ApolloHttpException");
@@ -75,7 +75,10 @@ import static junit.framework.Assert.fail;
       assertThat(e.rawResponse().body().string()).isEqualTo("Unauthorized request!");
       assertThat(e.getMessage()).isEqualTo("HTTP 401 Client Error");
     }
+  }
 
+  @Test public void httpExceptionAsync() throws Exception {
+    server.enqueue(new MockResponse().setResponseCode(401).setBody("Unauthorized request!"));
     apolloClient.newCall(emptyQuery).enqueue(new ApolloCall.Callback() {
       @Override public void onResponse(@Nonnull Response response) {
         fail("Expected ApolloHttpException");
@@ -91,20 +94,10 @@ import static junit.framework.Assert.fail;
     });
   }
 
-  @Test public void testTimeoutException() throws Exception {
-    try {
-      apolloClient.newCall(emptyQuery).execute();
-      fail("Expected ApolloHttpException");
-    } catch (ApolloHttpException e) {
-      assertThat(e.code()).isEqualTo(0);
-      assertThat(e.message()).isEqualTo("Failed to execute http call");
-      assertThat(e.getMessage()).isEqualTo("Failed to execute http call");
-      assertThat(e.rawResponse()).isNull();
-      assertThat(e.getCause().getClass()).isEqualTo(SocketTimeoutException.class);
-    }
-
-    apolloClient.newCall(emptyQuery).enqueue(new ApolloCall.Callback() {
-      @Override public void onResponse(@Nonnull Response response) {
+  @Test public void httpExceptionPrefetch() throws Exception {
+    server.enqueue(new MockResponse().setResponseCode(401).setBody("Unauthorized request!"));
+    apolloClient.prefetch(emptyQuery).enqueue(new ApolloPrefetch.Callback() {
+      @Override public void onSuccess() {
         fail("Expected ApolloHttpException");
       }
 
@@ -113,6 +106,46 @@ import static junit.framework.Assert.fail;
       }
 
       @Override public void onHttpError(@Nonnull ApolloHttpException e) {
+      }
+    });
+  }
+
+  @Test public void testTimeoutException() throws Exception {
+    try {
+      apolloClient.newCall(emptyQuery).execute();
+      fail("Expected ApolloNetworkException");
+    } catch (ApolloNetworkException e) {
+      assertThat(e.getMessage()).isEqualTo("Failed to execute http call");
+      assertThat(e.getCause().getClass()).isEqualTo(SocketTimeoutException.class);
+    }
+  }
+
+  @Test public void testTimeoutExceptionAsync() throws Exception {
+    apolloClient.newCall(emptyQuery).enqueue(new ApolloCall.Callback() {
+      @Override public void onResponse(@Nonnull Response response) {
+        fail("Expected ApolloNetworkException");
+      }
+
+      @Override public void onFailure(@Nonnull ApolloException e) {
+        fail("Expected ApolloNetworkException");
+      }
+
+      @Override public void onNetworkError(@Nonnull ApolloNetworkException e) {
+      }
+    });
+  }
+
+  @Test public void testTimeoutExceptionPrefetch() throws Exception {
+    apolloClient.prefetch(emptyQuery).enqueue(new ApolloPrefetch.Callback() {
+      @Override public void onSuccess() {
+        fail("Expected ApolloNetworkException");
+      }
+
+      @Override public void onFailure(@Nonnull ApolloException e) {
+        fail("Expected ApolloNetworkException");
+      }
+
+      @Override public void onNetworkError(@Nonnull ApolloNetworkException e) {
       }
     });
   }
@@ -126,7 +159,10 @@ import static junit.framework.Assert.fail;
       assertThat(e.getMessage()).isEqualTo("Failed to parse http response");
       assertThat(e.getCause().getClass()).isEqualTo(JsonEncodingException.class);
     }
+  }
 
+  @Test public void testParseExceptionAsync() throws Exception {
+    server.enqueue(new MockResponse().setBody("Noise"));
     apolloClient.newCall(emptyQuery).enqueue(new ApolloCall.Callback() {
       @Override public void onResponse(@Nonnull Response response) {
         fail("Expected ApolloParseException");

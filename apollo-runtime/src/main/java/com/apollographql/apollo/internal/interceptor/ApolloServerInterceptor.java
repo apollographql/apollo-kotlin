@@ -3,7 +3,7 @@ package com.apollographql.apollo.internal.interceptor;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.exception.ApolloHttpException;
+import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
@@ -56,14 +56,14 @@ import okio.Buffer;
       httpCall = httpCall(operation);
     } catch (IOException e) {
       logger.e(e, "Failed to prepare http call");
-      throw new ApolloHttpException("Failed to prepare http call", e);
+      throw new ApolloNetworkException("Failed to prepare http call", e);
     }
 
     try {
       return new InterceptorResponse(httpCall.execute());
     } catch (IOException e) {
       logger.e(e, "Failed to execute http call");
-      throw new ApolloHttpException("Failed to execute http call", e);
+      throw new ApolloNetworkException("Failed to execute http call", e);
     }
   }
 
@@ -76,14 +76,14 @@ import okio.Buffer;
           httpCall = httpCall(operation);
         } catch (IOException e) {
           logger.e(e, "Failed to prepare http call");
-          callBack.onFailure(new ApolloHttpException("Failed to prepare http call", e));
+          callBack.onFailure(new ApolloNetworkException("Failed to prepare http call", e));
           return;
         }
 
         httpCall.enqueue(new Callback() {
           @Override public void onFailure(Call call, IOException e) {
             logger.e(e, "Failed to execute http call");
-            callBack.onFailure(new ApolloHttpException("Failed to execute http call", e));
+            callBack.onFailure(new ApolloNetworkException("Failed to execute http call", e));
           }
 
           @Override public void onResponse(Call call, Response response) throws IOException {

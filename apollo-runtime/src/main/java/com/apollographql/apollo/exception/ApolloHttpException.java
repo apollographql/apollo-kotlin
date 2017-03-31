@@ -16,13 +16,6 @@ public final class ApolloHttpException extends ApolloException {
     this.rawResponse = rawResponse;
   }
 
-  public ApolloHttpException(String message, Throwable cause) {
-    super(message, cause);
-    this.code = 0;
-    this.message = message != null ? message : "";
-    rawResponse = null;
-  }
-
   public int code() {
     return code;
   }

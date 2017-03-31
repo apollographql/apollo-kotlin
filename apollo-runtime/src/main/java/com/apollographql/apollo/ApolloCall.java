@@ -6,6 +6,7 @@ import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
+import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.internal.util.Cancelable;
 
@@ -32,6 +33,10 @@ public interface ApolloCall<T> extends Cancelable {
     public abstract void onFailure(@Nonnull ApolloException e);
 
     public void onHttpError(@Nonnull ApolloHttpException e) {
+      onFailure(e);
+    }
+
+    public void onNetworkError(@Nonnull ApolloNetworkException e) {
       onFailure(e);
     }
 

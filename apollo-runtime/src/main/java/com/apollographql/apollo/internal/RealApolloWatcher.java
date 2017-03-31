@@ -7,6 +7,7 @@ import com.apollographql.apollo.api.internal.Utils;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
+import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.internal.cache.normalized.Cache;
 
@@ -84,6 +85,8 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
           sourceCallback.onHttpError((ApolloHttpException) e);
         } else if (e instanceof ApolloParseException) {
           sourceCallback.onParseError((ApolloParseException) e);
+        } else if (e instanceof ApolloNetworkException) {
+          sourceCallback.onNetworkError((ApolloNetworkException) e);
         } else {
           sourceCallback.onFailure(e);
         }

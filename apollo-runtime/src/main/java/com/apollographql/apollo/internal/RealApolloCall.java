@@ -10,6 +10,7 @@ import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
+import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
@@ -103,6 +104,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
             callback.onHttpError((ApolloHttpException) e);
           } else if (e instanceof ApolloParseException) {
             callback.onParseError((ApolloParseException) e);
+          } else if (e instanceof ApolloNetworkException) {
+            callback.onNetworkError((ApolloNetworkException) e);
           } else {
             callback.onFailure(e);
           }

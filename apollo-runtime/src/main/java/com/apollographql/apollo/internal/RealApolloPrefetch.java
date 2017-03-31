@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
+import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
@@ -21,6 +22,7 @@ import javax.annotation.Nullable;
 
 import okhttp3.Call;
 import okhttp3.HttpUrl;
+import okhttp3.Response;
 
 @SuppressWarnings("WeakerAccess") public final class RealApolloPrefetch implements ApolloPrefetch {
   final Operation operation;
@@ -63,8 +65,14 @@ import okhttp3.HttpUrl;
 
     interceptorChain.proceedAsync(dispatcher, new ApolloInterceptor.CallBack() {
       @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
+        Response httpResponse = response.httpResponse.get();
+        if (!httpResponse.isSuccessful()) {
+          onFailure(new ApolloHttpException(httpResponse));
+          return;
+        }
+
         try {
-          response.httpResponse.get().close();
+          httpResponse.close();
         } catch (Exception e) {
           onFailure(new ApolloException("Failed to close http response", e));
           return;
@@ -79,6 +87,8 @@ import okhttp3.HttpUrl;
         if (callback != null) {
           if (e instanceof ApolloHttpException) {
             callback.onHttpError((ApolloHttpException) e);
+          } else if (e instanceof ApolloNetworkException) {
+            callback.onNetworkError((ApolloNetworkException) e);
           } else {
             callback.onFailure(e);
           }
