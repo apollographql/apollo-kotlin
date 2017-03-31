@@ -41,6 +41,19 @@ import okhttp3.Response;
 
 import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
 
+/**
+ * ApolloClient class represents the abstraction for the graphQL client that will be used to
+ * execute queries and read the responses back.
+ *
+ * <h3>ApolloClient should be shared</h3>
+ *
+ * Since each ApolloClient holds its own connection pool and thread pool, it is recommended to only create a single
+ * ApolloClient and use that for execution of all the queries, as this would reduce latency and would also save
+ * memory. Conversely, creating a client for each query execution would result in resource wastage on idle pools.
+ *
+ *
+ * <p>See the {@link ApolloClient.Builder} class for customizing the ApolloClient.
+ */
 public final class ApolloClient implements ApolloCall.Factory {
   public static Builder builder() {
     return new Builder();
@@ -130,7 +143,7 @@ public final class ApolloClient implements ApolloCall.Factory {
     }
 
     /**
-     * The HTTP client used for making network requests.
+     * Set the {@link OkHttpClient} to be used for making network requests.
      *
      * @param okHttpClient the client to use.
      * @return The {@link Builder} object to be used for chaining method calls
@@ -179,7 +192,7 @@ public final class ApolloClient implements ApolloCall.Factory {
     /**
      * Sets the cache to be used as a normalized cache store.
      *
-     * @param cacheStore the cache store to use
+     * @param cacheStore       the cache store to use
      * @param cacheKeyResolver the cache key resolver
      * @return The {@link Builder} object to be used for chaining method calls
      */
