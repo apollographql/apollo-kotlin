@@ -34,6 +34,10 @@ public interface ApolloCall<T> extends Cancelable {
 
     public void onHttpError(@Nonnull ApolloHttpException e) {
       onFailure(e);
+      okhttp3.Response response = e.rawResponse();
+      if (response != null) {
+        response.close();
+      }
     }
 
     public void onNetworkError(@Nonnull ApolloNetworkException e) {
