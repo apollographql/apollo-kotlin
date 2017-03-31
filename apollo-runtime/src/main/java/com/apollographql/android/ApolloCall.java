@@ -21,6 +21,7 @@ public interface ApolloCall<T> extends Cancelable {
    *
    * @return The successful or failed {@link Response}
    * @throws IOException if the request could not be executed due to a cancellation, a timeout or a network failure
+   * @throws IllegalStateException when the call has already been executed
    */
   @Nonnull Response<T> execute() throws IOException;
 
@@ -30,6 +31,7 @@ public interface ApolloCall<T> extends Cancelable {
    * currently being executed.
    *
    * @param callback Callback which will handle the response or a failure exception.
+   * @throws IllegalStateException when the call has already been executed
    */
   void enqueue(@Nullable Callback<T> callback);
 

@@ -11,9 +11,8 @@ import javax.annotation.Nullable;
  * stores the raw response in the request/response cache and defers the parsing to a later time.</p>
  *
  *
- * <p>Use this object for use cases when the data needs to be downloaded, but is not required to be shown immediately to
- * the user. e.g. background update/syncing. Instead the parsing can be deferred to a later time when the downloaded
- * data needs to be shown to the user.</p>
+ * <p>Use this object for use cases when the data needs to be downloaded, but is not required for immediate
+ * consumption. e.g.background update/syncing.</p>
  */
 public interface ApolloPrefetch {
 
@@ -21,6 +20,7 @@ public interface ApolloPrefetch {
    * Sends the request immediately and blocks until the response can be processed or is an error.
    *
    * @throws IOException if the request could not be executed due to a cancellation, a timeout or a network failure
+   * @throws IllegalStateException when the call has already been executed
    */
   void execute() throws IOException;
 
@@ -29,15 +29,16 @@ public interface ApolloPrefetch {
    * The dispatcher defines when the request will run: usually immediately unless there are several other requests
    * currently being executed.
    *
-   * @param callback Callback which will handle the success response or a failure exception.
+   * @param callback Callback which will handle the success response or a failure exception
+   * @throws IllegalStateException when the call has already been executed
    */
   @Nonnull ApolloPrefetch enqueue(@Nullable Callback callback);
 
   /**
-   * Creates a new, identical ApolloPrefetch to this one which can be enqueued or executed even if this call
-   * has already been.
+   * Creates a new, identical ApolloPrefetch to this one which can be enqueued or executed even if this one has
+   * already been executed.
    *
-   * @return The cloned ApolloPrefetch object.
+   * @return The cloned ApolloPrefetch object
    */
   ApolloPrefetch clone();
 
