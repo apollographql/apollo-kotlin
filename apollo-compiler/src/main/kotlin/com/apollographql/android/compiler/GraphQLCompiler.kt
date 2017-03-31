@@ -52,14 +52,6 @@ class GraphQLCompiler {
         }
   }
 
-  private fun String.formatPackageName(): String {
-    val parts = split(File.separatorChar)
-    (parts.size - 1 downTo 2)
-        .filter { parts[it - 2] == "src" && parts[it] == "graphql" }
-        .forEach { return parts.subList(it + 1, parts.size).dropLast(1).joinToString(".") }
-    throw IllegalArgumentException("Files must be organized like src/main/graphql/...")
-  }
-
   private fun List<TypeDeclaration>.supportedTypeDeclarations() =
       filter { it.kind == TypeDeclaration.KIND_ENUM || it.kind == TypeDeclaration.KIND_INPUT_OBJECT_TYPE }
 
