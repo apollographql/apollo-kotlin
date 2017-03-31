@@ -7,27 +7,28 @@ package com.apollographql.android.cache.http;
 public enum HttpCacheControl {
 
   /**
-   * Signals the apollo client to first fetch the data from the cache. If that fails, then
-   * the data is fetched from the network.
+   * Signals the apollo client to first fetch the data from the http cache. If the data is not present in
+   * the cache, then it is fetched from the network.
    */
   CACHE_FIRST("cache-first"),
   /**
-   * Signals the apollo client to only fetch data from the cache. An exception is thrown if the cache read
-   * fails.
+   * Signals the apollo client to only fetch the data from the http cache. If the data is not present in the cache, an
+   * exception is thrown.
    */
   CACHE_ONLY("cache-only"),
   /**
-   * Signals the apollo client to only fetch data from a network request. An exception is thrown if the network request
-   * fails.
+   * Signals the apollo client to only fetch the data from the network request. If the network request fails, an
+   * exception is thrown.
    */
   NETWORK_ONLY("network-only"),
   /**
    * Signals the apollo client to first fetch the data from the network request. If the network request fails, then
-   * the data is fetched from the cache.
+   * the data is fetched from the http cache. If the data in the cache has become stale, an exception is thrown.
    */
   NETWORK_FIRST("network-first"),
   /**
-   * Ensures that the stale data is not deleted from the cache in case a network request results in an error.
+   * Signals the apollo client to first fetch the data from the network request. If the network request fails, then
+   * the data is fetched from the http cache even if it has become stale.
    */
   NETWORK_BEFORE_STALE("network-before-stale"),
   /**
