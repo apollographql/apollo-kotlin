@@ -16,7 +16,6 @@ buildscript {
     repositories {
         jcenter()
         maven { url "https://jitpack.io" }
-        mavenCentral()
     }
     dependencies {
         
@@ -31,7 +30,6 @@ Latest development changes are available in Sonatype's snapshots repository:
 buildscript {
   repositories {
     jcenter()
-    maven { url "https://jitpack.io" }
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
   }
   dependencies {
@@ -43,7 +41,11 @@ buildscript {
 
 The plugin can then be applied as follows within your app module's `build.gradle` :
 
+```
 apply plugin: 'com.apollographql.android'
+```
+
+The Android Plugin must be applied before the Apollo plugin
 
 ## Generate Code using Apollo
 
