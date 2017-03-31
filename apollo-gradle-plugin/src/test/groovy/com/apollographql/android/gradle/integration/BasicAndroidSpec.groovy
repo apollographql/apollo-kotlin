@@ -87,7 +87,6 @@ class BasicAndroidSpec extends Specification {
     replaceTextInFile(new File(testProjectDir, "build/apollo-codegen/node_modules/apollo-codegen/package.json")) {
       it.replace("\"version\": \"$GraphQLCompiler.APOLLOCODEGEN_VERSION\"", "\"version\": \"0.10.1\"")
     }
-    new File(testProjectDir, "build/apollo-codegen/package.json") << "\n"
 
     when:
     def result = GradleRunner.create().withProjectDir(testProjectDir)
