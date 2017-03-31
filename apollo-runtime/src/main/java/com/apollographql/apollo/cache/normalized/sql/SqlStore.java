@@ -1,8 +1,8 @@
 package com.apollographql.apollo.cache.normalized.sql;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.CacheStore;
@@ -21,12 +21,26 @@ import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLU
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.TABLE_RECORDS;
 
 public final class SqlStore extends CacheStore {
+  private static final String INSERT_STATEMENT =
+      String.format("INSERT INTO %s (%s,%s) VALUES (?,?)",
+          TABLE_RECORDS,
+          COLUMN_KEY,
+          COLUMN_RECORD);
+  private static final String UPDATE_STATEMENT =
+      String.format("UPDATE %s SET %s=?, %s=? WHERE %s=?",
+          TABLE_RECORDS,
+          COLUMN_KEY,
+          COLUMN_RECORD,
+          COLUMN_KEY);
   SQLiteDatabase database;
   private final FieldsAdapter parser;
   private final ApolloSqlHelper dbHelper;
   private final String[] allColumns = {ApolloSqlHelper.COLUMN_ID,
       ApolloSqlHelper.COLUMN_KEY,
       ApolloSqlHelper.COLUMN_RECORD};
+
+  private final SQLiteStatement insertStatement;
+  private final SQLiteStatement updateStatement;
 
   public static SqlStore create(ApolloSqlHelper helper, FieldsAdapter adapter) {
     return new SqlStore(helper, adapter);
@@ -36,6 +50,8 @@ public final class SqlStore extends CacheStore {
     this.dbHelper = dbHelper;
     database = dbHelper.getWritableDatabase();
     this.parser = parser;
+    insertStatement = database.compileStatement(INSERT_STATEMENT);
+    updateStatement = database.compileStatement(UPDATE_STATEMENT);
   }
 
   @Nullable public Record loadRecord(String key) {
@@ -71,23 +87,19 @@ public final class SqlStore extends CacheStore {
   }
 
   long createRecord(String key, String fields) {
-    ContentValues values = contentValuesForRecord(key, fields);
-    long recordId = database.insert(TABLE_RECORDS, null, values);
+    insertStatement.bindString(1, key);
+    insertStatement.bindString(2, fields);
+
+    long recordId = insertStatement.executeInsert();
     return recordId;
   }
 
   void updateRecord(String key, String fields) {
-    ContentValues values = contentValuesForRecord(key, fields);
-    String selection = COLUMN_KEY + " = ?";
-    String[] selectionArgs = new String[]{key};
-    database.update(TABLE_RECORDS, values, selection, selectionArgs);
-  }
+    updateStatement.bindString(1, key);
+    updateStatement.bindString(2, fields);
+    updateStatement.bindString(3, key);
 
-  private ContentValues contentValuesForRecord(String key, String fields) {
-    ContentValues values = new ContentValues(2);
-    values.put(COLUMN_KEY, key);
-    values.put(COLUMN_RECORD, fields);
-    return values;
+    updateStatement.executeInsert();
   }
 
   Optional<Record> selectRecordForKey(String key) {
