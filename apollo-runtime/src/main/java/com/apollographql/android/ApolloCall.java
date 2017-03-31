@@ -66,6 +66,7 @@ public interface ApolloCall<T> extends Cancelable {
    * Communicates responses from a server or offline requests.
    */
   interface Callback<T> {
+
     /**
      * Gets called when GraphQl response is received.
      *

@@ -85,7 +85,7 @@ public final class ApolloClient implements ApolloCall.Factory {
   }
 
   /**
-   * Prepares the request which will be executed at some point in the future.
+   * Prepares the {@link ApolloCall} request which will be executed at some point in the future.
    */
   @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloCall<T> newCall(
@@ -105,11 +105,7 @@ public final class ApolloClient implements ApolloCall.Factory {
   }
 
   /**
-   * <p>Fetches the graph response from the server but <b>doesn't</b> inflate the response into models.
-   * Instead it stores the raw response in the request/response cache and defers the parsing to a later time. </p>
-   *
-   * <p>This method is ideal for a use case when the data needs to be downloaded, but it is not required to be shown
-   * immediately to the user. e.g. background update/syncing.</p>
+   * Prepares the {@link ApolloPrefetch} which will be executed at some point in the future.
    */
   @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
