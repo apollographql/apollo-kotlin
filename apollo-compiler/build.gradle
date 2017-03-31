@@ -14,7 +14,6 @@ dependencies {
   compile dep.javaPoet
   compile dep.kotlinStdLib
   compile dep.moshi
-  compile dep.pluralizer
   compile dep.jsr305
   compile project(":apollo-api")
 

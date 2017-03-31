@@ -1,5 +1,8 @@
 package com.apollographql.android.compiler
 
+import com.apollographql.android.compiler.Annotations
+import com.apollographql.android.compiler.ClassNames
+import com.apollographql.android.compiler.NullableValueGenerationType
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 

@@ -1,6 +1,6 @@
 package com.apollographql.android.compiler.ir
 
-import com.apollographql.android.api.graphql.Operation
+import com.apollographql.apollo.api.Operation
 import com.apollographql.android.compiler.SchemaTypeSpecBuilder
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier

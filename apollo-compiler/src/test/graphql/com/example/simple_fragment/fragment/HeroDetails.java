@@ -1,8 +1,8 @@
 package com.example.simple_fragment.fragment;
 
-import com.apollographql.android.api.graphql.Field;
-import com.apollographql.android.api.graphql.ResponseFieldMapper;
-import com.apollographql.android.api.graphql.ResponseReader;
+import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseReader;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;

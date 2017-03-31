@@ -1,9 +1,9 @@
 package com.example.fragments_with_type_condition.fragment;
 
-import com.apollographql.android.api.graphql.Field;
-import com.apollographql.android.api.graphql.ResponseFieldMapper;
-import com.apollographql.android.api.graphql.ResponseReader;
-import com.apollographql.android.api.graphql.internal.Optional;
+import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.internal.Optional;
 import java.io.IOException;
 import java.lang.Double;
 import java.lang.Object;
