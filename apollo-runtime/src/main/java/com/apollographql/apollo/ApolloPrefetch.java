@@ -1,19 +1,19 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.internal.util.Cancelable;
+
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface ApolloPrefetch {
+public interface ApolloPrefetch extends Cancelable {
 
   void execute() throws IOException;
 
   @Nonnull ApolloPrefetch enqueue(@Nullable Callback callback);
 
   ApolloPrefetch clone();
-
-  void cancel();
 
   interface Callback {
     void onSuccess();
