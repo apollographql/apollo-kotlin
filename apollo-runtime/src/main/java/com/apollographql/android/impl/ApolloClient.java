@@ -104,6 +104,13 @@ public final class ApolloClient implements ApolloCall.Factory {
         .cacheControl(defaultCacheControl);
   }
 
+  /**
+   * <p>Fetches the graph response from the server but <b>doesn't</b> inflate the response into models.
+   * Instead it stores the raw response in the request/response cache and defers the parsing to a later time. </p>
+   *
+   * <p>This method is ideal for a use case when the data needs to be downloaded, but it is not required to be shown
+   * immediately to the user. e.g. background update/syncing.</p>
+   */
   @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
       @Nonnull Operation<D, T, V> operation) {
@@ -210,9 +217,9 @@ public final class ApolloClient implements ApolloCall.Factory {
     /**
      * Set the type adapter to use for serializing and de-serializing custom types.
      *
-     * @param scalarType the scalar type to serialize/deserialize
+     * @param scalarType        the scalar type to serialize/deserialize
      * @param customTypeAdapter the type adapter to use
-     * @param <T> the value type
+     * @param <T>               the value type
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public <T> Builder withCustomTypeAdapter(@Nonnull ScalarType scalarType,
