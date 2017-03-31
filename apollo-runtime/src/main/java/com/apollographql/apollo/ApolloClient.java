@@ -5,15 +5,15 @@ import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.http.EvictionStrategy;
-import com.apollographql.apollo.internal.RealApolloCall;
-import com.apollographql.apollo.internal.RealApolloPrefetch;
-import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.cache.http.ResponseCacheStore;
-import com.apollographql.apollo.internal.cache.normalized.Cache;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.CacheStore;
+import com.apollographql.apollo.internal.RealApolloCall;
+import com.apollographql.apollo.internal.RealApolloPrefetch;
+import com.apollographql.apollo.internal.cache.http.HttpCache;
+import com.apollographql.apollo.internal.cache.normalized.Cache;
 import com.apollographql.apollo.internal.cache.normalized.RealCache;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 import com.squareup.moshi.JsonAdapter;
@@ -89,7 +89,7 @@ public final class ApolloClient implements ApolloCall.Factory {
   @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
       @Nonnull Operation<D, T, V> operation) {
-    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, moshi, dispatcher);
+    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, moshi, dispatcher, logger);
   }
 
   void clearCache() {

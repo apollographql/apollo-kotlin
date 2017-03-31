@@ -9,6 +9,7 @@ import com.apollographql.android.impl.httpcache.AllPlanets;
 import com.apollographql.android.impl.httpcache.type.CustomType;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -174,7 +175,7 @@ public class IntegrationTest {
         latch.countDown();
       }
 
-      @Override public void onFailure(@Nonnull Throwable e) {
+      @Override public void onFailure(@Nonnull ApolloException e) {
         latch.countDown();
         Assert.fail("expected success");
       }

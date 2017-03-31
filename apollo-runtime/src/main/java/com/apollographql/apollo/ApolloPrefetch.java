@@ -1,13 +1,14 @@
 package com.apollographql.apollo;
 
-import java.io.IOException;
+import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.exception.ApolloHttpException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public interface ApolloPrefetch {
 
-  void execute() throws IOException;
+  void execute() throws ApolloException;
 
   @Nonnull ApolloPrefetch enqueue(@Nullable Callback callback);
 
@@ -15,9 +16,13 @@ public interface ApolloPrefetch {
 
   void cancel();
 
-  interface Callback {
-    void onSuccess();
+  abstract class Callback {
+    public abstract void onSuccess();
 
-    void onFailure(@Nonnull Throwable t);
+    public abstract void onFailure(@Nonnull ApolloException e);
+
+    public void onHttpError(@Nonnull ApolloHttpException e) {
+      onFailure(e);
+    }
   }
 }

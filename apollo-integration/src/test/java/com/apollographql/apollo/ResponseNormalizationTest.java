@@ -16,6 +16,7 @@ import com.apollographql.android.impl.normalizer.HeroName;
 import com.apollographql.android.impl.normalizer.HeroParentTypeDependentField;
 import com.apollographql.android.impl.normalizer.HeroTypeDependentAliasedField;
 import com.apollographql.android.impl.normalizer.SameHeroTwice;
+import com.apollographql.apollo.exception.ApolloException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -85,11 +86,11 @@ public class ResponseNormalizationTest {
         .build();
   }
 
-  private MockResponse mockResponse(String fileName) throws IOException {
+  private MockResponse mockResponse(String fileName) throws IOException, ApolloException {
     return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
   }
 
-  @Test public void testHeroName() throws IOException {
+  @Test public void testHeroName() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("HeroNameResponse.json");
     server.enqueue(mockResponse);
 
@@ -106,7 +107,7 @@ public class ResponseNormalizationTest {
   }
 
   @Test
-  public void testHeroNameWithVariable() throws IOException {
+  public void testHeroNameWithVariable() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("EpisodeHeroNameResponse.json");
     server.enqueue(mockResponse);
 
@@ -125,7 +126,7 @@ public class ResponseNormalizationTest {
 
 
   @Test
-  public void testHeroAppearsInQuery() throws IOException {
+  public void testHeroAppearsInQuery() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("HeroAppearsInResponse.json");
     server.enqueue(mockResponse);
 
@@ -144,7 +145,7 @@ public class ResponseNormalizationTest {
   }
 
   @Test
-  public void testHeroAndFriendsNamesQueryWithoutIDs() throws IOException {
+  public void testHeroAndFriendsNamesQueryWithoutIDs() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("HeroAndFriendsNameResponse.json");
     server.enqueue(mockResponse);
     final HeroAndFriendsNames heroAndFriendsNameQuery = HeroAndFriendsNames.builder().episode(JEDI).build();
@@ -171,7 +172,7 @@ public class ResponseNormalizationTest {
   }
 
   @Test
-  public void testHeroAndFriendsNamesQueryWithIDs() throws IOException {
+  public void testHeroAndFriendsNamesQueryWithIDs() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("HeroAndFriendsNameWithIdsResponse.json");
     server.enqueue(mockResponse);
     final HeroAndFriendsNamesWithIDs heroAndFriendsWithIdsQuery = HeroAndFriendsNamesWithIDs.builder().episode(JEDI).build();
@@ -198,7 +199,7 @@ public class ResponseNormalizationTest {
   }
 
   @Test
-  public void testHeroAndFriendsNamesWithIDForParentOnly() throws IOException {
+  public void testHeroAndFriendsNamesWithIDForParentOnly() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("HeroAndFriendsNameWithIdsParentOnlyResponse.json");
     server.enqueue(mockResponse);
     final HeroAndFriendsNamesWithIDForParentOnly heroAndFriendsWithIdsQuery = HeroAndFriendsNamesWithIDForParentOnly
@@ -226,7 +227,7 @@ public class ResponseNormalizationTest {
   }
 
   @Test
-  public void testSameHeroTwiceQuery() throws IOException {
+  public void testSameHeroTwiceQuery() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("SameHeroTwiceResponse.json");
     server.enqueue(mockResponse);
 
@@ -245,7 +246,7 @@ public class ResponseNormalizationTest {
   }
 
   @Test
-  public void testHeroTypeDependentAliasedFieldQueryDroid() throws IOException {
+  public void testHeroTypeDependentAliasedFieldQueryDroid() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("HeroTypeDependentAliasedFieldResponse.json");
     server.enqueue(mockResponse);
 
@@ -264,7 +265,7 @@ public class ResponseNormalizationTest {
   }
 
   @Test
-  public void testHeroTypeDependentAliasedFieldQueryHuman() throws IOException {
+  public void testHeroTypeDependentAliasedFieldQueryHuman() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("HeroTypeDependentAliasedFieldResponseHuman.json");
     server.enqueue(mockResponse);
 
@@ -283,7 +284,7 @@ public class ResponseNormalizationTest {
   }
 
   @Test
-  public void testHeroParentTypeDependentAliasedFieldQueryHuman() throws IOException {
+  public void testHeroParentTypeDependentAliasedFieldQueryHuman() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("HeroTypeDependentAliasedFieldResponseHuman.json");
     server.enqueue(mockResponse);
 
@@ -302,7 +303,7 @@ public class ResponseNormalizationTest {
   }
 
   @Test
-  public void testHeroParentTypeDependentFieldDroid() throws IOException {
+  public void testHeroParentTypeDependentFieldDroid() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("HeroParentTypeDependentFieldDroidResponse.json");
     server.enqueue(mockResponse);
     final HeroParentTypeDependentField aliasedQuery = HeroParentTypeDependentField.builder().episode(JEDI).build();
@@ -322,7 +323,7 @@ public class ResponseNormalizationTest {
   }
 
   @Test
-  public void testHeroParentTypeDependentFieldHuman() throws IOException {
+  public void testHeroParentTypeDependentFieldHuman() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("HeroParentTypeDependentFieldHumanResponse.json");
     server.enqueue(mockResponse);
     final HeroParentTypeDependentField aliasedQuery = HeroParentTypeDependentField.builder().episode(EMPIRE).build();
