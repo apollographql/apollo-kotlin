@@ -52,7 +52,7 @@ import static com.apollographql.android.api.graphql.util.Utils.checkNotNull;
  * memory. Conversely, creating a client for each query execution would result in resource wastage on idle pools.
  *
  *
- * <p>See the {@link ApolloClient.Builder} class for customizing the ApolloClient.
+ * <p>See the {@link ApolloClient.Builder} class for configuring the ApolloClient.
  */
 public final class ApolloClient implements ApolloCall.Factory {
   public static Builder builder() {
@@ -204,6 +204,11 @@ public final class ApolloClient implements ApolloCall.Factory {
     }
 
     /**
+     * Sets the type adapter to use for serializing and de-serializing custom types.
+     *
+     * @param scalarType the scalar type to serialize/deserialize
+     * @param customTypeAdapter the type adapter to use
+     * @param <T> the value type
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public <T> Builder withCustomTypeAdapter(@Nonnull ScalarType scalarType,
@@ -235,7 +240,7 @@ public final class ApolloClient implements ApolloCall.Factory {
     }
 
     /**
-     * Sets the default {@link HttpCacheControl}strategy.
+     * Sets the default {@link HttpCacheControl} strategy.
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */
