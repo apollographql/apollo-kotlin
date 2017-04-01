@@ -181,7 +181,7 @@ public final class ApolloClient implements ApolloCall.Factory {
     }
 
     /**
-     * Set the cache to be used for reading and writing cached http responses.
+     * Set the configuration to be used for request/response http cache.
      *
      * @param cacheStore       The store to use for reading and writing cached response.
      * @param evictionStrategy EvictionStrategy decides when the data in the cacheStore becomes stale and is no longer
@@ -195,7 +195,7 @@ public final class ApolloClient implements ApolloCall.Factory {
     }
 
     /**
-     * Set the cache to use as the normalized cache store.
+     * Set the configuration to be used for normalized cache.
      *
      * @param cacheStore       the cache store to use
      * @param cacheKeyResolver the cache key resolver
@@ -209,7 +209,7 @@ public final class ApolloClient implements ApolloCall.Factory {
     }
 
     /**
-     * Set the type adapter to use for serializing and de-serializing custom types.
+     * Set the type adapter to use for serializing and de-serializing custom GraphQL scalar types.
      *
      * @param scalarType        the scalar type to serialize/deserialize
      * @param customTypeAdapter the type adapter to use
