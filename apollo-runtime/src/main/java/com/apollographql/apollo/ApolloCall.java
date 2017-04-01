@@ -14,8 +14,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * ApolloCall is an abstraction for a request that has been prepared for execution. ApolloCall
- * represents a single request/response pair and cannot be executed twice, though it can be cancelled.
+ * <p>ApolloCall is an abstraction for a request that has been prepared for execution. ApolloCall represents a single
+ * request/response pair and cannot be executed twice, though it can be cancelled.</p>
+ *
+ * <p>In order to execute the request again, call the {@link ApolloCall#clone()} method which creates a new ApolloCall
+ * object.</p>
  */
 public interface ApolloCall<T> extends Cancelable {
 
@@ -23,16 +26,14 @@ public interface ApolloCall<T> extends Cancelable {
    * Sends the request immediately and blocks until the response can be processed or is an error.
    *
    * @return The successful or failed {@link Response}
-   * @throws ApolloException       if the request could not be executed due to a cancellation, a timeout or a network
-   *                               failure
+   * @throws ApolloException       if the request could not be executed due to a cancellation, a timeout, network
+   *                               failure or a parsing error
    * @throws IllegalStateException when the call has already been executed
    */
   @Nonnull Response<T> execute() throws ApolloException;
 
   /**
    * Schedules the request to be executed at some point in the future.
-   * The dispatcher defines when the request will run: usually immediately unless there are several other requests
-   * currently being executed.
    *
    * @param callback Callback which will handle the response or a failure exception.
    * @throws IllegalStateException when the call has already been executed
@@ -61,8 +62,7 @@ public interface ApolloCall<T> extends Cancelable {
   @Nonnull ApolloCall<T> cacheControl(@Nonnull CacheControl cacheControl);
 
   /**
-   * Creates a new, identical call to this one which can be enqueued or executed even if this call
-   * has already been.
+   * Creates a new, identical call to this one which can be enqueued or executed even if this call has already been.
    *
    * @return The cloned ApolloCall object.
    */
@@ -74,21 +74,20 @@ public interface ApolloCall<T> extends Cancelable {
   abstract class Callback<T> {
 
     /**
-     * Gets called when GraphQl response is received successfully.
+     * Gets called when GraphQl response is received and parsed successfully.
      *
      * @param response the GraphQl response
      */
     public abstract void onResponse(@Nonnull Response<T> response);
 
     /**
-     * Gets called when a network exception occurs while communicating with the server, or an unexpected
-     * exception occurs while creating the request or processing the response.
+     * Gets called when an unexpected exception occurs while creating the request or processing the response.
      */
     public abstract void onFailure(@Nonnull ApolloException e);
 
     /**
-     * Gets called when an http request error takes place either due to client error (status code >= 400) or due
-     * to server error (status code >= 500).
+     * Gets called when an http request error takes place either due to client error (status code >= 400) or due to
+     * server error (status code >= 500).
      */
     public void onHttpError(@Nonnull ApolloHttpException e) {
       onFailure(e);
