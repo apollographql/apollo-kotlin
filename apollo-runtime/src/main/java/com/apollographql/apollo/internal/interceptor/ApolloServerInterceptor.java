@@ -1,10 +1,13 @@
 package com.apollographql.apollo.internal.interceptor;
 
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.cache.http.HttpCacheControl;
+import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
+import com.apollographql.apollo.internal.util.ApolloLogger;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
@@ -34,21 +37,34 @@ import okio.Buffer;
   final HttpCacheControl cacheControl;
   final boolean prefetch;
   final Moshi moshi;
+  final ApolloLogger logger;
   volatile Call httpCall;
 
   public ApolloServerInterceptor(HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCacheControl cacheControl,
-      boolean prefetch, Moshi moshi) {
+      boolean prefetch, Moshi moshi, ApolloLogger logger) {
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
     this.cacheControl = cacheControl;
     this.prefetch = prefetch;
     this.moshi = moshi;
+    this.logger = logger;
   }
 
   @Override @Nonnull public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain)
-      throws IOException {
-    httpCall = httpCall(operation);
-    return new InterceptorResponse(httpCall.execute());
+      throws ApolloException {
+    try {
+      httpCall = httpCall(operation);
+    } catch (IOException e) {
+      logger.e(e, "Failed to prepare http call");
+      throw new ApolloNetworkException("Failed to prepare http call", e);
+    }
+
+    try {
+      return new InterceptorResponse(httpCall.execute());
+    } catch (IOException e) {
+      logger.e(e, "Failed to execute http call");
+      throw new ApolloNetworkException("Failed to execute http call", e);
+    }
   }
 
   @Override
@@ -58,14 +74,16 @@ import okio.Buffer;
       @Override public void run() {
         try {
           httpCall = httpCall(operation);
-        } catch (Exception e) {
-          callBack.onFailure(e);
+        } catch (IOException e) {
+          logger.e(e, "Failed to prepare http call");
+          callBack.onFailure(new ApolloNetworkException("Failed to prepare http call", e));
           return;
         }
 
         httpCall.enqueue(new Callback() {
           @Override public void onFailure(Call call, IOException e) {
-            callBack.onFailure(e);
+            logger.e(e, "Failed to execute http call");
+            callBack.onFailure(new ApolloNetworkException("Failed to execute http call", e));
           }
 
           @Override public void onResponse(Call call, Response response) throws IOException {

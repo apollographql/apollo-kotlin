@@ -3,10 +3,9 @@ package com.apollographql.android.rx;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloWatcher;
-import com.apollographql.apollo.internal.util.Cancelable;
 import com.apollographql.apollo.api.Response;
-
-import java.io.IOException;
+import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.internal.util.Cancelable;
 
 import javax.annotation.Nonnull;
 
@@ -48,7 +47,7 @@ public final class RxApollo {
             emitter.onNext(response.data());
           }
 
-          @Override public void onFailure(@Nonnull Throwable e) {
+          @Override public void onFailure(@Nonnull ApolloException e) {
             Exceptions.throwIfFatal(e);
             emitter.onError(e);
           }
@@ -67,7 +66,7 @@ public final class RxApollo {
           if (!subscriber.isUnsubscribed()) {
             subscriber.onSuccess(response.data());
           }
-        } catch (IOException e) {
+        } catch (ApolloException e) {
           Exceptions.throwIfFatal(e);
           if (!subscriber.isUnsubscribed()) {
             subscriber.onError(e);

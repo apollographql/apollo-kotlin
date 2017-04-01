@@ -1,17 +1,21 @@
 package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloCall;
-import com.apollographql.apollo.interceptor.ApolloInterceptor;
-import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
-import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
-import com.apollographql.apollo.internal.cache.normalized.Cache;
 import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.exception.ApolloHttpException;
+import com.apollographql.apollo.exception.ApolloNetworkException;
+import com.apollographql.apollo.exception.ApolloParseException;
+import com.apollographql.apollo.interceptor.ApolloInterceptor;
+import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
+import com.apollographql.apollo.internal.cache.http.HttpCache;
+import com.apollographql.apollo.internal.cache.normalized.Cache;
 import com.apollographql.apollo.internal.interceptor.ApolloCacheInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloParseInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
@@ -19,7 +23,6 @@ import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 import com.squareup.moshi.Moshi;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -69,11 +72,11 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         new ApolloCacheInterceptor(cache, cacheControl, responseFieldMapper, customTypeAdapters, dispatcher, logger),
         new ApolloParseInterceptor(httpCache, cache.networkResponseNormalizer(), responseFieldMapper,
             customTypeAdapters, logger),
-        new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCacheControl, false, moshi)
+        new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCacheControl, false, moshi, logger)
     ));
   }
 
-  @SuppressWarnings("unchecked") @Nonnull @Override public Response<T> execute() throws IOException {
+  @SuppressWarnings("unchecked") @Nonnull @Override public Response<T> execute() throws ApolloException {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
@@ -95,9 +98,17 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         }
       }
 
-      @Override public void onFailure(@Nonnull Throwable t) {
+      @Override public void onFailure(@Nonnull ApolloException e) {
         if (callback != null) {
-          callback.onFailure(t);
+          if (e instanceof ApolloHttpException) {
+            callback.onHttpError((ApolloHttpException) e);
+          } else if (e instanceof ApolloParseException) {
+            callback.onParseError((ApolloParseException) e);
+          } else if (e instanceof ApolloNetworkException) {
+            callback.onNetworkError((ApolloNetworkException) e);
+          } else {
+            callback.onFailure(e);
+          }
         }
       }
     });

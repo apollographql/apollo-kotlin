@@ -1,10 +1,10 @@
 package com.apollographql.apollo.internal.interceptor;
 
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -30,7 +30,7 @@ public final class RealApolloInterceptorChain implements ApolloInterceptorChain 
     this.interceptorIndex = interceptorIndex;
   }
 
-  @Override @Nonnull public ApolloInterceptor.InterceptorResponse proceed() throws IOException {
+  @Override @Nonnull public ApolloInterceptor.InterceptorResponse proceed() throws ApolloException {
     if (interceptorIndex >= interceptors.size()) throw new IllegalStateException();
 
     return interceptors.get(interceptorIndex).intercept(operation, new RealApolloInterceptorChain(operation,
