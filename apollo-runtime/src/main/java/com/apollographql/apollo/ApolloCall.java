@@ -86,8 +86,8 @@ public interface ApolloCall<T> extends Cancelable {
     public abstract void onFailure(@Nonnull ApolloException e);
 
     /**
-     * Gets called when an http request error takes place either due to client error (status code >= 400) or due to
-     * server error (status code >= 500).
+     * Gets called when an http request error takes place. This is the case when the returned http status code doesn't
+     * lie in the range 200 (inclusive) and 300 (exclusive).
      */
     public void onHttpError(@Nonnull ApolloHttpException e) {
       onFailure(e);
