@@ -3,6 +3,7 @@ package com.apollographql.android.gradle;
 import com.google.common.base.Joiner;
 
 import com.apollographql.android.compiler.GraphQLCompiler;
+import com.apollographql.android.compiler.NullableValueType;
 
 import org.gradle.api.Action;
 import org.gradle.api.tasks.Input;
@@ -21,17 +22,15 @@ public class ApolloClassGenTask extends SourceTask {
 
   @Internal private String variant;
   @Input private Map<String, String> customTypeMapping;
-  @Input private ApolloExtension.NullableValueType nullValueType;
-  @Input private boolean hasGuavaDep;
+  @Input private NullableValueType nullValueType;
   @Input private boolean generateAccessors;
   @OutputDirectory private File outputDir;
 
-  public void init(String buildVariant, Map<String, String> typeMapping,
-      String nullableValueType, boolean hasGuava, boolean accessors) {
+  public void init(String buildVariant, Map<String, String> typeMapping, String nullableValueType, boolean accessors) {
     variant = buildVariant;
     customTypeMapping = typeMapping;
-    nullValueType = ApolloExtension.NullableValueType.valueOf(nullableValueType);
-    hasGuavaDep = hasGuava;
+    nullValueType = nullableValueType == null ? NullableValueType.ANNOTATED
+        : NullableValueType.Companion.findByValue(nullableValueType);
     generateAccessors = accessors;
     outputDir = new File(getProject().getBuildDir() + "/" + Joiner.on(File.separator).join(GraphQLCompiler.Companion
         .getOUTPUT_DIRECTORY()));
@@ -42,11 +41,8 @@ public class ApolloClassGenTask extends SourceTask {
     inputs.outOfDate(new Action<InputFileDetails>() {
       @Override
       public void execute(InputFileDetails inputFileDetails) {
-        boolean useOptional = (nullValueType != ApolloExtension.NullableValueType.annotated);
-        boolean useGuava = (nullValueType == ApolloExtension.NullableValueType.guavaOptional
-            || (hasGuavaDep && nullValueType == ApolloExtension.NullableValueType.autoOptional));
         GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(inputFileDetails.getFile(), outputDir,
-            customTypeMapping, useOptional, useGuava, generateAccessors);
+            customTypeMapping, nullValueType, generateAccessors);
         new GraphQLCompiler().write(args);
       }
     });
@@ -76,11 +72,11 @@ public class ApolloClassGenTask extends SourceTask {
     this.customTypeMapping = customTypeMapping;
   }
 
-  public ApolloExtension.NullableValueType getNullValueType() {
+  public NullableValueType getNullValueType() {
     return nullValueType;
   }
 
-  public void setNullValueType(ApolloExtension.NullableValueType nullValueType) {
+  public void setNullValueType(NullableValueType nullValueType) {
     this.nullValueType = nullValueType;
   }
 

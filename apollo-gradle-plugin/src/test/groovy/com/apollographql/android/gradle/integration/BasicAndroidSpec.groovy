@@ -150,35 +150,35 @@ class BasicAndroidSpec extends Specification {
         "return Currency.class;")
   }
 
-  def "adding nullableValueType = `autoOptional` in Apollo Extension generates classes with Apollo Optional"() {
+  def "adding nullableValueType = `annotated` in Apollo Extension generates classes with Apollo Optional"() {
     setup: "a testProject with a previous build and a modified build script"
     replaceTextInFile(new File("$testProjectDir/build.gradle")) {
-      it.replace("apollo {", "apollo {\n nullableValueType = 'autoOptional' \n")
+      it.replace("apollo {", "apollo {\n nullableValueType = 'annotated' \n")
     }
 
     when:
     def result = GradleRunner.create().withProjectDir(testProjectDir)
         .withPluginClasspath()
-        .withArguments("generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
+        .withArguments("clean", "generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
         .forwardStdError(new OutputStreamWriter(System.err)).build()
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").getText(
+    assert !new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").getText(
         'UTF-8').contains("import com.apollographql.apollo.api.internal.Optional;")
   }
 
   def "adding nullableValueType = `apolloOptional` in Apollo Extension generates classes with Apollo Optional"() {
     setup: "a testProject with a previous build and a modified build script"
     replaceTextInFile(new File("$testProjectDir/build.gradle")) {
-      it.replace("autoOptional", "apolloOptional")
+      it.replace("annotated", "apolloOptional")
     }
 
     when:
     def result = GradleRunner.create().withProjectDir(testProjectDir)
         .withPluginClasspath()
-        .withArguments("generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
+        .withArguments("clean", "generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
         .forwardStdError(new OutputStreamWriter(System.err)).build()
 
     then:
@@ -197,7 +197,7 @@ class BasicAndroidSpec extends Specification {
     when:
     def result = GradleRunner.create().withProjectDir(testProjectDir)
         .withPluginClasspath()
-        .withArguments("generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
+        .withArguments("clean", "generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
         .forwardStdError(new OutputStreamWriter(System.err)).build()
 
     then:

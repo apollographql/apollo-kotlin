@@ -2,7 +2,7 @@ package com.apollographql.android.compiler
 
 import com.apollographql.android.compiler.Annotations
 import com.apollographql.android.compiler.ClassNames
-import com.apollographql.android.compiler.NullableValueGenerationType
+import com.apollographql.android.compiler.NullableValueType
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
@@ -33,7 +33,7 @@ fun MethodSpec.overrideReturnType(typeNameOverrideMap: Map<String, String>): Met
         .addCode(code)
         .build()
 
-fun TypeSpec.withValueInitConstructor(nullableValueGenerationType: NullableValueGenerationType): TypeSpec {
+fun TypeSpec.withValueInitConstructor(nullableValueGenerationType: NullableValueType): TypeSpec {
   return toBuilder()
       .addMethod(MethodSpec.constructorBuilder()
           .addModifiers(Modifier.PUBLIC)
@@ -50,8 +50,8 @@ fun TypeSpec.withValueInitConstructor(nullableValueGenerationType: NullableValue
           .addCode(fieldSpecs
               .filter { !it.modifiers.contains(Modifier.STATIC) }
               .map {
-                if (it.type.isOptional() && nullableValueGenerationType != NullableValueGenerationType.ANNOTATED) {
-                  val optionalType = if (nullableValueGenerationType == NullableValueGenerationType.GUAVA_OPTIONAL)
+                if (it.type.isOptional() && nullableValueGenerationType != NullableValueType.ANNOTATED) {
+                  val optionalType = if (nullableValueGenerationType == NullableValueType.GUAVA_OPTIONAL)
                     ClassNames.GUAVA_OPTIONAL
                   else
                     ClassNames.OPTIONAL
