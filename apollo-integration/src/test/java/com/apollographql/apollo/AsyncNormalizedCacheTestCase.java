@@ -10,6 +10,7 @@ import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.type.Episode;
+import com.apollographql.apollo.exception.ApolloException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -54,11 +55,11 @@ public class AsyncNormalizedCacheTestCase {
         .build();
   }
 
-  private MockResponse mockResponse(String fileName) throws IOException {
+  private MockResponse mockResponse(String fileName) throws IOException, ApolloException {
     return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
   }
 
-  @Test public void testAsync() throws IOException, InterruptedException {
+  @Test public void testAsync() throws IOException, InterruptedException, ApolloException {
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
     server.enqueue(mockResponse("HeroNameResponse.json"));
@@ -78,7 +79,7 @@ public class AsyncNormalizedCacheTestCase {
               latch.countDown();
             }
 
-            @Override public void onFailure(@Nonnull Throwable e) {
+            @Override public void onFailure(@Nonnull ApolloException e) {
               fail("unexpected error: " + e);
               latch.countDown();
             }

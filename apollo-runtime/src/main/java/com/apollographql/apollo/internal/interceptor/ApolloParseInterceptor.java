@@ -1,19 +1,20 @@
 package com.apollographql.apollo.internal.interceptor;
 
+import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
-import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
+import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.exception.ApolloHttpException;
+import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.CustomTypeAdapter;
-import com.apollographql.apollo.HttpException;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
+import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
@@ -37,7 +38,7 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
   }
 
   @Override @Nonnull public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain)
-      throws IOException {
+      throws ApolloException {
     InterceptorResponse response = chain.proceed();
     return parse(operation, response.httpResponse.get());
   }
@@ -48,14 +49,15 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
     chain.proceedAsync(dispatcher, new CallBack() {
       @Override public void onResponse(@Nonnull InterceptorResponse response) {
         try {
-          callBack.onResponse(parse(operation, response.httpResponse.get()));
-        } catch (Exception e) {
-          callBack.onFailure(e);
+          InterceptorResponse result = parse(operation, response.httpResponse.get());
+          callBack.onResponse(result);
+        } catch (ApolloException e) {
+          onFailure(e);
         }
       }
 
-      @Override public void onFailure(@Nonnull Throwable t) {
-        callBack.onFailure(t);
+      @Override public void onFailure(@Nonnull ApolloException e) {
+        callBack.onFailure(e);
       }
     });
   }
@@ -65,7 +67,7 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
   }
 
   @SuppressWarnings("unchecked") private InterceptorResponse parse(Operation operation, okhttp3.Response
-      httpResponse) throws IOException {
+      httpResponse) throws ApolloHttpException, ApolloParseException {
     String cacheKey = httpResponse.request().header(HttpCache.CACHE_KEY_HEADER);
     if (httpResponse.isSuccessful()) {
       try {
@@ -73,15 +75,16 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
         Response parsedResponse = parser.parse(httpResponse.body(), normalizer);
         return new InterceptorResponse(httpResponse, parsedResponse, normalizer.records());
       } catch (Exception rethrown) {
-        logger.e(rethrown, "Failed to parse network response for operation %s", operation);
+        logger.e(rethrown, "Failed to parse network response for operation: %s", operation);
         closeQuietly(httpResponse);
         if (httpCache != null) {
           httpCache.removeQuietly(cacheKey);
         }
-        throw rethrown;
+        throw new ApolloParseException("Failed to parse http response", rethrown);
       }
     } else {
-      throw new HttpException(httpResponse);
+      logger.e("Failed to parse network response: %s", httpResponse);
+      throw new ApolloHttpException(httpResponse);
     }
   }
 
@@ -89,8 +92,6 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
     if (closeable != null) {
       try {
         closeable.close();
-      } catch (RuntimeException rethrown) {
-        throw rethrown;
       } catch (Exception ignored) {
       }
     }

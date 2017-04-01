@@ -9,6 +9,7 @@ import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDs;
 import com.apollographql.android.impl.normalizer.type.Episode;
 import com.apollographql.android.rx.RxApollo;
+import com.apollographql.apollo.exception.ApolloException;
 
 import junit.framework.Assert;
 
@@ -91,7 +92,8 @@ public class RxApolloTest {
   }
 
   @Test
-  public void testRxQueryWatcherUpdated_SameQuery_DifferentResults() throws IOException, InterruptedException, TimeoutException {
+  public void testRxQueryWatcherUpdated_SameQuery_DifferentResults() throws IOException, InterruptedException,
+      TimeoutException, ApolloException {
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
 
@@ -168,7 +170,8 @@ public class RxApolloTest {
   }
 
   @Test
-  public void testQueryRxWatcherUpdated_DifferentQuery_DifferentResults() throws IOException, InterruptedException, TimeoutException {
+  public void testQueryRxWatcherUpdated_DifferentQuery_DifferentResults() throws IOException, InterruptedException,
+      TimeoutException, ApolloException {
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
 

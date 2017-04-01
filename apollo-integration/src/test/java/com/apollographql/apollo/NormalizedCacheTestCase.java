@@ -2,10 +2,6 @@ package com.apollographql.apollo;
 
 import android.support.annotation.NonNull;
 
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.cache.normalized.CacheControl;
-import com.apollographql.apollo.cache.normalized.CacheKey;
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNames;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDForParentOnly;
@@ -15,6 +11,11 @@ import com.apollographql.android.impl.normalizer.HeroParentTypeDependentField;
 import com.apollographql.android.impl.normalizer.HeroTypeDependentAliasedField;
 import com.apollographql.android.impl.normalizer.SameHeroTwice;
 import com.apollographql.android.impl.normalizer.type.Episode;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.cache.normalized.CacheKey;
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
+import com.apollographql.apollo.exception.ApolloException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -61,7 +62,7 @@ public class NormalizedCacheTestCase {
     return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
   }
 
-  @Test public void episodeHeroName() throws IOException {
+  @Test public void episodeHeroName() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroNameResponse.json"));
 
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
@@ -74,7 +75,7 @@ public class NormalizedCacheTestCase {
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
   }
 
-  @Test public void heroAndFriendsNameResponse() throws IOException {
+  @Test public void heroAndFriendsNameResponse() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
 
     HeroAndFriendsNames query = HeroAndFriendsNames.builder().episode(Episode.JEDI).build();
@@ -91,7 +92,7 @@ public class NormalizedCacheTestCase {
     assertThat(body.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
   }
 
-  @Test public void heroAndFriendsNamesWithIDs() throws IOException {
+  @Test public void heroAndFriendsNamesWithIDs() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
 
     HeroAndFriendsNamesWithIDs query = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
@@ -112,7 +113,7 @@ public class NormalizedCacheTestCase {
     assertThat(body.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
   }
 
-  @Test public void heroAndFriendsNameWithIdsForParentOnly() throws IOException {
+  @Test public void heroAndFriendsNameWithIdsForParentOnly() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsParentOnlyResponse.json"));
 
     HeroAndFriendsNamesWithIDForParentOnly query = HeroAndFriendsNamesWithIDForParentOnly.builder()
@@ -131,7 +132,7 @@ public class NormalizedCacheTestCase {
     assertThat(body.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
   }
 
-  @Test public void heroAppearsInResponse() throws IOException {
+  @Test public void heroAppearsInResponse() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroAppearsInResponse.json"));
 
     HeroAppearsIn query = new HeroAppearsIn();
@@ -147,7 +148,7 @@ public class NormalizedCacheTestCase {
     assertThat(body.data().hero().appearsIn().get(2).name()).isEqualTo("JEDI");
   }
 
-  @Test public void heroParentTypeDependentField() throws IOException {
+  @Test public void heroParentTypeDependentField() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroParentTypeDependentFieldDroidResponse.json"));
 
     HeroParentTypeDependentField query = HeroParentTypeDependentField.builder().episode(Episode.NEWHOPE).build();
@@ -165,7 +166,7 @@ public class NormalizedCacheTestCase {
     assertThat(body.data().hero().asDroid().friends().get(0).asHuman().height()).isWithin(1.72);
   }
 
-  @Test public void heroTypeDependentAliasedField() throws IOException {
+  @Test public void heroTypeDependentAliasedField() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroTypeDependentAliasedFieldResponse.json"));
 
     HeroTypeDependentAliasedField query = HeroTypeDependentAliasedField.builder().episode(Episode.NEWHOPE).build();
@@ -189,7 +190,7 @@ public class NormalizedCacheTestCase {
     assertThat(body.data().hero().asHuman().property()).isEqualTo("Tatooine");
   }
 
-  @Test public void sameHeroTwice() throws IOException {
+  @Test public void sameHeroTwice() throws IOException, ApolloException {
     server.enqueue(mockResponse("SameHeroTwiceResponse.json"));
 
     SameHeroTwice query = new SameHeroTwice();
@@ -206,7 +207,7 @@ public class NormalizedCacheTestCase {
     assertThat(body.data().r2().appearsIn().get(2).name()).isEqualTo("JEDI");
   }
 
-  @Test public void cacheFirst() throws IOException {
+  @Test public void cacheFirst() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroNameResponse.json"));
 
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
@@ -219,7 +220,7 @@ public class NormalizedCacheTestCase {
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
   }
 
-  @Test public void cacheOnly() throws IOException {
+  @Test public void cacheOnly() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroNameResponse.json"));
 
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
@@ -232,7 +233,7 @@ public class NormalizedCacheTestCase {
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
   }
 
-  @Test public void networkFirst() throws IOException {
+  @Test public void networkFirst() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroNameResponse.json"));
 
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
@@ -253,7 +254,7 @@ public class NormalizedCacheTestCase {
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
   }
 
-  @Test public void networkOnly() throws IOException {
+  @Test public void networkOnly() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroNameResponse.json"));
 
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();

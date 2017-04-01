@@ -2,11 +2,13 @@ package com.apollographql.apollo;
 
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.internal.util.Cancelable;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.cache.normalized.CacheControl;
-
-import java.io.IOException;
+import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.exception.ApolloHttpException;
+import com.apollographql.apollo.exception.ApolloNetworkException;
+import com.apollographql.apollo.exception.ApolloParseException;
+import com.apollographql.apollo.internal.util.Cancelable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,10 +23,11 @@ public interface ApolloCall<T> extends Cancelable {
    * Sends the request immediately and blocks until the response can be processed or is an error.
    *
    * @return The successful or failed {@link Response}
-   * @throws IOException if the request could not be executed due to a cancellation, a timeout or a network failure
+   * @throws ApolloException       if the request could not be executed due to a cancellation, a timeout or a network
+   *                               failure
    * @throws IllegalStateException when the call has already been executed
    */
-  @Nonnull Response<T> execute() throws IOException;
+  @Nonnull Response<T> execute() throws ApolloException;
 
   /**
    * Schedules the request to be executed at some point in the future.
@@ -68,20 +71,36 @@ public interface ApolloCall<T> extends Cancelable {
   /**
    * Communicates responses from a server or offline requests.
    */
-  interface Callback<T> {
+  abstract class Callback<T> {
 
     /**
      * Gets called when GraphQl response is received.
      *
      * @param response the GraphQl response
      */
-    void onResponse(@Nonnull Response<T> response);
+    public abstract void onResponse(@Nonnull Response<T> response);
 
     /**
      * Gets called when a network exception occurs while communicating with the server, or an unexpected
      * exception occurs while creating the request or processing the response.
      */
-    void onFailure(@Nonnull Throwable t);
+    public abstract void onFailure(@Nonnull ApolloException e);
+
+    public void onHttpError(@Nonnull ApolloHttpException e) {
+      onFailure(e);
+      okhttp3.Response response = e.rawResponse();
+      if (response != null) {
+        response.close();
+      }
+    }
+
+    public void onNetworkError(@Nonnull ApolloNetworkException e) {
+      onFailure(e);
+    }
+
+    public void onParseError(@Nonnull ApolloParseException e) {
+      onFailure(e);
+    }
   }
 
   /**
