@@ -12,13 +12,13 @@ public final class Utils {
   }
 
   /**
-   * Checks if the object is null. Returns the object if it is non null, else throws a NullPointerException with the
-   * errorMessage.
+   * Checks if the object is null. Returns the object if it is not null, else throws a NullPointerException with the
+   * error message.
    *
    * @param reference    the object whose nullability has to be checked
    * @param errorMessage the message to use with the NullPointerException
    * @param <T>          the value type
-   * @return the object itself
+   * @return The object itself
    * @throws NullPointerException if the object is null
    */
   public static <T> T checkNotNull(T reference, @Nullable Object errorMessage) {
@@ -35,7 +35,7 @@ public final class Utils {
    * @param setOne the first set
    * @param setTwo the second set
    * @param <E>    the value type contained within the sets
-   * @return true if the sets don't have a single common element or if either of the sets is null.
+   * @return True if the sets don't have a single common element or if either of the sets is null.
    */
   public static <E> boolean areDisjoint(Set<E> setOne, Set<E> setTwo) {
     if (setOne == null || setTwo == null) {
@@ -56,11 +56,11 @@ public final class Utils {
   }
 
   /**
-   * Checks if the object is null. Returns the object if it is non null, else throws a NullPointerException.
+   * Checks if the object is null. Returns the object if it is not null, else throws a NullPointerException.
    *
    * @param reference the object whose nullability has to be checked
    * @param <T>       the value type
-   * @return the object itself
+   * @return The object itself
    * @throws NullPointerException if the object is null
    */
   public static <T> T checkNotNull(T reference) {

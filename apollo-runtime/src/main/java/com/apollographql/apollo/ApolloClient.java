@@ -144,7 +144,7 @@ public final class ApolloClient implements ApolloCall.Factory {
     }
 
     /**
-     * Set the {@link OkHttpClient} to be used for making network requests.
+     * Set the {@link OkHttpClient} to use for making network requests.
      *
      * @param okHttpClient the client to use.
      * @return The {@link Builder} object to be used for chaining method calls
@@ -255,7 +255,7 @@ public final class ApolloClient implements ApolloCall.Factory {
     }
 
     /**
-     * Set the default normalized {@link CacheControl} strategy.
+     * Set the default {@link CacheControl} strategy.
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */

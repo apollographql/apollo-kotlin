@@ -22,7 +22,7 @@ import rx.subscriptions.Subscriptions;
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
- * The RxApollo class that provides methods for converting ApolloCall
+ * The RxApollo class provides methods for converting ApolloCall
  * and ApolloWatcher types to RxJava 1 Observables.
  */
 public final class RxApollo {
