@@ -1,14 +1,16 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.cache.http.DiskLruCacheStore;
-import com.apollographql.apollo.internal.cache.http.HttpCache;
-import com.apollographql.apollo.cache.http.HttpCacheControl;
-import com.apollographql.apollo.cache.http.TimeoutEvictionStrategy;
 import com.apollographql.android.impl.httpcache.AllFilms;
 import com.apollographql.android.impl.httpcache.AllPlanets;
 import com.apollographql.android.impl.httpcache.DroidDetails;
 import com.apollographql.android.impl.httpcache.type.CustomType;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.cache.http.DiskLruCacheStore;
+import com.apollographql.apollo.cache.http.HttpCacheControl;
+import com.apollographql.apollo.cache.http.TimeoutEvictionStrategy;
+import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.exception.ApolloHttpException;
+import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 
 import junit.framework.Assert;
@@ -102,8 +104,8 @@ public class CacheTest {
       Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets())
           .httpCacheControl(HttpCacheControl.NETWORK_ONLY).execute();
       assertThat(body.isSuccessful()).isTrue();
-      fail("expected IOException");
-    } catch (IOException expected) {
+      fail("expected ApolloException");
+    } catch (ApolloException expected) {
     }
 
     checkNoCachedResponse();
@@ -180,7 +182,7 @@ public class CacheTest {
     try {
       apolloClient.newCall(new AllPlanets()).httpCacheControl(HttpCacheControl.CACHE_ONLY).execute();
       Assert.fail("expected to fail with HttpException");
-    } catch (HttpException expected) {
+    } catch (ApolloHttpException expected) {
     } catch (Exception e) {
       fail("expected to fail with HttpException");
     }
@@ -267,14 +269,14 @@ public class CacheTest {
     checkCachedResponse("/HttpCacheTestAllPlanets2.json");
   }
 
-  @Test public void fileSystemUnavailable() throws IOException {
+  @Test public void fileSystemUnavailable() throws IOException, ApolloException {
     cacheStore.delegate = new DiskLruCacheStore(new NoFileSystem(), new File("/cache/"), Integer.MAX_VALUE);
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
     checkNoCachedResponse();
   }
 
-  @Test public void fileSystemWriteFailure() throws IOException {
+  @Test public void fileSystemWriteFailure() throws IOException, ApolloException {
     FaultyCacheStore faultyCacheStore = new FaultyCacheStore(FileSystem.SYSTEM);
     cacheStore.delegate = faultyCacheStore;
 
@@ -289,7 +291,7 @@ public class CacheTest {
     checkNoCachedResponse();
   }
 
-  @Test public void fileSystemReadFailure() throws IOException {
+  @Test public void fileSystemReadFailure() throws IOException, ApolloException {
     FaultyCacheStore faultyCacheStore = new FaultyCacheStore(inMemoryFileSystem);
     cacheStore.delegate = faultyCacheStore;
 
@@ -312,7 +314,7 @@ public class CacheTest {
     assertThat(server.getRequestCount()).isEqualTo(2);
   }
 
-  @Test public void prefetchDefault() throws IOException {
+  @Test public void prefetchDefault() throws IOException, ApolloException {
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     apolloClient.prefetch(new AllPlanets()).execute();
     checkCachedResponse("/HttpCacheTestAllPlanets.json");
@@ -321,8 +323,8 @@ public class CacheTest {
     assertThat(apolloClient.newCall(new AllPlanets()).httpCacheControl(HttpCacheControl.CACHE_ONLY).execute().isSuccessful()).isTrue();
   }
 
-  @Test public void prefetchNoCacheStore() throws IOException {
-     ApolloClient apolloClient = ApolloClient.builder()
+  @Test public void prefetchNoCacheStore() throws IOException, ApolloException {
+    ApolloClient apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .build();
@@ -356,7 +358,7 @@ public class CacheTest {
     checkNoCachedResponse();
   }
 
-  @Test public void expireAfterRead() throws IOException {
+  @Test public void expireAfterRead() throws IOException, ApolloException {
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
     checkCachedResponse("/HttpCacheTestAllPlanets.json");
@@ -375,7 +377,7 @@ public class CacheTest {
     checkCachedResponse("/HttpCacheTestAllPlanets.json");
   }
 
-  @Test public void cacheNetworkError() throws IOException {
+  @Test public void cacheNetworkError() throws IOException, ApolloException {
     server.enqueue(new MockResponse().setResponseCode(504).setBody(""));
     try {
       apolloClient.newCall(new AllPlanets()).execute();
@@ -417,7 +419,7 @@ public class CacheTest {
     String cacheKey = ApolloServerInterceptor.cacheKey(lastHttRequest.body());
     okhttp3.Response response = apolloClient.cachedHttpResponse(cacheKey);
     assertThat(response).isNotNull();
-    assertThat(response.body().source().readUtf8()).isEqualTo(Utils.readFileToString(getClass(),fileName));
+    assertThat(response.body().source().readUtf8()).isEqualTo(Utils.readFileToString(getClass(), fileName));
     response.body().source().close();
   }
 

@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
 import com.example.FeedQuery;
 import com.example.type.FeedType;
 
@@ -47,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
       }
 
-      @Override public void onFailure(@Nonnull Throwable t) {
-        Log.e(TAG, t.getMessage(), t);
+      @Override public void onFailure(@Nonnull ApolloException e) {
+        Log.e(TAG, e.getMessage(), e);
       }
     });
   }

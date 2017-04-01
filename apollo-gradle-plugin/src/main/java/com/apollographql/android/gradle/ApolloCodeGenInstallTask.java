@@ -1,9 +1,9 @@
 package com.apollographql.android.gradle;
 
-import com.google.common.collect.Lists;
-
 import java.io.File;
 import java.io.IOException;
+
+import okio.Okio;
 
 import org.gradle.api.Task;
 import org.gradle.api.logging.LogLevel;
@@ -11,16 +11,17 @@ import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.OutputDirectory;
 
 import com.apollographql.android.compiler.GraphQLCompiler;
-import com.moowork.gradle.node.npm.NpmTask;
-import com.squareup.moshi.JsonWriter;
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
 
-import okio.Okio;
+import com.google.common.collect.Lists;
+
+import com.moowork.gradle.node.npm.NpmTask;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.JsonWriter;
+import com.squareup.moshi.Moshi;
 
 public class ApolloCodeGenInstallTask extends NpmTask {
   static final String NAME = "installApolloCodegen";
-  private static final String INSTALL_DIR = "node_modules/apollo-codegen";
+  private static final String INSTALL_DIR =  "apollo-codegen/node_modules/apollo-codegen";
 
   @OutputDirectory private File installDir;
 
@@ -28,9 +29,13 @@ public class ApolloCodeGenInstallTask extends NpmTask {
     // TODO: set to const when ApolloPlugin is in java
     setGroup("apollo");
     setDescription("Runs npm install for apollo-codegen");
-    installDir = getProject().file(INSTALL_DIR);
+    installDir = new File(getProject().getBuildDir(), INSTALL_DIR);
+    installDir.mkdirs();
 
-    final File apolloPackageFile = getProject().file("package.json");
+    File workingDir = new File(getProject().getBuildDir(), "apollo-codegen");
+    setWorkingDir(workingDir);
+
+    final File apolloPackageFile = new File(workingDir, "package.json");
     final boolean isSameCodegenVersion = isSameApolloCodegenVersion(getApolloVersion());
 
     if (!isSameCodegenVersion) {
@@ -56,10 +61,10 @@ public class ApolloCodeGenInstallTask extends NpmTask {
   /**
    * Returns the locally install apollo-codegen version as found in the package.json file.
    *
-   * @return null if node_modules/apollo-codegen/package.json wasn't found, version otherwise
+   * @return null if build/apollo-codegen/node_modules/apollo-codegen/package.json wasn't found, version otherwise
    */
   private String getApolloVersion() {
-    File packageFile = getProject().file(INSTALL_DIR + "/package.json");
+    File packageFile = new File(getProject().getBuildDir(), INSTALL_DIR + "/package.json");
     if (!packageFile.isFile()) {
       return null;
     }

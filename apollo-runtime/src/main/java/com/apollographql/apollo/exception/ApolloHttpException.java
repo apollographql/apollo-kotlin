@@ -1,15 +1,15 @@
-package com.apollographql.apollo;
+package com.apollographql.apollo.exception;
 
 import javax.annotation.Nullable;
 
 import okhttp3.Response;
 
-public class HttpException extends RuntimeException {
+public final class ApolloHttpException extends ApolloException {
   private final int code;
   private final String message;
   private final transient Response rawResponse;
 
-  public HttpException(@Nullable okhttp3.Response rawResponse) {
+  public ApolloHttpException(@Nullable okhttp3.Response rawResponse) {
     super(formatMessage(rawResponse));
     this.code = rawResponse != null ? rawResponse.code() : 0;
     this.message = rawResponse != null ? rawResponse.message() : "";

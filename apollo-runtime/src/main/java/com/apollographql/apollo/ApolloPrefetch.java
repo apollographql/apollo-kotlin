@@ -1,23 +1,38 @@
 package com.apollographql.apollo;
 
-import java.io.IOException;
+import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.exception.ApolloHttpException;
+import com.apollographql.apollo.exception.ApolloNetworkException;
+import com.apollographql.apollo.internal.util.Cancelable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface ApolloPrefetch {
+import okhttp3.Response;
 
-  void execute() throws IOException;
+public interface ApolloPrefetch extends Cancelable {
+
+  void execute() throws ApolloException;
 
   @Nonnull ApolloPrefetch enqueue(@Nullable Callback callback);
 
   ApolloPrefetch clone();
 
-  void cancel();
+  abstract class Callback {
+    public abstract void onSuccess();
 
-  interface Callback {
-    void onSuccess();
+    public abstract void onFailure(@Nonnull ApolloException e);
 
-    void onFailure(@Nonnull Throwable t);
+    public void onHttpError(@Nonnull ApolloHttpException e) {
+      onFailure(e);
+      Response response = e.rawResponse();
+      if (response != null) {
+        response.close();
+      }
+    }
+
+    public void onNetworkError(@Nonnull ApolloNetworkException e) {
+      onFailure(e);
+    }
   }
 }

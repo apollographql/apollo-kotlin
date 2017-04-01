@@ -1,25 +1,25 @@
 package com.apollographql.apollo.internal.interceptor;
 
+import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
-import com.apollographql.apollo.internal.cache.normalized.Cache;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
-import com.apollographql.apollo.internal.cache.normalized.ReadableCache;
 import com.apollographql.apollo.cache.normalized.Record;
+import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.interceptor.ApolloInterceptor;
+import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
+import com.apollographql.apollo.internal.cache.normalized.Cache;
+import com.apollographql.apollo.internal.cache.normalized.ReadableCache;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.cache.normalized.Transaction;
 import com.apollographql.apollo.internal.cache.normalized.WriteableCache;
-import com.apollographql.apollo.interceptor.ApolloInterceptor;
-import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.internal.field.CacheFieldValueResolver;
 import com.apollographql.apollo.internal.reader.RealResponseReader;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -51,7 +51,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
   }
 
   @Nonnull @Override public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain)
-      throws IOException {
+      throws ApolloException {
     InterceptorResponse cachedResponse = resolveCacheFirstResponse(operation);
     if (cachedResponse != null) {
       return cachedResponse;
@@ -63,7 +63,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     } catch (Exception e) {
       InterceptorResponse networkFirstCacheResponse = resolveNetworkFirstCacheResponse(operation);
       if (networkFirstCacheResponse != null) {
-        logger.e(e, "Failed to fetch network response for operation %s, return cached one", operation);
+        logger.d(e, "Failed to fetch network response for operation %s, return cached one", operation);
         return networkFirstCacheResponse;
       }
       throw e;
@@ -76,7 +76,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
       @Nonnull final ExecutorService dispatcher, @Nonnull final CallBack callBack) {
     dispatcher.execute(new Runnable() {
       @Override public void run() {
-        InterceptorResponse cachedResponse = resolveCacheFirstResponse(operation);
+        final InterceptorResponse cachedResponse = resolveCacheFirstResponse(operation);
         if (cachedResponse != null) {
           callBack.onResponse(cachedResponse);
           return;
@@ -84,20 +84,16 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
 
         chain.proceedAsync(dispatcher, new CallBack() {
           @Override public void onResponse(@Nonnull InterceptorResponse response) {
-            try {
-              callBack.onResponse(handleNetworkResponse(operation, response));
-            } catch (Exception e) {
-              callBack.onFailure(e);
-            }
+            callBack.onResponse(handleNetworkResponse(operation, response));
           }
 
-          @Override public void onFailure(@Nonnull Throwable t) {
+          @Override public void onFailure(@Nonnull ApolloException e) {
             InterceptorResponse response = resolveNetworkFirstCacheResponse(operation);
             if (response != null) {
-              logger.e(t, "Failed to fetch network response for operation %s, return cached one", operation);
+              logger.d(e, "Failed to fetch network response for operation %s, return cached one", operation);
               callBack.onResponse(response);
             } else {
-              callBack.onFailure(t);
+              callBack.onFailure(e);
             }
           }
         });

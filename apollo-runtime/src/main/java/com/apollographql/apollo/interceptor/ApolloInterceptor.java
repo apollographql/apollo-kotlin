@@ -4,15 +4,15 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.Record;
+import com.apollographql.apollo.exception.ApolloException;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
 
 public interface ApolloInterceptor {
-  @Nonnull InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws IOException;
+  @Nonnull InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException;
 
   void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
       @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack);
@@ -22,7 +22,7 @@ public interface ApolloInterceptor {
   interface CallBack {
     void onResponse(@Nonnull InterceptorResponse response);
 
-    void onFailure(@Nonnull Throwable t);
+    void onFailure(@Nonnull ApolloException e);
   }
 
   final class InterceptorResponse {

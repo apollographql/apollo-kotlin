@@ -4,8 +4,12 @@ import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloWatcher;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.Utils;
-import com.apollographql.apollo.internal.cache.normalized.Cache;
 import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.exception.ApolloHttpException;
+import com.apollographql.apollo.exception.ApolloNetworkException;
+import com.apollographql.apollo.exception.ApolloParseException;
+import com.apollographql.apollo.internal.cache.normalized.Cache;
 
 import java.util.Collections;
 import java.util.Set;
@@ -40,7 +44,7 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
       executed = true;
     }
     this.callback = callback;
-    activeCall.enqueue(callbackProxy(this.callback, activeCall));
+    activeCall.enqueue(callbackProxy(this.callback));
   }
 
   @Nonnull @Override public RealApolloWatcher<T> refetchCacheControl(@Nonnull CacheControl cacheControl) {
@@ -62,11 +66,10 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
     activeCall.cancel();
     cache.unsubscribe(recordChangeSubscriber);
     activeCall = activeCall.clone().cacheControl(refetchCacheControl);
-    activeCall.enqueue(callbackProxy(this.callback, activeCall));
+    activeCall.enqueue(callbackProxy(this.callback));
   }
 
-  private ApolloCall.Callback<T> callbackProxy(final ApolloCall.Callback<T> sourceCallback,
-      final RealApolloCall<T> call) {
+  private ApolloCall.Callback<T> callbackProxy(final ApolloCall.Callback<T> sourceCallback) {
     return new ApolloCall.Callback<T>() {
       @Override public void onResponse(@Nonnull Response<T> response) {
         if (isActive) {
@@ -76,11 +79,18 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
         }
       }
 
-      @Override public void onFailure(@Nonnull Throwable t) {
-        sourceCallback.onFailure(t);
+      @Override public void onFailure(@Nonnull ApolloException e) {
         isActive = false;
+        if (e instanceof ApolloHttpException) {
+          sourceCallback.onHttpError((ApolloHttpException) e);
+        } else if (e instanceof ApolloParseException) {
+          sourceCallback.onParseError((ApolloParseException) e);
+        } else if (e instanceof ApolloNetworkException) {
+          sourceCallback.onNetworkError((ApolloNetworkException) e);
+        } else {
+          sourceCallback.onFailure(e);
+        }
       }
     };
   }
-
 }

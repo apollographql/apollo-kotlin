@@ -10,6 +10,7 @@ import com.apollographql.apollo.cache.normalized.CacheStore;
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDs;
 import com.apollographql.android.impl.normalizer.type.Episode;
+import com.apollographql.apollo.exception.ApolloException;
 
 import junit.framework.Assert;
 
@@ -57,7 +58,7 @@ public class ApolloWatcherTest {
 
   @Test
   public void testQueryWatcherUpdated_SameQuery_DifferentResults() throws IOException, InterruptedException,
-      TimeoutException {
+      TimeoutException, ApolloException {
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
 
@@ -77,7 +78,7 @@ public class ApolloWatcherTest {
             secondResponseLatch.countDown();
           }
 
-          @Override public void onFailure(@Nonnull Throwable e) {
+          @Override public void onFailure(@Nonnull ApolloException e) {
             Assert.fail(e.getMessage());
             firstResponseLatch.countDown();
             secondResponseLatch.countDown();
@@ -113,7 +114,7 @@ public class ApolloWatcherTest {
             }
           }
 
-          @Override public void onFailure(@Nonnull Throwable e) {
+          @Override public void onFailure(@Nonnull ApolloException e) {
             Assert.fail(e.getMessage());
             firstResponseLatch.countDown();
             secondResponseLatch.countDown();
@@ -131,7 +132,7 @@ public class ApolloWatcherTest {
 
   @Test
   public void testQueryWatcherUpdated_DifferentQuery_DifferentResults() throws IOException, InterruptedException,
-      TimeoutException {
+      TimeoutException, ApolloException {
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
 
@@ -151,7 +152,7 @@ public class ApolloWatcherTest {
             secondResponseLatch.countDown();
           }
 
-          @Override public void onFailure(@Nonnull Throwable e) {
+          @Override public void onFailure(@Nonnull ApolloException e) {
             Assert.fail(e.getMessage());
             firstResponseLatch.countDown();
             secondResponseLatch.countDown();
@@ -187,7 +188,7 @@ public class ApolloWatcherTest {
             }
           }
 
-          @Override public void onFailure(@Nonnull Throwable e) {
+          @Override public void onFailure(@Nonnull ApolloException e) {
             Assert.fail(e.getMessage());
             firstResponseLatch.countDown();
             secondResponseLatch.countDown();
@@ -226,7 +227,7 @@ public class ApolloWatcherTest {
                 secondResponseLatch.countDown();
               }
 
-              @Override public void onFailure(@Nonnull Throwable e) {
+              @Override public void onFailure(@Nonnull ApolloException e) {
                 Assert.fail(e.getMessage());
                 firstResponseLatch.countDown();
                 secondResponseLatch.countDown();
@@ -254,7 +255,7 @@ public class ApolloWatcherTest {
         cacheWarmUpLatch.countDown();
       }
 
-      @Override public void onFailure(@Nonnull Throwable e) {
+      @Override public void onFailure(@Nonnull ApolloException e) {
         Assert.fail(e.getMessage());
         cacheWarmUpLatch.countDown();
       }
@@ -281,7 +282,7 @@ public class ApolloWatcherTest {
             secondResponseLatch.countDown();
           }
 
-          @Override public void onFailure(@Nonnull Throwable e) {
+          @Override public void onFailure(@Nonnull ApolloException e) {
             Assert.fail(e.getMessage());
             firstResponseLatch.countDown();
             secondResponseLatch.countDown();
