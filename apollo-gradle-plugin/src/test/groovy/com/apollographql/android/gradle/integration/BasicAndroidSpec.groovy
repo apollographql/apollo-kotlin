@@ -49,8 +49,9 @@ class BasicAndroidSpec extends Specification {
 
     // Optional is not added to the generated classes
     assert !new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").getText(
-        'UTF-8').contains(
-        "import com.apollographql.apollo.api.internal.Optional;")
+        'UTF-8').contains("Optional")
+     assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").getText(
+        'UTF-8').contains("import javax.annotation.Nullable;")
   }
 
   def "installApolloCodegenTask is up to date if no changes occur to node_modules and package.json"() {
@@ -150,7 +151,7 @@ class BasicAndroidSpec extends Specification {
         "return Currency.class;")
   }
 
-  def "adding nullableValueType = `annotated` in Apollo Extension generates classes with Apollo Optional"() {
+  def "adding nullableValueType = `annotated` in Apollo Extension generates classes annotated with JSR"() {
     setup: "a testProject with a previous build and a modified build script"
     replaceTextInFile(new File("$testProjectDir/build.gradle")) {
       it.replace("apollo {", "apollo {\n nullableValueType = 'annotated' \n")
@@ -166,7 +167,9 @@ class BasicAndroidSpec extends Specification {
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").isFile()
     assert !new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").getText(
-        'UTF-8').contains("import com.apollographql.apollo.api.internal.Optional;")
+        'UTF-8').contains("Optional")
+    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").getText(
+        'UTF-8').contains("import javax.annotation.Nullable;")
   }
 
   def "adding nullableValueType = `apolloOptional` in Apollo Extension generates classes with Apollo Optional"() {
