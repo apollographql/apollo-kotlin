@@ -74,7 +74,7 @@ public interface ApolloCall<T> extends Cancelable {
   abstract class Callback<T> {
 
     /**
-     * Gets called when GraphQl response is received.
+     * Gets called when GraphQl response is received successfully.
      *
      * @param response the GraphQl response
      */
@@ -86,6 +86,10 @@ public interface ApolloCall<T> extends Cancelable {
      */
     public abstract void onFailure(@Nonnull ApolloException e);
 
+    /**
+     * Gets called when an http request error takes place either due to client error (status code >= 400) or due
+     * to server error (status code >= 500).
+     */
     public void onHttpError(@Nonnull ApolloHttpException e) {
       onFailure(e);
       okhttp3.Response response = e.rawResponse();
@@ -94,10 +98,16 @@ public interface ApolloCall<T> extends Cancelable {
       }
     }
 
+    /**
+     * Gets called when an http request error takes place due to network failures, timeouts etc.
+     */
     public void onNetworkError(@Nonnull ApolloNetworkException e) {
       onFailure(e);
     }
 
+    /**
+     * Gets called when the network request succeeds but there was an error parsing the response.
+     */
     public void onParseError(@Nonnull ApolloParseException e) {
       onFailure(e);
     }

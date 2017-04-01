@@ -65,6 +65,10 @@ public interface ApolloPrefetch extends Cancelable {
      */
     public abstract void onFailure(@Nonnull ApolloException e);
 
+    /**
+     * Gets called when an http request error takes place either due to client error (status code >= 400) or due
+     * to server error (status code >= 500).
+     */
     public void onHttpError(@Nonnull ApolloHttpException e) {
       onFailure(e);
       Response response = e.rawResponse();
@@ -73,6 +77,9 @@ public interface ApolloPrefetch extends Cancelable {
       }
     }
 
+    /**
+     * Gets called when an http request error takes place due to network failures, timeouts etc.
+     */
     public void onNetworkError(@Nonnull ApolloNetworkException e) {
       onFailure(e);
     }
