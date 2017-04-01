@@ -2,6 +2,7 @@ package com.apollographql.android.rx;
 
 
 import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.ApolloPrefetch;
 import com.apollographql.apollo.ApolloWatcher;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
@@ -9,6 +10,8 @@ import com.apollographql.apollo.internal.util.Cancelable;
 
 import javax.annotation.Nonnull;
 
+import rx.Completable;
+import rx.CompletableSubscriber;
 import rx.Emitter;
 import rx.Observable;
 import rx.Single;
@@ -74,6 +77,31 @@ public final class RxApollo {
         }
       }
     });
+  }
+
+  @Nonnull public static Completable from(@Nonnull final ApolloPrefetch prefetch) {
+    checkNotNull(prefetch, "prefetch == null");
+
+    return Completable.create(new Completable.OnSubscribe() {
+      @Override public void call(CompletableSubscriber subscriber) {
+        cancelOnCompletableUnsubscribe(subscriber, prefetch);
+        try {
+          prefetch.execute();
+          subscriber.onCompleted();
+        } catch (ApolloException e) {
+          Exceptions.throwIfFatal(e);
+          subscriber.onError(e);
+        }
+      }
+    });
+  }
+
+  private static void cancelOnCompletableUnsubscribe(CompletableSubscriber subscriber, final Cancelable cancelable) {
+    subscriber.onSubscribe(Subscriptions.create(new Action0() {
+      @Override public void call() {
+        cancelable.cancel();
+      }
+    }));
   }
 
   private static <T> void cancelOnSingleUnsubscribe(SingleSubscriber<? super T> subscriber, final Cancelable toCancel) {
