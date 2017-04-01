@@ -47,3 +47,6 @@ dependencies {
   compile supportDeps
   compile apolloApiCompileDeps
 }
+
+apollo {
+}

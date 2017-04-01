@@ -21,16 +21,16 @@ public class ApolloClassGenTask extends SourceTask {
 
   @Internal private String variant;
   @Input private Map<String, String> customTypeMapping;
-  @Input private boolean useOptional;
+  @Input private ApolloExtension.NullableValueType nullValueType;
   @Input private boolean hasGuavaDep;
   @Input private boolean generateAccessors;
   @OutputDirectory private File outputDir;
 
-  public void init(String buildVariant, Map<String, String> typeMapping, boolean generateOptional, boolean hasGuava,
-      boolean accessors) {
+  public void init(String buildVariant, Map<String, String> typeMapping,
+      String nullableValueType, boolean hasGuava, boolean accessors) {
     variant = buildVariant;
     customTypeMapping = typeMapping;
-    useOptional = generateOptional;
+    nullValueType = ApolloExtension.NullableValueType.valueOf(nullableValueType);
     hasGuavaDep = hasGuava;
     generateAccessors = accessors;
     outputDir = new File(getProject().getBuildDir() + "/" + Joiner.on(File.separator).join(GraphQLCompiler.Companion
@@ -42,8 +42,11 @@ public class ApolloClassGenTask extends SourceTask {
     inputs.outOfDate(new Action<InputFileDetails>() {
       @Override
       public void execute(InputFileDetails inputFileDetails) {
+        boolean useOptional = (nullValueType != ApolloExtension.NullableValueType.annotated);
+        boolean useGuava = (nullValueType == ApolloExtension.NullableValueType.guavaOptional
+            || (hasGuavaDep && nullValueType == ApolloExtension.NullableValueType.autoOptional));
         GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(inputFileDetails.getFile(), outputDir,
-            customTypeMapping, useOptional, hasGuavaDep, generateAccessors);
+            customTypeMapping, useOptional, useGuava, generateAccessors);
         new GraphQLCompiler().write(args);
       }
     });
@@ -73,12 +76,12 @@ public class ApolloClassGenTask extends SourceTask {
     this.customTypeMapping = customTypeMapping;
   }
 
-  public boolean isUseOptional() {
-    return useOptional;
+  public ApolloExtension.NullableValueType getNullValueType() {
+    return nullValueType;
   }
 
-  public void setUseOptional(boolean useOptional) {
-    this.useOptional = useOptional;
+  public void setNullValueType(ApolloExtension.NullableValueType nullValueType) {
+    this.nullValueType = nullValueType;
   }
 
   public boolean shouldGenerateAccessors() {
