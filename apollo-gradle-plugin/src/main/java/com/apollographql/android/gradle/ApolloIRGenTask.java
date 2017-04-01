@@ -29,7 +29,7 @@ import com.google.common.collect.Lists;
 import com.moowork.gradle.node.task.NodeTask;
 
 public class ApolloIRGenTask extends NodeTask {
-  private static final String APOLLO_CODEGEN = "node_modules/apollo-codegen/lib/cli.js";
+  private static final String APOLLO_CODEGEN = "apollo-codegen/node_modules/apollo-codegen/lib/cli.js";
   static final String NAME = "generate%sApolloIR";
 
   @Internal private String variant;
@@ -46,7 +46,7 @@ public class ApolloIRGenTask extends NodeTask {
 
   @Override
   public void exec() {
-    File apolloScript = getProject().file(APOLLO_CODEGEN);
+    File apolloScript = new File(getProject().getBuildDir(), APOLLO_CODEGEN);
     if (!apolloScript.isFile()) {
       throw new GradleException("Apollo-codegen was not found in node_modules. Please run the installApolloCodegen task.");
     }

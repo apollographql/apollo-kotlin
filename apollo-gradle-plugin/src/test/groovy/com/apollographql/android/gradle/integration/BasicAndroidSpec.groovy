@@ -1,5 +1,6 @@
 package com.apollographql.android.gradle.integration
 
+import com.apollographql.android.compiler.GraphQLCompiler
 import org.apache.commons.io.FileUtils
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
@@ -68,7 +69,7 @@ class BasicAndroidSpec extends Specification {
 
   def "installApolloCodegenTask gets outdated if node_modules directory is altered"() {
     setup: "a testProject with a deleted node_modules directory"
-    FileUtils.deleteDirectory(new File(testProjectDir, "node_modules"))
+    FileUtils.deleteDirectory(new File(testProjectDir, "build/apollo-codegen/node_modules"))
 
     when:
     def result = GradleRunner.create().withProjectDir(testProjectDir)
@@ -80,9 +81,12 @@ class BasicAndroidSpec extends Specification {
     result.task(":installApolloCodegen").outcome == TaskOutcome.SUCCESS
   }
 
-  def "installApolloCodegenTask gets outdated if package.json is altered"() {
-    setup: "a testProject with a deleted package.json directory"
-    FileUtils.deleteDirectory(new File(testProjectDir, "node_modules"))
+  def "installApolloCodegenTask gets outdated if apollo-codegen version is different"() {
+    setup: "a testProject with a different apollo-codegen version as indicated in the package.json file"
+
+    replaceTextInFile(new File(testProjectDir, "build/apollo-codegen/node_modules/apollo-codegen/package.json")) {
+      it.replace("\"version\": \"$GraphQLCompiler.APOLLOCODEGEN_VERSION\"", "\"version\": \"0.10.1\"")
+    }
 
     when:
     def result = GradleRunner.create().withProjectDir(testProjectDir)
