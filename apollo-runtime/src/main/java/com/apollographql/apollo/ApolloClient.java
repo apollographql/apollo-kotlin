@@ -40,14 +40,14 @@ import okhttp3.Response;
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
- * ApolloClient class represents the abstraction for the graphQL client that will be used to
- * execute queries and read the responses back.
+ * ApolloClient class represents the abstraction for the graphQL client that will be used to execute queries and read
+ * the responses back.
  *
  * <h3>ApolloClient should be shared</h3>
  *
  * Since each ApolloClient holds its own connection pool and thread pool, it is recommended to only create a single
- * ApolloClient and use that for execution of all the queries, as this would reduce latency and would also save
- * memory. Conversely, creating a client for each query execution would result in resource wastage on idle pools.
+ * ApolloClient and use that for execution of all the queries, as this would reduce latency and would also save memory.
+ * Conversely, creating a client for each query execution would result in resource wastage on idle pools.
  *
  *
  * <p>See the {@link ApolloClient.Builder} class for configuring the ApolloClient.
@@ -157,8 +157,6 @@ public final class ApolloClient implements ApolloCall.Factory {
     /**
      * <p>Set the API server's base url.</p>
      *
-     * <b>Base URLs should not have a trailing slash</b>
-     *
      * @param serverUrl the url to set.
      * @return The {@link Builder} object to be used for chaining method calls
      */
@@ -169,8 +167,6 @@ public final class ApolloClient implements ApolloCall.Factory {
 
     /**
      * <p>Set the API server's base url.</p>
-     *
-     * <b>Base URLs should not have a trailing slash</b>
      *
      * @param serverUrl the url to set.
      * @return The {@link Builder} object to be used for chaining method calls
