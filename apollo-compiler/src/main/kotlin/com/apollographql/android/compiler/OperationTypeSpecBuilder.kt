@@ -83,7 +83,7 @@ class OperationTypeSpecBuilder(
         .addParameter(ParameterSpec.builder(DATA_VAR_TYPE, "data").build())
         .returns(wrapperType(context))
         .addStatement(
-            if (context.nullableValueGenerationType != NullableValueGenerationType.ANNOTATED) {
+            if (context.nullableValueType != NullableValueType.ANNOTATED) {
               "return Optional.fromNullable(data)"
             } else {
               "return data"
@@ -122,9 +122,9 @@ class OperationTypeSpecBuilder(
         .build())
   }
 
-  private fun wrapperType(context: CodeGenerationContext) = when (context.nullableValueGenerationType) {
-    NullableValueGenerationType.GUAVA_OPTIONAL -> ClassNames.parameterizedGuavaOptional(DATA_VAR_TYPE)
-    NullableValueGenerationType.APOLLO_OPTIONAL -> ClassNames.parameterizedOptional(DATA_VAR_TYPE)
+  private fun wrapperType(context: CodeGenerationContext) = when (context.nullableValueType) {
+    NullableValueType.GUAVA_OPTIONAL -> ClassNames.parameterizedGuavaOptional(DATA_VAR_TYPE)
+    NullableValueType.APOLLO_OPTIONAL -> ClassNames.parameterizedOptional(DATA_VAR_TYPE)
     else -> DATA_VAR_TYPE
   }
 

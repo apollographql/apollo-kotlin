@@ -1,5 +1,7 @@
 package com.apollographql.android.gradle;
 
+import com.apollographql.android.compiler.NullableValueType;
+
 import groovy.lang.Closure;
 
 import java.util.LinkedHashMap;
@@ -8,7 +10,7 @@ import java.util.Map;
 public class ApolloExtension {
   static final String NAME = "apollo";
   private Map<String, String> customTypeMapping = new LinkedHashMap<>();
-  private boolean generateOptional = false;
+  private String nullableValueType = NullableValueType.ANNOTATED.getValue();
   private boolean generateAccessors = true;
 
   public Map<String, String> getCustomTypeMapping() {
@@ -19,12 +21,12 @@ public class ApolloExtension {
     this.customTypeMapping = customTypeMapping;
   }
 
-  public boolean isGenerateOptional() {
-    return generateOptional;
+  public String getNullableValueType() {
+    return nullableValueType;
   }
 
-  public void setGenerateOptional(boolean generateOptional) {
-    this.generateOptional = generateOptional;
+  public void setNullableValueType(String nullableValueType) {
+    this.nullableValueType = nullableValueType;
   }
 
   public boolean isGenerateAccessors() {
