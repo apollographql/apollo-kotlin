@@ -39,7 +39,9 @@ import okhttp3.Response;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
-public final class ApolloClient implements ApolloCall.Factory {
+public final class ApolloClient
+    implements ApolloCall.Factory,
+    ApolloPrefetch.Factory {
   public static Builder builder() {
     return new Builder();
   }

@@ -52,8 +52,5 @@ public interface ApolloCall<T> extends Cancelable {
   interface Factory {
     <D extends Operation.Data, T, V extends Operation.Variables> ApolloCall<T> newCall(
         @Nonnull Operation<D, T, V> operation);
-
-    <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
-        @Nonnull Operation<D, T, V> operation);
   }
 }

@@ -1,5 +1,6 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
@@ -34,5 +35,12 @@ public interface ApolloPrefetch extends Cancelable {
     public void onNetworkError(@Nonnull ApolloNetworkException e) {
       onFailure(e);
     }
+  }
+
+  interface Factory {
+
+    <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
+        @Nonnull Operation<D, T, V> operation);
+
   }
 }
