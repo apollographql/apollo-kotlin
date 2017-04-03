@@ -21,16 +21,36 @@ import rx.subscriptions.Subscriptions;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
+/**
+ * The RxApollo class provides methods for converting ApolloCall
+ * and ApolloWatcher types to RxJava 1 Observables.
+ */
 public final class RxApollo {
 
   private RxApollo() {
   }
 
+  /**
+   * Converts an {@link ApolloWatcher} into an Observable. Honors the back pressure from downstream with the back
+   * pressure strategy {@link rx.Emitter.BackpressureMode#LATEST}.
+   *
+   * @param watcher the ApolloWatcher to convert
+   * @param <T>     the value type
+   * @return the converted Observable
+   */
   @Nonnull
   public static <T> Observable<T> from(@Nonnull final ApolloWatcher<T> watcher) {
     return from(watcher, Emitter.BackpressureMode.LATEST);
   }
 
+  /**
+   * Converts an {@link ApolloWatcher} into an Observable.
+   *
+   * @param watcher          the ApolloWatcher to convert
+   * @param backpressureMode the back pressure strategy to apply to the observable source.
+   * @param <T>              the value type
+   * @return the converted Observable
+   */
   @Nonnull public static <T> Observable<T> from(@Nonnull final ApolloWatcher<T> watcher,
       @Nonnull Emitter.BackpressureMode backpressureMode) {
     checkNotNull(backpressureMode, "backpressureMode == null");
@@ -56,6 +76,13 @@ public final class RxApollo {
     }, backpressureMode);
   }
 
+  /**
+   * Converts an {@link ApolloCall} to a Single.
+   *
+   * @param call the ApolloCall to convert
+   * @param <T>  the value type
+   * @return the converted Single
+   */
   @Nonnull public static <T> Single<T> from(@Nonnull final ApolloCall<T> call) {
     checkNotNull(call, "call == null");
     return Single.create(new Single.OnSubscribe<T>() {
