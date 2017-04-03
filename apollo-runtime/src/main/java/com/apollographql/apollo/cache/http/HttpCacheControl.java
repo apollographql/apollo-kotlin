@@ -12,7 +12,7 @@ public enum HttpCacheControl {
    */
   CACHE_FIRST("cache-first"),
   /**
-   * Signals the apollo client to only fetch the data from the http cache. If the data is not present in the cache, an
+   * Signals the apollo client to only fetch the data from the http cache. If the data has become stale, an
    * {@link com.apollographql.apollo.exception.ApolloHttpException} is thrown.
    */
   CACHE_ONLY("cache-only"),
