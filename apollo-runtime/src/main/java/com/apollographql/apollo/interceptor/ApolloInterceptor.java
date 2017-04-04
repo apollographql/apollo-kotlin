@@ -43,8 +43,10 @@ public interface ApolloInterceptor {
       @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack);
 
   /**
-   * Disposes off the resources which are no longer required. e.g. cancelling a network request which is no longer
-   * needed.
+   * Disposes off the resources which are no longer required.
+   *
+   * <p>A UseCase for this method call would be when an {@link com.apollographql.apollo.ApolloCall} needs to be
+   * cancelled and resources need to be disposed off. </p>
    */
   void dispose();
 
