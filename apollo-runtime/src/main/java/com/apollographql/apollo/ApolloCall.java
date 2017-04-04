@@ -113,7 +113,7 @@ public interface ApolloCall<T> extends Cancelable {
   }
 
   /**
-   * Factory for creating ApolloCall & ApolloPrefetch objects.
+   * Factory for creating ApolloCall object.
    */
   interface Factory {
     /**
@@ -123,15 +123,6 @@ public interface ApolloCall<T> extends Cancelable {
      * @return The ApolloCall object with the wrapped operation object
      */
     <D extends Operation.Data, T, V extends Operation.Variables> ApolloCall<T> newCall(
-        @Nonnull Operation<D, T, V> operation);
-
-    /**
-     * Creates the ApolloPrefetch by wrapping the operation object inside.
-     *
-     * @param operation the operation which needs to be performed
-     * @return The ApolloPrefetch object with the wrapped operation object
-     */
-    <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
         @Nonnull Operation<D, T, V> operation);
   }
 }

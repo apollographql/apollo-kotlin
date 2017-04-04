@@ -39,6 +39,7 @@ import okhttp3.Response;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
+
 /**
  * ApolloClient class represents the abstraction for the graphQL client that will be used to execute queries and read
  * the responses back.
@@ -52,7 +53,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
  *
  * <p>See the {@link ApolloClient.Builder} class for configuring the ApolloClient.
  */
-public final class ApolloClient implements ApolloCall.Factory {
+public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Factory {
+
   public static Builder builder() {
     return new Builder();
   }
