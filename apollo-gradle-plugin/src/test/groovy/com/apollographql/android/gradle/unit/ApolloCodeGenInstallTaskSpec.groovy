@@ -37,7 +37,7 @@ class ApolloCodeGenInstallTaskSpec extends Specification {
     task.dependsOn.contains("nodeSetup")
   }
 
-  def "task creates a package.json file in project root"() {
+  def "task creates a package.json file under build/apollo-codegen"() {
     setup:
     def project = ProjectBuilder.builder().build()
     ApolloPluginTestHelper.setupDefaultAndroidProject(project)
@@ -47,7 +47,7 @@ class ApolloCodeGenInstallTaskSpec extends Specification {
     project.evaluate()
 
     then:
-    File packageFile = project.file("package.json")
+    File packageFile = new File(project.buildDir, "apollo-codegen/package.json")
     assert packageFile.isFile()
     def input = new JsonSlurper().parseText(packageFile.text)
     assert input.name == "apollo-android"
