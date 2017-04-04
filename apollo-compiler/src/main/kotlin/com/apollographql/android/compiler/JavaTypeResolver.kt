@@ -28,9 +28,9 @@ class JavaTypeResolver(
     return if (javaType.isPrimitive) {
       javaType
     } else if (isOptional) {
-      when (context.nullableValueGenerationType) {
-        NullableValueGenerationType.APOLLO_OPTIONAL -> parameterizedOptional(javaType)
-        NullableValueGenerationType.GUAVA_OPTIONAL -> parameterizedGuavaOptional(javaType)
+      when (context.nullableValueType) {
+        NullableValueType.APOLLO_OPTIONAL -> parameterizedOptional(javaType)
+        NullableValueType.GUAVA_OPTIONAL -> parameterizedGuavaOptional(javaType)
         else -> javaType.annotated(Annotations.NULLABLE)
       }
     } else {

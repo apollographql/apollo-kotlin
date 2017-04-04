@@ -23,7 +23,7 @@ class GraphQLCompiler {
         fragmentsPackage = fragmentsPackage,
         typesPackage = typesPackage,
         customTypeMap = supportedScalarTypeMapping,
-        nullableValueGenerationType = args.nullableValueGenerationType(),
+        nullableValueType = args.nullableValueType,
         generateAccessors = args.generateAccessors)
     ir.writeJavaFiles(context, args.outputDir)
   }
@@ -69,15 +69,6 @@ class GraphQLCompiler {
       val irFile: File,
       val outputDir: File,
       val customTypeMap: Map<String, String>,
-      val useOptional: Boolean,
-      val useGuava: Boolean,
-      val generateAccessors: Boolean) {
-    fun nullableValueGenerationType(): NullableValueGenerationType {
-      return if (useOptional) {
-        if (useGuava) NullableValueGenerationType.GUAVA_OPTIONAL else NullableValueGenerationType.APOLLO_OPTIONAL
-      } else {
-        NullableValueGenerationType.ANNOTATED
-      }
-    }
-  }
+      val nullableValueType: NullableValueType,
+      val generateAccessors: Boolean)
 }

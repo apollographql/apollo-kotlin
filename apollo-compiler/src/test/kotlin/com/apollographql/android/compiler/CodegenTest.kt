@@ -68,15 +68,17 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
             } else {
               emptyMap()
             }
-            val useOptional = (it.name != "hero_details_nullable" || it.name == "no_accessors")
-            val useGuava = (it.name == "hero_details_guava")
+            val nullableValueType = when {
+              it.name == "hero_details_guava" -> NullableValueType.GUAVA_OPTIONAL
+              (it.name != "hero_details_nullable" || it.name == "no_accessors") -> NullableValueType.APOLLO_OPTIONAL
+              else -> NullableValueType.ANNOTATED
+            }
             val generateAccessors = (it.name != "no_accessors")
             val args = GraphQLCompiler.Arguments(
                 irFile = File(it, "TestQuery.json"),
                 outputDir = GraphQLCompiler.Companion.OUTPUT_DIRECTORY.fold(File("build"), ::File),
                 customTypeMap = customTypeMap,
-                useOptional = useOptional,
-                useGuava = useGuava,
+                nullableValueType = nullableValueType,
                 generateAccessors = generateAccessors)
             arrayOf(it.name, args)
           }

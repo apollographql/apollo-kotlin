@@ -50,7 +50,6 @@ class ApolloPlugin implements Plugin<Project> {
     setupNode()
     project.extensions.create(ApolloExtension.NAME, ApolloExtension)
     createSourceSetExtensions()
-    def hasGuava = false
 
     def compileDepSet = project.configurations.getByName("compile").dependencies
     project.getGradle().addListener(new DependencyResolutionListener() {
@@ -71,20 +70,17 @@ class ApolloPlugin implements Plugin<Project> {
 
       @Override
       void afterResolve(ResolvableDependencies resolvableDependencies) {
-        hasGuava = resolvableDependencies.getResolutionResult().allDependencies.any {
-          it.toString().contains("com.google.guava:guava")
-        }
         project.getGradle().removeListener(this)
       }
     })
 
     project.afterEvaluate {
       project.tasks.create(ApolloCodeGenInstallTask.NAME, ApolloCodeGenInstallTask.class)
-      addApolloTasks(hasGuava)
+      addApolloTasks()
     }
   }
 
-  private void addApolloTasks(boolean hasGuava) {
+  private void addApolloTasks() {
     Task apolloIRGenTask = project.task("generateApolloIR")
     apolloIRGenTask.group(TASK_GROUP)
     Task apolloClassGenTask = project.task("generateApolloClasses")
@@ -92,31 +88,30 @@ class ApolloPlugin implements Plugin<Project> {
 
     if (isAndroidProject()) {
       getVariants().all { v ->
-        addVariantTasks(v, apolloIRGenTask, apolloClassGenTask, v.sourceSets, hasGuava)
+        addVariantTasks(v, apolloIRGenTask, apolloClassGenTask, v.sourceSets)
       }
     } else {
       getSourceSets().all { sourceSet ->
-        addSourceSetTasks(sourceSet, apolloIRGenTask, apolloClassGenTask, hasGuava)
+        addSourceSetTasks(sourceSet, apolloIRGenTask, apolloClassGenTask)
       }
     }
   }
 
-  private void addVariantTasks(Object variant, Task apolloIRGenTask, Task apolloClassGenTask, Collection<?> sourceSets,
-                               boolean hasGuava) {
+  private void addVariantTasks(Object variant, Task apolloIRGenTask, Task apolloClassGenTask, Collection<?> sourceSets) {
     ApolloIRGenTask variantIRTask = createApolloIRGenTask(variant.name, sourceSets)
     ApolloClassGenTask variantClassTask = createApolloClassGenTask(variant.name, project.apollo.customTypeMapping,
-        project.apollo.generateOptional, hasGuava, project.apollo.generateAccessors)
+        project.apollo.nullableValueType, project.apollo.generateAccessors)
     variant.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir)
     apolloIRGenTask.dependsOn(variantIRTask)
     apolloClassGenTask.dependsOn(variantClassTask)
   }
 
-  private void addSourceSetTasks(SourceSet sourceSet, Task apolloIRGenTask, Task apolloClassGenTask, boolean hasGuava) {
+  private void addSourceSetTasks(SourceSet sourceSet, Task apolloIRGenTask, Task apolloClassGenTask) {
     String taskName = "main".equals(sourceSet.name) ? "" : sourceSet.name
 
     ApolloIRGenTask sourceSetIRTask = createApolloIRGenTask(sourceSet.name, [sourceSet])
     ApolloClassGenTask sourceSetClassTask = createApolloClassGenTask(sourceSet.name, project.apollo.customTypeMapping,
-        project.apollo.generateOptional, hasGuava, project.apollo.generateAccessors)
+        project.apollo.nullableValueType, project.apollo.generateAccessors)
     apolloIRGenTask.dependsOn(sourceSetIRTask)
     apolloClassGenTask.dependsOn(sourceSetClassTask)
 
@@ -151,8 +146,7 @@ class ApolloPlugin implements Plugin<Project> {
   }
 
   private ApolloClassGenTask createApolloClassGenTask(String name, Map<String, String> customTypeMapping,
-                                                      boolean generateOptional, boolean hasGuava,
-                                                      boolean generateAccessors) {
+                                                      String nullableValueType, boolean generateAccessors) {
     String taskName = String.format(ApolloClassGenTask.NAME, name.capitalize())
     ApolloClassGenTask task = project.tasks.create(taskName, ApolloClassGenTask) {
       group = TASK_GROUP
@@ -161,7 +155,7 @@ class ApolloPlugin implements Plugin<Project> {
       source = project.tasks.findByName(String.format(ApolloIRGenTask.NAME, name.capitalize())).outputDir
       include "**${File.separatorChar}*API.json"
     }
-    task.init(name, customTypeMapping, generateOptional, hasGuava, generateAccessors)
+    task.init(name, customTypeMapping, nullableValueType, generateAccessors)
     return task
   }
 
