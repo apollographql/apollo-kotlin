@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 
 /**
  * ApolloParseInterceptor is responsible for inflating the http responses into models. To get the http responses, it
- * hands over the control to the next intereceptor in the chain and proceeds to then parse the returned response.
+ * hands over the control to the next interceptor in the chain and proceeds to then parse the returned response.
  */
 public final class ApolloParseInterceptor implements ApolloInterceptor {
   private final HttpCache httpCache;

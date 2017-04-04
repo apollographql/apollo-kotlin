@@ -23,10 +23,10 @@ public interface ApolloInterceptor {
    * set of interceptors in the chain, and returns an {@link InterceptorResponse} if the operations succeeded or throws
    * an exception if the operations failed.
    *
-   * @param operation the GraphQL Operation object contained within the request.
+   * @param operation the GraphQL Operation object contained within the outgoing request.
    * @param chain     the ApolloInterceptorChain object containing the next set of interceptors.
    * @return This interceptor's response after performing operations.
-   * @throws ApolloException If an error occurred while performing operations on the request/response.
+   * @throws ApolloException if an error occurred while performing operations on the request/response.
    */
   @Nonnull InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException;
 
@@ -34,9 +34,9 @@ public interface ApolloInterceptor {
    * Intercepts the outgoing request and performs non blocking operations on the request or the response returned by
    * the next set of interceptors in the chain.
    *
-   * @param operation  the GraphQL Operation object contained within the request.
+   * @param operation  the GraphQL Operation object contained within the outgoing request.
    * @param chain      the ApolloInterceptorChain object containing the next set of interceptors.
-   * @param dispatcher the dispatcher which dispatches the non blocking operations on the request.
+   * @param dispatcher the dispatcher which dispatches the non blocking operations on the request/response.
    * @param callBack   the Callback which will handle the interceptor's response or failure exception.
    */
   void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,

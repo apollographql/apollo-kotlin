@@ -21,9 +21,9 @@ public interface ApolloInterceptorChain {
   @Nonnull ApolloInterceptor.InterceptorResponse proceed() throws ApolloException;
 
   /**
-   * Passes the control over to the next {@link ApolloInterceptor} in the responsibility chain and exits as this is a
-   * non blocking call. In order to receive the results back, pass in a callback which will handle the received
-   * response or error.
+   * Passes the control over to the next {@link ApolloInterceptor} in the responsibility chain and immmediately exits
+   * as this is a non blocking call. In order to receive the results back, pass in a callback which will handle the
+   * received response or error.
    *
    * @param dispatcher the {@link ExecutorService} which dispatches the calls asynchronously.
    * @param callBack   the callback which will handle the response or a failure exception.
