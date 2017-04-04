@@ -42,6 +42,10 @@ public interface ApolloInterceptor {
   void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
       @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack);
 
+  /**
+   * Disposes off the resources which are no longer required. e.g. cancelling a network request which is no longer
+   * needed.
+   */
   void dispose();
 
   /**
