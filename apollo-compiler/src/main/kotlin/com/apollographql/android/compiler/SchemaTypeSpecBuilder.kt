@@ -8,11 +8,11 @@ import java.util.*
 import javax.lang.model.element.Modifier
 
 class SchemaTypeSpecBuilder(
-    typeName: String,
-    private val fields: List<Field>,
-    private val fragmentSpreads: List<String>,
-    private val inlineFragments: List<InlineFragment>,
-    private val context: CodeGenerationContext
+    val typeName: String,
+    val fields: List<Field>,
+    val fragmentSpreads: List<String>,
+    val inlineFragments: List<InlineFragment>,
+    val context: CodeGenerationContext
 ) {
   private val uniqueTypeName = formatUniqueTypeName(typeName, context.reservedTypeNames)
 
