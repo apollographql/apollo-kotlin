@@ -30,6 +30,10 @@ import javax.annotation.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
+/**
+ * ApolloCacheInterceptor is responsible for serving requests from the normalized cache. If no cached responses in
+ * the normalized cache are found, it hands over the control to the next interceptor in the chain.
+ */
 public final class ApolloCacheInterceptor implements ApolloInterceptor {
   private final Cache cache;
   private final CacheControl cacheControl;

@@ -27,6 +27,9 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okio.Buffer;
 
+/**
+ * ApolloServerInterceptor is responsible for making the network calls to the server.
+ */
 @SuppressWarnings("WeakerAccess") public final class ApolloServerInterceptor implements ApolloInterceptor {
   private static final String ACCEPT_TYPE = "application/json";
   private static final String CONTENT_TYPE = "application/json";
