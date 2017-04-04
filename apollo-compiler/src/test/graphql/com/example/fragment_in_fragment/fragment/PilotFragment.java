@@ -75,6 +75,26 @@ public class PilotFragment {
     return h;
   }
 
+  public static final class Mapper implements ResponseFieldMapper<PilotFragment> {
+    final Homeworld.Mapper homeworldFieldMapper = new Homeworld.Mapper();
+
+    final Field[] fields = {
+      Field.forString("name", "name", null, true),
+      Field.forObject("homeworld", "homeworld", null, true, new Field.ObjectReader<Homeworld>() {
+        @Override public Homeworld read(final ResponseReader reader) throws IOException {
+          return homeworldFieldMapper.map(reader);
+        }
+      })
+    };
+
+    @Override
+    public PilotFragment map(ResponseReader reader) throws IOException {
+      final String name = reader.read(fields[0]);
+      final Homeworld homeworld = reader.read(fields[1]);
+      return new PilotFragment(name, homeworld);
+    }
+  }
+
   public static class Homeworld {
     private final Optional<String> name;
 
@@ -123,26 +143,6 @@ public class PilotFragment {
         final String name = reader.read(fields[0]);
         return new Homeworld(name);
       }
-    }
-  }
-
-  public static final class Mapper implements ResponseFieldMapper<PilotFragment> {
-    final Homeworld.Mapper homeworldFieldMapper = new Homeworld.Mapper();
-
-    final Field[] fields = {
-      Field.forString("name", "name", null, true),
-      Field.forObject("homeworld", "homeworld", null, true, new Field.ObjectReader<Homeworld>() {
-        @Override public Homeworld read(final ResponseReader reader) throws IOException {
-          return homeworldFieldMapper.map(reader);
-        }
-      })
-    };
-
-    @Override
-    public PilotFragment map(ResponseReader reader) throws IOException {
-      final String name = reader.read(fields[0]);
-      final Homeworld homeworld = reader.read(fields[1]);
-      return new PilotFragment(name, homeworld);
     }
   }
 }

@@ -106,6 +106,34 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return h;
     }
 
+    public static final class Mapper implements ResponseFieldMapper<Data> {
+      final R2.Mapper r2FieldMapper = new R2.Mapper();
+
+      final Luke.Mapper lukeFieldMapper = new Luke.Mapper();
+
+      final Field[] fields = {
+        Field.forObject("r2", "hero", null, true, new Field.ObjectReader<R2>() {
+          @Override public R2 read(final ResponseReader reader) throws IOException {
+            return r2FieldMapper.map(reader);
+          }
+        }),
+        Field.forObject("luke", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+          .put("episode", "EMPIRE")
+        .build(), true, new Field.ObjectReader<Luke>() {
+          @Override public Luke read(final ResponseReader reader) throws IOException {
+            return lukeFieldMapper.map(reader);
+          }
+        })
+      };
+
+      @Override
+      public Data map(ResponseReader reader) throws IOException {
+        final R2 r2 = reader.read(fields[0]);
+        final Luke luke = reader.read(fields[1]);
+        return new Data(r2, luke);
+      }
+    }
+
     public static class R2 {
       private final @Nonnull String name;
 
@@ -218,34 +246,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           final String name = reader.read(fields[1]);
           return new Luke(id, name);
         }
-      }
-    }
-
-    public static final class Mapper implements ResponseFieldMapper<Data> {
-      final R2.Mapper r2FieldMapper = new R2.Mapper();
-
-      final Luke.Mapper lukeFieldMapper = new Luke.Mapper();
-
-      final Field[] fields = {
-        Field.forObject("r2", "hero", null, true, new Field.ObjectReader<R2>() {
-          @Override public R2 read(final ResponseReader reader) throws IOException {
-            return r2FieldMapper.map(reader);
-          }
-        }),
-        Field.forObject("luke", "hero", new UnmodifiableMapBuilder<String, Object>(1)
-          .put("episode", "EMPIRE")
-        .build(), true, new Field.ObjectReader<Luke>() {
-          @Override public Luke read(final ResponseReader reader) throws IOException {
-            return lukeFieldMapper.map(reader);
-          }
-        })
-      };
-
-      @Override
-      public Data map(ResponseReader reader) throws IOException {
-        final R2 r2 = reader.read(fields[0]);
-        final Luke luke = reader.read(fields[1]);
-        return new Data(r2, luke);
       }
     }
   }
