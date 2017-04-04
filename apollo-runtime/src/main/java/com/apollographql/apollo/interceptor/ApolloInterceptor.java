@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
 
 /**
- * ApolloInterceptor is responsible for observing and modifying the requests going out and and the corresponding
+ * ApolloInterceptor is responsible for observing and modifying the requests going out and the corresponding
  * responses coming back in. Typical responsibilities include adding or removing headers from the request or response
  * objects, transforming the returned responses from one type to another, etc.
  */
@@ -43,10 +43,10 @@ public interface ApolloInterceptor {
       @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack);
 
   /**
-   * Disposes off the resources which are no longer required.
+   * Disposes of the resources which are no longer required.
    *
    * <p>A UseCase for this method call would be when an {@link com.apollographql.apollo.ApolloCall} needs to be
-   * cancelled and resources need to be disposed off. </p>
+   * cancelled and resources need to be disposed of. </p>
    */
   void dispose();
 

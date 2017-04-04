@@ -22,7 +22,7 @@ public enum CacheControl {
   /**
    * Signals the apollo client to first fetch the data from the network. If network request fails, then the
    * data is fetched from the normalized cache. If the data is not present in the normalized cache, then the
-   * exception leading to network request failure is rethrown.
+   * exception which led to the network request failure is rethrown.
    */
   NETWORK_FIRST,
   /**
