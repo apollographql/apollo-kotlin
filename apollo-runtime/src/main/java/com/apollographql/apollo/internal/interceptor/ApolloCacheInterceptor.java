@@ -35,7 +35,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
  * cache. It takes the following actions based on the {@link CacheControl} set:
  *
  * <ol> <li> <b>CACHE_ONLY</b>: First tries to get the data from the normalized cache. If the data doesn't exist or
- * there was an error inflating the models, it returns the {@link com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse}
+ * there was an error inflating the models, it returns the
+ * {@link com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse}
  * with the GraphQL {@link Operation} object wrapped inside. </li>
  *
  * <li><b>CACHE_FIRST</b>: First tries to get the data from the normalized cache. If the data doesn't exist or there was
