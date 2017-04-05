@@ -11,9 +11,12 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.TestObserver;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -22,6 +25,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class Rx2ApolloTest {
 
+  public static final String FILE_NAME_EPISODE_HERO_NAME_WITH_ID = "EpisodeHeroNameResponseWithId.json";
   private ApolloClient apolloClient;
   private MockWebServer mockWebServer;
   private InMemoryCacheStore inMemoryCacheStore;
@@ -52,7 +56,7 @@ public class Rx2ApolloTest {
   public void testRx2CallProducesValue() throws IOException, InterruptedException {
 
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
-    mockWebServer.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+    mockWebServer.enqueue(mockResponse(FILE_NAME_EPISODE_HERO_NAME_WITH_ID));
 
     EpisodeHeroName.Data data = Rx2Apollo.from(apolloClient.newCall(query))
         .test()
@@ -63,6 +67,24 @@ public class Rx2ApolloTest {
         .get(0);
 
     assertThat(data.hero().name()).isEqualTo("R2-D2");
+  }
+
+  @Test
+  public void testRx2CallIsCancelledWhenDisposed() throws IOException {
+
+    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    mockWebServer.enqueue(mockResponse(FILE_NAME_EPISODE_HERO_NAME_WITH_ID));
+
+    TestObserver<EpisodeHeroName.Data> testObserver = new TestObserver<>();
+
+    Disposable disposable = Rx2Apollo.from(apolloClient.newCall(query))
+        .delay(5, TimeUnit.SECONDS)
+        .subscribeWith(testObserver);
+
+    disposable.dispose();
+
+    assertThat(testObserver.isDisposed()).isTrue();
+    testObserver.assertNoValues();
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
