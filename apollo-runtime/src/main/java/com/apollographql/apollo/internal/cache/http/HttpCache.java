@@ -38,7 +38,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     try {
       cacheStore.delete();
     } catch (IOException e) {
-      logger.e(e, "Failed to clearAll http cache");
+      logger.e(e, "Failed to clear http cache");
     }
   }
 
