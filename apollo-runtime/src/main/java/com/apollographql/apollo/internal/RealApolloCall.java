@@ -91,21 +91,16 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       executed = true;
     }
 
-    checkNotNull(callback, "callback == null");
-
     interceptorChain.proceedAsync(dispatcher, new ApolloInterceptor.CallBack() {
       @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
-
-        if (!isCanceled()) {
+        if (callback != null && !isCanceled()) {
           //noinspection unchecked
           callback.onResponse(response.parsedResponse.get());
         }
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-
-        if (!isCanceled()) {
-
+        if (callback != null && !isCanceled()) {
           if (e instanceof ApolloHttpException) {
             callback.onHttpError((ApolloHttpException) e);
           } else if (e instanceof ApolloParseException) {

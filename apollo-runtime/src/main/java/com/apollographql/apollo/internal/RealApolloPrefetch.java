@@ -24,8 +24,6 @@ import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-
 @SuppressWarnings("WeakerAccess") public final class RealApolloPrefetch implements ApolloPrefetch {
   final Operation operation;
   final HttpUrl serverUrl;
@@ -66,8 +64,6 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       executed = true;
     }
 
-    checkNotNull(callback, "callback == null");
-
     interceptorChain.proceedAsync(dispatcher, new ApolloInterceptor.CallBack() {
       @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
 
@@ -85,14 +81,17 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
             onFailure(new ApolloException("Failed to close http response", e));
             return;
           }
-          callback.onSuccess();
+
+          if (callback != null) {
+            callback.onSuccess();
+          }
         }
 
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
 
-        if (!isCanceled()) {
+        if (callback != null && !isCanceled()) {
 
           if (e instanceof ApolloHttpException) {
             callback.onHttpError((ApolloHttpException) e);

@@ -17,8 +17,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-
 final class RealApolloWatcher<T> implements ApolloWatcher<T> {
   private RealApolloCall<T> activeCall;
   @Nullable private ApolloCall.Callback<T> callback = null;
@@ -45,9 +43,6 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
       if (executed) throw new IllegalStateException("Already Executed.");
       executed = true;
     }
-
-    checkNotNull(callback, "callback == null");
-
     this.callback = callback;
     activeCall.enqueue(callbackProxy(this.callback));
   }
@@ -56,7 +51,7 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
-    checkNotNull(cacheControl, "httpCacheControl == null");
+    Utils.checkNotNull(cacheControl, "httpCacheControl == null");
     this.refetchCacheControl = cacheControl;
     return this;
   }

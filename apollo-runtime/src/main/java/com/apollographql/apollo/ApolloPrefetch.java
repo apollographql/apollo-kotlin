@@ -41,7 +41,6 @@ public interface ApolloPrefetch extends Cancelable {
    *
    * @param callback Callback which will handle the success response or a failure exception
    * @throws IllegalStateException when the call has already been executed
-   * @throws NullPointerException if the callback is null
    */
   @Nonnull ApolloPrefetch enqueue(@Nullable Callback callback);
 
