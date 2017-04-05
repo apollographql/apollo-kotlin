@@ -2,6 +2,8 @@ package com.apollographql.apollo.cache.normalized.lru;
 
 import com.apollographql.apollo.api.internal.Function;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.cache.CacheHeaders;
+import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.Record;
@@ -21,8 +23,7 @@ import javax.annotation.Nullable;
  * A {@link NormalizedCache} backed by an in memory {@link Cache}. Can be configured with an optional secondaryCache
  * {@link NormalizedCache}, which will be used as a backup if a {@link Record} is not present in the primary cache.
  *
- * A common configuration is to have secondary {@link com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache}
- * cache.
+ * A common configuration is to have secondary SQL cache.
  */
 public final class LruNormalizedCache extends NormalizedCache {
 
@@ -65,12 +66,13 @@ public final class LruNormalizedCache extends NormalizedCache {
     return secondaryCache.get();
   }
 
-  @Nullable @Override public Record loadRecord(final String key) {
+  @Nullable @Override public Record loadRecord(final String key, final CacheHeaders cacheHeaders) {
+    final Record record;
     if (secondaryCache.isPresent()) {
       try {
-        return lruCache.get(key, new Callable<Record>() {
+        record = lruCache.get(key, new Callable<Record>() {
           @Override public Record call() throws Exception {
-            Record record = secondaryCache.get().loadRecord(key);
+            Record record = secondaryCache.get().loadRecord(key, cacheHeaders);
             // get(key, callable) requires non-null. If null, an exception should be
             //thrown, which will be converted to null in the catch clause.
             if (record == null) {
@@ -79,16 +81,25 @@ public final class LruNormalizedCache extends NormalizedCache {
             return record;
           }
         });
+        return record;
       } catch (Exception e) {
         return null;
       }
+    } else {
+      record = lruCache.getIfPresent(key);
     }
-    return lruCache.getIfPresent(key);
+    if (record != null && cacheHeaders.hasHeader(ApolloCacheHeaders.EVICT_AFTER_READ)) {
+      lruCache.invalidate(key);
+    }
+    return record;
   }
 
-  @Nonnull @Override public Set<String> merge(Record apolloRecord) {
+  @Nonnull @Override public Set<String> merge(Record apolloRecord, CacheHeaders cacheHeaders) {
+    if (cacheHeaders.hasHeader(ApolloCacheHeaders.NO_CACHE)) {
+      return Collections.emptySet();
+    }
     if (secondaryCache.isPresent()) {
-      secondaryCache.get().merge(apolloRecord);
+      secondaryCache.get().merge(apolloRecord, cacheHeaders);
     }
     final Record oldRecord = lruCache.getIfPresent(apolloRecord.key());
     if (oldRecord == null) {

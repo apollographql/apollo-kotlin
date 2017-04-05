@@ -79,7 +79,6 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
         if (isCanceled()) {
           return;
         }
-
         dependentKeys = response.dependentKeys();
         apolloStore.subscribe(recordChangeSubscriber);
         sourceCallback.onResponse(response);

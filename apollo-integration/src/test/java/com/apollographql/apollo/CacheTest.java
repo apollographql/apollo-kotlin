@@ -88,6 +88,7 @@ public class CacheTest {
 
   @After public void tearDown() {
     try {
+      server.shutdown();
       apolloClient.clearHttpCache();
       server.shutdown();
     } catch (Exception ignore) {

@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
@@ -17,6 +18,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static com.apollographql.apollo.cache.ApolloCacheHeaders.*;
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLUMN_KEY;
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLUMN_RECORD;
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.TABLE_RECORDS;
@@ -33,6 +35,10 @@ public final class SqlNormalizedCache extends NormalizedCache {
           COLUMN_KEY,
           COLUMN_RECORD,
           COLUMN_KEY);
+  private static final String DELETE_STATEMENT =
+      String.format("DELETE FROM %s WHERE %s=?",
+          TABLE_RECORDS,
+          COLUMN_KEY);
   private static final String DELETE_ALL_RECORD_STATEMENT = String.format("DELETE FROM %s", TABLE_RECORDS);
   SQLiteDatabase database;
   private final ApolloSqlHelper dbHelper;
@@ -42,6 +48,7 @@ public final class SqlNormalizedCache extends NormalizedCache {
 
   private final SQLiteStatement insertStatement;
   private final SQLiteStatement updateStatement;
+  private final SQLiteStatement deleteStatement;
   private final SQLiteStatement deleteAllRecordsStatement;
 
   SqlNormalizedCache(RecordFieldAdapter recordFieldAdapter, ApolloSqlHelper dbHelper) {
@@ -50,14 +57,22 @@ public final class SqlNormalizedCache extends NormalizedCache {
     database = dbHelper.getWritableDatabase();
     insertStatement = database.compileStatement(INSERT_STATEMENT);
     updateStatement = database.compileStatement(UPDATE_STATEMENT);
+    deleteStatement = database.compileStatement(DELETE_STATEMENT);
     deleteAllRecordsStatement = database.compileStatement(DELETE_ALL_RECORD_STATEMENT);
   }
 
-  @Nullable @Override public Record loadRecord(String key) {
-    return selectRecordForKey(key).orNull();
+  @Nullable public Record loadRecord(String key, CacheHeaders cacheHeaders) {
+    Record record = selectRecordForKey(key).orNull();
+    if (cacheHeaders.hasHeader(EVICT_AFTER_READ) && record != null) {
+      deleteRecord(key);
+    }
+    return record;
   }
 
-  @Nonnull @Override public Set<String> merge(Record apolloRecord) {
+  @Nonnull public Set<String> merge(Record apolloRecord, CacheHeaders cacheHeaders) {
+    if (cacheHeaders.hasHeader(NO_CACHE)) {
+      return Collections.emptySet();
+    }
     Optional<Record> optionalOldRecord = selectRecordForKey(apolloRecord.key());
     Set<String> changedKeys;
     if (!optionalOldRecord.isPresent()) {
@@ -66,18 +81,19 @@ public final class SqlNormalizedCache extends NormalizedCache {
     } else {
       Record oldRecord = optionalOldRecord.get();
       changedKeys = oldRecord.mergeWith(apolloRecord);
-      if (!changedKeys.isEmpty()) {
-        updateRecord(oldRecord.key(), recordAdapter().toJson(oldRecord.fields()));
-      }
+      updateRecord(oldRecord.key(), recordAdapter().toJson(oldRecord.fields()));
     }
     return changedKeys;
   }
 
-  @Nonnull @Override public Set<String> merge(Collection<Record> recordSet) {
+  @Nonnull @Override public Set<String> merge(Collection<Record> recordSet, CacheHeaders cacheHeaders) {
+    if (cacheHeaders.hasHeader(NO_CACHE)) {
+      return Collections.emptySet();
+    }
     Set<String> changedKeys = Collections.emptySet();
     try {
       database.beginTransaction();
-      changedKeys = super.merge(recordSet);
+      changedKeys = super.merge(recordSet, cacheHeaders);
       database.setTransactionSuccessful();
     } finally {
       database.endTransaction();
@@ -103,6 +119,11 @@ public final class SqlNormalizedCache extends NormalizedCache {
     updateStatement.bindString(3, key);
 
     updateStatement.executeInsert();
+  }
+
+  void deleteRecord(String key) {
+    deleteStatement.bindString(1, key);
+    deleteStatement.executeUpdateDelete();
   }
 
   Optional<Record> selectRecordForKey(String key) {

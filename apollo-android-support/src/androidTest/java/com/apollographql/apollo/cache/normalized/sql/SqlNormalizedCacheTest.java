@@ -4,6 +4,7 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
 import com.squareup.moshi.Moshi;
@@ -59,7 +60,7 @@ public class SqlNormalizedCacheTest {
 
   @Test
   public void testRecordSelection_recordNotPresent() {
-    Record record = sqlStore.loadRecord(STANDARD_KEY);
+    Record record = sqlStore.loadRecord(STANDARD_KEY, new CacheHeaders());
     assertThat(record).isNull();
   }
 
@@ -68,10 +69,21 @@ public class SqlNormalizedCacheTest {
     createRecord(STANDARD_KEY);
     sqlStore.merge(Record.builder(STANDARD_KEY)
         .addField("fieldKey", "valueUpdated")
-        .addField("newFieldKey", true).build());
+        .addField("newFieldKey", true).build(), new CacheHeaders());
     Optional<Record> record = sqlStore.selectRecordForKey(STANDARD_KEY);
     assertThat(record.get().fields().get("fieldKey")).isEqualTo("valueUpdated");
     assertThat(record.get().fields().get("newFieldKey")).isEqualTo(true);
+  }
+
+  @Test
+  public void testRecordDelete() {
+    createRecord(STANDARD_KEY);
+    sqlStore.merge(Record.builder(STANDARD_KEY)
+        .addField("fieldKey", "valueUpdated")
+        .addField("newFieldKey", true).build(), new CacheHeaders());
+    sqlStore.deleteRecord(STANDARD_KEY);
+    Optional<Record> record = sqlStore.selectRecordForKey(STANDARD_KEY);
+    assertThat(record.isPresent()).isFalse();
   }
 
   @Test
@@ -82,6 +94,11 @@ public class SqlNormalizedCacheTest {
     assertThat(sqlStore.selectRecordForKey(QUERY_ROOT_KEY).isPresent()).isFalse();
     assertThat(sqlStore.selectRecordForKey(STANDARD_KEY).isPresent()).isFalse();
   }
+
+
+  // Tests for StandardCacheHeader compliance
+
+  //TODO
 
   private long createRecord(String key) {
     return sqlStore.createRecord(key, FIELDS);
