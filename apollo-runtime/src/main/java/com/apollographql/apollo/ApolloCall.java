@@ -37,6 +37,7 @@ public interface ApolloCall<T> extends Cancelable {
    *
    * @param callback Callback which will handle the response or a failure exception.
    * @throws IllegalStateException when the call has already been executed
+   * @throws NullPointerException if the callback is null
    */
   void enqueue(@Nullable Callback<T> callback);
 

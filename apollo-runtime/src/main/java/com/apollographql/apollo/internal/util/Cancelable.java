@@ -8,4 +8,11 @@ public interface Cancelable {
    * Cancels the operation.
    */
   void cancel();
+
+  /**
+   * Checks if this operation has been cancelled.
+   *
+   * @return true if this operation has been cancelled else returns false
+   */
+  boolean isCanceled();
 }

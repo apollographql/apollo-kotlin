@@ -17,6 +17,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+
 final class RealApolloWatcher<T> implements ApolloWatcher<T> {
   private RealApolloCall<T> activeCall;
   @Nullable private ApolloCall.Callback<T> callback = null;
@@ -43,6 +45,9 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
       if (executed) throw new IllegalStateException("Already Executed.");
       executed = true;
     }
+
+    checkNotNull(callback, "callback == null");
+
     this.callback = callback;
     activeCall.enqueue(callbackProxy(this.callback));
   }
@@ -51,7 +56,7 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
-    Utils.checkNotNull(cacheControl, "httpCacheControl == null");
+    checkNotNull(cacheControl, "httpCacheControl == null");
     this.refetchCacheControl = cacheControl;
     return this;
   }
@@ -60,6 +65,10 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
     isActive = false;
     activeCall.cancel();
     cache.unsubscribe(recordChangeSubscriber);
+  }
+
+  @Override public boolean isCanceled() {
+    return !isActive;
   }
 
   private void refetch() {
@@ -72,7 +81,8 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
   private ApolloCall.Callback<T> callbackProxy(final ApolloCall.Callback<T> sourceCallback) {
     return new ApolloCall.Callback<T>() {
       @Override public void onResponse(@Nonnull Response<T> response) {
-        if (isActive) {
+
+        if (!isCanceled()) {
           sourceCallback.onResponse(response);
           dependentKeys = response.dependentKeys();
           cache.subscribe(recordChangeSubscriber);
@@ -80,15 +90,19 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        isActive = false;
-        if (e instanceof ApolloHttpException) {
-          sourceCallback.onHttpError((ApolloHttpException) e);
-        } else if (e instanceof ApolloParseException) {
-          sourceCallback.onParseError((ApolloParseException) e);
-        } else if (e instanceof ApolloNetworkException) {
-          sourceCallback.onNetworkError((ApolloNetworkException) e);
-        } else {
-          sourceCallback.onFailure(e);
+
+        if (!isCanceled()) {
+
+          isActive = false;
+          if (e instanceof ApolloHttpException) {
+            sourceCallback.onHttpError((ApolloHttpException) e);
+          } else if (e instanceof ApolloParseException) {
+            sourceCallback.onParseError((ApolloParseException) e);
+          } else if (e instanceof ApolloNetworkException) {
+            sourceCallback.onNetworkError((ApolloNetworkException) e);
+          } else {
+            sourceCallback.onFailure(e);
+          }
         }
       }
     };

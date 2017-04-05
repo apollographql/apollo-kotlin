@@ -24,6 +24,8 @@ import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+
 @SuppressWarnings("WeakerAccess") public final class RealApolloPrefetch implements ApolloPrefetch {
   final Operation operation;
   final HttpUrl serverUrl;
@@ -34,6 +36,7 @@ import okhttp3.Response;
   final ApolloLogger logger;
   final ApolloInterceptorChain interceptorChain;
   volatile boolean executed;
+  volatile boolean canceled;
 
   public RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
       Moshi moshi, ExecutorService dispatcher, ApolloLogger logger) {
@@ -63,28 +66,34 @@ import okhttp3.Response;
       executed = true;
     }
 
+    checkNotNull(callback, "callback == null");
+
     interceptorChain.proceedAsync(dispatcher, new ApolloInterceptor.CallBack() {
       @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
-        Response httpResponse = response.httpResponse.get();
-        if (!httpResponse.isSuccessful()) {
-          onFailure(new ApolloHttpException(httpResponse));
-          return;
-        }
 
-        try {
-          httpResponse.close();
-        } catch (Exception e) {
-          onFailure(new ApolloException("Failed to close http response", e));
-          return;
-        }
+        if (!isCanceled()) {
 
-        if (callback != null) {
+          Response httpResponse = response.httpResponse.get();
+          if (!httpResponse.isSuccessful()) {
+            onFailure(new ApolloHttpException(httpResponse));
+            return;
+          }
+
+          try {
+            httpResponse.close();
+          } catch (Exception e) {
+            onFailure(new ApolloException("Failed to close http response", e));
+            return;
+          }
           callback.onSuccess();
         }
+
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        if (callback != null) {
+
+        if (!isCanceled()) {
+
           if (e instanceof ApolloHttpException) {
             callback.onHttpError((ApolloHttpException) e);
           } else if (e instanceof ApolloNetworkException) {
@@ -103,6 +112,11 @@ import okhttp3.Response;
   }
 
   @Override public void cancel() {
+    canceled = true;
     interceptorChain.dispose();
+  }
+
+  @Override public boolean isCanceled() {
+    return canceled;
   }
 }
