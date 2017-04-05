@@ -5,246 +5,138 @@
 
 Apollo-Android is a GraphQL compliant client that generates Java models from standard GraphQL queries.  These models give you a typesafe API to work with GraphQL servers.  Apollo will help you keep your GraphQL query statements together, organized, and easy to access from Java. Change a query and recompile your project - Apollo code gen will rebuild your data model.  Code generation also allows Apollo to read and unmarshal responses from the network without the need of any reflection (see example generated code below).  Future versions of Apollo-Android will also work with AutoValue and other value object generators.
 
+## Adding Apollo to your Project
 
+The latest Gradle plugin version is 0.2.2.
 
-
-## Usage
-Add the following to your project's top level `build.gradle` file 
+To use this plugin, add the dependency to your project's build.gradle file:
 
 ```groovy
-
-ext {
-    compileSdkVersion = 25
-    buildToolsVersion = '25.0.2'
-    apolloVersion = '0.2.1'
-
-    dep = [
-            androidPlugin: 'com.android.tools.build:gradle:2.3.0-beta3',
-            apolloPlugin: "com.apollographql.android:gradle-plugin:$apolloVersion",
-            apolloConverter: "com.apollographql.android:converter:$apolloVersion",
-            retrofit: 'com.squareup.retrofit2:retrofit:2.1.0']
-}
-
-subprojects {
-    buildscript {
-        repositories {
-            jcenter()
-            maven { url "https://jitpack.io" }
-            maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
-        }
-    }
+buildscript {
     repositories {
         jcenter()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        maven { url "https://jitpack.io" }
     }
-}
-
-
-```
-
-within your app module's `build.gradle` add the following:
-```
-buildscript {
     dependencies {
-        classpath dep.androidPlugin
-        classpath dep.apolloPlugin
-    }
-
-}
-
-apply plugin: 'com.android.application'
-apply plugin: 'com.apollographql.android'
-
-dependencies {
-    dep.apolloConverter
-    dep.retrofit
-}
-
-android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
-
-    defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 25
+        
+        classpath 'com.apollographql.android:gradle-plugin:0.2.2'
     }
 }
 ```
 
-To use Apollo, put your GraphQL queries in a `.graphql` file, like `src/main/graphql/com/example/DroidDetails.grapqhl`.  There is nothing special about this query, it can be shared with other GraphQL clients as well
+Latest development changes are available in Sonatype's snapshots repository:
 
-```
-query DroidDetails {
-  species(id: "c3BlY2llczoy") {
-    id
-    name
-    classification
+```groovy
+buildscript {
+  repositories {
+    jcenter()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
   }
-}
-```
-
-You will also need to add your schema to the project, see instructions [HERE](http://dev.apollodata.com/ios/downloading-schema.html)
-
-From this, Apollo will generate a `DroidDetails` Java class with nested classes for reading from the network response.
-
-```java
-@Generated("Apollo GraphQL")
-public final class DroidDetails implements Query<Operation.Variables> {
-  public static final String OPERATION_DEFINITION = "query DroidDetails {\n"
-      + "  species(id: \"c3BlY2llczoy\") {\n"
-      + "    id\n"
-      + "    name\n"
-      + "    classification\n"
-      + "  }\n"
-      + "}";
-
-  public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
-
-  private final Operation.Variables variables;
-
-  public DroidDetails() {
-    this.variables = Operation.EMPTY_VARIABLES;
-  }
-
-  @Override
-  public String queryDocument() {
-    return QUERY_DOCUMENT;
-  }
-
-  @Override
-  public Operation.Variables variables() {
-    return variables;
-  }
-
-  public static class Data implements Operation.Data {
-    private static final ResponseFieldMapper<Data> MAPPER = new ResponseFieldMapper<Data>() {
-      private final Field[] FIELDS = {
-        Field.forObject("species", "species", null, true, new Field.ObjectReader<Species>() {
-          @Override public Species read(final ResponseReader reader) throws IOException {
-            return new Species(reader);
-          }
-        })
-      };
-
-      @Override
-      public void map(final ResponseReader reader, final Data instance) throws IOException {
-        reader.read(new ResponseReader.ValueHandler() {
-          @Override
-          public void handle(final int fieldIndex, final Object value) throws IOException {
-            switch (fieldIndex) {
-              case 0: {
-                instance.species = (Species) value;
-                break;
-              }
-            }
-          }
-        }, FIELDS);
-      }
-    };
+  dependencies {
     
-    private @Nullable Species species;
-
-    public Data(ResponseReader reader) throws IOException {
-      MAPPER.map(reader, this);
-    }
-
-    public Data(@Nullable Species species) {
-      this.species = species;
-    }
-
-    public @Nullable Species species() {
-      return this.species;
-    }
-
-    public static class Species {
-      private static final ResponseFieldMapper<Species> MAPPER = new ResponseFieldMapper<Species>() {
-        private final Field[] FIELDS = {
-          Field.forString("id", "id", null, false),
-          Field.forString("name", "name", null, true),
-          Field.forString("classification", "classification", null, true)
-        };
-
-        @Override
-        public void map(final ResponseReader reader, final Species instance) throws IOException {
-          reader.read(new ResponseReader.ValueHandler() {
-            @Override
-            public void handle(final int fieldIndex, final Object value) throws IOException {
-              switch (fieldIndex) {
-                case 0: {
-                  instance.id = (String) value;
-                  break;
-                }
-                case 1: {
-                  instance.name = (String) value;
-                  break;
-                }
-                case 2: {
-                  instance.classification = (String) value;
-                  break;
-                }
-              }
-            }
-          }, FIELDS);
-        }
-      };
-
-      private @Nonnull String id;
-
-      private @Nullable String name;
-
-      private @Nullable String classification;
-
-      public Species(ResponseReader reader) throws IOException {
-        MAPPER.map(reader, this);
-      }
-      
-      public @Nonnull String id() {
-        return this.id;
-      }
-
-      public @Nullable String name() {
-        return this.name;
-      }
-
-      public @Nullable String classification() {
-        return this.classification;
-      }
+    classpath 'com.apollographql.apollo:gradle-plugin:0.2.3-SNAPSHOT' 
   }
 }
 ```
+
+The plugin can then be applied as follows within your app module's `build.gradle` :
+
+```
+apply plugin: 'com.apollographql.android'
+```
+
+The Android Plugin must be applied before the Apollo plugin
+
+## Generate Code using Apollo
+
+Follow these steps:
+
+1) Put your GraphQL queries in a `.graphql` file. For the sample project in this repo you can find the graphql file at `apollo-sample/src/main/graphql/com/example/GithuntFeedQuery.graphql`. 
+
+```
+query FeedQuery($type: FeedType!, $limit: Int!) {
+  feed(type: $type, limit: $limit) {
+    comments {
+      ...FeedCommentFragment
+    }
+    repository {
+      ...RepositoryFragment
+    }
+    postedBy {
+      login
+    }
+  }
+}
+
+fragment RepositoryFragment on Repository {
+  name
+  full_name
+  owner {
+    login
+  }
+}
+
+fragment FeedCommentFragment on Comment {
+  id
+  postedBy {
+    login
+  }
+  content
+}
+```
+
+Note: There is nothing Android specific about this query, it can be shared with other GraphQL clients as well
+
+2) You will also need to add a schema to the project. In the sample project you can find the schema `apollo-sample/src/main/graphql/com/example/schema.json`. 
+
+You can find instructions to download your schema using apollo-codegen [HERE](http://dev.apollodata.com/ios/downloading-schema.html)
+
+3) Compile your project to have Apollo generate the approriate Java classes with nested classes for reading from the network response. In the sample project, a `FeedQuery` Java class is created here `apollo-sample/build/generated/source/apollo/com/example`.
+
+Note: This is a file that Apollo generates and therefore should not be mutated.
+
 
 ## Consuming Code
 
-You can use the generated classes with Retrofit to make requests to your GraphQL API.  Apollo includes a `ApolloConverterFactory` which when registered with Retrofit will offer reflection-free response to Java mapping.
+You can use the generated classes to make requests to your GraphQL API.  Apollo includes an `ApolloClient` that allows you to edit networking options like pick the base url for your GraphQL Endpoint.
+
+In our sample project, we have the base url pointing to `https://githunt-api.herokuapp.com/graphql`
+
+There is also a #newCall instance method on ApolloClient that can take as input any Query or Mutation that you have generated using Apollo.
 
 ```java
-interface ApiService {
-  @POST("/") Call<Response<DroidDetails.Data>> droidDetails(@Body OperationRequest<Operation.Variables> query);
-}
-```
 
-```java
-OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-Retrofit retrofit = new Retrofit.Builder()
-    .baseUrl(BASE_URL)
-    .client(okHttpClient)
-    .addConverterFactory(new ApolloConverterFactory.Builder().build())
-    .build();
-ApiService service = retrofit.create(ApiService.class);
-service.droidDetails(new OperationRequest<>(new DroidDetails()))
-    application.service()
-            .droidDetails(new new DroidDetails())
-            .enqueue(new Callback<Response<DroidDetails.Data>>() {
-              @Override
-              public void onResponse(Call<Response<DroidDetails.Data>> call,
-                  retrofit2.Response<Response<DroidDetails.Data>> response) {
-                // use the graphql response which is now in Java Models.
-              }
+apolloClient.newCall(FeedQuery.builder()
+                .limit(10)
+                .type(FeedType.HOT)
+                .build()).enqueue(new ApolloCall.Callback<FeedQuery.Data>() {
 
-              @Override public void onFailure(Call<Response<DroidDetails.Data>> call, Throwable t) {
-                // handle error
-              }
-            });
+            @Override public void onResponse(@Nonnull Response<FeedQuery.Data> dataResponse) {
+
+                final StringBuffer buffer = new StringBuffer();
+                for (FeedQuery.Data.Feed feed : dataResponse.data().feed()) {
+                    buffer.append("name:" + feed.repository().fragments().repositoryFragment().name());
+                    buffer.append(" owner: " + feed.repository().fragments().repositoryFragment().owner().login());
+                    buffer.append(" postedBy: " + feed.postedBy().login());
+                    buffer.append("\n~~~~~~~~~~~");
+                    buffer.append("\n\n");
+                }
+
+				// onResponse returns on a background thread. If you want to make UI updates make sure they are done on the Main Thread.
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override public void run() {
+                        TextView txtResponse = (TextView) findViewById(R.id.txtResponse);
+                        txtResponse.setText(buffer.toString());
+                    }
+                });
+
+            }
+
+            @Override public void onFailure(@Nonnull Throwable t) {
+                Log.e(TAG, t.getMessage(), t);
+            }
+        });
+             
 ```
 
 ## Custom Scalar Types
