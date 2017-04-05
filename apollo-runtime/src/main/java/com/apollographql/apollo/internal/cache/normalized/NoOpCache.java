@@ -34,6 +34,10 @@ final class NoOpCache implements Cache, ReadableCache, WriteableCache {
 
   @Override public void publish(Set<String> keys) { }
 
+  @Override public void clearAll() {
+
+  }
+
   @Override public ResponseNormalizer<Map<String, Object>> networkResponseNormalizer() {
     //noinspection unchecked
     return ResponseNormalizer.NO_OP_NORMALIZER;
