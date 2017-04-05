@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 
 public final class InMemoryCacheStore extends CacheStore {
 
-  private final RecordSet recordSet;
+  private RecordSet recordSet;
 
   public InMemoryCacheStore() {
     this.recordSet = new RecordSet();
@@ -28,10 +28,14 @@ public final class InMemoryCacheStore extends CacheStore {
 
   @Nonnull @Override public Set<String> merge(Collection<Record> recordSet) {
     Set<String> changedKeys = new LinkedHashSet<>();
-    for (Record record: recordSet) {
+    for (Record record : recordSet) {
       changedKeys.addAll(merge(record));
     }
     return changedKeys;
+  }
+
+  @Override public void clearAll() {
+    recordSet = new RecordSet();
   }
 
   public Collection<Record> allRecords() {
