@@ -62,6 +62,10 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
     cache.unsubscribe(recordChangeSubscriber);
   }
 
+  @Override public boolean isCanceled() {
+    return !isActive;
+  }
+
   private void refetch() {
     activeCall.cancel();
     cache.unsubscribe(recordChangeSubscriber);
@@ -72,7 +76,8 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
   private ApolloCall.Callback<T> callbackProxy(final ApolloCall.Callback<T> sourceCallback) {
     return new ApolloCall.Callback<T>() {
       @Override public void onResponse(@Nonnull Response<T> response) {
-        if (isActive) {
+
+        if (!isCanceled()) {
           sourceCallback.onResponse(response);
           dependentKeys = response.dependentKeys();
           cache.subscribe(recordChangeSubscriber);
@@ -80,15 +85,19 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        isActive = false;
-        if (e instanceof ApolloHttpException) {
-          sourceCallback.onHttpError((ApolloHttpException) e);
-        } else if (e instanceof ApolloParseException) {
-          sourceCallback.onParseError((ApolloParseException) e);
-        } else if (e instanceof ApolloNetworkException) {
-          sourceCallback.onNetworkError((ApolloNetworkException) e);
-        } else {
-          sourceCallback.onFailure(e);
+
+        if (!isCanceled()) {
+
+          isActive = false;
+          if (e instanceof ApolloHttpException) {
+            sourceCallback.onHttpError((ApolloHttpException) e);
+          } else if (e instanceof ApolloParseException) {
+            sourceCallback.onParseError((ApolloParseException) e);
+          } else if (e instanceof ApolloNetworkException) {
+            sourceCallback.onNetworkError((ApolloNetworkException) e);
+          } else {
+            sourceCallback.onFailure(e);
+          }
         }
       }
     };

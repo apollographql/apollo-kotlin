@@ -50,6 +50,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   final ExecutorService dispatcher;
   final ApolloLogger logger;
   volatile boolean executed;
+  volatile boolean canceled;
 
   public RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
       HttpCacheControl httpCacheControl, Moshi moshi, ResponseFieldMapper responseFieldMapper,
@@ -92,14 +93,14 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
     interceptorChain.proceedAsync(dispatcher, new ApolloInterceptor.CallBack() {
       @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
-        if (callback != null) {
+        if (callback != null && !isCanceled()) {
           //noinspection unchecked
           callback.onResponse(response.parsedResponse.get());
         }
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        if (callback != null) {
+        if (callback != null && !isCanceled()) {
           if (e instanceof ApolloHttpException) {
             callback.onHttpError((ApolloHttpException) e);
           } else if (e instanceof ApolloParseException) {
@@ -137,7 +138,12 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   }
 
   @Override public void cancel() {
+    canceled = true;
     interceptorChain.dispose();
+  }
+
+  @Override public boolean isCanceled() {
+    return canceled;
   }
 
   @Override @Nonnull public RealApolloCall<T> clone() {

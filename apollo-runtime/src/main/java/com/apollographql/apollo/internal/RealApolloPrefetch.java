@@ -34,6 +34,7 @@ import okhttp3.Response;
   final ApolloLogger logger;
   final ApolloInterceptorChain interceptorChain;
   volatile boolean executed;
+  volatile boolean canceled;
 
   public RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
       Moshi moshi, ExecutorService dispatcher, ApolloLogger logger) {
@@ -65,26 +66,33 @@ import okhttp3.Response;
 
     interceptorChain.proceedAsync(dispatcher, new ApolloInterceptor.CallBack() {
       @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
-        Response httpResponse = response.httpResponse.get();
-        if (!httpResponse.isSuccessful()) {
-          onFailure(new ApolloHttpException(httpResponse));
-          return;
+
+        if (!isCanceled()) {
+
+          Response httpResponse = response.httpResponse.get();
+          if (!httpResponse.isSuccessful()) {
+            onFailure(new ApolloHttpException(httpResponse));
+            return;
+          }
+
+          try {
+            httpResponse.close();
+          } catch (Exception e) {
+            onFailure(new ApolloException("Failed to close http response", e));
+            return;
+          }
+
+          if (callback != null) {
+            callback.onSuccess();
+          }
         }
 
-        try {
-          httpResponse.close();
-        } catch (Exception e) {
-          onFailure(new ApolloException("Failed to close http response", e));
-          return;
-        }
-
-        if (callback != null) {
-          callback.onSuccess();
-        }
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        if (callback != null) {
+
+        if (callback != null && !isCanceled()) {
+
           if (e instanceof ApolloHttpException) {
             callback.onHttpError((ApolloHttpException) e);
           } else if (e instanceof ApolloNetworkException) {
@@ -103,6 +111,11 @@ import okhttp3.Response;
   }
 
   @Override public void cancel() {
+    canceled = true;
     interceptorChain.dispose();
+  }
+
+  @Override public boolean isCanceled() {
+    return canceled;
   }
 }
