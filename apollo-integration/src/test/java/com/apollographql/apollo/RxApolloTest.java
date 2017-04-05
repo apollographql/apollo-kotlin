@@ -2,14 +2,15 @@ package com.apollographql.apollo;
 
 import android.support.annotation.NonNull;
 
-import com.apollographql.apollo.cache.normalized.CacheControl;
-import com.apollographql.apollo.cache.normalized.CacheKey;
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDs;
 import com.apollographql.android.impl.normalizer.type.Episode;
 import com.apollographql.android.rx.RxApollo;
+import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.cache.normalized.CacheKey;
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.internal.cache.normalized.RealCache;
 
 import junit.framework.Assert;
 
@@ -35,29 +36,27 @@ import static com.google.common.truth.Truth.assertThat;
 public class RxApolloTest {
   private ApolloClient apolloClient;
   private MockWebServer server;
-  private InMemoryCacheStore cacheStore;
   private static final long TIME_OUT_SECONDS = 3;
 
   @Before public void setUp() {
     server = new MockWebServer();
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-    cacheStore = new InMemoryCacheStore();
-
+    InMemoryCacheStore cacheStore = new InMemoryCacheStore();
+    RealCache cache = new RealCache(cacheStore, new CacheKeyResolver<Map<String, Object>>() {
+      @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
+        String id = (String) jsonObject.get("id");
+        if (id == null || id.isEmpty()) {
+          return CacheKey.NO_KEY;
+        }
+        return CacheKey.from(id);
+      }
+    });
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(cacheStore, new CacheKeyResolver<Map<String, Object>>() {
-          @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
-            String id = (String) jsonObject.get("id");
-            if (id == null || id.isEmpty()) {
-              return CacheKey.NO_KEY;
-            }
-            return CacheKey.from(id);
-          }
-        })
+        .normalizedCache(cache)
         .build();
   }
-
 
   @Test public void testRxCallProducesValue() throws IOException {
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();

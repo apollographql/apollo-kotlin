@@ -1,16 +1,15 @@
 package com.apollographql.apollo;
 
-import com.google.common.base.Strings;
-
 import android.support.annotation.NonNull;
 
+import com.apollographql.android.impl.normalizer.EpisodeHeroName;
+import com.apollographql.android.impl.normalizer.type.Episode;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
-import com.apollographql.android.impl.normalizer.EpisodeHeroName;
-import com.apollographql.android.impl.normalizer.type.Episode;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.internal.cache.normalized.RealCache;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,18 +39,20 @@ public class AsyncNormalizedCacheTestCase {
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
     cacheStore = new InMemoryCacheStore();
 
+    RealCache cache = new RealCache(cacheStore, new CacheKeyResolver<Map<String, Object>>() {
+      @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
+        String id = (String) jsonObject.get("id");
+        if (id == null || id.isEmpty()) {
+          return CacheKey.NO_KEY;
+        }
+        return CacheKey.from(id);
+      }
+    });
+
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(cacheStore, new CacheKeyResolver<Map<String, Object>>() {
-          @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
-            String id = (String) jsonObject.get("id");
-            if (Strings.isNullOrEmpty(id)) {
-              return CacheKey.NO_KEY;
-            }
-            return CacheKey.from(id);
-          }
-        })
+        .normalizedCache(cache)
         .build();
   }
 

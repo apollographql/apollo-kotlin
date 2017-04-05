@@ -8,8 +8,6 @@ import com.apollographql.apollo.cache.http.EvictionStrategy;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.cache.http.ResponseCacheStore;
 import com.apollographql.apollo.cache.normalized.CacheControl;
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
-import com.apollographql.apollo.cache.normalized.CacheStore;
 import com.apollographql.apollo.internal.RealApolloCall;
 import com.apollographql.apollo.internal.RealApolloPrefetch;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
@@ -195,14 +193,10 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     /**
      * Set the configuration to be used for normalized cache.
      *
-     * @param cacheStore       the cache store to use
-     * @param cacheKeyResolver the cache key resolver
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder normalizedCache(@Nonnull CacheStore cacheStore,
-        @Nonnull CacheKeyResolver<Map<String, Object>> cacheKeyResolver) {
-      this.cache = new RealCache(checkNotNull(cacheStore, "cacheStore == null"),
-          checkNotNull(cacheKeyResolver, "cacheKeyResolver == null"));
+    public Builder normalizedCache(@Nonnull RealCache realCache) {
+      this.cache = checkNotNull(realCache, "realCache == null");
       return this;
     }
 

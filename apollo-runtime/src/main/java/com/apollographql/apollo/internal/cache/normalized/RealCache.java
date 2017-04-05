@@ -27,8 +27,8 @@ public final class RealCache implements Cache, ReadableCache, WriteableCache {
 
   public RealCache(@Nonnull CacheStore cacheStore,
       @Nonnull CacheKeyResolver<Map<String, Object>> networkCacheKeyResolver) {
-    this.cacheStore = cacheStore;
-    this.networkCacheKeyResolver = networkCacheKeyResolver;
+    this.cacheStore =  checkNotNull(cacheStore, "cacheStore null");
+    this.networkCacheKeyResolver = checkNotNull(networkCacheKeyResolver, "networkCacheKeyResolver null");
     this.lock = new ReentrantReadWriteLock();
     this.subscribers = Collections.newSetFromMap(new WeakHashMap<RecordChangeSubscriber, Boolean>());
   }
@@ -61,6 +61,15 @@ public final class RealCache implements Cache, ReadableCache, WriteableCache {
     for (RecordChangeSubscriber subscriber : iterableSubscribers) {
       subscriber.onCacheKeysChanged(changedKeys);
     }
+  }
+
+  @Override public void clearAll() {
+    writeTransaction(new Transaction<WriteableCache, Boolean>() {
+      @Override public Boolean execute(WriteableCache cache) {
+        cache.clearAll();
+        return true;
+      }
+    });
   }
 
   @Override public <R> R readTransaction(Transaction<ReadableCache, R> transaction) {

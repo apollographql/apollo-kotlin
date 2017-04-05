@@ -17,6 +17,8 @@ public interface Cache {
 
   void publish(Set<String> keys);
 
+  void clearAll();
+
   ResponseNormalizer<Map<String, Object>> networkResponseNormalizer();
 
   ResponseNormalizer<Record> cacheResponseNormalizer();
