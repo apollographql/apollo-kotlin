@@ -12,7 +12,6 @@ import com.apollographql.apollo.internal.RealApolloCall;
 import com.apollographql.apollo.internal.RealApolloPrefetch;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.cache.normalized.Cache;
-import com.apollographql.apollo.internal.cache.normalized.RealCache;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonWriter;
@@ -195,8 +194,8 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder normalizedCache(@Nonnull RealCache realCache) {
-      this.cache = checkNotNull(realCache, "realCache == null");
+    public Builder normalizedCache(@Nonnull Cache cache) {
+      this.cache = checkNotNull(cache, "realCache == null");
       return this;
     }
 

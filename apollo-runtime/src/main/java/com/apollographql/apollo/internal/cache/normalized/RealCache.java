@@ -25,7 +25,12 @@ public final class RealCache implements Cache, ReadableCache, WriteableCache {
   private final ReadWriteLock lock;
   private final Set<RecordChangeSubscriber> subscribers;
 
-  public RealCache(@Nonnull CacheStore cacheStore,
+  public static Cache construct(@Nonnull CacheStore cacheStore,
+      @Nonnull CacheKeyResolver<Map<String, Object>> networkCacheKeyResolver) {
+    return new RealCache(cacheStore, networkCacheKeyResolver);
+  }
+
+  private RealCache(@Nonnull CacheStore cacheStore,
       @Nonnull CacheKeyResolver<Map<String, Object>> networkCacheKeyResolver) {
     this.cacheStore =  checkNotNull(cacheStore, "cacheStore null");
     this.networkCacheKeyResolver = checkNotNull(networkCacheKeyResolver, "networkCacheKeyResolver null");

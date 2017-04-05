@@ -11,6 +11,7 @@ import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDs;
 import com.apollographql.android.impl.normalizer.type.Episode;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.internal.cache.normalized.Cache;
 import com.apollographql.apollo.internal.cache.normalized.RealCache;
 
 import junit.framework.Assert;
@@ -42,7 +43,7 @@ public class ApolloWatcherTest {
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
     cacheStore = new InMemoryCacheStore();
 
-    RealCache cache = new RealCache(cacheStore, new CacheKeyResolver<Map<String, Object>>() {
+    Cache cache = RealCache.construct(cacheStore, new CacheKeyResolver<Map<String, Object>>() {
       @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
         String id = (String) jsonObject.get("id");
         if (id == null || id.isEmpty()) {
