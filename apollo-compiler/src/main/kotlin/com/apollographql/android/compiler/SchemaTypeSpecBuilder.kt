@@ -15,17 +15,21 @@ class SchemaTypeSpecBuilder(
     val context: CodeGenerationContext
 ) {
   private val uniqueTypeName = formatUniqueTypeName(typeName, context.reservedTypeNames)
-  private val innerTypeNameOverrideMap = buildUniqueTypeNameMap(context.reservedTypeNames + typeName)
 
   fun build(vararg modifiers: Modifier): TypeSpec {
+    context.reservedTypeNames += uniqueTypeName
+
+    val nestedTypeSpecs = nestedTypeSpecs()
+    val nameOverrideMap = nestedTypeSpecs.map { it.first to it.second.name }.toMap()
     val mapper = SchemaTypeResponseMapperBuilder(uniqueTypeName, fields, fragmentSpreads, inlineFragments,
-        innerTypeNameOverrideMap, context).build()
+        nameOverrideMap, context).build()
+
     return TypeSpec.classBuilder(uniqueTypeName)
         .addModifiers(*modifiers)
-        .addFields(fields)
-        .addInnerTypes(fields.filter(Field::isNonScalar))
-        .addInlineFragments(inlineFragments)
-        .addInnerFragmentTypes(fragmentSpreads)
+        .addTypes(nestedTypeSpecs.map { it.second })
+        .addFields(nameOverrideMap)
+        .addInlineFragments(nameOverrideMap)
+        .addFragments()
         .addType(mapper)
         .build()
         .withValueInitConstructor(context.nullableValueType)
@@ -34,48 +38,44 @@ class SchemaTypeSpecBuilder(
         .withHashCodeImplementation()
   }
 
-  private fun TypeSpec.Builder.addFields(fields: List<Field>): TypeSpec.Builder {
+  private fun TypeSpec.Builder.addFields(nameOverrideMap: Map<String, String>): TypeSpec.Builder {
     addFields(fields
         .map { it.fieldSpec(context, !context.generateAccessors) }
-        .map { it.overrideType(innerTypeNameOverrideMap) })
+        .map { it.overrideType(nameOverrideMap) })
     if (context.generateAccessors) {
       addMethods(fields
           .map { it.accessorMethodSpec(context) }
-          .map { it.overrideReturnType(innerTypeNameOverrideMap) })
+          .map { it.overrideReturnType(nameOverrideMap) })
     }
     return this
   }
 
-  private fun TypeSpec.Builder.addInnerFragmentTypes(fragments: List<String>): TypeSpec.Builder {
-    if (fragments.isNotEmpty()) {
+  private fun TypeSpec.Builder.addFragments(): TypeSpec.Builder {
+    if (fragmentSpreads.isNotEmpty()) {
+      addType(fragmentsTypeSpec())
+      addField(fragmentsFieldSpec())
       if (context.generateAccessors) {
         addMethod(fragmentsAccessorMethodSpec())
       }
-      addFields(listOf(fragmentsFieldSpec()))
-      addType(fragmentsTypeSpec(fragments))
     }
     return this
   }
 
-  private fun TypeSpec.Builder.addInnerTypes(fields: List<Field>): TypeSpec.Builder {
-    val reservedTypeNames = context.reservedTypeNames + typeName + fields.map(Field::normalizedName)
-    val typeSpecs = fields.map { field ->
-      field.toTypeSpec(context.copy(reservedTypeNames = reservedTypeNames.minus(field.normalizedName())))
-    }
-    return addTypes(typeSpecs)
+  private fun nestedTypeSpecs(): List<Pair<String, TypeSpec>> {
+    return fields.filter(Field::isNonScalar)
+        .map { it.formatClassName() to it.toTypeSpec(context) }
+        .plus(inlineFragments.map { it.formatClassName() to it.toTypeSpec(context) })
   }
 
-  private fun TypeSpec.Builder.addInlineFragments(fragments: List<InlineFragment>): TypeSpec.Builder {
-    val reservedTypeNames = context.reservedTypeNames + typeName +
-        fields.filter(Field::isNonScalar).map(Field::normalizedName)
-    val uniqueTypeNameMap = buildUniqueTypeNameMap(reservedTypeNames)
-
-    addTypes(fragments.map { it.toTypeSpec(context.copy(reservedTypeNames = reservedTypeNames)) })
-    addFields(fragments.map { it.fieldSpec(context, !context.generateAccessors).overrideType(uniqueTypeNameMap) })
+  private fun TypeSpec.Builder.addInlineFragments(nameOverrideMap: Map<String, String>): TypeSpec.Builder {
+    addFields(inlineFragments
+        .map { it.fieldSpec(context, !context.generateAccessors) }
+        .map { it.overrideType(nameOverrideMap) })
 
     if (context.generateAccessors) {
-      addMethods(fragments
-          .map { it.accessorMethodSpec(context).overrideReturnType(uniqueTypeNameMap) })
+      addMethods(inlineFragments
+          .map { it.accessorMethodSpec(context) }
+          .map { it.overrideReturnType(nameOverrideMap) })
     }
 
     return this
@@ -97,10 +97,10 @@ class SchemaTypeSpecBuilder(
       .build()
 
   /** Returns a generic `Fragments` interface with methods for each of the provided fragments */
-  private fun fragmentsTypeSpec(fragments: List<String>): TypeSpec {
+  private fun fragmentsTypeSpec(): TypeSpec {
 
     fun TypeSpec.Builder.addFragmentFields(): TypeSpec.Builder {
-      return addFields(fragments.map {
+      return addFields(fragmentSpreads.map {
         FieldSpec.builder(JavaTypeResolver(context, context.fragmentsPackage).resolve(it.capitalize()),
             it.decapitalize())
             .addModifiers(if (context.generateAccessors) Modifier.PRIVATE else Modifier.PUBLIC, Modifier.FINAL)
@@ -110,7 +110,7 @@ class SchemaTypeSpecBuilder(
 
     fun TypeSpec.Builder.addFragmentAccessorMethods(): TypeSpec.Builder {
       if (context.generateAccessors) {
-        addMethods(fragments.map {
+        addMethods(fragmentSpreads.map {
           MethodSpec.methodBuilder(it.decapitalize())
               .returns(JavaTypeResolver(context, context.fragmentsPackage).resolve(it.capitalize()))
               .addModifiers(Modifier.PUBLIC)
@@ -121,8 +121,8 @@ class SchemaTypeSpecBuilder(
       return this
     }
 
-    val mapper = FragmentsResponseMapperBuilder(fragments, context).build()
-    return TypeSpec.classBuilder(FRAGMENTS_TYPE_NAME)
+    val mapper = FragmentsResponseMapperBuilder(fragmentSpreads, context).build()
+    return TypeSpec.classBuilder(formatUniqueTypeName(FRAGMENTS_TYPE_NAME, context.reservedTypeNames))
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
         .addFragmentFields()
         .addFragmentAccessorMethods()
@@ -134,14 +134,14 @@ class SchemaTypeSpecBuilder(
         .withHashCodeImplementation()
   }
 
-  private fun buildUniqueTypeNameMap(reservedTypeNames: List<String>) =
-      reservedTypeNames.distinct().associate {
-        it to formatUniqueTypeName(it, reservedTypeNames)
-      }
-
   private fun formatUniqueTypeName(typeName: String, reservedTypeNames: List<String>): String {
-    val suffix = reservedTypeNames.count { it == typeName }.let { if (it > 0) "$it" else "" }
-    return "$typeName$suffix"
+    var index = 1
+    var name = typeName
+    while (reservedTypeNames.contains(name)) {
+      name = "$typeName$index"
+      index++
+    }
+    return name
   }
 
   companion object {

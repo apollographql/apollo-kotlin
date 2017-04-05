@@ -166,6 +166,43 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return h;
     }
 
+    public static final class Mapper implements ResponseFieldMapper<Data> {
+      final HeroWithReview.Mapper heroWithReviewFieldMapper = new HeroWithReview.Mapper();
+
+      final Field[] fields = {
+        Field.forObject("heroWithReview", "heroWithReview", new UnmodifiableMapBuilder<String, Object>(2)
+          .put("review", new UnmodifiableMapBuilder<String, Object>(2)
+            .put("stars", new UnmodifiableMapBuilder<String, Object>(2)
+              .put("kind", "Variable")
+              .put("variableName", "stars")
+            .build())
+            .put("favoriteColor", new UnmodifiableMapBuilder<String, Object>(3)
+              .put("red", "0.0")
+              .put("green", new UnmodifiableMapBuilder<String, Object>(2)
+                .put("kind", "Variable")
+                .put("variableName", "greenValue")
+              .build())
+              .put("blue", "0.0")
+            .build())
+          .build())
+          .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
+            .put("kind", "Variable")
+            .put("variableName", "episode")
+          .build())
+        .build(), true, new Field.ObjectReader<HeroWithReview>() {
+          @Override public HeroWithReview read(final ResponseReader reader) throws IOException {
+            return heroWithReviewFieldMapper.map(reader);
+          }
+        })
+      };
+
+      @Override
+      public Data map(ResponseReader reader) throws IOException {
+        final HeroWithReview heroWithReview = reader.read(fields[0]);
+        return new Data(heroWithReview);
+      }
+    }
+
     public static class HeroWithReview {
       private final @Nonnull String name;
 
@@ -229,43 +266,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           final Double height = reader.read(fields[1]);
           return new HeroWithReview(name, height);
         }
-      }
-    }
-
-    public static final class Mapper implements ResponseFieldMapper<Data> {
-      final HeroWithReview.Mapper heroWithReviewFieldMapper = new HeroWithReview.Mapper();
-
-      final Field[] fields = {
-        Field.forObject("heroWithReview", "heroWithReview", new UnmodifiableMapBuilder<String, Object>(2)
-          .put("review", new UnmodifiableMapBuilder<String, Object>(2)
-            .put("stars", new UnmodifiableMapBuilder<String, Object>(2)
-              .put("kind", "Variable")
-              .put("variableName", "stars")
-            .build())
-            .put("favoriteColor", new UnmodifiableMapBuilder<String, Object>(3)
-              .put("red", "0.0")
-              .put("green", new UnmodifiableMapBuilder<String, Object>(2)
-                .put("kind", "Variable")
-                .put("variableName", "greenValue")
-              .build())
-              .put("blue", "0.0")
-            .build())
-          .build())
-          .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
-            .put("kind", "Variable")
-            .put("variableName", "episode")
-          .build())
-        .build(), true, new Field.ObjectReader<HeroWithReview>() {
-          @Override public HeroWithReview read(final ResponseReader reader) throws IOException {
-            return heroWithReviewFieldMapper.map(reader);
-          }
-        })
-      };
-
-      @Override
-      public Data map(ResponseReader reader) throws IOException {
-        final HeroWithReview heroWithReview = reader.read(fields[0]);
-        return new Data(heroWithReview);
       }
     }
   }
