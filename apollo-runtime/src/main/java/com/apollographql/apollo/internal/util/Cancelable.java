@@ -1,7 +1,7 @@
 package com.apollographql.apollo.internal.util;
 
 /**
- * Represents an operation which can be cancelled.
+ * Represents an operation which can be canceled.
  */
 public interface Cancelable {
   /**
@@ -10,9 +10,9 @@ public interface Cancelable {
   void cancel();
 
   /**
-   * Checks if this operation has been cancelled.
+   * Checks if this operation has been canceled.
    *
-   * @return true if this operation has been cancelled else returns false
+   * @return true if this operation has been canceled else returns false
    */
   boolean isCanceled();
 }
