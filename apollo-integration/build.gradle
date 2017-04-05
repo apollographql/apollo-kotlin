@@ -29,6 +29,7 @@ dependencies {
   compile project(':apollo-api')
   compile project(':apollo-runtime')
   compile project(':apollo-rxsupport')
+  compile project(':apollo-rx2support')
   compile dep.appcompat
 
   testCompile dep.junit
