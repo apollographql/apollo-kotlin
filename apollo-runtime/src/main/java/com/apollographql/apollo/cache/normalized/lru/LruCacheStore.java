@@ -85,4 +85,30 @@ public final class LruCacheStore extends CacheStore {
       return changedKeys;
     }
   }
+
+  /**
+   * Clears all records from the cache. If present, secondary cache store will be cleared
+   * as well.
+   */
+  @Override public void clearAll() {
+    clearPrimaryCache();
+    clearSecondaryCache();
+  }
+
+  /**
+   * Clears all records from the in-memory LRU cache. The secondary cache will *not* be cleared.
+   */
+  public void clearPrimaryCache() {
+    lruCache.invalidateAll();
+  }
+
+  /**
+   * Clear all records from the secondary cache. Records in the in-memory LRU cache will remain.
+   */
+  public void clearSecondaryCache() {
+    if (secondaryCacheStore.isPresent()) {
+      secondaryCacheStore.get().clearAll();
+    }
+  }
+
 }

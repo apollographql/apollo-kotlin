@@ -34,4 +34,6 @@ public abstract class CacheStore {
     return aggregatedDependentKeys;
   }
 
+  public abstract void clearAll();
+
 }

@@ -83,6 +83,15 @@ public class SqlStoreTest {
     assertThat(record.get().fields().get("newFieldKey")).isEqualTo(true);
   }
 
+  @Test
+  public void testClearAll() {
+    createRecord(QUERY_ROOT_KEY);
+    createRecord(STANDARD_KEY);
+    sqlStore.clearAll();
+    assertThat(sqlStore.selectRecordForKey(QUERY_ROOT_KEY).isPresent()).isFalse();
+    assertThat(sqlStore.selectRecordForKey(STANDARD_KEY).isPresent()).isFalse();
+  }
+
   private long createRecord(String key) {
     return sqlStore.createRecord(key, FIELDS);
   }

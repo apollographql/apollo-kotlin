@@ -2,8 +2,6 @@ package com.apollographql.apollo.cache.normalized.lru;
 
 import com.apollographql.apollo.cache.normalized.CacheStore;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
-import com.apollographql.apollo.cache.normalized.lru.LruCacheStore;
 
 import org.junit.Test;
 
@@ -203,6 +201,45 @@ public class LruCacheStoreTest {
     LruCacheStore primaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
 
     assertThat(primaryCacheStore.loadRecord("not_present_id")).isNull();
+  }
+
+  @Test
+  public void testClearAll() {
+    LruCacheStore secondaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION);
+    LruCacheStore primaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+
+    Record record = Record.builder("key").build();
+
+    primaryCacheStore.merge(record);
+    primaryCacheStore.clearAll();
+
+    assertThat(primaryCacheStore.loadRecord("key")).isNull();
+  }
+
+  @Test
+  public void testClearPrimaryCache() {
+    LruCacheStore secondaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION);
+    LruCacheStore primaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+
+    Record record = Record.builder("key").build();
+
+    primaryCacheStore.merge(record);
+    primaryCacheStore.clearPrimaryCache();
+
+    assertThat(secondaryCacheStore.loadRecord("key")).isNotNull();
+  }
+
+  @Test
+  public void testClearSecondaryCache() {
+    LruCacheStore secondaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION);
+    LruCacheStore primaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+
+    Record record = Record.builder("key").build();
+
+    primaryCacheStore.merge(record);
+    primaryCacheStore.clearSecondaryCache();
+
+    assertThat(secondaryCacheStore.loadRecord("key")).isNull();
   }
 
   private void assertTestRecordPresentAndAccurate(Record testRecord, CacheStore store) {

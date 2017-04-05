@@ -32,6 +32,7 @@ public final class SqlStore extends CacheStore {
           COLUMN_KEY,
           COLUMN_RECORD,
           COLUMN_KEY);
+  private static final String DELETE_ALL_RECORD_STATEMENT = String.format("DELETE FROM %s", TABLE_RECORDS);
   SQLiteDatabase database;
   private final FieldsAdapter parser;
   private final ApolloSqlHelper dbHelper;
@@ -41,6 +42,7 @@ public final class SqlStore extends CacheStore {
 
   private final SQLiteStatement insertStatement;
   private final SQLiteStatement updateStatement;
+  private final SQLiteStatement deleteAllRecordsStatement;
 
   public static SqlStore create(ApolloSqlHelper helper, FieldsAdapter adapter) {
     return new SqlStore(helper, adapter);
@@ -52,6 +54,7 @@ public final class SqlStore extends CacheStore {
     this.parser = parser;
     insertStatement = database.compileStatement(INSERT_STATEMENT);
     updateStatement = database.compileStatement(UPDATE_STATEMENT);
+    deleteAllRecordsStatement = database.compileStatement(DELETE_ALL_RECORD_STATEMENT);
   }
 
   @Nullable public Record loadRecord(String key) {
@@ -84,6 +87,10 @@ public final class SqlStore extends CacheStore {
       database.endTransaction();
     }
     return changedKeys;
+  }
+
+  @Override public void clearAll() {
+    deleteAllRecordsStatement.execute();
   }
 
   long createRecord(String key, String fields) {
@@ -119,7 +126,6 @@ public final class SqlStore extends CacheStore {
   }
 
   void deleteRecord(String key) {
-    System.out.println("Record deleted with key: " + key);
     database.delete(ApolloSqlHelper.TABLE_RECORDS, ApolloSqlHelper.COLUMN_ID
         + " = ?", new String[]{key});
   }
