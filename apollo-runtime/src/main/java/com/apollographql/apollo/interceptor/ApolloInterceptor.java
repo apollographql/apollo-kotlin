@@ -36,7 +36,7 @@ public interface ApolloInterceptor {
    *
    * @param operation  the GraphQL Operation object contained within the outgoing request.
    * @param chain      the ApolloInterceptorChain object containing the next set of interceptors.
-   * @param dispatcher the dispatcher which dispatches the non blocking operations on the request/response.
+   * @param dispatcher the ExecutorService which dispatches the non blocking operations on the request/response.
    * @param callBack   the Callback which will handle the interceptor's response or failure exception.
    */
   void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
@@ -45,7 +45,7 @@ public interface ApolloInterceptor {
   /**
    * Disposes of the resources which are no longer required.
    *
-   * <p>A UseCase for this method call would be when an {@link com.apollographql.apollo.ApolloCall} needs to be
+   * <p>A use case for this method call would be when an {@link com.apollographql.apollo.ApolloCall} needs to be
    * cancelled and resources need to be disposed of. </p>
    */
   void dispose();

@@ -28,7 +28,9 @@ import okhttp3.Response;
 import okio.Buffer;
 
 /**
- * ApolloServerInterceptor is responsible for making the network calls to the server.
+ * ApolloServerInterceptor is a concrete {@link ApolloInterceptor} responsible for making the network calls to the
+ * server. It is the last interceptor in the chain of interceptors and hence doesn't call
+ * {@link ApolloInterceptorChain#proceed()} on the interceptor chain.
  */
 @SuppressWarnings("WeakerAccess") public final class ApolloServerInterceptor implements ApolloInterceptor {
   private static final String ACCEPT_TYPE = "application/json";
