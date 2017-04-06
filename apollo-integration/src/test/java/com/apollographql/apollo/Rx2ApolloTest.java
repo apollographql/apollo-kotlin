@@ -1,6 +1,7 @@
 package com.apollographql.apollo;
 
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
+import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDs;
 import com.apollographql.android.impl.normalizer.type.Episode;
 import com.apollographql.android.rx2.Rx2Apollo;
 import com.apollographql.apollo.cache.normalized.CacheControl;
@@ -136,7 +137,7 @@ public class Rx2ApolloTest {
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 
-  /*@Test
+  @Test
   public void testRx2QueryWatcherNotUpdated_SameQuery_SameResults() throws IOException, TimeoutException, InterruptedException, ApolloException {
 
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResultLatch", 1);
@@ -176,7 +177,54 @@ public class Rx2ApolloTest {
     apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
 
     secondResponseLatch.await(3, TimeUnit.SECONDS);
-  }*/
+  }
+
+  @Test
+  public void testQueryRxWatcherUpdated_DifferentQuery_DifferentResults() throws IOException, InterruptedException,
+      TimeoutException, ApolloException {
+    final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
+    final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
+
+    mockWebServer.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+
+    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).watcher();
+
+    Rx2Apollo
+        .from(watcher)
+        .subscribe(new DisposableObserver<EpisodeHeroName.Data>() {
+
+          @Override public void onNext(EpisodeHeroName.Data data) {
+            if (secondResponseLatch.getCount() == 2) {
+              assertThat(data.hero().name()).isEqualTo("R2-D2");
+            } else if (secondResponseLatch.getCount() == 1) {
+              assertThat(data.hero().name()).isEqualTo("Artoo");
+            }
+            firstResponseLatch.countDown();
+            secondResponseLatch.countDown();
+          }
+
+          @Override public void onComplete() {
+
+          }
+
+          @Override public void onError(Throwable e) {
+            junit.framework.Assert.fail(e.getMessage());
+            firstResponseLatch.countDown();
+            secondResponseLatch.countDown();
+          }
+        });
+
+    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    HeroAndFriendsNamesWithIDs friendsQuery = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
+
+    mockWebServer.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
+    apolloClient.newCall(friendsQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+
+  }
+
+
 
   private MockResponse mockResponse(String fileName) throws IOException {
     return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);

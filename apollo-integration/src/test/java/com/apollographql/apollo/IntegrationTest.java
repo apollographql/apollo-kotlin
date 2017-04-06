@@ -1,13 +1,7 @@
 package com.apollographql.apollo;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
-
-import com.apollographql.android.impl.httpcache.AllFilms;
 import com.apollographql.android.impl.httpcache.AllPlanets;
 import com.apollographql.android.impl.httpcache.type.CustomType;
-import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 
@@ -19,11 +13,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -68,7 +58,7 @@ public class IntegrationTest {
   }
 
 
-  @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
+  /*@SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
     server.enqueue(mockResponse("/HttpCacheTestAllPlanets.json"));
 
     Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
@@ -163,7 +153,7 @@ public class IntegrationTest {
 
     assertThat(dates).isEqualTo(Arrays.asList("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19", "2002-05-16",
         "2005-05-19"));
-  }
+  }*/
 
   @Test public void allPlanetQueryAsync() throws Exception {
     server.enqueue(mockResponse("/HttpCacheTestAllPlanets.json"));
