@@ -31,11 +31,11 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class Rx2ApolloTest {
 
-  public static final String FILE_NAME_EPISODE_HERO_NAME_WITH_ID = "EpisodeHeroNameResponseWithId.json";
   private ApolloClient apolloClient;
   private MockWebServer mockWebServer;
   private InMemoryCacheStore inMemoryCacheStore;
 
+  private static final String FILE_NAME_EPISODE_HERO_NAME_WITH_ID = "EpisodeHeroNameResponseWithId.json";
   private static final long TIME_OUT_SECONDS = 3;
 
   @Before public void setup() {
@@ -77,7 +77,7 @@ public class Rx2ApolloTest {
   }
 
   @Test
-  public void testRx2CallIsCancelledWhenDisposed() throws IOException {
+  public void testRx2CallIsCanceledWhenDisposed() throws IOException {
 
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
     mockWebServer.enqueue(mockResponse(FILE_NAME_EPISODE_HERO_NAME_WITH_ID));
@@ -93,6 +93,39 @@ public class Rx2ApolloTest {
 
     assertThat(testObserver.isDisposed()).isTrue();
     testObserver.assertNoValues();
+  }
+
+  @Test
+  public void testRx2PrefetchCompletes() throws IOException, InterruptedException {
+
+    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    mockWebServer.enqueue(mockResponse(FILE_NAME_EPISODE_HERO_NAME_WITH_ID));
+
+    Rx2Apollo
+        .from(apolloClient.prefetch(query))
+        .test()
+        .await()
+        .assertNoErrors()
+        .assertComplete();
+  }
+
+  @Test
+  public void testRx2PrefetchIsCanceledWhenDisposed() throws IOException {
+
+    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    mockWebServer.enqueue(mockResponse(FILE_NAME_EPISODE_HERO_NAME_WITH_ID));
+
+    TestObserver<EpisodeHeroName.Data> testObserver = new TestObserver<>();
+
+    Disposable disposable = Rx2Apollo
+        .from(apolloClient.prefetch(query))
+        .delay(5, TimeUnit.SECONDS)
+        .subscribeWith(testObserver);
+
+    disposable.dispose();
+
+    assertThat(testObserver.isDisposed()).isTrue();
+    testObserver.assertNotComplete();
   }
 
   @Test
@@ -223,8 +256,6 @@ public class Rx2ApolloTest {
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
 
   }
-
-
 
   private MockResponse mockResponse(String fileName) throws IOException {
     return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
