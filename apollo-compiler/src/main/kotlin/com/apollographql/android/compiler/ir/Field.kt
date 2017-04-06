@@ -19,7 +19,7 @@ data class Field(
     val inlineFragments: List<InlineFragment>?
 ) : CodeGenerator {
   override fun toTypeSpec(context: CodeGenerationContext): TypeSpec =
-      SchemaTypeSpecBuilder(normalizedName(), fields ?: emptyList(), fragmentSpreads ?: emptyList(),
+      SchemaTypeSpecBuilder(formatClassName(), fields ?: emptyList(), fragmentSpreads ?: emptyList(),
           inlineFragments ?: emptyList(), context).build(Modifier.PUBLIC, Modifier.STATIC)
 
   fun accessorMethodSpec(context: CodeGenerationContext): MethodSpec {
@@ -68,14 +68,14 @@ data class Field(
     return JavaTypeResolver(context, packageName).resolve(responseType, isOptional())
   }
 
-  fun normalizedName() = responseName.capitalize().let { if (isList()) it.singularize() else it }
+  fun formatClassName() = responseName.capitalize().let { if (isList()) it.singularize() else it }
 
   private fun methodResponseType(): String {
     if (isNonScalar() || hasFragments()) {
       // For non scalar fields, we use the responseName as the method return type.
       // However, we need to also encode any extra information from the `type` field
       // eg, [lists], nonNulls!, [[nestedLists]], [nonNullLists]!, etc
-      val normalizedName = normalizedName()
+      val normalizedName = formatClassName()
       if (type.startsWith("[")) {
         // array type
         return if (type.endsWith("!")) "[$normalizedName]!" else "[$normalizedName]"

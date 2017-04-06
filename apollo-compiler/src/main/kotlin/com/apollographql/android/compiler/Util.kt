@@ -1,8 +1,5 @@
 package com.apollographql.android.compiler
 
-import com.apollographql.android.compiler.Annotations
-import com.apollographql.android.compiler.ClassNames
-import com.apollographql.android.compiler.NullableValueType
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
@@ -205,6 +202,33 @@ fun TypeName.unwrapOptionalType(): TypeName {
   } else {
     this
   }
+}
+
+fun TypeSpec.removeNestedTypeSpecs(excludeTypeNames: List<String>): TypeSpec =
+    TypeSpec.classBuilder(name)
+        .superclass(superclass)
+        .addJavadoc(javadoc)
+        .addAnnotations(annotations)
+        .addModifiers(*modifiers.toTypedArray())
+        .addSuperinterfaces(superinterfaces)
+        .addFields(fieldSpecs)
+        .addTypes(typeSpecs.filter { excludeTypeNames.contains(it.name) })
+        .addMethods(methodSpecs)
+        .let { if (initializerBlock.isEmpty) it else it.addInitializerBlock(initializerBlock) }
+        .let { if (staticBlock.isEmpty) it else it.addStaticBlock(staticBlock) }
+        .build()
+
+fun TypeSpec.flatNestedTypeSpecs(excludeTypeNames: List<String>): List<TypeSpec> =
+    typeSpecs
+        .filter { !excludeTypeNames.contains(it.name) }
+        .flatMap { it.flatNestedTypeSpecs(excludeTypeNames) + it.removeNestedTypeSpecs(excludeTypeNames) }
+
+fun TypeSpec.flatten(excludeTypeNames: List<String>): TypeSpec {
+  val nestedTypeSpecs = flatNestedTypeSpecs(excludeTypeNames)
+  return removeNestedTypeSpecs(excludeTypeNames)
+      .toBuilder()
+      .addTypes(nestedTypeSpecs)
+      .build()
 }
 
 object Util {
