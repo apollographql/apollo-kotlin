@@ -13,25 +13,25 @@ data class InlineFragment(
     val fragmentSpreads: List<String>?
 ) : CodeGenerator {
   override fun toTypeSpec(context: CodeGenerationContext): TypeSpec =
-      SchemaTypeSpecBuilder(interfaceName(), fields, fragmentSpreads ?: emptyList(), emptyList(), context)
+      SchemaTypeSpecBuilder(formatClassName(), fields, fragmentSpreads ?: emptyList(), emptyList(), context)
           .build(Modifier.PUBLIC, Modifier.STATIC)
 
   fun accessorMethodSpec(context: CodeGenerationContext): MethodSpec {
-    return MethodSpec.methodBuilder(interfaceName().decapitalize())
+    return MethodSpec.methodBuilder(formatClassName().decapitalize())
         .addModifiers(Modifier.PUBLIC)
         .returns(typeName(context))
-        .addStatement("return this.\$L", interfaceName().decapitalize())
+        .addStatement("return this.\$L", formatClassName().decapitalize())
         .build()
   }
 
   fun fieldSpec(context: CodeGenerationContext, publicModifier:Boolean = false): FieldSpec =
-      FieldSpec.builder(typeName(context), interfaceName().decapitalize())
+      FieldSpec.builder(typeName(context), formatClassName().decapitalize())
           .addModifiers(if (publicModifier) Modifier.PUBLIC else Modifier.PRIVATE, Modifier.FINAL)
           .build()
 
-  private fun interfaceName() = "$INTERFACE_PREFIX${typeCondition.capitalize()}"
+  fun formatClassName():String = "$INTERFACE_PREFIX${typeCondition.capitalize()}"
 
-  private fun typeName(context: CodeGenerationContext) = JavaTypeResolver(context, "").resolve(interfaceName(), true)
+  private fun typeName(context: CodeGenerationContext) = JavaTypeResolver(context, "").resolve(formatClassName(), true)
 
   companion object {
     private val INTERFACE_PREFIX = "As"

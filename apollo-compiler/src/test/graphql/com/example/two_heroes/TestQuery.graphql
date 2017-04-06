@@ -1,8 +1,0 @@
-query TestQuery {
-  r2: hero {
-    name
-  }
-  luke: hero(episode: EMPIRE) {
-    name
-  }
-}

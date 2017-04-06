@@ -3,7 +3,7 @@ package com.apollographql.android.compiler.ir
 import com.apollographql.android.compiler.NullableValueType
 
 data class CodeGenerationContext(
-    val reservedTypeNames: List<String>,
+    var reservedTypeNames: List<String>,
     val typeDeclarations: List<TypeDeclaration>,
     val fragmentsPackage: String = "",
     val typesPackage: String = "",

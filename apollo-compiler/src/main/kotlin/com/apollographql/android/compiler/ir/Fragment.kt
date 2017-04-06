@@ -1,8 +1,6 @@
 package com.apollographql.android.compiler.ir
 
-import com.apollographql.android.compiler.Annotations
-import com.apollographql.android.compiler.ClassNames
-import com.apollographql.android.compiler.SchemaTypeSpecBuilder
+import com.apollographql.android.compiler.*
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.TypeSpec
@@ -20,15 +18,16 @@ data class Fragment(
 ) : CodeGenerator {
   /** Returns the Java interface that represents this Fragment object. */
   override fun toTypeSpec(context: CodeGenerationContext): TypeSpec =
-      SchemaTypeSpecBuilder(interfaceTypeName(), fields, fragmentSpreads, inlineFragments, context)
+      SchemaTypeSpecBuilder(formatClassName(), fields, fragmentSpreads, inlineFragments, context)
           .build(Modifier.PUBLIC)
           .toBuilder()
           .addAnnotation(Annotations.GENERATED_BY_APOLLO)
           .addFragmentDefinitionField()
           .addTypeConditionField()
           .build()
+          .flatten(excludeTypeNames = listOf(Util.MAPPER_TYPE_NAME, SchemaTypeSpecBuilder.FRAGMENTS_TYPE_NAME))
 
-  fun interfaceTypeName() = fragmentName.capitalize()
+  fun formatClassName() = fragmentName.capitalize()
 
   private fun TypeSpec.Builder.addFragmentDefinitionField(): TypeSpec.Builder =
       addField(FieldSpec.builder(ClassNames.STRING, FRAGMENT_DEFINITION_FIELD_NAME)
