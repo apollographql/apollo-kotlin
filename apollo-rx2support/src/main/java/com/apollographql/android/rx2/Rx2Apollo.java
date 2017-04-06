@@ -38,8 +38,8 @@ public class Rx2Apollo {
   /**
    * Converts an {@link ApolloPrefetch} to a Flowable.
    *
-   * @param watcher the ApolloWatcher to convert.
-   * @param <T>     the value type
+   * @param watcher              the ApolloWatcher to convert.
+   * @param <T>                  the value type
    * @param backpressureStrategy the BackpressureStrategy to apply to this returned source
    * @return the converted Flowable
    * @throws NullPointerException if watcher == null or backpressureStrategy == null
@@ -54,7 +54,7 @@ public class Rx2Apollo {
    * <p>Converts an {@link ApolloPrefetch} to an Observable.</p>
    *
    * <b>Note</b>: If you need a reactive type with back pressure support,
-   * use {@link Rx2Apollo#from(ApolloWatcher, BackpressureStrategy)} instead.
+   * use {@link Rx2Apollo#from(ApolloWatcher, BackpressureStrategy)} instead which returns a Flowable.
    *
    * @param watcher the ApolloWatcher to convert.
    * @param <T>     the value type
