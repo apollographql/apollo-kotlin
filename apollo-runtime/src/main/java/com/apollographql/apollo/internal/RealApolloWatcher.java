@@ -21,7 +21,7 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
   private RealApolloCall<T> activeCall;
   @Nullable private ApolloCall.Callback<T> callback = null;
   private CacheControl refetchCacheControl = CacheControl.CACHE_FIRST;
-  private volatile boolean isActive = true;
+  private volatile boolean canceled;
   private boolean executed = false;
   private final Cache cache;
   private Set<String> dependentKeys = Collections.emptySet();
@@ -57,13 +57,13 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
   }
 
   @Override public void cancel() {
-    isActive = false;
+    canceled = true;
     activeCall.cancel();
     cache.unsubscribe(recordChangeSubscriber);
   }
 
   @Override public boolean isCanceled() {
-    return !isActive;
+    return canceled;
   }
 
   private void refetch() {
@@ -76,28 +76,28 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
   private ApolloCall.Callback<T> callbackProxy(final ApolloCall.Callback<T> sourceCallback) {
     return new ApolloCall.Callback<T>() {
       @Override public void onResponse(@Nonnull Response<T> response) {
-
-        if (!isCanceled()) {
-          sourceCallback.onResponse(response);
-          dependentKeys = response.dependentKeys();
-          cache.subscribe(recordChangeSubscriber);
+        if (isCanceled()) {
+          return;
         }
+
+        sourceCallback.onResponse(response);
+        dependentKeys = response.dependentKeys();
+        cache.subscribe(recordChangeSubscriber);
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
+        if (isCanceled()) {
+          return;
+        }
 
-        if (!isCanceled()) {
-
-          isActive = false;
-          if (e instanceof ApolloHttpException) {
-            sourceCallback.onHttpError((ApolloHttpException) e);
-          } else if (e instanceof ApolloParseException) {
-            sourceCallback.onParseError((ApolloParseException) e);
-          } else if (e instanceof ApolloNetworkException) {
-            sourceCallback.onNetworkError((ApolloNetworkException) e);
-          } else {
-            sourceCallback.onFailure(e);
-          }
+        if (e instanceof ApolloHttpException) {
+          sourceCallback.onHttpError((ApolloHttpException) e);
+        } else if (e instanceof ApolloParseException) {
+          sourceCallback.onParseError((ApolloParseException) e);
+        } else if (e instanceof ApolloNetworkException) {
+          sourceCallback.onNetworkError((ApolloNetworkException) e);
+        } else {
+          sourceCallback.onFailure(e);
         }
       }
     };

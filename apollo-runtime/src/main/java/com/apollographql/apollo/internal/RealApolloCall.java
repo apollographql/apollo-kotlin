@@ -93,24 +93,28 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
     interceptorChain.proceedAsync(dispatcher, new ApolloInterceptor.CallBack() {
       @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
-        if (callback != null && !isCanceled()) {
-          //noinspection unchecked
-          callback.onResponse(response.parsedResponse.get());
+        if (callback == null || isCanceled()) {
+          return;
         }
+
+        callback.onResponse(response.parsedResponse.get());
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        if (callback != null && !isCanceled()) {
-          if (e instanceof ApolloHttpException) {
-            callback.onHttpError((ApolloHttpException) e);
-          } else if (e instanceof ApolloParseException) {
-            callback.onParseError((ApolloParseException) e);
-          } else if (e instanceof ApolloNetworkException) {
-            callback.onNetworkError((ApolloNetworkException) e);
-          } else {
-            callback.onFailure(e);
-          }
+        if (callback == null || isCanceled()) {
+          return;
         }
+
+        if (e instanceof ApolloHttpException) {
+          callback.onHttpError((ApolloHttpException) e);
+        } else if (e instanceof ApolloParseException) {
+          callback.onParseError((ApolloParseException) e);
+        } else if (e instanceof ApolloNetworkException) {
+          callback.onNetworkError((ApolloNetworkException) e);
+        } else {
+          callback.onFailure(e);
+        }
+
       }
     });
   }
