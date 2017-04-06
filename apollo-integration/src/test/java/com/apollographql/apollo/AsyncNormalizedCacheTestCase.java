@@ -40,7 +40,7 @@ public class AsyncNormalizedCacheTestCase {
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
     cacheStore = new InMemoryCacheStore();
 
-    Cache cache = RealCache.construct((cacheStore, new CacheKeyResolver<Map<String, Object>>() {
+    Cache cache = RealCache.construct(cacheStore, new CacheKeyResolver<Map<String, Object>>() {
       @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
         String id = (String) jsonObject.get("id");
         if (id == null || id.isEmpty()) {
