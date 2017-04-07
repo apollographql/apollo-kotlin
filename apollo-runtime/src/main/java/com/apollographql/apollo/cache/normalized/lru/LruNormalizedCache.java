@@ -97,6 +97,10 @@ public final class LruNormalizedCache extends NormalizedCache {
 
   /**
    * Clears all records from the in-memory LRU cache. The secondary cache will *not* be cleared.
+   *
+   * This method is **not** guaranteed to be thread safe. It should be run inside a write transaction in
+   * {@link com.apollographql.apollo.cache.normalized.ApolloStore}, obtained from
+   * {@link com.apollographql.apollo.ApolloClient#apolloStore()}
    */
   public void clearPrimaryCache() {
     lruCache.invalidateAll();
@@ -104,6 +108,10 @@ public final class LruNormalizedCache extends NormalizedCache {
 
   /**
    * Clear all records from the secondary cache. Records in the in-memory LRU cache will remain.
+   *
+   * This method is **not** guaranteed to be thread safe. It should be run inside a write transaction in
+   * {@link com.apollographql.apollo.cache.normalized.ApolloStore}, obtained from
+   * {@link com.apollographql.apollo.ApolloClient#apolloStore()}
    */
   public void clearSecondaryCache() {
     if (secondaryCacheStore.isPresent()) {

@@ -10,8 +10,6 @@ import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.cache.normalized.ApolloStore;
-import com.apollographql.apollo.internal.cache.normalized.RealApolloStore;
 
 import junit.framework.Assert;
 
@@ -43,19 +41,19 @@ public class RxApolloTest {
     server = new MockWebServer();
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
     InMemoryNormalizedCache cacheStore = new InMemoryNormalizedCache();
-    ApolloStore apolloStore = RealApolloStore.construct(cacheStore, new CacheKeyResolver<Map<String, Object>>() {
-      @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
-        String id = (String) jsonObject.get("id");
-        if (id == null || id.isEmpty()) {
-          return CacheKey.NO_KEY;
-        }
-        return CacheKey.from(id);
-      }
-    });
+
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(apolloStore)
+        .normalizedCache(cacheStore, new CacheKeyResolver<Map<String, Object>>() {
+          @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
+            String id = (String) jsonObject.get("id");
+            if (id == null || id.isEmpty()) {
+              return CacheKey.NO_KEY;
+            }
+            return CacheKey.from(id);
+          }
+        })
         .build();
   }
 
