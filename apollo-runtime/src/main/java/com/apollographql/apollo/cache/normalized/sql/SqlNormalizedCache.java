@@ -20,7 +20,7 @@ import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLU
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLUMN_RECORD;
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.TABLE_RECORDS;
 
-public final class SqlNormalized extends NormalizedCache {
+public final class SqlNormalizedCache extends NormalizedCache {
   private static final String INSERT_STATEMENT =
       String.format("INSERT INTO %s (%s,%s) VALUES (?,?)",
           TABLE_RECORDS,
@@ -44,11 +44,11 @@ public final class SqlNormalized extends NormalizedCache {
   private final SQLiteStatement updateStatement;
   private final SQLiteStatement deleteAllRecordsStatement;
 
-  public static SqlNormalized create(ApolloSqlHelper helper, FieldsAdapter adapter) {
-    return new SqlNormalized(helper, adapter);
+  public static SqlNormalizedCache create(ApolloSqlHelper helper, FieldsAdapter adapter) {
+    return new SqlNormalizedCache(helper, adapter);
   }
 
-  private SqlNormalized(ApolloSqlHelper dbHelper, FieldsAdapter parser) {
+  private SqlNormalizedCache(ApolloSqlHelper dbHelper, FieldsAdapter parser) {
     this.dbHelper = dbHelper;
     database = dbHelper.getWritableDatabase();
     this.parser = parser;
@@ -123,11 +123,6 @@ public final class SqlNormalized extends NormalizedCache {
     } finally {
       cursor.close();
     }
-  }
-
-  void deleteRecord(String key) {
-    database.delete(ApolloSqlHelper.TABLE_RECORDS, ApolloSqlHelper.COLUMN_ID
-        + " = ?", new String[]{key});
   }
 
   Record cursorToRecord(Cursor cursor) throws IOException {
