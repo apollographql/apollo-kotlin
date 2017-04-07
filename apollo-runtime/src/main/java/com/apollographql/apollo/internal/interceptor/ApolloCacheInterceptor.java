@@ -30,6 +30,27 @@ import javax.annotation.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
+/**
+ * ApolloCacheInterceptor is a concrete {@link ApolloInterceptor} responsible for serving requests from the normalized
+ * cache. It takes the following actions based on the {@link CacheControl} set:
+ *
+ * <ol> <li> <b>CACHE_ONLY</b>: First tries to get the data from the normalized cache. If the data doesn't exist or
+ * there was an error inflating the models, it returns the
+ * {@link com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse}
+ * with the GraphQL {@link Operation} object wrapped inside. </li>
+ *
+ * <li><b>CACHE_FIRST</b>: First tries to get the data from the normalized cache. If the data doesn't exist or there was
+ * an error inflating the models, it then makes a network request.</li>
+ *
+ * <li><b>NETWORK_FIRST</b>: First tries to get the data from the network. If there was an error getting data from the
+ * network, it tries to get it from the normalized cache. If it is not present in the cache, then it rethrows the
+ * network exception.</li>
+ *
+ * <li><b>NETWORK_ONLY</b>: First tries to get the data from the network. If the network request fails, it throws an
+ * exception.</li>
+ *
+ * </ol>
+ */
 public final class ApolloCacheInterceptor implements ApolloInterceptor {
   private final Cache cache;
   private final CacheControl cacheControl;
