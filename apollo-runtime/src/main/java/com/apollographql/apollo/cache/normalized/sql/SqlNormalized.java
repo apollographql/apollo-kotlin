@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.cache.normalized.CacheStore;
+import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 
 import java.io.IOException;
@@ -20,7 +20,7 @@ import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLU
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLUMN_RECORD;
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.TABLE_RECORDS;
 
-public final class SqlStore extends CacheStore {
+public final class SqlNormalized extends NormalizedCache {
   private static final String INSERT_STATEMENT =
       String.format("INSERT INTO %s (%s,%s) VALUES (?,?)",
           TABLE_RECORDS,
@@ -44,11 +44,11 @@ public final class SqlStore extends CacheStore {
   private final SQLiteStatement updateStatement;
   private final SQLiteStatement deleteAllRecordsStatement;
 
-  public static SqlStore create(ApolloSqlHelper helper, FieldsAdapter adapter) {
-    return new SqlStore(helper, adapter);
+  public static SqlNormalized create(ApolloSqlHelper helper, FieldsAdapter adapter) {
+    return new SqlNormalized(helper, adapter);
   }
 
-  private SqlStore(ApolloSqlHelper dbHelper, FieldsAdapter parser) {
+  private SqlNormalized(ApolloSqlHelper dbHelper, FieldsAdapter parser) {
     this.dbHelper = dbHelper;
     database = dbHelper.getWritableDatabase();
     this.parser = parser;

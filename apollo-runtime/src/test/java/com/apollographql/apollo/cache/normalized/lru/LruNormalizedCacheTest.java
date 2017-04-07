@@ -1,6 +1,6 @@
 package com.apollographql.apollo.cache.normalized.lru;
 
-import com.apollographql.apollo.cache.normalized.CacheStore;
+import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 
 import org.junit.Test;
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class LruCacheStoreTest {
+public class LruNormalizedCacheTest {
 
   @Test
   public void testEvictionPolicyBuilder() {
@@ -36,7 +36,7 @@ public class LruCacheStoreTest {
 
   @Test
   public void testSaveAndLoad_singleRecord() {
-    LruCacheStore lruCacheStore = new LruCacheStore(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
+    LruNormalizedCache lruCacheStore = new LruNormalizedCache(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
     Record testRecord = createTestRecord("1");
 
     lruCacheStore.merge(testRecord);
@@ -46,7 +46,7 @@ public class LruCacheStoreTest {
 
   @Test
   public void testSaveAndLoad_multipleRecord_readSingle() {
-    LruCacheStore lruCacheStore = new LruCacheStore(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
+    LruNormalizedCache lruCacheStore = new LruNormalizedCache(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
     Record testRecord1 = createTestRecord("1");
     Record testRecord2 = createTestRecord("2");
     Record testRecord3 = createTestRecord("3");
@@ -61,7 +61,7 @@ public class LruCacheStoreTest {
 
   @Test
   public void testSaveAndLoad_multipleRecord_readMultiple() {
-    LruCacheStore lruCacheStore = new LruCacheStore(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
+    LruNormalizedCache lruCacheStore = new LruNormalizedCache(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
     Record testRecord1 = createTestRecord("1");
     Record testRecord2 = createTestRecord("2");
     Record testRecord3 = createTestRecord("3");
@@ -75,14 +75,14 @@ public class LruCacheStoreTest {
 
   @Test
   public void testLoad_recordNotPresent() {
-    LruCacheStore lruCacheStore = new LruCacheStore(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
+    LruNormalizedCache lruCacheStore = new LruNormalizedCache(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
     final Record record = lruCacheStore.loadRecord("key1");
     assertThat(record).isNull();
   }
 
   @Test
   public void testEviction() {
-    LruCacheStore lruCacheStore = new LruCacheStore(EvictionPolicy.builder().maxSizeBytes(2000).build());
+    LruNormalizedCache lruCacheStore = new LruNormalizedCache(EvictionPolicy.builder().maxSizeBytes(2000).build());
 
     Record.Builder testRecord1Builder = Record.builder("key1");
     testRecord1Builder.addField("a",  new String(new byte[1100]));
@@ -113,7 +113,7 @@ public class LruCacheStoreTest {
 
   @Test
   public void testEviction_recordChange() {
-    LruCacheStore lruCacheStore = new LruCacheStore(EvictionPolicy.builder().maxSizeBytes(2000).build());
+    LruNormalizedCache lruCacheStore = new LruNormalizedCache(EvictionPolicy.builder().maxSizeBytes(2000).build());
 
     Record.Builder testRecord1Builder = Record.builder("key1");
     testRecord1Builder.addField("a",  new String(new byte[10]));
@@ -153,8 +153,8 @@ public class LruCacheStoreTest {
 
   @Test
   public void testDualCacheSingleRecord() {
-    LruCacheStore secondaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION);
-    LruCacheStore primaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+    LruNormalizedCache secondaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION);
+    LruNormalizedCache primaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
 
     Record.Builder recordBuilder = Record.builder("root");
     recordBuilder.addField("bar", "bar");
@@ -168,8 +168,8 @@ public class LruCacheStoreTest {
 
   @Test
   public void testDualCacheMultipleRecord() {
-    LruCacheStore secondaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION);
-    LruCacheStore primaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+    LruNormalizedCache secondaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION);
+    LruNormalizedCache primaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
 
     Record.Builder recordBuilder = Record.builder("root1");
     recordBuilder.addField("bar", "bar");
@@ -197,16 +197,16 @@ public class LruCacheStoreTest {
 
   @Test
   public void testDualCache_recordNotPresent() {
-    LruCacheStore secondaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION);
-    LruCacheStore primaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+    LruNormalizedCache secondaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION);
+    LruNormalizedCache primaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
 
     assertThat(primaryCacheStore.loadRecord("not_present_id")).isNull();
   }
 
   @Test
   public void testClearAll() {
-    LruCacheStore secondaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION);
-    LruCacheStore primaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+    LruNormalizedCache secondaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION);
+    LruNormalizedCache primaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
 
     Record record = Record.builder("key").build();
 
@@ -218,8 +218,8 @@ public class LruCacheStoreTest {
 
   @Test
   public void testClearPrimaryCache() {
-    LruCacheStore secondaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION);
-    LruCacheStore primaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+    LruNormalizedCache secondaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION);
+    LruNormalizedCache primaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
 
     Record record = Record.builder("key").build();
 
@@ -231,8 +231,8 @@ public class LruCacheStoreTest {
 
   @Test
   public void testClearSecondaryCache() {
-    LruCacheStore secondaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION);
-    LruCacheStore primaryCacheStore = new LruCacheStore(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+    LruNormalizedCache secondaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION);
+    LruNormalizedCache primaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
 
     Record record = Record.builder("key").build();
 
@@ -242,7 +242,7 @@ public class LruCacheStoreTest {
     assertThat(secondaryCacheStore.loadRecord("key")).isNull();
   }
 
-  private void assertTestRecordPresentAndAccurate(Record testRecord, CacheStore store) {
+  private void assertTestRecordPresentAndAccurate(Record testRecord, NormalizedCache store) {
     final Record cacheRecord1 = store.loadRecord(testRecord.key());
     assertThat(cacheRecord1.key()).isEqualTo(testRecord.key());
     assertThat(cacheRecord1.field("a")).isEqualTo(testRecord.field("a"));

@@ -17,8 +17,8 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.CacheReference;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.internal.cache.normalized.Cache;
-import com.apollographql.apollo.internal.cache.normalized.RealCache;
+import com.apollographql.apollo.cache.normalized.ApolloStore;
+import com.apollographql.apollo.internal.cache.normalized.RealApolloStore;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class ResponseNormalizationTest {
 
   private ApolloClient apolloClient;
   private MockWebServer server;
-  private InMemoryCacheStore cacheStore;
+  private InMemoryNormalizedCache cacheStore;
 
   private final String QUERY_ROOT_KEY = "QUERY_ROOT";
 
@@ -70,9 +70,9 @@ public class ResponseNormalizationTest {
     };
 
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-    cacheStore = new InMemoryCacheStore();
+    cacheStore = new InMemoryNormalizedCache();
 
-    Cache cache = RealCache.construct(cacheStore, new CacheKeyResolver<Map<String, Object>>() {
+    ApolloStore apolloStore = RealApolloStore.construct(cacheStore, new CacheKeyResolver<Map<String, Object>>() {
       @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
         String id = (String) jsonObject.get("id");
         if (id == null || id.isEmpty()) {
@@ -85,7 +85,7 @@ public class ResponseNormalizationTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(cache)
+        .normalizedCache(apolloStore)
         .dispatcher(Utils.immediateExecutorService())
         .build();
   }

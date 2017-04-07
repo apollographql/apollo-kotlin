@@ -1,7 +1,7 @@
 package com.apollographql.apollo.cache.normalized.lru;
 
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.cache.normalized.CacheStore;
+import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
@@ -14,17 +14,17 @@ import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class LruCacheStore extends CacheStore {
+public final class LruNormalizedCache extends NormalizedCache {
 
   private final Cache<String, Record> lruCache;
-  private final Optional<CacheStore> secondaryCacheStore;
+  private final Optional<NormalizedCache> secondaryCacheStore;
 
-  public LruCacheStore(EvictionPolicy evictionPolicy) {
+  public LruNormalizedCache(EvictionPolicy evictionPolicy) {
     this(evictionPolicy, null);
   }
 
-  public LruCacheStore(EvictionPolicy evictionPolicy, CacheStore secondaryCacheStore) {
-    this.secondaryCacheStore = Optional.fromNullable(secondaryCacheStore);
+  public LruNormalizedCache(EvictionPolicy evictionPolicy, NormalizedCache secondaryNormalizedCache) {
+    this.secondaryCacheStore = Optional.fromNullable(secondaryNormalizedCache);
     final CacheBuilder<Object, Object> lruCacheBuilder = CacheBuilder.newBuilder();
     if (evictionPolicy.maxSizeBytes().isPresent()) {
       lruCacheBuilder.maximumWeight(evictionPolicy.maxSizeBytes().get())

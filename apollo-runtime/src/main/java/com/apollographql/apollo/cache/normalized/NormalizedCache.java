@@ -9,7 +9,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class CacheStore {
+public abstract class NormalizedCache {
 
   @Nullable public abstract Record loadRecord(String key);
 

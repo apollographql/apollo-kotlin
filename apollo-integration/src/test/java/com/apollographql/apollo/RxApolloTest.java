@@ -10,8 +10,8 @@ import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.internal.cache.normalized.Cache;
-import com.apollographql.apollo.internal.cache.normalized.RealCache;
+import com.apollographql.apollo.cache.normalized.ApolloStore;
+import com.apollographql.apollo.internal.cache.normalized.RealApolloStore;
 
 import junit.framework.Assert;
 
@@ -42,8 +42,8 @@ public class RxApolloTest {
   @Before public void setUp() {
     server = new MockWebServer();
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-    InMemoryCacheStore cacheStore = new InMemoryCacheStore();
-    Cache cache = RealCache.construct(cacheStore, new CacheKeyResolver<Map<String, Object>>() {
+    InMemoryNormalizedCache cacheStore = new InMemoryNormalizedCache();
+    ApolloStore apolloStore = RealApolloStore.construct(cacheStore, new CacheKeyResolver<Map<String, Object>>() {
       @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
         String id = (String) jsonObject.get("id");
         if (id == null || id.isEmpty()) {
@@ -55,7 +55,7 @@ public class RxApolloTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(cache)
+        .normalizedCache(apolloStore)
         .build();
   }
 

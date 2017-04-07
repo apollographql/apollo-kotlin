@@ -1,6 +1,6 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.cache.normalized.CacheStore;
+import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.RecordSet;
 
@@ -10,11 +10,11 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-public final class InMemoryCacheStore extends CacheStore {
+public final class InMemoryNormalizedCache extends NormalizedCache {
 
   private RecordSet recordSet;
 
-  public InMemoryCacheStore() {
+  public InMemoryNormalizedCache() {
     this.recordSet = new RecordSet();
   }
 

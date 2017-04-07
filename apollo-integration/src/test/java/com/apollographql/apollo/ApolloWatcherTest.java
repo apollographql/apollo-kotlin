@@ -6,13 +6,13 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
-import com.apollographql.apollo.cache.normalized.CacheStore;
+import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDs;
 import com.apollographql.android.impl.normalizer.type.Episode;
 import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.internal.cache.normalized.Cache;
-import com.apollographql.apollo.internal.cache.normalized.RealCache;
+import com.apollographql.apollo.cache.normalized.ApolloStore;
+import com.apollographql.apollo.internal.cache.normalized.RealApolloStore;
 
 import junit.framework.Assert;
 
@@ -35,15 +35,15 @@ import static com.google.common.truth.Truth.assertThat;
 public class ApolloWatcherTest {
   private ApolloClient apolloClient;
   private MockWebServer server;
-  private CacheStore cacheStore;
+  private NormalizedCache normalizedCache;
   private static final int TIME_OUT_SECONDS = 3;
 
   @Before public void setUp() {
     server = new MockWebServer();
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-    cacheStore = new InMemoryCacheStore();
+    normalizedCache = new InMemoryNormalizedCache();
 
-    Cache cache = RealCache.construct(cacheStore, new CacheKeyResolver<Map<String, Object>>() {
+    ApolloStore apolloStore = RealApolloStore.construct(normalizedCache, new CacheKeyResolver<Map<String, Object>>() {
       @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
         String id = (String) jsonObject.get("id");
         if (id == null || id.isEmpty()) {
@@ -55,7 +55,7 @@ public class ApolloWatcherTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(cache)
+        .normalizedCache(apolloStore)
         .build();
   }
 

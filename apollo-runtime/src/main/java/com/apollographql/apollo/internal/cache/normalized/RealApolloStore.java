@@ -1,8 +1,9 @@
 package com.apollographql.apollo.internal.cache.normalized;
 
 
+import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
-import com.apollographql.apollo.cache.normalized.CacheStore;
+import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 
 import java.util.Collection;
@@ -19,20 +20,15 @@ import javax.annotation.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
-public final class RealCache implements Cache, ReadableCache, WriteableCache {
-  private final CacheStore cacheStore;
+public final class RealApolloStore implements ApolloStore, ReadableCache, WriteableCache {
+  private final NormalizedCache normalizedCache;
   private final CacheKeyResolver<Map<String, Object>> networkCacheKeyResolver;
   private final ReadWriteLock lock;
   private final Set<RecordChangeSubscriber> subscribers;
 
-  public static Cache construct(@Nonnull CacheStore cacheStore,
+  public RealApolloStore(@Nonnull NormalizedCache normalizedCache,
       @Nonnull CacheKeyResolver<Map<String, Object>> networkCacheKeyResolver) {
-    return new RealCache(cacheStore, networkCacheKeyResolver);
-  }
-
-  private RealCache(@Nonnull CacheStore cacheStore,
-      @Nonnull CacheKeyResolver<Map<String, Object>> networkCacheKeyResolver) {
-    this.cacheStore =  checkNotNull(cacheStore, "cacheStore null");
+    this.normalizedCache =  checkNotNull(normalizedCache, "cacheStore null");
     this.networkCacheKeyResolver = checkNotNull(networkCacheKeyResolver, "networkCacheKeyResolver null");
     this.lock = new ReentrantReadWriteLock();
     this.subscribers = Collections.newSetFromMap(new WeakHashMap<RecordChangeSubscriber, Boolean>());
@@ -64,7 +60,7 @@ public final class RealCache implements Cache, ReadableCache, WriteableCache {
       iterableSubscribers = new LinkedHashSet<>(subscribers);
     }
     for (RecordChangeSubscriber subscriber : iterableSubscribers) {
-      subscriber.onCacheKeysChanged(changedKeys);
+      subscriber.onCacheRecordsChanged(changedKeys);
     }
   }
 
@@ -80,7 +76,7 @@ public final class RealCache implements Cache, ReadableCache, WriteableCache {
   @Override public <R> R readTransaction(Transaction<ReadableCache, R> transaction) {
     lock.readLock().lock();
     try {
-      return transaction.execute(RealCache.this);
+      return transaction.execute(RealApolloStore.this);
     } finally {
       lock.readLock().unlock();
     }
@@ -89,22 +85,22 @@ public final class RealCache implements Cache, ReadableCache, WriteableCache {
   @Override public <R> R writeTransaction(Transaction<WriteableCache, R> transaction) {
     lock.writeLock().lock();
     try {
-      return transaction.execute(RealCache.this);
+      return transaction.execute(RealApolloStore.this);
     } finally {
       lock.writeLock().unlock();
     }
   }
 
   @Nullable public Record read(@Nonnull String key) {
-    return cacheStore.loadRecord(checkNotNull(key, "key == null"));
+    return normalizedCache.loadRecord(checkNotNull(key, "key == null"));
   }
 
   @Nonnull public Collection<Record> read(@Nonnull Collection<String> keys) {
-    return cacheStore.loadRecords(checkNotNull(keys, "keys == null"));
+    return normalizedCache.loadRecords(checkNotNull(keys, "keys == null"));
   }
 
   @Nonnull public Set<String> merge(@Nonnull Collection<Record> recordSet) {
-    return cacheStore.merge(checkNotNull(recordSet, "recordSet == null"));
+    return normalizedCache.merge(checkNotNull(recordSet, "recordSet == null"));
   }
 
 }

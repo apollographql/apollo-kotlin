@@ -19,13 +19,13 @@ public class SqlStoreTest {
   public static final String QUERY_ROOT_KEY = "QUERY_ROOT";
   public static final String FIELDS = "{\"fieldKey\": \"value\"}";
   public static final String IN_MEMORY_DB = null; //null means db is memory only
-  private SqlStore sqlStore;
+  private SqlNormalized sqlStore;
 
   @Before
   public void setUp() {
     ApolloSqlHelper apolloSqlHelper = ApolloSqlHelper.create(InstrumentationRegistry.getTargetContext(),
         IN_MEMORY_DB);
-    sqlStore = SqlStore.create(apolloSqlHelper, FieldsAdapter.create());
+    sqlStore = SqlNormalized.create(apolloSqlHelper, FieldsAdapter.create());
   }
 
   @Test
