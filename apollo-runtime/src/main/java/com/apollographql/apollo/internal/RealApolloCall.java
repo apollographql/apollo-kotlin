@@ -69,7 +69,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     this.logger = logger;
 
     interceptorChain = new RealApolloInterceptorChain(operation, Arrays.asList(
-        new ApolloCacheInterceptor(apolloStore, cacheControl, responseFieldMapper, customTypeAdapters, dispatcher, logger),
+        new ApolloCacheInterceptor(apolloStore, cacheControl, responseFieldMapper, customTypeAdapters, dispatcher,
+            logger),
         new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
             customTypeAdapters, logger),
         new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCacheControl, false, moshi, logger)
