@@ -7,14 +7,14 @@ import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.http.EvictionStrategy;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.cache.http.ResponseCacheStore;
+import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
-import com.apollographql.apollo.cache.normalized.CacheStore;
+import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.internal.RealApolloCall;
 import com.apollographql.apollo.internal.RealApolloPrefetch;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
-import com.apollographql.apollo.internal.cache.normalized.Cache;
-import com.apollographql.apollo.internal.cache.normalized.RealCache;
+import com.apollographql.apollo.internal.cache.normalized.RealApolloStore;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonWriter;
@@ -62,7 +62,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   private final HttpUrl serverUrl;
   private final Call.Factory httpCallFactory;
   private final HttpCache httpCache;
-  private final Cache cache;
+  private final ApolloStore apolloStore;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final Moshi moshi;
   private final Map<Class, ResponseFieldMapper> responseFieldMapperPool = new LinkedHashMap<>();
@@ -75,7 +75,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     this.serverUrl = builder.serverUrl;
     this.httpCallFactory = builder.okHttpClient;
     this.httpCache = builder.httpCache;
-    this.cache = builder.cache;
+    this.apolloStore = builder.apolloStore;
     this.customTypeAdapters = builder.customTypeAdapters;
     this.moshi = builder.moshiBuilder.build();
     this.dispatcher = builder.dispatcher;
@@ -99,7 +99,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
       }
     }
     return new RealApolloCall<T>(operation, serverUrl, httpCallFactory, httpCache, defaultHttpCacheControl, moshi,
-        responseFieldMapper, customTypeAdapters, cache, defaultCacheControl, dispatcher, logger)
+        responseFieldMapper, customTypeAdapters, apolloStore, defaultCacheControl, dispatcher, logger)
         .httpCacheControl(defaultHttpCacheControl)
         .cacheControl(defaultCacheControl);
   }
@@ -113,10 +113,26 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, moshi, dispatcher, logger);
   }
 
-  void clearCache() {
+  void clearHttpCache() {
     if (httpCache != null) {
       httpCache.clear();
     }
+  }
+
+  /**
+   * Clear all entries from the normalized cache.
+   */
+  public void clearNormalizedCache() {
+    apolloStore.clearAll();
+  }
+
+  /**
+   *
+   * @return The {@link ApolloStore} managing access to the normalized cache created by
+   * {@link Builder#normalizedCache(NormalizedCache, CacheKeyResolver)} }
+   */
+  public ApolloStore apolloStore() {
+    return apolloStore;
   }
 
   Response cachedHttpResponse(String cacheKey) throws IOException {
@@ -132,7 +148,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     HttpUrl serverUrl;
     ResponseCacheStore httpCacheStore;
     EvictionStrategy httpEvictionStrategy;
-    Cache cache = Cache.NO_CACHE;
+    ApolloStore apolloStore = ApolloStore.NO_APOLLO_STORE;
     HttpCacheControl defaultHttpCacheControl = HttpCacheControl.CACHE_FIRST;
     CacheControl defaultCacheControl = CacheControl.CACHE_FIRST;
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
@@ -195,13 +211,13 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     /**
      * Set the configuration to be used for normalized cache.
      *
-     * @param cacheStore       the cache store to use
-     * @param cacheKeyResolver the cache key resolver
+     * @param normalizedCache       the cache store to use
+     * @param cacheKeyResolver      the {@link CacheKeyResolver} to use to normalize records
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder normalizedCache(@Nonnull CacheStore cacheStore,
+    public Builder normalizedCache(@Nonnull NormalizedCache normalizedCache,
         @Nonnull CacheKeyResolver<Map<String, Object>> cacheKeyResolver) {
-      this.cache = new RealCache(checkNotNull(cacheStore, "cacheStore == null"),
+      this.apolloStore = new RealApolloStore(checkNotNull(normalizedCache, "normalizedCache == null"),
           checkNotNull(cacheKeyResolver, "cacheKeyResolver == null"));
       return this;
     }
