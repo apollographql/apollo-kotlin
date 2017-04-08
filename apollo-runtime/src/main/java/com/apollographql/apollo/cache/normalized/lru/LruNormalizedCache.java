@@ -86,10 +86,6 @@ public final class LruNormalizedCache extends NormalizedCache {
     }
   }
 
-  /**
-   * Clears all records from the cache. If present, secondary cache store will be cleared
-   * as well.
-   */
   @Override public void clearAll() {
     clearPrimaryCache();
     clearSecondaryCache();
@@ -100,7 +96,7 @@ public final class LruNormalizedCache extends NormalizedCache {
    *
    * This method is **not** guaranteed to be thread safe. It should be run inside a write transaction in
    * {@link com.apollographql.apollo.cache.normalized.ApolloStore}, obtained from
-   * {@link com.apollographql.apollo.ApolloClient#apolloStore()}
+   * {@link com.apollographql.apollo.ApolloClient#apolloStore()}.
    */
   public void clearPrimaryCache() {
     lruCache.invalidateAll();
@@ -111,7 +107,7 @@ public final class LruNormalizedCache extends NormalizedCache {
    *
    * This method is **not** guaranteed to be thread safe. It should be run inside a write transaction in
    * {@link com.apollographql.apollo.cache.normalized.ApolloStore}, obtained from
-   * {@link com.apollographql.apollo.ApolloClient#apolloStore()}
+   * {@link com.apollographql.apollo.ApolloClient#apolloStore()}.
    */
   public void clearSecondaryCache() {
     if (secondaryCacheStore.isPresent()) {
