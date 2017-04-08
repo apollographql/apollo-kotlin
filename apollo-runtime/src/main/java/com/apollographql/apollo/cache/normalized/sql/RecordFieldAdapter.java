@@ -20,20 +20,24 @@ import okio.Okio;
 import static com.apollographql.apollo.internal.json.ApolloJsonReader.bufferedSourceJsonReader;
 import static com.apollographql.apollo.internal.json.ApolloJsonReader.cacheJsonStreamReader;
 
-public final class FieldsAdapter {
+/**
+ * An adapter used to serialize and deserialize Record fields. Record object types will be serialized to
+ * {@link CacheReference}.
+ */
+public final class RecordFieldAdapter {
   private final JsonAdapter<Map<String, Object>> serializationAdapter;
 
-  private FieldsAdapter(Moshi moshi) {
+  private RecordFieldAdapter(Moshi moshi) {
     Type type = Types.newParameterizedType(Map.class, String.class, Object.class);
     serializationAdapter = moshi.adapter(type);
   }
 
-  public static FieldsAdapter create() {
-    Moshi moshi = new Moshi.Builder()
+  public static RecordFieldAdapter create(Moshi baseMoshi) {
+    Moshi moshi = baseMoshi.newBuilder()
         .add(CacheReference.class, new CacheReferenceAdapter())
         .add(BigDecimal.class, new BigDecimalAdapter())
         .build();
-    return new FieldsAdapter(moshi);
+    return new RecordFieldAdapter(moshi);
   }
 
   public String toJson(Map<String, Object> fields) {

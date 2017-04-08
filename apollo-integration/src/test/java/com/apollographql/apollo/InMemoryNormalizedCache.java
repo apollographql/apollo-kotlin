@@ -3,6 +3,7 @@ package com.apollographql.apollo;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.RecordSet;
+import com.apollographql.apollo.cache.normalized.sql.RecordFieldAdapter;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -15,6 +16,11 @@ public final class InMemoryNormalizedCache extends NormalizedCache {
   private RecordSet recordSet;
 
   public InMemoryNormalizedCache() {
+    this(null);
+  }
+
+  public InMemoryNormalizedCache(RecordFieldAdapter recordFieldAdapter) {
+    super(recordFieldAdapter);
     this.recordSet = new RecordSet();
   }
 
