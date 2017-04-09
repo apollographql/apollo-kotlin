@@ -9,4 +9,6 @@ public interface WriteableCache extends ReadableCache {
 
   Set<String> merge(Collection<Record> recordCollection);
 
+  void clearAll();
+
 }

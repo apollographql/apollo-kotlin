@@ -34,13 +34,13 @@ import static com.google.common.truth.Truth.assertThat;
 public class NormalizedCacheTestCase {
   private ApolloClient apolloClient;
   private MockWebServer server;
-  private InMemoryCacheStore cacheStore;
+  private InMemoryNormalizedCache cacheStore;
 
   @Before public void setUp() {
     server = new MockWebServer();
 
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-    cacheStore = new InMemoryCacheStore();
+    cacheStore = new InMemoryNormalizedCache();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))

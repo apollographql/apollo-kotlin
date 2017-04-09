@@ -7,6 +7,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A normalized entry that corresponds to a response object. Object fields are stored
+ * if they are a GraphQL Scalars. If a field is a GraphQL Object a {@link CacheReference} will be stored instead.
+ */
 public final class Record {
 
   private final String key;
@@ -67,6 +71,11 @@ public final class Record {
     return key;
   }
 
+  /**
+   * @param otherRecord The record to merge into this record.
+   * @return A set of field keys which have changed, or where added. A field key incorporates any GraphQL arguments in
+   * addition to the field name.
+   */
   public Set<String> mergeWith(Record otherRecord) {
     Set<String> changedKeys = new HashSet<>();
     for (Map.Entry<String, Object> field : otherRecord.fields.entrySet()) {
@@ -82,10 +91,17 @@ public final class Record {
     return changedKeys;
   }
 
+  /**
+   * @return A map of fieldName to fieldValue. Where fieldValue is a GraphQL Scalar or {@link CacheReference} if it is a
+   * GraphQL Object type.
+   */
   public Map<String, Object> fields() {
     return fields;
   }
 
+  /**
+   * @return An approximate number of bytes this Record takes up.
+   */
   public int sizeEstimateBytes() {
     if (sizeInBytes == UNKNOWN_SIZE_ESTIMATE) {
       sizeInBytes = RecordWeigher.calculateBytes(this);

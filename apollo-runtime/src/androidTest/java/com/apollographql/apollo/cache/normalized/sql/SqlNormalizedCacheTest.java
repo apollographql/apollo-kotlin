@@ -13,19 +13,19 @@ import org.junit.runner.RunWith;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class SqlStoreTest {
+public class SqlNormalizedCacheTest {
 
   public static final String STANDARD_KEY = "key";
   public static final String QUERY_ROOT_KEY = "QUERY_ROOT";
   public static final String FIELDS = "{\"fieldKey\": \"value\"}";
   public static final String IN_MEMORY_DB = null; //null means db is memory only
-  private SqlStore sqlStore;
+  private SqlNormalizedCache sqlStore;
 
   @Before
   public void setUp() {
     ApolloSqlHelper apolloSqlHelper = ApolloSqlHelper.create(InstrumentationRegistry.getTargetContext(),
         IN_MEMORY_DB);
-    sqlStore = SqlStore.create(apolloSqlHelper, FieldsAdapter.create());
+    sqlStore = SqlNormalizedCache.create(apolloSqlHelper, FieldsAdapter.create());
   }
 
   @Test
@@ -38,18 +38,6 @@ public class SqlStoreTest {
   public void testRecordCreation_root() {
     long record = createRecord(QUERY_ROOT_KEY);
     assertThat(record).isEqualTo(1);
-  }
-
-  @Test
-  public void testRecordDeletion() {
-    long recordId = createRecord(STANDARD_KEY);
-    sqlStore.deleteRecord(STANDARD_KEY);
-  }
-
-  @Test
-  public void testRecordDeletion_root() {
-    long recordId = createRecord(QUERY_ROOT_KEY);
-    sqlStore.deleteRecord(QUERY_ROOT_KEY);
   }
 
   @Test
@@ -81,6 +69,15 @@ public class SqlStoreTest {
     Optional<Record> record = sqlStore.selectRecordForKey(STANDARD_KEY);
     assertThat(record.get().fields().get("fieldKey")).isEqualTo("valueUpdated");
     assertThat(record.get().fields().get("newFieldKey")).isEqualTo(true);
+  }
+
+  @Test
+  public void testClearAll() {
+    createRecord(QUERY_ROOT_KEY);
+    createRecord(STANDARD_KEY);
+    sqlStore.clearAll();
+    assertThat(sqlStore.selectRecordForKey(QUERY_ROOT_KEY).isPresent()).isFalse();
+    assertThat(sqlStore.selectRecordForKey(STANDARD_KEY).isPresent()).isFalse();
   }
 
   private long createRecord(String key) {
