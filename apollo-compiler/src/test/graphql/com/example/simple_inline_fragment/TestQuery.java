@@ -116,7 +116,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
     }
 
-    public static class AsHuman {
+    public static class AsHuman extends Hero {
       private final @Nonnull String name;
 
       private final Optional<Double> height;
@@ -180,7 +180,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
     }
 
-    public static class AsDroid {
+    public static class AsDroid extends Hero {
       private final @Nonnull String name;
 
       private final Optional<String> primaryFunction;
@@ -245,34 +245,26 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class Hero {
-      private final @Nonnull String name;
-
       private final Optional<AsHuman> asHuman;
 
       private final Optional<AsDroid> asDroid;
 
-      public Hero(@Nonnull String name, @Nullable AsHuman asHuman, @Nullable AsDroid asDroid) {
-        this.name = name;
-        this.asHuman = Optional.fromNullable(asHuman);
-        this.asDroid = Optional.fromNullable(asDroid);
-      }
-
-      public @Nonnull String name() {
-        return this.name;
-      }
-
-      public Optional<AsHuman> asHuman() {
-        return this.asHuman;
-      }
-
-      public Optional<AsDroid> asDroid() {
-        return this.asDroid;
+      public Hero() {
+        if (this instanceof AsHuman) {
+          asHuman = Optional.fromNullable((AsHuman) this);
+        } else {
+          asHuman = Optional.absent();
+        }
+        if (this instanceof AsDroid) {
+          asDroid = Optional.fromNullable((AsDroid) this);
+        } else {
+          asDroid = Optional.absent();
+        }
       }
 
       @Override
       public String toString() {
         return "Hero{"
-          + "name=" + name + ", "
           + "asHuman=" + asHuman + ", "
           + "asDroid=" + asDroid
           + "}";
@@ -285,8 +277,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         }
         if (o instanceof Hero) {
           Hero that = (Hero) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-           && ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman))
+          return ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman))
            && ((this.asDroid == null) ? (that.asDroid == null) : this.asDroid.equals(that.asDroid));
         }
         return false;
@@ -295,8 +286,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public int hashCode() {
         int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
         h ^= (asHuman == null) ? 0 : asHuman.hashCode();
         h *= 1000003;
@@ -310,7 +299,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
         final Field[] fields = {
-          Field.forString("name", "name", null, false),
           Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman>() {
             @Override
             public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
@@ -335,10 +323,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
         @Override
         public Hero map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          final AsHuman asHuman = reader.read(fields[1]);
-          final AsDroid asDroid = reader.read(fields[2]);
-          return new Hero(name, asHuman, asDroid);
+          final AsHuman asHuman = reader.read(fields[0]);
+          if (asHuman != null) {
+            return asHuman;
+          }
+          final AsDroid asDroid = reader.read(fields[1]);
+          if (asDroid != null) {
+            return asDroid;
+          }
+          return new Hero();
         }
       }
     }
