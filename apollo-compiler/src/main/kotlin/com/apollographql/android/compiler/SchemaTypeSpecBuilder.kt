@@ -70,7 +70,7 @@ class SchemaTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addFragments(): TypeSpec.Builder {
-    if (fragmentSpreads.isNotEmpty()) {
+    if (fragmentSpreads.isNotEmpty() && inlineFragments.isEmpty()) {
       addType(fragmentsTypeSpec())
       addField(fragmentsFieldSpec())
       if (context.generateAccessors) {
@@ -180,7 +180,7 @@ class SchemaTypeSpecBuilder(
           if (nullableTypeWrapperClass != null) {
             codeBuilder.addStatement("\$L = \$T.absent()", fieldSpec.name, nullableTypeWrapperClass)
           } else {
-            codeBuilder.addStatement("\$L = null", fieldSpec.name, type)
+            codeBuilder.addStatement("\$L = null", fieldSpec.name)
           }
           codeBuilder.endControlFlow()
           codeBuilder.build()

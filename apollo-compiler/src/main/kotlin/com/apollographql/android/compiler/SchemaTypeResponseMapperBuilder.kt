@@ -95,7 +95,8 @@ class SchemaTypeResponseMapperBuilder(
   private fun fieldFactoriesCode(fields: List<Field>) =
       fields.map { fieldFactoryCode(it) }
           .plus(inlineFragments.map { inlineFragmentFieldFactoryCode(it) })
-          .plus(if (fragmentSpreads.isNotEmpty()) fragmentsFieldFactoryCode() else CodeBlock.of(""))
+          .plus(if (fragmentSpreads.isNotEmpty() && inlineFragments.isEmpty())
+            fragmentsFieldFactoryCode() else CodeBlock.of(""))
           .filter { !it.isEmpty }
           .foldIndexed(CodeBlock.builder()) { i, builder, code ->
             builder.add(if (i > 0) ",\n" else "").add(code)
@@ -368,7 +369,7 @@ class SchemaTypeResponseMapperBuilder(
           .map { it.let { if (it.isList()) it.listParamType() else it } }
           .filter { !it.isScalar() && !it.isCustomScalarType() }
           .map { it.overrideTypeName(typeOverrideMap) as ClassName }
-          .plus(if (fragmentSpreads.isEmpty()) emptyList<ClassName>() else listOf(FRAGMENTS_CLASS))
+          .plus(if (fragmentSpreads.isNotEmpty() && inlineFragments.isEmpty()) listOf(FRAGMENTS_CLASS) else emptyList())
           .map {
             val mapperClassName = ClassName.get(it.packageName(), it.simpleName(), Util.MAPPER_TYPE_NAME)
             FieldSpec.builder(mapperClassName, it.mapperFieldName(), Modifier.FINAL)
