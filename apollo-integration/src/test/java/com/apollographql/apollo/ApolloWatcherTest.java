@@ -127,7 +127,7 @@ public class ApolloWatcherTest {
 
     // Wait 3 seconds to make sure no double callback.
     // Successful if timeout _is_ reached
-    secondResponseLatch.await(3, TimeUnit.SECONDS);
+    secondResponseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 
   @Test
@@ -295,6 +295,46 @@ public class ApolloWatcherTest {
     apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
 
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+  }
+
+  @Test
+  public void testQueryWatcherNotCalled_WhenCanceled() throws IOException, TimeoutException, InterruptedException, ApolloException {
+
+    final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
+    final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
+
+    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+
+    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).watcher();
+
+    watcher.enqueueAndWatch(
+        new ApolloCall.Callback<EpisodeHeroName.Data>() {
+          @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            firstResponseLatch.countDown();
+            secondResponseLatch.countDown();
+            if (secondResponseLatch.getCount() == 0) {
+              Assert.fail("Received two callbacks, although query watcher has already been canceled");
+            }
+          }
+
+          @Override public void onFailure(@Nonnull ApolloException e) {
+            Assert.fail(e.getMessage());
+            firstResponseLatch.countDown();
+            secondResponseLatch.countDown();
+          }
+        });
+
+    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+
+    server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
+    watcher.cancel();
+    apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+
+    //Wait for 3 seconds to check that callback is not called twice.
+    //Test is successful if timeout is reached.
+    secondResponseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
