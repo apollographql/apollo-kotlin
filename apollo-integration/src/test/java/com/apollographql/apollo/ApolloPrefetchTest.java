@@ -35,7 +35,7 @@ public class ApolloPrefetchTest {
   }
 
   @Test
-  public void testApolloPrefecthNotCalled_WhenCanceled() throws IOException, InterruptedException {
+  public void testApolloPrefetchNotCalled_WhenCanceled() throws IOException, InterruptedException {
 
     final NamedCountDownLatch responseLatch = new NamedCountDownLatch("responseLatch", 1);
 
