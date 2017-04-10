@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.cache.normalized.CacheStore;
+import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 
 import java.io.IOException;
@@ -20,7 +20,7 @@ import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLU
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLUMN_RECORD;
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.TABLE_RECORDS;
 
-public final class SqlStore extends CacheStore {
+public final class SqlNormalizedCache extends NormalizedCache {
   private static final String INSERT_STATEMENT =
       String.format("INSERT INTO %s (%s,%s) VALUES (?,?)",
           TABLE_RECORDS,
@@ -32,6 +32,7 @@ public final class SqlStore extends CacheStore {
           COLUMN_KEY,
           COLUMN_RECORD,
           COLUMN_KEY);
+  private static final String DELETE_ALL_RECORD_STATEMENT = String.format("DELETE FROM %s", TABLE_RECORDS);
   SQLiteDatabase database;
   private final FieldsAdapter parser;
   private final ApolloSqlHelper dbHelper;
@@ -41,17 +42,19 @@ public final class SqlStore extends CacheStore {
 
   private final SQLiteStatement insertStatement;
   private final SQLiteStatement updateStatement;
+  private final SQLiteStatement deleteAllRecordsStatement;
 
-  public static SqlStore create(ApolloSqlHelper helper, FieldsAdapter adapter) {
-    return new SqlStore(helper, adapter);
+  public static SqlNormalizedCache create(ApolloSqlHelper helper, FieldsAdapter adapter) {
+    return new SqlNormalizedCache(helper, adapter);
   }
 
-  private SqlStore(ApolloSqlHelper dbHelper, FieldsAdapter parser) {
+  private SqlNormalizedCache(ApolloSqlHelper dbHelper, FieldsAdapter parser) {
     this.dbHelper = dbHelper;
     database = dbHelper.getWritableDatabase();
     this.parser = parser;
     insertStatement = database.compileStatement(INSERT_STATEMENT);
     updateStatement = database.compileStatement(UPDATE_STATEMENT);
+    deleteAllRecordsStatement = database.compileStatement(DELETE_ALL_RECORD_STATEMENT);
   }
 
   @Nullable public Record loadRecord(String key) {
@@ -86,6 +89,10 @@ public final class SqlStore extends CacheStore {
     return changedKeys;
   }
 
+  @Override public void clearAll() {
+    deleteAllRecordsStatement.execute();
+  }
+
   long createRecord(String key, String fields) {
     insertStatement.bindString(1, key);
     insertStatement.bindString(2, fields);
@@ -116,12 +123,6 @@ public final class SqlStore extends CacheStore {
     } finally {
       cursor.close();
     }
-  }
-
-  void deleteRecord(String key) {
-    System.out.println("Record deleted with key: " + key);
-    database.delete(ApolloSqlHelper.TABLE_RECORDS, ApolloSqlHelper.COLUMN_ID
-        + " = ?", new String[]{key});
   }
 
   Record cursorToRecord(Cursor cursor) throws IOException {

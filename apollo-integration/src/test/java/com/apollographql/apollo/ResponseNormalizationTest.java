@@ -2,11 +2,6 @@ package com.apollographql.apollo;
 
 import android.support.annotation.NonNull;
 
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.cache.normalized.CacheKey;
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
-import com.apollographql.apollo.cache.normalized.CacheReference;
-import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNames;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDForParentOnly;
@@ -16,6 +11,11 @@ import com.apollographql.android.impl.normalizer.HeroName;
 import com.apollographql.android.impl.normalizer.HeroParentTypeDependentField;
 import com.apollographql.android.impl.normalizer.HeroTypeDependentAliasedField;
 import com.apollographql.android.impl.normalizer.SameHeroTwice;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.cache.normalized.CacheKey;
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
+import com.apollographql.apollo.cache.normalized.CacheReference;
+import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
 
 import org.junit.Before;
@@ -47,7 +47,7 @@ public class ResponseNormalizationTest {
 
   private ApolloClient apolloClient;
   private MockWebServer server;
-  private InMemoryCacheStore cacheStore;
+  private InMemoryNormalizedCache cacheStore;
 
   private final String QUERY_ROOT_KEY = "QUERY_ROOT";
 
@@ -68,7 +68,7 @@ public class ResponseNormalizationTest {
     };
 
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-    cacheStore = new InMemoryCacheStore();
+    cacheStore = new InMemoryNormalizedCache();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))

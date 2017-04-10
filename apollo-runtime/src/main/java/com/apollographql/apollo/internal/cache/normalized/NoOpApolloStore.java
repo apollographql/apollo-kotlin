@@ -1,5 +1,6 @@
 package com.apollographql.apollo.internal.cache.normalized;
 
+import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.Record;
 
 import java.util.Collection;
@@ -11,10 +12,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * An alternative to {@link RealCache} for when a no-operation cache
+ * An alternative to {@link RealApolloStore} for when a no-operation cache
  * is needed.
  */
-final class NoOpCache implements Cache, ReadableCache, WriteableCache {
+public final class NoOpApolloStore implements ApolloStore, ReadableCache, WriteableCache {
 
   @Override public Set<String> merge(Collection<Record> recordCollection) {
     return Collections.emptySet();
@@ -33,6 +34,10 @@ final class NoOpCache implements Cache, ReadableCache, WriteableCache {
   @Override public void unsubscribe(RecordChangeSubscriber subscriber) { }
 
   @Override public void publish(Set<String> keys) { }
+
+  @Override public void clearAll() {
+
+  }
 
   @Override public ResponseNormalizer<Map<String, Object>> networkResponseNormalizer() {
     //noinspection unchecked

@@ -1,8 +1,6 @@
 package com.apollographql.apollo.cache.normalized;
 
-import com.apollographql.apollo.cache.normalized.CacheReference;
 import com.apollographql.apollo.cache.normalized.sql.FieldsAdapter;
-import com.apollographql.apollo.cache.normalized.Record;
 
 import org.junit.Test;
 

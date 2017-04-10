@@ -11,7 +11,7 @@ import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.internal.cache.normalized.Cache;
+import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.internal.cache.normalized.ReadableCache;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.cache.normalized.Transaction;
@@ -30,19 +30,40 @@ import javax.annotation.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
+/**
+ * ApolloCacheInterceptor is a concrete {@link ApolloInterceptor} responsible for serving requests from the normalized
+ * cache. It takes the following actions based on the {@link CacheControl} set:
+ *
+ * <ol> <li> <b>CACHE_ONLY</b>: First tries to get the data from the normalized cache. If the data doesn't exist or
+ * there was an error inflating the models, it returns the
+ * {@link com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse}
+ * with the GraphQL {@link Operation} object wrapped inside. </li>
+ *
+ * <li><b>CACHE_FIRST</b>: First tries to get the data from the normalized cache. If the data doesn't exist or there was
+ * an error inflating the models, it then makes a network request.</li>
+ *
+ * <li><b>NETWORK_FIRST</b>: First tries to get the data from the network. If there was an error getting data from the
+ * network, it tries to get it from the normalized cache. If it is not present in the cache, then it rethrows the
+ * network exception.</li>
+ *
+ * <li><b>NETWORK_ONLY</b>: First tries to get the data from the network. If the network request fails, it throws an
+ * exception.</li>
+ *
+ * </ol>
+ */
 public final class ApolloCacheInterceptor implements ApolloInterceptor {
-  private final Cache cache;
+  private final ApolloStore apolloStore;
   private final CacheControl cacheControl;
   private final ResponseFieldMapper responseFieldMapper;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final ExecutorService dispatcher;
   private final ApolloLogger logger;
 
-  public ApolloCacheInterceptor(@Nonnull Cache cache, @Nonnull CacheControl cacheControl,
+  public ApolloCacheInterceptor(@Nonnull ApolloStore apolloStore, @Nonnull CacheControl cacheControl,
       @Nonnull ResponseFieldMapper responseFieldMapper,
       @Nonnull Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
       @Nonnull ExecutorService dispatcher, @Nonnull ApolloLogger logger) {
-    this.cache = checkNotNull(cache, "cache == null");
+    this.apolloStore = checkNotNull(apolloStore, "cache == null");
     this.cacheControl = checkNotNull(cacheControl, "cacheControl == null");
     this.responseFieldMapper = checkNotNull(responseFieldMapper, "responseFieldMapper == null");
     this.customTypeAdapters = checkNotNull(customTypeAdapters, "customTypeAdapters == null");
@@ -107,7 +128,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
 
   private InterceptorResponse resolveCacheFirstResponse(Operation operation) {
     if (cacheControl == CacheControl.CACHE_ONLY || cacheControl == CacheControl.CACHE_FIRST) {
-      ResponseNormalizer<Record> responseNormalizer = cache.cacheResponseNormalizer();
+      ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
       Response cachedResponse = cachedResponse(operation, responseNormalizer);
       if (cacheControl == CacheControl.CACHE_ONLY
           || (cachedResponse != null && cachedResponse.data() != null && cachedResponse.isSuccessful())) {
@@ -121,7 +142,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
 
   @SuppressWarnings("unchecked") private Response cachedResponse(final Operation operation,
       final ResponseNormalizer<Record> cacheResponseNormalizer) {
-    return cache.readTransaction(new Transaction<ReadableCache, Response>() {
+    return apolloStore.readTransaction(new Transaction<ReadableCache, Response>() {
       @Nullable @Override public Response execute(ReadableCache cache) {
         cacheResponseNormalizer.willResolveRootQuery(operation);
         Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key());
@@ -145,7 +166,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     boolean networkFailed = (!networkResponse.httpResponse.isPresent()
         || !networkResponse.httpResponse.get().isSuccessful());
     if (networkFailed && cacheControl != CacheControl.NETWORK_ONLY) {
-      ResponseNormalizer<Record> responseNormalizer = cache.cacheResponseNormalizer();
+      ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
       Response cachedResponse = cachedResponse(operation, responseNormalizer);
       if (cachedResponse != null && cachedResponse.data() != null && cachedResponse.isSuccessful()) {
         return new InterceptorResponse(networkResponse.httpResponse.get(), cachedResponse,
@@ -157,12 +178,12 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     if (records != null) {
       dispatcher.execute(new Runnable() {
         @Override public void run() {
-          Set<String> changedKeys = cache.writeTransaction(new Transaction<WriteableCache, Set<String>>() {
+          Set<String> changedKeys = apolloStore.writeTransaction(new Transaction<WriteableCache, Set<String>>() {
             @Nullable @Override public Set<String> execute(WriteableCache cache) {
               return cache.merge(records);
             }
           });
-          cache.publish(changedKeys);
+          apolloStore.publish(changedKeys);
         }
       });
     }
@@ -172,7 +193,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
 
   private InterceptorResponse resolveNetworkFirstCacheResponse(Operation operation) {
     if (cacheControl == CacheControl.NETWORK_FIRST) {
-      ResponseNormalizer<Record> responseNormalizer = cache.cacheResponseNormalizer();
+      ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
       Response cachedResponse = cachedResponse(operation, responseNormalizer);
       if (cachedResponse != null && cachedResponse.data() != null && cachedResponse.isSuccessful()) {
         logger.d("Cache HIT for operation %s", operation);
