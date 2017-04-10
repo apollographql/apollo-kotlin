@@ -24,7 +24,8 @@ class GraphQLCompiler {
         typesPackage = typesPackage,
         customTypeMap = supportedScalarTypeMapping,
         nullableValueType = args.nullableValueType,
-        generateAccessors = args.generateAccessors)
+        generateAccessors = args.generateAccessors,
+        ir = ir)
     ir.writeJavaFiles(context, args.outputDir)
   }
 
