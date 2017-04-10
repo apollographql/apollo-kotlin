@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
-import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.exception.ApolloException;
 
 import junit.framework.Assert;
@@ -33,7 +32,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class ApolloWatcherTest {
   private ApolloClient apolloClient;
   private MockWebServer server;
-  private NormalizedCache normalizedCache;
+  private InMemoryNormalizedCache normalizedCache;
   private static final int TIME_OUT_SECONDS = 3;
 
   @Before public void setUp() {
