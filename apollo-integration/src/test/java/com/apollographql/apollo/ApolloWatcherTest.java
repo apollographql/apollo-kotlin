@@ -14,6 +14,7 @@ import com.apollographql.apollo.exception.ApolloException;
 
 import junit.framework.Assert;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -56,6 +57,13 @@ public class ApolloWatcherTest {
         .build();
 
     normalizedCache = apolloClient.apolloStore().normalizedCache();
+  }
+
+  @After public void tearDown() {
+    try {
+      server.shutdown();
+    } catch (IOException ignored) {
+    }
   }
 
   @Test

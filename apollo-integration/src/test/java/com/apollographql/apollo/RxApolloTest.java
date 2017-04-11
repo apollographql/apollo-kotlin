@@ -13,6 +13,7 @@ import com.apollographql.apollo.exception.ApolloException;
 
 import junit.framework.Assert;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -55,6 +56,13 @@ public class RxApolloTest {
           }
         })
         .build();
+  }
+
+  @After public void tearDown() {
+    try {
+      server.shutdown();
+    } catch (IOException ignored) {
+    }
   }
 
   @Test public void testRxCallProducesValue() throws IOException {

@@ -18,6 +18,7 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.exception.ApolloException;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,6 +58,13 @@ public class NormalizedCacheTestCase {
         .dispatcher(Utils.immediateExecutorService())
         .build();
     normalizedCache = apolloClient.apolloStore().normalizedCache();
+  }
+
+  @After public void tearDown() {
+    try {
+      server.shutdown();
+    } catch (IOException ignored) {
+    }
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
