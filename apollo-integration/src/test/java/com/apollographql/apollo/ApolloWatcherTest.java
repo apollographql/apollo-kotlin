@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
+import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.exception.ApolloException;
 
 import junit.framework.Assert;
@@ -32,7 +33,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class ApolloWatcherTest {
   private ApolloClient apolloClient;
   private MockWebServer server;
-  private InMemoryNormalizedCache normalizedCache;
+  private NormalizedCache normalizedCache;
   private static final int TIME_OUT_SECONDS = 3;
 
   @Before public void setUp() {
@@ -43,7 +44,7 @@ public class ApolloWatcherTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(normalizedCache, new CacheKeyResolver<Map<String, Object>>() {
+        .normalizedCache(new InMemoryNormalizedCache(), new CacheKeyResolver<Map<String, Object>>() {
           @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
             String id = (String) jsonObject.get("id");
             if (id == null || id.isEmpty()) {
@@ -53,6 +54,8 @@ public class ApolloWatcherTest {
           }
         })
         .build();
+
+    normalizedCache = apolloClient.apolloStore().normalizedCache();
   }
 
   @Test

@@ -5,6 +5,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.Record;
+import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
 import com.squareup.moshi.Moshi;
 
 import org.junit.Before;

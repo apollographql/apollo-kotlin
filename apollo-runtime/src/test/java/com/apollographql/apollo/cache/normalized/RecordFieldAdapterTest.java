@@ -1,7 +1,6 @@
 package com.apollographql.apollo.cache.normalized;
 
 import com.apollographql.apollo.CustomTypeAdapter;
-import com.apollographql.apollo.cache.normalized.sql.RecordFieldAdapter;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;

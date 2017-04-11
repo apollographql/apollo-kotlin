@@ -2,7 +2,7 @@ package com.apollographql.apollo.cache.normalized.lru;
 
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.cache.normalized.sql.RecordFieldAdapter;
+import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
 import com.squareup.moshi.Moshi;
 
 import org.junit.Before;

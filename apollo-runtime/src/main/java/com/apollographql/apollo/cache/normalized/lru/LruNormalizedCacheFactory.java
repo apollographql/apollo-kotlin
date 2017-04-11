@@ -2,7 +2,7 @@ package com.apollographql.apollo.cache.normalized.lru;
 
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
-import com.apollographql.apollo.cache.normalized.sql.RecordFieldAdapter;
+import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 

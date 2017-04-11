@@ -2,7 +2,6 @@ package com.apollographql.apollo.cache.normalized;
 
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.ScalarType;
-import com.apollographql.apollo.cache.normalized.sql.RecordFieldAdapter;
 
 /**
  * A Factory used to construct an instance of a {@link NormalizedCache} configured with the custom scalar adapters set

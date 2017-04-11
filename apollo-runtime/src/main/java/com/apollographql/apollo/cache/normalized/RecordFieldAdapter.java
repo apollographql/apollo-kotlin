@@ -1,6 +1,5 @@
-package com.apollographql.apollo.cache.normalized.sql;
+package com.apollographql.apollo.cache.normalized;
 
-import com.apollographql.apollo.cache.normalized.CacheReference;
 import com.apollographql.apollo.internal.json.CacheJsonStreamReader;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;

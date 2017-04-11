@@ -4,7 +4,7 @@ import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.RecordSet;
-import com.apollographql.apollo.cache.normalized.sql.RecordFieldAdapter;
+import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;

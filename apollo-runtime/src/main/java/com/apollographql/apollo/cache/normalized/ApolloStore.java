@@ -71,5 +71,10 @@ public interface ApolloStore {
    */
   <R> R writeTransaction(Transaction<WriteableCache, R> transaction);
 
+  /**
+   * @return The {@link NormalizedCache} which backs this ApolloStore.
+   */
+  NormalizedCache normalizedCache();
+
   ApolloStore NO_APOLLO_STORE = new NoOpApolloStore();
 }

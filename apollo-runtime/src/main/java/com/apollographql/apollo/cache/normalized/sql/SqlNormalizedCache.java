@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteStatement;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
+import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
 
 import java.io.IOException;
 import java.util.Collection;

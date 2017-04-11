@@ -1,10 +1,11 @@
 package com.apollographql.apollo.cache.normalized.lru;
 
+import com.apollographql.apollo.api.internal.Function;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.cache.normalized.sql.RecordFieldAdapter;
+import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.cache.Weigher;
@@ -28,15 +29,15 @@ public final class LruNormalizedCache extends NormalizedCache {
   private final Cache<String, Record> lruCache;
   private final Optional<NormalizedCache> secondaryCache;
 
-  LruNormalizedCache(RecordFieldAdapter recordFieldAdapter,
+  LruNormalizedCache(final RecordFieldAdapter recordFieldAdapter,
       EvictionPolicy evictionPolicy,
       Optional<NormalizedCacheFactory> secondaryNormalizedCache) {
     super(recordFieldAdapter);
-    if (secondaryNormalizedCache.isPresent()) {
-      this.secondaryCache = Optional.of(secondaryNormalizedCache.get().createNormalizedCache(recordFieldAdapter));
-    } else {
-      this.secondaryCache = Optional.absent();
-    }
+    this.secondaryCache = secondaryNormalizedCache.transform(new Function<NormalizedCacheFactory, NormalizedCache>() {
+      @Nonnull @Override public NormalizedCache apply(@Nonnull NormalizedCacheFactory normalizedCacheFactory) {
+        return normalizedCacheFactory.createNormalizedCache(recordFieldAdapter);
+      }
+    });
     final CacheBuilder<Object, Object> lruCacheBuilder = CacheBuilder.newBuilder();
     if (evictionPolicy.maxSizeBytes().isPresent()) {
       lruCacheBuilder.maximumWeight(evictionPolicy.maxSizeBytes().get())
