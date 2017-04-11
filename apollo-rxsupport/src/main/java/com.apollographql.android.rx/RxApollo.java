@@ -106,6 +106,12 @@ public final class RxApollo {
     });
   }
 
+  /**
+   * Converts an {@link ApolloPrefetch} to a Completable.
+   *
+   * @param prefetch the ApolloPrefetch to convert
+   * @return the converted Completable
+   */
   @Nonnull public static Completable from(@Nonnull final ApolloPrefetch prefetch) {
     checkNotNull(prefetch, "prefetch == null");
 

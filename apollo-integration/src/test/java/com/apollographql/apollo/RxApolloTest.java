@@ -29,11 +29,13 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import rx.Observer;
 import rx.Subscription;
+import rx.observers.AssertableSubscriber;
 import rx.observers.TestSubscriber;
 
 import static com.google.common.truth.Truth.assertThat;
 
 public class RxApolloTest {
+  public static final int RX_DELAY_SECONDS = 5;
   private ApolloClient apolloClient;
   private MockWebServer server;
   private static final long TIME_OUT_SECONDS = 3;
@@ -88,13 +90,43 @@ public class RxApolloTest {
     TestSubscriber<EpisodeHeroName.Data> subscriber = new TestSubscriber<>();
     Subscription subscription = RxApollo
         .from(call)
-        .delay(5, TimeUnit.SECONDS)
+        .delay(RX_DELAY_SECONDS, TimeUnit.SECONDS)
         .subscribe(subscriber);
     subscription.unsubscribe();
     subscriber
         .assertUnsubscribed();
     subscriber.assertNoValues();
 
+  }
+
+  @Test public void testRxPrefetchCompletes() throws IOException {
+    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+
+    RxApollo
+        .from(apolloClient.prefetch(query))
+        .test()
+        .awaitTerminalEvent()
+        .assertNoErrors()
+        .assertCompleted();
+  }
+
+  @Test public void testRxPrefetchIsCanceledWhenUnsubscribed() throws IOException {
+
+    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+
+    ApolloPrefetch prefetch = apolloClient.prefetch(query);
+
+    AssertableSubscriber<Void> subscriber = RxApollo
+        .from(prefetch)
+        .delay(RX_DELAY_SECONDS, TimeUnit.SECONDS)
+        .test();
+
+    subscriber.unsubscribe();
+
+    subscriber.assertUnsubscribed();
+    subscriber.assertNotCompleted();
   }
 
   @Test
@@ -166,7 +198,8 @@ public class RxApolloTest {
       }
     });
 
-    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);;
+    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    ;
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
     apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
 
@@ -208,12 +241,14 @@ public class RxApolloTest {
       }
     });
 
-    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);;
+    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    ;
     HeroAndFriendsNamesWithIDs friendsQuery = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
 
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
     apolloClient.newCall(friendsQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
-    secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);;
+    secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    ;
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
