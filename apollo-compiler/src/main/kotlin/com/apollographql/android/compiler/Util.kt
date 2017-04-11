@@ -1,8 +1,5 @@
 package com.apollographql.android.compiler
 
-import com.apollographql.android.compiler.Annotations
-import com.apollographql.android.compiler.ClassNames
-import com.apollographql.android.compiler.NullableValueGenerationType
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
@@ -33,7 +30,7 @@ fun MethodSpec.overrideReturnType(typeNameOverrideMap: Map<String, String>): Met
         .addCode(code)
         .build()
 
-fun TypeSpec.withValueInitConstructor(nullableValueGenerationType: NullableValueGenerationType): TypeSpec {
+fun TypeSpec.withValueInitConstructor(nullableValueGenerationType: NullableValueType): TypeSpec {
   return toBuilder()
       .addMethod(MethodSpec.constructorBuilder()
           .addModifiers(Modifier.PUBLIC)
@@ -50,8 +47,8 @@ fun TypeSpec.withValueInitConstructor(nullableValueGenerationType: NullableValue
           .addCode(fieldSpecs
               .filter { !it.modifiers.contains(Modifier.STATIC) }
               .map {
-                if (it.type.isOptional() && nullableValueGenerationType != NullableValueGenerationType.ANNOTATED) {
-                  val optionalType = if (nullableValueGenerationType == NullableValueGenerationType.GUAVA_OPTIONAL)
+                if (it.type.isOptional() && nullableValueGenerationType != NullableValueType.ANNOTATED) {
+                  val optionalType = if (nullableValueGenerationType == NullableValueType.GUAVA_OPTIONAL)
                     ClassNames.GUAVA_OPTIONAL
                   else
                     ClassNames.OPTIONAL
@@ -205,6 +202,33 @@ fun TypeName.unwrapOptionalType(): TypeName {
   } else {
     this
   }
+}
+
+fun TypeSpec.removeNestedTypeSpecs(excludeTypeNames: List<String>): TypeSpec =
+    TypeSpec.classBuilder(name)
+        .superclass(superclass)
+        .addJavadoc(javadoc)
+        .addAnnotations(annotations)
+        .addModifiers(*modifiers.toTypedArray())
+        .addSuperinterfaces(superinterfaces)
+        .addFields(fieldSpecs)
+        .addTypes(typeSpecs.filter { excludeTypeNames.contains(it.name) })
+        .addMethods(methodSpecs)
+        .let { if (initializerBlock.isEmpty) it else it.addInitializerBlock(initializerBlock) }
+        .let { if (staticBlock.isEmpty) it else it.addStaticBlock(staticBlock) }
+        .build()
+
+fun TypeSpec.flatNestedTypeSpecs(excludeTypeNames: List<String>): List<TypeSpec> =
+    typeSpecs
+        .filter { !excludeTypeNames.contains(it.name) }
+        .flatMap { it.flatNestedTypeSpecs(excludeTypeNames) + it.removeNestedTypeSpecs(excludeTypeNames) }
+
+fun TypeSpec.flatten(excludeTypeNames: List<String>): TypeSpec {
+  val nestedTypeSpecs = flatNestedTypeSpecs(excludeTypeNames)
+  return removeNestedTypeSpecs(excludeTypeNames)
+      .toBuilder()
+      .addTypes(nestedTypeSpecs)
+      .build()
 }
 
 object Util {

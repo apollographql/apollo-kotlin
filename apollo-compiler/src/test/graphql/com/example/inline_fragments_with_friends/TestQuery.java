@@ -108,6 +108,298 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return h;
     }
 
+    public static final class Mapper implements ResponseFieldMapper<Data> {
+      final Hero.Mapper heroFieldMapper = new Hero.Mapper();
+
+      final Field[] fields = {
+        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
+          @Override public Hero read(final ResponseReader reader) throws IOException {
+            return heroFieldMapper.map(reader);
+          }
+        })
+      };
+
+      @Override
+      public Data map(ResponseReader reader) throws IOException {
+        final Hero hero = reader.read(fields[0]);
+        return new Data(hero);
+      }
+    }
+
+    public static class Friend {
+      private final @Nonnull List<Episode> appearsIn;
+
+      public Friend(@Nonnull List<Episode> appearsIn) {
+        this.appearsIn = appearsIn;
+      }
+
+      public @Nonnull List<Episode> appearsIn() {
+        return this.appearsIn;
+      }
+
+      @Override
+      public String toString() {
+        return "Friend{"
+          + "appearsIn=" + appearsIn
+          + "}";
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (o instanceof Friend) {
+          Friend that = (Friend) o;
+          return ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn));
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        int h = 1;
+        h *= 1000003;
+        h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
+        return h;
+      }
+
+      public static final class Mapper implements ResponseFieldMapper<Friend> {
+        final Field[] fields = {
+          Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
+            @Override public Episode read(final Field.ListItemReader reader) throws IOException {
+              return Episode.valueOf(reader.readString());
+            }
+          })
+        };
+
+        @Override
+        public Friend map(ResponseReader reader) throws IOException {
+          final List<Episode> appearsIn = reader.read(fields[0]);
+          return new Friend(appearsIn);
+        }
+      }
+    }
+
+    public static class AsHuman {
+      private final @Nonnull String name;
+
+      private final Optional<Double> height;
+
+      private final Optional<List<Friend>> friends;
+
+      public AsHuman(@Nonnull String name, @Nullable Double height,
+          @Nullable List<Friend> friends) {
+        this.name = name;
+        this.height = Optional.fromNullable(height);
+        this.friends = Optional.fromNullable(friends);
+      }
+
+      public @Nonnull String name() {
+        return this.name;
+      }
+
+      public Optional<Double> height() {
+        return this.height;
+      }
+
+      public Optional<List<Friend>> friends() {
+        return this.friends;
+      }
+
+      @Override
+      public String toString() {
+        return "AsHuman{"
+          + "name=" + name + ", "
+          + "height=" + height + ", "
+          + "friends=" + friends
+          + "}";
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (o instanceof AsHuman) {
+          AsHuman that = (AsHuman) o;
+          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+           && ((this.height == null) ? (that.height == null) : this.height.equals(that.height))
+           && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends));
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (height == null) ? 0 : height.hashCode();
+        h *= 1000003;
+        h ^= (friends == null) ? 0 : friends.hashCode();
+        return h;
+      }
+
+      public static final class Mapper implements ResponseFieldMapper<AsHuman> {
+        final Friend.Mapper friendFieldMapper = new Friend.Mapper();
+
+        final Field[] fields = {
+          Field.forString("name", "name", null, false),
+          Field.forDouble("height", "height", null, true),
+          Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend>() {
+            @Override public Friend read(final ResponseReader reader) throws IOException {
+              return friendFieldMapper.map(reader);
+            }
+          })
+        };
+
+        @Override
+        public AsHuman map(ResponseReader reader) throws IOException {
+          final String name = reader.read(fields[0]);
+          final Double height = reader.read(fields[1]);
+          final List<Friend> friends = reader.read(fields[2]);
+          return new AsHuman(name, height, friends);
+        }
+      }
+    }
+
+    public static class Friend1 {
+      private final @Nonnull String id;
+
+      public Friend1(@Nonnull String id) {
+        this.id = id;
+      }
+
+      public @Nonnull String id() {
+        return this.id;
+      }
+
+      @Override
+      public String toString() {
+        return "Friend1{"
+          + "id=" + id
+          + "}";
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (o instanceof Friend1) {
+          Friend1 that = (Friend1) o;
+          return ((this.id == null) ? (that.id == null) : this.id.equals(that.id));
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        int h = 1;
+        h *= 1000003;
+        h ^= (id == null) ? 0 : id.hashCode();
+        return h;
+      }
+
+      public static final class Mapper implements ResponseFieldMapper<Friend1> {
+        final Field[] fields = {
+          Field.forString("id", "id", null, false)
+        };
+
+        @Override
+        public Friend1 map(ResponseReader reader) throws IOException {
+          final String id = reader.read(fields[0]);
+          return new Friend1(id);
+        }
+      }
+    }
+
+    public static class AsDroid {
+      private final @Nonnull String name;
+
+      private final Optional<List<Friend1>> friends;
+
+      private final Optional<String> primaryFunction;
+
+      public AsDroid(@Nonnull String name, @Nullable List<Friend1> friends,
+          @Nullable String primaryFunction) {
+        this.name = name;
+        this.friends = Optional.fromNullable(friends);
+        this.primaryFunction = Optional.fromNullable(primaryFunction);
+      }
+
+      public @Nonnull String name() {
+        return this.name;
+      }
+
+      public Optional<List<Friend1>> friends() {
+        return this.friends;
+      }
+
+      public Optional<String> primaryFunction() {
+        return this.primaryFunction;
+      }
+
+      @Override
+      public String toString() {
+        return "AsDroid{"
+          + "name=" + name + ", "
+          + "friends=" + friends + ", "
+          + "primaryFunction=" + primaryFunction
+          + "}";
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (o instanceof AsDroid) {
+          AsDroid that = (AsDroid) o;
+          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+           && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends))
+           && ((this.primaryFunction == null) ? (that.primaryFunction == null) : this.primaryFunction.equals(that.primaryFunction));
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (friends == null) ? 0 : friends.hashCode();
+        h *= 1000003;
+        h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
+        return h;
+      }
+
+      public static final class Mapper implements ResponseFieldMapper<AsDroid> {
+        final Friend1.Mapper friend1FieldMapper = new Friend1.Mapper();
+
+        final Field[] fields = {
+          Field.forString("name", "name", null, false),
+          Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend1>() {
+            @Override public Friend1 read(final ResponseReader reader) throws IOException {
+              return friend1FieldMapper.map(reader);
+            }
+          }),
+          Field.forString("primaryFunction", "primaryFunction", null, true)
+        };
+
+        @Override
+        public AsDroid map(ResponseReader reader) throws IOException {
+          final String name = reader.read(fields[0]);
+          final List<Friend1> friends = reader.read(fields[1]);
+          final String primaryFunction = reader.read(fields[2]);
+          return new AsDroid(name, friends, primaryFunction);
+        }
+      }
+    }
+
     public static class Hero {
       private final @Nonnull String name;
 
@@ -168,280 +460,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return h;
       }
 
-      public static class AsHuman {
-        private final @Nonnull String name;
-
-        private final Optional<Double> height;
-
-        private final Optional<List<Friend>> friends;
-
-        public AsHuman(@Nonnull String name, @Nullable Double height,
-            @Nullable List<Friend> friends) {
-          this.name = name;
-          this.height = Optional.fromNullable(height);
-          this.friends = Optional.fromNullable(friends);
-        }
-
-        public @Nonnull String name() {
-          return this.name;
-        }
-
-        public Optional<Double> height() {
-          return this.height;
-        }
-
-        public Optional<List<Friend>> friends() {
-          return this.friends;
-        }
-
-        @Override
-        public String toString() {
-          return "AsHuman{"
-            + "name=" + name + ", "
-            + "height=" + height + ", "
-            + "friends=" + friends
-            + "}";
-        }
-
-        @Override
-        public boolean equals(Object o) {
-          if (o == this) {
-            return true;
-          }
-          if (o instanceof AsHuman) {
-            AsHuman that = (AsHuman) o;
-            return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-             && ((this.height == null) ? (that.height == null) : this.height.equals(that.height))
-             && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends));
-          }
-          return false;
-        }
-
-        @Override
-        public int hashCode() {
-          int h = 1;
-          h *= 1000003;
-          h ^= (name == null) ? 0 : name.hashCode();
-          h *= 1000003;
-          h ^= (height == null) ? 0 : height.hashCode();
-          h *= 1000003;
-          h ^= (friends == null) ? 0 : friends.hashCode();
-          return h;
-        }
-
-        public static class Friend {
-          private final @Nonnull List<Episode> appearsIn;
-
-          public Friend(@Nonnull List<Episode> appearsIn) {
-            this.appearsIn = appearsIn;
-          }
-
-          public @Nonnull List<Episode> appearsIn() {
-            return this.appearsIn;
-          }
-
-          @Override
-          public String toString() {
-            return "Friend{"
-              + "appearsIn=" + appearsIn
-              + "}";
-          }
-
-          @Override
-          public boolean equals(Object o) {
-            if (o == this) {
-              return true;
-            }
-            if (o instanceof Friend) {
-              Friend that = (Friend) o;
-              return ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn));
-            }
-            return false;
-          }
-
-          @Override
-          public int hashCode() {
-            int h = 1;
-            h *= 1000003;
-            h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
-            return h;
-          }
-
-          public static final class Mapper implements ResponseFieldMapper<Friend> {
-            final Field[] fields = {
-              Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
-                @Override public Episode read(final Field.ListItemReader reader) throws IOException {
-                  return Episode.valueOf(reader.readString());
-                }
-              })
-            };
-
-            @Override
-            public Friend map(ResponseReader reader) throws IOException {
-              final List<Episode> appearsIn = reader.read(fields[0]);
-              return new Friend(appearsIn);
-            }
-          }
-        }
-
-        public static final class Mapper implements ResponseFieldMapper<AsHuman> {
-          final Friend.Mapper friendFieldMapper = new Friend.Mapper();
-
-          final Field[] fields = {
-            Field.forString("name", "name", null, false),
-            Field.forDouble("height", "height", null, true),
-            Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend>() {
-              @Override public Friend read(final ResponseReader reader) throws IOException {
-                return friendFieldMapper.map(reader);
-              }
-            })
-          };
-
-          @Override
-          public AsHuman map(ResponseReader reader) throws IOException {
-            final String name = reader.read(fields[0]);
-            final Double height = reader.read(fields[1]);
-            final List<Friend> friends = reader.read(fields[2]);
-            return new AsHuman(name, height, friends);
-          }
-        }
-      }
-
-      public static class AsDroid {
-        private final @Nonnull String name;
-
-        private final Optional<List<Friend>> friends;
-
-        private final Optional<String> primaryFunction;
-
-        public AsDroid(@Nonnull String name, @Nullable List<Friend> friends,
-            @Nullable String primaryFunction) {
-          this.name = name;
-          this.friends = Optional.fromNullable(friends);
-          this.primaryFunction = Optional.fromNullable(primaryFunction);
-        }
-
-        public @Nonnull String name() {
-          return this.name;
-        }
-
-        public Optional<List<Friend>> friends() {
-          return this.friends;
-        }
-
-        public Optional<String> primaryFunction() {
-          return this.primaryFunction;
-        }
-
-        @Override
-        public String toString() {
-          return "AsDroid{"
-            + "name=" + name + ", "
-            + "friends=" + friends + ", "
-            + "primaryFunction=" + primaryFunction
-            + "}";
-        }
-
-        @Override
-        public boolean equals(Object o) {
-          if (o == this) {
-            return true;
-          }
-          if (o instanceof AsDroid) {
-            AsDroid that = (AsDroid) o;
-            return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-             && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends))
-             && ((this.primaryFunction == null) ? (that.primaryFunction == null) : this.primaryFunction.equals(that.primaryFunction));
-          }
-          return false;
-        }
-
-        @Override
-        public int hashCode() {
-          int h = 1;
-          h *= 1000003;
-          h ^= (name == null) ? 0 : name.hashCode();
-          h *= 1000003;
-          h ^= (friends == null) ? 0 : friends.hashCode();
-          h *= 1000003;
-          h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
-          return h;
-        }
-
-        public static class Friend {
-          private final @Nonnull String id;
-
-          public Friend(@Nonnull String id) {
-            this.id = id;
-          }
-
-          public @Nonnull String id() {
-            return this.id;
-          }
-
-          @Override
-          public String toString() {
-            return "Friend{"
-              + "id=" + id
-              + "}";
-          }
-
-          @Override
-          public boolean equals(Object o) {
-            if (o == this) {
-              return true;
-            }
-            if (o instanceof Friend) {
-              Friend that = (Friend) o;
-              return ((this.id == null) ? (that.id == null) : this.id.equals(that.id));
-            }
-            return false;
-          }
-
-          @Override
-          public int hashCode() {
-            int h = 1;
-            h *= 1000003;
-            h ^= (id == null) ? 0 : id.hashCode();
-            return h;
-          }
-
-          public static final class Mapper implements ResponseFieldMapper<Friend> {
-            final Field[] fields = {
-              Field.forString("id", "id", null, false)
-            };
-
-            @Override
-            public Friend map(ResponseReader reader) throws IOException {
-              final String id = reader.read(fields[0]);
-              return new Friend(id);
-            }
-          }
-        }
-
-        public static final class Mapper implements ResponseFieldMapper<AsDroid> {
-          final Friend.Mapper friendFieldMapper = new Friend.Mapper();
-
-          final Field[] fields = {
-            Field.forString("name", "name", null, false),
-            Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend>() {
-              @Override public Friend read(final ResponseReader reader) throws IOException {
-                return friendFieldMapper.map(reader);
-              }
-            }),
-            Field.forString("primaryFunction", "primaryFunction", null, true)
-          };
-
-          @Override
-          public AsDroid map(ResponseReader reader) throws IOException {
-            final String name = reader.read(fields[0]);
-            final List<Friend> friends = reader.read(fields[1]);
-            final String primaryFunction = reader.read(fields[2]);
-            return new AsDroid(name, friends, primaryFunction);
-          }
-        }
-      }
-
       public static final class Mapper implements ResponseFieldMapper<Hero> {
         final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
@@ -478,24 +496,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           final AsDroid asDroid = reader.read(fields[2]);
           return new Hero(name, asHuman, asDroid);
         }
-      }
-    }
-
-    public static final class Mapper implements ResponseFieldMapper<Data> {
-      final Hero.Mapper heroFieldMapper = new Hero.Mapper();
-
-      final Field[] fields = {
-        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
-          @Override public Hero read(final ResponseReader reader) throws IOException {
-            return heroFieldMapper.map(reader);
-          }
-        })
-      };
-
-      @Override
-      public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = reader.read(fields[0]);
-        return new Data(hero);
       }
     }
   }

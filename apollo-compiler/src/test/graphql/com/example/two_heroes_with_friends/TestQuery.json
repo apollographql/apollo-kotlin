@@ -1,0 +1,129 @@
+{
+	"operations": [
+		{
+			"filePath": "src/test/graphql/com/example/two_heroes_with_friends/TestQuery.graphql",
+			"operationName": "TestQuery",
+			"operationType": "query",
+			"variables": [],
+			"source": "query TestQuery {\n  r2: hero {\n    __typename\n    name\n    friendsConnection {\n      __typename\n      totalCount\n      edges {\n        __typename\n        node {\n          __typename\n          name\n        }\n      }\n    }\n  }\n  luke: hero(episode: EMPIRE) {\n    __typename\n    id\n    name\n    friendsConnection {\n      __typename\n      totalCount\n      edges {\n        __typename\n        node {\n          __typename\n          name\n        }\n      }\n    }\n  }\n}",
+			"fields": [
+				{
+					"responseName": "r2",
+					"fieldName": "hero",
+					"type": "Character",
+					"fields": [
+						{
+							"responseName": "name",
+							"fieldName": "name",
+							"type": "String!"
+						},
+						{
+							"responseName": "friendsConnection",
+							"fieldName": "friendsConnection",
+							"type": "FriendsConnection!",
+							"fields": [
+								{
+									"responseName": "totalCount",
+									"fieldName": "totalCount",
+									"type": "Int"
+								},
+								{
+									"responseName": "edges",
+									"fieldName": "edges",
+									"type": "[FriendsEdge]",
+									"fields": [
+										{
+											"responseName": "node",
+											"fieldName": "node",
+											"type": "Character",
+											"fields": [
+												{
+													"responseName": "name",
+													"fieldName": "name",
+													"type": "String!"
+												}
+											],
+											"fragmentSpreads": [],
+											"inlineFragments": []
+										}
+									],
+									"fragmentSpreads": [],
+									"inlineFragments": []
+								}
+							],
+							"fragmentSpreads": [],
+							"inlineFragments": []
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				},
+				{
+					"responseName": "luke",
+					"fieldName": "hero",
+					"type": "Character",
+					"args": [
+						{
+							"name": "episode",
+							"value": "EMPIRE"
+						}
+					],
+					"fields": [
+						{
+							"responseName": "id",
+							"fieldName": "id",
+							"type": "ID!"
+						},
+						{
+							"responseName": "name",
+							"fieldName": "name",
+							"type": "String!"
+						},
+						{
+							"responseName": "friendsConnection",
+							"fieldName": "friendsConnection",
+							"type": "FriendsConnection!",
+							"fields": [
+								{
+									"responseName": "totalCount",
+									"fieldName": "totalCount",
+									"type": "Int"
+								},
+								{
+									"responseName": "edges",
+									"fieldName": "edges",
+									"type": "[FriendsEdge]",
+									"fields": [
+										{
+											"responseName": "node",
+											"fieldName": "node",
+											"type": "Character",
+											"fields": [
+												{
+													"responseName": "name",
+													"fieldName": "name",
+													"type": "String!"
+												}
+											],
+											"fragmentSpreads": [],
+											"inlineFragments": []
+										}
+									],
+									"fragmentSpreads": [],
+									"inlineFragments": []
+								}
+							],
+							"fragmentSpreads": [],
+							"inlineFragments": []
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				}
+			],
+			"fragmentsReferenced": []
+		}
+	],
+	"fragments": [],
+	"typesUsed": []
+}

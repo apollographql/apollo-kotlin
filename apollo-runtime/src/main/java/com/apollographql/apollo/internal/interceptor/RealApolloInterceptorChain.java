@@ -13,6 +13,11 @@ import javax.annotation.Nonnull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
+/**
+ * RealApolloInterceptorChain is responsible for building the entire interceptor chain. Based on the task at hand,
+ * the chain may contain interceptors which fetch responses from the normalized cache, make network calls
+ * to fetch data if needed or parse the http responses to inflate models.
+ */
 public final class RealApolloInterceptorChain implements ApolloInterceptorChain {
   private final Operation operation;
   private final List<ApolloInterceptor> interceptors;

@@ -23,31 +23,31 @@ class GraphQLCompiler {
         fragmentsPackage = fragmentsPackage,
         typesPackage = typesPackage,
         customTypeMap = supportedScalarTypeMapping,
-        nullableValueGenerationType = args.nullableValueGenerationType(),
+        nullableValueType = args.nullableValueType,
         generateAccessors = args.generateAccessors)
     ir.writeJavaFiles(context, args.outputDir)
   }
 
   private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File) {
     fragments.forEach {
-      val typeSpec = it.toTypeSpec(context)
+      val typeSpec = it.toTypeSpec(context.copy())
       JavaFile.builder(context.fragmentsPackage, typeSpec).build().writeTo(outputDir)
     }
 
     typesUsed.supportedTypeDeclarations().forEach {
-      val typeSpec = it.toTypeSpec(context)
+      val typeSpec = it.toTypeSpec(context.copy())
       JavaFile.builder(context.typesPackage, typeSpec).build().writeTo(outputDir)
     }
 
     if (context.customTypeMap.isNotEmpty()) {
-      val typeSpec = CustomEnumTypeSpecBuilder(context).build()
+      val typeSpec = CustomEnumTypeSpecBuilder(context.copy()).build()
       JavaFile.builder(context.typesPackage, typeSpec).build().writeTo(outputDir)
     }
 
     operations.map { OperationTypeSpecBuilder(it, fragments) }
         .forEach {
           val packageName = it.operation.filePath.formatPackageName()
-          val typeSpec = it.toTypeSpec(context)
+          val typeSpec = it.toTypeSpec(context.copy())
           JavaFile.builder(packageName, typeSpec).build().writeTo(outputDir)
         }
   }
@@ -69,15 +69,6 @@ class GraphQLCompiler {
       val irFile: File,
       val outputDir: File,
       val customTypeMap: Map<String, String>,
-      val useOptional: Boolean,
-      val useGuava: Boolean,
-      val generateAccessors: Boolean) {
-    fun nullableValueGenerationType(): NullableValueGenerationType {
-      return if (useOptional) {
-        if (useGuava) NullableValueGenerationType.GUAVA_OPTIONAL else NullableValueGenerationType.APOLLO_OPTIONAL
-      } else {
-        NullableValueGenerationType.ANNOTATED
-      }
-    }
-  }
+      val nullableValueType: NullableValueType,
+      val generateAccessors: Boolean)
 }

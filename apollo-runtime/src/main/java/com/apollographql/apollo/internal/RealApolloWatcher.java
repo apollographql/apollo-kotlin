@@ -9,7 +9,7 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.exception.ApolloParseException;
-import com.apollographql.apollo.internal.cache.normalized.Cache;
+import com.apollographql.apollo.cache.normalized.ApolloStore;
 
 import java.util.Collections;
 import java.util.Set;
@@ -21,21 +21,21 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
   private RealApolloCall<T> activeCall;
   @Nullable private ApolloCall.Callback<T> callback = null;
   private CacheControl refetchCacheControl = CacheControl.CACHE_FIRST;
-  private volatile boolean isActive = true;
+  private volatile boolean canceled;
   private boolean executed = false;
-  private final Cache cache;
+  private final ApolloStore apolloStore;
   private Set<String> dependentKeys = Collections.emptySet();
-  private final Cache.RecordChangeSubscriber recordChangeSubscriber = new Cache.RecordChangeSubscriber() {
-    @Override public void onCacheKeysChanged(Set<String> changedCacheKeys) {
-      if (!Utils.areDisjoint(dependentKeys, changedCacheKeys)) {
+  private final ApolloStore.RecordChangeSubscriber recordChangeSubscriber = new ApolloStore.RecordChangeSubscriber() {
+    @Override public void onCacheRecordsChanged(Set<String> changedRecordKeys) {
+      if (!Utils.areDisjoint(dependentKeys, changedRecordKeys)) {
         refetch();
       }
     }
   };
 
-  RealApolloWatcher(RealApolloCall<T> originalCall, Cache cache) {
+  RealApolloWatcher(RealApolloCall<T> originalCall, ApolloStore apolloStore) {
     activeCall = originalCall;
-    this.cache = cache;
+    this.apolloStore = apolloStore;
   }
 
   @Override public void enqueueAndWatch(@Nullable final ApolloCall.Callback<T> callback) {
@@ -57,14 +57,18 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
   }
 
   @Override public void cancel() {
-    isActive = false;
+    canceled = true;
     activeCall.cancel();
-    cache.unsubscribe(recordChangeSubscriber);
+    apolloStore.unsubscribe(recordChangeSubscriber);
+  }
+
+  @Override public boolean isCanceled() {
+    return canceled;
   }
 
   private void refetch() {
     activeCall.cancel();
-    cache.unsubscribe(recordChangeSubscriber);
+    apolloStore.unsubscribe(recordChangeSubscriber);
     activeCall = activeCall.clone().cacheControl(refetchCacheControl);
     activeCall.enqueue(callbackProxy(this.callback));
   }
@@ -72,15 +76,20 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
   private ApolloCall.Callback<T> callbackProxy(final ApolloCall.Callback<T> sourceCallback) {
     return new ApolloCall.Callback<T>() {
       @Override public void onResponse(@Nonnull Response<T> response) {
-        if (isActive) {
-          sourceCallback.onResponse(response);
-          dependentKeys = response.dependentKeys();
-          cache.subscribe(recordChangeSubscriber);
+        if (isCanceled()) {
+          return;
         }
+
+        sourceCallback.onResponse(response);
+        dependentKeys = response.dependentKeys();
+        apolloStore.subscribe(recordChangeSubscriber);
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        isActive = false;
+        if (isCanceled()) {
+          return;
+        }
+
         if (e instanceof ApolloHttpException) {
           sourceCallback.onHttpError((ApolloHttpException) e);
         } else if (e instanceof ApolloParseException) {

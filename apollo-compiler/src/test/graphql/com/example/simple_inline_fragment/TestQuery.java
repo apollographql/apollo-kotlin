@@ -98,6 +98,152 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return h;
     }
 
+    public static final class Mapper implements ResponseFieldMapper<Data> {
+      final Hero.Mapper heroFieldMapper = new Hero.Mapper();
+
+      final Field[] fields = {
+        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
+          @Override public Hero read(final ResponseReader reader) throws IOException {
+            return heroFieldMapper.map(reader);
+          }
+        })
+      };
+
+      @Override
+      public Data map(ResponseReader reader) throws IOException {
+        final Hero hero = reader.read(fields[0]);
+        return new Data(hero);
+      }
+    }
+
+    public static class AsHuman {
+      private final @Nonnull String name;
+
+      private final Optional<Double> height;
+
+      public AsHuman(@Nonnull String name, @Nullable Double height) {
+        this.name = name;
+        this.height = Optional.fromNullable(height);
+      }
+
+      public @Nonnull String name() {
+        return this.name;
+      }
+
+      public Optional<Double> height() {
+        return this.height;
+      }
+
+      @Override
+      public String toString() {
+        return "AsHuman{"
+          + "name=" + name + ", "
+          + "height=" + height
+          + "}";
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (o instanceof AsHuman) {
+          AsHuman that = (AsHuman) o;
+          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+           && ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (height == null) ? 0 : height.hashCode();
+        return h;
+      }
+
+      public static final class Mapper implements ResponseFieldMapper<AsHuman> {
+        final Field[] fields = {
+          Field.forString("name", "name", null, false),
+          Field.forDouble("height", "height", null, true)
+        };
+
+        @Override
+        public AsHuman map(ResponseReader reader) throws IOException {
+          final String name = reader.read(fields[0]);
+          final Double height = reader.read(fields[1]);
+          return new AsHuman(name, height);
+        }
+      }
+    }
+
+    public static class AsDroid {
+      private final @Nonnull String name;
+
+      private final Optional<String> primaryFunction;
+
+      public AsDroid(@Nonnull String name, @Nullable String primaryFunction) {
+        this.name = name;
+        this.primaryFunction = Optional.fromNullable(primaryFunction);
+      }
+
+      public @Nonnull String name() {
+        return this.name;
+      }
+
+      public Optional<String> primaryFunction() {
+        return this.primaryFunction;
+      }
+
+      @Override
+      public String toString() {
+        return "AsDroid{"
+          + "name=" + name + ", "
+          + "primaryFunction=" + primaryFunction
+          + "}";
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (o instanceof AsDroid) {
+          AsDroid that = (AsDroid) o;
+          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+           && ((this.primaryFunction == null) ? (that.primaryFunction == null) : this.primaryFunction.equals(that.primaryFunction));
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
+        return h;
+      }
+
+      public static final class Mapper implements ResponseFieldMapper<AsDroid> {
+        final Field[] fields = {
+          Field.forString("name", "name", null, false),
+          Field.forString("primaryFunction", "primaryFunction", null, true)
+        };
+
+        @Override
+        public AsDroid map(ResponseReader reader) throws IOException {
+          final String name = reader.read(fields[0]);
+          final String primaryFunction = reader.read(fields[1]);
+          return new AsDroid(name, primaryFunction);
+        }
+      }
+    }
+
     public static class Hero {
       private final @Nonnull String name;
 
@@ -158,134 +304,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return h;
       }
 
-      public static class AsHuman {
-        private final @Nonnull String name;
-
-        private final Optional<Double> height;
-
-        public AsHuman(@Nonnull String name, @Nullable Double height) {
-          this.name = name;
-          this.height = Optional.fromNullable(height);
-        }
-
-        public @Nonnull String name() {
-          return this.name;
-        }
-
-        public Optional<Double> height() {
-          return this.height;
-        }
-
-        @Override
-        public String toString() {
-          return "AsHuman{"
-            + "name=" + name + ", "
-            + "height=" + height
-            + "}";
-        }
-
-        @Override
-        public boolean equals(Object o) {
-          if (o == this) {
-            return true;
-          }
-          if (o instanceof AsHuman) {
-            AsHuman that = (AsHuman) o;
-            return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-             && ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
-          }
-          return false;
-        }
-
-        @Override
-        public int hashCode() {
-          int h = 1;
-          h *= 1000003;
-          h ^= (name == null) ? 0 : name.hashCode();
-          h *= 1000003;
-          h ^= (height == null) ? 0 : height.hashCode();
-          return h;
-        }
-
-        public static final class Mapper implements ResponseFieldMapper<AsHuman> {
-          final Field[] fields = {
-            Field.forString("name", "name", null, false),
-            Field.forDouble("height", "height", null, true)
-          };
-
-          @Override
-          public AsHuman map(ResponseReader reader) throws IOException {
-            final String name = reader.read(fields[0]);
-            final Double height = reader.read(fields[1]);
-            return new AsHuman(name, height);
-          }
-        }
-      }
-
-      public static class AsDroid {
-        private final @Nonnull String name;
-
-        private final Optional<String> primaryFunction;
-
-        public AsDroid(@Nonnull String name, @Nullable String primaryFunction) {
-          this.name = name;
-          this.primaryFunction = Optional.fromNullable(primaryFunction);
-        }
-
-        public @Nonnull String name() {
-          return this.name;
-        }
-
-        public Optional<String> primaryFunction() {
-          return this.primaryFunction;
-        }
-
-        @Override
-        public String toString() {
-          return "AsDroid{"
-            + "name=" + name + ", "
-            + "primaryFunction=" + primaryFunction
-            + "}";
-        }
-
-        @Override
-        public boolean equals(Object o) {
-          if (o == this) {
-            return true;
-          }
-          if (o instanceof AsDroid) {
-            AsDroid that = (AsDroid) o;
-            return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-             && ((this.primaryFunction == null) ? (that.primaryFunction == null) : this.primaryFunction.equals(that.primaryFunction));
-          }
-          return false;
-        }
-
-        @Override
-        public int hashCode() {
-          int h = 1;
-          h *= 1000003;
-          h ^= (name == null) ? 0 : name.hashCode();
-          h *= 1000003;
-          h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
-          return h;
-        }
-
-        public static final class Mapper implements ResponseFieldMapper<AsDroid> {
-          final Field[] fields = {
-            Field.forString("name", "name", null, false),
-            Field.forString("primaryFunction", "primaryFunction", null, true)
-          };
-
-          @Override
-          public AsDroid map(ResponseReader reader) throws IOException {
-            final String name = reader.read(fields[0]);
-            final String primaryFunction = reader.read(fields[1]);
-            return new AsDroid(name, primaryFunction);
-          }
-        }
-      }
-
       public static final class Mapper implements ResponseFieldMapper<Hero> {
         final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
@@ -322,24 +340,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           final AsDroid asDroid = reader.read(fields[2]);
           return new Hero(name, asHuman, asDroid);
         }
-      }
-    }
-
-    public static final class Mapper implements ResponseFieldMapper<Data> {
-      final Hero.Mapper heroFieldMapper = new Hero.Mapper();
-
-      final Field[] fields = {
-        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
-          @Override public Hero read(final ResponseReader reader) throws IOException {
-            return heroFieldMapper.map(reader);
-          }
-        })
-      };
-
-      @Override
-      public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = reader.read(fields[0]);
-        return new Data(hero);
       }
     }
   }

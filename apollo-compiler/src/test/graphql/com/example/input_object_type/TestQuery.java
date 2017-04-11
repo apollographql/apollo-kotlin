@@ -157,6 +157,33 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       return h;
     }
 
+    public static final class Mapper implements ResponseFieldMapper<Data> {
+      final CreateReview.Mapper createReviewFieldMapper = new CreateReview.Mapper();
+
+      final Field[] fields = {
+        Field.forObject("createReview", "createReview", new UnmodifiableMapBuilder<String, Object>(2)
+          .put("review", new UnmodifiableMapBuilder<String, Object>(2)
+            .put("kind", "Variable")
+            .put("variableName", "review")
+          .build())
+          .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
+            .put("kind", "Variable")
+            .put("variableName", "ep")
+          .build())
+        .build(), true, new Field.ObjectReader<CreateReview>() {
+          @Override public CreateReview read(final ResponseReader reader) throws IOException {
+            return createReviewFieldMapper.map(reader);
+          }
+        })
+      };
+
+      @Override
+      public Data map(ResponseReader reader) throws IOException {
+        final CreateReview createReview = reader.read(fields[0]);
+        return new Data(createReview);
+      }
+    }
+
     public static class CreateReview {
       private final int stars;
 
@@ -218,33 +245,6 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
           final String commentary = reader.read(fields[1]);
           return new CreateReview(stars, commentary);
         }
-      }
-    }
-
-    public static final class Mapper implements ResponseFieldMapper<Data> {
-      final CreateReview.Mapper createReviewFieldMapper = new CreateReview.Mapper();
-
-      final Field[] fields = {
-        Field.forObject("createReview", "createReview", new UnmodifiableMapBuilder<String, Object>(2)
-          .put("review", new UnmodifiableMapBuilder<String, Object>(2)
-            .put("kind", "Variable")
-            .put("variableName", "review")
-          .build())
-          .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
-            .put("kind", "Variable")
-            .put("variableName", "ep")
-          .build())
-        .build(), true, new Field.ObjectReader<CreateReview>() {
-          @Override public CreateReview read(final ResponseReader reader) throws IOException {
-            return createReviewFieldMapper.map(reader);
-          }
-        })
-      };
-
-      @Override
-      public Data map(ResponseReader reader) throws IOException {
-        final CreateReview createReview = reader.read(fields[0]);
-        return new Data(createReview);
       }
     }
   }

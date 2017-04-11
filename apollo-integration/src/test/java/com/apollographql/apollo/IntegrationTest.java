@@ -11,6 +11,7 @@ import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -67,6 +68,12 @@ public class IntegrationTest {
         .build();
   }
 
+  @After public void tearDown() {
+    try {
+      server.shutdown();
+    } catch (IOException ignored) {
+    }
+  }
 
   @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
     server.enqueue(mockResponse("/HttpCacheTestAllPlanets.json"));
@@ -109,8 +116,8 @@ public class IntegrationTest {
     assertThat(data.allPlanets().planets().size()).isEqualTo(60);
 
     List<String> planets = FluentIterable.from(data.allPlanets().planets())
-        .transform(new Function<AllPlanets.Data.AllPlanets1.Planet, String>() {
-          @Override public String apply(AllPlanets.Data.AllPlanets1.Planet planet) {
+        .transform(new Function<AllPlanets.Data.Planet, String>() {
+          @Override public String apply(AllPlanets.Data.Planet planet) {
             return planet.fragments().planetFragment().name();
           }
         }).toList();
@@ -123,7 +130,7 @@ public class IntegrationTest {
         .split("\\s*,\\s*")
     ));
 
-    AllPlanets.Data.AllPlanets1.Planet firstPlanet = data.allPlanets().planets().get(0);
+    AllPlanets.Data.Planet firstPlanet = data.allPlanets().planets().get(0);
     assertThat(firstPlanet.fragments().planetFragment().climates()).isEqualTo(Collections.singletonList("arid"));
     assertThat(firstPlanet.fragments().planetFragment().surfaceWater()).isWithin(1d);
     assertThat(firstPlanet.filmConnection().totalCount()).isEqualTo(5);
@@ -154,8 +161,8 @@ public class IntegrationTest {
     assertThat(data.allFilms().films()).hasSize(6);
 
     List<String> dates = FluentIterable.from(data.allFilms().films())
-        .transform(new Function<AllFilms.Data.AllFilms1.Film, String>() {
-          @Override public String apply(AllFilms.Data.AllFilms1.Film film) {
+        .transform(new Function<AllFilms.Data.Film, String>() {
+          @Override public String apply(AllFilms.Data.Film film) {
             Date releaseDate = film.releaseDate();
             return dateCustomTypeAdapter.encode(releaseDate);
           }
