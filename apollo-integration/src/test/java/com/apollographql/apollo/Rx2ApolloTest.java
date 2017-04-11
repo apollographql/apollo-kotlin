@@ -9,6 +9,7 @@ import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.exception.ApolloException;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,6 +60,15 @@ public class Rx2ApolloTest {
           }
         })
         .build();
+  }
+
+  @After
+  public void tearDown(){
+    try {
+      mockWebServer.shutdown();
+    } catch (IOException e) {
+
+    }
   }
 
   @Test
