@@ -18,8 +18,8 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.exceptions.Exceptions;
-import io.reactivex.functions.Cancellable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -34,9 +34,7 @@ public class Rx2Apollo {
   }
 
   /**
-   * <p>Converts an {@link ApolloPrefetch} to an Observable.</p>
-   *
-   * <b>Note</b>: If you need a reactive type with back pressure support,
+   * <p>Converts an {@link ApolloPrefetch} to an asynchronous Observable.</p>
    *
    * @param watcher the ApolloWatcher to convert.
    * @param <T>     the value type
@@ -51,12 +49,16 @@ public class Rx2Apollo {
 
         watcher.enqueueAndWatch(new ApolloCall.Callback<T>() {
           @Override public void onResponse(@Nonnull Response<T> response) {
-            emitter.onNext(response.data());
+            if (!emitter.isDisposed()) {
+              emitter.onNext(response.data());
+            }
           }
 
           @Override public void onFailure(@Nonnull ApolloException e) {
             Exceptions.throwIfFatal(e);
-            emitter.onError(e);
+            if (!emitter.isDisposed()) {
+              emitter.onError(e);
+            }
           }
         });
       }
@@ -64,7 +66,7 @@ public class Rx2Apollo {
   }
 
   /**
-   * Converts an {@link ApolloCall} to a Single.
+   * Converts an {@link ApolloCall} to a synchronous Single.
    *
    * @param originalCall the ApolloCall to convert
    * @param <T>          the value type.
@@ -93,7 +95,7 @@ public class Rx2Apollo {
   }
 
   /**
-   * Converts an {@link ApolloPrefetch} to a Completable
+   * Converts an {@link ApolloPrefetch} to a synchronous Completable
    *
    * @param prefetch the ApolloPrefetch to convert
    * @return the converted Completable
@@ -112,7 +114,7 @@ public class Rx2Apollo {
           }
         } catch (ApolloException e) {
           Exceptions.throwIfFatal(e);
-          if (emitter.isDisposed()) {
+          if (!emitter.isDisposed()) {
             emitter.onError(e);
           }
         }
@@ -121,21 +123,25 @@ public class Rx2Apollo {
   }
 
   private static void cancelOnCompletableDisposed(CompletableEmitter emitter, final Cancelable cancelable) {
-    emitter.setCancellable(getRx2Cancellable(cancelable));
+    emitter.setDisposable(getRx2Disposable(cancelable));
   }
 
   private static <T> void cancelOnSingleDisposed(SingleEmitter<T> emitter, final Cancelable cancelable) {
-    emitter.setCancellable(getRx2Cancellable(cancelable));
+    emitter.setDisposable(getRx2Disposable(cancelable));
   }
 
   private static <T> void cancelOnObservableDisposed(ObservableEmitter<T> emitter, final Cancelable cancelable) {
-    emitter.setCancellable(getRx2Cancellable(cancelable));
+    emitter.setDisposable(getRx2Disposable(cancelable));
   }
 
-  private static Cancellable getRx2Cancellable(final Cancelable apolloCancelable) {
-    return new Cancellable() {
-      @Override public void cancel() throws Exception {
-        apolloCancelable.cancel();
+  private static Disposable getRx2Disposable(final Cancelable cancelable) {
+    return new Disposable() {
+      @Override public void dispose() {
+        cancelable.cancel();
+      }
+
+      @Override public boolean isDisposed() {
+        return cancelable.isCanceled();
       }
     };
   }
