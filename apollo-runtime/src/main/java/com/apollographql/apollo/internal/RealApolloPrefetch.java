@@ -67,39 +67,37 @@ import okhttp3.Response;
     interceptorChain.proceedAsync(dispatcher, new ApolloInterceptor.CallBack() {
       @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
 
-        if (!isCanceled()) {
-
-          Response httpResponse = response.httpResponse.get();
-          if (!httpResponse.isSuccessful()) {
-            onFailure(new ApolloHttpException(httpResponse));
-            return;
-          }
-
-          try {
-            httpResponse.close();
-          } catch (Exception e) {
-            onFailure(new ApolloException("Failed to close http response", e));
-            return;
-          }
-
-          if (callback != null) {
-            callback.onSuccess();
-          }
+        if (callback == null || isCanceled()) {
+          return;
         }
 
+        Response httpResponse = response.httpResponse.get();
+        if (!httpResponse.isSuccessful()) {
+          onFailure(new ApolloHttpException(httpResponse));
+          return;
+        }
+
+        try {
+          httpResponse.close();
+        } catch (Exception e) {
+          onFailure(new ApolloException("Failed to close http response", e));
+          return;
+        }
+
+        callback.onSuccess();
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
+        if (callback == null || isCanceled()) {
+          return;
+        }
 
-        if (callback != null && !isCanceled()) {
-
-          if (e instanceof ApolloHttpException) {
-            callback.onHttpError((ApolloHttpException) e);
-          } else if (e instanceof ApolloNetworkException) {
-            callback.onNetworkError((ApolloNetworkException) e);
-          } else {
-            callback.onFailure(e);
-          }
+        if (e instanceof ApolloHttpException) {
+          callback.onHttpError((ApolloHttpException) e);
+        } else if (e instanceof ApolloNetworkException) {
+          callback.onNetworkError((ApolloNetworkException) e);
+        } else {
+          callback.onFailure(e);
         }
       }
     });

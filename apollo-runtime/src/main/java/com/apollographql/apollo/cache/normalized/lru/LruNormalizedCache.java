@@ -1,8 +1,11 @@
 package com.apollographql.apollo.cache.normalized.lru;
 
+import com.apollographql.apollo.api.internal.Function;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.cache.normalized.CacheStore;
+import com.apollographql.apollo.cache.normalized.NormalizedCache;
+import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.Record;
+import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.cache.Weigher;
@@ -14,17 +17,27 @@ import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class LruCacheStore extends CacheStore {
+/**
+ * A {@link NormalizedCache} backed by an in memory {@link Cache}. Can be configured with an optional secondaryCache
+ * {@link NormalizedCache}, which will be used as a backup if a {@link Record} is not present in the primary cache.
+ *
+ * A common configuration is to have secondary {@link com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache}
+ * cache.
+ */
+public final class LruNormalizedCache extends NormalizedCache {
 
   private final Cache<String, Record> lruCache;
-  private final Optional<CacheStore> secondaryCacheStore;
+  private final Optional<NormalizedCache> secondaryCache;
 
-  public LruCacheStore(EvictionPolicy evictionPolicy) {
-    this(evictionPolicy, null);
-  }
-
-  public LruCacheStore(EvictionPolicy evictionPolicy, CacheStore secondaryCacheStore) {
-    this.secondaryCacheStore = Optional.fromNullable(secondaryCacheStore);
+  LruNormalizedCache(final RecordFieldAdapter recordFieldAdapter,
+      EvictionPolicy evictionPolicy,
+      Optional<NormalizedCacheFactory> secondaryNormalizedCache) {
+    super(recordFieldAdapter);
+    this.secondaryCache = secondaryNormalizedCache.transform(new Function<NormalizedCacheFactory, NormalizedCache>() {
+      @Nonnull @Override public NormalizedCache apply(@Nonnull NormalizedCacheFactory normalizedCacheFactory) {
+        return normalizedCacheFactory.createNormalizedCache(recordFieldAdapter);
+      }
+    });
     final CacheBuilder<Object, Object> lruCacheBuilder = CacheBuilder.newBuilder();
     if (evictionPolicy.maxSizeBytes().isPresent()) {
       lruCacheBuilder.maximumWeight(evictionPolicy.maxSizeBytes().get())
@@ -48,12 +61,16 @@ public final class LruCacheStore extends CacheStore {
     lruCache = lruCacheBuilder.build();
   }
 
+  @Nullable public NormalizedCache secondaryCache() {
+    return secondaryCache.get();
+  }
+
   @Nullable @Override public Record loadRecord(final String key) {
-    if (secondaryCacheStore.isPresent()) {
+    if (secondaryCache.isPresent()) {
       try {
         return lruCache.get(key, new Callable<Record>() {
           @Override public Record call() throws Exception {
-            Record record = secondaryCacheStore.get().loadRecord(key);
+            Record record = secondaryCache.get().loadRecord(key);
             // get(key, callable) requires non-null. If null, an exception should be
             //thrown, which will be converted to null in the catch clause.
             if (record == null) {
@@ -70,8 +87,8 @@ public final class LruCacheStore extends CacheStore {
   }
 
   @Nonnull @Override public Set<String> merge(Record apolloRecord) {
-    if (secondaryCacheStore.isPresent()) {
-      secondaryCacheStore.get().merge(apolloRecord);
+    if (secondaryCache.isPresent()) {
+      secondaryCache.get().merge(apolloRecord);
     }
     final Record oldRecord = lruCache.getIfPresent(apolloRecord.key());
     if (oldRecord == null) {
@@ -85,4 +102,34 @@ public final class LruCacheStore extends CacheStore {
       return changedKeys;
     }
   }
+
+  @Override public void clearAll() {
+    clearPrimaryCache();
+    clearSecondaryCache();
+  }
+
+  /**
+   * Clears all records from the in-memory LRU cache. The secondary cache will *not* be cleared.
+   *
+   * This method is **not** guaranteed to be thread safe. It should be run inside a write transaction in
+   * {@link com.apollographql.apollo.cache.normalized.ApolloStore}, obtained from
+   * {@link com.apollographql.apollo.ApolloClient#apolloStore()}.
+   */
+  public void clearPrimaryCache() {
+    lruCache.invalidateAll();
+  }
+
+  /**
+   * Clear all records from the secondary cache. Records in the in-memory LRU cache will remain.
+   *
+   * This method is **not** guaranteed to be thread safe. It should be run inside a write transaction in
+   * {@link com.apollographql.apollo.cache.normalized.ApolloStore}, obtained from
+   * {@link com.apollographql.apollo.ApolloClient#apolloStore()}.
+   */
+  public void clearSecondaryCache() {
+    if (secondaryCache.isPresent()) {
+      secondaryCache.get().clearAll();
+    }
+  }
+
 }

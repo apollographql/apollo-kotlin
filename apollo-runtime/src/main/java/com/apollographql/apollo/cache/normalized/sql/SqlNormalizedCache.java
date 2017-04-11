@@ -5,8 +5,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.cache.normalized.CacheStore;
+import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
+import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -20,7 +21,7 @@ import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLU
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLUMN_RECORD;
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.TABLE_RECORDS;
 
-public final class SqlStore extends CacheStore {
+public final class SqlNormalizedCache extends NormalizedCache {
   private static final String INSERT_STATEMENT =
       String.format("INSERT INTO %s (%s,%s) VALUES (?,?)",
           TABLE_RECORDS,
@@ -32,8 +33,8 @@ public final class SqlStore extends CacheStore {
           COLUMN_KEY,
           COLUMN_RECORD,
           COLUMN_KEY);
+  private static final String DELETE_ALL_RECORD_STATEMENT = String.format("DELETE FROM %s", TABLE_RECORDS);
   SQLiteDatabase database;
-  private final FieldsAdapter parser;
   private final ApolloSqlHelper dbHelper;
   private final String[] allColumns = {ApolloSqlHelper.COLUMN_ID,
       ApolloSqlHelper.COLUMN_KEY,
@@ -41,34 +42,32 @@ public final class SqlStore extends CacheStore {
 
   private final SQLiteStatement insertStatement;
   private final SQLiteStatement updateStatement;
+  private final SQLiteStatement deleteAllRecordsStatement;
 
-  public static SqlStore create(ApolloSqlHelper helper, FieldsAdapter adapter) {
-    return new SqlStore(helper, adapter);
-  }
-
-  private SqlStore(ApolloSqlHelper dbHelper, FieldsAdapter parser) {
+  SqlNormalizedCache(RecordFieldAdapter recordFieldAdapter, ApolloSqlHelper dbHelper) {
+    super(recordFieldAdapter);
     this.dbHelper = dbHelper;
     database = dbHelper.getWritableDatabase();
-    this.parser = parser;
     insertStatement = database.compileStatement(INSERT_STATEMENT);
     updateStatement = database.compileStatement(UPDATE_STATEMENT);
+    deleteAllRecordsStatement = database.compileStatement(DELETE_ALL_RECORD_STATEMENT);
   }
 
-  @Nullable public Record loadRecord(String key) {
+  @Nullable @Override public Record loadRecord(String key) {
     return selectRecordForKey(key).orNull();
   }
 
-  @Nonnull public Set<String> merge(Record apolloRecord) {
+  @Nonnull @Override public Set<String> merge(Record apolloRecord) {
     Optional<Record> optionalOldRecord = selectRecordForKey(apolloRecord.key());
     Set<String> changedKeys;
     if (!optionalOldRecord.isPresent()) {
-      createRecord(apolloRecord.key(), parser.toJson(apolloRecord.fields()));
+      createRecord(apolloRecord.key(), recordAdapter().toJson(apolloRecord.fields()));
       changedKeys = Collections.emptySet();
     } else {
       Record oldRecord = optionalOldRecord.get();
       changedKeys = oldRecord.mergeWith(apolloRecord);
       if (!changedKeys.isEmpty()) {
-        updateRecord(oldRecord.key(), parser.toJson(oldRecord.fields()));
+        updateRecord(oldRecord.key(), recordAdapter().toJson(oldRecord.fields()));
       }
     }
     return changedKeys;
@@ -84,6 +83,10 @@ public final class SqlStore extends CacheStore {
       database.endTransaction();
     }
     return changedKeys;
+  }
+
+  @Override public void clearAll() {
+    deleteAllRecordsStatement.execute();
   }
 
   long createRecord(String key, String fields) {
@@ -118,16 +121,10 @@ public final class SqlStore extends CacheStore {
     }
   }
 
-  void deleteRecord(String key) {
-    System.out.println("Record deleted with key: " + key);
-    database.delete(ApolloSqlHelper.TABLE_RECORDS, ApolloSqlHelper.COLUMN_ID
-        + " = ?", new String[]{key});
-  }
-
   Record cursorToRecord(Cursor cursor) throws IOException {
     String key = cursor.getString(1);
     String jsonOfFields = cursor.getString(2);
-    return new Record(key, parser.from(jsonOfFields));
+    return new Record(key, recordAdapter().from(jsonOfFields));
   }
 
   public void close() {

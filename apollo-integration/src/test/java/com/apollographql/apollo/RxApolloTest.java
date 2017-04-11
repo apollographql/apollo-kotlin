@@ -2,17 +2,18 @@ package com.apollographql.apollo;
 
 import android.support.annotation.NonNull;
 
-import com.apollographql.apollo.cache.normalized.CacheControl;
-import com.apollographql.apollo.cache.normalized.CacheKey;
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDs;
 import com.apollographql.android.impl.normalizer.type.Episode;
 import com.apollographql.android.rx.RxApollo;
+import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.cache.normalized.CacheKey;
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.exception.ApolloException;
 
 import junit.framework.Assert;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,13 +36,12 @@ import static com.google.common.truth.Truth.assertThat;
 public class RxApolloTest {
   private ApolloClient apolloClient;
   private MockWebServer server;
-  private InMemoryCacheStore cacheStore;
   private static final long TIME_OUT_SECONDS = 3;
 
   @Before public void setUp() {
     server = new MockWebServer();
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-    cacheStore = new InMemoryCacheStore();
+    InMemoryNormalizedCache cacheStore = new InMemoryNormalizedCache();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
@@ -58,6 +58,12 @@ public class RxApolloTest {
         .build();
   }
 
+  @After public void tearDown() {
+    try {
+      server.shutdown();
+    } catch (IOException ignored) {
+    }
+  }
 
   @Test public void testRxCallProducesValue() throws IOException {
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
