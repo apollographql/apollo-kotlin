@@ -34,6 +34,7 @@ import okhttp3.Response;
   final ApolloLogger logger;
   final ApolloInterceptorChain interceptorChain;
   volatile boolean executed;
+  volatile boolean canceled;
 
   public RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
       Moshi moshi, ExecutorService dispatcher, ApolloLogger logger) {
@@ -65,6 +66,11 @@ import okhttp3.Response;
 
     interceptorChain.proceedAsync(dispatcher, new ApolloInterceptor.CallBack() {
       @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
+
+        if (callback == null || isCanceled()) {
+          return;
+        }
+
         Response httpResponse = response.httpResponse.get();
         if (!httpResponse.isSuccessful()) {
           onFailure(new ApolloHttpException(httpResponse));
@@ -78,20 +84,20 @@ import okhttp3.Response;
           return;
         }
 
-        if (callback != null) {
-          callback.onSuccess();
-        }
+        callback.onSuccess();
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        if (callback != null) {
-          if (e instanceof ApolloHttpException) {
-            callback.onHttpError((ApolloHttpException) e);
-          } else if (e instanceof ApolloNetworkException) {
-            callback.onNetworkError((ApolloNetworkException) e);
-          } else {
-            callback.onFailure(e);
-          }
+        if (callback == null || isCanceled()) {
+          return;
+        }
+
+        if (e instanceof ApolloHttpException) {
+          callback.onHttpError((ApolloHttpException) e);
+        } else if (e instanceof ApolloNetworkException) {
+          callback.onNetworkError((ApolloNetworkException) e);
+        } else {
+          callback.onFailure(e);
         }
       }
     });
@@ -103,6 +109,11 @@ import okhttp3.Response;
   }
 
   @Override public void cancel() {
+    canceled = true;
     interceptorChain.dispose();
+  }
+
+  @Override public boolean isCanceled() {
+    return canceled;
   }
 }
