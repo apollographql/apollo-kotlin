@@ -91,6 +91,10 @@ public final class RealApolloStore implements ApolloStore, ReadableCache, Writea
     }
   }
 
+  @Override public NormalizedCache normalizedCache() {
+    return normalizedCache;
+  }
+
   @Nullable public Record read(@Nonnull String key) {
     return normalizedCache.loadRecord(checkNotNull(key, "key == null"));
   }

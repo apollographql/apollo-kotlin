@@ -5,6 +5,8 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.Record;
+import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
+import com.squareup.moshi.Moshi;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +27,8 @@ public class SqlNormalizedCacheTest {
   public void setUp() {
     ApolloSqlHelper apolloSqlHelper = ApolloSqlHelper.create(InstrumentationRegistry.getTargetContext(),
         IN_MEMORY_DB);
-    sqlStore = SqlNormalizedCache.create(apolloSqlHelper, FieldsAdapter.create());
+    sqlStore = new SqlNormalizedCacheFactory(apolloSqlHelper).createNormalizedCache(RecordFieldAdapter.create(new
+        Moshi.Builder().build()));
   }
 
   @Test

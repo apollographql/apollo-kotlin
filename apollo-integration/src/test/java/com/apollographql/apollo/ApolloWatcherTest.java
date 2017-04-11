@@ -14,6 +14,7 @@ import com.apollographql.apollo.exception.ApolloException;
 
 import junit.framework.Assert;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,7 +45,7 @@ public class ApolloWatcherTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(normalizedCache, new CacheKeyResolver<Map<String, Object>>() {
+        .normalizedCache(new InMemoryNormalizedCache(), new CacheKeyResolver<Map<String, Object>>() {
           @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
             String id = (String) jsonObject.get("id");
             if (id == null || id.isEmpty()) {
@@ -54,6 +55,15 @@ public class ApolloWatcherTest {
           }
         })
         .build();
+
+    normalizedCache = apolloClient.apolloStore().normalizedCache();
+  }
+
+  @After public void tearDown() {
+    try {
+      server.shutdown();
+    } catch (IOException ignored) {
+    }
   }
 
   @Test

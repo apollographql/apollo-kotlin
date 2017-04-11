@@ -11,6 +11,8 @@ import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
+import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
+import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
 import com.apollographql.apollo.internal.RealApolloCall;
 import com.apollographql.apollo.internal.RealApolloPrefetch;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
@@ -77,7 +79,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     this.httpCache = builder.httpCache;
     this.apolloStore = builder.apolloStore;
     this.customTypeAdapters = builder.customTypeAdapters;
-    this.moshi = builder.moshiBuilder.build();
+    this.moshi = builder.moshi;
     this.dispatcher = builder.dispatcher;
     this.defaultHttpCacheControl = builder.defaultHttpCacheControl;
     this.defaultCacheControl = builder.defaultCacheControl;
@@ -129,7 +131,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   /**
    *
    * @return The {@link ApolloStore} managing access to the normalized cache created by
-   * {@link Builder#normalizedCache(NormalizedCache, CacheKeyResolver)} }
+   * {@link Builder#normalizedCache(NormalizedCacheFactory, CacheKeyResolver)}  }
    */
   public ApolloStore apolloStore() {
     return apolloStore;
@@ -149,10 +151,13 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     ResponseCacheStore httpCacheStore;
     EvictionStrategy httpEvictionStrategy;
     ApolloStore apolloStore = ApolloStore.NO_APOLLO_STORE;
+    Optional<NormalizedCacheFactory> cacheFactory = Optional.absent();
+    Optional<CacheKeyResolver<Map<String, Object>>> cacheKeyResolver = Optional.absent();
     HttpCacheControl defaultHttpCacheControl = HttpCacheControl.CACHE_FIRST;
     CacheControl defaultCacheControl = CacheControl.CACHE_FIRST;
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
-    final Moshi.Builder moshiBuilder = new Moshi.Builder();
+    private final Moshi.Builder moshiBuilder = new Moshi.Builder();
+    Moshi moshi;
     ExecutorService dispatcher;
     Optional<Logger> logger = Optional.absent();
     HttpCache httpCache;
@@ -211,14 +216,14 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     /**
      * Set the configuration to be used for normalized cache.
      *
-     * @param normalizedCache       the cache store to use
-     * @param cacheKeyResolver      the {@link CacheKeyResolver} to use to normalize records
+     * @param normalizedCacheFactory the {@link NormalizedCacheFactory} used to construct a {@link NormalizedCache}.
+     * @param keyResolver            the {@link CacheKeyResolver} to use to normalize records
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder normalizedCache(@Nonnull NormalizedCache normalizedCache,
-        @Nonnull CacheKeyResolver<Map<String, Object>> cacheKeyResolver) {
-      this.apolloStore = new RealApolloStore(checkNotNull(normalizedCache, "normalizedCache == null"),
-          checkNotNull(cacheKeyResolver, "cacheKeyResolver == null"));
+    public Builder normalizedCache(@Nonnull NormalizedCacheFactory normalizedCacheFactory,
+        @Nonnull CacheKeyResolver<Map<String, Object>> keyResolver) {
+      cacheFactory = Optional.fromNullable(checkNotNull(normalizedCacheFactory, "normalizedCacheFactory == null"));
+      cacheKeyResolver = Optional.fromNullable(checkNotNull(keyResolver, "cacheKeyResolver == null"));
       return this;
     }
 
@@ -300,10 +305,17 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
       checkNotNull(serverUrl, "serverUrl is null");
 
       apolloLogger = new ApolloLogger(logger);
+      moshi = moshiBuilder.build();
 
       if (httpCacheStore != null && httpEvictionStrategy != null) {
         httpCache = new HttpCache(httpCacheStore, httpEvictionStrategy, apolloLogger);
         okHttpClient = okHttpClient.newBuilder().addInterceptor(httpCache.interceptor()).build();
+      }
+
+      if (cacheFactory.isPresent() && cacheKeyResolver.isPresent()) {
+        final NormalizedCache normalizedCache =
+            cacheFactory.get().createNormalizedCache(RecordFieldAdapter.create(moshi));
+        this.apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get());
       }
 
       if (dispatcher == null) {

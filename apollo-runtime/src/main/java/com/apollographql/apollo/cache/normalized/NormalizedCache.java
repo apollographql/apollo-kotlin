@@ -17,11 +17,27 @@ import javax.annotation.Nullable;
  * If {@link NormalizedCache#loadRecords(Collection)} returns an empty set while, the request will be considered a
  * cache-miss.
  *
+ * To serialize a {@link Record} to a standardized form use {@link #recordAdapter()} which handles
+ * call custom scalar types registered on the {@link ApolloClient}.
+ *
  * A {@link NormalizedCache} can choose to store records in any manner.
  * See {@link com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache} for a persistent cache.
  * See {@link com.apollographql.apollo.cache.normalized.lru.LruNormalizedCache} for a in memory cache.
  */
 public abstract class NormalizedCache {
+
+  private RecordFieldAdapter recordFieldAdapter;
+
+  /**
+   * @param recordFieldAdapter An adapter which can deserialize and deserialize {@link Record}
+   */
+  public NormalizedCache(RecordFieldAdapter recordFieldAdapter) {
+    this.recordFieldAdapter = recordFieldAdapter;
+  }
+
+  protected RecordFieldAdapter recordAdapter() {
+    return recordFieldAdapter;
+  }
 
   /**
    * @param key The key of the record to read

@@ -2,7 +2,10 @@ package com.apollographql.apollo.cache.normalized.lru;
 
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
+import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
+import com.squareup.moshi.Moshi;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -13,6 +16,12 @@ import java.util.concurrent.TimeUnit;
 import static com.google.common.truth.Truth.assertThat;
 
 public class LruNormalizedCacheTest {
+
+  private RecordFieldAdapter basicFieldAdapter;
+
+  @Before public void createFieldAdapter() {
+    basicFieldAdapter = RecordFieldAdapter.create(new Moshi.Builder().build());
+  }
 
   @Test
   public void testEvictionPolicyBuilder() {
@@ -36,64 +45,69 @@ public class LruNormalizedCacheTest {
 
   @Test
   public void testSaveAndLoad_singleRecord() {
-    LruNormalizedCache lruCacheStore = new LruNormalizedCache(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
+    LruNormalizedCache lruCache = new LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build
+        ()).createNormalizedCache(basicFieldAdapter);
     Record testRecord = createTestRecord("1");
 
-    lruCacheStore.merge(testRecord);
+    lruCache.merge(testRecord);
 
-    assertTestRecordPresentAndAccurate(testRecord, lruCacheStore);
+    assertTestRecordPresentAndAccurate(testRecord, lruCache);
   }
 
   @Test
   public void testSaveAndLoad_multipleRecord_readSingle() {
-    LruNormalizedCache lruCacheStore = new LruNormalizedCache(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
+    LruNormalizedCache lruCache = new LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build
+        ()).createNormalizedCache(basicFieldAdapter);
     Record testRecord1 = createTestRecord("1");
     Record testRecord2 = createTestRecord("2");
     Record testRecord3 = createTestRecord("3");
 
     List<Record> records = Arrays.asList(testRecord1, testRecord2, testRecord3);
-    lruCacheStore.merge(records);
+    lruCache.merge(records);
 
-    assertTestRecordPresentAndAccurate(testRecord1, lruCacheStore);
-    assertTestRecordPresentAndAccurate(testRecord2, lruCacheStore);
-    assertTestRecordPresentAndAccurate(testRecord3, lruCacheStore);
+    assertTestRecordPresentAndAccurate(testRecord1, lruCache);
+    assertTestRecordPresentAndAccurate(testRecord2, lruCache);
+    assertTestRecordPresentAndAccurate(testRecord3, lruCache);
   }
 
   @Test
   public void testSaveAndLoad_multipleRecord_readMultiple() {
-    LruNormalizedCache lruCacheStore = new LruNormalizedCache(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
+    LruNormalizedCache lruCache = new LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build
+        ()).createNormalizedCache(basicFieldAdapter);
     Record testRecord1 = createTestRecord("1");
     Record testRecord2 = createTestRecord("2");
     Record testRecord3 = createTestRecord("3");
 
     List<Record> inputRecords = Arrays.asList(testRecord1, testRecord2, testRecord3);
-    lruCacheStore.merge(inputRecords);
-    final Collection<Record> readRecords = lruCacheStore.loadRecords(Arrays.asList("key1", "key2", "key3"));
+    lruCache.merge(inputRecords);
+    final Collection<Record> readRecords = lruCache.loadRecords(Arrays.asList("key1", "key2", "key3"));
     //noinspection ResultOfMethodCallIgnored
     assertThat(readRecords).containsExactlyElementsIn(inputRecords);
   }
 
   @Test
   public void testLoad_recordNotPresent() {
-    LruNormalizedCache lruCacheStore = new LruNormalizedCache(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
-    final Record record = lruCacheStore.loadRecord("key1");
+    LruNormalizedCache lruCache = new LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build
+        ()).createNormalizedCache(basicFieldAdapter);
+    final Record record = lruCache.loadRecord("key1");
     assertThat(record).isNull();
   }
 
   @Test
   public void testEviction() {
-    LruNormalizedCache lruCacheStore = new LruNormalizedCache(EvictionPolicy.builder().maxSizeBytes(2000).build());
+    LruNormalizedCache lruCache = new LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(2000)
+        .build()).createNormalizedCache(basicFieldAdapter);
 
     Record.Builder testRecord1Builder = Record.builder("key1");
-    testRecord1Builder.addField("a",  new String(new byte[1100]));
+    testRecord1Builder.addField("a", new String(new byte[1100]));
     Record testRecord1 = testRecord1Builder.build();
 
     Record.Builder testRecord2Builder = Record.builder("key2");
-    testRecord2Builder.addField("a",  new String(new byte[1100]));
+    testRecord2Builder.addField("a", new String(new byte[1100]));
     Record testRecord2 = testRecord2Builder.build();
 
     Record.Builder testRecord3Builder = Record.builder("key3");
-    testRecord3Builder.addField("a",  new String(new byte[10]));
+    testRecord3Builder.addField("a", new String(new byte[10]));
     Record testRecord3 = testRecord3Builder.build();
 
     List<Record> records = Arrays.asList(
@@ -101,30 +115,31 @@ public class LruNormalizedCacheTest {
         testRecord2,
         testRecord3
     );
-    lruCacheStore.merge(records);
+    lruCache.merge(records);
 
     //Cache does not reveal exactly how it handles eviction, but appears
     //to evict more than is strictly necessary. Regardless, any sane eviction
     //strategy should leave the third record in this test case, and evict the first record.
-    assertThat(lruCacheStore.loadRecord("key1")).isNull();
-    assertThat(lruCacheStore.loadRecord("key3")).isNotNull();
+    assertThat(lruCache.loadRecord("key1")).isNull();
+    assertThat(lruCache.loadRecord("key3")).isNotNull();
 
   }
 
   @Test
   public void testEviction_recordChange() {
-    LruNormalizedCache lruCacheStore = new LruNormalizedCache(EvictionPolicy.builder().maxSizeBytes(2000).build());
+    LruNormalizedCache lruCache = new LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(2000)
+        .build()).createNormalizedCache(basicFieldAdapter);
 
     Record.Builder testRecord1Builder = Record.builder("key1");
-    testRecord1Builder.addField("a",  new String(new byte[10]));
+    testRecord1Builder.addField("a", new String(new byte[10]));
     Record testRecord1 = testRecord1Builder.build();
 
     Record.Builder testRecord2Builder = Record.builder("key2");
-    testRecord2Builder.addField("a",  new String(new byte[10]));
+    testRecord2Builder.addField("a", new String(new byte[10]));
     Record testRecord2 = testRecord2Builder.build();
 
     Record.Builder testRecord3Builder = Record.builder("key3");
-    testRecord3Builder.addField("a",  new String(new byte[10]));
+    testRecord3Builder.addField("a", new String(new byte[10]));
     Record testRecord3 = testRecord3Builder.build();
 
     List<Record> records = Arrays.asList(
@@ -132,29 +147,30 @@ public class LruNormalizedCacheTest {
         testRecord2,
         testRecord3
     );
-    lruCacheStore.merge(records);
+    lruCache.merge(records);
 
     //All records should present
-    assertThat(lruCacheStore.loadRecord("key1")).isNotNull();
-    assertThat(lruCacheStore.loadRecord("key2")).isNotNull();
-    assertThat(lruCacheStore.loadRecord("key3")).isNotNull();
+    assertThat(lruCache.loadRecord("key1")).isNotNull();
+    assertThat(lruCache.loadRecord("key2")).isNotNull();
+    assertThat(lruCache.loadRecord("key3")).isNotNull();
 
     Record.Builder largeTestRecordBuilder = Record.builder("key1");
-    largeTestRecordBuilder.addField("a",  new String(new byte[2000]));
+    largeTestRecordBuilder.addField("a", new String(new byte[2000]));
     Record largeTestRecord = largeTestRecordBuilder.build();
 
-    lruCacheStore.merge(largeTestRecord);
+    lruCache.merge(largeTestRecord);
     //The large record (Record 1) should be evicted. the other small records should remain.
-    assertThat(lruCacheStore.loadRecord("key1")).isNull();
-    assertThat(lruCacheStore.loadRecord("key2")).isNotNull();
-    assertThat(lruCacheStore.loadRecord("key3")).isNotNull();
+    assertThat(lruCache.loadRecord("key1")).isNull();
+    assertThat(lruCache.loadRecord("key2")).isNotNull();
+    assertThat(lruCache.loadRecord("key3")).isNotNull();
 
   }
 
   @Test
   public void testDualCacheSingleRecord() {
-    LruNormalizedCache secondaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION);
-    LruNormalizedCache primaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+    LruNormalizedCacheFactory secondaryCacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION);
+    LruNormalizedCache primaryCacheStore = new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION,
+        secondaryCacheFactory).createNormalizedCache(basicFieldAdapter);
 
     Record.Builder recordBuilder = Record.builder("root");
     recordBuilder.addField("bar", "bar");
@@ -163,13 +179,14 @@ public class LruNormalizedCacheTest {
 
     //verify write through behavior
     assertThat(primaryCacheStore.loadRecord("root").field("bar")).isEqualTo("bar");
-    assertThat(secondaryCacheStore.loadRecord("root").field("bar")).isEqualTo("bar");
+    assertThat(primaryCacheStore.secondaryCache().loadRecord("root").field("bar")).isEqualTo("bar");
   }
 
   @Test
   public void testDualCacheMultipleRecord() {
-    LruNormalizedCache secondaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION);
-    LruNormalizedCache primaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+    LruNormalizedCacheFactory secondaryCacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION);
+    LruNormalizedCache primaryCacheStore = new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION,
+        secondaryCacheFactory).createNormalizedCache(basicFieldAdapter);
 
     Record.Builder recordBuilder = Record.builder("root1");
     recordBuilder.addField("bar", "bar");
@@ -192,21 +209,23 @@ public class LruNormalizedCacheTest {
 
     //verify write through behavior
     assertThat(primaryCacheStore.loadRecords(keys).size()).isEqualTo(3);
-    assertThat(secondaryCacheStore.loadRecords(keys).size()).isEqualTo(3);
+    assertThat(primaryCacheStore.secondaryCache().loadRecords(keys).size()).isEqualTo(3);
   }
 
   @Test
   public void testDualCache_recordNotPresent() {
-    LruNormalizedCache secondaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION);
-    LruNormalizedCache primaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+    LruNormalizedCacheFactory secondaryCacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION);
+    LruNormalizedCache primaryCacheStore = new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION,
+        secondaryCacheFactory).createNormalizedCache(basicFieldAdapter);
 
     assertThat(primaryCacheStore.loadRecord("not_present_id")).isNull();
   }
 
   @Test
   public void testClearAll() {
-    LruNormalizedCache secondaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION);
-    LruNormalizedCache primaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+    LruNormalizedCacheFactory secondaryCacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION);
+    LruNormalizedCache primaryCacheStore = new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION,
+        secondaryCacheFactory).createNormalizedCache(basicFieldAdapter);
 
     Record record = Record.builder("key").build();
 
@@ -218,28 +237,30 @@ public class LruNormalizedCacheTest {
 
   @Test
   public void testClearPrimaryCache() {
-    LruNormalizedCache secondaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION);
-    LruNormalizedCache primaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+    LruNormalizedCacheFactory secondaryCacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION);
+    LruNormalizedCache primaryCacheStore = new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION,
+        secondaryCacheFactory).createNormalizedCache(basicFieldAdapter);
 
     Record record = Record.builder("key").build();
 
     primaryCacheStore.merge(record);
     primaryCacheStore.clearPrimaryCache();
 
-    assertThat(secondaryCacheStore.loadRecord("key")).isNotNull();
+    assertThat(primaryCacheStore.secondaryCache().loadRecord("key")).isNotNull();
   }
 
   @Test
   public void testClearSecondaryCache() {
-    LruNormalizedCache secondaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION);
-    LruNormalizedCache primaryCacheStore = new LruNormalizedCache(EvictionPolicy.NO_EVICTION, secondaryCacheStore);
+    LruNormalizedCacheFactory secondaryCacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION);
+    LruNormalizedCache primaryCacheStore = new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION,
+        secondaryCacheFactory).createNormalizedCache(basicFieldAdapter);
 
     Record record = Record.builder("key").build();
 
     primaryCacheStore.merge(record);
     primaryCacheStore.clearSecondaryCache();
 
-    assertThat(secondaryCacheStore.loadRecord("key")).isNull();
+    assertThat(primaryCacheStore.secondaryCache().loadRecord("key")).isNull();
   }
 
   private void assertTestRecordPresentAndAccurate(Record testRecord, NormalizedCache store) {
