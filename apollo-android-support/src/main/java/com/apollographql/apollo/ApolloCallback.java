@@ -28,7 +28,7 @@ public final class ApolloCallback<T> extends ApolloCall.Callback<T> {
     this.handler = checkNotNull(handler, "handler == null");
   }
 
-  @Override public final void onResponse(@Nonnull final Response<T> response) {
+  @Override public void onResponse(@Nonnull final Response<T> response) {
     handler.post(new Runnable() {
       @Override public void run() {
         delegate.onResponse(response);
@@ -36,7 +36,7 @@ public final class ApolloCallback<T> extends ApolloCall.Callback<T> {
     });
   }
 
-  @Override public final void onFailure(@Nonnull final ApolloException e) {
+  @Override public void onFailure(@Nonnull final ApolloException e) {
     handler.post(new Runnable() {
       @Override public void run() {
         delegate.onFailure(e);
