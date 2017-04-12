@@ -9,5 +9,6 @@ data class CodeGenerationContext(
     val typesPackage: String = "",
     val customTypeMap: Map<String, String>,
     val nullableValueType: NullableValueType,
-    val generateAccessors: Boolean
+    val generateAccessors: Boolean,
+    val ir:CodeGenerationIR
 )

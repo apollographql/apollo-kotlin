@@ -1,6 +1,7 @@
 package com.apollographql.android.compiler
 
 import com.apollographql.android.compiler.ir.CodeGenerationContext
+import com.apollographql.android.compiler.ir.CodeGenerationIR
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeName
 import org.junit.Assert
@@ -15,7 +16,8 @@ class JavaTypeResolverTest {
       typesPackage = "",
       customTypeMap = emptyMap(),
       nullableValueType = NullableValueType.APOLLO_OPTIONAL,
-      generateAccessors = true)
+      generateAccessors = true,
+      ir = CodeGenerationIR(emptyList(), emptyList(), emptyList()))
   private val defaultResolver = JavaTypeResolver(defaultContext, packageName)
 
   @Test

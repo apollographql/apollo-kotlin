@@ -157,13 +157,13 @@ public class StarshipFragment {
     }
 
     public static class Fragments {
-      private final Optional<PilotFragment> pilotFragment;
+      private final @Nonnull PilotFragment pilotFragment;
 
-      public Fragments(@Nullable PilotFragment pilotFragment) {
-        this.pilotFragment = Optional.fromNullable(pilotFragment);
+      public Fragments(@Nonnull PilotFragment pilotFragment) {
+        this.pilotFragment = pilotFragment;
       }
 
-      public Optional<PilotFragment> pilotFragment() {
+      public @Nonnull PilotFragment pilotFragment() {
         return this.pilotFragment;
       }
 

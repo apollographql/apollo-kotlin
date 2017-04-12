@@ -176,20 +176,20 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
 
       public static class Fragments {
-        private final Optional<HumanDetails> humanDetails;
+        private final @Nonnull HumanDetails humanDetails;
 
-        private final Optional<DroidDetails> droidDetails;
+        private final @Nonnull DroidDetails droidDetails;
 
-        public Fragments(@Nullable HumanDetails humanDetails, @Nullable DroidDetails droidDetails) {
-          this.humanDetails = Optional.fromNullable(humanDetails);
-          this.droidDetails = Optional.fromNullable(droidDetails);
+        public Fragments(@Nonnull HumanDetails humanDetails, @Nonnull DroidDetails droidDetails) {
+          this.humanDetails = humanDetails;
+          this.droidDetails = droidDetails;
         }
 
-        public Optional<HumanDetails> humanDetails() {
+        public @Nonnull HumanDetails humanDetails() {
           return this.humanDetails;
         }
 
-        public Optional<DroidDetails> droidDetails() {
+        public @Nonnull DroidDetails droidDetails() {
           return this.droidDetails;
         }
 
@@ -305,20 +305,20 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
 
       public static class Fragments {
-        private final Optional<HumanDetails> humanDetails;
+        private final @Nonnull HumanDetails humanDetails;
 
-        private final Optional<DroidDetails> droidDetails;
+        private final @Nonnull DroidDetails droidDetails;
 
-        public Fragments(@Nullable HumanDetails humanDetails, @Nullable DroidDetails droidDetails) {
-          this.humanDetails = Optional.fromNullable(humanDetails);
-          this.droidDetails = Optional.fromNullable(droidDetails);
+        public Fragments(@Nonnull HumanDetails humanDetails, @Nonnull DroidDetails droidDetails) {
+          this.humanDetails = humanDetails;
+          this.droidDetails = droidDetails;
         }
 
-        public Optional<HumanDetails> humanDetails() {
+        public @Nonnull HumanDetails humanDetails() {
           return this.humanDetails;
         }
 
-        public Optional<DroidDetails> droidDetails() {
+        public @Nonnull DroidDetails droidDetails() {
           return this.droidDetails;
         }
 

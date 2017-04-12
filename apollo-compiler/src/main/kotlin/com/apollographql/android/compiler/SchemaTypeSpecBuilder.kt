@@ -99,10 +99,18 @@ class SchemaTypeSpecBuilder(
   /** Returns a generic `Fragments` interface with methods for each of the provided fragments */
   private fun fragmentsTypeSpec(): TypeSpec {
 
+    fun isOptional(fragmentName: String): Boolean {
+      return context.ir.fragments
+          .find { it.fragmentName == fragmentName }
+          ?.let { it.typeCondition == typeName } ?: true
+    }
+
     fun TypeSpec.Builder.addFragmentFields(): TypeSpec.Builder {
-      return addFields(fragmentSpreads.map {
-        FieldSpec.builder(JavaTypeResolver(context, context.fragmentsPackage).resolve(it.capitalize()),
-            it.decapitalize())
+      return addFields(fragmentSpreads.map { fragmentName ->
+        val optional = isOptional(fragmentName)
+        FieldSpec.builder(
+            JavaTypeResolver(context = context, packageName = context.fragmentsPackage)
+                .resolve(typeName = fragmentName.capitalize(), isOptional = optional), fragmentName.decapitalize())
             .addModifiers(if (context.generateAccessors) Modifier.PRIVATE else Modifier.PUBLIC, Modifier.FINAL)
             .build()
       })
@@ -110,11 +118,13 @@ class SchemaTypeSpecBuilder(
 
     fun TypeSpec.Builder.addFragmentAccessorMethods(): TypeSpec.Builder {
       if (context.generateAccessors) {
-        addMethods(fragmentSpreads.map {
-          MethodSpec.methodBuilder(it.decapitalize())
-              .returns(JavaTypeResolver(context, context.fragmentsPackage).resolve(it.capitalize()))
+        addMethods(fragmentSpreads.map { fragmentName ->
+          val optional = isOptional(fragmentName)
+          MethodSpec.methodBuilder(fragmentName.decapitalize())
+              .returns(JavaTypeResolver(context = context, packageName = context.fragmentsPackage)
+                  .resolve(typeName = fragmentName.capitalize(), isOptional = optional))
               .addModifiers(Modifier.PUBLIC)
-              .addStatement("return this.\$L", it.decapitalize())
+              .addStatement("return this.\$L", fragmentName.decapitalize())
               .build()
         })
       }

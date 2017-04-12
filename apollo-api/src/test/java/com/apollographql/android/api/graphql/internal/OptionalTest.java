@@ -28,6 +28,8 @@ import org.junit.Test;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertSame;
@@ -154,7 +156,6 @@ public final class OptionalTest {
     }
   }
 
-
   @Test
   public void testTransformAbsent() {
     assertEquals(Optional.absent(), Optional.absent().transform(Functions.identity()));
@@ -198,7 +199,6 @@ public final class OptionalTest {
               }
             }));
   }
-
 
   @Test
   public void testEqualsAndHashCodeAbsent() {
@@ -264,5 +264,97 @@ public final class OptionalTest {
 
   }
 
+  @Test
+  public void testMapAbsent() {
+    assertEquals(Optional.absent(), Optional.absent().map(Functions.identity()));
+    assertEquals(Optional.absent(), Optional.absent().map(Functions.toStringFunction()));
+  }
 
+  @Test
+  public void testMapPresentIdentity() {
+    assertEquals(Optional.of("a"), Optional.of("a").map(Functions.identity()));
+  }
+
+  @Test
+  public void testMapPresentToString() {
+    assertEquals(Optional.of("42"), Optional.of(42).map(Functions.toStringFunction()));
+  }
+
+  @Test
+  public void testMapPresentFunctionReturnsNull() {
+    try {
+      Optional<String> unused =
+          Optional.of("a")
+              .map(
+                  new Function<String, String>() {
+                    @Override
+                    public String apply(String input) {
+                      return null;
+                    }
+                  });
+      fail("Should throw if Function returns null.");
+    } catch (NullPointerException expected) {
+    }
+  }
+
+  @Test
+  public void testMapAbssentFunctionReturnsNull() {
+    assertEquals(Optional.absent(),
+        Optional.absent().map(
+            new Function<Object, Object>() {
+              @Override public Object apply(Object input) {
+                return null;
+              }
+            }));
+  }
+
+  @Test
+  public void testFlatMapAbsent() {
+    assertEquals(Optional.absent(), Optional.absent().flatMap(new Function<Object, Optional<String>>() {
+      @Nonnull @Override public Optional<String> apply(@Nonnull Object o) {
+        return Optional.of(o.toString());
+      }
+    }));
+  }
+
+  @Test
+  public void testFlatMapMapPresentIdentity() {
+    assertEquals(Optional.of("a"), Optional.of("a").flatMap(new Function<String, Optional<String>>() {
+          @Nonnull @Override public Optional<String> apply(@Nonnull String s) {
+            return Optional.of(s);
+          }
+        })
+    );
+  }
+
+  @Test
+  public void testFlatMapPresentToString() {
+    assertEquals(Optional.of("42"), Optional.of(42).flatMap(new Function<Integer, Optional<String>>() {
+      @Nonnull @Override public Optional<String> apply(@Nonnull Integer integer) {
+        return Optional.of(integer.toString());
+      }
+    }));
+  }
+
+  @Test
+  public void testFlatMapPresentFunctionReturnsNull() {
+    try {
+      Optional<String> unused = Optional.of("a").flatMap(new Function<String, Optional<String>>() {
+        @Nonnull @Override public Optional<String> apply(@Nonnull String s) {
+          return null;
+        }
+      });
+      fail("Should throw if Function returns null.");
+    } catch (NullPointerException expected) {
+    }
+  }
+
+  @Test
+  public void testFlatMapAbssentFunctionReturnsNull() {
+    assertEquals(Optional.absent(), Optional.absent().flatMap(new Function<Object, Optional<Object>>() {
+      @Nonnull @Override public Optional<Object> apply(@Nonnull Object o) {
+        return null;
+      }
+    }));
+  }
 }
