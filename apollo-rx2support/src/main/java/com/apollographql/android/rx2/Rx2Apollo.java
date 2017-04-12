@@ -34,7 +34,7 @@ public class Rx2Apollo {
   }
 
   /**
-   * Converts an {@link ApolloPrefetch} to an asynchronous Observable.
+   * Converts an {@link ApolloWatcher} to an asynchronous Observable.
    *
    * @param watcher the ApolloWatcher to convert.
    * @param <T>     the value type
