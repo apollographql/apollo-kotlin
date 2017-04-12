@@ -16,6 +16,7 @@ import rx.Emitter;
 import rx.Observable;
 import rx.Single;
 import rx.SingleSubscriber;
+import rx.Subscription;
 import rx.exceptions.Exceptions;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -116,25 +117,32 @@ public final class RxApollo {
     checkNotNull(prefetch, "prefetch == null");
 
     return Completable.create(new Completable.OnSubscribe() {
-      @Override public void call(CompletableSubscriber subscriber) {
-        cancelOnCompletableUnsubscribe(subscriber, prefetch);
+      @Override public void call(final CompletableSubscriber subscriber) {
+        Subscription subscription = getSubscription(subscriber, prefetch);
+
         try {
           prefetch.execute();
-          subscriber.onCompleted();
+          if (!subscription.isUnsubscribed()) {
+            subscriber.onCompleted();
+          }
         } catch (ApolloException e) {
           Exceptions.throwIfFatal(e);
-          subscriber.onError(e);
+          if (!subscription.isUnsubscribed()) {
+            subscriber.onError(e);
+          }
         }
       }
     });
   }
 
-  private static void cancelOnCompletableUnsubscribe(CompletableSubscriber subscriber, final Cancelable cancelable) {
-    subscriber.onSubscribe(Subscriptions.create(new Action0() {
+  private static Subscription getSubscription(CompletableSubscriber subscriber, final Cancelable cancelable) {
+    Subscription subscription = Subscriptions.create(new Action0() {
       @Override public void call() {
         cancelable.cancel();
       }
-    }));
+    });
+    subscriber.onSubscribe(subscription);
+    return subscription;
   }
 
   private static <T> void cancelOnSingleUnsubscribe(SingleSubscriber<? super T> subscriber, final Cancelable toCancel) {
