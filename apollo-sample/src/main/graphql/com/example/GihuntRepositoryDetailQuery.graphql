@@ -1,0 +1,29 @@
+query EntryDetailQuery($repoFullName: String!) {
+  entry(repoFullName: $repoFullName) {
+    id
+    repository {
+      full_name
+      description
+      owner {
+          login
+          avatar_url
+        }
+    }
+    postedBy {
+      login
+      avatar_url
+    }
+    vote {
+      vote_value
+    }
+  }
+}
+
+mutation upvote($repoFullName: String!) {
+  vote(repoFullName: $repoFullName, type: UP) {
+    id
+    vote {
+      vote_value
+    }
+  }
+}

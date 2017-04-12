@@ -31,6 +31,10 @@ dependencies {
   compile dep.apolloRuntime
   compile dep.appcompat
   compile dep.okhttpLoggingInterceptor
-
+  compile dep.apolloRxSupport
+  compile dep.rxjava
+  compile 'io.reactivex:rxandroid:1.2.1'
+  compile 'com.squareup.picasso:picasso:2.5.2'
+  compile 'com.android.support:recyclerview-v7:25.3.1'
   testCompile dep.junit
 }
