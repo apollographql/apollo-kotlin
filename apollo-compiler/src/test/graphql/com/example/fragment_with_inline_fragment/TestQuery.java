@@ -176,13 +176,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
 
       public static class Fragments {
-        private final Optional<HeroDetails> heroDetails;
+        private final @Nonnull HeroDetails heroDetails;
 
-        public Fragments(@Nullable HeroDetails heroDetails) {
-          this.heroDetails = Optional.fromNullable(heroDetails);
+        public Fragments(@Nonnull HeroDetails heroDetails) {
+          this.heroDetails = heroDetails;
         }
 
-        public Optional<HeroDetails> heroDetails() {
+        public @Nonnull HeroDetails heroDetails() {
           return this.heroDetails;
         }
 

@@ -214,6 +214,9 @@ public abstract class Optional<T> implements Serializable {
    */
   public abstract <V> Optional<V> transform(Function<? super T, V> function);
 
+  public abstract <V> Optional<V> map(Function<? super T, V> function);
+
+  public abstract <V> Optional<V> flatMap(Function<? super T, Optional<V>> function);
 
   /**
    * Returns {@code true} if {@code object} is an {@code Optional} instance, and either the contained references are

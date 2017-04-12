@@ -161,13 +161,13 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       }
 
       public static class Fragments {
-        private final Optional<StarshipFragment> starshipFragment;
+        private final @Nonnull StarshipFragment starshipFragment;
 
-        public Fragments(@Nullable StarshipFragment starshipFragment) {
-          this.starshipFragment = Optional.fromNullable(starshipFragment);
+        public Fragments(@Nonnull StarshipFragment starshipFragment) {
+          this.starshipFragment = starshipFragment;
         }
 
-        public Optional<StarshipFragment> starshipFragment() {
+        public @Nonnull StarshipFragment starshipFragment() {
           return this.starshipFragment;
         }
 
