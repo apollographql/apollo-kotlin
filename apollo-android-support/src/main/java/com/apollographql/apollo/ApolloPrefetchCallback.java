@@ -18,6 +18,16 @@ public final class ApolloPrefetchCallback extends ApolloPrefetch.Callback {
   private final Handler handler;
 
   /**
+   * Wraps {@code callback} to be be operated on specified {@code handler}
+   *
+   * @param callback original callback to delegates calls
+   * @param handler  the callback will be run on the thread to which this handler is attached
+   */
+  public static <T> ApolloPrefetchCallback wrap(@Nonnull ApolloPrefetch.Callback callback, @Nonnull Handler handler) {
+    return new ApolloPrefetchCallback(callback, handler);
+  }
+
+  /**
    * @param callback original callback to delegates calls
    * @param handler  the callback will be run on the thread to which this handler is attached
    */

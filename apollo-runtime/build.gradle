@@ -24,3 +24,7 @@ tasks.withType(Checkstyle) {
   exclude '**/BufferedSourceJsonReader.java'
   exclude '**/JsonScope.java'
 }
+
+javadoc {
+  options.encoding = 'UTF-8'
+}

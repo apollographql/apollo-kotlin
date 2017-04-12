@@ -1,1 +1,4 @@
-<manifest package="com.apollographql.apollo" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="com.apollographql.apollo">
+  <uses-permission android:name="android.permission.INTERNET" />
+</manifest>
