@@ -72,6 +72,16 @@ final class Absent<T> extends Optional<T> {
     return Optional.absent();
   }
 
+  @Override public <V> Optional<V> map(Function<? super T, V> function) {
+    checkNotNull(function);
+    return Optional.absent();
+  }
+
+  @Override public <V> Optional<V> flatMap(Function<? super T, Optional<V>> function) {
+    checkNotNull(function);
+    return Optional.absent();
+  }
+
   @Override
   public Set<T> asSet() {
     return Collections.emptySet();

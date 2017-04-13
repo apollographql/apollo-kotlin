@@ -160,10 +160,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
 
       public static class Fragments {
-        public final Optional<HeroDetails> heroDetails;
+        public final @Nonnull HeroDetails heroDetails;
 
-        public Fragments(@Nullable HeroDetails heroDetails) {
-          this.heroDetails = Optional.fromNullable(heroDetails);
+        public Fragments(@Nonnull HeroDetails heroDetails) {
+          this.heroDetails = heroDetails;
         }
 
         @Override

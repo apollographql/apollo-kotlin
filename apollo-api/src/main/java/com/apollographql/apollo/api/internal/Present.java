@@ -58,6 +58,17 @@ final class Present<T> extends Optional<T> {
         "the Function passed to Optional.transform() must not return null."));
   }
 
+  @Override public <V> Optional<V> map(Function<? super T, V> function) {
+    return new Present<V>(checkNotNull(function.apply(reference),
+        "the Function passed to Optional.map() must not return null."));
+  }
+
+  @Override public <V> Optional<V> flatMap(Function<? super T, Optional<V>> function) {
+    checkNotNull(function);
+    return checkNotNull(function.apply(reference),
+        "the Function passed to Optional.flatMap() must not return null.");
+  }
+
   @Override public T orNull() {
     return reference;
   }
