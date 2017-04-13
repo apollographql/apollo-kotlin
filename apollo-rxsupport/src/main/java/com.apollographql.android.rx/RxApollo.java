@@ -2,6 +2,7 @@ package com.apollographql.android.rx;
 
 
 import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.ApolloPrefetch;
 import com.apollographql.apollo.ApolloWatcher;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
@@ -9,10 +10,13 @@ import com.apollographql.apollo.internal.util.Cancelable;
 
 import javax.annotation.Nonnull;
 
+import rx.Completable;
+import rx.CompletableSubscriber;
 import rx.Emitter;
 import rx.Observable;
 import rx.Single;
 import rx.SingleSubscriber;
+import rx.Subscription;
 import rx.exceptions.Exceptions;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -101,6 +105,44 @@ public final class RxApollo {
         }
       }
     });
+  }
+
+  /**
+   * Converts an {@link ApolloPrefetch} to a Completable.
+   *
+   * @param prefetch the ApolloPrefetch to convert
+   * @return the converted Completable
+   */
+  @Nonnull public static Completable from(@Nonnull final ApolloPrefetch prefetch) {
+    checkNotNull(prefetch, "prefetch == null");
+
+    return Completable.create(new Completable.OnSubscribe() {
+      @Override public void call(final CompletableSubscriber subscriber) {
+        Subscription subscription = getSubscription(subscriber, prefetch);
+
+        try {
+          prefetch.execute();
+          if (!subscription.isUnsubscribed()) {
+            subscriber.onCompleted();
+          }
+        } catch (ApolloException e) {
+          Exceptions.throwIfFatal(e);
+          if (!subscription.isUnsubscribed()) {
+            subscriber.onError(e);
+          }
+        }
+      }
+    });
+  }
+
+  private static Subscription getSubscription(CompletableSubscriber subscriber, final Cancelable cancelable) {
+    Subscription subscription = Subscriptions.create(new Action0() {
+      @Override public void call() {
+        cancelable.cancel();
+      }
+    });
+    subscriber.onSubscribe(subscription);
+    return subscription;
   }
 
   private static <T> void cancelOnSingleUnsubscribe(SingleSubscriber<? super T> subscriber, final Cancelable toCancel) {

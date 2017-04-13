@@ -29,13 +29,17 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import rx.Observer;
 import rx.Subscription;
+import rx.observers.AssertableSubscriber;
 import rx.observers.TestSubscriber;
 
 import static com.google.common.truth.Truth.assertThat;
 
 public class RxApolloTest {
+
   private ApolloClient apolloClient;
   private MockWebServer server;
+
+  private static final int RX_DELAY_SECONDS = 2;
   private static final long TIME_OUT_SECONDS = 3;
 
   @Before public void setUp() {
@@ -88,13 +92,43 @@ public class RxApolloTest {
     TestSubscriber<EpisodeHeroName.Data> subscriber = new TestSubscriber<>();
     Subscription subscription = RxApollo
         .from(call)
-        .delay(5, TimeUnit.SECONDS)
+        .delay(RX_DELAY_SECONDS, TimeUnit.SECONDS)
         .subscribe(subscriber);
     subscription.unsubscribe();
     subscriber
         .assertUnsubscribed();
     subscriber.assertNoValues();
 
+  }
+
+  @Test public void testRxPrefetchCompletes() throws IOException {
+    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+
+    RxApollo
+        .from(apolloClient.prefetch(query))
+        .test()
+        .awaitTerminalEvent()
+        .assertNoErrors()
+        .assertCompleted();
+  }
+
+  @Test public void testRxPrefetchIsCanceledWhenUnsubscribed() throws IOException {
+
+    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+
+    ApolloPrefetch prefetch = apolloClient.prefetch(query);
+
+    AssertableSubscriber<Void> subscriber = RxApollo
+        .from(prefetch)
+        .delay(RX_DELAY_SECONDS, TimeUnit.SECONDS)
+        .test();
+
+    subscriber.unsubscribe();
+
+    subscriber.assertUnsubscribed();
+    subscriber.assertNotCompleted();
   }
 
   @Test
