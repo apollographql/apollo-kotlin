@@ -24,6 +24,13 @@ android {
     textOutput 'stdout'
     ignore 'InvalidPackage', 'GoogleAppIndexingWarning', 'AllowBackup'
   }
+
+  variantFilter { variant ->
+    def names = variant.buildType.name
+    if (names.contains("debug")) {
+        setIgnore(true)
+    }
+  }
 }
 dependencies {
   compile dep.jsr305
