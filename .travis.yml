@@ -1,4 +1,5 @@
 language: android
+sudo: true
 
 android:
   components:
@@ -14,7 +15,7 @@ jdk:
   - oraclejdk8
 
 script:
-  - ./gradlew clean build connectedCheck -x checkstyleTest --stacktrace
+  - ./gradlew clean build connectedCheck -x checkstyleTest --stacktrace --max-workers=2 -x apollo-gradle-plugin:test
 
 before_script:
   - echo no | android create avd --force -n test -t android-15 --abi armeabi-v7a
@@ -29,7 +30,7 @@ env:
   global:
     - secure: "KOweJZUuxJmrvFX6I3JiH5gGERCuCL/zxkgEsUUwJDD8JsdGqfpEBA2rzMykV+5lLjToZvlJixrkIUiSAqUM4BxTLcYS97iGF8lnRilZhrT+o6VGtcD78cX3eMs/ASuV890/D64qJheVzWS4qSL3Cw+nVdh0rD7wn+5z4MAX/2yC59eEnvyff+Epr4rYmF1Bi0fBpVP7pR2ZKmr9+oTBZ7rdn9tfEkK9HLjs4IzuPFCkBBWun4a3WSKoeQUaaCmJBVMVwdOlABakLZ4by2nzBAyQ0RuQeK/21horrGqbnvFeLMqoi1MhYVkuGsm9CvoaaevmuqRuiklEc//7yfQ5oGJu42lf5Cvcy6Vce4HhQp4ZoOaEKD0usuaTvaJFitxfXwON4etrzaTcfYboxcWl7LfbYBAv7rCYRdxMcVQjA3c09Fqt6fsvIhA8Xk314BoVR0rSvhpaIZQPkXFiinebdqYpVe6KTa82W2TMIY0J7Wald42MmJIFoDaOWRMQbubby4G2W8M2qbtDj7zXbu/gr1/q1rl04VeiD6QNct0drwmnQ6Hk2U1pgWtEoYvHtIv3AyHD9kQgZuN70UfolP/0IwLeTa3kG+90a7hgpJ+a4DL6eERg5+2IqSz/w469gfR+dPr5PDYutuyslyAlz/cLValzP8vHkXIiS3nkJCXHDGY="
     - secure: "oH00sBHo0tBt8ROUq1CAf0ImZKgCbxuOQiRAXxcMXWpZXbuoeL4VP3vQMX89Ton3+ZcPp6+HEDyLeFYqLTpDC8sfIiMuHxUYZDEGogqA+BFEGizFB0Ucc6My2vNEe8nqgDLSNgkGjrpz5YkgCNPZi9cEXeoUUcVKKI+z4kxGq6icK5cKw0GgTMgvKP8EP36yCGotCgfU/Za2cuPHlVOgGgIgHK4ztaBtZOHJkJJ507Oy3WUlDQN9osJY6GeWglDD55xI8MhCC3XlhpnLcpKwno0wvIAJ0EpRFMcQCag6IZd9yK23g97+tY606QFWzt73C9nJaQyZiDPjNaiX+LCf0QChS6Sd+U8y2pibELev9OYa4hsUu0VE4f/FdTtU08cDJda7qU65VMb0WYB2yvpbm9ZvSltzFiQqIt9x6rHOvWpOT/P5vgamO1xVHcHLFaWsvUA4Smx99AShwZ0DynTkKl1LeGWtGs3i5hVv8OEoNVMtQ57DIqhnRhTJfqnojav1napVhnTv8OBTk2Xbxg0LDXuLRwpxth8OaOhNuCmmaRaDlEMhHAuvAzLW+Z2u6QztUg9Ia+KLCoxz20Hmh3+KHXkAfkUofph9BoXz7XEeRMkRd6J8zZFeJFw27Te5/YOhB3M6g/gZ6HTJrCQhxxuv+yjgtrCJsF5r/B/yMvEmMCQ="
-    - GRADLE_OPTS="-Xmx3072m -XX:MaxPermSize=2048m"
+    - GRADLE_OPTS="-Xmx2048m -XX:MaxPermSize=1024m"
 
 branches:
   except:
