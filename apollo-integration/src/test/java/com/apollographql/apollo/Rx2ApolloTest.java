@@ -35,7 +35,7 @@ public class Rx2ApolloTest {
   private ApolloClient apolloClient;
   private MockWebServer mockWebServer;
 
-  private static final int RX_DELAY_SECONDS = 5;
+  private static final int RX_DELAY_SECONDS = 2;
   private static final long TIME_OUT_SECONDS = 3;
 
   private static final String FILE_EPISODE_HERO_NAME_WITH_ID = "EpisodeHeroNameResponseWithId.json";
@@ -63,7 +63,7 @@ public class Rx2ApolloTest {
   }
 
   @After
-  public void tearDown(){
+  public void tearDown() {
     try {
       mockWebServer.shutdown();
     } catch (IOException e) {
