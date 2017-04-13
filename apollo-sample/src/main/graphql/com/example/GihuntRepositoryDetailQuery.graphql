@@ -18,12 +18,3 @@ query EntryDetailQuery($repoFullName: String!) {
     }
   }
 }
-
-mutation upvote($repoFullName: String!) {
-  vote(repoFullName: $repoFullName, type: UP) {
-    id
-    vote {
-      vote_value
-    }
-  }
-}

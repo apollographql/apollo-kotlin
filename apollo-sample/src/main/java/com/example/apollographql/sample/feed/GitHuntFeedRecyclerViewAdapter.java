@@ -40,10 +40,7 @@ class GitHuntFeedRecyclerViewAdapter extends
     final FeedQuery.Data.FeedEntry feedEntry = this.feed.get(position);
     holder.setFeedItem(feedEntry, navigator);
     if (feedEntry.id() == 1) {
-      visitCount ++;
-      if (visitCount > 6) {
-        holder.upvoteCount.setText("" + 1);
-      }
+      holder.upvoteCount.setText("" + 1);
     }
   }
 
