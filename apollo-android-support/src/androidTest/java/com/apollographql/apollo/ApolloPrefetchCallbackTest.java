@@ -26,6 +26,7 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
 import static com.apollographql.apollo.TestUtils.EMPTY_QUERY;
+import static com.apollographql.apollo.TestUtils.createBackgroundLooper;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.fail;
 
@@ -118,20 +119,7 @@ public class ApolloPrefetchCallbackTest {
   }
 
   private static Handler mockCallbackHandler(final AtomicBoolean invokeTracker) throws Exception {
-    final AtomicReference<Looper> looperRef = new AtomicReference<>();
-    new Thread() {
-      @Override public void run() {
-        Looper.prepare();
-        synchronized (this) {
-          looperRef.set(Looper.myLooper());
-          notifyAll();
-        }
-        Looper.loop();
-      }
-    }.start();
-
-    Thread.sleep(200);
-    return new Handler(looperRef.get()) {
+    return new Handler(createBackgroundLooper()) {
       @Override public boolean sendMessageAtTime(Message msg, long uptimeMillis) {
         invokeTracker.set(true);
         msg.getCallback().run();
