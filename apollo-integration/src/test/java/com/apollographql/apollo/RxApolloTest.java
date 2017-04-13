@@ -39,7 +39,7 @@ public class RxApolloTest {
   private ApolloClient apolloClient;
   private MockWebServer server;
 
-  private static final int RX_DELAY_SECONDS = 5;
+  private static final int RX_DELAY_SECONDS = 2;
   private static final long TIME_OUT_SECONDS = 3;
 
   @Before public void setUp() {
