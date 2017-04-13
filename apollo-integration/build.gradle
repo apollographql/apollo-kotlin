@@ -24,12 +24,17 @@ android {
     textOutput 'stdout'
     ignore 'InvalidPackage', 'GoogleAppIndexingWarning', 'AllowBackup'
   }
+
+  packagingOptions {
+    exclude 'META-INF/rxjava.properties'
+  }
 }
 dependencies {
   compile dep.jsr305
   compile project(':apollo-api')
   compile project(':apollo-runtime')
   compile project(':apollo-rxsupport')
+  compile project(':apollo-rx2support')
   compile dep.appcompat
 
   testCompile dep.junit

@@ -1,0 +1,23 @@
+apply plugin: 'java'
+clearSkipApolloRuntimeDep()
+
+targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_7
+
+dependencies {
+  compile dep.jsr305
+  compile dep.rxjava2
+  compile project(":apollo-runtime")
+  compile project(":apollo-api")
+
+  testCompile dep.junit
+  testCompile dep.truth
+  testCompile dep.mockWebServer
+  testCompile dep.okhttpTestSupport
+}
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
+
+javadoc {
+  options.encoding = 'UTF-8'
+}
