@@ -1,0 +1,52 @@
+buildscript {
+  dependencies {
+    classpath dep.androidPlugin
+  }
+}
+
+apply plugin: 'com.android.library'
+clearSkipApolloRuntimeDep()
+
+android {
+  compileSdkVersion androidConfig.compileSdkVersion
+  buildToolsVersion androidConfig.buildToolsVersion
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
+  }
+
+  lintOptions {
+    textReport true
+    textOutput 'stdout'
+    ignore 'InvalidPackage'
+  }
+
+  dexOptions {
+    preDexLibraries = isCi
+  }
+
+  defaultConfig {
+    minSdkVersion androidConfig.minSdkVersion
+    targetSdkVersion androidConfig.targetSdkVersion
+    testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+  }
+}
+
+dependencies {
+  compile dep.jsr305
+  compile dep.moshi
+
+  provided project(":apollo-runtime")
+  provided project(":apollo-api")
+
+  androidTestCompile project(":apollo-runtime")
+  androidTestCompile project(":apollo-api")
+  androidTestCompile dep.truth
+  androidTestCompile dep.mockWebServer
+  androidTestCompile(dep.testRunner) {
+    exclude module: 'support-annotations'
+  }
+}
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
