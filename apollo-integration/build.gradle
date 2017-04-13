@@ -26,6 +26,7 @@ android {
   }
 }
 dependencies {
+  compile dep.jsr305
   compile project(':apollo-api')
   compile project(':apollo-runtime')
   compile project(':apollo-rxsupport')
