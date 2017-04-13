@@ -31,13 +31,6 @@ android {
     targetSdkVersion androidConfig.targetSdkVersion
     testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
   }
-
-  variantFilter { variant ->
-    def names = variant.buildType.name
-    if (names.contains("debug")) {
-        setIgnore(true)
-    }
-  }
 }
 
 dependencies {

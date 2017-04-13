@@ -1,7 +1,6 @@
 package com.apollographql.apollo;
 
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -19,7 +18,6 @@ import org.junit.runner.RunWith;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nonnull;
 
