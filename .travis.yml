@@ -1,4 +1,5 @@
 language: android
+sudo: true
 
 android:
   components:
