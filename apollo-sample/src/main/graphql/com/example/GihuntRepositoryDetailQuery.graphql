@@ -6,15 +6,10 @@ query EntryDetailQuery($repoFullName: String!) {
       description
       owner {
           login
-          avatar_url
         }
     }
     postedBy {
       login
-      avatar_url
-    }
-    vote {
-      vote_value
     }
   }
 }

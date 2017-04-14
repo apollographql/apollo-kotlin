@@ -7,9 +7,6 @@ query FeedQuery($type: FeedType!, $limit: Int!) {
     postedBy {
       login
     }
-    vote {
-       vote_value
-    }
   }
 }
 
@@ -18,6 +15,5 @@ fragment RepositoryFragment on Repository {
   full_name
   owner {
     login
-    avatar_url
   }
 }
