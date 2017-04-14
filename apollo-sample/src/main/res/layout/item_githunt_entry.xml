@@ -1,54 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/feed_entry_container"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:layout_margin="5dp"
   android:background="?android:attr/selectableItemBackground"
-  android:orientation="horizontal"
+  android:orientation="vertical"
+  android:padding="5dp"
   >
-
-  <ImageView
-    android:id="@+id/iv_repository_icon"
-    android:layout_width="60dp"
-    android:layout_height="60dp"
-    android:layout_alignParentLeft="true"
-    android:padding="5dp"
-    />
 
   <TextView
     android:id="@+id/tv_repository_name"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentTop="true"
-    android:layout_toRightOf="@id/iv_repository_icon"
     android:textColor="@android:color/black"
-    android:textSize="16sp"
+    android:textSize="24sp"
     />
 
-  <TextView
-    android:id="@+id/tv_submitted_by"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_below="@+id/tv_repository_name"
-    android:layout_toRightOf="@id/iv_repository_icon"
-    />
 
-  <TextView
-    android:id="@+id/tv_upvotes"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentRight="true"
-    android:layout_centerVertical="true"
-    />
-
-  <View
-    android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginBottom="5dp"
-    android:layout_alignParentBottom="true"
-    android:background="@android:color/black"
-    />
-
-</RelativeLayout>
+</LinearLayout>

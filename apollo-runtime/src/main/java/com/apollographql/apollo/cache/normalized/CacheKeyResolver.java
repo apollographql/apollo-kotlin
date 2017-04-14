@@ -8,6 +8,11 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Resolves a cache key for a JSON object.
+ *
+ * @param <R> The type representing the JSON Object. Typically, Map<String, Object>.
+ */
 public abstract class CacheKeyResolver<R> {
   public static final CacheKeyResolver DEFAULT = new CacheKeyResolver<Map<String, Object>>() {
     @Nonnull @Override public CacheKey resolve(@Nonnull Map<String, Object> jsonObject) {
@@ -15,7 +20,7 @@ public abstract class CacheKeyResolver<R> {
     }
   };
 
-  public static final CacheKeyResolver<Record> RECORD  = new CacheKeyResolver<Record>() {
+  public static final CacheKeyResolver<Record> RECORD = new CacheKeyResolver<Record>() {
     @Nonnull @Override public CacheKey resolve(@Nonnull Record record) {
       return CacheKey.from(record.key());
     }
