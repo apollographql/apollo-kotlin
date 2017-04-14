@@ -17,26 +17,23 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 
 public class GitHuntApplication extends Application {
 
   private static final String BASE_URL = "https://githunt-api.herokuapp.com/graphql";
+  private static final String SQL_CACHE_NAME = "githuntdb";
   private ApolloClient apolloClient;
 
   @Override public void onCreate() {
     super.onCreate();
-    HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-    loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .addNetworkInterceptor(loggingInterceptor)
         .build();
 
-    ApolloSqlHelper apolloSqlHelper = new ApolloSqlHelper(this, "githuntdb");
+    ApolloSqlHelper apolloSqlHelper = new ApolloSqlHelper(this, SQL_CACHE_NAME);
     NormalizedCacheFactory normalizedCacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION,
         new SqlNormalizedCacheFactory(apolloSqlHelper));
 
-    final CacheKeyResolver<Map<String, Object>> cacheKeyResolver = new CacheKeyResolver<Map<String, Object>>() {
+    CacheKeyResolver<Map<String, Object>> cacheKeyResolver = new CacheKeyResolver<Map<String, Object>>() {
       @Nonnull @Override public CacheKey resolve(@Nonnull Map<String, Object> objectSource) {
         //Specific id for User type.
         if (objectSource.get("__typename").equals("User")) {
