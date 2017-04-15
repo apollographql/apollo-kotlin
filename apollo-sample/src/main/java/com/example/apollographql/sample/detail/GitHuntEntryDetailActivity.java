@@ -32,11 +32,11 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
 
   private GitHuntApplication application;
 
-  private ViewGroup content;
-  private ProgressBar progressBar;
-  private TextView description;
-  private TextView name;
-  private TextView postedBy;
+  ViewGroup content;
+  ProgressBar progressBar;
+  TextView description;
+  TextView name;
+  TextView postedBy;
 
   private String repoFullName;
 
@@ -68,11 +68,10 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home:
-        // do something useful
-        return (true);
+        return true;
+      default:
+        super.onOptionsItemSelected(item);
     }
-
-    return (super.onOptionsItemSelected(item));
   }
 
   private void setEntryData(EntryDetailQuery.Data data) {
@@ -107,4 +106,8 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
         }));
   }
 
+  @Override protected void onDestroy() {
+    super.onDestroy();
+    disposables.dispose();
+  }
 }
