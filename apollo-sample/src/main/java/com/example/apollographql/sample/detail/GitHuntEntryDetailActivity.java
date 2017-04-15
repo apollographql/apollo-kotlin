@@ -70,7 +70,7 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
       case android.R.id.home:
         return true;
       default:
-        super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
     }
   }
 
