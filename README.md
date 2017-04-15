@@ -188,6 +188,76 @@ You can have the compiler generate interfaces instead of classes if it's easier 
 }
 ```
 
+## Rx Apollo
+
+Apollo GraphQL client for Android comes with RxJava1 & RxJava2 support. Apollo types such as  ApolloCall, ApolloPrefetch & ApolloWatcher can be converted
+to their corresponding RxJava1 & RxJava2 Observable types by using wrapper functions provided in RxApollo & Rx2Apollo classes respectively.
+
+### Usage
+
+Converting ApolloCall to a Single
+```
+//Create a query object
+EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+
+//Create an ApolloCall object
+ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.newCall(query);
+
+//RxJava1 Single
+Single<EpisodeHeroName.Data> single1 = RxApollo.from(apolloCall);
+
+//RxJava2 Single
+Single<EpisodeHeroName.Data> single2 = Rx2Apollo.from(apolloCall);
+```
+
+Converting ApolloPrefetch to a Completable
+```
+//Create a query object
+EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+
+//Create an ApolloPrefetch object
+ApolloPrefetch<EpisodeHeroName.Data> apolloPrefetch = apolloClient.prefetch(query);
+
+//RxJava1 Completable
+Completable completable1 = RxApollo.from(apolloPrefetch);
+
+//RxJava2 Completable
+Completable completable2 = Rx2Apollo.from(apolloPrefetch);
+```
+
+Converting ApolloWatcher to an Observable
+```
+//Create a query object
+EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+
+//Create an ApolloWatcher object
+ApolloWatcher<EpisodeHeroName.Data> apolloWatcher = apolloClient.newCall(query).watcher();
+
+//RxJava1 Observable
+Observable<EpisodeHeroName.Data> observable1 = RxApollo.from(apolloWatcher);
+
+//RxJava2 Observable
+Observable<EpisodeHeroName.Data> observable1 = Rx2Apollo.from(apolloWatcher);
+```
+Don't forget to dispose of your Observer/Subscriber when you are finished:
+```
+Disposable disposable = Rx2Apollo.from(query).subscribe();
+
+//Dispose of your Observer when you are done with your work
+disposable.dispose();
+```
+As an alternative, multiple Disposables can be collected to dispose of at once via `CompositeDisposable`:
+```
+CompositeDisposable disposable = new CompositeDisposable();
+disposable.add(Rx2Apollo.from(query).subscribe());
+
+// Dispose of all collected Disposables at once
+disposable.clear();
+```
+
+
+For a concrete example of using Rx wrappers for apollo types, checkout the sample app in the [`apollo-sample`](apollo-sample) module.
+
 ## License
 
 ```
