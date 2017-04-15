@@ -3,6 +3,7 @@ package com.example.apollographql.sample.feed;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,12 +29,14 @@ public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNav
 
   private static final String TAG = GitHuntFeedActivity.class.getSimpleName();
 
-  private GitHuntApplication application;
-
-  private ViewGroup content;
-  private ProgressBar progressBar;
-  private GitHuntFeedRecyclerViewAdapter feedAdapter;
   private static final int FEED_SIZE = 20;
+
+  GitHuntApplication application;
+  ViewGroup content;
+  ProgressBar progressBar;
+  GitHuntFeedRecyclerViewAdapter feedAdapter;
+  Handler uiHandler = new Handler(Looper.getMainLooper());
+
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -62,7 +65,7 @@ public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNav
     @Override public void onFailure(@Nonnull ApolloException e) {
       Log.e(TAG, e.getMessage(), e);
     }
-  }, new Handler(this.getMainLooper()));
+  }, uiHandler);
 
   private void fetchFeed() {
     final FeedQuery feedQuery = FeedQuery.builder()
