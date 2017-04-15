@@ -196,7 +196,7 @@ to their corresponding RxJava1 & RxJava2 Observable types by using wrapper funct
 ### Usage
 
 Converting ApolloCall to a Single
-```
+```java
 //Create a query object
 EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
@@ -211,7 +211,7 @@ Single<EpisodeHeroName.Data> single2 = Rx2Apollo.from(apolloCall);
 ```
 
 Converting ApolloPrefetch to a Completable
-```
+```java
 //Create a query object
 EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
@@ -226,7 +226,7 @@ Completable completable2 = Rx2Apollo.from(apolloPrefetch);
 ```
 
 Converting ApolloWatcher to an Observable
-```
+```java
 //Create a query object
 EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
@@ -239,15 +239,16 @@ Observable<EpisodeHeroName.Data> observable1 = RxApollo.from(apolloWatcher);
 //RxJava2 Observable
 Observable<EpisodeHeroName.Data> observable1 = Rx2Apollo.from(apolloWatcher);
 ```
-Don't forget to dispose of your Observer/Subscriber when you are finished:
-```
+
+Also, don't forget to dispose of your Observer/Subscriber when you are finished:
+```java
 Disposable disposable = Rx2Apollo.from(query).subscribe();
 
 //Dispose of your Observer when you are done with your work
 disposable.dispose();
 ```
 As an alternative, multiple Disposables can be collected to dispose of at once via `CompositeDisposable`:
-```
+```java
 CompositeDisposable disposable = new CompositeDisposable();
 disposable.add(Rx2Apollo.from(query).subscribe());
 
