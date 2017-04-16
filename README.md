@@ -248,6 +248,22 @@ disposable.clear();
 
 For a concrete example of using Rx wrappers for apollo types, checkout the sample app in the [`apollo-sample`](apollo-sample) module.
 
+### Download
+
+RxJava1:
+
+[![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo/apollo-rx-support.svg)](http://repo1.maven.org/maven2/com/apollographql/apollo/apollo-rx-support/)
+```gradle
+compile 'com.apollographql.apollo:apollo-rx-support:x.y.z'
+```
+
+RxJava2:
+
+[![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo/apollo-rx2-support.svg)](http://repo1.maven.org/maven2/com/apollographql/apollo/apollo-rx2-support/)
+```gradle
+compile 'com.apollographql.apollo:apollo-rx2-support:x.y.z'
+```
+
 ## License
 
 ```
