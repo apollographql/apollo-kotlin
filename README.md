@@ -184,7 +184,7 @@ to their corresponding RxJava1 & RxJava2 Observable types by using wrapper funct
 
 ### Usage
 
-Converting ApolloCall to a Single
+Converting ApolloCall to a Single:
 ```java
 //Create a query object
 EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
@@ -199,7 +199,7 @@ Single<EpisodeHeroName.Data> single1 = RxApollo.from(apolloCall);
 Single<EpisodeHeroName.Data> single2 = Rx2Apollo.from(apolloCall);
 ```
 
-Converting ApolloPrefetch to a Completable
+Converting ApolloPrefetch to a Completable:
 ```java
 //Create a query object
 EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
@@ -214,7 +214,7 @@ Completable completable1 = RxApollo.from(apolloPrefetch);
 Completable completable2 = Rx2Apollo.from(apolloPrefetch);
 ```
 
-Converting ApolloWatcher to an Observable
+Converting ApolloWatcher to an Observable:
 ```java
 //Create a query object
 EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
