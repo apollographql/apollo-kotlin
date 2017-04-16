@@ -250,7 +250,7 @@ disposable.dispose();
 As an alternative, multiple Disposables can be collected to dispose of at once via `CompositeDisposable`:
 ```java
 CompositeDisposable disposable = new CompositeDisposable();
-disposable.add(Rx2Apollo.from(query).subscribe());
+disposable.add(Rx2Apollo.from(call).subscribe());
 
 // Dispose of all collected Disposables at once
 disposable.clear();
