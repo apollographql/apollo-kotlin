@@ -13,6 +13,7 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
+import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.internal.RealApolloCall;
 import com.apollographql.apollo.internal.RealApolloPrefetch;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
@@ -23,7 +24,10 @@ import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
@@ -72,6 +76,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   private final HttpCacheControl defaultHttpCacheControl;
   private final CacheControl defaultCacheControl;
   private final ApolloLogger logger;
+  private final List<ApolloInterceptor> interceptors;
 
   private ApolloClient(Builder builder) {
     this.serverUrl = builder.serverUrl;
@@ -84,6 +89,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     this.defaultHttpCacheControl = builder.defaultHttpCacheControl;
     this.defaultCacheControl = builder.defaultCacheControl;
     this.logger = builder.apolloLogger;
+    this.interceptors = Collections.unmodifiableList(new ArrayList<ApolloInterceptor>(builder.interceptors));
   }
 
   /**
@@ -101,7 +107,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
       }
     }
     return new RealApolloCall<T>(operation, serverUrl, httpCallFactory, httpCache, defaultHttpCacheControl, moshi,
-        responseFieldMapper, customTypeAdapters, apolloStore, defaultCacheControl, dispatcher, logger)
+        responseFieldMapper, customTypeAdapters, apolloStore, defaultCacheControl, dispatcher, logger, interceptors)
         .httpCacheControl(defaultHttpCacheControl)
         .cacheControl(defaultCacheControl);
   }
@@ -129,9 +135,8 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   }
 
   /**
-   *
-   * @return The {@link ApolloStore} managing access to the normalized cache created by
-   * {@link Builder#normalizedCache(NormalizedCacheFactory, CacheKeyResolver)}  }
+   * @return The {@link ApolloStore} managing access to the normalized cache created by {@link
+   * Builder#normalizedCache(NormalizedCacheFactory, CacheKeyResolver)}  }
    */
   public ApolloStore apolloStore() {
     return apolloStore;
@@ -162,6 +167,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     Optional<Logger> logger = Optional.absent();
     HttpCache httpCache;
     ApolloLogger apolloLogger;
+    final List<ApolloInterceptor> interceptors = new ArrayList<>();
 
     private Builder() {
     }
@@ -290,6 +296,11 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
      */
     public Builder logger(@Nullable Logger logger) {
       this.logger = Optional.fromNullable(logger);
+      return this;
+    }
+
+    public Builder interceptor(@Nonnull ApolloInterceptor apolloInterceptor) {
+      interceptors.add(apolloInterceptor);
       return this;
     }
 
