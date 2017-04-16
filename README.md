@@ -177,16 +177,6 @@ ApolloConverterFactory apolloConverterFactory = new ApolloConverterFactory.Build
         .build();
 ```
 
-## Generate interfaces instead of classes
-
-You can have the compiler generate interfaces instead of classes if it's easier to integrate with your existing framework:. More on that soon.
-
-```gradle
-{
-  generateClasses=false
-}
-```
-
 ## License
 
 ```
