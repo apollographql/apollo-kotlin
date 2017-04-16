@@ -30,7 +30,6 @@ package com.apollographql.apollo;
  * To use a custom type adapter with Apollo, you must first define the mapping in the build.gradle file:
  * <pre>   {@code
  *  apollo {
- *        generateClasses = true
  *        customTypeMapping {
  *        DateTime = "java.util.Date"
  *        }
@@ -42,7 +41,6 @@ package com.apollographql.apollo;
  * notation. For example, in order to use the reserved keyword URL, define the mapping like this:
  * <pre>   {@code
  * apollo {
- *        generateClasses = true
  *        customTypeMapping['URL'] = "String"
  *    }
  * }
