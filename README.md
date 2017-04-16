@@ -145,9 +145,8 @@ Apollo supports Custom Scalar Types like `DateTime` for an example.
 
 You first need to define the mapping in your build.gradle file. This will tell the compiler what type to use when generating the classes.
 
-```
+```gradle
 apollo {
-    generateClasses = true
     customTypeMapping {
         DateTime = "java.util.Date"
     }
@@ -156,7 +155,7 @@ apollo {
 
 Then register your custom adapter:
 
-```
+```java
 CustomTypeAdapter<Date> dateCustomTypeAdapter = new CustomTypeAdapter<Date>() {
     @Override
     public Date decode(String value) {
@@ -176,16 +175,6 @@ ApolloConverterFactory apolloConverterFactory = new ApolloConverterFactory.Build
         .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
         .withResponseFieldMappers(ResponseFieldMappers.MAPPERS)
         .build();
-```
-
-## Generate interfaces instead of classes
-
-You can have the compiler generate interfaces instead of classes if it's easier to integrate with your existing framework:. More on that soon.
-
-```
-{
-  generateClasses=false
-}
 ```
 
 ## License
