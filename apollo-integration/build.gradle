@@ -7,7 +7,7 @@ buildscript {
 skipApolloRuntimeDep()
 
 apply plugin: 'com.android.application'
-//apply plugin: 'com.apollographql.android'
+apply plugin: 'com.apollographql.android'
 
 android {
   compileSdkVersion androidConfig.compileSdkVersion
@@ -43,6 +43,6 @@ dependencies {
   testCompile dep.okhttpTestSupport
 }
 
-//apollo {
-//  customTypeMapping['Date'] = "java.util.Date"
-//}
+apollo {
+  customTypeMapping['Date'] = "java.util.Date"
+}
