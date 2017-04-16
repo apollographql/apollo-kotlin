@@ -190,7 +190,7 @@ You can have the compiler generate interfaces instead of classes if it's easier 
 
 ## Rx Apollo
 
-Apollo GraphQL client for Android comes with RxJava1 & RxJava2 support. Apollo types such as  ApolloCall, ApolloPrefetch & ApolloWatcher can be converted
+Apollo GraphQL client comes with RxJava1 & RxJava2 support. Apollo types such as ApolloCall, ApolloPrefetch & ApolloWatcher can be converted
 to their corresponding RxJava1 & RxJava2 Observable types by using wrapper functions provided in RxApollo & Rx2Apollo classes respectively.
 
 ### Usage
