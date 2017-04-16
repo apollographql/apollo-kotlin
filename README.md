@@ -147,7 +147,6 @@ You first need to define the mapping in your build.gradle file. This will tell t
 
 ```gradle
 apollo {
-    generateClasses = true
     customTypeMapping {
         DateTime = "java.util.Date"
     }
