@@ -34,7 +34,7 @@ buildscript {
   }
   dependencies {
     
-    classpath 'com.apollographql.apollo:gradle-plugin:0.2.3-SNAPSHOT' 
+    classpath 'com.apollographql.apollo:gradle-plugin:0.3.0'
   }
 }
 ```
