@@ -1,7 +1,7 @@
 package com.apollographql.apollo;
 
 /**
- * CustomTypeAdapter class represents the adapter for converting custom scalar types to Java objects.
+ * CustomTypeAdapter class represents the adapter for converting GraphQL custom scalar types to Java objects.
  *
  * <h3>Defining a custom scalar type adapter</h3>
  *
@@ -38,6 +38,15 @@ package com.apollographql.apollo;
  * }
  * </pre>
  *
+ * Sometimes when the name of the custom scalar type is a reserved keyword in groovy, you can instead use it's Map
+ * notation. For example, in order to use the reserved keyword URL, define the mapping like this:
+ * <pre>   {@code
+ * apollo {
+ *        generateClasses = true
+ *        customTypeMapping['URL'] = "String"
+ *    }
+ * }
+ * </pre>
  * The lines above tell the compiler which type to use while generating the classes. Once this is done, register the
  * type adapter with {@link com.apollographql.apollo.ApolloClient.Builder}:
  * <pre>
@@ -53,7 +62,7 @@ package com.apollographql.apollo;
 public interface CustomTypeAdapter<T> {
 
   /**
-   * De-serializes the value to the custom scalar type.
+   * De-serializes the value to the custom scalar type. Usually used in parsing the GraphQL response.
    *
    * @param value the value to de-serialize
    * @return custom scalar type
@@ -61,7 +70,8 @@ public interface CustomTypeAdapter<T> {
   T decode(String value);
 
   /**
-   * Serializes the custom scalar type to the corresponding string value.
+   * Serializes the custom scalar type to the corresponding string value. Usually used in serializing variables or input
+   * values.
    *
    * @param value the custom scalar type to serialize
    * @return serialized string value
