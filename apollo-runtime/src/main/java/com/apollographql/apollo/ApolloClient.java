@@ -76,7 +76,8 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   private final HttpCacheControl defaultHttpCacheControl;
   private final CacheControl defaultCacheControl;
   private final ApolloLogger logger;
-  private final List<ApolloInterceptor> interceptors;
+  private final List<ApolloInterceptor> applicationInterceptors;
+  private final List<ApolloInterceptor> networkInterceptors;
 
   private ApolloClient(Builder builder) {
     this.serverUrl = builder.serverUrl;
@@ -89,7 +90,9 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     this.defaultHttpCacheControl = builder.defaultHttpCacheControl;
     this.defaultCacheControl = builder.defaultCacheControl;
     this.logger = builder.apolloLogger;
-    this.interceptors = Collections.unmodifiableList(new ArrayList<ApolloInterceptor>(builder.interceptors));
+    this.applicationInterceptors = Collections.unmodifiableList(new ArrayList<ApolloInterceptor>(builder.applicationInterceptors));
+    this.networkInterceptors = Collections.unmodifiableList(new ArrayList<ApolloInterceptor>(builder
+        .networkInterceptors));
   }
 
   /**
@@ -107,7 +110,8 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
       }
     }
     return new RealApolloCall<T>(operation, serverUrl, httpCallFactory, httpCache, defaultHttpCacheControl, moshi,
-        responseFieldMapper, customTypeAdapters, apolloStore, defaultCacheControl, dispatcher, logger, interceptors)
+        responseFieldMapper, customTypeAdapters, apolloStore, defaultCacheControl, dispatcher, logger,
+        applicationInterceptors, networkInterceptors)
         .httpCacheControl(defaultHttpCacheControl)
         .cacheControl(defaultCacheControl);
   }
@@ -167,7 +171,8 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     Optional<Logger> logger = Optional.absent();
     HttpCache httpCache;
     ApolloLogger apolloLogger;
-    final List<ApolloInterceptor> interceptors = new ArrayList<>();
+    final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
+    final List<ApolloInterceptor> networkInterceptors = new ArrayList<>();
 
     private Builder() {
     }
@@ -299,8 +304,13 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
       return this;
     }
 
-    public Builder interceptor(@Nonnull ApolloInterceptor apolloInterceptor) {
-      interceptors.add(apolloInterceptor);
+    public Builder applicationInterceptor(@Nonnull ApolloInterceptor interceptor) {
+      applicationInterceptors.add(interceptor);
+      return this;
+    }
+
+    public Builder networkInterceptor(@Nonnull ApolloInterceptor interceptor) {
+      networkInterceptors.add(interceptor);
       return this;
     }
 
