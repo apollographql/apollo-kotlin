@@ -1,7 +1,6 @@
 apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'java-gradle-plugin'
-clearSkipApolloRuntimeDep()
 
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7

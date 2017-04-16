@@ -4,7 +4,6 @@ subprojects {
   buildscript {
     repositories {
       jcenter()
-      maven { url "https://jitpack.io" }
       maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
 
@@ -14,7 +13,6 @@ subprojects {
   }
   repositories {
     jcenter()
-    maven { url "https://jitpack.io" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
   }
 
@@ -43,17 +41,5 @@ subprojects {
         check.dependsOn('checkstyle')
       }
     }
-  }
-}
-
-// This prevents the plugin from adding the snapshot version of
-// apollo-runtime dependencies to the dependencies set
-def skipApolloRuntimeDep() {
-  System.setProperty("apollographql.skipRuntimeDep", "true")
-}
-// Clears the skipRuntimeDep property for other modules
-def clearSkipApolloRuntimeDep() {
-  if (System.getProperty("apollographql.skipRuntimeDep") != null) {
-    System.clearProperty("apollographql.skipRuntimeDep")
   }
 }
