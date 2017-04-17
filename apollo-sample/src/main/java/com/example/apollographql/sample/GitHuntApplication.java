@@ -35,7 +35,7 @@ public class GitHuntApplication extends Application {
     CacheKeyResolver<Map<String, Object>> cacheKeyResolver = new CacheKeyResolver<Map<String, Object>>() {
       @Nonnull @Override public CacheKey resolve(@Nonnull Map<String, Object> objectSource) {
         //Specific id for User type.
-        if (objectSource.get("__typename").equals("User")) {
+        if ("User".equals(objectSource.get("__typename"))) {
           String userKey = objectSource.get("__typename") + "." + objectSource.get("login");
           return CacheKey.from(userKey);
         }
