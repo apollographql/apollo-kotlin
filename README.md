@@ -50,7 +50,6 @@ If using Apollo in your Kotlin project, make sure to apply the Apollo plugin bef
 
 ```
 apply plugin: 'com.apollographql.android'
-// Kotlin plugins
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 ...
