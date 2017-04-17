@@ -241,15 +241,6 @@ public class InterceptorTest {
 
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
-    okhttp3.Request request = getFakeHttpRequest();
-
-    okhttp3.Response okHttpResponse = getFakeHttpResponse(request);
-
-    Response<EpisodeHeroName.Data> apolloResponse = new Response<>(query);
-
-    final InterceptorResponse rewrittenResponse = new InterceptorResponse(okHttpResponse,
-        apolloResponse, Collections.<Record>emptyList());
-
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
       public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
@@ -273,7 +264,35 @@ public class InterceptorTest {
     assertThat(actualResponse.data().hero().name()).isEqualTo("Artoo");
   }
 
+  @Test
+  public void syncApplicationInterceptorThrowsRuntimeException() {
 
+    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+
+    ApolloInterceptor interceptor = new ApolloInterceptor() {
+      @Nonnull @Override
+      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+        throw new RuntimeException("RuntimeException");
+      }
+
+      @Override
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+
+      }
+
+      @Override public void dispose() {
+
+      }
+    };
+
+    client = getApolloClient(interceptor);
+
+    try {
+      client.newCall(query).execute();
+    } catch (Exception e) {
+      assertThat(e.getMessage()).isEqualTo("RuntimeException");
+    }
+  }
 
   private ApolloClient getApolloClient(ApolloInterceptor interceptor) {
     return ApolloClient.builder()
