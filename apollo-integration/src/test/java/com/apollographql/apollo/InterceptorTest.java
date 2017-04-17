@@ -201,9 +201,16 @@ public class InterceptorTest {
       }
 
       @Override
-      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
-        callBack.onResponse(rewrittenResponse);
-        chain.proceedAsync(dispatcher, callBack);
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+        chain.proceedAsync(dispatcher, new CallBack() {
+          @Override public void onResponse(@Nonnull InterceptorResponse response) {
+            callBack.onResponse(rewrittenResponse);
+          }
+
+          @Override public void onFailure(@Nonnull ApolloException e) {
+
+          }
+        });
       }
 
       @Override public void dispose() {
@@ -265,6 +272,8 @@ public class InterceptorTest {
     Response<EpisodeHeroName.Data> actualResponse = client.newCall(query).execute();
     assertThat(actualResponse.data().hero().name()).isEqualTo("Artoo");
   }
+
+
 
   private ApolloClient getApolloClient(ApolloInterceptor interceptor) {
     return ApolloClient.builder()
