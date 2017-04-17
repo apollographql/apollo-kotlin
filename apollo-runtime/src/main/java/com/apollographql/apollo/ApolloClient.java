@@ -14,6 +14,7 @@ import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
+import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.RealApolloCall;
 import com.apollographql.apollo.internal.RealApolloPrefetch;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
@@ -304,11 +305,27 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
       return this;
     }
 
+    /**
+     * Add an interceptor that observes the full span of each call: from before the connection is established until
+     * after the response source is selected (either the server, cache or both). This method can be called multiple
+     * times for adding multiple application interceptors.
+     *
+     * @param interceptor Application level interceptor to add
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
     public Builder applicationInterceptor(@Nonnull ApolloInterceptor interceptor) {
       applicationInterceptors.add(interceptor);
       return this;
     }
 
+    /**
+     * Add an interceptor that observes a single request and response. This interceptor must call {@link
+     * ApolloInterceptorChain#proceed()} exactly once: it is an error for a network interceptor to short circuit or
+     * repeat a network request. This method can be called multiple times for adding multiple network interceptors.
+     *
+     * @param interceptor Network level interceptor to add
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
     public Builder networkInterceptor(@Nonnull ApolloInterceptor interceptor) {
       networkInterceptors.add(interceptor);
       return this;
