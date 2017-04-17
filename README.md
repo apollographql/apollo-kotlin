@@ -177,7 +177,7 @@ ApolloConverterFactory apolloConverterFactory = new ApolloConverterFactory.Build
         .build();
 ```
 
-## Rx Apollo
+## RxJava Support
 
 Apollo GraphQL client comes with RxJava1 & RxJava2 support. Apollo types such as ApolloCall, ApolloPrefetch & ApolloWatcher can be converted
 to their corresponding RxJava1 & RxJava2 Observable types by using wrapper functions provided in RxApollo & Rx2Apollo classes respectively.
