@@ -187,14 +187,14 @@ Apollo GraphQL client allows you to cache responses, making it suitable for use 
 
 ### Usage
 
-HTTP Response Cache:
+Raw HTTP Response Cache:
 ```java
 
 File file = new File("/cache/"); //directory where cached responses will be stored
 
 int size = 1024*1024; //size in bytes of the cache
 
-EvictionStrategy evictionStrategy = new TimeoutEvictionStrategy(, TimeUnit.SECONDS) //decides when the cache becomes stale
+EvictionStrategy evictionStrategy = new TimeoutEvictionStrategy(5, TimeUnit.SECONDS) //decides when the cache becomes stale
 
 ResponseCacheStore cacheStore = new DiskLruCacheStore(file, size); 
 
@@ -260,6 +260,8 @@ ApolloClient apolloClient = ApolloClient.builder()
 
 ```
 
+For concrete examples of using response caches, please see the following classes in the [`apollo-integration`](apollo-integration) module:
+`CacheTest`, `SqlNormalizedCacheTest`, `LruNormalizedCacheTest`. 
 
 ## RxJava Support
 
