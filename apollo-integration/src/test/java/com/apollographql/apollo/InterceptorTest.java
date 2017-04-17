@@ -15,7 +15,11 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -294,6 +298,45 @@ public class InterceptorTest {
     }
   }
 
+  @Test
+  public void asyncApplicationInterceptorThrowsRuntimeException() {
+
+    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+
+    ApolloInterceptor interceptor = new ApolloInterceptor() {
+      @Nonnull @Override
+      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+        throw new RuntimeException("RuntimeException");
+      }
+
+      @Override
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+
+      }
+
+      @Override public void dispose() {
+
+      }
+    };
+
+    client = ApolloClient.builder()
+        .serverUrl(mockWebServer.url("/"))
+        .okHttpClient(okHttpClient)
+        .applicationInterceptor(interceptor)
+        .dispatcher(new ExceptionCatchingExecutor())
+        .build();
+
+    client.newCall(query).enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
+      @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+
+      }
+
+      @Override public void onFailure(@Nonnull ApolloException e) {
+
+      }
+    });
+  }
+
   private ApolloClient getApolloClient(ApolloInterceptor interceptor) {
     return ApolloClient.builder()
         .serverUrl(mockWebServer.url("/"))
@@ -320,5 +363,30 @@ public class InterceptorTest {
 
   private MockResponse mockResponse(String fileName) throws IOException {
     return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
+  }
+
+  /** Catches exceptions that are otherwise headed for the uncaught exception handler. */
+  private static class ExceptionCatchingExecutor extends ThreadPoolExecutor {
+    private final BlockingQueue<Exception> exceptions = new LinkedBlockingQueue<>();
+
+    public ExceptionCatchingExecutor() {
+      super(1, 1, 0, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+    }
+
+    @Override public void execute(final Runnable runnable) {
+      super.execute(new Runnable() {
+        @Override public void run() {
+          try {
+            runnable.run();
+          } catch (Exception e) {
+            exceptions.add(e);
+          }
+        }
+      });
+    }
+
+    public Exception takeException() throws InterruptedException {
+      return exceptions.take();
+    }
   }
 }
