@@ -14,7 +14,6 @@ import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
-import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.RealApolloCall;
 import com.apollographql.apollo.internal.RealApolloPrefetch;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
@@ -26,7 +25,6 @@ import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +76,6 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   private final CacheControl defaultCacheControl;
   private final ApolloLogger logger;
   private final List<ApolloInterceptor> applicationInterceptors;
-  private final List<ApolloInterceptor> networkInterceptors;
 
   private ApolloClient(Builder builder) {
     this.serverUrl = builder.serverUrl;
@@ -91,9 +88,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     this.defaultHttpCacheControl = builder.defaultHttpCacheControl;
     this.defaultCacheControl = builder.defaultCacheControl;
     this.logger = builder.apolloLogger;
-    this.applicationInterceptors = Collections.unmodifiableList(new ArrayList<ApolloInterceptor>(builder.applicationInterceptors));
-    this.networkInterceptors = Collections.unmodifiableList(new ArrayList<ApolloInterceptor>(builder
-        .networkInterceptors));
+    this.applicationInterceptors = builder.applicationInterceptors;
   }
 
   /**
@@ -112,7 +107,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     }
     return new RealApolloCall<T>(operation, serverUrl, httpCallFactory, httpCache, defaultHttpCacheControl, moshi,
         responseFieldMapper, customTypeAdapters, apolloStore, defaultCacheControl, dispatcher, logger,
-        applicationInterceptors, networkInterceptors)
+        applicationInterceptors)
         .httpCacheControl(defaultHttpCacheControl)
         .cacheControl(defaultCacheControl);
   }
@@ -315,19 +310,6 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
      */
     public Builder applicationInterceptor(@Nonnull ApolloInterceptor interceptor) {
       applicationInterceptors.add(interceptor);
-      return this;
-    }
-
-    /**
-     * Add an interceptor that observes a single request and response. This interceptor must call {@link
-     * ApolloInterceptorChain#proceed()} exactly once: it is an error for a network interceptor to short circuit or
-     * repeat a network request. This method can be called multiple times for adding multiple network interceptors.
-     *
-     * @param interceptor Network level interceptor to add
-     * @return The {@link Builder} object to be used for chaining method calls
-     */
-    public Builder networkInterceptor(@Nonnull ApolloInterceptor interceptor) {
-      networkInterceptors.add(interceptor);
       return this;
     }
 

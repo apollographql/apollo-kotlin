@@ -10,6 +10,7 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,16 +24,20 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
 import okhttp3.ResponseBody;
+import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
 import static com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse;
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class InterceptorTest {
 
   private ApolloClient client;
   private MockWebServer mockWebServer;
   private OkHttpClient okHttpClient;
+
+  private static final String FILE_EPISODE_HERO_NAME_WITH_ID = "EpisodeHeroNameResponseWithId.json";
 
   @Before
   public void setup() {
@@ -41,7 +46,7 @@ public class InterceptorTest {
   }
 
   @Test
-  public void applicationInterceptorCanShortCircuitResponses() throws IOException, ApolloException {
+  public void applicationInterceptorsCanShortCircuitResponses() throws IOException, ApolloException {
     mockWebServer.shutdown();
 
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
@@ -55,7 +60,7 @@ public class InterceptorTest {
         .protocol(Protocol.HTTP_2)
         .code(200)
         .message("Intercepted")
-        .body(ResponseBody.create(MediaType.parse("text/plain; charset=utf-8"), "dummy"))
+        .body(ResponseBody.create(MediaType.parse("text/plain; charset=utf-8"), "fakeResponse"))
         .build();
 
     Response<EpisodeHeroName.Data> apolloResponse = new Response<>(query);
@@ -88,4 +93,7 @@ public class InterceptorTest {
     assertThat(expectedResponse.parsedResponse.get()).isEqualTo(actualResponse);
   }
 
+  private MockResponse mockResponse(String fileName) throws IOException {
+    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
+  }
 }
