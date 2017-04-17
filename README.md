@@ -189,15 +189,17 @@ Apollo GraphQL client allows you to cache responses, making it suitable for use 
 
 Raw HTTP Response Cache:
 ```java
+//Directory where cached responses will be stored
+File file = new File("/cache/");
 
-File file = new File("/cache/"); //directory where cached responses will be stored
+//Size in bytes of the cache
+int size = 1024*1024;
 
-int size = 1024*1024; //size in bytes of the cache
+//Strategy for deciding when the cache becomes stale
+EvictionStrategy evictionStrategy = new TimeoutEvictionStrategy(5, TimeUnit.SECONDS);
 
-EvictionStrategy evictionStrategy = new TimeoutEvictionStrategy(5, TimeUnit.SECONDS) //decides when the cache becomes stale
-
+//Create the http response cache store
 ResponseCacheStore cacheStore = new DiskLruCacheStore(file, size); 
-
 
 //Build the Apollo Client
 ApolloClient apolloClient = ApolloClient.builder()
