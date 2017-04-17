@@ -177,6 +177,90 @@ ApolloConverterFactory apolloConverterFactory = new ApolloConverterFactory.Build
         .build();
 ```
 
+## Support For Cached Responses
+
+Apollo GraphQL client allows you to cache responses, making it suitable for use even while offline. The client can be configured with 3 levels of caching:
+
+ - **HTTP Response Cache**: For caching raw http responses. These responses are stored in files.
+ - **Normalized Disk Cache**: Per node caching of responses in SQL. Persists normalized responses on disk so that they can used across sessions. 
+ - **Normalized InMemory Cache**: Optimized Guava memory cache for when cached normalized responses need not be persisted across sessions.  
+
+### Usage
+
+HTTP Response Cache:
+```java
+
+File file = new File("/cache/"); //directory where cached responses will be stored
+
+int size = 1024*1024; //size in bytes of the cache
+
+EvictionStrategy evictionStrategy = new TimeoutEvictionStrategy(, TimeUnit.SECONDS) //decides when the cache becomes stale
+
+ResponseCacheStore cacheStore = new DiskLruCacheStore(file, size); 
+
+
+//Build the Apollo Client
+ApolloClient apolloClient = ApolloClient.builder()
+                                    .serverUrl("/")
+                                    .httpCache(cacheStore, evictionStrategy)
+                                    .okHttpClient(okHttpClient)
+                                    .build();
+```
+
+Normalized Disk Cache:
+```java
+//Create the ApolloSqlHelper
+ApolloSqlHelper apolloSqlHelper = ApolloSqlHelper.create(context, "db_name");
+
+//Create NormalizedCacheFactory
+NormalizedCacheFactory cacheFactory = new SqlNormalizedCacheFactory(apolloSqlHelper);
+
+//Create the cache key resolver
+CacheKeyResolver<Map<String, Object>> resolver =  new CacheKeyResolver<Map<String, Object>>() {
+          @Nonnull @Override public CacheKey resolve(@Nonnull Map<String, Object> objectSource) {
+            String id = (String) objectSource.get("id");
+            if (id == null || id.isEmpty()) {
+              return CacheKey.NO_KEY;
+            }
+            return CacheKey.from(id);
+          }
+        }
+
+//Build the Apollo Client
+ApolloClient apolloClient = ApolloClient.builder()
+                                    .serverUrl("/")
+                                    .normalizedCache(cacheFactory, resolver)
+                                    .okHttpClient(okHttpClient)
+                                    .build();
+```
+
+Normalized InMemory Cache:
+```java
+
+//Create NormalizedCacheFactory
+NormalizedCacheFactory cacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
+
+//Create the cache key resolver
+CacheKeyResolver<Map<String, Object>> resolver =  new CacheKeyResolver<Map<String, Object>>() {
+          @Nonnull @Override public CacheKey resolve(@Nonnull Map<String, Object> objectSource) {
+            String id = (String) objectSource.get("id");
+            if (id == null || id.isEmpty()) {
+              return CacheKey.NO_KEY;
+            }
+            return CacheKey.from(id);
+          }
+        }
+
+//Build the Apollo Client
+ApolloClient apolloClient = ApolloClient.builder()
+                                    .serverUrl("/")
+                                    .normalizedCache(cacheFactory, resolver)
+                                    .okHttpClient(okHttpClient)
+                                    .build();
+
+```
+
+
 ## RxJava Support
 
 Apollo GraphQL client comes with RxJava1 & RxJava2 support. Apollo types such as ApolloCall, ApolloPrefetch & ApolloWatcher can be converted
