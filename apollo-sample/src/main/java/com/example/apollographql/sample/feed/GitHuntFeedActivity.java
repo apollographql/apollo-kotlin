@@ -36,6 +36,7 @@ public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNav
   ProgressBar progressBar;
   GitHuntFeedRecyclerViewAdapter feedAdapter;
   Handler uiHandler = new Handler(Looper.getMainLooper());
+  ApolloCall<FeedQuery.Data> githuntFeedCall;
 
 
   @Override protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +73,7 @@ public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNav
         .limit(FEED_SIZE)
         .type(FeedType.HOT)
         .build();
-    ApolloCall<FeedQuery.Data> githuntFeedCall = application.apolloClient()
+    githuntFeedCall = application.apolloClient()
         .newCall(feedQuery)
         .cacheControl(CacheControl.NETWORK_FIRST);
     githuntFeedCall.enqueue(dataCallback);
@@ -81,6 +82,13 @@ public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNav
   @Override public void startGitHuntActivity(String repoFullName) {
     final Intent intent = GitHuntEntryDetailActivity.newIntent(this, repoFullName);
     startActivity(intent);
+  }
+
+  @Override protected void onDestroy() {
+    super.onDestroy();
+    if (githuntFeedCall != null) {
+      githuntFeedCall.cancel();
+    }
   }
 }
 

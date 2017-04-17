@@ -93,7 +93,7 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
 
     //Example call using Rx2Support
     disposables.add(Rx2Apollo.from(entryDetailQuery)
-        .subscribeOn(Schedulers.newThread())
+        .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeWith(new DisposableSingleObserver<EntryDetailQuery.Data>() {
           @Override public void onSuccess(EntryDetailQuery.Data data) {

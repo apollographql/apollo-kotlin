@@ -2,7 +2,6 @@ package com.example.apollographql.sample;
 
 import android.app.Application;
 
-import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
@@ -49,7 +48,7 @@ public class GitHuntApplication extends Application {
       }
     };
 
-    apolloClient = ApolloClient.<ApolloCall>builder()
+    apolloClient = ApolloClient.builder()
         .serverUrl(BASE_URL)
         .okHttpClient(okHttpClient)
         .normalizedCache(normalizedCacheFactory, cacheKeyResolver)
