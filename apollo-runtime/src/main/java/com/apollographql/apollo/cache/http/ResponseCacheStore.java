@@ -21,7 +21,7 @@ public interface ResponseCacheStore {
    * Returns an editor for the entry named cacheKey or null if another edit is in progress.
    *
    * @param cacheKey the entry to edit.
-   * @return {@link ResponseCacheRecordEditor} to use fo editing the entry
+   * @return {@link ResponseCacheRecordEditor} to use for editing the entry
    */
   @Nullable ResponseCacheRecordEditor cacheRecordEditor(@Nonnull String cacheKey) throws IOException;
 
