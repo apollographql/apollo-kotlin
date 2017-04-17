@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  >
+
+  <ProgressBar
+    android:id="@+id/loading_bar"
+    android:layout_width="50dp"
+    android:layout_height="50dp"
+    android:layout_gravity="center"
+    />
+
+  <LinearLayout
+    android:id="@+id/content_holder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:visibility="gone"
+    >
+
+    <TextView
+      android:id="@+id/tv_repository_name"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textColor="@android:color/black"
+      android:textSize="20sp"
+      />
+
+
+    <TextView
+      android:id="@+id/tv_posted_by"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      />
+
+    <TextView
+      android:id="@+id/tv_repository_description"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      />
+
+  </LinearLayout>
+
+</FrameLayout>

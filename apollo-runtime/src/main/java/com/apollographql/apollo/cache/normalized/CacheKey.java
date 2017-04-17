@@ -4,7 +4,13 @@ import javax.annotation.Nonnull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
+/**
+ * A key for a {@link Record} used for normalization in a {@link NormalizedCache}.
+ * If the json object which the {@link Record} corresponds to does not have a suitable
+ * key, return use {@link #NO_KEY}.
+ */
 public final class CacheKey {
+
   public static final CacheKey NO_KEY = new CacheKey("");
 
   public static CacheKey from(@Nonnull String key) {

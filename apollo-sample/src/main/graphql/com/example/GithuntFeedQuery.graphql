@@ -1,8 +1,6 @@
 query FeedQuery($type: FeedType!, $limit: Int!) {
-  feed(type: $type, limit: $limit) {
-    comments {
-      ...FeedCommentFragment
-    }
+  feedEntries: feed(type: $type, limit: $limit) {
+    id
     repository {
       ...RepositoryFragment
     }
@@ -18,12 +16,4 @@ fragment RepositoryFragment on Repository {
   owner {
     login
   }
-}
-
-fragment FeedCommentFragment on Comment {
-  id
-  postedBy {
-    login
-  }
-  content
 }

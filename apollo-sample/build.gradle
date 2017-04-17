@@ -28,8 +28,12 @@ android {
 dependencies {
   compile dep.jsr305
   compile dep.apolloRuntime
+  compile dep.apolloAndroidSupport
+  compile dep.apolloRx2Support
   compile dep.appcompat
   compile dep.okhttpLoggingInterceptor
-
+  compile dep.recyclerView
+  compile dep.rxandroid
+  compile dep.rxjava2
   testCompile dep.junit
 }
