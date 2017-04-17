@@ -30,12 +30,11 @@ dependencies {
   compile dep.jsr305
   compile dep.apolloRuntime
   compile dep.apolloAndroidSupport
+  compile dep.apolloRx2Support
   compile dep.appcompat
   compile dep.okhttpLoggingInterceptor
-  compile dep.apolloAndroidSupport
-  compile dep.apolloRx2Support
-  compile dep.rxjava2
-  compile dep.rxandroid
   compile dep.recyclerView
+  compile dep.rxandroid
+  compile dep.rxjava2
   testCompile dep.junit
 }
