@@ -44,6 +44,17 @@ apply plugin: 'com.apollographql.android'
 
 The Android Plugin must be applied before the Apollo plugin
 
+### Kotlin
+
+If using Apollo in your Kotlin project, make sure to apply the Apollo plugin before your Kotlin plugins within your app module's `build.gradle`:
+
+```
+apply plugin: 'com.apollographql.android'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+...
+```
+
 ## Generate Code using Apollo
 
 Follow these steps:
