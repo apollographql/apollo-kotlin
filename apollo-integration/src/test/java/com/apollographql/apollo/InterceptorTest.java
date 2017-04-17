@@ -40,6 +40,8 @@ public class InterceptorTest {
   private OkHttpClient okHttpClient;
 
   private static final String FILE_EPISODE_HERO_NAME_WITH_ID = "EpisodeHeroNameResponseWithId.json";
+  private static final String FILE_EPISODE_HERO_NAME_CHANGE = "EpisodeHeroNameResponseNameChange.json";
+
 
   @Before
   public void setup() {
@@ -223,6 +225,45 @@ public class InterceptorTest {
     });
 
     responseLatch.awaitOrThrowWithTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
+  }
+
+  @Test
+  public void applicationInterceptorsCanMakeMultipleRequestsToServer() throws IOException, ApolloException {
+    mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
+
+    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+
+    okhttp3.Request request = getFakeHttpRequest();
+
+    okhttp3.Response okHttpResponse = getFakeHttpResponse(request);
+
+    Response<EpisodeHeroName.Data> apolloResponse = new Response<>(query);
+
+    final InterceptorResponse rewrittenResponse = new InterceptorResponse(okHttpResponse,
+        apolloResponse, Collections.<Record>emptyList());
+
+    ApolloInterceptor interceptor = new ApolloInterceptor() {
+      @Nonnull @Override
+      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+        chain.proceed();
+        return chain.proceed();
+      }
+
+      @Override
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+
+      }
+
+      @Override public void dispose() {
+
+      }
+    };
+
+    client = getApolloClient(interceptor);
+
+    Response<EpisodeHeroName.Data> actualResponse = client.newCall(query).execute();
+    assertThat(actualResponse.data().hero().name()).isEqualTo("Artoo");
   }
 
   private ApolloClient getApolloClient(ApolloInterceptor interceptor) {
