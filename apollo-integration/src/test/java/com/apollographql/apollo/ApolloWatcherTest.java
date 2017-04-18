@@ -93,6 +93,7 @@ public class ApolloWatcherTest {
     // Another newer call gets updated information
     server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
     apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     watcher.cancel();
   }
@@ -124,6 +125,7 @@ public class ApolloWatcherTest {
         });
 
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
     apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
 
@@ -165,6 +167,7 @@ public class ApolloWatcherTest {
 
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
     apolloClient.newCall(friendsQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
+
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     watcher.cancel();
   }
@@ -243,6 +246,7 @@ public class ApolloWatcherTest {
     // -- this is for the refetch
     server.enqueue(mockResponse("EpisodeHeroNameResponseNameChangeTwo.json"));
     apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
+
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     watcher.cancel();
   }
