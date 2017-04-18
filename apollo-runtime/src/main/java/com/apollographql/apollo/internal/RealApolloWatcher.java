@@ -67,8 +67,8 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
   }
 
   private void refetch() {
-    activeCall.cancel();
     apolloStore.unsubscribe(recordChangeSubscriber);
+    activeCall.cancel();
     activeCall = activeCall.clone().cacheControl(refetchCacheControl);
     activeCall.enqueue(callbackProxy(this.callback));
   }
@@ -80,9 +80,9 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
           return;
         }
 
-        sourceCallback.onResponse(response);
         dependentKeys = response.dependentKeys();
         apolloStore.subscribe(recordChangeSubscriber);
+        sourceCallback.onResponse(response);
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
