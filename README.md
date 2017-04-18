@@ -181,9 +181,9 @@ ApolloConverterFactory apolloConverterFactory = new ApolloConverterFactory.Build
 
 Apollo GraphQL client allows you to cache responses, making it suitable for use even while offline. The client can be configured with 3 levels of caching:
 
- - **HTTP Response Cache**: For caching raw http responses. These responses are stored in files.
- - **Normalized Disk Cache**: Per node caching of responses in SQL. Persists normalized responses on disk so that they can used across sessions. 
- - **Normalized InMemory Cache**: Optimized Guava memory cache for when cached normalized responses need not be persisted across sessions.  
+ - **HTTP Response Cache**: For caching raw http responses.
+ - **Normalized Disk Cache**: Per node caching of responses in SQL. Persists normalized responses on disk so that they can used after process death. 
+ - **Normalized InMemory Cache**: Optimized Guava memory cache for in memory caching as long as the App/Process is still alive.  
 
 ### Usage
 
@@ -211,7 +211,8 @@ ApolloClient apolloClient = ApolloClient.builder()
 
 Normalized Disk Cache:
 ```java
-//Create the ApolloSqlHelper
+//Create the ApolloSqlHelper. Please note that if null is passed in as the name, you will get an in-memory SqlLite database that 
+// will not persist across restarts of the app.
 ApolloSqlHelper apolloSqlHelper = ApolloSqlHelper.create(context, "db_name");
 
 //Create NormalizedCacheFactory
@@ -262,7 +263,7 @@ ApolloClient apolloClient = ApolloClient.builder()
 
 ```
 
-For concrete examples of using response caches, please see the following classes in the [`apollo-integration`](apollo-integration) module:
+For concrete examples of using response caches, please see the following tests in the [`apollo-integration`](apollo-integration) module:
 `CacheTest`, `SqlNormalizedCacheTest`, `LruNormalizedCacheTest`. 
 
 ## RxJava Support
