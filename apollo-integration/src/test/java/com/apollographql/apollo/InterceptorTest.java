@@ -68,12 +68,7 @@ public class InterceptorTest {
 
     EpisodeHeroName query = getHeroNameQuery();
 
-    okhttp3.Request request = getFakeHttpRequest();
-    okhttp3.Response okHttpResponse = getFakeHttpResponse(request);
-    Response<EpisodeHeroName.Data> apolloResponse = new Response<>(query);
-
-    final InterceptorResponse expectedResponse = new InterceptorResponse(okHttpResponse,
-        apolloResponse, Collections.<Record>emptyList());
+    final InterceptorResponse expectedResponse = getInterceptorResponse(query);
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
@@ -109,12 +104,7 @@ public class InterceptorTest {
 
     EpisodeHeroName query = getHeroNameQuery();
 
-    okhttp3.Request request = getFakeHttpRequest();
-    okhttp3.Response okHttpResponse = getFakeHttpResponse(request);
-    Response<EpisodeHeroName.Data> apolloResponse = new Response<>(query);
-
-    final InterceptorResponse expectedResponse = new InterceptorResponse(okHttpResponse,
-        apolloResponse, Collections.<Record>emptyList());
+    final InterceptorResponse expectedResponse = getInterceptorResponse(query);
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
@@ -123,7 +113,8 @@ public class InterceptorTest {
       }
 
       @Override
-      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
         callBack.onResponse(expectedResponse);
       }
 
@@ -154,12 +145,7 @@ public class InterceptorTest {
 
     EpisodeHeroName query = getHeroNameQuery();
 
-    okhttp3.Request request = getFakeHttpRequest();
-    okhttp3.Response okHttpResponse = getFakeHttpResponse(request);
-    Response<EpisodeHeroName.Data> apolloResponse = new Response<>(query);
-
-    final InterceptorResponse rewrittenResponse = new InterceptorResponse(okHttpResponse,
-        apolloResponse, Collections.<Record>emptyList());
+    final InterceptorResponse rewrittenResponse = getInterceptorResponse(query);
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
@@ -169,7 +155,8 @@ public class InterceptorTest {
       }
 
       @Override
-      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
 
       }
 
@@ -193,12 +180,7 @@ public class InterceptorTest {
 
     EpisodeHeroName query = getHeroNameQuery();
 
-    okhttp3.Request request = getFakeHttpRequest();
-    okhttp3.Response okHttpResponse = getFakeHttpResponse(request);
-    Response<EpisodeHeroName.Data> apolloResponse = new Response<>(query);
-
-    final InterceptorResponse rewrittenResponse = new InterceptorResponse(okHttpResponse,
-        apolloResponse, Collections.<Record>emptyList());
+    final InterceptorResponse rewrittenResponse = getInterceptorResponse(query);
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
@@ -207,7 +189,8 @@ public class InterceptorTest {
       }
 
       @Override
-      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
         chain.proceedAsync(dispatcher, new CallBack() {
           @Override public void onResponse(@Nonnull InterceptorResponse response) {
             callBack.onResponse(rewrittenResponse);
@@ -252,7 +235,8 @@ public class InterceptorTest {
       }
 
       @Override
-      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
 
       }
 
@@ -286,7 +270,8 @@ public class InterceptorTest {
       }
 
       @Override
-      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
         ApolloException apolloException = new ApolloParseException(message);
         callBack.onFailure(apolloException);
       }
@@ -325,7 +310,8 @@ public class InterceptorTest {
       }
 
       @Override
-      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
 
       }
 
@@ -358,7 +344,8 @@ public class InterceptorTest {
       }
 
       @Override
-      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
 
       }
 
@@ -384,7 +371,8 @@ public class InterceptorTest {
       }
 
       @Override
-      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
 
       }
 
@@ -404,7 +392,10 @@ public class InterceptorTest {
   }
 
   @NonNull private EpisodeHeroName getHeroNameQuery() {
-    return EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    return EpisodeHeroName
+        .builder()
+        .episode(Episode.EMPIRE)
+        .build();
   }
 
   private ApolloClient getApolloClient(ApolloInterceptor interceptor) {
@@ -415,20 +406,23 @@ public class InterceptorTest {
         .build();
   }
 
-  private Request getFakeHttpRequest() {
-    return new Request.Builder()
+  @NonNull private InterceptorResponse getInterceptorResponse(EpisodeHeroName query) {
+    Request request = new Request.Builder()
         .url(mockWebServer.url("/"))
         .build();
-  }
 
-  private okhttp3.Response getFakeHttpResponse(Request request) {
-    return new okhttp3.Response.Builder()
+    okhttp3.Response okHttpResponse = new okhttp3.Response.Builder()
         .request(request)
         .protocol(Protocol.HTTP_2)
         .code(200)
         .message("Intercepted")
         .body(ResponseBody.create(MediaType.parse("text/plain; charset=utf-8"), "fakeResponse"))
         .build();
+
+    Response<EpisodeHeroName.Data> apolloResponse = new Response<>(query);
+
+    return new InterceptorResponse(okHttpResponse,
+        apolloResponse, Collections.<Record>emptyList());
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
