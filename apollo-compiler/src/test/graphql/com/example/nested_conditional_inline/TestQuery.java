@@ -181,7 +181,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
     }
 
-    public static class AsHuman1 {
+    public static class AsHuman1 extends Friend {
       private final @Nonnull String name;
 
       private final Optional<Double> height;
@@ -248,27 +248,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class Friend {
-      private final @Nonnull String name;
-
       private final Optional<AsHuman1> asHuman;
 
-      public Friend(@Nonnull String name, @Nullable AsHuman1 asHuman) {
-        this.name = name;
-        this.asHuman = Optional.fromNullable(asHuman);
-      }
-
-      public @Nonnull String name() {
-        return this.name;
-      }
-
-      public Optional<AsHuman1> asHuman() {
-        return this.asHuman;
+      public Friend() {
+        if (this instanceof AsHuman1) {
+          asHuman = Optional.fromNullable((AsHuman1) this);
+        } else {
+          asHuman = Optional.absent();
+        }
       }
 
       @Override
       public String toString() {
         return "Friend{"
-          + "name=" + name + ", "
           + "asHuman=" + asHuman
           + "}";
       }
@@ -280,8 +272,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         }
         if (o instanceof Friend) {
           Friend that = (Friend) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-           && ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman));
+          return ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman));
         }
         return false;
       }
@@ -289,8 +280,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public int hashCode() {
         int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
         h ^= (asHuman == null) ? 0 : asHuman.hashCode();
         return h;
@@ -300,7 +289,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final AsHuman1.Mapper asHuman1FieldMapper = new AsHuman1.Mapper();
 
         final Field[] fields = {
-          Field.forString("name", "name", null, false),
           Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman1>() {
             @Override
             public AsHuman1 read(String conditionalType, ResponseReader reader) throws IOException {
@@ -315,14 +303,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
         @Override
         public Friend map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          final AsHuman1 asHuman = reader.read(fields[1]);
-          return new Friend(name, asHuman);
+          final AsHuman1 asHuman = reader.read(fields[0]);
+          if (asHuman != null) {
+            return asHuman;
+          }
+          return new Friend();
         }
       }
     }
 
-    public static class AsHuman {
+    public static class AsHuman extends Hero {
       private final @Nonnull String name;
 
       private final Optional<List<Friend>> friends;
@@ -392,7 +382,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
     }
 
-    public static class AsHuman2 {
+    public static class AsHuman2 extends Friend1 {
       private final @Nonnull String name;
 
       private final Optional<Double> height;
@@ -459,27 +449,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class Friend1 {
-      private final @Nonnull String name;
-
       private final Optional<AsHuman2> asHuman;
 
-      public Friend1(@Nonnull String name, @Nullable AsHuman2 asHuman) {
-        this.name = name;
-        this.asHuman = Optional.fromNullable(asHuman);
-      }
-
-      public @Nonnull String name() {
-        return this.name;
-      }
-
-      public Optional<AsHuman2> asHuman() {
-        return this.asHuman;
+      public Friend1() {
+        if (this instanceof AsHuman2) {
+          asHuman = Optional.fromNullable((AsHuman2) this);
+        } else {
+          asHuman = Optional.absent();
+        }
       }
 
       @Override
       public String toString() {
         return "Friend1{"
-          + "name=" + name + ", "
           + "asHuman=" + asHuman
           + "}";
       }
@@ -491,8 +473,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         }
         if (o instanceof Friend1) {
           Friend1 that = (Friend1) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-           && ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman));
+          return ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman));
         }
         return false;
       }
@@ -500,8 +481,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public int hashCode() {
         int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
         h ^= (asHuman == null) ? 0 : asHuman.hashCode();
         return h;
@@ -511,7 +490,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final AsHuman2.Mapper asHuman2FieldMapper = new AsHuman2.Mapper();
 
         final Field[] fields = {
-          Field.forString("name", "name", null, false),
           Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman2>() {
             @Override
             public AsHuman2 read(String conditionalType, ResponseReader reader) throws IOException {
@@ -526,14 +504,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
         @Override
         public Friend1 map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          final AsHuman2 asHuman = reader.read(fields[1]);
-          return new Friend1(name, asHuman);
+          final AsHuman2 asHuman = reader.read(fields[0]);
+          if (asHuman != null) {
+            return asHuman;
+          }
+          return new Friend1();
         }
       }
     }
 
-    public static class AsDroid {
+    public static class AsDroid extends Hero {
       private final @Nonnull String name;
 
       private final Optional<List<Friend1>> friends;
@@ -604,34 +584,26 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class Hero {
-      private final @Nonnull String name;
-
       private final Optional<AsHuman> asHuman;
 
       private final Optional<AsDroid> asDroid;
 
-      public Hero(@Nonnull String name, @Nullable AsHuman asHuman, @Nullable AsDroid asDroid) {
-        this.name = name;
-        this.asHuman = Optional.fromNullable(asHuman);
-        this.asDroid = Optional.fromNullable(asDroid);
-      }
-
-      public @Nonnull String name() {
-        return this.name;
-      }
-
-      public Optional<AsHuman> asHuman() {
-        return this.asHuman;
-      }
-
-      public Optional<AsDroid> asDroid() {
-        return this.asDroid;
+      public Hero() {
+        if (this instanceof AsHuman) {
+          asHuman = Optional.fromNullable((AsHuman) this);
+        } else {
+          asHuman = Optional.absent();
+        }
+        if (this instanceof AsDroid) {
+          asDroid = Optional.fromNullable((AsDroid) this);
+        } else {
+          asDroid = Optional.absent();
+        }
       }
 
       @Override
       public String toString() {
         return "Hero{"
-          + "name=" + name + ", "
           + "asHuman=" + asHuman + ", "
           + "asDroid=" + asDroid
           + "}";
@@ -644,8 +616,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         }
         if (o instanceof Hero) {
           Hero that = (Hero) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-           && ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman))
+          return ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman))
            && ((this.asDroid == null) ? (that.asDroid == null) : this.asDroid.equals(that.asDroid));
         }
         return false;
@@ -654,8 +625,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public int hashCode() {
         int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
         h ^= (asHuman == null) ? 0 : asHuman.hashCode();
         h *= 1000003;
@@ -669,7 +638,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
         final Field[] fields = {
-          Field.forString("name", "name", null, false),
           Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman>() {
             @Override
             public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
@@ -694,10 +662,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
         @Override
         public Hero map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          final AsHuman asHuman = reader.read(fields[1]);
-          final AsDroid asDroid = reader.read(fields[2]);
-          return new Hero(name, asHuman, asDroid);
+          final AsHuman asHuman = reader.read(fields[0]);
+          if (asHuman != null) {
+            return asHuman;
+          }
+          final AsDroid asDroid = reader.read(fields[1]);
+          if (asDroid != null) {
+            return asDroid;
+          }
+          return new Hero();
         }
       }
     }

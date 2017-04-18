@@ -39,31 +39,43 @@ import javax.lang.model.element.Modifier
  */
 class SchemaTypeResponseMapperBuilder(
     typeName: String,
-    val fields: List<Field>,
+    fields: List<Field>,
     val fragmentSpreads: List<String>,
     val inlineFragments: List<InlineFragment>,
     val typeOverrideMap: Map<String, String>,
     val context: CodeGenerationContext
 ) {
   private val typeClassName = ClassName.get("", typeName)
-  private val responseFieldMapperType = ParameterizedTypeName.get(API_RESPONSE_FIELD_MAPPER_TYPE, typeClassName)
+  private val superInterfaceType = ParameterizedTypeName.get(API_RESPONSE_FIELD_MAPPER_TYPE, typeClassName)
+  private val fields = if (inlineFragments.isEmpty()) fields else emptyList()
+  private val inlineFragmentContentValues = inlineFragments
+      .map { it.fieldSpec(context) }
+      .map {
+        val type = it.type
+            .unwrapOptionalType()
+            .withoutAnnotations()
+            .overrideTypeName(typeOverrideMap)
+        FieldSpec.builder(type, it.name).build()
+      }
+  private val contentValues = this.fields
+      .map { it.fieldSpec(context) }
+      .map {
+        val type = it.type
+            .unwrapOptionalType()
+            .withoutAnnotations()
+            .overrideTypeName(typeOverrideMap)
+        FieldSpec.builder(type, it.name).build()
+      }
+      .plus(inlineFragmentContentValues)
+      .let { if (fragmentSpreads.isNotEmpty() && inlineFragments.isEmpty()) it.plus(FRAGMENTS_FIELD) else it }
 
   fun build(): TypeSpec {
-    val contentValueFields = fields
-        .map { it.fieldSpec(context) }
-        .map { FieldSpec.builder(it.type.overrideTypeName(typeOverrideMap), it.name).build() }
-        .plus(inlineFragments
-            .map { it.fieldSpec(context) }
-            .map { FieldSpec.builder(it.type.overrideTypeName(typeOverrideMap), it.name).build() })
-        .let { if (fragmentSpreads.isNotEmpty()) it.plus(FRAGMENTS_FIELD) else it }
-        .map { FieldSpec.builder(it.type.withoutAnnotations().unwrapOptionalType(), it.name).build() }
-
     return TypeSpec.classBuilder(Util.MAPPER_TYPE_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-        .addSuperinterface(responseFieldMapperType)
-        .addFields(mapperFields())
+        .addSuperinterface(superInterfaceType)
+        .addFields(mapperFields(fields))
         .addField(fieldArray(fields))
-        .addMethod(mapMethod(contentValueFields))
+        .addMethod(mapMethod())
         .build()
   }
 
@@ -83,7 +95,8 @@ class SchemaTypeResponseMapperBuilder(
   private fun fieldFactoriesCode(fields: List<Field>) =
       fields.map { fieldFactoryCode(it) }
           .plus(inlineFragments.map { inlineFragmentFieldFactoryCode(it) })
-          .plus(if (fragmentSpreads.isNotEmpty()) fragmentsFieldFactoryCode() else CodeBlock.of(""))
+          .plus(if (fragmentSpreads.isNotEmpty() && inlineFragments.isEmpty())
+            fragmentsFieldFactoryCode() else CodeBlock.of(""))
           .filter { !it.isEmpty }
           .foldIndexed(CodeBlock.builder()) { i, builder, code ->
             builder.add(if (i > 0) ",\n" else "").add(code)
@@ -210,30 +223,38 @@ class SchemaTypeResponseMapperBuilder(
         .build()
   }
 
-  private fun mapMethod(contentValueFields: List<FieldSpec>) =
+  private fun mapMethod() =
       MethodSpec.methodBuilder("map")
           .addModifiers(Modifier.PUBLIC)
           .addAnnotation(Override::class.java)
           .addParameter(READER_PARAM)
           .addException(IOException::class.java)
           .returns(typeClassName)
-          .addCode(mapMethodCode(contentValueFields))
+          .addCode(mapMethodCode())
           .build()
 
-  private fun mapMethodCode(contentValueFields: List<FieldSpec>) =
-      CodeBlock.builder()
-          .add(contentValueFields
-              .mapIndexed { i, fieldSpec -> readFieldValueCode(fieldSpec, i) }
-              .fold(CodeBlock.builder(), CodeBlock.Builder::add)
-              .build())
+  private fun mapMethodCode(): CodeBlock {
+    val contentValuesCode = contentValues
+        .mapIndexed { i, fieldSpec -> readFieldValueCode(fieldSpec, i) }
+        .fold(CodeBlock.builder(), CodeBlock.Builder::add)
+        .build()
+    if (inlineFragments.isNotEmpty()) {
+      return CodeBlock.builder()
+          .add(contentValuesCode)
+          .addStatement("return new \$T()", typeClassName)
+          .build()
+    } else {
+      return CodeBlock.builder()
+          .add(contentValuesCode)
           .add("return new \$T(", typeClassName)
-          .add(contentValueFields
+          .add(contentValues
               .mapIndexed { i, fieldSpec -> CodeBlock.of("\$L\$L", if (i > 0) ", " else "", fieldSpec.name) }
               .fold(CodeBlock.builder(), CodeBlock.Builder::add)
               .build())
           .add(");\n")
           .build()
-
+    }
+  }
 
   private fun readFieldValueCode(fieldSpec: FieldSpec, index: Int): CodeBlock {
     val fieldRawType = fieldSpec.type.withoutAnnotations()
@@ -249,7 +270,17 @@ class SchemaTypeResponseMapperBuilder(
           .endControlFlow()
           .build()
     } else {
-      CodeBlock.of("final \$T \$L = \$L.read(\$L[\$L]);\n", fieldRawType, fieldSpec.name, READER_VAR, FIELDS_VAR, index)
+      CodeBlock.builder()
+          .add("final \$T \$L = \$L.read(\$L[\$L]);\n", fieldRawType, fieldSpec.name, READER_VAR, FIELDS_VAR, index)
+          .let {
+            if (inlineFragmentContentValues.contains(fieldSpec)) {
+              it.beginControlFlow("if (\$L != null)", fieldSpec.name)
+                  .add("return \$L;\n", fieldSpec.name)
+                  .endControlFlow()
+            }
+            it
+          }
+          .build()
     }
   }
 
@@ -273,6 +304,7 @@ class SchemaTypeResponseMapperBuilder(
   private fun inlineFragmentFieldFactoryCode(fragment: InlineFragment): CodeBlock {
     val type = fragment.fieldSpec(context).type.unwrapOptionalType().withoutAnnotations()
         .overrideTypeName(typeOverrideMap) as ClassName
+
     fun readCodeBlock(): CodeBlock {
       return CodeBlock.builder()
           .beginControlFlow("if (\$L.equals(\$S))", CONDITIONAL_TYPE_VAR, fragment.typeCondition)
@@ -329,7 +361,7 @@ class SchemaTypeResponseMapperBuilder(
         conditionalFieldReaderType())
   }
 
-  private fun mapperFields() =
+  private fun mapperFields(fields: List<Field>) =
       fields
           .map { it.fieldSpec(context) }
           .plus(inlineFragments.map { it.fieldSpec(context) })
@@ -337,7 +369,7 @@ class SchemaTypeResponseMapperBuilder(
           .map { it.let { if (it.isList()) it.listParamType() else it } }
           .filter { !it.isScalar() && !it.isCustomScalarType() }
           .map { it.overrideTypeName(typeOverrideMap) as ClassName }
-          .plus(if (fragmentSpreads.isEmpty()) emptyList<ClassName>() else listOf(FRAGMENTS_CLASS))
+          .plus(if (fragmentSpreads.isNotEmpty() && inlineFragments.isEmpty()) listOf(FRAGMENTS_CLASS) else emptyList())
           .map {
             val mapperClassName = ClassName.get(it.packageName(), it.simpleName(), Util.MAPPER_TYPE_NAME)
             FieldSpec.builder(mapperClassName, it.mapperFieldName(), Modifier.FINAL)

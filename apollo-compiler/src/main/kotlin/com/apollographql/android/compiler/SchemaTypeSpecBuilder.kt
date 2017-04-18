@@ -12,9 +12,11 @@ class SchemaTypeSpecBuilder(
     val fields: List<Field>,
     val fragmentSpreads: List<String>,
     val inlineFragments: List<InlineFragment>,
-    val context: CodeGenerationContext
+    val context: CodeGenerationContext,
+    val superClass: TypeName = TypeName.OBJECT
 ) {
   private val uniqueTypeName = formatUniqueTypeName(typeName, context.reservedTypeNames)
+  private val javaClassName = ClassName.get("", uniqueTypeName)
 
   fun build(vararg modifiers: Modifier): TypeSpec {
     context.reservedTypeNames += uniqueTypeName
@@ -26,32 +28,49 @@ class SchemaTypeSpecBuilder(
 
     return TypeSpec.classBuilder(uniqueTypeName)
         .addModifiers(*modifiers)
+        .superclass(superClass)
         .addTypes(nestedTypeSpecs.map { it.second })
         .addFields(nameOverrideMap)
-        .addInlineFragments(nameOverrideMap)
         .addFragments()
         .addType(mapper)
+        .let {
+          if (inlineFragments.isNotEmpty())
+            it.addMethod(constructorWithInlineFragments(nameOverrideMap))
+          else
+            it
+        }
         .build()
-        .withValueInitConstructor(context.nullableValueType)
+        .let {
+          if (inlineFragments.isEmpty())
+            it.withValueInitConstructor(nullableValueGenerationType = context.nullableValueType)
+          else
+            it
+        }
         .withToStringImplementation()
         .withEqualsImplementation()
         .withHashCodeImplementation()
   }
 
   private fun TypeSpec.Builder.addFields(nameOverrideMap: Map<String, String>): TypeSpec.Builder {
-    addFields(fields
-        .map { it.fieldSpec(context, !context.generateAccessors) }
-        .map { it.overrideType(nameOverrideMap) })
-    if (context.generateAccessors) {
-      addMethods(fields
-          .map { it.accessorMethodSpec(context) }
-          .map { it.overrideReturnType(nameOverrideMap) })
+    if (inlineFragments.isEmpty()) {
+      addFields(fields
+          .map { it.fieldSpec(context, !context.generateAccessors) }
+          .map { it.overrideType(nameOverrideMap) })
+      if (context.generateAccessors) {
+        addMethods(fields
+            .map { it.accessorMethodSpec(context) }
+            .map { it.overrideReturnType(nameOverrideMap) })
+      }
+    } else {
+      addFields(inlineFragments
+          .map { it.fieldSpec(context, !context.generateAccessors) }
+          .map { it.overrideType(nameOverrideMap) })
     }
     return this
   }
 
   private fun TypeSpec.Builder.addFragments(): TypeSpec.Builder {
-    if (fragmentSpreads.isNotEmpty()) {
+    if (fragmentSpreads.isNotEmpty() && inlineFragments.isEmpty()) {
       addType(fragmentsTypeSpec())
       addField(fragmentsFieldSpec())
       if (context.generateAccessors) {
@@ -62,23 +81,17 @@ class SchemaTypeSpecBuilder(
   }
 
   private fun nestedTypeSpecs(): List<Pair<String, TypeSpec>> {
-    return fields.filter(Field::isNonScalar)
-        .map { it.formatClassName() to it.toTypeSpec(context) }
-        .plus(inlineFragments.map { it.formatClassName() to it.toTypeSpec(context) })
-  }
-
-  private fun TypeSpec.Builder.addInlineFragments(nameOverrideMap: Map<String, String>): TypeSpec.Builder {
-    addFields(inlineFragments
-        .map { it.fieldSpec(context, !context.generateAccessors) }
-        .map { it.overrideType(nameOverrideMap) })
-
-    if (context.generateAccessors) {
-      addMethods(inlineFragments
-          .map { it.accessorMethodSpec(context) }
-          .map { it.overrideReturnType(nameOverrideMap) })
+    if (inlineFragments.isEmpty()) {
+      return fields.filter(Field::isNonScalar)
+          .map { it.formatClassName() to it.toTypeSpec(context) }
+    } else {
+      return inlineFragments.map {
+        it.formatClassName() to it.toTypeSpec(
+            context = context,
+            superClass = javaClassName
+        )
+      }
     }
-
-    return this
   }
 
   private fun fragmentsAccessorMethodSpec(): MethodSpec {
@@ -152,6 +165,42 @@ class SchemaTypeSpecBuilder(
       index++
     }
     return name
+  }
+
+  private fun constructorWithInlineFragments(nameOverrideMap: Map<String, String>): MethodSpec {
+    val code = inlineFragments
+        .map { it.fieldSpec(context = context, publicModifier = true) }
+        .mapIndexed { i, fieldSpec ->
+          val type = fieldSpec.type.unwrapOptionalType().withoutAnnotations().overrideTypeName(nameOverrideMap)
+          val nullableTypeWrapperClass = when (context.nullableValueType) {
+            NullableValueType.APOLLO_OPTIONAL -> ClassNames.OPTIONAL
+            NullableValueType.GUAVA_OPTIONAL -> ClassNames.GUAVA_OPTIONAL
+            else -> null
+          }
+
+          val codeBuilder = CodeBlock.builder()
+          codeBuilder.beginControlFlow("if (this instanceof \$T)", type)
+          if (nullableTypeWrapperClass != null) {
+            codeBuilder.addStatement("\$L = \$T.fromNullable((\$T) this)", fieldSpec.name, nullableTypeWrapperClass,
+                type)
+          } else {
+            codeBuilder.addStatement("\$L = (\$T) this", fieldSpec.name, type)
+          }
+          codeBuilder.nextControlFlow("else")
+          if (nullableTypeWrapperClass != null) {
+            codeBuilder.addStatement("\$L = \$T.absent()", fieldSpec.name, nullableTypeWrapperClass)
+          } else {
+            codeBuilder.addStatement("\$L = null", fieldSpec.name)
+          }
+          codeBuilder.endControlFlow()
+          codeBuilder.build()
+        }
+        .fold(CodeBlock.builder(), CodeBlock.Builder::add)
+        .build()
+    return MethodSpec.constructorBuilder()
+        .addModifiers(Modifier.PUBLIC)
+        .addCode(code)
+        .build()
   }
 
   companion object {

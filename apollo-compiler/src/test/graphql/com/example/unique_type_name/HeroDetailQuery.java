@@ -129,61 +129,10 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       }
     }
 
-    public static class Friend {
-      private final @Nonnull String name;
-
-      public Friend(@Nonnull String name) {
-        this.name = name;
-      }
-
-      public @Nonnull String name() {
-        return this.name;
-      }
-
-      @Override
-      public String toString() {
-        return "Friend{"
-          + "name=" + name
-          + "}";
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof Friend) {
-          Friend that = (Friend) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        return h;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<Friend> {
-        final Field[] fields = {
-          Field.forString("name", "name", null, false)
-        };
-
-        @Override
-        public Friend map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          return new Friend(name);
-        }
-      }
-    }
-
-    public static class Friend2 {
+    public static class Friend1 {
       private final @Nonnull Fragments fragments;
 
-      public Friend2(@Nonnull Fragments fragments) {
+      public Friend1(@Nonnull Fragments fragments) {
         this.fragments = fragments;
       }
 
@@ -193,7 +142,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
       @Override
       public String toString() {
-        return "Friend2{"
+        return "Friend1{"
           + "fragments=" + fragments
           + "}";
       }
@@ -203,8 +152,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         if (o == this) {
           return true;
         }
-        if (o instanceof Friend2) {
-          Friend2 that = (Friend2) o;
+        if (o instanceof Friend1) {
+          Friend1 that = (Friend1) o;
           return ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
         }
         return false;
@@ -271,7 +220,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         }
       }
 
-      public static final class Mapper implements ResponseFieldMapper<Friend2> {
+      public static final class Mapper implements ResponseFieldMapper<Friend1> {
         final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
         final Field[] fields = {
@@ -285,22 +234,22 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         };
 
         @Override
-        public Friend2 map(ResponseReader reader) throws IOException {
+        public Friend1 map(ResponseReader reader) throws IOException {
           final Fragments fragments = reader.read(fields[0]);
-          return new Friend2(fragments);
+          return new Friend1(fragments);
         }
       }
     }
 
-    public static class Friend1 {
+    public static class Friend {
       private final @Nonnull String name;
 
       private final @Nonnull List<Episode> appearsIn;
 
-      private final Optional<List<Friend2>> friends;
+      private final Optional<List<Friend1>> friends;
 
-      public Friend1(@Nonnull String name, @Nonnull List<Episode> appearsIn,
-          @Nullable List<Friend2> friends) {
+      public Friend(@Nonnull String name, @Nonnull List<Episode> appearsIn,
+          @Nullable List<Friend1> friends) {
         this.name = name;
         this.appearsIn = appearsIn;
         this.friends = Optional.fromNullable(friends);
@@ -314,13 +263,13 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         return this.appearsIn;
       }
 
-      public Optional<List<Friend2>> friends() {
+      public Optional<List<Friend1>> friends() {
         return this.friends;
       }
 
       @Override
       public String toString() {
-        return "Friend1{"
+        return "Friend{"
           + "name=" + name + ", "
           + "appearsIn=" + appearsIn + ", "
           + "friends=" + friends
@@ -332,8 +281,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         if (o == this) {
           return true;
         }
-        if (o instanceof Friend1) {
-          Friend1 that = (Friend1) o;
+        if (o instanceof Friend) {
+          Friend that = (Friend) o;
           return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
            && ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn))
            && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends));
@@ -353,8 +302,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         return h;
       }
 
-      public static final class Mapper implements ResponseFieldMapper<Friend1> {
-        final Friend2.Mapper friend2FieldMapper = new Friend2.Mapper();
+      public static final class Mapper implements ResponseFieldMapper<Friend> {
+        final Friend1.Mapper friend1FieldMapper = new Friend1.Mapper();
 
         final Field[] fields = {
           Field.forString("name", "name", null, false),
@@ -363,31 +312,31 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
               return Episode.valueOf(reader.readString());
             }
           }),
-          Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend2>() {
-            @Override public Friend2 read(final ResponseReader reader) throws IOException {
-              return friend2FieldMapper.map(reader);
+          Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend1>() {
+            @Override public Friend1 read(final ResponseReader reader) throws IOException {
+              return friend1FieldMapper.map(reader);
             }
           })
         };
 
         @Override
-        public Friend1 map(ResponseReader reader) throws IOException {
+        public Friend map(ResponseReader reader) throws IOException {
           final String name = reader.read(fields[0]);
           final List<Episode> appearsIn = reader.read(fields[1]);
-          final List<Friend2> friends = reader.read(fields[2]);
-          return new Friend1(name, appearsIn, friends);
+          final List<Friend1> friends = reader.read(fields[2]);
+          return new Friend(name, appearsIn, friends);
         }
       }
     }
 
-    public static class AsHuman {
+    public static class AsHuman extends HeroDetailQuery1 {
       private final @Nonnull String name;
 
-      private final Optional<List<Friend1>> friends;
+      private final Optional<List<Friend>> friends;
 
       private final Optional<Double> height;
 
-      public AsHuman(@Nonnull String name, @Nullable List<Friend1> friends,
+      public AsHuman(@Nonnull String name, @Nullable List<Friend> friends,
           @Nullable Double height) {
         this.name = name;
         this.friends = Optional.fromNullable(friends);
@@ -398,7 +347,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         return this.name;
       }
 
-      public Optional<List<Friend1>> friends() {
+      public Optional<List<Friend>> friends() {
         return this.friends;
       }
 
@@ -442,13 +391,13 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       }
 
       public static final class Mapper implements ResponseFieldMapper<AsHuman> {
-        final Friend1.Mapper friend1FieldMapper = new Friend1.Mapper();
+        final Friend.Mapper friendFieldMapper = new Friend.Mapper();
 
         final Field[] fields = {
           Field.forString("name", "name", null, false),
-          Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend1>() {
-            @Override public Friend1 read(final ResponseReader reader) throws IOException {
-              return friend1FieldMapper.map(reader);
+          Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend>() {
+            @Override public Friend read(final ResponseReader reader) throws IOException {
+              return friendFieldMapper.map(reader);
             }
           }),
           Field.forDouble("height", "height", null, true)
@@ -457,7 +406,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         @Override
         public AsHuman map(ResponseReader reader) throws IOException {
           final String name = reader.read(fields[0]);
-          final List<Friend1> friends = reader.read(fields[1]);
+          final List<Friend> friends = reader.read(fields[1]);
           final Double height = reader.read(fields[2]);
           return new AsHuman(name, friends, height);
         }
@@ -465,36 +414,19 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     }
 
     public static class HeroDetailQuery1 {
-      private final @Nonnull String name;
-
-      private final Optional<List<Friend>> friends;
-
       private final Optional<AsHuman> asHuman;
 
-      public HeroDetailQuery1(@Nonnull String name, @Nullable List<Friend> friends,
-          @Nullable AsHuman asHuman) {
-        this.name = name;
-        this.friends = Optional.fromNullable(friends);
-        this.asHuman = Optional.fromNullable(asHuman);
-      }
-
-      public @Nonnull String name() {
-        return this.name;
-      }
-
-      public Optional<List<Friend>> friends() {
-        return this.friends;
-      }
-
-      public Optional<AsHuman> asHuman() {
-        return this.asHuman;
+      public HeroDetailQuery1() {
+        if (this instanceof AsHuman) {
+          asHuman = Optional.fromNullable((AsHuman) this);
+        } else {
+          asHuman = Optional.absent();
+        }
       }
 
       @Override
       public String toString() {
         return "HeroDetailQuery1{"
-          + "name=" + name + ", "
-          + "friends=" + friends + ", "
           + "asHuman=" + asHuman
           + "}";
       }
@@ -506,9 +438,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         }
         if (o instanceof HeroDetailQuery1) {
           HeroDetailQuery1 that = (HeroDetailQuery1) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-           && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends))
-           && ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman));
+          return ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman));
         }
         return false;
       }
@@ -517,26 +447,14 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       public int hashCode() {
         int h = 1;
         h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        h *= 1000003;
-        h ^= (friends == null) ? 0 : friends.hashCode();
-        h *= 1000003;
         h ^= (asHuman == null) ? 0 : asHuman.hashCode();
         return h;
       }
 
       public static final class Mapper implements ResponseFieldMapper<HeroDetailQuery1> {
-        final Friend.Mapper friendFieldMapper = new Friend.Mapper();
-
         final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
         final Field[] fields = {
-          Field.forString("name", "name", null, false),
-          Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend>() {
-            @Override public Friend read(final ResponseReader reader) throws IOException {
-              return friendFieldMapper.map(reader);
-            }
-          }),
           Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman>() {
             @Override
             public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
@@ -551,10 +469,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
         @Override
         public HeroDetailQuery1 map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          final List<Friend> friends = reader.read(fields[1]);
-          final AsHuman asHuman = reader.read(fields[2]);
-          return new HeroDetailQuery1(name, friends, asHuman);
+          final AsHuman asHuman = reader.read(fields[0]);
+          if (asHuman != null) {
+            return asHuman;
+          }
+          return new HeroDetailQuery1();
         }
       }
     }
