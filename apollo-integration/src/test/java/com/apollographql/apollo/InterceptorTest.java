@@ -13,6 +13,7 @@ import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,19 +39,27 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class InterceptorTest {
 
-  public static final int TIMEOUT_SECONDS = 3;
   private ApolloClient client;
   private MockWebServer mockWebServer;
   private OkHttpClient okHttpClient;
 
   private static final String FILE_EPISODE_HERO_NAME_WITH_ID = "EpisodeHeroNameResponseWithId.json";
   private static final String FILE_EPISODE_HERO_NAME_CHANGE = "EpisodeHeroNameResponseNameChange.json";
-
+  private static final int TIMEOUT_SECONDS = 3;
 
   @Before
   public void setup() {
     mockWebServer = new MockWebServer();
     okHttpClient = new OkHttpClient.Builder().build();
+  }
+
+  @After
+  public void tearDown() {
+    try {
+      mockWebServer.shutdown();
+    } catch (IOException e) {
+
+    }
   }
 
   @Test
