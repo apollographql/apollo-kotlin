@@ -13,7 +13,6 @@ import com.apollographql.apollo.exception.ApolloException;
 
 import junit.framework.Assert;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,7 +34,7 @@ public class ApolloWatcherTest {
   private MockWebServer server;
   private static final int TIME_OUT_SECONDS = 5;
 
-  @Before public void setUp() throws IOException {
+  @Before public void setUp() {
     server = new MockWebServer();
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
 
@@ -52,10 +51,6 @@ public class ApolloWatcherTest {
           }
         })
         .build();
-  }
-
-  @After public void tearDown() throws IOException {
-    server.shutdown();
   }
 
   @Test
