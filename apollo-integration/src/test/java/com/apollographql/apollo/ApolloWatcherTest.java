@@ -33,10 +33,11 @@ import static com.google.common.truth.Truth.assertThat;
 public class ApolloWatcherTest {
   private ApolloClient apolloClient;
   private MockWebServer server;
-  private static final int TIME_OUT_SECONDS = 5;
+  private static final int TIME_OUT_SECONDS = 3;
 
-  @Before public void setUp() {
+  @Before public void setUp() throws IOException {
     server = new MockWebServer();
+    server.start();
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
 
     apolloClient = ApolloClient.builder()
