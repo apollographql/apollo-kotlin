@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
-import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.exception.ApolloException;
 
 import junit.framework.Assert;
@@ -34,13 +33,11 @@ import static com.google.common.truth.Truth.assertThat;
 public class ApolloWatcherTest {
   private ApolloClient apolloClient;
   private MockWebServer server;
-  private NormalizedCache normalizedCache;
-  private static final int TIME_OUT_SECONDS = 3;
+  private static final int TIME_OUT_SECONDS = 5;
 
-  @Before public void setUp() {
+  @Before public void setUp() throws IOException {
     server = new MockWebServer();
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-    normalizedCache = new InMemoryNormalizedCache();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
@@ -55,15 +52,10 @@ public class ApolloWatcherTest {
           }
         })
         .build();
-
-    normalizedCache = apolloClient.apolloStore().normalizedCache();
   }
 
-  @After public void tearDown() {
-    try {
-      server.shutdown();
-    } catch (IOException ignored) {
-    }
+  @After public void tearDown() throws IOException {
+    server.shutdown();
   }
 
   @Test
@@ -90,8 +82,6 @@ public class ApolloWatcherTest {
 
           @Override public void onFailure(@Nonnull ApolloException e) {
             Assert.fail(e.getMessage());
-            firstResponseLatch.countDown();
-            secondResponseLatch.countDown();
           }
         });
 
@@ -101,6 +91,7 @@ public class ApolloWatcherTest {
     server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
     apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    watcher.cancel();
   }
 
   @Test
@@ -126,8 +117,6 @@ public class ApolloWatcherTest {
 
           @Override public void onFailure(@Nonnull ApolloException e) {
             Assert.fail(e.getMessage());
-            firstResponseLatch.countDown();
-            secondResponseLatch.countDown();
           }
         });
 
@@ -138,6 +127,7 @@ public class ApolloWatcherTest {
     // Wait 3 seconds to make sure no double callback.
     // Successful if timeout _is_ reached
     secondResponseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    watcher.cancel();
   }
 
   @Test
@@ -164,8 +154,6 @@ public class ApolloWatcherTest {
 
           @Override public void onFailure(@Nonnull ApolloException e) {
             Assert.fail(e.getMessage());
-            firstResponseLatch.countDown();
-            secondResponseLatch.countDown();
           }
         });
 
@@ -175,6 +163,7 @@ public class ApolloWatcherTest {
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
     apolloClient.newCall(friendsQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    watcher.cancel();
   }
 
   @Test
@@ -200,8 +189,6 @@ public class ApolloWatcherTest {
 
           @Override public void onFailure(@Nonnull ApolloException e) {
             Assert.fail(e.getMessage());
-            firstResponseLatch.countDown();
-            secondResponseLatch.countDown();
           }
         });
 
@@ -214,10 +201,11 @@ public class ApolloWatcherTest {
     // Wait 3 seconds to make sure no double callback.
     // Successful if timeout _is_ reached
     secondResponseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    watcher.cancel();
   }
 
   @Test
-  public void rewatchCacheControl() throws IOException, InterruptedException, TimeoutException {
+  public void testRefetchCacheControl() throws IOException, InterruptedException, TimeoutException {
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
@@ -232,26 +220,28 @@ public class ApolloWatcherTest {
                   assertThat(response.data().hero().name()).isEqualTo("R2-D2");
                 } else if (secondResponseLatch.getCount() == 1) {
                   assertThat(response.data().hero().name()).isEqualTo("ArTwo");
+                } else {
+                  Assert.fail("Unknown hero name: " + response.data().hero().name());
                 }
                 firstResponseLatch.countDown();
                 secondResponseLatch.countDown();
               }
 
               @Override public void onFailure(@Nonnull ApolloException e) {
-                Assert.fail(e.getMessage());
-                firstResponseLatch.countDown();
-                secondResponseLatch.countDown();
+                Assert.fail(e.getCause().getMessage());
               }
             });
 
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-    //Another newer call gets updated information -- need to queue up two network responses
+    //A different call gets updated information.
     server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
 
     //To verify that the updated response comes from server use a different name change
+    // -- this is for the refetch
     server.enqueue(mockResponse("EpisodeHeroNameResponseNameChangeTwo.json"));
     apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    watcher.cancel();
   }
 
   @Test
@@ -294,8 +284,6 @@ public class ApolloWatcherTest {
 
           @Override public void onFailure(@Nonnull ApolloException e) {
             Assert.fail(e.getMessage());
-            firstResponseLatch.countDown();
-            secondResponseLatch.countDown();
           }
         });
 
@@ -305,6 +293,7 @@ public class ApolloWatcherTest {
     apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
 
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    watcher.cancel();
   }
 
   @Test
@@ -331,8 +320,6 @@ public class ApolloWatcherTest {
 
           @Override public void onFailure(@Nonnull ApolloException e) {
             Assert.fail(e.getMessage());
-            firstResponseLatch.countDown();
-            secondResponseLatch.countDown();
           }
         });
 
