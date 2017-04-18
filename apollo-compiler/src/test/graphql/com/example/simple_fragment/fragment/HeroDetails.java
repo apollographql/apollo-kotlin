@@ -24,6 +24,12 @@ public class HeroDetails {
 
   private final @Nonnull String name;
 
+  private volatile String $toString;
+
+  private volatile int $hashCode;
+
+  private volatile boolean $hashCodeMemoized;
+
   public HeroDetails(@Nonnull String name) {
     this.name = name;
   }
@@ -34,9 +40,16 @@ public class HeroDetails {
 
   @Override
   public String toString() {
-    return "HeroDetails{"
-      + "name=" + name
-      + "}";
+    if ($toString == null) {
+      synchronized(this) {
+        if ($toString == null) {
+          $toString = "HeroDetails{"
+            + "name=" + name
+            + "}";
+        }
+      }
+    }
+    return $toString;
   }
 
   @Override
@@ -53,10 +66,18 @@ public class HeroDetails {
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= (name == null) ? 0 : name.hashCode();
-    return h;
+    if (!$hashCodeMemoized) {
+      synchronized(this) {
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= (name == null) ? 0 : name.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+      }
+    }
+    return $hashCode;
   }
 
   public static final class Mapper implements ResponseFieldMapper<HeroDetails> {

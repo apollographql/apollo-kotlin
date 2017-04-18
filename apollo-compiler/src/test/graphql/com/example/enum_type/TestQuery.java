@@ -58,6 +58,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Data implements Operation.Data {
     private final Optional<Hero> hero;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Data(@Nullable Hero hero) {
       this.hero = Optional.fromNullable(hero);
     }
@@ -68,9 +74,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     @Override
     public String toString() {
-      return "Data{"
-        + "hero=" + hero
-        + "}";
+      if ($toString == null) {
+        synchronized(this) {
+          if ($toString == null) {
+            $toString = "Data{"
+              + "hero=" + hero
+              + "}";
+          }
+        }
+      }
+      return $toString;
     }
 
     @Override
@@ -87,10 +100,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (hero == null) ? 0 : hero.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        synchronized(this) {
+          if (!$hashCodeMemoized) {
+            int h = 1;
+            h *= 1000003;
+            h ^= (hero == null) ? 0 : hero.hashCode();
+            $hashCode = h;
+            $hashCodeMemoized = true;
+          }
+        }
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
@@ -118,6 +139,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       private final @Nonnull Episode firstAppearsIn;
 
+      private volatile String $toString;
+
+      private volatile int $hashCode;
+
+      private volatile boolean $hashCodeMemoized;
+
       public Hero(@Nonnull String name, @Nonnull List<Episode> appearsIn,
           @Nonnull Episode firstAppearsIn) {
         this.name = name;
@@ -139,11 +166,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public String toString() {
-        return "Hero{"
-          + "name=" + name + ", "
-          + "appearsIn=" + appearsIn + ", "
-          + "firstAppearsIn=" + firstAppearsIn
-          + "}";
+        if ($toString == null) {
+          synchronized(this) {
+            if ($toString == null) {
+              $toString = "Hero{"
+                + "name=" + name + ", "
+                + "appearsIn=" + appearsIn + ", "
+                + "firstAppearsIn=" + firstAppearsIn
+                + "}";
+            }
+          }
+        }
+        return $toString;
       }
 
       @Override
@@ -162,14 +196,22 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        h *= 1000003;
-        h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
-        h *= 1000003;
-        h ^= (firstAppearsIn == null) ? 0 : firstAppearsIn.hashCode();
-        return h;
+        if (!$hashCodeMemoized) {
+          synchronized(this) {
+            if (!$hashCodeMemoized) {
+              int h = 1;
+              h *= 1000003;
+              h ^= (name == null) ? 0 : name.hashCode();
+              h *= 1000003;
+              h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
+              h *= 1000003;
+              h ^= (firstAppearsIn == null) ? 0 : firstAppearsIn.hashCode();
+              $hashCode = h;
+              $hashCodeMemoized = true;
+            }
+          }
+        }
+        return $hashCode;
       }
 
       public static final class Mapper implements ResponseFieldMapper<Hero> {
