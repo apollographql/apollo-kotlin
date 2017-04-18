@@ -77,13 +77,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     @Override
     public String toString() {
       if ($toString == null) {
-        synchronized(this) {
-          if ($toString == null) {
-            $toString = "Data{"
-              + "hero=" + hero
-              + "}";
-          }
-        }
+        $toString = "Data{"
+          + "hero=" + hero
+          + "}";
       }
       return $toString;
     }
@@ -103,15 +99,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        synchronized(this) {
-          if (!$hashCodeMemoized) {
-            int h = 1;
-            h *= 1000003;
-            h ^= (hero == null) ? 0 : hero.hashCode();
-            $hashCode = h;
-            $hashCodeMemoized = true;
-          }
-        }
+        int h = 1;
+        h *= 1000003;
+        h ^= (hero == null) ? 0 : hero.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
       return $hashCode;
     }
@@ -176,16 +168,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "Hero{"
-                + "name=" + name + ", "
-                + "birthDate=" + birthDate + ", "
-                + "appearanceDates=" + appearanceDates + ", "
-                + "fieldWithUnsupportedType=" + fieldWithUnsupportedType
-                + "}";
-            }
-          }
+          $toString = "Hero{"
+            + "name=" + name + ", "
+            + "birthDate=" + birthDate + ", "
+            + "appearanceDates=" + appearanceDates + ", "
+            + "fieldWithUnsupportedType=" + fieldWithUnsupportedType
+            + "}";
         }
         return $toString;
       }
@@ -208,21 +196,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= (name == null) ? 0 : name.hashCode();
-              h *= 1000003;
-              h ^= (birthDate == null) ? 0 : birthDate.hashCode();
-              h *= 1000003;
-              h ^= (appearanceDates == null) ? 0 : appearanceDates.hashCode();
-              h *= 1000003;
-              h ^= (fieldWithUnsupportedType == null) ? 0 : fieldWithUnsupportedType.hashCode();
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= (name == null) ? 0 : name.hashCode();
+          h *= 1000003;
+          h ^= (birthDate == null) ? 0 : birthDate.hashCode();
+          h *= 1000003;
+          h ^= (appearanceDates == null) ? 0 : appearanceDates.hashCode();
+          h *= 1000003;
+          h ^= (fieldWithUnsupportedType == null) ? 0 : fieldWithUnsupportedType.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }

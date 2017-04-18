@@ -139,13 +139,9 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     @Override
     public String toString() {
       if ($toString == null) {
-        synchronized(this) {
-          if ($toString == null) {
-            $toString = "Data{"
-              + "createReview=" + createReview
-              + "}";
-          }
-        }
+        $toString = "Data{"
+          + "createReview=" + createReview
+          + "}";
       }
       return $toString;
     }
@@ -165,15 +161,11 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        synchronized(this) {
-          if (!$hashCodeMemoized) {
-            int h = 1;
-            h *= 1000003;
-            h ^= (createReview == null) ? 0 : createReview.hashCode();
-            $hashCode = h;
-            $hashCodeMemoized = true;
-          }
-        }
+        int h = 1;
+        h *= 1000003;
+        h ^= (createReview == null) ? 0 : createReview.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
       return $hashCode;
     }
@@ -232,14 +224,10 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "CreateReview{"
-                + "stars=" + stars + ", "
-                + "commentary=" + commentary
-                + "}";
-            }
-          }
+          $toString = "CreateReview{"
+            + "stars=" + stars + ", "
+            + "commentary=" + commentary
+            + "}";
         }
         return $toString;
       }
@@ -260,17 +248,13 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= stars;
-              h *= 1000003;
-              h ^= (commentary == null) ? 0 : commentary.hashCode();
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= stars;
+          h *= 1000003;
+          h ^= (commentary == null) ? 0 : commentary.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }

@@ -89,14 +89,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     @Override
     public String toString() {
       if ($toString == null) {
-        synchronized(this) {
-          if ($toString == null) {
-            $toString = "Data{"
-              + "r2=" + r2 + ", "
-              + "luke=" + luke
-              + "}";
-          }
-        }
+        $toString = "Data{"
+          + "r2=" + r2 + ", "
+          + "luke=" + luke
+          + "}";
       }
       return $toString;
     }
@@ -117,17 +113,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        synchronized(this) {
-          if (!$hashCodeMemoized) {
-            int h = 1;
-            h *= 1000003;
-            h ^= (r2 == null) ? 0 : r2.hashCode();
-            h *= 1000003;
-            h ^= (luke == null) ? 0 : luke.hashCode();
-            $hashCode = h;
-            $hashCodeMemoized = true;
-          }
-        }
+        int h = 1;
+        h *= 1000003;
+        h ^= (r2 == null) ? 0 : r2.hashCode();
+        h *= 1000003;
+        h ^= (luke == null) ? 0 : luke.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
       return $hashCode;
     }
@@ -178,13 +170,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "R2{"
-                + "fragments=" + fragments
-                + "}";
-            }
-          }
+          $toString = "R2{"
+            + "fragments=" + fragments
+            + "}";
         }
         return $toString;
       }
@@ -204,15 +192,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= (fragments == null) ? 0 : fragments.hashCode();
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= (fragments == null) ? 0 : fragments.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }
@@ -244,14 +228,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Override
         public String toString() {
           if ($toString == null) {
-            synchronized(this) {
-              if ($toString == null) {
-                $toString = "Fragments{"
-                  + "humanDetails=" + humanDetails + ", "
-                  + "droidDetails=" + droidDetails
-                  + "}";
-              }
-            }
+            $toString = "Fragments{"
+              + "humanDetails=" + humanDetails + ", "
+              + "droidDetails=" + droidDetails
+              + "}";
           }
           return $toString;
         }
@@ -272,17 +252,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Override
         public int hashCode() {
           if (!$hashCodeMemoized) {
-            synchronized(this) {
-              if (!$hashCodeMemoized) {
-                int h = 1;
-                h *= 1000003;
-                h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
-                h *= 1000003;
-                h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
-                $hashCode = h;
-                $hashCodeMemoized = true;
-              }
-            }
+            int h = 1;
+            h *= 1000003;
+            h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
+            h *= 1000003;
+            h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
+            $hashCode = h;
+            $hashCodeMemoized = true;
           }
           return $hashCode;
         }
@@ -349,13 +325,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "Luke{"
-                + "fragments=" + fragments
-                + "}";
-            }
-          }
+          $toString = "Luke{"
+            + "fragments=" + fragments
+            + "}";
         }
         return $toString;
       }
@@ -375,15 +347,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= (fragments == null) ? 0 : fragments.hashCode();
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= (fragments == null) ? 0 : fragments.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }
@@ -415,14 +383,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Override
         public String toString() {
           if ($toString == null) {
-            synchronized(this) {
-              if ($toString == null) {
-                $toString = "Fragments{"
-                  + "humanDetails=" + humanDetails + ", "
-                  + "droidDetails=" + droidDetails
-                  + "}";
-              }
-            }
+            $toString = "Fragments{"
+              + "humanDetails=" + humanDetails + ", "
+              + "droidDetails=" + droidDetails
+              + "}";
           }
           return $toString;
         }
@@ -443,17 +407,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Override
         public int hashCode() {
           if (!$hashCodeMemoized) {
-            synchronized(this) {
-              if (!$hashCodeMemoized) {
-                int h = 1;
-                h *= 1000003;
-                h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
-                h *= 1000003;
-                h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
-                $hashCode = h;
-                $hashCodeMemoized = true;
-              }
-            }
+            int h = 1;
+            h *= 1000003;
+            h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
+            h *= 1000003;
+            h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
+            $hashCode = h;
+            $hashCodeMemoized = true;
           }
           return $hashCode;
         }

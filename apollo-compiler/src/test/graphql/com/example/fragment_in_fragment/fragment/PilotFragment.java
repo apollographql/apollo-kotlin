@@ -53,14 +53,10 @@ public class PilotFragment {
   @Override
   public String toString() {
     if ($toString == null) {
-      synchronized(this) {
-        if ($toString == null) {
-          $toString = "PilotFragment{"
-            + "name=" + name + ", "
-            + "homeworld=" + homeworld
-            + "}";
-        }
-      }
+      $toString = "PilotFragment{"
+        + "name=" + name + ", "
+        + "homeworld=" + homeworld
+        + "}";
     }
     return $toString;
   }
@@ -81,17 +77,13 @@ public class PilotFragment {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      synchronized(this) {
-        if (!$hashCodeMemoized) {
-          int h = 1;
-          h *= 1000003;
-          h ^= (name == null) ? 0 : name.hashCode();
-          h *= 1000003;
-          h ^= (homeworld == null) ? 0 : homeworld.hashCode();
-          $hashCode = h;
-          $hashCodeMemoized = true;
-        }
-      }
+      int h = 1;
+      h *= 1000003;
+      h ^= (name == null) ? 0 : name.hashCode();
+      h *= 1000003;
+      h ^= (homeworld == null) ? 0 : homeworld.hashCode();
+      $hashCode = h;
+      $hashCodeMemoized = true;
     }
     return $hashCode;
   }
@@ -136,13 +128,9 @@ public class PilotFragment {
     @Override
     public String toString() {
       if ($toString == null) {
-        synchronized(this) {
-          if ($toString == null) {
-            $toString = "Homeworld{"
-              + "name=" + name
-              + "}";
-          }
-        }
+        $toString = "Homeworld{"
+          + "name=" + name
+          + "}";
       }
       return $toString;
     }
@@ -162,15 +150,11 @@ public class PilotFragment {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        synchronized(this) {
-          if (!$hashCodeMemoized) {
-            int h = 1;
-            h *= 1000003;
-            h ^= (name == null) ? 0 : name.hashCode();
-            $hashCode = h;
-            $hashCodeMemoized = true;
-          }
-        }
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
       return $hashCode;
     }

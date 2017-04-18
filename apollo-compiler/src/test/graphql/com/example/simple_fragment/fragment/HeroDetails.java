@@ -41,13 +41,9 @@ public class HeroDetails {
   @Override
   public String toString() {
     if ($toString == null) {
-      synchronized(this) {
-        if ($toString == null) {
-          $toString = "HeroDetails{"
-            + "name=" + name
-            + "}";
-        }
-      }
+      $toString = "HeroDetails{"
+        + "name=" + name
+        + "}";
     }
     return $toString;
   }
@@ -67,15 +63,11 @@ public class HeroDetails {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      synchronized(this) {
-        if (!$hashCodeMemoized) {
-          int h = 1;
-          h *= 1000003;
-          h ^= (name == null) ? 0 : name.hashCode();
-          $hashCode = h;
-          $hashCodeMemoized = true;
-        }
-      }
+      int h = 1;
+      h *= 1000003;
+      h ^= (name == null) ? 0 : name.hashCode();
+      $hashCode = h;
+      $hashCodeMemoized = true;
     }
     return $hashCode;
   }

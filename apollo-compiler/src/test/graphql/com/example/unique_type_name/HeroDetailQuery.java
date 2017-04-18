@@ -93,13 +93,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     @Override
     public String toString() {
       if ($toString == null) {
-        synchronized(this) {
-          if ($toString == null) {
-            $toString = "Data{"
-              + "heroDetailQuery=" + heroDetailQuery
-              + "}";
-          }
-        }
+        $toString = "Data{"
+          + "heroDetailQuery=" + heroDetailQuery
+          + "}";
       }
       return $toString;
     }
@@ -119,15 +115,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        synchronized(this) {
-          if (!$hashCodeMemoized) {
-            int h = 1;
-            h *= 1000003;
-            h ^= (heroDetailQuery == null) ? 0 : heroDetailQuery.hashCode();
-            $hashCode = h;
-            $hashCodeMemoized = true;
-          }
-        }
+        int h = 1;
+        h *= 1000003;
+        h ^= (heroDetailQuery == null) ? 0 : heroDetailQuery.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
       return $hashCode;
     }
@@ -170,13 +162,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "Friend{"
-                + "name=" + name
-                + "}";
-            }
-          }
+          $toString = "Friend{"
+            + "name=" + name
+            + "}";
         }
         return $toString;
       }
@@ -196,15 +184,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= (name == null) ? 0 : name.hashCode();
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= (name == null) ? 0 : name.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }
@@ -242,13 +226,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "Friend2{"
-                + "fragments=" + fragments
-                + "}";
-            }
-          }
+          $toString = "Friend2{"
+            + "fragments=" + fragments
+            + "}";
         }
         return $toString;
       }
@@ -268,15 +248,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= (fragments == null) ? 0 : fragments.hashCode();
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= (fragments == null) ? 0 : fragments.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }
@@ -301,13 +277,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         @Override
         public String toString() {
           if ($toString == null) {
-            synchronized(this) {
-              if ($toString == null) {
-                $toString = "Fragments{"
-                  + "heroDetails=" + heroDetails
-                  + "}";
-              }
-            }
+            $toString = "Fragments{"
+              + "heroDetails=" + heroDetails
+              + "}";
           }
           return $toString;
         }
@@ -327,15 +299,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         @Override
         public int hashCode() {
           if (!$hashCodeMemoized) {
-            synchronized(this) {
-              if (!$hashCodeMemoized) {
-                int h = 1;
-                h *= 1000003;
-                h ^= (heroDetails == null) ? 0 : heroDetails.hashCode();
-                $hashCode = h;
-                $hashCodeMemoized = true;
-              }
-            }
+            int h = 1;
+            h *= 1000003;
+            h ^= (heroDetails == null) ? 0 : heroDetails.hashCode();
+            $hashCode = h;
+            $hashCodeMemoized = true;
           }
           return $hashCode;
         }
@@ -411,15 +379,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "Friend1{"
-                + "name=" + name + ", "
-                + "appearsIn=" + appearsIn + ", "
-                + "friends=" + friends
-                + "}";
-            }
-          }
+          $toString = "Friend1{"
+            + "name=" + name + ", "
+            + "appearsIn=" + appearsIn + ", "
+            + "friends=" + friends
+            + "}";
         }
         return $toString;
       }
@@ -441,19 +405,15 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= (name == null) ? 0 : name.hashCode();
-              h *= 1000003;
-              h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
-              h *= 1000003;
-              h ^= (friends == null) ? 0 : friends.hashCode();
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= (name == null) ? 0 : name.hashCode();
+          h *= 1000003;
+          h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
+          h *= 1000003;
+          h ^= (friends == null) ? 0 : friends.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }
@@ -520,15 +480,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "AsHuman{"
-                + "name=" + name + ", "
-                + "friends=" + friends + ", "
-                + "height=" + height
-                + "}";
-            }
-          }
+          $toString = "AsHuman{"
+            + "name=" + name + ", "
+            + "friends=" + friends + ", "
+            + "height=" + height
+            + "}";
         }
         return $toString;
       }
@@ -550,19 +506,15 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= (name == null) ? 0 : name.hashCode();
-              h *= 1000003;
-              h ^= (friends == null) ? 0 : friends.hashCode();
-              h *= 1000003;
-              h ^= (height == null) ? 0 : height.hashCode();
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= (name == null) ? 0 : name.hashCode();
+          h *= 1000003;
+          h ^= (friends == null) ? 0 : friends.hashCode();
+          h *= 1000003;
+          h ^= (height == null) ? 0 : height.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }
@@ -625,15 +577,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "HeroDetailQuery1{"
-                + "name=" + name + ", "
-                + "friends=" + friends + ", "
-                + "asHuman=" + asHuman
-                + "}";
-            }
-          }
+          $toString = "HeroDetailQuery1{"
+            + "name=" + name + ", "
+            + "friends=" + friends + ", "
+            + "asHuman=" + asHuman
+            + "}";
         }
         return $toString;
       }
@@ -655,19 +603,15 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= (name == null) ? 0 : name.hashCode();
-              h *= 1000003;
-              h ^= (friends == null) ? 0 : friends.hashCode();
-              h *= 1000003;
-              h ^= (asHuman == null) ? 0 : asHuman.hashCode();
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= (name == null) ? 0 : name.hashCode();
+          h *= 1000003;
+          h ^= (friends == null) ? 0 : friends.hashCode();
+          h *= 1000003;
+          h ^= (asHuman == null) ? 0 : asHuman.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }

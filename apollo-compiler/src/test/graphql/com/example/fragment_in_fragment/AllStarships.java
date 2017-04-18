@@ -84,13 +84,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     @Override
     public String toString() {
       if ($toString == null) {
-        synchronized(this) {
-          if ($toString == null) {
-            $toString = "Data{"
-              + "allStarships=" + allStarships
-              + "}";
-          }
-        }
+        $toString = "Data{"
+          + "allStarships=" + allStarships
+          + "}";
       }
       return $toString;
     }
@@ -110,15 +106,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        synchronized(this) {
-          if (!$hashCodeMemoized) {
-            int h = 1;
-            h *= 1000003;
-            h ^= (allStarships == null) ? 0 : allStarships.hashCode();
-            $hashCode = h;
-            $hashCodeMemoized = true;
-          }
-        }
+        int h = 1;
+        h *= 1000003;
+        h ^= (allStarships == null) ? 0 : allStarships.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
       return $hashCode;
     }
@@ -163,13 +155,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "Node{"
-                + "fragments=" + fragments
-                + "}";
-            }
-          }
+          $toString = "Node{"
+            + "fragments=" + fragments
+            + "}";
         }
         return $toString;
       }
@@ -189,15 +177,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= (fragments == null) ? 0 : fragments.hashCode();
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= (fragments == null) ? 0 : fragments.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }
@@ -222,13 +206,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
         @Override
         public String toString() {
           if ($toString == null) {
-            synchronized(this) {
-              if ($toString == null) {
-                $toString = "Fragments{"
-                  + "starshipFragment=" + starshipFragment
-                  + "}";
-              }
-            }
+            $toString = "Fragments{"
+              + "starshipFragment=" + starshipFragment
+              + "}";
           }
           return $toString;
         }
@@ -248,15 +228,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
         @Override
         public int hashCode() {
           if (!$hashCodeMemoized) {
-            synchronized(this) {
-              if (!$hashCodeMemoized) {
-                int h = 1;
-                h *= 1000003;
-                h ^= (starshipFragment == null) ? 0 : starshipFragment.hashCode();
-                $hashCode = h;
-                $hashCodeMemoized = true;
-              }
-            }
+            int h = 1;
+            h *= 1000003;
+            h ^= (starshipFragment == null) ? 0 : starshipFragment.hashCode();
+            $hashCode = h;
+            $hashCodeMemoized = true;
           }
           return $hashCode;
         }
@@ -317,13 +293,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "Edge{"
-                + "node=" + node
-                + "}";
-            }
-          }
+          $toString = "Edge{"
+            + "node=" + node
+            + "}";
         }
         return $toString;
       }
@@ -343,15 +315,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= (node == null) ? 0 : node.hashCode();
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= (node == null) ? 0 : node.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }
@@ -395,13 +363,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "AllStarships1{"
-                + "edges=" + edges
-                + "}";
-            }
-          }
+          $toString = "AllStarships1{"
+            + "edges=" + edges
+            + "}";
         }
         return $toString;
       }
@@ -421,15 +385,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= (edges == null) ? 0 : edges.hashCode();
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= (edges == null) ? 0 : edges.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }

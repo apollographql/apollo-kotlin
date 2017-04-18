@@ -83,13 +83,9 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
     @Override
     public String toString() {
       if ($toString == null) {
-        synchronized(this) {
-          if ($toString == null) {
-            $toString = "Data{"
-              + "hero=" + hero
-              + "}";
-          }
-        }
+        $toString = "Data{"
+          + "hero=" + hero
+          + "}";
       }
       return $toString;
     }
@@ -109,15 +105,11 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        synchronized(this) {
-          if (!$hashCodeMemoized) {
-            int h = 1;
-            h *= 1000003;
-            h ^= (hero == null) ? 0 : hero.hashCode();
-            $hashCode = h;
-            $hashCodeMemoized = true;
-          }
-        }
+        int h = 1;
+        h *= 1000003;
+        h ^= (hero == null) ? 0 : hero.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
       return $hashCode;
     }
@@ -160,13 +152,9 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "Node{"
-                + "name=" + name
-                + "}";
-            }
-          }
+          $toString = "Node{"
+            + "name=" + name
+            + "}";
         }
         return $toString;
       }
@@ -186,15 +174,11 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= (name == null) ? 0 : name.hashCode();
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= (name == null) ? 0 : name.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }
@@ -232,13 +216,9 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "Edge{"
-                + "node=" + node
-                + "}";
-            }
-          }
+          $toString = "Edge{"
+            + "node=" + node
+            + "}";
         }
         return $toString;
       }
@@ -258,15 +238,11 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= (node == null) ? 0 : node.hashCode();
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= (node == null) ? 0 : node.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }
@@ -317,14 +293,10 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "FriendsConnection{"
-                + "totalCount=" + totalCount + ", "
-                + "edges=" + edges
-                + "}";
-            }
-          }
+          $toString = "FriendsConnection{"
+            + "totalCount=" + totalCount + ", "
+            + "edges=" + edges
+            + "}";
         }
         return $toString;
       }
@@ -345,17 +317,13 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= (totalCount == null) ? 0 : totalCount.hashCode();
-              h *= 1000003;
-              h ^= (edges == null) ? 0 : edges.hashCode();
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= (totalCount == null) ? 0 : totalCount.hashCode();
+          h *= 1000003;
+          h ^= (edges == null) ? 0 : edges.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }
@@ -408,14 +376,10 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "Hero{"
-                + "name=" + name + ", "
-                + "friendsConnection=" + friendsConnection
-                + "}";
-            }
-          }
+          $toString = "Hero{"
+            + "name=" + name + ", "
+            + "friendsConnection=" + friendsConnection
+            + "}";
         }
         return $toString;
       }
@@ -436,17 +400,13 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= (name == null) ? 0 : name.hashCode();
-              h *= 1000003;
-              h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= (name == null) ? 0 : name.hashCode();
+          h *= 1000003;
+          h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }

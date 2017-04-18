@@ -130,13 +130,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     @Override
     public String toString() {
       if ($toString == null) {
-        synchronized(this) {
-          if ($toString == null) {
-            $toString = "Data{"
-              + "hero=" + hero
-              + "}";
-          }
-        }
+        $toString = "Data{"
+          + "hero=" + hero
+          + "}";
       }
       return $toString;
     }
@@ -156,15 +152,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        synchronized(this) {
-          if (!$hashCodeMemoized) {
-            int h = 1;
-            h *= 1000003;
-            h ^= (hero == null) ? 0 : hero.hashCode();
-            $hashCode = h;
-            $hashCodeMemoized = true;
-          }
-        }
+        int h = 1;
+        h *= 1000003;
+        h ^= (hero == null) ? 0 : hero.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
       return $hashCode;
     }
@@ -212,13 +204,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "Hero{"
-                + "name=" + name
-                + "}";
-            }
-          }
+          $toString = "Hero{"
+            + "name=" + name
+            + "}";
         }
         return $toString;
       }
@@ -238,15 +226,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= (name == null) ? 0 : name.hashCode();
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= (name == null) ? 0 : name.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }

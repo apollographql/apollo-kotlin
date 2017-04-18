@@ -145,23 +145,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     @Override
     public String toString() {
       if ($toString == null) {
-        synchronized(this) {
-          if ($toString == null) {
-            $toString = "Data{"
-              + "graphQlString=" + graphQlString + ", "
-              + "graphQlIdNullable=" + graphQlIdNullable + ", "
-              + "graphQlIdNonNullable=" + graphQlIdNonNullable + ", "
-              + "graphQlIntNullable=" + graphQlIntNullable + ", "
-              + "graphQlIntNonNullable=" + graphQlIntNonNullable + ", "
-              + "graphQlFloatNullable=" + graphQlFloatNullable + ", "
-              + "graphQlFloatNonNullable=" + graphQlFloatNonNullable + ", "
-              + "graphQlBooleanNullable=" + graphQlBooleanNullable + ", "
-              + "graphQlBooleanNonNullable=" + graphQlBooleanNonNullable + ", "
-              + "graphQlListOfInt=" + graphQlListOfInt + ", "
-              + "graphQlListOfObjects=" + graphQlListOfObjects
-              + "}";
-          }
-        }
+        $toString = "Data{"
+          + "graphQlString=" + graphQlString + ", "
+          + "graphQlIdNullable=" + graphQlIdNullable + ", "
+          + "graphQlIdNonNullable=" + graphQlIdNonNullable + ", "
+          + "graphQlIntNullable=" + graphQlIntNullable + ", "
+          + "graphQlIntNonNullable=" + graphQlIntNonNullable + ", "
+          + "graphQlFloatNullable=" + graphQlFloatNullable + ", "
+          + "graphQlFloatNonNullable=" + graphQlFloatNonNullable + ", "
+          + "graphQlBooleanNullable=" + graphQlBooleanNullable + ", "
+          + "graphQlBooleanNonNullable=" + graphQlBooleanNonNullable + ", "
+          + "graphQlListOfInt=" + graphQlListOfInt + ", "
+          + "graphQlListOfObjects=" + graphQlListOfObjects
+          + "}";
       }
       return $toString;
     }
@@ -191,35 +187,31 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        synchronized(this) {
-          if (!$hashCodeMemoized) {
-            int h = 1;
-            h *= 1000003;
-            h ^= (graphQlString == null) ? 0 : graphQlString.hashCode();
-            h *= 1000003;
-            h ^= (graphQlIdNullable == null) ? 0 : graphQlIdNullable.hashCode();
-            h *= 1000003;
-            h ^= (graphQlIdNonNullable == null) ? 0 : graphQlIdNonNullable.hashCode();
-            h *= 1000003;
-            h ^= (graphQlIntNullable == null) ? 0 : graphQlIntNullable.hashCode();
-            h *= 1000003;
-            h ^= graphQlIntNonNullable;
-            h *= 1000003;
-            h ^= (graphQlFloatNullable == null) ? 0 : graphQlFloatNullable.hashCode();
-            h *= 1000003;
-            h ^= Double.valueOf(graphQlFloatNonNullable).hashCode();
-            h *= 1000003;
-            h ^= (graphQlBooleanNullable == null) ? 0 : graphQlBooleanNullable.hashCode();
-            h *= 1000003;
-            h ^= Boolean.valueOf(graphQlBooleanNonNullable).hashCode();
-            h *= 1000003;
-            h ^= (graphQlListOfInt == null) ? 0 : graphQlListOfInt.hashCode();
-            h *= 1000003;
-            h ^= (graphQlListOfObjects == null) ? 0 : graphQlListOfObjects.hashCode();
-            $hashCode = h;
-            $hashCodeMemoized = true;
-          }
-        }
+        int h = 1;
+        h *= 1000003;
+        h ^= (graphQlString == null) ? 0 : graphQlString.hashCode();
+        h *= 1000003;
+        h ^= (graphQlIdNullable == null) ? 0 : graphQlIdNullable.hashCode();
+        h *= 1000003;
+        h ^= (graphQlIdNonNullable == null) ? 0 : graphQlIdNonNullable.hashCode();
+        h *= 1000003;
+        h ^= (graphQlIntNullable == null) ? 0 : graphQlIntNullable.hashCode();
+        h *= 1000003;
+        h ^= graphQlIntNonNullable;
+        h *= 1000003;
+        h ^= (graphQlFloatNullable == null) ? 0 : graphQlFloatNullable.hashCode();
+        h *= 1000003;
+        h ^= Double.valueOf(graphQlFloatNonNullable).hashCode();
+        h *= 1000003;
+        h ^= (graphQlBooleanNullable == null) ? 0 : graphQlBooleanNullable.hashCode();
+        h *= 1000003;
+        h ^= Boolean.valueOf(graphQlBooleanNonNullable).hashCode();
+        h *= 1000003;
+        h ^= (graphQlListOfInt == null) ? 0 : graphQlListOfInt.hashCode();
+        h *= 1000003;
+        h ^= (graphQlListOfObjects == null) ? 0 : graphQlListOfObjects.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
       return $hashCode;
     }
@@ -286,13 +278,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public String toString() {
         if ($toString == null) {
-          synchronized(this) {
-            if ($toString == null) {
-              $toString = "GraphQlListOfObject{"
-                + "someField=" + someField
-                + "}";
-            }
-          }
+          $toString = "GraphQlListOfObject{"
+            + "someField=" + someField
+            + "}";
         }
         return $toString;
       }
@@ -312,15 +300,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public int hashCode() {
         if (!$hashCodeMemoized) {
-          synchronized(this) {
-            if (!$hashCodeMemoized) {
-              int h = 1;
-              h *= 1000003;
-              h ^= someField;
-              $hashCode = h;
-              $hashCodeMemoized = true;
-            }
-          }
+          int h = 1;
+          h *= 1000003;
+          h ^= someField;
+          $hashCode = h;
+          $hashCodeMemoized = true;
         }
         return $hashCode;
       }

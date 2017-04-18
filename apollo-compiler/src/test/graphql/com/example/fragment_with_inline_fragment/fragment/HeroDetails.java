@@ -75,15 +75,11 @@ public class HeroDetails {
   @Override
   public String toString() {
     if ($toString == null) {
-      synchronized(this) {
-        if ($toString == null) {
-          $toString = "HeroDetails{"
-            + "name=" + name + ", "
-            + "friendsConnection=" + friendsConnection + ", "
-            + "asDroid=" + asDroid
-            + "}";
-        }
-      }
+      $toString = "HeroDetails{"
+        + "name=" + name + ", "
+        + "friendsConnection=" + friendsConnection + ", "
+        + "asDroid=" + asDroid
+        + "}";
     }
     return $toString;
   }
@@ -105,19 +101,15 @@ public class HeroDetails {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      synchronized(this) {
-        if (!$hashCodeMemoized) {
-          int h = 1;
-          h *= 1000003;
-          h ^= (name == null) ? 0 : name.hashCode();
-          h *= 1000003;
-          h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
-          h *= 1000003;
-          h ^= (asDroid == null) ? 0 : asDroid.hashCode();
-          $hashCode = h;
-          $hashCodeMemoized = true;
-        }
-      }
+      int h = 1;
+      h *= 1000003;
+      h ^= (name == null) ? 0 : name.hashCode();
+      h *= 1000003;
+      h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
+      h *= 1000003;
+      h ^= (asDroid == null) ? 0 : asDroid.hashCode();
+      $hashCode = h;
+      $hashCodeMemoized = true;
     }
     return $hashCode;
   }
@@ -175,13 +167,9 @@ public class HeroDetails {
     @Override
     public String toString() {
       if ($toString == null) {
-        synchronized(this) {
-          if ($toString == null) {
-            $toString = "Node{"
-              + "name=" + name
-              + "}";
-          }
-        }
+        $toString = "Node{"
+          + "name=" + name
+          + "}";
       }
       return $toString;
     }
@@ -201,15 +189,11 @@ public class HeroDetails {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        synchronized(this) {
-          if (!$hashCodeMemoized) {
-            int h = 1;
-            h *= 1000003;
-            h ^= (name == null) ? 0 : name.hashCode();
-            $hashCode = h;
-            $hashCodeMemoized = true;
-          }
-        }
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
       return $hashCode;
     }
@@ -247,13 +231,9 @@ public class HeroDetails {
     @Override
     public String toString() {
       if ($toString == null) {
-        synchronized(this) {
-          if ($toString == null) {
-            $toString = "Edge{"
-              + "node=" + node
-              + "}";
-          }
-        }
+        $toString = "Edge{"
+          + "node=" + node
+          + "}";
       }
       return $toString;
     }
@@ -273,15 +253,11 @@ public class HeroDetails {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        synchronized(this) {
-          if (!$hashCodeMemoized) {
-            int h = 1;
-            h *= 1000003;
-            h ^= (node == null) ? 0 : node.hashCode();
-            $hashCode = h;
-            $hashCodeMemoized = true;
-          }
-        }
+        int h = 1;
+        h *= 1000003;
+        h ^= (node == null) ? 0 : node.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
       return $hashCode;
     }
@@ -332,14 +308,10 @@ public class HeroDetails {
     @Override
     public String toString() {
       if ($toString == null) {
-        synchronized(this) {
-          if ($toString == null) {
-            $toString = "FriendsConnection{"
-              + "totalCount=" + totalCount + ", "
-              + "edges=" + edges
-              + "}";
-          }
-        }
+        $toString = "FriendsConnection{"
+          + "totalCount=" + totalCount + ", "
+          + "edges=" + edges
+          + "}";
       }
       return $toString;
     }
@@ -360,17 +332,13 @@ public class HeroDetails {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        synchronized(this) {
-          if (!$hashCodeMemoized) {
-            int h = 1;
-            h *= 1000003;
-            h ^= (totalCount == null) ? 0 : totalCount.hashCode();
-            h *= 1000003;
-            h ^= (edges == null) ? 0 : edges.hashCode();
-            $hashCode = h;
-            $hashCodeMemoized = true;
-          }
-        }
+        int h = 1;
+        h *= 1000003;
+        h ^= (totalCount == null) ? 0 : totalCount.hashCode();
+        h *= 1000003;
+        h ^= (edges == null) ? 0 : edges.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
       return $hashCode;
     }
@@ -416,13 +384,9 @@ public class HeroDetails {
     @Override
     public String toString() {
       if ($toString == null) {
-        synchronized(this) {
-          if ($toString == null) {
-            $toString = "Node1{"
-              + "name=" + name
-              + "}";
-          }
-        }
+        $toString = "Node1{"
+          + "name=" + name
+          + "}";
       }
       return $toString;
     }
@@ -442,15 +406,11 @@ public class HeroDetails {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        synchronized(this) {
-          if (!$hashCodeMemoized) {
-            int h = 1;
-            h *= 1000003;
-            h ^= (name == null) ? 0 : name.hashCode();
-            $hashCode = h;
-            $hashCodeMemoized = true;
-          }
-        }
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
       return $hashCode;
     }
@@ -488,13 +448,9 @@ public class HeroDetails {
     @Override
     public String toString() {
       if ($toString == null) {
-        synchronized(this) {
-          if ($toString == null) {
-            $toString = "Edge1{"
-              + "node=" + node
-              + "}";
-          }
-        }
+        $toString = "Edge1{"
+          + "node=" + node
+          + "}";
       }
       return $toString;
     }
@@ -514,15 +470,11 @@ public class HeroDetails {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        synchronized(this) {
-          if (!$hashCodeMemoized) {
-            int h = 1;
-            h *= 1000003;
-            h ^= (node == null) ? 0 : node.hashCode();
-            $hashCode = h;
-            $hashCodeMemoized = true;
-          }
-        }
+        int h = 1;
+        h *= 1000003;
+        h ^= (node == null) ? 0 : node.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
       return $hashCode;
     }
@@ -573,14 +525,10 @@ public class HeroDetails {
     @Override
     public String toString() {
       if ($toString == null) {
-        synchronized(this) {
-          if ($toString == null) {
-            $toString = "FriendsConnection1{"
-              + "totalCount=" + totalCount + ", "
-              + "edges=" + edges
-              + "}";
-          }
-        }
+        $toString = "FriendsConnection1{"
+          + "totalCount=" + totalCount + ", "
+          + "edges=" + edges
+          + "}";
       }
       return $toString;
     }
@@ -601,17 +549,13 @@ public class HeroDetails {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        synchronized(this) {
-          if (!$hashCodeMemoized) {
-            int h = 1;
-            h *= 1000003;
-            h ^= (totalCount == null) ? 0 : totalCount.hashCode();
-            h *= 1000003;
-            h ^= (edges == null) ? 0 : edges.hashCode();
-            $hashCode = h;
-            $hashCodeMemoized = true;
-          }
-        }
+        int h = 1;
+        h *= 1000003;
+        h ^= (totalCount == null) ? 0 : totalCount.hashCode();
+        h *= 1000003;
+        h ^= (edges == null) ? 0 : edges.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
       return $hashCode;
     }
@@ -672,15 +616,11 @@ public class HeroDetails {
     @Override
     public String toString() {
       if ($toString == null) {
-        synchronized(this) {
-          if ($toString == null) {
-            $toString = "AsDroid{"
-              + "name=" + name + ", "
-              + "friendsConnection=" + friendsConnection + ", "
-              + "primaryFunction=" + primaryFunction
-              + "}";
-          }
-        }
+        $toString = "AsDroid{"
+          + "name=" + name + ", "
+          + "friendsConnection=" + friendsConnection + ", "
+          + "primaryFunction=" + primaryFunction
+          + "}";
       }
       return $toString;
     }
@@ -702,19 +642,15 @@ public class HeroDetails {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        synchronized(this) {
-          if (!$hashCodeMemoized) {
-            int h = 1;
-            h *= 1000003;
-            h ^= (name == null) ? 0 : name.hashCode();
-            h *= 1000003;
-            h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
-            h *= 1000003;
-            h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
-            $hashCode = h;
-            $hashCodeMemoized = true;
-          }
-        }
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
+        h *= 1000003;
+        h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
       return $hashCode;
     }

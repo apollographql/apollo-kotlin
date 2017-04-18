@@ -51,14 +51,10 @@ public class DroidDetails {
   @Override
   public String toString() {
     if ($toString == null) {
-      synchronized(this) {
-        if ($toString == null) {
-          $toString = "DroidDetails{"
-            + "name=" + name + ", "
-            + "primaryFunction=" + primaryFunction
-            + "}";
-        }
-      }
+      $toString = "DroidDetails{"
+        + "name=" + name + ", "
+        + "primaryFunction=" + primaryFunction
+        + "}";
     }
     return $toString;
   }
@@ -79,17 +75,13 @@ public class DroidDetails {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      synchronized(this) {
-        if (!$hashCodeMemoized) {
-          int h = 1;
-          h *= 1000003;
-          h ^= (name == null) ? 0 : name.hashCode();
-          h *= 1000003;
-          h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
-          $hashCode = h;
-          $hashCodeMemoized = true;
-        }
-      }
+      int h = 1;
+      h *= 1000003;
+      h ^= (name == null) ? 0 : name.hashCode();
+      h *= 1000003;
+      h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
+      $hashCode = h;
+      $hashCodeMemoized = true;
     }
     return $hashCode;
   }

@@ -78,8 +78,6 @@ fun TypeSpec.withToStringImplementation(): TypeSpec {
   fun methodCode() =
       CodeBlock.builder()
           .beginControlFlow("if (\$L == null)", Util.MEMOIZED_TO_STRING_VAR)
-          .beginControlFlow("synchronized(this)")
-          .beginControlFlow("if (\$L == null)", Util.MEMOIZED_TO_STRING_VAR)
           .add("\$L = \$S", "\$toString", "$name{")
           .add(fieldSpecs
               .filter { !it.hasModifier(Modifier.STATIC) }
@@ -95,8 +93,6 @@ fun TypeSpec.withToStringImplementation(): TypeSpec {
               .add("\n+ \$S;\n", "}")
               .unindent()
               .build())
-          .endControlFlow()
-          .endControlFlow()
           .endControlFlow()
           .addStatement("return \$L", Util.MEMOIZED_TO_STRING_VAR)
           .build()
@@ -186,8 +182,6 @@ fun TypeSpec.withHashCodeImplementation(): TypeSpec {
   fun methodCode() =
       CodeBlock.builder()
           .beginControlFlow("if (!\$L)", Util.MEMOIZED_HASH_CODE_FLAG_VAR)
-          .beginControlFlow("synchronized(this)")
-          .beginControlFlow("if (!\$L)", Util.MEMOIZED_HASH_CODE_FLAG_VAR)
           .addStatement("int h = 1")
           .add(fieldSpecs
               .filter { !it.hasModifier(Modifier.STATIC) }
@@ -199,8 +193,6 @@ fun TypeSpec.withHashCodeImplementation(): TypeSpec {
               .build())
           .addStatement("\$L = h", Util.MEMOIZED_HASH_CODE_VAR)
           .addStatement("\$L = true", Util.MEMOIZED_HASH_CODE_FLAG_VAR)
-          .endControlFlow()
-          .endControlFlow()
           .endControlFlow()
           .addStatement("return \$L", Util.MEMOIZED_HASH_CODE_VAR)
           .build()
