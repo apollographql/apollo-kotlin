@@ -74,19 +74,6 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     interceptorChain = new RealApolloInterceptorChain(operation, getInterceptors());
   }
 
-  private List<ApolloInterceptor> getInterceptors() {
-    List<ApolloInterceptor> interceptors = new ArrayList<>();
-
-    interceptors.addAll(applicationInterceptors);
-    interceptors.add(new ApolloCacheInterceptor(apolloStore, cacheControl, responseFieldMapper, customTypeAdapters,
-        dispatcher, logger));
-    interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
-        customTypeAdapters, logger));
-    interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCacheControl, false, moshi,
-        logger));
-    return interceptors;
-  }
-
   @SuppressWarnings("unchecked") @Nonnull @Override public Response<T> execute() throws ApolloException {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
@@ -164,5 +151,18 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCacheControl, moshi,
         responseFieldMapper, customTypeAdapters, apolloStore, cacheControl, dispatcher, logger,
         applicationInterceptors);
+  }
+
+  private List<ApolloInterceptor> getInterceptors() {
+    List<ApolloInterceptor> interceptors = new ArrayList<>();
+
+    interceptors.addAll(applicationInterceptors);
+    interceptors.add(new ApolloCacheInterceptor(apolloStore, cacheControl, responseFieldMapper, customTypeAdapters,
+        dispatcher, logger));
+    interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
+        customTypeAdapters, logger));
+    interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCacheControl, false, moshi,
+        logger));
+    return interceptors;
   }
 }

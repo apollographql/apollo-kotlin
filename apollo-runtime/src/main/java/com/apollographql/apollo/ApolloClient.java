@@ -135,8 +135,9 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   }
 
   /**
-   * @return The {@link ApolloStore} managing access to the normalized cache created by {@link
-   * Builder#normalizedCache(NormalizedCacheFactory, CacheKeyResolver)}  }
+   *
+   * @return The {@link ApolloStore} managing access to the normalized cache created by
+   * {@link Builder#normalizedCache(NormalizedCacheFactory, CacheKeyResolver)}  }
    */
   public ApolloStore apolloStore() {
     return apolloStore;
@@ -168,7 +169,6 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     HttpCache httpCache;
     ApolloLogger apolloLogger;
     final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
-    final List<ApolloInterceptor> networkInterceptors = new ArrayList<>();
 
     private Builder() {
     }
