@@ -78,8 +78,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     List<ApolloInterceptor> interceptors = new ArrayList<>();
 
     interceptors.addAll(applicationInterceptors);
-    interceptors.add(new ApolloCacheInterceptor(apolloStore, cacheControl, responseFieldMapper, customTypeAdapters, dispatcher,
-        logger));
+    interceptors.add(new ApolloCacheInterceptor(apolloStore, cacheControl, responseFieldMapper, customTypeAdapters,
+        dispatcher, logger));
     interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
         customTypeAdapters, logger));
     interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCacheControl, false, moshi,
@@ -162,6 +162,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
   @Override @Nonnull public RealApolloCall<T> clone() {
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCacheControl, moshi,
-        responseFieldMapper, customTypeAdapters, apolloStore, cacheControl, dispatcher, logger, applicationInterceptors);
+        responseFieldMapper, customTypeAdapters, apolloStore, cacheControl, dispatcher, logger,
+        applicationInterceptors);
   }
 }
