@@ -71,7 +71,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     this.dispatcher = dispatcher;
     this.logger = logger;
     this.applicationInterceptors = applicationInterceptors;
-    interceptorChain = new RealApolloInterceptorChain(operation, getInterceptors());
+    interceptorChain = prepareInterceptorChain(operation);
   }
 
   @SuppressWarnings("unchecked") @Nonnull @Override public Response<T> execute() throws ApolloException {
@@ -153,7 +153,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         applicationInterceptors);
   }
 
-  private List<ApolloInterceptor> getInterceptors() {
+  private ApolloInterceptorChain prepareInterceptorChain(Operation operation) {
     List<ApolloInterceptor> interceptors = new ArrayList<>();
 
     interceptors.addAll(applicationInterceptors);
@@ -163,6 +163,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         customTypeAdapters, logger));
     interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCacheControl, false, moshi,
         logger));
-    return interceptors;
+
+    return new RealApolloInterceptorChain(operation, interceptors);
   }
 }
