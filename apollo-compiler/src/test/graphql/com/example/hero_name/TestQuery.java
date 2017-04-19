@@ -106,55 +106,55 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new Data(hero);
       }
     }
+  }
 
-    public static class Hero {
-      private final @Nonnull String name;
+  public static class Hero {
+    private final @Nonnull String name;
 
-      public Hero(@Nonnull String name) {
-        this.name = name;
+    public Hero(@Nonnull String name) {
+      this.name = name;
+    }
+
+    public @Nonnull String name() {
+      return this.name;
+    }
+
+    @Override
+    public String toString() {
+      return "Hero{"
+        + "name=" + name
+        + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
       }
-
-      public @Nonnull String name() {
-        return this.name;
+      if (o instanceof Hero) {
+        Hero that = (Hero) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (name == null) ? 0 : name.hashCode();
+      return h;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Hero> {
+      final Field[] fields = {
+        Field.forString("name", "name", null, false)
+      };
 
       @Override
-      public String toString() {
-        return "Hero{"
-          + "name=" + name
-          + "}";
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof Hero) {
-          Hero that = (Hero) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        return h;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<Hero> {
-        final Field[] fields = {
-          Field.forString("name", "name", null, false)
-        };
-
-        @Override
-        public Hero map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          return new Hero(name);
-        }
+      public Hero map(ResponseReader reader) throws IOException {
+        final String name = reader.read(fields[0]);
+        return new Hero(name);
       }
     }
   }

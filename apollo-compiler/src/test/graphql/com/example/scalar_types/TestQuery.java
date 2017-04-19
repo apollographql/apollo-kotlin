@@ -244,55 +244,55 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new Data(graphQlString, graphQlIdNullable, graphQlIdNonNullable, graphQlIntNullable, graphQlIntNonNullable, graphQlFloatNullable, graphQlFloatNonNullable, graphQlBooleanNullable, graphQlBooleanNonNullable, graphQlListOfInt, graphQlListOfObjects);
       }
     }
+  }
 
-    public static class GraphQlListOfObject {
-      private final int someField;
+  public static class GraphQlListOfObject {
+    private final int someField;
 
-      public GraphQlListOfObject(int someField) {
-        this.someField = someField;
+    public GraphQlListOfObject(int someField) {
+      this.someField = someField;
+    }
+
+    public int someField() {
+      return this.someField;
+    }
+
+    @Override
+    public String toString() {
+      return "GraphQlListOfObject{"
+        + "someField=" + someField
+        + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
       }
-
-      public int someField() {
-        return this.someField;
+      if (o instanceof GraphQlListOfObject) {
+        GraphQlListOfObject that = (GraphQlListOfObject) o;
+        return this.someField == that.someField;
       }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= someField;
+      return h;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<GraphQlListOfObject> {
+      final Field[] fields = {
+        Field.forInt("someField", "someField", null, false)
+      };
 
       @Override
-      public String toString() {
-        return "GraphQlListOfObject{"
-          + "someField=" + someField
-          + "}";
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof GraphQlListOfObject) {
-          GraphQlListOfObject that = (GraphQlListOfObject) o;
-          return this.someField == that.someField;
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= someField;
-        return h;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<GraphQlListOfObject> {
-        final Field[] fields = {
-          Field.forInt("someField", "someField", null, false)
-        };
-
-        @Override
-        public GraphQlListOfObject map(ResponseReader reader) throws IOException {
-          final int someField = reader.read(fields[0]);
-          return new GraphQlListOfObject(someField);
-        }
+      public GraphQlListOfObject map(ResponseReader reader) throws IOException {
+        final int someField = reader.read(fields[0]);
+        return new GraphQlListOfObject(someField);
       }
     }
   }

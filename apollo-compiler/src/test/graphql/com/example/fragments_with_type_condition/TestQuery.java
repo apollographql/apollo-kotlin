@@ -136,22 +136,69 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new Data(r2, luke);
       }
     }
+  }
 
-    public static class R2 {
-      private final @Nonnull Fragments fragments;
+  public static class R2 {
+    private final @Nonnull Fragments fragments;
 
-      public R2(@Nonnull Fragments fragments) {
-        this.fragments = fragments;
+    public R2(@Nonnull Fragments fragments) {
+      this.fragments = fragments;
+    }
+
+    public @Nonnull Fragments fragments() {
+      return this.fragments;
+    }
+
+    @Override
+    public String toString() {
+      return "R2{"
+        + "fragments=" + fragments
+        + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof R2) {
+        R2 that = (R2) o;
+        return ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (fragments == null) ? 0 : fragments.hashCode();
+      return h;
+    }
+
+    public static class Fragments {
+      private final @Nonnull HumanDetails humanDetails;
+
+      private final @Nonnull DroidDetails droidDetails;
+
+      public Fragments(@Nonnull HumanDetails humanDetails, @Nonnull DroidDetails droidDetails) {
+        this.humanDetails = humanDetails;
+        this.droidDetails = droidDetails;
       }
 
-      public @Nonnull Fragments fragments() {
-        return this.fragments;
+      public @Nonnull HumanDetails humanDetails() {
+        return this.humanDetails;
+      }
+
+      public @Nonnull DroidDetails droidDetails() {
+        return this.droidDetails;
       }
 
       @Override
       public String toString() {
-        return "R2{"
-          + "fragments=" + fragments
+        return "Fragments{"
+          + "humanDetails=" + humanDetails + ", "
+          + "droidDetails=" + droidDetails
           + "}";
       }
 
@@ -160,9 +207,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         if (o == this) {
           return true;
         }
-        if (o instanceof R2) {
-          R2 that = (R2) o;
-          return ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+        if (o instanceof Fragments) {
+          Fragments that = (Fragments) o;
+          return ((this.humanDetails == null) ? (that.humanDetails == null) : this.humanDetails.equals(that.humanDetails))
+           && ((this.droidDetails == null) ? (that.droidDetails == null) : this.droidDetails.equals(that.droidDetails));
         }
         return false;
       }
@@ -171,116 +219,114 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       public int hashCode() {
         int h = 1;
         h *= 1000003;
-        h ^= (fragments == null) ? 0 : fragments.hashCode();
+        h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
+        h *= 1000003;
+        h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
         return h;
       }
 
-      public static class Fragments {
-        private final @Nonnull HumanDetails humanDetails;
+      public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+        final HumanDetails.Mapper humanDetailsFieldMapper = new HumanDetails.Mapper();
 
-        private final @Nonnull DroidDetails droidDetails;
-
-        public Fragments(@Nonnull HumanDetails humanDetails, @Nonnull DroidDetails droidDetails) {
-          this.humanDetails = humanDetails;
-          this.droidDetails = droidDetails;
-        }
-
-        public @Nonnull HumanDetails humanDetails() {
-          return this.humanDetails;
-        }
-
-        public @Nonnull DroidDetails droidDetails() {
-          return this.droidDetails;
-        }
+        final DroidDetails.Mapper droidDetailsFieldMapper = new DroidDetails.Mapper();
 
         @Override
-        public String toString() {
-          return "Fragments{"
-            + "humanDetails=" + humanDetails + ", "
-            + "droidDetails=" + droidDetails
-            + "}";
-        }
-
-        @Override
-        public boolean equals(Object o) {
-          if (o == this) {
-            return true;
+        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) throws
+            IOException {
+          HumanDetails humanDetails = null;
+          DroidDetails droidDetails = null;
+          if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType)) {
+            humanDetails = humanDetailsFieldMapper.map(reader);
           }
-          if (o instanceof Fragments) {
-            Fragments that = (Fragments) o;
-            return ((this.humanDetails == null) ? (that.humanDetails == null) : this.humanDetails.equals(that.humanDetails))
-             && ((this.droidDetails == null) ? (that.droidDetails == null) : this.droidDetails.equals(that.droidDetails));
+          if (DroidDetails.POSSIBLE_TYPES.contains(conditionalType)) {
+            droidDetails = droidDetailsFieldMapper.map(reader);
           }
-          return false;
-        }
-
-        @Override
-        public int hashCode() {
-          int h = 1;
-          h *= 1000003;
-          h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
-          h *= 1000003;
-          h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
-          return h;
-        }
-
-        public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
-          final HumanDetails.Mapper humanDetailsFieldMapper = new HumanDetails.Mapper();
-
-          final DroidDetails.Mapper droidDetailsFieldMapper = new DroidDetails.Mapper();
-
-          @Override
-          public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType)
-              throws IOException {
-            HumanDetails humanDetails = null;
-            DroidDetails droidDetails = null;
-            if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType)) {
-              humanDetails = humanDetailsFieldMapper.map(reader);
-            }
-            if (DroidDetails.POSSIBLE_TYPES.contains(conditionalType)) {
-              droidDetails = droidDetailsFieldMapper.map(reader);
-            }
-            return new Fragments(humanDetails, droidDetails);
-          }
-        }
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<R2> {
-        final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
-
-        final Field[] fields = {
-          Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
-            @Override
-            public Fragments read(String conditionalType, ResponseReader reader) throws
-                IOException {
-              return fragmentsFieldMapper.map(reader, conditionalType);
-            }
-          })
-        };
-
-        @Override
-        public R2 map(ResponseReader reader) throws IOException {
-          final Fragments fragments = reader.read(fields[0]);
-          return new R2(fragments);
+          return new Fragments(humanDetails, droidDetails);
         }
       }
     }
 
-    public static class Luke {
-      private final @Nonnull Fragments fragments;
+    public static final class Mapper implements ResponseFieldMapper<R2> {
+      final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
-      public Luke(@Nonnull Fragments fragments) {
-        this.fragments = fragments;
+      final Field[] fields = {
+        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
+          @Override
+          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
+            return fragmentsFieldMapper.map(reader, conditionalType);
+          }
+        })
+      };
+
+      @Override
+      public R2 map(ResponseReader reader) throws IOException {
+        final Fragments fragments = reader.read(fields[0]);
+        return new R2(fragments);
+      }
+    }
+  }
+
+  public static class Luke {
+    private final @Nonnull Fragments fragments;
+
+    public Luke(@Nonnull Fragments fragments) {
+      this.fragments = fragments;
+    }
+
+    public @Nonnull Fragments fragments() {
+      return this.fragments;
+    }
+
+    @Override
+    public String toString() {
+      return "Luke{"
+        + "fragments=" + fragments
+        + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Luke) {
+        Luke that = (Luke) o;
+        return ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (fragments == null) ? 0 : fragments.hashCode();
+      return h;
+    }
+
+    public static class Fragments {
+      private final @Nonnull HumanDetails humanDetails;
+
+      private final @Nonnull DroidDetails droidDetails;
+
+      public Fragments(@Nonnull HumanDetails humanDetails, @Nonnull DroidDetails droidDetails) {
+        this.humanDetails = humanDetails;
+        this.droidDetails = droidDetails;
       }
 
-      public @Nonnull Fragments fragments() {
-        return this.fragments;
+      public @Nonnull HumanDetails humanDetails() {
+        return this.humanDetails;
+      }
+
+      public @Nonnull DroidDetails droidDetails() {
+        return this.droidDetails;
       }
 
       @Override
       public String toString() {
-        return "Luke{"
-          + "fragments=" + fragments
+        return "Fragments{"
+          + "humanDetails=" + humanDetails + ", "
+          + "droidDetails=" + droidDetails
           + "}";
       }
 
@@ -289,9 +335,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         if (o == this) {
           return true;
         }
-        if (o instanceof Luke) {
-          Luke that = (Luke) o;
-          return ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+        if (o instanceof Fragments) {
+          Fragments that = (Fragments) o;
+          return ((this.humanDetails == null) ? (that.humanDetails == null) : this.humanDetails.equals(that.humanDetails))
+           && ((this.droidDetails == null) ? (that.droidDetails == null) : this.droidDetails.equals(that.droidDetails));
         }
         return false;
       }
@@ -300,98 +347,49 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       public int hashCode() {
         int h = 1;
         h *= 1000003;
-        h ^= (fragments == null) ? 0 : fragments.hashCode();
+        h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
+        h *= 1000003;
+        h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
         return h;
       }
 
-      public static class Fragments {
-        private final @Nonnull HumanDetails humanDetails;
+      public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+        final HumanDetails.Mapper humanDetailsFieldMapper = new HumanDetails.Mapper();
 
-        private final @Nonnull DroidDetails droidDetails;
-
-        public Fragments(@Nonnull HumanDetails humanDetails, @Nonnull DroidDetails droidDetails) {
-          this.humanDetails = humanDetails;
-          this.droidDetails = droidDetails;
-        }
-
-        public @Nonnull HumanDetails humanDetails() {
-          return this.humanDetails;
-        }
-
-        public @Nonnull DroidDetails droidDetails() {
-          return this.droidDetails;
-        }
+        final DroidDetails.Mapper droidDetailsFieldMapper = new DroidDetails.Mapper();
 
         @Override
-        public String toString() {
-          return "Fragments{"
-            + "humanDetails=" + humanDetails + ", "
-            + "droidDetails=" + droidDetails
-            + "}";
-        }
-
-        @Override
-        public boolean equals(Object o) {
-          if (o == this) {
-            return true;
+        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) throws
+            IOException {
+          HumanDetails humanDetails = null;
+          DroidDetails droidDetails = null;
+          if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType)) {
+            humanDetails = humanDetailsFieldMapper.map(reader);
           }
-          if (o instanceof Fragments) {
-            Fragments that = (Fragments) o;
-            return ((this.humanDetails == null) ? (that.humanDetails == null) : this.humanDetails.equals(that.humanDetails))
-             && ((this.droidDetails == null) ? (that.droidDetails == null) : this.droidDetails.equals(that.droidDetails));
+          if (DroidDetails.POSSIBLE_TYPES.contains(conditionalType)) {
+            droidDetails = droidDetailsFieldMapper.map(reader);
           }
-          return false;
-        }
-
-        @Override
-        public int hashCode() {
-          int h = 1;
-          h *= 1000003;
-          h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
-          h *= 1000003;
-          h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
-          return h;
-        }
-
-        public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
-          final HumanDetails.Mapper humanDetailsFieldMapper = new HumanDetails.Mapper();
-
-          final DroidDetails.Mapper droidDetailsFieldMapper = new DroidDetails.Mapper();
-
-          @Override
-          public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType)
-              throws IOException {
-            HumanDetails humanDetails = null;
-            DroidDetails droidDetails = null;
-            if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType)) {
-              humanDetails = humanDetailsFieldMapper.map(reader);
-            }
-            if (DroidDetails.POSSIBLE_TYPES.contains(conditionalType)) {
-              droidDetails = droidDetailsFieldMapper.map(reader);
-            }
-            return new Fragments(humanDetails, droidDetails);
-          }
+          return new Fragments(humanDetails, droidDetails);
         }
       }
+    }
 
-      public static final class Mapper implements ResponseFieldMapper<Luke> {
-        final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
+    public static final class Mapper implements ResponseFieldMapper<Luke> {
+      final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
-        final Field[] fields = {
-          Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
-            @Override
-            public Fragments read(String conditionalType, ResponseReader reader) throws
-                IOException {
-              return fragmentsFieldMapper.map(reader, conditionalType);
-            }
-          })
-        };
+      final Field[] fields = {
+        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
+          @Override
+          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
+            return fragmentsFieldMapper.map(reader, conditionalType);
+          }
+        })
+      };
 
-        @Override
-        public Luke map(ResponseReader reader) throws IOException {
-          final Fragments fragments = reader.read(fields[0]);
-          return new Luke(fragments);
-        }
+      @Override
+      public Luke map(ResponseReader reader) throws IOException {
+        final Fragments fragments = reader.read(fields[0]);
+        return new Luke(fragments);
       }
     }
   }

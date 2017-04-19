@@ -112,99 +112,99 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new Data(hero);
       }
     }
+  }
 
-    public static class Hero {
-      private final @Nonnull String name;
+  public static class Hero {
+    private final @Nonnull String name;
 
-      private final @Nonnull Date birthDate;
+    private final @Nonnull Date birthDate;
 
-      private final @Nonnull List<Date> appearanceDates;
+    private final @Nonnull List<Date> appearanceDates;
 
-      private final @Nonnull Object fieldWithUnsupportedType;
+    private final @Nonnull Object fieldWithUnsupportedType;
 
-      public Hero(@Nonnull String name, @Nonnull Date birthDate,
-          @Nonnull List<Date> appearanceDates, @Nonnull Object fieldWithUnsupportedType) {
-        this.name = name;
-        this.birthDate = birthDate;
-        this.appearanceDates = appearanceDates;
-        this.fieldWithUnsupportedType = fieldWithUnsupportedType;
+    public Hero(@Nonnull String name, @Nonnull Date birthDate, @Nonnull List<Date> appearanceDates,
+        @Nonnull Object fieldWithUnsupportedType) {
+      this.name = name;
+      this.birthDate = birthDate;
+      this.appearanceDates = appearanceDates;
+      this.fieldWithUnsupportedType = fieldWithUnsupportedType;
+    }
+
+    public @Nonnull String name() {
+      return this.name;
+    }
+
+    public @Nonnull Date birthDate() {
+      return this.birthDate;
+    }
+
+    public @Nonnull List<Date> appearanceDates() {
+      return this.appearanceDates;
+    }
+
+    public @Nonnull Object fieldWithUnsupportedType() {
+      return this.fieldWithUnsupportedType;
+    }
+
+    @Override
+    public String toString() {
+      return "Hero{"
+        + "name=" + name + ", "
+        + "birthDate=" + birthDate + ", "
+        + "appearanceDates=" + appearanceDates + ", "
+        + "fieldWithUnsupportedType=" + fieldWithUnsupportedType
+        + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
       }
-
-      public @Nonnull String name() {
-        return this.name;
+      if (o instanceof Hero) {
+        Hero that = (Hero) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         && ((this.birthDate == null) ? (that.birthDate == null) : this.birthDate.equals(that.birthDate))
+         && ((this.appearanceDates == null) ? (that.appearanceDates == null) : this.appearanceDates.equals(that.appearanceDates))
+         && ((this.fieldWithUnsupportedType == null) ? (that.fieldWithUnsupportedType == null) : this.fieldWithUnsupportedType.equals(that.fieldWithUnsupportedType));
       }
+      return false;
+    }
 
-      public @Nonnull Date birthDate() {
-        return this.birthDate;
-      }
+    @Override
+    public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (name == null) ? 0 : name.hashCode();
+      h *= 1000003;
+      h ^= (birthDate == null) ? 0 : birthDate.hashCode();
+      h *= 1000003;
+      h ^= (appearanceDates == null) ? 0 : appearanceDates.hashCode();
+      h *= 1000003;
+      h ^= (fieldWithUnsupportedType == null) ? 0 : fieldWithUnsupportedType.hashCode();
+      return h;
+    }
 
-      public @Nonnull List<Date> appearanceDates() {
-        return this.appearanceDates;
-      }
-
-      public @Nonnull Object fieldWithUnsupportedType() {
-        return this.fieldWithUnsupportedType;
-      }
+    public static final class Mapper implements ResponseFieldMapper<Hero> {
+      final Field[] fields = {
+        Field.forString("name", "name", null, false),
+        Field.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE),
+        Field.forList("appearanceDates", "appearanceDates", null, false, new Field.ListReader<Date>() {
+          @Override public Date read(final Field.ListItemReader reader) throws IOException {
+            return reader.readCustomType(CustomType.DATE);
+          }
+        }),
+        Field.forCustomType("fieldWithUnsupportedType", "fieldWithUnsupportedType", null, false, CustomType.UNSUPPORTEDTYPE)
+      };
 
       @Override
-      public String toString() {
-        return "Hero{"
-          + "name=" + name + ", "
-          + "birthDate=" + birthDate + ", "
-          + "appearanceDates=" + appearanceDates + ", "
-          + "fieldWithUnsupportedType=" + fieldWithUnsupportedType
-          + "}";
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof Hero) {
-          Hero that = (Hero) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-           && ((this.birthDate == null) ? (that.birthDate == null) : this.birthDate.equals(that.birthDate))
-           && ((this.appearanceDates == null) ? (that.appearanceDates == null) : this.appearanceDates.equals(that.appearanceDates))
-           && ((this.fieldWithUnsupportedType == null) ? (that.fieldWithUnsupportedType == null) : this.fieldWithUnsupportedType.equals(that.fieldWithUnsupportedType));
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        h *= 1000003;
-        h ^= (birthDate == null) ? 0 : birthDate.hashCode();
-        h *= 1000003;
-        h ^= (appearanceDates == null) ? 0 : appearanceDates.hashCode();
-        h *= 1000003;
-        h ^= (fieldWithUnsupportedType == null) ? 0 : fieldWithUnsupportedType.hashCode();
-        return h;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<Hero> {
-        final Field[] fields = {
-          Field.forString("name", "name", null, false),
-          Field.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE),
-          Field.forList("appearanceDates", "appearanceDates", null, false, new Field.ListReader<Date>() {
-            @Override public Date read(final Field.ListItemReader reader) throws IOException {
-              return reader.readCustomType(CustomType.DATE);
-            }
-          }),
-          Field.forCustomType("fieldWithUnsupportedType", "fieldWithUnsupportedType", null, false, CustomType.UNSUPPORTEDTYPE)
-        };
-
-        @Override
-        public Hero map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          final Date birthDate = reader.read(fields[1]);
-          final List<Date> appearanceDates = reader.read(fields[2]);
-          final Object fieldWithUnsupportedType = reader.read(fields[3]);
-          return new Hero(name, birthDate, appearanceDates, fieldWithUnsupportedType);
-        }
+      public Hero map(ResponseReader reader) throws IOException {
+        final String name = reader.read(fields[0]);
+        final Date birthDate = reader.read(fields[1]);
+        final List<Date> appearanceDates = reader.read(fields[2]);
+        final Object fieldWithUnsupportedType = reader.read(fields[3]);
+        return new Hero(name, birthDate, appearanceDates, fieldWithUnsupportedType);
       }
     }
   }

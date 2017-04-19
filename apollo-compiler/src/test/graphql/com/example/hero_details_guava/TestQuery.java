@@ -119,252 +119,252 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new Data(hero);
       }
     }
+  }
 
-    public static class Node {
-      private final @Nonnull String name;
+  public static class Hero {
+    private final @Nonnull String name;
 
-      public Node(@Nonnull String name) {
-        this.name = name;
-      }
+    private final @Nonnull FriendsConnection friendsConnection;
 
-      public @Nonnull String name() {
-        return this.name;
-      }
-
-      @Override
-      public String toString() {
-        return "Node{"
-          + "name=" + name
-          + "}";
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof Node) {
-          Node that = (Node) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        return h;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<Node> {
-        final Field[] fields = {
-          Field.forString("name", "name", null, false)
-        };
-
-        @Override
-        public Node map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          return new Node(name);
-        }
-      }
+    public Hero(@Nonnull String name, @Nonnull FriendsConnection friendsConnection) {
+      this.name = name;
+      this.friendsConnection = friendsConnection;
     }
 
-    public static class Edge {
-      private final Optional<Node> node;
-
-      public Edge(@Nullable Node node) {
-        this.node = Optional.fromNullable(node);
-      }
-
-      public Optional<Node> node() {
-        return this.node;
-      }
-
-      @Override
-      public String toString() {
-        return "Edge{"
-          + "node=" + node
-          + "}";
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof Edge) {
-          Edge that = (Edge) o;
-          return ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (node == null) ? 0 : node.hashCode();
-        return h;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<Edge> {
-        final Node.Mapper nodeFieldMapper = new Node.Mapper();
-
-        final Field[] fields = {
-          Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
-            @Override public Node read(final ResponseReader reader) throws IOException {
-              return nodeFieldMapper.map(reader);
-            }
-          })
-        };
-
-        @Override
-        public Edge map(ResponseReader reader) throws IOException {
-          final Node node = reader.read(fields[0]);
-          return new Edge(node);
-        }
-      }
+    public @Nonnull String name() {
+      return this.name;
     }
 
-    public static class FriendsConnection {
-      private final Optional<Integer> totalCount;
-
-      private final Optional<List<Edge>> edges;
-
-      public FriendsConnection(@Nullable Integer totalCount, @Nullable List<Edge> edges) {
-        this.totalCount = Optional.fromNullable(totalCount);
-        this.edges = Optional.fromNullable(edges);
-      }
-
-      public Optional<Integer> totalCount() {
-        return this.totalCount;
-      }
-
-      public Optional<List<Edge>> edges() {
-        return this.edges;
-      }
-
-      @Override
-      public String toString() {
-        return "FriendsConnection{"
-          + "totalCount=" + totalCount + ", "
-          + "edges=" + edges
-          + "}";
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof FriendsConnection) {
-          FriendsConnection that = (FriendsConnection) o;
-          return ((this.totalCount == null) ? (that.totalCount == null) : this.totalCount.equals(that.totalCount))
-           && ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (totalCount == null) ? 0 : totalCount.hashCode();
-        h *= 1000003;
-        h ^= (edges == null) ? 0 : edges.hashCode();
-        return h;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<FriendsConnection> {
-        final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
-
-        final Field[] fields = {
-          Field.forInt("totalCount", "totalCount", null, true),
-          Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
-            @Override public Edge read(final ResponseReader reader) throws IOException {
-              return edgeFieldMapper.map(reader);
-            }
-          })
-        };
-
-        @Override
-        public FriendsConnection map(ResponseReader reader) throws IOException {
-          final Integer totalCount = reader.read(fields[0]);
-          final List<Edge> edges = reader.read(fields[1]);
-          return new FriendsConnection(totalCount, edges);
-        }
-      }
+    public @Nonnull FriendsConnection friendsConnection() {
+      return this.friendsConnection;
     }
 
-    public static class Hero {
-      private final @Nonnull String name;
+    @Override
+    public String toString() {
+      return "Hero{"
+        + "name=" + name + ", "
+        + "friendsConnection=" + friendsConnection
+        + "}";
+    }
 
-      private final @Nonnull FriendsConnection friendsConnection;
-
-      public Hero(@Nonnull String name, @Nonnull FriendsConnection friendsConnection) {
-        this.name = name;
-        this.friendsConnection = friendsConnection;
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
       }
-
-      public @Nonnull String name() {
-        return this.name;
+      if (o instanceof Hero) {
+        Hero that = (Hero) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         && ((this.friendsConnection == null) ? (that.friendsConnection == null) : this.friendsConnection.equals(that.friendsConnection));
       }
+      return false;
+    }
 
-      public @Nonnull FriendsConnection friendsConnection() {
-        return this.friendsConnection;
-      }
+    @Override
+    public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (name == null) ? 0 : name.hashCode();
+      h *= 1000003;
+      h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
+      return h;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Hero> {
+      final FriendsConnection.Mapper friendsConnectionFieldMapper = new FriendsConnection.Mapper();
+
+      final Field[] fields = {
+        Field.forString("name", "name", null, false),
+        Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection>() {
+          @Override public FriendsConnection read(final ResponseReader reader) throws IOException {
+            return friendsConnectionFieldMapper.map(reader);
+          }
+        })
+      };
 
       @Override
-      public String toString() {
-        return "Hero{"
-          + "name=" + name + ", "
-          + "friendsConnection=" + friendsConnection
-          + "}";
+      public Hero map(ResponseReader reader) throws IOException {
+        final String name = reader.read(fields[0]);
+        final FriendsConnection friendsConnection = reader.read(fields[1]);
+        return new Hero(name, friendsConnection);
       }
+    }
+  }
+
+  public static class FriendsConnection {
+    private final Optional<Integer> totalCount;
+
+    private final Optional<List<Edge>> edges;
+
+    public FriendsConnection(@Nullable Integer totalCount, @Nullable List<Edge> edges) {
+      this.totalCount = Optional.fromNullable(totalCount);
+      this.edges = Optional.fromNullable(edges);
+    }
+
+    public Optional<Integer> totalCount() {
+      return this.totalCount;
+    }
+
+    public Optional<List<Edge>> edges() {
+      return this.edges;
+    }
+
+    @Override
+    public String toString() {
+      return "FriendsConnection{"
+        + "totalCount=" + totalCount + ", "
+        + "edges=" + edges
+        + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof FriendsConnection) {
+        FriendsConnection that = (FriendsConnection) o;
+        return ((this.totalCount == null) ? (that.totalCount == null) : this.totalCount.equals(that.totalCount))
+         && ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (totalCount == null) ? 0 : totalCount.hashCode();
+      h *= 1000003;
+      h ^= (edges == null) ? 0 : edges.hashCode();
+      return h;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<FriendsConnection> {
+      final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
+
+      final Field[] fields = {
+        Field.forInt("totalCount", "totalCount", null, true),
+        Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
+          @Override public Edge read(final ResponseReader reader) throws IOException {
+            return edgeFieldMapper.map(reader);
+          }
+        })
+      };
 
       @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof Hero) {
-          Hero that = (Hero) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-           && ((this.friendsConnection == null) ? (that.friendsConnection == null) : this.friendsConnection.equals(that.friendsConnection));
-        }
-        return false;
+      public FriendsConnection map(ResponseReader reader) throws IOException {
+        final Integer totalCount = reader.read(fields[0]);
+        final List<Edge> edges = reader.read(fields[1]);
+        return new FriendsConnection(totalCount, edges);
       }
+    }
+  }
+
+  public static class Edge {
+    private final Optional<Node> node;
+
+    public Edge(@Nullable Node node) {
+      this.node = Optional.fromNullable(node);
+    }
+
+    public Optional<Node> node() {
+      return this.node;
+    }
+
+    @Override
+    public String toString() {
+      return "Edge{"
+        + "node=" + node
+        + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Edge) {
+        Edge that = (Edge) o;
+        return ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (node == null) ? 0 : node.hashCode();
+      return h;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Edge> {
+      final Node.Mapper nodeFieldMapper = new Node.Mapper();
+
+      final Field[] fields = {
+        Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
+          @Override public Node read(final ResponseReader reader) throws IOException {
+            return nodeFieldMapper.map(reader);
+          }
+        })
+      };
 
       @Override
-      public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        h *= 1000003;
-        h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
-        return h;
+      public Edge map(ResponseReader reader) throws IOException {
+        final Node node = reader.read(fields[0]);
+        return new Edge(node);
       }
+    }
+  }
 
-      public static final class Mapper implements ResponseFieldMapper<Hero> {
-        final FriendsConnection.Mapper friendsConnectionFieldMapper = new FriendsConnection.Mapper();
+  public static class Node {
+    private final @Nonnull String name;
 
-        final Field[] fields = {
-          Field.forString("name", "name", null, false),
-          Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection>() {
-            @Override public FriendsConnection read(final ResponseReader reader) throws IOException {
-              return friendsConnectionFieldMapper.map(reader);
-            }
-          })
-        };
+    public Node(@Nonnull String name) {
+      this.name = name;
+    }
 
-        @Override
-        public Hero map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          final FriendsConnection friendsConnection = reader.read(fields[1]);
-          return new Hero(name, friendsConnection);
-        }
+    public @Nonnull String name() {
+      return this.name;
+    }
+
+    @Override
+    public String toString() {
+      return "Node{"
+        + "name=" + name
+        + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Node) {
+        Node that = (Node) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (name == null) ? 0 : name.hashCode();
+      return h;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Node> {
+      final Field[] fields = {
+        Field.forString("name", "name", null, false)
+      };
+
+      @Override
+      public Node map(ResponseReader reader) throws IOException {
+        final String name = reader.read(fields[0]);
+        return new Node(name);
       }
     }
   }

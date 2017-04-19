@@ -109,22 +109,61 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new Data(hero);
       }
     }
+  }
 
-    public static class Hero {
-      private final @Nonnull Fragments fragments;
+  public static class Hero {
+    private final @Nonnull Fragments fragments;
 
-      public Hero(@Nonnull Fragments fragments) {
-        this.fragments = fragments;
+    public Hero(@Nonnull Fragments fragments) {
+      this.fragments = fragments;
+    }
+
+    public @Nonnull Fragments fragments() {
+      return this.fragments;
+    }
+
+    @Override
+    public String toString() {
+      return "Hero{"
+        + "fragments=" + fragments
+        + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Hero) {
+        Hero that = (Hero) o;
+        return ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (fragments == null) ? 0 : fragments.hashCode();
+      return h;
+    }
+
+    public static class Fragments {
+      private final @Nonnull HeroDetails heroDetails;
+
+      public Fragments(@Nonnull HeroDetails heroDetails) {
+        this.heroDetails = heroDetails;
       }
 
-      public @Nonnull Fragments fragments() {
-        return this.fragments;
+      public @Nonnull HeroDetails heroDetails() {
+        return this.heroDetails;
       }
 
       @Override
       public String toString() {
-        return "Hero{"
-          + "fragments=" + fragments
+        return "Fragments{"
+          + "heroDetails=" + heroDetails
           + "}";
       }
 
@@ -133,9 +172,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         if (o == this) {
           return true;
         }
-        if (o instanceof Hero) {
-          Hero that = (Hero) o;
-          return ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+        if (o instanceof Fragments) {
+          Fragments that = (Fragments) o;
+          return ((this.heroDetails == null) ? (that.heroDetails == null) : this.heroDetails.equals(that.heroDetails));
         }
         return false;
       }
@@ -144,81 +183,41 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       public int hashCode() {
         int h = 1;
         h *= 1000003;
-        h ^= (fragments == null) ? 0 : fragments.hashCode();
+        h ^= (heroDetails == null) ? 0 : heroDetails.hashCode();
         return h;
       }
 
-      public static class Fragments {
-        private final @Nonnull HeroDetails heroDetails;
-
-        public Fragments(@Nonnull HeroDetails heroDetails) {
-          this.heroDetails = heroDetails;
-        }
-
-        public @Nonnull HeroDetails heroDetails() {
-          return this.heroDetails;
-        }
+      public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+        final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();
 
         @Override
-        public String toString() {
-          return "Fragments{"
-            + "heroDetails=" + heroDetails
-            + "}";
-        }
-
-        @Override
-        public boolean equals(Object o) {
-          if (o == this) {
-            return true;
+        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) throws
+            IOException {
+          HeroDetails heroDetails = null;
+          if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) {
+            heroDetails = heroDetailsFieldMapper.map(reader);
           }
-          if (o instanceof Fragments) {
-            Fragments that = (Fragments) o;
-            return ((this.heroDetails == null) ? (that.heroDetails == null) : this.heroDetails.equals(that.heroDetails));
-          }
-          return false;
-        }
-
-        @Override
-        public int hashCode() {
-          int h = 1;
-          h *= 1000003;
-          h ^= (heroDetails == null) ? 0 : heroDetails.hashCode();
-          return h;
-        }
-
-        public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
-          final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();
-
-          @Override
-          public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType)
-              throws IOException {
-            HeroDetails heroDetails = null;
-            if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) {
-              heroDetails = heroDetailsFieldMapper.map(reader);
-            }
-            return new Fragments(heroDetails);
-          }
+          return new Fragments(heroDetails);
         }
       }
+    }
 
-      public static final class Mapper implements ResponseFieldMapper<Hero> {
-        final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
+    public static final class Mapper implements ResponseFieldMapper<Hero> {
+      final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
-        final Field[] fields = {
-          Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
-            @Override
-            public Fragments read(String conditionalType, ResponseReader reader) throws
-                IOException {
-              return fragmentsFieldMapper.map(reader, conditionalType);
-            }
-          })
-        };
+      final Field[] fields = {
+        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
+          @Override
+          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
+            return fragmentsFieldMapper.map(reader, conditionalType);
+          }
+        })
+      };
 
-        @Override
-        public Hero map(ResponseReader reader) throws IOException {
-          final Fragments fragments = reader.read(fields[0]);
-          return new Hero(fragments);
-        }
+      @Override
+      public Hero map(ResponseReader reader) throws IOException {
+        final Fragments fragments = reader.read(fields[0]);
+        return new Hero(fragments);
       }
     }
   }
