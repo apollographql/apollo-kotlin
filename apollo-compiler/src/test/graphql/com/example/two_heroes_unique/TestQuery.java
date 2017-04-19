@@ -62,6 +62,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private final Optional<Luke> luke;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Data(@Nullable R2 r2, @Nullable Luke luke) {
       this.r2 = Optional.fromNullable(r2);
       this.luke = Optional.fromNullable(luke);
@@ -77,10 +83,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     @Override
     public String toString() {
-      return "Data{"
-        + "r2=" + r2 + ", "
-        + "luke=" + luke
-        + "}";
+      if ($toString == null) {
+        $toString = "Data{"
+          + "r2=" + r2 + ", "
+          + "luke=" + luke
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -98,12 +107,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (r2 == null) ? 0 : r2.hashCode();
-      h *= 1000003;
-      h ^= (luke == null) ? 0 : luke.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (r2 == null) ? 0 : r2.hashCode();
+        h *= 1000003;
+        h ^= (luke == null) ? 0 : luke.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
@@ -137,6 +150,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static class R2 {
       private final @Nonnull String name;
 
+      private volatile String $toString;
+
+      private volatile int $hashCode;
+
+      private volatile boolean $hashCodeMemoized;
+
       public R2(@Nonnull String name) {
         this.name = name;
       }
@@ -147,9 +166,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public String toString() {
-        return "R2{"
-          + "name=" + name
-          + "}";
+        if ($toString == null) {
+          $toString = "R2{"
+            + "name=" + name
+            + "}";
+        }
+        return $toString;
       }
 
       @Override
@@ -166,10 +188,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        return h;
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= (name == null) ? 0 : name.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
       }
 
       public static final class Mapper implements ResponseFieldMapper<R2> {
@@ -190,6 +216,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       private final @Nonnull String name;
 
+      private volatile String $toString;
+
+      private volatile int $hashCode;
+
+      private volatile boolean $hashCodeMemoized;
+
       public Luke(@Nonnull String id, @Nonnull String name) {
         this.id = id;
         this.name = name;
@@ -205,10 +237,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public String toString() {
-        return "Luke{"
-          + "id=" + id + ", "
-          + "name=" + name
-          + "}";
+        if ($toString == null) {
+          $toString = "Luke{"
+            + "id=" + id + ", "
+            + "name=" + name
+            + "}";
+        }
+        return $toString;
       }
 
       @Override
@@ -226,12 +261,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (id == null) ? 0 : id.hashCode();
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        return h;
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= (id == null) ? 0 : id.hashCode();
+          h *= 1000003;
+          h ^= (name == null) ? 0 : name.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
       }
 
       public static final class Mapper implements ResponseFieldMapper<Luke> {

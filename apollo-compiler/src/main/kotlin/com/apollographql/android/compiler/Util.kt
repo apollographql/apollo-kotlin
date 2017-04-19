@@ -77,9 +77,13 @@ fun TypeSpec.withToStringImplementation(): TypeSpec {
 
   fun methodCode() =
       CodeBlock.builder()
-          .add("return \$S", "$name{")
+          .beginControlFlow("if (\$L == null)", Util.MEMOIZED_TO_STRING_VAR)
+          .add("\$L = \$S", "\$toString", "$name{")
           .add(fieldSpecs
               .filter { !it.hasModifier(Modifier.STATIC) }
+              .filter { it.name != Util.MEMOIZED_HASH_CODE_FLAG_VAR }
+              .filter { it.name != Util.MEMOIZED_HASH_CODE_VAR }
+              .filter { it.name != Util.MEMOIZED_TO_STRING_VAR }
               .map { it.name }
               .mapIndexed(::printFieldCode)
               .fold(CodeBlock.builder(), CodeBlock.Builder::add)
@@ -89,9 +93,13 @@ fun TypeSpec.withToStringImplementation(): TypeSpec {
               .add("\n+ \$S;\n", "}")
               .unindent()
               .build())
+          .endControlFlow()
+          .addStatement("return \$L", Util.MEMOIZED_TO_STRING_VAR)
           .build()
 
   return toBuilder()
+      .addField(FieldSpec.builder(ClassNames.STRING, Util.MEMOIZED_TO_STRING_VAR, Modifier.PRIVATE, Modifier.VOLATILE)
+          .build())
       .addMethod(MethodSpec.methodBuilder("toString")
           .addAnnotation(Override::class.java)
           .addModifiers(Modifier.PUBLIC)
@@ -130,6 +138,9 @@ fun TypeSpec.withEqualsImplementation(): TypeSpec {
           .add("return ")
           .add(fieldSpecs
               .filter { !it.hasModifier(Modifier.STATIC) }
+              .filter { it.name != Util.MEMOIZED_HASH_CODE_FLAG_VAR }
+              .filter { it.name != Util.MEMOIZED_HASH_CODE_VAR }
+              .filter { it.name != Util.MEMOIZED_TO_STRING_VAR }
               .mapIndexed(::equalsFieldCode)
               .fold(CodeBlock.builder(), CodeBlock.Builder::add)
               .build())
@@ -150,7 +161,7 @@ fun TypeSpec.withEqualsImplementation(): TypeSpec {
 }
 
 fun TypeSpec.withHashCodeImplementation(): TypeSpec {
-  fun hashCodeFieldCode(field: FieldSpec) =
+  fun hashFieldCode(field: FieldSpec) =
       CodeBlock.builder()
           .addStatement("h *= 1000003")
           .let {
@@ -170,16 +181,27 @@ fun TypeSpec.withHashCodeImplementation(): TypeSpec {
 
   fun methodCode() =
       CodeBlock.builder()
+          .beginControlFlow("if (!\$L)", Util.MEMOIZED_HASH_CODE_FLAG_VAR)
           .addStatement("int h = 1")
           .add(fieldSpecs
               .filter { !it.hasModifier(Modifier.STATIC) }
-              .map(::hashCodeFieldCode)
+              .filter { it.name != Util.MEMOIZED_HASH_CODE_FLAG_VAR }
+              .filter { it.name != Util.MEMOIZED_HASH_CODE_VAR }
+              .filter { it.name != Util.MEMOIZED_TO_STRING_VAR }
+              .map(::hashFieldCode)
               .fold(CodeBlock.builder(), CodeBlock.Builder::add)
               .build())
-          .addStatement("return h")
+          .addStatement("\$L = h", Util.MEMOIZED_HASH_CODE_VAR)
+          .addStatement("\$L = true", Util.MEMOIZED_HASH_CODE_FLAG_VAR)
+          .endControlFlow()
+          .addStatement("return \$L", Util.MEMOIZED_HASH_CODE_VAR)
           .build()
 
   return toBuilder()
+      .addField(FieldSpec.builder(TypeName.INT, Util.MEMOIZED_HASH_CODE_VAR, Modifier.PRIVATE, Modifier.VOLATILE)
+          .build())
+      .addField(FieldSpec.builder(TypeName.BOOLEAN, Util.MEMOIZED_HASH_CODE_FLAG_VAR, Modifier.PRIVATE,
+          Modifier.VOLATILE).build())
       .addMethod(MethodSpec.methodBuilder("hashCode")
           .addAnnotation(Override::class.java)
           .addModifiers(Modifier.PUBLIC)
@@ -234,4 +256,7 @@ fun TypeSpec.flatten(excludeTypeNames: List<String>): TypeSpec {
 object Util {
   const val MAPPER_TYPE_NAME: String = "Mapper"
   const val FIELD_MAPPER_VAR: String = "FieldMapper"
+  const val MEMOIZED_HASH_CODE_VAR: String = "\$hashCode"
+  const val MEMOIZED_HASH_CODE_FLAG_VAR: String = "\$hashCodeMemoized"
+  const val MEMOIZED_TO_STRING_VAR: String = "\$toString"
 }

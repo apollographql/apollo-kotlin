@@ -42,6 +42,12 @@ public class StarshipFragment {
 
   private final Optional<PilotConnection> pilotConnection;
 
+  private volatile String $toString;
+
+  private volatile int $hashCode;
+
+  private volatile boolean $hashCodeMemoized;
+
   public StarshipFragment(@Nonnull String id, @Nullable String name,
       @Nullable PilotConnection pilotConnection) {
     this.id = id;
@@ -63,11 +69,14 @@ public class StarshipFragment {
 
   @Override
   public String toString() {
-    return "StarshipFragment{"
-      + "id=" + id + ", "
-      + "name=" + name + ", "
-      + "pilotConnection=" + pilotConnection
-      + "}";
+    if ($toString == null) {
+      $toString = "StarshipFragment{"
+        + "id=" + id + ", "
+        + "name=" + name + ", "
+        + "pilotConnection=" + pilotConnection
+        + "}";
+    }
+    return $toString;
   }
 
   @Override
@@ -86,14 +95,18 @@ public class StarshipFragment {
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= (id == null) ? 0 : id.hashCode();
-    h *= 1000003;
-    h ^= (name == null) ? 0 : name.hashCode();
-    h *= 1000003;
-    h ^= (pilotConnection == null) ? 0 : pilotConnection.hashCode();
-    return h;
+    if (!$hashCodeMemoized) {
+      int h = 1;
+      h *= 1000003;
+      h ^= (id == null) ? 0 : id.hashCode();
+      h *= 1000003;
+      h ^= (name == null) ? 0 : name.hashCode();
+      h *= 1000003;
+      h ^= (pilotConnection == null) ? 0 : pilotConnection.hashCode();
+      $hashCode = h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
   }
 
   public static final class Mapper implements ResponseFieldMapper<StarshipFragment> {
@@ -121,6 +134,12 @@ public class StarshipFragment {
   public static class Node {
     private final @Nonnull Fragments fragments;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Node(@Nonnull Fragments fragments) {
       this.fragments = fragments;
     }
@@ -131,9 +150,12 @@ public class StarshipFragment {
 
     @Override
     public String toString() {
-      return "Node{"
-        + "fragments=" + fragments
-        + "}";
+      if ($toString == null) {
+        $toString = "Node{"
+          + "fragments=" + fragments
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -150,14 +172,24 @@ public class StarshipFragment {
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (fragments == null) ? 0 : fragments.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (fragments == null) ? 0 : fragments.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static class Fragments {
       private final @Nonnull PilotFragment pilotFragment;
+
+      private volatile String $toString;
+
+      private volatile int $hashCode;
+
+      private volatile boolean $hashCodeMemoized;
 
       public Fragments(@Nonnull PilotFragment pilotFragment) {
         this.pilotFragment = pilotFragment;
@@ -169,9 +201,12 @@ public class StarshipFragment {
 
       @Override
       public String toString() {
-        return "Fragments{"
-          + "pilotFragment=" + pilotFragment
-          + "}";
+        if ($toString == null) {
+          $toString = "Fragments{"
+            + "pilotFragment=" + pilotFragment
+            + "}";
+        }
+        return $toString;
       }
 
       @Override
@@ -188,10 +223,14 @@ public class StarshipFragment {
 
       @Override
       public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (pilotFragment == null) ? 0 : pilotFragment.hashCode();
-        return h;
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= (pilotFragment == null) ? 0 : pilotFragment.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
       }
 
       public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
@@ -232,6 +271,12 @@ public class StarshipFragment {
   public static class Edge {
     private final Optional<Node> node;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Edge(@Nullable Node node) {
       this.node = Optional.fromNullable(node);
     }
@@ -242,9 +287,12 @@ public class StarshipFragment {
 
     @Override
     public String toString() {
-      return "Edge{"
-        + "node=" + node
-        + "}";
+      if ($toString == null) {
+        $toString = "Edge{"
+          + "node=" + node
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -261,10 +309,14 @@ public class StarshipFragment {
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (node == null) ? 0 : node.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (node == null) ? 0 : node.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Edge> {
@@ -289,6 +341,12 @@ public class StarshipFragment {
   public static class PilotConnection {
     private final Optional<List<Edge>> edges;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public PilotConnection(@Nullable List<Edge> edges) {
       this.edges = Optional.fromNullable(edges);
     }
@@ -299,9 +357,12 @@ public class StarshipFragment {
 
     @Override
     public String toString() {
-      return "PilotConnection{"
-        + "edges=" + edges
-        + "}";
+      if ($toString == null) {
+        $toString = "PilotConnection{"
+          + "edges=" + edges
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -318,10 +379,14 @@ public class StarshipFragment {
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (edges == null) ? 0 : edges.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (edges == null) ? 0 : edges.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<PilotConnection> {

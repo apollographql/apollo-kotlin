@@ -30,6 +30,12 @@ public class HumanDetails {
 
   private final Optional<Double> height;
 
+  private volatile String $toString;
+
+  private volatile int $hashCode;
+
+  private volatile boolean $hashCodeMemoized;
+
   public HumanDetails(@Nonnull String name, @Nullable Double height) {
     this.name = name;
     this.height = Optional.fromNullable(height);
@@ -45,10 +51,13 @@ public class HumanDetails {
 
   @Override
   public String toString() {
-    return "HumanDetails{"
-      + "name=" + name + ", "
-      + "height=" + height
-      + "}";
+    if ($toString == null) {
+      $toString = "HumanDetails{"
+        + "name=" + name + ", "
+        + "height=" + height
+        + "}";
+    }
+    return $toString;
   }
 
   @Override
@@ -66,12 +75,16 @@ public class HumanDetails {
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= (name == null) ? 0 : name.hashCode();
-    h *= 1000003;
-    h ^= (height == null) ? 0 : height.hashCode();
-    return h;
+    if (!$hashCodeMemoized) {
+      int h = 1;
+      h *= 1000003;
+      h ^= (name == null) ? 0 : name.hashCode();
+      h *= 1000003;
+      h ^= (height == null) ? 0 : height.hashCode();
+      $hashCode = h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
   }
 
   public static final class Mapper implements ResponseFieldMapper<HumanDetails> {

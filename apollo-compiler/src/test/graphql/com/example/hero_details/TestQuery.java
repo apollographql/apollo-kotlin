@@ -67,6 +67,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Data implements Operation.Data {
     private final Optional<Hero> hero;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Data(@Nullable Hero hero) {
       this.hero = Optional.fromNullable(hero);
     }
@@ -77,9 +83,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     @Override
     public String toString() {
-      return "Data{"
-        + "hero=" + hero
-        + "}";
+      if ($toString == null) {
+        $toString = "Data{"
+          + "hero=" + hero
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -96,10 +105,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (hero == null) ? 0 : hero.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (hero == null) ? 0 : hero.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
@@ -123,6 +136,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static class Node {
       private final @Nonnull String name;
 
+      private volatile String $toString;
+
+      private volatile int $hashCode;
+
+      private volatile boolean $hashCodeMemoized;
+
       public Node(@Nonnull String name) {
         this.name = name;
       }
@@ -133,9 +152,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public String toString() {
-        return "Node{"
-          + "name=" + name
-          + "}";
+        if ($toString == null) {
+          $toString = "Node{"
+            + "name=" + name
+            + "}";
+        }
+        return $toString;
       }
 
       @Override
@@ -152,10 +174,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        return h;
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= (name == null) ? 0 : name.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
       }
 
       public static final class Mapper implements ResponseFieldMapper<Node> {
@@ -174,6 +200,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static class Edge {
       private final Optional<Node> node;
 
+      private volatile String $toString;
+
+      private volatile int $hashCode;
+
+      private volatile boolean $hashCodeMemoized;
+
       public Edge(@Nullable Node node) {
         this.node = Optional.fromNullable(node);
       }
@@ -184,9 +216,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public String toString() {
-        return "Edge{"
-          + "node=" + node
-          + "}";
+        if ($toString == null) {
+          $toString = "Edge{"
+            + "node=" + node
+            + "}";
+        }
+        return $toString;
       }
 
       @Override
@@ -203,10 +238,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (node == null) ? 0 : node.hashCode();
-        return h;
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= (node == null) ? 0 : node.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
       }
 
       public static final class Mapper implements ResponseFieldMapper<Edge> {
@@ -233,6 +272,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       private final Optional<List<Edge>> edges;
 
+      private volatile String $toString;
+
+      private volatile int $hashCode;
+
+      private volatile boolean $hashCodeMemoized;
+
       public FriendsConnection(@Nullable Integer totalCount, @Nullable List<Edge> edges) {
         this.totalCount = Optional.fromNullable(totalCount);
         this.edges = Optional.fromNullable(edges);
@@ -248,10 +293,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public String toString() {
-        return "FriendsConnection{"
-          + "totalCount=" + totalCount + ", "
-          + "edges=" + edges
-          + "}";
+        if ($toString == null) {
+          $toString = "FriendsConnection{"
+            + "totalCount=" + totalCount + ", "
+            + "edges=" + edges
+            + "}";
+        }
+        return $toString;
       }
 
       @Override
@@ -269,12 +317,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (totalCount == null) ? 0 : totalCount.hashCode();
-        h *= 1000003;
-        h ^= (edges == null) ? 0 : edges.hashCode();
-        return h;
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= (totalCount == null) ? 0 : totalCount.hashCode();
+          h *= 1000003;
+          h ^= (edges == null) ? 0 : edges.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
       }
 
       public static final class Mapper implements ResponseFieldMapper<FriendsConnection> {
@@ -303,6 +355,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       private final @Nonnull FriendsConnection friendsConnection;
 
+      private volatile String $toString;
+
+      private volatile int $hashCode;
+
+      private volatile boolean $hashCodeMemoized;
+
       public Hero(@Nonnull String name, @Nonnull FriendsConnection friendsConnection) {
         this.name = name;
         this.friendsConnection = friendsConnection;
@@ -318,10 +376,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public String toString() {
-        return "Hero{"
-          + "name=" + name + ", "
-          + "friendsConnection=" + friendsConnection
-          + "}";
+        if ($toString == null) {
+          $toString = "Hero{"
+            + "name=" + name + ", "
+            + "friendsConnection=" + friendsConnection
+            + "}";
+        }
+        return $toString;
       }
 
       @Override
@@ -339,12 +400,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        h *= 1000003;
-        h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
-        return h;
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= (name == null) ? 0 : name.hashCode();
+          h *= 1000003;
+          h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
       }
 
       public static final class Mapper implements ResponseFieldMapper<Hero> {

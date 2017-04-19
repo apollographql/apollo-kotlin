@@ -31,6 +31,12 @@ public class PilotFragment {
 
   private final Optional<Homeworld> homeworld;
 
+  private volatile String $toString;
+
+  private volatile int $hashCode;
+
+  private volatile boolean $hashCodeMemoized;
+
   public PilotFragment(@Nullable String name, @Nullable Homeworld homeworld) {
     this.name = Optional.fromNullable(name);
     this.homeworld = Optional.fromNullable(homeworld);
@@ -46,10 +52,13 @@ public class PilotFragment {
 
   @Override
   public String toString() {
-    return "PilotFragment{"
-      + "name=" + name + ", "
-      + "homeworld=" + homeworld
-      + "}";
+    if ($toString == null) {
+      $toString = "PilotFragment{"
+        + "name=" + name + ", "
+        + "homeworld=" + homeworld
+        + "}";
+    }
+    return $toString;
   }
 
   @Override
@@ -67,12 +76,16 @@ public class PilotFragment {
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= (name == null) ? 0 : name.hashCode();
-    h *= 1000003;
-    h ^= (homeworld == null) ? 0 : homeworld.hashCode();
-    return h;
+    if (!$hashCodeMemoized) {
+      int h = 1;
+      h *= 1000003;
+      h ^= (name == null) ? 0 : name.hashCode();
+      h *= 1000003;
+      h ^= (homeworld == null) ? 0 : homeworld.hashCode();
+      $hashCode = h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
   }
 
   public static final class Mapper implements ResponseFieldMapper<PilotFragment> {
@@ -98,6 +111,12 @@ public class PilotFragment {
   public static class Homeworld {
     private final Optional<String> name;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Homeworld(@Nullable String name) {
       this.name = Optional.fromNullable(name);
     }
@@ -108,9 +127,12 @@ public class PilotFragment {
 
     @Override
     public String toString() {
-      return "Homeworld{"
-        + "name=" + name
-        + "}";
+      if ($toString == null) {
+        $toString = "Homeworld{"
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -127,10 +149,14 @@ public class PilotFragment {
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (name == null) ? 0 : name.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Homeworld> {

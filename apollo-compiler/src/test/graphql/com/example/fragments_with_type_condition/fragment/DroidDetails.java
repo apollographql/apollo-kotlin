@@ -29,6 +29,12 @@ public class DroidDetails {
 
   private final Optional<String> primaryFunction;
 
+  private volatile String $toString;
+
+  private volatile int $hashCode;
+
+  private volatile boolean $hashCodeMemoized;
+
   public DroidDetails(@Nonnull String name, @Nullable String primaryFunction) {
     this.name = name;
     this.primaryFunction = Optional.fromNullable(primaryFunction);
@@ -44,10 +50,13 @@ public class DroidDetails {
 
   @Override
   public String toString() {
-    return "DroidDetails{"
-      + "name=" + name + ", "
-      + "primaryFunction=" + primaryFunction
-      + "}";
+    if ($toString == null) {
+      $toString = "DroidDetails{"
+        + "name=" + name + ", "
+        + "primaryFunction=" + primaryFunction
+        + "}";
+    }
+    return $toString;
   }
 
   @Override
@@ -65,12 +74,16 @@ public class DroidDetails {
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= (name == null) ? 0 : name.hashCode();
-    h *= 1000003;
-    h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
-    return h;
+    if (!$hashCodeMemoized) {
+      int h = 1;
+      h *= 1000003;
+      h ^= (name == null) ? 0 : name.hashCode();
+      h *= 1000003;
+      h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
+      $hashCode = h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
   }
 
   public static final class Mapper implements ResponseFieldMapper<DroidDetails> {
