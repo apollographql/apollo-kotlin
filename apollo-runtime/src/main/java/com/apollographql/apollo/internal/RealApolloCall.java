@@ -71,20 +71,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     this.dispatcher = dispatcher;
     this.logger = logger;
     this.applicationInterceptors = applicationInterceptors;
-    interceptorChain = new RealApolloInterceptorChain(operation, getInterceptors());
-  }
-
-  private List<ApolloInterceptor> getInterceptors() {
-    List<ApolloInterceptor> interceptors = new ArrayList<>();
-
-    interceptors.addAll(applicationInterceptors);
-    interceptors.add(new ApolloCacheInterceptor(apolloStore, cacheControl, responseFieldMapper, customTypeAdapters, dispatcher,
-        logger));
-    interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
-        customTypeAdapters, logger));
-    interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCacheControl, false, moshi,
-        logger));
-    return interceptors;
+    interceptorChain = prepareInterceptorChain(operation);
   }
 
   @SuppressWarnings("unchecked") @Nonnull @Override public Response<T> execute() throws ApolloException {
@@ -162,6 +149,21 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
   @Override @Nonnull public RealApolloCall<T> clone() {
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCacheControl, moshi,
-        responseFieldMapper, customTypeAdapters, apolloStore, cacheControl, dispatcher, logger, applicationInterceptors);
+        responseFieldMapper, customTypeAdapters, apolloStore, cacheControl, dispatcher, logger,
+        applicationInterceptors);
+  }
+
+  private ApolloInterceptorChain prepareInterceptorChain(Operation operation) {
+    List<ApolloInterceptor> interceptors = new ArrayList<>();
+
+    interceptors.addAll(applicationInterceptors);
+    interceptors.add(new ApolloCacheInterceptor(apolloStore, cacheControl, responseFieldMapper, customTypeAdapters,
+        dispatcher, logger));
+    interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
+        customTypeAdapters, logger));
+    interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCacheControl, false, moshi,
+        logger));
+
+    return new RealApolloInterceptorChain(operation, interceptors);
   }
 }
