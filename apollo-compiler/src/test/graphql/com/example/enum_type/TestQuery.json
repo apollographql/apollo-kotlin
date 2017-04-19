@@ -15,17 +15,20 @@
 						{
 							"responseName": "name",
 							"fieldName": "name",
-							"type": "String!"
+							"type": "String!",
+							"description": "The name of the character"
 						},
 						{
 							"responseName": "appearsIn",
 							"fieldName": "appearsIn",
-							"type": "[Episode]!"
+							"type": "[Episode]!",
+							"description": "The movies this character appears in"
 						},
 						{
 							"responseName": "firstAppearsIn",
 							"fieldName": "firstAppearsIn",
-							"type": "Episode!"
+							"type": "Episode!",
+							"description": "The movie this character first appears in"
 						}
 					],
 					"fragmentSpreads": [],

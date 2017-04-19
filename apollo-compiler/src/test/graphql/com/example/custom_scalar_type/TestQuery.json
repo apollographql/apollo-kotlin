@@ -15,22 +15,26 @@
 						{
 							"responseName": "name",
 							"fieldName": "name",
-							"type": "String!"
+							"type": "String!",
+							"description": "The name of the character"
 						},
 						{
 							"responseName": "birthDate",
 							"fieldName": "birthDate",
-							"type": "Date!"
+							"type": "Date!",
+							"description": "The date character was born."
 						},
 						{
 							"responseName": "appearanceDates",
 							"fieldName": "appearanceDates",
-							"type": "[Date!]!"
+							"type": "[Date!]!",
+							"description": "The dates of appearances"
 						},
 						{
 							"responseName": "fieldWithUnsupportedType",
 							"fieldName": "fieldWithUnsupportedType",
-							"type": "UnsupportedType!"
+							"type": "UnsupportedType!",
+							"description": "The date character was born."
 						}
 					],
 					"fragmentSpreads": [],

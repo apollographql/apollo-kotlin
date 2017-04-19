@@ -15,7 +15,8 @@
 						{
 							"responseName": "name",
 							"fieldName": "name",
-							"type": "String!"
+							"type": "String!",
+							"description": "The name of the character"
 						}
 					],
 					"fragmentSpreads": [],
@@ -29,12 +30,14 @@
 								{
 									"responseName": "name",
 									"fieldName": "name",
-									"type": "String!"
+									"type": "String!",
+									"description": "What this human calls themselves"
 								},
 								{
 									"responseName": "height",
 									"fieldName": "height",
-									"type": "Float"
+									"type": "Float",
+									"description": "Height in the preferred unit, default is meters"
 								}
 							],
 							"fragmentSpreads": []
@@ -48,12 +51,14 @@
 								{
 									"responseName": "name",
 									"fieldName": "name",
-									"type": "String!"
+									"type": "String!",
+									"description": "What others call this droid"
 								},
 								{
 									"responseName": "primaryFunction",
 									"fieldName": "primaryFunction",
-									"type": "String"
+									"type": "String",
+									"description": "This droid's primary function"
 								}
 							],
 							"fragmentSpreads": []
