@@ -242,7 +242,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
      * @param <T>               the value type
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public <T> Builder withCustomTypeAdapter(@Nonnull ScalarType scalarType,
+    public <T> Builder addCustomTypeAdapter(@Nonnull ScalarType scalarType,
         @Nonnull final CustomTypeAdapter<T> customTypeAdapter) {
       customTypeAdapters.put(scalarType, customTypeAdapter);
       moshiBuilder.add(scalarType.javaType(), new JsonAdapter<T>() {
@@ -308,7 +308,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
      * @param interceptor Application level interceptor to add
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder applicationInterceptor(@Nonnull ApolloInterceptor interceptor) {
+    public Builder addApplicationInterceptor(@Nonnull ApolloInterceptor interceptor) {
       applicationInterceptors.add(interceptor);
       return this;
     }

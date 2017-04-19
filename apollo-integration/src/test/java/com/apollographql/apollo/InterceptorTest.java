@@ -322,7 +322,7 @@ public class InterceptorTest {
     client = ApolloClient.builder()
         .serverUrl(mockWebServer.url("/"))
         .okHttpClient(okHttpClient)
-        .applicationInterceptor(interceptor)
+        .addApplicationInterceptor(interceptor)
         .dispatcher(new ExceptionCatchingExecutor())
         .build();
 
@@ -341,7 +341,7 @@ public class InterceptorTest {
     return ApolloClient.builder()
         .serverUrl(mockWebServer.url("/"))
         .okHttpClient(okHttpClient)
-        .applicationInterceptor(interceptor)
+        .addApplicationInterceptor(interceptor)
         .build();
   }
 
