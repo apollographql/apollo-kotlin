@@ -145,6 +145,9 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
         this.name = name;
       }
 
+      /**
+       * The name of the character
+       */
       public @Nonnull String name() {
         return this.name;
       }
@@ -209,6 +212,9 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
         this.node = node;
       }
 
+      /**
+       * The character represented by this friendship edge
+       */
       public @Nullable Node node() {
         return this.node;
       }
@@ -282,10 +288,16 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
         this.edges = edges;
       }
 
+      /**
+       * The total number of friends
+       */
       public @Nullable Integer totalCount() {
         return this.totalCount;
       }
 
+      /**
+       * The edges for each of the character's friends.
+       */
       public @Nullable List<Edge> edges() {
         return this.edges;
       }
@@ -365,10 +377,16 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
         this.friendsConnection = friendsConnection;
       }
 
+      /**
+       * The name of the character
+       */
       public @Nonnull String name() {
         return this.name;
       }
 
+      /**
+       * The friends of the character exposed as a connection with edges
+       */
       public @Nonnull FriendsConnection friendsConnection() {
         return this.friendsConnection;
       }

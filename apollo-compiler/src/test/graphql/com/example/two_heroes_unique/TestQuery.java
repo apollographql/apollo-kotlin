@@ -160,6 +160,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         this.name = name;
       }
 
+      /**
+       * The name of the character
+       */
       public @Nonnull String name() {
         return this.name;
       }
@@ -227,10 +230,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         this.name = name;
       }
 
+      /**
+       * The ID of the character
+       */
       public @Nonnull String id() {
         return this.id;
       }
 
+      /**
+       * The name of the character
+       */
       public @Nonnull String name() {
         return this.name;
       }

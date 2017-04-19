@@ -152,6 +152,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         this.appearsIn = appearsIn;
       }
 
+      /**
+       * The movies this character appears in
+       */
       public @Nonnull List<Episode> appearsIn() {
         return this.appearsIn;
       }
@@ -227,14 +230,23 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         this.friends = Optional.fromNullable(friends);
       }
 
+      /**
+       * What this human calls themselves
+       */
       public @Nonnull String name() {
         return this.name;
       }
 
+      /**
+       * Height in the preferred unit, default is meters
+       */
       public Optional<Double> height() {
         return this.height;
       }
 
+      /**
+       * This human's friends, or an empty list if they have none
+       */
       public Optional<List<Friend>> friends() {
         return this.friends;
       }
@@ -317,6 +329,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         this.id = id;
       }
 
+      /**
+       * The ID of the character
+       */
       public @Nonnull String id() {
         return this.id;
       }
@@ -388,14 +403,23 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         this.primaryFunction = Optional.fromNullable(primaryFunction);
       }
 
+      /**
+       * What others call this droid
+       */
       public @Nonnull String name() {
         return this.name;
       }
 
+      /**
+       * This droid's friends, or an empty list if they have none
+       */
       public Optional<List<Friend1>> friends() {
         return this.friends;
       }
 
+      /**
+       * This droid's primary function
+       */
       public Optional<String> primaryFunction() {
         return this.primaryFunction;
       }
@@ -484,6 +508,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         this.asDroid = Optional.fromNullable(asDroid);
       }
 
+      /**
+       * The name of the character
+       */
       public @Nonnull String name() {
         return this.name;
       }

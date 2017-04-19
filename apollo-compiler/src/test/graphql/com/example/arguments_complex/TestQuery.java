@@ -232,10 +232,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         this.height = Optional.fromNullable(height);
       }
 
+      /**
+       * What this human calls themselves
+       */
       public @Nonnull String name() {
         return this.name;
       }
 
+      /**
+       * Height in the preferred unit, default is meters
+       */
       public Optional<Double> height() {
         return this.height;
       }
