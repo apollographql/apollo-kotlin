@@ -15,17 +15,20 @@
 						{
 							"responseName": "name",
 							"fieldName": "name",
-							"type": "String!"
+							"type": "String!",
+							"description": "The name of the character"
 						},
 						{
 							"responseName": "friends",
 							"fieldName": "friends",
 							"type": "[Character]",
+							"description": "The friends of the character, or an empty list if they have none",
 							"fields": [
 								{
 									"responseName": "name",
 									"fieldName": "name",
-									"type": "String!"
+									"type": "String!",
+									"description": "The name of the character"
 								}
 							],
 							"fragmentSpreads": [],
@@ -43,27 +46,32 @@
 								{
 									"responseName": "name",
 									"fieldName": "name",
-									"type": "String!"
+									"type": "String!",
+									"description": "What this human calls themselves"
 								},
 								{
 									"responseName": "friends",
 									"fieldName": "friends",
 									"type": "[Character]",
+									"description": "This human's friends, or an empty list if they have none",
 									"fields": [
 										{
 											"responseName": "name",
 											"fieldName": "name",
-											"type": "String!"
+											"type": "String!",
+											"description": "The name of the character"
 										},
 										{
 											"responseName": "appearsIn",
 											"fieldName": "appearsIn",
-											"type": "[Episode]!"
+											"type": "[Episode]!",
+											"description": "The movies this character appears in"
 										},
 										{
 											"responseName": "friends",
 											"fieldName": "friends",
 											"type": "[Character]",
+											"description": "The friends of the character, or an empty list if they have none",
 											"fields": [],
 											"fragmentSpreads": [
 												"HeroDetails"
@@ -77,7 +85,8 @@
 								{
 									"responseName": "height",
 									"fieldName": "height",
-									"type": "Float"
+									"type": "Float",
+									"description": "Height in the preferred unit, default is meters"
 								}
 							],
 							"fragmentSpreads": []
@@ -104,32 +113,38 @@
 				{
 					"responseName": "name",
 					"fieldName": "name",
-					"type": "String!"
+					"type": "String!",
+					"description": "The name of the character"
 				},
 				{
 					"responseName": "friendsConnection",
 					"fieldName": "friendsConnection",
 					"type": "FriendsConnection!",
+					"description": "The friends of the character exposed as a connection with edges",
 					"fields": [
 						{
 							"responseName": "totalCount",
 							"fieldName": "totalCount",
-							"type": "Int"
+							"type": "Int",
+							"description": "The total number of friends"
 						},
 						{
 							"responseName": "edges",
 							"fieldName": "edges",
 							"type": "[FriendsEdge]",
+							"description": "The edges for each of the character's friends.",
 							"fields": [
 								{
 									"responseName": "node",
 									"fieldName": "node",
 									"type": "Character",
+									"description": "The character represented by this friendship edge",
 									"fields": [
 										{
 											"responseName": "name",
 											"fieldName": "name",
-											"type": "String!"
+											"type": "String!",
+											"description": "The name of the character"
 										}
 									],
 									"fragmentSpreads": [],

@@ -22,11 +22,13 @@
 							"responseName": "edges",
 							"fieldName": "edges",
 							"type": "[StarshipsEdge]",
+							"description": "A list of edges.",
 							"fields": [
 								{
 									"responseName": "node",
 									"fieldName": "node",
 									"type": "Starship",
+									"description": "The item at the end of the edge",
 									"fields": [],
 									"fragmentSpreads": [
 										"starshipFragment"
@@ -61,12 +63,14 @@
 				{
 					"responseName": "id",
 					"fieldName": "id",
-					"type": "ID!"
+					"type": "ID!",
+					"description": "The ID of an object"
 				},
 				{
 					"responseName": "name",
 					"fieldName": "name",
-					"type": "String"
+					"type": "String",
+					"description": "The name of this starship. The common name, such as \"Death Star\"."
 				},
 				{
 					"responseName": "pilotConnection",
@@ -77,11 +81,13 @@
 							"responseName": "edges",
 							"fieldName": "edges",
 							"type": "[StarshipPilotsEdge]",
+							"description": "A list of edges.",
 							"fields": [
 								{
 									"responseName": "node",
 									"fieldName": "node",
 									"type": "Person",
+									"description": "The item at the end of the edge",
 									"fields": [],
 									"fragmentSpreads": [
 										"pilotFragment"
@@ -115,17 +121,20 @@
 				{
 					"responseName": "name",
 					"fieldName": "name",
-					"type": "String"
+					"type": "String",
+					"description": "The name of this person."
 				},
 				{
 					"responseName": "homeworld",
 					"fieldName": "homeworld",
 					"type": "Planet",
+					"description": "A planet that this person was born on or inhabits.",
 					"fields": [
 						{
 							"responseName": "name",
 							"fieldName": "name",
-							"type": "String"
+							"type": "String",
+							"description": "The name of this planet."
 						}
 					],
 					"fragmentSpreads": [],

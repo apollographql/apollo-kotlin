@@ -40,12 +40,14 @@
 						{
 							"responseName": "stars",
 							"fieldName": "stars",
-							"type": "Int!"
+							"type": "Int!",
+							"description": "The number of stars this review gave, 1-5"
 						},
 						{
 							"responseName": "commentary",
 							"fieldName": "commentary",
-							"type": "String"
+							"type": "String",
+							"description": "Comment about the movie"
 						}
 					],
 					"fragmentSpreads": [],
