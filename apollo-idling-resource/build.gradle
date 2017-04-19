@@ -35,8 +35,9 @@ android {
 dependencies {
 
   compile dep.espressoIdlingResource
-
   provided project(":apollo-runtime")
+  provided project(":apollo-api")
+
   androidTestCompile project(":apollo-runtime")
   androidTestCompile project(":apollo-api")
   androidTestCompile dep.truth
