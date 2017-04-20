@@ -59,7 +59,7 @@ apply plugin: 'kotlin-android-extensions'
 
 Follow these steps:
 
-1) Put your GraphQL queries in a `.graphql` file. For the sample project in this repo you can find the graphql file at `apollo-sample/src/main/graphql/com/example/GithuntFeedQuery.graphql`. 
+1) Put your GraphQL queries in a `.graphql` file. For the sample project in this repo you can find the graphql file at `apollo-sample/src/main/graphql/com/apollographql/apollo/sample/GithuntFeedQuery.graphql`. 
 
 ```
 query FeedQuery($type: FeedType!, $limit: Int!) {
@@ -95,11 +95,11 @@ fragment FeedCommentFragment on Comment {
 
 Note: There is nothing Android specific about this query, it can be shared with other GraphQL clients as well
 
-2) You will also need to add a schema to the project. In the sample project you can find the schema `apollo-sample/src/main/graphql/com/example/schema.json`. 
+2) You will also need to add a schema to the project. In the sample project you can find the schema `apollo-sample/src/main/graphql/com/apollographql/apollo/sample/schema.json`. 
 
 You can find instructions to download your schema using apollo-codegen [HERE](http://dev.apollodata.com/ios/downloading-schema.html)
 
-3) Compile your project to have Apollo generate the approriate Java classes with nested classes for reading from the network response. In the sample project, a `FeedQuery` Java class is created here `apollo-sample/build/generated/source/apollo/com/example`.
+3) Compile your project to have Apollo generate the appropriate Java classes with nested classes for reading from the network response. In the sample project, a `FeedQuery` Java class is created here `apollo-sample/build/generated/source/apollo/com/apollographql/apollo/sample`.
 
 Note: This is a file that Apollo generates and therefore should not be mutated.
 
