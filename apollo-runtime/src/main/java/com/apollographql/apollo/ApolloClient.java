@@ -135,9 +135,8 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   }
 
   /**
-   *
-   * @return The {@link ApolloStore} managing access to the normalized cache created by
-   * {@link Builder#normalizedCache(NormalizedCacheFactory, CacheKeyResolver)}  }
+   * @return The {@link ApolloStore} managing access to the normalized cache created by {@link
+   * Builder#normalizedCache(NormalizedCacheFactory, CacheKeyResolver)}  }
    */
   public ApolloStore apolloStore() {
     return apolloStore;
@@ -301,9 +300,13 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     }
 
     /**
-     * Add an interceptor that observes the full span of each call: from before the connection is established until
+     * <p>Adds an interceptor that observes the full span of each call: from before the connection is established until
      * after the response source is selected (either the server, cache or both). This method can be called multiple
-     * times for adding multiple application interceptors.
+     * times for adding multiple application interceptors. </p>
+     *
+     * <p>Note: Interceptors will be called <b>in the order in which they are added to the list of interceptors</b>
+     * and if any of the interceptors tries to short circuit the responses, then subsequent interceptors <b>won't</b> be
+     * called.</p>
      *
      * @param interceptor Application level interceptor to add
      * @return The {@link Builder} object to be used for chaining method calls
