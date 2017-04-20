@@ -150,18 +150,30 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.fieldWithUnsupportedType = fieldWithUnsupportedType;
     }
 
+    /**
+     * The name of the character
+     */
     public @Nonnull String name() {
       return this.name;
     }
 
+    /**
+     * The date character was born.
+     */
     public @Nonnull Date birthDate() {
       return this.birthDate;
     }
 
+    /**
+     * The dates of appearances
+     */
     public @Nonnull List<Date> appearanceDates() {
       return this.appearanceDates;
     }
 
+    /**
+     * The date character was born.
+     */
     public @Nonnull Object fieldWithUnsupportedType() {
       return this.fieldWithUnsupportedType;
     }

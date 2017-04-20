@@ -41,8 +41,14 @@ public class HeroDetails {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
 
+  /**
+   * The name of the character
+   */
   public final @Nonnull String name;
 
+  /**
+   * The friends of the character exposed as a connection with edges
+   */
   public final @Nonnull FriendsConnection friendsConnection;
 
   public final Optional<AsDroid> asDroid;
@@ -136,8 +142,14 @@ public class HeroDetails {
   }
 
   public static class FriendsConnection {
+    /**
+     * The total number of friends
+     */
     public final Optional<Integer> totalCount;
 
+    /**
+     * The edges for each of the character's friends.
+     */
     public final Optional<List<Edge>> edges;
 
     private volatile String $toString;
@@ -211,6 +223,9 @@ public class HeroDetails {
   }
 
   public static class Edge {
+    /**
+     * The character represented by this friendship edge
+     */
     public final Optional<Node> node;
 
     private volatile String $toString;
@@ -277,6 +292,9 @@ public class HeroDetails {
   }
 
   public static class Node {
+    /**
+     * The name of the character
+     */
     public final @Nonnull String name;
 
     private volatile String $toString;
@@ -337,10 +355,19 @@ public class HeroDetails {
   }
 
   public static class AsDroid {
+    /**
+     * What others call this droid
+     */
     public final @Nonnull String name;
 
+    /**
+     * The friends of the droid exposed as a connection with edges
+     */
     public final @Nonnull FriendsConnection1 friendsConnection;
 
+    /**
+     * This droid's primary function
+     */
     public final Optional<String> primaryFunction;
 
     private volatile String $toString;
@@ -422,8 +449,14 @@ public class HeroDetails {
   }
 
   public static class FriendsConnection1 {
+    /**
+     * The total number of friends
+     */
     public final Optional<Integer> totalCount;
 
+    /**
+     * The edges for each of the character's friends.
+     */
     public final Optional<List<Edge1>> edges;
 
     private volatile String $toString;
@@ -497,6 +530,9 @@ public class HeroDetails {
   }
 
   public static class Edge1 {
+    /**
+     * The character represented by this friendship edge
+     */
     public final Optional<Node1> node;
 
     private volatile String $toString;
@@ -563,6 +599,9 @@ public class HeroDetails {
   }
 
   public static class Node1 {
+    /**
+     * The name of the character
+     */
     public final @Nonnull String name;
 
     private volatile String $toString;

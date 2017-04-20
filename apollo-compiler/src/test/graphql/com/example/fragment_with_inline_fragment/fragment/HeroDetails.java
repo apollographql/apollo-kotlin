@@ -60,10 +60,16 @@ public class HeroDetails {
     this.asDroid = Optional.fromNullable(asDroid);
   }
 
+  /**
+   * The name of the character
+   */
   public @Nonnull String name() {
     return this.name;
   }
 
+  /**
+   * The friends of the character exposed as a connection with edges
+   */
   public @Nonnull FriendsConnection friendsConnection() {
     return this.friendsConnection;
   }
@@ -163,10 +169,16 @@ public class HeroDetails {
       this.edges = Optional.fromNullable(edges);
     }
 
+    /**
+     * The total number of friends
+     */
     public Optional<Integer> totalCount() {
       return this.totalCount;
     }
 
+    /**
+     * The edges for each of the character's friends.
+     */
     public Optional<List<Edge>> edges() {
       return this.edges;
     }
@@ -243,6 +255,9 @@ public class HeroDetails {
       this.node = Optional.fromNullable(node);
     }
 
+    /**
+     * The character represented by this friendship edge
+     */
     public Optional<Node> node() {
       return this.node;
     }
@@ -313,6 +328,9 @@ public class HeroDetails {
       this.name = name;
     }
 
+    /**
+     * The name of the character
+     */
     public @Nonnull String name() {
       return this.name;
     }
@@ -384,14 +402,23 @@ public class HeroDetails {
       this.primaryFunction = Optional.fromNullable(primaryFunction);
     }
 
+    /**
+     * What others call this droid
+     */
     public @Nonnull String name() {
       return this.name;
     }
 
+    /**
+     * The friends of the droid exposed as a connection with edges
+     */
     public @Nonnull FriendsConnection1 friendsConnection() {
       return this.friendsConnection;
     }
 
+    /**
+     * This droid's primary function
+     */
     public Optional<String> primaryFunction() {
       return this.primaryFunction;
     }
@@ -477,10 +504,16 @@ public class HeroDetails {
       this.edges = Optional.fromNullable(edges);
     }
 
+    /**
+     * The total number of friends
+     */
     public Optional<Integer> totalCount() {
       return this.totalCount;
     }
 
+    /**
+     * The edges for each of the character's friends.
+     */
     public Optional<List<Edge1>> edges() {
       return this.edges;
     }
@@ -557,6 +590,9 @@ public class HeroDetails {
       this.node = Optional.fromNullable(node);
     }
 
+    /**
+     * The character represented by this friendship edge
+     */
     public Optional<Node1> node() {
       return this.node;
     }
@@ -627,6 +663,9 @@ public class HeroDetails {
       this.name = name;
     }
 
+    /**
+     * The name of the character
+     */
     public @Nonnull String name() {
       return this.name;
     }

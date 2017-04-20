@@ -149,6 +149,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       this.edges = Optional.fromNullable(edges);
     }
 
+    /**
+     * A list of edges.
+     */
     public Optional<List<Edge>> edges() {
       return this.edges;
     }
@@ -219,6 +222,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       this.node = Optional.fromNullable(node);
     }
 
+    /**
+     * The item at the end of the edge
+     */
     public Optional<Node> node() {
       return this.node;
     }

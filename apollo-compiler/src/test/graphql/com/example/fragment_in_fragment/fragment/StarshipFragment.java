@@ -55,10 +55,16 @@ public class StarshipFragment {
     this.pilotConnection = Optional.fromNullable(pilotConnection);
   }
 
+  /**
+   * The ID of an object
+   */
   public @Nonnull String id() {
     return this.id;
   }
 
+  /**
+   * The name of this starship. The common name, such as "Death Star".
+   */
   public Optional<String> name() {
     return this.name;
   }
@@ -144,6 +150,9 @@ public class StarshipFragment {
       this.edges = Optional.fromNullable(edges);
     }
 
+    /**
+     * A list of edges.
+     */
     public Optional<List<Edge>> edges() {
       return this.edges;
     }
@@ -214,6 +223,9 @@ public class StarshipFragment {
       this.node = Optional.fromNullable(node);
     }
 
+    /**
+     * The item at the end of the edge
+     */
     public Optional<Node> node() {
       return this.node;
     }

@@ -148,10 +148,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.fragments = fragments;
     }
 
+    /**
+     * The name of the character
+     */
     public @Nonnull String name() {
       return this.name;
     }
 
+    /**
+     * The movies this character appears in
+     */
     public @Nonnull List<Episode> appearsIn() {
       return this.appearsIn;
     }

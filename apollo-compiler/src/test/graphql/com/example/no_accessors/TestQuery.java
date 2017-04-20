@@ -125,8 +125,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Hero {
+    /**
+     * The name of the character
+     */
     public final @Nonnull String name;
 
+    /**
+     * The movies this character appears in
+     */
     public final @Nonnull List<Episode> appearsIn;
 
     public final @Nonnull Fragments fragments;

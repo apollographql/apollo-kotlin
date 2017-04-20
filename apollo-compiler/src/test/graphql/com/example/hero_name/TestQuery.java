@@ -134,6 +134,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.name = name;
     }
 
+    /**
+     * The name of the character
+     */
     public @Nonnull String name() {
       return this.name;
     }

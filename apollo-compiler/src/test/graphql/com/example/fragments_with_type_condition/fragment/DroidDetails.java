@@ -40,10 +40,16 @@ public class DroidDetails {
     this.primaryFunction = Optional.fromNullable(primaryFunction);
   }
 
+  /**
+   * What others call this droid
+   */
   public @Nonnull String name() {
     return this.name;
   }
 
+  /**
+   * This droid's primary function
+   */
   public Optional<String> primaryFunction() {
     return this.primaryFunction;
   }

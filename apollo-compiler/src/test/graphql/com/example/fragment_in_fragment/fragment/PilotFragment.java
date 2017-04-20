@@ -42,10 +42,16 @@ public class PilotFragment {
     this.homeworld = Optional.fromNullable(homeworld);
   }
 
+  /**
+   * The name of this person.
+   */
   public Optional<String> name() {
     return this.name;
   }
 
+  /**
+   * A planet that this person was born on or inhabits.
+   */
   public Optional<Homeworld> homeworld() {
     return this.homeworld;
   }
@@ -121,6 +127,9 @@ public class PilotFragment {
       this.name = Optional.fromNullable(name);
     }
 
+    /**
+     * The name of this planet.
+     */
     public Optional<String> name() {
       return this.name;
     }

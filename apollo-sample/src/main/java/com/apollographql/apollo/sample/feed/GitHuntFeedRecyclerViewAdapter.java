@@ -16,14 +16,14 @@ import java.util.List;
 class GitHuntFeedRecyclerViewAdapter extends
     RecyclerView.Adapter<GitHuntFeedRecyclerViewAdapter.FeedItemViewHolder> {
 
-  private List<FeedQuery.Data.FeedEntry> feed = Collections.emptyList();
+  private List<FeedQuery.FeedEntry> feed = Collections.emptyList();
   private GitHuntNavigator navigator;
 
   public GitHuntFeedRecyclerViewAdapter(GitHuntNavigator navigator) {
     this.navigator = navigator;
   }
 
-  public void setFeed(List<FeedQuery.Data.FeedEntry> feed) {
+  public void setFeed(List<FeedQuery.FeedEntry> feed) {
     this.feed = feed;
     this.notifyDataSetChanged();
   }
@@ -37,7 +37,7 @@ class GitHuntFeedRecyclerViewAdapter extends
   }
 
   @Override public void onBindViewHolder(FeedItemViewHolder holder, int position) {
-    final FeedQuery.Data.FeedEntry feedEntry = this.feed.get(position);
+    final FeedQuery.FeedEntry feedEntry = this.feed.get(position);
     holder.setFeedItem(feedEntry, navigator);
   }
 
@@ -56,7 +56,7 @@ class GitHuntFeedRecyclerViewAdapter extends
       feedEntryContainer = itemView.findViewById(R.id.feed_entry_container);
     }
 
-    public void setFeedItem(FeedQuery.Data.FeedEntry feedItem, final GitHuntNavigator navigator) {
+    public void setFeedItem(FeedQuery.FeedEntry feedItem, final GitHuntNavigator navigator) {
       final RepositoryFragment repositoryFragment = feedItem.repository().fragments().repositoryFragment();
       repositoryTitle.setText(repositoryFragment.full_name());
       feedEntryContainer.setOnClickListener(new View.OnClickListener() {

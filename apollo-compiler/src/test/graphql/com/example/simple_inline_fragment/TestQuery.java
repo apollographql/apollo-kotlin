@@ -149,6 +149,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.asDroid = Optional.fromNullable(asDroid);
     }
 
+    /**
+     * The name of the character
+     */
     public @Nonnull String name() {
       return this.name;
     }
@@ -258,10 +261,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.height = Optional.fromNullable(height);
     }
 
+    /**
+     * What this human calls themselves
+     */
     public @Nonnull String name() {
       return this.name;
     }
 
+    /**
+     * Height in the preferred unit, default is meters
+     */
     public Optional<Double> height() {
       return this.height;
     }
@@ -335,10 +344,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.primaryFunction = Optional.fromNullable(primaryFunction);
     }
 
+    /**
+     * What others call this droid
+     */
     public @Nonnull String name() {
       return this.name;
     }
 
+    /**
+     * This droid's primary function
+     */
     public Optional<String> primaryFunction() {
       return this.primaryFunction;
     }

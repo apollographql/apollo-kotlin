@@ -163,10 +163,16 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       this.asHuman = Optional.fromNullable(asHuman);
     }
 
+    /**
+     * The name of the character
+     */
     public @Nonnull String name() {
       return this.name;
     }
 
+    /**
+     * The friends of the character, or an empty list if they have none
+     */
     public Optional<List<Friend>> friends() {
       return this.friends;
     }
@@ -264,6 +270,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       this.name = name;
     }
 
+    /**
+     * The name of the character
+     */
     public @Nonnull String name() {
       return this.name;
     }
@@ -334,14 +343,23 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       this.height = Optional.fromNullable(height);
     }
 
+    /**
+     * What this human calls themselves
+     */
     public @Nonnull String name() {
       return this.name;
     }
 
+    /**
+     * This human's friends, or an empty list if they have none
+     */
     public Optional<List<Friend1>> friends() {
       return this.friends;
     }
 
+    /**
+     * Height in the preferred unit, default is meters
+     */
     public Optional<Double> height() {
       return this.height;
     }
@@ -431,14 +449,23 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       this.friends = Optional.fromNullable(friends);
     }
 
+    /**
+     * The name of the character
+     */
     public @Nonnull String name() {
       return this.name;
     }
 
+    /**
+     * The movies this character appears in
+     */
     public @Nonnull List<Episode> appearsIn() {
       return this.appearsIn;
     }
 
+    /**
+     * The friends of the character, or an empty list if they have none
+     */
     public Optional<List<Friend2>> friends() {
       return this.friends;
     }

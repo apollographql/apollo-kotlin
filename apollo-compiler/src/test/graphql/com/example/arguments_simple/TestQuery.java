@@ -198,6 +198,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.name = Optional.fromNullable(name);
     }
 
+    /**
+     * The name of the character
+     */
     public Optional<String> name() {
       return this.name;
     }

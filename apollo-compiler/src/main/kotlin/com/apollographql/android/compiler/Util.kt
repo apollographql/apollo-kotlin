@@ -20,6 +20,7 @@ fun FieldSpec.overrideType(typeNameOverrideMap: Map<String, String>): FieldSpec 
     FieldSpec.builder(type.overrideTypeName(typeNameOverrideMap).annotated(type.annotations), name)
         .addModifiers(*modifiers.toTypedArray())
         .addAnnotations(annotations)
+        .addJavadoc(javadoc)
         .initializer(initializer)
         .build()
 
@@ -28,6 +29,7 @@ fun MethodSpec.overrideReturnType(typeNameOverrideMap: Map<String, String>): Met
         .returns(returnType.overrideTypeName(typeNameOverrideMap).annotated(returnType.annotations))
         .addModifiers(*modifiers.toTypedArray())
         .addCode(code)
+        .addJavadoc(javadoc)
         .build()
 
 fun TypeSpec.withValueInitConstructor(nullableValueGenerationType: NullableValueType): TypeSpec {

@@ -214,10 +214,16 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       this.commentary = Optional.fromNullable(commentary);
     }
 
+    /**
+     * The number of stars this review gave, 1-5
+     */
     public int stars() {
       return this.stars;
     }
 
+    /**
+     * Comment about the movie
+     */
     public Optional<String> commentary() {
       return this.commentary;
     }
