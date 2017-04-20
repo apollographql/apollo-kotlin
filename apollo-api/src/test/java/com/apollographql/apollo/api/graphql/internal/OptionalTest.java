@@ -1,4 +1,4 @@
-package com.apollographql.android.api.graphql.internal;
+package com.apollographql.apollo.api.graphql.internal;
 
 /*
  * Copyright (C) 2011 The Guava Authors
