@@ -146,145 +146,145 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new Data(r2, luke);
       }
     }
+  }
 
-    public static class R2 {
-      private final @Nonnull String name;
+  public static class R2 {
+    private final @Nonnull String name;
 
-      private volatile String $toString;
+    private volatile String $toString;
 
-      private volatile int $hashCode;
+    private volatile int $hashCode;
 
-      private volatile boolean $hashCodeMemoized;
+    private volatile boolean $hashCodeMemoized;
 
-      public R2(@Nonnull String name) {
-        this.name = name;
-      }
-
-      public @Nonnull String name() {
-        return this.name;
-      }
-
-      @Override
-      public String toString() {
-        if ($toString == null) {
-          $toString = "R2{"
-            + "name=" + name
-            + "}";
-        }
-        return $toString;
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof R2) {
-          R2 that = (R2) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        if (!$hashCodeMemoized) {
-          int h = 1;
-          h *= 1000003;
-          h ^= (name == null) ? 0 : name.hashCode();
-          $hashCode = h;
-          $hashCodeMemoized = true;
-        }
-        return $hashCode;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<R2> {
-        final Field[] fields = {
-          Field.forString("name", "name", null, false)
-        };
-
-        @Override
-        public R2 map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          return new R2(name);
-        }
-      }
+    public R2(@Nonnull String name) {
+      this.name = name;
     }
 
-    public static class Luke {
-      private final @Nonnull String id;
+    public @Nonnull String name() {
+      return this.name;
+    }
 
-      private final @Nonnull String name;
-
-      private volatile String $toString;
-
-      private volatile int $hashCode;
-
-      private volatile boolean $hashCodeMemoized;
-
-      public Luke(@Nonnull String id, @Nonnull String name) {
-        this.id = id;
-        this.name = name;
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "R2{"
+          + "name=" + name
+          + "}";
       }
+      return $toString;
+    }
 
-      public @Nonnull String id() {
-        return this.id;
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
       }
+      if (o instanceof R2) {
+        R2 that = (R2) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+      }
+      return false;
+    }
 
-      public @Nonnull String name() {
-        return this.name;
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<R2> {
+      final Field[] fields = {
+        Field.forString("name", "name", null, false)
+      };
 
       @Override
-      public String toString() {
-        if ($toString == null) {
-          $toString = "Luke{"
-            + "id=" + id + ", "
-            + "name=" + name
-            + "}";
-        }
-        return $toString;
+      public R2 map(ResponseReader reader) throws IOException {
+        final String name = reader.read(fields[0]);
+        return new R2(name);
       }
+    }
+  }
+
+  public static class Luke {
+    private final @Nonnull String id;
+
+    private final @Nonnull String name;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public Luke(@Nonnull String id, @Nonnull String name) {
+      this.id = id;
+      this.name = name;
+    }
+
+    public @Nonnull String id() {
+      return this.id;
+    }
+
+    public @Nonnull String name() {
+      return this.name;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Luke{"
+          + "id=" + id + ", "
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Luke) {
+        Luke that = (Luke) o;
+        return ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (id == null) ? 0 : id.hashCode();
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Luke> {
+      final Field[] fields = {
+        Field.forString("id", "id", null, false),
+        Field.forString("name", "name", null, false)
+      };
 
       @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof Luke) {
-          Luke that = (Luke) o;
-          return ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
-           && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        if (!$hashCodeMemoized) {
-          int h = 1;
-          h *= 1000003;
-          h ^= (id == null) ? 0 : id.hashCode();
-          h *= 1000003;
-          h ^= (name == null) ? 0 : name.hashCode();
-          $hashCode = h;
-          $hashCodeMemoized = true;
-        }
-        return $hashCode;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<Luke> {
-        final Field[] fields = {
-          Field.forString("id", "id", null, false),
-          Field.forString("name", "name", null, false)
-        };
-
-        @Override
-        public Luke map(ResponseReader reader) throws IOException {
-          final String id = reader.read(fields[0]);
-          final String name = reader.read(fields[1]);
-          return new Luke(id, name);
-        }
+      public Luke map(ResponseReader reader) throws IOException {
+        final String id = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        return new Luke(id, name);
       }
     }
   }

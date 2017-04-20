@@ -1,8 +1,6 @@
 package com.apollographql.android.compiler.ir
 
 import com.apollographql.android.compiler.SchemaTypeSpecBuilder
-import com.apollographql.android.compiler.Util
-import com.apollographql.android.compiler.flatten
 import com.apollographql.apollo.api.Operation
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
@@ -22,7 +20,6 @@ data class Operation(
           .toBuilder()
           .addSuperinterface(Operation.Data::class.java)
           .build()
-          .flatten(excludeTypeNames = listOf(Util.MAPPER_TYPE_NAME, SchemaTypeSpecBuilder.FRAGMENTS_TYPE_NAME))
 
   companion object {
     val DATA_TYPE_NAME = "Data"

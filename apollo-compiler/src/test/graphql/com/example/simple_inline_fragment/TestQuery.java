@@ -128,270 +128,270 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new Data(hero);
       }
     }
+  }
 
-    public static class AsHuman {
-      private final @Nonnull String name;
+  public static class Hero {
+    private final @Nonnull String name;
 
-      private final Optional<Double> height;
+    private final Optional<AsHuman> asHuman;
 
-      private volatile String $toString;
+    private final Optional<AsDroid> asDroid;
 
-      private volatile int $hashCode;
+    private volatile String $toString;
 
-      private volatile boolean $hashCodeMemoized;
+    private volatile int $hashCode;
 
-      public AsHuman(@Nonnull String name, @Nullable Double height) {
-        this.name = name;
-        this.height = Optional.fromNullable(height);
-      }
+    private volatile boolean $hashCodeMemoized;
 
-      public @Nonnull String name() {
-        return this.name;
-      }
-
-      public Optional<Double> height() {
-        return this.height;
-      }
-
-      @Override
-      public String toString() {
-        if ($toString == null) {
-          $toString = "AsHuman{"
-            + "name=" + name + ", "
-            + "height=" + height
-            + "}";
-        }
-        return $toString;
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof AsHuman) {
-          AsHuman that = (AsHuman) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-           && ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        if (!$hashCodeMemoized) {
-          int h = 1;
-          h *= 1000003;
-          h ^= (name == null) ? 0 : name.hashCode();
-          h *= 1000003;
-          h ^= (height == null) ? 0 : height.hashCode();
-          $hashCode = h;
-          $hashCodeMemoized = true;
-        }
-        return $hashCode;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<AsHuman> {
-        final Field[] fields = {
-          Field.forString("name", "name", null, false),
-          Field.forDouble("height", "height", null, true)
-        };
-
-        @Override
-        public AsHuman map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          final Double height = reader.read(fields[1]);
-          return new AsHuman(name, height);
-        }
-      }
+    public Hero(@Nonnull String name, @Nullable AsHuman asHuman, @Nullable AsDroid asDroid) {
+      this.name = name;
+      this.asHuman = Optional.fromNullable(asHuman);
+      this.asDroid = Optional.fromNullable(asDroid);
     }
 
-    public static class AsDroid {
-      private final @Nonnull String name;
-
-      private final Optional<String> primaryFunction;
-
-      private volatile String $toString;
-
-      private volatile int $hashCode;
-
-      private volatile boolean $hashCodeMemoized;
-
-      public AsDroid(@Nonnull String name, @Nullable String primaryFunction) {
-        this.name = name;
-        this.primaryFunction = Optional.fromNullable(primaryFunction);
-      }
-
-      public @Nonnull String name() {
-        return this.name;
-      }
-
-      public Optional<String> primaryFunction() {
-        return this.primaryFunction;
-      }
-
-      @Override
-      public String toString() {
-        if ($toString == null) {
-          $toString = "AsDroid{"
-            + "name=" + name + ", "
-            + "primaryFunction=" + primaryFunction
-            + "}";
-        }
-        return $toString;
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof AsDroid) {
-          AsDroid that = (AsDroid) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-           && ((this.primaryFunction == null) ? (that.primaryFunction == null) : this.primaryFunction.equals(that.primaryFunction));
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        if (!$hashCodeMemoized) {
-          int h = 1;
-          h *= 1000003;
-          h ^= (name == null) ? 0 : name.hashCode();
-          h *= 1000003;
-          h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
-          $hashCode = h;
-          $hashCodeMemoized = true;
-        }
-        return $hashCode;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<AsDroid> {
-        final Field[] fields = {
-          Field.forString("name", "name", null, false),
-          Field.forString("primaryFunction", "primaryFunction", null, true)
-        };
-
-        @Override
-        public AsDroid map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          final String primaryFunction = reader.read(fields[1]);
-          return new AsDroid(name, primaryFunction);
-        }
-      }
+    public @Nonnull String name() {
+      return this.name;
     }
 
-    public static class Hero {
-      private final @Nonnull String name;
+    public Optional<AsHuman> asHuman() {
+      return this.asHuman;
+    }
 
-      private final Optional<AsHuman> asHuman;
+    public Optional<AsDroid> asDroid() {
+      return this.asDroid;
+    }
 
-      private final Optional<AsDroid> asDroid;
-
-      private volatile String $toString;
-
-      private volatile int $hashCode;
-
-      private volatile boolean $hashCodeMemoized;
-
-      public Hero(@Nonnull String name, @Nullable AsHuman asHuman, @Nullable AsDroid asDroid) {
-        this.name = name;
-        this.asHuman = Optional.fromNullable(asHuman);
-        this.asDroid = Optional.fromNullable(asDroid);
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Hero{"
+          + "name=" + name + ", "
+          + "asHuman=" + asHuman + ", "
+          + "asDroid=" + asDroid
+          + "}";
       }
+      return $toString;
+    }
 
-      public @Nonnull String name() {
-        return this.name;
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
       }
-
-      public Optional<AsHuman> asHuman() {
-        return this.asHuman;
+      if (o instanceof Hero) {
+        Hero that = (Hero) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         && ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman))
+         && ((this.asDroid == null) ? (that.asDroid == null) : this.asDroid.equals(that.asDroid));
       }
+      return false;
+    }
 
-      public Optional<AsDroid> asDroid() {
-        return this.asDroid;
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (asHuman == null) ? 0 : asHuman.hashCode();
+        h *= 1000003;
+        h ^= (asDroid == null) ? 0 : asDroid.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
+      return $hashCode;
+    }
 
-      @Override
-      public String toString() {
-        if ($toString == null) {
-          $toString = "Hero{"
-            + "name=" + name + ", "
-            + "asHuman=" + asHuman + ", "
-            + "asDroid=" + asDroid
-            + "}";
-        }
-        return $toString;
-      }
+    public static final class Mapper implements ResponseFieldMapper<Hero> {
+      final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof Hero) {
-          Hero that = (Hero) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-           && ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman))
-           && ((this.asDroid == null) ? (that.asDroid == null) : this.asDroid.equals(that.asDroid));
-        }
-        return false;
-      }
+      final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
-      @Override
-      public int hashCode() {
-        if (!$hashCodeMemoized) {
-          int h = 1;
-          h *= 1000003;
-          h ^= (name == null) ? 0 : name.hashCode();
-          h *= 1000003;
-          h ^= (asHuman == null) ? 0 : asHuman.hashCode();
-          h *= 1000003;
-          h ^= (asDroid == null) ? 0 : asDroid.hashCode();
-          $hashCode = h;
-          $hashCodeMemoized = true;
-        }
-        return $hashCode;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<Hero> {
-        final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
-
-        final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
-
-        final Field[] fields = {
-          Field.forString("name", "name", null, false),
-          Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman>() {
-            @Override
-            public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
-              if (conditionalType.equals("Human")) {
-                return asHumanFieldMapper.map(reader);
-              } else {
-                return null;
-              }
+      final Field[] fields = {
+        Field.forString("name", "name", null, false),
+        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman>() {
+          @Override
+          public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
+            if (conditionalType.equals("Human")) {
+              return asHumanFieldMapper.map(reader);
+            } else {
+              return null;
             }
-          }),
-          Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsDroid>() {
-            @Override
-            public AsDroid read(String conditionalType, ResponseReader reader) throws IOException {
-              if (conditionalType.equals("Droid")) {
-                return asDroidFieldMapper.map(reader);
-              } else {
-                return null;
-              }
+          }
+        }),
+        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsDroid>() {
+          @Override
+          public AsDroid read(String conditionalType, ResponseReader reader) throws IOException {
+            if (conditionalType.equals("Droid")) {
+              return asDroidFieldMapper.map(reader);
+            } else {
+              return null;
             }
-          })
-        };
+          }
+        })
+      };
 
-        @Override
-        public Hero map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          final AsHuman asHuman = reader.read(fields[1]);
-          final AsDroid asDroid = reader.read(fields[2]);
-          return new Hero(name, asHuman, asDroid);
-        }
+      @Override
+      public Hero map(ResponseReader reader) throws IOException {
+        final String name = reader.read(fields[0]);
+        final AsHuman asHuman = reader.read(fields[1]);
+        final AsDroid asDroid = reader.read(fields[2]);
+        return new Hero(name, asHuman, asDroid);
+      }
+    }
+  }
+
+  public static class AsHuman {
+    private final @Nonnull String name;
+
+    private final Optional<Double> height;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public AsHuman(@Nonnull String name, @Nullable Double height) {
+      this.name = name;
+      this.height = Optional.fromNullable(height);
+    }
+
+    public @Nonnull String name() {
+      return this.name;
+    }
+
+    public Optional<Double> height() {
+      return this.height;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "AsHuman{"
+          + "name=" + name + ", "
+          + "height=" + height
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof AsHuman) {
+        AsHuman that = (AsHuman) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         && ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (height == null) ? 0 : height.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<AsHuman> {
+      final Field[] fields = {
+        Field.forString("name", "name", null, false),
+        Field.forDouble("height", "height", null, true)
+      };
+
+      @Override
+      public AsHuman map(ResponseReader reader) throws IOException {
+        final String name = reader.read(fields[0]);
+        final Double height = reader.read(fields[1]);
+        return new AsHuman(name, height);
+      }
+    }
+  }
+
+  public static class AsDroid {
+    private final @Nonnull String name;
+
+    private final Optional<String> primaryFunction;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public AsDroid(@Nonnull String name, @Nullable String primaryFunction) {
+      this.name = name;
+      this.primaryFunction = Optional.fromNullable(primaryFunction);
+    }
+
+    public @Nonnull String name() {
+      return this.name;
+    }
+
+    public Optional<String> primaryFunction() {
+      return this.primaryFunction;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "AsDroid{"
+          + "name=" + name + ", "
+          + "primaryFunction=" + primaryFunction
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof AsDroid) {
+        AsDroid that = (AsDroid) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         && ((this.primaryFunction == null) ? (that.primaryFunction == null) : this.primaryFunction.equals(that.primaryFunction));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<AsDroid> {
+      final Field[] fields = {
+        Field.forString("name", "name", null, false),
+        Field.forString("primaryFunction", "primaryFunction", null, true)
+      };
+
+      @Override
+      public AsDroid map(ResponseReader reader) throws IOException {
+        final String name = reader.read(fields[0]);
+        final String primaryFunction = reader.read(fields[1]);
+        return new AsDroid(name, primaryFunction);
       }
     }
   }

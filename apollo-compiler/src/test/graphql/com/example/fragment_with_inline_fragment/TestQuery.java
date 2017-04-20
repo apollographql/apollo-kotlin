@@ -126,13 +126,84 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new Data(hero);
       }
     }
+  }
 
-    public static class Hero {
-      private final @Nonnull String name;
+  public static class Hero {
+    private final @Nonnull String name;
 
-      private final @Nonnull List<Episode> appearsIn;
+    private final @Nonnull List<Episode> appearsIn;
 
-      private final @Nonnull Fragments fragments;
+    private final @Nonnull Fragments fragments;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public Hero(@Nonnull String name, @Nonnull List<Episode> appearsIn,
+        @Nonnull Fragments fragments) {
+      this.name = name;
+      this.appearsIn = appearsIn;
+      this.fragments = fragments;
+    }
+
+    public @Nonnull String name() {
+      return this.name;
+    }
+
+    public @Nonnull List<Episode> appearsIn() {
+      return this.appearsIn;
+    }
+
+    public @Nonnull Fragments fragments() {
+      return this.fragments;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Hero{"
+          + "name=" + name + ", "
+          + "appearsIn=" + appearsIn + ", "
+          + "fragments=" + fragments
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Hero) {
+        Hero that = (Hero) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         && ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn))
+         && ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
+        h *= 1000003;
+        h ^= (fragments == null) ? 0 : fragments.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static class Fragments {
+      private final @Nonnull HeroDetails heroDetails;
 
       private volatile String $toString;
 
@@ -140,32 +211,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       private volatile boolean $hashCodeMemoized;
 
-      public Hero(@Nonnull String name, @Nonnull List<Episode> appearsIn,
-          @Nonnull Fragments fragments) {
-        this.name = name;
-        this.appearsIn = appearsIn;
-        this.fragments = fragments;
+      public Fragments(@Nonnull HeroDetails heroDetails) {
+        this.heroDetails = heroDetails;
       }
 
-      public @Nonnull String name() {
-        return this.name;
-      }
-
-      public @Nonnull List<Episode> appearsIn() {
-        return this.appearsIn;
-      }
-
-      public @Nonnull Fragments fragments() {
-        return this.fragments;
+      public @Nonnull HeroDetails heroDetails() {
+        return this.heroDetails;
       }
 
       @Override
       public String toString() {
         if ($toString == null) {
-          $toString = "Hero{"
-            + "name=" + name + ", "
-            + "appearsIn=" + appearsIn + ", "
-            + "fragments=" + fragments
+          $toString = "Fragments{"
+            + "heroDetails=" + heroDetails
             + "}";
         }
         return $toString;
@@ -176,11 +234,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         if (o == this) {
           return true;
         }
-        if (o instanceof Hero) {
-          Hero that = (Hero) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-           && ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn))
-           && ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+        if (o instanceof Fragments) {
+          Fragments that = (Fragments) o;
+          return ((this.heroDetails == null) ? (that.heroDetails == null) : this.heroDetails.equals(that.heroDetails));
         }
         return false;
       }
@@ -190,109 +246,52 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         if (!$hashCodeMemoized) {
           int h = 1;
           h *= 1000003;
-          h ^= (name == null) ? 0 : name.hashCode();
-          h *= 1000003;
-          h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
-          h *= 1000003;
-          h ^= (fragments == null) ? 0 : fragments.hashCode();
+          h ^= (heroDetails == null) ? 0 : heroDetails.hashCode();
           $hashCode = h;
           $hashCodeMemoized = true;
         }
         return $hashCode;
       }
 
-      public static class Fragments {
-        private final @Nonnull HeroDetails heroDetails;
-
-        private volatile String $toString;
-
-        private volatile int $hashCode;
-
-        private volatile boolean $hashCodeMemoized;
-
-        public Fragments(@Nonnull HeroDetails heroDetails) {
-          this.heroDetails = heroDetails;
-        }
-
-        public @Nonnull HeroDetails heroDetails() {
-          return this.heroDetails;
-        }
+      public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+        final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();
 
         @Override
-        public String toString() {
-          if ($toString == null) {
-            $toString = "Fragments{"
-              + "heroDetails=" + heroDetails
-              + "}";
+        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) throws
+            IOException {
+          HeroDetails heroDetails = null;
+          if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) {
+            heroDetails = heroDetailsFieldMapper.map(reader);
           }
-          return $toString;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-          if (o == this) {
-            return true;
-          }
-          if (o instanceof Fragments) {
-            Fragments that = (Fragments) o;
-            return ((this.heroDetails == null) ? (that.heroDetails == null) : this.heroDetails.equals(that.heroDetails));
-          }
-          return false;
-        }
-
-        @Override
-        public int hashCode() {
-          if (!$hashCodeMemoized) {
-            int h = 1;
-            h *= 1000003;
-            h ^= (heroDetails == null) ? 0 : heroDetails.hashCode();
-            $hashCode = h;
-            $hashCodeMemoized = true;
-          }
-          return $hashCode;
-        }
-
-        public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
-          final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();
-
-          @Override
-          public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType)
-              throws IOException {
-            HeroDetails heroDetails = null;
-            if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) {
-              heroDetails = heroDetailsFieldMapper.map(reader);
-            }
-            return new Fragments(heroDetails);
-          }
+          return new Fragments(heroDetails);
         }
       }
+    }
 
-      public static final class Mapper implements ResponseFieldMapper<Hero> {
-        final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
+    public static final class Mapper implements ResponseFieldMapper<Hero> {
+      final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
-        final Field[] fields = {
-          Field.forString("name", "name", null, false),
-          Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
-            @Override public Episode read(final Field.ListItemReader reader) throws IOException {
-              return Episode.valueOf(reader.readString());
-            }
-          }),
-          Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
-            @Override
-            public Fragments read(String conditionalType, ResponseReader reader) throws
-                IOException {
-              return fragmentsFieldMapper.map(reader, conditionalType);
-            }
-          })
-        };
+      final Field[] fields = {
+        Field.forString("name", "name", null, false),
+        Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
+          @Override public Episode read(final Field.ListItemReader reader) throws IOException {
+            return Episode.valueOf(reader.readString());
+          }
+        }),
+        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
+          @Override
+          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
+            return fragmentsFieldMapper.map(reader, conditionalType);
+          }
+        })
+      };
 
-        @Override
-        public Hero map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          final List<Episode> appearsIn = reader.read(fields[1]);
-          final Fragments fragments = reader.read(fields[2]);
-          return new Hero(name, appearsIn, fragments);
-        }
+      @Override
+      public Hero map(ResponseReader reader) throws IOException {
+        final String name = reader.read(fields[0]);
+        final List<Episode> appearsIn = reader.read(fields[1]);
+        final Fragments fragments = reader.read(fields[2]);
+        return new Hero(name, appearsIn, fragments);
       }
     }
   }

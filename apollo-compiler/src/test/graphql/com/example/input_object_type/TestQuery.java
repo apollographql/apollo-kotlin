@@ -196,81 +196,81 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
         return new Data(createReview);
       }
     }
+  }
 
-    public static class CreateReview {
-      private final int stars;
+  public static class CreateReview {
+    private final int stars;
 
-      private final Optional<String> commentary;
+    private final Optional<String> commentary;
 
-      private volatile String $toString;
+    private volatile String $toString;
 
-      private volatile int $hashCode;
+    private volatile int $hashCode;
 
-      private volatile boolean $hashCodeMemoized;
+    private volatile boolean $hashCodeMemoized;
 
-      public CreateReview(int stars, @Nullable String commentary) {
-        this.stars = stars;
-        this.commentary = Optional.fromNullable(commentary);
+    public CreateReview(int stars, @Nullable String commentary) {
+      this.stars = stars;
+      this.commentary = Optional.fromNullable(commentary);
+    }
+
+    public int stars() {
+      return this.stars;
+    }
+
+    public Optional<String> commentary() {
+      return this.commentary;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "CreateReview{"
+          + "stars=" + stars + ", "
+          + "commentary=" + commentary
+          + "}";
       }
+      return $toString;
+    }
 
-      public int stars() {
-        return this.stars;
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
       }
+      if (o instanceof CreateReview) {
+        CreateReview that = (CreateReview) o;
+        return this.stars == that.stars
+         && ((this.commentary == null) ? (that.commentary == null) : this.commentary.equals(that.commentary));
+      }
+      return false;
+    }
 
-      public Optional<String> commentary() {
-        return this.commentary;
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= stars;
+        h *= 1000003;
+        h ^= (commentary == null) ? 0 : commentary.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<CreateReview> {
+      final Field[] fields = {
+        Field.forInt("stars", "stars", null, false),
+        Field.forString("commentary", "commentary", null, true)
+      };
 
       @Override
-      public String toString() {
-        if ($toString == null) {
-          $toString = "CreateReview{"
-            + "stars=" + stars + ", "
-            + "commentary=" + commentary
-            + "}";
-        }
-        return $toString;
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof CreateReview) {
-          CreateReview that = (CreateReview) o;
-          return this.stars == that.stars
-           && ((this.commentary == null) ? (that.commentary == null) : this.commentary.equals(that.commentary));
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        if (!$hashCodeMemoized) {
-          int h = 1;
-          h *= 1000003;
-          h ^= stars;
-          h *= 1000003;
-          h ^= (commentary == null) ? 0 : commentary.hashCode();
-          $hashCode = h;
-          $hashCodeMemoized = true;
-        }
-        return $hashCode;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<CreateReview> {
-        final Field[] fields = {
-          Field.forInt("stars", "stars", null, false),
-          Field.forString("commentary", "commentary", null, true)
-        };
-
-        @Override
-        public CreateReview map(ResponseReader reader) throws IOException {
-          final int stars = reader.read(fields[0]);
-          final String commentary = reader.read(fields[1]);
-          return new CreateReview(stars, commentary);
-        }
+      public CreateReview map(ResponseReader reader) throws IOException {
+        final int stars = reader.read(fields[0]);
+        final String commentary = reader.read(fields[1]);
+        return new CreateReview(stars, commentary);
       }
     }
   }

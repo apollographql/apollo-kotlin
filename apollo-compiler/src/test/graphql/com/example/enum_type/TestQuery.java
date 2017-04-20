@@ -123,105 +123,105 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new Data(hero);
       }
     }
+  }
 
-    public static class Hero {
-      private final @Nonnull String name;
+  public static class Hero {
+    private final @Nonnull String name;
 
-      private final @Nonnull List<Episode> appearsIn;
+    private final @Nonnull List<Episode> appearsIn;
 
-      private final @Nonnull Episode firstAppearsIn;
+    private final @Nonnull Episode firstAppearsIn;
 
-      private volatile String $toString;
+    private volatile String $toString;
 
-      private volatile int $hashCode;
+    private volatile int $hashCode;
 
-      private volatile boolean $hashCodeMemoized;
+    private volatile boolean $hashCodeMemoized;
 
-      public Hero(@Nonnull String name, @Nonnull List<Episode> appearsIn,
-          @Nonnull Episode firstAppearsIn) {
-        this.name = name;
-        this.appearsIn = appearsIn;
-        this.firstAppearsIn = firstAppearsIn;
+    public Hero(@Nonnull String name, @Nonnull List<Episode> appearsIn,
+        @Nonnull Episode firstAppearsIn) {
+      this.name = name;
+      this.appearsIn = appearsIn;
+      this.firstAppearsIn = firstAppearsIn;
+    }
+
+    public @Nonnull String name() {
+      return this.name;
+    }
+
+    public @Nonnull List<Episode> appearsIn() {
+      return this.appearsIn;
+    }
+
+    public @Nonnull Episode firstAppearsIn() {
+      return this.firstAppearsIn;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Hero{"
+          + "name=" + name + ", "
+          + "appearsIn=" + appearsIn + ", "
+          + "firstAppearsIn=" + firstAppearsIn
+          + "}";
       }
+      return $toString;
+    }
 
-      public @Nonnull String name() {
-        return this.name;
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
       }
-
-      public @Nonnull List<Episode> appearsIn() {
-        return this.appearsIn;
+      if (o instanceof Hero) {
+        Hero that = (Hero) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         && ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn))
+         && ((this.firstAppearsIn == null) ? (that.firstAppearsIn == null) : this.firstAppearsIn.equals(that.firstAppearsIn));
       }
+      return false;
+    }
 
-      public @Nonnull Episode firstAppearsIn() {
-        return this.firstAppearsIn;
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
+        h *= 1000003;
+        h ^= (firstAppearsIn == null) ? 0 : firstAppearsIn.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
+      return $hashCode;
+    }
 
-      @Override
-      public String toString() {
-        if ($toString == null) {
-          $toString = "Hero{"
-            + "name=" + name + ", "
-            + "appearsIn=" + appearsIn + ", "
-            + "firstAppearsIn=" + firstAppearsIn
-            + "}";
-        }
-        return $toString;
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof Hero) {
-          Hero that = (Hero) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-           && ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn))
-           && ((this.firstAppearsIn == null) ? (that.firstAppearsIn == null) : this.firstAppearsIn.equals(that.firstAppearsIn));
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        if (!$hashCodeMemoized) {
-          int h = 1;
-          h *= 1000003;
-          h ^= (name == null) ? 0 : name.hashCode();
-          h *= 1000003;
-          h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
-          h *= 1000003;
-          h ^= (firstAppearsIn == null) ? 0 : firstAppearsIn.hashCode();
-          $hashCode = h;
-          $hashCodeMemoized = true;
-        }
-        return $hashCode;
-      }
-
-      public static final class Mapper implements ResponseFieldMapper<Hero> {
-        final Field[] fields = {
-          Field.forString("name", "name", null, false),
-          Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
-            @Override public Episode read(final Field.ListItemReader reader) throws IOException {
-              return Episode.valueOf(reader.readString());
-            }
-          }),
-          Field.forString("firstAppearsIn", "firstAppearsIn", null, false)
-        };
-
-        @Override
-        public Hero map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          final List<Episode> appearsIn = reader.read(fields[1]);
-          final String firstAppearsInStr = reader.read(fields[2]);
-          final Episode firstAppearsIn;
-          if (firstAppearsInStr != null) {
-            firstAppearsIn = Episode.valueOf(firstAppearsInStr);
-          } else {
-            firstAppearsIn = null;
+    public static final class Mapper implements ResponseFieldMapper<Hero> {
+      final Field[] fields = {
+        Field.forString("name", "name", null, false),
+        Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
+          @Override public Episode read(final Field.ListItemReader reader) throws IOException {
+            return Episode.valueOf(reader.readString());
           }
-          return new Hero(name, appearsIn, firstAppearsIn);
+        }),
+        Field.forString("firstAppearsIn", "firstAppearsIn", null, false)
+      };
+
+      @Override
+      public Hero map(ResponseReader reader) throws IOException {
+        final String name = reader.read(fields[0]);
+        final List<Episode> appearsIn = reader.read(fields[1]);
+        final String firstAppearsInStr = reader.read(fields[2]);
+        final Episode firstAppearsIn;
+        if (firstAppearsInStr != null) {
+          firstAppearsIn = Episode.valueOf(firstAppearsInStr);
+        } else {
+          firstAppearsIn = null;
         }
+        return new Hero(name, appearsIn, firstAppearsIn);
       }
     }
   }
