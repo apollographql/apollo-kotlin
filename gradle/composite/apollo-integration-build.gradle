@@ -1,0 +1,56 @@
+buildscript {
+  apply from: rootProject.file("../gradle/dependencies.gradle")
+  repositories {
+    jcenter()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+  }
+  dependencies {
+    classpath dep.androidPlugin
+    classpath dep.apolloPlugin
+  }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'com.apollographql.android'
+repositories {
+  jcenter()
+  maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+}
+
+android {
+  compileSdkVersion androidConfig.compileSdkVersion
+  buildToolsVersion androidConfig.buildToolsVersion
+
+  defaultConfig {
+    applicationId "com.example.apollographql.integration"
+    minSdkVersion androidConfig.minSdkVersion
+    targetSdkVersion androidConfig.targetSdkVersion
+  }
+
+  lintOptions {
+    textReport true
+    textOutput 'stdout'
+    ignore 'InvalidPackage', 'GoogleAppIndexingWarning', 'AllowBackup'
+  }
+
+  packagingOptions {
+    exclude 'META-INF/rxjava.properties'
+  }
+}
+
+dependencies {
+  compile dep.jsr305
+  compile dep.apolloRuntime
+  compile dep.apolloRxSupport
+  compile dep.apolloRx2Support
+  compile dep.appcompat
+
+  testCompile dep.junit
+  testCompile dep.truth
+  testCompile dep.mockWebServer
+  testCompile dep.okhttpTestSupport
+}
+
+apollo {
+  customTypeMapping['Date'] = "java.util.Date"
+}
