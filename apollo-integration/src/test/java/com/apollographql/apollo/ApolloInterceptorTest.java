@@ -21,6 +21,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -226,12 +228,13 @@ public class ApolloInterceptorTest {
   @Test
   public void syncApplicationInterceptorThrowsApolloException() {
 
+    final String apolloException = "ApolloException";
     EpisodeHeroName query = createHeroNameQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
       public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
-        throw new ApolloException("ApolloException");
+        throw new ApolloException(apolloException);
       }
 
       @Override
@@ -258,8 +261,8 @@ public class ApolloInterceptorTest {
   @Test
   public void asyncApplicationInterceptorThrowsApolloException() throws TimeoutException, InterruptedException {
     final NamedCountDownLatch responseLatch = new NamedCountDownLatch("responseLatch", 1);
-    final String message = "ApolloException";
 
+    final String message = "ApolloException";
     EpisodeHeroName query = createHeroNameQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
@@ -299,7 +302,7 @@ public class ApolloInterceptorTest {
   }
 
   @Test
-  public void applicationInterceptorThrowsRuntimeException() {
+  public void syncApplicationInterceptorThrowsRuntimeException() {
 
     EpisodeHeroName query = createHeroNameQuery();
 
@@ -326,7 +329,137 @@ public class ApolloInterceptorTest {
       client.newCall(query).execute();
     } catch (Exception e) {
       assertThat(e.getMessage()).isEqualTo("RuntimeException");
+      assertThat(e).isInstanceOf(RuntimeException.class);
     }
+  }
+
+  @Test
+  public void asyncApplicationInterceptorThrowsRuntimeException() throws TimeoutException, InterruptedException {
+    NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
+
+    final String message = "RuntimeException";
+    EpisodeHeroName query = createHeroNameQuery();
+
+    ApolloInterceptor interceptor = new ApolloInterceptor() {
+
+      @Nonnull @Override
+      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+        return null;
+      }
+
+      @Override
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+        dispatcher.execute(new Runnable() {
+          @Override public void run() {
+            throw new RuntimeException(message);
+          }
+        });
+      }
+
+      @Override public void dispose() {
+
+      }
+    };
+
+    client = ApolloClient.builder()
+        .serverUrl(mockWebServer.url("/"))
+        .okHttpClient(okHttpClient)
+        .addApplicationInterceptor(interceptor)
+        .dispatcher(new ExceptionHandlingExecutor(message, RuntimeException.class, latch))
+        .build();
+
+    client
+        .newCall(query)
+        .enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
+          @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+
+          }
+
+          @Override public void onFailure(@Nonnull ApolloException e) {
+
+          }
+        });
+
+    latch.awaitOrThrowWithTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
+  }
+
+  @Test
+  public void syncApplicationInterceptorReturnsNull() {
+    EpisodeHeroName query = createHeroNameQuery();
+
+    ApolloInterceptor interceptor = new ApolloInterceptor() {
+      @Nonnull @Override
+      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+        return null;
+      }
+
+      @Override
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+
+      }
+
+      @Override public void dispose() {
+
+      }
+    };
+
+    client = createApolloClient(interceptor);
+
+    try {
+      client.newCall(query).execute();
+      Assert.fail();
+    } catch (Exception e) {
+      assertThat(e).isInstanceOf(NullPointerException.class);
+    }
+  }
+
+  @Test
+  public void asyncApplicationInterceptorReturnsNull() throws TimeoutException, InterruptedException {
+    NamedCountDownLatch latch = new NamedCountDownLatch("first", 1);
+
+    EpisodeHeroName query = createHeroNameQuery();
+
+    ApolloInterceptor interceptor = new ApolloInterceptor() {
+      @Nonnull @Override
+      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+        return null;
+      }
+
+      @Override
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+        dispatcher.execute(new Runnable() {
+          @Override public void run() {
+            callBack.onResponse(null);
+          }
+        });
+      }
+
+      @Override public void dispose() {
+
+      }
+    };
+
+    client = ApolloClient.builder()
+        .serverUrl(mockWebServer.url("/"))
+        .okHttpClient(okHttpClient)
+        .addApplicationInterceptor(interceptor)
+        .dispatcher(new ExceptionHandlingExecutor(null, NullPointerException.class, latch))
+        .build();
+
+    client.newCall(query).enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
+      @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+
+      }
+
+      @Override public void onFailure(@Nonnull ApolloException e) {
+
+      }
+    });
+
+    latch.awaitOrThrowWithTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
   }
 
   @Test
@@ -358,37 +491,6 @@ public class ApolloInterceptorTest {
 
     Response<EpisodeHeroName.Data> actualResponse = client.newCall(query).execute();
     assertThat(actualResponse.data().hero().name()).isEqualTo("Artoo");
-  }
-
-  @Test
-  public void applicationInterceptorReturnsNull() {
-    EpisodeHeroName query = createHeroNameQuery();
-
-    ApolloInterceptor interceptor = new ApolloInterceptor() {
-      @Nonnull @Override
-      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
-        return null;
-      }
-
-      @Override
-      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
-
-      }
-
-      @Override public void dispose() {
-
-      }
-    };
-
-    client = createApolloClient(interceptor);
-
-    try {
-      client.newCall(query).execute();
-      Assert.fail();
-    } catch (Exception e) {
-      assertThat(e).isInstanceOf(NullPointerException.class);
-    }
   }
 
   @Test
@@ -531,5 +633,33 @@ public class ApolloInterceptorTest {
 
   private MockResponse mockResponse(String fileName) throws IOException {
     return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
+  }
+
+  private class ExceptionHandlingExecutor extends ThreadPoolExecutor {
+
+    private String message;
+    private Class<?> exceptionClass;
+    private NamedCountDownLatch latch;
+
+    private ExceptionHandlingExecutor(String message, Class<?> exceptionClass, NamedCountDownLatch latch) {
+      super(1, 1, 0, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+      this.message = message;
+      this.exceptionClass = exceptionClass;
+      this.latch = latch;
+    }
+
+    @Override public void execute(final Runnable command) {
+      super.execute(new Runnable() {
+        @Override public void run() {
+          try {
+            command.run();
+          } catch (Exception e) {
+            assertThat(e.getMessage()).isEqualTo(message);
+            assertThat(e).isInstanceOf(exceptionClass);
+            latch.countDown();
+          }
+        }
+      });
+    }
   }
 }
