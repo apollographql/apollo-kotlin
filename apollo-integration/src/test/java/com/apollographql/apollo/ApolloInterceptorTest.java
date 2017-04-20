@@ -391,6 +391,57 @@ public class ApolloInterceptorTest {
     }
   }
 
+  @Test
+  public void onShortCircuitingResponseSubsequentInterceptorsAreNotCalled() throws IOException, ApolloException {
+    mockWebServer.shutdown();
+
+    EpisodeHeroName query = createHeroNameQuery();
+    final InterceptorResponse expectedResponse = prepareInterceptorResponse(query);
+
+    ApolloInterceptor firstInterceptor = new ApolloInterceptor() {
+      @Nonnull @Override
+      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+        return expectedResponse;
+      }
+
+      @Override
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+      }
+
+      @Override public void dispose() {
+      }
+    };
+
+    ApolloInterceptor secondInterceptor = new ApolloInterceptor() {
+      @Nonnull @Override
+      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+        Assert.fail("Second interceptor called, although response has been short circuited");
+        return chain.proceed();
+      }
+
+      @Override
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+
+      }
+
+      @Override public void dispose() {
+
+      }
+    };
+
+    client = ApolloClient.builder()
+        .serverUrl(mockWebServer.url("/"))
+        .okHttpClient(okHttpClient)
+        .addApplicationInterceptor(firstInterceptor)
+        .addApplicationInterceptor(secondInterceptor)
+        .build();
+
+    Response<EpisodeHeroName.Data> actualResponse = client.newCall(query).execute();
+    assertThat(expectedResponse.parsedResponse.get()).isEqualTo(actualResponse);
+  }
+
   @NonNull private EpisodeHeroName createHeroNameQuery() {
     return EpisodeHeroName
         .builder()
