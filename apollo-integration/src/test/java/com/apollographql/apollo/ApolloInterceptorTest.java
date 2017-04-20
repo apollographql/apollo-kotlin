@@ -572,11 +572,7 @@ public class ApolloInterceptorTest {
       }
     };
 
-    client = ApolloClient.builder()
-        .serverUrl(mockWebServer.url("/"))
-        .okHttpClient(okHttpClient)
-        .addApplicationInterceptor(interceptor)
-        .build();
+    client = createApolloClient(interceptor);
 
     ApolloCall<EpisodeHeroName.Data> apolloCall = client.newCall(query);
 
