@@ -1,4 +1,4 @@
-package com.example.apollographql.sample.detail;
+package com.apollographql.apollo.sample.detail;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,10 +15,10 @@ import android.widget.TextView;
 import com.apollographql.android.rx2.Rx2Apollo;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.cache.normalized.CacheControl;
-import com.example.EntryDetailQuery;
-import com.example.EntryDetailQuery.Data.Entry;
-import com.example.apollographql.sample.R;
-import com.example.apollographql.sample.GitHuntApplication;
+import com.apollographql.apollo.sample.EntryDetailQuery;
+import com.apollographql.apollo.sample.EntryDetailQuery.Data.Entry;
+import com.apollographql.apollo.sample.R;
+import com.apollographql.apollo.sample.GitHuntApplication;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
