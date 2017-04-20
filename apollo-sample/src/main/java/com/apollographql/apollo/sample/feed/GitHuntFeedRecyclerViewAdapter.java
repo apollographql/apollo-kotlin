@@ -1,4 +1,4 @@
-package com.example.apollographql.sample.feed;
+package com.apollographql.apollo.sample.feed;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.FeedQuery;
-import com.example.apollographql.sample.R;
-import com.example.fragment.RepositoryFragment;
+import com.apollographql.apollo.sample.FeedQuery;
+import com.apollographql.apollo.sample.R;
+import com.apollographql.apollo.sample.fragment.RepositoryFragment;
 
 import java.util.Collections;
 import java.util.List;

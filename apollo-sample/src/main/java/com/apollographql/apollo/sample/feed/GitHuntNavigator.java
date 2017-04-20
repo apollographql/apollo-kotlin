@@ -1,4 +1,4 @@
-package com.example.apollographql.sample.feed;
+package com.apollographql.apollo.sample.feed;
 
 public interface GitHuntNavigator {
 

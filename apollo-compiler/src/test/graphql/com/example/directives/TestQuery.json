@@ -16,7 +16,8 @@
 							"responseName": "name",
 							"fieldName": "name",
 							"type": "String!",
-							"isConditional": true
+							"isConditional": true,
+							"description": "The name of the character"
 						}
 					],
 					"fragmentSpreads": [],

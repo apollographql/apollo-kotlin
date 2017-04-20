@@ -76,6 +76,12 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
   public static class Data implements Operation.Data {
     private final Optional<HeroDetailQuery1> heroDetailQuery;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Data(@Nullable HeroDetailQuery1 heroDetailQuery) {
       this.heroDetailQuery = Optional.fromNullable(heroDetailQuery);
     }
@@ -86,9 +92,12 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     @Override
     public String toString() {
-      return "Data{"
-        + "heroDetailQuery=" + heroDetailQuery
-        + "}";
+      if ($toString == null) {
+        $toString = "Data{"
+          + "heroDetailQuery=" + heroDetailQuery
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -105,10 +114,14 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (heroDetailQuery == null) ? 0 : heroDetailQuery.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (heroDetailQuery == null) ? 0 : heroDetailQuery.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
@@ -137,6 +150,12 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     private final Optional<AsHuman> asHuman;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public HeroDetailQuery1(@Nonnull String name, @Nullable List<Friend> friends,
         @Nullable AsHuman asHuman) {
       this.name = name;
@@ -158,11 +177,14 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     @Override
     public String toString() {
-      return "HeroDetailQuery1{"
-        + "name=" + name + ", "
-        + "friends=" + friends + ", "
-        + "asHuman=" + asHuman
-        + "}";
+      if ($toString == null) {
+        $toString = "HeroDetailQuery1{"
+          + "name=" + name + ", "
+          + "friends=" + friends + ", "
+          + "asHuman=" + asHuman
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -181,14 +203,18 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (name == null) ? 0 : name.hashCode();
-      h *= 1000003;
-      h ^= (friends == null) ? 0 : friends.hashCode();
-      h *= 1000003;
-      h ^= (asHuman == null) ? 0 : asHuman.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (friends == null) ? 0 : friends.hashCode();
+        h *= 1000003;
+        h ^= (asHuman == null) ? 0 : asHuman.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<HeroDetailQuery1> {
@@ -228,6 +254,12 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
   public static class Friend {
     private final @Nonnull String name;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Friend(@Nonnull String name) {
       this.name = name;
     }
@@ -238,9 +270,12 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     @Override
     public String toString() {
-      return "Friend{"
-        + "name=" + name
-        + "}";
+      if ($toString == null) {
+        $toString = "Friend{"
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -257,10 +292,14 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (name == null) ? 0 : name.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Friend> {
@@ -283,6 +322,12 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     private final Optional<Double> height;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public AsHuman(@Nonnull String name, @Nullable List<Friend1> friends, @Nullable Double height) {
       this.name = name;
       this.friends = Optional.fromNullable(friends);
@@ -303,11 +348,14 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     @Override
     public String toString() {
-      return "AsHuman{"
-        + "name=" + name + ", "
-        + "friends=" + friends + ", "
-        + "height=" + height
-        + "}";
+      if ($toString == null) {
+        $toString = "AsHuman{"
+          + "name=" + name + ", "
+          + "friends=" + friends + ", "
+          + "height=" + height
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -326,14 +374,18 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (name == null) ? 0 : name.hashCode();
-      h *= 1000003;
-      h ^= (friends == null) ? 0 : friends.hashCode();
-      h *= 1000003;
-      h ^= (height == null) ? 0 : height.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (friends == null) ? 0 : friends.hashCode();
+        h *= 1000003;
+        h ^= (height == null) ? 0 : height.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<AsHuman> {
@@ -366,6 +418,12 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     private final Optional<List<Friend2>> friends;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Friend1(@Nonnull String name, @Nonnull List<Episode> appearsIn,
         @Nullable List<Friend2> friends) {
       this.name = name;
@@ -387,11 +445,14 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     @Override
     public String toString() {
-      return "Friend1{"
-        + "name=" + name + ", "
-        + "appearsIn=" + appearsIn + ", "
-        + "friends=" + friends
-        + "}";
+      if ($toString == null) {
+        $toString = "Friend1{"
+          + "name=" + name + ", "
+          + "appearsIn=" + appearsIn + ", "
+          + "friends=" + friends
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -410,14 +471,18 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (name == null) ? 0 : name.hashCode();
-      h *= 1000003;
-      h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
-      h *= 1000003;
-      h ^= (friends == null) ? 0 : friends.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
+        h *= 1000003;
+        h ^= (friends == null) ? 0 : friends.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Friend1> {
@@ -450,6 +515,12 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
   public static class Friend2 {
     private final @Nonnull Fragments fragments;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Friend2(@Nonnull Fragments fragments) {
       this.fragments = fragments;
     }
@@ -460,9 +531,12 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     @Override
     public String toString() {
-      return "Friend2{"
-        + "fragments=" + fragments
-        + "}";
+      if ($toString == null) {
+        $toString = "Friend2{"
+          + "fragments=" + fragments
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -479,14 +553,24 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (fragments == null) ? 0 : fragments.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (fragments == null) ? 0 : fragments.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static class Fragments {
       private final @Nonnull HeroDetails heroDetails;
+
+      private volatile String $toString;
+
+      private volatile int $hashCode;
+
+      private volatile boolean $hashCodeMemoized;
 
       public Fragments(@Nonnull HeroDetails heroDetails) {
         this.heroDetails = heroDetails;
@@ -498,9 +582,12 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
       @Override
       public String toString() {
-        return "Fragments{"
-          + "heroDetails=" + heroDetails
-          + "}";
+        if ($toString == null) {
+          $toString = "Fragments{"
+            + "heroDetails=" + heroDetails
+            + "}";
+        }
+        return $toString;
       }
 
       @Override
@@ -517,10 +604,14 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
       @Override
       public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (heroDetails == null) ? 0 : heroDetails.hashCode();
-        return h;
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= (heroDetails == null) ? 0 : heroDetails.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
       }
 
       public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {

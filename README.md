@@ -59,7 +59,7 @@ apply plugin: 'kotlin-android-extensions'
 
 Follow these steps:
 
-1) Put your GraphQL queries in a `.graphql` file. For the sample project in this repo you can find the graphql file at `apollo-sample/src/main/graphql/com/example/GithuntFeedQuery.graphql`. 
+1) Put your GraphQL queries in a `.graphql` file. For the sample project in this repo you can find the graphql file at `apollo-sample/src/main/graphql/com/apollographql/apollo/sample/GithuntFeedQuery.graphql`. 
 
 ```
 query FeedQuery($type: FeedType!, $limit: Int!) {
@@ -95,11 +95,11 @@ fragment FeedCommentFragment on Comment {
 
 Note: There is nothing Android specific about this query, it can be shared with other GraphQL clients as well
 
-2) You will also need to add a schema to the project. In the sample project you can find the schema `apollo-sample/src/main/graphql/com/example/schema.json`. 
+2) You will also need to add a schema to the project. In the sample project you can find the schema `apollo-sample/src/main/graphql/com/apollographql/apollo/sample/schema.json`. 
 
 You can find instructions to download your schema using apollo-codegen [HERE](http://dev.apollodata.com/ios/downloading-schema.html)
 
-3) Compile your project to have Apollo generate the approriate Java classes with nested classes for reading from the network response. In the sample project, a `FeedQuery` Java class is created here `apollo-sample/build/generated/source/apollo/com/example`.
+3) Compile your project to have Apollo generate the appropriate Java classes with nested classes for reading from the network response. In the sample project, a `FeedQuery` Java class is created here `apollo-sample/build/generated/source/apollo/com/apollographql/apollo/sample`.
 
 Note: This is a file that Apollo generates and therefore should not be mutated.
 
@@ -183,6 +183,182 @@ ApolloConverterFactory apolloConverterFactory = new ApolloConverterFactory.Build
         .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
         .withResponseFieldMappers(ResponseFieldMappers.MAPPERS)
         .build();
+```
+
+## Support For Cached Responses
+
+Apollo GraphQL client allows you to cache responses, making it suitable for use even while offline. The client can be configured with 3 levels of caching:
+
+ - **HTTP Response Cache**: For caching raw http responses.
+ - **Normalized Disk Cache**: Per node caching of responses in SQL. Persists normalized responses on disk so that they can used after process death. 
+ - **Normalized InMemory Cache**: Optimized Guava memory cache for in memory caching as long as the App/Process is still alive.  
+
+### Usage
+
+Raw HTTP Response Cache:
+```java
+//Directory where cached responses will be stored
+File file = new File("/cache/");
+
+//Size in bytes of the cache
+int size = 1024*1024;
+
+//Strategy for deciding when the cache becomes stale
+EvictionStrategy evictionStrategy = new TimeoutEvictionStrategy(5, TimeUnit.SECONDS);
+
+//Create the http response cache store
+ResponseCacheStore cacheStore = new DiskLruCacheStore(file, size); 
+
+//Build the Apollo Client
+ApolloClient apolloClient = ApolloClient.builder()
+                                    .serverUrl("/")
+                                    .httpCache(cacheStore, evictionStrategy)
+                                    .okHttpClient(okHttpClient)
+                                    .build();
+```
+
+Normalized Disk Cache:
+```java
+//Create the ApolloSqlHelper. Please note that if null is passed in as the name, you will get an in-memory SqlLite database that 
+// will not persist across restarts of the app.
+ApolloSqlHelper apolloSqlHelper = ApolloSqlHelper.create(context, "db_name");
+
+//Create NormalizedCacheFactory
+NormalizedCacheFactory cacheFactory = new SqlNormalizedCacheFactory(apolloSqlHelper);
+
+//Create the cache key resolver
+CacheKeyResolver<Map<String, Object>> resolver =  new CacheKeyResolver<Map<String, Object>>() {
+          @Nonnull @Override public CacheKey resolve(@Nonnull Map<String, Object> objectSource) {
+            String id = (String) objectSource.get("id");
+            if (id == null || id.isEmpty()) {
+              return CacheKey.NO_KEY;
+            }
+            return CacheKey.from(id);
+          }
+        }
+
+//Build the Apollo Client
+ApolloClient apolloClient = ApolloClient.builder()
+                                    .serverUrl("/")
+                                    .normalizedCache(cacheFactory, resolver)
+                                    .okHttpClient(okHttpClient)
+                                    .build();
+```
+
+Normalized InMemory Cache:
+```java
+
+//Create NormalizedCacheFactory
+NormalizedCacheFactory cacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
+
+//Create the cache key resolver
+CacheKeyResolver<Map<String, Object>> resolver =  new CacheKeyResolver<Map<String, Object>>() {
+          @Nonnull @Override public CacheKey resolve(@Nonnull Map<String, Object> objectSource) {
+            String id = (String) objectSource.get("id");
+            if (id == null || id.isEmpty()) {
+              return CacheKey.NO_KEY;
+            }
+            return CacheKey.from(id);
+          }
+        }
+
+//Build the Apollo Client
+ApolloClient apolloClient = ApolloClient.builder()
+                                    .serverUrl("/")
+                                    .normalizedCache(cacheFactory, resolver)
+                                    .okHttpClient(okHttpClient)
+                                    .build();
+
+```
+
+For concrete examples of using response caches, please see the following tests in the [`apollo-integration`](apollo-integration) module:
+`CacheTest`, `SqlNormalizedCacheTest`, `LruNormalizedCacheTest`. 
+
+## RxJava Support
+
+Apollo GraphQL client comes with RxJava1 & RxJava2 support. Apollo types such as ApolloCall, ApolloPrefetch & ApolloWatcher can be converted
+to their corresponding RxJava1 & RxJava2 Observable types by using wrapper functions provided in RxApollo & Rx2Apollo classes respectively.
+
+### Usage
+
+Converting ApolloCall to a Single:
+```java
+//Create a query object
+EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+
+//Create an ApolloCall object
+ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.newCall(query);
+
+//RxJava1 Single
+Single<EpisodeHeroName.Data> single1 = RxApollo.from(apolloCall);
+
+//RxJava2 Single
+Single<EpisodeHeroName.Data> single2 = Rx2Apollo.from(apolloCall);
+```
+
+Converting ApolloPrefetch to a Completable:
+```java
+//Create a query object
+EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+
+//Create an ApolloPrefetch object
+ApolloPrefetch<EpisodeHeroName.Data> apolloPrefetch = apolloClient.prefetch(query);
+
+//RxJava1 Completable
+Completable completable1 = RxApollo.from(apolloPrefetch);
+
+//RxJava2 Completable
+Completable completable2 = Rx2Apollo.from(apolloPrefetch);
+```
+
+Converting ApolloWatcher to an Observable:
+```java
+//Create a query object
+EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+
+//Create an ApolloWatcher object
+ApolloWatcher<EpisodeHeroName.Data> apolloWatcher = apolloClient.newCall(query).watcher();
+
+//RxJava1 Observable
+Observable<EpisodeHeroName.Data> observable1 = RxApollo.from(apolloWatcher);
+
+//RxJava2 Observable
+Observable<EpisodeHeroName.Data> observable1 = Rx2Apollo.from(apolloWatcher);
+```
+
+Also, don't forget to dispose of your Observer/Subscriber when you are finished:
+```java
+Disposable disposable = Rx2Apollo.from(query).subscribe();
+
+//Dispose of your Observer when you are done with your work
+disposable.dispose();
+```
+As an alternative, multiple Disposables can be collected to dispose of at once via `CompositeDisposable`:
+```java
+CompositeDisposable disposable = new CompositeDisposable();
+disposable.add(Rx2Apollo.from(call).subscribe());
+
+// Dispose of all collected Disposables at once
+disposable.clear();
+```
+
+
+For a concrete example of using Rx wrappers for apollo types, checkout the sample app in the [`apollo-sample`](apollo-sample) module.
+
+### Download
+
+RxJava1:
+
+[![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo/apollo-rx-support.svg)](http://repo1.maven.org/maven2/com/apollographql/apollo/apollo-rx-support/)
+```gradle
+compile 'com.apollographql.apollo:apollo-rx-support:x.y.z'
+```
+
+RxJava2:
+
+[![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo/apollo-rx2-support.svg)](http://repo1.maven.org/maven2/com/apollographql/apollo/apollo-rx2-support/)
+```gradle
+compile 'com.apollographql.apollo:apollo-rx2-support:x.y.z'
 ```
 
 ## License
