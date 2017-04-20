@@ -47,6 +47,12 @@ public class HeroDetails {
 
   public final Optional<AsDroid> asDroid;
 
+  private volatile String $toString;
+
+  private volatile int $hashCode;
+
+  private volatile boolean $hashCodeMemoized;
+
   public HeroDetails(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
       @Nullable AsDroid asDroid) {
     this.name = name;
@@ -56,11 +62,14 @@ public class HeroDetails {
 
   @Override
   public String toString() {
-    return "HeroDetails{"
-      + "name=" + name + ", "
-      + "friendsConnection=" + friendsConnection + ", "
-      + "asDroid=" + asDroid
-      + "}";
+    if ($toString == null) {
+      $toString = "HeroDetails{"
+        + "name=" + name + ", "
+        + "friendsConnection=" + friendsConnection + ", "
+        + "asDroid=" + asDroid
+        + "}";
+    }
+    return $toString;
   }
 
   @Override
@@ -79,14 +88,18 @@ public class HeroDetails {
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= (name == null) ? 0 : name.hashCode();
-    h *= 1000003;
-    h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
-    h *= 1000003;
-    h ^= (asDroid == null) ? 0 : asDroid.hashCode();
-    return h;
+    if (!$hashCodeMemoized) {
+      int h = 1;
+      h *= 1000003;
+      h ^= (name == null) ? 0 : name.hashCode();
+      h *= 1000003;
+      h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
+      h *= 1000003;
+      h ^= (asDroid == null) ? 0 : asDroid.hashCode();
+      $hashCode = h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
   }
 
   public static final class Mapper implements ResponseFieldMapper<HeroDetails> {
@@ -125,15 +138,24 @@ public class HeroDetails {
   public static class Node {
     public final @Nonnull String name;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Node(@Nonnull String name) {
       this.name = name;
     }
 
     @Override
     public String toString() {
-      return "Node{"
-        + "name=" + name
-        + "}";
+      if ($toString == null) {
+        $toString = "Node{"
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -150,10 +172,14 @@ public class HeroDetails {
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (name == null) ? 0 : name.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Node> {
@@ -172,15 +198,24 @@ public class HeroDetails {
   public static class Edge {
     public final Optional<Node> node;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Edge(@Nullable Node node) {
       this.node = Optional.fromNullable(node);
     }
 
     @Override
     public String toString() {
-      return "Edge{"
-        + "node=" + node
-        + "}";
+      if ($toString == null) {
+        $toString = "Edge{"
+          + "node=" + node
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -197,10 +232,14 @@ public class HeroDetails {
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (node == null) ? 0 : node.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (node == null) ? 0 : node.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Edge> {
@@ -227,6 +266,12 @@ public class HeroDetails {
 
     public final Optional<List<Edge>> edges;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public FriendsConnection(@Nullable Integer totalCount, @Nullable List<Edge> edges) {
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
@@ -234,10 +279,13 @@ public class HeroDetails {
 
     @Override
     public String toString() {
-      return "FriendsConnection{"
-        + "totalCount=" + totalCount + ", "
-        + "edges=" + edges
-        + "}";
+      if ($toString == null) {
+        $toString = "FriendsConnection{"
+          + "totalCount=" + totalCount + ", "
+          + "edges=" + edges
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -255,12 +303,16 @@ public class HeroDetails {
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (totalCount == null) ? 0 : totalCount.hashCode();
-      h *= 1000003;
-      h ^= (edges == null) ? 0 : edges.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (totalCount == null) ? 0 : totalCount.hashCode();
+        h *= 1000003;
+        h ^= (edges == null) ? 0 : edges.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<FriendsConnection> {
@@ -287,15 +339,24 @@ public class HeroDetails {
   public static class Node1 {
     public final @Nonnull String name;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Node1(@Nonnull String name) {
       this.name = name;
     }
 
     @Override
     public String toString() {
-      return "Node1{"
-        + "name=" + name
-        + "}";
+      if ($toString == null) {
+        $toString = "Node1{"
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -312,10 +373,14 @@ public class HeroDetails {
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (name == null) ? 0 : name.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Node1> {
@@ -334,15 +399,24 @@ public class HeroDetails {
   public static class Edge1 {
     public final Optional<Node1> node;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Edge1(@Nullable Node1 node) {
       this.node = Optional.fromNullable(node);
     }
 
     @Override
     public String toString() {
-      return "Edge1{"
-        + "node=" + node
-        + "}";
+      if ($toString == null) {
+        $toString = "Edge1{"
+          + "node=" + node
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -359,10 +433,14 @@ public class HeroDetails {
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (node == null) ? 0 : node.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (node == null) ? 0 : node.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Edge1> {
@@ -389,6 +467,12 @@ public class HeroDetails {
 
     public final Optional<List<Edge1>> edges;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public FriendsConnection1(@Nullable Integer totalCount, @Nullable List<Edge1> edges) {
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
@@ -396,10 +480,13 @@ public class HeroDetails {
 
     @Override
     public String toString() {
-      return "FriendsConnection1{"
-        + "totalCount=" + totalCount + ", "
-        + "edges=" + edges
-        + "}";
+      if ($toString == null) {
+        $toString = "FriendsConnection1{"
+          + "totalCount=" + totalCount + ", "
+          + "edges=" + edges
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -417,12 +504,16 @@ public class HeroDetails {
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (totalCount == null) ? 0 : totalCount.hashCode();
-      h *= 1000003;
-      h ^= (edges == null) ? 0 : edges.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (totalCount == null) ? 0 : totalCount.hashCode();
+        h *= 1000003;
+        h ^= (edges == null) ? 0 : edges.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<FriendsConnection1> {
@@ -453,6 +544,12 @@ public class HeroDetails {
 
     public final Optional<String> primaryFunction;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public AsDroid(@Nonnull String name, @Nonnull FriendsConnection1 friendsConnection,
         @Nullable String primaryFunction) {
       this.name = name;
@@ -462,11 +559,14 @@ public class HeroDetails {
 
     @Override
     public String toString() {
-      return "AsDroid{"
-        + "name=" + name + ", "
-        + "friendsConnection=" + friendsConnection + ", "
-        + "primaryFunction=" + primaryFunction
-        + "}";
+      if ($toString == null) {
+        $toString = "AsDroid{"
+          + "name=" + name + ", "
+          + "friendsConnection=" + friendsConnection + ", "
+          + "primaryFunction=" + primaryFunction
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -485,14 +585,18 @@ public class HeroDetails {
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (name == null) ? 0 : name.hashCode();
-      h *= 1000003;
-      h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
-      h *= 1000003;
-      h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        h *= 1000003;
+        h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
+        h *= 1000003;
+        h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<AsDroid> {

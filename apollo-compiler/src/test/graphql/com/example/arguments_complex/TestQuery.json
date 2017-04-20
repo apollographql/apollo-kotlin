@@ -54,7 +54,8 @@
 						{
 							"responseName": "name",
 							"fieldName": "name",
-							"type": "String!"
+							"type": "String!",
+							"description": "What this human calls themselves"
 						},
 						{
 							"responseName": "height",
@@ -65,7 +66,8 @@
 									"name": "unit",
 									"value": "FOOT"
 								}
-							]
+							],
+							"description": "Height in the preferred unit, default is meters"
 						}
 					],
 					"fragmentSpreads": [],

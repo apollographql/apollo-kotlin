@@ -15,7 +15,8 @@
 						{
 							"responseName": "name",
 							"fieldName": "name",
-							"type": "String!"
+							"type": "String!",
+							"description": "The name of the character"
 						}
 					],
 					"fragmentSpreads": [],
@@ -29,22 +30,26 @@
 								{
 									"responseName": "name",
 									"fieldName": "name",
-									"type": "String!"
+									"type": "String!",
+									"description": "What this human calls themselves"
 								},
 								{
 									"responseName": "height",
 									"fieldName": "height",
-									"type": "Float"
+									"type": "Float",
+									"description": "Height in the preferred unit, default is meters"
 								},
 								{
 									"responseName": "friends",
 									"fieldName": "friends",
 									"type": "[Character]",
+									"description": "This human's friends, or an empty list if they have none",
 									"fields": [
 										{
 											"responseName": "appearsIn",
 											"fieldName": "appearsIn",
-											"type": "[Episode]!"
+											"type": "[Episode]!",
+											"description": "The movies this character appears in"
 										}
 									],
 									"fragmentSpreads": [],
@@ -62,17 +67,20 @@
 								{
 									"responseName": "name",
 									"fieldName": "name",
-									"type": "String!"
+									"type": "String!",
+									"description": "What others call this droid"
 								},
 								{
 									"responseName": "friends",
 									"fieldName": "friends",
 									"type": "[Character]",
+									"description": "This droid's friends, or an empty list if they have none",
 									"fields": [
 										{
 											"responseName": "id",
 											"fieldName": "id",
-											"type": "ID!"
+											"type": "ID!",
+											"description": "The ID of the character"
 										}
 									],
 									"fragmentSpreads": [],
@@ -81,7 +89,8 @@
 								{
 									"responseName": "primaryFunction",
 									"fieldName": "primaryFunction",
-									"type": "String"
+									"type": "String",
+									"description": "This droid's primary function"
 								}
 							],
 							"fragmentSpreads": []

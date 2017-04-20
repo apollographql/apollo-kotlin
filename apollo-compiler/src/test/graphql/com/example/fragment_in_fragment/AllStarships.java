@@ -67,6 +67,12 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
   public static class Data implements Operation.Data {
     private final Optional<AllStarships1> allStarships;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Data(@Nullable AllStarships1 allStarships) {
       this.allStarships = Optional.fromNullable(allStarships);
     }
@@ -77,9 +83,12 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
     @Override
     public String toString() {
-      return "Data{"
-        + "allStarships=" + allStarships
-        + "}";
+      if ($toString == null) {
+        $toString = "Data{"
+          + "allStarships=" + allStarships
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -96,10 +105,14 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (allStarships == null) ? 0 : allStarships.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (allStarships == null) ? 0 : allStarships.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
@@ -125,6 +138,12 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public static class Node {
       private final @Nonnull Fragments fragments;
 
+      private volatile String $toString;
+
+      private volatile int $hashCode;
+
+      private volatile boolean $hashCodeMemoized;
+
       public Node(@Nonnull Fragments fragments) {
         this.fragments = fragments;
       }
@@ -135,9 +154,12 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
       @Override
       public String toString() {
-        return "Node{"
-          + "fragments=" + fragments
-          + "}";
+        if ($toString == null) {
+          $toString = "Node{"
+            + "fragments=" + fragments
+            + "}";
+        }
+        return $toString;
       }
 
       @Override
@@ -154,14 +176,24 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
       @Override
       public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (fragments == null) ? 0 : fragments.hashCode();
-        return h;
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= (fragments == null) ? 0 : fragments.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
       }
 
       public static class Fragments {
         private final @Nonnull StarshipFragment starshipFragment;
+
+        private volatile String $toString;
+
+        private volatile int $hashCode;
+
+        private volatile boolean $hashCodeMemoized;
 
         public Fragments(@Nonnull StarshipFragment starshipFragment) {
           this.starshipFragment = starshipFragment;
@@ -173,9 +205,12 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
         @Override
         public String toString() {
-          return "Fragments{"
-            + "starshipFragment=" + starshipFragment
-            + "}";
+          if ($toString == null) {
+            $toString = "Fragments{"
+              + "starshipFragment=" + starshipFragment
+              + "}";
+          }
+          return $toString;
         }
 
         @Override
@@ -192,10 +227,14 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
         @Override
         public int hashCode() {
-          int h = 1;
-          h *= 1000003;
-          h ^= (starshipFragment == null) ? 0 : starshipFragment.hashCode();
-          return h;
+          if (!$hashCodeMemoized) {
+            int h = 1;
+            h *= 1000003;
+            h ^= (starshipFragment == null) ? 0 : starshipFragment.hashCode();
+            $hashCode = h;
+            $hashCodeMemoized = true;
+          }
+          return $hashCode;
         }
 
         public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
@@ -237,6 +276,12 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public static class Edge {
       private final Optional<Node> node;
 
+      private volatile String $toString;
+
+      private volatile int $hashCode;
+
+      private volatile boolean $hashCodeMemoized;
+
       public Edge(@Nullable Node node) {
         this.node = Optional.fromNullable(node);
       }
@@ -247,9 +292,12 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
       @Override
       public String toString() {
-        return "Edge{"
-          + "node=" + node
-          + "}";
+        if ($toString == null) {
+          $toString = "Edge{"
+            + "node=" + node
+            + "}";
+        }
+        return $toString;
       }
 
       @Override
@@ -266,10 +314,14 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
       @Override
       public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (node == null) ? 0 : node.hashCode();
-        return h;
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= (node == null) ? 0 : node.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
       }
 
       public static final class Mapper implements ResponseFieldMapper<Edge> {
@@ -294,6 +346,12 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public static class AllStarships1 {
       private final Optional<List<Edge>> edges;
 
+      private volatile String $toString;
+
+      private volatile int $hashCode;
+
+      private volatile boolean $hashCodeMemoized;
+
       public AllStarships1(@Nullable List<Edge> edges) {
         this.edges = Optional.fromNullable(edges);
       }
@@ -304,9 +362,12 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
       @Override
       public String toString() {
-        return "AllStarships1{"
-          + "edges=" + edges
-          + "}";
+        if ($toString == null) {
+          $toString = "AllStarships1{"
+            + "edges=" + edges
+            + "}";
+        }
+        return $toString;
       }
 
       @Override
@@ -323,10 +384,14 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
       @Override
       public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (edges == null) ? 0 : edges.hashCode();
-        return h;
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= (edges == null) ? 0 : edges.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
       }
 
       public static final class Mapper implements ResponseFieldMapper<AllStarships1> {

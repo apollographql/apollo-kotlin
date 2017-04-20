@@ -67,6 +67,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private final Optional<Luke> luke;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Data(@Nullable R2 r2, @Nullable Luke luke) {
       this.r2 = Optional.fromNullable(r2);
       this.luke = Optional.fromNullable(luke);
@@ -82,10 +88,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     @Override
     public String toString() {
-      return "Data{"
-        + "r2=" + r2 + ", "
-        + "luke=" + luke
-        + "}";
+      if ($toString == null) {
+        $toString = "Data{"
+          + "r2=" + r2 + ", "
+          + "luke=" + luke
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -103,12 +112,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (r2 == null) ? 0 : r2.hashCode();
-      h *= 1000003;
-      h ^= (luke == null) ? 0 : luke.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (r2 == null) ? 0 : r2.hashCode();
+        h *= 1000003;
+        h ^= (luke == null) ? 0 : luke.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
@@ -140,6 +153,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static class R2 {
       private final @Nonnull Fragments fragments;
 
+      private volatile String $toString;
+
+      private volatile int $hashCode;
+
+      private volatile boolean $hashCodeMemoized;
+
       public R2(@Nonnull Fragments fragments) {
         this.fragments = fragments;
       }
@@ -150,9 +169,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public String toString() {
-        return "R2{"
-          + "fragments=" + fragments
-          + "}";
+        if ($toString == null) {
+          $toString = "R2{"
+            + "fragments=" + fragments
+            + "}";
+        }
+        return $toString;
       }
 
       @Override
@@ -169,16 +191,26 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (fragments == null) ? 0 : fragments.hashCode();
-        return h;
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= (fragments == null) ? 0 : fragments.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
       }
 
       public static class Fragments {
         private final @Nonnull HumanDetails humanDetails;
 
         private final @Nonnull DroidDetails droidDetails;
+
+        private volatile String $toString;
+
+        private volatile int $hashCode;
+
+        private volatile boolean $hashCodeMemoized;
 
         public Fragments(@Nonnull HumanDetails humanDetails, @Nonnull DroidDetails droidDetails) {
           this.humanDetails = humanDetails;
@@ -195,10 +227,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
         @Override
         public String toString() {
-          return "Fragments{"
-            + "humanDetails=" + humanDetails + ", "
-            + "droidDetails=" + droidDetails
-            + "}";
+          if ($toString == null) {
+            $toString = "Fragments{"
+              + "humanDetails=" + humanDetails + ", "
+              + "droidDetails=" + droidDetails
+              + "}";
+          }
+          return $toString;
         }
 
         @Override
@@ -216,12 +251,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
         @Override
         public int hashCode() {
-          int h = 1;
-          h *= 1000003;
-          h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
-          h *= 1000003;
-          h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
-          return h;
+          if (!$hashCodeMemoized) {
+            int h = 1;
+            h *= 1000003;
+            h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
+            h *= 1000003;
+            h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
+            $hashCode = h;
+            $hashCodeMemoized = true;
+          }
+          return $hashCode;
         }
 
         public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
@@ -269,6 +308,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static class Luke {
       private final @Nonnull Fragments fragments;
 
+      private volatile String $toString;
+
+      private volatile int $hashCode;
+
+      private volatile boolean $hashCodeMemoized;
+
       public Luke(@Nonnull Fragments fragments) {
         this.fragments = fragments;
       }
@@ -279,9 +324,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public String toString() {
-        return "Luke{"
-          + "fragments=" + fragments
-          + "}";
+        if ($toString == null) {
+          $toString = "Luke{"
+            + "fragments=" + fragments
+            + "}";
+        }
+        return $toString;
       }
 
       @Override
@@ -298,16 +346,26 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (fragments == null) ? 0 : fragments.hashCode();
-        return h;
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= (fragments == null) ? 0 : fragments.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
       }
 
       public static class Fragments {
         private final @Nonnull HumanDetails humanDetails;
 
         private final @Nonnull DroidDetails droidDetails;
+
+        private volatile String $toString;
+
+        private volatile int $hashCode;
+
+        private volatile boolean $hashCodeMemoized;
 
         public Fragments(@Nonnull HumanDetails humanDetails, @Nonnull DroidDetails droidDetails) {
           this.humanDetails = humanDetails;
@@ -324,10 +382,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
         @Override
         public String toString() {
-          return "Fragments{"
-            + "humanDetails=" + humanDetails + ", "
-            + "droidDetails=" + droidDetails
-            + "}";
+          if ($toString == null) {
+            $toString = "Fragments{"
+              + "humanDetails=" + humanDetails + ", "
+              + "droidDetails=" + droidDetails
+              + "}";
+          }
+          return $toString;
         }
 
         @Override
@@ -345,12 +406,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
         @Override
         public int hashCode() {
-          int h = 1;
-          h *= 1000003;
-          h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
-          h *= 1000003;
-          h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
-          return h;
+          if (!$hashCodeMemoized) {
+            int h = 1;
+            h *= 1000003;
+            h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
+            h *= 1000003;
+            h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
+            $hashCode = h;
+            $hashCodeMemoized = true;
+          }
+          return $hashCode;
         }
 
         public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {

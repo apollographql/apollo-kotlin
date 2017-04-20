@@ -122,6 +122,12 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
   public static class Data implements Operation.Data {
     private final Optional<CreateReview> createReview;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Data(@Nullable CreateReview createReview) {
       this.createReview = Optional.fromNullable(createReview);
     }
@@ -132,9 +138,12 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
     @Override
     public String toString() {
-      return "Data{"
-        + "createReview=" + createReview
-        + "}";
+      if ($toString == null) {
+        $toString = "Data{"
+          + "createReview=" + createReview
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -151,10 +160,14 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (createReview == null) ? 0 : createReview.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (createReview == null) ? 0 : createReview.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
@@ -189,6 +202,12 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
       private final Optional<String> commentary;
 
+      private volatile String $toString;
+
+      private volatile int $hashCode;
+
+      private volatile boolean $hashCodeMemoized;
+
       public CreateReview(int stars, @Nullable String commentary) {
         this.stars = stars;
         this.commentary = Optional.fromNullable(commentary);
@@ -204,10 +223,13 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
       @Override
       public String toString() {
-        return "CreateReview{"
-          + "stars=" + stars + ", "
-          + "commentary=" + commentary
-          + "}";
+        if ($toString == null) {
+          $toString = "CreateReview{"
+            + "stars=" + stars + ", "
+            + "commentary=" + commentary
+            + "}";
+        }
+        return $toString;
       }
 
       @Override
@@ -225,12 +247,16 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
       @Override
       public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= stars;
-        h *= 1000003;
-        h ^= (commentary == null) ? 0 : commentary.hashCode();
-        return h;
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= stars;
+          h *= 1000003;
+          h ^= (commentary == null) ? 0 : commentary.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
       }
 
       public static final class Mapper implements ResponseFieldMapper<CreateReview> {

@@ -131,6 +131,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Data implements Operation.Data {
     private final Optional<HeroWithReview> heroWithReview;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Data(@Nullable HeroWithReview heroWithReview) {
       this.heroWithReview = Optional.fromNullable(heroWithReview);
     }
@@ -141,9 +147,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     @Override
     public String toString() {
-      return "Data{"
-        + "heroWithReview=" + heroWithReview
-        + "}";
+      if ($toString == null) {
+        $toString = "Data{"
+          + "heroWithReview=" + heroWithReview
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -160,10 +169,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (heroWithReview == null) ? 0 : heroWithReview.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (heroWithReview == null) ? 0 : heroWithReview.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
@@ -208,6 +221,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       private final Optional<Double> height;
 
+      private volatile String $toString;
+
+      private volatile int $hashCode;
+
+      private volatile boolean $hashCodeMemoized;
+
       public HeroWithReview(@Nonnull String name, @Nullable Double height) {
         this.name = name;
         this.height = Optional.fromNullable(height);
@@ -223,10 +242,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public String toString() {
-        return "HeroWithReview{"
-          + "name=" + name + ", "
-          + "height=" + height
-          + "}";
+        if ($toString == null) {
+          $toString = "HeroWithReview{"
+            + "name=" + name + ", "
+            + "height=" + height
+            + "}";
+        }
+        return $toString;
       }
 
       @Override
@@ -244,12 +266,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        h *= 1000003;
-        h ^= (height == null) ? 0 : height.hashCode();
-        return h;
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= (name == null) ? 0 : name.hashCode();
+          h *= 1000003;
+          h ^= (height == null) ? 0 : height.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
       }
 
       public static final class Mapper implements ResponseFieldMapper<HeroWithReview> {
