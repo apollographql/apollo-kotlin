@@ -37,7 +37,7 @@ import okhttp3.mockwebserver.MockWebServer;
 import static com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse;
 import static com.google.common.truth.Truth.assertThat;
 
-public class InterceptorTest {
+public class ApolloInterceptorTest {
 
   private ApolloClient client;
   private MockWebServer mockWebServer;
