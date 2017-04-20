@@ -442,6 +442,59 @@ public class ApolloInterceptorTest {
     assertThat(expectedResponse.parsedResponse.get()).isEqualTo(actualResponse);
   }
 
+  @Test
+  public void onApolloCallCanceledAsyncApolloInterceptorIsDisposed() throws ApolloException, TimeoutException, InterruptedException {
+    final NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
+
+    EpisodeHeroName query = createHeroNameQuery();
+    final InterceptorResponse fakeResponse = prepareInterceptorResponse(query);
+
+    ApolloInterceptor interceptor = new ApolloInterceptor() {
+      @Nonnull @Override
+      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+        return null;
+      }
+
+      @Override
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+        dispatcher.execute(new Runnable() {
+          @Override public void run() {
+            callBack.onResponse(fakeResponse);
+          }
+        });
+      }
+
+      @Override public void dispose() {
+        latch.countDown();
+      }
+    };
+
+    client = ApolloClient.builder()
+        .serverUrl(mockWebServer.url("/"))
+        .okHttpClient(okHttpClient)
+        .addApplicationInterceptor(interceptor)
+        .build();
+
+    ApolloCall<EpisodeHeroName.Data> apolloCall = client.newCall(query);
+
+    apolloCall.enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
+      @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+        Assert.fail("Received a response, even though the request has been canceled");
+      }
+
+      @Override public void onFailure(@Nonnull ApolloException e) {
+        Assert.fail("Received an apolloException, even though the request has been canceled");
+      }
+    });
+
+    apolloCall.cancel();
+
+    //Latch's count should go down to zero in interceptor's dispose,
+    //else timeout is reached which means the test fails.
+    latch.awaitOrThrowWithTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
+  }
+
   @NonNull private EpisodeHeroName createHeroNameQuery() {
     return EpisodeHeroName
         .builder()
@@ -479,5 +532,4 @@ public class ApolloInterceptorTest {
   private MockResponse mockResponse(String fileName) throws IOException {
     return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
   }
-
 }
