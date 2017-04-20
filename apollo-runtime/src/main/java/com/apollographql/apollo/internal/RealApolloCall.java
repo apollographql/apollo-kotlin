@@ -7,6 +7,7 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
+import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
@@ -15,17 +16,16 @@ import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
-import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.internal.interceptor.ApolloCacheInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloParseInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
 import com.apollographql.apollo.internal.util.ApolloLogger;
+import com.apollographql.apollo.Dispatcher;
 import com.squareup.moshi.Moshi;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,15 +47,42 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   final ApolloStore apolloStore;
   final CacheControl cacheControl;
   final ApolloInterceptorChain interceptorChain;
-  final ExecutorService dispatcher;
+  //  final ExecutorService dispatcher;
+  final Dispatcher dispatcher;
   final ApolloLogger logger;
   volatile boolean executed;
   volatile boolean canceled;
 
-  public RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
+  /*public RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
       HttpCacheControl httpCacheControl, Moshi moshi, ResponseFieldMapper responseFieldMapper,
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ApolloStore apolloStore, CacheControl cacheControl,
       ExecutorService dispatcher, ApolloLogger logger) {
+    this.operation = operation;
+    this.serverUrl = serverUrl;
+    this.httpCallFactory = httpCallFactory;
+    this.httpCache = httpCache;
+    this.httpCacheControl = httpCacheControl;
+    this.moshi = moshi;
+    this.responseFieldMapper = responseFieldMapper;
+    this.customTypeAdapters = customTypeAdapters;
+    this.apolloStore = apolloStore;
+    this.cacheControl = cacheControl;
+    this.dispatcher = dispatcher;
+    this.logger = logger;
+
+    interceptorChain = new RealApolloInterceptorChain(operation, Arrays.asList(
+        new ApolloCacheInterceptor(apolloStore, cacheControl, responseFieldMapper, customTypeAdapters, dispatcher,
+            logger),
+        new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
+            customTypeAdapters, logger),
+        new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCacheControl, false, moshi, logger)
+    ));
+  }*/
+
+  public RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
+      HttpCacheControl httpCacheControl, Moshi moshi, ResponseFieldMapper responseFieldMapper,
+      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ApolloStore apolloStore, CacheControl cacheControl,
+      Dispatcher dispatcher, ApolloLogger logger) {
     this.operation = operation;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
@@ -83,7 +110,13 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
-    return interceptorChain.proceed().parsedResponse.get();
+
+    try {
+      dispatcher.executed(this);
+      return interceptorChain.proceed().parsedResponse.get();
+    } finally {
+      dispatcher.finished(this);
+    }
   }
 
   @Override public void enqueue(@Nullable final Callback<T> callback) {
@@ -91,7 +124,6 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
-
     interceptorChain.proceedAsync(dispatcher, new ApolloInterceptor.CallBack() {
       @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
         if (callback == null || isCanceled()) {

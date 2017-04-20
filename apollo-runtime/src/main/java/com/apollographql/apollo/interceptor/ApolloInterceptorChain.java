@@ -1,6 +1,7 @@
 package com.apollographql.apollo.interceptor;
 
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.Dispatcher;
 
 import java.util.concurrent.ExecutorService;
 
@@ -28,7 +29,8 @@ public interface ApolloInterceptorChain {
    * @param dispatcher the {@link ExecutorService} which dispatches the calls asynchronously.
    * @param callBack   the callback which will handle the response or a failure exception.
    */
-  void proceedAsync(@Nonnull ExecutorService dispatcher, @Nonnull ApolloInterceptor.CallBack callBack);
+  /*void proceedAsync(@Nonnull ExecutorService dispatcher, @Nonnull ApolloInterceptor.CallBack callBack);*/
+  void proceedAsync(@Nonnull Dispatcher dispatcher, @Nonnull ApolloInterceptor.CallBack callBack);
 
   /**
    * Disposes of the resources which are no longer required.

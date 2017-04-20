@@ -5,9 +5,9 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.Dispatcher;
 
 import java.util.Collection;
-import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
 
@@ -39,8 +39,10 @@ public interface ApolloInterceptor {
    * @param dispatcher the ExecutorService which dispatches the non blocking operations on the request/response.
    * @param callBack   the Callback which will handle the interceptor's response or failure exception.
    */
+  /*void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+      @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack);*/
   void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
-      @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack);
+      @Nonnull Dispatcher dispatcher, @Nonnull CallBack callBack);
 
   /**
    * Disposes of the resources which are no longer required.

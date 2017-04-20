@@ -5,13 +5,13 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.internal.cache.normalized.ReadableCache;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.cache.normalized.Transaction;
@@ -19,11 +19,11 @@ import com.apollographql.apollo.internal.cache.normalized.WriteableCache;
 import com.apollographql.apollo.internal.field.CacheFieldValueResolver;
 import com.apollographql.apollo.internal.reader.RealResponseReader;
 import com.apollographql.apollo.internal.util.ApolloLogger;
+import com.apollographql.apollo.Dispatcher;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,13 +56,26 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
   private final CacheControl cacheControl;
   private final ResponseFieldMapper responseFieldMapper;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
-  private final ExecutorService dispatcher;
+//  private final ExecutorService dispatcher;
+  private final Dispatcher dispatcher;
   private final ApolloLogger logger;
+
+  /*public ApolloCacheInterceptor(@Nonnull ApolloStore apolloStore, @Nonnull CacheControl cacheControl,
+      @Nonnull ResponseFieldMapper responseFieldMapper,
+      @Nonnull Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
+      @Nonnull ExecutorService dispatcher, @Nonnull ApolloLogger logger) {
+    this.apolloStore = checkNotNull(apolloStore, "cache == null");
+    this.cacheControl = checkNotNull(cacheControl, "cacheControl == null");
+    this.responseFieldMapper = checkNotNull(responseFieldMapper, "responseFieldMapper == null");
+    this.customTypeAdapters = checkNotNull(customTypeAdapters, "customTypeAdapters == null");
+    this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
+    this.logger = checkNotNull(logger, "logger == null");
+  }*/
 
   public ApolloCacheInterceptor(@Nonnull ApolloStore apolloStore, @Nonnull CacheControl cacheControl,
       @Nonnull ResponseFieldMapper responseFieldMapper,
       @Nonnull Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
-      @Nonnull ExecutorService dispatcher, @Nonnull ApolloLogger logger) {
+      @Nonnull Dispatcher dispatcher, @Nonnull ApolloLogger logger) {
     this.apolloStore = checkNotNull(apolloStore, "cache == null");
     this.cacheControl = checkNotNull(cacheControl, "cacheControl == null");
     this.responseFieldMapper = checkNotNull(responseFieldMapper, "responseFieldMapper == null");
@@ -94,7 +107,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
 
   @Override
   public void interceptAsync(@Nonnull final Operation operation, @Nonnull final ApolloInterceptorChain chain,
-      @Nonnull final ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+      @Nonnull final Dispatcher dispatcher, @Nonnull final CallBack callBack) {
     dispatcher.execute(new Runnable() {
       @Override public void run() {
         final InterceptorResponse cachedResponse = resolveCacheFirstResponse(operation);

@@ -13,10 +13,10 @@ import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.util.ApolloLogger;
+import com.apollographql.apollo.Dispatcher;
 
 import java.io.Closeable;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
 
@@ -48,9 +48,28 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
     return parse(operation, response.httpResponse.get());
   }
 
-  @Override
+  /*@Override
   public void interceptAsync(@Nonnull final Operation operation, @Nonnull ApolloInterceptorChain chain,
       @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+    chain.proceedAsync(dispatcher, new CallBack() {
+      @Override public void onResponse(@Nonnull InterceptorResponse response) {
+        try {
+          InterceptorResponse result = parse(operation, response.httpResponse.get());
+          callBack.onResponse(result);
+        } catch (ApolloException e) {
+          onFailure(e);
+        }
+      }
+
+      @Override public void onFailure(@Nonnull ApolloException e) {
+        callBack.onFailure(e);
+      }
+    });
+  }*/
+
+  @Override
+  public void interceptAsync(@Nonnull final Operation operation, @Nonnull ApolloInterceptorChain chain,
+      @Nonnull Dispatcher dispatcher, @Nonnull final CallBack callBack) {
     chain.proceedAsync(dispatcher, new CallBack() {
       @Override public void onResponse(@Nonnull InterceptorResponse response) {
         try {

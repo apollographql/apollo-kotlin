@@ -12,10 +12,10 @@ import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
 import com.apollographql.apollo.internal.util.ApolloLogger;
+import com.apollographql.apollo.Dispatcher;
 import com.squareup.moshi.Moshi;
 
 import java.util.Collections;
-import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,14 +30,29 @@ import okhttp3.Response;
   final Call.Factory httpCallFactory;
   final HttpCache httpCache;
   final Moshi moshi;
-  final ExecutorService dispatcher;
+//  final ExecutorService dispatcher;
+  final Dispatcher dispatcher;
   final ApolloLogger logger;
   final ApolloInterceptorChain interceptorChain;
   volatile boolean executed;
   volatile boolean canceled;
 
-  public RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
+  /*public RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
       Moshi moshi, ExecutorService dispatcher, ApolloLogger logger) {
+    this.operation = operation;
+    this.serverUrl = serverUrl;
+    this.httpCallFactory = httpCallFactory;
+    this.httpCache = httpCache;
+    this.moshi = moshi;
+    this.dispatcher = dispatcher;
+    this.logger = logger;
+    interceptorChain = new RealApolloInterceptorChain(operation, Collections.<ApolloInterceptor>singletonList(
+        new ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCacheControl.NETWORK_FIRST, true, moshi, logger)
+    ));
+  }*/
+
+  public RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
+      Moshi moshi, Dispatcher dispatcher, ApolloLogger logger) {
     this.operation = operation;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
