@@ -1,4 +1,4 @@
-package com.example.apollographql.sample.feed;
+package com.apollographql.apollo.sample.feed;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,11 +17,11 @@ import com.apollographql.apollo.ApolloCallback;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.exception.ApolloException;
-import com.example.FeedQuery;
-import com.example.apollographql.sample.GitHuntApplication;
-import com.example.apollographql.sample.R;
-import com.example.apollographql.sample.detail.GitHuntEntryDetailActivity;
-import com.example.type.FeedType;
+import com.apollographql.apollo.sample.FeedQuery;
+import com.apollographql.apollo.sample.GitHuntApplication;
+import com.apollographql.apollo.sample.R;
+import com.apollographql.apollo.sample.detail.GitHuntEntryDetailActivity;
+import com.apollographql.apollo.sample.type.FeedType;
 
 import javax.annotation.Nonnull;
 
