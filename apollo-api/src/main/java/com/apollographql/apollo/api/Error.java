@@ -5,7 +5,9 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-/** Represents an error response returned from the GraphQL server */
+/**
+ * Represents an error response returned from the GraphQL server
+ */
 public class Error {
   private final String message;
   @Nullable private final List<Location> locations;

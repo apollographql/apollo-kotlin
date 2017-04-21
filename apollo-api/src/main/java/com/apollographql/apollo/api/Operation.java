@@ -5,7 +5,9 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-/** TODO */
+/**
+ * Abstraction for a GraphQL operation (mutation or query)
+ */
 public interface Operation<D extends Operation.Data, T, V extends Operation.Variables> {
   /** TODO */
   String queryDocument();
@@ -21,7 +23,9 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
   interface Data {
   }
 
-  /** TODO */
+  /**
+   * Abstraction for the variables which are a part of the GraphQL query.
+   */
   class Variables {
     protected Variables() {
     }

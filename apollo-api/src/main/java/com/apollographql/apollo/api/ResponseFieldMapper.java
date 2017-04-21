@@ -2,7 +2,7 @@ package com.apollographql.apollo.api;
 
 import java.io.IOException;
 
-/** TODO */
+/** Converts the response back to the data */
 public interface ResponseFieldMapper<T> {
   T map(final ResponseReader responseReader) throws IOException;
 }

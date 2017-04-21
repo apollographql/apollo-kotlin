@@ -7,6 +7,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents a field type in a graphQL operation
+ */
 public class Field {
   private final Type type;
   private final String responseName;
@@ -158,6 +161,9 @@ public class Field {
     }
   }
 
+  /**
+   * Represents the GraphQl scalar types.
+   */
   public enum Type {
     STRING,
     INT,
