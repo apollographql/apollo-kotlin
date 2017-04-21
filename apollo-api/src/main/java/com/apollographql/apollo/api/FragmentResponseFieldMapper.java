@@ -3,7 +3,7 @@ package com.apollographql.apollo.api;
 import java.io.IOException;
 
 /**
- * Maps the respose back to the data for a fragment
+ * Maps the response back to the data for a fragment
  * @param <T>
  */
 public interface FragmentResponseFieldMapper<T> {

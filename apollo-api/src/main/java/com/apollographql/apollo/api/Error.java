@@ -17,10 +17,16 @@ public class Error {
     this.locations = locations;
   }
 
+  /**
+   * Returns the error message returned by the server.
+   */
   public String message() {
     return message;
   }
 
+  /**
+   * Returns the location (line, column) of the exact error in the query.
+   */
   @Nullable public List<Location> locations() {
     return locations != null ? new ArrayList<>(locations) : null;
   }

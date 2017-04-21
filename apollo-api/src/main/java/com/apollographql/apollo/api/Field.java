@@ -8,7 +8,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents a field type in a graphQL operation
+ * Abstraction for field in a graphQL operation. i.e. if your graphQL query is like:
+ *
+ * <pre> {@code
+ *  {
+ *      hero {
+ *        name
+ *      }
+ *  }
+ *  }
+ * </pre>
+ *
+ * then the Field represents abstraction for field 'name'. Field can not only refer to simple graphQL scalar type,
+ * but can also refer to Objects, List or custom objects.
  */
 public class Field {
   private final Type type;
@@ -30,7 +42,7 @@ public class Field {
     return new Field(Type.INT, responseName, fieldName, arguments, optional);
   }
 
-  public static <T> Field forLong(String responseName, String fieldName, Map<String, Object> arguments,
+  public static Field forLong(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional) {
     return new Field(Type.LONG, responseName, fieldName, arguments, optional);
   }
@@ -162,7 +174,7 @@ public class Field {
   }
 
   /**
-   * Represents the GraphQl scalar types.
+   * An abstraction for the field types
    */
   public enum Type {
     STRING,
