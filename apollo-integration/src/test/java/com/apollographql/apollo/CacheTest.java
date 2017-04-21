@@ -82,7 +82,7 @@ public class CacheTest {
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .httpCache(cacheStore, new TimeoutEvictionStrategy(2, TimeUnit.SECONDS))
-        .withCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
+        .addCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
         .build();
   }
 
