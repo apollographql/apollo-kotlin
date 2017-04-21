@@ -2,7 +2,9 @@ package com.apollographql.apollo.api;
 
 import java.io.IOException;
 
-/** Converts the response back to the data **/
+/*
+ * ResponseReader is responsible for converting a field object to another object of type T.
+ */
 public interface ResponseReader {
   <T> T read(Field field) throws IOException;
 }

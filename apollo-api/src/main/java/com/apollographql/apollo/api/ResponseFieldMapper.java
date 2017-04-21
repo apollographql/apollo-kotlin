@@ -2,7 +2,9 @@ package com.apollographql.apollo.api;
 
 import java.io.IOException;
 
-/** Converts the response back to the data */
+/**
+ * * ResponseFieldMapper is responsible for mapping the responses returned by the server back to data.
+ */
 public interface ResponseFieldMapper<T> {
   T map(final ResponseReader responseReader) throws IOException;
 }

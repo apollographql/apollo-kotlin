@@ -25,7 +25,7 @@ public class Error {
   }
 
   /**
-   * Returns the location of the exact error in the query.
+   * Returns the location of the error in the query.
    */
   @Nullable public List<Location> locations() {
     return locations != null ? new ArrayList<>(locations) : null;

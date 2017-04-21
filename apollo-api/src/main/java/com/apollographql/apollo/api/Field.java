@@ -20,7 +20,7 @@ import java.util.Map;
  *      }
  * </pre>
  *
- * Field can refer to: <b>GraphQL Scalar Types, Objects or List</b>. For a complete list representings that a Field
+ * Field can refer to: <b>GraphQL Scalar Types, Objects or List</b>. For a complete list of types that a Field
  * object can refer to see {@link Field.Type} class.
  */
 public class Field {
@@ -315,7 +315,7 @@ public class Field {
   }
 
   /**
-   * Abstraction for a field type representing a custom Object type.
+   * Abstraction for a Field representing a custom Object type.
    */
   public static final class ObjectField extends Field {
     private final ObjectReader objectReader;
@@ -332,7 +332,7 @@ public class Field {
   }
 
   /**
-   * Abstraction for a field type representing a list of GraphQL scalar types.
+   * Abstraction for a Field representing a list of GraphQL scalar types.
    */
   public static final class ScalarListField extends Field {
     private final ListReader listReader;
@@ -349,7 +349,7 @@ public class Field {
   }
 
   /**
-   * Abstraction for a field type representing a list of custom Objects.
+   * Abstraction for a Field representing a list of custom Objects.
    */
   public static final class ObjectListField extends Field {
     private final ObjectReader objectReader;
@@ -366,7 +366,7 @@ public class Field {
   }
 
   /**
-   * Abstraction for a field type representing a custom GraphQL scalar type.
+   * Abstraction for a Field representing a custom GraphQL scalar type.
    */
   public static final class CustomTypeField extends Field {
     private final ScalarType scalarType;
@@ -383,7 +383,7 @@ public class Field {
   }
 
   /**
-   * Abstraction for a field type representing a conditional type.
+   * Abstraction for a Field representing a conditional type.
    */
   public static final class ConditionalTypeField extends Field {
     private final ConditionalTypeReader conditionalTypeReader;
