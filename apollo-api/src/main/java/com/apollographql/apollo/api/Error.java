@@ -25,7 +25,7 @@ public class Error {
   }
 
   /**
-   * Returns the location (line, column) of the exact error in the query.
+   * Returns the location of the exact error in the query.
    */
   @Nullable public List<Location> locations() {
     return locations != null ? new ArrayList<>(locations) : null;
@@ -58,6 +58,10 @@ public class Error {
         + '}';
   }
 
+  /**
+   * Represents the location of the error in the graphQL operation sent to the server. This location is represented in
+   * terms of the line and column number.
+   */
   public static class Location {
     private final long line;
     private final long column;
@@ -67,10 +71,16 @@ public class Error {
       this.column = column;
     }
 
+    /**
+     * Returns the line number of the error location.
+     */
     public long line() {
       return line;
     }
 
+    /**
+     * Returns the column number of the error location.
+     */
     public long column() {
       return column;
     }
