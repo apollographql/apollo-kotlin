@@ -1,4 +1,4 @@
-package com.example.apollographql.sample;
+package com.apollographql.apollo.sample;
 
 import android.app.Application;
 

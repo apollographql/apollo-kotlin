@@ -20,6 +20,7 @@ fun FieldSpec.overrideType(typeNameOverrideMap: Map<String, String>): FieldSpec 
     FieldSpec.builder(type.overrideTypeName(typeNameOverrideMap).annotated(type.annotations), name)
         .addModifiers(*modifiers.toTypedArray())
         .addAnnotations(annotations)
+        .addJavadoc(javadoc)
         .initializer(initializer)
         .build()
 
@@ -28,6 +29,7 @@ fun MethodSpec.overrideReturnType(typeNameOverrideMap: Map<String, String>): Met
         .returns(returnType.overrideTypeName(typeNameOverrideMap).annotated(returnType.annotations))
         .addModifiers(*modifiers.toTypedArray())
         .addCode(code)
+        .addJavadoc(javadoc)
         .build()
 
 fun TypeSpec.withValueInitConstructor(nullableValueGenerationType: NullableValueType): TypeSpec {
@@ -243,7 +245,7 @@ fun TypeSpec.removeNestedTypeSpecs(excludeTypeNames: List<String>): TypeSpec =
 fun TypeSpec.flatNestedTypeSpecs(excludeTypeNames: List<String>): List<TypeSpec> =
     typeSpecs
         .filter { !excludeTypeNames.contains(it.name) }
-        .flatMap { it.flatNestedTypeSpecs(excludeTypeNames) + it.removeNestedTypeSpecs(excludeTypeNames) }
+        .flatMap { listOf(it.removeNestedTypeSpecs(excludeTypeNames)) + it.flatNestedTypeSpecs(excludeTypeNames) }
 
 fun TypeSpec.flatten(excludeTypeNames: List<String>): TypeSpec {
   val nestedTypeSpecs = flatNestedTypeSpecs(excludeTypeNames)

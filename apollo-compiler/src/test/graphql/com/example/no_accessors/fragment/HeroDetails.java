@@ -41,8 +41,14 @@ public class HeroDetails {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
 
+  /**
+   * The name of the character
+   */
   public final @Nonnull String name;
 
+  /**
+   * The friends of the character exposed as a connection with edges
+   */
   public final @Nonnull FriendsConnection friendsConnection;
 
   public final Optional<AsDroid> asDroid;
@@ -135,135 +141,15 @@ public class HeroDetails {
     }
   }
 
-  public static class Node {
-    public final @Nonnull String name;
-
-    private volatile String $toString;
-
-    private volatile int $hashCode;
-
-    private volatile boolean $hashCodeMemoized;
-
-    public Node(@Nonnull String name) {
-      this.name = name;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Node{"
-          + "name=" + name
-          + "}";
-      }
-      return $toString;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Node) {
-        Node that = (Node) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        $hashCode = h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    public static final class Mapper implements ResponseFieldMapper<Node> {
-      final Field[] fields = {
-        Field.forString("name", "name", null, false)
-      };
-
-      @Override
-      public Node map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        return new Node(name);
-      }
-    }
-  }
-
-  public static class Edge {
-    public final Optional<Node> node;
-
-    private volatile String $toString;
-
-    private volatile int $hashCode;
-
-    private volatile boolean $hashCodeMemoized;
-
-    public Edge(@Nullable Node node) {
-      this.node = Optional.fromNullable(node);
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Edge{"
-          + "node=" + node
-          + "}";
-      }
-      return $toString;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Edge) {
-        Edge that = (Edge) o;
-        return ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (node == null) ? 0 : node.hashCode();
-        $hashCode = h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    public static final class Mapper implements ResponseFieldMapper<Edge> {
-      final Node.Mapper nodeFieldMapper = new Node.Mapper();
-
-      final Field[] fields = {
-        Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
-          @Override public Node read(final ResponseReader reader) throws IOException {
-            return nodeFieldMapper.map(reader);
-          }
-        })
-      };
-
-      @Override
-      public Edge map(ResponseReader reader) throws IOException {
-        final Node node = reader.read(fields[0]);
-        return new Edge(node);
-      }
-    }
-  }
-
   public static class FriendsConnection {
+    /**
+     * The total number of friends
+     */
     public final Optional<Integer> totalCount;
 
+    /**
+     * The edges for each of the character's friends.
+     */
     public final Optional<List<Edge>> edges;
 
     private volatile String $toString;
@@ -336,8 +222,11 @@ public class HeroDetails {
     }
   }
 
-  public static class Node1 {
-    public final @Nonnull String name;
+  public static class Edge {
+    /**
+     * The character represented by this friendship edge
+     */
+    public final Optional<Node> node;
 
     private volatile String $toString;
 
@@ -345,74 +234,14 @@ public class HeroDetails {
 
     private volatile boolean $hashCodeMemoized;
 
-    public Node1(@Nonnull String name) {
-      this.name = name;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Node1{"
-          + "name=" + name
-          + "}";
-      }
-      return $toString;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Node1) {
-        Node1 that = (Node1) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        $hashCode = h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    public static final class Mapper implements ResponseFieldMapper<Node1> {
-      final Field[] fields = {
-        Field.forString("name", "name", null, false)
-      };
-
-      @Override
-      public Node1 map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        return new Node1(name);
-      }
-    }
-  }
-
-  public static class Edge1 {
-    public final Optional<Node1> node;
-
-    private volatile String $toString;
-
-    private volatile int $hashCode;
-
-    private volatile boolean $hashCodeMemoized;
-
-    public Edge1(@Nullable Node1 node) {
+    public Edge(@Nullable Node node) {
       this.node = Optional.fromNullable(node);
     }
 
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "Edge1{"
+        $toString = "Edge{"
           + "node=" + node
           + "}";
       }
@@ -424,8 +253,8 @@ public class HeroDetails {
       if (o == this) {
         return true;
       }
-      if (o instanceof Edge1) {
-        Edge1 that = (Edge1) o;
+      if (o instanceof Edge) {
+        Edge that = (Edge) o;
         return ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
       }
       return false;
@@ -443,29 +272,30 @@ public class HeroDetails {
       return $hashCode;
     }
 
-    public static final class Mapper implements ResponseFieldMapper<Edge1> {
-      final Node1.Mapper node1FieldMapper = new Node1.Mapper();
+    public static final class Mapper implements ResponseFieldMapper<Edge> {
+      final Node.Mapper nodeFieldMapper = new Node.Mapper();
 
       final Field[] fields = {
-        Field.forObject("node", "node", null, true, new Field.ObjectReader<Node1>() {
-          @Override public Node1 read(final ResponseReader reader) throws IOException {
-            return node1FieldMapper.map(reader);
+        Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
+          @Override public Node read(final ResponseReader reader) throws IOException {
+            return nodeFieldMapper.map(reader);
           }
         })
       };
 
       @Override
-      public Edge1 map(ResponseReader reader) throws IOException {
-        final Node1 node = reader.read(fields[0]);
-        return new Edge1(node);
+      public Edge map(ResponseReader reader) throws IOException {
+        final Node node = reader.read(fields[0]);
+        return new Edge(node);
       }
     }
   }
 
-  public static class FriendsConnection1 {
-    public final Optional<Integer> totalCount;
-
-    public final Optional<List<Edge1>> edges;
+  public static class Node {
+    /**
+     * The name of the character
+     */
+    public final @Nonnull String name;
 
     private volatile String $toString;
 
@@ -473,17 +303,15 @@ public class HeroDetails {
 
     private volatile boolean $hashCodeMemoized;
 
-    public FriendsConnection1(@Nullable Integer totalCount, @Nullable List<Edge1> edges) {
-      this.totalCount = Optional.fromNullable(totalCount);
-      this.edges = Optional.fromNullable(edges);
+    public Node(@Nonnull String name) {
+      this.name = name;
     }
 
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "FriendsConnection1{"
-          + "totalCount=" + totalCount + ", "
-          + "edges=" + edges
+        $toString = "Node{"
+          + "name=" + name
           + "}";
       }
       return $toString;
@@ -494,10 +322,9 @@ public class HeroDetails {
       if (o == this) {
         return true;
       }
-      if (o instanceof FriendsConnection1) {
-        FriendsConnection1 that = (FriendsConnection1) o;
-        return ((this.totalCount == null) ? (that.totalCount == null) : this.totalCount.equals(that.totalCount))
-         && ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
+      if (o instanceof Node) {
+        Node that = (Node) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
     }
@@ -507,41 +334,40 @@ public class HeroDetails {
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (totalCount == null) ? 0 : totalCount.hashCode();
-        h *= 1000003;
-        h ^= (edges == null) ? 0 : edges.hashCode();
+        h ^= (name == null) ? 0 : name.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
     }
 
-    public static final class Mapper implements ResponseFieldMapper<FriendsConnection1> {
-      final Edge1.Mapper edge1FieldMapper = new Edge1.Mapper();
-
+    public static final class Mapper implements ResponseFieldMapper<Node> {
       final Field[] fields = {
-        Field.forInt("totalCount", "totalCount", null, true),
-        Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge1>() {
-          @Override public Edge1 read(final ResponseReader reader) throws IOException {
-            return edge1FieldMapper.map(reader);
-          }
-        })
+        Field.forString("name", "name", null, false)
       };
 
       @Override
-      public FriendsConnection1 map(ResponseReader reader) throws IOException {
-        final Integer totalCount = reader.read(fields[0]);
-        final List<Edge1> edges = reader.read(fields[1]);
-        return new FriendsConnection1(totalCount, edges);
+      public Node map(ResponseReader reader) throws IOException {
+        final String name = reader.read(fields[0]);
+        return new Node(name);
       }
     }
   }
 
   public static class AsDroid {
+    /**
+     * What others call this droid
+     */
     public final @Nonnull String name;
 
+    /**
+     * The friends of the droid exposed as a connection with edges
+     */
     public final @Nonnull FriendsConnection1 friendsConnection;
 
+    /**
+     * This droid's primary function
+     */
     public final Optional<String> primaryFunction;
 
     private volatile String $toString;
@@ -618,6 +444,219 @@ public class HeroDetails {
         final FriendsConnection1 friendsConnection = reader.read(fields[1]);
         final String primaryFunction = reader.read(fields[2]);
         return new AsDroid(name, friendsConnection, primaryFunction);
+      }
+    }
+  }
+
+  public static class FriendsConnection1 {
+    /**
+     * The total number of friends
+     */
+    public final Optional<Integer> totalCount;
+
+    /**
+     * The edges for each of the character's friends.
+     */
+    public final Optional<List<Edge1>> edges;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public FriendsConnection1(@Nullable Integer totalCount, @Nullable List<Edge1> edges) {
+      this.totalCount = Optional.fromNullable(totalCount);
+      this.edges = Optional.fromNullable(edges);
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "FriendsConnection1{"
+          + "totalCount=" + totalCount + ", "
+          + "edges=" + edges
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof FriendsConnection1) {
+        FriendsConnection1 that = (FriendsConnection1) o;
+        return ((this.totalCount == null) ? (that.totalCount == null) : this.totalCount.equals(that.totalCount))
+         && ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (totalCount == null) ? 0 : totalCount.hashCode();
+        h *= 1000003;
+        h ^= (edges == null) ? 0 : edges.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<FriendsConnection1> {
+      final Edge1.Mapper edge1FieldMapper = new Edge1.Mapper();
+
+      final Field[] fields = {
+        Field.forInt("totalCount", "totalCount", null, true),
+        Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge1>() {
+          @Override public Edge1 read(final ResponseReader reader) throws IOException {
+            return edge1FieldMapper.map(reader);
+          }
+        })
+      };
+
+      @Override
+      public FriendsConnection1 map(ResponseReader reader) throws IOException {
+        final Integer totalCount = reader.read(fields[0]);
+        final List<Edge1> edges = reader.read(fields[1]);
+        return new FriendsConnection1(totalCount, edges);
+      }
+    }
+  }
+
+  public static class Edge1 {
+    /**
+     * The character represented by this friendship edge
+     */
+    public final Optional<Node1> node;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public Edge1(@Nullable Node1 node) {
+      this.node = Optional.fromNullable(node);
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Edge1{"
+          + "node=" + node
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Edge1) {
+        Edge1 that = (Edge1) o;
+        return ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (node == null) ? 0 : node.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Edge1> {
+      final Node1.Mapper node1FieldMapper = new Node1.Mapper();
+
+      final Field[] fields = {
+        Field.forObject("node", "node", null, true, new Field.ObjectReader<Node1>() {
+          @Override public Node1 read(final ResponseReader reader) throws IOException {
+            return node1FieldMapper.map(reader);
+          }
+        })
+      };
+
+      @Override
+      public Edge1 map(ResponseReader reader) throws IOException {
+        final Node1 node = reader.read(fields[0]);
+        return new Edge1(node);
+      }
+    }
+  }
+
+  public static class Node1 {
+    /**
+     * The name of the character
+     */
+    public final @Nonnull String name;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public Node1(@Nonnull String name) {
+      this.name = name;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Node1{"
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Node1) {
+        Node1 that = (Node1) o;
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Node1> {
+      final Field[] fields = {
+        Field.forString("name", "name", null, false)
+      };
+
+      @Override
+      public Node1 map(ResponseReader reader) throws IOException {
+        final String name = reader.read(fields[0]);
+        return new Node1(name);
       }
     }
   }

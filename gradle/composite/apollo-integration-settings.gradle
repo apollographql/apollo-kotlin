@@ -1,0 +1,11 @@
+rootProject.name = 'apollo-integration'
+
+includeBuild('..') {
+  dependencySubstitution {
+    substitute module('com.apollographql.apollo:gradle-plugin') with project(':apollo-gradle-plugin')
+    substitute module('com.apollographql.apollo:apollo-runtime') with project(':apollo-runtime')
+    substitute module('com.apollographql.apollo:apollo-rx-support') with project(':apollo-rxsupport')
+    substitute module('com.apollographql.apollo:apollo-rx2-support') with project(':apollo-rx2support')
+  }
+}
+

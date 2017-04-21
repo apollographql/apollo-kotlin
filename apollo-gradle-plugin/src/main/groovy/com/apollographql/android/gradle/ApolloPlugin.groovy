@@ -13,6 +13,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.DependencyResolutionListener
+import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.artifacts.ResolvableDependencies
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.plugins.JavaPlugin
@@ -59,7 +60,7 @@ class ApolloPlugin implements Plugin<Project> {
           dep.group == APOLLO_DEP_GROUP
           dep.name == RUNTIME_DEP_NAME
         }
-        if (apolloRuntimeDep != null && apolloRuntimeDep.version != VersionKt.VERSION) {
+        if (apolloRuntimeDep != null && apolloRuntimeDep.version != VersionKt.VERSION && !apolloRuntimeDep instanceof ProjectDependency) {
           throw new GradleException(
               "apollo-runtime version ${apolloRuntimeDep.version} isn't compatible with the apollo-gradle-plugin version ${VersionKt.VERSION}")
         }

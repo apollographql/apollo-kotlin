@@ -1,4 +1,4 @@
-package com.apollographql.android.rx;
+package com.apollographql.apollo.rx;
 
 
 import com.apollographql.apollo.ApolloCall;

@@ -55,10 +55,16 @@ public class StarshipFragment {
     this.pilotConnection = Optional.fromNullable(pilotConnection);
   }
 
+  /**
+   * The ID of an object
+   */
   public @Nonnull String id() {
     return this.id;
   }
 
+  /**
+   * The name of this starship. The common name, such as "Death Star".
+   */
   public Optional<String> name() {
     return this.name;
   }
@@ -128,6 +134,152 @@ public class StarshipFragment {
       final String name = reader.read(fields[1]);
       final PilotConnection pilotConnection = reader.read(fields[2]);
       return new StarshipFragment(id, name, pilotConnection);
+    }
+  }
+
+  public static class PilotConnection {
+    private final Optional<List<Edge>> edges;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public PilotConnection(@Nullable List<Edge> edges) {
+      this.edges = Optional.fromNullable(edges);
+    }
+
+    /**
+     * A list of edges.
+     */
+    public Optional<List<Edge>> edges() {
+      return this.edges;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "PilotConnection{"
+          + "edges=" + edges
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof PilotConnection) {
+        PilotConnection that = (PilotConnection) o;
+        return ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (edges == null) ? 0 : edges.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<PilotConnection> {
+      final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
+
+      final Field[] fields = {
+        Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
+          @Override public Edge read(final ResponseReader reader) throws IOException {
+            return edgeFieldMapper.map(reader);
+          }
+        })
+      };
+
+      @Override
+      public PilotConnection map(ResponseReader reader) throws IOException {
+        final List<Edge> edges = reader.read(fields[0]);
+        return new PilotConnection(edges);
+      }
+    }
+  }
+
+  public static class Edge {
+    private final Optional<Node> node;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public Edge(@Nullable Node node) {
+      this.node = Optional.fromNullable(node);
+    }
+
+    /**
+     * The item at the end of the edge
+     */
+    public Optional<Node> node() {
+      return this.node;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Edge{"
+          + "node=" + node
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Edge) {
+        Edge that = (Edge) o;
+        return ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (node == null) ? 0 : node.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Edge> {
+      final Node.Mapper nodeFieldMapper = new Node.Mapper();
+
+      final Field[] fields = {
+        Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
+          @Override public Node read(final ResponseReader reader) throws IOException {
+            return nodeFieldMapper.map(reader);
+          }
+        })
+      };
+
+      @Override
+      public Edge map(ResponseReader reader) throws IOException {
+        final Node node = reader.read(fields[0]);
+        return new Edge(node);
+      }
     }
   }
 
@@ -264,146 +416,6 @@ public class StarshipFragment {
       public Node map(ResponseReader reader) throws IOException {
         final Fragments fragments = reader.read(fields[0]);
         return new Node(fragments);
-      }
-    }
-  }
-
-  public static class Edge {
-    private final Optional<Node> node;
-
-    private volatile String $toString;
-
-    private volatile int $hashCode;
-
-    private volatile boolean $hashCodeMemoized;
-
-    public Edge(@Nullable Node node) {
-      this.node = Optional.fromNullable(node);
-    }
-
-    public Optional<Node> node() {
-      return this.node;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Edge{"
-          + "node=" + node
-          + "}";
-      }
-      return $toString;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Edge) {
-        Edge that = (Edge) o;
-        return ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (node == null) ? 0 : node.hashCode();
-        $hashCode = h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    public static final class Mapper implements ResponseFieldMapper<Edge> {
-      final Node.Mapper nodeFieldMapper = new Node.Mapper();
-
-      final Field[] fields = {
-        Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
-          @Override public Node read(final ResponseReader reader) throws IOException {
-            return nodeFieldMapper.map(reader);
-          }
-        })
-      };
-
-      @Override
-      public Edge map(ResponseReader reader) throws IOException {
-        final Node node = reader.read(fields[0]);
-        return new Edge(node);
-      }
-    }
-  }
-
-  public static class PilotConnection {
-    private final Optional<List<Edge>> edges;
-
-    private volatile String $toString;
-
-    private volatile int $hashCode;
-
-    private volatile boolean $hashCodeMemoized;
-
-    public PilotConnection(@Nullable List<Edge> edges) {
-      this.edges = Optional.fromNullable(edges);
-    }
-
-    public Optional<List<Edge>> edges() {
-      return this.edges;
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "PilotConnection{"
-          + "edges=" + edges
-          + "}";
-      }
-      return $toString;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof PilotConnection) {
-        PilotConnection that = (PilotConnection) o;
-        return ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (edges == null) ? 0 : edges.hashCode();
-        $hashCode = h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    public static final class Mapper implements ResponseFieldMapper<PilotConnection> {
-      final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
-
-      final Field[] fields = {
-        Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
-          @Override public Edge read(final ResponseReader reader) throws IOException {
-            return edgeFieldMapper.map(reader);
-          }
-        })
-      };
-
-      @Override
-      public PilotConnection map(ResponseReader reader) throws IOException {
-        final List<Edge> edges = reader.read(fields[0]);
-        return new PilotConnection(edges);
       }
     }
   }

@@ -34,6 +34,9 @@ public class HeroDetails {
     this.name = name;
   }
 
+  /**
+   * The name of the character
+   */
   public @Nonnull String name() {
     return this.name;
   }

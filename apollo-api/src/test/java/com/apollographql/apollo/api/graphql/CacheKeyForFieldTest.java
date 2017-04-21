@@ -1,4 +1,4 @@
-package com.apollographql.android.api.graphql;
+package com.apollographql.apollo.api.graphql;
 
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Field;

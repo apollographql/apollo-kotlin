@@ -27,6 +27,7 @@ class OperationTypeSpecBuilder(
         .addBuilder(context)
         .addType(operation.toTypeSpec(newContext))
         .build()
+        .flatten(excludeTypeNames = listOf(Util.MAPPER_TYPE_NAME, SchemaTypeSpecBuilder.FRAGMENTS_TYPE_NAME))
   }
 
   private fun TypeSpec.Builder.addQuerySuperInterface(context: CodeGenerationContext): TypeSpec.Builder {

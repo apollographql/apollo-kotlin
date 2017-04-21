@@ -16,24 +16,33 @@ data class Field(
     val isConditional: Boolean = false,
     val fields: List<Field>?,
     val fragmentSpreads: List<String>?,
-    val inlineFragments: List<InlineFragment>?
+    val inlineFragments: List<InlineFragment>?,
+    val description: String?
 ) : CodeGenerator {
   override fun toTypeSpec(context: CodeGenerationContext): TypeSpec =
-      SchemaTypeSpecBuilder(formatClassName(), fields ?: emptyList(), fragmentSpreads ?: emptyList(),
-          inlineFragments ?: emptyList(), context).build(Modifier.PUBLIC, Modifier.STATIC)
+      SchemaTypeSpecBuilder(
+          typeName = formatClassName(),
+          fields = fields ?: emptyList(),
+          fragmentSpreads = fragmentSpreads ?: emptyList(),
+          inlineFragments = inlineFragments ?: emptyList(),
+          context = context
+      ).build(Modifier.PUBLIC, Modifier.STATIC)
 
   fun accessorMethodSpec(context: CodeGenerationContext): MethodSpec {
     return MethodSpec.methodBuilder(responseName)
         .addModifiers(Modifier.PUBLIC)
         .returns(toTypeName(methodResponseType(), context))
         .addStatement("return this.\$L", responseName)
+        .let { if (description != null) it.addJavadoc("\$L\n", description) else it }
         .build()
   }
 
-  fun fieldSpec(context: CodeGenerationContext, publicModifier: Boolean = false): FieldSpec =
-      FieldSpec.builder(toTypeName(methodResponseType(), context), responseName)
-          .addModifiers(if (publicModifier) Modifier.PUBLIC else Modifier.PRIVATE, Modifier.FINAL)
-          .build()
+  fun fieldSpec(context: CodeGenerationContext, publicModifier: Boolean = false): FieldSpec {
+    return FieldSpec.builder(toTypeName(methodResponseType(), context), responseName)
+        .addModifiers(if (publicModifier) Modifier.PUBLIC else Modifier.PRIVATE, Modifier.FINAL)
+        .let { if (publicModifier && description != null) it.addJavadoc("\$L\n", description) else it }
+        .build()
+  }
 
   fun argumentCodeBlock(): CodeBlock {
     if (args == null || args.isEmpty()) {
