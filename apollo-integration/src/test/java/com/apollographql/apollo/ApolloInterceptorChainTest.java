@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 
@@ -38,7 +38,8 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class ApolloInterceptorChainTest {
 
-  public static final int TIMEOUT_SECONDS = 2;
+  private static final int TIMEOUT_SECONDS = 2;
+
   private ApolloInterceptorChain chain;
 
 
@@ -50,14 +51,13 @@ public class ApolloInterceptorChainTest {
   @Test
   public void onProceedCalled_chainPassesControlToInterceptor() throws ApolloException, TimeoutException, InterruptedException {
 
-    final Counter counter = new Counter(1);
-
+    final AtomicInteger counter = new AtomicInteger(1);
     EpisodeHeroName query = createQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
       public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
-        counter.decrement();
+        counter.decrementAndGet();
         return null;
       }
 
@@ -76,7 +76,7 @@ public class ApolloInterceptorChainTest {
 
     chain.proceed();
 
-    if (!counter.isZero()) {
+    if (counter.get() != 0) {
       Assert.fail("Control not passed to the interceptor");
     }
   }
@@ -106,7 +106,7 @@ public class ApolloInterceptorChainTest {
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     chain = new RealApolloInterceptorChain(query, interceptors);
 
-    chain.proceedAsync(Executors.newFixedThreadPool(1), new CallBack() {
+    chain.proceedAsync(Utils.immediateExecutorService(), new CallBack() {
       @Override public void onResponse(@Nonnull InterceptorResponse response) {
 
       }
@@ -183,7 +183,7 @@ public class ApolloInterceptorChainTest {
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     chain = new RealApolloInterceptorChain(query, interceptors);
 
-    chain.proceedAsync(Executors.newFixedThreadPool(1), new CallBack() {
+    chain.proceedAsync(Utils.immediateExecutorService(), new CallBack() {
       @Override public void onResponse(@Nonnull InterceptorResponse response) {
         assertThat(response).isEqualTo(expectedResponse);
         latch.countDown();
@@ -264,7 +264,7 @@ public class ApolloInterceptorChainTest {
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     chain = new RealApolloInterceptorChain(query, interceptors);
 
-    chain.proceedAsync(Executors.newFixedThreadPool(1), new CallBack() {
+    chain.proceedAsync(Utils.immediateExecutorService(), new CallBack() {
       @Override public void onResponse(@Nonnull InterceptorResponse response) {
 
       }
@@ -280,8 +280,8 @@ public class ApolloInterceptorChainTest {
 
   @Test
   public void onDisposeCalled_interceptorIsDisposed() {
-    final Counter counter = new Counter(1);
 
+    final AtomicInteger counter = new AtomicInteger(1);
     EpisodeHeroName query = createQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
@@ -296,7 +296,7 @@ public class ApolloInterceptorChainTest {
       }
 
       @Override public void dispose() {
-        counter.decrement();
+        counter.decrementAndGet();
       }
     };
 
@@ -305,7 +305,7 @@ public class ApolloInterceptorChainTest {
 
     chain.dispose();
 
-    if (!counter.isZero()) {
+    if (counter.get() != 0) {
       Assert.fail("Interceptor's dispose method not called");
     }
   }
@@ -336,22 +336,5 @@ public class ApolloInterceptorChainTest {
 
     return new InterceptorResponse(okHttpResponse,
         apolloResponse, Collections.<Record>emptyList());
-  }
-
-  private final class Counter {
-
-    private int counter;
-
-    private Counter(int maxCount) {
-      this.counter = maxCount;
-    }
-
-    private void decrement() {
-      counter--;
-    }
-
-    private boolean isZero() {
-      return counter == 0;
-    }
   }
 }
