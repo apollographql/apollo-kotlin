@@ -68,11 +68,11 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final Moshi moshi;
   private final Map<Class, ResponseFieldMapper> responseFieldMapperPool = new LinkedHashMap<>();
-  /*private final ExecutorService dispatcher;*/
-  private final Dispatcher dispatcher;
+  private final ExecutorService dispatcher;
   private final HttpCacheControl defaultHttpCacheControl;
   private final CacheControl defaultCacheControl;
   private final ApolloLogger logger;
+  private final ApolloTracker callTracker = new ApolloTracker();
 
   private ApolloClient(Builder builder) {
     this.serverUrl = builder.serverUrl;
@@ -102,7 +102,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
       }
     }
     return new RealApolloCall<T>(operation, serverUrl, httpCallFactory, httpCache, defaultHttpCacheControl, moshi,
-        responseFieldMapper, customTypeAdapters, apolloStore, defaultCacheControl, dispatcher, logger)
+        responseFieldMapper, customTypeAdapters, apolloStore, defaultCacheControl, dispatcher, logger, callTracker)
         .httpCacheControl(defaultHttpCacheControl)
         .cacheControl(defaultCacheControl);
   }
@@ -113,8 +113,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
       @Nonnull Operation<D, T, V> operation) {
-    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, moshi, dispatcher, logger);
-
+    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, moshi, dispatcher, logger, callTracker);
   }
 
   void clearHttpCache() {
@@ -159,7 +158,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
     private final Moshi.Builder moshiBuilder = new Moshi.Builder();
     Moshi moshi;
-    Dispatcher dispatcher;
+    ExecutorService dispatcher;
     /*ExecutorService dispatcher;*/
     Optional<Logger> logger = Optional.absent();
     HttpCache httpCache;
@@ -260,11 +259,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    /*public Builder dispatcher(@Nonnull ExecutorService dispatcher) {
-      this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
-      return this;
-    }*/
-    public Builder dispatcher(@Nonnull Dispatcher dispatcher) {
+    public Builder dispatcher(@Nonnull ExecutorService dispatcher) {
       this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
       return this;
     }
@@ -331,10 +326,6 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
       return new ApolloClient(this);
     }
 
-    private Dispatcher defaultDispatcher() {
-      return new Dispatcher(defaultExecutorService());
-    }
-
     private ExecutorService defaultExecutorService() {
       return new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
           new SynchronousQueue<Runnable>(), new ThreadFactory() {
@@ -344,13 +335,13 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
       });
     }
 
-    /*private ExecutorService defaultDispatcher() {
+    private ExecutorService defaultDispatcher() {
       return new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
           new SynchronousQueue<Runnable>(), new ThreadFactory() {
         @Override public Thread newThread(Runnable runnable) {
           return new Thread(runnable, "Apollo Dispatcher");
         }
       });
-    }*/
+    }
   }
 }

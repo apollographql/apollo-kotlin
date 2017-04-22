@@ -1,7 +1,6 @@
 package com.apollographql.apollo.interceptor;
 
 import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.Dispatcher;
 
 import java.util.concurrent.ExecutorService;
 
@@ -25,12 +24,11 @@ public interface ApolloInterceptorChain {
    * Passes the control over to the next {@link ApolloInterceptor} in the responsibility chain and immediately exits as
    * this is a non blocking call. In order to receive the results back, pass in a callback which will handle the
    * received response or error.
-   *
-   * @param dispatcher the {@link ExecutorService} which dispatches the calls asynchronously.
+   *  @param dispatcher the {@link ExecutorService} which dispatches the calls asynchronously.
    * @param callBack   the callback which will handle the response or a failure exception.
    */
   /*void proceedAsync(@Nonnull ExecutorService dispatcher, @Nonnull ApolloInterceptor.CallBack callBack);*/
-  void proceedAsync(@Nonnull Dispatcher dispatcher, @Nonnull ApolloInterceptor.CallBack callBack);
+  void proceedAsync(@Nonnull ExecutorService dispatcher, @Nonnull ApolloInterceptor.CallBack callBack);
 
   /**
    * Disposes of the resources which are no longer required.

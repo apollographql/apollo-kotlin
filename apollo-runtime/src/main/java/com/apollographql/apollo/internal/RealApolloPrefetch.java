@@ -1,6 +1,7 @@
 package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloPrefetch;
+import com.apollographql.apollo.ApolloTracker;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.exception.ApolloException;
@@ -12,10 +13,10 @@ import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
 import com.apollographql.apollo.internal.util.ApolloLogger;
-import com.apollographql.apollo.Dispatcher;
 import com.squareup.moshi.Moshi;
 
 import java.util.Collections;
+import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,29 +31,15 @@ import okhttp3.Response;
   final Call.Factory httpCallFactory;
   final HttpCache httpCache;
   final Moshi moshi;
-//  final ExecutorService dispatcher;
-  final Dispatcher dispatcher;
+  final ExecutorService dispatcher;
   final ApolloLogger logger;
+  private ApolloTracker tracker;
   final ApolloInterceptorChain interceptorChain;
   volatile boolean executed;
   volatile boolean canceled;
 
-  /*public RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
-      Moshi moshi, ExecutorService dispatcher, ApolloLogger logger) {
-    this.operation = operation;
-    this.serverUrl = serverUrl;
-    this.httpCallFactory = httpCallFactory;
-    this.httpCache = httpCache;
-    this.moshi = moshi;
-    this.dispatcher = dispatcher;
-    this.logger = logger;
-    interceptorChain = new RealApolloInterceptorChain(operation, Collections.<ApolloInterceptor>singletonList(
-        new ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCacheControl.NETWORK_FIRST, true, moshi, logger)
-    ));
-  }*/
-
   public RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
-      Moshi moshi, Dispatcher dispatcher, ApolloLogger logger) {
+      Moshi moshi, ExecutorService dispatcher, ApolloLogger logger, ApolloTracker callTracker) {
     this.operation = operation;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
@@ -60,6 +47,7 @@ import okhttp3.Response;
     this.moshi = moshi;
     this.dispatcher = dispatcher;
     this.logger = logger;
+    this.tracker = callTracker;
     interceptorChain = new RealApolloInterceptorChain(operation, Collections.<ApolloInterceptor>singletonList(
         new ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCacheControl.NETWORK_FIRST, true, moshi, logger)
     ));
@@ -70,19 +58,50 @@ import okhttp3.Response;
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
-    interceptorChain.proceed().httpResponse.get().close();
+    try {
+      tracker.syncPrefetchInProgress(this);
+      interceptorChain.proceed().httpResponse.get().close();
+    } finally {
+      tracker.syncPrefetchFinished(this);
+    }
+
   }
 
-  @Nonnull @Override public ApolloPrefetch enqueue(@Nullable final Callback callback) {
+  @Nonnull @Override public ApolloPrefetch enqueue(@Nullable final Callback responseCallback) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
+    tracker.asyncPrefetchInProgress(responseCallback);
+    interceptorChain.proceedAsync(dispatcher, new AsyncCall(responseCallback));
+    return this;
+  }
 
-    interceptorChain.proceedAsync(dispatcher, new ApolloInterceptor.CallBack() {
-      @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
+  @Override public ApolloPrefetch clone() {
+    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, moshi, dispatcher, logger, tracker);
+  }
 
-        if (callback == null || isCanceled()) {
+  @Override public void cancel() {
+    canceled = true;
+    interceptorChain.dispose();
+  }
+
+  @Override public boolean isCanceled() {
+    return canceled;
+  }
+
+  private class AsyncCall implements ApolloInterceptor.CallBack {
+
+    private final Callback responseCallback;
+
+    private AsyncCall(Callback responseCallback) {
+      this.responseCallback = responseCallback;
+    }
+
+    @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
+
+      try {
+        if (responseCallback == null || isCanceled()) {
           return;
         }
 
@@ -99,36 +118,31 @@ import okhttp3.Response;
           return;
         }
 
-        callback.onSuccess();
-      }
+        responseCallback.onSuccess();
 
-      @Override public void onFailure(@Nonnull ApolloException e) {
-        if (callback == null || isCanceled()) {
+      } finally {
+        tracker.asyncPrefetchFinished(responseCallback);
+      }
+    }
+
+    @Override public void onFailure(@Nonnull ApolloException e) {
+      try {
+
+        if (responseCallback == null || isCanceled()) {
           return;
         }
 
         if (e instanceof ApolloHttpException) {
-          callback.onHttpError((ApolloHttpException) e);
+          responseCallback.onHttpError((ApolloHttpException) e);
         } else if (e instanceof ApolloNetworkException) {
-          callback.onNetworkError((ApolloNetworkException) e);
+          responseCallback.onNetworkError((ApolloNetworkException) e);
         } else {
-          callback.onFailure(e);
+          responseCallback.onFailure(e);
         }
+
+      } finally {
+        tracker.asyncPrefetchFinished(responseCallback);
       }
-    });
-    return this;
-  }
-
-  @Override public ApolloPrefetch clone() {
-    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, moshi, dispatcher, logger);
-  }
-
-  @Override public void cancel() {
-    canceled = true;
-    interceptorChain.dispose();
-  }
-
-  @Override public boolean isCanceled() {
-    return canceled;
+    }
   }
 }

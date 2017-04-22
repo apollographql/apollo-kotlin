@@ -8,13 +8,13 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.util.ApolloLogger;
-import com.apollographql.apollo.Dispatcher;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
 
@@ -101,7 +101,7 @@ import okio.Buffer;
 
   @Override
   public void interceptAsync(@Nonnull final Operation operation, @Nonnull final ApolloInterceptorChain chain,
-      @Nonnull Dispatcher dispatcher, @Nonnull final CallBack callBack) {
+      @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
     dispatcher.execute(new Runnable() {
       @Override public void run() {
         try {

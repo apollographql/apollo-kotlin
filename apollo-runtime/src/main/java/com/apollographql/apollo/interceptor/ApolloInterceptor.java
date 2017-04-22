@@ -5,9 +5,9 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.Dispatcher;
 
 import java.util.Collection;
+import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
 
@@ -42,7 +42,7 @@ public interface ApolloInterceptor {
   /*void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
       @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack);*/
   void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
-      @Nonnull Dispatcher dispatcher, @Nonnull CallBack callBack);
+      @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack);
 
   /**
    * Disposes of the resources which are no longer required.

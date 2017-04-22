@@ -4,10 +4,10 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.Dispatcher;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
 
@@ -42,15 +42,7 @@ public final class RealApolloInterceptorChain implements ApolloInterceptorChain 
         interceptors, interceptorIndex + 1));
   }
 
-  /*@Override public void proceedAsync(@Nonnull ExecutorService dispatcher,
-      @Nonnull ApolloInterceptor.CallBack callBack) {
-    if (interceptorIndex >= interceptors.size()) throw new IllegalStateException();
-
-    interceptors.get(interceptorIndex).interceptAsync(operation, new RealApolloInterceptorChain(operation,
-        interceptors, interceptorIndex + 1), dispatcher, callBack);
-  }*/
-
-  @Override public void proceedAsync(@Nonnull Dispatcher dispatcher,
+  @Override public void proceedAsync(@Nonnull ExecutorService dispatcher,
       @Nonnull ApolloInterceptor.CallBack callBack) {
     if (interceptorIndex >= interceptors.size()) throw new IllegalStateException();
 
