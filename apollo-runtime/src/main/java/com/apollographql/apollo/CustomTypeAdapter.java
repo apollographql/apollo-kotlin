@@ -50,7 +50,7 @@ package com.apollographql.apollo;
  * <pre>
  *   {@code
  *           ApolloClient.Builder builder = ApolloClient.builder()
- *                                    .withCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter);
+ *                                    .addCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter);
  *                ApolloClient client = builder.client;
  * }
  * </pre>
