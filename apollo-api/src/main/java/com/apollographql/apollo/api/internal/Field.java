@@ -1,4 +1,8 @@
-package com.apollographql.apollo.api;
+package com.apollographql.apollo.api.internal;
+
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ScalarType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -383,7 +387,24 @@ public class Field {
   }
 
   /**
-   * Abstraction for a Field representing a conditional type.
+   * Abstraction for a Field representing a conditional type. Conditional Type is used for parsing inline fragments or
+   * fragments. Here is an example of how it is used:
+   * <pre>
+   * {@code
+   * final Field[] fields = {
+   *            Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
+   *
+   *                @Override
+   *                public Fragments read(String conditionalType, ResponseReader reader) throws IOException { return
+   *                      fragmentsFieldMapper.map(reader, conditionalType);
+   *                      }
+   *                 })
+   *           };
+   * }
+   * </pre>
+   *
+   * In the example above, the first field '__typename' will be read and then passed to another nested mapper along with
+   * reader that will decide by checking conditionalType what type of fragment it will parse.
    */
   public static final class ConditionalTypeField extends Field {
     private final ConditionalTypeReader conditionalTypeReader;

@@ -1,6 +1,6 @@
 package com.apollographql.apollo.internal.reader;
 
-import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.internal.Field;
 import com.apollographql.apollo.api.Operation;
 
 import java.util.List;

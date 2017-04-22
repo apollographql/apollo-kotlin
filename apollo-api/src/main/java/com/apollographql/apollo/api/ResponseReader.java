@@ -3,8 +3,8 @@ package com.apollographql.apollo.api;
 import java.io.IOException;
 
 /*
- * ResponseReader is responsible for converting a field object to another object of type T.
+ * ResponseReader is an abstraction for reading GraphQL fields.
  */
 public interface ResponseReader {
-  <T> T read(Field field) throws IOException;
+  <T> T read(com.apollographql.apollo.api.internal.Field field) throws IOException;
 }

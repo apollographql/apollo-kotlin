@@ -1,6 +1,6 @@
 package com.apollographql.apollo.internal.field;
 
-import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.internal.Field;
 
 import java.util.Map;
 

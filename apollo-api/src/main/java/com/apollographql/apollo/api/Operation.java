@@ -10,22 +10,23 @@ import javax.annotation.Nonnull;
  */
 public interface Operation<D extends Operation.Data, T, V extends Operation.Variables> {
   /**
-   * Returns the raw graphQL operation string.
+   * Returns the raw GraphQL operation string.
    */
   String queryDocument();
 
   /**
-   * Returns the Variable object associated with this GraphQL operation.
+   * Returns the variables associated with this GraphQL operation.
    */
   V variables();
 
   /**
-   * Returns a mapper that maps the server response back to an object of type D.
+   * Returns a mapper that maps the server response data to generated model class {@link D}.
    */
   ResponseFieldMapper<D> responseFieldMapper();
 
   /**
-   * Converts the object representing the server response to another type.
+   * Wraps the generated response data class {@link D} with another class. For example, a use case for this would be to
+   * wrap the generated response data class in an Optional i.e. Optional.fromNullable(data).
    */
   T wrapData(D data);
 
@@ -37,7 +38,7 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
 
   /**
    * Abstraction for the variables which are a part of the GraphQL operation. For example, for the following GraphQL
-   * operation, Variables represents an abstraction for GraphQL variables '$type' and '$limit' their values:
+   * operation, Variables represents values for GraphQL '$type' and '$limit' variables:
    * <pre>{@code
    *      query FeedQuery($type: FeedType!, $limit: Int!) {
    *          feedEntries: feed(type: $type, limit: $limit) {
@@ -57,7 +58,7 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
     protected Variables() {
     }
 
-    @Nonnull protected Map<String, Object> valueMap() {
+    @Nonnull public Map<String, Object> valueMap() {
       return Collections.emptyMap();
     }
   }
