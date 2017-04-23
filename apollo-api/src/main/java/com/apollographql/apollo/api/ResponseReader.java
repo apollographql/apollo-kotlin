@@ -1,10 +1,12 @@
 package com.apollographql.apollo.api;
 
+import com.apollographql.apollo.api.internal.Field;
+
 import java.io.IOException;
 
 /*
  * ResponseReader is an abstraction for reading GraphQL fields.
  */
 public interface ResponseReader {
-  <T> T read(com.apollographql.apollo.api.internal.Field field) throws IOException;
+  <T> T read(Field field) throws IOException;
 }
