@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -42,7 +41,6 @@ public class ApolloInterceptorChainTest {
 
   private ApolloInterceptorChain chain;
 
-
   @After
   public void tearDown() {
     chain = null;
@@ -50,8 +48,8 @@ public class ApolloInterceptorChainTest {
 
   @Test
   public void onProceedCalled_chainPassesControlToInterceptor() throws ApolloException, TimeoutException, InterruptedException {
-
     final AtomicInteger counter = new AtomicInteger(1);
+
     EpisodeHeroName query = createQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
@@ -83,8 +81,8 @@ public class ApolloInterceptorChainTest {
 
   @Test
   public void onProceedAsyncCalled_chainPassesControlToInterceptor() throws TimeoutException, InterruptedException {
+    final AtomicInteger counter = new AtomicInteger(1);
 
-    final NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
     EpisodeHeroName query = createQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
@@ -95,7 +93,7 @@ public class ApolloInterceptorChainTest {
 
       @Override
       public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
-        latch.countDown();
+        counter.decrementAndGet();
       }
 
       @Override public void dispose() {
@@ -116,9 +114,11 @@ public class ApolloInterceptorChainTest {
       }
     });
 
-    //Latch's count should go down to zero, else timeout is reached
-    //which means the test fails.
-    latch.awaitOrThrowWithTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
+    //If counter's count doesn't go down to zero, it means interceptor's interceptAsync wasn't called
+    //which means the test should fail.
+    if (counter.get() != 0) {
+      Assert.fail("Control not passed to the interceptor");
+    }
   }
 
   @Test
@@ -154,10 +154,9 @@ public class ApolloInterceptorChainTest {
 
   @Test
   public void onProceedAsyncCalled_correctInterceptorResponseIsReceived() throws TimeoutException, InterruptedException {
+    final AtomicInteger counter = new AtomicInteger(1);
 
-    final NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
     EpisodeHeroName query = createQuery();
-
     final InterceptorResponse expectedResponse = prepareInterceptorResponse(query);
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
@@ -186,7 +185,7 @@ public class ApolloInterceptorChainTest {
     chain.proceedAsync(Utils.immediateExecutorService(), new CallBack() {
       @Override public void onResponse(@Nonnull InterceptorResponse response) {
         assertThat(response).isEqualTo(expectedResponse);
-        latch.countDown();
+        counter.decrementAndGet();
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
@@ -194,7 +193,9 @@ public class ApolloInterceptorChainTest {
       }
     });
 
-    latch.awaitOrThrowWithTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
+    if (counter.get() != 0) {
+      Assert.fail("Interceptor's response not received");
+    }
   }
 
   @Test
@@ -234,7 +235,8 @@ public class ApolloInterceptorChainTest {
 
   @Test
   public void onProceedAsyncCalled_correctExceptionIsCaught() throws TimeoutException, InterruptedException {
-    final NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
+
+    final AtomicInteger counter = new AtomicInteger(1);
 
     final String message = "ApolloException";
     EpisodeHeroName query = createQuery();
@@ -271,11 +273,13 @@ public class ApolloInterceptorChainTest {
 
       @Override public void onFailure(@Nonnull ApolloException e) {
         assertThat(e.getMessage()).isEqualTo(message);
-        latch.countDown();
+        counter.decrementAndGet();
       }
     });
 
-    latch.awaitOrThrowWithTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
+    if (counter.get() != 0) {
+      Assert.fail("Exception thrown by Interceptor not caught");
+    }
   }
 
   @Test
