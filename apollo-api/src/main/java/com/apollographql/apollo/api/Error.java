@@ -25,7 +25,7 @@ public class Error {
   }
 
   /**
-   * Returns the location of the error in the query.
+   * Returns the location of the error in the GraphQL operation.
    */
   @Nullable public List<Location> locations() {
     return locations != null ? new ArrayList<>(locations) : null;
@@ -59,7 +59,7 @@ public class Error {
   }
 
   /**
-   * Represents the location of the error in the graphQL operation sent to the server. This location is represented in
+   * Represents the location of the error in the GraphQL operation sent to the server. This location is represented in
    * terms of the line and column number.
    */
   public static class Location {
