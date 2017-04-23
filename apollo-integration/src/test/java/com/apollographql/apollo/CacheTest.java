@@ -104,7 +104,7 @@ public class CacheTest {
     try {
       Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets())
           .httpCacheControl(HttpCacheControl.NETWORK_ONLY).execute();
-      assertThat(body.isSuccessful()).isTrue();
+      assertThat(body.hasErrors()).isFalse();
       fail("expected ApolloException");
     } catch (ApolloException expected) {
     }
@@ -114,21 +114,21 @@ public class CacheTest {
 
   @Test public void cacheDefault() throws Exception {
     enqueueResponse("/HttpCacheTestAllPlanets.json");
-    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().hasErrors()).isFalse();
     checkCachedResponse("/HttpCacheTestAllPlanets.json");
   }
 
   @Test public void cacheSeveralResponses() throws Exception {
     enqueueResponse("/HttpCacheTestAllPlanets.json");
-    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().hasErrors()).isFalse();
     checkCachedResponse("/HttpCacheTestAllPlanets.json");
 
     enqueueResponse("/HttpCacheTestDroidDetails.json");
-    assertThat(apolloClient.newCall(new DroidDetails()).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new DroidDetails()).execute().hasErrors()).isFalse();
     checkCachedResponse("/HttpCacheTestDroidDetails.json");
 
     enqueueResponse("/HttpCacheTestAllFilms.json");
-    assertThat(apolloClient.newCall(new AllFilms()).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new AllFilms()).execute().hasErrors()).isFalse();
     checkCachedResponse("/HttpCacheTestAllFilms.json");
   }
 
@@ -152,13 +152,14 @@ public class CacheTest {
         .okHttpClient(okHttpClient)
         .build();
 
-    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().hasErrors()).isFalse();
     checkNoCachedResponse();
   }
 
   @Test public void networkOnly() throws Exception {
     enqueueResponse("/HttpCacheTestAllPlanets.json");
-    assertThat(apolloClient.newCall(new AllPlanets()).httpCacheControl(HttpCacheControl.NETWORK_ONLY).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new AllPlanets()).httpCacheControl(HttpCacheControl.NETWORK_ONLY).execute().hasErrors())
+        .isFalse();
     assertThat(server.getRequestCount()).isEqualTo(1);
     assertThat(lastHttResponse.networkResponse()).isNotNull();
     assertThat(lastHttResponse.cacheResponse()).isNull();
@@ -273,7 +274,7 @@ public class CacheTest {
   @Test public void fileSystemUnavailable() throws IOException, ApolloException {
     cacheStore.delegate = new DiskLruCacheStore(new NoFileSystem(), new File("/cache/"), Integer.MAX_VALUE);
     enqueueResponse("/HttpCacheTestAllPlanets.json");
-    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().hasErrors()).isFalse();
     checkNoCachedResponse();
   }
 
@@ -283,12 +284,12 @@ public class CacheTest {
 
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     faultyCacheStore.failStrategy(FaultyCacheStore.FailStrategy.FAIL_HEADER_WRITE);
-    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().hasErrors()).isFalse();
     checkNoCachedResponse();
 
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     faultyCacheStore.failStrategy(FaultyCacheStore.FailStrategy.FAIL_BODY_WRITE);
-    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().hasErrors()).isFalse();
     checkNoCachedResponse();
   }
 
@@ -297,12 +298,12 @@ public class CacheTest {
     cacheStore.delegate = faultyCacheStore;
 
     enqueueResponse("/HttpCacheTestAllPlanets.json");
-    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().hasErrors()).isFalse();
     checkCachedResponse("/HttpCacheTestAllPlanets.json");
 
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     faultyCacheStore.failStrategy(FaultyCacheStore.FailStrategy.FAIL_HEADER_READ);
-    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().hasErrors()).isFalse();
     assertThat(server.getRequestCount()).isEqualTo(2);
 
     enqueueResponse("/HttpCacheTestAllPlanets.json");
@@ -320,8 +321,8 @@ public class CacheTest {
     apolloClient.prefetch(new AllPlanets()).execute();
     checkCachedResponse("/HttpCacheTestAllPlanets.json");
 
-    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
-    assertThat(apolloClient.newCall(new AllPlanets()).httpCacheControl(HttpCacheControl.CACHE_ONLY).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().hasErrors()).isFalse();
+    assertThat(apolloClient.newCall(new AllPlanets()).httpCacheControl(HttpCacheControl.CACHE_ONLY).execute().hasErrors()).isFalse();
   }
 
   @Test public void prefetchNoCacheStore() throws IOException, ApolloException {
@@ -333,7 +334,7 @@ public class CacheTest {
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     apolloClient.prefetch(new AllPlanets()).execute();
     enqueueResponse("/HttpCacheTestAllPlanets.json");
-    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().hasErrors()).isFalse();
   }
 
   @Test public void prefetchFileSystemWriteFailure() throws IOException {
@@ -361,11 +362,11 @@ public class CacheTest {
 
   @Test public void expireAfterRead() throws IOException, ApolloException {
     enqueueResponse("/HttpCacheTestAllPlanets.json");
-    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().hasErrors()).isFalse();
     checkCachedResponse("/HttpCacheTestAllPlanets.json");
 
     assertThat(apolloClient.newCall(new AllPlanets()).httpCacheControl(HttpCacheControl.EXPIRE_AFTER_READ).execute()
-        .isSuccessful()).isTrue();
+        .hasErrors()).isFalse();
     checkNoCachedResponse();
     try {
       apolloClient.newCall(new AllPlanets()).httpCacheControl(HttpCacheControl.CACHE_ONLY).execute();
@@ -374,7 +375,7 @@ public class CacheTest {
     }
 
     enqueueResponse("/HttpCacheTestAllPlanets.json");
-    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().hasErrors()).isFalse();
     checkCachedResponse("/HttpCacheTestAllPlanets.json");
   }
 
@@ -388,16 +389,16 @@ public class CacheTest {
     checkNoCachedResponse();
 
     enqueueResponse("/HttpCacheTestAllPlanets.json");
-    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().hasErrors()).isFalse();
     checkCachedResponse("/HttpCacheTestAllPlanets.json");
 
     assertThat(apolloClient.newCall(new AllPlanets()).httpCacheControl(HttpCacheControl.CACHE_ONLY).execute()
-        .isSuccessful()).isTrue();
+        .hasErrors()).isFalse();
   }
 
   @Test public void networkFirst() throws Exception {
     enqueueResponse("/HttpCacheTestAllPlanets.json");
-    assertThat(apolloClient.newCall(new AllPlanets()).execute().isSuccessful()).isTrue();
+    assertThat(apolloClient.newCall(new AllPlanets()).execute().hasErrors()).isFalse();
     assertThat(server.getRequestCount()).isEqualTo(1);
     assertThat(lastHttResponse.networkResponse()).isNotNull();
     assertThat(lastHttResponse.cacheResponse()).isNull();
@@ -405,7 +406,7 @@ public class CacheTest {
 
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     assertThat(apolloClient.newCall(new AllPlanets()).httpCacheControl(HttpCacheControl.NETWORK_FIRST).execute()
-        .isSuccessful()).isTrue();
+        .hasErrors()).isFalse();
     assertThat(server.getRequestCount()).isEqualTo(2);
     assertThat(lastHttResponse.networkResponse()).isNotNull();
     assertThat(lastHttResponse.cacheResponse()).isNull();

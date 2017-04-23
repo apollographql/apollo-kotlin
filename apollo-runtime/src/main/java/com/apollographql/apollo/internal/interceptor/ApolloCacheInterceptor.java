@@ -5,13 +5,13 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.internal.cache.normalized.ReadableCache;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.cache.normalized.Transaction;
@@ -130,8 +130,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     if (cacheControl == CacheControl.CACHE_ONLY || cacheControl == CacheControl.CACHE_FIRST) {
       ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
       Response cachedResponse = cachedResponse(operation, responseNormalizer);
-      if (cacheControl == CacheControl.CACHE_ONLY
-          || (cachedResponse != null && cachedResponse.data() != null && cachedResponse.isSuccessful())) {
+      if (cacheControl == CacheControl.CACHE_ONLY || cachedResponse != null) {
         logger.d("Cache HIT for operation %s", operation);
         return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
       }
@@ -142,8 +141,8 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
 
   @SuppressWarnings("unchecked") private Response cachedResponse(final Operation operation,
       final ResponseNormalizer<Record> cacheResponseNormalizer) {
-    return apolloStore.readTransaction(new Transaction<ReadableCache, Response>() {
-      @Nullable @Override public Response execute(ReadableCache cache) {
+    Response response = apolloStore.readTransaction(new Transaction<ReadableCache, Response>() {
+      @Override public Response execute(ReadableCache cache) {
         cacheResponseNormalizer.willResolveRootQuery(operation);
         Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key());
         if (rootRecord == null) {
@@ -160,6 +159,12 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
         }
       }
     });
+
+    if (response != null && response.data() != null && !response.hasErrors()) {
+      return response;
+    } else {
+      return null;
+    }
   }
 
   private InterceptorResponse handleNetworkResponse(Operation operation, InterceptorResponse networkResponse) {
@@ -168,7 +173,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     if (networkFailed && cacheControl != CacheControl.NETWORK_ONLY) {
       ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
       Response cachedResponse = cachedResponse(operation, responseNormalizer);
-      if (cachedResponse != null && cachedResponse.data() != null && cachedResponse.isSuccessful()) {
+      if (cachedResponse != null) {
         return new InterceptorResponse(networkResponse.httpResponse.get(), cachedResponse,
             responseNormalizer.records());
       }
@@ -195,7 +200,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     if (cacheControl == CacheControl.NETWORK_FIRST) {
       ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
       Response cachedResponse = cachedResponse(operation, responseNormalizer);
-      if (cachedResponse != null && cachedResponse.data() != null && cachedResponse.isSuccessful()) {
+      if (cachedResponse != null) {
         logger.d("Cache HIT for operation %s", operation);
         return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
       }

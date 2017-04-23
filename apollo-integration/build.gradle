@@ -35,6 +35,8 @@ dependencies {
   compile project(':apollo-rxsupport')
   compile project(':apollo-rx2support')
   compile dep.appcompat
+  compile dep.rxjava
+  compile dep.rxjava2
 
   testCompile dep.junit
   testCompile dep.truth
