@@ -137,6 +137,10 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     return apolloStore;
   }
 
+  public ApolloTracker apolloTracker() {
+    return callTracker;
+  }
+
   Response cachedHttpResponse(String cacheKey) throws IOException {
     if (httpCache != null) {
       return httpCache.read(cacheKey);

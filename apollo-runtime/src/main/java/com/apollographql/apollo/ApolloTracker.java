@@ -96,7 +96,7 @@ public class ApolloTracker {
     }
   }
 
-  private int getRunningCallsCount() {
+  public int getRunningCallsCount() {
     return runningAsyncCalls.size() +
         runningSyncCalls.size() +
         runningSyncPrefetches.size() +
