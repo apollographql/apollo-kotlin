@@ -18,7 +18,7 @@ public class Error {
   }
 
   /**
-   * Returns the error message returned by the server.
+   * Returns server error message.
    */
   public String message() {
     return message;

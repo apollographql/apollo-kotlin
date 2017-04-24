@@ -6,11 +6,11 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 /**
- * Represents an abstraction for a GraphQL operation (mutation or query).
+ * Represents a GraphQL operation (mutation or query).
  */
 public interface Operation<D extends Operation.Data, T, V extends Operation.Variables> {
   /**
-   * Returns the raw GraphQL operation string.
+   * Returns the raw GraphQL operation String.
    */
   String queryDocument();
 
