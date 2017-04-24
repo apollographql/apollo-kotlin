@@ -36,15 +36,10 @@ dependencies {
 
   compile dep.espressoIdlingResource
   provided project(":apollo-runtime")
-  provided project(":apollo-api")
 
-  androidTestCompile project(":apollo-runtime")
-  androidTestCompile project(":apollo-api")
-  androidTestCompile dep.truth
-  androidTestCompile dep.mockWebServer
-  androidTestCompile(dep.testRunner) {
-    exclude module: 'support-annotations'
-  }
+  testCompile dep.junit
+  testCompile dep.truth
+  testCompile dep.mockWebServer
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
