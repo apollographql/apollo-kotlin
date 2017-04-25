@@ -71,7 +71,7 @@ public class AsyncNormalizedCacheTestCase {
 
     server.enqueue(mockResponse("HeroNameResponse.json"));
     Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).execute();
-    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.hasErrors()).isFalse();
 
     for (int i = 0; i < 500; i++) {
       server.enqueue(mockResponse("HeroNameResponse.json"));
@@ -82,7 +82,7 @@ public class AsyncNormalizedCacheTestCase {
       apolloClient.newCall(query).cacheControl(i % 2 == 0 ? CacheControl.NETWORK_FIRST : CacheControl.CACHE_ONLY)
           .enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
             @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
-              assertThat(response.isSuccessful()).isTrue();
+              assertThat(response.hasErrors()).isFalse();
               latch.countDown();
             }
 

@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /** Represents either a successful or failed response received from the GraphQL server. */
 public class Response<T> {
   private final Operation operation;
@@ -22,24 +25,23 @@ public class Response<T> {
     this.dependentKeys = dependentKeys != null ? dependentKeys : Collections.<String>emptySet();
   }
 
-  public boolean isSuccessful() {
-    return errors.isEmpty();
-  }
-
   public Operation operation() {
     return operation;
   }
 
-  public T data() {
+  @Nullable public T data() {
     return data;
   }
 
-  public List<Error> errors() {
+  @Nonnull public List<Error> errors() {
     return errors;
   }
 
-  public Set<String> dependentKeys() {
+  @Nonnull public Set<String> dependentKeys() {
     return dependentKeys;
   }
 
+  public boolean hasErrors() {
+    return !errors.isEmpty();
+  }
 }

@@ -79,7 +79,7 @@ public class IntegrationTest {
     server.enqueue(mockResponse("/HttpCacheTestAllPlanets.json"));
 
     Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
-    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.hasErrors()).isFalse();
 
     assertThat(server.takeRequest().getBody().readString(Charsets.UTF_8))
         .isEqualTo("{\"query\":\"query AllPlanets {  "
@@ -143,7 +143,7 @@ public class IntegrationTest {
   @Test public void errorResponse() throws Exception {
     server.enqueue(mockResponse("/HttpCacheTestError.json"));
     Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
-    assertThat(body.isSuccessful()).isFalse();
+    assertThat(body.hasErrors()).isTrue();
     //noinspection ConstantConditions
     assertThat(body.errors()).containsExactly(new Error(
         "Cannot query field \"names\" on type \"Species\".",
@@ -154,7 +154,7 @@ public class IntegrationTest {
     server.enqueue(mockResponse("/HttpCacheTestAllFilms.json"));
 
     Response<AllFilms.Data> body = apolloClient.newCall(new AllFilms()).execute();
-    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.hasErrors()).isFalse();
 
 
     AllFilms.Data data = body.data();
@@ -177,7 +177,7 @@ public class IntegrationTest {
     final NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
     apolloClient.newCall(new AllPlanets()).enqueue(new ApolloCall.Callback<AllPlanets.Data>() {
       @Override public void onResponse(@Nonnull Response<AllPlanets.Data> response) {
-        assertThat(response.isSuccessful()).isTrue();
+        assertThat(response.hasErrors()).isFalse();
         assertThat(response.data().allPlanets().planets().size()).isEqualTo(60);
         latch.countDown();
       }
