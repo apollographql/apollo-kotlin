@@ -41,16 +41,16 @@ public class Rx2Apollo {
    * @return the converted Observable
    * @throws NullPointerException if watcher == null
    */
-  public static <T> Observable<T> from(@Nonnull final ApolloWatcher<T> watcher) {
+  public static <T> Observable<Response<T>> from(@Nonnull final ApolloWatcher<T> watcher) {
     checkNotNull(watcher, "watcher == null");
-    return Observable.create(new ObservableOnSubscribe<T>() {
-      @Override public void subscribe(final ObservableEmitter<T> emitter) throws Exception {
+    return Observable.create(new ObservableOnSubscribe<Response<T>>() {
+      @Override public void subscribe(final ObservableEmitter<Response<T>> emitter) throws Exception {
         cancelOnObservableDisposed(emitter, watcher);
 
         watcher.enqueueAndWatch(new ApolloCall.Callback<T>() {
           @Override public void onResponse(@Nonnull Response<T> response) {
             if (!emitter.isDisposed()) {
-              emitter.onNext(response.data());
+              emitter.onNext(response);
             }
           }
 
@@ -73,16 +73,16 @@ public class Rx2Apollo {
    * @return the converted Single
    * @throws NullPointerException if originalCall == null
    */
-  @Nonnull public static <T> Single<T> from(@Nonnull final ApolloCall<T> originalCall) {
+  @Nonnull public static <T> Single<Response<T>> from(@Nonnull final ApolloCall<T> originalCall) {
     checkNotNull(originalCall, "call == null");
 
-    return Single.create(new SingleOnSubscribe<T>() {
-      @Override public void subscribe(SingleEmitter<T> emitter) {
+    return Single.create(new SingleOnSubscribe<Response<T>>() {
+      @Override public void subscribe(SingleEmitter<Response<T>> emitter) {
         cancelOnSingleDisposed(emitter, originalCall);
         try {
           Response<T> response = originalCall.execute();
           if (!emitter.isDisposed()) {
-            emitter.onSuccess(response.data());
+            emitter.onSuccess(response);
           }
         } catch (ApolloException e) {
           Exceptions.throwIfFatal(e);

@@ -43,7 +43,7 @@ public final class RxApollo {
    * @return the converted Observable
    */
   @Nonnull
-  public static <T> Observable<T> from(@Nonnull final ApolloWatcher<T> watcher) {
+  public static <T> Observable<Response<T>> from(@Nonnull final ApolloWatcher<T> watcher) {
     return from(watcher, Emitter.BackpressureMode.LATEST);
   }
 
@@ -55,12 +55,12 @@ public final class RxApollo {
    * @param <T>              the value type
    * @return the converted Observable
    */
-  @Nonnull public static <T> Observable<T> from(@Nonnull final ApolloWatcher<T> watcher,
+  @Nonnull public static <T> Observable<Response<T>> from(@Nonnull final ApolloWatcher<T> watcher,
       @Nonnull Emitter.BackpressureMode backpressureMode) {
     checkNotNull(backpressureMode, "backpressureMode == null");
     checkNotNull(watcher, "watcher == null");
-    return Observable.create(new Action1<Emitter<T>>() {
-      @Override public void call(final Emitter<T> emitter) {
+    return Observable.create(new Action1<Emitter<Response<T>>>() {
+      @Override public void call(final Emitter<Response<T>> emitter) {
         emitter.setCancellation(new Cancellable() {
           @Override public void cancel() throws Exception {
             watcher.cancel();
@@ -68,7 +68,7 @@ public final class RxApollo {
         });
         watcher.enqueueAndWatch(new ApolloCall.Callback<T>() {
           @Override public void onResponse(@Nonnull Response<T> response) {
-            emitter.onNext(response.data());
+            emitter.onNext(response);
           }
 
           @Override public void onFailure(@Nonnull ApolloException e) {
@@ -87,15 +87,15 @@ public final class RxApollo {
    * @param <T>  the value type
    * @return the converted Single
    */
-  @Nonnull public static <T> Single<T> from(@Nonnull final ApolloCall<T> call) {
+  @Nonnull public static <T> Single<Response<T>> from(@Nonnull final ApolloCall<T> call) {
     checkNotNull(call, "call == null");
-    return Single.create(new Single.OnSubscribe<T>() {
-      @Override public void call(SingleSubscriber<? super T> subscriber) {
+    return Single.create(new Single.OnSubscribe<Response<T>>() {
+      @Override public void call(SingleSubscriber<? super Response<T>> subscriber) {
         cancelOnSingleUnsubscribe(subscriber, call);
         try {
           Response<T> response = call.execute();
           if (!subscriber.isUnsubscribed()) {
-            subscriber.onSuccess(response.data());
+            subscriber.onSuccess(response);
           }
         } catch (ApolloException e) {
           Exceptions.throwIfFatal(e);
