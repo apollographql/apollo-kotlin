@@ -95,13 +95,13 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     }
   }
 
-  @Override public void enqueue(@Nullable final Callback<T> callback) {
+  @Override public void enqueue(@Nullable final Callback<T> responseCallback) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
-    tracker.asyncCallInProgress(callback);
-    interceptorChain.proceedAsync(dispatcher, new AsyncCall(callback));
+    tracker.asyncCallInProgress(responseCallback);
+    interceptorChain.proceedAsync(dispatcher, new AsyncCall(responseCallback));
   }
 
   @Nonnull @Override public RealApolloWatcher<T> watcher() {

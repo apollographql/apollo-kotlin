@@ -40,6 +40,7 @@ dependencies {
   testCompile dep.truth
   testCompile dep.mockWebServer
   testCompile dep.okhttpTestSupport
+  testCompile project(path: ':apollo-idling-resource')
 }
 
 apollo {
