@@ -13,11 +13,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.apollographql.apollo.ApolloCall;
-import com.apollographql.apollo.rx2.Rx2Apollo;
+import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.rx2.Rx2Apollo;
 import com.apollographql.apollo.sample.EntryDetailQuery;
-import com.apollographql.apollo.sample.R;
 import com.apollographql.apollo.sample.GitHuntApplication;
+import com.apollographql.apollo.sample.R;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -94,9 +95,9 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
     disposables.add(Rx2Apollo.from(entryDetailQuery)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(new DisposableSingleObserver<EntryDetailQuery.Data>() {
-          @Override public void onSuccess(EntryDetailQuery.Data data) {
-            setEntryData(data);
+        .subscribeWith(new DisposableSingleObserver<Response<EntryDetailQuery.Data>>() {
+          @Override public void onSuccess(Response<EntryDetailQuery.Data> dataResponse) {
+            setEntryData(dataResponse.data());
           }
 
           @Override public void onError(Throwable e) {

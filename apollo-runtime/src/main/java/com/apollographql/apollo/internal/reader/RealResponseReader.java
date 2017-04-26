@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.CustomTypeAdapter;
+import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.internal.field.FieldValueResolver;
 
 import java.io.IOException;
@@ -147,14 +148,14 @@ import java.util.Map;
   @SuppressWarnings("unchecked") <T> T readObject(Field.ObjectField field) throws IOException {
     R value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
-    readerShadow.willParseObject(value);
+    readerShadow.willParseObject(Optional.fromNullable(value));
     if (value == null) {
       readerShadow.didParseNull();
       return null;
     } else {
       final T parsedValue = (T) field.objectReader().read(new RealResponseReader(operation, value,
           fieldValueResolver, customTypeAdapters, readerShadow));
-      readerShadow.didParseObject(value);
+      readerShadow.didParseObject(Optional.fromNullable(value));
       return parsedValue;
     }
   }
@@ -190,10 +191,10 @@ import java.util.Map;
       for (int i = 0; i < values.size(); i++) {
         readerShadow.willParseElement(i);
         R value = values.get(i);
-        readerShadow.willParseObject(value);
+        readerShadow.willParseObject(Optional.fromNullable(value));
         T item = (T) field.objectReader().read(new RealResponseReader(operation, value, fieldValueResolver,
             customTypeAdapters, readerShadow));
-        readerShadow.didParseObject(value);
+        readerShadow.didParseObject(Optional.fromNullable(value));
         readerShadow.didParseElement(i);
         result.add(item);
       }

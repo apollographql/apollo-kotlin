@@ -100,6 +100,15 @@ public class ResponseNormalizationTest {
     assertThat(heroRecord.field("name")).isEqualTo("R2-D2");
   }
 
+  @Test public void testHeroNameNullable() throws IOException, ApolloException {
+    MockResponse mockResponse = mockResponse("HeroNameNullHeroResponse.json");
+    server.enqueue(mockResponse);
+
+    ApolloCall<HeroName.Data> call = apolloClient.newCall(new HeroName());
+    Response<HeroName.Data> body = call.execute();
+    assertThat(body.hasErrors()).isFalse();
+  }
+
   @Test
   public void testHeroNameWithVariable() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("EpisodeHeroNameResponse.json");
