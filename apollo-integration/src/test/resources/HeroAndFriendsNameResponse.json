@@ -1,15 +1,19 @@
 {
   "data": {
     "hero": {
+      "__typename": "Droid",
       "name": "R2-D2",
       "friends": [
         {
+          "__typename": "Human",
           "name": "Luke Skywalker"
         },
         {
+          "__typename": "Human",
           "name": "Han Solo"
         },
         {
+          "__typename": "Human",
           "name": "Leia Organa"
         }
       ]
