@@ -2,6 +2,7 @@ package com.apollographql.apollo;
 
 import android.support.annotation.NonNull;
 
+import com.apollographql.android.impl.normalizer.CharacterById;
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNames;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDForParentOnly;
@@ -276,5 +277,19 @@ public class NormalizedCacheTestCase {
     assertThat(server.getRequestCount()).isEqualTo(2);
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
+  }
+
+  @Test public void masterDetail() throws Exception {
+    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
+    HeroAndFriendsNamesWithIDs query = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
+    apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+
+    CharacterById characterById = CharacterById.builder().id("1002").build();
+    CharacterById.Data characterByIdData = apolloClient.newCall(characterById).cacheControl(CacheControl.CACHE_ONLY)
+        .execute().data();
+
+    assertThat(characterByIdData).isNotNull();
+    assertThat(characterByIdData.character()).isNotNull();
+    assertThat(characterByIdData.character().asHuman().name()).isEqualTo("Han Solo");
   }
 }
