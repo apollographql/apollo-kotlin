@@ -36,6 +36,8 @@ public class StarshipFragment {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Starship"));
 
+  private final @Nonnull String __typename;
+
   private final @Nonnull String id;
 
   private final Optional<String> name;
@@ -48,11 +50,16 @@ public class StarshipFragment {
 
   private volatile boolean $hashCodeMemoized;
 
-  public StarshipFragment(@Nonnull String id, @Nullable String name,
+  public StarshipFragment(@Nonnull String __typename, @Nonnull String id, @Nullable String name,
       @Nullable PilotConnection pilotConnection) {
+    this.__typename = __typename;
     this.id = id;
     this.name = Optional.fromNullable(name);
     this.pilotConnection = Optional.fromNullable(pilotConnection);
+  }
+
+  public @Nonnull String __typename() {
+    return this.__typename;
   }
 
   /**
@@ -77,6 +84,7 @@ public class StarshipFragment {
   public String toString() {
     if ($toString == null) {
       $toString = "StarshipFragment{"
+        + "__typename=" + __typename + ", "
         + "id=" + id + ", "
         + "name=" + name + ", "
         + "pilotConnection=" + pilotConnection
@@ -92,7 +100,8 @@ public class StarshipFragment {
     }
     if (o instanceof StarshipFragment) {
       StarshipFragment that = (StarshipFragment) o;
-      return ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
+      return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+       && ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
        && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
        && ((this.pilotConnection == null) ? (that.pilotConnection == null) : this.pilotConnection.equals(that.pilotConnection));
     }
@@ -103,6 +112,8 @@ public class StarshipFragment {
   public int hashCode() {
     if (!$hashCodeMemoized) {
       int h = 1;
+      h *= 1000003;
+      h ^= (__typename == null) ? 0 : __typename.hashCode();
       h *= 1000003;
       h ^= (id == null) ? 0 : id.hashCode();
       h *= 1000003;
@@ -119,6 +130,7 @@ public class StarshipFragment {
     final PilotConnection.Mapper pilotConnectionFieldMapper = new PilotConnection.Mapper();
 
     final Field[] fields = {
+      Field.forString("__typename", "__typename", null, false),
       Field.forString("id", "id", null, false),
       Field.forString("name", "name", null, true),
       Field.forObject("pilotConnection", "pilotConnection", null, true, new Field.ObjectReader<PilotConnection>() {
@@ -130,14 +142,17 @@ public class StarshipFragment {
 
     @Override
     public StarshipFragment map(ResponseReader reader) throws IOException {
-      final String id = reader.read(fields[0]);
-      final String name = reader.read(fields[1]);
-      final PilotConnection pilotConnection = reader.read(fields[2]);
-      return new StarshipFragment(id, name, pilotConnection);
+      final String __typename = reader.read(fields[0]);
+      final String id = reader.read(fields[1]);
+      final String name = reader.read(fields[2]);
+      final PilotConnection pilotConnection = reader.read(fields[3]);
+      return new StarshipFragment(__typename, id, name, pilotConnection);
     }
   }
 
   public static class PilotConnection {
+    private final @Nonnull String __typename;
+
     private final Optional<List<Edge>> edges;
 
     private volatile String $toString;
@@ -146,8 +161,13 @@ public class StarshipFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public PilotConnection(@Nullable List<Edge> edges) {
+    public PilotConnection(@Nonnull String __typename, @Nullable List<Edge> edges) {
+      this.__typename = __typename;
       this.edges = Optional.fromNullable(edges);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -161,6 +181,7 @@ public class StarshipFragment {
     public String toString() {
       if ($toString == null) {
         $toString = "PilotConnection{"
+          + "__typename=" + __typename + ", "
           + "edges=" + edges
           + "}";
       }
@@ -174,7 +195,8 @@ public class StarshipFragment {
       }
       if (o instanceof PilotConnection) {
         PilotConnection that = (PilotConnection) o;
-        return ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
       }
       return false;
     }
@@ -183,6 +205,8 @@ public class StarshipFragment {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (edges == null) ? 0 : edges.hashCode();
         $hashCode = h;
@@ -195,6 +219,7 @@ public class StarshipFragment {
       final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
           @Override public Edge read(final ResponseReader reader) throws IOException {
             return edgeFieldMapper.map(reader);
@@ -204,13 +229,16 @@ public class StarshipFragment {
 
       @Override
       public PilotConnection map(ResponseReader reader) throws IOException {
-        final List<Edge> edges = reader.read(fields[0]);
-        return new PilotConnection(edges);
+        final String __typename = reader.read(fields[0]);
+        final List<Edge> edges = reader.read(fields[1]);
+        return new PilotConnection(__typename, edges);
       }
     }
   }
 
   public static class Edge {
+    private final @Nonnull String __typename;
+
     private final Optional<Node> node;
 
     private volatile String $toString;
@@ -219,8 +247,13 @@ public class StarshipFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public Edge(@Nullable Node node) {
+    public Edge(@Nonnull String __typename, @Nullable Node node) {
+      this.__typename = __typename;
       this.node = Optional.fromNullable(node);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -234,6 +267,7 @@ public class StarshipFragment {
     public String toString() {
       if ($toString == null) {
         $toString = "Edge{"
+          + "__typename=" + __typename + ", "
           + "node=" + node
           + "}";
       }
@@ -247,7 +281,8 @@ public class StarshipFragment {
       }
       if (o instanceof Edge) {
         Edge that = (Edge) o;
-        return ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
       }
       return false;
     }
@@ -256,6 +291,8 @@ public class StarshipFragment {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (node == null) ? 0 : node.hashCode();
         $hashCode = h;
@@ -268,6 +305,7 @@ public class StarshipFragment {
       final Node.Mapper nodeFieldMapper = new Node.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
           @Override public Node read(final ResponseReader reader) throws IOException {
             return nodeFieldMapper.map(reader);
@@ -277,13 +315,16 @@ public class StarshipFragment {
 
       @Override
       public Edge map(ResponseReader reader) throws IOException {
-        final Node node = reader.read(fields[0]);
-        return new Edge(node);
+        final String __typename = reader.read(fields[0]);
+        final Node node = reader.read(fields[1]);
+        return new Edge(__typename, node);
       }
     }
   }
 
   public static class Node {
+    private final @Nonnull String __typename;
+
     private final @Nonnull Fragments fragments;
 
     private volatile String $toString;
@@ -292,8 +333,13 @@ public class StarshipFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public Node(@Nonnull Fragments fragments) {
+    public Node(@Nonnull String __typename, @Nonnull Fragments fragments) {
+      this.__typename = __typename;
       this.fragments = fragments;
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     public @Nonnull Fragments fragments() {
@@ -304,6 +350,7 @@ public class StarshipFragment {
     public String toString() {
       if ($toString == null) {
         $toString = "Node{"
+          + "__typename=" + __typename + ", "
           + "fragments=" + fragments
           + "}";
       }
@@ -317,7 +364,8 @@ public class StarshipFragment {
       }
       if (o instanceof Node) {
         Node that = (Node) o;
-        return ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
       }
       return false;
     }
@@ -326,6 +374,8 @@ public class StarshipFragment {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (fragments == null) ? 0 : fragments.hashCode();
         $hashCode = h;
@@ -404,6 +454,7 @@ public class StarshipFragment {
       final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
           @Override
           public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
@@ -414,8 +465,9 @@ public class StarshipFragment {
 
       @Override
       public Node map(ResponseReader reader) throws IOException {
-        final Fragments fragments = reader.read(fields[0]);
-        return new Node(fragments);
+        final String __typename = reader.read(fields[0]);
+        final Fragments fragments = reader.read(fields[1]);
+        return new Node(__typename, fragments);
       }
     }
   }

@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.Generated;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
@@ -186,6 +187,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Hero {
+    private final @Nonnull String __typename;
+
     private final Optional<String> name;
 
     private volatile String $toString;
@@ -194,8 +197,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Hero(@Nullable String name) {
+    public Hero(@Nonnull String __typename, @Nullable String name) {
+      this.__typename = __typename;
       this.name = Optional.fromNullable(name);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -209,6 +217,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Hero{"
+          + "__typename=" + __typename + ", "
           + "name=" + name
           + "}";
       }
@@ -222,7 +231,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
     }
@@ -231,6 +241,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         $hashCode = h;
@@ -241,13 +253,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<Hero> {
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, true)
       };
 
       @Override
       public Hero map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        return new Hero(name);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        return new Hero(__typename, name);
       }
     }
   }

@@ -196,6 +196,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Hero {
+    private final @Nonnull String __typename;
+
     private final @Nonnull String name;
 
     private final Optional<AsHuman> asHuman;
@@ -208,10 +210,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Hero(@Nonnull String name, @Nullable AsHuman asHuman, @Nullable AsDroid asDroid) {
+    public Hero(@Nonnull String __typename, @Nonnull String name, @Nullable AsHuman asHuman,
+        @Nullable AsDroid asDroid) {
+      this.__typename = __typename;
       this.name = name;
       this.asHuman = Optional.fromNullable(asHuman);
       this.asDroid = Optional.fromNullable(asDroid);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     public @Nonnull String name() {
@@ -230,6 +238,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Hero{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "asHuman=" + asHuman + ", "
           + "asDroid=" + asDroid
@@ -245,7 +254,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          && ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman))
          && ((this.asDroid == null) ? (that.asDroid == null) : this.asDroid.equals(that.asDroid));
       }
@@ -256,6 +266,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -274,6 +286,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
         Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman>() {
           @Override
@@ -299,15 +312,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Hero map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        final AsHuman asHuman = reader.read(fields[1]);
-        final AsDroid asDroid = reader.read(fields[2]);
-        return new Hero(name, asHuman, asDroid);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        final AsHuman asHuman = reader.read(fields[2]);
+        final AsDroid asDroid = reader.read(fields[3]);
+        return new Hero(__typename, name, asHuman, asDroid);
       }
     }
   }
 
   public static class AsHuman {
+    private final @Nonnull String __typename;
+
     private final @Nonnull String name;
 
     private final Optional<List<Friend>> friends;
@@ -318,9 +334,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsHuman(@Nonnull String name, @Nullable List<Friend> friends) {
+    public AsHuman(@Nonnull String __typename, @Nonnull String name,
+        @Nullable List<Friend> friends) {
+      this.__typename = __typename;
       this.name = name;
       this.friends = Optional.fromNullable(friends);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     public @Nonnull String name() {
@@ -335,6 +357,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "AsHuman{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "friends=" + friends
           + "}";
@@ -349,7 +372,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof AsHuman) {
         AsHuman that = (AsHuman) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends));
       }
       return false;
@@ -359,6 +383,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -373,6 +399,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Friend.Mapper friendFieldMapper = new Friend.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
         Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend>() {
           @Override public Friend read(final ResponseReader reader) throws IOException {
@@ -383,14 +410,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public AsHuman map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        final List<Friend> friends = reader.read(fields[1]);
-        return new AsHuman(name, friends);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        final List<Friend> friends = reader.read(fields[2]);
+        return new AsHuman(__typename, name, friends);
       }
     }
   }
 
   public static class Friend {
+    private final @Nonnull String __typename;
+
     private final @Nonnull String name;
 
     private final Optional<AsHuman1> asHuman;
@@ -401,9 +431,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Friend(@Nonnull String name, @Nullable AsHuman1 asHuman) {
+    public Friend(@Nonnull String __typename, @Nonnull String name, @Nullable AsHuman1 asHuman) {
+      this.__typename = __typename;
       this.name = name;
       this.asHuman = Optional.fromNullable(asHuman);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     public @Nonnull String name() {
@@ -418,6 +453,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Friend{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "asHuman=" + asHuman
           + "}";
@@ -432,7 +468,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Friend) {
         Friend that = (Friend) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          && ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman));
       }
       return false;
@@ -442,6 +479,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -456,6 +495,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final AsHuman1.Mapper asHuman1FieldMapper = new AsHuman1.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
         Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman1>() {
           @Override
@@ -471,14 +511,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Friend map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        final AsHuman1 asHuman = reader.read(fields[1]);
-        return new Friend(name, asHuman);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        final AsHuman1 asHuman = reader.read(fields[2]);
+        return new Friend(__typename, name, asHuman);
       }
     }
   }
 
   public static class AsHuman1 {
+    private final @Nonnull String __typename;
+
     private final @Nonnull String name;
 
     private final Optional<Double> height;
@@ -489,9 +532,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsHuman1(@Nonnull String name, @Nullable Double height) {
+    public AsHuman1(@Nonnull String __typename, @Nonnull String name, @Nullable Double height) {
+      this.__typename = __typename;
       this.name = name;
       this.height = Optional.fromNullable(height);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     public @Nonnull String name() {
@@ -506,6 +554,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "AsHuman1{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "height=" + height
           + "}";
@@ -520,7 +569,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof AsHuman1) {
         AsHuman1 that = (AsHuman1) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          && ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
       }
       return false;
@@ -530,6 +580,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -542,6 +594,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<AsHuman1> {
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
         Field.forDouble("height", "height", new UnmodifiableMapBuilder<String, Object>(1)
           .put("unit", "FOOT")
@@ -550,14 +603,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public AsHuman1 map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        final Double height = reader.read(fields[1]);
-        return new AsHuman1(name, height);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        final Double height = reader.read(fields[2]);
+        return new AsHuman1(__typename, name, height);
       }
     }
   }
 
   public static class AsDroid {
+    private final @Nonnull String __typename;
+
     private final @Nonnull String name;
 
     private final Optional<List<Friend1>> friends;
@@ -568,9 +624,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsDroid(@Nonnull String name, @Nullable List<Friend1> friends) {
+    public AsDroid(@Nonnull String __typename, @Nonnull String name,
+        @Nullable List<Friend1> friends) {
+      this.__typename = __typename;
       this.name = name;
       this.friends = Optional.fromNullable(friends);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     public @Nonnull String name() {
@@ -585,6 +647,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "AsDroid{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "friends=" + friends
           + "}";
@@ -599,7 +662,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof AsDroid) {
         AsDroid that = (AsDroid) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends));
       }
       return false;
@@ -609,6 +673,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -623,6 +689,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Friend1.Mapper friend1FieldMapper = new Friend1.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
         Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend1>() {
           @Override public Friend1 read(final ResponseReader reader) throws IOException {
@@ -633,14 +700,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public AsDroid map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        final List<Friend1> friends = reader.read(fields[1]);
-        return new AsDroid(name, friends);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        final List<Friend1> friends = reader.read(fields[2]);
+        return new AsDroid(__typename, name, friends);
       }
     }
   }
 
   public static class Friend1 {
+    private final @Nonnull String __typename;
+
     private final @Nonnull String name;
 
     private final Optional<AsHuman2> asHuman;
@@ -651,9 +721,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Friend1(@Nonnull String name, @Nullable AsHuman2 asHuman) {
+    public Friend1(@Nonnull String __typename, @Nonnull String name, @Nullable AsHuman2 asHuman) {
+      this.__typename = __typename;
       this.name = name;
       this.asHuman = Optional.fromNullable(asHuman);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     public @Nonnull String name() {
@@ -668,6 +743,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Friend1{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "asHuman=" + asHuman
           + "}";
@@ -682,7 +758,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Friend1) {
         Friend1 that = (Friend1) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          && ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman));
       }
       return false;
@@ -692,6 +769,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -706,6 +785,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final AsHuman2.Mapper asHuman2FieldMapper = new AsHuman2.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
         Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman2>() {
           @Override
@@ -721,14 +801,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Friend1 map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        final AsHuman2 asHuman = reader.read(fields[1]);
-        return new Friend1(name, asHuman);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        final AsHuman2 asHuman = reader.read(fields[2]);
+        return new Friend1(__typename, name, asHuman);
       }
     }
   }
 
   public static class AsHuman2 {
+    private final @Nonnull String __typename;
+
     private final @Nonnull String name;
 
     private final Optional<Double> height;
@@ -739,9 +822,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsHuman2(@Nonnull String name, @Nullable Double height) {
+    public AsHuman2(@Nonnull String __typename, @Nonnull String name, @Nullable Double height) {
+      this.__typename = __typename;
       this.name = name;
       this.height = Optional.fromNullable(height);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     public @Nonnull String name() {
@@ -756,6 +844,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "AsHuman2{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "height=" + height
           + "}";
@@ -770,7 +859,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof AsHuman2) {
         AsHuman2 that = (AsHuman2) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          && ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
       }
       return false;
@@ -780,6 +870,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -792,6 +884,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<AsHuman2> {
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
         Field.forDouble("height", "height", new UnmodifiableMapBuilder<String, Object>(1)
           .put("unit", "METER")
@@ -800,9 +893,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public AsHuman2 map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        final Double height = reader.read(fields[1]);
-        return new AsHuman2(name, height);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        final Double height = reader.read(fields[2]);
+        return new AsHuman2(__typename, name, height);
       }
     }
   }

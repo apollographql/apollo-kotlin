@@ -218,6 +218,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class HeroWithReview {
+    private final @Nonnull String __typename;
+
     private final @Nonnull String name;
 
     private final Optional<Double> height;
@@ -228,9 +230,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public HeroWithReview(@Nonnull String name, @Nullable Double height) {
+    public HeroWithReview(@Nonnull String __typename, @Nonnull String name,
+        @Nullable Double height) {
+      this.__typename = __typename;
       this.name = name;
       this.height = Optional.fromNullable(height);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -251,6 +259,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "HeroWithReview{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "height=" + height
           + "}";
@@ -265,7 +274,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof HeroWithReview) {
         HeroWithReview that = (HeroWithReview) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          && ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
       }
       return false;
@@ -275,6 +285,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -287,6 +299,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<HeroWithReview> {
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
         Field.forDouble("height", "height", new UnmodifiableMapBuilder<String, Object>(1)
           .put("unit", "FOOT")
@@ -295,9 +308,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public HeroWithReview map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        final Double height = reader.read(fields[1]);
-        return new HeroWithReview(name, height);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        final Double height = reader.read(fields[2]);
+        return new HeroWithReview(__typename, name, height);
       }
     }
   }
