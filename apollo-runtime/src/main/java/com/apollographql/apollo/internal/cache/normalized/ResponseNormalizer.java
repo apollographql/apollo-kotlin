@@ -2,6 +2,7 @@ package com.apollographql.apollo.internal.cache.normalized;
 
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.CacheReference;
@@ -76,10 +77,10 @@ public class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     valueStack.push(value);
   }
 
-  @Override public void willParseObject(R objectSource) {
+  @Override public void willParseObject(Optional<R> objectSource) {
     pathStack.push(path);
 
-    CacheKey cacheKey = cacheKeyResolver.resolve(objectSource);
+    CacheKey cacheKey = objectSource.isPresent() ? cacheKeyResolver.resolve(objectSource.get()) : CacheKey.NO_KEY;
     String cacheKeyValue = cacheKey.key();
     if (cacheKey == CacheKey.NO_KEY) {
       cacheKeyValue = pathToString();
@@ -91,7 +92,7 @@ public class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     currentRecordBuilder = Record.builder(cacheKeyValue);
   }
 
-  @Override public void didParseObject(R objectSource) {
+  @Override public void didParseObject(Optional<R> objectSource) {
     path = pathStack.pop();
     Record completedRecord = currentRecordBuilder.build();
     valueStack.push(new CacheReference(completedRecord.key()));
@@ -146,10 +147,10 @@ public class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     @Override public void didParseScalar(Object value) {
     }
 
-    @Override public void willParseObject(Object objectMap) {
+    @Override public void willParseObject(Optional objectSource) {
     }
 
-    @Override public void didParseObject(Object objectMap) {
+    @Override public void didParseObject(Optional objectSource) {
     }
 
     @Override public void didParseList(List array) {
