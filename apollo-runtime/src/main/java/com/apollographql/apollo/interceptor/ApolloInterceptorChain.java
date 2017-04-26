@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
 
 /**
- * ApolloInterceptorChain is responsible for building the entire {@link ApolloInterceptorChain} chain.
+ * ApolloInterceptorChain is responsible for building chain of {@link ApolloInterceptor} .
  */
 public interface ApolloInterceptorChain {
 
