@@ -1,7 +1,5 @@
 package com.apollographql.apollo;
 
-import android.support.annotation.NonNull;
-
 import com.apollographql.android.impl.normalizer.CharacterById;
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNames;
@@ -12,6 +10,7 @@ import com.apollographql.android.impl.normalizer.HeroParentTypeDependentField;
 import com.apollographql.android.impl.normalizer.HeroTypeDependentAliasedField;
 import com.apollographql.android.impl.normalizer.SameHeroTwice;
 import com.apollographql.android.impl.normalizer.type.Episode;
+import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKey;
@@ -47,9 +46,9 @@ public class NormalizedCacheTestCase {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(new InMemoryNormalizedCache(), new CacheKeyResolver<Map<String, Object>>() {
-          @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
-            String id = (String) jsonObject.get("id");
+        .normalizedCache(new InMemoryNormalizedCache(), new CacheKeyResolver() {
+          @Nonnull @Override public CacheKey resolve(@Nonnull Field field, @Nonnull Map<String, Object> arguments) {
+            String id = (String) arguments.get("id");
             if (id == null || id.isEmpty()) {
               return CacheKey.NO_KEY;
             }

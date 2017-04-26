@@ -76,5 +76,10 @@ public interface ApolloStore {
    */
   NormalizedCache normalizedCache();
 
+  /**
+   * @return the {@link CacheKeyResolver} used for resolving cache key for fields
+   */
+  CacheKeyResolver cacheKeyResolver();
+
   ApolloStore NO_APOLLO_STORE = new NoOpApolloStore();
 }

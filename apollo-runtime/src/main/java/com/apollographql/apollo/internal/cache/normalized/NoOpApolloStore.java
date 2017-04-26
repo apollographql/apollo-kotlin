@@ -1,6 +1,7 @@
 package com.apollographql.apollo.internal.cache.normalized;
 
 import com.apollographql.apollo.cache.normalized.ApolloStore;
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 
@@ -59,6 +60,10 @@ public final class NoOpApolloStore implements ApolloStore, ReadableCache, Writea
   }
 
   @Override public NormalizedCache normalizedCache() {
+    return null;
+  }
+
+  @Override public CacheKeyResolver cacheKeyResolver() {
     return null;
   }
 }
