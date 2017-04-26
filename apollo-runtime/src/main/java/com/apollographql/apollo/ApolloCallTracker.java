@@ -1,12 +1,9 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.internal.RealApolloCall;
-import com.apollographql.apollo.internal.RealApolloPrefetch;
-
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public class ApolloTracker {
+public class ApolloCallTracker {
 
   private Runnable idleCallback;
 
@@ -15,15 +12,15 @@ public class ApolloTracker {
   private final Deque<ApolloPrefetch> runningSyncPrefetches = new ArrayDeque<>();
   private final Deque<ApolloPrefetch.Callback> runningAsyncPrefetches = new ArrayDeque<>();
 
-  public ApolloTracker() {
+  public ApolloCallTracker() {
   }
 
-  public void syncPrefetchInProgress(RealApolloPrefetch realApolloPrefetch) {
-    runningSyncPrefetches.add(realApolloPrefetch);
+  public void syncPrefetchInProgress(ApolloPrefetch apolloPrefetch) {
+    runningSyncPrefetches.add(apolloPrefetch);
   }
 
-  public synchronized void syncCallInProgress(RealApolloCall realApolloCall) {
-    runningSyncCalls.add(realApolloCall);
+  public synchronized void syncCallInProgress(ApolloCall apolloCall) {
+    runningSyncCalls.add(apolloCall);
   }
 
   public synchronized void asyncPrefetchInProgress(ApolloPrefetch.Callback responseCallback) {
@@ -34,11 +31,11 @@ public class ApolloTracker {
     runningAsyncCalls.add(callback);
   }
 
-  public void syncPrefetchFinished(RealApolloPrefetch realApolloPrefetch) {
+  public void syncPrefetchFinished(ApolloPrefetch apolloPrefetch) {
     Runnable idleCallback;
     int runningCallsCount;
     synchronized (this) {
-      if (!runningSyncPrefetches.remove(realApolloPrefetch)) {
+      if (!runningSyncPrefetches.remove(apolloPrefetch)) {
         throw new AssertionError("Prefetch call wasn't in progress");
       }
       runningCallsCount = getRunningCallsCount();
@@ -47,11 +44,11 @@ public class ApolloTracker {
     executeCallBackIfCallsAreFinished(runningCallsCount, idleCallback);
   }
 
-  public void syncCallFinished(RealApolloCall tRealApolloCall) {
+  public void syncCallFinished(ApolloCall apolloCall) {
     Runnable idleCallback;
     int runningCallsCount;
     synchronized (this) {
-      if (!runningSyncCalls.remove(tRealApolloCall)) {
+      if (!runningSyncCalls.remove(apolloCall)) {
         throw new AssertionError("Call wasn't in progress");
       }
       runningCallsCount = getRunningCallsCount();

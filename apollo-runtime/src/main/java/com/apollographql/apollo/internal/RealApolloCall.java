@@ -1,7 +1,7 @@
 package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloCall;
-import com.apollographql.apollo.ApolloTracker;
+import com.apollographql.apollo.ApolloCallTracker;
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
@@ -50,14 +50,14 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   final ApolloInterceptorChain interceptorChain;
   final ExecutorService dispatcher;
   final ApolloLogger logger;
-  final ApolloTracker tracker;
+  final ApolloCallTracker tracker;
   volatile boolean executed;
   volatile boolean canceled;
 
   public RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
       HttpCacheControl httpCacheControl, Moshi moshi, ResponseFieldMapper responseFieldMapper,
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ApolloStore apolloStore, CacheControl cacheControl,
-      ExecutorService dispatcher, ApolloLogger logger, ApolloTracker tracker) {
+      ExecutorService dispatcher, ApolloLogger logger, ApolloCallTracker tracker) {
     this.operation = operation;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;

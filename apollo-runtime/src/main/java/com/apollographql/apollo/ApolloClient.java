@@ -72,7 +72,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   private final HttpCacheControl defaultHttpCacheControl;
   private final CacheControl defaultCacheControl;
   private final ApolloLogger logger;
-  private final ApolloTracker callTracker = new ApolloTracker();
+  private final ApolloCallTracker callTracker = new ApolloCallTracker();
 
   private ApolloClient(Builder builder) {
     this.serverUrl = builder.serverUrl;
@@ -137,7 +137,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     return apolloStore;
   }
 
-  public ApolloTracker apolloTracker() {
+  public ApolloCallTracker apolloCallTracker() {
     return callTracker;
   }
 
@@ -163,7 +163,6 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     private final Moshi.Builder moshiBuilder = new Moshi.Builder();
     Moshi moshi;
     ExecutorService dispatcher;
-    /*ExecutorService dispatcher;*/
     Optional<Logger> logger = Optional.absent();
     HttpCache httpCache;
     ApolloLogger apolloLogger;

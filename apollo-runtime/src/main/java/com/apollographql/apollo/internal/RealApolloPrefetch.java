@@ -1,7 +1,7 @@
 package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloPrefetch;
-import com.apollographql.apollo.ApolloTracker;
+import com.apollographql.apollo.ApolloCallTracker;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.exception.ApolloException;
@@ -33,13 +33,13 @@ import okhttp3.Response;
   final Moshi moshi;
   final ExecutorService dispatcher;
   final ApolloLogger logger;
-  private ApolloTracker tracker;
+  private ApolloCallTracker tracker;
   final ApolloInterceptorChain interceptorChain;
   volatile boolean executed;
   volatile boolean canceled;
 
   public RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
-      Moshi moshi, ExecutorService dispatcher, ApolloLogger logger, ApolloTracker callTracker) {
+      Moshi moshi, ExecutorService dispatcher, ApolloLogger logger, ApolloCallTracker callTracker) {
     this.operation = operation;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
