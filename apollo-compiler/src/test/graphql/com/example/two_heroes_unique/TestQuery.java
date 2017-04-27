@@ -149,6 +149,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class R2 {
+    private final @Nonnull String __typename;
+
     private final @Nonnull String name;
 
     private volatile String $toString;
@@ -157,8 +159,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public R2(@Nonnull String name) {
+    public R2(@Nonnull String __typename, @Nonnull String name) {
+      this.__typename = __typename;
       this.name = name;
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -172,6 +179,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "R2{"
+          + "__typename=" + __typename + ", "
           + "name=" + name
           + "}";
       }
@@ -185,7 +193,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof R2) {
         R2 that = (R2) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
     }
@@ -194,6 +203,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         $hashCode = h;
@@ -204,18 +215,22 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<R2> {
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false)
       };
 
       @Override
       public R2 map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        return new R2(name);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        return new R2(__typename, name);
       }
     }
   }
 
   public static class Luke {
+    private final @Nonnull String __typename;
+
     private final @Nonnull String id;
 
     private final @Nonnull String name;
@@ -226,9 +241,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Luke(@Nonnull String id, @Nonnull String name) {
+    public Luke(@Nonnull String __typename, @Nonnull String id, @Nonnull String name) {
+      this.__typename = __typename;
       this.id = id;
       this.name = name;
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -249,6 +269,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Luke{"
+          + "__typename=" + __typename + ", "
           + "id=" + id + ", "
           + "name=" + name
           + "}";
@@ -263,7 +284,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Luke) {
         Luke that = (Luke) o;
-        return ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
          && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
@@ -273,6 +295,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (id == null) ? 0 : id.hashCode();
         h *= 1000003;
@@ -285,15 +309,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<Luke> {
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("id", "id", null, false),
         Field.forString("name", "name", null, false)
       };
 
       @Override
       public Luke map(ResponseReader reader) throws IOException {
-        final String id = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
-        return new Luke(id, name);
+        final String __typename = reader.read(fields[0]);
+        final String id = reader.read(fields[1]);
+        final String name = reader.read(fields[2]);
+        return new Luke(__typename, id, name);
       }
     }
   }
