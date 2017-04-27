@@ -185,7 +185,7 @@ public class RxApolloTest {
     });
 
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-    ;
+
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
     apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
 

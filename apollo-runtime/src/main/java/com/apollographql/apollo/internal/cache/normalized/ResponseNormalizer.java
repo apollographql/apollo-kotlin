@@ -86,7 +86,7 @@ public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     currentRecordBuilder = Record.builder(cacheKeyValue);
   }
 
-  @Override public void didParseObject(Field Field, Optional<R> objectSource) {
+  @Override public void didParseObject(Field field, Optional<R> objectSource) {
     path = pathStack.pop();
     Record completedRecord = currentRecordBuilder.build();
     valueStack.push(new CacheReference(completedRecord.key()));
