@@ -9,10 +9,7 @@ import com.apollographql.android.impl.normalizer.HeroName;
 import com.apollographql.android.impl.normalizer.HeroParentTypeDependentField;
 import com.apollographql.android.impl.normalizer.HeroTypeDependentAliasedField;
 import com.apollographql.android.impl.normalizer.SameHeroTwice;
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.cache.normalized.CacheKey;
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.CacheReference;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
@@ -28,9 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -41,9 +35,6 @@ import static com.apollographql.android.impl.normalizer.type.Episode.JEDI;
 import static com.google.common.truth.Truth.assertThat;
 
 public class ResponseNormalizationTest {
-
-  private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-
   private ApolloClient apolloClient;
   private MockWebServer server;
   private NormalizedCache normalizedCache;
@@ -53,20 +44,10 @@ public class ResponseNormalizationTest {
   @Before public void setUp() {
     server = new MockWebServer();
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-    InMemoryNormalizedCache inMemoryNormalizedCache = new InMemoryNormalizedCache();
-
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-                .normalizedCache(new InMemoryNormalizedCache(), new CacheKeyResolver() {
-          @Nonnull @Override public CacheKey resolve(@Nonnull Field field, @Nonnull Map<String, Object> arguments) {
-            String id = (String) arguments.get("id");
-            if (id == null || id.isEmpty()) {
-              return CacheKey.NO_KEY;
-            }
-            return CacheKey.from(id);
-          }
-        })
+        .normalizedCache(new InMemoryNormalizedCache(), new IdFieldCacheKeyResolver())
         .dispatcher(Utils.immediateExecutorService())
         .build();
     normalizedCache = apolloClient.apolloStore().normalizedCache();

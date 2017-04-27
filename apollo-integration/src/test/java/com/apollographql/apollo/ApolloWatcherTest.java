@@ -3,11 +3,8 @@ package com.apollographql.apollo;
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDs;
 import com.apollographql.android.impl.normalizer.type.Episode;
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
-import com.apollographql.apollo.cache.normalized.CacheKey;
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.exception.ApolloException;
 
 import junit.framework.Assert;
@@ -17,7 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -42,15 +38,7 @@ public class ApolloWatcherTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-                .normalizedCache(new InMemoryNormalizedCache(), new CacheKeyResolver() {
-          @Nonnull @Override public CacheKey resolve(@Nonnull Field field, @Nonnull Map<String, Object> arguments) {
-            String id = (String) arguments.get("id");
-            if (id == null || id.isEmpty()) {
-              return CacheKey.NO_KEY;
-            }
-            return CacheKey.from(id);
-          }
-        })
+        .normalizedCache(new InMemoryNormalizedCache(), new IdFieldCacheKeyResolver())
         .build();
   }
 

@@ -10,7 +10,6 @@ import com.apollographql.apollo.internal.cache.normalized.ReadableCache;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public final class CacheFieldValueResolver implements FieldValueResolver<Record> {
   private final ReadableCache readableCache;
@@ -38,8 +37,7 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
 
   private Record valueFor(Record record, Field.ObjectField field) {
     CacheReference cacheReference;
-    Map<String, Object> arguments = field.resolvedArguments(variables);
-    CacheKey fieldCacheKey = cacheKeyResolver.resolve(field, arguments);
+    CacheKey fieldCacheKey = cacheKeyResolver.fromFieldArguments(field, variables);
     if (fieldCacheKey != CacheKey.NO_KEY) {
       cacheReference = new CacheReference(fieldCacheKey.key());
     } else {

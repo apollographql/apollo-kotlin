@@ -223,6 +223,16 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
      * Set the configuration to be used for normalized cache.
      *
      * @param normalizedCacheFactory the {@link NormalizedCacheFactory} used to construct a {@link NormalizedCache}.
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
+    public Builder normalizedCache(@Nonnull NormalizedCacheFactory normalizedCacheFactory) {
+      return normalizedCache(normalizedCacheFactory, CacheKeyResolver.DEFAULT);
+    }
+
+    /**
+     * Set the configuration to be used for normalized cache.
+     *
+     * @param normalizedCacheFactory the {@link NormalizedCacheFactory} used to construct a {@link NormalizedCache}.
      * @param keyResolver            the {@link CacheKeyResolver} to use to normalize records
      * @return The {@link Builder} object to be used for chaining method calls
      */

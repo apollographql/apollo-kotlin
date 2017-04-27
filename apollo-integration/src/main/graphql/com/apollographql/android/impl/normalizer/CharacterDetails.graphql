@@ -1,0 +1,10 @@
+query CharacterDetails($id:ID!) {
+  character(id:$id) {
+    ... on Human {
+      name
+      birthDate
+      appearsIn
+      firstAppearsIn
+    }
+  }
+}

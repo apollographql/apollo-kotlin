@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -104,27 +103,19 @@ public class Field {
     return String.format("%s(%s)", fieldName(), orderIndependentKey(arguments, variables));
   }
 
-  @SuppressWarnings("unchecked") public Map<String, Object> resolvedArguments(Operation.Variables variables) {
-    return (Map<String, Object>) resolveArguments(arguments, variables.valueMap());
-  }
-
-  @SuppressWarnings("unchecked")
-  private Object resolveArguments(Map<String, Object> arguments, Map<String, Object> variables) {
-    if (isArgumentValueVariableType(arguments)) {
-      return variables.get(arguments.get(VARIABLE_NAME_KEY).toString());
-    } else {
-      Map<String, Object> result = new HashMap<>();
-      for (Map.Entry<String, Object> entry : arguments.entrySet()) {
-        String key = entry.getKey();
-        Object value = entry.getValue();
-        if (value instanceof Map) {
-          result.put(key, resolveArguments((Map<String, Object>) value, variables));
-        } else {
-          result.put(entry.getKey(), value);
-        }
+  @SuppressWarnings("unchecked") public Object resolveArgument(String name, Operation.Variables variables) {
+    Map<String, Object> variableValues = variables.valueMap();
+    Object argumentValue = arguments.get(name);
+    if (argumentValue instanceof Map) {
+      Map<String, Object> argumentValueMap = (Map<String, Object>) argumentValue;
+      if (isArgumentValueVariableType(argumentValueMap)) {
+        String variableName = argumentValueMap.get(VARIABLE_NAME_KEY).toString();
+        return variableValues.get(variableName);
+      } else {
+        return null;
       }
-      return result;
     }
+    return argumentValue;
   }
 
   private String orderIndependentKey(Map<String, Object> objectMap, Operation.Variables variables) {

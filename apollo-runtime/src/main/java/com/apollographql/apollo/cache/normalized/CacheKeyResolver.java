@@ -16,7 +16,13 @@ import javax.annotation.Nonnull;
  */
 public abstract class CacheKeyResolver {
   public static final CacheKeyResolver DEFAULT = new CacheKeyResolver() {
-    @Nonnull @Override public CacheKey resolve(@Nonnull Field field, @Nonnull Map<String, Object> arguments) {
+    @Nonnull @Override
+    public CacheKey fromFieldRecordSet(@Nonnull Field field, @Nonnull Map<String, Object> recordSet) {
+      return CacheKey.NO_KEY;
+    }
+
+    @Nonnull @Override
+    public CacheKey fromFieldArguments(@Nonnull Field field, @Nonnull Operation.Variables variables) {
       return CacheKey.NO_KEY;
     }
   };
@@ -32,5 +38,7 @@ public abstract class CacheKeyResolver {
     throw new IllegalArgumentException("Unknown operation type.");
   }
 
-  @Nonnull public abstract CacheKey resolve(@Nonnull Field field, @Nonnull Map<String, Object> arguments);
+  @Nonnull public abstract CacheKey fromFieldRecordSet(@Nonnull Field field, @Nonnull Map<String, Object> recordSet);
+
+  @Nonnull public abstract CacheKey fromFieldArguments(@Nonnull Field field, @Nonnull Operation.Variables variables);
 }

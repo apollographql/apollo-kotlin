@@ -1,4 +1,4 @@
-query CharacterById($id:ID!) {
+query CharacterNameById($id:ID!) {
   character(id:$id) {
     ... on Human {
       name

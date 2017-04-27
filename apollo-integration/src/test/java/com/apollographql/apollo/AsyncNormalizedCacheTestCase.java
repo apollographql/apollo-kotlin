@@ -2,12 +2,8 @@ package com.apollographql.apollo;
 
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.type.Episode;
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
-import com.apollographql.apollo.cache.normalized.CacheKey;
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
-import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.exception.ApolloException;
 
 import org.junit.After;
@@ -15,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -29,9 +24,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.fail;
 
 public class AsyncNormalizedCacheTestCase {
-    private ApolloClient apolloClient;
+  private ApolloClient apolloClient;
   private MockWebServer server;
-  private NormalizedCache normalizedCache;
 
   @Before public void setUp() {
     server = new MockWebServer();
@@ -41,17 +35,8 @@ public class AsyncNormalizedCacheTestCase {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-                .normalizedCache(new InMemoryNormalizedCache(), new CacheKeyResolver() {
-          @Nonnull @Override public CacheKey resolve(@Nonnull Field field, @Nonnull Map<String, Object> arguments) {
-            String id = (String) arguments.get("id");
-            if (id == null || id.isEmpty()) {
-              return CacheKey.NO_KEY;
-            }
-            return CacheKey.from(id);
-          }
-        })
+        .normalizedCache(new InMemoryNormalizedCache(), new IdFieldCacheKeyResolver())
         .build();
-    normalizedCache = apolloClient.apolloStore().normalizedCache();
   }
 
   @After public void tearDown() {
