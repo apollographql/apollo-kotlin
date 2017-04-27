@@ -41,6 +41,8 @@ public class HeroDetails {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
 
+  private final @Nonnull String __typename;
+
   private final @Nonnull String name;
 
   private final @Nonnull FriendsConnection friendsConnection;
@@ -53,11 +55,16 @@ public class HeroDetails {
 
   private volatile boolean $hashCodeMemoized;
 
-  public HeroDetails(@Nonnull String name, @Nonnull FriendsConnection friendsConnection,
-      @Nullable AsDroid asDroid) {
+  public HeroDetails(@Nonnull String __typename, @Nonnull String name,
+      @Nonnull FriendsConnection friendsConnection, @Nullable AsDroid asDroid) {
+    this.__typename = __typename;
     this.name = name;
     this.friendsConnection = friendsConnection;
     this.asDroid = Optional.fromNullable(asDroid);
+  }
+
+  public @Nonnull String __typename() {
+    return this.__typename;
   }
 
   /**
@@ -82,6 +89,7 @@ public class HeroDetails {
   public String toString() {
     if ($toString == null) {
       $toString = "HeroDetails{"
+        + "__typename=" + __typename + ", "
         + "name=" + name + ", "
         + "friendsConnection=" + friendsConnection + ", "
         + "asDroid=" + asDroid
@@ -97,7 +105,8 @@ public class HeroDetails {
     }
     if (o instanceof HeroDetails) {
       HeroDetails that = (HeroDetails) o;
-      return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+      return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+       && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
        && ((this.friendsConnection == null) ? (that.friendsConnection == null) : this.friendsConnection.equals(that.friendsConnection))
        && ((this.asDroid == null) ? (that.asDroid == null) : this.asDroid.equals(that.asDroid));
     }
@@ -108,6 +117,8 @@ public class HeroDetails {
   public int hashCode() {
     if (!$hashCodeMemoized) {
       int h = 1;
+      h *= 1000003;
+      h ^= (__typename == null) ? 0 : __typename.hashCode();
       h *= 1000003;
       h ^= (name == null) ? 0 : name.hashCode();
       h *= 1000003;
@@ -126,6 +137,7 @@ public class HeroDetails {
     final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
     final Field[] fields = {
+      Field.forString("__typename", "__typename", null, false),
       Field.forString("name", "name", null, false),
       Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection>() {
         @Override public FriendsConnection read(final ResponseReader reader) throws IOException {
@@ -146,14 +158,17 @@ public class HeroDetails {
 
     @Override
     public HeroDetails map(ResponseReader reader) throws IOException {
-      final String name = reader.read(fields[0]);
-      final FriendsConnection friendsConnection = reader.read(fields[1]);
-      final AsDroid asDroid = reader.read(fields[2]);
-      return new HeroDetails(name, friendsConnection, asDroid);
+      final String __typename = reader.read(fields[0]);
+      final String name = reader.read(fields[1]);
+      final FriendsConnection friendsConnection = reader.read(fields[2]);
+      final AsDroid asDroid = reader.read(fields[3]);
+      return new HeroDetails(__typename, name, friendsConnection, asDroid);
     }
   }
 
   public static class FriendsConnection {
+    private final @Nonnull String __typename;
+
     private final Optional<Integer> totalCount;
 
     private final Optional<List<Edge>> edges;
@@ -164,9 +179,15 @@ public class HeroDetails {
 
     private volatile boolean $hashCodeMemoized;
 
-    public FriendsConnection(@Nullable Integer totalCount, @Nullable List<Edge> edges) {
+    public FriendsConnection(@Nonnull String __typename, @Nullable Integer totalCount,
+        @Nullable List<Edge> edges) {
+      this.__typename = __typename;
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -187,6 +208,7 @@ public class HeroDetails {
     public String toString() {
       if ($toString == null) {
         $toString = "FriendsConnection{"
+          + "__typename=" + __typename + ", "
           + "totalCount=" + totalCount + ", "
           + "edges=" + edges
           + "}";
@@ -201,7 +223,8 @@ public class HeroDetails {
       }
       if (o instanceof FriendsConnection) {
         FriendsConnection that = (FriendsConnection) o;
-        return ((this.totalCount == null) ? (that.totalCount == null) : this.totalCount.equals(that.totalCount))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.totalCount == null) ? (that.totalCount == null) : this.totalCount.equals(that.totalCount))
          && ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
       }
       return false;
@@ -211,6 +234,8 @@ public class HeroDetails {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (totalCount == null) ? 0 : totalCount.hashCode();
         h *= 1000003;
@@ -225,6 +250,7 @@ public class HeroDetails {
       final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forInt("totalCount", "totalCount", null, true),
         Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
           @Override public Edge read(final ResponseReader reader) throws IOException {
@@ -235,14 +261,17 @@ public class HeroDetails {
 
       @Override
       public FriendsConnection map(ResponseReader reader) throws IOException {
-        final Integer totalCount = reader.read(fields[0]);
-        final List<Edge> edges = reader.read(fields[1]);
-        return new FriendsConnection(totalCount, edges);
+        final String __typename = reader.read(fields[0]);
+        final Integer totalCount = reader.read(fields[1]);
+        final List<Edge> edges = reader.read(fields[2]);
+        return new FriendsConnection(__typename, totalCount, edges);
       }
     }
   }
 
   public static class Edge {
+    private final @Nonnull String __typename;
+
     private final Optional<Node> node;
 
     private volatile String $toString;
@@ -251,8 +280,13 @@ public class HeroDetails {
 
     private volatile boolean $hashCodeMemoized;
 
-    public Edge(@Nullable Node node) {
+    public Edge(@Nonnull String __typename, @Nullable Node node) {
+      this.__typename = __typename;
       this.node = Optional.fromNullable(node);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -266,6 +300,7 @@ public class HeroDetails {
     public String toString() {
       if ($toString == null) {
         $toString = "Edge{"
+          + "__typename=" + __typename + ", "
           + "node=" + node
           + "}";
       }
@@ -279,7 +314,8 @@ public class HeroDetails {
       }
       if (o instanceof Edge) {
         Edge that = (Edge) o;
-        return ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
       }
       return false;
     }
@@ -288,6 +324,8 @@ public class HeroDetails {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (node == null) ? 0 : node.hashCode();
         $hashCode = h;
@@ -300,6 +338,7 @@ public class HeroDetails {
       final Node.Mapper nodeFieldMapper = new Node.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
           @Override public Node read(final ResponseReader reader) throws IOException {
             return nodeFieldMapper.map(reader);
@@ -309,13 +348,16 @@ public class HeroDetails {
 
       @Override
       public Edge map(ResponseReader reader) throws IOException {
-        final Node node = reader.read(fields[0]);
-        return new Edge(node);
+        final String __typename = reader.read(fields[0]);
+        final Node node = reader.read(fields[1]);
+        return new Edge(__typename, node);
       }
     }
   }
 
   public static class Node {
+    private final @Nonnull String __typename;
+
     private final @Nonnull String name;
 
     private volatile String $toString;
@@ -324,8 +366,13 @@ public class HeroDetails {
 
     private volatile boolean $hashCodeMemoized;
 
-    public Node(@Nonnull String name) {
+    public Node(@Nonnull String __typename, @Nonnull String name) {
+      this.__typename = __typename;
       this.name = name;
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -339,6 +386,7 @@ public class HeroDetails {
     public String toString() {
       if ($toString == null) {
         $toString = "Node{"
+          + "__typename=" + __typename + ", "
           + "name=" + name
           + "}";
       }
@@ -352,7 +400,8 @@ public class HeroDetails {
       }
       if (o instanceof Node) {
         Node that = (Node) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
     }
@@ -361,6 +410,8 @@ public class HeroDetails {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         $hashCode = h;
@@ -371,18 +422,22 @@ public class HeroDetails {
 
     public static final class Mapper implements ResponseFieldMapper<Node> {
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false)
       };
 
       @Override
       public Node map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        return new Node(name);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        return new Node(__typename, name);
       }
     }
   }
 
   public static class AsDroid {
+    private final @Nonnull String __typename;
+
     private final @Nonnull String name;
 
     private final @Nonnull FriendsConnection1 friendsConnection;
@@ -395,11 +450,16 @@ public class HeroDetails {
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsDroid(@Nonnull String name, @Nonnull FriendsConnection1 friendsConnection,
-        @Nullable String primaryFunction) {
+    public AsDroid(@Nonnull String __typename, @Nonnull String name,
+        @Nonnull FriendsConnection1 friendsConnection, @Nullable String primaryFunction) {
+      this.__typename = __typename;
       this.name = name;
       this.friendsConnection = friendsConnection;
       this.primaryFunction = Optional.fromNullable(primaryFunction);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -427,6 +487,7 @@ public class HeroDetails {
     public String toString() {
       if ($toString == null) {
         $toString = "AsDroid{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "friendsConnection=" + friendsConnection + ", "
           + "primaryFunction=" + primaryFunction
@@ -442,7 +503,8 @@ public class HeroDetails {
       }
       if (o instanceof AsDroid) {
         AsDroid that = (AsDroid) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          && ((this.friendsConnection == null) ? (that.friendsConnection == null) : this.friendsConnection.equals(that.friendsConnection))
          && ((this.primaryFunction == null) ? (that.primaryFunction == null) : this.primaryFunction.equals(that.primaryFunction));
       }
@@ -453,6 +515,8 @@ public class HeroDetails {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -469,6 +533,7 @@ public class HeroDetails {
       final FriendsConnection1.Mapper friendsConnection1FieldMapper = new FriendsConnection1.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
         Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection1>() {
           @Override public FriendsConnection1 read(final ResponseReader reader) throws IOException {
@@ -480,15 +545,18 @@ public class HeroDetails {
 
       @Override
       public AsDroid map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        final FriendsConnection1 friendsConnection = reader.read(fields[1]);
-        final String primaryFunction = reader.read(fields[2]);
-        return new AsDroid(name, friendsConnection, primaryFunction);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        final FriendsConnection1 friendsConnection = reader.read(fields[2]);
+        final String primaryFunction = reader.read(fields[3]);
+        return new AsDroid(__typename, name, friendsConnection, primaryFunction);
       }
     }
   }
 
   public static class FriendsConnection1 {
+    private final @Nonnull String __typename;
+
     private final Optional<Integer> totalCount;
 
     private final Optional<List<Edge1>> edges;
@@ -499,9 +567,15 @@ public class HeroDetails {
 
     private volatile boolean $hashCodeMemoized;
 
-    public FriendsConnection1(@Nullable Integer totalCount, @Nullable List<Edge1> edges) {
+    public FriendsConnection1(@Nonnull String __typename, @Nullable Integer totalCount,
+        @Nullable List<Edge1> edges) {
+      this.__typename = __typename;
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -522,6 +596,7 @@ public class HeroDetails {
     public String toString() {
       if ($toString == null) {
         $toString = "FriendsConnection1{"
+          + "__typename=" + __typename + ", "
           + "totalCount=" + totalCount + ", "
           + "edges=" + edges
           + "}";
@@ -536,7 +611,8 @@ public class HeroDetails {
       }
       if (o instanceof FriendsConnection1) {
         FriendsConnection1 that = (FriendsConnection1) o;
-        return ((this.totalCount == null) ? (that.totalCount == null) : this.totalCount.equals(that.totalCount))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.totalCount == null) ? (that.totalCount == null) : this.totalCount.equals(that.totalCount))
          && ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
       }
       return false;
@@ -546,6 +622,8 @@ public class HeroDetails {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (totalCount == null) ? 0 : totalCount.hashCode();
         h *= 1000003;
@@ -560,6 +638,7 @@ public class HeroDetails {
       final Edge1.Mapper edge1FieldMapper = new Edge1.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forInt("totalCount", "totalCount", null, true),
         Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge1>() {
           @Override public Edge1 read(final ResponseReader reader) throws IOException {
@@ -570,14 +649,17 @@ public class HeroDetails {
 
       @Override
       public FriendsConnection1 map(ResponseReader reader) throws IOException {
-        final Integer totalCount = reader.read(fields[0]);
-        final List<Edge1> edges = reader.read(fields[1]);
-        return new FriendsConnection1(totalCount, edges);
+        final String __typename = reader.read(fields[0]);
+        final Integer totalCount = reader.read(fields[1]);
+        final List<Edge1> edges = reader.read(fields[2]);
+        return new FriendsConnection1(__typename, totalCount, edges);
       }
     }
   }
 
   public static class Edge1 {
+    private final @Nonnull String __typename;
+
     private final Optional<Node1> node;
 
     private volatile String $toString;
@@ -586,8 +668,13 @@ public class HeroDetails {
 
     private volatile boolean $hashCodeMemoized;
 
-    public Edge1(@Nullable Node1 node) {
+    public Edge1(@Nonnull String __typename, @Nullable Node1 node) {
+      this.__typename = __typename;
       this.node = Optional.fromNullable(node);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -601,6 +688,7 @@ public class HeroDetails {
     public String toString() {
       if ($toString == null) {
         $toString = "Edge1{"
+          + "__typename=" + __typename + ", "
           + "node=" + node
           + "}";
       }
@@ -614,7 +702,8 @@ public class HeroDetails {
       }
       if (o instanceof Edge1) {
         Edge1 that = (Edge1) o;
-        return ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
       }
       return false;
     }
@@ -623,6 +712,8 @@ public class HeroDetails {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (node == null) ? 0 : node.hashCode();
         $hashCode = h;
@@ -635,6 +726,7 @@ public class HeroDetails {
       final Node1.Mapper node1FieldMapper = new Node1.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forObject("node", "node", null, true, new Field.ObjectReader<Node1>() {
           @Override public Node1 read(final ResponseReader reader) throws IOException {
             return node1FieldMapper.map(reader);
@@ -644,13 +736,16 @@ public class HeroDetails {
 
       @Override
       public Edge1 map(ResponseReader reader) throws IOException {
-        final Node1 node = reader.read(fields[0]);
-        return new Edge1(node);
+        final String __typename = reader.read(fields[0]);
+        final Node1 node = reader.read(fields[1]);
+        return new Edge1(__typename, node);
       }
     }
   }
 
   public static class Node1 {
+    private final @Nonnull String __typename;
+
     private final @Nonnull String name;
 
     private volatile String $toString;
@@ -659,8 +754,13 @@ public class HeroDetails {
 
     private volatile boolean $hashCodeMemoized;
 
-    public Node1(@Nonnull String name) {
+    public Node1(@Nonnull String __typename, @Nonnull String name) {
+      this.__typename = __typename;
       this.name = name;
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -674,6 +774,7 @@ public class HeroDetails {
     public String toString() {
       if ($toString == null) {
         $toString = "Node1{"
+          + "__typename=" + __typename + ", "
           + "name=" + name
           + "}";
       }
@@ -687,7 +788,8 @@ public class HeroDetails {
       }
       if (o instanceof Node1) {
         Node1 that = (Node1) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
     }
@@ -696,6 +798,8 @@ public class HeroDetails {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         $hashCode = h;
@@ -706,13 +810,15 @@ public class HeroDetails {
 
     public static final class Mapper implements ResponseFieldMapper<Node1> {
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false)
       };
 
       @Override
       public Node1 map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        return new Node1(name);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        return new Node1(__typename, name);
       }
     }
   }
