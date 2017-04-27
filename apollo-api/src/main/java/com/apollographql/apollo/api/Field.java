@@ -1,8 +1,4 @@
-package com.apollographql.apollo.api.internal;
-
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.ResponseReader;
-import com.apollographql.apollo.api.ScalarType;
+package com.apollographql.apollo.api;
 
 import java.io.IOException;
 import java.util.ArrayList;

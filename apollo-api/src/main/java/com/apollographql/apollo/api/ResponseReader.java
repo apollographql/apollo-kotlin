@@ -1,7 +1,5 @@
 package com.apollographql.apollo.api;
 
-import com.apollographql.apollo.api.internal.Field;
-
 import java.io.IOException;
 
 /*

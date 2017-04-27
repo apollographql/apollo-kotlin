@@ -1,7 +1,7 @@
 package com.apollographql.apollo.internal.reader;
 
 import com.apollographql.apollo.CustomTypeAdapter;
-import com.apollographql.apollo.api.internal.Field;
+import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
