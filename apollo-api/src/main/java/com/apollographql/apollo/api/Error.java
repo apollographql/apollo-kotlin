@@ -5,7 +5,9 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-/** Represents an error response returned from the GraphQL server */
+/**
+ * Represents an error response returned from the GraphQL server
+ */
 public class Error {
   private final String message;
   @Nullable private final List<Location> locations;
@@ -15,10 +17,16 @@ public class Error {
     this.locations = locations;
   }
 
+  /**
+   * Returns server error message.
+   */
   public String message() {
     return message;
   }
 
+  /**
+   * Returns the location of the error in the GraphQL operation.
+   */
   @Nullable public List<Location> locations() {
     return locations != null ? new ArrayList<>(locations) : null;
   }
@@ -50,6 +58,10 @@ public class Error {
         + '}';
   }
 
+  /**
+   * Represents the location of the error in the GraphQL operation sent to the server. This location is represented in
+   * terms of the line and column number.
+   */
   public static class Location {
     private final long line;
     private final long column;
@@ -59,10 +71,16 @@ public class Error {
       this.column = column;
     }
 
+    /**
+     * Returns the line number of the error location.
+     */
     public long line() {
       return line;
     }
 
+    /**
+     * Returns the column number of the error location.
+     */
     public long column() {
       return column;
     }

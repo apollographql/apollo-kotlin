@@ -7,6 +7,22 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Field is an abstraction for a field in a graphQL operation. For example, in the following graphQL query, Field
+ * represents abstraction for field 'name':
+ *
+ * <pre> {@code
+ *  {
+ *      hero {
+ *        name
+ *      }
+ *  }
+ *      }
+ * </pre>
+ *
+ * Field can refer to: <b>GraphQL Scalar Types, Objects or List</b>. For a complete list of types that a Field
+ * object can refer to see {@link Field.Type} class.
+ */
 public class Field {
   private final Type type;
   private final String responseName;
@@ -18,50 +34,147 @@ public class Field {
   private static final String VARIABLE_IDENTIFIER_VALUE = "Variable";
   private static final String VARIABLE_NAME_KEY = "variableName";
 
+  /**
+   * Factory method for creating a Field instance representing {@link Type#STRING}.
+   *
+   * @param responseName alias for the result of a field
+   * @param fieldName    name of the field in the GraphQL operation
+   * @param arguments    arguments to be passed along with the field
+   * @param optional     whether the arguments passed along are optional or required
+   * @return Field instance representing {@link Type#STRING}
+   */
   public static Field forString(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional) {
     return new Field(Type.STRING, responseName, fieldName, arguments, optional);
   }
 
+  /**
+   * Factory method for creating a Field instance representing {@link Type#INT}.
+   *
+   * @param responseName alias for the result of a field
+   * @param fieldName    name of the field in the GraphQL operation
+   * @param arguments    arguments to be passed along with the field
+   * @param optional     whether the arguments passed along are optional or required
+   * @return Field instance representing {@link Type#INT}
+   */
   public static Field forInt(String responseName, String fieldName, Map<String, Object> arguments, boolean optional) {
     return new Field(Type.INT, responseName, fieldName, arguments, optional);
   }
 
-  public static <T> Field forLong(String responseName, String fieldName, Map<String, Object> arguments,
+  /**
+   * Factory method for creating a Field instance representing {@link Type#LONG}.
+   *
+   * @param responseName alias for the result of a field
+   * @param fieldName    name of the field in the GraphQL operation
+   * @param arguments    arguments to be passed along with the field
+   * @param optional     whether the arguments passed along are optional or required
+   * @return Field instance representing {@link Type#LONG}
+   */
+  public static Field forLong(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional) {
     return new Field(Type.LONG, responseName, fieldName, arguments, optional);
   }
 
+  /**
+   * Factory method for creating a Field instance representing {@link Type#DOUBLE}.
+   *
+   * @param responseName alias for the result of a field
+   * @param fieldName    name of the field in the GraphQL operation
+   * @param arguments    arguments to be passed along with the field
+   * @param optional     whether the arguments passed along are optional or required
+   * @return Field instance representing {@link Type#DOUBLE}
+   */
   public static Field forDouble(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional) {
     return new Field(Type.DOUBLE, responseName, fieldName, arguments, optional);
   }
 
+  /**
+   * Factory method for creating a Field instance representing {@link Type#BOOLEAN}.
+   *
+   * @param responseName alias for the result of a field
+   * @param fieldName    name of the field in the GraphQL operation
+   * @param arguments    arguments to be passed along with the field
+   * @param optional     whether the arguments passed along are optional or required
+   * @return Field instance representing {@link Type#BOOLEAN}
+   */
   public static Field forBoolean(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional) {
     return new Field(Type.BOOLEAN, responseName, fieldName, arguments, optional);
   }
 
+  /**
+   * Factory method for creating a Field instance representing a custom {@link Type#OBJECT}.
+   *
+   * @param responseName alias for the result of a field
+   * @param fieldName    name of the field in the GraphQL operation
+   * @param arguments    arguments to be passed along with the field
+   * @param optional     whether the arguments passed along are optional or required
+   * @param objectReader converts the field response to the custom object type
+   * @param <T>          type of the custom object
+   * @return Field instance representing custom {@link Type#OBJECT}
+   */
   public static <T> Field forObject(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional, ObjectReader<T> objectReader) {
     return new ObjectField(responseName, fieldName, arguments, optional, objectReader);
   }
 
+  /**
+   * Factory method for creating a Field instance representing {@link Type#SCALAR_LIST}.
+   *
+   * @param responseName alias for the result of a field
+   * @param fieldName    name of the field in the GraphQL operation
+   * @param arguments    arguments to be passed along with the field
+   * @param optional     whether the arguments passed along are optional or required
+   * @param listReader   converts the field response to a list of GraphQL scalar types
+   * @param <T>          type of the scalar type
+   * @return Field instance representing {@link Type#SCALAR_LIST}
+   */
   public static <T> Field forList(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional, ListReader<T> listReader) {
     return new ScalarListField(responseName, fieldName, arguments, optional, listReader);
   }
 
+  /**
+   * Factory method for creating a Field instance representing {@link Type#OBJECT_LIST}.
+   *
+   * @param responseName alias for the result of a field
+   * @param fieldName    name of the field in the GraphQL operation
+   * @param arguments    arguments to be passed along with the field
+   * @param optional     whether the arguments passed along are optional or required
+   * @param objectReader converts the field response to a list of custom object types
+   * @param <T>          type of the custom object
+   * @return Field instance representing {@link Type#OBJECT_LIST}
+   */
   public static <T> Field forList(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional, ObjectReader<T> objectReader) {
     return new ObjectListField(responseName, fieldName, arguments, optional, objectReader);
   }
 
-  public static <T> Field forCustomType(String responseName, String fieldName, Map<String, Object> arguments,
+  /**
+   * Factory method for creating a Field instance representing a custom GraphQL Scalar type, {@link Type#CUSTOM}
+   *
+   * @param responseName alias for the result of a field
+   * @param fieldName    name of the field in the GraphQL operation
+   * @param arguments    arguments to be passed along with the field
+   * @param optional     whether the arguments passed along are optional or required
+   * @param scalarType   the custom scalar type of the field
+   * @return Field instance representing {@link Type#CUSTOM}
+   */
+  public static Field forCustomType(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional, ScalarType scalarType) {
     return new CustomTypeField(responseName, fieldName, arguments, optional, scalarType);
   }
 
+  /**
+   * Factory method for creating a Field instance representing {@link Type#CONDITIONAL}.
+   *
+   * @param responseName          alias for the result of a field
+   * @param fieldName             name of the field in the GraphQL operation
+   * @param conditionalTypeReader converts the field response to an optional type
+   * @param <T>                   type of the conditional
+   * @return Field instance representing {@link Type#CONDITIONAL}
+   */
   public static <T> Field forConditionalType(String responseName, String fieldName,
       ConditionalTypeReader<T> conditionalTypeReader) {
     return new ConditionalTypeField(responseName, fieldName, conditionalTypeReader);
@@ -158,6 +271,9 @@ public class Field {
     }
   }
 
+  /**
+   * An abstraction for the field types
+   */
   public enum Type {
     STRING,
     INT,
@@ -198,6 +314,9 @@ public class Field {
     <T> T readCustomType(ScalarType scalarType) throws IOException;
   }
 
+  /**
+   * Abstraction for a Field representing a custom Object type.
+   */
   public static final class ObjectField extends Field {
     private final ObjectReader objectReader;
 
@@ -212,6 +331,9 @@ public class Field {
     }
   }
 
+  /**
+   * Abstraction for a Field representing a list of GraphQL scalar types.
+   */
   public static final class ScalarListField extends Field {
     private final ListReader listReader;
 
@@ -226,6 +348,9 @@ public class Field {
     }
   }
 
+  /**
+   * Abstraction for a Field representing a list of custom Objects.
+   */
   public static final class ObjectListField extends Field {
     private final ObjectReader objectReader;
 
@@ -240,6 +365,9 @@ public class Field {
     }
   }
 
+  /**
+   * Abstraction for a Field representing a custom GraphQL scalar type.
+   */
   public static final class CustomTypeField extends Field {
     private final ScalarType scalarType;
 
@@ -254,6 +382,26 @@ public class Field {
     }
   }
 
+  /**
+   * Abstraction for a Field representing a conditional type. Conditional Type is used for parsing inline fragments or
+   * fragments. Here is an example of how it is used:
+   * <pre>
+   * {@code
+   * final Field[] fields = {
+   *            Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
+   *
+   *                @Override
+   *                public Fragments read(String conditionalType, ResponseReader reader) throws IOException { return
+   *                      fragmentsFieldMapper.map(reader, conditionalType);
+   *                      }
+   *                 })
+   *           };
+   * }
+   * </pre>
+   *
+   * In the example above, the first field '__typename' will be read and then passed to another nested mapper along with
+   * reader that will decide by checking conditionalType what type of fragment it will parse.
+   */
   public static final class ConditionalTypeField extends Field {
     private final ConditionalTypeReader conditionalTypeReader;
 
