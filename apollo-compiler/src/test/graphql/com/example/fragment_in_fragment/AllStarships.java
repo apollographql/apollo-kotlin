@@ -137,6 +137,8 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
   }
 
   public static class AllStarships1 {
+    private final @Nonnull String __typename;
+
     private final Optional<List<Edge>> edges;
 
     private volatile String $toString;
@@ -145,8 +147,13 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
     private volatile boolean $hashCodeMemoized;
 
-    public AllStarships1(@Nullable List<Edge> edges) {
+    public AllStarships1(@Nonnull String __typename, @Nullable List<Edge> edges) {
+      this.__typename = __typename;
       this.edges = Optional.fromNullable(edges);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -160,6 +167,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public String toString() {
       if ($toString == null) {
         $toString = "AllStarships1{"
+          + "__typename=" + __typename + ", "
           + "edges=" + edges
           + "}";
       }
@@ -173,7 +181,8 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       }
       if (o instanceof AllStarships1) {
         AllStarships1 that = (AllStarships1) o;
-        return ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
       }
       return false;
     }
@@ -182,6 +191,8 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (edges == null) ? 0 : edges.hashCode();
         $hashCode = h;
@@ -194,6 +205,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
           @Override public Edge read(final ResponseReader reader) throws IOException {
             return edgeFieldMapper.map(reader);
@@ -203,13 +215,16 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
       @Override
       public AllStarships1 map(ResponseReader reader) throws IOException {
-        final List<Edge> edges = reader.read(fields[0]);
-        return new AllStarships1(edges);
+        final String __typename = reader.read(fields[0]);
+        final List<Edge> edges = reader.read(fields[1]);
+        return new AllStarships1(__typename, edges);
       }
     }
   }
 
   public static class Edge {
+    private final @Nonnull String __typename;
+
     private final Optional<Node> node;
 
     private volatile String $toString;
@@ -218,8 +233,13 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
     private volatile boolean $hashCodeMemoized;
 
-    public Edge(@Nullable Node node) {
+    public Edge(@Nonnull String __typename, @Nullable Node node) {
+      this.__typename = __typename;
       this.node = Optional.fromNullable(node);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -233,6 +253,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public String toString() {
       if ($toString == null) {
         $toString = "Edge{"
+          + "__typename=" + __typename + ", "
           + "node=" + node
           + "}";
       }
@@ -246,7 +267,8 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       }
       if (o instanceof Edge) {
         Edge that = (Edge) o;
-        return ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
       }
       return false;
     }
@@ -255,6 +277,8 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (node == null) ? 0 : node.hashCode();
         $hashCode = h;
@@ -267,6 +291,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       final Node.Mapper nodeFieldMapper = new Node.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
           @Override public Node read(final ResponseReader reader) throws IOException {
             return nodeFieldMapper.map(reader);
@@ -276,13 +301,16 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
       @Override
       public Edge map(ResponseReader reader) throws IOException {
-        final Node node = reader.read(fields[0]);
-        return new Edge(node);
+        final String __typename = reader.read(fields[0]);
+        final Node node = reader.read(fields[1]);
+        return new Edge(__typename, node);
       }
     }
   }
 
   public static class Node {
+    private final @Nonnull String __typename;
+
     private final @Nonnull Fragments fragments;
 
     private volatile String $toString;
@@ -291,8 +319,13 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
     private volatile boolean $hashCodeMemoized;
 
-    public Node(@Nonnull Fragments fragments) {
+    public Node(@Nonnull String __typename, @Nonnull Fragments fragments) {
+      this.__typename = __typename;
       this.fragments = fragments;
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     public @Nonnull Fragments fragments() {
@@ -303,6 +336,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public String toString() {
       if ($toString == null) {
         $toString = "Node{"
+          + "__typename=" + __typename + ", "
           + "fragments=" + fragments
           + "}";
       }
@@ -316,7 +350,8 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       }
       if (o instanceof Node) {
         Node that = (Node) o;
-        return ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
       }
       return false;
     }
@@ -325,6 +360,8 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (fragments == null) ? 0 : fragments.hashCode();
         $hashCode = h;
@@ -403,6 +440,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
           @Override
           public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
@@ -413,8 +451,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
       @Override
       public Node map(ResponseReader reader) throws IOException {
-        final Fragments fragments = reader.read(fields[0]);
-        return new Node(fragments);
+        final String __typename = reader.read(fields[0]);
+        final Fragments fragments = reader.read(fields[1]);
+        return new Node(__typename, fragments);
       }
     }
   }

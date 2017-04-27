@@ -10,16 +10,23 @@ import javax.lang.model.element.Modifier
 data class Fragment(
     val fragmentName: String,
     val source: String,
-    val typeCondition:String,
+    val typeCondition: String,
     val possibleTypes: List<String>,
     val fields: List<Field>,
     val fragmentSpreads: List<String>,
     val inlineFragments: List<InlineFragment>,
     val fragmentsReferenced: List<String>
 ) : CodeGenerator {
+
   /** Returns the Java interface that represents this Fragment object. */
   override fun toTypeSpec(context: CodeGenerationContext): TypeSpec =
-      SchemaTypeSpecBuilder(formatClassName(), fields, fragmentSpreads, inlineFragments, context)
+      SchemaTypeSpecBuilder(
+          typeName = formatClassName(),
+          fields = listOf(Field("__typename", "__typename", "String!")) + fields,
+          fragmentSpreads = fragmentSpreads,
+          inlineFragments = inlineFragments,
+          context = context
+      )
           .build(Modifier.PUBLIC)
           .toBuilder()
           .addAnnotation(Annotations.GENERATED_BY_APOLLO)

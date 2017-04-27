@@ -125,6 +125,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Hero {
+    public final @Nonnull String __typename;
+
     /**
      * The name of the character
      */
@@ -143,8 +145,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Hero(@Nonnull String name, @Nonnull List<Episode> appearsIn,
+    public Hero(@Nonnull String __typename, @Nonnull String name, @Nonnull List<Episode> appearsIn,
         @Nonnull Fragments fragments) {
+      this.__typename = __typename;
       this.name = name;
       this.appearsIn = appearsIn;
       this.fragments = fragments;
@@ -154,6 +157,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Hero{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "appearsIn=" + appearsIn + ", "
           + "fragments=" + fragments
@@ -169,7 +173,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          && ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn))
          && ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
       }
@@ -180,6 +185,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -258,6 +265,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
         Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
           @Override public Episode read(final Field.ListItemReader reader) throws IOException {
@@ -274,10 +282,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Hero map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        final List<Episode> appearsIn = reader.read(fields[1]);
-        final Fragments fragments = reader.read(fields[2]);
-        return new Hero(name, appearsIn, fragments);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        final List<Episode> appearsIn = reader.read(fields[2]);
+        final Fragments fragments = reader.read(fields[3]);
+        return new Hero(__typename, name, appearsIn, fragments);
       }
     }
   }

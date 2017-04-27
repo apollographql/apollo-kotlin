@@ -26,6 +26,8 @@ public class HumanDetails {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human"));
 
+  private final @Nonnull String __typename;
+
   private final @Nonnull String name;
 
   private final Optional<Double> height;
@@ -36,9 +38,14 @@ public class HumanDetails {
 
   private volatile boolean $hashCodeMemoized;
 
-  public HumanDetails(@Nonnull String name, @Nullable Double height) {
+  public HumanDetails(@Nonnull String __typename, @Nonnull String name, @Nullable Double height) {
+    this.__typename = __typename;
     this.name = name;
     this.height = Optional.fromNullable(height);
+  }
+
+  public @Nonnull String __typename() {
+    return this.__typename;
   }
 
   /**
@@ -59,6 +66,7 @@ public class HumanDetails {
   public String toString() {
     if ($toString == null) {
       $toString = "HumanDetails{"
+        + "__typename=" + __typename + ", "
         + "name=" + name + ", "
         + "height=" + height
         + "}";
@@ -73,7 +81,8 @@ public class HumanDetails {
     }
     if (o instanceof HumanDetails) {
       HumanDetails that = (HumanDetails) o;
-      return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+      return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+       && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
        && ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
     }
     return false;
@@ -83,6 +92,8 @@ public class HumanDetails {
   public int hashCode() {
     if (!$hashCodeMemoized) {
       int h = 1;
+      h *= 1000003;
+      h ^= (__typename == null) ? 0 : __typename.hashCode();
       h *= 1000003;
       h ^= (name == null) ? 0 : name.hashCode();
       h *= 1000003;
@@ -95,15 +106,17 @@ public class HumanDetails {
 
   public static final class Mapper implements ResponseFieldMapper<HumanDetails> {
     final Field[] fields = {
+      Field.forString("__typename", "__typename", null, false),
       Field.forString("name", "name", null, false),
       Field.forDouble("height", "height", null, true)
     };
 
     @Override
     public HumanDetails map(ResponseReader reader) throws IOException {
-      final String name = reader.read(fields[0]);
-      final Double height = reader.read(fields[1]);
-      return new HumanDetails(name, height);
+      final String __typename = reader.read(fields[0]);
+      final String name = reader.read(fields[1]);
+      final Double height = reader.read(fields[2]);
+      return new HumanDetails(__typename, name, height);
     }
   }
 }

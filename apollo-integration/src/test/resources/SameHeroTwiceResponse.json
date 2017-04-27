@@ -1,9 +1,11 @@
 {
   "data": {
     "hero": {
+      "__typename": "Droid",
       "name": "R2-D2"
     },
     "r2": {
+      "__typename": "Droid",
       "appearsIn": [
         "NEWHOPE",
         "EMPIRE",

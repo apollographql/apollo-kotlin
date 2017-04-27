@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
@@ -27,6 +28,8 @@ public class PilotFragment {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Person"));
 
+  private final @Nonnull String __typename;
+
   private final Optional<String> name;
 
   private final Optional<Homeworld> homeworld;
@@ -37,9 +40,15 @@ public class PilotFragment {
 
   private volatile boolean $hashCodeMemoized;
 
-  public PilotFragment(@Nullable String name, @Nullable Homeworld homeworld) {
+  public PilotFragment(@Nonnull String __typename, @Nullable String name,
+      @Nullable Homeworld homeworld) {
+    this.__typename = __typename;
     this.name = Optional.fromNullable(name);
     this.homeworld = Optional.fromNullable(homeworld);
+  }
+
+  public @Nonnull String __typename() {
+    return this.__typename;
   }
 
   /**
@@ -60,6 +69,7 @@ public class PilotFragment {
   public String toString() {
     if ($toString == null) {
       $toString = "PilotFragment{"
+        + "__typename=" + __typename + ", "
         + "name=" + name + ", "
         + "homeworld=" + homeworld
         + "}";
@@ -74,7 +84,8 @@ public class PilotFragment {
     }
     if (o instanceof PilotFragment) {
       PilotFragment that = (PilotFragment) o;
-      return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+      return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+       && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
        && ((this.homeworld == null) ? (that.homeworld == null) : this.homeworld.equals(that.homeworld));
     }
     return false;
@@ -84,6 +95,8 @@ public class PilotFragment {
   public int hashCode() {
     if (!$hashCodeMemoized) {
       int h = 1;
+      h *= 1000003;
+      h ^= (__typename == null) ? 0 : __typename.hashCode();
       h *= 1000003;
       h ^= (name == null) ? 0 : name.hashCode();
       h *= 1000003;
@@ -98,6 +111,7 @@ public class PilotFragment {
     final Homeworld.Mapper homeworldFieldMapper = new Homeworld.Mapper();
 
     final Field[] fields = {
+      Field.forString("__typename", "__typename", null, false),
       Field.forString("name", "name", null, true),
       Field.forObject("homeworld", "homeworld", null, true, new Field.ObjectReader<Homeworld>() {
         @Override public Homeworld read(final ResponseReader reader) throws IOException {
@@ -108,13 +122,16 @@ public class PilotFragment {
 
     @Override
     public PilotFragment map(ResponseReader reader) throws IOException {
-      final String name = reader.read(fields[0]);
-      final Homeworld homeworld = reader.read(fields[1]);
-      return new PilotFragment(name, homeworld);
+      final String __typename = reader.read(fields[0]);
+      final String name = reader.read(fields[1]);
+      final Homeworld homeworld = reader.read(fields[2]);
+      return new PilotFragment(__typename, name, homeworld);
     }
   }
 
   public static class Homeworld {
+    private final @Nonnull String __typename;
+
     private final Optional<String> name;
 
     private volatile String $toString;
@@ -123,8 +140,13 @@ public class PilotFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public Homeworld(@Nullable String name) {
+    public Homeworld(@Nonnull String __typename, @Nullable String name) {
+      this.__typename = __typename;
       this.name = Optional.fromNullable(name);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -138,6 +160,7 @@ public class PilotFragment {
     public String toString() {
       if ($toString == null) {
         $toString = "Homeworld{"
+          + "__typename=" + __typename + ", "
           + "name=" + name
           + "}";
       }
@@ -151,7 +174,8 @@ public class PilotFragment {
       }
       if (o instanceof Homeworld) {
         Homeworld that = (Homeworld) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
     }
@@ -160,6 +184,8 @@ public class PilotFragment {
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         $hashCode = h;
@@ -170,13 +196,15 @@ public class PilotFragment {
 
     public static final class Mapper implements ResponseFieldMapper<Homeworld> {
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, true)
       };
 
       @Override
       public Homeworld map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        return new Homeworld(name);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        return new Homeworld(__typename, name);
       }
     }
   }

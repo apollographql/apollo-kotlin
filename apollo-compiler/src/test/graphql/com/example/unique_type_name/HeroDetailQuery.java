@@ -144,6 +144,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
   }
 
   public static class HeroDetailQuery1 {
+    private final @Nonnull String __typename;
+
     private final @Nonnull String name;
 
     private final Optional<List<Friend>> friends;
@@ -156,11 +158,16 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     private volatile boolean $hashCodeMemoized;
 
-    public HeroDetailQuery1(@Nonnull String name, @Nullable List<Friend> friends,
-        @Nullable AsHuman asHuman) {
+    public HeroDetailQuery1(@Nonnull String __typename, @Nonnull String name,
+        @Nullable List<Friend> friends, @Nullable AsHuman asHuman) {
+      this.__typename = __typename;
       this.name = name;
       this.friends = Optional.fromNullable(friends);
       this.asHuman = Optional.fromNullable(asHuman);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -185,6 +192,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public String toString() {
       if ($toString == null) {
         $toString = "HeroDetailQuery1{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "friends=" + friends + ", "
           + "asHuman=" + asHuman
@@ -200,7 +208,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       }
       if (o instanceof HeroDetailQuery1) {
         HeroDetailQuery1 that = (HeroDetailQuery1) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends))
          && ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman));
       }
@@ -211,6 +220,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -229,6 +240,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
         Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend>() {
           @Override public Friend read(final ResponseReader reader) throws IOException {
@@ -249,15 +261,18 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
       @Override
       public HeroDetailQuery1 map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        final List<Friend> friends = reader.read(fields[1]);
-        final AsHuman asHuman = reader.read(fields[2]);
-        return new HeroDetailQuery1(name, friends, asHuman);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        final List<Friend> friends = reader.read(fields[2]);
+        final AsHuman asHuman = reader.read(fields[3]);
+        return new HeroDetailQuery1(__typename, name, friends, asHuman);
       }
     }
   }
 
   public static class Friend {
+    private final @Nonnull String __typename;
+
     private final @Nonnull String name;
 
     private volatile String $toString;
@@ -266,8 +281,13 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     private volatile boolean $hashCodeMemoized;
 
-    public Friend(@Nonnull String name) {
+    public Friend(@Nonnull String __typename, @Nonnull String name) {
+      this.__typename = __typename;
       this.name = name;
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -281,6 +301,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public String toString() {
       if ($toString == null) {
         $toString = "Friend{"
+          + "__typename=" + __typename + ", "
           + "name=" + name
           + "}";
       }
@@ -294,7 +315,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       }
       if (o instanceof Friend) {
         Friend that = (Friend) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
     }
@@ -303,6 +325,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         $hashCode = h;
@@ -313,18 +337,22 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     public static final class Mapper implements ResponseFieldMapper<Friend> {
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false)
       };
 
       @Override
       public Friend map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        return new Friend(name);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        return new Friend(__typename, name);
       }
     }
   }
 
   public static class AsHuman {
+    private final @Nonnull String __typename;
+
     private final @Nonnull String name;
 
     private final Optional<List<Friend1>> friends;
@@ -337,10 +365,16 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsHuman(@Nonnull String name, @Nullable List<Friend1> friends, @Nullable Double height) {
+    public AsHuman(@Nonnull String __typename, @Nonnull String name,
+        @Nullable List<Friend1> friends, @Nullable Double height) {
+      this.__typename = __typename;
       this.name = name;
       this.friends = Optional.fromNullable(friends);
       this.height = Optional.fromNullable(height);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -368,6 +402,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public String toString() {
       if ($toString == null) {
         $toString = "AsHuman{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "friends=" + friends + ", "
           + "height=" + height
@@ -383,7 +418,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       }
       if (o instanceof AsHuman) {
         AsHuman that = (AsHuman) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends))
          && ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
       }
@@ -394,6 +430,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -410,6 +448,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       final Friend1.Mapper friend1FieldMapper = new Friend1.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
         Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend1>() {
           @Override public Friend1 read(final ResponseReader reader) throws IOException {
@@ -421,15 +460,18 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
       @Override
       public AsHuman map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        final List<Friend1> friends = reader.read(fields[1]);
-        final Double height = reader.read(fields[2]);
-        return new AsHuman(name, friends, height);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        final List<Friend1> friends = reader.read(fields[2]);
+        final Double height = reader.read(fields[3]);
+        return new AsHuman(__typename, name, friends, height);
       }
     }
   }
 
   public static class Friend1 {
+    private final @Nonnull String __typename;
+
     private final @Nonnull String name;
 
     private final @Nonnull List<Episode> appearsIn;
@@ -442,11 +484,16 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     private volatile boolean $hashCodeMemoized;
 
-    public Friend1(@Nonnull String name, @Nonnull List<Episode> appearsIn,
-        @Nullable List<Friend2> friends) {
+    public Friend1(@Nonnull String __typename, @Nonnull String name,
+        @Nonnull List<Episode> appearsIn, @Nullable List<Friend2> friends) {
+      this.__typename = __typename;
       this.name = name;
       this.appearsIn = appearsIn;
       this.friends = Optional.fromNullable(friends);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -474,6 +521,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public String toString() {
       if ($toString == null) {
         $toString = "Friend1{"
+          + "__typename=" + __typename + ", "
           + "name=" + name + ", "
           + "appearsIn=" + appearsIn + ", "
           + "friends=" + friends
@@ -489,7 +537,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       }
       if (o instanceof Friend1) {
         Friend1 that = (Friend1) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          && ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn))
          && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends));
       }
@@ -500,6 +549,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
@@ -516,6 +567,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       final Friend2.Mapper friend2FieldMapper = new Friend2.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
         Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
           @Override public Episode read(final Field.ListItemReader reader) throws IOException {
@@ -531,15 +583,18 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
       @Override
       public Friend1 map(ResponseReader reader) throws IOException {
-        final String name = reader.read(fields[0]);
-        final List<Episode> appearsIn = reader.read(fields[1]);
-        final List<Friend2> friends = reader.read(fields[2]);
-        return new Friend1(name, appearsIn, friends);
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        final List<Episode> appearsIn = reader.read(fields[2]);
+        final List<Friend2> friends = reader.read(fields[3]);
+        return new Friend1(__typename, name, appearsIn, friends);
       }
     }
   }
 
   public static class Friend2 {
+    private final @Nonnull String __typename;
+
     private final @Nonnull Fragments fragments;
 
     private volatile String $toString;
@@ -548,8 +603,13 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     private volatile boolean $hashCodeMemoized;
 
-    public Friend2(@Nonnull Fragments fragments) {
+    public Friend2(@Nonnull String __typename, @Nonnull Fragments fragments) {
+      this.__typename = __typename;
       this.fragments = fragments;
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     public @Nonnull Fragments fragments() {
@@ -560,6 +620,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public String toString() {
       if ($toString == null) {
         $toString = "Friend2{"
+          + "__typename=" + __typename + ", "
           + "fragments=" + fragments
           + "}";
       }
@@ -573,7 +634,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       }
       if (o instanceof Friend2) {
         Friend2 that = (Friend2) o;
-        return ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
       }
       return false;
     }
@@ -582,6 +644,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (fragments == null) ? 0 : fragments.hashCode();
         $hashCode = h;
@@ -660,6 +724,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
           @Override
           public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
@@ -670,8 +735,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
       @Override
       public Friend2 map(ResponseReader reader) throws IOException {
-        final Fragments fragments = reader.read(fields[0]);
-        return new Friend2(fragments);
+        final String __typename = reader.read(fields[0]);
+        final Fragments fragments = reader.read(fields[1]);
+        return new Friend2(__typename, fragments);
       }
     }
   }

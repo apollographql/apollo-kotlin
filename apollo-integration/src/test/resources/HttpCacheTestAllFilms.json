@@ -1,29 +1,36 @@
 {
   "data": {
     "allFilms": {
+      "__typename": "FilmsConnection",
       "totalCount": 6,
       "films": [
         {
+          "__typename": "Film",
           "title": "A New Hope",
           "releaseDate": "1977-05-25"
         },
         {
+          "__typename": "Film",
           "title": "The Empire Strikes Back",
           "releaseDate": "1980-05-17"
         },
         {
+          "__typename": "Film",
           "title": "Return of the Jedi",
           "releaseDate": "1983-05-25"
         },
         {
+          "__typename": "Film",
           "title": "The Phantom Menace",
           "releaseDate": "1999-05-19"
         },
         {
+          "__typename": "Film",
           "title": "Attack of the Clones",
           "releaseDate": "2002-05-16"
         },
         {
+          "__typename": "Film",
           "title": "Revenge of the Sith",
           "releaseDate": "2005-05-19"
         }

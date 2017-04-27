@@ -199,6 +199,8 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
   }
 
   public static class CreateReview {
+    private final @Nonnull String __typename;
+
     private final int stars;
 
     private final Optional<String> commentary;
@@ -209,9 +211,14 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
     private volatile boolean $hashCodeMemoized;
 
-    public CreateReview(int stars, @Nullable String commentary) {
+    public CreateReview(@Nonnull String __typename, int stars, @Nullable String commentary) {
+      this.__typename = __typename;
       this.stars = stars;
       this.commentary = Optional.fromNullable(commentary);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     /**
@@ -232,6 +239,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     public String toString() {
       if ($toString == null) {
         $toString = "CreateReview{"
+          + "__typename=" + __typename + ", "
           + "stars=" + stars + ", "
           + "commentary=" + commentary
           + "}";
@@ -246,7 +254,8 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       }
       if (o instanceof CreateReview) {
         CreateReview that = (CreateReview) o;
-        return this.stars == that.stars
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && this.stars == that.stars
          && ((this.commentary == null) ? (that.commentary == null) : this.commentary.equals(that.commentary));
       }
       return false;
@@ -256,6 +265,8 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= stars;
         h *= 1000003;
@@ -268,15 +279,17 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
     public static final class Mapper implements ResponseFieldMapper<CreateReview> {
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forInt("stars", "stars", null, false),
         Field.forString("commentary", "commentary", null, true)
       };
 
       @Override
       public CreateReview map(ResponseReader reader) throws IOException {
-        final int stars = reader.read(fields[0]);
-        final String commentary = reader.read(fields[1]);
-        return new CreateReview(stars, commentary);
+        final String __typename = reader.read(fields[0]);
+        final int stars = reader.read(fields[1]);
+        final String commentary = reader.read(fields[2]);
+        return new CreateReview(__typename, stars, commentary);
       }
     }
   }

@@ -152,6 +152,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class R2 {
+    private final @Nonnull String __typename;
+
     private final @Nonnull Fragments fragments;
 
     private volatile String $toString;
@@ -160,8 +162,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public R2(@Nonnull Fragments fragments) {
+    public R2(@Nonnull String __typename, @Nonnull Fragments fragments) {
+      this.__typename = __typename;
       this.fragments = fragments;
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     public @Nonnull Fragments fragments() {
@@ -172,6 +179,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "R2{"
+          + "__typename=" + __typename + ", "
           + "fragments=" + fragments
           + "}";
       }
@@ -185,7 +193,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof R2) {
         R2 that = (R2) o;
-        return ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
       }
       return false;
     }
@@ -194,6 +203,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (fragments == null) ? 0 : fragments.hashCode();
         $hashCode = h;
@@ -289,6 +300,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
           @Override
           public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
@@ -299,13 +311,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public R2 map(ResponseReader reader) throws IOException {
-        final Fragments fragments = reader.read(fields[0]);
-        return new R2(fragments);
+        final String __typename = reader.read(fields[0]);
+        final Fragments fragments = reader.read(fields[1]);
+        return new R2(__typename, fragments);
       }
     }
   }
 
   public static class Luke {
+    private final @Nonnull String __typename;
+
     private final @Nonnull Fragments fragments;
 
     private volatile String $toString;
@@ -314,8 +329,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Luke(@Nonnull Fragments fragments) {
+    public Luke(@Nonnull String __typename, @Nonnull Fragments fragments) {
+      this.__typename = __typename;
       this.fragments = fragments;
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
     }
 
     public @Nonnull Fragments fragments() {
@@ -326,6 +346,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "Luke{"
+          + "__typename=" + __typename + ", "
           + "fragments=" + fragments
           + "}";
       }
@@ -339,7 +360,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Luke) {
         Luke that = (Luke) o;
-        return ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
       }
       return false;
     }
@@ -348,6 +370,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= (fragments == null) ? 0 : fragments.hashCode();
         $hashCode = h;
@@ -443,6 +467,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
       final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
         Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
           @Override
           public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
@@ -453,8 +478,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Luke map(ResponseReader reader) throws IOException {
-        final Fragments fragments = reader.read(fields[0]);
-        return new Luke(fragments);
+        final String __typename = reader.read(fields[0]);
+        final Fragments fragments = reader.read(fields[1]);
+        return new Luke(__typename, fragments);
       }
     }
   }
