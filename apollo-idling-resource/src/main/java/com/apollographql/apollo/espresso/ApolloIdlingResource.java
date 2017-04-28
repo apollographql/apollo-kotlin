@@ -36,7 +36,7 @@ public class ApolloIdlingResource implements IdlingResource {
   private ApolloIdlingResource(String name, ApolloClient apolloClient) {
     this.apolloClient = apolloClient;
     this.name = name;
-    apolloClient.apolloCallTracker().setIdleCallback(new Runnable() {
+    apolloClient.setIdleCallback(new Runnable() {
       @Override public void run() {
         ResourceCallback callback = ApolloIdlingResource.this.callback;
         if (callback != null) {
@@ -51,7 +51,7 @@ public class ApolloIdlingResource implements IdlingResource {
   }
 
   @Override public boolean isIdleNow() {
-    return apolloClient.apolloCallTracker().getRunningCallsCount() == 0;
+    return apolloClient.getRunningCallsCount() == 0;
   }
 
   @Override public void registerIdleTransitionCallback(ResourceCallback callback) {

@@ -63,7 +63,7 @@ public class ApolloCallTrackerTest {
       }
     });
 
-    assertThat(apolloClient.apolloCallTracker().getRunningCallsCount()).isEqualTo(0);
+    assertThat(apolloClient.getRunningCallsCount()).isEqualTo(0);
 
     prefetch.enqueue(new ApolloPrefetch.Callback() {
       @Override public void onSuccess() {
@@ -74,7 +74,7 @@ public class ApolloCallTrackerTest {
       }
     });
 
-    assertThat(apolloClient.apolloCallTracker().getRunningCallsCount()).isEqualTo(1);
+    assertThat(apolloClient.getRunningCallsCount()).isEqualTo(1);
   }
 
   @Test
@@ -108,7 +108,7 @@ public class ApolloCallTrackerTest {
       }
     });
 
-    assertThat(apolloClient.apolloCallTracker().getRunningCallsCount()).isEqualTo(0);
+    assertThat(apolloClient.getRunningCallsCount()).isEqualTo(0);
 
     apolloCall.enqueue(new ApolloCall.Callback<Object>() {
       @Override public void onResponse(@Nonnull Response<Object> response) {
@@ -120,6 +120,6 @@ public class ApolloCallTrackerTest {
       }
     });
 
-    assertThat(apolloClient.apolloCallTracker().getRunningCallsCount()).isEqualTo(1);
+    assertThat(apolloClient.getRunningCallsCount()).isEqualTo(1);
   }
 }

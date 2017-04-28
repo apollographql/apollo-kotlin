@@ -74,7 +74,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   private final HttpCacheControl defaultHttpCacheControl;
   private final CacheControl defaultCacheControl;
   private final ApolloLogger logger;
-  private final com.apollographql.apollo.internal.ApolloCallTracker callTracker = new com.apollographql.apollo.internal.ApolloCallTracker();
+  private final ApolloCallTracker callTracker = new ApolloCallTracker();
   private final List<ApolloInterceptor> applicationInterceptors;
 
   private ApolloClient(Builder builder) {
@@ -142,8 +142,12 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     return apolloStore;
   }
 
-  public com.apollographql.apollo.internal.ApolloCallTracker apolloCallTracker() {
-    return callTracker;
+  public void setIdleCallback(Runnable idleCallback) {
+    callTracker.setIdleCallback(idleCallback);
+  }
+
+  public int getRunningCallsCount() {
+    return callTracker.getRunningCallsCount();
   }
 
   Response cachedHttpResponse(String cacheKey) throws IOException {
@@ -308,8 +312,8 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
      * after the response source is selected (either the server, cache or both). This method can be called multiple
      * times for adding multiple application interceptors. </p>
      *
-     * <p>Note: Interceptors will be called <b>in the order in which they are added to the list of interceptors</b>
-     * and if any of the interceptors tries to short circuit the responses, then subsequent interceptors <b>won't</b> be
+     * <p>Note: Interceptors will be called <b>in the order in which they are added to the list of interceptors</b> and
+     * if any of the interceptors tries to short circuit the responses, then subsequent interceptors <b>won't</b> be
      * called.</p>
      *
      * @param interceptor Application level interceptor to add
