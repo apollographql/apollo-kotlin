@@ -91,6 +91,9 @@ class ApolloPlugin implements Plugin<Project> {
       getVariants().all { v ->
         addVariantTasks(v, apolloIRGenTask, apolloClassGenTask, v.sourceSets)
       }
+      project.android.testVariants.each { tv ->
+        addVariantTasks(tv, apolloIRGenTask, apolloClassGenTask, tv.sourceSets)
+      }
     } else {
       getSourceSets().all { sourceSet ->
         addSourceSetTasks(sourceSet, apolloIRGenTask, apolloClassGenTask)
@@ -179,5 +182,4 @@ class ApolloPlugin implements Plugin<Project> {
     return project.android.hasProperty(
         'libraryVariants') ? project.android.libraryVariants : project.android.applicationVariants
   }
-
 }
