@@ -312,8 +312,8 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
      * after the response source is selected (either the server, cache or both). This method can be called multiple
      * times for adding multiple application interceptors. </p>
      *
-     * <p>Note: Interceptors will be called <b>in the order in which they are added to the list of interceptors</b> and
-     * if any of the interceptors tries to short circuit the responses, then subsequent interceptors <b>won't</b> be
+     * <p>Note: Interceptors will be called <b>in the order in which they are added to the list of interceptors</b>
+     * and if any of the interceptors tries to short circuit the responses, then subsequent interceptors <b>won't</b> be
      * called.</p>
      *
      * @param interceptor Application level interceptor to add

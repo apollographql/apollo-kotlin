@@ -48,25 +48,6 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
     return parse(operation, response.httpResponse.get());
   }
 
-  /*@Override
-  public void interceptAsync(@Nonnull final Operation operation, @Nonnull ApolloInterceptorChain chain,
-      @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
-    chain.proceedAsync(dispatcher, new CallBack() {
-      @Override public void onResponse(@Nonnull InterceptorResponse response) {
-        try {
-          InterceptorResponse result = parse(operation, response.httpResponse.get());
-          callBack.onResponse(result);
-        } catch (ApolloException e) {
-          onFailure(e);
-        }
-      }
-
-      @Override public void onFailure(@Nonnull ApolloException e) {
-        callBack.onFailure(e);
-      }
-    });
-  }*/
-
   @Override
   public void interceptAsync(@Nonnull final Operation operation, @Nonnull ApolloInterceptorChain chain,
       @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {

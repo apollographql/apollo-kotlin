@@ -102,8 +102,8 @@ public class ApolloIdlingResourceTest {
   public void checkIsIdleNow_whenCallIsQueued() throws IOException, TimeoutException, InterruptedException {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
-    final NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
-    final NamedCountDownLatch latch1 = new NamedCountDownLatch("latch2", 1);
+    final NamedCountDownLatch firstLatch = new NamedCountDownLatch("firstLatch", 1);
+    final NamedCountDownLatch secondLatch = new NamedCountDownLatch("secondLatch", 1);
 
     ExecutorService executorService = Executors.newFixedThreadPool(1);
 
@@ -120,9 +120,9 @@ public class ApolloIdlingResourceTest {
 
     apolloClient.newCall(query).enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
       @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
-        latch.countDown();
+        firstLatch.countDown();
         try {
-          latch1.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+          secondLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
           throw new AssertionError(e);
         }
@@ -134,9 +134,9 @@ public class ApolloIdlingResourceTest {
     });
     assertThat(idlingResource.isIdleNow()).isFalse();
 
-    latch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    firstLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
 
-    latch1.countDown();
+    secondLatch.countDown();
 
     executorService.shutdown();
     executorService.awaitTermination(TIME_OUT_SECONDS, TimeUnit.SECONDS);

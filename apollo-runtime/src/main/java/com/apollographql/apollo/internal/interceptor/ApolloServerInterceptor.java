@@ -72,33 +72,6 @@ import okio.Buffer;
     }
   }
 
-  /*@Override
-  public void interceptAsync(@Nonnull final Operation operation, @Nonnull final ApolloInterceptorChain chain,
-      @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
-    dispatcher.execute(new Runnable() {
-      @Override public void run() {
-        try {
-          httpCall = httpCall(operation);
-        } catch (IOException e) {
-          logger.e(e, "Failed to prepare http call");
-          callBack.onFailure(new ApolloNetworkException("Failed to prepare http call", e));
-          return;
-        }
-
-        httpCall.enqueue(new Callback() {
-          @Override public void onFailure(Call call, IOException e) {
-            logger.e(e, "Failed to execute http call");
-            callBack.onFailure(new ApolloNetworkException("Failed to execute http call", e));
-          }
-
-          @Override public void onResponse(Call call, Response response) throws IOException {
-            callBack.onResponse(new ApolloInterceptor.InterceptorResponse(response));
-          }
-        });
-      }
-    });
-  }*/
-
   @Override
   public void interceptAsync(@Nonnull final Operation operation, @Nonnull final ApolloInterceptorChain chain,
       @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
