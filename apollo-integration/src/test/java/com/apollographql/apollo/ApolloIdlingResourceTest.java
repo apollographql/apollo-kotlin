@@ -126,7 +126,7 @@ public class ApolloIdlingResourceTest {
         try {
           latch1.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-
+          throw new AssertionError(e);
         }
       }
 
