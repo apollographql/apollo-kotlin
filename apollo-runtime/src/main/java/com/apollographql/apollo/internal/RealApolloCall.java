@@ -1,7 +1,6 @@
 package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloCall;
-import com.apollographql.apollo.ApolloCallTracker;
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
@@ -96,8 +95,9 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
-    tracker.asyncCallInProgress(responseCallback);
-    interceptorChain.proceedAsync(dispatcher, new AsyncCall(responseCallback));
+    AsyncCall asyncCall = new AsyncCall(responseCallback);
+    tracker.asyncCallInProgress(asyncCall);
+    interceptorChain.proceedAsync(dispatcher, asyncCall);
   }
 
   @Nonnull @Override public RealApolloWatcher<T> watcher() {
@@ -137,7 +137,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         applicationInterceptors, tracker);
   }
 
-  private final class AsyncCall implements ApolloInterceptor.CallBack {
+  final class AsyncCall implements ApolloInterceptor.CallBack {
 
     private final Callback<T> responseCallback;
 
@@ -154,7 +154,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
         responseCallback.onResponse(response.parsedResponse.get());
       } finally {
-        tracker.asyncCallFinished(responseCallback);
+        tracker.asyncCallFinished(this);
       }
     }
 
@@ -174,7 +174,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
           responseCallback.onFailure(e);
         }
       } finally {
-        tracker.asyncCallFinished(responseCallback);
+        tracker.asyncCallFinished(this);
       }
     }
   }

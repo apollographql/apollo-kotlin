@@ -1,7 +1,6 @@
 package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloPrefetch;
-import com.apollographql.apollo.ApolloCallTracker;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.exception.ApolloException;
@@ -72,8 +71,9 @@ import okhttp3.Response;
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
-    tracker.asyncPrefetchInProgress(responseCallback);
-    interceptorChain.proceedAsync(dispatcher, new AsyncCall(responseCallback));
+    AsyncCall asyncCall = new AsyncCall(responseCallback);
+    tracker.asyncPrefetchInProgress(asyncCall);
+    interceptorChain.proceedAsync(dispatcher, asyncCall);
     return this;
   }
 
@@ -90,7 +90,7 @@ import okhttp3.Response;
     return canceled;
   }
 
-  private class AsyncCall implements ApolloInterceptor.CallBack {
+  class AsyncCall implements ApolloInterceptor.CallBack {
 
     private final Callback responseCallback;
 
@@ -121,7 +121,7 @@ import okhttp3.Response;
         responseCallback.onSuccess();
 
       } finally {
-        tracker.asyncPrefetchFinished(responseCallback);
+        tracker.asyncPrefetchFinished(this);
       }
     }
 
@@ -141,7 +141,7 @@ import okhttp3.Response;
         }
 
       } finally {
-        tracker.asyncPrefetchFinished(responseCallback);
+        tracker.asyncPrefetchFinished(this);
       }
     }
   }

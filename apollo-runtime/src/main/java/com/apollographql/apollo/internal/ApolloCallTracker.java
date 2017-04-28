@@ -1,4 +1,7 @@
-package com.apollographql.apollo;
+package com.apollographql.apollo.internal;
+
+import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.ApolloPrefetch;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -8,30 +11,18 @@ public class ApolloCallTracker {
   private Runnable idleCallback;
 
   private final Deque<ApolloCall> runningSyncCalls = new ArrayDeque<>();
-  private final Deque<ApolloCall.Callback> runningAsyncCalls = new ArrayDeque<>();
+  private final Deque<RealApolloCall<?>.AsyncCall> runningAsyncCalls = new ArrayDeque<>();
   private final Deque<ApolloPrefetch> runningSyncPrefetches = new ArrayDeque<>();
-  private final Deque<ApolloPrefetch.Callback> runningAsyncPrefetches = new ArrayDeque<>();
+  private final Deque<RealApolloPrefetch.AsyncCall> runningAsyncPrefetches = new ArrayDeque<>();
 
   public ApolloCallTracker() {
   }
 
-  public void syncPrefetchInProgress(ApolloPrefetch apolloPrefetch) {
+  void syncPrefetchInProgress(ApolloPrefetch apolloPrefetch) {
     runningSyncPrefetches.add(apolloPrefetch);
   }
 
-  public synchronized void syncCallInProgress(ApolloCall apolloCall) {
-    runningSyncCalls.add(apolloCall);
-  }
-
-  public synchronized void asyncPrefetchInProgress(ApolloPrefetch.Callback responseCallback) {
-    runningAsyncPrefetches.add(responseCallback);
-  }
-
-  public synchronized void asyncCallInProgress(ApolloCall.Callback callback) {
-    runningAsyncCalls.add(callback);
-  }
-
-  public void syncPrefetchFinished(ApolloPrefetch apolloPrefetch) {
+  void syncPrefetchFinished(ApolloPrefetch apolloPrefetch) {
     Runnable idleCallback;
     int runningCallsCount;
     synchronized (this) {
@@ -44,7 +35,28 @@ public class ApolloCallTracker {
     executeCallBackIfCallsAreFinished(runningCallsCount, idleCallback);
   }
 
-  public void syncCallFinished(ApolloCall apolloCall) {
+  synchronized void asyncPrefetchInProgress(RealApolloPrefetch.AsyncCall asyncCall) {
+    runningAsyncPrefetches.add(asyncCall);
+  }
+
+  void asyncPrefetchFinished(RealApolloPrefetch.AsyncCall asyncCall) {
+    Runnable idleCallback;
+    int runningCallsCount;
+    synchronized (this) {
+      if (!runningAsyncPrefetches.remove(asyncCall)) {
+        throw new AssertionError("Prefetch call wasn't in progress");
+      }
+      runningCallsCount = getRunningCallsCount();
+      idleCallback = this.idleCallback;
+    }
+    executeCallBackIfCallsAreFinished(runningCallsCount, idleCallback);
+  }
+
+  synchronized void syncCallInProgress(ApolloCall apolloCall) {
+    runningSyncCalls.add(apolloCall);
+  }
+
+  void syncCallFinished(ApolloCall apolloCall) {
     Runnable idleCallback;
     int runningCallsCount;
     synchronized (this) {
@@ -57,24 +69,15 @@ public class ApolloCallTracker {
     executeCallBackIfCallsAreFinished(runningCallsCount, idleCallback);
   }
 
-  public void asyncPrefetchFinished(ApolloPrefetch.Callback responseCallback) {
-    Runnable idleCallback;
-    int runningCallsCount;
-    synchronized (this) {
-      if (!runningAsyncPrefetches.remove(responseCallback)) {
-        throw new AssertionError("Prefetch call wasn't in progress");
-      }
-      runningCallsCount = getRunningCallsCount();
-      idleCallback = this.idleCallback;
-    }
-    executeCallBackIfCallsAreFinished(runningCallsCount, idleCallback);
+  synchronized void asyncCallInProgress(RealApolloCall<?>.AsyncCall asyncCall) {
+    runningAsyncCalls.add(asyncCall);
   }
 
-  public void asyncCallFinished(ApolloCall.Callback callback) {
+  void asyncCallFinished(RealApolloCall<?>.AsyncCall asyncCall) {
     Runnable idleCallback;
     int runningCallsCount;
     synchronized (this) {
-      if (!runningAsyncCalls.remove(callback)) {
+      if (!runningAsyncCalls.remove(asyncCall)) {
         throw new AssertionError("Call wasn't in progress");
       }
       runningCallsCount = getRunningCallsCount();

@@ -14,8 +14,7 @@ import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
-import com.apollographql.apollo.internal.RealApolloCall;
-import com.apollographql.apollo.internal.RealApolloPrefetch;
+import com.apollographql.apollo.internal.*;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.cache.normalized.RealApolloStore;
 import com.apollographql.apollo.internal.util.ApolloLogger;
@@ -75,7 +74,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   private final HttpCacheControl defaultHttpCacheControl;
   private final CacheControl defaultCacheControl;
   private final ApolloLogger logger;
-  private final ApolloCallTracker callTracker = new ApolloCallTracker();
+  private final com.apollographql.apollo.internal.ApolloCallTracker callTracker = new com.apollographql.apollo.internal.ApolloCallTracker();
   private final List<ApolloInterceptor> applicationInterceptors;
 
   private ApolloClient(Builder builder) {
@@ -143,7 +142,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     return apolloStore;
   }
 
-  public ApolloCallTracker apolloCallTracker() {
+  public com.apollographql.apollo.internal.ApolloCallTracker apolloCallTracker() {
     return callTracker;
   }
 
