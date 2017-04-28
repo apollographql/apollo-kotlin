@@ -44,9 +44,7 @@ public class ApolloIdlingResourceTest {
 
   @Before
   public void setup() {
-
     server = new MockWebServer();
-
     okHttpClient = new OkHttpClient.Builder()
         .build();
   }

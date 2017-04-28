@@ -13,6 +13,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.RealApolloCall;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,6 +21,8 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.Nonnull;
 
@@ -66,6 +69,11 @@ public class ApolloCallTrackerTest {
     server = new MockWebServer();
   }
 
+  @After
+  public void tearDown() throws Exception {
+    server.shutdown();
+  }
+
   @Test
   public void testRunningCallsCount_whenSyncPrefetchCallIsMade() throws InterruptedException {
     final CountDownLatch firstLatch = new CountDownLatch(1);
@@ -107,7 +115,6 @@ public class ApolloCallTrackerTest {
 
   @Test
   public void testRunningCallsCount_whenAsyncPrefetchCallIsMade() throws InterruptedException {
-    final CountDownLatch latch = new CountDownLatch(1);
     ApolloClient apolloClient = ApolloClient.builder()
         .serverUrl(SERVER_URL)
         .okHttpClient(okHttpClientBuilder.build())
@@ -120,7 +127,6 @@ public class ApolloCallTrackerTest {
 
     prefetch.enqueue(new ApolloPrefetch.Callback() {
       @Override public void onSuccess() {
-        latch.countDown();
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
@@ -128,8 +134,6 @@ public class ApolloCallTrackerTest {
     });
 
     assertThat(apolloClient.getRunningCallsCount()).isEqualTo(1);
-    latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS);
-    assertThat(apolloClient.getRunningCallsCount()).isEqualTo(0);
   }
 
   @Test
@@ -180,7 +184,6 @@ public class ApolloCallTrackerTest {
 
   @Test
   public void testRunningCallsCount_whenAsyncApolloCallIsMade() throws InterruptedException {
-    final CountDownLatch latch = new CountDownLatch(1);
     ApolloClient apolloClient = ApolloClient.builder()
         .serverUrl(SERVER_URL)
         .okHttpClient(okHttpClientBuilder.build())
@@ -193,7 +196,6 @@ public class ApolloCallTrackerTest {
 
     apolloCall.enqueue(new ApolloCall.Callback<Object>() {
       @Override public void onResponse(@Nonnull Response<Object> response) {
-        latch.countDown();
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
@@ -201,8 +203,62 @@ public class ApolloCallTrackerTest {
     });
 
     assertThat(apolloClient.getRunningCallsCount()).isEqualTo(1);
-    latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS);
-    assertThat(apolloClient.getRunningCallsCount()).isEqualTo(0);
+  }
+
+  @Test
+  public void testIdleCallBackIsInvoked_whenApolloClientBecomesIdle() throws InterruptedException, TimeoutException {
+    server.enqueue(createMockResponse());
+
+    final AtomicBoolean idle = new AtomicBoolean();
+    final CountDownLatch firstLatch = new CountDownLatch(1);
+    final CountDownLatch secondLatch = new CountDownLatch(1);
+
+    ApolloInterceptor interceptor = new ApolloInterceptor() {
+      @Nonnull @Override
+      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+        firstLatch.countDown();
+        try {
+          secondLatch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+          throw new AssertionError();
+        }
+        throw new ApolloException("ApolloException");
+      }
+
+      @Override
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+      }
+
+      @Override public void dispose() {
+      }
+    };
+
+    Runnable idleCallback = new Runnable() {
+      @Override public void run() {
+        idle.set(true);
+      }
+    };
+
+    ApolloClient apolloClient = ApolloClient.builder()
+        .serverUrl(SERVER_URL)
+        .okHttpClient(okHttpClientBuilder.build())
+        .addApplicationInterceptor(interceptor)
+        .build();
+    apolloClient.setIdleCallback(idleCallback);
+
+    assertThat(idle.get()).isFalse();
+
+    RealApolloCall<Object> apolloCall = (RealApolloCall<Object>) apolloClient.newCall(EMPTY_QUERY);
+    Thread thread = synchronousApolloCall(apolloCall);
+
+    firstLatch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS);
+
+    assertThat(idle.get()).isFalse();
+
+    secondLatch.countDown();
+    thread.join();
+    assertThat(idle.get()).isTrue();
   }
 
   private Thread synchronousApolloCall(final ApolloCall apolloCall) {
@@ -211,7 +267,6 @@ public class ApolloCallTrackerTest {
         try {
           apolloCall.execute();
         } catch (ApolloException expected) {
-
         }
       }
     };
@@ -224,7 +279,6 @@ public class ApolloCallTrackerTest {
         try {
           prefetch.execute();
         } catch (ApolloException expected) {
-
         }
       }
     };
