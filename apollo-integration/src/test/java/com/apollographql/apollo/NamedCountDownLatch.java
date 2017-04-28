@@ -32,8 +32,7 @@ public class NamedCountDownLatch extends CountDownLatch {
    */
   public void awaitOrThrowWithTimeout(long timeout, TimeUnit timeUnit)
       throws InterruptedException, TimeoutException {
-    this.await(timeout, timeUnit);
-    if (this.getCount() != 0) {
+    if (!this.await(timeout, timeUnit)) {
       throw new TimeoutException("Time expired before latch, " + this.name() + "count went to zero.");
     }
   }

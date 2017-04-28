@@ -13,8 +13,13 @@ data class InlineFragment(
     val fragmentSpreads: List<String>?
 ) : CodeGenerator {
   override fun toTypeSpec(context: CodeGenerationContext): TypeSpec =
-      SchemaTypeSpecBuilder(formatClassName(), fields, fragmentSpreads ?: emptyList(), emptyList(), context)
-          .build(Modifier.PUBLIC, Modifier.STATIC)
+      SchemaTypeSpecBuilder(
+          typeName = formatClassName(),
+          fields = listOf(Field("__typename", "__typename", "String!")) + fields,
+          fragmentSpreads = fragmentSpreads ?: emptyList(),
+          inlineFragments = emptyList(),
+          context = context
+      ).build(Modifier.PUBLIC, Modifier.STATIC)
 
   fun accessorMethodSpec(context: CodeGenerationContext): MethodSpec {
     return MethodSpec.methodBuilder(formatClassName().decapitalize())
@@ -24,12 +29,12 @@ data class InlineFragment(
         .build()
   }
 
-  fun fieldSpec(context: CodeGenerationContext, publicModifier:Boolean = false): FieldSpec =
+  fun fieldSpec(context: CodeGenerationContext, publicModifier: Boolean = false): FieldSpec =
       FieldSpec.builder(typeName(context), formatClassName().decapitalize())
           .addModifiers(if (publicModifier) Modifier.PUBLIC else Modifier.PRIVATE, Modifier.FINAL)
           .build()
 
-  fun formatClassName():String = "$INTERFACE_PREFIX${typeCondition.capitalize()}"
+  fun formatClassName(): String = "$INTERFACE_PREFIX${typeCondition.capitalize()}"
 
   private fun typeName(context: CodeGenerationContext) = JavaTypeResolver(context, "").resolve(formatClassName(), true)
 

@@ -37,7 +37,8 @@
 				{
 					"responseName": "name",
 					"fieldName": "name",
-					"type": "String!"
+					"type": "String!",
+					"description": "The name of the character"
 				}
 			],
 			"fragmentSpreads": [],

@@ -25,29 +25,53 @@ public class DroidDetails {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Droid"));
 
+  private final @Nonnull String __typename;
+
   private final @Nonnull String name;
 
   private final Optional<String> primaryFunction;
 
-  public DroidDetails(@Nonnull String name, @Nullable String primaryFunction) {
+  private volatile String $toString;
+
+  private volatile int $hashCode;
+
+  private volatile boolean $hashCodeMemoized;
+
+  public DroidDetails(@Nonnull String __typename, @Nonnull String name,
+      @Nullable String primaryFunction) {
+    this.__typename = __typename;
     this.name = name;
     this.primaryFunction = Optional.fromNullable(primaryFunction);
   }
 
+  public @Nonnull String __typename() {
+    return this.__typename;
+  }
+
+  /**
+   * What others call this droid
+   */
   public @Nonnull String name() {
     return this.name;
   }
 
+  /**
+   * This droid's primary function
+   */
   public Optional<String> primaryFunction() {
     return this.primaryFunction;
   }
 
   @Override
   public String toString() {
-    return "DroidDetails{"
-      + "name=" + name + ", "
-      + "primaryFunction=" + primaryFunction
-      + "}";
+    if ($toString == null) {
+      $toString = "DroidDetails{"
+        + "__typename=" + __typename + ", "
+        + "name=" + name + ", "
+        + "primaryFunction=" + primaryFunction
+        + "}";
+    }
+    return $toString;
   }
 
   @Override
@@ -57,7 +81,8 @@ public class DroidDetails {
     }
     if (o instanceof DroidDetails) {
       DroidDetails that = (DroidDetails) o;
-      return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+      return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+       && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
        && ((this.primaryFunction == null) ? (that.primaryFunction == null) : this.primaryFunction.equals(that.primaryFunction));
     }
     return false;
@@ -65,25 +90,33 @@ public class DroidDetails {
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= (name == null) ? 0 : name.hashCode();
-    h *= 1000003;
-    h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
-    return h;
+    if (!$hashCodeMemoized) {
+      int h = 1;
+      h *= 1000003;
+      h ^= (__typename == null) ? 0 : __typename.hashCode();
+      h *= 1000003;
+      h ^= (name == null) ? 0 : name.hashCode();
+      h *= 1000003;
+      h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
+      $hashCode = h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
   }
 
   public static final class Mapper implements ResponseFieldMapper<DroidDetails> {
     final Field[] fields = {
+      Field.forString("__typename", "__typename", null, false),
       Field.forString("name", "name", null, false),
       Field.forString("primaryFunction", "primaryFunction", null, true)
     };
 
     @Override
     public DroidDetails map(ResponseReader reader) throws IOException {
-      final String name = reader.read(fields[0]);
-      final String primaryFunction = reader.read(fields[1]);
-      return new DroidDetails(name, primaryFunction);
+      final String __typename = reader.read(fields[0]);
+      final String name = reader.read(fields[1]);
+      final String primaryFunction = reader.read(fields[2]);
+      return new DroidDetails(__typename, name, primaryFunction);
     }
   }
 }

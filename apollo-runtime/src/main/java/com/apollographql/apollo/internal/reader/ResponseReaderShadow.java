@@ -2,6 +2,7 @@ package com.apollographql.apollo.internal.reader;
 
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.internal.Optional;
 
 import java.util.List;
 
@@ -15,9 +16,9 @@ public interface ResponseReaderShadow<R> {
 
   void didParseScalar(Object value);
 
-  void willParseObject(R objectSource);
+  void willParseObject(Optional<R> objectSource);
 
-  void didParseObject(R objectSource);
+  void didParseObject(Optional<R> objectSource);
 
   void didParseList(List array);
 

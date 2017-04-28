@@ -1,6 +1,7 @@
 {
   "data": {
     "hero": {
+      "__typename": "Human",
       "appearsIn": [
         "NEWHOPE",
         "EMPIRE",

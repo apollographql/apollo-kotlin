@@ -22,21 +22,41 @@ public class HeroDetails {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
 
+  private final @Nonnull String __typename;
+
   private final @Nonnull String name;
 
-  public HeroDetails(@Nonnull String name) {
+  private volatile String $toString;
+
+  private volatile int $hashCode;
+
+  private volatile boolean $hashCodeMemoized;
+
+  public HeroDetails(@Nonnull String __typename, @Nonnull String name) {
+    this.__typename = __typename;
     this.name = name;
   }
 
+  public @Nonnull String __typename() {
+    return this.__typename;
+  }
+
+  /**
+   * The name of the character
+   */
   public @Nonnull String name() {
     return this.name;
   }
 
   @Override
   public String toString() {
-    return "HeroDetails{"
-      + "name=" + name
-      + "}";
+    if ($toString == null) {
+      $toString = "HeroDetails{"
+        + "__typename=" + __typename + ", "
+        + "name=" + name
+        + "}";
+    }
+    return $toString;
   }
 
   @Override
@@ -46,28 +66,37 @@ public class HeroDetails {
     }
     if (o instanceof HeroDetails) {
       HeroDetails that = (HeroDetails) o;
-      return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+      return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+       && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= (name == null) ? 0 : name.hashCode();
-    return h;
+    if (!$hashCodeMemoized) {
+      int h = 1;
+      h *= 1000003;
+      h ^= (__typename == null) ? 0 : __typename.hashCode();
+      h *= 1000003;
+      h ^= (name == null) ? 0 : name.hashCode();
+      $hashCode = h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
   }
 
   public static final class Mapper implements ResponseFieldMapper<HeroDetails> {
     final Field[] fields = {
+      Field.forString("__typename", "__typename", null, false),
       Field.forString("name", "name", null, false)
     };
 
     @Override
     public HeroDetails map(ResponseReader reader) throws IOException {
-      final String name = reader.read(fields[0]);
-      return new HeroDetails(name);
+      final String __typename = reader.read(fields[0]);
+      final String name = reader.read(fields[1]);
+      return new HeroDetails(__typename, name);
     }
   }
 }

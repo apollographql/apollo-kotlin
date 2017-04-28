@@ -13,6 +13,7 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
+import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.internal.RealApolloCall;
 import com.apollographql.apollo.internal.RealApolloPrefetch;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
@@ -23,7 +24,9 @@ import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
@@ -73,6 +76,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   private final CacheControl defaultCacheControl;
   private final ApolloLogger logger;
   private final ApolloCallTracker callTracker = new ApolloCallTracker();
+  private final List<ApolloInterceptor> applicationInterceptors;
 
   private ApolloClient(Builder builder) {
     this.serverUrl = builder.serverUrl;
@@ -85,6 +89,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     this.defaultHttpCacheControl = builder.defaultHttpCacheControl;
     this.defaultCacheControl = builder.defaultCacheControl;
     this.logger = builder.apolloLogger;
+    this.applicationInterceptors = builder.applicationInterceptors;
   }
 
   /**
@@ -102,7 +107,8 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
       }
     }
     return new RealApolloCall<T>(operation, serverUrl, httpCallFactory, httpCache, defaultHttpCacheControl, moshi,
-        responseFieldMapper, customTypeAdapters, apolloStore, defaultCacheControl, dispatcher, logger, callTracker)
+        responseFieldMapper, customTypeAdapters, apolloStore, defaultCacheControl, dispatcher, logger,
+        applicationInterceptors, callTracker)
         .httpCacheControl(defaultHttpCacheControl)
         .cacheControl(defaultCacheControl);
   }
@@ -166,6 +172,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     Optional<Logger> logger = Optional.absent();
     HttpCache httpCache;
     ApolloLogger apolloLogger;
+    final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
 
     private Builder() {
     }
@@ -239,7 +246,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
      * @param <T>               the value type
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public <T> Builder withCustomTypeAdapter(@Nonnull ScalarType scalarType,
+    public <T> Builder addCustomTypeAdapter(@Nonnull ScalarType scalarType,
         @Nonnull final CustomTypeAdapter<T> customTypeAdapter) {
       customTypeAdapters.put(scalarType, customTypeAdapter);
       moshiBuilder.add(scalarType.javaType(), new JsonAdapter<T>() {
@@ -294,6 +301,23 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
      */
     public Builder logger(@Nullable Logger logger) {
       this.logger = Optional.fromNullable(logger);
+      return this;
+    }
+
+    /**
+     * <p>Adds an interceptor that observes the full span of each call: from before the connection is established until
+     * after the response source is selected (either the server, cache or both). This method can be called multiple
+     * times for adding multiple application interceptors. </p>
+     *
+     * <p>Note: Interceptors will be called <b>in the order in which they are added to the list of interceptors</b>
+     * and if any of the interceptors tries to short circuit the responses, then subsequent interceptors <b>won't</b> be
+     * called.</p>
+     *
+     * @param interceptor Application level interceptor to add
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
+    public Builder addApplicationInterceptor(@Nonnull ApolloInterceptor interceptor) {
+      applicationInterceptors.add(interceptor);
       return this;
     }
 

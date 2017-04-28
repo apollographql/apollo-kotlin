@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
@@ -339,10 +340,10 @@ public class ResponseReaderTest {
         @Override public void didParseScalar(Object value) {
         }
 
-        @Override public void willParseObject(Object objectMap) {
+        @Override public void willParseObject(Optional objectMap) {
         }
 
-        @Override public void didParseObject(Object objectMap) {
+        @Override public void didParseObject(Optional objectMap) {
         }
 
         @Override public void didParseList(List array) {

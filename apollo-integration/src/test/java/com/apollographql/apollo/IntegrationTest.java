@@ -1,5 +1,10 @@
 package com.apollographql.apollo;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
+
+import com.apollographql.android.impl.httpcache.AllFilms;
 import com.apollographql.android.impl.httpcache.AllPlanets;
 import com.apollographql.android.impl.httpcache.type.CustomType;
 import com.apollographql.apollo.api.Error;
@@ -15,8 +20,11 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -56,7 +64,7 @@ public class IntegrationTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(new OkHttpClient.Builder().build())
-        .withCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
+        .addCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
         .build();
   }
 
@@ -70,8 +78,8 @@ public class IntegrationTest {
   @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
     server.enqueue(mockResponse("/HttpCacheTestAllPlanets.json"));
 
-    /*Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
-    assertThat(body.isSuccessful()).isTrue();
+    Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
+    assertThat(body.hasErrors()).isFalse();
 
     assertThat(server.takeRequest().getBody().readString(Charsets.UTF_8))
         .isEqualTo("{\"query\":\"query AllPlanets {  "
@@ -108,8 +116,8 @@ public class IntegrationTest {
     assertThat(data.allPlanets().planets().size()).isEqualTo(60);
 
     List<String> planets = FluentIterable.from(data.allPlanets().planets())
-        .transform(new Function<AllPlanets.Data.Planet, String>() {
-          @Override public String apply(AllPlanets.Data.Planet planet) {
+        .transform(new Function<AllPlanets.Planet, String>() {
+          @Override public String apply(AllPlanets.Planet planet) {
             return planet.fragments().planetFragment().name();
           }
         }).toList();
@@ -122,20 +130,20 @@ public class IntegrationTest {
         .split("\\s*,\\s*")
     ));
 
-    AllPlanets.Data.Planet firstPlanet = data.allPlanets().planets().get(0);
+    AllPlanets.Planet firstPlanet = data.allPlanets().planets().get(0);
     assertThat(firstPlanet.fragments().planetFragment().climates()).isEqualTo(Collections.singletonList("arid"));
     assertThat(firstPlanet.fragments().planetFragment().surfaceWater()).isWithin(1d);
     assertThat(firstPlanet.filmConnection().totalCount()).isEqualTo(5);
     assertThat(firstPlanet.filmConnection().films().size()).isEqualTo(5);
     assertThat(firstPlanet.filmConnection().films().get(0).fragments().filmFragment().title()).isEqualTo("A New Hope");
     assertThat(firstPlanet.filmConnection().films().get(0).fragments().filmFragment().producers()).isEqualTo(Arrays
-        .asList("Gary Kurtz", "Rick McCallum"));*/
+        .asList("Gary Kurtz", "Rick McCallum"));
   }
 
   @Test public void errorResponse() throws Exception {
     server.enqueue(mockResponse("/HttpCacheTestError.json"));
     Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
-    assertThat(body.isSuccessful()).isFalse();
+    assertThat(body.hasErrors()).isTrue();
     //noinspection ConstantConditions
     assertThat(body.errors()).containsExactly(new Error(
         "Cannot query field \"names\" on type \"Species\".",
@@ -145,23 +153,23 @@ public class IntegrationTest {
   @Test public void allFilmsWithDate() throws Exception {
     server.enqueue(mockResponse("/HttpCacheTestAllFilms.json"));
 
-    /*Response<AllFilms.Data> body = apolloClient.newCall(new AllFilms()).execute();
-    assertThat(body.isSuccessful()).isTrue();
+    Response<AllFilms.Data> body = apolloClient.newCall(new AllFilms()).execute();
+    assertThat(body.hasErrors()).isFalse();
 
 
     AllFilms.Data data = body.data();
     assertThat(data.allFilms().films()).hasSize(6);
 
     List<String> dates = FluentIterable.from(data.allFilms().films())
-        .transform(new Function<AllFilms.Data.Film, String>() {
-          @Override public String apply(AllFilms.Data.Film film) {
+        .transform(new Function<AllFilms.Film, String>() {
+          @Override public String apply(AllFilms.Film film) {
             Date releaseDate = film.releaseDate();
             return dateCustomTypeAdapter.encode(releaseDate);
           }
         }).copyInto(new ArrayList<String>());
 
     assertThat(dates).isEqualTo(Arrays.asList("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19", "2002-05-16",
-        "2005-05-19"));*/
+        "2005-05-19"));
   }
 
   @Test public void allPlanetQueryAsync() throws Exception {
@@ -169,7 +177,7 @@ public class IntegrationTest {
     final NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
     apolloClient.newCall(new AllPlanets()).enqueue(new ApolloCall.Callback<AllPlanets.Data>() {
       @Override public void onResponse(@Nonnull Response<AllPlanets.Data> response) {
-        assertThat(response.isSuccessful()).isTrue();
+        assertThat(response.hasErrors()).isFalse();
         assertThat(response.data().allPlanets().planets().size()).isEqualTo(60);
         latch.countDown();
       }

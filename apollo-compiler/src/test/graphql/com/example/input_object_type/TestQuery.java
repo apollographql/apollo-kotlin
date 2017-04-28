@@ -122,6 +122,12 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
   public static class Data implements Operation.Data {
     private final Optional<CreateReview> createReview;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Data(@Nullable CreateReview createReview) {
       this.createReview = Optional.fromNullable(createReview);
     }
@@ -132,9 +138,12 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
     @Override
     public String toString() {
-      return "Data{"
-        + "createReview=" + createReview
-        + "}";
+      if ($toString == null) {
+        $toString = "Data{"
+          + "createReview=" + createReview
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -151,10 +160,14 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (createReview == null) ? 0 : createReview.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (createReview == null) ? 0 : createReview.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
@@ -183,68 +196,100 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
         return new Data(createReview);
       }
     }
+  }
 
-    public static class CreateReview {
-      private final int stars;
+  public static class CreateReview {
+    private final @Nonnull String __typename;
 
-      private final Optional<String> commentary;
+    private final int stars;
 
-      public CreateReview(int stars, @Nullable String commentary) {
-        this.stars = stars;
-        this.commentary = Optional.fromNullable(commentary);
-      }
+    private final Optional<String> commentary;
 
-      public int stars() {
-        return this.stars;
-      }
+    private volatile String $toString;
 
-      public Optional<String> commentary() {
-        return this.commentary;
-      }
+    private volatile int $hashCode;
 
-      @Override
-      public String toString() {
-        return "CreateReview{"
+    private volatile boolean $hashCodeMemoized;
+
+    public CreateReview(@Nonnull String __typename, int stars, @Nullable String commentary) {
+      this.__typename = __typename;
+      this.stars = stars;
+      this.commentary = Optional.fromNullable(commentary);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * The number of stars this review gave, 1-5
+     */
+    public int stars() {
+      return this.stars;
+    }
+
+    /**
+     * Comment about the movie
+     */
+    public Optional<String> commentary() {
+      return this.commentary;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "CreateReview{"
+          + "__typename=" + __typename + ", "
           + "stars=" + stars + ", "
           + "commentary=" + commentary
           + "}";
       }
+      return $toString;
+    }
 
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof CreateReview) {
-          CreateReview that = (CreateReview) o;
-          return this.stars == that.stars
-           && ((this.commentary == null) ? (that.commentary == null) : this.commentary.equals(that.commentary));
-        }
-        return false;
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
       }
+      if (o instanceof CreateReview) {
+        CreateReview that = (CreateReview) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && this.stars == that.stars
+         && ((this.commentary == null) ? (that.commentary == null) : this.commentary.equals(that.commentary));
+      }
+      return false;
+    }
 
-      @Override
-      public int hashCode() {
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
         int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
         h *= 1000003;
         h ^= stars;
         h *= 1000003;
         h ^= (commentary == null) ? 0 : commentary.hashCode();
-        return h;
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
+      return $hashCode;
+    }
 
-      public static final class Mapper implements ResponseFieldMapper<CreateReview> {
-        final Field[] fields = {
-          Field.forInt("stars", "stars", null, false),
-          Field.forString("commentary", "commentary", null, true)
-        };
+    public static final class Mapper implements ResponseFieldMapper<CreateReview> {
+      final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
+        Field.forInt("stars", "stars", null, false),
+        Field.forString("commentary", "commentary", null, true)
+      };
 
-        @Override
-        public CreateReview map(ResponseReader reader) throws IOException {
-          final int stars = reader.read(fields[0]);
-          final String commentary = reader.read(fields[1]);
-          return new CreateReview(stars, commentary);
-        }
+      @Override
+      public CreateReview map(ResponseReader reader) throws IOException {
+        final String __typename = reader.read(fields[0]);
+        final int stars = reader.read(fields[1]);
+        final String commentary = reader.read(fields[2]);
+        return new CreateReview(__typename, stars, commentary);
       }
     }
   }

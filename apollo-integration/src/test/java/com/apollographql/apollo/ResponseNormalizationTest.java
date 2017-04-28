@@ -90,7 +90,7 @@ public class ResponseNormalizationTest {
 
     ApolloCall<HeroName.Data> call = apolloClient.newCall(new HeroName());
     Response<HeroName.Data> body = call.execute();
-    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.hasErrors()).isFalse();
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY);
     CacheReference reference = (CacheReference) record.field("hero");
@@ -98,6 +98,15 @@ public class ResponseNormalizationTest {
 
     final Record heroRecord = normalizedCache.loadRecord(reference.key());
     assertThat(heroRecord.field("name")).isEqualTo("R2-D2");
+  }
+
+  @Test public void testHeroNameNullable() throws IOException, ApolloException {
+    MockResponse mockResponse = mockResponse("HeroNameNullHeroResponse.json");
+    server.enqueue(mockResponse);
+
+    ApolloCall<HeroName.Data> call = apolloClient.newCall(new HeroName());
+    Response<HeroName.Data> body = call.execute();
+    assertThat(body.hasErrors()).isFalse();
   }
 
   @Test
@@ -108,7 +117,7 @@ public class ResponseNormalizationTest {
     final EpisodeHeroName query = EpisodeHeroName.builder().episode(JEDI).build();
     ApolloCall<EpisodeHeroName.Data> call = apolloClient.newCall(query);
     Response<EpisodeHeroName.Data> body = call.execute();
-    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.hasErrors()).isFalse();
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY);
     CacheReference reference = (CacheReference) record.field("hero(episode:JEDI)");
@@ -128,7 +137,7 @@ public class ResponseNormalizationTest {
 
     ApolloCall<HeroAppearsIn.Data> call = apolloClient.newCall(heroAppearsInQuery);
     Response<HeroAppearsIn.Data> body = call.execute();
-    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.hasErrors()).isFalse();
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY);
     CacheReference heroReference = (CacheReference) record.field("hero");
@@ -146,7 +155,7 @@ public class ResponseNormalizationTest {
 
     ApolloCall<HeroAndFriendsNames.Data> call = apolloClient.newCall(heroAndFriendsNameQuery);
     Response<HeroAndFriendsNames.Data> body = call.execute();
-    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.hasErrors()).isFalse();
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:JEDI)");
@@ -173,7 +182,7 @@ public class ResponseNormalizationTest {
 
     ApolloCall<HeroAndFriendsNamesWithIDs.Data> call = apolloClient.newCall(heroAndFriendsWithIdsQuery);
     Response<HeroAndFriendsNamesWithIDs.Data> body = call.execute();
-    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.hasErrors()).isFalse();
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:JEDI)");
@@ -201,7 +210,7 @@ public class ResponseNormalizationTest {
 
     ApolloCall<HeroAndFriendsNamesWithIDForParentOnly.Data> call = apolloClient.newCall(heroAndFriendsWithIdsQuery);
     Response<HeroAndFriendsNamesWithIDForParentOnly.Data> body = call.execute();
-    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.hasErrors()).isFalse();
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:JEDI)");
@@ -229,7 +238,7 @@ public class ResponseNormalizationTest {
 
     ApolloCall<SameHeroTwice.Data> call = apolloClient.newCall(sameHeroTwiceQuery);
     Response<SameHeroTwice.Data> body = call.execute();
-    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.hasErrors()).isFalse();
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY);
     CacheReference heroReference = (CacheReference) record.field("hero");
@@ -248,7 +257,7 @@ public class ResponseNormalizationTest {
 
     ApolloCall<HeroTypeDependentAliasedField.Data> call = apolloClient.newCall(aliasedQuery);
     Response<HeroTypeDependentAliasedField.Data> body = call.execute();
-    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.hasErrors()).isFalse();
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:JEDI)");
@@ -267,7 +276,7 @@ public class ResponseNormalizationTest {
 
     ApolloCall<HeroTypeDependentAliasedField.Data> call = apolloClient.newCall(aliasedQuery);
     Response<HeroTypeDependentAliasedField.Data> body = call.execute();
-    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.hasErrors()).isFalse();
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:EMPIRE)");
@@ -286,7 +295,7 @@ public class ResponseNormalizationTest {
 
     ApolloCall<HeroTypeDependentAliasedField.Data> call = apolloClient.newCall(aliasedQuery);
     Response<HeroTypeDependentAliasedField.Data> body = call.execute();
-    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.hasErrors()).isFalse();
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:EMPIRE)");
@@ -304,7 +313,7 @@ public class ResponseNormalizationTest {
 
     ApolloCall<HeroParentTypeDependentField.Data> call = apolloClient.newCall(aliasedQuery);
     Response<HeroParentTypeDependentField.Data> body = call.execute();
-    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.hasErrors()).isFalse();
 
     Record lukeRecord = normalizedCache.loadRecord("hero(episode:JEDI).friends.0");
     assertThat(lukeRecord.field("name")).isEqualTo("Luke Skywalker");
@@ -324,7 +333,7 @@ public class ResponseNormalizationTest {
 
     ApolloCall<HeroParentTypeDependentField.Data> call = apolloClient.newCall(aliasedQuery);
     Response<HeroParentTypeDependentField.Data> body = call.execute();
-    assertThat(body.isSuccessful()).isTrue();
+    assertThat(body.hasErrors()).isFalse();
 
     Record lukeRecord = normalizedCache.loadRecord("hero(episode:EMPIRE).friends.0");
     assertThat(lukeRecord.field("name")).isEqualTo("Han Solo");

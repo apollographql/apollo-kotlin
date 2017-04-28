@@ -1,4 +1,4 @@
-package com.example.apollographql.sample.feed;
+package com.apollographql.apollo.sample.feed;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.FeedQuery;
-import com.example.apollographql.sample.R;
-import com.example.fragment.RepositoryFragment;
+import com.apollographql.apollo.sample.FeedQuery;
+import com.apollographql.apollo.sample.R;
+import com.apollographql.apollo.sample.fragment.RepositoryFragment;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,14 +16,14 @@ import java.util.List;
 class GitHuntFeedRecyclerViewAdapter extends
     RecyclerView.Adapter<GitHuntFeedRecyclerViewAdapter.FeedItemViewHolder> {
 
-  private List<FeedQuery.Data.FeedEntry> feed = Collections.emptyList();
+  private List<FeedQuery.FeedEntry> feed = Collections.emptyList();
   private GitHuntNavigator navigator;
 
   public GitHuntFeedRecyclerViewAdapter(GitHuntNavigator navigator) {
     this.navigator = navigator;
   }
 
-  public void setFeed(List<FeedQuery.Data.FeedEntry> feed) {
+  public void setFeed(List<FeedQuery.FeedEntry> feed) {
     this.feed = feed;
     this.notifyDataSetChanged();
   }
@@ -37,7 +37,7 @@ class GitHuntFeedRecyclerViewAdapter extends
   }
 
   @Override public void onBindViewHolder(FeedItemViewHolder holder, int position) {
-    final FeedQuery.Data.FeedEntry feedEntry = this.feed.get(position);
+    final FeedQuery.FeedEntry feedEntry = this.feed.get(position);
     holder.setFeedItem(feedEntry, navigator);
   }
 
@@ -56,7 +56,7 @@ class GitHuntFeedRecyclerViewAdapter extends
       feedEntryContainer = itemView.findViewById(R.id.feed_entry_container);
     }
 
-    public void setFeedItem(FeedQuery.Data.FeedEntry feedItem, final GitHuntNavigator navigator) {
+    public void setFeedItem(FeedQuery.FeedEntry feedItem, final GitHuntNavigator navigator) {
       final RepositoryFragment repositoryFragment = feedItem.repository().fragments().repositoryFragment();
       repositoryTitle.setText(repositoryFragment.full_name());
       feedEntryContainer.setOnClickListener(new View.OnClickListener() {

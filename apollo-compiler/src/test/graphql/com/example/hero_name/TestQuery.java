@@ -54,6 +54,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Data implements Operation.Data {
     private final Optional<Hero> hero;
 
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
     public Data(@Nullable Hero hero) {
       this.hero = Optional.fromNullable(hero);
     }
@@ -64,9 +70,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     @Override
     public String toString() {
-      return "Data{"
-        + "hero=" + hero
-        + "}";
+      if ($toString == null) {
+        $toString = "Data{"
+          + "hero=" + hero
+          + "}";
+      }
+      return $toString;
     }
 
     @Override
@@ -83,10 +92,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     @Override
     public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= (hero == null) ? 0 : hero.hashCode();
-      return h;
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (hero == null) ? 0 : hero.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
@@ -106,55 +119,84 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new Data(hero);
       }
     }
+  }
 
-    public static class Hero {
-      private final @Nonnull String name;
+  public static class Hero {
+    private final @Nonnull String __typename;
 
-      public Hero(@Nonnull String name) {
-        this.name = name;
-      }
+    private final @Nonnull String name;
 
-      public @Nonnull String name() {
-        return this.name;
-      }
+    private volatile String $toString;
 
-      @Override
-      public String toString() {
-        return "Hero{"
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public Hero(@Nonnull String __typename, @Nonnull String name) {
+      this.__typename = __typename;
+      this.name = name;
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * The name of the character
+     */
+    public @Nonnull String name() {
+      return this.name;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Hero{"
+          + "__typename=" + __typename + ", "
           + "name=" + name
           + "}";
       }
+      return $toString;
+    }
 
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof Hero) {
-          Hero that = (Hero) o;
-          return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
-        }
-        return false;
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
       }
+      if (o instanceof Hero) {
+        Hero that = (Hero) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+      }
+      return false;
+    }
 
-      @Override
-      public int hashCode() {
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
-        return h;
+        $hashCode = h;
+        $hashCodeMemoized = true;
       }
+      return $hashCode;
+    }
 
-      public static final class Mapper implements ResponseFieldMapper<Hero> {
-        final Field[] fields = {
-          Field.forString("name", "name", null, false)
-        };
+    public static final class Mapper implements ResponseFieldMapper<Hero> {
+      final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
+        Field.forString("name", "name", null, false)
+      };
 
-        @Override
-        public Hero map(ResponseReader reader) throws IOException {
-          final String name = reader.read(fields[0]);
-          return new Hero(name);
-        }
+      @Override
+      public Hero map(ResponseReader reader) throws IOException {
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        return new Hero(__typename, name);
       }
     }
   }
