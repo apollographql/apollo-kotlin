@@ -7,6 +7,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+
 public class Field {
   private final Type type;
   private final String responseName;
@@ -103,7 +108,18 @@ public class Field {
     return String.format("%s(%s)", fieldName(), orderIndependentKey(arguments, variables));
   }
 
-  @SuppressWarnings("unchecked") public Object resolveArgument(String name, Operation.Variables variables) {
+  /**
+   * Resolve field argument value by name. If argument represents a references to the variable, it will be
+   * resolved from provided operation variables values.
+   *
+   * @param name      argument name
+   * @param variables values of operation variables
+   * @return resolved argument value
+   */
+  @SuppressWarnings("unchecked") @Nullable public Object resolveArgument(@Nonnull String name,
+      @Nonnull Operation.Variables variables) {
+    checkNotNull(name, "name == null");
+    checkNotNull(variables, "variables == null");
     Map<String, Object> variableValues = variables.valueMap();
     Object argumentValue = arguments.get(name);
     if (argumentValue instanceof Map) {
