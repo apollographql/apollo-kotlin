@@ -4,5 +4,7 @@ query TestQuery {
     birthDate
     appearanceDates
     fieldWithUnsupportedType
+    profileLink
+    links
   }
 }

@@ -5,7 +5,7 @@
 			"operationName": "TestQuery",
 			"operationType": "query",
 			"variables": [],
-			"source": "query TestQuery {\n  hero {\n    __typename\n    name\n    birthDate\n    appearanceDates\n    fieldWithUnsupportedType\n  }\n}",
+			"source": "query TestQuery {\n  hero {\n    __typename\n    name\n    birthDate\n    appearanceDates\n    fieldWithUnsupportedType\n    profileLink\n    links\n  }\n}",
 			"fields": [
 				{
 					"responseName": "hero",
@@ -35,6 +35,18 @@
 							"fieldName": "fieldWithUnsupportedType",
 							"type": "UnsupportedType!",
 							"description": "The date character was born."
+						},
+						{
+							"responseName": "profileLink",
+							"fieldName": "profileLink",
+							"type": "URL!",
+							"description": "Profile link"
+						},
+						{
+							"responseName": "links",
+							"fieldName": "links",
+							"type": "[URL!]!",
+							"description": "Links"
 						}
 					],
 					"fragmentSpreads": [],
@@ -55,6 +67,11 @@
 			"kind": "ScalarType",
 			"name": "UnsupportedType",
 			"description": "UnsupportedType for testing"
+		},
+		{
+			"kind": "ScalarType",
+			"name": "URL",
+			"description": "URL for testing"
 		}
 	]
 }
