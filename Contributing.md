@@ -4,6 +4,8 @@ Contributing to Apollo Android GraphQL
 The Apollo team welcomes contributions of all kinds, from simple bug reports through documentation, test cases,
 bugfixes, and features.
 
+If you instead have a usage question kindly ask on Stackoverflow.com using the tag [apollo-android] 
+
 DOs and DON'Ts
 --------------
 
