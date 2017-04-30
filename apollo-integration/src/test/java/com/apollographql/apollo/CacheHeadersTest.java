@@ -1,5 +1,7 @@
 package com.apollographql.apollo;
 
+import android.support.annotation.NonNull;
+
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNames;
 import com.apollographql.android.impl.normalizer.type.Episode;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
@@ -48,19 +50,18 @@ public class CacheHeadersTest {
   @Test
   public void testHeadersReceived() throws ApolloException, IOException {
     final NormalizedCache normalizedCache = new NormalizedCache(RecordFieldAdapter.create(new Moshi.Builder().build())) {
-      @Nullable @Override public Record loadRecord(String key, CacheHeaders cacheHeaders) {
+      @Nullable @Override public Record loadRecord(@NonNull String key, @NonNull CacheHeaders cacheHeaders) {
         assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.NO_CACHE)).isTrue();
         return null;
       }
 
-      @Nonnull @Override public Set<String> merge(Record record, CacheHeaders cacheHeaders) {
+      @Nonnull @Override public Set<String> merge(@NonNull Record record, @NonNull CacheHeaders cacheHeaders) {
         assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.NO_CACHE)).isTrue();
         return Collections.emptySet();
       }
 
-      @Override public void clearAll() {
+      @Override public void clearAll() { }
 
-      }
     };
 
     final NormalizedCacheFactory<NormalizedCache> cacheFactory = new NormalizedCacheFactory<NormalizedCache>() {
@@ -89,12 +90,12 @@ public class CacheHeadersTest {
   @Test
   public void testDefaultHeadersReceived() throws IOException, ApolloException {
     final NormalizedCache normalizedCache = new NormalizedCache(RecordFieldAdapter.create(new Moshi.Builder().build())) {
-      @Nullable @Override public Record loadRecord(String key, CacheHeaders cacheHeaders) {
+      @Nullable @Override public Record loadRecord(@NonNull String key, @NonNull CacheHeaders cacheHeaders) {
         assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.NO_CACHE)).isTrue();
         return null;
       }
 
-      @Nonnull @Override public Set<String> merge(Record record, CacheHeaders cacheHeaders) {
+      @Nonnull @Override public Set<String> merge(@NonNull Record record, @NonNull CacheHeaders cacheHeaders) {
         assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.NO_CACHE)).isTrue();
         return Collections.emptySet();
       }

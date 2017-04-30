@@ -10,7 +10,6 @@ public class ApolloSqlHelper extends SQLiteOpenHelper {
   public static final String COLUMN_ID = "_id";
   public static final String COLUMN_RECORD = "record";
   public static final String COLUMN_KEY = "key";
-  public static final String COLUMN_LAST_UPDATED = "last_updated";
 
   private static final String DATABASE_NAME = "apollo.db";
   private static final int DATABASE_VERSION = 1;

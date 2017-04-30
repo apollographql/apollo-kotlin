@@ -52,9 +52,9 @@ public abstract class NormalizedCache {
   @Nullable public abstract Record loadRecord(@Nonnull String key, @Nonnull CacheHeaders cacheHeaders);
 
   /**
-   * Calls through to {@link NormalizedCache#loadRecord(String, CacheHeaders)}. Implementations should override this method if
-   * the
-   * underlying storage technology can offer an optimized manner to read multiple records.
+   * Calls through to {@link NormalizedCache#loadRecord(String, CacheHeaders)}.
+   * Implementations should override this method if the underlying storage technology can offer an optimized manner
+   * to read multiple records.
    *
    * @param keys         The set of {@link Record} keys to read.
    * @param cacheHeaders The cache headers associated with the request which generated this record.

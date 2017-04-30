@@ -21,9 +21,9 @@ public final class CacheHeaders {
     return new Builder();
   }
 
-  public final static CacheHeaders NONE = CacheHeaders.builder().build();
+  public static final CacheHeaders NONE = CacheHeaders.builder().build();
 
-  public static class Builder {
+  public static final class Builder {
 
     private Map<String, String> headerMap = new LinkedHashMap<>();
 

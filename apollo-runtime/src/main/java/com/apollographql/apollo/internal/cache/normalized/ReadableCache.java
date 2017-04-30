@@ -10,8 +10,8 @@ import javax.annotation.Nullable;
 
 public interface ReadableCache {
 
-  @Nullable Record read(@Nonnull String key, CacheHeaders cacheHeaders);
+  @Nullable Record read(@Nonnull String key, @Nonnull CacheHeaders cacheHeaders);
 
-  Collection<Record> read(@Nonnull Collection<String> keys, CacheHeaders cacheHeaders);
+  Collection<Record> read(@Nonnull Collection<String> keys, @Nonnull CacheHeaders cacheHeaders);
 
 }

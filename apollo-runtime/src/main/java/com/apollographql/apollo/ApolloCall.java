@@ -56,7 +56,7 @@ public interface ApolloCall<T> extends Cancelable {
   @Nonnull ApolloCall<T> httpCacheControl(@Nonnull HttpCacheControl httpCacheControl);
 
   /**
-   * Sets the {@link CacheControl} strategy for an ApolloCall object. No cache headers will be used.
+   * Sets the {@link CacheControl} strategy for an ApolloCall object.
    *
    * @param cacheControl the CacheControl strategy to set
    * @return The ApolloCall object with the provided CacheControl strategy

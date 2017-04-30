@@ -4,12 +4,13 @@ import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.Record;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
+
+import javax.annotation.Nonnull;
 
 public interface WriteableCache extends ReadableCache {
 
-  Set<String> merge(Collection<Record> recordCollection, CacheHeaders cacheHeaders);
+  Set<String> merge(@Nonnull Collection<Record> recordCollection, @Nonnull CacheHeaders cacheHeaders);
 
   void clearAll();
 

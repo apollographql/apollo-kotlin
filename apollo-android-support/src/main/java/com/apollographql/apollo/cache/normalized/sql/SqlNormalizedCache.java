@@ -18,7 +18,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static com.apollographql.apollo.cache.ApolloCacheHeaders.*;
+import static com.apollographql.apollo.cache.ApolloCacheHeaders.EVICT_AFTER_READ;
+import static com.apollographql.apollo.cache.ApolloCacheHeaders.NO_CACHE;
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLUMN_KEY;
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLUMN_RECORD;
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.TABLE_RECORDS;

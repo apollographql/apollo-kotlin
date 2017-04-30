@@ -66,7 +66,7 @@ public final class LruNormalizedCache extends NormalizedCache {
     return secondaryCache.get();
   }
 
-  @Nullable @Override public Record loadRecord(@Nonnull final String key, final @Nonnull CacheHeaders cacheHeaders) {
+  @Nullable @Override public Record loadRecord(@Nonnull final String key, @Nonnull final CacheHeaders cacheHeaders) {
     final Record record;
     if (secondaryCache.isPresent()) {
       try {

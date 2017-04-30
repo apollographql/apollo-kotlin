@@ -33,6 +33,6 @@ public enum CacheControl {
    * Signals the apollo client to <b>only</b> fetch the GraphQL data from the network. If network request fails, an
    * exception is thrown.
    */
-  NETWORK_ONLY
+  NETWORK_ONLY,
 
 }
