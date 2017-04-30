@@ -1,6 +1,7 @@
 package com.apollographql.apollo;
 
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
@@ -83,6 +84,13 @@ public interface ApolloPrefetch extends Cancelable {
      * Gets called when an http request error takes place due to network failures, timeouts etc.
      */
     public void onNetworkError(@Nonnull ApolloNetworkException e) {
+      onFailure(e);
+    }
+
+    /**
+     * Gets called when {@link ApolloCall} has been canceled.
+     */
+    public void onCanceledError(@Nonnull ApolloCanceledException e) {
       onFailure(e);
     }
   }

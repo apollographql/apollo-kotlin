@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
@@ -79,7 +80,27 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
-    return interceptorChain.proceed().parsedResponse.get();
+
+    if (canceled) {
+      throw new ApolloCanceledException("Canceled");
+    }
+
+    Response<T> response;
+    try {
+      response = interceptorChain.proceed().parsedResponse.get();
+    } catch (Exception e) {
+      if (canceled) {
+        throw new ApolloCanceledException("Canceled", e);
+      } else {
+        throw e;
+      }
+    }
+
+    if (canceled) {
+      throw new ApolloCanceledException("Canceled");
+    }
+
+    return response;
   }
 
   @Override public void enqueue(@Nullable final Callback<T> callback) {
@@ -90,19 +111,26 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
     interceptorChain.proceedAsync(dispatcher, new ApolloInterceptor.CallBack() {
       @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
-        if (callback == null || isCanceled()) {
+        if (callback == null) {
           return;
         }
 
-        callback.onResponse(response.parsedResponse.get());
+        if (canceled) {
+          callback.onCanceledError(new ApolloCanceledException("Canceled"));
+        } else {
+          //noinspection unchecked
+          callback.onResponse(response.parsedResponse.get());
+        }
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        if (callback == null || isCanceled()) {
+        if (callback == null) {
           return;
         }
 
-        if (e instanceof ApolloHttpException) {
+        if (canceled) {
+          callback.onCanceledError(new ApolloCanceledException("Canceled", e));
+        } else if (e instanceof ApolloHttpException) {
           callback.onHttpError((ApolloHttpException) e);
         } else if (e instanceof ApolloParseException) {
           callback.onParseError((ApolloParseException) e);
@@ -111,7 +139,6 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         } else {
           callback.onFailure(e);
         }
-
       }
     });
   }
