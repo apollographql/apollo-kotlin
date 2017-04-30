@@ -1,5 +1,6 @@
 package com.apollographql.apollo.cache.normalized.lru;
 
+import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
@@ -270,6 +271,39 @@ public class LruNormalizedCacheTest {
     primaryCache.clearSecondaryCache();
 
     assertThat(primaryCache.secondaryCache().loadRecord("key", CacheHeaders.NONE)).isNull();
+  }
+
+  // Tests for StandardCacheHeader compliance.
+
+  @Test
+  public void testHeader_evictAfterRead() {
+    LruNormalizedCache lruCache = new LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build
+        ()).createNormalizedCache(basicFieldAdapter);
+
+    Record testRecord = createTestRecord("1");
+    lruCache.merge(testRecord, CacheHeaders.NONE);
+
+    final Record record =
+        lruCache.loadRecord("key1", CacheHeaders.builder().addHeader(ApolloCacheHeaders.EVICT_AFTER_READ, "true")
+            .build());
+    assertThat(record).isNotNull();
+    final Record nullRecord =
+        lruCache.loadRecord("key1", CacheHeaders.builder().addHeader(ApolloCacheHeaders.EVICT_AFTER_READ, "true")
+            .build());
+    assertThat(nullRecord).isNull();
+  }
+
+  @Test
+  public void testHeader_noCache() {
+    LruNormalizedCache lruCache = new LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build
+        ()).createNormalizedCache(basicFieldAdapter);
+
+    Record testRecord = createTestRecord("1");
+    lruCache.merge(testRecord, CacheHeaders.builder().addHeader(ApolloCacheHeaders.NO_CACHE, "true").build());
+
+    final Record record =
+        lruCache.loadRecord("key1", CacheHeaders.NONE);
+    assertThat(record).isNull();
   }
 
   private void assertTestRecordPresentAndAccurate(Record testRecord, NormalizedCache store) {

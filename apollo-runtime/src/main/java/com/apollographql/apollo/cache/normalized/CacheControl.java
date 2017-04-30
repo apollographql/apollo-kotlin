@@ -33,28 +33,6 @@ public enum CacheControl {
    * Signals the apollo client to <b>only</b> fetch the GraphQL data from the network. If network request fails, an
    * exception is thrown.
    */
-  NETWORK_ONLY;
-
-  /**
-   * Extension {@link CacheControl} which can be configured with the option to use stale data, if available, and when
-   * otherwise an {@link com.apollographql.apollo.exception.ApolloException} would occur.
-   */
-  public static class CacheFetchStrategy {
-    private boolean useStaleDataOnError = false;
-    private final CacheControl baseStrategy;
-
-    public CacheFetchStrategy(CacheControl strategy) {
-      this.baseStrategy = strategy;
-    }
-
-    public CacheControl baseStrategy() {
-      return baseStrategy;
-    }
-
-    CacheFetchStrategy useStaleOnError() {
-      this.useStaleDataOnError = true;
-      return this;
-    }
-  }
+  NETWORK_ONLY
 
 }

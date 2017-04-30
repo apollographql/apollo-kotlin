@@ -4,6 +4,7 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
@@ -60,16 +61,15 @@ public class SqlNormalizedCacheTest {
 
   @Test
   public void testRecordSelection_recordNotPresent() {
-    Record record = sqlStore.loadRecord(STANDARD_KEY, new CacheHeaders());
+    Record record = sqlStore.loadRecord(STANDARD_KEY, CacheHeaders.NONE);
     assertThat(record).isNull();
   }
 
   @Test
   public void testRecordMerge() {
-    createRecord(STANDARD_KEY);
     sqlStore.merge(Record.builder(STANDARD_KEY)
         .addField("fieldKey", "valueUpdated")
-        .addField("newFieldKey", true).build(), new CacheHeaders());
+        .addField("newFieldKey", true).build(), CacheHeaders.NONE);
     Optional<Record> record = sqlStore.selectRecordForKey(STANDARD_KEY);
     assertThat(record.get().fields().get("fieldKey")).isEqualTo("valueUpdated");
     assertThat(record.get().fields().get("newFieldKey")).isEqualTo(true);
@@ -80,7 +80,7 @@ public class SqlNormalizedCacheTest {
     createRecord(STANDARD_KEY);
     sqlStore.merge(Record.builder(STANDARD_KEY)
         .addField("fieldKey", "valueUpdated")
-        .addField("newFieldKey", true).build(), new CacheHeaders());
+        .addField("newFieldKey", true).build(), CacheHeaders.NONE);
     sqlStore.deleteRecord(STANDARD_KEY);
     Optional<Record> record = sqlStore.selectRecordForKey(STANDARD_KEY);
     assertThat(record.isPresent()).isFalse();
@@ -98,7 +98,24 @@ public class SqlNormalizedCacheTest {
 
   // Tests for StandardCacheHeader compliance
 
-  //TODO
+  @Test
+  public void testHeader_evictAfterRead() {
+    createRecord(STANDARD_KEY);
+    Record record = sqlStore.loadRecord(STANDARD_KEY, CacheHeaders.builder()
+        .addHeader(ApolloCacheHeaders.EVICT_AFTER_READ, "true").build());
+    assertThat(record).isNotNull();
+    Record nullRecord = sqlStore.loadRecord(STANDARD_KEY, CacheHeaders.builder()
+        .addHeader(ApolloCacheHeaders.EVICT_AFTER_READ, "true").build());
+    assertThat(nullRecord).isNull();
+  }
+
+  @Test
+  public void testHeader_noCache() {
+    sqlStore.merge(Record.builder(STANDARD_KEY).build(),
+        CacheHeaders.builder().addHeader(ApolloCacheHeaders.NO_CACHE, "true").build());
+    final Record record = sqlStore.loadRecord(STANDARD_KEY, CacheHeaders.NONE);
+    assertThat(record).isNull();
+  }
 
   private long createRecord(String key) {
     return sqlStore.createRecord(key, FIELDS);
