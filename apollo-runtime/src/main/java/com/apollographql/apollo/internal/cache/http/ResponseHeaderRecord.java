@@ -15,8 +15,6 @@
  */
 package com.apollographql.apollo.internal.cache.http;
 
-import com.apollographql.apollo.cache.http.ResponseCacheRecordEditor;
-
 import java.io.IOException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
