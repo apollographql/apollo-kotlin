@@ -34,5 +34,4 @@ public enum CacheControl {
    * exception is thrown.
    */
   NETWORK_ONLY,
-
 }
