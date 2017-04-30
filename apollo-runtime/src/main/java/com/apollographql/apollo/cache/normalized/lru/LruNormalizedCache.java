@@ -66,7 +66,7 @@ public final class LruNormalizedCache extends NormalizedCache {
     return secondaryCache.get();
   }
 
-  @Nullable @Override public Record loadRecord(final String key, final CacheHeaders cacheHeaders) {
+  @Nullable @Override public Record loadRecord(@Nonnull final String key, final @Nonnull CacheHeaders cacheHeaders) {
     final Record record;
     if (secondaryCache.isPresent()) {
       try {
@@ -94,7 +94,7 @@ public final class LruNormalizedCache extends NormalizedCache {
     return record;
   }
 
-  @Nonnull @Override public Set<String> merge(Record apolloRecord, CacheHeaders cacheHeaders) {
+  @Nonnull @Override public Set<String> merge(@Nonnull Record apolloRecord, @Nonnull CacheHeaders cacheHeaders) {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.NO_CACHE)) {
       return Collections.emptySet();
     }

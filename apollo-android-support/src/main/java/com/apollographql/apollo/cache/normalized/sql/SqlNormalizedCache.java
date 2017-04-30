@@ -61,7 +61,7 @@ public final class SqlNormalizedCache extends NormalizedCache {
     deleteAllRecordsStatement = database.compileStatement(DELETE_ALL_RECORD_STATEMENT);
   }
 
-  @Nullable public Record loadRecord(String key, CacheHeaders cacheHeaders) {
+  @Nullable public Record loadRecord(@Nonnull String key, @Nonnull CacheHeaders cacheHeaders) {
     Record record = selectRecordForKey(key).orNull();
     if (cacheHeaders.hasHeader(EVICT_AFTER_READ) && record != null) {
       deleteRecord(key);
@@ -69,7 +69,7 @@ public final class SqlNormalizedCache extends NormalizedCache {
     return record;
   }
 
-  @Nonnull public Set<String> merge(Record apolloRecord, CacheHeaders cacheHeaders) {
+  @Nonnull public Set<String> merge(@Nonnull Record apolloRecord, @Nonnull CacheHeaders cacheHeaders) {
     if (cacheHeaders.hasHeader(NO_CACHE)) {
       return Collections.emptySet();
     }
@@ -86,7 +86,8 @@ public final class SqlNormalizedCache extends NormalizedCache {
     return changedKeys;
   }
 
-  @Nonnull @Override public Set<String> merge(Collection<Record> recordSet, CacheHeaders cacheHeaders) {
+  @Nonnull @Override public Set<String> merge(@Nonnull Collection<Record> recordSet,
+      @Nonnull CacheHeaders cacheHeaders) {
     if (cacheHeaders.hasHeader(NO_CACHE)) {
       return Collections.emptySet();
     }

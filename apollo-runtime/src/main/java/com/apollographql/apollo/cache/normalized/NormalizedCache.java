@@ -49,7 +49,7 @@ public abstract class NormalizedCache {
    * @param cacheHeaders The cache headers associated with the request which generated this record.
    * @return The {@link Record} for key. If not present return null.
    */
-  @Nullable public abstract Record loadRecord(String key, CacheHeaders cacheHeaders);
+  @Nullable public abstract Record loadRecord(@Nonnull String key, @Nonnull CacheHeaders cacheHeaders);
 
   /**
    * Calls through to {@link NormalizedCache#loadRecord(String, CacheHeaders)}. Implementations should override this method if
@@ -59,8 +59,7 @@ public abstract class NormalizedCache {
    * @param keys         The set of {@link Record} keys to read.
    * @param cacheHeaders The cache headers associated with the request which generated this record.
    */
-  @Nonnull public Collection<Record> loadRecords(Collection<String> keys, CacheHeaders
-      cacheHeaders) {
+  @Nonnull public Collection<Record> loadRecords(@Nonnull Collection<String> keys, @Nonnull CacheHeaders cacheHeaders) {
     List<Record> records = new ArrayList<>(keys.size());
     for (String key : keys) {
       final Record record = loadRecord(key, cacheHeaders);
@@ -76,7 +75,7 @@ public abstract class NormalizedCache {
    * @param cacheHeaders The {@link CacheHeaders} associated with the request which generated this record.
    * @return A set of record field keys that have changed. This set is returned by {@link Record#mergeWith(Record)}.
    */
-  @Nonnull public abstract Set<String> merge(Record record, CacheHeaders cacheHeaders);
+  @Nonnull public abstract Set<String> merge(@Nonnull Record record, @Nonnull CacheHeaders cacheHeaders);
 
   /**
    * Calls through to {@link NormalizedCache#merge(Record, CacheHeaders)}. Implementations should override this
@@ -87,7 +86,7 @@ public abstract class NormalizedCache {
    * @param cacheHeaders The {@link CacheHeaders} associated with the request which generated this record.
    * @return A set of record field keys that have changed. This set is returned by {@link Record#mergeWith(Record)}.
    */
-  @Nonnull public Set<String> merge(Collection<Record> recordSet, CacheHeaders cacheHeaders) {
+  @Nonnull public Set<String> merge(@Nonnull Collection<Record> recordSet, @Nonnull CacheHeaders cacheHeaders) {
     Set<String> aggregatedDependentKeys = new LinkedHashSet<>();
     for (Record record : recordSet) {
       aggregatedDependentKeys.addAll(merge(record, cacheHeaders));
