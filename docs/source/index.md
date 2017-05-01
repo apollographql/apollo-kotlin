@@ -11,13 +11,14 @@ Apollo Android has been launched and is ready to try in your app today! For now,
 
 Apollo Android is a community-driven project with contributors from many companies. Check out the [blog post introducing the first public release of the project](https://dev-blog.apollodata.com/launching-apollo-graphql-on-android-40ee0b5789bd) and the [project's README](https://github.com/apollographql/apollo-android) to learn about the current progress.
 
+We're excited about the idea of further [unifying the clients for JavaScript, iOS and Android](https://dev-blog.apollodata.com/one-graphql-client-for-javascript-ios-and-android-64993c1b7991), including sharing a cache between native and React Native.
+
 If you have questions or would like to contribute, please join the `#android` channel on [Slack](http://www.apollodata.com/#slack).
 
-[Apollo iOS](https://github.com/apollographql/apollo-ios) is a GraphQL client for native iOS apps, written in Swift.
+## Other platforms
 
-Apollo Client for JavaScript's [React integration](/react) works with [React Native](https://facebook.github.io/react-native/) on both iOS and Android.
-
-We're excited about the prospects of further [unifying the clients for JavaScript, iOS and Android](https://dev-blog.apollodata.com/one-graphql-client-for-javascript-ios-and-android-64993c1b7991), including sharing a cache between native and React Native.
+- [Apollo iOS](https://github.com/apollographql/apollo-ios) is a GraphQL client for native iOS apps, written in Swift.
+- [Apollo Client for JS](http://dev.apollodata.com/react/) is a great option for your web or React Native apps.
 
 <h2 id="learn-more">Other resources</h2>
 
