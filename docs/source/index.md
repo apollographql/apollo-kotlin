@@ -3,9 +3,13 @@ title: Introduction
 order: 0
 ---
 
-This will be the guide to using [Apollo Android](https://github.com/apollographql/apollo-android), a strongly-typed, caching GraphQL client for native Android apps written in Java.
+## Docs are on GitHub
 
-For now, refer to the [blog post introducing the first public release of the project](https://dev-blog.apollodata.com/launching-apollo-graphql-on-android-40ee0b5789bd) and the [project's README](https://github.com/apollographql/apollo-android) to get started.
+Apollo Android has been launched and is ready to try in your app today! For now, the docs for the project are hosted on GitHub, please look there: [apollographql/apollo-android](https://github.com/apollographql/apollo-android).
+
+## Getting involved
+
+Apollo Android is a community-driven project with contributors from many companies. Check out the [blog post introducing the first public release of the project](https://dev-blog.apollodata.com/launching-apollo-graphql-on-android-40ee0b5789bd) and the [project's README](https://github.com/apollographql/apollo-android) to learn about the current progress.
 
 If you have questions or would like to contribute, please join the `#android` channel on [Slack](http://www.apollodata.com/#slack).
 
