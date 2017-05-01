@@ -58,7 +58,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   public RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
       HttpCacheControl httpCacheControl, Moshi moshi, ResponseFieldMapper responseFieldMapper,
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ApolloStore apolloStore, CacheControl cacheControl,
-      ExecutorService dispatcher, ApolloLogger logger, List<ApolloInterceptor> applicationInterceptors, ApolloCallTracker tracker) {
+      ExecutorService dispatcher, ApolloLogger logger, List<ApolloInterceptor> applicationInterceptors,
+      ApolloCallTracker tracker) {
     this.operation = operation;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
