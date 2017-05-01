@@ -112,7 +112,7 @@ public class SqlNormalizedCacheTest {
   @Test
   public void testHeader_noCache() {
     sqlStore.merge(Record.builder(STANDARD_KEY).build(),
-        CacheHeaders.builder().addHeader(ApolloCacheHeaders.NO_CACHE, "true").build());
+        CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build());
     final Record record = sqlStore.loadRecord(STANDARD_KEY, CacheHeaders.NONE);
     assertThat(record).isNull();
   }

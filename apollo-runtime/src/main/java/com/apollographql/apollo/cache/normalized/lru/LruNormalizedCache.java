@@ -81,7 +81,6 @@ public final class LruNormalizedCache extends NormalizedCache {
             return record;
           }
         });
-        return record;
       } catch (Exception e) {
         return null;
       }
@@ -95,7 +94,7 @@ public final class LruNormalizedCache extends NormalizedCache {
   }
 
   @Nonnull @Override public Set<String> merge(@Nonnull Record apolloRecord, @Nonnull CacheHeaders cacheHeaders) {
-    if (cacheHeaders.hasHeader(ApolloCacheHeaders.NO_CACHE)) {
+    if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return Collections.emptySet();
     }
     if (secondaryCache.isPresent()) {

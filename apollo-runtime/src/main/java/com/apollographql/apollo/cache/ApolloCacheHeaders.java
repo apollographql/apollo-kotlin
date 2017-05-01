@@ -9,10 +9,8 @@ public final class ApolloCacheHeaders {
 
   /**
    * Records from this request should not be stored in the {@link NormalizedCache}.
-   * This does not specify that a request should not be read from a cache. To control where
-   * a response is read use {@link com.apollographql.apollo.cache.normalized.CacheControl}.
    */
-  public static final String NO_CACHE = "no-cache";
+  public static final String DO_NOT_STORE = "do-not-store";
 
   /**
    * Records from this request should be evicted after being read.

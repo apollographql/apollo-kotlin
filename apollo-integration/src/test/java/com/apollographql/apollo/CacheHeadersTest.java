@@ -51,12 +51,12 @@ public class CacheHeadersTest {
   public void testHeadersReceived() throws ApolloException, IOException {
     final NormalizedCache normalizedCache = new NormalizedCache(RecordFieldAdapter.create(new Moshi.Builder().build())) {
       @Nullable @Override public Record loadRecord(@NonNull String key, @NonNull CacheHeaders cacheHeaders) {
-        assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.NO_CACHE)).isTrue();
+        assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)).isTrue();
         return null;
       }
 
       @Nonnull @Override public Set<String> merge(@NonNull Record record, @NonNull CacheHeaders cacheHeaders) {
-        assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.NO_CACHE)).isTrue();
+        assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)).isTrue();
         return Collections.emptySet();
       }
 
@@ -81,7 +81,7 @@ public class CacheHeadersTest {
 
 
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
-    CacheHeaders cacheHeaders = CacheHeaders.builder().addHeader(ApolloCacheHeaders.NO_CACHE, "true").build();
+    CacheHeaders cacheHeaders = CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build();
     apolloClient.newCall(new HeroAndFriendsNames(Episode.NEWHOPE))
         .cacheHeaders(cacheHeaders)
         .execute();
@@ -91,12 +91,12 @@ public class CacheHeadersTest {
   public void testDefaultHeadersReceived() throws IOException, ApolloException {
     final NormalizedCache normalizedCache = new NormalizedCache(RecordFieldAdapter.create(new Moshi.Builder().build())) {
       @Nullable @Override public Record loadRecord(@NonNull String key, @NonNull CacheHeaders cacheHeaders) {
-        assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.NO_CACHE)).isTrue();
+        assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)).isTrue();
         return null;
       }
 
       @Nonnull @Override public Set<String> merge(@NonNull Record record, @NonNull CacheHeaders cacheHeaders) {
-        assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.NO_CACHE)).isTrue();
+        assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)).isTrue();
         return Collections.emptySet();
       }
 
@@ -111,7 +111,7 @@ public class CacheHeadersTest {
       }
     };
 
-    CacheHeaders cacheHeaders = CacheHeaders.builder().addHeader(ApolloCacheHeaders.NO_CACHE, "true").build();
+    CacheHeaders cacheHeaders = CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build();
 
     ApolloClient apolloClient = ApolloClient.builder().normalizedCache(cacheFactory, new CacheKeyResolver<Map<String, Object>>() {
       @Nonnull @Override public CacheKey resolve(@Nonnull Map<String, Object> objectSource) {

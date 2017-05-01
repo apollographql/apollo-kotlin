@@ -299,7 +299,7 @@ public class LruNormalizedCacheTest {
         ()).createNormalizedCache(basicFieldAdapter);
 
     Record testRecord = createTestRecord("1");
-    lruCache.merge(testRecord, CacheHeaders.builder().addHeader(ApolloCacheHeaders.NO_CACHE, "true").build());
+    lruCache.merge(testRecord, CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build());
 
     final Record record =
         lruCache.loadRecord("key1", CacheHeaders.NONE);

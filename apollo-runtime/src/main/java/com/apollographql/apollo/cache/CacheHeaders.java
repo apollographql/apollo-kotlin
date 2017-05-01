@@ -1,5 +1,6 @@
 package com.apollographql.apollo.cache;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -15,17 +16,17 @@ import javax.annotation.Nullable;
  */
 public final class CacheHeaders {
 
-  private Map<String, String> headerMap = new LinkedHashMap<>();
+  private final Map<String, String> headerMap;
 
   public static CacheHeaders.Builder builder() {
     return new Builder();
   }
 
-  public static final CacheHeaders NONE = CacheHeaders.builder().build();
+  public static final CacheHeaders NONE = new CacheHeaders(Collections.<String, String>emptyMap());
 
   public static final class Builder {
 
-    private Map<String, String> headerMap = new LinkedHashMap<>();
+    private final Map<String, String> headerMap = new LinkedHashMap<>();
 
     public Builder addHeader(String headerName, String headerValue) {
       headerMap.put(headerName, headerValue);

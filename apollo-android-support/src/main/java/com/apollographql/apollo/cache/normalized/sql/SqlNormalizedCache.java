@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static com.apollographql.apollo.cache.ApolloCacheHeaders.EVICT_AFTER_READ;
-import static com.apollographql.apollo.cache.ApolloCacheHeaders.NO_CACHE;
+import static com.apollographql.apollo.cache.ApolloCacheHeaders.DO_NOT_STORE;
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLUMN_KEY;
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLUMN_RECORD;
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.TABLE_RECORDS;
@@ -71,7 +71,7 @@ public final class SqlNormalizedCache extends NormalizedCache {
   }
 
   @Nonnull public Set<String> merge(@Nonnull Record apolloRecord, @Nonnull CacheHeaders cacheHeaders) {
-    if (cacheHeaders.hasHeader(NO_CACHE)) {
+    if (cacheHeaders.hasHeader(DO_NOT_STORE)) {
       return Collections.emptySet();
     }
     Optional<Record> optionalOldRecord = selectRecordForKey(apolloRecord.key());
@@ -82,14 +82,16 @@ public final class SqlNormalizedCache extends NormalizedCache {
     } else {
       Record oldRecord = optionalOldRecord.get();
       changedKeys = oldRecord.mergeWith(apolloRecord);
-      updateRecord(oldRecord.key(), recordAdapter().toJson(oldRecord.fields()));
+      if (!changedKeys.isEmpty()) {
+        updateRecord(oldRecord.key(), recordAdapter().toJson(oldRecord.fields()));
+      }
     }
     return changedKeys;
   }
 
   @Nonnull @Override public Set<String> merge(@Nonnull Collection<Record> recordSet,
       @Nonnull CacheHeaders cacheHeaders) {
-    if (cacheHeaders.hasHeader(NO_CACHE)) {
+    if (cacheHeaders.hasHeader(DO_NOT_STORE)) {
       return Collections.emptySet();
     }
     Set<String> changedKeys = Collections.emptySet();
