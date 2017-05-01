@@ -5,7 +5,7 @@ order: 0
 
 ## Docs are on GitHub
 
-Apollo Android has been launched and is ready to try in your app today! For now, the docs for the project are hosted on GitHub, please look there: [apollographql/apollo-android](https://github.com/apollographql/apollo-android).
+Apollo Android has been [launched](https://dev-blog.apollodata.com/launching-apollo-graphql-on-android-40ee0b5789bd) and is ready to try in your app today! For now, the docs for the project are hosted on GitHub, please look there: [apollographql/apollo-android](https://github.com/apollographql/apollo-android).
 
 ## Getting involved
 
