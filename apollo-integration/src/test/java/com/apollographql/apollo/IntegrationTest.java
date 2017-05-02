@@ -7,6 +7,7 @@ import com.google.common.collect.FluentIterable;
 import com.apollographql.android.impl.httpcache.AllFilms;
 import com.apollographql.android.impl.httpcache.AllPlanets;
 import com.apollographql.android.impl.httpcache.type.CustomType;
+import com.apollographql.android.impl.normalizer.HeroName;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
@@ -76,7 +77,7 @@ public class IntegrationTest {
   }
 
   @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
-    server.enqueue(mockResponse("/HttpCacheTestAllPlanets.json"));
+    server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"));
 
     Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
     assertThat(body.hasErrors()).isFalse();
@@ -141,7 +142,7 @@ public class IntegrationTest {
   }
 
   @Test public void errorResponse() throws Exception {
-    server.enqueue(mockResponse("/HttpCacheTestError.json"));
+    server.enqueue(mockResponse("HttpCacheTestError.json"));
     Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
     assertThat(body.hasErrors()).isTrue();
     //noinspection ConstantConditions
@@ -151,7 +152,7 @@ public class IntegrationTest {
   }
 
   @Test public void allFilmsWithDate() throws Exception {
-    server.enqueue(mockResponse("/HttpCacheTestAllFilms.json"));
+    server.enqueue(mockResponse("HttpCacheTestAllFilms.json"));
 
     Response<AllFilms.Data> body = apolloClient.newCall(new AllFilms()).execute();
     assertThat(body.hasErrors()).isFalse();
@@ -173,7 +174,7 @@ public class IntegrationTest {
   }
 
   @Test public void allPlanetQueryAsync() throws Exception {
-    server.enqueue(mockResponse("/HttpCacheTestAllPlanets.json"));
+    server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"));
     final NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
     apolloClient.newCall(new AllPlanets()).enqueue(new ApolloCall.Callback<AllPlanets.Data>() {
       @Override public void onResponse(@Nonnull Response<AllPlanets.Data> response) {
@@ -190,7 +191,27 @@ public class IntegrationTest {
     latch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 
+  @Test public void dataEmpty() throws Exception {
+    MockResponse mockResponse = mockResponse("ResponseDataEmpty.json");
+    server.enqueue(mockResponse);
+
+    ApolloCall<HeroName.Data> call = apolloClient.newCall(new HeroName());
+    Response<HeroName.Data> body = call.execute();
+    assertThat(body.data()).isNotNull();
+    assertThat(body.hasErrors()).isFalse();
+  }
+
+  @Test public void dataNull() throws Exception {
+    MockResponse mockResponse = mockResponse("ResponseDataNull.json");
+    server.enqueue(mockResponse);
+
+    ApolloCall<HeroName.Data> call = apolloClient.newCall(new HeroName());
+    Response<HeroName.Data> body = call.execute();
+    assertThat(body.data()).isNull();
+    assertThat(body.hasErrors()).isFalse();
+  }
+
   private MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), fileName), 32);
+    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
   }
 }

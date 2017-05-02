@@ -47,7 +47,7 @@ final class HttpResponseBodyParser<D extends Operation.Data, W> {
         String name = responseStreamReader.nextName();
         if ("data".equals(name)) {
           //noinspection unchecked
-          data = (D) responseStreamReader.nextObject(false, new ResponseJsonStreamReader.ObjectReader<Object>() {
+          data = (D) responseStreamReader.nextObject(true, new ResponseJsonStreamReader.ObjectReader<Object>() {
             @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
               Map<String, Object> buffer = reader.buffer();
               RealResponseReader<Map<String, Object>> realResponseReader = new RealResponseReader<>(operation, buffer,
