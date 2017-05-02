@@ -75,10 +75,8 @@ class ApolloPlugin implements Plugin<Project> {
       }
     })
 
-    project.afterEvaluate {
-      project.tasks.create(ApolloCodeGenInstallTask.NAME, ApolloCodeGenInstallTask.class)
-      addApolloTasks()
-    }
+    project.tasks.create(ApolloCodeGenInstallTask.NAME, ApolloCodeGenInstallTask.class)
+    addApolloTasks()
   }
 
   private void addApolloTasks() {
