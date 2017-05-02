@@ -79,7 +79,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
-    return interceptorChain.proceed().parsedResponse.get();
+    return interceptorChain.proceed().parsedResponse.or(new Response(operation));
   }
 
   @Override public void enqueue(@Nullable final Callback<T> callback) {

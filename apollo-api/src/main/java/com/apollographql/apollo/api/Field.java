@@ -7,6 +7,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+
 /**
  * Field is an abstraction for a field in a graphQL operation. For example, in the following graphQL query, Field
  * represents abstraction for field 'name':
@@ -214,6 +219,32 @@ public class Field {
       return fieldName();
     }
     return String.format("%s(%s)", fieldName(), orderIndependentKey(arguments, variables));
+  }
+
+  /**
+   * Resolve field argument value by name. If argument represents a references to the variable, it will be
+   * resolved from provided operation variables values.
+   *
+   * @param name      argument name
+   * @param variables values of operation variables
+   * @return resolved argument value
+   */
+  @SuppressWarnings("unchecked") @Nullable public Object resolveArgument(@Nonnull String name,
+      @Nonnull Operation.Variables variables) {
+    checkNotNull(name, "name == null");
+    checkNotNull(variables, "variables == null");
+    Map<String, Object> variableValues = variables.valueMap();
+    Object argumentValue = arguments.get(name);
+    if (argumentValue instanceof Map) {
+      Map<String, Object> argumentValueMap = (Map<String, Object>) argumentValue;
+      if (isArgumentValueVariableType(argumentValueMap)) {
+        String variableName = argumentValueMap.get(VARIABLE_NAME_KEY).toString();
+        return variableValues.get(variableName);
+      } else {
+        return null;
+      }
+    }
+    return argumentValue;
   }
 
   private String orderIndependentKey(Map<String, Object> objectMap, Operation.Variables variables) {

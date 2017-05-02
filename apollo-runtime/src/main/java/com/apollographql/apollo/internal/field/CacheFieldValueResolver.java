@@ -2,9 +2,11 @@ package com.apollographql.apollo.internal.field;
 
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.cache.normalized.CacheKey;
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.CacheReference;
-import com.apollographql.apollo.internal.cache.normalized.ReadableCache;
 import com.apollographql.apollo.cache.normalized.Record;
+import com.apollographql.apollo.internal.cache.normalized.ReadableCache;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +14,13 @@ import java.util.List;
 public final class CacheFieldValueResolver implements FieldValueResolver<Record> {
   private final ReadableCache readableCache;
   private final Operation.Variables variables;
+  private final CacheKeyResolver cacheKeyResolver;
 
-  public CacheFieldValueResolver(ReadableCache readableCache, Operation.Variables variables) {
+  public CacheFieldValueResolver(ReadableCache readableCache, Operation.Variables variables,
+      CacheKeyResolver cacheKeyResolver) {
     this.readableCache = readableCache;
     this.variables = variables;
+    this.cacheKeyResolver = cacheKeyResolver;
   }
 
   @SuppressWarnings("unchecked") @Override public <T> T valueFor(Record record, Field field) {
@@ -31,7 +36,13 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
   }
 
   private Record valueFor(Record record, Field.ObjectField field) {
-    CacheReference cacheReference = fieldValue(record, field);
+    CacheReference cacheReference;
+    CacheKey fieldCacheKey = cacheKeyResolver.fromFieldArguments(field, variables);
+    if (fieldCacheKey != CacheKey.NO_KEY) {
+      cacheReference = new CacheReference(fieldCacheKey.key());
+    } else {
+      cacheReference = fieldValue(record, field);
+    }
     return cacheReference != null ? readableCache.read(cacheReference.key()) : null;
   }
 

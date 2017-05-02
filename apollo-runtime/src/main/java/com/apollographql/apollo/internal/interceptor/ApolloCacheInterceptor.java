@@ -149,8 +149,10 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
           return new Response(operation);
         }
         try {
+          CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
+              apolloStore.cacheKeyResolver());
           RealResponseReader<Record> responseReader = new RealResponseReader<>(operation, rootRecord,
-              new CacheFieldValueResolver(cache, operation.variables()), customTypeAdapters, cacheResponseNormalizer);
+              fieldValueResolver, customTypeAdapters, cacheResponseNormalizer);
           return new Response(operation, responseFieldMapper.map(responseReader), null,
               cacheResponseNormalizer.dependentKeys());
         } catch (final Exception e) {

@@ -7,7 +7,7 @@ import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
+import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.field.MapFieldValueResolver;
@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.annotation.Nonnull;
 
 import static com.google.common.truth.Truth.assertThat;
 import static java.util.Arrays.asList;
@@ -326,44 +328,47 @@ public class ResponseReaderTest {
     }
   };
 
-  @SuppressWarnings("unchecked") private static final ResponseNormalizer NO_OP_NORMALIZER =
-      new ResponseNormalizer(CacheKeyResolver.DEFAULT) {
-        @Override public void willResolveRootQuery(Operation operation) {
-        }
+  @SuppressWarnings("unchecked") private static final ResponseNormalizer NO_OP_NORMALIZER = new ResponseNormalizer() {
+    @Override public void willResolveRootQuery(Operation operation) {
+    }
 
-        @Override public void willResolve(Field field, Operation.Variables variables) {
-        }
+    @Override public void willResolve(Field field, Operation.Variables variables) {
+    }
 
-        @Override public void didResolve(Field field, Operation.Variables variables) {
-        }
+    @Override public void didResolve(Field field, Operation.Variables variables) {
+    }
 
-        @Override public void didParseScalar(Object value) {
-        }
+    @Override public void didParseScalar(Object value) {
+    }
 
-        @Override public void willParseObject(Optional objectMap) {
-        }
+    @Override public void willParseObject(Field field, Optional objectSource) {
+    }
 
-        @Override public void didParseObject(Optional objectMap) {
-        }
+    @Override public void didParseObject(Field Field, Optional objectSource) {
+    }
 
-        @Override public void didParseList(List array) {
-        }
+    @Nonnull @Override public CacheKey resolveCacheKey(@Nonnull Field field, @Nonnull Object record) {
+      return CacheKey.NO_KEY;
+    }
 
-        @Override public void willParseElement(int atIndex) {
-        }
+    @Override public void didParseList(List array) {
+    }
 
-        @Override public void didParseElement(int atIndex) {
-        }
+    @Override public void willParseElement(int atIndex) {
+    }
 
-        @Override public void didParseNull() {
-        }
+    @Override public void didParseElement(int atIndex) {
+    }
 
-        @Override public Collection<Record> records() {
-          return Collections.emptyList();
-        }
+    @Override public void didParseNull() {
+    }
 
-        @Override public Set<String> dependentKeys() {
-          return Collections.emptySet();
-        }
-      };
+    @Override public Collection<Record> records() {
+      return Collections.emptyList();
+    }
+
+    @Override public Set<String> dependentKeys() {
+      return Collections.emptySet();
+    }
+  };
 }

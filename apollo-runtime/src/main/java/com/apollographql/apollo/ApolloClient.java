@@ -157,7 +157,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     EvictionStrategy httpEvictionStrategy;
     ApolloStore apolloStore = ApolloStore.NO_APOLLO_STORE;
     Optional<NormalizedCacheFactory> cacheFactory = Optional.absent();
-    Optional<CacheKeyResolver<Map<String, Object>>> cacheKeyResolver = Optional.absent();
+    Optional<CacheKeyResolver> cacheKeyResolver = Optional.absent();
     HttpCacheControl defaultHttpCacheControl = HttpCacheControl.CACHE_FIRST;
     CacheControl defaultCacheControl = CacheControl.CACHE_FIRST;
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
@@ -223,11 +223,21 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
      * Set the configuration to be used for normalized cache.
      *
      * @param normalizedCacheFactory the {@link NormalizedCacheFactory} used to construct a {@link NormalizedCache}.
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
+    public Builder normalizedCache(@Nonnull NormalizedCacheFactory normalizedCacheFactory) {
+      return normalizedCache(normalizedCacheFactory, CacheKeyResolver.DEFAULT);
+    }
+
+    /**
+     * Set the configuration to be used for normalized cache.
+     *
+     * @param normalizedCacheFactory the {@link NormalizedCacheFactory} used to construct a {@link NormalizedCache}.
      * @param keyResolver            the {@link CacheKeyResolver} to use to normalize records
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder normalizedCache(@Nonnull NormalizedCacheFactory normalizedCacheFactory,
-        @Nonnull CacheKeyResolver<Map<String, Object>> keyResolver) {
+        @Nonnull CacheKeyResolver keyResolver) {
       cacheFactory = Optional.fromNullable(checkNotNull(normalizedCacheFactory, "normalizedCacheFactory == null"));
       cacheKeyResolver = Optional.fromNullable(checkNotNull(keyResolver, "cacheKeyResolver == null"));
       return this;

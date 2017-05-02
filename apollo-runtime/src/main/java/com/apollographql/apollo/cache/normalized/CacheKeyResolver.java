@@ -1,5 +1,6 @@
 package com.apollographql.apollo.cache.normalized;
 
+import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Query;
@@ -13,21 +14,20 @@ import javax.annotation.Nonnull;
  *
  * @param <R> The type representing the JSON Object. Typically, Map<String, Object>.
  */
-public abstract class CacheKeyResolver<R> {
-  public static final CacheKeyResolver DEFAULT = new CacheKeyResolver<Map<String, Object>>() {
-    @Nonnull @Override public CacheKey resolve(@Nonnull Map<String, Object> jsonObject) {
+public abstract class CacheKeyResolver {
+  public static final CacheKeyResolver DEFAULT = new CacheKeyResolver() {
+    @Nonnull @Override
+    public CacheKey fromFieldRecordSet(@Nonnull Field field, @Nonnull Map<String, Object> recordSet) {
+      return CacheKey.NO_KEY;
+    }
+
+    @Nonnull @Override
+    public CacheKey fromFieldArguments(@Nonnull Field field, @Nonnull Operation.Variables variables) {
       return CacheKey.NO_KEY;
     }
   };
-
-  public static final CacheKeyResolver<Record> RECORD = new CacheKeyResolver<Record>() {
-    @Nonnull @Override public CacheKey resolve(@Nonnull Record record) {
-      return CacheKey.from(record.key());
-    }
-  };
-
-  private static final CacheKey QUERY_ROOT_KEY = CacheKey.from("QUERY_ROOT");
-  private static final CacheKey MUTATION_ROOT_KEY = CacheKey.from("MUTATION_ROOT");
+  public static final CacheKey QUERY_ROOT_KEY = CacheKey.from("QUERY_ROOT");
+  public static final CacheKey MUTATION_ROOT_KEY = CacheKey.from("MUTATION_ROOT");
 
   public static CacheKey rootKeyForOperation(@Nonnull Operation operation) {
     if (operation instanceof Query) {
@@ -38,5 +38,7 @@ public abstract class CacheKeyResolver<R> {
     throw new IllegalArgumentException("Unknown operation type.");
   }
 
-  @Nonnull public abstract CacheKey resolve(@Nonnull R objectSource);
+  @Nonnull public abstract CacheKey fromFieldRecordSet(@Nonnull Field field, @Nonnull Map<String, Object> recordSet);
+
+  @Nonnull public abstract CacheKey fromFieldArguments(@Nonnull Field field, @Nonnull Operation.Variables variables);
 }

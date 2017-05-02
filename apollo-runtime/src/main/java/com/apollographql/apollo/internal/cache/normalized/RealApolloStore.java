@@ -1,7 +1,9 @@
 package com.apollographql.apollo.internal.cache.normalized;
 
 
+import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
+import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
@@ -22,24 +24,31 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 public final class RealApolloStore implements ApolloStore, ReadableCache, WriteableCache {
   private final NormalizedCache normalizedCache;
-  private final CacheKeyResolver<Map<String, Object>> networkCacheKeyResolver;
+  private final CacheKeyResolver cacheKeyResolver;
   private final ReadWriteLock lock;
   private final Set<RecordChangeSubscriber> subscribers;
 
-  public RealApolloStore(@Nonnull NormalizedCache normalizedCache,
-      @Nonnull CacheKeyResolver<Map<String, Object>> networkCacheKeyResolver) {
-    this.normalizedCache =  checkNotNull(normalizedCache, "cacheStore null");
-    this.networkCacheKeyResolver = checkNotNull(networkCacheKeyResolver, "networkCacheKeyResolver null");
+  public RealApolloStore(@Nonnull NormalizedCache normalizedCache, @Nonnull CacheKeyResolver cacheKeyResolver) {
+    this.normalizedCache = checkNotNull(normalizedCache, "cacheStore null");
+    this.cacheKeyResolver = checkNotNull(cacheKeyResolver, "cacheKeyResolver null");
     this.lock = new ReentrantReadWriteLock();
     this.subscribers = Collections.newSetFromMap(new WeakHashMap<RecordChangeSubscriber, Boolean>());
   }
 
   @Override public ResponseNormalizer<Map<String, Object>> networkResponseNormalizer() {
-    return new ResponseNormalizer<>(networkCacheKeyResolver);
+    return new ResponseNormalizer<Map<String, Object>>() {
+      @Nonnull @Override public CacheKey resolveCacheKey(@Nonnull Field field, @Nonnull Map<String, Object> record) {
+        return cacheKeyResolver.fromFieldRecordSet(field, record);
+      }
+    };
   }
 
   @Override public ResponseNormalizer<Record> cacheResponseNormalizer() {
-    return new ResponseNormalizer<>(CacheKeyResolver.RECORD);
+    return new ResponseNormalizer<Record>() {
+      @Nonnull @Override public CacheKey resolveCacheKey(@Nonnull Field field, @Nonnull Record record) {
+        return CacheKey.from(record.key());
+      }
+    };
   }
 
   @Override public synchronized void subscribe(RecordChangeSubscriber subscriber) {
@@ -107,4 +116,7 @@ public final class RealApolloStore implements ApolloStore, ReadableCache, Writea
     return normalizedCache.merge(checkNotNull(recordSet, "recordSet == null"));
   }
 
+  @Override public CacheKeyResolver cacheKeyResolver() {
+    return cacheKeyResolver;
+  }
 }
