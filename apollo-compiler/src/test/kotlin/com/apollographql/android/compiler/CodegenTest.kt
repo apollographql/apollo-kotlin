@@ -64,7 +64,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
           .filter { it.isDirectory }
           .map {
             val customTypeMap = if (it.name == "custom_scalar_type") {
-              mapOf("Date" to "java.util.Date")
+              mapOf("Date" to "java.util.Date", "URL" to "java.lang.String")
             } else {
               emptyMap()
             }

@@ -92,17 +92,17 @@ class SchemaTypeResponseMapperBuilder(
 
   private fun fieldFactoryCode(field: Field): CodeBlock {
     val fieldTypeName = field.fieldSpec(context).type.unwrapOptionalType().withoutAnnotations()
-    if (fieldTypeName.isScalar() || fieldTypeName.isCustomScalarType()) {
-      return scalarFieldFactoryCode(field, fieldTypeName)
-    } else if (fieldTypeName.isList()) {
+    if (fieldTypeName.isList()) {
       return listFieldFactoryCode(field, fieldTypeName)
+    } else if (fieldTypeName.isScalar() || field.type.isCustomScalarType()) {
+      return scalarFieldFactoryCode(field, fieldTypeName)
     } else {
       return objectFieldFactoryCode(field, "forObject", fieldTypeName.overrideTypeName(typeOverrideMap) as ClassName)
     }
   }
 
   private fun scalarFieldFactoryCode(field: Field, type: TypeName): CodeBlock {
-    if (type.isCustomScalarType()) {
+    if (field.type.isCustomScalarType()) {
       val customScalarEnum = CustomEnumTypeSpecBuilder.className(context)
       val customScalarEnumConst = normalizeGraphQlType(field.type).toUpperCase(Locale.ENGLISH)
       return CodeBlock.of("\$T.forCustomType(\$S, \$S, \$L, \$L, \$T.\$L)", API_RESPONSE_FIELD_TYPE,
@@ -134,7 +134,7 @@ class SchemaTypeResponseMapperBuilder(
     val rawFieldType = type.let { if (it.isList()) it.listParamType() else it }
     return CodeBlock.builder()
         .add(
-            if (rawFieldType.isCustomScalarType()) {
+            if (field.type.isCustomScalarType()) {
               customTypeListFieldFactoryCode(field, rawFieldType)
             } else if (rawFieldType.isScalar()) {
               scalarListFieldFactoryCode(field, rawFieldType)
@@ -259,8 +259,8 @@ class SchemaTypeResponseMapperBuilder(
   private fun TypeName.isEnum() =
       ((this is ClassName) && context.typeDeclarations.count { it.kind == "EnumType" && it.name == simpleName() } > 0)
 
-  private fun TypeName.isCustomScalarType() =
-      context.customTypeMap.containsValue(toString())
+  private fun String.isCustomScalarType() =
+      context.customTypeMap.containsKey(normalizeGraphQlType(this))
 
   private fun TypeName.isScalar() = (SCALAR_TYPES.contains(this) || isEnum())
 
@@ -273,6 +273,7 @@ class SchemaTypeResponseMapperBuilder(
   private fun inlineFragmentFieldFactoryCode(fragment: InlineFragment): CodeBlock {
     val type = fragment.fieldSpec(context).type.unwrapOptionalType().withoutAnnotations()
         .overrideTypeName(typeOverrideMap) as ClassName
+
     fun readCodeBlock(): CodeBlock {
       return CodeBlock.builder()
           .beginControlFlow("if (\$L.equals(\$S))", CONDITIONAL_TYPE_VAR, fragment.typeCondition)
@@ -331,11 +332,12 @@ class SchemaTypeResponseMapperBuilder(
 
   private fun mapperFields() =
       fields
+          .filter { !it.type.isCustomScalarType() }
           .map { it.fieldSpec(context) }
           .plus(inlineFragments.map { it.fieldSpec(context) })
           .map { it.type.unwrapOptionalType().withoutAnnotations() }
           .map { it.let { if (it.isList()) it.listParamType() else it } }
-          .filter { !it.isScalar() && !it.isCustomScalarType() }
+          .filter { !it.isScalar() }
           .map { it.overrideTypeName(typeOverrideMap) as ClassName }
           .plus(if (fragmentSpreads.isEmpty()) emptyList<ClassName>() else listOf(FRAGMENTS_CLASS))
           .map {
