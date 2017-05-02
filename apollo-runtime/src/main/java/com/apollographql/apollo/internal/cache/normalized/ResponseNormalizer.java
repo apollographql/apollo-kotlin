@@ -21,20 +21,14 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
+public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
   private SimpleStack<List<String>> pathStack;
   private SimpleStack<Record> recordStack;
   private SimpleStack<Object> valueStack;
   private Set<String> dependentKeys;
-  private final CacheKeyResolver<R> cacheKeyResolver;
-
   private List<String> path;
   private Record.Builder currentRecordBuilder;
   private RecordSet recordSet;
-
-  public ResponseNormalizer(@Nonnull CacheKeyResolver<R> cacheKeyResolver) {
-    this.cacheKeyResolver = cacheKeyResolver;
-  }
 
   public Collection<Record> records() {
     return recordSet.allRecords();
@@ -77,10 +71,10 @@ public class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     valueStack.push(value);
   }
 
-  @Override public void willParseObject(Optional<R> objectSource) {
+  @Override public void willParseObject(Field field, Optional<R> objectSource) {
     pathStack.push(path);
 
-    CacheKey cacheKey = objectSource.isPresent() ? cacheKeyResolver.resolve(objectSource.get()) : CacheKey.NO_KEY;
+    CacheKey cacheKey = objectSource.isPresent() ? resolveCacheKey(field, objectSource.get()) : CacheKey.NO_KEY;
     String cacheKeyValue = cacheKey.key();
     if (cacheKey == CacheKey.NO_KEY) {
       cacheKeyValue = pathToString();
@@ -92,7 +86,7 @@ public class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     currentRecordBuilder = Record.builder(cacheKeyValue);
   }
 
-  @Override public void didParseObject(Optional<R> objectSource) {
+  @Override public void didParseObject(Field field, Optional<R> objectSource) {
     path = pathStack.pop();
     Record completedRecord = currentRecordBuilder.build();
     valueStack.push(new CacheReference(completedRecord.key()));
@@ -121,6 +115,8 @@ public class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     valueStack.push(null);
   }
 
+  @Nonnull public abstract CacheKey resolveCacheKey(@Nonnull Field field, @Nonnull R record);
+
   private String pathToString() {
     StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0, size = path.size(); i < size; i++) {
@@ -133,8 +129,7 @@ public class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     return stringBuilder.toString();
   }
 
-  @SuppressWarnings("unchecked") static final ResponseNormalizer NO_OP_NORMALIZER
-      = new ResponseNormalizer(CacheKeyResolver.DEFAULT) {
+  @SuppressWarnings("unchecked") static final ResponseNormalizer NO_OP_NORMALIZER = new ResponseNormalizer() {
     @Override public void willResolveRootQuery(Operation operation) {
     }
 
@@ -147,10 +142,10 @@ public class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     @Override public void didParseScalar(Object value) {
     }
 
-    @Override public void willParseObject(Optional objectSource) {
+    @Override public void willParseObject(Field field, Optional objectSource) {
     }
 
-    @Override public void didParseObject(Optional objectSource) {
+    @Override public void didParseObject(Field field, Optional objectSource) {
     }
 
     @Override public void didParseList(List array) {
@@ -171,6 +166,10 @@ public class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
 
     @Override public Set<String> dependentKeys() {
       return Collections.emptySet();
+    }
+
+    @Nonnull @Override public CacheKey resolveCacheKey(@Nonnull Field field, @Nonnull Object record) {
+      return CacheKey.NO_KEY;
     }
   };
 }

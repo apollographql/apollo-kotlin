@@ -31,5 +31,17 @@ public enum CustomType implements ScalarType {
     public Class javaType() {
       return Object.class;
     }
+  },
+
+  URL {
+    @Override
+    public String typeName() {
+      return "URL";
+    }
+
+    @Override
+    public Class javaType() {
+      return String.class;
+    }
   }
 }

@@ -26,6 +26,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       + "    birthDate\n"
       + "    appearanceDates\n"
       + "    fieldWithUnsupportedType\n"
+      + "    profileLink\n"
+      + "    links\n"
       + "  }\n"
       + "}";
 
@@ -138,6 +140,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private final @Nonnull Object fieldWithUnsupportedType;
 
+    private final @Nonnull String profileLink;
+
+    private final @Nonnull List<String> links;
+
     private volatile String $toString;
 
     private volatile int $hashCode;
@@ -145,12 +151,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Hero(@Nonnull String __typename, @Nonnull String name, @Nonnull Date birthDate,
-        @Nonnull List<Date> appearanceDates, @Nonnull Object fieldWithUnsupportedType) {
+        @Nonnull List<Date> appearanceDates, @Nonnull Object fieldWithUnsupportedType,
+        @Nonnull String profileLink, @Nonnull List<String> links) {
       this.__typename = __typename;
       this.name = name;
       this.birthDate = birthDate;
       this.appearanceDates = appearanceDates;
       this.fieldWithUnsupportedType = fieldWithUnsupportedType;
+      this.profileLink = profileLink;
+      this.links = links;
     }
 
     public @Nonnull String __typename() {
@@ -185,6 +194,20 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.fieldWithUnsupportedType;
     }
 
+    /**
+     * Profile link
+     */
+    public @Nonnull String profileLink() {
+      return this.profileLink;
+    }
+
+    /**
+     * Links
+     */
+    public @Nonnull List<String> links() {
+      return this.links;
+    }
+
     @Override
     public String toString() {
       if ($toString == null) {
@@ -193,7 +216,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           + "name=" + name + ", "
           + "birthDate=" + birthDate + ", "
           + "appearanceDates=" + appearanceDates + ", "
-          + "fieldWithUnsupportedType=" + fieldWithUnsupportedType
+          + "fieldWithUnsupportedType=" + fieldWithUnsupportedType + ", "
+          + "profileLink=" + profileLink + ", "
+          + "links=" + links
           + "}";
       }
       return $toString;
@@ -210,7 +235,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
          && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
          && ((this.birthDate == null) ? (that.birthDate == null) : this.birthDate.equals(that.birthDate))
          && ((this.appearanceDates == null) ? (that.appearanceDates == null) : this.appearanceDates.equals(that.appearanceDates))
-         && ((this.fieldWithUnsupportedType == null) ? (that.fieldWithUnsupportedType == null) : this.fieldWithUnsupportedType.equals(that.fieldWithUnsupportedType));
+         && ((this.fieldWithUnsupportedType == null) ? (that.fieldWithUnsupportedType == null) : this.fieldWithUnsupportedType.equals(that.fieldWithUnsupportedType))
+         && ((this.profileLink == null) ? (that.profileLink == null) : this.profileLink.equals(that.profileLink))
+         && ((this.links == null) ? (that.links == null) : this.links.equals(that.links));
       }
       return false;
     }
@@ -229,6 +256,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         h ^= (appearanceDates == null) ? 0 : appearanceDates.hashCode();
         h *= 1000003;
         h ^= (fieldWithUnsupportedType == null) ? 0 : fieldWithUnsupportedType.hashCode();
+        h *= 1000003;
+        h ^= (profileLink == null) ? 0 : profileLink.hashCode();
+        h *= 1000003;
+        h ^= (links == null) ? 0 : links.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -245,7 +276,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             return reader.readCustomType(CustomType.DATE);
           }
         }),
-        Field.forCustomType("fieldWithUnsupportedType", "fieldWithUnsupportedType", null, false, CustomType.UNSUPPORTEDTYPE)
+        Field.forCustomType("fieldWithUnsupportedType", "fieldWithUnsupportedType", null, false, CustomType.UNSUPPORTEDTYPE),
+        Field.forCustomType("profileLink", "profileLink", null, false, CustomType.URL),
+        Field.forList("links", "links", null, false, new Field.ListReader<String>() {
+          @Override public String read(final Field.ListItemReader reader) throws IOException {
+            return reader.readCustomType(CustomType.URL);
+          }
+        })
       };
 
       @Override
@@ -255,7 +292,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final Date birthDate = reader.read(fields[2]);
         final List<Date> appearanceDates = reader.read(fields[3]);
         final Object fieldWithUnsupportedType = reader.read(fields[4]);
-        return new Hero(__typename, name, birthDate, appearanceDates, fieldWithUnsupportedType);
+        final String profileLink = reader.read(fields[5]);
+        final List<String> links = reader.read(fields[6]);
+        return new Hero(__typename, name, birthDate, appearanceDates, fieldWithUnsupportedType, profileLink, links);
       }
     }
   }

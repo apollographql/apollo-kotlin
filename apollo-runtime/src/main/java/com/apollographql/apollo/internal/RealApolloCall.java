@@ -84,7 +84,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
     try {
       tracker.syncCallInProgress(this);
-      return interceptorChain.proceed().parsedResponse.get();
+      return interceptorChain.proceed().parsedResponse.or(new Response(operation));
     } finally {
       tracker.syncCallFinished(this);
     }

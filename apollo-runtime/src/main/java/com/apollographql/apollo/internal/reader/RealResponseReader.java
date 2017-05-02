@@ -148,14 +148,14 @@ import java.util.Map;
   @SuppressWarnings("unchecked") <T> T readObject(Field.ObjectField field) throws IOException {
     R value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
-    readerShadow.willParseObject(Optional.fromNullable(value));
+    readerShadow.willParseObject(field, Optional.fromNullable(value));
     if (value == null) {
       readerShadow.didParseNull();
       return null;
     } else {
       final T parsedValue = (T) field.objectReader().read(new RealResponseReader(operation, value,
           fieldValueResolver, customTypeAdapters, readerShadow));
-      readerShadow.didParseObject(Optional.fromNullable(value));
+      readerShadow.didParseObject(field, Optional.fromNullable(value));
       return parsedValue;
     }
   }
@@ -191,10 +191,10 @@ import java.util.Map;
       for (int i = 0; i < values.size(); i++) {
         readerShadow.willParseElement(i);
         R value = values.get(i);
-        readerShadow.willParseObject(Optional.fromNullable(value));
+        readerShadow.willParseObject(field, Optional.fromNullable(value));
         T item = (T) field.objectReader().read(new RealResponseReader(operation, value, fieldValueResolver,
             customTypeAdapters, readerShadow));
-        readerShadow.didParseObject(Optional.fromNullable(value));
+        readerShadow.didParseObject(field, Optional.fromNullable(value));
         readerShadow.didParseElement(i);
         result.add(item);
       }

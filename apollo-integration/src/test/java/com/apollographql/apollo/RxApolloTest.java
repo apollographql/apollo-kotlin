@@ -1,14 +1,10 @@
 package com.apollographql.apollo;
 
-import android.support.annotation.NonNull;
-
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDs;
 import com.apollographql.android.impl.normalizer.type.Episode;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
-import com.apollographql.apollo.cache.normalized.CacheKey;
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.rx.RxApollo;
 
@@ -19,11 +15,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import javax.annotation.Nonnull;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -46,20 +39,10 @@ public class RxApolloTest {
   @Before public void setUp() {
     server = new MockWebServer();
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-    InMemoryNormalizedCache cacheStore = new InMemoryNormalizedCache();
-
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(cacheStore, new CacheKeyResolver<Map<String, Object>>() {
-          @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
-            String id = (String) jsonObject.get("id");
-            if (id == null || id.isEmpty()) {
-              return CacheKey.NO_KEY;
-            }
-            return CacheKey.from(id);
-          }
-        })
+        .normalizedCache(new InMemoryNormalizedCache(), new IdFieldCacheKeyResolver())
         .build();
   }
 
@@ -201,7 +184,8 @@ public class RxApolloTest {
       }
     });
 
-    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);;
+    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
     apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
 
@@ -243,12 +227,12 @@ public class RxApolloTest {
       }
     });
 
-    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);;
+    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     HeroAndFriendsNamesWithIDs friendsQuery = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
 
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
     apolloClient.newCall(friendsQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
-    secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);;
+    secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {

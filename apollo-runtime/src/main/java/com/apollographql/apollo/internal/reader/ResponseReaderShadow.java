@@ -16,9 +16,9 @@ public interface ResponseReaderShadow<R> {
 
   void didParseScalar(Object value);
 
-  void willParseObject(Optional<R> objectSource);
+  void willParseObject(Field objectField, Optional<R> objectSource);
 
-  void didParseObject(Optional<R> objectSource);
+  void didParseObject(Field objectField, Optional<R> objectSource);
 
   void didParseList(List array);
 
