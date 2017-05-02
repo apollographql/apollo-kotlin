@@ -64,12 +64,12 @@ public interface ApolloCall<T> extends Cancelable {
   @Nonnull ApolloCall<T> cacheControl(@Nonnull CacheControl cacheControl);
 
   /**
-   * Sets the cache headers to use for this call. The default {@link CacheControl} will be used.
+   * Sets the {@link CacheHeaders} to use for this call.
    *
    * @param cacheHeaders the {@link CacheHeaders} that will be passed with records generated from this request to {@link
    *                     com.apollographql.apollo.cache.normalized.NormalizedCache}. Standardized cache headers are
    *                     defined in {@link ApolloCacheHeaders}.
-   * @return The ApolloCall object with the provided CacheControl strategy
+   * @return The ApolloCall object with the provided {@link CacheHeaders}.
    */
   @Nonnull ApolloCall<T> cacheHeaders(@Nonnull CacheHeaders cacheHeaders);
 

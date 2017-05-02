@@ -3,10 +3,10 @@ package com.apollographql.apollo.cache.normalized;
 import com.apollographql.apollo.cache.CacheHeaders;
 
 /**
- * {@link CacheControl} represents strategies for defining what precedence reading a GraphQL responses back
- * from the {@link NormalizedCache}.
+ * {@link CacheControl} represents strategies for what order a {@link NormalizedCache} will be accessed with respect
+ * to the network.
  *
- * To control how a cache reads a response see {@link CacheHeaders}.
+ * To control how a cache reads and writes a response to the cache, see {@link CacheHeaders}.
  */
 public enum CacheControl {
 
