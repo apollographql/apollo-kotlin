@@ -14,7 +14,7 @@ public class ApolloCallTracker {
   private Runnable idleCallback;
 
   private final Deque<ApolloCall> runningSyncCalls = new ArrayDeque<>();
-  private final Deque<RealApolloCall<?>.AsyncCall> runningAsyncCalls = new ArrayDeque<>();
+  private final Deque<RealApolloCall.AsyncCall> runningAsyncCalls = new ArrayDeque<>();
   private final Deque<ApolloPrefetch> runningSyncPrefetches = new ArrayDeque<>();
   private final Deque<RealApolloPrefetch.AsyncCall> runningAsyncPrefetches = new ArrayDeque<>();
 
@@ -166,9 +166,9 @@ public class ApolloCallTracker {
    * Returns a total count of in progress {@link ApolloCall} & {@link ApolloPrefetch} objects.
    */
   public int getRunningCallsCount() {
-    return runningAsyncCalls.size() +
-        runningSyncCalls.size() +
-        runningSyncPrefetches.size() +
-        runningAsyncPrefetches.size();
+    return runningAsyncCalls.size()
+        + runningSyncCalls.size()
+        + runningSyncPrefetches.size()
+        + runningAsyncPrefetches.size();
   }
 }

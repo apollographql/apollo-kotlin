@@ -14,7 +14,9 @@ import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
-import com.apollographql.apollo.internal.*;
+import com.apollographql.apollo.internal.ApolloCallTracker;
+import com.apollographql.apollo.internal.RealApolloCall;
+import com.apollographql.apollo.internal.RealApolloPrefetch;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.cache.normalized.RealApolloStore;
 import com.apollographql.apollo.internal.util.ApolloLogger;
@@ -118,7 +120,8 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
       @Nonnull Operation<D, T, V> operation) {
-    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, moshi, dispatcher, logger, callTracker);
+    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory,
+        httpCache, moshi, dispatcher, logger, callTracker);
   }
 
   void clearHttpCache() {
@@ -322,8 +325,8 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
      * after the response source is selected (either the server, cache or both). This method can be called multiple
      * times for adding multiple application interceptors. </p>
      *
-     * <p>Note: Interceptors will be called <b>in the order in which they are added to the list of interceptors</b>
-     * and if any of the interceptors tries to short circuit the responses, then subsequent interceptors <b>won't</b> be
+     * <p>Note: Interceptors will be called <b>in the order in which they are added to the list of interceptors</b> and
+     * if any of the interceptors tries to short circuit the responses, then subsequent interceptors <b>won't</b> be
      * called.</p>
      *
      * @param interceptor Application level interceptor to add
