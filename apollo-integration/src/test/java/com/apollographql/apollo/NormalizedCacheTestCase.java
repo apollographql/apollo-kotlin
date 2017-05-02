@@ -1,7 +1,7 @@
 package com.apollographql.apollo;
 
-import android.support.annotation.NonNull;
-
+import com.apollographql.android.impl.normalizer.CharacterDetails;
+import com.apollographql.android.impl.normalizer.CharacterNameById;
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNames;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDForParentOnly;
@@ -13,8 +13,6 @@ import com.apollographql.android.impl.normalizer.SameHeroTwice;
 import com.apollographql.android.impl.normalizer.type.Episode;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
-import com.apollographql.apollo.cache.normalized.CacheKey;
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.exception.ApolloException;
 
@@ -23,9 +21,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -36,7 +31,6 @@ import static com.google.common.truth.Truth.assertThat;
 public class NormalizedCacheTestCase {
   private ApolloClient apolloClient;
   private MockWebServer server;
-  private NormalizedCache normalizedCache;
 
   @Before public void setUp() {
     server = new MockWebServer();
@@ -46,18 +40,9 @@ public class NormalizedCacheTestCase {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(new InMemoryNormalizedCache(), new CacheKeyResolver<Map<String, Object>>() {
-          @Nonnull @Override public CacheKey resolve(@NonNull Map<String, Object> jsonObject) {
-            String id = (String) jsonObject.get("id");
-            if (id == null || id.isEmpty()) {
-              return CacheKey.NO_KEY;
-            }
-            return CacheKey.from(id);
-          }
-        })
+        .normalizedCache(new InMemoryNormalizedCache(), new IdFieldCacheKeyResolver())
         .dispatcher(Utils.immediateExecutorService())
         .build();
-    normalizedCache = apolloClient.apolloStore().normalizedCache();
   }
 
   @After public void tearDown() {
@@ -276,5 +261,31 @@ public class NormalizedCacheTestCase {
     assertThat(server.getRequestCount()).isEqualTo(2);
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
+  }
+
+  @Test public void masterDetailSuccess() throws Exception {
+    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
+    HeroAndFriendsNamesWithIDs query = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
+    apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+
+    CharacterNameById character = CharacterNameById.builder().id("1002").build();
+    CharacterNameById.Data characterData = apolloClient.newCall(character).cacheControl(CacheControl.CACHE_ONLY)
+        .execute().data();
+
+    assertThat(characterData).isNotNull();
+    assertThat(characterData.character()).isNotNull();
+    assertThat(characterData.character().asHuman().name()).isEqualTo("Han Solo");
+  }
+
+  @Test public void masterDetailFailIncomplete() throws Exception {
+    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
+    HeroAndFriendsNamesWithIDs query = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
+    apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+
+    CharacterDetails character = CharacterDetails.builder().id("1002").build();
+    CharacterDetails.Data characterData = apolloClient.newCall(character).cacheControl(CacheControl.CACHE_ONLY)
+        .execute().data();
+
+    assertThat(characterData).isNull();
   }
 }

@@ -87,7 +87,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
     Response<T> response;
     try {
-      response = interceptorChain.proceed().parsedResponse.get();
+      response = interceptorChain.proceed().parsedResponse.or(new Response(operation));
     } catch (Exception e) {
       if (canceled) {
         throw new ApolloCanceledException("Canceled", e);
