@@ -11,8 +11,6 @@ import javax.annotation.Nonnull;
 
 /**
  * Resolves a cache key for a JSON object.
- *
- * @param <R> The type representing the JSON Object. Typically, Map<String, Object>.
  */
 public abstract class CacheKeyResolver {
   public static final CacheKeyResolver DEFAULT = new CacheKeyResolver() {

@@ -6,8 +6,6 @@ import com.apollographql.android.impl.normalizer.HeroAndFriendsNames;
 import com.apollographql.android.impl.normalizer.type.Episode;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.cache.normalized.CacheKey;
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.Record;
@@ -21,7 +19,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -60,7 +57,8 @@ public class CacheHeadersTest {
         return Collections.emptySet();
       }
 
-      @Override public void clearAll() { }
+      @Override public void clearAll() {
+      }
 
     };
 
@@ -70,12 +68,9 @@ public class CacheHeadersTest {
       }
     };
 
-    ApolloClient apolloClient = ApolloClient.builder().normalizedCache(cacheFactory,
-        new CacheKeyResolver<Map<String, Object>>() {
-          @Nonnull @Override public CacheKey resolve(@Nonnull Map<String, Object> objectSource) {
-            return CacheKey.NO_KEY;
-          }
-        }).serverUrl(server.url("/"))
+    ApolloClient apolloClient = ApolloClient.builder()
+        .normalizedCache(cacheFactory, new IdFieldCacheKeyResolver())
+        .serverUrl(server.url("/"))
         .okHttpClient(new OkHttpClient())
         .build();
 
@@ -113,15 +108,12 @@ public class CacheHeadersTest {
 
     CacheHeaders cacheHeaders = CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build();
 
-    ApolloClient apolloClient = ApolloClient.builder().normalizedCache(cacheFactory, new CacheKeyResolver<Map<String, Object>>() {
-      @Nonnull @Override public CacheKey resolve(@Nonnull Map<String, Object> objectSource) {
-        return CacheKey.NO_KEY;
-      }
-    }).serverUrl(server.url("/"))
+    ApolloClient apolloClient = ApolloClient.builder()
+        .normalizedCache(cacheFactory, new IdFieldCacheKeyResolver())
+        .serverUrl(server.url("/"))
         .okHttpClient(new OkHttpClient())
         .defaultCacheHeaders(cacheHeaders)
         .build();
-
 
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
 
