@@ -27,12 +27,13 @@ android {
 
 dependencies {
   compile dep.jsr305
-  compile project(path: ':apollo-rx2support')
-  compile 'com.apollographql.apollo:apollo-android-support:0.3.0'
-  compile 'com.apollographql.apollo:apollo-runtime:0.3.0'
+  compile dep.apolloRuntime
+  compile dep.apolloAndroidSupport
+  compile dep.apolloRx2Support
   compile dep.appcompat
   compile dep.okhttpLoggingInterceptor
   compile dep.recyclerView
   compile dep.rxandroid
+  compile dep.rxjava2
   testCompile dep.junit
 }
