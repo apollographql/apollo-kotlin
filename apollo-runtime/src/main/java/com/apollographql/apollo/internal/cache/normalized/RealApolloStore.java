@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
-public final class RealApolloStore implements ApolloStore, ReadableCache, WriteableCache {
+public final class RealApolloStore implements ApolloStore, ReadableStore, WriteableStore {
   private final NormalizedCache normalizedCache;
   private final CacheKeyResolver cacheKeyResolver;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
@@ -88,15 +88,15 @@ public final class RealApolloStore implements ApolloStore, ReadableCache, Writea
   }
 
   @Override public void clearAll() {
-    writeTransaction(new Transaction<WriteableCache, Boolean>() {
-      @Override public Boolean execute(WriteableCache cache) {
+    writeTransaction(new Transaction<WriteableStore, Boolean>() {
+      @Override public Boolean execute(WriteableStore cache) {
         cache.clearAll();
         return true;
       }
     });
   }
 
-  @Override public <R> R readTransaction(Transaction<ReadableCache, R> transaction) {
+  @Override public <R> R readTransaction(Transaction<ReadableStore, R> transaction) {
     lock.readLock().lock();
     try {
       return transaction.execute(RealApolloStore.this);
@@ -105,7 +105,7 @@ public final class RealApolloStore implements ApolloStore, ReadableCache, Writea
     }
   }
 
-  @Override public <R> R writeTransaction(Transaction<WriteableCache, R> transaction) {
+  @Override public <R> R writeTransaction(Transaction<WriteableStore, R> transaction) {
     lock.writeLock().lock();
     try {
       return transaction.execute(RealApolloStore.this);
@@ -137,8 +137,8 @@ public final class RealApolloStore implements ApolloStore, ReadableCache, Writea
   @Nullable @Override public <D extends Operation.Data, T, V extends Operation.Variables> T read(
       @Nonnull final Operation<D, T, V> operation) {
     checkNotNull(operation, "operation == null");
-    return readTransaction(new Transaction<ReadableCache, T>() {
-      @Nullable @Override public T execute(ReadableCache cache) {
+    return readTransaction(new Transaction<ReadableStore, T>() {
+      @Nullable @Override public T execute(ReadableStore cache) {
         Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key());
         if (rootRecord == null) {
           return null;
@@ -167,8 +167,8 @@ public final class RealApolloStore implements ApolloStore, ReadableCache, Writea
     checkNotNull(responseNormalizer, "responseNormalizer == null");
     checkNotNull(customTypeAdapters, "customTypeAdapters == null");
 
-    return readTransaction(new Transaction<ReadableCache, Response<T>>() {
-      @Nonnull @Override public Response<T> execute(ReadableCache cache) {
+    return readTransaction(new Transaction<ReadableStore, Response<T>>() {
+      @Nonnull @Override public Response<T> execute(ReadableStore cache) {
         Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key());
         if (rootRecord == null) {
           return new Response<>(operation);
@@ -196,8 +196,8 @@ public final class RealApolloStore implements ApolloStore, ReadableCache, Writea
     checkNotNull(cacheKey, "cacheKey == null");
     checkNotNull(variables, "variables == null");
 
-    return readTransaction(new Transaction<ReadableCache, F>() {
-      @Nullable @Override public F execute(ReadableCache cache) {
+    return readTransaction(new Transaction<ReadableStore, F>() {
+      @Nullable @Override public F execute(ReadableStore cache) {
         Record rootRecord = cache.read(cacheKey.key());
         if (rootRecord == null) {
           return null;

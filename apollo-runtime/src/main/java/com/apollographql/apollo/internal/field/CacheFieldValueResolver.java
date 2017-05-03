@@ -6,17 +6,17 @@ import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.CacheReference;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.internal.cache.normalized.ReadableCache;
+import com.apollographql.apollo.internal.cache.normalized.ReadableStore;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class CacheFieldValueResolver implements FieldValueResolver<Record> {
-  private final ReadableCache readableCache;
+  private final ReadableStore readableCache;
   private final Operation.Variables variables;
   private final CacheKeyResolver cacheKeyResolver;
 
-  public CacheFieldValueResolver(ReadableCache readableCache, Operation.Variables variables,
+  public CacheFieldValueResolver(ReadableStore readableCache, Operation.Variables variables,
       CacheKeyResolver cacheKeyResolver) {
     this.readableCache = readableCache;
     this.variables = variables;

@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
  * An alternative to {@link RealApolloStore} for when a no-operation cache
  * is needed.
  */
-public final class NoOpApolloStore implements ApolloStore, ReadableCache, WriteableCache {
+public final class NoOpApolloStore implements ApolloStore, ReadableStore, WriteableStore {
 
   @Override public Set<String> merge(Collection<Record> recordCollection) {
     return Collections.emptySet();
@@ -58,11 +58,11 @@ public final class NoOpApolloStore implements ApolloStore, ReadableCache, Writea
     return ResponseNormalizer.NO_OP_NORMALIZER;
   }
 
-  @Override public <R> R readTransaction(Transaction<ReadableCache, R> transaction) {
+  @Override public <R> R readTransaction(Transaction<ReadableStore, R> transaction) {
     return transaction.execute(this);
   }
 
-  @Override public <R> R writeTransaction(Transaction<WriteableCache, R> transaction) {
+  @Override public <R> R writeTransaction(Transaction<WriteableStore, R> transaction) {
     return transaction.execute(this);
   }
 

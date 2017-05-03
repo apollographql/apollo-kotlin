@@ -5,10 +5,10 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.internal.cache.normalized.NoOpApolloStore;
-import com.apollographql.apollo.internal.cache.normalized.ReadableCache;
+import com.apollographql.apollo.internal.cache.normalized.ReadableStore;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.cache.normalized.Transaction;
-import com.apollographql.apollo.internal.cache.normalized.WriteableCache;
+import com.apollographql.apollo.internal.cache.normalized.WriteableStore;
 
 import java.util.Map;
 import java.util.Set;
@@ -66,7 +66,7 @@ public interface ApolloStore {
    * @param <R>         The result type of this read operation.
    * @return A result from the read operation.
    */
-  <R> R readTransaction(Transaction<ReadableCache, R> transaction);
+  <R> R readTransaction(Transaction<ReadableStore, R> transaction);
 
   /**
    * Run a operation inside a write-lock. Blocks until write-lock is acquired.
@@ -75,7 +75,7 @@ public interface ApolloStore {
    * @param <R>         The result type of this write operation.
    * @return A result from the write operation.
    */
-  <R> R writeTransaction(Transaction<WriteableCache, R> transaction);
+  <R> R writeTransaction(Transaction<WriteableStore, R> transaction);
 
   /**
    * @return The {@link NormalizedCache} which backs this ApolloStore.

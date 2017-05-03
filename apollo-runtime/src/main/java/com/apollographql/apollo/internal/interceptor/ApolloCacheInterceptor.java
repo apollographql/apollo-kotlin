@@ -13,7 +13,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.cache.normalized.Transaction;
-import com.apollographql.apollo.internal.cache.normalized.WriteableCache;
+import com.apollographql.apollo.internal.cache.normalized.WriteableStore;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.util.Collection;
@@ -151,8 +151,8 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     if (records != null) {
       dispatcher.execute(new Runnable() {
         @Override public void run() {
-          Set<String> changedKeys = apolloStore.writeTransaction(new Transaction<WriteableCache, Set<String>>() {
-            @Nullable @Override public Set<String> execute(WriteableCache cache) {
+          Set<String> changedKeys = apolloStore.writeTransaction(new Transaction<WriteableStore, Set<String>>() {
+            @Nullable @Override public Set<String> execute(WriteableStore cache) {
               return cache.merge(records);
             }
           });
