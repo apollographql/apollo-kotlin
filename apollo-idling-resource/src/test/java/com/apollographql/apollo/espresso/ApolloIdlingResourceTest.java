@@ -1,14 +1,14 @@
-package com.apollographql.apollo;
+package com.apollographql.apollo.espresso;
 
-
-import com.google.common.truth.Truth;
 
 import android.support.test.espresso.IdlingResource;
 
-import com.apollographql.android.impl.normalizer.EpisodeHeroName;
-import com.apollographql.android.impl.normalizer.type.Episode;
+import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.espresso.ApolloIdlingResource;
+import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.exception.ApolloException;
 
 import org.junit.After;
@@ -16,6 +16,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.AbstractExecutorService;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -37,8 +40,29 @@ public class ApolloIdlingResourceTest {
   private MockWebServer server;
   private OkHttpClient okHttpClient;
 
-  private static final String FILE_EPISODE_HERO_NAME_WITH_ID = "EpisodeHeroNameResponseWithId.json";
   private static final String IDLING_RESOURCE_NAME = "apolloIdlingResource";
+
+  private static final Query EMPTY_QUERY = new Query() {
+    @Override public String queryDocument() {
+      return "";
+    }
+
+    @Override public Variables variables() {
+      return EMPTY_VARIABLES;
+    }
+
+    @Override public ResponseFieldMapper<Data> responseFieldMapper() {
+      return new ResponseFieldMapper<Data>() {
+        @Override public Data map(ResponseReader responseReader) throws IOException {
+          return null;
+        }
+      };
+    }
+
+    @Override public Object wrapData(Data data) {
+      return data;
+    }
+  };
 
   private static final long TIME_OUT_SECONDS = 3;
 
@@ -95,19 +119,17 @@ public class ApolloIdlingResourceTest {
 
     idlingResource = ApolloIdlingResource.create(IDLING_RESOURCE_NAME, apolloClient);
 
-    Truth.assertThat(idlingResource.getName()).isEqualTo(IDLING_RESOURCE_NAME);
+    assertThat(idlingResource.getName()).isEqualTo(IDLING_RESOURCE_NAME);
   }
 
   @Test
   public void checkIsIdleNow_whenCallIsQueued() throws IOException, TimeoutException, InterruptedException {
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    server.enqueue(mockResponse());
 
-    final NamedCountDownLatch firstLatch = new NamedCountDownLatch("firstLatch", 1);
-    final NamedCountDownLatch secondLatch = new NamedCountDownLatch("secondLatch", 1);
+    final CountDownLatch firstLatch = new CountDownLatch(1);
+    final CountDownLatch secondLatch = new CountDownLatch(1);
 
     ExecutorService executorService = Executors.newFixedThreadPool(1);
-
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
     apolloClient = ApolloClient.builder()
         .okHttpClient(okHttpClient)
@@ -118,8 +140,8 @@ public class ApolloIdlingResourceTest {
     idlingResource = ApolloIdlingResource.create(IDLING_RESOURCE_NAME, apolloClient);
     assertThat(idlingResource.isIdleNow()).isTrue();
 
-    apolloClient.newCall(query).enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
-      @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+    apolloClient.newCall(EMPTY_QUERY).enqueue(new ApolloCall.Callback<Object>() {
+      @Override public void onResponse(@Nonnull Response<Object> response) {
         firstLatch.countDown();
         try {
           secondLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
@@ -145,15 +167,14 @@ public class ApolloIdlingResourceTest {
 
   @Test
   public void checkIdlingResourceTransition_whenCallIsQueued() throws IOException, ApolloException {
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    server.enqueue(mockResponse());
 
     apolloClient = ApolloClient.builder()
         .okHttpClient(okHttpClient)
-        .dispatcher(Utils.immediateExecutorService())
+        .dispatcher(immediateExecutorService())
         .serverUrl(server.url("/"))
         .build();
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
     final AtomicInteger counter = new AtomicInteger(1);
     idlingResource = ApolloIdlingResource.create(IDLING_RESOURCE_NAME, apolloClient);
 
@@ -164,11 +185,53 @@ public class ApolloIdlingResourceTest {
     });
 
     assertThat(counter.get()).isEqualTo(1);
-    apolloClient.newCall(query).execute();
+    apolloClient.newCall(EMPTY_QUERY).execute();
     assertThat(counter.get()).isEqualTo(0);
   }
 
-  private MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
+  private MockResponse mockResponse() throws IOException {
+    return new MockResponse().setResponseCode(200).setBody(new StringBuilder()
+        .append("{")
+        .append("  \"errors\": [")
+        .append("    {")
+        .append("      \"message\": \"Cannot query field \\\"names\\\" on type \\\"Species\\\".\",")
+        .append("      \"locations\": [")
+        .append("        {")
+        .append("          \"line\": 3,")
+        .append("          \"column\": 5")
+        .append("        }")
+        .append("      ]")
+        .append("    }")
+        .append("  ]")
+        .append("}")
+        .toString());
+  }
+
+  private ExecutorService immediateExecutorService() {
+    return new AbstractExecutorService() {
+      @Override public void shutdown() {
+
+      }
+
+      @Override public List<Runnable> shutdownNow() {
+        return null;
+      }
+
+      @Override public boolean isShutdown() {
+        return false;
+      }
+
+      @Override public boolean isTerminated() {
+        return false;
+      }
+
+      @Override public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
+        return false;
+      }
+
+      @Override public void execute(Runnable runnable) {
+        runnable.run();
+      }
+    };
   }
 }

@@ -34,7 +34,6 @@ dependencies {
   compile project(':apollo-runtime')
   compile project(':apollo-rxsupport')
   compile project(':apollo-rx2support')
-  compile project(':apollo-idling-resource')
   compile dep.appcompat
   compile dep.rxjava
   compile dep.rxjava2
@@ -43,7 +42,6 @@ dependencies {
   testCompile dep.truth
   testCompile dep.mockWebServer
   testCompile dep.okhttpTestSupport
-//  testCompile project(path: ':apollo-idling-resource')
   testCompile dep.moshi
 }
 
