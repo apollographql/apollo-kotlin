@@ -145,10 +145,16 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     return apolloStore;
   }
 
+  /**
+   * Sets the idleCallback which will be called when this ApolloClient is idle.
+   */
   public void setIdleCallback(Runnable idleCallback) {
     callTracker.setIdleCallback(idleCallback);
   }
 
+  /**
+   * Returns the sum of {@link ApolloCall} & {@link ApolloPrefetch} objects which are currently in progress.
+   */
   public int getRunningCallsCount() {
     return callTracker.getRunningCallsCount();
   }
