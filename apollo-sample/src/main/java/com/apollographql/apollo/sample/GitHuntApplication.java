@@ -3,6 +3,8 @@ package com.apollographql.apollo.sample;
 import android.app.Application;
 
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
@@ -32,18 +34,22 @@ public class GitHuntApplication extends Application {
     NormalizedCacheFactory normalizedCacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION,
         new SqlNormalizedCacheFactory(apolloSqlHelper));
 
-    CacheKeyResolver<Map<String, Object>> cacheKeyResolver = new CacheKeyResolver<Map<String, Object>>() {
-      @Nonnull @Override public CacheKey resolve(@Nonnull Map<String, Object> objectSource) {
-        //Specific id for User type.
-        if ("User".equals(objectSource.get("__typename"))) {
-          String userKey = objectSource.get("__typename") + "." + objectSource.get("login");
+    CacheKeyResolver cacheKeyResolver = new CacheKeyResolver() {
+      @Nonnull @Override public CacheKey fromFieldRecordSet(@Nonnull Field field, @Nonnull Map<String, Object> map) {
+        String typeName = (String) map.get("__typename");
+        if ("User".equals(typeName)) {
+          String userKey = typeName + "." + map.get("login");
           return CacheKey.from(userKey);
         }
-        //Use id as default case.
-        if (objectSource.containsKey("id")) {
-          String typeNameAndIDKey = objectSource.get("__typename") + "." + objectSource.get("id");
+        if (map.containsKey("id")) {
+          String typeNameAndIDKey = map.get("__typename") + "." + map.get("id");
           return CacheKey.from(typeNameAndIDKey);
         }
+        return CacheKey.NO_KEY;
+      }
+
+      @Nonnull @Override
+      public CacheKey fromFieldArguments(@Nonnull Field field, @Nonnull Operation.Variables variables) {
         return CacheKey.NO_KEY;
       }
     };
