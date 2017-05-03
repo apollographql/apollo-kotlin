@@ -1,9 +1,11 @@
 package com.apollographql.apollo.internal.cache.normalized;
 
+import com.apollographql.apollo.api.Fragment;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
+import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
@@ -81,5 +83,10 @@ public final class NoOpApolloStore implements ApolloStore, ReadableCache, Writea
       @Nonnull Operation<D, T, V> operation, @Nonnull ResponseFieldMapper<D> responseFieldMapper,
       @Nonnull ResponseNormalizer<Record> responseNormalizer) {
     return new Response<T>(operation);
+  }
+
+  @Nullable @Override public <F extends Fragment> F read(@Nonnull ResponseFieldMapper<F> fieldMapper,
+      @Nonnull CacheKey cacheKey, @Nonnull Operation.Variables variables) {
+    return null;
   }
 }

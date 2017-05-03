@@ -294,8 +294,8 @@ public class ResponseReaderTest {
         return null;
       }
     });
-    return new RealResponseReader<>(EMPTY_OPERATION, recordSet, new MapFieldValueResolver(), customTypeAdapters,
-        NO_OP_NORMALIZER);
+    return new RealResponseReader<>(EMPTY_OPERATION.variables(), recordSet, new MapFieldValueResolver(),
+        customTypeAdapters, NO_OP_NORMALIZER);
   }
 
   private static final ScalarType CUSTOM_TYPE = new ScalarType() {

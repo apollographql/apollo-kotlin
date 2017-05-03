@@ -16,15 +16,16 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("WeakerAccess") public final class RealResponseReader<R> implements ResponseReader {
-  private final Operation operation;
+  private final Operation.Variables operationVariables;
   private final R recordSet;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final FieldValueResolver<R> fieldValueResolver;
   private final ResponseReaderShadow<R> readerShadow;
 
-  public RealResponseReader(Operation operation, R recordSet, FieldValueResolver<R> fieldValueResolver,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ResponseReaderShadow<R> readerShadow) {
-    this.operation = operation;
+  public RealResponseReader(Operation.Variables operationVariables, R recordSet,
+      FieldValueResolver<R> fieldValueResolver, Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
+      ResponseReaderShadow<R> readerShadow) {
+    this.operationVariables = operationVariables;
     this.recordSet = recordSet;
     this.fieldValueResolver = fieldValueResolver;
     this.customTypeAdapters = customTypeAdapters;
@@ -63,7 +64,7 @@ import java.util.Map;
         value = readCustomType((Field.CustomTypeField) field);
         break;
       case CONDITIONAL:
-        value = readConditional((Field.ConditionalTypeField) field, operation.variables());
+        value = readConditional((Field.ConditionalTypeField) field, operationVariables);
         break;
       default:
         throw new IllegalArgumentException("Unsupported field type");
@@ -75,13 +76,13 @@ import java.util.Map;
 
   private void willResolve(Field field) {
     if (field.type() != Field.Type.CONDITIONAL) {
-      readerShadow.willResolve(field, operation.variables());
+      readerShadow.willResolve(field, operationVariables);
     }
   }
 
   private void didResolve(Field field) {
     if (field.type() != Field.Type.CONDITIONAL) {
-      readerShadow.didResolve(field, operation.variables());
+      readerShadow.didResolve(field, operationVariables);
     }
   }
 
@@ -153,7 +154,7 @@ import java.util.Map;
       readerShadow.didParseNull();
       return null;
     } else {
-      final T parsedValue = (T) field.objectReader().read(new RealResponseReader(operation, value,
+      final T parsedValue = (T) field.objectReader().read(new RealResponseReader(operationVariables, value,
           fieldValueResolver, customTypeAdapters, readerShadow));
       readerShadow.didParseObject(field, Optional.fromNullable(value));
       return parsedValue;
@@ -192,7 +193,7 @@ import java.util.Map;
         readerShadow.willParseElement(i);
         R value = values.get(i);
         readerShadow.willParseObject(field, Optional.fromNullable(value));
-        T item = (T) field.objectReader().read(new RealResponseReader(operation, value, fieldValueResolver,
+        T item = (T) field.objectReader().read(new RealResponseReader(operationVariables, value, fieldValueResolver,
             customTypeAdapters, readerShadow));
         readerShadow.didParseObject(field, Optional.fromNullable(value));
         readerShadow.didParseElement(i);

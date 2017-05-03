@@ -3,6 +3,7 @@ package com.apollographql.apollo.internal.cache.normalized;
 
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.Fragment;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
@@ -147,13 +148,12 @@ public final class RealApolloStore implements ApolloStore, ReadableCache, Writea
         CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
             cacheKeyResolver());
         //noinspection unchecked
-        RealResponseReader<Record> responseReader = new RealResponseReader<>(operation, rootRecord,
+        RealResponseReader<Record> responseReader = new RealResponseReader<>(operation.variables(), rootRecord,
             fieldValueResolver, customTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
-
         try {
           return operation.wrapData(responseFieldMapper.map(responseReader));
         } catch (final Exception e) {
-          logger.e(e, "Failed to read cached data for operation: %s", operation);
+          logger.e(e, "Failed to read cached operation data. Operation: %s", operation);
           return null;
         }
       }
@@ -174,17 +174,44 @@ public final class RealApolloStore implements ApolloStore, ReadableCache, Writea
           return new Response<>(operation);
         }
 
-        responseNormalizer.willResolveRootQuery(operation);
+        CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
+            cacheKeyResolver());
+        RealResponseReader<Record> responseReader = new RealResponseReader<>(operation.variables(), rootRecord,
+            fieldValueResolver, customTypeAdapters, responseNormalizer);
         try {
-          CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
-              cacheKeyResolver());
-          RealResponseReader<Record> responseReader = new RealResponseReader<>(operation, rootRecord,
-              fieldValueResolver, customTypeAdapters, responseNormalizer);
+          responseNormalizer.willResolveRootQuery(operation);
           T data = operation.wrapData(responseFieldMapper.map(responseReader));
           return new Response<T>(operation, data, null, responseNormalizer.dependentKeys());
         } catch (final Exception e) {
-          logger.e(e, "Failed to read cached data for operation: %s", operation);
+          logger.e(e, "Failed to read cached operation data. Operation: %s", operation);
           return new Response<>(operation);
+        }
+      }
+    });
+  }
+
+  @Nullable @Override public <F extends Fragment> F read(@Nonnull final ResponseFieldMapper<F> responseFieldMapper,
+      @Nonnull final CacheKey cacheKey, @Nonnull final Operation.Variables variables) {
+    checkNotNull(responseFieldMapper, "responseFieldMapper == null");
+    checkNotNull(cacheKey, "cacheKey == null");
+    checkNotNull(variables, "variables == null");
+
+    return readTransaction(new Transaction<ReadableCache, F>() {
+      @Nullable @Override public F execute(ReadableCache cache) {
+        Record rootRecord = cache.read(cacheKey.key());
+        if (rootRecord == null) {
+          return null;
+        }
+
+        CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, variables, cacheKeyResolver());
+        //noinspection unchecked
+        RealResponseReader<Record> responseReader = new RealResponseReader<>(variables, rootRecord, fieldValueResolver,
+            customTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
+        try {
+          return responseFieldMapper.map(responseReader);
+        } catch (final Exception e) {
+          logger.e(e, "Failed to read cached fragment data");
+          return null;
         }
       }
     });
