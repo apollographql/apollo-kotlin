@@ -1,5 +1,8 @@
 package com.apollographql.apollo.internal.cache.normalized;
 
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
@@ -31,14 +34,16 @@ public final class NoOpApolloStore implements ApolloStore, ReadableCache, Writea
     return Collections.emptySet();
   }
 
-  @Override public void subscribe(RecordChangeSubscriber subscriber) { }
+  @Override public void subscribe(RecordChangeSubscriber subscriber) {
+  }
 
-  @Override public void unsubscribe(RecordChangeSubscriber subscriber) { }
+  @Override public void unsubscribe(RecordChangeSubscriber subscriber) {
+  }
 
-  @Override public void publish(Set<String> keys) { }
+  @Override public void publish(Set<String> keys) {
+  }
 
   @Override public void clearAll() {
-
   }
 
   @Override public ResponseNormalizer<Map<String, Object>> networkResponseNormalizer() {
@@ -65,5 +70,16 @@ public final class NoOpApolloStore implements ApolloStore, ReadableCache, Writea
 
   @Override public CacheKeyResolver cacheKeyResolver() {
     return null;
+  }
+
+  @Nullable @Override public <D extends Operation.Data, T, V extends Operation.Variables> T read(
+      @Nonnull Operation<D, T, V> operation) {
+    return null;
+  }
+
+  @Nonnull @Override public <D extends Operation.Data, T, V extends Operation.Variables> Response<T> read(
+      @Nonnull Operation<D, T, V> operation, @Nonnull ResponseFieldMapper<D> responseFieldMapper,
+      @Nonnull ResponseNormalizer<Record> responseNormalizer) {
+    return new Response<T>(operation);
   }
 }

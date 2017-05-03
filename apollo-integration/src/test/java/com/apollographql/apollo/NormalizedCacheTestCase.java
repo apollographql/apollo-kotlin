@@ -12,6 +12,7 @@ import com.apollographql.android.impl.normalizer.HeroTypeDependentAliasedField;
 import com.apollographql.android.impl.normalizer.SameHeroTwice;
 import com.apollographql.android.impl.normalizer.type.Episode;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.exception.ApolloException;
@@ -21,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -287,5 +289,23 @@ public class NormalizedCacheTestCase {
         .execute().data();
 
     assertThat(characterData).isNull();
+  }
+
+  @Test public void readOperationFromStore() throws IOException, ApolloException {
+    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
+
+    HeroAndFriendsNamesWithIDs query = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
+    apolloClient.newCall(query).execute();
+
+    HeroAndFriendsNamesWithIDs.Data data = apolloClient.apolloStore().read(query);
+    assertThat(data.hero().id()).isEqualTo("2001");
+    assertThat(data.hero().name()).isEqualTo("R2-D2");
+    assertThat(data.hero().friends()).hasSize(3);
+    assertThat(data.hero().friends().get(0).id()).isEqualTo("1000");
+    assertThat(data.hero().friends().get(0).name()).isEqualTo("Luke Skywalker");
+    assertThat(data.hero().friends().get(1).id()).isEqualTo("1002");
+    assertThat(data.hero().friends().get(1).name()).isEqualTo("Han Solo");
+    assertThat(data.hero().friends().get(2).id()).isEqualTo("1003");
+    assertThat(data.hero().friends().get(2).name()).isEqualTo("Leia Organa");
   }
 }

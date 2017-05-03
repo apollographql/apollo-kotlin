@@ -1,12 +1,20 @@
 package com.apollographql.apollo.internal.cache.normalized;
 
 
+import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
+import com.apollographql.apollo.internal.field.CacheFieldValueResolver;
+import com.apollographql.apollo.internal.reader.RealResponseReader;
+import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -25,12 +33,17 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 public final class RealApolloStore implements ApolloStore, ReadableCache, WriteableCache {
   private final NormalizedCache normalizedCache;
   private final CacheKeyResolver cacheKeyResolver;
+  private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  private final ApolloLogger logger;
   private final ReadWriteLock lock;
   private final Set<RecordChangeSubscriber> subscribers;
 
-  public RealApolloStore(@Nonnull NormalizedCache normalizedCache, @Nonnull CacheKeyResolver cacheKeyResolver) {
-    this.normalizedCache = checkNotNull(normalizedCache, "cacheStore null");
-    this.cacheKeyResolver = checkNotNull(cacheKeyResolver, "cacheKeyResolver null");
+  public RealApolloStore(@Nonnull NormalizedCache normalizedCache, @Nonnull CacheKeyResolver cacheKeyResolver,
+      @Nonnull final Map<ScalarType, CustomTypeAdapter> customTypeAdapters, @Nonnull ApolloLogger logger) {
+    this.normalizedCache = checkNotNull(normalizedCache, "cacheStore == null");
+    this.cacheKeyResolver = checkNotNull(cacheKeyResolver, "cacheKeyResolver == null");
+    this.customTypeAdapters = checkNotNull(customTypeAdapters, "customTypeAdapters == null");
+    this.logger = checkNotNull(logger, "logger == null");
     this.lock = new ReentrantReadWriteLock();
     this.subscribers = Collections.newSetFromMap(new WeakHashMap<RecordChangeSubscriber, Boolean>());
   }
@@ -118,5 +131,62 @@ public final class RealApolloStore implements ApolloStore, ReadableCache, Writea
 
   @Override public CacheKeyResolver cacheKeyResolver() {
     return cacheKeyResolver;
+  }
+
+  @Nullable @Override public <D extends Operation.Data, T, V extends Operation.Variables> T read(
+      @Nonnull final Operation<D, T, V> operation) {
+    checkNotNull(operation, "operation == null");
+    return readTransaction(new Transaction<ReadableCache, T>() {
+      @Nullable @Override public T execute(ReadableCache cache) {
+        Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key());
+        if (rootRecord == null) {
+          return null;
+        }
+
+        ResponseFieldMapper<D> responseFieldMapper = operation.responseFieldMapper();
+        CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
+            cacheKeyResolver());
+        //noinspection unchecked
+        RealResponseReader<Record> responseReader = new RealResponseReader<>(operation, rootRecord,
+            fieldValueResolver, customTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
+
+        try {
+          return operation.wrapData(responseFieldMapper.map(responseReader));
+        } catch (final Exception e) {
+          logger.e(e, "Failed to read cached data for operation: %s", operation);
+          return null;
+        }
+      }
+    });
+  }
+
+  @Nonnull @Override public <D extends Operation.Data, T, V extends Operation.Variables> Response<T> read(
+      @Nonnull final Operation<D, T, V> operation, @Nonnull final ResponseFieldMapper<D> responseFieldMapper,
+      @Nonnull final ResponseNormalizer<Record> responseNormalizer) {
+    checkNotNull(operation, "operation == null");
+    checkNotNull(responseNormalizer, "responseNormalizer == null");
+    checkNotNull(customTypeAdapters, "customTypeAdapters == null");
+
+    return readTransaction(new Transaction<ReadableCache, Response<T>>() {
+      @Nonnull @Override public Response<T> execute(ReadableCache cache) {
+        Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key());
+        if (rootRecord == null) {
+          return new Response<>(operation);
+        }
+
+        responseNormalizer.willResolveRootQuery(operation);
+        try {
+          CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
+              cacheKeyResolver());
+          RealResponseReader<Record> responseReader = new RealResponseReader<>(operation, rootRecord,
+              fieldValueResolver, customTypeAdapters, responseNormalizer);
+          T data = operation.wrapData(responseFieldMapper.map(responseReader));
+          return new Response<T>(operation, data, null, responseNormalizer.dependentKeys());
+        } catch (final Exception e) {
+          logger.e(e, "Failed to read cached data for operation: %s", operation);
+          return new Response<>(operation);
+        }
+      }
+    });
   }
 }
