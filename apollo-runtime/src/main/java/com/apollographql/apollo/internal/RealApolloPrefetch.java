@@ -99,30 +99,26 @@ import okhttp3.Response;
     }
 
     @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
+      if (responseCallback == null || isCanceled()) {
+        tracker.asyncPrefetchFinished(this);
+        return;
+      }
+
+      Response httpResponse = response.httpResponse.get();
+      if (!httpResponse.isSuccessful()) {
+        onFailure(new ApolloHttpException(httpResponse));
+        return;
+      }
 
       try {
-        if (responseCallback == null || isCanceled()) {
-          return;
-        }
-
-        Response httpResponse = response.httpResponse.get();
-        if (!httpResponse.isSuccessful()) {
-          onFailure(new ApolloHttpException(httpResponse));
-          return;
-        }
-
-        try {
-          httpResponse.close();
-        } catch (Exception e) {
-          onFailure(new ApolloException("Failed to close http response", e));
-          return;
-        }
-
-        responseCallback.onSuccess();
-
-      } finally {
-        tracker.asyncPrefetchFinished(this);
+        httpResponse.close();
+      } catch (Exception e) {
+        onFailure(new ApolloException("Failed to close http response", e));
+        return;
       }
+
+      tracker.asyncPrefetchFinished(this);
+      responseCallback.onSuccess();
     }
 
     @Override public void onFailure(@Nonnull ApolloException e) {
