@@ -1,0 +1,9 @@
+query HeroAndFriendsWithFragments($episode: Episode) {
+  hero(episode: $episode) {
+    id
+    name
+    friends {
+      ... HumanWithIdFragment
+    }
+  }
+}

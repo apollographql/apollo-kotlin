@@ -6,15 +6,17 @@ import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNames;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDForParentOnly;
 import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDs;
+import com.apollographql.android.impl.normalizer.HeroAndFriendsWithFragments;
 import com.apollographql.android.impl.normalizer.HeroAppearsIn;
 import com.apollographql.android.impl.normalizer.HeroParentTypeDependentField;
 import com.apollographql.android.impl.normalizer.HeroTypeDependentAliasedField;
 import com.apollographql.android.impl.normalizer.SameHeroTwice;
+import com.apollographql.android.impl.normalizer.fragment.HumanWithIdFragment;
 import com.apollographql.android.impl.normalizer.type.Episode;
+import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.normalized.CacheControl;
-import com.apollographql.apollo.cache.normalized.NormalizedCache;
+import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.exception.ApolloException;
 
 import org.junit.After;
@@ -22,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Collections;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -307,5 +308,27 @@ public class NormalizedCacheTestCase {
     assertThat(data.hero().friends().get(1).name()).isEqualTo("Han Solo");
     assertThat(data.hero().friends().get(2).id()).isEqualTo("1003");
     assertThat(data.hero().friends().get(2).name()).isEqualTo("Leia Organa");
+  }
+
+  @Test public void readFragmentFromStore() throws IOException, ApolloException {
+    server.enqueue(mockResponse("HeroAndFriendsWithFragmentResponse.json"));
+
+    HeroAndFriendsWithFragments query = HeroAndFriendsWithFragments.builder().episode(Episode.NEWHOPE).build();
+    apolloClient.newCall(query).execute();
+
+    HumanWithIdFragment fragment = apolloClient.apolloStore().read(new HumanWithIdFragment.Mapper(),
+        CacheKey.from("1000"), Operation.EMPTY_VARIABLES);
+    assertThat(fragment.id()).isEqualTo("1000");
+    assertThat(fragment.name()).isEqualTo("Luke Skywalker");
+
+    fragment = apolloClient.apolloStore().read(new HumanWithIdFragment.Mapper(), CacheKey.from("1002"),
+        Operation.EMPTY_VARIABLES);
+    assertThat(fragment.id()).isEqualTo("1002");
+    assertThat(fragment.name()).isEqualTo("Han Solo");
+
+    fragment = apolloClient.apolloStore().read(new HumanWithIdFragment.Mapper(), CacheKey.from("1003"),
+        Operation.EMPTY_VARIABLES);
+    assertThat(fragment.id()).isEqualTo("1003");
+    assertThat(fragment.name()).isEqualTo("Leia Organa");
   }
 }
