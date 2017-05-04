@@ -221,7 +221,7 @@ class BasicAndroidSpec extends Specification {
 
   private static File setupBasicAndroidProject() {
     def destDir = createTempTestDirectory("basic")
-    prepareProjectTestDir(destDir, ApolloPluginTestHelper.ProjectType.Android, "basic", "basic")
+    prepareProjectTestDir(destDir, ProjectType.Android, "basic", "basic")
     String schemaFilesFixtures = "src/test/testProject/android/schemaFilesFixtures"
     copyFile(new File(schemaFilesFixtures + "/oldswapi.json"), new File("$destDir/src/main/graphql/schema.json"))
     return destDir
