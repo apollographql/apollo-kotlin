@@ -1,5 +1,20 @@
 package com.apollographql.apollo.gradle;
 
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+
+import com.apollographql.apollo.compiler.GraphQLCompiler;
+import com.moowork.gradle.node.task.NodeTask;
+
+import org.gradle.api.GradleException;
+import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.OutputDirectory;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,22 +25,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
-
-import org.gradle.api.GradleException;
-import org.gradle.api.tasks.Internal;
-import org.gradle.api.tasks.OutputDirectory;
-
-import com.apollographql.apollo.compiler.GraphQLCompiler;
-
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-
-import com.moowork.gradle.node.task.NodeTask;
 
 public class ApolloIRGenTask extends NodeTask {
   private static final String APOLLO_CODEGEN = "apollo-codegen/node_modules/apollo-codegen/lib/cli.js";
@@ -51,8 +50,8 @@ public class ApolloIRGenTask extends NodeTask {
     }
     setScript(apolloScript);
 
-    ImmutableMap<String, com.apollographql.apollo.gradle.ApolloCodegenArgs> schemaQueryMap = buildSchemaQueryMap(getInputs().getSourceFiles().getFiles());
-    for (Map.Entry<String, com.apollographql.apollo.gradle.ApolloCodegenArgs> entry : schemaQueryMap.entrySet()) {
+    ImmutableMap<String, ApolloCodegenArgs> schemaQueryMap = buildSchemaQueryMap(getInputs().getSourceFiles().getFiles());
+    for (Map.Entry<String, ApolloCodegenArgs> entry : schemaQueryMap.entrySet()) {
       String irOutput = outputDir.getAbsolutePath() + "/" + getProject().relativePath(entry.getValue().getSchemaFile().getParent());
       new File(irOutput).mkdirs();
 
@@ -79,7 +78,7 @@ public class ApolloIRGenTask extends NodeTask {
    * @param files - task input files which consist of .graphql query files and schema.json files
    * @return - a map with schema files as a key and associated query files as a value
    */
-  private ImmutableMap<String, com.apollographql.apollo.gradle.ApolloCodegenArgs> buildSchemaQueryMap(Set<File> files) {
+  private ImmutableMap<String, ApolloCodegenArgs> buildSchemaQueryMap(Set<File> files) {
     final List<File> schemaFiles = getSchemaFilesFrom(files);
 
     if (schemaFiles.isEmpty()) {
@@ -92,14 +91,14 @@ public class ApolloIRGenTask extends NodeTask {
                 " Please ensure no schema files exist on the path to another one");
     }
 
-    ImmutableMap.Builder<String, com.apollographql.apollo.gradle.ApolloCodegenArgs> schemaQueryMap = ImmutableMap.builder();
+    ImmutableMap.Builder<String, ApolloCodegenArgs> schemaQueryMap = ImmutableMap.builder();
     for (final File f : schemaFiles) {
       final String normalizedSchemaFileName = getPathRelativeToSourceSet(f);
       // ensures that only the highest priority schema file is used
       if (schemaQueryMap.build().containsKey(normalizedSchemaFileName)) {
         continue;
       }
-      schemaQueryMap.put(normalizedSchemaFileName, new com.apollographql.apollo.gradle.ApolloCodegenArgs(f, FluentIterable.from(files).filter(new Predicate<File>() {
+      schemaQueryMap.put(normalizedSchemaFileName, new ApolloCodegenArgs(f, FluentIterable.from(files).filter(new Predicate<File>() {
         @Override public boolean apply(@Nullable File file) {
           return file != null && !schemaFiles.contains(file) && file.getParent().contains(getPathRelativeToSourceSet(f.getParentFile()));
         }
