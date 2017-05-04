@@ -11,6 +11,7 @@ import com.apollographql.android.impl.normalizer.HeroAppearsIn;
 import com.apollographql.android.impl.normalizer.HeroParentTypeDependentField;
 import com.apollographql.android.impl.normalizer.HeroTypeDependentAliasedField;
 import com.apollographql.android.impl.normalizer.SameHeroTwice;
+import com.apollographql.android.impl.normalizer.fragment.HeroWithFriendsFragment;
 import com.apollographql.android.impl.normalizer.fragment.HumanWithIdFragment;
 import com.apollographql.android.impl.normalizer.type.Episode;
 import com.apollographql.apollo.api.Operation;
@@ -313,8 +314,21 @@ public class NormalizedCacheTestCase {
   @Test public void readFragmentFromStore() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroAndFriendsWithFragmentResponse.json"));
 
-    HeroAndFriendsWithFragments query = HeroAndFriendsWithFragments.builder().episode(Episode.NEWHOPE).build();
+    HeroAndFriendsNamesWithIDs query = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
     apolloClient.newCall(query).execute();
+
+    HeroWithFriendsFragment heroWithFriendsFragment = apolloClient.apolloStore().read(
+        new HeroWithFriendsFragment.Mapper(), CacheKey.from("2001"), Operation.EMPTY_VARIABLES);
+
+    assertThat(heroWithFriendsFragment.id()).isEqualTo("2001");
+    assertThat(heroWithFriendsFragment.name()).isEqualTo("R2-D2");
+    assertThat(heroWithFriendsFragment.friends()).hasSize(3);
+    assertThat(heroWithFriendsFragment.friends().get(0).fragments().humanWithIdFragment().id()).isEqualTo("1000");
+    assertThat(heroWithFriendsFragment.friends().get(0).fragments().humanWithIdFragment().name()).isEqualTo("Luke Skywalker");
+    assertThat(heroWithFriendsFragment.friends().get(1).fragments().humanWithIdFragment().id()).isEqualTo("1002");
+    assertThat(heroWithFriendsFragment.friends().get(1).fragments().humanWithIdFragment().name()).isEqualTo("Han Solo");
+    assertThat(heroWithFriendsFragment.friends().get(2).fragments().humanWithIdFragment().id()).isEqualTo("1003");
+    assertThat(heroWithFriendsFragment.friends().get(2).fragments().humanWithIdFragment().name()).isEqualTo("Leia Organa");
 
     HumanWithIdFragment fragment = apolloClient.apolloStore().read(new HumanWithIdFragment.Mapper(),
         CacheKey.from("1000"), Operation.EMPTY_VARIABLES);
