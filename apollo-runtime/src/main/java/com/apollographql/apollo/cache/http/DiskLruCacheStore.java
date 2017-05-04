@@ -31,8 +31,7 @@ public final class DiskLruCacheStore implements ResponseCacheStore {
     if (snapshot == null) {
       return null;
     }
-
-    return new ResponseCacheRecord() {
+    final ResponseCacheRecord responseCacheRecord = new ResponseCacheRecord() {
       @Nonnull @Override public Source headerSource() {
         return snapshot.getSource(ENTRY_HEADERS);
       }
@@ -45,6 +44,8 @@ public final class DiskLruCacheStore implements ResponseCacheStore {
         snapshot.close();
       }
     };
+
+    return responseCacheRecord;
   }
 
   @Override public ResponseCacheRecordEditor cacheRecordEditor(@Nonnull String cacheKey) throws IOException {
