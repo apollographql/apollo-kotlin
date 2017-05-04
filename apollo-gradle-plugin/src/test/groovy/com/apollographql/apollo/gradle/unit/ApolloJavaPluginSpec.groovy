@@ -1,6 +1,6 @@
-package com.apollographql.android.gradle.unit
+package com.apollographql.apollo.gradle.unit
 
-import com.apollographql.android.gradle.*
+import com.apollographql.apollo.gradle.ApolloPluginTestHelper
 import com.moowork.gradle.node.NodePlugin
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
@@ -15,10 +15,10 @@ class ApolloJavaPluginSpec extends Specification {
     ApolloPluginTestHelper.applyApolloPlugin(project)
     project.evaluate()
 
-    def mainTask = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "Main"))
+    def mainTask = project.tasks.getByName(String.format(com.apollographql.apollo.gradle.ApolloIRGenTask.NAME, "Main"))
 
     then:
-    mainTask.group.equals(ApolloPlugin.TASK_GROUP)
+    mainTask.group.equals(com.apollographql.apollo.gradle.ApolloPlugin.TASK_GROUP)
     mainTask.description.equals("Generate an IR file using apollo-codegen for Main GraphQL queries")
   }
 
@@ -31,10 +31,10 @@ class ApolloJavaPluginSpec extends Specification {
     ApolloPluginTestHelper.applyApolloPlugin(project)
     project.evaluate()
 
-    def mainTask = project.tasks.getByName(String.format(ApolloClassGenTask.NAME, "Main"))
+    def mainTask = project.tasks.getByName(String.format(com.apollographql.apollo.gradle.ApolloClassGenTask.NAME, "Main"))
 
     then:
-    mainTask.group.equals(ApolloPlugin.TASK_GROUP)
+    mainTask.group.equals(com.apollographql.apollo.gradle.ApolloPlugin.TASK_GROUP)
     mainTask.description.equals("Generate Android classes for Main GraphQL queries")
   }
 
@@ -63,7 +63,7 @@ class ApolloJavaPluginSpec extends Specification {
     then:
     project.sourceSets.all { sourceSet ->
       assert (sourceSet.extensions.findByName("graphql")) != null
-      assert (sourceSet.extensions.findByType(GraphQLSourceDirectorySet.class)) != null
+      assert (sourceSet.extensions.findByType(com.apollographql.apollo.gradle.GraphQLSourceDirectorySet.class)) != null
     }
   }
 
@@ -78,6 +78,6 @@ class ApolloJavaPluginSpec extends Specification {
 
     then:
     assert (project.extensions.findByName("apollo")) != null
-    assert (project.extensions.findByType(ApolloExtension.class)) != null
+    assert (project.extensions.findByType(com.apollographql.apollo.gradle.ApolloExtension.class)) != null
   }
 }

@@ -1,4 +1,4 @@
-package com.apollographql.android.gradle
+package com.apollographql.apollo.gradle
 
 import org.apache.commons.io.FileUtils
 import org.gradle.api.Project;

@@ -1,4 +1,4 @@
-package com.apollographql.android.gradle
+package com.apollographql.apollo.gradle
 
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryPlugin

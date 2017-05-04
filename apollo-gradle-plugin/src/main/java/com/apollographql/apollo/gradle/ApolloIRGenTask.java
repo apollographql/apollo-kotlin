@@ -1,11 +1,10 @@
-package com.apollographql.android.gradle;
+package com.apollographql.apollo.gradle;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,8 +51,8 @@ public class ApolloIRGenTask extends NodeTask {
     }
     setScript(apolloScript);
 
-    ImmutableMap<String, ApolloCodegenArgs> schemaQueryMap = buildSchemaQueryMap(getInputs().getSourceFiles().getFiles());
-    for (Map.Entry<String, ApolloCodegenArgs> entry : schemaQueryMap.entrySet()) {
+    ImmutableMap<String, com.apollographql.apollo.gradle.ApolloCodegenArgs> schemaQueryMap = buildSchemaQueryMap(getInputs().getSourceFiles().getFiles());
+    for (Map.Entry<String, com.apollographql.apollo.gradle.ApolloCodegenArgs> entry : schemaQueryMap.entrySet()) {
       String irOutput = outputDir.getAbsolutePath() + "/" + getProject().relativePath(entry.getValue().getSchemaFile().getParent());
       new File(irOutput).mkdirs();
 
@@ -80,7 +79,7 @@ public class ApolloIRGenTask extends NodeTask {
    * @param files - task input files which consist of .graphql query files and schema.json files
    * @return - a map with schema files as a key and associated query files as a value
    */
-  private ImmutableMap<String, ApolloCodegenArgs> buildSchemaQueryMap(Set<File> files) {
+  private ImmutableMap<String, com.apollographql.apollo.gradle.ApolloCodegenArgs> buildSchemaQueryMap(Set<File> files) {
     final List<File> schemaFiles = getSchemaFilesFrom(files);
 
     if (schemaFiles.isEmpty()) {
@@ -93,14 +92,14 @@ public class ApolloIRGenTask extends NodeTask {
                 " Please ensure no schema files exist on the path to another one");
     }
 
-    ImmutableMap.Builder<String, ApolloCodegenArgs> schemaQueryMap = ImmutableMap.builder();
+    ImmutableMap.Builder<String, com.apollographql.apollo.gradle.ApolloCodegenArgs> schemaQueryMap = ImmutableMap.builder();
     for (final File f : schemaFiles) {
       final String normalizedSchemaFileName = getPathRelativeToSourceSet(f);
       // ensures that only the highest priority schema file is used
       if (schemaQueryMap.build().containsKey(normalizedSchemaFileName)) {
         continue;
       }
-      schemaQueryMap.put(normalizedSchemaFileName, new ApolloCodegenArgs(f, FluentIterable.from(files).filter(new Predicate<File>() {
+      schemaQueryMap.put(normalizedSchemaFileName, new com.apollographql.apollo.gradle.ApolloCodegenArgs(f, FluentIterable.from(files).filter(new Predicate<File>() {
         @Override public boolean apply(@Nullable File file) {
           return file != null && !schemaFiles.contains(file) && file.getParent().contains(getPathRelativeToSourceSet(f.getParentFile()));
         }

@@ -1,8 +1,8 @@
-package com.apollographql.android.gradle.unit
+package com.apollographql.apollo.gradle.unit
 
-import com.apollographql.android.gradle.ApolloCodeGenInstallTask
-import com.apollographql.android.gradle.ApolloPlugin
-import com.apollographql.android.gradle.ApolloPluginTestHelper
+import com.apollographql.apollo.gradle.ApolloCodeGenInstallTask
+import com.apollographql.apollo.gradle.ApolloPlugin
+import com.apollographql.apollo.gradle.ApolloPluginTestHelper
 import groovy.json.JsonSlurper
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification

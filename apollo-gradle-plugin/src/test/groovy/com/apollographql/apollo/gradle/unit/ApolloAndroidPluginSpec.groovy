@@ -1,6 +1,6 @@
-package com.apollographql.android.gradle.unit
+package com.apollographql.apollo.gradle.unit
 
-import com.apollographql.android.gradle.*
+import com.apollographql.apollo.gradle.ApolloPluginTestHelper
 import com.moowork.gradle.node.NodePlugin
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
@@ -15,14 +15,14 @@ class ApolloAndroidPluginSpec extends Specification {
     ApolloPluginTestHelper.applyApolloPlugin(project)
     project.evaluate()
 
-    def debugTask = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "Debug"))
-    def releaseTask = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "Release"))
+    def debugTask = project.tasks.getByName(String.format(com.apollographql.apollo.gradle.ApolloIRGenTask.NAME, "Debug"))
+    def releaseTask = project.tasks.getByName(String.format(com.apollographql.apollo.gradle.ApolloIRGenTask.NAME, "Release"))
 
     then:
-    debugTask.group.equals(ApolloPlugin.TASK_GROUP)
+    debugTask.group.equals(com.apollographql.apollo.gradle.ApolloPlugin.TASK_GROUP)
     debugTask.description.equals("Generate an IR file using apollo-codegen for Debug GraphQL queries")
 
-    releaseTask.group.equals(ApolloPlugin.TASK_GROUP)
+    releaseTask.group.equals(com.apollographql.apollo.gradle.ApolloPlugin.TASK_GROUP)
     releaseTask.description.equals("Generate an IR file using apollo-codegen for Release GraphQL queries")
   }
 
@@ -38,13 +38,13 @@ class ApolloAndroidPluginSpec extends Specification {
 
     then:
     flavors.each { flavor ->
-      def debugTask = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "${flavor}Debug"))
-      def releaseTask = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "${flavor}Release"))
+      def debugTask = project.tasks.getByName(String.format(com.apollographql.apollo.gradle.ApolloIRGenTask.NAME, "${flavor}Debug"))
+      def releaseTask = project.tasks.getByName(String.format(com.apollographql.apollo.gradle.ApolloIRGenTask.NAME, "${flavor}Release"))
 
-      assert (debugTask.group) == ApolloPlugin.TASK_GROUP
+      assert (debugTask.group) == com.apollographql.apollo.gradle.ApolloPlugin.TASK_GROUP
       assert (debugTask.description) == "Generate an IR file using apollo-codegen for " + flavor + "Debug GraphQL queries"
 
-      assert (releaseTask.group) == ApolloPlugin.TASK_GROUP
+      assert (releaseTask.group) == com.apollographql.apollo.gradle.ApolloPlugin.TASK_GROUP
       assert (releaseTask.description) == "Generate an IR file using apollo-codegen for " + flavor + "Release GraphQL queries"
     }
   }
@@ -74,7 +74,7 @@ class ApolloAndroidPluginSpec extends Specification {
     then:
     project.android.sourceSets.all { sourceSet ->
       assert (sourceSet.extensions.findByName("graphql")) != null
-      assert (sourceSet.extensions.findByType(GraphQLSourceDirectorySet.class)) != null
+      assert (sourceSet.extensions.findByType(com.apollographql.apollo.gradle.GraphQLSourceDirectorySet.class)) != null
     }
   }
 
@@ -90,7 +90,7 @@ class ApolloAndroidPluginSpec extends Specification {
     then:
     project.android.sourceSets.all { sourceSet ->
       assert (sourceSet.extensions.findByName("graphql")) != null
-      assert (sourceSet.extensions.findByType(GraphQLSourceDirectorySet.class)) != null
+      assert (sourceSet.extensions.findByType(com.apollographql.apollo.gradle.GraphQLSourceDirectorySet.class)) != null
     }
   }
 
@@ -105,7 +105,7 @@ class ApolloAndroidPluginSpec extends Specification {
 
     then:
     assert (project.extensions.findByName("apollo")) != null
-    assert (project.extensions.findByType(ApolloExtension.class)) != null
+    assert (project.extensions.findByType(com.apollographql.apollo.gradle.ApolloExtension.class)) != null
   }
 
   def "adds apollo-runtime dependency if not skipped and not found in compile dep list"() {

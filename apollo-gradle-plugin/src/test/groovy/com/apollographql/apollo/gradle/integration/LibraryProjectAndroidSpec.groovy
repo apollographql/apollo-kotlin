@@ -1,14 +1,14 @@
-package com.apollographql.android.gradle.integration
+package com.apollographql.apollo.gradle.integration
 
-import com.apollographql.android.gradle.ApolloPluginTestHelper
+import com.apollographql.apollo.gradle.ApolloPluginTestHelper
 import org.apache.commons.io.FileUtils
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import spock.lang.Shared
 import spock.lang.Specification
 
-import static com.apollographql.android.gradle.ApolloPluginTestHelper.createTempTestDirectory
-import static com.apollographql.android.gradle.ApolloPluginTestHelper.prepareProjectTestDir
+import static ApolloPluginTestHelper.createTempTestDirectory
+import static ApolloPluginTestHelper.prepareProjectTestDir
 import static org.apache.commons.io.FileUtils.copyFile
 
 class LibraryProjectAndroidSpec extends Specification {

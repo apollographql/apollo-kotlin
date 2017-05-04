@@ -1,4 +1,4 @@
-package com.apollographql.android.gradle;
+package com.apollographql.apollo.gradle;
 
 import java.io.File;
 import java.io.IOException;
