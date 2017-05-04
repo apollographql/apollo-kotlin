@@ -1,16 +1,16 @@
 package com.apollographql.apollo;
 
-import com.apollographql.android.impl.normalizer.CharacterDetails;
-import com.apollographql.android.impl.normalizer.CharacterNameById;
-import com.apollographql.android.impl.normalizer.EpisodeHeroName;
-import com.apollographql.android.impl.normalizer.HeroAndFriendsNames;
-import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDForParentOnly;
-import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDs;
-import com.apollographql.android.impl.normalizer.HeroAppearsIn;
-import com.apollographql.android.impl.normalizer.HeroParentTypeDependentField;
-import com.apollographql.android.impl.normalizer.HeroTypeDependentAliasedField;
-import com.apollographql.android.impl.normalizer.SameHeroTwice;
-import com.apollographql.android.impl.normalizer.type.Episode;
+import com.apollographql.apollo.integration.normalizer.CharacterDetails;
+import com.apollographql.apollo.integration.normalizer.CharacterNameById;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroName;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNames;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDForParentOnly;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDs;
+import com.apollographql.apollo.integration.normalizer.HeroAppearsIn;
+import com.apollographql.apollo.integration.normalizer.HeroParentTypeDependentField;
+import com.apollographql.apollo.integration.normalizer.HeroTypeDependentAliasedField;
+import com.apollographql.apollo.integration.normalizer.SameHeroTwice;
+import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;

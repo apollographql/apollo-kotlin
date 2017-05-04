@@ -4,10 +4,10 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
-import com.apollographql.android.impl.httpcache.AllFilms;
-import com.apollographql.android.impl.httpcache.AllPlanets;
-import com.apollographql.android.impl.httpcache.type.CustomType;
-import com.apollographql.android.impl.normalizer.HeroName;
+import com.apollographql.apollo.integration.httpcache.AllFilms;
+import com.apollographql.apollo.integration.httpcache.AllPlanets;
+import com.apollographql.apollo.integration.httpcache.type.CustomType;
+import com.apollographql.apollo.integration.normalizer.HeroName;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
