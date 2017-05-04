@@ -16,7 +16,7 @@ import org.gradle.api.GradleException;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputDirectory;
 
-import com.apollographql.android.compiler.GraphQLCompiler;
+import com.apollographql.apollo.compiler.GraphQLCompiler;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;

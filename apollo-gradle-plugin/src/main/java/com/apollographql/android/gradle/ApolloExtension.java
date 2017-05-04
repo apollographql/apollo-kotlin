@@ -1,6 +1,6 @@
 package com.apollographql.android.gradle;
 
-import com.apollographql.android.compiler.NullableValueType;
+import com.apollographql.apollo.compiler.NullableValueType;
 
 import groovy.lang.Closure;
 

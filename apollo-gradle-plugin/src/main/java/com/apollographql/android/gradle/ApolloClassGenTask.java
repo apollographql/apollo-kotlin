@@ -2,8 +2,8 @@ package com.apollographql.android.gradle;
 
 import com.google.common.base.Joiner;
 
-import com.apollographql.android.compiler.GraphQLCompiler;
-import com.apollographql.android.compiler.NullableValueType;
+import com.apollographql.apollo.compiler.GraphQLCompiler;
+import com.apollographql.apollo.compiler.NullableValueType;
 
 import org.gradle.api.Action;
 import org.gradle.api.tasks.Input;

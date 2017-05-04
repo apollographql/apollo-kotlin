@@ -10,7 +10,7 @@ import org.gradle.api.logging.LogLevel;
 import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.OutputDirectory;
 
-import com.apollographql.android.compiler.GraphQLCompiler;
+import com.apollographql.apollo.compiler.GraphQLCompiler;
 
 import com.google.common.collect.Lists;
 

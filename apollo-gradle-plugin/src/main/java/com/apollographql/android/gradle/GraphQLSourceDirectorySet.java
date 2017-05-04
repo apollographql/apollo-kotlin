@@ -1,6 +1,6 @@
 package com.apollographql.android.gradle;
 
-import com.apollographql.android.compiler.GraphQLCompiler;
+import com.apollographql.apollo.compiler.GraphQLCompiler;
 
 import org.gradle.api.internal.file.DefaultSourceDirectorySet;
 import org.gradle.api.internal.file.FileResolver;
