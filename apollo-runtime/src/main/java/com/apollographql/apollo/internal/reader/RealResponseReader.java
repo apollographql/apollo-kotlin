@@ -204,7 +204,7 @@ import java.util.Map;
     }
   }
 
-  @SuppressWarnings("unchecked") private <T> T readCustomType(Field.CustomTypeField field) {
+  @SuppressWarnings("unchecked") private <T> T readCustomType(Field.CustomTypeField field) throws IOException {
     Object value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
     if (value == null) {

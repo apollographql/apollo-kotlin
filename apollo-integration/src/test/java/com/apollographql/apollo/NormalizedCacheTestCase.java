@@ -75,6 +75,14 @@ public class NormalizedCacheTestCase {
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
   }
 
+
+  @Test
+  public void episodeHeroNameCacheMiss() throws IOException, ApolloException {
+    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    assertThat(body.data()).isNull();
+  }
+
   @Test public void heroAndFriendsNameResponse() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
 

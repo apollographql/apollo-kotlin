@@ -2,13 +2,14 @@ package com.apollographql.apollo.internal.field;
 
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
-import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.CacheReference;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.internal.cache.normalized.ReadableStore;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,8 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
     this.cacheHeaders = cacheHeaders;
   }
 
-  @SuppressWarnings("unchecked") @Override public <T> T valueFor(Record record, Field field) {
+  @SuppressWarnings("unchecked") @Override public <T> T valueFor(Record record, Field field)
+      throws IOException {
     if (field instanceof Field.ObjectField) {
       return (T) valueFor(record, (Field.ObjectField) field);
     } else if (field instanceof Field.ScalarListField) {
@@ -38,7 +40,7 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
     }
   }
 
-  private Record valueFor(Record record, Field.ObjectField field) {
+  private Record valueFor(Record record, Field.ObjectField field) throws IOException {
     CacheReference cacheReference;
     CacheKey fieldCacheKey = cacheKeyResolver.fromFieldArguments(field, variables);
     if (fieldCacheKey != CacheKey.NO_KEY) {
@@ -49,7 +51,7 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
     return cacheReference != null ? readableCache.read(cacheReference.key(), cacheHeaders) : null;
   }
 
-  private List<Record> valueFor(Record record, Field.ObjectListField field) {
+  private List<Record> valueFor(Record record, Field.ObjectListField field) throws IOException {
     List<CacheReference> values = fieldValue(record, field);
     List<Record> result = new ArrayList<>();
     for (CacheReference reference : values) {
@@ -58,7 +60,11 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
     return result;
   }
 
-  @SuppressWarnings("unchecked") private <T> T fieldValue(Record record, Field field) {
-    return (T) record.field(field.cacheKey(variables));
+  @SuppressWarnings("unchecked") private <T> T fieldValue(Record record, Field field) throws IOException {
+    String fieldKey = field.cacheKey(variables);
+    if (!record.hasField(fieldKey)) {
+      throw new IOException("Missing value: " + field.fieldName());
+    }
+    return (T) record.field(fieldKey);
   }
 }
