@@ -1,5 +1,6 @@
 package com.apollographql.apollo.internal.cache.normalized;
 
+import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.Record;
 
 import java.util.Collection;
@@ -9,8 +10,8 @@ import javax.annotation.Nullable;
 
 public interface ReadableCache {
 
-  @Nullable Record read(@Nonnull String key);
+  @Nullable Record read(@Nonnull String key, @Nonnull CacheHeaders cacheHeaders);
 
-  Collection<Record> read(@Nonnull Collection<String> keys);
+  Collection<Record> read(@Nonnull Collection<String> keys, @Nonnull CacheHeaders cacheHeaders);
 
 }

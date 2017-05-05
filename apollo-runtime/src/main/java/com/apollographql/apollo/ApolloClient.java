@@ -4,11 +4,12 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.cache.CacheHeaders;
+import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.http.EvictionStrategy;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.cache.http.ResponseCacheStore;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
-import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
@@ -74,6 +75,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   private final ExecutorService dispatcher;
   private final HttpCacheControl defaultHttpCacheControl;
   private final CacheControl defaultCacheControl;
+  private final CacheHeaders defaultCacheHeaders;
   private final ApolloLogger logger;
   private final List<ApolloInterceptor> applicationInterceptors;
 
@@ -86,6 +88,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     this.moshi = builder.moshi;
     this.dispatcher = builder.dispatcher;
     this.defaultHttpCacheControl = builder.defaultHttpCacheControl;
+    this.defaultCacheHeaders = builder.defaultCacheHeaders;
     this.defaultCacheControl = builder.defaultCacheControl;
     this.logger = builder.apolloLogger;
     this.applicationInterceptors = builder.applicationInterceptors;
@@ -106,10 +109,8 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
       }
     }
     return new RealApolloCall<T>(operation, serverUrl, httpCallFactory, httpCache, defaultHttpCacheControl, moshi,
-        responseFieldMapper, customTypeAdapters, apolloStore, defaultCacheControl, dispatcher, logger,
-        applicationInterceptors)
-        .httpCacheControl(defaultHttpCacheControl)
-        .cacheControl(defaultCacheControl);
+        responseFieldMapper, customTypeAdapters, apolloStore, defaultCacheControl, defaultCacheHeaders,
+        dispatcher, logger, applicationInterceptors);
   }
 
   /**
@@ -119,6 +120,14 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
       @Nonnull Operation<D, T, V> operation) {
     return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, moshi, dispatcher, logger);
+  }
+
+  /**
+   *
+   * @return The default {@link CacheHeaders} which this instance of {@link ApolloClient} was configured.
+   */
+  public CacheHeaders defaultCacheHeaders() {
+    return defaultCacheHeaders;
   }
 
   void clearHttpCache() {
@@ -160,6 +169,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     Optional<CacheKeyResolver> cacheKeyResolver = Optional.absent();
     HttpCacheControl defaultHttpCacheControl = HttpCacheControl.CACHE_FIRST;
     CacheControl defaultCacheControl = CacheControl.CACHE_FIRST;
+    CacheHeaders defaultCacheHeaders = CacheHeaders.NONE;
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
     private final Moshi.Builder moshiBuilder = new Moshi.Builder();
     Moshi moshi;
@@ -290,12 +300,24 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     }
 
     /**
-     * Set the default {@link CacheControl} strategy.
+     * Set the default {@link CacheControl} strategy that will be used for each new
+     * {@link ApolloCall}.
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder defaultCacheControl(@Nonnull CacheControl cacheControl) {
       this.defaultCacheControl = checkNotNull(cacheControl, "cacheControl == null");
+      return this;
+    }
+
+    /**
+     * Set the default {@link CacheHeaders} strategy that will be passed
+     * to each new {@link ApolloCall}.
+     *
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
+    public Builder defaultCacheHeaders(@Nonnull CacheHeaders cacheHeaders) {
+      this.defaultCacheHeaders = checkNotNull(cacheHeaders, "cacheHeaders == null");
       return this;
     }
 
