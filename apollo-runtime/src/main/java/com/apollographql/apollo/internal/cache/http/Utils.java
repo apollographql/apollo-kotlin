@@ -14,6 +14,7 @@ import okio.BufferedSink;
 import okio.BufferedSource;
 import okio.Okio;
 import okio.Sink;
+import okio.Source;
 
 final class Utils {
   static Response strip(Response response) {
@@ -80,8 +81,15 @@ final class Utils {
     while (responseBodySource.read(cacheResponseBody.buffer(), bufferSize) > 0) {
       cacheResponseBody.emit();
     }
-    Util.closeQuietly(responseBodySource);
-    cacheResponseBody.close();
+    closeQuietly(responseBodySource);
+  }
+
+  private static void closeQuietly(Source source) {
+    try {
+      source.close();
+    } catch (Exception ignore) {
+      // ignore
+    }
   }
 
   private static HttpCacheControl cacheControl(Request request) {
