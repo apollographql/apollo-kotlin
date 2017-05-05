@@ -1,0 +1,7 @@
+fragment HeroWithFriendsFragment on Character {
+  id
+  name
+  friends {
+    ... HumanWithIdFragment
+  }
+}

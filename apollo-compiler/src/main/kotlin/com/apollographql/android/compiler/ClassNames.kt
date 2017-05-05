@@ -1,9 +1,6 @@
 package com.apollographql.android.compiler
 
-import com.apollographql.apollo.api.Mutation
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.ResponseReader
+import com.apollographql.apollo.api.*
 import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder
 import com.apollographql.apollo.api.internal.Utils
@@ -27,6 +24,7 @@ object ClassNames {
   val OPTIONAL: ClassName = ClassName.get(Optional::class.java)
   val GUAVA_OPTIONAL: ClassName = ClassName.get("com.google.common.base", "Optional")
   val API_UTILS: ClassName = ClassName.get(Utils::class.java)
+  val FRAGMENT: ClassName = ClassName.get(GraphqlFragment::class.java)
 
   fun <K : Any> parameterizedListOf(type: Class<K>): TypeName =
       ParameterizedTypeName.get(LIST, ClassName.get(type))
