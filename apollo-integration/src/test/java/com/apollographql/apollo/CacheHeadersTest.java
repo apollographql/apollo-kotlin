@@ -2,8 +2,8 @@ package com.apollographql.apollo;
 
 import android.support.annotation.NonNull;
 
-import com.apollographql.android.impl.normalizer.HeroAndFriendsNames;
-import com.apollographql.android.impl.normalizer.type.Episode;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNames;
+import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
