@@ -7,7 +7,8 @@ import java.util.Map;
 
 public final class MapFieldValueResolver implements FieldValueResolver<Map<String, Object>> {
 
-  @SuppressWarnings("unchecked") @Override public <T> T valueFor(Map<String, Object> map, Field field) throws IOException {
+  @SuppressWarnings("unchecked") @Override public <T> T valueFor(Map<String, Object> map, Field field)
+      throws IOException {
     if (!map.containsKey(field.responseName())) {
       throw new IOException("Missing value: " + field.responseName());
     }
