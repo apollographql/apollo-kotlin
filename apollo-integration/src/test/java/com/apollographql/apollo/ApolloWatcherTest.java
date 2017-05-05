@@ -5,6 +5,10 @@ import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDs;
 import com.apollographql.android.impl.normalizer.type.Episode;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.cache.normalized.CacheKey;
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
+import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
+import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
 
 import junit.framework.Assert;
@@ -38,7 +42,7 @@ public class ApolloWatcherTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(new InMemoryNormalizedCache(), new IdFieldCacheKeyResolver())
+        .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .build();
   }
 
@@ -81,7 +85,6 @@ public class ApolloWatcherTest {
     // Another newer call gets updated information
     server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
     apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
-
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     watcher.cancel();
   }

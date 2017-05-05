@@ -1,8 +1,12 @@
 package com.apollographql.apollo.cache.normalized;
 
+import com.apollographql.apollo.cache.CacheHeaders;
+
 /**
- * CacheControl class represents the cache controlling strategies for reading GraphQL responses back from the
- * {@link NormalizedCache}.
+ * {@link CacheControl} represents strategies for what order a {@link NormalizedCache} will be accessed with respect
+ * to the network.
+ *
+ * To control how a cache reads and writes a response to the cache, see {@link CacheHeaders}.
  */
 public enum CacheControl {
 
