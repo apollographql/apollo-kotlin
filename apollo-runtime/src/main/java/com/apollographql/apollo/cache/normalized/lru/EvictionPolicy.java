@@ -4,6 +4,10 @@ import com.apollographql.apollo.api.internal.Optional;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Controls how long a {@link com.apollographql.apollo.cache.normalized.Record} will
+ * stay in a {@link LruNormalizedCache}.
+ */
 public final class EvictionPolicy {
 
   public static final EvictionPolicy NO_EVICTION = EvictionPolicy.builder().build();

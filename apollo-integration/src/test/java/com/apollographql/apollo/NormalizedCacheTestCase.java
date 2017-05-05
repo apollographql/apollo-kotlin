@@ -17,7 +17,8 @@ import com.apollographql.android.impl.normalizer.type.Episode;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
-import com.apollographql.apollo.cache.normalized.CacheKey;
+import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
+import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
 
 import org.junit.After;
@@ -44,7 +45,7 @@ public class NormalizedCacheTestCase {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(new InMemoryNormalizedCache(), new IdFieldCacheKeyResolver())
+        .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .dispatcher(Utils.immediateExecutorService())
         .build();
   }

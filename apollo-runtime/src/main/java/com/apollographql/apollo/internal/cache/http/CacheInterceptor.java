@@ -109,11 +109,21 @@ final class CacheInterceptor implements Interceptor {
   }
 
   private Response prefetch(Response networkResponse, String cacheKey) throws IOException {
-    cache.write(networkResponse, cacheKey);
+    if (!networkResponse.isSuccessful()) {
+      return networkResponse;
+    }
+
+    try {
+      cache.write(networkResponse, cacheKey);
+    } finally {
+      networkResponse.close();
+    }
+
     Response cacheResponse = cache.read(cacheKey);
     if (cacheResponse == null) {
       throw new IOException("failed to read prefetch cache response");
     }
+
     return cacheResponse
         .newBuilder()
         .networkResponse(Utils.strip(networkResponse))

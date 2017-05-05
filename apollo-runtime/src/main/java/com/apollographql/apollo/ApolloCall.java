@@ -2,8 +2,11 @@ package com.apollographql.apollo;
 
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.cache.http.HttpCacheControl;
+import com.apollographql.apollo.cache.ApolloCacheHeaders;
+import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.exception.ApolloCanceledException;
+import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
@@ -62,6 +65,16 @@ public interface ApolloCall<T> extends Cancelable {
   @Nonnull ApolloCall<T> cacheControl(@Nonnull CacheControl cacheControl);
 
   /**
+   * Sets the {@link CacheHeaders} to use for this call.
+   *
+   * @param cacheHeaders the {@link CacheHeaders} that will be passed with records generated from this request to {@link
+   *                     com.apollographql.apollo.cache.normalized.NormalizedCache}. Standardized cache headers are
+   *                     defined in {@link ApolloCacheHeaders}.
+   * @return The ApolloCall object with the provided {@link CacheHeaders}.
+   */
+  @Nonnull ApolloCall<T> cacheHeaders(@Nonnull CacheHeaders cacheHeaders);
+
+  /**
    * Creates a new, identical call to this one which can be enqueued or executed even if this call has already been.
    *
    * @return The cloned ApolloCall object.
@@ -108,6 +121,13 @@ public interface ApolloCall<T> extends Cancelable {
      * Gets called when the network request succeeds but there was an error parsing the response.
      */
     public void onParseError(@Nonnull ApolloParseException e) {
+      onFailure(e);
+    }
+
+    /**
+     * Gets called when {@link ApolloCall} has been canceled.
+     */
+    public void onCanceledError(@Nonnull ApolloCanceledException e) {
       onFailure(e);
     }
   }

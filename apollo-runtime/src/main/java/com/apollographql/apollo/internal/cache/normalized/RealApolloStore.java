@@ -118,16 +118,16 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     return normalizedCache;
   }
 
-  @Nullable public Record read(@Nonnull String key) {
-    return normalizedCache.loadRecord(checkNotNull(key, "key == null"));
+  @Nullable public Record read(@Nonnull String key, CacheHeaders cacheHeaders) {
+    return normalizedCache.loadRecord(checkNotNull(key, "key == null"), cacheHeaders);
   }
 
-  @Nonnull public Collection<Record> read(@Nonnull Collection<String> keys) {
-    return normalizedCache.loadRecords(checkNotNull(keys, "keys == null"));
+  @Nonnull public Collection<Record> read(@Nonnull Collection<String> keys, CacheHeaders cacheHeaders) {
+    return normalizedCache.loadRecords(checkNotNull(keys, "keys == null"), cacheHeaders);
   }
 
-  @Nonnull public Set<String> merge(@Nonnull Collection<Record> recordSet) {
-    return normalizedCache.merge(checkNotNull(recordSet, "recordSet == null"));
+  @Nonnull public Set<String> merge(@Nonnull Collection<Record> recordSet, CacheHeaders cacheHeaders) {
+    return normalizedCache.merge(checkNotNull(recordSet, "recordSet == null"), cacheHeaders);
   }
 
   @Override public CacheKeyResolver cacheKeyResolver() {

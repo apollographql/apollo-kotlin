@@ -68,6 +68,7 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home:
+        this.finish();
         return true;
       default:
         return super.onOptionsItemSelected(item);
@@ -82,8 +83,8 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
     if (entry != null) {
       name.setText(entry.repository().full_name());
       description.setText(entry.repository().description());
+      postedBy.setText(getResources().getString(R.string.posted_by, entry.postedBy().login()));
     }
-    postedBy.setText(getResources().getString(R.string.posted_by, entry.postedBy().login()));
   }
 
   private void fetchRepositoryDetails() {

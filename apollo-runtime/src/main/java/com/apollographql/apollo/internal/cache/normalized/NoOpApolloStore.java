@@ -1,9 +1,6 @@
 package com.apollographql.apollo.internal.cache.normalized;
 
-import com.apollographql.apollo.api.Fragment;
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
@@ -24,15 +21,15 @@ import javax.annotation.Nullable;
  */
 public final class NoOpApolloStore implements ApolloStore, ReadableStore, WriteableStore {
 
-  @Override public Set<String> merge(Collection<Record> recordCollection) {
+  @Override public Set<String> merge(Collection<Record> recordCollection, CacheHeaders cacheHeaders) {
     return Collections.emptySet();
   }
 
-  @Nullable @Override public Record read(@Nonnull String key) {
+  @Nullable @Override public Record read(@Nonnull String key, CacheHeaders cacheHeaders) {
     return null;
   }
 
-  @Override public Collection<Record> read(@Nonnull Collection<String> keys) {
+  @Override public Collection<Record> read(@Nonnull Collection<String> keys, CacheHeaders cacheHeaders) {
     return Collections.emptySet();
   }
 

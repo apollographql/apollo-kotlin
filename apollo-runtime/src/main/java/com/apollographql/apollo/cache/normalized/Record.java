@@ -73,7 +73,7 @@ public final class Record {
 
   /**
    * @param otherRecord The record to merge into this record.
-   * @return A set of field keys which have changed, or where added. A field key incorporates any GraphQL arguments in
+   * @return A set of field keys which have changed, or were added. A field key incorporates any GraphQL arguments in
    * addition to the field name.
    */
   public Set<String> mergeWith(Record otherRecord) {

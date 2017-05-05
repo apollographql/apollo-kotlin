@@ -75,10 +75,8 @@ class ApolloPlugin implements Plugin<Project> {
       }
     })
 
-    project.afterEvaluate {
-      project.tasks.create(ApolloCodeGenInstallTask.NAME, ApolloCodeGenInstallTask.class)
-      addApolloTasks()
-    }
+    project.tasks.create(ApolloCodeGenInstallTask.NAME, ApolloCodeGenInstallTask.class)
+    addApolloTasks()
   }
 
   private void addApolloTasks() {
@@ -90,6 +88,9 @@ class ApolloPlugin implements Plugin<Project> {
     if (isAndroidProject()) {
       getVariants().all { v ->
         addVariantTasks(v, apolloIRGenTask, apolloClassGenTask, v.sourceSets)
+      }
+      project.android.testVariants.each { tv ->
+        addVariantTasks(tv, apolloIRGenTask, apolloClassGenTask, tv.sourceSets)
       }
     } else {
       getSourceSets().all { sourceSet ->
@@ -179,5 +180,4 @@ class ApolloPlugin implements Plugin<Project> {
     return project.android.hasProperty(
         'libraryVariants') ? project.android.libraryVariants : project.android.applicationVariants
   }
-
 }

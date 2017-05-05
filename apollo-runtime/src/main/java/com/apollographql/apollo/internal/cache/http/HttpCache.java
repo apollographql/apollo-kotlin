@@ -13,9 +13,11 @@ import javax.annotation.Nonnull;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import okio.ForwardingSource;
+import okio.Sink;
 import okio.Source;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import static com.apollographql.apollo.internal.cache.http.Utils.copyResponseBody;
 
 @SuppressWarnings("WeakerAccess") public final class HttpCache {
   public static final String CACHE_KEY_HEADER = "APOLLO-CACHE-KEY";
@@ -103,7 +105,13 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     try {
       cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey);
       if (cacheRecordEditor != null) {
-        new ResponseHeaderRecord(response).writeTo(cacheRecordEditor);
+        Sink headerSink = cacheRecordEditor.headerSink();
+        try {
+          new ResponseHeaderRecord(response).writeTo(headerSink);
+        } finally {
+          closeQuietly(headerSink);
+        }
+
         return response.newBuilder()
             .body(new ResponseBodyProxy(cacheRecordEditor, response, logger))
             .build();
@@ -120,8 +128,20 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     try {
       cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey);
       if (cacheRecordEditor != null) {
-        new ResponseHeaderRecord(response).writeTo(cacheRecordEditor);
-        Utils.copyResponseBody(response, cacheRecordEditor.bodySink());
+        Sink headerSink = cacheRecordEditor.headerSink();
+        try {
+          new ResponseHeaderRecord(response).writeTo(headerSink);
+        } finally {
+          closeQuietly(headerSink);
+        }
+
+        Sink bodySink = cacheRecordEditor.bodySink();
+        try {
+          copyResponseBody(response, bodySink);
+        } finally {
+          closeQuietly(bodySink);
+        }
+
         cacheRecordEditor.commit();
       }
     } catch (Exception e) {
@@ -147,6 +167,14 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       }
     } catch (Exception ignore) {
       logger.w(ignore, "Failed to abort cache record edit");
+    }
+  }
+
+  private void closeQuietly(Sink sink) {
+    try {
+      sink.close();
+    } catch (Exception ignore) {
+      logger.w(ignore, "Failed to close sink");
     }
   }
 }
