@@ -1,9 +1,10 @@
 package com.apollographql.apollo.cache.normalized;
 
-import com.apollographql.apollo.api.Fragment;
+import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.internal.cache.normalized.NoOpApolloStore;
 import com.apollographql.apollo.internal.cache.normalized.ReadableStore;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
@@ -111,7 +112,7 @@ public interface ApolloStore {
    */
   @Nonnull <D extends Operation.Data, T, V extends Operation.Variables> Response<T> read(
       @Nonnull Operation<D, T, V> operation, @Nonnull ResponseFieldMapper<D> responseFieldMapper,
-      @Nonnull ResponseNormalizer<Record> responseNormalizer);
+      @Nonnull ResponseNormalizer<Record> responseNormalizer, @Nonnull CacheHeaders cacheHeaders);
 
   /**
    * Read GraphQL fragment from store.
@@ -121,7 +122,7 @@ public interface ApolloStore {
    * @param variables   {@link Operation.Variables} required for fragment arguments resolving
    * @param <F>         type of fragment to be read
    */
-  @Nullable <F extends Fragment> F read(@Nonnull ResponseFieldMapper<F> fieldMapper, @Nonnull CacheKey cacheKey,
+  @Nullable <F extends GraphqlFragment> F read(@Nonnull ResponseFieldMapper<F> fieldMapper, @Nonnull CacheKey cacheKey,
       @Nonnull Operation.Variables variables);
 
   ApolloStore NO_APOLLO_STORE = new NoOpApolloStore();

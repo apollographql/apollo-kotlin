@@ -3,5 +3,5 @@ package com.apollographql.apollo.api;
 /**
  * Represents a GraphQL fragment
  */
-public interface Fragment {
+public interface GraphqlFragment {
 }

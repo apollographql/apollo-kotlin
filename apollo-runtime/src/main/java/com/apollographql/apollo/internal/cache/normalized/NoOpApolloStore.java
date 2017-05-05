@@ -1,5 +1,9 @@
 package com.apollographql.apollo.internal.cache.normalized;
 
+import com.apollographql.apollo.api.GraphqlFragment;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.CacheKey;
@@ -21,15 +25,15 @@ import javax.annotation.Nullable;
  */
 public final class NoOpApolloStore implements ApolloStore, ReadableStore, WriteableStore {
 
-  @Override public Set<String> merge(Collection<Record> recordCollection, CacheHeaders cacheHeaders) {
+  @Override public Set<String> merge(@Nonnull Collection<Record> recordCollection, @Nonnull CacheHeaders cacheHeaders) {
     return Collections.emptySet();
   }
 
-  @Nullable @Override public Record read(@Nonnull String key, CacheHeaders cacheHeaders) {
+  @Nullable @Override public Record read(@Nonnull String key, @Nonnull CacheHeaders cacheHeaders) {
     return null;
   }
 
-  @Override public Collection<Record> read(@Nonnull Collection<String> keys, CacheHeaders cacheHeaders) {
+  @Override public Collection<Record> read(@Nonnull Collection<String> keys, @Nonnull CacheHeaders cacheHeaders) {
     return Collections.emptySet();
   }
 
@@ -78,11 +82,11 @@ public final class NoOpApolloStore implements ApolloStore, ReadableStore, Writea
 
   @Nonnull @Override public <D extends Operation.Data, T, V extends Operation.Variables> Response<T> read(
       @Nonnull Operation<D, T, V> operation, @Nonnull ResponseFieldMapper<D> responseFieldMapper,
-      @Nonnull ResponseNormalizer<Record> responseNormalizer) {
+      @Nonnull ResponseNormalizer<Record> responseNormalizer, @Nonnull CacheHeaders cacheHeaders) {
     return new Response<T>(operation);
   }
 
-  @Nullable @Override public <F extends Fragment> F read(@Nonnull ResponseFieldMapper<F> fieldMapper,
+  @Nullable @Override public <F extends GraphqlFragment> F read(@Nonnull ResponseFieldMapper<F> fieldMapper,
       @Nonnull CacheKey cacheKey, @Nonnull Operation.Variables variables) {
     return null;
   }

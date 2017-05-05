@@ -24,7 +24,7 @@ object ClassNames {
   val OPTIONAL: ClassName = ClassName.get(Optional::class.java)
   val GUAVA_OPTIONAL: ClassName = ClassName.get("com.google.common.base", "Optional")
   val API_UTILS: ClassName = ClassName.get(Utils::class.java)
-  val FRAGMENT: ClassName = ClassName.get(Fragment::class.java)
+  val FRAGMENT: ClassName = ClassName.get(GraphqlFragment::class.java)
 
   fun <K : Any> parameterizedListOf(type: Class<K>): TypeName =
       ParameterizedTypeName.get(LIST, ClassName.get(type))

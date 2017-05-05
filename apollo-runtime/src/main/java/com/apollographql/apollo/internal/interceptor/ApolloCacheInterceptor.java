@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
@@ -130,7 +131,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
   private InterceptorResponse resolveCacheFirstResponse(Operation operation) {
     if (cacheControl == CacheControl.CACHE_ONLY || cacheControl == CacheControl.CACHE_FIRST) {
       ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
-      Response cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer);
+      Response cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer, cacheHeaders);
       if (cacheControl == CacheControl.CACHE_ONLY || cachedResponse.data() != null) {
         logger.d("Cache HIT for operation %s", operation);
         return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
@@ -172,7 +173,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
   private InterceptorResponse resolveNetworkFirstCacheResponse(Operation operation) {
     if (cacheControl == CacheControl.NETWORK_FIRST) {
       ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
-      Response cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer);
+      Response cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer, cacheHeaders);
       if (cachedResponse.data() != null) {
         logger.d("Cache HIT for operation %s", operation);
         return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
