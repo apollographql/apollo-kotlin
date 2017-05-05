@@ -1,7 +1,7 @@
 package com.example.fragment_friends_connection.fragment;
 
 import com.apollographql.apollo.api.Field;
-import com.apollographql.apollo.api.Fragment;
+import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
-public class HeroDetails implements Fragment {
+public class HeroDetails implements GraphqlFragment {
   public static final String FRAGMENT_DEFINITION = "fragment HeroDetails on Character {\n"
       + "  __typename\n"
       + "  name\n"

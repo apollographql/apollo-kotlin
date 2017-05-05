@@ -1,7 +1,7 @@
 package com.example.fragments_with_type_condition.fragment;
 
 import com.apollographql.apollo.api.Field;
-import com.apollographql.apollo.api.Fragment;
+import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
-public class DroidDetails implements Fragment {
+public class DroidDetails implements GraphqlFragment {
   public static final String FRAGMENT_DEFINITION = "fragment DroidDetails on Droid {\n"
       + "  __typename\n"
       + "  name\n"
