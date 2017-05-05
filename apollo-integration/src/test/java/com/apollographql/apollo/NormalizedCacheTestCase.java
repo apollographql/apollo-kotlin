@@ -1,5 +1,6 @@
 package com.apollographql.apollo;
 
+import com.apollographql.android.impl.httpcache.AllPlanets;
 import com.apollographql.android.impl.normalizer.CharacterDetails;
 import com.apollographql.android.impl.normalizer.CharacterNameById;
 import com.apollographql.android.impl.normalizer.EpisodeHeroName;
@@ -73,14 +74,6 @@ public class NormalizedCacheTestCase {
     body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
-  }
-
-
-  @Test
-  public void episodeHeroNameCacheMiss() throws IOException, ApolloException {
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
-    Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
-    assertThat(body.data()).isNull();
   }
 
   @Test public void heroAndFriendsNameResponse() throws IOException, ApolloException {
@@ -303,6 +296,44 @@ public class NormalizedCacheTestCase {
     assertThat(characterData).isNull();
   }
 
+  @Test
+  public void testIndependentQueriesGoToNetworkWhenCacheMiss() throws IOException, ApolloException {
+    server.enqueue(mockResponse("HeroNameResponse.json"));
+    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).execute();
+    assertThat(body.hasErrors()).isFalse();
+    assertThat(body.data()).isNotNull();
+
+    server.enqueue(mockResponse("AllPlanetsNullableField.json"));
+    AllPlanets allPlanetsQuery = new AllPlanets();
+    final Response<AllPlanets.Data> allPlanetsResponse = apolloClient.newCall(allPlanetsQuery).execute();
+    assertThat(allPlanetsResponse.hasErrors()).isFalse();
+    assertThat(allPlanetsResponse.data().allPlanets()).isNotNull();
+  }
+
+
+  @Test
+  public void testCacheOnlyMissReturnNullData() throws IOException, ApolloException {
+    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    assertThat(body.data()).isNull();
+  }
+
+  @Test public void cacheResponseWithNullableFields() throws IOException, ApolloException {
+    server.enqueue(mockResponse("AllPlanetsNullableField.json"));
+    AllPlanets query = new AllPlanets();
+    Response<AllPlanets.Data> body =
+        apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+
+    assertThat(body).isNotNull();
+    assertThat(body.hasErrors()).isFalse();
+
+    body =
+        apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    assertThat(body).isNotNull();
+    assertThat(body.hasErrors()).isFalse();
+  }
+
   @Test public void readOperationFromStore() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
 
@@ -355,4 +386,5 @@ public class NormalizedCacheTestCase {
     assertThat(fragment.id()).isEqualTo("1003");
     assertThat(fragment.name()).isEqualTo("Leia Organa");
   }
+
 }
