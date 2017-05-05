@@ -191,8 +191,9 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     });
   }
 
-  @Nullable @Override public <F extends GraphqlFragment> F read(@Nonnull final ResponseFieldMapper<F> responseFieldMapper,
-      @Nonnull final CacheKey cacheKey, @Nonnull final Operation.Variables variables) {
+  @Nullable @Override public <F extends GraphqlFragment> F read(
+      @Nonnull final ResponseFieldMapper<F> responseFieldMapper, @Nonnull final CacheKey cacheKey,
+      @Nonnull final Operation.Variables variables) {
     checkNotNull(responseFieldMapper, "responseFieldMapper == null");
     checkNotNull(cacheKey, "cacheKey == null");
     checkNotNull(variables, "variables == null");
