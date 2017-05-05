@@ -104,7 +104,8 @@ public interface ApolloStore {
    *
    * @param operation           response of which should be read
    * @param responseFieldMapper {@link ResponseFieldMapper} to be used for field mapping
-   * @param responseNormalizer  {@link ResponseNormalizer} to be used whe reading cached response
+   * @param responseNormalizer  {@link ResponseNormalizer} to be used when reading cached response
+   * @param cacheHeaders        {@link CacheHeaders} to be used when reading cached response
    * @param <D>                 type of GraphQL operation data
    * @param <T>                 type operation cached data will be wrapped with
    * @param <V>                 type of operation variables
