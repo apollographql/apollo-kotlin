@@ -296,8 +296,7 @@ public class NormalizedCacheTestCase {
     assertThat(characterData).isNull();
   }
 
-  @Test
-  public void testIndependentQueriesGoToNetworkWhenCacheMiss() throws IOException, ApolloException {
+  @Test public void independentQueriesGoToNetworkWhenCacheMiss() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroNameResponse.json"));
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
     Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).execute();
@@ -311,9 +310,7 @@ public class NormalizedCacheTestCase {
     assertThat(allPlanetsResponse.data().allPlanets()).isNotNull();
   }
 
-
-  @Test
-  public void testCacheOnlyMissReturnNullData() throws IOException, ApolloException {
+  @Test public void cacheOnlyMissReturnsNullData() throws IOException, ApolloException {
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
     Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.data()).isNull();
@@ -322,14 +319,12 @@ public class NormalizedCacheTestCase {
   @Test public void cacheResponseWithNullableFields() throws IOException, ApolloException {
     server.enqueue(mockResponse("AllPlanetsNullableField.json"));
     AllPlanets query = new AllPlanets();
-    Response<AllPlanets.Data> body =
-        apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    Response<AllPlanets.Data> body = apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
 
     assertThat(body).isNotNull();
     assertThat(body.hasErrors()).isFalse();
 
-    body =
-        apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body).isNotNull();
     assertThat(body.hasErrors()).isFalse();
   }
