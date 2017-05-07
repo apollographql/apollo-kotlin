@@ -142,7 +142,7 @@ public class IntegrationTest {
   }
 
   @Test public void errorResponse() throws Exception {
-    server.enqueue(mockResponse("HttpCacheTestError.json"));
+    server.enqueue(mockResponse("ResponseError.json"));
     Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
     assertThat(body.hasErrors()).isTrue();
     //noinspection ConstantConditions

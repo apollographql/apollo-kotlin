@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 
 import okio.Source;
 
-public interface ResponseCacheRecord {
+public interface HttpResponseCacheRecord {
   @Nonnull Source headerSource();
 
   @Nonnull Source bodySource();
