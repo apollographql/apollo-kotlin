@@ -15,15 +15,15 @@ public interface HttpCacheStore {
    * @param cacheKey the name of the entry
    * @return ResponseCacheRecord
    */
-  @Nullable HttpResponseCacheRecord cacheRecord(@Nonnull String cacheKey) throws IOException;
+  @Nullable HttpCacheRecord cacheRecord(@Nonnull String cacheKey) throws IOException;
 
   /**
    * Returns an editor for the entry named cacheKey or null if another edit is in progress.
    *
    * @param cacheKey the entry to edit.
-   * @return {@link HttpResponseCacheRecordEditor} to use for editing the entry
+   * @return {@link HttpCacheRecordEditor} to use for editing the entry
    */
-  @Nullable HttpResponseCacheRecordEditor cacheRecordEditor(@Nonnull String cacheKey) throws IOException;
+  @Nullable HttpCacheRecordEditor cacheRecordEditor(@Nonnull String cacheKey) throws IOException;
 
   /**
    * Drops the entry for key if it exists and can be removed. If the entry for key is currently being edited, that edit

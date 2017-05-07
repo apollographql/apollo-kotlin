@@ -1,7 +1,7 @@
 package com.apollographql.apollo.internal.cache.http;
 
-import com.apollographql.apollo.cache.http.HttpResponseCacheRecord;
-import com.apollographql.apollo.cache.http.HttpResponseCacheRecordEditor;
+import com.apollographql.apollo.cache.http.HttpCacheRecord;
+import com.apollographql.apollo.cache.http.HttpCacheRecordEditor;
 import com.apollographql.apollo.cache.http.HttpCacheStore;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
@@ -59,14 +59,14 @@ import static com.apollographql.apollo.internal.cache.http.Utils.copyResponseBod
   }
 
   public Response read(@Nonnull final String cacheKey, final boolean expireAfterRead) {
-    HttpResponseCacheRecord responseCacheRecord = null;
+    HttpCacheRecord responseCacheRecord = null;
     try {
       responseCacheRecord = cacheStore.cacheRecord(cacheKey);
       if (responseCacheRecord == null) {
         return null;
       }
 
-      final HttpResponseCacheRecord cacheRecord = responseCacheRecord;
+      final HttpCacheRecord cacheRecord = responseCacheRecord;
       Source cacheResponseSource = new ForwardingSource(responseCacheRecord.bodySource()) {
         @Override public void close() throws IOException {
           super.close();
@@ -95,7 +95,7 @@ import static com.apollographql.apollo.internal.cache.http.Utils.copyResponseBod
   }
 
   Response cacheProxy(@Nonnull Response response, @Nonnull String cacheKey) {
-    HttpResponseCacheRecordEditor cacheRecordEditor = null;
+    HttpCacheRecordEditor cacheRecordEditor = null;
     try {
       cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey);
       if (cacheRecordEditor != null) {
@@ -118,7 +118,7 @@ import static com.apollographql.apollo.internal.cache.http.Utils.copyResponseBod
   }
 
   void write(@Nonnull Response response, @Nonnull String cacheKey) {
-    HttpResponseCacheRecordEditor cacheRecordEditor = null;
+    HttpCacheRecordEditor cacheRecordEditor = null;
     try {
       cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey);
       if (cacheRecordEditor != null) {
@@ -144,7 +144,7 @@ import static com.apollographql.apollo.internal.cache.http.Utils.copyResponseBod
     }
   }
 
-  private void closeQuietly(HttpResponseCacheRecord cacheRecord) {
+  private void closeQuietly(HttpCacheRecord cacheRecord) {
     try {
       if (cacheRecord != null) {
         cacheRecord.close();
@@ -154,7 +154,7 @@ import static com.apollographql.apollo.internal.cache.http.Utils.copyResponseBod
     }
   }
 
-  private void abortQuietly(HttpResponseCacheRecordEditor cacheRecordEditor) {
+  private void abortQuietly(HttpCacheRecordEditor cacheRecordEditor) {
     try {
       if (cacheRecordEditor != null) {
         cacheRecordEditor.abort();

@@ -1,7 +1,7 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.cache.http.HttpResponseCacheRecord;
-import com.apollographql.apollo.cache.http.HttpResponseCacheRecordEditor;
+import com.apollographql.apollo.cache.http.HttpCacheRecord;
+import com.apollographql.apollo.cache.http.HttpCacheRecordEditor;
 import com.apollographql.apollo.cache.http.HttpCacheStore;
 
 import java.io.File;
@@ -31,13 +31,13 @@ class FaultyHttpCacheStore implements HttpCacheStore {
     this.cache = DiskLruCache.create(fileSystem, new File("/cache/"), VERSION, ENTRY_COUNT, Integer.MAX_VALUE);
   }
 
-  @Override public HttpResponseCacheRecord cacheRecord(@Nonnull String cacheKey) throws IOException {
+  @Override public HttpCacheRecord cacheRecord(@Nonnull String cacheKey) throws IOException {
     final DiskLruCache.Snapshot snapshot = cache.get(cacheKey);
     if (snapshot == null) {
       return null;
     }
 
-    return new HttpResponseCacheRecord() {
+    return new HttpCacheRecord() {
       @Nonnull @Override public Source headerSource() {
         if (failStrategy == FailStrategy.FAIL_HEADER_READ) {
           return faultySource;
@@ -60,13 +60,13 @@ class FaultyHttpCacheStore implements HttpCacheStore {
     };
   }
 
-  @Override public HttpResponseCacheRecordEditor cacheRecordEditor(@Nonnull String cacheKey) throws IOException {
+  @Override public HttpCacheRecordEditor cacheRecordEditor(@Nonnull String cacheKey) throws IOException {
     final DiskLruCache.Editor editor = cache.edit(cacheKey);
     if (editor == null) {
       return null;
     }
 
-    return new HttpResponseCacheRecordEditor() {
+    return new HttpCacheRecordEditor() {
       @Nonnull @Override public Sink headerSink() {
         if (failStrategy == FailStrategy.FAIL_HEADER_WRITE) {
           return faultySink;

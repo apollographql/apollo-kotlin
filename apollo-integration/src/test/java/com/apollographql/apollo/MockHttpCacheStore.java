@@ -1,7 +1,7 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.cache.http.HttpResponseCacheRecord;
-import com.apollographql.apollo.cache.http.HttpResponseCacheRecordEditor;
+import com.apollographql.apollo.cache.http.HttpCacheRecord;
+import com.apollographql.apollo.cache.http.HttpCacheRecordEditor;
 import com.apollographql.apollo.cache.http.HttpCacheStore;
 
 import java.io.IOException;
@@ -11,11 +11,11 @@ import javax.annotation.Nonnull;
 final class MockHttpCacheStore implements HttpCacheStore {
   HttpCacheStore delegate;
 
-  @Override public HttpResponseCacheRecord cacheRecord(@Nonnull String cacheKey) throws IOException {
+  @Override public HttpCacheRecord cacheRecord(@Nonnull String cacheKey) throws IOException {
     return delegate.cacheRecord(cacheKey);
   }
 
-  @Override public HttpResponseCacheRecordEditor cacheRecordEditor(@Nonnull String cacheKey) throws IOException {
+  @Override public HttpCacheRecordEditor cacheRecordEditor(@Nonnull String cacheKey) throws IOException {
     return delegate.cacheRecordEditor(cacheKey);
   }
 

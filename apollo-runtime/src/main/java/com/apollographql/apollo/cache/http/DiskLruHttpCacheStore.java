@@ -26,12 +26,12 @@ public final class DiskLruHttpCacheStore implements HttpCacheStore {
     this.cache = DiskLruCache.create(fileSystem, directory, VERSION, ENTRY_COUNT, maxSize);
   }
 
-  @Override public HttpResponseCacheRecord cacheRecord(@Nonnull String cacheKey) throws IOException {
+  @Override public HttpCacheRecord cacheRecord(@Nonnull String cacheKey) throws IOException {
     final DiskLruCache.Snapshot snapshot = cache.get(cacheKey);
     if (snapshot == null) {
       return null;
     }
-    final HttpResponseCacheRecord responseCacheRecord = new HttpResponseCacheRecord() {
+    final HttpCacheRecord responseCacheRecord = new HttpCacheRecord() {
       @Nonnull @Override public Source headerSource() {
         return snapshot.getSource(ENTRY_HEADERS);
       }
@@ -48,13 +48,13 @@ public final class DiskLruHttpCacheStore implements HttpCacheStore {
     return responseCacheRecord;
   }
 
-  @Override public HttpResponseCacheRecordEditor cacheRecordEditor(@Nonnull String cacheKey) throws IOException {
+  @Override public HttpCacheRecordEditor cacheRecordEditor(@Nonnull String cacheKey) throws IOException {
     final DiskLruCache.Editor editor = cache.edit(cacheKey);
     if (editor == null) {
       return null;
     }
 
-    return new HttpResponseCacheRecordEditor() {
+    return new HttpCacheRecordEditor() {
       @Nonnull @Override public Sink headerSink() {
         return editor.newSink(ENTRY_HEADERS);
       }
