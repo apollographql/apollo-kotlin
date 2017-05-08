@@ -25,10 +25,11 @@ public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
   private SimpleStack<List<String>> pathStack;
   private SimpleStack<Record> recordStack;
   private SimpleStack<Object> valueStack;
-  private Set<String> dependentKeys;
   private List<String> path;
   private Record.Builder currentRecordBuilder;
-  private RecordSet recordSet;
+
+  private RecordSet recordSet = new RecordSet();
+  private Set<String> dependentKeys = Collections.emptySet();
 
   public Collection<Record> records() {
     return recordSet.allRecords();
