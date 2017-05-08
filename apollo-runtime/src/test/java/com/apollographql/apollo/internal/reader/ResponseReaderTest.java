@@ -195,7 +195,7 @@ public class ResponseReaderTest {
     checkReadFields(recordSet, successField, classCastExceptionField, responseObject1);
   }
 
-  @Test public void optionalFields() throws Exception {
+  @Test public void optionalFieldsIOException() throws Exception {
     List<Field> fields = asList(
         Field.forString("stringField", "stringField", null, true),
         Field.forInt("intField", "intField", null, true),
@@ -224,11 +224,16 @@ public class ResponseReaderTest {
 
     RealResponseReader<Map<String, Object>> responseReader = responseReader(Collections.<String, Object>emptyMap());
     for (Field field : fields) {
-      assertThat(responseReader.read(field)).isNull();
+      try {
+        responseReader.read(field);
+        fail("expected IOException for field: " + field);
+      } catch (IOException expected) {
+        //expected
+      }
     }
   }
 
-  @Test public void mandatoryFieldsNpe() throws Exception {
+  @Test public void mandatoryFieldsIOException() throws Exception {
     List<Field> fields = asList(
         Field.forString("stringField", "stringField", null, false),
         Field.forInt("intField", "intField", null, false),
@@ -260,7 +265,7 @@ public class ResponseReaderTest {
       try {
         responseReader.read(field);
         fail("expected NullPointerException for field: " + field);
-      } catch (NullPointerException expected) {
+      } catch (IOException expected) {
         //expected
       }
     }
