@@ -2,6 +2,7 @@ package com.example.fragment_in_fragment.fragment;
 
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.FragmentResponseFieldMapper;
+import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -17,7 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
-public class StarshipFragment {
+public class StarshipFragment implements GraphqlFragment {
   public static final String FRAGMENT_DEFINITION = "fragment starshipFragment on Starship {\n"
       + "  __typename\n"
       + "  id\n"

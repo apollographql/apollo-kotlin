@@ -146,6 +146,7 @@ public class ResponseJsonStreamReader {
       String name = streamReader.nextName();
       if (streamReader.isNextNull()) {
         streamReader.skipNext();
+        result.put(name, null);
       } else if (streamReader.isNextObject()) {
         result.put(name, readObject(streamReader));
       } else if (streamReader.isNextList()) {

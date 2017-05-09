@@ -8,7 +8,7 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public interface ReadableCache {
+public interface ReadableStore {
 
   @Nullable Record read(@Nonnull String key, @Nonnull CacheHeaders cacheHeaders);
 

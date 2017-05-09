@@ -15,8 +15,6 @@
  */
 package com.apollographql.apollo.internal.cache.http;
 
-import com.apollographql.apollo.cache.http.ResponseCacheRecordEditor;
-
 import java.io.IOException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
@@ -43,6 +41,7 @@ import okio.BufferedSink;
 import okio.BufferedSource;
 import okio.ByteString;
 import okio.Okio;
+import okio.Sink;
 import okio.Source;
 
 /**
@@ -181,54 +180,54 @@ final class ResponseHeaderRecord {
     this.receivedResponseMillis = response.receivedResponseAtMillis();
   }
 
-  void writeTo(ResponseCacheRecordEditor cacheRecordEditor) throws IOException {
-    BufferedSink sink = Okio.buffer(cacheRecordEditor.headerSink());
+  void writeTo(Sink sink) throws IOException {
+    BufferedSink bufferedSink = Okio.buffer(sink);
 
-    sink.writeUtf8(url)
+    bufferedSink.writeUtf8(url)
         .writeByte('\n');
-    sink.writeUtf8(requestMethod)
+    bufferedSink.writeUtf8(requestMethod)
         .writeByte('\n');
-    sink.writeDecimalLong(varyHeaders.size())
+    bufferedSink.writeDecimalLong(varyHeaders.size())
         .writeByte('\n');
     for (int i = 0, size = varyHeaders.size(); i < size; i++) {
-      sink.writeUtf8(varyHeaders.name(i))
+      bufferedSink.writeUtf8(varyHeaders.name(i))
           .writeUtf8(": ")
           .writeUtf8(varyHeaders.value(i))
           .writeByte('\n');
     }
 
-    sink.writeUtf8(new StatusLine(protocol, code, message).toString())
+    bufferedSink.writeUtf8(new StatusLine(protocol, code, message).toString())
         .writeByte('\n');
-    sink.writeDecimalLong(responseHeaders.size() + 2)
+    bufferedSink.writeDecimalLong(responseHeaders.size() + 2)
         .writeByte('\n');
     for (int i = 0, size = responseHeaders.size(); i < size; i++) {
-      sink.writeUtf8(responseHeaders.name(i))
+      bufferedSink.writeUtf8(responseHeaders.name(i))
           .writeUtf8(": ")
           .writeUtf8(responseHeaders.value(i))
           .writeByte('\n');
     }
-    sink.writeUtf8(SENT_MILLIS)
+    bufferedSink.writeUtf8(SENT_MILLIS)
         .writeUtf8(": ")
         .writeDecimalLong(sentRequestMillis)
         .writeByte('\n');
-    sink.writeUtf8(RECEIVED_MILLIS)
+    bufferedSink.writeUtf8(RECEIVED_MILLIS)
         .writeUtf8(": ")
         .writeDecimalLong(receivedResponseMillis)
         .writeByte('\n');
 
     if (isHttps()) {
-      sink.writeByte('\n');
-      sink.writeUtf8(handshake.cipherSuite().javaName())
+      bufferedSink.writeByte('\n');
+      bufferedSink.writeUtf8(handshake.cipherSuite().javaName())
           .writeByte('\n');
-      writeCertList(sink, handshake.peerCertificates());
-      writeCertList(sink, handshake.localCertificates());
+      writeCertList(bufferedSink, handshake.peerCertificates());
+      writeCertList(bufferedSink, handshake.localCertificates());
       // The handshake’s TLS version is null on HttpsURLConnection and on older cached responses.
       if (handshake.tlsVersion() != null) {
-        sink.writeUtf8(handshake.tlsVersion().javaName())
+        bufferedSink.writeUtf8(handshake.tlsVersion().javaName())
             .writeByte('\n');
       }
     }
-    sink.close();
+    bufferedSink.close();
   }
 
   private boolean isHttps() {

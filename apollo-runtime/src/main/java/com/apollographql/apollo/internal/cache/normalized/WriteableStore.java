@@ -8,7 +8,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-public interface WriteableCache extends ReadableCache {
+public interface WriteableStore extends ReadableStore {
 
   Set<String> merge(@Nonnull Collection<Record> recordCollection, @Nonnull CacheHeaders cacheHeaders);
 

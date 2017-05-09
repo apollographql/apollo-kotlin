@@ -3,6 +3,7 @@ package com.apollographql.apollo.internal;
 import com.apollographql.apollo.ApolloPrefetch;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
+import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
@@ -57,13 +58,35 @@ import okhttp3.Response;
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
+
+    if (canceled) {
+      throw new ApolloCanceledException("Canceled");
+    }
+
+    Response httpResponse;
+
     try {
       tracker.syncPrefetchInProgress(this);
-      interceptorChain.proceed().httpResponse.get().close();
+      httpResponse = interceptorChain.proceed().httpResponse.get();
+    } catch (Exception e) {
+      if (canceled) {
+        throw new ApolloCanceledException("Canceled", e);
+      } else {
+        throw e;
+      }
     } finally {
       tracker.syncPrefetchFinished(this);
     }
 
+    httpResponse.close();
+
+    if (canceled) {
+      throw new ApolloCanceledException("Canceled");
+    }
+
+    if (!httpResponse.isSuccessful()) {
+      throw new ApolloHttpException(httpResponse);
+    }
   }
 
   @Nonnull @Override public ApolloPrefetch enqueue(@Nullable final Callback responseCallback) {
@@ -99,36 +122,36 @@ import okhttp3.Response;
     }
 
     @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
-      if (responseCallback == null || isCanceled()) {
-        tracker.asyncPrefetchFinished(this);
-        return;
-      }
-
-      Response httpResponse = response.httpResponse.get();
-      if (!httpResponse.isSuccessful()) {
-        onFailure(new ApolloHttpException(httpResponse));
-        return;
-      }
-
       try {
-        httpResponse.close();
-      } catch (Exception e) {
-        onFailure(new ApolloException("Failed to close http response", e));
-        return;
-      }
+        if (responseCallback == null) return;
 
-      tracker.asyncPrefetchFinished(this);
-      responseCallback.onSuccess();
+        Response httpResponse = response.httpResponse.get();
+        httpResponse.close();
+
+        if (canceled) {
+          responseCallback.onCanceledError(new ApolloCanceledException("Canceled"));
+        }
+
+        if (httpResponse.isSuccessful()) {
+          responseCallback.onSuccess();
+        } else {
+          responseCallback.onHttpError(new ApolloHttpException(httpResponse));
+        }
+      } finally {
+        tracker.asyncPrefetchFinished(this);
+      }
     }
 
     @Override public void onFailure(@Nonnull ApolloException e) {
       try {
 
-        if (responseCallback == null || isCanceled()) {
+        if (responseCallback == null) {
           return;
         }
 
-        if (e instanceof ApolloHttpException) {
+        if (canceled) {
+          responseCallback.onCanceledError(new ApolloCanceledException("Canceled"));
+        } else if (e instanceof ApolloHttpException) {
           responseCallback.onHttpError((ApolloHttpException) e);
         } else if (e instanceof ApolloNetworkException) {
           responseCallback.onNetworkError((ApolloNetworkException) e);

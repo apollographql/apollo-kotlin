@@ -191,14 +191,12 @@ public class IntegrationTest {
     latch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 
-  @Test public void dataEmpty() throws Exception {
+  @Test(expected = ApolloException.class) public void dataEmpty() throws Exception {
     MockResponse mockResponse = mockResponse("ResponseDataEmpty.json");
     server.enqueue(mockResponse);
 
     ApolloCall<HeroName.Data> call = apolloClient.newCall(new HeroName());
-    Response<HeroName.Data> body = call.execute();
-    assertThat(body.data()).isNotNull();
-    assertThat(body.hasErrors()).isFalse();
+    call.execute();
   }
 
   @Test public void dataNull() throws Exception {
@@ -209,6 +207,14 @@ public class IntegrationTest {
     Response<HeroName.Data> body = call.execute();
     assertThat(body.data()).isNull();
     assertThat(body.hasErrors()).isFalse();
+  }
+
+  @Test(expected = ApolloException.class) public void fieldMissing() throws Exception {
+    MockResponse mockResponse = mockResponse("ResponseDataMissing.json");
+    server.enqueue(mockResponse);
+
+    ApolloCall<HeroName.Data> call = apolloClient.newCall(new HeroName());
+    call.execute();
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {

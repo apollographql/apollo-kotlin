@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
@@ -120,6 +121,13 @@ public interface ApolloCall<T> extends Cancelable {
      * Gets called when the network request succeeds but there was an error parsing the response.
      */
     public void onParseError(@Nonnull ApolloParseException e) {
+      onFailure(e);
+    }
+
+    /**
+     * Gets called when {@link ApolloCall} has been canceled.
+     */
+    public void onCanceledError(@Nonnull ApolloCanceledException e) {
       onFailure(e);
     }
   }

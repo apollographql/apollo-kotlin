@@ -4,12 +4,13 @@ import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloWatcher;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.Utils;
+import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.exception.ApolloParseException;
-import com.apollographql.apollo.cache.normalized.ApolloStore;
 
 import java.util.Collections;
 import java.util.Set;
@@ -76,28 +77,35 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
   private ApolloCall.Callback<T> callbackProxy(final ApolloCall.Callback<T> sourceCallback) {
     return new ApolloCall.Callback<T>() {
       @Override public void onResponse(@Nonnull Response<T> response) {
-        if (isCanceled()) {
-          return;
-        }
+        if (canceled) return;
         dependentKeys = response.dependentKeys();
         apolloStore.subscribe(recordChangeSubscriber);
         sourceCallback.onResponse(response);
       }
 
-      @Override public void onFailure(@Nonnull ApolloException e) {
-        if (isCanceled()) {
-          return;
-        }
+      @Override public void onHttpError(@Nonnull ApolloHttpException e) {
+        if (canceled) return;
+        sourceCallback.onHttpError(e);
+      }
 
-        if (e instanceof ApolloHttpException) {
-          sourceCallback.onHttpError((ApolloHttpException) e);
-        } else if (e instanceof ApolloParseException) {
-          sourceCallback.onParseError((ApolloParseException) e);
-        } else if (e instanceof ApolloNetworkException) {
-          sourceCallback.onNetworkError((ApolloNetworkException) e);
-        } else {
-          sourceCallback.onFailure(e);
-        }
+      @Override public void onNetworkError(@Nonnull ApolloNetworkException e) {
+        if (canceled) return;
+        sourceCallback.onNetworkError(e);
+      }
+
+      @Override public void onParseError(@Nonnull ApolloParseException e) {
+        if (canceled) return;
+        sourceCallback.onParseError(e);
+      }
+
+      @Override public void onCanceledError(@Nonnull ApolloCanceledException e) {
+        if (canceled) return;
+        sourceCallback.onCanceledError(e);
+      }
+
+      @Override public void onFailure(@Nonnull ApolloException e) {
+        if (canceled) return;
+        sourceCallback.onFailure(e);
       }
     };
   }

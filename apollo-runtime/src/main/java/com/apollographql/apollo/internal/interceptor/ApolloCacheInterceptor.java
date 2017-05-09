@@ -5,20 +5,16 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.CacheControl;
-import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.internal.cache.normalized.ReadableCache;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.cache.normalized.Transaction;
-import com.apollographql.apollo.internal.cache.normalized.WriteableCache;
-import com.apollographql.apollo.internal.field.CacheFieldValueResolver;
-import com.apollographql.apollo.internal.reader.RealResponseReader;
+import com.apollographql.apollo.internal.cache.normalized.WriteableStore;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.util.Collection;
@@ -134,8 +130,8 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
   private InterceptorResponse resolveCacheFirstResponse(Operation operation) {
     if (cacheControl == CacheControl.CACHE_ONLY || cacheControl == CacheControl.CACHE_FIRST) {
       ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
-      Response cachedResponse = cachedResponse(operation, responseNormalizer);
-      if (cacheControl == CacheControl.CACHE_ONLY || cachedResponse != null) {
+      Response cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer, cacheHeaders);
+      if (cacheControl == CacheControl.CACHE_ONLY || cachedResponse.data() != null) {
         logger.d("Cache HIT for operation %s", operation);
         return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
       }
@@ -144,43 +140,13 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     return null;
   }
 
-  @SuppressWarnings("unchecked") private Response cachedResponse(final Operation operation,
-      final ResponseNormalizer<Record> cacheResponseNormalizer) {
-    Response response = apolloStore.readTransaction(new Transaction<ReadableCache, Response>() {
-      @Override public Response execute(ReadableCache cache) {
-        cacheResponseNormalizer.willResolveRootQuery(operation);
-        Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key(), cacheHeaders);
-        if (rootRecord == null) {
-          return new Response(operation);
-        }
-        try {
-          CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
-              apolloStore.cacheKeyResolver(), cacheHeaders);
-          RealResponseReader<Record> responseReader = new RealResponseReader<>(operation, rootRecord,
-              fieldValueResolver, customTypeAdapters, cacheResponseNormalizer);
-          return new Response(operation, responseFieldMapper.map(responseReader), null,
-              cacheResponseNormalizer.dependentKeys());
-        } catch (final Exception e) {
-          logger.e(e, "Failed to parse cached response for operation: %s", operation);
-          return new Response(operation);
-        }
-      }
-    });
-
-    if (response != null && response.data() != null && !response.hasErrors()) {
-      return response;
-    } else {
-      return null;
-    }
-  }
-
   private InterceptorResponse handleNetworkResponse(Operation operation, InterceptorResponse networkResponse) {
     boolean networkFailed = (!networkResponse.httpResponse.isPresent()
         || !networkResponse.httpResponse.get().isSuccessful());
     if (networkFailed && cacheControl != CacheControl.NETWORK_ONLY) {
       ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
-      Response cachedResponse = cachedResponse(operation, responseNormalizer);
-      if (cachedResponse != null) {
+      Response cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer, cacheHeaders);
+      if (cachedResponse.data() != null) {
         return new InterceptorResponse(networkResponse.httpResponse.get(), cachedResponse,
             responseNormalizer.records());
       }
@@ -190,8 +156,8 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     if (records != null) {
       dispatcher.execute(new Runnable() {
         @Override public void run() {
-          Set<String> changedKeys = apolloStore.writeTransaction(new Transaction<WriteableCache, Set<String>>() {
-            @Nullable @Override public Set<String> execute(WriteableCache cache) {
+          Set<String> changedKeys = apolloStore.writeTransaction(new Transaction<WriteableStore, Set<String>>() {
+            @Nullable @Override public Set<String> execute(WriteableStore cache) {
               return cache.merge(records, cacheHeaders);
             }
           });
@@ -206,8 +172,8 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
   private InterceptorResponse resolveNetworkFirstCacheResponse(Operation operation) {
     if (cacheControl == CacheControl.NETWORK_FIRST) {
       ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
-      Response cachedResponse = cachedResponse(operation, responseNormalizer);
-      if (cachedResponse != null) {
+      Response cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer, cacheHeaders);
+      if (cachedResponse.data() != null) {
         logger.d("Cache HIT for operation %s", operation);
         return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
       }
