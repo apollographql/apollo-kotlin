@@ -157,12 +157,6 @@ public final class ApolloCallTracker {
     this.idleCallback = idleCallback;
   }
 
-  private void executeCallBackIfCallsAreFinished(int runningCallsCount, IdleCallback idleCallback) {
-    if (runningCallsCount == 0 && idleCallback != null) {
-      idleCallback.onIdle();
-    }
-  }
-
   /**
    * Returns a total count of in progress {@link ApolloCall} & {@link ApolloPrefetch} objects.
    */
@@ -171,5 +165,11 @@ public final class ApolloCallTracker {
         + runningSyncCalls.size()
         + runningSyncPrefetches.size()
         + runningAsyncPrefetches.size();
+  }
+
+  private void executeCallBackIfCallsAreFinished(int runningCallsCount, IdleCallback idleCallback) {
+    if (runningCallsCount == 0 && idleCallback != null) {
+      idleCallback.onIdle();
+    }
   }
 }
