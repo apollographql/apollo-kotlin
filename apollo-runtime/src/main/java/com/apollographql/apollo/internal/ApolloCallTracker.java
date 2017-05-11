@@ -4,8 +4,8 @@ import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloPrefetch;
 import com.apollographql.apollo.IdleCallback;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * ApolloCallTracker is responsible for keeping track of running {@link ApolloCall} & {@link ApolloPrefetch} objects.
@@ -14,10 +14,10 @@ public final class ApolloCallTracker {
 
   private IdleCallback idleCallback;
 
-  private final Deque<ApolloCall> runningSyncCalls = new ArrayDeque<>();
-  private final Deque<RealApolloCall.AsyncCall> runningAsyncCalls = new ArrayDeque<>();
-  private final Deque<ApolloPrefetch> runningSyncPrefetches = new ArrayDeque<>();
-  private final Deque<RealApolloPrefetch.AsyncCall> runningAsyncPrefetches = new ArrayDeque<>();
+  private final Set<ApolloCall> runningSyncCalls = new LinkedHashSet<>();
+  private final Set<RealApolloCall.AsyncCall> runningAsyncCalls = new LinkedHashSet<>();
+  private final Set<ApolloPrefetch> runningSyncPrefetches = new LinkedHashSet<>();
+  private final Set<RealApolloPrefetch.AsyncCall> runningAsyncPrefetches = new LinkedHashSet<>();
 
   public ApolloCallTracker() {
   }
