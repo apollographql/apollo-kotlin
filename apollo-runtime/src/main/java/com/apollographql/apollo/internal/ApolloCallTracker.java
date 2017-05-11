@@ -28,7 +28,7 @@ public final class ApolloCallTracker {
    *
    * <p><b>Note</b>: This method needs to be called right before a prefetch call is executed.</p>
    */
-  synchronized void syncPrefetchInProgress(ApolloPrefetch apolloPrefetch) {
+  synchronized void onSyncPrefetchInProgress(ApolloPrefetch apolloPrefetch) {
     runningSyncPrefetches.add(apolloPrefetch);
   }
 
@@ -41,7 +41,7 @@ public final class ApolloCallTracker {
    * <p><b>Note</b>: This method needs to be called right after a prefetch call is completed (whether successful or
    * failed).</p>
    */
-  void syncPrefetchFinished(ApolloPrefetch apolloPrefetch) {
+  void onSyncPrefetchFinished(ApolloPrefetch apolloPrefetch) {
     IdleCallback idleCallback;
     int runningCallsCount;
     synchronized (this) {
@@ -60,7 +60,7 @@ public final class ApolloCallTracker {
    *
    * <p><b>Note</b>: This method needs to be called right before a prefetch call is executed.</p>
    */
-  synchronized void asyncPrefetchInProgress(RealApolloPrefetch.AsyncCall asyncCall) {
+  synchronized void onAsyncPrefetchInProgress(RealApolloPrefetch.AsyncCall asyncCall) {
     runningAsyncPrefetches.add(asyncCall);
   }
 
@@ -73,7 +73,7 @@ public final class ApolloCallTracker {
    * <p><b>Note</b>: This method needs to be called right after a prefetch call is completed (whether successful or
    * failed).</p>
    */
-  void asyncPrefetchFinished(RealApolloPrefetch.AsyncCall asyncCall) {
+  void onAsyncPrefetchFinished(RealApolloPrefetch.AsyncCall asyncCall) {
     IdleCallback idleCallback;
     int runningCallsCount;
     synchronized (this) {
@@ -92,7 +92,7 @@ public final class ApolloCallTracker {
    *
    * <p><b>Note</b>: This method needs to be called right before an apolloCall is executed.</p>
    */
-  synchronized void syncCallInProgress(ApolloCall apolloCall) {
+  synchronized void onSyncCallInProgress(ApolloCall apolloCall) {
     runningSyncCalls.add(apolloCall);
   }
 
@@ -105,7 +105,7 @@ public final class ApolloCallTracker {
    * <p><b>Note</b>: This method needs to be called right after an apolloCall is completed (whether successful or
    * failed).</p>
    */
-  void syncCallFinished(ApolloCall apolloCall) {
+  void onSyncCallFinished(ApolloCall apolloCall) {
     IdleCallback idleCallback;
     int runningCallsCount;
     synchronized (this) {
@@ -124,7 +124,7 @@ public final class ApolloCallTracker {
    *
    * <p><b>Note</b>: This method needs to be called right before an apolloCall is executed.</p>
    */
-  synchronized void asyncCallInProgress(RealApolloCall<?>.AsyncCall asyncCall) {
+  synchronized void onAsyncCallInProgress(RealApolloCall<?>.AsyncCall asyncCall) {
     runningAsyncCalls.add(asyncCall);
   }
 
@@ -137,7 +137,7 @@ public final class ApolloCallTracker {
    * <p><b>Note</b>: This method needs to be called right after an apolloCall is completed (whether successful or
    * failed).</p>
    */
-  void asyncCallFinished(RealApolloCall<?>.AsyncCall asyncCall) {
+  void onAsyncCallFinished(RealApolloCall<?>.AsyncCall asyncCall) {
     IdleCallback idleCallback;
     int runningCallsCount;
     synchronized (this) {

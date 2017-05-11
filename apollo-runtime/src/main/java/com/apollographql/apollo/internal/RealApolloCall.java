@@ -93,7 +93,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
     Response<T> response;
     try {
-      tracker.syncCallInProgress(this);
+      tracker.onSyncCallInProgress(this);
       response = interceptorChain.proceed().parsedResponse.or(new Response(operation));
     } catch (Exception e) {
       if (canceled) {
@@ -102,7 +102,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         throw e;
       }
     } finally {
-      tracker.syncCallFinished(this);
+      tracker.onSyncCallFinished(this);
     }
 
     if (canceled) {
@@ -118,7 +118,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       executed = true;
     }
     AsyncCall asyncCall = new AsyncCall(responseCallback);
-    tracker.asyncCallInProgress(asyncCall);
+    tracker.onAsyncCallInProgress(asyncCall);
     interceptorChain.proceedAsync(dispatcher, asyncCall);
   }
 
@@ -192,7 +192,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         }
 
       } finally {
-        tracker.asyncCallFinished(this);
+        tracker.onAsyncCallFinished(this);
       }
     }
 
@@ -215,7 +215,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
           responseCallback.onFailure(e);
         }
       } finally {
-        tracker.asyncCallFinished(this);
+        tracker.onAsyncCallFinished(this);
       }
     }
   }

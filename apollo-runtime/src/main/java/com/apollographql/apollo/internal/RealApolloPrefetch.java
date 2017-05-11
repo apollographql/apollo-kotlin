@@ -66,7 +66,7 @@ import okhttp3.Response;
     Response httpResponse;
 
     try {
-      tracker.syncPrefetchInProgress(this);
+      tracker.onSyncPrefetchInProgress(this);
       httpResponse = interceptorChain.proceed().httpResponse.get();
     } catch (Exception e) {
       if (canceled) {
@@ -75,7 +75,7 @@ import okhttp3.Response;
         throw e;
       }
     } finally {
-      tracker.syncPrefetchFinished(this);
+      tracker.onSyncPrefetchFinished(this);
     }
 
     httpResponse.close();
@@ -95,7 +95,7 @@ import okhttp3.Response;
       executed = true;
     }
     AsyncCall asyncCall = new AsyncCall(responseCallback);
-    tracker.asyncPrefetchInProgress(asyncCall);
+    tracker.onAsyncPrefetchInProgress(asyncCall);
     interceptorChain.proceedAsync(dispatcher, asyncCall);
     return this;
   }
@@ -138,7 +138,7 @@ import okhttp3.Response;
           responseCallback.onHttpError(new ApolloHttpException(httpResponse));
         }
       } finally {
-        tracker.asyncPrefetchFinished(this);
+        tracker.onAsyncPrefetchFinished(this);
       }
     }
 
@@ -160,7 +160,7 @@ import okhttp3.Response;
         }
 
       } finally {
-        tracker.asyncPrefetchFinished(this);
+        tracker.onAsyncPrefetchFinished(this);
       }
     }
   }
