@@ -157,15 +157,15 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   /**
    * Sets the idleCallback which will be called when this ApolloClient is idle.
    */
-  public void setIdleCallback(Runnable idleCallback) {
+  public void idleCallback(IdleCallback idleCallback) {
     callTracker.setIdleCallback(idleCallback);
   }
 
   /**
-   * Returns the sum of {@link ApolloCall} & {@link ApolloPrefetch} objects which are currently in progress.
+   * Returns the count of {@link ApolloCall} & {@link ApolloPrefetch} objects which are currently in progress.
    */
-  public int getRunningCallsCount() {
-    return callTracker.getRunningCallsCount();
+  public int activeCallsCount() {
+    return callTracker.activeCallsCount();
   }
 
   Response cachedHttpResponse(String cacheKey) throws IOException {

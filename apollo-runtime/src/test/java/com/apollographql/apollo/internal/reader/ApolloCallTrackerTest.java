@@ -3,6 +3,7 @@ package com.apollographql.apollo.internal.reader;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloPrefetch;
+import com.apollographql.apollo.IdleCallback;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
@@ -101,16 +102,16 @@ public class ApolloCallTrackerTest {
         .build();
 
     ApolloPrefetch prefetch = apolloClient.prefetch(EMPTY_QUERY);
-    assertThat(apolloClient.getRunningCallsCount()).isEqualTo(0);
+    assertThat(apolloClient.activeCallsCount()).isEqualTo(0);
 
     Thread thread = synchronousPrefetch(prefetch);
 
     firstLatch.await();
-    assertThat(apolloClient.getRunningCallsCount()).isEqualTo(1);
+    assertThat(apolloClient.activeCallsCount()).isEqualTo(1);
 
     secondLatch.countDown();
     thread.join();
-    assertThat(apolloClient.getRunningCallsCount()).isEqualTo(0);
+    assertThat(apolloClient.activeCallsCount()).isEqualTo(0);
   }
 
   @Test
@@ -123,7 +124,7 @@ public class ApolloCallTrackerTest {
 
     ApolloPrefetch prefetch = apolloClient.prefetch(EMPTY_QUERY);
 
-    assertThat(apolloClient.getRunningCallsCount()).isEqualTo(0);
+    assertThat(apolloClient.activeCallsCount()).isEqualTo(0);
 
     prefetch.enqueue(new ApolloPrefetch.Callback() {
       @Override public void onSuccess() {
@@ -133,7 +134,7 @@ public class ApolloCallTrackerTest {
       }
     });
 
-    assertThat(apolloClient.getRunningCallsCount()).isEqualTo(1);
+    assertThat(apolloClient.activeCallsCount()).isEqualTo(1);
   }
 
   @Test
@@ -169,17 +170,17 @@ public class ApolloCallTrackerTest {
         .build();
 
     ApolloCall apolloCall = apolloClient.newCall(EMPTY_QUERY);
-    assertThat(apolloClient.getRunningCallsCount()).isEqualTo(0);
+    assertThat(apolloClient.activeCallsCount()).isEqualTo(0);
 
     Thread thread = synchronousApolloCall(apolloCall);
 
     firstLatch.await();
-    assertThat(apolloClient.getRunningCallsCount()).isEqualTo(1);
+    assertThat(apolloClient.activeCallsCount()).isEqualTo(1);
 
     secondLatch.countDown();
     thread.join();
 
-    assertThat(apolloClient.getRunningCallsCount()).isEqualTo(0);
+    assertThat(apolloClient.activeCallsCount()).isEqualTo(0);
   }
 
   @Test
@@ -192,7 +193,7 @@ public class ApolloCallTrackerTest {
 
     RealApolloCall<Object> apolloCall = (RealApolloCall<Object>) apolloClient.newCall(EMPTY_QUERY);
 
-    assertThat(apolloClient.getRunningCallsCount()).isEqualTo(0);
+    assertThat(apolloClient.activeCallsCount()).isEqualTo(0);
 
     apolloCall.enqueue(new ApolloCall.Callback<Object>() {
       @Override public void onResponse(@Nonnull Response<Object> response) {
@@ -202,7 +203,7 @@ public class ApolloCallTrackerTest {
       }
     });
 
-    assertThat(apolloClient.getRunningCallsCount()).isEqualTo(1);
+    assertThat(apolloClient.activeCallsCount()).isEqualTo(1);
   }
 
   @Test
@@ -234,8 +235,8 @@ public class ApolloCallTrackerTest {
       }
     };
 
-    Runnable idleCallback = new Runnable() {
-      @Override public void run() {
+    IdleCallback idleCallback = new IdleCallback() {
+      @Override public void onIdle() {
         idle.set(true);
       }
     };
@@ -245,7 +246,7 @@ public class ApolloCallTrackerTest {
         .okHttpClient(okHttpClientBuilder.build())
         .addApplicationInterceptor(interceptor)
         .build();
-    apolloClient.setIdleCallback(idleCallback);
+    apolloClient.idleCallback(idleCallback);
 
     assertThat(idle.get()).isFalse();
 

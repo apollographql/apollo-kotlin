@@ -2,6 +2,7 @@ package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloPrefetch;
+import com.apollographql.apollo.IdleCallback;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -9,9 +10,9 @@ import java.util.Deque;
 /**
  * ApolloCallTracker is responsible for keeping track of running {@link ApolloCall} & {@link ApolloPrefetch} objects.
  */
-public class ApolloCallTracker {
+public final class ApolloCallTracker {
 
-  private Runnable idleCallback;
+  private IdleCallback idleCallback;
 
   private final Deque<ApolloCall> runningSyncCalls = new ArrayDeque<>();
   private final Deque<RealApolloCall.AsyncCall> runningAsyncCalls = new ArrayDeque<>();
@@ -41,13 +42,13 @@ public class ApolloCallTracker {
    * failed).</p>
    */
   void syncPrefetchFinished(ApolloPrefetch apolloPrefetch) {
-    Runnable idleCallback;
+    IdleCallback idleCallback;
     int runningCallsCount;
     synchronized (this) {
       if (!runningSyncPrefetches.remove(apolloPrefetch)) {
         throw new AssertionError("Prefetch call wasn't in progress");
       }
-      runningCallsCount = getRunningCallsCount();
+      runningCallsCount = activeCallsCount();
       idleCallback = this.idleCallback;
     }
     executeCallBackIfCallsAreFinished(runningCallsCount, idleCallback);
@@ -73,13 +74,13 @@ public class ApolloCallTracker {
    * failed).</p>
    */
   void asyncPrefetchFinished(RealApolloPrefetch.AsyncCall asyncCall) {
-    Runnable idleCallback;
+    IdleCallback idleCallback;
     int runningCallsCount;
     synchronized (this) {
       if (!runningAsyncPrefetches.remove(asyncCall)) {
         throw new AssertionError("Prefetch call wasn't in progress");
       }
-      runningCallsCount = getRunningCallsCount();
+      runningCallsCount = activeCallsCount();
       idleCallback = this.idleCallback;
     }
     executeCallBackIfCallsAreFinished(runningCallsCount, idleCallback);
@@ -105,13 +106,13 @@ public class ApolloCallTracker {
    * failed).</p>
    */
   void syncCallFinished(ApolloCall apolloCall) {
-    Runnable idleCallback;
+    IdleCallback idleCallback;
     int runningCallsCount;
     synchronized (this) {
       if (!runningSyncCalls.remove(apolloCall)) {
         throw new AssertionError("Call wasn't in progress");
       }
-      runningCallsCount = getRunningCallsCount();
+      runningCallsCount = activeCallsCount();
       idleCallback = this.idleCallback;
     }
     executeCallBackIfCallsAreFinished(runningCallsCount, idleCallback);
@@ -137,13 +138,13 @@ public class ApolloCallTracker {
    * failed).</p>
    */
   void asyncCallFinished(RealApolloCall<?>.AsyncCall asyncCall) {
-    Runnable idleCallback;
+    IdleCallback idleCallback;
     int runningCallsCount;
     synchronized (this) {
       if (!runningAsyncCalls.remove(asyncCall)) {
         throw new AssertionError("Call wasn't in progress");
       }
-      runningCallsCount = getRunningCallsCount();
+      runningCallsCount = activeCallsCount();
       idleCallback = this.idleCallback;
     }
     executeCallBackIfCallsAreFinished(runningCallsCount, idleCallback);
@@ -152,20 +153,20 @@ public class ApolloCallTracker {
   /**
    * Registers idleCallback which is invoked when the apolloClient becomes idle.
    */
-  public synchronized void setIdleCallback(Runnable idleCallback) {
+  public synchronized void setIdleCallback(IdleCallback idleCallback) {
     this.idleCallback = idleCallback;
   }
 
-  private void executeCallBackIfCallsAreFinished(int runningCallsCount, Runnable idleCallback) {
+  private void executeCallBackIfCallsAreFinished(int runningCallsCount, IdleCallback idleCallback) {
     if (runningCallsCount == 0 && idleCallback != null) {
-      idleCallback.run();
+      idleCallback.onIdle();
     }
   }
 
   /**
    * Returns a total count of in progress {@link ApolloCall} & {@link ApolloPrefetch} objects.
    */
-  public int getRunningCallsCount() {
+  public int activeCallsCount() {
     return runningAsyncCalls.size()
         + runningSyncCalls.size()
         + runningSyncPrefetches.size()
