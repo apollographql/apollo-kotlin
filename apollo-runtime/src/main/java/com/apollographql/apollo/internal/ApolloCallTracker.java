@@ -151,9 +151,9 @@ public final class ApolloCallTracker {
   }
 
   /**
-   * Registers idleCallback which is invoked when the apolloClient becomes idle.
+   * Registers the idleCallback which is invoked when the apolloClient becomes idle.
    */
-  public synchronized void setIdleCallback(IdleCallback idleCallback) {
+  public void setIdleCallback(IdleCallback idleCallback) {
     this.idleCallback = idleCallback;
   }
 
