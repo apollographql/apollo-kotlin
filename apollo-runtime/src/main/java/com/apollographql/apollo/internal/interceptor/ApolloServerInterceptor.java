@@ -50,7 +50,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   volatile Call httpCall;
 
   public ApolloServerInterceptor(@Nonnull HttpUrl serverUrl, @Nonnull Call.Factory httpCallFactory,
-      @Nullable HttpCachePolicy.Policy cachePolicy, boolean prefetch, @Nonnull Moshi moshi, @Nonnull ApolloLogger logger) {
+      @Nullable HttpCachePolicy.Policy cachePolicy, boolean prefetch, @Nonnull Moshi moshi,
+      @Nonnull ApolloLogger logger) {
     this.serverUrl = checkNotNull(serverUrl, "serverUrl == null");
     this.httpCallFactory = checkNotNull(httpCallFactory, "httpCallFactory == null");
     this.cachePolicy = Optional.fromNullable(cachePolicy);
