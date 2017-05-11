@@ -1,7 +1,7 @@
 package com.apollographql.android.compiler
 
-import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.android.compiler.ir.*
+import com.apollographql.apollo.api.ResponseFieldMapper
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
@@ -163,15 +163,16 @@ class OperationTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addBuilder(context: CodeGenerationContext): TypeSpec.Builder {
-    if (operation.variables.isEmpty()) {
-      return this
-    }
     addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
-    return operation.variables
-        .map { it.name.decapitalize() to it.type }
-        .map { it.first to JavaTypeResolver(context, context.typesPackage).resolve(it.second).unwrapOptionalType() }
-        .let { BuilderTypeSpecBuilder(ClassName.get("", OPERATION_TYPE_NAME), it, emptyMap()) }
-        .let { addType(it.build()) }
+    if (operation.variables.isEmpty()) {
+      return this;
+    } else {
+      return operation.variables
+          .map { it.name.decapitalize() to it.type }
+          .map { it.first to JavaTypeResolver(context, context.typesPackage).resolve(it.second).unwrapOptionalType() }
+          .let { BuilderTypeSpecBuilder(ClassName.get("", OPERATION_TYPE_NAME), it, emptyMap()) }
+          .let { addType(it.build()) }
+    }
   }
 
   private fun variablesType() =
