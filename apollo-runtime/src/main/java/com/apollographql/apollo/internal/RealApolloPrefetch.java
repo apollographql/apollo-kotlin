@@ -47,7 +47,7 @@ import okhttp3.Response;
     this.dispatcher = dispatcher;
     this.logger = logger;
     interceptorChain = new RealApolloInterceptorChain(operation, Collections.<ApolloInterceptor>singletonList(
-        new ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCachePolicy.NETWORK_ONLY.obtain(), true, moshi,
+        new ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCachePolicy.NETWORK_ONLY, true, moshi,
             logger)
     ));
   }

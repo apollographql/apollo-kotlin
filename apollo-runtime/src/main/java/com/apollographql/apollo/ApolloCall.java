@@ -51,10 +51,10 @@ public interface ApolloCall<T> extends Cancelable {
   /**
    * Sets the http cache policy for response/request cache.
    *
-   * @param httpCachePolicy {@link HttpCachePolicy} to set
-   * @return The ApolloCall object with the provided {@link HttpCachePolicy}
+   * @param httpCachePolicy {@link HttpCachePolicy.Policy} to set
+   * @return The ApolloCall object with the provided {@link HttpCachePolicy.Policy}
    */
-  @Nonnull ApolloCall<T> httpCachePolicy(@Nonnull HttpCachePolicy httpCachePolicy);
+  @Nonnull ApolloCall<T> httpCachePolicy(@Nonnull HttpCachePolicy.Policy httpCachePolicy);
 
   /**
    * Sets the {@link CacheControl} strategy for an ApolloCall object.

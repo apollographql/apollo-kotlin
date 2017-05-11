@@ -1,7 +1,5 @@
 package com.apollographql.apollo.internal.cache.http;
 
-import com.apollographql.apollo.cache.http.HttpCachePolicy.FetchStrategy;
-
 import java.io.IOException;
 import java.util.Date;
 
@@ -42,7 +40,7 @@ final class Utils {
 
   static boolean shouldSkipCache(Request request) {
     String cacheKey = request.header(CACHE_KEY_HEADER);
-    FetchStrategy fetchStrategy = fetchStrategy(request);
+    HttpCacheFetchStrategy fetchStrategy = fetchStrategy(request);
     return cacheKey == null
         || cacheKey.isEmpty()
         || fetchStrategy == null;
@@ -50,27 +48,26 @@ final class Utils {
 
   static boolean shouldSkipNetwork(Request request) {
     String cacheKey = request.header(CACHE_KEY_HEADER);
-    FetchStrategy fetchStrategy = fetchStrategy(request);
+    HttpCacheFetchStrategy fetchStrategy = fetchStrategy(request);
     return cacheKey != null
         && !cacheKey.isEmpty()
-        && fetchStrategy == FetchStrategy.CACHE_ONLY;
+        && fetchStrategy == HttpCacheFetchStrategy.CACHE_ONLY;
   }
 
   static boolean isNetworkOnly(Request request) {
-    FetchStrategy fetchStrategy = fetchStrategy(request);
-    return fetchStrategy == FetchStrategy.NETWORK_ONLY;
+    HttpCacheFetchStrategy fetchStrategy = fetchStrategy(request);
+    return fetchStrategy == HttpCacheFetchStrategy.NETWORK_ONLY;
   }
 
   static boolean isNetworkFirst(Request request) {
-    FetchStrategy fetchStrategy = fetchStrategy(request);
-    return fetchStrategy == FetchStrategy.NETWORK_FIRST
-        || fetchStrategy == FetchStrategy.NETWORK_BEFORE_STALE;
+    HttpCacheFetchStrategy fetchStrategy = fetchStrategy(request);
+    return fetchStrategy == HttpCacheFetchStrategy.NETWORK_FIRST;
   }
 
-  static boolean shouldReturnStaleCache(Request request) {
-    FetchStrategy fetchStrategy = fetchStrategy(request);
-    return fetchStrategy == FetchStrategy.NETWORK_BEFORE_STALE;
-  }
+//  static boolean shouldReturnStaleCache(Request request) {
+//    String expireTimeoutHeader = request.header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER);
+//    return expireTimeoutHeader == null || expireTimeoutHeader.isEmpty();
+//  }
 
   static boolean shouldExpireAfterRead(Request request) {
     return Boolean.TRUE.toString().equalsIgnoreCase(request.header(CACHE_EXPIRE_AFTER_READ_HEADER));
@@ -124,19 +121,22 @@ final class Utils {
     }
 
     long timeout = Long.parseLong(timeoutStr);
-    Date servedDate = HttpDate.parse(servedDateStr);
+    if (timeout == 0) {
+      return false;
+    }
 
+    Date servedDate = HttpDate.parse(servedDateStr);
     long now = System.currentTimeMillis();
     return servedDate == null || now - servedDate.getTime() > timeout;
   }
 
-  private static FetchStrategy fetchStrategy(Request request) {
+  private static HttpCacheFetchStrategy fetchStrategy(Request request) {
     String fetchStrategyHeader = request.header(CACHE_FETCH_STRATEGY_HEADER);
     if (fetchStrategyHeader == null || fetchStrategyHeader.isEmpty()) {
       return null;
     }
 
-    for (FetchStrategy fetchStrategy : FetchStrategy.values()) {
+    for (HttpCacheFetchStrategy fetchStrategy : HttpCacheFetchStrategy.values()) {
       if (fetchStrategy.name().equals(fetchStrategyHeader)) {
         return fetchStrategy;
       }

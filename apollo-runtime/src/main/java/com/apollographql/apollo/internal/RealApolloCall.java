@@ -43,7 +43,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   final HttpUrl serverUrl;
   final Call.Factory httpCallFactory;
   final HttpCache httpCache;
-  final HttpCachePolicy httpCachePolicy;
+  final HttpCachePolicy.Policy httpCachePolicy;
   final Moshi moshi;
   final ResponseFieldMapper responseFieldMapper;
   final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
@@ -58,7 +58,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   volatile boolean canceled;
 
   public RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
-      HttpCachePolicy httpCachePolicy, Moshi moshi, ResponseFieldMapper responseFieldMapper,
+      HttpCachePolicy.Policy httpCachePolicy, Moshi moshi, ResponseFieldMapper responseFieldMapper,
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ApolloStore apolloStore, CacheControl cacheControl,
       CacheHeaders cacheHeaders, ExecutorService dispatcher, ApolloLogger logger, List<ApolloInterceptor>
       applicationInterceptors) {
@@ -151,7 +151,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     return new RealApolloWatcher<>(clone(), apolloStore);
   }
 
-  @Nonnull @Override public RealApolloCall<T> httpCachePolicy(@Nonnull HttpCachePolicy httpCachePolicy) {
+  @Nonnull @Override public RealApolloCall<T> httpCachePolicy(@Nonnull HttpCachePolicy.Policy httpCachePolicy) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }

@@ -72,7 +72,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   private final Moshi moshi;
   private final Map<Class, ResponseFieldMapper> responseFieldMapperPool = new LinkedHashMap<>();
   private final ExecutorService dispatcher;
-  private final HttpCachePolicy defaultHttpCachePolicy;
+  private final HttpCachePolicy.Policy defaultHttpCachePolicy;
   private final CacheControl defaultCacheControl;
   private final CacheHeaders defaultCacheHeaders;
   private final ApolloLogger logger;
@@ -164,7 +164,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     ApolloStore apolloStore = ApolloStore.NO_APOLLO_STORE;
     Optional<NormalizedCacheFactory> cacheFactory = Optional.absent();
     Optional<CacheKeyResolver> cacheKeyResolver = Optional.absent();
-    HttpCachePolicy defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY.obtain();
+    HttpCachePolicy.Policy defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY;
     CacheControl defaultCacheControl = CacheControl.CACHE_FIRST;
     CacheHeaders defaultCacheHeaders = CacheHeaders.NONE;
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
@@ -284,11 +284,11 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     }
 
     /**
-     * Set the default {@link HttpCachePolicy} cache policy.
+     * Set the default {@link HttpCachePolicy.Policy} cache policy.
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder defaultHttpCachePolicy(@Nonnull HttpCachePolicy cachePolicy) {
+    public Builder defaultHttpCachePolicy(@Nonnull HttpCachePolicy.Policy cachePolicy) {
       this.defaultHttpCachePolicy = checkNotNull(cachePolicy, "cachePolicy == null");
       return this;
     }

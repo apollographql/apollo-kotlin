@@ -1,5 +1,7 @@
 package com.apollographql.apollo.cache.http;
 
+import com.apollographql.apollo.internal.cache.http.HttpCacheFetchStrategy;
+
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
@@ -7,158 +9,91 @@ import javax.annotation.Nonnull;
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
- * Represents the http cache policies for request/response http cache.
+ * Http cache policy factory
  */
 public final class HttpCachePolicy {
 
   /**
-   * Signals the apollo client to only fetch the data from the http cache. If the data is stale, an
-   * {@link com.apollographql.apollo.exception.ApolloHttpException} is thrown.
+   * Signals the apollo client to fetch the GraphQL query response from the http cache <b>only</b>.
    */
-  public static final ExpireAfterTimeoutFactory CACHE_ONLY = new ExpireAfterTimeoutFactory() {
-    @Nonnull @Override public HttpCachePolicy obtain(long expireTimeout, @Nonnull TimeUnit expireTimeUnit) {
-      return obtain(expireTimeout, expireTimeUnit, false);
-    }
-
-    @Nonnull @Override
-    public HttpCachePolicy obtain(long expireTimeout, @Nonnull TimeUnit expireTimeUnit, boolean expireAfterRead) {
-      return new HttpCachePolicy(FetchStrategy.CACHE_ONLY, expireTimeout,
-          checkNotNull(expireTimeUnit, "expireTimeUnit == null"), expireAfterRead);
-    }
-  };
+  public static final ExpirePolicy CACHE_ONLY = new ExpirePolicy(HttpCacheFetchStrategy.CACHE_ONLY);
 
   /**
-   * Signals the apollo client to only fetch the data from the network.
+   * Signals the apollo client to fetch the GraphQL query response from the network <b>only</b>.
    */
-  public static final WriteOnlyFactory NETWORK_ONLY = new WriteOnlyFactory() {
-    @Nonnull @Override public HttpCachePolicy obtain() {
-      return new HttpCachePolicy(FetchStrategy.NETWORK_ONLY, 0, null, false);
-    }
-  };
+  public static final Policy NETWORK_ONLY = new Policy(HttpCacheFetchStrategy.NETWORK_ONLY, 0, null, false);
 
   /**
-   * Signals the apollo client to first fetch the data from the http cache. If the data is stale, then it is fetched
-   * from the network.
+   * Signals the apollo client to first fetch the GraphQL query response from the http cache. If it's not present in the
+   * cache response is fetched from the network.
    */
-  public static final ExpireAfterTimeoutFactory CACHE_FIRST = new ExpireAfterTimeoutFactory() {
-    @Nonnull @Override public HttpCachePolicy obtain(long expireTimeout, @Nonnull TimeUnit expireTimeUnit) {
-      return obtain(expireTimeout, expireTimeUnit, false);
-    }
-
-    @Nonnull @Override
-    public HttpCachePolicy obtain(long expireTimeout, @Nonnull TimeUnit expireTimeUnit, boolean expireAfterRead) {
-      return new HttpCachePolicy(FetchStrategy.CACHE_FIRST, expireTimeout,
-          checkNotNull(expireTimeUnit, "expireTimeUnit == null"), expireAfterRead);
-    }
-  };
+  public static final ExpirePolicy CACHE_FIRST = new ExpirePolicy(HttpCacheFetchStrategy.CACHE_FIRST);
 
   /**
-   * Signals the apollo client to first fetch the data from the network request. If the network request fails, then the
-   * data is fetched from the http cache.
+   * Signals the apollo client to first fetch the GraphQL query response from the network. If it fails then fetch the
+   * response from the http cache.
    */
-  public static final ExpireAfterTimeoutFactory NETWORK_FIRST = new ExpireAfterTimeoutFactory() {
-    @Nonnull @Override public HttpCachePolicy obtain(long expireTimeout, @Nonnull TimeUnit expireTimeUnit) {
-      return obtain(expireTimeout, expireTimeUnit, false);
-    }
+  public static final ExpirePolicy NETWORK_FIRST = new ExpirePolicy(HttpCacheFetchStrategy.NETWORK_FIRST);
 
-    @Nonnull @Override
-    public HttpCachePolicy obtain(long expireTimeout, @Nonnull TimeUnit expireTimeUnit, boolean expireAfterRead) {
-      return new HttpCachePolicy(FetchStrategy.NETWORK_FIRST, expireTimeout,
-          checkNotNull(expireTimeUnit, "expireTimeUnit == null"), expireAfterRead);
-    }
-  };
+  private HttpCachePolicy() {
+  }
 
   /**
-   * Signals the apollo client to first fetch the data from the network request. If the network request fails, then the
-   * data is fetched from the http cache even if it is stale.
+   * Abstraction for http cache policy configurations
    */
-  public static final NeverExpireFactory NETWORK_BEFORE_STALE = new NeverExpireFactory() {
-    @Nonnull @Override public HttpCachePolicy obtain() {
-      return obtain(false);
+  public static class Policy {
+    public final HttpCacheFetchStrategy fetchStrategy;
+    public final long expireTimeout;
+    public final TimeUnit expireTimeUnit;
+    public final boolean expireAfterRead;
+
+    Policy(HttpCacheFetchStrategy fetchStrategy, long expireTimeout, TimeUnit expireTimeUnit,
+        boolean expireAfterRead) {
+      this.fetchStrategy = fetchStrategy;
+      this.expireTimeout = expireTimeout;
+      this.expireTimeUnit = expireTimeUnit;
+      this.expireAfterRead = expireAfterRead;
     }
 
-    @Nonnull @Override public HttpCachePolicy obtain(boolean expireAfterRead) {
-      return new HttpCachePolicy(FetchStrategy.NETWORK_BEFORE_STALE, 0, null, expireAfterRead);
+    public long expireTimeoutMs() {
+      if (expireTimeUnit == null) {
+        return 0;
+      }
+      return expireTimeUnit.toMillis(expireTimeout);
     }
-  };
-
-  public final FetchStrategy fetchStrategy;
-  public final long expireTimeout;
-  public final TimeUnit expireTimeUnit;
-  public final boolean expireAfterRead;
-
-  private HttpCachePolicy(FetchStrategy fetchStrategy, long expireTimeout, TimeUnit expireTimeUnit,
-      boolean expireAfterRead) {
-    this.fetchStrategy = fetchStrategy;
-    this.expireTimeout = expireTimeout;
-    this.expireTimeUnit = expireTimeUnit;
-    this.expireAfterRead = expireAfterRead;
   }
 
-  public long expireTimeoutMs() {
-    if (expireTimeUnit == null) {
-      return 0;
+  /**
+   * Cache policy with provided expiration configuration
+   */
+  public static final class ExpirePolicy extends Policy {
+    ExpirePolicy(HttpCacheFetchStrategy fetchStrategy) {
+      super(fetchStrategy, 0, null, false);
     }
-    return expireTimeUnit.toMillis(expireTimeout);
-  }
 
-  public interface WriteOnlyFactory {
-    /**
-     * Obtain new write only cache policy. Cached response will be only written to cache but never read.
-     *
-     * @return obtained cache policy
-     */
-    @Nonnull HttpCachePolicy obtain();
-  }
-
-  public interface NeverExpireFactory {
-    /**
-     * Obtain new never expire policy. Cached response is treated as never expired.
-     *
-     * @return obtained cache policy
-     */
-    @Nonnull HttpCachePolicy obtain();
+    private ExpirePolicy(HttpCacheFetchStrategy fetchStrategy, long expireTimeout, TimeUnit expireTimeUnit,
+        boolean expireAfterRead) {
+      super(fetchStrategy, expireTimeout, expireTimeUnit, expireAfterRead);
+    }
 
     /**
-     * Obtain new never expire policy. Cached response is treated as never expired.
+     * Create new cache policy with expire after timeout configuration. Cached response is treated as expired if it's
+     * served date exceeds.
      *
-     * @param expireAfterRead signals the apollo client to mark the data in the cache stale after it's been read
-     * @return obtained cache policy
-     */
-    @Nonnull HttpCachePolicy obtain(boolean expireAfterRead);
-  }
-
-  public interface ExpireAfterTimeoutFactory {
-    /**
-     * Obtain new expire after timeout policy. Cached response is treated as expired if his served date is exceed
-     * specified timeout.
-     *
-     * @param expireTimeout  expire timeout after which cached response is treated as expired.
+     * @param expireTimeout  expire timeout after which cached response is treated as expired
      * @param expireTimeUnit time unit
-     * @return obtained cache policy
+     * @return new cache policy
      */
-    @Nonnull HttpCachePolicy obtain(long expireTimeout, @Nonnull TimeUnit expireTimeUnit);
+    public ExpirePolicy expireAfter(long expireTimeout, @Nonnull TimeUnit expireTimeUnit) {
+      return new ExpirePolicy(fetchStrategy, expireTimeout, checkNotNull(expireTimeUnit), expireAfterRead);
+    }
 
     /**
-     * Obtain new expire after timeout policy. Cached response is treated as expired if his served date is exceed
-     * specified timeout.
-     *
-     * @param expireTimeout   expire timeout after which cached response is treated as expired.
-     * @param expireTimeUnit  time unit
-     * @param expireAfterRead signals the apollo client to mark the data in the cache stale after it's been read.
-     * @return obtained cache policy
+     * Create new cache policy with expire after read configuration. Cached response will be evicted from the cache
+     * after it's been read.
      */
-    @Nonnull HttpCachePolicy obtain(long expireTimeout, @Nonnull TimeUnit expireTimeUnit, boolean expireAfterRead);
-  }
-
-  /**
-   * Represents different fetch strategies for http request / response cache
-   */
-  public enum FetchStrategy {
-    CACHE_ONLY,
-    NETWORK_ONLY,
-    CACHE_FIRST,
-    NETWORK_FIRST,
-    NETWORK_BEFORE_STALE
+    public ExpirePolicy expireAfterRead() {
+      return new ExpirePolicy(fetchStrategy, expireTimeout, expireTimeUnit, true);
+    }
   }
 }

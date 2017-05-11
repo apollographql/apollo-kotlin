@@ -16,7 +16,6 @@ import static com.apollographql.apollo.internal.cache.http.Utils.isNetworkOnly;
 import static com.apollographql.apollo.internal.cache.http.Utils.isPrefetchResponse;
 import static com.apollographql.apollo.internal.cache.http.Utils.isStale;
 import static com.apollographql.apollo.internal.cache.http.Utils.shouldExpireAfterRead;
-import static com.apollographql.apollo.internal.cache.http.Utils.shouldReturnStaleCache;
 import static com.apollographql.apollo.internal.cache.http.Utils.shouldSkipCache;
 import static com.apollographql.apollo.internal.cache.http.Utils.shouldSkipNetwork;
 import static com.apollographql.apollo.internal.cache.http.Utils.strip;
@@ -59,7 +58,7 @@ final class HttpCacheInterceptor implements Interceptor {
   }
 
   private Response cacheOnlyResponse(Request request) throws IOException {
-    Response cacheResponse = cachedResponse(request, true);
+    Response cacheResponse = cachedResponse(request);
     if (cacheResponse == null) {
       logCacheMiss(request);
       return unsatisfiableCacheRequest(request);
@@ -99,7 +98,7 @@ final class HttpCacheInterceptor implements Interceptor {
       rethrowException = e;
     }
 
-    Response cachedResponse = cachedResponse(request, !shouldReturnStaleCache(request));
+    Response cachedResponse = cachedResponse(request);
     if (cachedResponse == null) {
       logCacheMiss(request);
       if (rethrowException != null) {
@@ -117,7 +116,7 @@ final class HttpCacheInterceptor implements Interceptor {
   }
 
   private Response cacheFirst(Request request, Chain chain) throws IOException {
-    Response cachedResponse = cachedResponse(request, true);
+    Response cachedResponse = cachedResponse(request);
     if (cachedResponse != null) {
       logCacheHit(request);
       return cachedResponse.newBuilder()
@@ -160,7 +159,7 @@ final class HttpCacheInterceptor implements Interceptor {
         .build();
   }
 
-  private Response cachedResponse(Request request, boolean checkStale) {
+  private Response cachedResponse(Request request) {
     String cacheKey = request.header(CACHE_KEY_HEADER);
 
     Response cachedResponse = cache.read(cacheKey, shouldExpireAfterRead(request));
@@ -168,7 +167,7 @@ final class HttpCacheInterceptor implements Interceptor {
       return null;
     }
 
-    if (checkStale && isStale(request, cachedResponse)) {
+    if (isStale(request, cachedResponse)) {
       closeQuietly(cachedResponse);
       return null;
     }

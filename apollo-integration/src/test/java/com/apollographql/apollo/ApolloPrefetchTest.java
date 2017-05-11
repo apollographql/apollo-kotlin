@@ -162,8 +162,8 @@ public class ApolloPrefetchTest {
     apolloClient.prefetch(new AllPlanets()).execute();
     checkCachedResponse("HttpCacheTestAllPlanets.json");
     assertThat(apolloClient.newCall(new AllPlanets())
-        .httpCachePolicy(HttpCachePolicy.CACHE_ONLY.obtain(2, TimeUnit.SECONDS)).execute().hasErrors())
-        .isFalse();
+        .httpCachePolicy(HttpCachePolicy.CACHE_ONLY.expireAfter(2, TimeUnit.SECONDS)).execute()
+        .hasErrors()).isFalse();
   }
 
   @Test public void prefetchNoCacheStore() throws IOException, ApolloException {

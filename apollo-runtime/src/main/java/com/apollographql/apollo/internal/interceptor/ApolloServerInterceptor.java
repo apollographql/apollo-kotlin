@@ -43,14 +43,14 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
   final HttpUrl serverUrl;
   final okhttp3.Call.Factory httpCallFactory;
-  final Optional<HttpCachePolicy> cachePolicy;
+  final Optional<HttpCachePolicy.Policy> cachePolicy;
   final boolean prefetch;
   final Moshi moshi;
   final ApolloLogger logger;
   volatile Call httpCall;
 
   public ApolloServerInterceptor(@Nonnull HttpUrl serverUrl, @Nonnull Call.Factory httpCallFactory,
-      @Nullable HttpCachePolicy cachePolicy, boolean prefetch, @Nonnull Moshi moshi, @Nonnull ApolloLogger logger) {
+      @Nullable HttpCachePolicy.Policy cachePolicy, boolean prefetch, @Nonnull Moshi moshi, @Nonnull ApolloLogger logger) {
     this.serverUrl = checkNotNull(serverUrl, "serverUrl == null");
     this.httpCallFactory = checkNotNull(httpCallFactory, "httpCallFactory == null");
     this.cachePolicy = Optional.fromNullable(cachePolicy);
@@ -120,7 +120,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         .header("Content-Type", CONTENT_TYPE);
 
     if (cachePolicy.isPresent()) {
-      HttpCachePolicy cachePolicy = this.cachePolicy.get();
+      HttpCachePolicy.Policy cachePolicy = this.cachePolicy.get();
       String cacheKey = cacheKey(requestBody);
       requestBuilder = requestBuilder
           .header(HttpCache.CACHE_KEY_HEADER, cacheKey)
