@@ -35,8 +35,8 @@ public final class ApolloCallTracker {
   /**
    * <p>Removes this {@link ApolloPrefetch} from the underlying data structure keeping track of the in progress
    * synchronous prefetch objects, if it is found, else throws an {@link AssertionError}.</p> If the removal operation
-   * is successful and no active running calls are found, then the registered {@link ApolloCallTracker#idleResourceCallback} is
-   * invoked.
+   * is successful and no active running calls are found, then the registered
+   * {@link ApolloCallTracker#idleResourceCallback} is invoked.
    *
    * <p><b>Note</b>: This method needs to be called right after a prefetch call is completed (whether successful or
    * failed).</p>
@@ -99,8 +99,8 @@ public final class ApolloCallTracker {
   /**
    * <p>Removes this {@link ApolloCall} from the underlying data structure keeping track of the in progress synchronous
    * apolloCall objects, if it is found, else throws an {@link AssertionError}.</p> If the removal operation is
-   * successful and no active running calls are found, then the registered {@link ApolloCallTracker#idleResourceCallback} is
-   * invoked.
+   * successful and no active running calls are found, then the registered {@link ApolloCallTracker#idleResourceCallback}
+   * is invoked.
    *
    * <p><b>Note</b>: This method needs to be called right after an apolloCall is completed (whether successful or
    * failed).</p>
