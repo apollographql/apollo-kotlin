@@ -54,7 +54,7 @@ class OperationTypeSpecBuilder(
       context: CodeGenerationContext): TypeSpec.Builder {
     val initializeCodeBuilder = CodeBlock.builder().add(OPERATION_DEFINITION_FIELD_NAME)
     fragments.filter { operation.fragmentsReferenced.contains(it.fragmentName) }.forEach {
-      val className = ClassName.get(context.fragmentsPackage, it.formatClassName());
+      val className = ClassName.get(context.fragmentsPackage, it.formatClassName())
       initializeCodeBuilder
           .add(" + \$S\n", "\n")
           .add(" + \$T.\$L", className, Fragment.FRAGMENT_DEFINITION_FIELD_NAME)
