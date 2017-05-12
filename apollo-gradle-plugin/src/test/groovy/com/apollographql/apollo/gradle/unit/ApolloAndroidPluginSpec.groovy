@@ -1,10 +1,6 @@
 package com.apollographql.apollo.gradle.unit
 
-import com.apollographql.apollo.gradle.ApolloExtension
-import com.apollographql.apollo.gradle.ApolloIRGenTask
-import com.apollographql.apollo.gradle.ApolloPlugin
-import com.apollographql.apollo.gradle.ApolloPluginTestHelper
-import com.apollographql.apollo.gradle.GraphQLSourceDirectorySet
+import com.apollographql.apollo.gradle.*
 import com.moowork.gradle.node.NodePlugin
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification

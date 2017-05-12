@@ -1,13 +1,12 @@
 package com.apollographql.apollo.gradle.integration
 
-import com.apollographql.apollo.gradle.ApolloPluginTestHelper
 import org.apache.commons.io.FileUtils
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import spock.lang.Shared
 import spock.lang.Specification
 
-import static ApolloPluginTestHelper.*
+import static com.apollographql.apollo.gradle.ApolloPluginTestHelper.*
 import static org.apache.commons.io.FileUtils.copyFile
 
 
@@ -132,7 +131,7 @@ class FlavoredMultiSchemaSpec extends Specification {
 
   private static File setupFlavoredAndroidProject() {
     def destDir = createTempTestDirectory("flavoredWithMultipleSchemas")
-    prepareProjectTestDir(destDir, ApolloPluginTestHelper.ProjectType.Android, "flavoredWithMultipleSchemas", "flavored")
+    prepareProjectTestDir(destDir, ProjectType.Android, "flavoredWithMultipleSchemas", "flavored")
     String schemaFilesFixtures = "src/test/testProject/android/schemaFilesFixtures"
     copyFile(new File(schemaFilesFixtures + "/invalidSchema.json"), new File("$destDir/src/main/graphql/com/githunt/api/schema.json"))
     copyFile(new File(schemaFilesFixtures + "/frontpage.json"), new File("$destDir/src/main/graphql/com/frontpage/api/schema.json"))
