@@ -18,6 +18,8 @@ import com.apollographql.apollo.integration.normalizer.HeroAppearsIn;
 import com.apollographql.apollo.integration.normalizer.HeroParentTypeDependentField;
 import com.apollographql.apollo.integration.normalizer.HeroTypeDependentAliasedField;
 import com.apollographql.apollo.integration.normalizer.SameHeroTwice;
+import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragment;
+import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 
 import org.junit.After;
