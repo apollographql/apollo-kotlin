@@ -4,7 +4,7 @@ package com.apollographql.apollo.espresso;
 import android.support.test.espresso.IdlingResource;
 
 import com.apollographql.apollo.ApolloClient;
-import com.apollographql.apollo.IdleCallback;
+import com.apollographql.apollo.IdleResourceCallback;
 
 import javax.annotation.Nonnull;
 
@@ -37,7 +37,7 @@ public class ApolloIdlingResource implements IdlingResource {
   private ApolloIdlingResource(String name, ApolloClient apolloClient) {
     this.apolloClient = apolloClient;
     this.name = name;
-    apolloClient.idleCallback(new IdleCallback() {
+    apolloClient.idleCallback(new IdleResourceCallback() {
       @Override public void onIdle() {
         ResourceCallback callback = ApolloIdlingResource.this.callback;
         if (callback != null) {

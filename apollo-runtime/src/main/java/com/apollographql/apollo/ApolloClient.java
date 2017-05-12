@@ -155,10 +155,10 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   }
 
   /**
-   * Sets the idleCallback which will be called when this ApolloClient is idle.
+   * Sets the idleResourceCallback which will be called when this ApolloClient is idle.
    */
-  public void idleCallback(IdleCallback idleCallback) {
-    callTracker.setIdleCallback(idleCallback);
+  public void idleCallback(IdleResourceCallback idleResourceCallback) {
+    callTracker.setIdleResourceCallback(idleResourceCallback);
   }
 
   /**

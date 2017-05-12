@@ -3,7 +3,7 @@ package com.apollographql.apollo.internal.reader;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloPrefetch;
-import com.apollographql.apollo.IdleCallback;
+import com.apollographql.apollo.IdleResourceCallback;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
@@ -235,7 +235,7 @@ public class ApolloCallTrackerTest {
       }
     };
 
-    IdleCallback idleCallback = new IdleCallback() {
+    IdleResourceCallback idleResourceCallback = new IdleResourceCallback() {
       @Override public void onIdle() {
         idle.set(true);
       }
@@ -246,7 +246,7 @@ public class ApolloCallTrackerTest {
         .okHttpClient(okHttpClientBuilder.build())
         .addApplicationInterceptor(interceptor)
         .build();
-    apolloClient.idleCallback(idleCallback);
+    apolloClient.idleCallback(idleResourceCallback);
 
     assertThat(idle.get()).isFalse();
 
