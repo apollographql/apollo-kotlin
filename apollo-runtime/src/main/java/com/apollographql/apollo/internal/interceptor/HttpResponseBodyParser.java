@@ -50,8 +50,9 @@ final class HttpResponseBodyParser<D extends Operation.Data, W> {
           data = (D) responseStreamReader.nextObject(true, new ResponseJsonStreamReader.ObjectReader<Object>() {
             @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
               Map<String, Object> buffer = reader.buffer();
-              RealResponseReader<Map<String, Object>> realResponseReader = new RealResponseReader<>(operation, buffer,
-                  new MapFieldValueResolver(), customTypeAdapters, networkResponseNormalizer);
+              RealResponseReader<Map<String, Object>> realResponseReader = new RealResponseReader<>(
+                  operation.variables(), buffer, new MapFieldValueResolver(), customTypeAdapters,
+                  networkResponseNormalizer);
               return responseFieldMapper.map(realResponseReader);
             }
           });

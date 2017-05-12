@@ -63,7 +63,7 @@ class GraphQLCompiler {
   companion object {
     const val FILE_EXTENSION = "graphql"
     val OUTPUT_DIRECTORY = listOf("generated", "source", "apollo")
-    const val APOLLOCODEGEN_VERSION = "0.10.11"
+    const val APOLLOCODEGEN_VERSION = "0.10.13"
   }
 
   data class Arguments(

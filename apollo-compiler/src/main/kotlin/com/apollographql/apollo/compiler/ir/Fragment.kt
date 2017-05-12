@@ -29,6 +29,7 @@ data class Fragment(
       )
           .build(Modifier.PUBLIC)
           .toBuilder()
+          .addSuperinterface(ClassNames.FRAGMENT)
           .addAnnotation(Annotations.GENERATED_BY_APOLLO)
           .addFragmentDefinitionField()
           .addTypeConditionField()

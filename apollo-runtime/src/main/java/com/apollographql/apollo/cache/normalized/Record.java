@@ -67,6 +67,10 @@ public final class Record {
     return fields.get(fieldKey);
   }
 
+  public boolean hasField(String fieldKey) {
+    return fields.containsKey(fieldKey);
+  }
+
   public String key() {
     return key;
   }
