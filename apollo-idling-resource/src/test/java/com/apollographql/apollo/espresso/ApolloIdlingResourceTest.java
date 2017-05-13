@@ -126,8 +126,7 @@ public class ApolloIdlingResourceTest {
   public void checkIsIdleNow_whenCallIsQueued() throws IOException, TimeoutException, InterruptedException {
     server.enqueue(mockResponse());
 
-    final CountDownLatch firstLatch = new CountDownLatch(1);
-    final CountDownLatch secondLatch = new CountDownLatch(1);
+    final CountDownLatch latch = new CountDownLatch(1);
 
     ExecutorService executorService = Executors.newFixedThreadPool(1);
 
@@ -142,12 +141,7 @@ public class ApolloIdlingResourceTest {
 
     apolloClient.newCall(EMPTY_QUERY).enqueue(new ApolloCall.Callback<Object>() {
       @Override public void onResponse(@Nonnull Response<Object> response) {
-        firstLatch.countDown();
-        try {
-          secondLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-          throw new AssertionError(e);
-        }
+        latch.countDown();
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
@@ -156,12 +150,11 @@ public class ApolloIdlingResourceTest {
     });
     assertThat(idlingResource.isIdleNow()).isFalse();
 
-    firstLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-
-    secondLatch.countDown();
+    latch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
 
     executorService.shutdown();
     executorService.awaitTermination(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    Thread.sleep(100);
     assertThat(idlingResource.isIdleNow()).isTrue();
   }
 
