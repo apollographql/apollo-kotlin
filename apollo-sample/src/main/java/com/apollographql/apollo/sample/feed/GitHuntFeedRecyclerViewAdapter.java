@@ -19,7 +19,7 @@ class GitHuntFeedRecyclerViewAdapter extends
   private List<FeedQuery.FeedEntry> feed = Collections.emptyList();
   private GitHuntNavigator navigator;
 
-  public GitHuntFeedRecyclerViewAdapter(GitHuntNavigator navigator) {
+  GitHuntFeedRecyclerViewAdapter(GitHuntNavigator navigator) {
     this.navigator = navigator;
   }
 
@@ -50,13 +50,13 @@ class GitHuntFeedRecyclerViewAdapter extends
     private TextView repositoryTitle;
     private View feedEntryContainer;
 
-    public FeedItemViewHolder(View itemView) {
+    FeedItemViewHolder(View itemView) {
       super(itemView);
       repositoryTitle = (TextView) itemView.findViewById(R.id.tv_repository_name);
       feedEntryContainer = itemView.findViewById(R.id.feed_entry_container);
     }
 
-    public void setFeedItem(FeedQuery.FeedEntry feedItem, final GitHuntNavigator navigator) {
+    void setFeedItem(FeedQuery.FeedEntry feedItem, final GitHuntNavigator navigator) {
       final RepositoryFragment repositoryFragment = feedItem.repository().fragments().repositoryFragment();
       repositoryTitle.setText(repositoryFragment.full_name());
       feedEntryContainer.setOnClickListener(new View.OnClickListener() {
