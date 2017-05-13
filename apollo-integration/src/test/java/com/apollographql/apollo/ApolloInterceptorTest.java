@@ -91,7 +91,7 @@ public class ApolloInterceptorTest {
 
     client = createApolloClient(interceptor);
 
-    Response<EpisodeHeroName.Data> actualResponse = client.newCall(query).execute();
+    Response<EpisodeHeroName.Data> actualResponse = client.query(query).execute();
 
     assertThat(expectedResponse.parsedResponse.get()).isEqualTo(actualResponse);
   }
@@ -127,7 +127,7 @@ public class ApolloInterceptorTest {
 
     client = createApolloClient(interceptor);
 
-    client.newCall(query).enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
+    client.query(query).enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
       @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
         assertThat(expectedResponse.parsedResponse.get()).isEqualTo(response);
         responseLatch.countDown();
@@ -169,7 +169,7 @@ public class ApolloInterceptorTest {
 
     client = createApolloClient(interceptor);
 
-    Response<EpisodeHeroName.Data> actualResponse = client.newCall(query).execute();
+    Response<EpisodeHeroName.Data> actualResponse = client.query(query).execute();
 
     assertThat(rewrittenResponse.parsedResponse.get()).isEqualTo(actualResponse);
   }
@@ -211,7 +211,7 @@ public class ApolloInterceptorTest {
 
     client = createApolloClient(interceptor);
 
-    client.newCall(query).enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
+    client.query(query).enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
       @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
         assertThat(rewrittenResponse.parsedResponse.get()).isEqualTo(response);
         responseLatch.countDown();
@@ -251,7 +251,7 @@ public class ApolloInterceptorTest {
     client = createApolloClient(interceptor);
 
     try {
-      client.newCall(query).execute();
+      client.query(query).execute();
     } catch (Exception e) {
       assertThat(e.getMessage()).isEqualTo("ApolloException");
       assertThat(e).isInstanceOf(ApolloException.class);
@@ -286,7 +286,7 @@ public class ApolloInterceptorTest {
 
     client = createApolloClient(interceptor);
 
-    client.newCall(query)
+    client.query(query)
         .enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
           @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
 
@@ -326,7 +326,7 @@ public class ApolloInterceptorTest {
     client = createApolloClient(interceptor);
 
     try {
-      client.newCall(query).execute();
+      client.query(query).execute();
     } catch (Exception e) {
       assertThat(e.getMessage()).isEqualTo("RuntimeException");
       assertThat(e).isInstanceOf(RuntimeException.class);
@@ -370,7 +370,7 @@ public class ApolloInterceptorTest {
         .build();
 
     client
-        .newCall(query)
+        .query(query)
         .enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
           @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
 
@@ -408,7 +408,7 @@ public class ApolloInterceptorTest {
     client = createApolloClient(interceptor);
 
     try {
-      client.newCall(query).execute();
+      client.query(query).execute();
       Assert.fail();
     } catch (Exception e) {
       assertThat(e).isInstanceOf(NullPointerException.class);
@@ -449,7 +449,7 @@ public class ApolloInterceptorTest {
         .dispatcher(new ExceptionHandlingExecutor(null, NullPointerException.class, latch))
         .build();
 
-    client.newCall(query).enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
+    client.query(query).enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
       @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
 
       }
@@ -489,7 +489,7 @@ public class ApolloInterceptorTest {
 
     client = createApolloClient(interceptor);
 
-    Response<EpisodeHeroName.Data> actualResponse = client.newCall(query).execute();
+    Response<EpisodeHeroName.Data> actualResponse = client.query(query).execute();
     assertThat(actualResponse.data().hero().name()).isEqualTo("Artoo");
   }
 
@@ -540,7 +540,7 @@ public class ApolloInterceptorTest {
         .addApplicationInterceptor(secondInterceptor)
         .build();
 
-    Response<EpisodeHeroName.Data> actualResponse = client.newCall(query).execute();
+    Response<EpisodeHeroName.Data> actualResponse = client.query(query).execute();
     assertThat(expectedResponse.parsedResponse.get()).isEqualTo(actualResponse);
   }
 
@@ -574,7 +574,7 @@ public class ApolloInterceptorTest {
 
     client = createApolloClient(interceptor);
 
-    ApolloCall<EpisodeHeroName.Data> apolloCall = client.newCall(query);
+    ApolloCall<EpisodeHeroName.Data> apolloCall = client.query(query);
 
     apolloCall.enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
       @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {

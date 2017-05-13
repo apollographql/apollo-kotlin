@@ -68,10 +68,10 @@ public class NormalizedCacheTestCase {
 
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
-    Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).execute();
+    Response<EpisodeHeroName.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
-    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
   }
@@ -81,10 +81,10 @@ public class NormalizedCacheTestCase {
 
     HeroAndFriendsNames query = HeroAndFriendsNames.builder().episode(Episode.JEDI).build();
 
-    Response<HeroAndFriendsNames.Data> body = apolloClient.newCall(query).execute();
+    Response<HeroAndFriendsNames.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
-    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
     assertThat(body.data().hero().friends()).hasSize(3);
@@ -98,10 +98,10 @@ public class NormalizedCacheTestCase {
 
     HeroAndFriendsNamesWithIDs query = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
 
-    Response<HeroAndFriendsNamesWithIDs.Data> body = apolloClient.newCall(query).execute();
+    Response<HeroAndFriendsNamesWithIDs.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
-    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data().hero().id()).isEqualTo("2001");
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
@@ -120,10 +120,10 @@ public class NormalizedCacheTestCase {
     HeroAndFriendsNamesWithIDForParentOnly query = HeroAndFriendsNamesWithIDForParentOnly.builder()
         .episode(Episode.NEWHOPE).build();
 
-    Response<HeroAndFriendsNamesWithIDForParentOnly.Data> body = apolloClient.newCall(query).execute();
+    Response<HeroAndFriendsNamesWithIDForParentOnly.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
-    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data().hero().id()).isEqualTo("2001");
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
@@ -138,10 +138,10 @@ public class NormalizedCacheTestCase {
 
     HeroAppearsIn query = new HeroAppearsIn();
 
-    Response<HeroAppearsIn.Data> body = apolloClient.newCall(query).execute();
+    Response<HeroAppearsIn.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
-    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data().hero().appearsIn()).hasSize(3);
     assertThat(body.data().hero().appearsIn().get(0).name()).isEqualTo("NEWHOPE");
@@ -154,10 +154,10 @@ public class NormalizedCacheTestCase {
 
     HeroParentTypeDependentField query = HeroParentTypeDependentField.builder().episode(Episode.NEWHOPE).build();
 
-    Response<HeroParentTypeDependentField.Data> body = apolloClient.newCall(query).execute();
+    Response<HeroParentTypeDependentField.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
-    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
     assertThat(body.data().hero().asDroid().name()).isEqualTo("R2-D2");
@@ -172,20 +172,20 @@ public class NormalizedCacheTestCase {
 
     HeroTypeDependentAliasedField query = HeroTypeDependentAliasedField.builder().episode(Episode.NEWHOPE).build();
 
-    Response<HeroTypeDependentAliasedField.Data> body = apolloClient.newCall(query).execute();
+    Response<HeroTypeDependentAliasedField.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
-    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data().hero().asHuman()).isNull();
     assertThat(body.data().hero().asDroid().property()).isEqualTo("Astromech");
 
     server.enqueue(mockResponse("HeroTypeDependentAliasedFieldResponseHuman.json"));
 
-    body = apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    body = apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
     assertThat(body.hasErrors()).isFalse();
 
-    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data().hero().asDroid()).isNull();
     assertThat(body.data().hero().asHuman().property()).isEqualTo("Tatooine");
@@ -196,10 +196,10 @@ public class NormalizedCacheTestCase {
 
     SameHeroTwice query = new SameHeroTwice();
 
-    Response<SameHeroTwice.Data> body = apolloClient.newCall(query).execute();
+    Response<SameHeroTwice.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
-    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
     assertThat(body.data().r2().appearsIn()).hasSize(3);
@@ -213,10 +213,10 @@ public class NormalizedCacheTestCase {
 
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
-    Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).execute();
+    Response<EpisodeHeroName.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
-    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_FIRST).execute();
+    body = apolloClient.query(query).cacheControl(CacheControl.CACHE_FIRST).execute();
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
   }
@@ -226,10 +226,10 @@ public class NormalizedCacheTestCase {
 
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
-    Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).execute();
+    Response<EpisodeHeroName.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
-    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
   }
@@ -239,17 +239,17 @@ public class NormalizedCacheTestCase {
 
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
-    Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).execute();
+    Response<EpisodeHeroName.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
     server.enqueue(mockResponse("HeroNameResponse.json"));
-    body = apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_FIRST).execute();
+    body = apolloClient.query(query).cacheControl(CacheControl.NETWORK_FIRST).execute();
     assertThat(server.getRequestCount()).isEqualTo(2);
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
 
     server.enqueue(new MockResponse().setResponseCode(504).setBody(""));
-    body = apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_FIRST).execute();
+    body = apolloClient.query(query).cacheControl(CacheControl.NETWORK_FIRST).execute();
     assertThat(server.getRequestCount()).isEqualTo(3);
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
@@ -260,11 +260,11 @@ public class NormalizedCacheTestCase {
 
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
-    Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).execute();
+    Response<EpisodeHeroName.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
     server.enqueue(mockResponse("HeroNameResponse.json"));
-    body = apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    body = apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
     assertThat(server.getRequestCount()).isEqualTo(2);
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
@@ -273,10 +273,10 @@ public class NormalizedCacheTestCase {
   @Test public void masterDetailSuccess() throws Exception {
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
     HeroAndFriendsNamesWithIDs query = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
-    apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
 
     CharacterNameById character = CharacterNameById.builder().id("1002").build();
-    CharacterNameById.Data characterData = apolloClient.newCall(character).cacheControl(CacheControl.CACHE_ONLY)
+    CharacterNameById.Data characterData = apolloClient.query(character).cacheControl(CacheControl.CACHE_ONLY)
         .execute().data();
 
     assertThat(characterData).isNotNull();
@@ -287,10 +287,10 @@ public class NormalizedCacheTestCase {
   @Test public void masterDetailFailIncomplete() throws Exception {
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
     HeroAndFriendsNamesWithIDs query = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
-    apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
 
     CharacterDetails character = CharacterDetails.builder().id("1002").build();
-    CharacterDetails.Data characterData = apolloClient.newCall(character).cacheControl(CacheControl.CACHE_ONLY)
+    CharacterDetails.Data characterData = apolloClient.query(character).cacheControl(CacheControl.CACHE_ONLY)
         .execute().data();
 
     assertThat(characterData).isNull();
@@ -299,32 +299,32 @@ public class NormalizedCacheTestCase {
   @Test public void independentQueriesGoToNetworkWhenCacheMiss() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroNameResponse.json"));
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
-    Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).execute();
+    Response<EpisodeHeroName.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data()).isNotNull();
 
     server.enqueue(mockResponse("AllPlanetsNullableField.json"));
     AllPlanets allPlanetsQuery = new AllPlanets();
-    final Response<AllPlanets.Data> allPlanetsResponse = apolloClient.newCall(allPlanetsQuery).execute();
+    final Response<AllPlanets.Data> allPlanetsResponse = apolloClient.query(allPlanetsQuery).execute();
     assertThat(allPlanetsResponse.hasErrors()).isFalse();
     assertThat(allPlanetsResponse.data().allPlanets()).isNotNull();
   }
 
   @Test public void cacheOnlyMissReturnsNullData() throws IOException, ApolloException {
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
-    Response<EpisodeHeroName.Data> body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    Response<EpisodeHeroName.Data> body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.data()).isNull();
   }
 
   @Test public void cacheResponseWithNullableFields() throws IOException, ApolloException {
     server.enqueue(mockResponse("AllPlanetsNullableField.json"));
     AllPlanets query = new AllPlanets();
-    Response<AllPlanets.Data> body = apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    Response<AllPlanets.Data> body = apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
 
     assertThat(body).isNotNull();
     assertThat(body.hasErrors()).isFalse();
 
-    body = apolloClient.newCall(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body).isNotNull();
     assertThat(body.hasErrors()).isFalse();
   }
@@ -333,7 +333,7 @@ public class NormalizedCacheTestCase {
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
 
     HeroAndFriendsNamesWithIDs query = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
-    apolloClient.newCall(query).execute();
+    apolloClient.query(query).execute();
 
     HeroAndFriendsNamesWithIDs.Data data = apolloClient.apolloStore().read(query);
     assertThat(data.hero().id()).isEqualTo("2001");
@@ -351,7 +351,7 @@ public class NormalizedCacheTestCase {
     server.enqueue(mockResponse("HeroAndFriendsWithFragmentResponse.json"));
 
     HeroAndFriendsNamesWithIDs query = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
-    apolloClient.newCall(query).execute();
+    apolloClient.query(query).execute();
 
     HeroWithFriendsFragment heroWithFriendsFragment = apolloClient.apolloStore().read(
         new HeroWithFriendsFragment.Mapper(), CacheKey.from("2001"), Operation.EMPTY_VARIABLES);

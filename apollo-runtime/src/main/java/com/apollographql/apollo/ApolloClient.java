@@ -1,6 +1,9 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.OperationName;
+import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
@@ -25,6 +28,7 @@ import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +62,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
  *
  * <p>See the {@link ApolloClient.Builder} class for configuring the ApolloClient.
  */
-public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Factory {
+public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutationCall.Factory, ApolloPrefetch.Factory {
 
   public static Builder builder() {
     return new Builder();
@@ -93,23 +97,15 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     this.applicationInterceptors = builder.applicationInterceptors;
   }
 
-  /**
-   * Prepares the {@link ApolloCall} request which will be executed at some point in the future.
-   */
   @Override
-  public <D extends Operation.Data, T, V extends Operation.Variables> ApolloCall<T> newCall(
-      @Nonnull Operation<D, T, V> operation) {
-    ResponseFieldMapper responseFieldMapper;
-    synchronized (responseFieldMapperPool) {
-      responseFieldMapper = responseFieldMapperPool.get(operation.getClass());
-      if (responseFieldMapper == null) {
-        responseFieldMapper = operation.responseFieldMapper();
-        responseFieldMapperPool.put(operation.getClass(), responseFieldMapper);
-      }
-    }
-    return new RealApolloCall<T>(operation, serverUrl, httpCallFactory, httpCache, defaultHttpCachePolicy, moshi,
-        responseFieldMapper, customTypeAdapters, apolloStore, defaultCacheControl, defaultCacheHeaders,
-        dispatcher, logger, applicationInterceptors);
+  public <D extends Mutation.Data, T, V extends Mutation.Variables> ApolloMutationCall<T> mutate(
+      @Nonnull Mutation<D, T, V> mutation) {
+    return newCall(mutation);
+  }
+
+  @Override
+  public <D extends Query.Data, T, V extends Query.Variables> ApolloQueryCall<T> query(@Nonnull Query<D, T, V> query) {
+    return newCall(query);
   }
 
   /**
@@ -155,6 +151,26 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     } else {
       return null;
     }
+  }
+
+  private <D extends Operation.Data, T, V extends Operation.Variables> RealApolloCall<T> newCall(
+      @Nonnull Operation<D, T, V> operation) {
+    ResponseFieldMapper responseFieldMapper = responseFieldMapper(operation);
+    return new RealApolloCall<T>(operation, serverUrl, httpCallFactory, httpCache, defaultHttpCachePolicy, moshi,
+        responseFieldMapper, customTypeAdapters, apolloStore, defaultCacheControl, defaultCacheHeaders,
+        dispatcher, logger, applicationInterceptors, Collections.<OperationName>emptyList());
+  }
+
+  private ResponseFieldMapper responseFieldMapper(Operation operation) {
+    ResponseFieldMapper responseFieldMapper;
+    synchronized (responseFieldMapperPool) {
+      responseFieldMapper = responseFieldMapperPool.get(operation.getClass());
+      if (responseFieldMapper == null) {
+        responseFieldMapper = operation.responseFieldMapper();
+        responseFieldMapperPool.put(operation.getClass(), responseFieldMapper);
+      }
+    }
+    return responseFieldMapper;
   }
 
   @SuppressWarnings("WeakerAccess") public static class Builder {

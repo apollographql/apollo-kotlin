@@ -161,7 +161,7 @@ public class ApolloPrefetchTest {
     enqueueResponse("HttpCacheTestAllPlanets.json");
     apolloClient.prefetch(new AllPlanets()).execute();
     checkCachedResponse("HttpCacheTestAllPlanets.json");
-    assertThat(apolloClient.newCall(new AllPlanets())
+    assertThat(apolloClient.query(new AllPlanets())
         .httpCachePolicy(HttpCachePolicy.CACHE_ONLY.expireAfter(2, TimeUnit.SECONDS)).execute()
         .hasErrors()).isFalse();
   }
@@ -175,7 +175,7 @@ public class ApolloPrefetchTest {
     enqueueResponse("HttpCacheTestAllPlanets.json");
     apolloClient.prefetch(new AllPlanets()).execute();
     enqueueResponse("HttpCacheTestAllPlanets.json");
-    assertThat(apolloClient.newCall(new AllPlanets()).execute().hasErrors()).isFalse();
+    assertThat(apolloClient.query(new AllPlanets()).execute().hasErrors()).isFalse();
   }
 
   @Test public void prefetchFileSystemWriteFailure() throws IOException {

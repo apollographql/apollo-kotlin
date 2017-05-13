@@ -1,8 +1,10 @@
 package com.apollographql.apollo.internal;
 
-import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.ApolloMutationCall;
+import com.apollographql.apollo.ApolloQueryCall;
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
@@ -26,9 +28,11 @@ import com.apollographql.apollo.internal.util.ApolloLogger;
 import com.squareup.moshi.Moshi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,7 +42,8 @@ import okhttp3.HttpUrl;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
-@SuppressWarnings("WeakerAccess") public final class RealApolloCall<T> implements ApolloCall<T> {
+@SuppressWarnings("WeakerAccess")
+public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutationCall<T> {
   final Operation operation;
   final HttpUrl serverUrl;
   final Call.Factory httpCallFactory;
@@ -54,14 +59,15 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   final ExecutorService dispatcher;
   final ApolloLogger logger;
   final List<ApolloInterceptor> applicationInterceptors;
-  volatile boolean executed;
+  final List<OperationName> refetchQueryNames;
+  final AtomicBoolean executed = new AtomicBoolean();
   volatile boolean canceled;
 
   public RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
       HttpCachePolicy.Policy httpCachePolicy, Moshi moshi, ResponseFieldMapper responseFieldMapper,
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ApolloStore apolloStore, CacheControl cacheControl,
-      CacheHeaders cacheHeaders, ExecutorService dispatcher, ApolloLogger logger, List<ApolloInterceptor>
-      applicationInterceptors) {
+      CacheHeaders cacheHeaders, ExecutorService dispatcher, ApolloLogger logger,
+      List<ApolloInterceptor> applicationInterceptors, List<OperationName> refetchQueryNames) {
     this.operation = operation;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
@@ -76,13 +82,13 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     this.dispatcher = dispatcher;
     this.logger = logger;
     this.applicationInterceptors = applicationInterceptors;
+    this.refetchQueryNames = refetchQueryNames;
     interceptorChain = prepareInterceptorChain(operation);
   }
 
   @SuppressWarnings("unchecked") @Nonnull @Override public Response<T> execute() throws ApolloException {
-    synchronized (this) {
-      if (executed) throw new IllegalStateException("Already Executed");
-      executed = true;
+    if (!executed.compareAndSet(false, true)) {
+      throw new IllegalStateException("Already Executed");
     }
 
     if (canceled) {
@@ -108,9 +114,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   }
 
   @Override public void enqueue(@Nullable final Callback<T> callback) {
-    synchronized (this) {
-      if (executed) throw new IllegalStateException("Already Executed");
-      executed = true;
+    if (!executed.compareAndSet(false, true)) {
+      throw new IllegalStateException("Already Executed");
     }
 
     interceptorChain.proceedAsync(dispatcher, new ApolloInterceptor.CallBack() {
@@ -147,35 +152,30 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     });
   }
 
-  @Nonnull @Override public RealApolloWatcher<T> watcher() {
-    return new RealApolloWatcher<>(clone(), apolloStore);
+  @Nonnull @Override public RealApolloQueryWatcher<T> watcher() {
+    return new RealApolloQueryWatcher<>(clone(), apolloStore);
   }
 
   @Nonnull @Override public RealApolloCall<T> httpCachePolicy(@Nonnull HttpCachePolicy.Policy httpCachePolicy) {
-    synchronized (this) {
-      if (executed) throw new IllegalStateException("Already Executed");
-    }
+    if (executed.get()) throw new IllegalStateException("Already Executed");
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache,
         checkNotNull(httpCachePolicy, "httpCachePolicy == null"), moshi, responseFieldMapper, customTypeAdapters,
-        apolloStore, cacheControl, cacheHeaders, dispatcher, logger, applicationInterceptors);
+        apolloStore, cacheControl, cacheHeaders, dispatcher, logger, applicationInterceptors, refetchQueryNames);
   }
 
   @Nonnull @Override public RealApolloCall<T> cacheControl(@Nonnull CacheControl cacheControl) {
-    synchronized (this) {
-      if (executed) throw new IllegalStateException("Already Executed");
-    }
+    if (executed.get()) throw new IllegalStateException("Already Executed");
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCachePolicy, moshi,
         responseFieldMapper, customTypeAdapters, apolloStore, checkNotNull(cacheControl, "cacheControl == null"),
-        cacheHeaders, dispatcher, logger, applicationInterceptors);
+        cacheHeaders, dispatcher, logger, applicationInterceptors, refetchQueryNames);
   }
 
   @Nonnull @Override public RealApolloCall<T> cacheHeaders(@Nonnull CacheHeaders cacheHeaders) {
-    synchronized (this) {
-      if (executed) throw new IllegalStateException("Already Executed");
-    }
+    if (executed.get()) throw new IllegalStateException("Already Executed");
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCachePolicy, moshi,
         responseFieldMapper, customTypeAdapters, apolloStore, cacheControl,
-        checkNotNull(cacheHeaders, "cacheHeaders == null"), dispatcher, logger, applicationInterceptors);
+        checkNotNull(cacheHeaders, "cacheHeaders == null"), dispatcher, logger, applicationInterceptors,
+        refetchQueryNames);
   }
 
   @Override public void cancel() {
@@ -190,7 +190,14 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   @Override @Nonnull public RealApolloCall<T> clone() {
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCachePolicy, moshi,
         responseFieldMapper, customTypeAdapters, apolloStore, cacheControl, cacheHeaders, dispatcher, logger,
-        applicationInterceptors);
+        applicationInterceptors, refetchQueryNames);
+  }
+
+  @Nonnull @Override public ApolloMutationCall<T> refetchQueries(@Nonnull OperationName... operationNames) {
+    if (executed.get()) throw new IllegalStateException("Already Executed");
+    return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCachePolicy, moshi,
+        responseFieldMapper, customTypeAdapters, apolloStore, cacheControl, cacheHeaders, dispatcher, logger,
+        applicationInterceptors, Arrays.asList(checkNotNull(operationNames, "operationNames == null")));
   }
 
   private ApolloInterceptorChain prepareInterceptorChain(Operation operation) {
