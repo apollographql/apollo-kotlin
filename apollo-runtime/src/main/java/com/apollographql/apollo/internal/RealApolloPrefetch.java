@@ -2,7 +2,7 @@ package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloPrefetch;
 import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.cache.http.HttpCacheControl;
+import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
@@ -47,7 +47,8 @@ import okhttp3.Response;
     this.dispatcher = dispatcher;
     this.logger = logger;
     interceptorChain = new RealApolloInterceptorChain(operation, Collections.<ApolloInterceptor>singletonList(
-        new ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCacheControl.NETWORK_FIRST, true, moshi, logger)
+        new ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCachePolicy.NETWORK_ONLY, true, moshi,
+            logger)
     ));
   }
 

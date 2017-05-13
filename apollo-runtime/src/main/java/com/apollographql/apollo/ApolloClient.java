@@ -5,11 +5,10 @@ import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.cache.normalized.CacheControl;
-import com.apollographql.apollo.cache.http.EvictionStrategy;
-import com.apollographql.apollo.cache.http.HttpCacheControl;
-import com.apollographql.apollo.cache.http.ResponseCacheStore;
+import com.apollographql.apollo.cache.http.HttpCachePolicy;
+import com.apollographql.apollo.cache.http.HttpCacheStore;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
+import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
@@ -73,7 +72,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   private final Moshi moshi;
   private final Map<Class, ResponseFieldMapper> responseFieldMapperPool = new LinkedHashMap<>();
   private final ExecutorService dispatcher;
-  private final HttpCacheControl defaultHttpCacheControl;
+  private final HttpCachePolicy.Policy defaultHttpCachePolicy;
   private final CacheControl defaultCacheControl;
   private final CacheHeaders defaultCacheHeaders;
   private final ApolloLogger logger;
@@ -87,7 +86,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     this.customTypeAdapters = builder.customTypeAdapters;
     this.moshi = builder.moshi;
     this.dispatcher = builder.dispatcher;
-    this.defaultHttpCacheControl = builder.defaultHttpCacheControl;
+    this.defaultHttpCachePolicy = builder.defaultHttpCachePolicy;
     this.defaultCacheHeaders = builder.defaultCacheHeaders;
     this.defaultCacheControl = builder.defaultCacheControl;
     this.logger = builder.apolloLogger;
@@ -108,7 +107,7 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
         responseFieldMapperPool.put(operation.getClass(), responseFieldMapper);
       }
     }
-    return new RealApolloCall<T>(operation, serverUrl, httpCallFactory, httpCache, defaultHttpCacheControl, moshi,
+    return new RealApolloCall<T>(operation, serverUrl, httpCallFactory, httpCache, defaultHttpCachePolicy, moshi,
         responseFieldMapper, customTypeAdapters, apolloStore, defaultCacheControl, defaultCacheHeaders,
         dispatcher, logger, applicationInterceptors);
   }
@@ -123,7 +122,6 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   }
 
   /**
-   *
    * @return The default {@link CacheHeaders} which this instance of {@link ApolloClient} was configured.
    */
   public CacheHeaders defaultCacheHeaders() {
@@ -162,12 +160,11 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
   @SuppressWarnings("WeakerAccess") public static class Builder {
     OkHttpClient okHttpClient;
     HttpUrl serverUrl;
-    ResponseCacheStore httpCacheStore;
-    EvictionStrategy httpEvictionStrategy;
+    HttpCacheStore httpCacheStore;
     ApolloStore apolloStore = ApolloStore.NO_APOLLO_STORE;
     Optional<NormalizedCacheFactory> cacheFactory = Optional.absent();
     Optional<CacheKeyResolver> cacheKeyResolver = Optional.absent();
-    HttpCacheControl defaultHttpCacheControl = HttpCacheControl.CACHE_FIRST;
+    HttpCachePolicy.Policy defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY;
     CacheControl defaultCacheControl = CacheControl.CACHE_FIRST;
     CacheHeaders defaultCacheHeaders = CacheHeaders.NONE;
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
@@ -218,14 +215,11 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     /**
      * Set the configuration to be used for request/response http cache.
      *
-     * @param cacheStore       The store to use for reading and writing cached response.
-     * @param evictionStrategy EvictionStrategy decides when the data in the cacheStore becomes stale and is no longer
-     *                         valid
+     * @param cacheStore The store to use for reading and writing cached response.
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder httpCache(@Nonnull ResponseCacheStore cacheStore, @Nonnull EvictionStrategy evictionStrategy) {
+    public Builder httpCacheStore(@Nonnull HttpCacheStore cacheStore) {
       this.httpCacheStore = checkNotNull(cacheStore, "cacheStore == null");
-      this.httpEvictionStrategy = checkNotNull(evictionStrategy, "evictionStrategy == null");
       return this;
     }
 
@@ -290,12 +284,12 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
     }
 
     /**
-     * Set the default {@link HttpCacheControl} strategy.
+     * Set the default {@link HttpCachePolicy.Policy} cache policy.
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder defaultHttpCacheControl(@Nonnull HttpCacheControl cacheControl) {
-      this.defaultHttpCacheControl = checkNotNull(cacheControl, "cacheControl == null");
+    public Builder defaultHttpCachePolicy(@Nonnull HttpCachePolicy.Policy cachePolicy) {
+      this.defaultHttpCachePolicy = checkNotNull(cachePolicy, "cachePolicy == null");
       return this;
     }
 
@@ -362,8 +356,8 @@ public final class ApolloClient implements ApolloCall.Factory, ApolloPrefetch.Fa
       apolloLogger = new ApolloLogger(logger);
       moshi = moshiBuilder.build();
 
-      if (httpCacheStore != null && httpEvictionStrategy != null) {
-        httpCache = new HttpCache(httpCacheStore, httpEvictionStrategy, apolloLogger);
+      if (httpCacheStore != null) {
+        httpCache = new HttpCache(httpCacheStore, apolloLogger);
         okHttpClient = okHttpClient.newBuilder().addInterceptor(httpCache.interceptor()).build();
       }
 
