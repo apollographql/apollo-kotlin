@@ -5,6 +5,7 @@ import com.apollographql.apollo.ApolloQueryCall;
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
+import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
@@ -202,14 +203,14 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
   private ApolloInterceptorChain prepareInterceptorChain(Operation operation) {
     List<ApolloInterceptor> interceptors = new ArrayList<>();
+    HttpCachePolicy.Policy httpCachePolicy = operation instanceof Query ? this.httpCachePolicy : null;
 
     interceptors.addAll(applicationInterceptors);
     interceptors.add(new ApolloCacheInterceptor(apolloStore, cacheControl, cacheHeaders, responseFieldMapper,
         customTypeAdapters, dispatcher, logger));
     interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
         customTypeAdapters, logger));
-    interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCachePolicy, false, moshi,
-        logger));
+    interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCachePolicy, false, moshi, logger));
 
     return new RealApolloInterceptorChain(operation, interceptors);
   }
