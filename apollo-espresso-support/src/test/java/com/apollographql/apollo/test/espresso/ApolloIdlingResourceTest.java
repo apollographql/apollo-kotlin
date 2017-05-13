@@ -1,4 +1,4 @@
-package com.apollographql.apollo.espresso;
+package com.apollographql.apollo.test.espresso;
 
 
 import android.support.test.espresso.IdlingResource;
@@ -10,6 +10,7 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.test.espresso.ApolloIdlingResource;
 
 import org.junit.After;
 import org.junit.Before;

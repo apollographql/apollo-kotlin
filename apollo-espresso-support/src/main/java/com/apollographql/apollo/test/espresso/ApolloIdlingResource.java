@@ -1,4 +1,4 @@
-package com.apollographql.apollo.espresso;
+package com.apollographql.apollo.test.espresso;
 
 
 import android.support.test.espresso.IdlingResource;
@@ -25,7 +25,7 @@ public class ApolloIdlingResource implements IdlingResource {
    *
    * @param name         name of this idlingResource instance.
    * @param apolloClient the apolloClient for which idlingResource needs to be created.
-   * @return a new ApolloIdlingResource.
+   * @return a new ApolloIdgit add -ulingResource.
    * @throws NullPointerException if name == null or apolloClient == null
    */
   public static ApolloIdlingResource create(@Nonnull String name, @Nonnull ApolloClient apolloClient) {
