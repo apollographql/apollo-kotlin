@@ -4,9 +4,9 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
+import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.exception.ApolloCanceledException;
-import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
@@ -49,12 +49,12 @@ public interface ApolloCall<T> extends Cancelable {
   @Nonnull ApolloWatcher<T> watcher();
 
   /**
-   * Sets the {@link HttpCacheControl} strategy for an ApolloCall object.
+   * Sets the http cache policy for response/request cache.
    *
-   * @param httpCacheControl the HttpCacheControl strategy to set
-   * @return The ApolloCall object with the provided HttpCacheControl strategy
+   * @param httpCachePolicy {@link HttpCachePolicy.Policy} to set
+   * @return The ApolloCall object with the provided {@link HttpCachePolicy.Policy}
    */
-  @Nonnull ApolloCall<T> httpCacheControl(@Nonnull HttpCacheControl httpCacheControl);
+  @Nonnull ApolloCall<T> httpCachePolicy(@Nonnull HttpCachePolicy.Policy httpCachePolicy);
 
   /**
    * Sets the {@link CacheControl} strategy for an ApolloCall object.

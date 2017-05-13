@@ -7,7 +7,7 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.cache.http.HttpCacheControl;
+import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.exception.ApolloCanceledException;
@@ -43,7 +43,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   final HttpUrl serverUrl;
   final Call.Factory httpCallFactory;
   final HttpCache httpCache;
-  final HttpCacheControl httpCacheControl;
+  final HttpCachePolicy.Policy httpCachePolicy;
   final Moshi moshi;
   final ResponseFieldMapper responseFieldMapper;
   final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
@@ -59,7 +59,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   volatile boolean canceled;
 
   public RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
-      HttpCacheControl httpCacheControl, Moshi moshi, ResponseFieldMapper responseFieldMapper,
+      HttpCachePolicy.Policy httpCachePolicy, Moshi moshi, ResponseFieldMapper responseFieldMapper,
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ApolloStore apolloStore, CacheControl cacheControl,
       ExecutorService dispatcher, ApolloLogger logger, List<ApolloInterceptor> applicationInterceptors,
       ApolloCallTracker tracker, CacheHeaders cacheHeaders) {
@@ -67,7 +67,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
     this.httpCache = httpCache;
-    this.httpCacheControl = httpCacheControl;
+    this.httpCachePolicy = httpCachePolicy;
     this.moshi = moshi;
     this.responseFieldMapper = responseFieldMapper;
     this.customTypeAdapters = customTypeAdapters;
@@ -126,12 +126,12 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     return new RealApolloWatcher<>(clone(), apolloStore);
   }
 
-  @Nonnull @Override public RealApolloCall<T> httpCacheControl(@Nonnull HttpCacheControl httpCacheControl) {
+  @Nonnull @Override public RealApolloCall<T> httpCachePolicy(@Nonnull HttpCachePolicy.Policy httpCachePolicy) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
     return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache,
-        checkNotNull(httpCacheControl, "httpCacheControl == null"), moshi, responseFieldMapper, customTypeAdapters,
+        checkNotNull(httpCachePolicy, "httpCacheControl == null"), moshi, responseFieldMapper, customTypeAdapters,
         apolloStore, cacheControl, dispatcher, logger, applicationInterceptors, tracker, cacheHeaders);
   }
 
@@ -139,7 +139,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
-    return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCacheControl, moshi,
+    return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCachePolicy, moshi,
         responseFieldMapper, customTypeAdapters, apolloStore, checkNotNull(cacheControl, "cacheControl == null"),
         dispatcher, logger, applicationInterceptors, tracker, cacheHeaders);
   }
@@ -148,7 +148,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
-    return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCacheControl, moshi,
+    return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCachePolicy, moshi,
         responseFieldMapper, customTypeAdapters, apolloStore, cacheControl,
         dispatcher, logger, applicationInterceptors, tracker, checkNotNull(cacheHeaders, "cacheHeaders == null"));
   }
@@ -163,7 +163,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   }
 
   @Override @Nonnull public RealApolloCall<T> clone() {
-    return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCacheControl, moshi,
+    return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCachePolicy, moshi,
         responseFieldMapper, customTypeAdapters, apolloStore, cacheControl, dispatcher, logger,
         applicationInterceptors, tracker, cacheHeaders);
 
@@ -228,7 +228,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         customTypeAdapters, dispatcher, logger));
     interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
         customTypeAdapters, logger));
-    interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCacheControl, false, moshi,
+    interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCachePolicy, false, moshi,
         logger));
 
     return new RealApolloInterceptorChain(operation, interceptors);

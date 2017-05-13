@@ -1,10 +1,9 @@
 package com.apollographql.apollo.internal.cache.http;
 
+import com.apollographql.apollo.cache.http.HttpCacheRecord;
+import com.apollographql.apollo.cache.http.HttpCacheRecordEditor;
+import com.apollographql.apollo.cache.http.HttpCacheStore;
 import com.apollographql.apollo.internal.util.ApolloLogger;
-import com.apollographql.apollo.cache.http.EvictionStrategy;
-import com.apollographql.apollo.cache.http.ResponseCacheRecord;
-import com.apollographql.apollo.cache.http.ResponseCacheRecordEditor;
-import com.apollographql.apollo.cache.http.ResponseCacheStore;
 
 import java.io.IOException;
 
@@ -20,19 +19,18 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static com.apollographql.apollo.internal.cache.http.Utils.copyResponseBody;
 
 @SuppressWarnings("WeakerAccess") public final class HttpCache {
-  public static final String CACHE_KEY_HEADER = "APOLLO-CACHE-KEY";
-  public static final String CACHE_CONTROL_HEADER = "APOLLO-CACHE-CONTROL";
-  public static final String CACHE_SERVED_DATE_HEADER = "APOLLO-SERVED-DATE";
-  public static final String CACHE_PREFETCH_HEADER = "APOLLO-PREFETCH";
+  public static final String CACHE_KEY_HEADER = "X-APOLLO-CACHE-KEY";
+  public static final String CACHE_FETCH_STRATEGY_HEADER = "X-APOLLO-CACHE-FETCH-STRATEGY";
+  public static final String CACHE_SERVED_DATE_HEADER = "X-APOLLO-SERVED-DATE";
+  public static final String CACHE_PREFETCH_HEADER = "X-APOLLO-PREFETCH";
+  public static final String CACHE_EXPIRE_TIMEOUT_HEADER = "X-APOLLO-EXPIRE-TIMEOUT";
+  public static final String CACHE_EXPIRE_AFTER_READ_HEADER = "X-APOLLO-EXPIRE-AFTER-READ";
 
-  private final ResponseCacheStore cacheStore;
-  private final EvictionStrategy evictionStrategy;
+  private final HttpCacheStore cacheStore;
   private final ApolloLogger logger;
 
-  public HttpCache(@Nonnull ResponseCacheStore cacheStore, @Nonnull EvictionStrategy evictionStrategy,
-      @Nonnull ApolloLogger logger) {
+  public HttpCache(@Nonnull HttpCacheStore cacheStore, @Nonnull ApolloLogger logger) {
     this.cacheStore = checkNotNull(cacheStore, "cacheStore can't be null");
-    this.evictionStrategy = checkNotNull(evictionStrategy, "evictionStrategy can't be null");
     this.logger = checkNotNull(logger, "logger can't be null");
   }
 
@@ -61,14 +59,14 @@ import static com.apollographql.apollo.internal.cache.http.Utils.copyResponseBod
   }
 
   public Response read(@Nonnull final String cacheKey, final boolean expireAfterRead) {
-    ResponseCacheRecord responseCacheRecord = null;
+    HttpCacheRecord responseCacheRecord = null;
     try {
       responseCacheRecord = cacheStore.cacheRecord(cacheKey);
       if (responseCacheRecord == null) {
         return null;
       }
 
-      final ResponseCacheRecord cacheRecord = responseCacheRecord;
+      final HttpCacheRecord cacheRecord = responseCacheRecord;
       Source cacheResponseSource = new ForwardingSource(responseCacheRecord.bodySource()) {
         @Override public void close() throws IOException {
           super.close();
@@ -93,15 +91,11 @@ import static com.apollographql.apollo.internal.cache.http.Utils.copyResponseBod
   }
 
   public Interceptor interceptor() {
-    return new CacheInterceptor(this, logger);
-  }
-
-  boolean isStale(@Nonnull Response response) {
-    return evictionStrategy.isStale(response);
+    return new HttpCacheInterceptor(this, logger);
   }
 
   Response cacheProxy(@Nonnull Response response, @Nonnull String cacheKey) {
-    ResponseCacheRecordEditor cacheRecordEditor = null;
+    HttpCacheRecordEditor cacheRecordEditor = null;
     try {
       cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey);
       if (cacheRecordEditor != null) {
@@ -124,7 +118,7 @@ import static com.apollographql.apollo.internal.cache.http.Utils.copyResponseBod
   }
 
   void write(@Nonnull Response response, @Nonnull String cacheKey) {
-    ResponseCacheRecordEditor cacheRecordEditor = null;
+    HttpCacheRecordEditor cacheRecordEditor = null;
     try {
       cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey);
       if (cacheRecordEditor != null) {
@@ -150,7 +144,7 @@ import static com.apollographql.apollo.internal.cache.http.Utils.copyResponseBod
     }
   }
 
-  private void closeQuietly(ResponseCacheRecord cacheRecord) {
+  private void closeQuietly(HttpCacheRecord cacheRecord) {
     try {
       if (cacheRecord != null) {
         cacheRecord.close();
@@ -160,7 +154,7 @@ import static com.apollographql.apollo.internal.cache.http.Utils.copyResponseBod
     }
   }
 
-  private void abortQuietly(ResponseCacheRecordEditor cacheRecordEditor) {
+  private void abortQuietly(HttpCacheRecordEditor cacheRecordEditor) {
     try {
       if (cacheRecordEditor != null) {
         cacheRecordEditor.abort();

@@ -1,7 +1,8 @@
 package com.apollographql.apollo.internal.interceptor;
 
 import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.cache.http.HttpCacheControl;
+import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -26,6 +28,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okio.Buffer;
+
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
  * ApolloServerInterceptor is a concrete {@link ApolloInterceptor} responsible for making the network calls to the
@@ -39,20 +43,21 @@ import okio.Buffer;
 
   final HttpUrl serverUrl;
   final okhttp3.Call.Factory httpCallFactory;
-  final HttpCacheControl cacheControl;
+  final Optional<HttpCachePolicy.Policy> cachePolicy;
   final boolean prefetch;
   final Moshi moshi;
   final ApolloLogger logger;
   volatile Call httpCall;
 
-  public ApolloServerInterceptor(HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCacheControl cacheControl,
-      boolean prefetch, Moshi moshi, ApolloLogger logger) {
-    this.serverUrl = serverUrl;
-    this.httpCallFactory = httpCallFactory;
-    this.cacheControl = cacheControl;
+  public ApolloServerInterceptor(@Nonnull HttpUrl serverUrl, @Nonnull Call.Factory httpCallFactory,
+      @Nullable HttpCachePolicy.Policy cachePolicy, boolean prefetch, @Nonnull Moshi moshi,
+      @Nonnull ApolloLogger logger) {
+    this.serverUrl = checkNotNull(serverUrl, "serverUrl == null");
+    this.httpCallFactory = checkNotNull(httpCallFactory, "httpCallFactory == null");
+    this.cachePolicy = Optional.fromNullable(cachePolicy);
     this.prefetch = prefetch;
-    this.moshi = moshi;
-    this.logger = logger;
+    this.moshi = checkNotNull(moshi, "moshi == null");
+    this.logger = checkNotNull(logger, "logger == null");
   }
 
   @Override @Nonnull public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain)
@@ -109,17 +114,24 @@ import okio.Buffer;
 
   private Call httpCall(Operation operation) throws IOException {
     RequestBody requestBody = httpRequestBody(operation);
-    String cacheKey = cacheKey(requestBody);
-    Request request = new Request.Builder()
+    Request.Builder requestBuilder = new Request.Builder()
         .url(serverUrl)
         .post(requestBody)
         .header("Accept", ACCEPT_TYPE)
-        .header("Content-Type", CONTENT_TYPE)
-        .header(HttpCache.CACHE_KEY_HEADER, cacheKey)
-        .header(HttpCache.CACHE_CONTROL_HEADER, cacheControl.httpHeader)
-        .header(HttpCache.CACHE_PREFETCH_HEADER, Boolean.toString(prefetch))
-        .build();
-    return httpCallFactory.newCall(request);
+        .header("Content-Type", CONTENT_TYPE);
+
+    if (cachePolicy.isPresent()) {
+      HttpCachePolicy.Policy cachePolicy = this.cachePolicy.get();
+      String cacheKey = cacheKey(requestBody);
+      requestBuilder = requestBuilder
+          .header(HttpCache.CACHE_KEY_HEADER, cacheKey)
+          .header(HttpCache.CACHE_FETCH_STRATEGY_HEADER, cachePolicy.fetchStrategy.name())
+          .header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER, String.valueOf(cachePolicy.expireTimeoutMs()))
+          .header(HttpCache.CACHE_EXPIRE_AFTER_READ_HEADER, Boolean.toString(cachePolicy.expireAfterRead))
+          .header(HttpCache.CACHE_PREFETCH_HEADER, Boolean.toString(prefetch));
+    }
+
+    return httpCallFactory.newCall(requestBuilder.build());
   }
 
   private RequestBody httpRequestBody(Operation operation) throws IOException {

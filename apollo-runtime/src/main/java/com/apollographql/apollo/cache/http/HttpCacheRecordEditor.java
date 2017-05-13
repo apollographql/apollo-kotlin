@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 
 import okio.Sink;
 
-public interface ResponseCacheRecordEditor {
+public interface HttpCacheRecordEditor {
   @Nonnull Sink headerSink();
 
   @Nonnull Sink bodySink();
