@@ -54,7 +54,7 @@ class OperationTypeSpecBuilder(
       context: CodeGenerationContext): TypeSpec.Builder {
     val initializeCodeBuilder = CodeBlock.builder().add(OPERATION_DEFINITION_FIELD_NAME)
     fragments.filter { operation.fragmentsReferenced.contains(it.fragmentName) }.forEach {
-      val className = ClassName.get(context.fragmentsPackage, it.formatClassName());
+      val className = ClassName.get(context.fragmentsPackage, it.formatClassName())
       initializeCodeBuilder
           .add(" + \$S\n", "\n")
           .add(" + \$T.\$L", className, Fragment.FRAGMENT_DEFINITION_FIELD_NAME)
@@ -163,16 +163,15 @@ class OperationTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addBuilder(context: CodeGenerationContext): TypeSpec.Builder {
-    addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
     if (operation.variables.isEmpty()) {
-      return this;
-    } else {
-      return operation.variables
-          .map { it.name.decapitalize() to it.type }
-          .map { it.first to JavaTypeResolver(context, context.typesPackage).resolve(it.second).unwrapOptionalType() }
-          .let { BuilderTypeSpecBuilder(ClassName.get("", OPERATION_TYPE_NAME), it, emptyMap()) }
-          .let { addType(it.build()) }
+      return this
     }
+    addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
+    return operation.variables
+        .map { it.name.decapitalize() to it.type }
+        .map { it.first to JavaTypeResolver(context, context.typesPackage).resolve(it.second).unwrapOptionalType() }
+        .let { BuilderTypeSpecBuilder(ClassName.get("", OPERATION_TYPE_NAME), it, emptyMap()) }
+        .let { addType(it.build()) }
   }
 
   private fun variablesType() =
