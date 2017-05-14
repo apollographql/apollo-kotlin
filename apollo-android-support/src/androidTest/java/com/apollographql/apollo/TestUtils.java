@@ -2,6 +2,7 @@ package com.apollographql.apollo;
 
 import android.os.Looper;
 
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
@@ -9,6 +10,8 @@ import com.apollographql.apollo.api.ResponseReader;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Handler;
+
+import javax.annotation.Nonnull;
 
 public final class TestUtils {
   public static final Query EMPTY_QUERY = new Query() {
@@ -30,6 +33,10 @@ public final class TestUtils {
 
     @Override public Object wrapData(Data data) {
       return data;
+    }
+
+    @Nonnull @Override public OperationName name() {
+      return null;
     }
   };
 
