@@ -300,7 +300,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
-     * Set the default {@link HttpCachePolicy.Policy} cache policy.
+     * Sets the http cache policy to be used as default for all GraphQL {@link Query} operations. Will be ignored for
+     * any {@link Mutation} operations. By default http cache policy is set to {@link HttpCachePolicy#NETWORK_ONLY}.
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */
