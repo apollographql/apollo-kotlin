@@ -15,7 +15,7 @@ jdk:
   - oraclejdk8
 
 script:
-  - ./gradlew clean build connectedCheck -x checkstyleTest --stacktrace --max-workers=2 -x apollo-gradle-plugin:test -x apollo-integration:build
+  - ./gradlew clean build connectedCheck -x checkstyleTest --stacktrace --max-workers=2 -x apollo-gradle-plugin:test -x apollo-integration:build -x apollo-integration:connectedCheck
   - .buildscript/integration_tests_composite.sh
 
 before_script:
