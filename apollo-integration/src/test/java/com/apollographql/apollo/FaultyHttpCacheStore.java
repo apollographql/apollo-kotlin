@@ -1,8 +1,8 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.cache.http.ResponseCacheRecord;
-import com.apollographql.apollo.cache.http.ResponseCacheRecordEditor;
-import com.apollographql.apollo.cache.http.ResponseCacheStore;
+import com.apollographql.apollo.cache.http.HttpCacheRecord;
+import com.apollographql.apollo.cache.http.HttpCacheRecordEditor;
+import com.apollographql.apollo.cache.http.HttpCacheStore;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import okio.Sink;
 import okio.Source;
 import okio.Timeout;
 
-class FaultyCacheStore implements ResponseCacheStore {
+class FaultyHttpCacheStore implements HttpCacheStore {
   private static final int VERSION = 99991;
   private static final int ENTRY_HEADERS = 0;
   private static final int ENTRY_BODY = 1;
@@ -27,17 +27,17 @@ class FaultyCacheStore implements ResponseCacheStore {
   private final FaultySink faultySink = new FaultySink();
   private FailStrategy failStrategy;
 
-  FaultyCacheStore(FileSystem fileSystem) {
+  FaultyHttpCacheStore(FileSystem fileSystem) {
     this.cache = DiskLruCache.create(fileSystem, new File("/cache/"), VERSION, ENTRY_COUNT, Integer.MAX_VALUE);
   }
 
-  @Override public ResponseCacheRecord cacheRecord(@Nonnull String cacheKey) throws IOException {
+  @Override public HttpCacheRecord cacheRecord(@Nonnull String cacheKey) throws IOException {
     final DiskLruCache.Snapshot snapshot = cache.get(cacheKey);
     if (snapshot == null) {
       return null;
     }
 
-    return new ResponseCacheRecord() {
+    return new HttpCacheRecord() {
       @Nonnull @Override public Source headerSource() {
         if (failStrategy == FailStrategy.FAIL_HEADER_READ) {
           return faultySource;
@@ -60,13 +60,13 @@ class FaultyCacheStore implements ResponseCacheStore {
     };
   }
 
-  @Override public ResponseCacheRecordEditor cacheRecordEditor(@Nonnull String cacheKey) throws IOException {
+  @Override public HttpCacheRecordEditor cacheRecordEditor(@Nonnull String cacheKey) throws IOException {
     final DiskLruCache.Editor editor = cache.edit(cacheKey);
     if (editor == null) {
       return null;
     }
 
-    return new ResponseCacheRecordEditor() {
+    return new HttpCacheRecordEditor() {
       @Nonnull @Override public Sink headerSink() {
         if (failStrategy == FailStrategy.FAIL_HEADER_WRITE) {
           return faultySink;

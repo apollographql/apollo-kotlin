@@ -1,16 +1,18 @@
 package com.apollographql.apollo.internal;
 
+import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
-import com.apollographql.apollo.ApolloClient;
-import com.apollographql.apollo.cache.http.HttpCacheControl;
+import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.internal.cache.http.HttpCacheFetchStrategy;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 
@@ -24,11 +26,11 @@ public class CacheControlTest {
     okHttpClient = new OkHttpClient.Builder().build();
   }
 
-  @Test public void setDefaultCacheControl() {
+  @Test public void setDefaultCachePolicy() {
     ApolloClient apolloClient = ApolloClient.builder()
         .serverUrl("http://google.com")
         .okHttpClient(okHttpClient)
-        .defaultHttpCacheControl(HttpCacheControl.CACHE_ONLY)
+        .defaultHttpCachePolicy(HttpCachePolicy.CACHE_ONLY)
         .defaultCacheControl(CacheControl.NETWORK_ONLY)
         .build();
 
@@ -55,7 +57,7 @@ public class CacheControlTest {
           }
         });
 
-    assertThat(realApolloCall.httpCacheControl).isEqualTo(HttpCacheControl.CACHE_ONLY);
+    assertThat(realApolloCall.httpCachePolicy.fetchStrategy).isEqualTo(HttpCacheFetchStrategy.CACHE_ONLY);
     assertThat(realApolloCall.cacheControl).isEqualTo(CacheControl.NETWORK_ONLY);
   }
 
@@ -88,7 +90,7 @@ public class CacheControlTest {
           }
         });
 
-    assertThat(realApolloCall.httpCacheControl).isEqualTo(HttpCacheControl.CACHE_FIRST);
+    assertThat(realApolloCall.httpCachePolicy.fetchStrategy).isEqualTo(HttpCacheFetchStrategy.NETWORK_ONLY);
     assertThat(realApolloCall.cacheControl).isEqualTo(CacheControl.CACHE_FIRST);
   }
 }

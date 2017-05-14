@@ -1,7 +1,7 @@
 package com.apollographql.apollo.internal.cache.http;
 
 import com.apollographql.apollo.internal.util.ApolloLogger;
-import com.apollographql.apollo.cache.http.ResponseCacheRecordEditor;
+import com.apollographql.apollo.cache.http.HttpCacheRecordEditor;
 
 import java.io.IOException;
 
@@ -27,7 +27,7 @@ final class ResponseBodyProxy extends ResponseBody {
   private final String contentLength;
   private final Source responseBodySource;
 
-  ResponseBodyProxy(@Nonnull ResponseCacheRecordEditor cacheRecordEditor, @Nonnull Response sourceResponse,
+  ResponseBodyProxy(@Nonnull HttpCacheRecordEditor cacheRecordEditor, @Nonnull Response sourceResponse,
       @Nonnull ApolloLogger logger) {
     checkNotNull(cacheRecordEditor, "cacheRecordEditor == null");
     checkNotNull(sourceResponse, "sourceResponse == null");
@@ -54,13 +54,13 @@ final class ResponseBodyProxy extends ResponseBody {
   }
 
   private static class ProxySource implements Source {
-    final ResponseCacheRecordEditor cacheRecordEditor;
+    final HttpCacheRecordEditor cacheRecordEditor;
     final ResponseBodyCacheSink responseBodyCacheSink;
     final Source responseBodySource;
     final ApolloLogger logger;
     boolean closed;
 
-    ProxySource(ResponseCacheRecordEditor cacheRecordEditor, Source responseBodySource, final ApolloLogger logger) {
+    ProxySource(HttpCacheRecordEditor cacheRecordEditor, Source responseBodySource, final ApolloLogger logger) {
       this.cacheRecordEditor = cacheRecordEditor;
       this.responseBodySource = responseBodySource;
       this.logger = logger;
