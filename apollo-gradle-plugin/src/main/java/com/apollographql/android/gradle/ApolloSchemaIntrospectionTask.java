@@ -4,21 +4,25 @@ import com.google.common.collect.Lists;
 
 import com.moowork.gradle.node.task.NodeTask;
 
+import org.gradle.api.internal.tasks.options.Option;
+
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ApolloSchemaIntrospectionTask extends NodeTask{
-  // URL for the GraphQL server, also supports a local query file
+  @Option(option = "url", description = "URL for the GraphQL server, also supports a local query file")
   private String url;
-  // Output path for the GraphQL schema file relative to the project root
+  @Option(option = "output", description = "Output path for the GraphQL schema file relative to the project root")
   private String output;
-  // Additional header to send to the server
-  private String header;
-  // Allows "insecure" SSL connection to the server
+  @Option(option = "headers", description = "Additional Headers to send to the server")
+  private List<String> headers;
+  @Option(option = "insecure", description = "Allows \"insecure\" SSL connection to the server")
   private boolean insecure;
 
   public ApolloSchemaIntrospectionTask() {
     dependsOn(ApolloCodeGenInstallTask.NAME);
+    headers = new ArrayList<>();
   }
 
   @Override
@@ -33,9 +37,11 @@ public class ApolloSchemaIntrospectionTask extends NodeTask{
     List<String> args = Lists.newArrayList("introspect-schema", url, "--output", getProject().file(output)
         .getAbsolutePath());
 
-    if (!Utils.isNullOrEmpty(header)) {
-      args.add("--header");
-      args.add(header);
+    if (!headers.isEmpty()) {
+      for(String h : headers) {
+        args.add("--header");
+        args.add(h);
+      }
     }
 
     if (insecure) {
@@ -55,8 +61,8 @@ public class ApolloSchemaIntrospectionTask extends NodeTask{
     this.output = output;
   }
 
-  public void setHeader(String header) {
-    this.header = header;
+  public void setHeaders(List<String> header) {
+    this.headers = header;
   }
 
   public void setInsecure(boolean inSecure) {
