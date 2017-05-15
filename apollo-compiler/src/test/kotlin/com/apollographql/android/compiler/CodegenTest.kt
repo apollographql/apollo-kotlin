@@ -21,7 +21,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
   @Test
   fun generateExpectedClasses() {
     GraphQLCompiler().write(args)
-    Files.walkFileTree(args.irFile.parentFile.toPath(), object : SimpleFileVisitor<Path>() {
+    Files.walkFileTree(path, object : SimpleFileVisitor<Path>() {
       override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
         if (expectedFileMatcher.matches(expectedFile)) {
           val expected = expectedFile.toFile()
@@ -33,6 +33,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
             throw AssertionError("Couldn't find actual file: $actual")
           }
 
+          System.out.println("Actual" + actual.readText())
           assertThat(actual.readText()).isEqualTo(expected.readText())
           sourceFileObjects.add(JavaFileObjects.forSourceLines("com.example.$pkgName.$actualClassName",
               actual.readLines()))
