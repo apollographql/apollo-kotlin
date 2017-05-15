@@ -10,11 +10,10 @@ import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.example.fragment_in_fragment.fragment.PilotFragment;
 import com.example.fragment_in_fragment.fragment.StarshipFragment;
+
 import java.io.IOException;
-import java.lang.Object;
-import java.lang.Override;
-import java.lang.String;
 import java.util.List;
+
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,6 +61,19 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
   @Override
   public ResponseFieldMapper<AllStarships.Data> responseFieldMapper() {
     return new Data.Mapper();
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public AllStarships build() {
+      return new AllStarships();
+    }
   }
 
   public static class Data implements Operation.Data {

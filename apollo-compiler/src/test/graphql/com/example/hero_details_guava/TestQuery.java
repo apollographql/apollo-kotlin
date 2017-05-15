@@ -1,17 +1,16 @@
 package com.example.hero_details_guava;
 
+import com.google.common.base.Optional;
+
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
-import com.google.common.base.Optional;
+
 import java.io.IOException;
-import java.lang.Integer;
-import java.lang.Object;
-import java.lang.Override;
-import java.lang.String;
 import java.util.List;
+
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,6 +61,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   @Override
   public ResponseFieldMapper<TestQuery.Data> responseFieldMapper() {
     return new Data.Mapper();
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public TestQuery build() {
+      return new TestQuery();
+    }
   }
 
   public static class Data implements Operation.Data {
