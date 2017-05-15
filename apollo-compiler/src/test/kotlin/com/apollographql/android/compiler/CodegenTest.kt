@@ -21,7 +21,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
   @Test
   fun generateExpectedClasses() {
     GraphQLCompiler().write(args)
-    Files.walkFileTree(path, object : SimpleFileVisitor<Path>() {
+    Files.walkFileTree(args.irFile.parentFile.toPath(), object : SimpleFileVisitor<Path>() {
       override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
         if (expectedFileMatcher.matches(expectedFile)) {
           val expected = expectedFile.toFile()
