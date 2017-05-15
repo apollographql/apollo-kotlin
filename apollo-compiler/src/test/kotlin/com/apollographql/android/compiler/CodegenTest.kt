@@ -33,8 +33,6 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
             throw AssertionError("Couldn't find actual file: $actual")
           }
 
-//          System.out.println("Actual " + actual.readText())
-//          System.out.println("Expected " + expected.readText());
           assertThat(actual.readText()).isEqualTo(expected.readText())
           sourceFileObjects.add(JavaFileObjects.forSourceLines("com.example.$pkgName.$actualClassName",
               actual.readLines()))

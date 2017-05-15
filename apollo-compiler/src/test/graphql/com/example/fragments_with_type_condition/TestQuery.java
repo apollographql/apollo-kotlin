@@ -9,9 +9,10 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
 import com.example.fragments_with_type_condition.fragment.DroidDetails;
 import com.example.fragments_with_type_condition.fragment.HumanDetails;
-
 import java.io.IOException;
-
+import java.lang.Object;
+import java.lang.Override;
+import java.lang.String;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

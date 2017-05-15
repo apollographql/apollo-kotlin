@@ -9,10 +9,11 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
 import com.example.fragment_with_inline_fragment.fragment.HeroDetails;
 import com.example.fragment_with_inline_fragment.type.Episode;
-
 import java.io.IOException;
+import java.lang.Object;
+import java.lang.Override;
+import java.lang.String;
 import java.util.List;
-
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
