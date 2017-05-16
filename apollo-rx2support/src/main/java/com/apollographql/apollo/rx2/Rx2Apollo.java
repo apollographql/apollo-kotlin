@@ -36,7 +36,7 @@ public class Rx2Apollo {
   /**
    * Converts an {@link ApolloQueryWatcher} to an asynchronous Observable.
    *
-   * @param watcher the ApolloWatcher to convert.
+   * @param watcher the ApolloQueryWatcher to convert.
    * @param <T>     the value type
    * @return the converted Observable
    * @throws NullPointerException if watcher == null

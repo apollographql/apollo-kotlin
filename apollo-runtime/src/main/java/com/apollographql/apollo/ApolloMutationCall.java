@@ -3,7 +3,6 @@ package com.apollographql.apollo;
 import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.cache.normalized.CacheControl;
 
 import javax.annotation.Nonnull;
 
@@ -22,8 +21,6 @@ public interface ApolloMutationCall<T> extends ApolloCall<T> {
    */
   @Nonnull ApolloMutationCall<T> refetchQueries(@Nonnull OperationName... operationNames);
 
-  @Nonnull @Override ApolloMutationCall<T> cacheControl(@Nonnull CacheControl cacheControl);
-
   @Nonnull @Override ApolloMutationCall<T> cacheHeaders(@Nonnull CacheHeaders cacheHeaders);
 
   @Nonnull @Override ApolloMutationCall<T> clone();
@@ -35,8 +32,8 @@ public interface ApolloMutationCall<T> extends ApolloCall<T> {
     /**
      * Creates and prepares a new {@link ApolloMutationCall} call.
      *
-     * @param query the operation which needs to be performed
-     * @return prepared {@link ApolloQueryCall} call to be executed at some point in the future
+     * @param mutation the mutation which needs to be performed
+     * @return prepared {@link ApolloMutationCall} call to be executed at some point in the future
      */
     <D extends Mutation.Data, T, V extends Mutation.Variables> ApolloMutationCall<T> mutate(
         @Nonnull Mutation<D, T, V> mutation);

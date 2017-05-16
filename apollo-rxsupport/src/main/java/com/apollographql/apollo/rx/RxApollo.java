@@ -38,7 +38,7 @@ public final class RxApollo {
    * Converts an {@link ApolloQueryWatcher} into an Observable. Honors the back pressure from downstream with the back
    * pressure strategy {@link rx.Emitter.BackpressureMode#LATEST}.
    *
-   * @param watcher the ApolloWatcher to convert
+   * @param watcher the ApolloQueryWatcher to convert
    * @param <T>     the value type
    * @return the converted Observable
    */
@@ -50,7 +50,7 @@ public final class RxApollo {
   /**
    * Converts an {@link ApolloQueryWatcher} into an Observable.
    *
-   * @param watcher          the ApolloWatcher to convert
+   * @param watcher          the ApolloQueryWatcher to convert
    * @param backpressureMode the back pressure strategy to apply to the observable source.
    * @param <T>              the value type
    * @return the converted Observable

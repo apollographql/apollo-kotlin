@@ -64,26 +64,26 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final AtomicBoolean executed = new AtomicBoolean();
   volatile boolean canceled;
 
-  public RealApolloCall(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
-      HttpCachePolicy.Policy httpCachePolicy, Moshi moshi, ResponseFieldMapper responseFieldMapper,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ApolloStore apolloStore, CacheControl cacheControl,
-      CacheHeaders cacheHeaders, ExecutorService dispatcher, ApolloLogger logger,
-      List<ApolloInterceptor> applicationInterceptors, List<OperationName> refetchQueryNames) {
-    this.operation = operation;
-    this.serverUrl = serverUrl;
-    this.httpCallFactory = httpCallFactory;
-    this.httpCache = httpCache;
-    this.httpCachePolicy = httpCachePolicy;
-    this.moshi = moshi;
-    this.responseFieldMapper = responseFieldMapper;
-    this.customTypeAdapters = customTypeAdapters;
-    this.apolloStore = apolloStore;
-    this.cacheControl = cacheControl;
-    this.cacheHeaders = cacheHeaders;
-    this.dispatcher = dispatcher;
-    this.logger = logger;
-    this.applicationInterceptors = applicationInterceptors;
-    this.refetchQueryNames = refetchQueryNames;
+  public static <T> Builder<T> builder() {
+    return new Builder<>();
+  }
+
+  private RealApolloCall(Builder<T> builder) {
+    this.operation = builder.operation;
+    this.serverUrl = builder.serverUrl;
+    this.httpCallFactory = builder.httpCallFactory;
+    this.httpCache = builder.httpCache;
+    this.httpCachePolicy = builder.httpCachePolicy;
+    this.moshi = builder.moshi;
+    this.responseFieldMapper = builder.responseFieldMapper;
+    this.customTypeAdapters = builder.customTypeAdapters;
+    this.apolloStore = builder.apolloStore;
+    this.cacheControl = builder.cacheControl;
+    this.cacheHeaders = builder.cacheHeaders;
+    this.dispatcher = builder.dispatcher;
+    this.logger = builder.logger;
+    this.applicationInterceptors = builder.applicationInterceptors;
+    this.refetchQueryNames = builder.refetchQueryNames;
     interceptorChain = prepareInterceptorChain(operation);
   }
 
@@ -159,24 +159,23 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
   @Nonnull @Override public RealApolloCall<T> httpCachePolicy(@Nonnull HttpCachePolicy.Policy httpCachePolicy) {
     if (executed.get()) throw new IllegalStateException("Already Executed");
-    return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache,
-        checkNotNull(httpCachePolicy, "httpCachePolicy == null"), moshi, responseFieldMapper, customTypeAdapters,
-        apolloStore, cacheControl, cacheHeaders, dispatcher, logger, applicationInterceptors, refetchQueryNames);
+    return toBuilder()
+        .httpCachePolicy(checkNotNull(httpCachePolicy, "httpCachePolicy == null"))
+        .build();
   }
 
   @Nonnull @Override public RealApolloCall<T> cacheControl(@Nonnull CacheControl cacheControl) {
     if (executed.get()) throw new IllegalStateException("Already Executed");
-    return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCachePolicy, moshi,
-        responseFieldMapper, customTypeAdapters, apolloStore, checkNotNull(cacheControl, "cacheControl == null"),
-        cacheHeaders, dispatcher, logger, applicationInterceptors, refetchQueryNames);
+    return toBuilder()
+        .cacheControl(checkNotNull(cacheControl, "cacheControl == null"))
+        .build();
   }
 
   @Nonnull @Override public RealApolloCall<T> cacheHeaders(@Nonnull CacheHeaders cacheHeaders) {
     if (executed.get()) throw new IllegalStateException("Already Executed");
-    return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCachePolicy, moshi,
-        responseFieldMapper, customTypeAdapters, apolloStore, cacheControl,
-        checkNotNull(cacheHeaders, "cacheHeaders == null"), dispatcher, logger, applicationInterceptors,
-        refetchQueryNames);
+    return toBuilder()
+        .cacheHeaders(checkNotNull(cacheHeaders, "cacheHeaders == null"))
+        .build();
   }
 
   @Override public void cancel() {
@@ -189,16 +188,33 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   }
 
   @Override @Nonnull public RealApolloCall<T> clone() {
-    return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCachePolicy, moshi,
-        responseFieldMapper, customTypeAdapters, apolloStore, cacheControl, cacheHeaders, dispatcher, logger,
-        applicationInterceptors, refetchQueryNames);
+    return toBuilder().build();
   }
 
   @Nonnull @Override public ApolloMutationCall<T> refetchQueries(@Nonnull OperationName... operationNames) {
     if (executed.get()) throw new IllegalStateException("Already Executed");
-    return new RealApolloCall<>(operation, serverUrl, httpCallFactory, httpCache, httpCachePolicy, moshi,
-        responseFieldMapper, customTypeAdapters, apolloStore, cacheControl, cacheHeaders, dispatcher, logger,
-        applicationInterceptors, Arrays.asList(checkNotNull(operationNames, "operationNames == null")));
+    return toBuilder()
+        .refetchQueryNames(Arrays.asList(checkNotNull(operationNames, "operationNames == null")))
+        .build();
+  }
+
+  public Builder<T> toBuilder() {
+    return RealApolloCall.<T>builder()
+        .operation(operation)
+        .serverUrl(serverUrl)
+        .httpCallFactory(httpCallFactory)
+        .httpCache(httpCache)
+        .httpCachePolicy(httpCachePolicy)
+        .moshi(moshi)
+        .responseFieldMapper(responseFieldMapper)
+        .customTypeAdapters(customTypeAdapters)
+        .apolloStore(apolloStore)
+        .cacheControl(cacheControl)
+        .cacheHeaders(cacheHeaders)
+        .dispatcher(dispatcher)
+        .logger(logger)
+        .applicationInterceptors(applicationInterceptors)
+        .refetchQueryNames(refetchQueryNames);
   }
 
   private ApolloInterceptorChain prepareInterceptorChain(Operation operation) {
@@ -213,5 +229,111 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCachePolicy, false, moshi, logger));
 
     return new RealApolloInterceptorChain(operation, interceptors);
+  }
+
+  public static final class Builder<T> {
+    Operation operation;
+    HttpUrl serverUrl;
+    Call.Factory httpCallFactory;
+    HttpCache httpCache;
+    HttpCachePolicy.Policy httpCachePolicy;
+    Moshi moshi;
+    ResponseFieldMapper responseFieldMapper;
+    Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+    ApolloStore apolloStore;
+    CacheControl cacheControl;
+    CacheHeaders cacheHeaders;
+    ApolloInterceptorChain interceptorChain;
+    ExecutorService dispatcher;
+    ApolloLogger logger;
+    List<ApolloInterceptor> applicationInterceptors;
+    List<OperationName> refetchQueryNames;
+
+    public Builder<T> operation(Operation operation) {
+      this.operation = operation;
+      return this;
+    }
+
+    public Builder<T> serverUrl(HttpUrl serverUrl) {
+      this.serverUrl = serverUrl;
+      return this;
+    }
+
+    public Builder<T> httpCallFactory(Call.Factory httpCallFactory) {
+      this.httpCallFactory = httpCallFactory;
+      return this;
+    }
+
+    public Builder<T> httpCache(HttpCache httpCache) {
+      this.httpCache = httpCache;
+      return this;
+    }
+
+    public Builder<T> httpCachePolicy(HttpCachePolicy.Policy httpCachePolicy) {
+      this.httpCachePolicy = httpCachePolicy;
+      return this;
+    }
+
+    public Builder<T> moshi(Moshi moshi) {
+      this.moshi = moshi;
+      return this;
+    }
+
+    public Builder<T> responseFieldMapper(ResponseFieldMapper responseFieldMapper) {
+      this.responseFieldMapper = responseFieldMapper;
+      return this;
+    }
+
+    public Builder<T> customTypeAdapters(Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+      this.customTypeAdapters = customTypeAdapters;
+      return this;
+    }
+
+    public Builder<T> apolloStore(ApolloStore apolloStore) {
+      this.apolloStore = apolloStore;
+      return this;
+    }
+
+    public Builder<T> cacheControl(CacheControl cacheControl) {
+      this.cacheControl = cacheControl;
+      return this;
+    }
+
+    public Builder<T> cacheHeaders(CacheHeaders cacheHeaders) {
+      this.cacheHeaders = cacheHeaders;
+      return this;
+    }
+
+    public Builder<T> interceptorChain(ApolloInterceptorChain interceptorChain) {
+      this.interceptorChain = interceptorChain;
+      return this;
+    }
+
+    public Builder<T> dispatcher(ExecutorService dispatcher) {
+      this.dispatcher = dispatcher;
+      return this;
+    }
+
+    public Builder<T> logger(ApolloLogger logger) {
+      this.logger = logger;
+      return this;
+    }
+
+    public Builder<T> applicationInterceptors(List<ApolloInterceptor> applicationInterceptors) {
+      this.applicationInterceptors = applicationInterceptors;
+      return this;
+    }
+
+    public Builder<T> refetchQueryNames(List<OperationName> refetchQueryNames) {
+      this.refetchQueryNames = refetchQueryNames;
+      return this;
+    }
+
+    Builder() {
+    }
+
+    public RealApolloCall<T> build() {
+      return new RealApolloCall<>(this);
+    }
   }
 }

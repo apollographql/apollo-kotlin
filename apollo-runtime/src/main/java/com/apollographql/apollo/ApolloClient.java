@@ -156,21 +156,35 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private <D extends Operation.Data, T, V extends Operation.Variables> RealApolloCall<T> newCall(
       @Nonnull Operation<D, T, V> operation) {
     ResponseFieldMapper responseFieldMapper = responseFieldMapper(operation);
-    return new RealApolloCall<T>(operation, serverUrl, httpCallFactory, httpCache, defaultHttpCachePolicy, moshi,
-        responseFieldMapper, customTypeAdapters, apolloStore, defaultCacheControl, defaultCacheHeaders,
-        dispatcher, logger, applicationInterceptors, Collections.<OperationName>emptyList());
+    return RealApolloCall.<T>builder()
+        .operation(operation)
+        .serverUrl(serverUrl)
+        .httpCallFactory(httpCallFactory)
+        .httpCache(httpCache)
+        .httpCachePolicy(defaultHttpCachePolicy)
+        .moshi(moshi)
+        .responseFieldMapper(responseFieldMapper)
+        .customTypeAdapters(customTypeAdapters)
+        .apolloStore(apolloStore)
+        .cacheControl(defaultCacheControl)
+        .cacheHeaders(defaultCacheHeaders)
+        .dispatcher(dispatcher)
+        .logger(logger)
+        .applicationInterceptors(applicationInterceptors)
+        .refetchQueryNames(Collections.<OperationName>emptyList())
+        .build();
   }
 
   private ResponseFieldMapper responseFieldMapper(Operation operation) {
-    ResponseFieldMapper responseFieldMapper;
+    Optional<ResponseFieldMapper> responseFieldMapper;
     synchronized (responseFieldMapperPool) {
-      responseFieldMapper = responseFieldMapperPool.get(operation.getClass());
-      if (responseFieldMapper == null) {
-        responseFieldMapper = operation.responseFieldMapper();
-        responseFieldMapperPool.put(operation.getClass(), responseFieldMapper);
+      responseFieldMapper = Optional.fromNullable(responseFieldMapperPool.get(operation.getClass()));
+      if (!responseFieldMapper.isPresent()) {
+        responseFieldMapper = Optional.of(operation.responseFieldMapper());
+        responseFieldMapperPool.put(operation.getClass(), responseFieldMapper.get());
       }
     }
-    return responseFieldMapper;
+    return responseFieldMapper.get();
   }
 
   @SuppressWarnings("WeakerAccess") public static class Builder {
