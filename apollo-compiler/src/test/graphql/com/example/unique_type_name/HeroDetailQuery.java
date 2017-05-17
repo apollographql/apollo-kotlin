@@ -120,7 +120,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return ((this.heroDetailQuery == null) ? (that.heroDetailQuery == null) : this.heroDetailQuery.equals(that.heroDetailQuery));
+        return this.heroDetailQuery.equals(that.heroDetailQuery);
       }
       return false;
     }
@@ -130,7 +130,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (heroDetailQuery == null) ? 0 : heroDetailQuery.hashCode();
+        h ^= heroDetailQuery.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -221,10 +221,10 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       }
       if (o instanceof HeroDetailQuery1) {
         HeroDetailQuery1 that = (HeroDetailQuery1) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-         && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends))
-         && ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman));
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name)
+         && this.friends.equals(that.friends)
+         && this.asHuman.equals(that.asHuman);
       }
       return false;
     }
@@ -234,13 +234,13 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
+        h ^= name.hashCode();
         h *= 1000003;
-        h ^= (friends == null) ? 0 : friends.hashCode();
+        h ^= friends.hashCode();
         h *= 1000003;
-        h ^= (asHuman == null) ? 0 : asHuman.hashCode();
+        h ^= asHuman.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -328,8 +328,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       }
       if (o instanceof Friend) {
         Friend that = (Friend) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name);
       }
       return false;
     }
@@ -339,9 +339,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
+        h ^= name.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -431,10 +431,10 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       }
       if (o instanceof AsHuman) {
         AsHuman that = (AsHuman) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-         && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends))
-         && ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name)
+         && this.friends.equals(that.friends)
+         && this.height.equals(that.height);
       }
       return false;
     }
@@ -444,13 +444,13 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
+        h ^= name.hashCode();
         h *= 1000003;
-        h ^= (friends == null) ? 0 : friends.hashCode();
+        h ^= friends.hashCode();
         h *= 1000003;
-        h ^= (height == null) ? 0 : height.hashCode();
+        h ^= height.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -550,10 +550,10 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       }
       if (o instanceof Friend1) {
         Friend1 that = (Friend1) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-         && ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn))
-         && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends));
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name)
+         && this.appearsIn.equals(that.appearsIn)
+         && this.friends.equals(that.friends);
       }
       return false;
     }
@@ -563,13 +563,13 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
+        h ^= name.hashCode();
         h *= 1000003;
-        h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
+        h ^= appearsIn.hashCode();
         h *= 1000003;
-        h ^= (friends == null) ? 0 : friends.hashCode();
+        h ^= friends.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -647,8 +647,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       }
       if (o instanceof Friend2) {
         Friend2 that = (Friend2) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+        return this.__typename.equals(that.__typename)
+         && this.fragments.equals(that.fragments);
       }
       return false;
     }
@@ -658,9 +658,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (fragments == null) ? 0 : fragments.hashCode();
+        h ^= fragments.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -701,7 +701,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         }
         if (o instanceof Fragments) {
           Fragments that = (Fragments) o;
-          return ((this.heroDetails == null) ? (that.heroDetails == null) : this.heroDetails.equals(that.heroDetails));
+          return this.heroDetails.equals(that.heroDetails);
         }
         return false;
       }
@@ -711,7 +711,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         if (!$hashCodeMemoized) {
           int h = 1;
           h *= 1000003;
-          h ^= (heroDetails == null) ? 0 : heroDetails.hashCode();
+          h ^= heroDetails.hashCode();
           $hashCode = h;
           $hashCodeMemoized = true;
         }

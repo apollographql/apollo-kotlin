@@ -124,9 +124,11 @@ fun TypeSpec.withEqualsImplementation(): TypeSpec {
               } else {
                 it.add("this.\$L == that.\$L", field.name, field.name)
               }
+            } else if (field.type.annotations.contains(Annotations.NONNULL) || field.type.isOptional()) {
+              it.add("this.\$L.equals(that.\$L)", field.name, field.name)
             } else {
-              it.add("((this.\$L == null) ? (that.\$L == null) : this.\$L.equals(that.\$L))", field.name,
-                  field.name, field.name, field.name)
+              it.add("((this.\$L == null) ? (that.\$L == null) : this.\$L.equals(that.\$L))", field.name, field.name,
+                  field.name, field.name)
             }
           }
           .build()
@@ -176,6 +178,8 @@ fun TypeSpec.withHashCodeImplementation(): TypeSpec {
               } else {
                 it.addStatement("h ^= \$L", field.name)
               }
+            } else if (field.type.annotations.contains(Annotations.NONNULL) || field.type.isOptional()) {
+              it.addStatement("h ^= \$L.hashCode()", field.name)
             } else {
               it.addStatement("h ^= (\$L == null) ? 0 : \$L.hashCode()", field.name, field.name)
             }

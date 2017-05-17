@@ -67,8 +67,8 @@ public class HeroDetails implements GraphqlFragment {
     }
     if (o instanceof HeroDetails) {
       HeroDetails that = (HeroDetails) o;
-      return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-       && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+      return this.__typename.equals(that.__typename)
+       && this.name.equals(that.name);
     }
     return false;
   }
@@ -78,9 +78,9 @@ public class HeroDetails implements GraphqlFragment {
     if (!$hashCodeMemoized) {
       int h = 1;
       h *= 1000003;
-      h ^= (__typename == null) ? 0 : __typename.hashCode();
+      h ^= __typename.hashCode();
       h *= 1000003;
-      h ^= (name == null) ? 0 : name.hashCode();
+      h ^= name.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
