@@ -106,10 +106,10 @@ public class HeroDetails implements GraphqlFragment {
     }
     if (o instanceof HeroDetails) {
       HeroDetails that = (HeroDetails) o;
-      return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-       && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-       && ((this.friendsConnection == null) ? (that.friendsConnection == null) : this.friendsConnection.equals(that.friendsConnection))
-       && ((this.asDroid == null) ? (that.asDroid == null) : this.asDroid.equals(that.asDroid));
+      return this.__typename.equals(that.__typename)
+       && this.name.equals(that.name)
+       && this.friendsConnection.equals(that.friendsConnection)
+       && this.asDroid.equals(that.asDroid);
     }
     return false;
   }
@@ -119,13 +119,13 @@ public class HeroDetails implements GraphqlFragment {
     if (!$hashCodeMemoized) {
       int h = 1;
       h *= 1000003;
-      h ^= (__typename == null) ? 0 : __typename.hashCode();
+      h ^= __typename.hashCode();
       h *= 1000003;
-      h ^= (name == null) ? 0 : name.hashCode();
+      h ^= name.hashCode();
       h *= 1000003;
-      h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
+      h ^= friendsConnection.hashCode();
       h *= 1000003;
-      h ^= (asDroid == null) ? 0 : asDroid.hashCode();
+      h ^= asDroid.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -224,9 +224,9 @@ public class HeroDetails implements GraphqlFragment {
       }
       if (o instanceof FriendsConnection) {
         FriendsConnection that = (FriendsConnection) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.totalCount == null) ? (that.totalCount == null) : this.totalCount.equals(that.totalCount))
-         && ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
+        return this.__typename.equals(that.__typename)
+         && this.totalCount.equals(that.totalCount)
+         && this.edges.equals(that.edges);
       }
       return false;
     }
@@ -236,11 +236,11 @@ public class HeroDetails implements GraphqlFragment {
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (totalCount == null) ? 0 : totalCount.hashCode();
+        h ^= totalCount.hashCode();
         h *= 1000003;
-        h ^= (edges == null) ? 0 : edges.hashCode();
+        h ^= edges.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -315,8 +315,8 @@ public class HeroDetails implements GraphqlFragment {
       }
       if (o instanceof Edge) {
         Edge that = (Edge) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
+        return this.__typename.equals(that.__typename)
+         && this.node.equals(that.node);
       }
       return false;
     }
@@ -326,9 +326,9 @@ public class HeroDetails implements GraphqlFragment {
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (node == null) ? 0 : node.hashCode();
+        h ^= node.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -401,8 +401,8 @@ public class HeroDetails implements GraphqlFragment {
       }
       if (o instanceof Node) {
         Node that = (Node) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name);
       }
       return false;
     }
@@ -412,9 +412,9 @@ public class HeroDetails implements GraphqlFragment {
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
+        h ^= name.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -504,10 +504,10 @@ public class HeroDetails implements GraphqlFragment {
       }
       if (o instanceof AsDroid) {
         AsDroid that = (AsDroid) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-         && ((this.friendsConnection == null) ? (that.friendsConnection == null) : this.friendsConnection.equals(that.friendsConnection))
-         && ((this.primaryFunction == null) ? (that.primaryFunction == null) : this.primaryFunction.equals(that.primaryFunction));
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name)
+         && this.friendsConnection.equals(that.friendsConnection)
+         && this.primaryFunction.equals(that.primaryFunction);
       }
       return false;
     }
@@ -517,13 +517,13 @@ public class HeroDetails implements GraphqlFragment {
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
+        h ^= name.hashCode();
         h *= 1000003;
-        h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
+        h ^= friendsConnection.hashCode();
         h *= 1000003;
-        h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
+        h ^= primaryFunction.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -612,9 +612,9 @@ public class HeroDetails implements GraphqlFragment {
       }
       if (o instanceof FriendsConnection1) {
         FriendsConnection1 that = (FriendsConnection1) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.totalCount == null) ? (that.totalCount == null) : this.totalCount.equals(that.totalCount))
-         && ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
+        return this.__typename.equals(that.__typename)
+         && this.totalCount.equals(that.totalCount)
+         && this.edges.equals(that.edges);
       }
       return false;
     }
@@ -624,11 +624,11 @@ public class HeroDetails implements GraphqlFragment {
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (totalCount == null) ? 0 : totalCount.hashCode();
+        h ^= totalCount.hashCode();
         h *= 1000003;
-        h ^= (edges == null) ? 0 : edges.hashCode();
+        h ^= edges.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -703,8 +703,8 @@ public class HeroDetails implements GraphqlFragment {
       }
       if (o instanceof Edge1) {
         Edge1 that = (Edge1) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
+        return this.__typename.equals(that.__typename)
+         && this.node.equals(that.node);
       }
       return false;
     }
@@ -714,9 +714,9 @@ public class HeroDetails implements GraphqlFragment {
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (node == null) ? 0 : node.hashCode();
+        h ^= node.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -789,8 +789,8 @@ public class HeroDetails implements GraphqlFragment {
       }
       if (o instanceof Node1) {
         Node1 that = (Node1) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name);
       }
       return false;
     }
@@ -800,9 +800,9 @@ public class HeroDetails implements GraphqlFragment {
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
+        h ^= name.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }

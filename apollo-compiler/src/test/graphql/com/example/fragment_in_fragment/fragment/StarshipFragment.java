@@ -101,10 +101,10 @@ public class StarshipFragment implements GraphqlFragment {
     }
     if (o instanceof StarshipFragment) {
       StarshipFragment that = (StarshipFragment) o;
-      return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-       && ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
-       && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-       && ((this.pilotConnection == null) ? (that.pilotConnection == null) : this.pilotConnection.equals(that.pilotConnection));
+      return this.__typename.equals(that.__typename)
+       && this.id.equals(that.id)
+       && this.name.equals(that.name)
+       && this.pilotConnection.equals(that.pilotConnection);
     }
     return false;
   }
@@ -114,13 +114,13 @@ public class StarshipFragment implements GraphqlFragment {
     if (!$hashCodeMemoized) {
       int h = 1;
       h *= 1000003;
-      h ^= (__typename == null) ? 0 : __typename.hashCode();
+      h ^= __typename.hashCode();
       h *= 1000003;
-      h ^= (id == null) ? 0 : id.hashCode();
+      h ^= id.hashCode();
       h *= 1000003;
-      h ^= (name == null) ? 0 : name.hashCode();
+      h ^= name.hashCode();
       h *= 1000003;
-      h ^= (pilotConnection == null) ? 0 : pilotConnection.hashCode();
+      h ^= pilotConnection.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -196,8 +196,8 @@ public class StarshipFragment implements GraphqlFragment {
       }
       if (o instanceof PilotConnection) {
         PilotConnection that = (PilotConnection) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
+        return this.__typename.equals(that.__typename)
+         && this.edges.equals(that.edges);
       }
       return false;
     }
@@ -207,9 +207,9 @@ public class StarshipFragment implements GraphqlFragment {
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (edges == null) ? 0 : edges.hashCode();
+        h ^= edges.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -282,8 +282,8 @@ public class StarshipFragment implements GraphqlFragment {
       }
       if (o instanceof Edge) {
         Edge that = (Edge) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
+        return this.__typename.equals(that.__typename)
+         && this.node.equals(that.node);
       }
       return false;
     }
@@ -293,9 +293,9 @@ public class StarshipFragment implements GraphqlFragment {
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (node == null) ? 0 : node.hashCode();
+        h ^= node.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -365,8 +365,8 @@ public class StarshipFragment implements GraphqlFragment {
       }
       if (o instanceof Node) {
         Node that = (Node) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+        return this.__typename.equals(that.__typename)
+         && this.fragments.equals(that.fragments);
       }
       return false;
     }
@@ -376,9 +376,9 @@ public class StarshipFragment implements GraphqlFragment {
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (fragments == null) ? 0 : fragments.hashCode();
+        h ^= fragments.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -419,7 +419,7 @@ public class StarshipFragment implements GraphqlFragment {
         }
         if (o instanceof Fragments) {
           Fragments that = (Fragments) o;
-          return ((this.pilotFragment == null) ? (that.pilotFragment == null) : this.pilotFragment.equals(that.pilotFragment));
+          return this.pilotFragment.equals(that.pilotFragment);
         }
         return false;
       }
@@ -429,7 +429,7 @@ public class StarshipFragment implements GraphqlFragment {
         if (!$hashCodeMemoized) {
           int h = 1;
           h *= 1000003;
-          h ^= (pilotFragment == null) ? 0 : pilotFragment.hashCode();
+          h ^= pilotFragment.hashCode();
           $hashCode = h;
           $hashCodeMemoized = true;
         }

@@ -50,11 +50,12 @@ fun TypeSpec.withValueInitConstructor(nullableValueGenerationType: NullableValue
               .filter { !it.modifiers.contains(Modifier.STATIC) }
               .map {
                 if (it.type.isOptional() && nullableValueGenerationType != NullableValueType.ANNOTATED) {
-                  val optionalType = if (nullableValueGenerationType == NullableValueType.GUAVA_OPTIONAL)
-                    ClassNames.GUAVA_OPTIONAL
-                  else
-                    ClassNames.OPTIONAL
-                  CodeBlock.of("this.\$L = \$T.fromNullable(\$L);\n", it.name, optionalType, it.name)
+                  val factory = when (nullableValueGenerationType) {
+                    NullableValueType.GUAVA_OPTIONAL -> ClassNames.GUAVA_OPTIONAL to "fromNullable"
+                    NullableValueType.JAVA_OPTIONAL -> ClassNames.JAVA_OPTIONAL to "ofNullable"
+                    else -> ClassNames.OPTIONAL to "fromNullable"
+                  }
+                  CodeBlock.of("this.\$L = \$T.\$L(\$L);\n", it.name, factory.first, factory.second, it.name)
                 } else {
                   CodeBlock.of("this.\$L = \$L;\n", it.name, it.name)
                 }
@@ -123,9 +124,11 @@ fun TypeSpec.withEqualsImplementation(): TypeSpec {
               } else {
                 it.add("this.\$L == that.\$L", field.name, field.name)
               }
+            } else if (field.type.annotations.contains(Annotations.NONNULL) || field.type.isOptional()) {
+              it.add("this.\$L.equals(that.\$L)", field.name, field.name)
             } else {
-              it.add("((this.\$L == null) ? (that.\$L == null) : this.\$L.equals(that.\$L))", field.name,
-                  field.name, field.name, field.name)
+              it.add("((this.\$L == null) ? (that.\$L == null) : this.\$L.equals(that.\$L))", field.name, field.name,
+                  field.name, field.name)
             }
           }
           .build()
@@ -175,6 +178,8 @@ fun TypeSpec.withHashCodeImplementation(): TypeSpec {
               } else {
                 it.addStatement("h ^= \$L", field.name)
               }
+            } else if (field.type.annotations.contains(Annotations.NONNULL) || field.type.isOptional()) {
+              it.addStatement("h ^= \$L.hashCode()", field.name)
             } else {
               it.addStatement("h ^= (\$L == null) ? 0 : \$L.hashCode()", field.name, field.name)
             }
@@ -217,7 +222,7 @@ fun ClassName.mapperFieldName(): String = "${simpleName().decapitalize()}${Util.
 
 fun TypeName.isOptional(): Boolean {
   val rawType = (this as? ParameterizedTypeName)?.rawType ?: this
-  return rawType == ClassNames.OPTIONAL || rawType == ClassNames.GUAVA_OPTIONAL
+  return rawType == ClassNames.OPTIONAL || rawType == ClassNames.GUAVA_OPTIONAL || rawType == ClassNames.JAVA_OPTIONAL
 }
 
 fun TypeName.unwrapOptionalType(): TypeName {

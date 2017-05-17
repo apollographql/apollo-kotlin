@@ -65,9 +65,22 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     return new Data.Mapper();
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public OperationName name() {
     return OPERATION_NAME;
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public TestQuery build() {
+      return new TestQuery();
+    }
   }
 
   public static class Data implements Operation.Data {
@@ -112,8 +125,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return ((this.r2 == null) ? (that.r2 == null) : this.r2.equals(that.r2))
-         && ((this.luke == null) ? (that.luke == null) : this.luke.equals(that.luke));
+        return this.r2.equals(that.r2)
+         && this.luke.equals(that.luke);
       }
       return false;
     }
@@ -123,9 +136,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (r2 == null) ? 0 : r2.hashCode();
+        h ^= r2.hashCode();
         h *= 1000003;
-        h ^= (luke == null) ? 0 : luke.hashCode();
+        h ^= luke.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -206,8 +219,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof R2) {
         R2 that = (R2) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name);
       }
       return false;
     }
@@ -217,9 +230,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
+        h ^= name.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -297,9 +310,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Luke) {
         Luke that = (Luke) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
-         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+        return this.__typename.equals(that.__typename)
+         && this.id.equals(that.id)
+         && this.name.equals(that.name);
       }
       return false;
     }
@@ -309,11 +322,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (id == null) ? 0 : id.hashCode();
+        h ^= id.hashCode();
         h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
+        h ^= name.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
