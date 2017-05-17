@@ -3,11 +3,15 @@ package com.apollographql.android.gradle;
 import java.io.File;
 
 public class Utils {
-  public static String capitalize(String s) {
+  static String capitalize(String s) {
     return s.substring(0, 1).toUpperCase() + s.substring(1);
   }
 
-  public static void deleteDirectory(File directory) {
+  static boolean isNullOrEmpty(String s) {
+    return s == null || s.length() == 0;
+  }
+
+  static void deleteDirectory(File directory) {
     if (directory.exists()){
       File[] files = directory.listFiles();
       if (files != null){
