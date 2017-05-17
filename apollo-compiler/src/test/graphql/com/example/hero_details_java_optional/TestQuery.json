@@ -1,7 +1,7 @@
 {
 	"operations": [
 		{
-			"filePath": "src/test/graphql/com/example/hero_details_java8_optional/TestQuery.graphql",
+			"filePath": "src/test/graphql/com/example/hero_details_java_optional/TestQuery.graphql",
 			"operationName": "TestQuery",
 			"operationType": "query",
 			"variables": [],

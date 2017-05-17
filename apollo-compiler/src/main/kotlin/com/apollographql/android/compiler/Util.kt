@@ -52,7 +52,7 @@ fun TypeSpec.withValueInitConstructor(nullableValueGenerationType: NullableValue
                 if (it.type.isOptional() && nullableValueGenerationType != NullableValueType.ANNOTATED) {
                   val factory = when (nullableValueGenerationType) {
                     NullableValueType.GUAVA_OPTIONAL -> ClassNames.GUAVA_OPTIONAL to "fromNullable"
-                    NullableValueType.JAVA8_OPTIONAL -> ClassNames.JAVA8_OPTIONAL to "ofNullable"
+                    NullableValueType.JAVA_OPTIONAL -> ClassNames.JAVA_OPTIONAL to "ofNullable"
                     else -> ClassNames.OPTIONAL to "fromNullable"
                   }
                   CodeBlock.of("this.\$L = \$T.\$L(\$L);\n", it.name, factory.first, factory.second, it.name)
@@ -218,7 +218,7 @@ fun ClassName.mapperFieldName(): String = "${simpleName().decapitalize()}${Util.
 
 fun TypeName.isOptional(): Boolean {
   val rawType = (this as? ParameterizedTypeName)?.rawType ?: this
-  return rawType == ClassNames.OPTIONAL || rawType == ClassNames.GUAVA_OPTIONAL || rawType == ClassNames.JAVA8_OPTIONAL
+  return rawType == ClassNames.OPTIONAL || rawType == ClassNames.GUAVA_OPTIONAL || rawType == ClassNames.JAVA_OPTIONAL
 }
 
 fun TypeName.unwrapOptionalType(): TypeName {

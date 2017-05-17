@@ -23,7 +23,7 @@ object ClassNames {
   val UNMODIFIABLE_MAP_BUILDER: ClassName = ClassName.get(UnmodifiableMapBuilder::class.java)
   val OPTIONAL: ClassName = ClassName.get(Optional::class.java)
   val GUAVA_OPTIONAL: ClassName = ClassName.get("com.google.common.base", "Optional")
-  val JAVA8_OPTIONAL: ClassName = ClassName.get("java.util", "Optional")
+  val JAVA_OPTIONAL: ClassName = ClassName.get("java.util", "Optional")
   val API_UTILS: ClassName = ClassName.get(Utils::class.java)
   val FRAGMENT: ClassName = ClassName.get(GraphqlFragment::class.java)
 
@@ -58,7 +58,7 @@ object ClassNames {
   fun parameterizedGuavaOptional(type: TypeName): TypeName =
       ParameterizedTypeName.get(GUAVA_OPTIONAL, type)
 
-  fun parameterizedJava8Optional(type: TypeName): TypeName =
-      ParameterizedTypeName.get(JAVA8_OPTIONAL, type)
+  fun parameterizedJavaOptional(type: TypeName): TypeName =
+      ParameterizedTypeName.get(JAVA_OPTIONAL, type)
 
 }

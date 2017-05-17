@@ -1,4 +1,4 @@
-package com.example.hero_details_java8_optional;
+package com.example.hero_details_java_optional;
 
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
