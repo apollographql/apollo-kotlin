@@ -63,6 +63,19 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
     return new Data.Mapper();
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public TestQuery build() {
+      return new TestQuery();
+    }
+  }
+
   public static class Data implements Operation.Data {
     private final @Nullable Hero hero;
 

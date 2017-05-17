@@ -73,6 +73,19 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     return new Data.Mapper();
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public HeroDetailQuery build() {
+      return new HeroDetailQuery();
+    }
+  }
+
   public static class Data implements Operation.Data {
     private final Optional<HeroDetailQuery1> heroDetailQuery;
 

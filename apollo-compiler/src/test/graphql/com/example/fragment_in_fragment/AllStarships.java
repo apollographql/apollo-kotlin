@@ -64,6 +64,19 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     return new Data.Mapper();
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public AllStarships build() {
+      return new AllStarships();
+    }
+  }
+
   public static class Data implements Operation.Data {
     private final Optional<AllStarships1> allStarships;
 
