@@ -74,7 +74,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final ApolloStore apolloStore;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final Moshi moshi;
-  private final ResponseFieldMapperFactory responseFieldMapperPool = new ResponseFieldMapperFactory();
+  private final ResponseFieldMapperFactory responseFieldMapperFactory = new ResponseFieldMapperFactory();
   private final ExecutorService dispatcher;
   private final HttpCachePolicy.Policy defaultHttpCachePolicy;
   private final CacheControl defaultCacheControl;
@@ -162,7 +162,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .httpCache(httpCache)
         .httpCachePolicy(defaultHttpCachePolicy)
         .moshi(moshi)
-        .responseFieldMapperPool(responseFieldMapperPool)
+        .responseFieldMapperFactory(responseFieldMapperFactory)
         .customTypeAdapters(customTypeAdapters)
         .apolloStore(apolloStore)
         .cacheControl(defaultCacheControl)

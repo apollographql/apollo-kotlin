@@ -45,7 +45,7 @@ final class QueryFetcher {
           .serverUrl(builder.serverUrl)
           .httpCallFactory(builder.httpCallFactory)
           .moshi(builder.moshi)
-          .responseFieldMapperPool(builder.responseFieldMapperPool)
+          .responseFieldMapperFactory(builder.responseFieldMapperFactory)
           .customTypeAdapters(builder.customTypeAdapters)
           .apolloStore(builder.apolloStore)
           .cacheControl(CacheControl.NETWORK_ONLY)
@@ -118,7 +118,7 @@ final class QueryFetcher {
     HttpUrl serverUrl;
     Call.Factory httpCallFactory;
     Moshi moshi;
-    ResponseFieldMapperFactory responseFieldMapperPool;
+    ResponseFieldMapperFactory responseFieldMapperFactory;
     Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
     ApolloStore apolloStore;
     ExecutorService dispatcher;
@@ -145,8 +145,8 @@ final class QueryFetcher {
       return this;
     }
 
-    Builder responseFieldMapperPool(ResponseFieldMapperFactory responseFieldMapperPool) {
-      this.responseFieldMapperPool = responseFieldMapperPool;
+    Builder responseFieldMapperFactory(ResponseFieldMapperFactory responseFieldMapperFactory) {
+      this.responseFieldMapperFactory = responseFieldMapperFactory;
       return this;
     }
 
