@@ -3,6 +3,7 @@ package com.example.fragment_in_fragment;
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
@@ -38,6 +39,13 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
    + StarshipFragment.FRAGMENT_DEFINITION + "\n"
    + PilotFragment.FRAGMENT_DEFINITION;
 
+  private static final OperationName OPERATION_NAME = new OperationName() {
+    @Override
+    public String name() {
+      return "AllStarships";
+    }
+  };
+
   private final Operation.Variables variables;
 
   public AllStarships() {
@@ -66,6 +74,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
   public static Builder builder() {
     return new Builder();
+  }
+
+  @Override
+  public OperationName name() {
+    return OPERATION_NAME;
   }
 
   public static final class Builder {

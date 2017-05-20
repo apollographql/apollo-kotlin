@@ -31,6 +31,13 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
   T wrapData(D data);
 
   /**
+   * Returns GraphQL operation name.
+   *
+   * @return {@link OperationName} operation name
+   */
+  @Nonnull OperationName name();
+
+  /**
    * Abstraction for data returned by the server in response to this operation.
    */
   interface Data {

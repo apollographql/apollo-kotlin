@@ -2,6 +2,7 @@ package com.apollographql.android.compiler
 
 import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.android.compiler.ir.*
+import com.apollographql.apollo.api.OperationName
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
@@ -26,6 +27,7 @@ class OperationTypeSpecBuilder(
         .addResponseFieldMapperMethod()
         .addBuilder(context)
         .addType(operation.toTypeSpec(newContext))
+        .addOperationName()
         .build()
         .flatten(excludeTypeNames = listOf(Util.MAPPER_TYPE_NAME, SchemaTypeSpecBuilder.FRAGMENTS_TYPE_NAME))
   }
@@ -183,6 +185,35 @@ class OperationTypeSpecBuilder(
         ClassName.get("", "$OPERATION_TYPE_NAME.Variables")
       else
         ClassNames.GRAPHQL_OPERATION_VARIABLES
+
+  private fun TypeSpec.Builder.addOperationName(): TypeSpec.Builder {
+    fun operationNameTypeSpec() = TypeSpec.anonymousClassBuilder("")
+        .addSuperinterface(OperationName::class.java)
+        .addMethod(MethodSpec.methodBuilder("name")
+            .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(Override::class.java)
+            .returns(java.lang.String::class.java)
+            .addStatement("return \$S", operation.operationName)
+            .build())
+        .build()
+
+    fun TypeSpec.Builder.addOperationNameField(): TypeSpec.Builder =
+        addField(FieldSpec.builder(OperationName::class.java, "OPERATION_NAME", Modifier.PRIVATE, Modifier.STATIC,
+            Modifier.FINAL)
+            .initializer("\$L", operationNameTypeSpec())
+            .build())
+
+    fun TypeSpec.Builder.addOperationNameAccessor(): TypeSpec.Builder =
+        addMethod(MethodSpec.methodBuilder("name")
+            .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(Override::class.java)
+            .returns(OperationName::class.java)
+            .addStatement("return \$L", "OPERATION_NAME")
+            .build())
+
+    return addOperationNameField()
+        .addOperationNameAccessor()
+  }
 
   companion object {
     private val OPERATION_DEFINITION_FIELD_NAME = "OPERATION_DEFINITION"

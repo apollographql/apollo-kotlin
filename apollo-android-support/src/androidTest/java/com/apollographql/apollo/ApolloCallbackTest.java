@@ -50,7 +50,7 @@ public class ApolloCallbackTest {
     final AtomicBoolean invoked = new AtomicBoolean();
     final Handler callbackHandler = mockCallbackHandler(invoked);
     server.enqueue(new MockResponse().setResponseCode(401).setBody("Unauthorized request!"));
-    apolloClient.newCall(EMPTY_QUERY).enqueue(ApolloCallback.wrap(new ApolloCall.Callback() {
+    apolloClient.query(EMPTY_QUERY).enqueue(ApolloCallback.wrap(new ApolloCall.Callback() {
       @Override public void onResponse(@Nonnull Response response) {
         fail("Expected onHttpError");
       }
@@ -71,7 +71,7 @@ public class ApolloCallbackTest {
     final CountDownLatch countDownLatch = new CountDownLatch(1);
     final AtomicBoolean invoked = new AtomicBoolean();
     final Handler callbackHandler = mockCallbackHandler(invoked);
-    apolloClient.newCall(EMPTY_QUERY).enqueue(ApolloCallback.wrap(new ApolloCall.Callback() {
+    apolloClient.query(EMPTY_QUERY).enqueue(ApolloCallback.wrap(new ApolloCall.Callback() {
       @Override public void onResponse(@Nonnull Response response) {
         fail("Expected onNetworkError");
       }
@@ -93,7 +93,7 @@ public class ApolloCallbackTest {
     final AtomicBoolean invoked = new AtomicBoolean();
     final Handler callbackHandler = mockCallbackHandler(invoked);
     server.enqueue(new MockResponse().setResponseCode(200).setBody("nonsense"));
-    apolloClient.newCall(EMPTY_QUERY).enqueue(ApolloCallback.wrap(new ApolloCall.Callback() {
+    apolloClient.query(EMPTY_QUERY).enqueue(ApolloCallback.wrap(new ApolloCall.Callback() {
       @Override public void onResponse(@Nonnull Response response) {
         fail("Expected onParseError");
       }
@@ -127,7 +127,7 @@ public class ApolloCallbackTest {
         "    }" +
         "  ]" +
         "}"));
-    apolloClient.newCall(EMPTY_QUERY).enqueue(ApolloCallback.wrap(new ApolloCall.Callback() {
+    apolloClient.query(EMPTY_QUERY).enqueue(ApolloCallback.wrap(new ApolloCall.Callback() {
       @Override public void onResponse(@Nonnull Response response) {
         countDownLatch.countDown();
       }

@@ -1,5 +1,6 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
@@ -58,6 +59,10 @@ import static junit.framework.Assert.fail;
         };
       }
 
+      @Nonnull @Override public OperationName name() {
+        return null;
+      }
+
       @Override public Object wrapData(Data data) {
         return data;
       }
@@ -67,7 +72,7 @@ import static junit.framework.Assert.fail;
   @Test public void httpException() throws Exception {
     server.enqueue(new MockResponse().setResponseCode(401).setBody("Unauthorized request!"));
     try {
-      apolloClient.newCall(emptyQuery).execute();
+      apolloClient.query(emptyQuery).execute();
       fail("Expected ApolloHttpException");
     } catch (ApolloHttpException e) {
       assertThat(e.code()).isEqualTo(401);
@@ -79,7 +84,7 @@ import static junit.framework.Assert.fail;
 
   @Test public void httpExceptionAsync() throws Exception {
     server.enqueue(new MockResponse().setResponseCode(401).setBody("Unauthorized request!"));
-    apolloClient.newCall(emptyQuery).enqueue(new ApolloCall.Callback() {
+    apolloClient.query(emptyQuery).enqueue(new ApolloCall.Callback() {
       @Override public void onResponse(@Nonnull Response response) {
         fail("Expected ApolloHttpException");
       }
@@ -112,7 +117,7 @@ import static junit.framework.Assert.fail;
 
   @Test public void testTimeoutException() throws Exception {
     try {
-      apolloClient.newCall(emptyQuery).execute();
+      apolloClient.query(emptyQuery).execute();
       fail("Expected ApolloNetworkException");
     } catch (ApolloNetworkException e) {
       assertThat(e.getMessage()).isEqualTo("Failed to execute http call");
@@ -121,7 +126,7 @@ import static junit.framework.Assert.fail;
   }
 
   @Test public void testTimeoutExceptionAsync() throws Exception {
-    apolloClient.newCall(emptyQuery).enqueue(new ApolloCall.Callback() {
+    apolloClient.query(emptyQuery).enqueue(new ApolloCall.Callback() {
       @Override public void onResponse(@Nonnull Response response) {
         fail("Expected ApolloNetworkException");
       }
@@ -153,7 +158,7 @@ import static junit.framework.Assert.fail;
   @Test public void testParseException() throws Exception {
     server.enqueue(new MockResponse().setBody("Noise"));
     try {
-      apolloClient.newCall(emptyQuery).execute();
+      apolloClient.query(emptyQuery).execute();
       fail("Expected ApolloParseException");
     } catch (ApolloParseException e) {
       assertThat(e.getMessage()).isEqualTo("Failed to parse http response");
@@ -163,7 +168,7 @@ import static junit.framework.Assert.fail;
 
   @Test public void testParseExceptionAsync() throws Exception {
     server.enqueue(new MockResponse().setBody("Noise"));
-    apolloClient.newCall(emptyQuery).enqueue(new ApolloCall.Callback() {
+    apolloClient.query(emptyQuery).enqueue(new ApolloCall.Callback() {
       @Override public void onResponse(@Nonnull Response response) {
         fail("Expected ApolloParseException");
       }

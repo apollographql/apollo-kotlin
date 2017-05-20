@@ -79,7 +79,7 @@ public class IntegrationTest {
   @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
     server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"));
 
-    Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
+    Response<AllPlanets.Data> body = apolloClient.query(new AllPlanets()).execute();
     assertThat(body.hasErrors()).isFalse();
 
     assertThat(server.takeRequest().getBody().readString(Charsets.UTF_8))
@@ -143,7 +143,7 @@ public class IntegrationTest {
 
   @Test public void errorResponse() throws Exception {
     server.enqueue(mockResponse("ResponseError.json"));
-    Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
+    Response<AllPlanets.Data> body = apolloClient.query(new AllPlanets()).execute();
     assertThat(body.hasErrors()).isTrue();
     //noinspection ConstantConditions
     assertThat(body.errors()).containsExactly(new Error(
@@ -154,7 +154,7 @@ public class IntegrationTest {
   @Test public void allFilmsWithDate() throws Exception {
     server.enqueue(mockResponse("HttpCacheTestAllFilms.json"));
 
-    Response<AllFilms.Data> body = apolloClient.newCall(new AllFilms()).execute();
+    Response<AllFilms.Data> body = apolloClient.query(new AllFilms()).execute();
     assertThat(body.hasErrors()).isFalse();
 
 
@@ -176,7 +176,7 @@ public class IntegrationTest {
   @Test public void allPlanetQueryAsync() throws Exception {
     server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"));
     final NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
-    apolloClient.newCall(new AllPlanets()).enqueue(new ApolloCall.Callback<AllPlanets.Data>() {
+    apolloClient.query(new AllPlanets()).enqueue(new ApolloCall.Callback<AllPlanets.Data>() {
       @Override public void onResponse(@Nonnull Response<AllPlanets.Data> response) {
         assertThat(response.hasErrors()).isFalse();
         assertThat(response.data().allPlanets().planets().size()).isEqualTo(60);
@@ -195,7 +195,7 @@ public class IntegrationTest {
     MockResponse mockResponse = mockResponse("ResponseDataEmpty.json");
     server.enqueue(mockResponse);
 
-    ApolloCall<HeroName.Data> call = apolloClient.newCall(new HeroName());
+    ApolloCall<HeroName.Data> call = apolloClient.query(new HeroName());
     call.execute();
   }
 
@@ -203,7 +203,7 @@ public class IntegrationTest {
     MockResponse mockResponse = mockResponse("ResponseDataNull.json");
     server.enqueue(mockResponse);
 
-    ApolloCall<HeroName.Data> call = apolloClient.newCall(new HeroName());
+    ApolloCall<HeroName.Data> call = apolloClient.query(new HeroName());
     Response<HeroName.Data> body = call.execute();
     assertThat(body.data()).isNull();
     assertThat(body.hasErrors()).isFalse();
@@ -213,7 +213,7 @@ public class IntegrationTest {
     MockResponse mockResponse = mockResponse("ResponseDataMissing.json");
     server.enqueue(mockResponse);
 
-    ApolloCall<HeroName.Data> call = apolloClient.newCall(new HeroName());
+    ApolloCall<HeroName.Data> call = apolloClient.query(new HeroName());
     call.execute();
   }
 

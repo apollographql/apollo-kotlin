@@ -77,7 +77,7 @@ public class CacheHeadersTest {
 
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
     CacheHeaders cacheHeaders = CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build();
-    apolloClient.newCall(new HeroAndFriendsNames(Episode.NEWHOPE))
+    apolloClient.query(new HeroAndFriendsNames(Episode.NEWHOPE))
         .cacheHeaders(cacheHeaders)
         .execute();
   }
@@ -117,7 +117,7 @@ public class CacheHeadersTest {
 
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
 
-    apolloClient.newCall(new HeroAndFriendsNames(Episode.NEWHOPE)).execute();
+    apolloClient.query(new HeroAndFriendsNames(Episode.NEWHOPE)).execute();
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {

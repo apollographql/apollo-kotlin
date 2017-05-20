@@ -2,6 +2,7 @@ package com.example.hero_details_java_optional;
 
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
@@ -38,6 +39,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
+  private static final OperationName OPERATION_NAME = new OperationName() {
+    @Override
+    public String name() {
+      return "TestQuery";
+    }
+  };
+
   private final Operation.Variables variables;
 
   public TestQuery() {
@@ -62,6 +70,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   @Override
   public ResponseFieldMapper<TestQuery.Data> responseFieldMapper() {
     return new Data.Mapper();
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  @Override
+  public OperationName name() {
+    return OPERATION_NAME;
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public TestQuery build() {
+      return new TestQuery();
+    }
   }
 
   public static class Data implements Operation.Data {
@@ -98,7 +124,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero));
+        return this.hero.equals(that.hero);
       }
       return false;
     }
@@ -108,7 +134,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (hero == null) ? 0 : hero.hashCode();
+        h ^= hero.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -191,9 +217,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-         && ((this.friendsConnection == null) ? (that.friendsConnection == null) : this.friendsConnection.equals(that.friendsConnection));
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name)
+         && this.friendsConnection.equals(that.friendsConnection);
       }
       return false;
     }
@@ -203,11 +229,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
+        h ^= name.hashCode();
         h *= 1000003;
-        h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
+        h ^= friendsConnection.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -294,9 +320,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof FriendsConnection) {
         FriendsConnection that = (FriendsConnection) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.totalCount == null) ? (that.totalCount == null) : this.totalCount.equals(that.totalCount))
-         && ((this.edges == null) ? (that.edges == null) : this.edges.equals(that.edges));
+        return this.__typename.equals(that.__typename)
+         && this.totalCount.equals(that.totalCount)
+         && this.edges.equals(that.edges);
       }
       return false;
     }
@@ -306,11 +332,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (totalCount == null) ? 0 : totalCount.hashCode();
+        h ^= totalCount.hashCode();
         h *= 1000003;
-        h ^= (edges == null) ? 0 : edges.hashCode();
+        h ^= edges.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -385,8 +411,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Edge) {
         Edge that = (Edge) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.node == null) ? (that.node == null) : this.node.equals(that.node));
+        return this.__typename.equals(that.__typename)
+         && this.node.equals(that.node);
       }
       return false;
     }
@@ -396,9 +422,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (node == null) ? 0 : node.hashCode();
+        h ^= node.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -471,8 +497,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Node) {
         Node that = (Node) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name);
       }
       return false;
     }
@@ -482,9 +508,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
+        h ^= name.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }

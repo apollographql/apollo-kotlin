@@ -3,6 +3,7 @@ package com.example.input_object_type;
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -34,6 +35,13 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
+  private static final OperationName OPERATION_NAME = new OperationName() {
+    @Override
+    public String name() {
+      return "TestQuery";
+    }
+  };
+
   private final TestQuery.Variables variables;
 
   public TestQuery(@Nonnull Episode ep, @Nonnull ReviewInput review) {
@@ -64,6 +72,11 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
   public static Builder builder() {
     return new Builder();
+  }
+
+  @Override
+  public OperationName name() {
+    return OPERATION_NAME;
   }
 
   public static final class Variables extends Operation.Variables {

@@ -3,6 +3,7 @@ package com.example.unique_type_name;
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
@@ -47,6 +48,13 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION + "\n"
    + HeroDetails.FRAGMENT_DEFINITION;
 
+  private static final OperationName OPERATION_NAME = new OperationName() {
+    @Override
+    public String name() {
+      return "HeroDetailQuery";
+    }
+  };
+
   private final Operation.Variables variables;
 
   public HeroDetailQuery() {
@@ -75,6 +83,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
   public static Builder builder() {
     return new Builder();
+  }
+
+  @Override
+  public OperationName name() {
+    return OPERATION_NAME;
   }
 
   public static final class Builder {

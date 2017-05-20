@@ -2,6 +2,7 @@ package com.example.custom_scalar_type;
 
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
@@ -33,6 +34,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
+  private static final OperationName OPERATION_NAME = new OperationName() {
+    @Override
+    public String name() {
+      return "TestQuery";
+    }
+  };
+
   private final Operation.Variables variables;
 
   public TestQuery() {
@@ -61,6 +69,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static Builder builder() {
     return new Builder();
+  }
+
+  @Override
+  public OperationName name() {
+    return OPERATION_NAME;
   }
 
   public static final class Builder {

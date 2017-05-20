@@ -1,7 +1,7 @@
 package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloCall;
-import com.apollographql.apollo.ApolloWatcher;
+import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.Utils;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
@@ -18,7 +18,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-final class RealApolloWatcher<T> implements ApolloWatcher<T> {
+final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
   private RealApolloCall<T> activeCall;
   @Nullable private ApolloCall.Callback<T> callback = null;
   private CacheControl refetchCacheControl = CacheControl.CACHE_FIRST;
@@ -34,7 +34,7 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
     }
   };
 
-  RealApolloWatcher(RealApolloCall<T> originalCall, ApolloStore apolloStore) {
+  RealApolloQueryWatcher(RealApolloCall<T> originalCall, ApolloStore apolloStore) {
     activeCall = originalCall;
     this.apolloStore = apolloStore;
   }
@@ -48,7 +48,7 @@ final class RealApolloWatcher<T> implements ApolloWatcher<T> {
     activeCall.enqueue(callbackProxy(this.callback));
   }
 
-  @Nonnull @Override public RealApolloWatcher<T> refetchCacheControl(@Nonnull CacheControl cacheControl) {
+  @Nonnull @Override public RealApolloQueryWatcher<T> refetchCacheControl(@Nonnull CacheControl cacheControl) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
