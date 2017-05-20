@@ -13,6 +13,8 @@ import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.cache.Weigher;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -85,6 +87,8 @@ public final class LruNormalizedCache extends NormalizedCache {
         return null;
       }
     } else {
+      Map tmp = new HashMap(lruCache.asMap());
+      tmp = tmp;
       record = lruCache.getIfPresent(key);
     }
     if (record != null && cacheHeaders.hasHeader(ApolloCacheHeaders.EVICT_AFTER_READ)) {

@@ -4,7 +4,6 @@ import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
@@ -46,13 +45,14 @@ final class QueryFetcher {
           .serverUrl(builder.serverUrl)
           .httpCallFactory(builder.httpCallFactory)
           .moshi(builder.moshi)
-          .responseFieldMapper(builder.responseFieldMapper)
+          .responseFieldMapperPool(builder.responseFieldMapperPool)
           .customTypeAdapters(builder.customTypeAdapters)
           .apolloStore(builder.apolloStore)
           .cacheControl(CacheControl.NETWORK_ONLY)
           .cacheHeaders(CacheHeaders.NONE)
           .logger(builder.logger)
           .applicationInterceptors(builder.applicationInterceptors)
+          .dispatcher(builder.dispatcher)
           .build());
     }
   }
@@ -118,7 +118,7 @@ final class QueryFetcher {
     HttpUrl serverUrl;
     Call.Factory httpCallFactory;
     Moshi moshi;
-    ResponseFieldMapper responseFieldMapper;
+    ResponseFieldMapperFactory responseFieldMapperPool;
     Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
     ApolloStore apolloStore;
     ExecutorService dispatcher;
@@ -145,8 +145,8 @@ final class QueryFetcher {
       return this;
     }
 
-    Builder responseFieldMapper(ResponseFieldMapper responseFieldMapper) {
-      this.responseFieldMapper = responseFieldMapper;
+    Builder responseFieldMapperPool(ResponseFieldMapperFactory responseFieldMapperPool) {
+      this.responseFieldMapperPool = responseFieldMapperPool;
       return this;
     }
 

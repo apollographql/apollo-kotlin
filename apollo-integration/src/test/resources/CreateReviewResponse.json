@@ -1,0 +1,9 @@
+{
+  "data": {
+    "createReview": {
+      "__typename": "Review",
+      "stars": 5,
+      "commentary": "Awesome"
+    }
+  }
+}
