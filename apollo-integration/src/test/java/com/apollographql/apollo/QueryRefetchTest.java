@@ -97,9 +97,9 @@ public class QueryRefetchTest {
 
     empireReviewsQueryResponse = apolloClient.query(empireReviewsQuery).cacheControl
         (CacheControl.CACHE_ONLY).execute();
-    assertThat(empireReviewsQueryResponse.data().reviews()).hasSize(3);
-    assertThat(empireReviewsQueryResponse.data().reviews().get(2).stars()).isEqualTo(5);
-    assertThat(empireReviewsQueryResponse.data().reviews().get(2).commentary()).isEqualTo("Awesome");
+    assertThat(empireReviewsQueryResponse.data().reviews()).hasSize(4);
+    assertThat(empireReviewsQueryResponse.data().reviews().get(3).stars()).isEqualTo(5);
+    assertThat(empireReviewsQueryResponse.data().reviews().get(3).commentary()).isEqualTo("Awesome");
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {

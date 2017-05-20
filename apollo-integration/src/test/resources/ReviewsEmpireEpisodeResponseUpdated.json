@@ -9,7 +9,12 @@
       {
         "__typename": "Review",
         "stars": 2,
-        "commentary": "So-so"
+        "commentary": "So so"
+      },
+      {
+        "__typename": "Review",
+        "stars": 5,
+        "commentary": "Amazing"
       },
       {
         "__typename": "Review",
