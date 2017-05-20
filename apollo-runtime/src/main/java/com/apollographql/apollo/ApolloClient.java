@@ -171,6 +171,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .dispatcher(dispatcher)
         .logger(logger)
         .applicationInterceptors(applicationInterceptors)
+        .refetchQueries(Collections.<Query>emptyList())
         .refetchQueryNames(Collections.<OperationName>emptyList())
         .build();
   }
