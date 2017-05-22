@@ -8,7 +8,6 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
-import com.apollographql.apollo.cache.http.TimeoutEvictionStrategy;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
@@ -68,8 +67,7 @@ public class HttpCacheTest {
     cacheStore = new MockHttpCacheStore();
     cacheStore.delegate = new DiskLruHttpCacheStore(inMemoryFileSystem, new File("/cache/"), Integer.MAX_VALUE);
 
-    HttpCache cache = new HttpCache(cacheStore, new TimeoutEvictionStrategy(2, TimeUnit.SECONDS),
-        new ApolloLogger(Optional.<Logger>absent()));
+    HttpCache cache = new HttpCache(cacheStore, new ApolloLogger(Optional.<Logger>absent()));
     okHttpClient = new OkHttpClient.Builder()
         .addInterceptor(new TrackingInterceptor())
         .addInterceptor(cache.interceptor())

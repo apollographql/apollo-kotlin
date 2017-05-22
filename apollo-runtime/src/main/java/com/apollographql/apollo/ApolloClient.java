@@ -82,7 +82,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final List<ApolloInterceptor> applicationInterceptors;
   private final boolean sendOperationIdentifiers;
 
-  public ApolloClient(HttpUrl serverUrl,
+  private ApolloClient(HttpUrl serverUrl,
       Call.Factory httpCallFactory,
       HttpCache httpCache,
       ApolloStore apolloStore,
@@ -220,7 +220,6 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
     ExecutorService dispatcher;
     Optional<Logger> logger = Optional.absent();
-    HttpCache httpCache;
     final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
     boolean sendOperationIdentifiers;
 
@@ -242,7 +241,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * <p>
      * Note: Calling {@link #okHttpClient(OkHttpClient)} automatically sets this value.
      */
-    public Builder callFactory(Call.Factory factory) {
+    public Builder callFactory(@Nonnull Call.Factory factory) {
       this.callFactory = checkNotNull(factory, "factory == null");
       return this;
     }
@@ -270,12 +269,10 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
-     * Set the configuration to be used for request/response http cache. <em>Note:</em> you should supply an
-     * interceptor backed by this cache in your http client as well.
+     * Set the configuration to be used for request/response http cache.
      *
      * @param cacheStore The store to use for reading and writing cached response.
      * @return The {@link Builder} object to be used for chaining method calls
-     * @see HttpCache#interceptor()
      */
     public Builder httpCacheStore(@Nonnull HttpCacheStore cacheStore) {
       this.httpCacheStore = checkNotNull(cacheStore, "cacheStore == null");
@@ -418,10 +415,9 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         callFactory = new OkHttpClient();
       }
 
-      if (httpCacheStore != null && callFactory instanceof OkHttpClient) {
-        if (httpCache == null) {
-          httpCache = new HttpCache(httpCacheStore, apolloLogger);
-        }
+      HttpCache httpCache = null;
+      if (httpCacheStore != null) {
+        httpCache = new HttpCache(httpCacheStore, apolloLogger);
         if (localClient) {
           apolloLogger.w("Created local client, adding passed in HttpCache");
           callFactory = ((OkHttpClient) callFactory).newBuilder().addInterceptor(httpCache.interceptor()).build();
