@@ -1,140 +1,265 @@
-package com.example.unique_type_name.fragment;
+package com.example.hero_details_java_optional;
 
 import com.apollographql.apollo.api.Field;
-import com.apollographql.apollo.api.GraphqlFragment;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.OperationName;
+import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
-import com.apollographql.apollo.api.internal.Optional;
 import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
-public class HeroDetails implements GraphqlFragment {
-  public static final String FRAGMENT_DEFINITION = "fragment HeroDetails on Character {\n"
-      + "  __typename\n"
-      + "  name\n"
-      + "  friendsConnection {\n"
+public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
+  public static final String OPERATION_DEFINITION = "query TestQuery {\n"
+      + "  hero {\n"
       + "    __typename\n"
-      + "    totalCount\n"
-      + "    edges {\n"
+      + "    name\n"
+      + "    friendsConnection {\n"
       + "      __typename\n"
-      + "      node {\n"
+      + "      totalCount\n"
+      + "      edges {\n"
       + "        __typename\n"
-      + "        name\n"
+      + "        node {\n"
+      + "          __typename\n"
+      + "          name\n"
+      + "        }\n"
       + "      }\n"
       + "    }\n"
       + "  }\n"
       + "}";
 
-  public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
+  public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
-  private final @Nonnull String __typename;
+  private static final OperationName OPERATION_NAME = new OperationName() {
+    @Override
+    public String name() {
+      return "TestQuery";
+    }
+  };
 
-  private final @Nonnull String name;
+  private final Operation.Variables variables;
 
-  private final @Nonnull FriendsConnection friendsConnection;
-
-  private volatile String $toString;
-
-  private volatile int $hashCode;
-
-  private volatile boolean $hashCodeMemoized;
-
-  public HeroDetails(@Nonnull String __typename, @Nonnull String name,
-      @Nonnull FriendsConnection friendsConnection) {
-    this.__typename = __typename;
-    this.name = name;
-    this.friendsConnection = friendsConnection;
-  }
-
-  public @Nonnull String __typename() {
-    return this.__typename;
-  }
-
-  /**
-   * The name of the character
-   */
-  public @Nonnull String name() {
-    return this.name;
-  }
-
-  /**
-   * The friends of the character exposed as a connection with edges
-   */
-  public @Nonnull FriendsConnection friendsConnection() {
-    return this.friendsConnection;
+  public TestQuery() {
+    this.variables = Operation.EMPTY_VARIABLES;
   }
 
   @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "HeroDetails{"
-        + "__typename=" + __typename + ", "
-        + "name=" + name + ", "
-        + "friendsConnection=" + friendsConnection
-        + "}";
-    }
-    return $toString;
+  public String queryDocument() {
+    return QUERY_DOCUMENT;
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof HeroDetails) {
-      HeroDetails that = (HeroDetails) o;
-      return this.__typename.equals(that.__typename)
-       && this.name.equals(that.name)
-       && this.friendsConnection.equals(that.friendsConnection);
-    }
-    return false;
+  public Optional<TestQuery.Data> wrapData(TestQuery.Data data) {
+    return Optional.ofNullable(data);
   }
 
   @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= __typename.hashCode();
-      h *= 1000003;
-      h ^= name.hashCode();
-      h *= 1000003;
-      h ^= friendsConnection.hashCode();
-      $hashCode = h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
+  public Operation.Variables variables() {
+    return variables;
   }
 
-  public static final class Mapper implements ResponseFieldMapper<HeroDetails> {
-    final FriendsConnection.Mapper friendsConnectionFieldMapper = new FriendsConnection.Mapper();
+  @Override
+  public ResponseFieldMapper<TestQuery.Data> responseFieldMapper() {
+    return new Data.Mapper();
+  }
 
-    final Field[] fields = {
-      Field.forString("__typename", "__typename", null, false),
-      Field.forString("name", "name", null, false),
-      Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection>() {
-        @Override public FriendsConnection read(final ResponseReader reader) throws IOException {
-          return friendsConnectionFieldMapper.map(reader);
-        }
-      })
-    };
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  @Override
+  public OperationName name() {
+    return OPERATION_NAME;
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public TestQuery build() {
+      return new TestQuery();
+    }
+  }
+
+  public static class Data implements Operation.Data {
+    private final Optional<Hero> hero;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public Data(@Nullable Hero hero) {
+      this.hero = Optional.ofNullable(hero);
+    }
+
+    public Optional<Hero> hero() {
+      return this.hero;
+    }
 
     @Override
-    public HeroDetails map(ResponseReader reader) throws IOException {
-      final String __typename = reader.read(fields[0]);
-      final String name = reader.read(fields[1]);
-      final FriendsConnection friendsConnection = reader.read(fields[2]);
-      return new HeroDetails(__typename, name, friendsConnection);
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Data{"
+          + "hero=" + hero
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return this.hero.equals(that.hero);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= hero.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Data> {
+      final Hero.Mapper heroFieldMapper = new Hero.Mapper();
+
+      final Field[] fields = {
+        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
+          @Override public Hero read(final ResponseReader reader) throws IOException {
+            return heroFieldMapper.map(reader);
+          }
+        })
+      };
+
+      @Override
+      public Data map(ResponseReader reader) throws IOException {
+        final Hero hero = reader.read(fields[0]);
+        return new Data(hero);
+      }
+    }
+  }
+
+  public static class Hero {
+    private final @Nonnull String __typename;
+
+    private final @Nonnull String name;
+
+    private final @Nonnull FriendsConnection friendsConnection;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public Hero(@Nonnull String __typename, @Nonnull String name,
+        @Nonnull FriendsConnection friendsConnection) {
+      this.__typename = __typename;
+      this.name = name;
+      this.friendsConnection = friendsConnection;
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * The name of the character
+     */
+    public @Nonnull String name() {
+      return this.name;
+    }
+
+    /**
+     * The friends of the character exposed as a connection with edges
+     */
+    public @Nonnull FriendsConnection friendsConnection() {
+      return this.friendsConnection;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Hero{"
+          + "__typename=" + __typename + ", "
+          + "name=" + name + ", "
+          + "friendsConnection=" + friendsConnection
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Hero) {
+        Hero that = (Hero) o;
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name)
+         && this.friendsConnection.equals(that.friendsConnection);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
+        h *= 1000003;
+        h ^= friendsConnection.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Hero> {
+      final FriendsConnection.Mapper friendsConnectionFieldMapper = new FriendsConnection.Mapper();
+
+      final Field[] fields = {
+        Field.forString("__typename", "__typename", null, false),
+        Field.forString("name", "name", null, false),
+        Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection>() {
+          @Override public FriendsConnection read(final ResponseReader reader) throws IOException {
+            return friendsConnectionFieldMapper.map(reader);
+          }
+        })
+      };
+
+      @Override
+      public Hero map(ResponseReader reader) throws IOException {
+        final String __typename = reader.read(fields[0]);
+        final String name = reader.read(fields[1]);
+        final FriendsConnection friendsConnection = reader.read(fields[2]);
+        return new Hero(__typename, name, friendsConnection);
+      }
     }
   }
 
@@ -154,8 +279,8 @@ public class HeroDetails implements GraphqlFragment {
     public FriendsConnection(@Nonnull String __typename, @Nullable Integer totalCount,
         @Nullable List<Edge> edges) {
       this.__typename = __typename;
-      this.totalCount = Optional.fromNullable(totalCount);
-      this.edges = Optional.fromNullable(edges);
+      this.totalCount = Optional.ofNullable(totalCount);
+      this.edges = Optional.ofNullable(edges);
     }
 
     public @Nonnull String __typename() {
@@ -254,7 +379,7 @@ public class HeroDetails implements GraphqlFragment {
 
     public Edge(@Nonnull String __typename, @Nullable Node node) {
       this.__typename = __typename;
-      this.node = Optional.fromNullable(node);
+      this.node = Optional.ofNullable(node);
     }
 
     public @Nonnull String __typename() {

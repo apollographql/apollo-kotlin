@@ -3,6 +3,7 @@ package com.example.fragments_with_type_condition;
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
@@ -36,6 +37,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
    + HumanDetails.FRAGMENT_DEFINITION + "\n"
    + DroidDetails.FRAGMENT_DEFINITION;
 
+  private static final OperationName OPERATION_NAME = new OperationName() {
+    @Override
+    public String name() {
+      return "TestQuery";
+    }
+  };
+
   private final Operation.Variables variables;
 
   public TestQuery() {
@@ -60,6 +68,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   @Override
   public ResponseFieldMapper<TestQuery.Data> responseFieldMapper() {
     return new Data.Mapper();
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  @Override
+  public OperationName name() {
+    return OPERATION_NAME;
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public TestQuery build() {
+      return new TestQuery();
+    }
   }
 
   public static class Data implements Operation.Data {
@@ -104,8 +130,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return ((this.r2 == null) ? (that.r2 == null) : this.r2.equals(that.r2))
-         && ((this.luke == null) ? (that.luke == null) : this.luke.equals(that.luke));
+        return this.r2.equals(that.r2)
+         && this.luke.equals(that.luke);
       }
       return false;
     }
@@ -115,9 +141,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (r2 == null) ? 0 : r2.hashCode();
+        h ^= r2.hashCode();
         h *= 1000003;
-        h ^= (luke == null) ? 0 : luke.hashCode();
+        h ^= luke.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -193,8 +219,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof R2) {
         R2 that = (R2) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+        return this.__typename.equals(that.__typename)
+         && this.fragments.equals(that.fragments);
       }
       return false;
     }
@@ -204,9 +230,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (fragments == null) ? 0 : fragments.hashCode();
+        h ^= fragments.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -255,8 +281,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         }
         if (o instanceof Fragments) {
           Fragments that = (Fragments) o;
-          return ((this.humanDetails == null) ? (that.humanDetails == null) : this.humanDetails.equals(that.humanDetails))
-           && ((this.droidDetails == null) ? (that.droidDetails == null) : this.droidDetails.equals(that.droidDetails));
+          return this.humanDetails.equals(that.humanDetails)
+           && this.droidDetails.equals(that.droidDetails);
         }
         return false;
       }
@@ -266,9 +292,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         if (!$hashCodeMemoized) {
           int h = 1;
           h *= 1000003;
-          h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
+          h ^= humanDetails.hashCode();
           h *= 1000003;
-          h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
+          h ^= droidDetails.hashCode();
           $hashCode = h;
           $hashCodeMemoized = true;
         }
@@ -360,8 +386,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Luke) {
         Luke that = (Luke) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+        return this.__typename.equals(that.__typename)
+         && this.fragments.equals(that.fragments);
       }
       return false;
     }
@@ -371,9 +397,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (fragments == null) ? 0 : fragments.hashCode();
+        h ^= fragments.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -422,8 +448,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         }
         if (o instanceof Fragments) {
           Fragments that = (Fragments) o;
-          return ((this.humanDetails == null) ? (that.humanDetails == null) : this.humanDetails.equals(that.humanDetails))
-           && ((this.droidDetails == null) ? (that.droidDetails == null) : this.droidDetails.equals(that.droidDetails));
+          return this.humanDetails.equals(that.humanDetails)
+           && this.droidDetails.equals(that.droidDetails);
         }
         return false;
       }
@@ -433,9 +459,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         if (!$hashCodeMemoized) {
           int h = 1;
           h *= 1000003;
-          h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
+          h ^= humanDetails.hashCode();
           h *= 1000003;
-          h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
+          h ^= droidDetails.hashCode();
           $hashCode = h;
           $hashCodeMemoized = true;
         }

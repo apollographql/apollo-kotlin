@@ -2,6 +2,7 @@ package com.example.arguments_complex;
 
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
@@ -32,6 +33,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
+  private static final OperationName OPERATION_NAME = new OperationName() {
+    @Override
+    public String name() {
+      return "TestQuery";
+    }
+  };
+
   private final TestQuery.Variables variables;
 
   public TestQuery(@Nullable Episode episode, int stars, double greenValue) {
@@ -60,6 +68,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static Builder builder() {
     return new Builder();
+  }
+
+  @Override
+  public OperationName name() {
+    return OPERATION_NAME;
   }
 
   public static final class Variables extends Operation.Variables {
@@ -162,7 +175,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return ((this.heroWithReview == null) ? (that.heroWithReview == null) : this.heroWithReview.equals(that.heroWithReview));
+        return this.heroWithReview.equals(that.heroWithReview);
       }
       return false;
     }
@@ -172,7 +185,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (heroWithReview == null) ? 0 : heroWithReview.hashCode();
+        h ^= heroWithReview.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -274,9 +287,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof HeroWithReview) {
         HeroWithReview that = (HeroWithReview) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-         && ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name)
+         && this.height.equals(that.height);
       }
       return false;
     }
@@ -286,11 +299,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
+        h ^= name.hashCode();
         h *= 1000003;
-        h ^= (height == null) ? 0 : height.hashCode();
+        h ^= height.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }

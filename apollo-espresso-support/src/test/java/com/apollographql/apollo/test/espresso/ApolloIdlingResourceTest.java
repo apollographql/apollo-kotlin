@@ -5,12 +5,12 @@ import android.support.test.espresso.IdlingResource;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.test.espresso.ApolloIdlingResource;
 
 import org.junit.After;
 import org.junit.Before;
@@ -41,6 +41,7 @@ public class ApolloIdlingResourceTest {
   private MockWebServer server;
   private OkHttpClient okHttpClient;
 
+  private static final long TIME_OUT_SECONDS = 3;
   private static final String IDLING_RESOURCE_NAME = "apolloIdlingResource";
 
   private static final Query EMPTY_QUERY = new Query() {
@@ -63,9 +64,11 @@ public class ApolloIdlingResourceTest {
     @Override public Object wrapData(Data data) {
       return data;
     }
-  };
 
-  private static final long TIME_OUT_SECONDS = 3;
+    @Nonnull @Override public OperationName name() {
+      return null;
+    }
+  };
 
   @Before
   public void setup() {
@@ -140,7 +143,7 @@ public class ApolloIdlingResourceTest {
     idlingResource = ApolloIdlingResource.create(IDLING_RESOURCE_NAME, apolloClient);
     assertThat(idlingResource.isIdleNow()).isTrue();
 
-    apolloClient.newCall(EMPTY_QUERY).enqueue(new ApolloCall.Callback<Object>() {
+    apolloClient.query(EMPTY_QUERY).enqueue(new ApolloCall.Callback<Object>() {
       @Override public void onResponse(@Nonnull Response<Object> response) {
         latch.countDown();
       }
@@ -179,7 +182,7 @@ public class ApolloIdlingResourceTest {
     });
 
     assertThat(counter.get()).isEqualTo(1);
-    apolloClient.newCall(EMPTY_QUERY).execute();
+    apolloClient.query(EMPTY_QUERY).execute();
     assertThat(counter.get()).isEqualTo(0);
   }
 

@@ -3,6 +3,7 @@ package com.example.input_object_type;
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -34,6 +35,13 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
+  private static final OperationName OPERATION_NAME = new OperationName() {
+    @Override
+    public String name() {
+      return "TestQuery";
+    }
+  };
+
   private final TestQuery.Variables variables;
 
   public TestQuery(@Nonnull Episode ep, @Nonnull ReviewInput review) {
@@ -64,6 +72,11 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
   public static Builder builder() {
     return new Builder();
+  }
+
+  @Override
+  public OperationName name() {
+    return OPERATION_NAME;
   }
 
   public static final class Variables extends Operation.Variables {
@@ -153,7 +166,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return ((this.createReview == null) ? (that.createReview == null) : this.createReview.equals(that.createReview));
+        return this.createReview.equals(that.createReview);
       }
       return false;
     }
@@ -163,7 +176,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (createReview == null) ? 0 : createReview.hashCode();
+        h ^= createReview.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -254,9 +267,9 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       }
       if (o instanceof CreateReview) {
         CreateReview that = (CreateReview) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+        return this.__typename.equals(that.__typename)
          && this.stars == that.stars
-         && ((this.commentary == null) ? (that.commentary == null) : this.commentary.equals(that.commentary));
+         && this.commentary.equals(that.commentary);
       }
       return false;
     }
@@ -266,11 +279,11 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= stars;
         h *= 1000003;
-        h ^= (commentary == null) ? 0 : commentary.hashCode();
+        h ^= commentary.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }

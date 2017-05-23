@@ -2,7 +2,7 @@ package com.apollographql.apollo.rx2;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloPrefetch;
-import com.apollographql.apollo.ApolloWatcher;
+import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.internal.util.Cancelable;
@@ -34,14 +34,14 @@ public class Rx2Apollo {
   }
 
   /**
-   * Converts an {@link ApolloWatcher} to an asynchronous Observable.
+   * Converts an {@link ApolloQueryWatcher} to an asynchronous Observable.
    *
-   * @param watcher the ApolloWatcher to convert.
+   * @param watcher the ApolloQueryWatcher to convert.
    * @param <T>     the value type
    * @return the converted Observable
    * @throws NullPointerException if watcher == null
    */
-  public static <T> Observable<Response<T>> from(@Nonnull final ApolloWatcher<T> watcher) {
+  public static <T> Observable<Response<T>> from(@Nonnull final ApolloQueryWatcher<T> watcher) {
     checkNotNull(watcher, "watcher == null");
     return Observable.create(new ObservableOnSubscribe<Response<T>>() {
       @Override public void subscribe(final ObservableEmitter<Response<T>> emitter) throws Exception {

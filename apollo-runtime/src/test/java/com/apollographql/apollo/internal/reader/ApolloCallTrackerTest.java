@@ -5,6 +5,7 @@ import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloPrefetch;
 import com.apollographql.apollo.IdleResourceCallback;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
@@ -57,6 +58,10 @@ public class ApolloCallTrackerTest {
 
     @Override public Object wrapData(Data data) {
       return data;
+    }
+
+    @Nonnull @Override public OperationName name() {
+      return null;
     }
   };
 
@@ -169,7 +174,7 @@ public class ApolloCallTrackerTest {
         .addApplicationInterceptor(interceptor)
         .build();
 
-    ApolloCall apolloCall = apolloClient.newCall(EMPTY_QUERY);
+    ApolloCall apolloCall = apolloClient.query(EMPTY_QUERY);
     assertThat(apolloClient.activeCallsCount()).isEqualTo(0);
 
     Thread thread = synchronousApolloCall(apolloCall);
@@ -191,7 +196,7 @@ public class ApolloCallTrackerTest {
         .build();
     server.enqueue(createMockResponse());
 
-    RealApolloCall<Object> apolloCall = (RealApolloCall<Object>) apolloClient.newCall(EMPTY_QUERY);
+    RealApolloCall<Object> apolloCall = (RealApolloCall<Object>) apolloClient.query(EMPTY_QUERY);
 
     assertThat(apolloClient.activeCallsCount()).isEqualTo(0);
 
@@ -250,7 +255,7 @@ public class ApolloCallTrackerTest {
 
     assertThat(idle.get()).isFalse();
 
-    RealApolloCall<Object> apolloCall = (RealApolloCall<Object>) apolloClient.newCall(EMPTY_QUERY);
+    RealApolloCall<Object> apolloCall = (RealApolloCall<Object>) apolloClient.query(EMPTY_QUERY);
     Thread thread = synchronousApolloCall(apolloCall);
 
     firstLatch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS);

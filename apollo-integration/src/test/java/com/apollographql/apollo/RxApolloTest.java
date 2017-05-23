@@ -61,7 +61,7 @@ public class RxApolloTest {
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
     Response<EpisodeHeroName.Data> response = RxApollo
-        .from(apolloClient.newCall(query))
+        .from(apolloClient.query(query))
         .test()
         .awaitTerminalEvent()
         .assertNoErrors()
@@ -75,7 +75,7 @@ public class RxApolloTest {
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
-    ApolloCall<EpisodeHeroName.Data> call = apolloClient.newCall(query);
+    ApolloCall<EpisodeHeroName.Data> call = apolloClient.query(query);
     TestSubscriber<Response<EpisodeHeroName.Data>> subscriber = new TestSubscriber<>();
     Subscription subscription = RxApollo
         .from(call)
@@ -127,7 +127,7 @@ public class RxApolloTest {
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
-    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).watcher();
+    ApolloQueryWatcher<EpisodeHeroName.Data> watcher = apolloClient.query(query).watcher();
 
     RxApollo.from(watcher).subscribe(new Observer<Response<EpisodeHeroName.Data>>() {
       @Override public void onCompleted() {
@@ -153,7 +153,7 @@ public class RxApolloTest {
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     //Another newer call gets updated information
     server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
-    apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 
@@ -165,7 +165,7 @@ public class RxApolloTest {
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
-    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).watcher();
+    ApolloQueryWatcher<EpisodeHeroName.Data> watcher = apolloClient.query(query).watcher();
 
     RxApollo.from(watcher).subscribe(new Observer<Response<EpisodeHeroName.Data>>() {
       @Override public void onCompleted() {
@@ -190,7 +190,7 @@ public class RxApolloTest {
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
 
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
-    apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
+    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
 
     // Wait 3 seconds to make sure no double callback.
     // Successful if timeout _is_ reached
@@ -206,7 +206,7 @@ public class RxApolloTest {
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
-    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).watcher();
+    ApolloQueryWatcher<EpisodeHeroName.Data> watcher = apolloClient.query(query).watcher();
 
     RxApollo.from(watcher).subscribe(new Observer<Response<EpisodeHeroName.Data>>() {
       @Override public void onCompleted() {
@@ -234,7 +234,7 @@ public class RxApolloTest {
     HeroAndFriendsNamesWithIDs friendsQuery = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
 
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
-    apolloClient.newCall(friendsQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    apolloClient.query(friendsQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 

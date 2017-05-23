@@ -2,6 +2,7 @@ package com.example.inline_fragments_with_friends;
 
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
@@ -44,6 +45,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
+  private static final OperationName OPERATION_NAME = new OperationName() {
+    @Override
+    public String name() {
+      return "TestQuery";
+    }
+  };
+
   private final Operation.Variables variables;
 
   public TestQuery() {
@@ -68,6 +76,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   @Override
   public ResponseFieldMapper<TestQuery.Data> responseFieldMapper() {
     return new Data.Mapper();
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  @Override
+  public OperationName name() {
+    return OPERATION_NAME;
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public TestQuery build() {
+      return new TestQuery();
+    }
   }
 
   public static class Data implements Operation.Data {
@@ -104,7 +130,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero));
+        return this.hero.equals(that.hero);
       }
       return false;
     }
@@ -114,7 +140,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (hero == null) ? 0 : hero.hashCode();
+        h ^= hero.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -202,10 +228,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-         && ((this.asHuman == null) ? (that.asHuman == null) : this.asHuman.equals(that.asHuman))
-         && ((this.asDroid == null) ? (that.asDroid == null) : this.asDroid.equals(that.asDroid));
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name)
+         && this.asHuman.equals(that.asHuman)
+         && this.asDroid.equals(that.asDroid);
       }
       return false;
     }
@@ -215,13 +241,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
+        h ^= name.hashCode();
         h *= 1000003;
-        h ^= (asHuman == null) ? 0 : asHuman.hashCode();
+        h ^= asHuman.hashCode();
         h *= 1000003;
-        h ^= (asDroid == null) ? 0 : asDroid.hashCode();
+        h ^= asDroid.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -337,10 +363,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof AsHuman) {
         AsHuman that = (AsHuman) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-         && ((this.height == null) ? (that.height == null) : this.height.equals(that.height))
-         && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends));
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name)
+         && this.height.equals(that.height)
+         && this.friends.equals(that.friends);
       }
       return false;
     }
@@ -350,13 +376,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
+        h ^= name.hashCode();
         h *= 1000003;
-        h ^= (height == null) ? 0 : height.hashCode();
+        h ^= height.hashCode();
         h *= 1000003;
-        h ^= (friends == null) ? 0 : friends.hashCode();
+        h ^= friends.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -433,8 +459,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Friend) {
         Friend that = (Friend) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn));
+        return this.__typename.equals(that.__typename)
+         && this.appearsIn.equals(that.appearsIn);
       }
       return false;
     }
@@ -444,9 +470,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
+        h ^= appearsIn.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -540,10 +566,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof AsDroid) {
         AsDroid that = (AsDroid) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-         && ((this.friends == null) ? (that.friends == null) : this.friends.equals(that.friends))
-         && ((this.primaryFunction == null) ? (that.primaryFunction == null) : this.primaryFunction.equals(that.primaryFunction));
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name)
+         && this.friends.equals(that.friends)
+         && this.primaryFunction.equals(that.primaryFunction);
       }
       return false;
     }
@@ -553,13 +579,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
+        h ^= name.hashCode();
         h *= 1000003;
-        h ^= (friends == null) ? 0 : friends.hashCode();
+        h ^= friends.hashCode();
         h *= 1000003;
-        h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
+        h ^= primaryFunction.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -636,8 +662,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Friend1) {
         Friend1 that = (Friend1) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.id == null) ? (that.id == null) : this.id.equals(that.id));
+        return this.__typename.equals(that.__typename)
+         && this.id.equals(that.id);
       }
       return false;
     }
@@ -647,9 +673,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (id == null) ? 0 : id.hashCode();
+        h ^= id.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }

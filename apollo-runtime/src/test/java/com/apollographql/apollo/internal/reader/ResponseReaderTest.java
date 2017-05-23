@@ -3,6 +3,7 @@ package com.apollographql.apollo.internal.reader;
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
@@ -330,6 +331,10 @@ public class ResponseReaderTest {
 
     @Override public Object wrapData(Data data) {
       throw new UnsupportedOperationException();
+    }
+
+    @Nonnull @Override public OperationName name() {
+      return null;
     }
   };
 
