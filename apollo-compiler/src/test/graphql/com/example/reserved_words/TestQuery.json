@@ -1,0 +1,366 @@
+{
+  "operations": [
+    {
+      "operationName": "TestQuery",
+      "operationType": "query",
+      "variables": [],
+      "source": "",
+      "fields": [
+        {
+          "responseName": "abstract",
+          "fieldName": "abstract",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "assert",
+          "fieldName": "assert",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "boolean",
+          "fieldName": "boolean",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "break",
+          "fieldName": "break",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "byte",
+          "fieldName": "byte",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "case",
+          "fieldName": "case",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "catch",
+          "fieldName": "catch",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "char",
+          "fieldName": "char",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "class",
+          "fieldName": "class",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "const",
+          "fieldName": "const",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "continue",
+          "fieldName": "continue",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "default",
+          "fieldName": "default",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "do",
+          "fieldName": "do",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "double",
+          "fieldName": "double",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "else",
+          "fieldName": "else",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "enum",
+          "fieldName": "enum",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "extends",
+          "fieldName": "extends",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "final",
+          "fieldName": "final",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "finally",
+          "fieldName": "finally",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "float",
+          "fieldName": "float",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "for",
+          "fieldName": "for",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "goto",
+          "fieldName": "goto",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "if",
+          "fieldName": "if",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "implements",
+          "fieldName": "implements",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "import",
+          "fieldName": "import",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "instanceof",
+          "fieldName": "instanceof",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "int",
+          "fieldName": "int",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "interface",
+          "fieldName": "interface",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "long",
+          "fieldName": "long",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "native",
+          "fieldName": "native",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "new",
+          "fieldName": "new",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "package",
+          "fieldName": "package",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "private",
+          "fieldName": "private",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "protected",
+          "fieldName": "protected",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "public",
+          "fieldName": "public",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "return",
+          "fieldName": "return",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "short",
+          "fieldName": "short",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "static",
+          "fieldName": "static",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "strictfp",
+          "fieldName": "strictfp",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "super",
+          "fieldName": "super",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "switch",
+          "fieldName": "switch",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "synchronized",
+          "fieldName": "synchronized",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "this",
+          "fieldName": "this",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "throw",
+          "fieldName": "throw",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "throws",
+          "fieldName": "throws",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "transient",
+          "fieldName": "transient",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "try",
+          "fieldName": "try",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "void",
+          "fieldName": "void",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "volatile",
+          "fieldName": "volatile",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "while",
+          "fieldName": "while",
+          "type": "String",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentsReferenced": [],
+      "filePath": "src/test/graphql/com/example/reserved_words/TestQuery.json"
+    }
+  ],
+  "fragments": [],
+  "typesUsed": []
+}

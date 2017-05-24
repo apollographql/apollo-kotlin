@@ -1,9 +1,6 @@
 package com.apollographql.android.compiler.ir
 
-import com.apollographql.android.compiler.ClassNames
-import com.apollographql.android.compiler.JavaTypeResolver
-import com.apollographql.android.compiler.SchemaTypeSpecBuilder
-import com.apollographql.android.compiler.singularize
+import com.apollographql.android.compiler.*
 import com.squareup.javapoet.*
 import java.util.*
 import javax.lang.model.element.Modifier
@@ -32,16 +29,16 @@ data class Field(
   }
 
   fun accessorMethodSpec(context: CodeGenerationContext): MethodSpec {
-    return MethodSpec.methodBuilder(responseName)
+    return MethodSpec.methodBuilder(responseName.escapeJavaReservedWord())
         .addModifiers(Modifier.PUBLIC)
         .returns(toTypeName(methodResponseType(), context))
-        .addStatement("return this.\$L", responseName)
+        .addStatement("return this.\$L", responseName.escapeJavaReservedWord())
         .let { if (description != null) it.addJavadoc("\$L\n", description) else it }
         .build()
   }
 
   fun fieldSpec(context: CodeGenerationContext, publicModifier: Boolean = false): FieldSpec {
-    return FieldSpec.builder(toTypeName(methodResponseType(), context), responseName)
+    return FieldSpec.builder(toTypeName(methodResponseType(), context), responseName.escapeJavaReservedWord())
         .addModifiers(if (publicModifier) Modifier.PUBLIC else Modifier.PRIVATE, Modifier.FINAL)
         .let { if (publicModifier && description != null) it.addJavadoc("\$L\n", description) else it }
         .build()
