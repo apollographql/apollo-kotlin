@@ -79,8 +79,8 @@ public class QueryRefetchTest {
     ReviewsByEpisode empireReviewsQuery = new ReviewsByEpisode(Episode.EMPIRE);
     apolloClient.query(empireReviewsQuery).cacheControl(CacheControl.NETWORK_FIRST).execute();
 
-    Response<ReviewsByEpisode.Data> empireReviewsQueryResponse = apolloClient.query(empireReviewsQuery).cacheControl
-        (CacheControl.CACHE_ONLY).execute();
+    Response<ReviewsByEpisode.Data> empireReviewsQueryResponse = apolloClient.query(empireReviewsQuery)
+        .cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(empireReviewsQueryResponse.data().reviews()).hasSize(3);
     assertThat(empireReviewsQueryResponse.data().reviews().get(2).stars()).isEqualTo(5);
     assertThat(empireReviewsQueryResponse.data().reviews().get(2).commentary()).isEqualTo("Amazing");

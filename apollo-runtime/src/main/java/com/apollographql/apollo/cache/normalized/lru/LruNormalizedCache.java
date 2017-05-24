@@ -87,8 +87,6 @@ public final class LruNormalizedCache extends NormalizedCache {
         return null;
       }
     } else {
-      Map tmp = new HashMap(lruCache.asMap());
-      tmp = tmp;
       record = lruCache.getIfPresent(key);
     }
     if (record != null && cacheHeaders.hasHeader(ApolloCacheHeaders.EVICT_AFTER_READ)) {

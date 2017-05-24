@@ -20,7 +20,6 @@ public interface ApolloMutationCall<T> extends ApolloCall<T> {
    */
   @Nonnull ApolloMutationCall<T> refetchQueries(@Nonnull OperationName... operationNames);
 
-
   /**
    * <p>Sets a list of {@link Query} to be re-fetched once this mutation completed.</p>
    *

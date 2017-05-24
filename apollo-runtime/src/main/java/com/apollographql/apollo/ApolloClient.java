@@ -100,7 +100,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   @Override
   public <D extends Mutation.Data, T, V extends Mutation.Variables> ApolloMutationCall<T> mutate(
       @Nonnull Mutation<D, T, V> mutation) {
-    return newCall(mutation);
+    return newCall(mutation).cacheControl(CacheControl.NETWORK_ONLY);
   }
 
   @Override
