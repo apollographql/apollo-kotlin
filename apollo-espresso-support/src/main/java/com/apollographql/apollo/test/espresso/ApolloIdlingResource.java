@@ -13,7 +13,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 /**
  * An Espresso {@link IdlingResource} for {@link com.apollographql.apollo.ApolloClient}.
  */
-public class ApolloIdlingResource implements IdlingResource {
+public final class ApolloIdlingResource implements IdlingResource {
 
   private final String name;
   private final ApolloClient apolloClient;
@@ -23,9 +23,9 @@ public class ApolloIdlingResource implements IdlingResource {
    * Creates a new {@link IdlingResource} from {@link ApolloClient} with a given name. Register this instance using
    * Espresso class's registerIdlingResource in your test suite's setup method.
    *
-   * @param name         name of this idlingResource instance.
+   * @param name name of this idlingResource instance.
    * @param apolloClient the apolloClient for which idlingResource needs to be created.
-   * @return a new ApolloIdgit add -ulingResource.
+   * @return a new ApolloIdlingResource.
    * @throws NullPointerException if name == null or apolloClient == null
    */
   public static ApolloIdlingResource create(@Nonnull String name, @Nonnull ApolloClient apolloClient) {
