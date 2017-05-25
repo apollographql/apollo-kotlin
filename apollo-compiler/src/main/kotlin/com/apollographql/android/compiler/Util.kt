@@ -3,6 +3,16 @@ package com.apollographql.android.compiler
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
+private val JAVA_RESERVED_WORDS = arrayOf(
+    "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class", "const", "continue", "default",
+    "do", "double", "else", "enum", "extends", "final", "finally", "float", "for", "goto", "if", "implements", "import",
+    "instanceof", "int", "interface", "long", "native", "new", "package", "private", "protected", "public", "return",
+    "short", "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws", "transient", "try",
+    "void", "volatile", "while"
+)
+
+fun String.escapeJavaReservedWord() = if (JAVA_RESERVED_WORDS.contains(this)) "${this}_" else this
+
 fun TypeName.overrideTypeName(typeNameOverrideMap: Map<String, String>): TypeName {
   if (this is ParameterizedTypeName) {
     val typeArguments = typeArguments.map { it.overrideTypeName(typeNameOverrideMap) }.toTypedArray()
