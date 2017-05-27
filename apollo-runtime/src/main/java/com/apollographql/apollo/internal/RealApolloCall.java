@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
@@ -30,6 +31,7 @@ import com.squareup.moshi.Moshi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -42,6 +44,7 @@ import okhttp3.Call;
 import okhttp3.HttpUrl;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import static java.util.Collections.emptyList;
 
 @SuppressWarnings("WeakerAccess")
 public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutationCall<T> {
@@ -51,7 +54,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final HttpCache httpCache;
   final HttpCachePolicy.Policy httpCachePolicy;
   final Moshi moshi;
-  final ResponseFieldMapper responseFieldMapper;
+  final ResponseFieldMapperFactory responseFieldMapperFactory;
   final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   final ApolloStore apolloStore;
   final CacheControl cacheControl;
@@ -61,6 +64,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final ApolloLogger logger;
   final List<ApolloInterceptor> applicationInterceptors;
   final List<OperationName> refetchQueryNames;
+  final List<Query> refetchQueries;
+  final Optional<QueryFetcher> queryFetcher;
   final AtomicBoolean executed = new AtomicBoolean();
   volatile boolean canceled;
 
@@ -69,21 +74,38 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   }
 
   private RealApolloCall(Builder<T> builder) {
-    this.operation = builder.operation;
-    this.serverUrl = builder.serverUrl;
-    this.httpCallFactory = builder.httpCallFactory;
-    this.httpCache = builder.httpCache;
-    this.httpCachePolicy = builder.httpCachePolicy;
-    this.moshi = builder.moshi;
-    this.responseFieldMapper = builder.responseFieldMapper;
-    this.customTypeAdapters = builder.customTypeAdapters;
-    this.apolloStore = builder.apolloStore;
-    this.cacheControl = builder.cacheControl;
-    this.cacheHeaders = builder.cacheHeaders;
-    this.dispatcher = builder.dispatcher;
-    this.logger = builder.logger;
-    this.applicationInterceptors = builder.applicationInterceptors;
-    this.refetchQueryNames = builder.refetchQueryNames;
+    operation = builder.operation;
+    serverUrl = builder.serverUrl;
+    httpCallFactory = builder.httpCallFactory;
+    httpCache = builder.httpCache;
+    httpCachePolicy = builder.httpCachePolicy;
+    moshi = builder.moshi;
+    responseFieldMapperFactory = builder.responseFieldMapperFactory;
+    customTypeAdapters = builder.customTypeAdapters;
+    apolloStore = builder.apolloStore;
+    cacheControl = builder.cacheControl;
+    cacheHeaders = builder.cacheHeaders;
+    dispatcher = builder.dispatcher;
+    logger = builder.logger;
+    applicationInterceptors = builder.applicationInterceptors;
+    refetchQueryNames = builder.refetchQueryNames;
+    refetchQueries = builder.refetchQueries;
+    if (refetchQueries.isEmpty() || builder.apolloStore == null) {
+      queryFetcher = Optional.absent();
+    } else {
+      queryFetcher = Optional.of(QueryFetcher.builder()
+          .queries(builder.refetchQueries)
+          .serverUrl(builder.serverUrl)
+          .httpCallFactory(builder.httpCallFactory)
+          .moshi(builder.moshi)
+          .responseFieldMapperFactory(builder.responseFieldMapperFactory)
+          .customTypeAdapters(builder.customTypeAdapters)
+          .apolloStore(builder.apolloStore)
+          .dispatcher(builder.dispatcher)
+          .logger(builder.logger)
+          .applicationInterceptors(builder.applicationInterceptors)
+          .build());
+    }
     interceptorChain = prepareInterceptorChain(operation);
   }
 
@@ -111,6 +133,10 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
       throw new ApolloCanceledException("Canceled");
     }
 
+    if (queryFetcher.isPresent()) {
+      queryFetcher.get().refetchSync();
+    }
+
     return response;
   }
 
@@ -120,13 +146,23 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     }
 
     interceptorChain.proceedAsync(dispatcher, new ApolloInterceptor.CallBack() {
-      @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
+      @Override public void onResponse(@Nonnull final ApolloInterceptor.InterceptorResponse response) {
         if (callback == null) {
           return;
         }
 
         if (canceled) {
           callback.onCanceledError(new ApolloCanceledException("Canceled"));
+          return;
+        }
+
+        if (queryFetcher.isPresent()) {
+          queryFetcher.get().refetchAsync(new QueryFetcher.OnFetchCompleteCallback() {
+            @Override public void onFetchComplete() {
+              //noinspection unchecked
+              callback.onResponse(response.parsedResponse.get());
+            }
+          });
         } else {
           //noinspection unchecked
           callback.onResponse(response.parsedResponse.get());
@@ -181,6 +217,9 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   @Override public void cancel() {
     canceled = true;
     interceptorChain.dispose();
+    if (queryFetcher.isPresent()) {
+      queryFetcher.get().cancel();
+    }
   }
 
   @Override public boolean isCanceled() {
@@ -198,6 +237,13 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .build();
   }
 
+  @Nonnull @Override public ApolloMutationCall<T> refetchQueries(@Nonnull Query... queries) {
+    if (executed.get()) throw new IllegalStateException("Already Executed");
+    return toBuilder()
+        .refetchQueries(Arrays.asList(checkNotNull(queries, "queries == null")))
+        .build();
+  }
+
   public Builder<T> toBuilder() {
     return RealApolloCall.<T>builder()
         .operation(operation)
@@ -206,7 +252,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .httpCache(httpCache)
         .httpCachePolicy(httpCachePolicy)
         .moshi(moshi)
-        .responseFieldMapper(responseFieldMapper)
+        .responseFieldMapperFactory(responseFieldMapperFactory)
         .customTypeAdapters(customTypeAdapters)
         .apolloStore(apolloStore)
         .cacheControl(cacheControl)
@@ -214,12 +260,14 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .dispatcher(dispatcher)
         .logger(logger)
         .applicationInterceptors(applicationInterceptors)
-        .refetchQueryNames(refetchQueryNames);
+        .refetchQueryNames(refetchQueryNames)
+        .refetchQueries(refetchQueries);
   }
 
   private ApolloInterceptorChain prepareInterceptorChain(Operation operation) {
     List<ApolloInterceptor> interceptors = new ArrayList<>();
     HttpCachePolicy.Policy httpCachePolicy = operation instanceof Query ? this.httpCachePolicy : null;
+    ResponseFieldMapper responseFieldMapper = responseFieldMapperFactory.create(operation);
 
     interceptors.addAll(applicationInterceptors);
     interceptors.add(new ApolloCacheInterceptor(apolloStore, cacheControl, cacheHeaders, responseFieldMapper,
@@ -238,7 +286,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     HttpCache httpCache;
     HttpCachePolicy.Policy httpCachePolicy;
     Moshi moshi;
-    ResponseFieldMapper responseFieldMapper;
+    ResponseFieldMapperFactory responseFieldMapperFactory;
     Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
     ApolloStore apolloStore;
     CacheControl cacheControl;
@@ -248,6 +296,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     ApolloLogger logger;
     List<ApolloInterceptor> applicationInterceptors;
     List<OperationName> refetchQueryNames;
+    List<Query> refetchQueries = emptyList();
 
     public Builder<T> operation(Operation operation) {
       this.operation = operation;
@@ -279,8 +328,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
       return this;
     }
 
-    public Builder<T> responseFieldMapper(ResponseFieldMapper responseFieldMapper) {
-      this.responseFieldMapper = responseFieldMapper;
+    public Builder<T> responseFieldMapperFactory(ResponseFieldMapperFactory responseFieldMapperFactory) {
+      this.responseFieldMapperFactory = responseFieldMapperFactory;
       return this;
     }
 
@@ -326,6 +375,11 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
     public Builder<T> refetchQueryNames(List<OperationName> refetchQueryNames) {
       this.refetchQueryNames = refetchQueryNames;
+      return this;
+    }
+
+    public Builder<T> refetchQueries(List<Query> refetchQueries) {
+      this.refetchQueries = refetchQueries != null ? new ArrayList<>(refetchQueries) : Collections.<Query>emptyList();
       return this;
     }
 

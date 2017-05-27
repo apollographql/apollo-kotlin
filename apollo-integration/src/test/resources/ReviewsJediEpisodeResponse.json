@@ -1,0 +1,11 @@
+{
+  "data": {
+    "reviews": [
+      {
+        "__typename": "Review",
+        "stars": 5,
+        "commentary": "Fascinating"
+      }
+    ]
+  }
+}

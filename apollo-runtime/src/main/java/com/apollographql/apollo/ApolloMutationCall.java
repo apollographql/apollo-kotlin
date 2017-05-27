@@ -2,6 +2,7 @@ package com.apollographql.apollo;
 
 import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.OperationName;
+import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.cache.CacheHeaders;
 
 import javax.annotation.Nonnull;
@@ -12,14 +13,20 @@ import javax.annotation.Nonnull;
 public interface ApolloMutationCall<T> extends ApolloCall<T> {
 
   /**
-   * <p>Sets a list of GraphQL query names to be re-fetched once this mutation completed.</p>
-   * In order to get queries to be re-fetched you must obtain {@link ApolloQueryWatcher} from provided list of
-   * queries before running this mutation.
+   * <p>Sets a list of {@link ApolloQueryWatcher} query names to be re-fetched once this mutation completed.</p>
    *
    * @param operationNames array of {@link OperationName} query names to be re-fetched
    * @return {@link ApolloMutationCall} that will trigger re-fetching provided queries
    */
   @Nonnull ApolloMutationCall<T> refetchQueries(@Nonnull OperationName... operationNames);
+
+  /**
+   * <p>Sets a list of {@link Query} to be re-fetched once this mutation completed.</p>
+   *
+   * @param queries array of {@link Query} to be re-fetched
+   * @return {@link ApolloMutationCall} that will trigger re-fetching provided queries
+   */
+  @Nonnull ApolloMutationCall<T> refetchQueries(@Nonnull Query... queries);
 
   @Nonnull @Override ApolloMutationCall<T> cacheHeaders(@Nonnull CacheHeaders cacheHeaders);
 

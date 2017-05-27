@@ -43,6 +43,7 @@ dependencies {
   testCompile dep.mockWebServer
   testCompile dep.okhttpTestSupport
   testCompile dep.moshi
+  testCompile dep.cache
 }
 
 apollo {
