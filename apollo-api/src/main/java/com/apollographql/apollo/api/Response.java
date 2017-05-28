@@ -26,7 +26,8 @@ public final class Response<T> {
     operation = checkNotNull(builder.operation, "operation == null");
     data = builder.data;
     errors = builder.errors != null ? unmodifiableList(builder.errors) : Collections.<Error>emptyList();
-    dependentKeys = builder.dependentKeys != null ? unmodifiableSet(builder.dependentKeys) : Collections.<String>emptySet();
+    dependentKeys = builder.dependentKeys != null ? unmodifiableSet(builder.dependentKeys)
+        : Collections.<String>emptySet();
   }
 
   public Operation operation() {

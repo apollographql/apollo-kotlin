@@ -65,11 +65,11 @@ public final class Error {
   }
 
   @Override public String toString() {
-    return "Error{" +
-        "message='" + message + '\'' +
-        ", locations=" + locations +
-        ", customAttributes=" + customAttributes +
-        '}';
+    return "Error{"
+        + "message='" + message + '\''
+        + ", locations=" + locations
+        + ", customAttributes=" + customAttributes
+        + '}';
   }
 
   /**
