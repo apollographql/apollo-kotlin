@@ -101,19 +101,6 @@ import okhttp3.Response;
     return this;
   }
 
-  @Override public ApolloPrefetch clone() {
-    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, moshi, dispatcher, logger, tracker);
-  }
-
-  @Override public void cancel() {
-    canceled = true;
-    interceptorChain.dispose();
-  }
-
-  @Override public boolean isCanceled() {
-    return canceled;
-  }
-
   class AsyncCall implements ApolloInterceptor.CallBack {
 
     private final Callback responseCallback;
@@ -164,5 +151,18 @@ import okhttp3.Response;
         tracker.onAsyncPrefetchFinished(this);
       }
     }
+  }
+
+  @Override public ApolloPrefetch clone() {
+    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, moshi, dispatcher, logger, tracker);
+  }
+
+  @Override public void cancel() {
+    canceled = true;
+    interceptorChain.dispose();
+  }
+
+  @Override public boolean isCanceled() {
+    return canceled;
   }
 }
