@@ -81,7 +81,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final CacheControl defaultCacheControl;
   private final CacheHeaders defaultCacheHeaders;
   private final ApolloLogger logger;
-  private final ApolloCallTracker callTracker = new ApolloCallTracker();
+  private final ApolloCallTracker tracker = new ApolloCallTracker();
   private final List<ApolloInterceptor> applicationInterceptors;
 
   private ApolloClient(Builder builder) {
@@ -117,7 +117,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
       @Nonnull Operation<D, T, V> operation) {
     return new RealApolloPrefetch(operation, serverUrl, httpCallFactory,
-        httpCache, moshi, dispatcher, logger, callTracker);
+        httpCache, moshi, dispatcher, logger, tracker);
   }
 
   /**
@@ -152,14 +152,14 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
    * Sets the idleResourceCallback which will be called when this ApolloClient is idle.
    */
   public void idleCallback(IdleResourceCallback idleResourceCallback) {
-    callTracker.setIdleResourceCallback(idleResourceCallback);
+    tracker.setIdleResourceCallback(idleResourceCallback);
   }
 
   /**
    * Returns the count of {@link ApolloCall} & {@link ApolloPrefetch} objects which are currently in progress.
    */
   public int activeCallsCount() {
-    return callTracker.activeCallsCount();
+    return tracker.activeCallsCount();
   }
 
   Response cachedHttpResponse(String cacheKey) throws IOException {
@@ -187,7 +187,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .dispatcher(dispatcher)
         .logger(logger)
         .applicationInterceptors(applicationInterceptors)
-        .tracker(callTracker)
+        .tracker(tracker)
         .refetchQueries(Collections.<Query>emptyList())
         .refetchQueryNames(Collections.<OperationName>emptyList())
         .build();

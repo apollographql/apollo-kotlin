@@ -33,7 +33,7 @@ import okhttp3.Response;
   final Moshi moshi;
   final ExecutorService dispatcher;
   final ApolloLogger logger;
-  private ApolloCallTracker tracker;
+  final ApolloCallTracker tracker;
   final ApolloInterceptorChain interceptorChain;
   volatile boolean executed;
   volatile boolean canceled;

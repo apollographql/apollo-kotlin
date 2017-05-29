@@ -283,6 +283,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
           .dispatcher(dispatcher)
           .logger(logger)
           .applicationInterceptors(applicationInterceptors)
+          .tracker(tracker)
           .refetchQueryNames(refetchQueryNames)
           .refetchQueries(refetchQueries);
     }
