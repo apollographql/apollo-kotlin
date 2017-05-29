@@ -89,7 +89,7 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
 
   private void fetchRepositoryDetails() {
     ApolloCall<EntryDetailQuery.Data> entryDetailQuery = application.apolloClient()
-        .newCall(new EntryDetailQuery(repoFullName))
+        .query(new EntryDetailQuery(repoFullName))
         .cacheControl(CacheControl.CACHE_FIRST);
 
     //Example call using Rx2Support
