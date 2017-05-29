@@ -9,9 +9,6 @@ public final class MapFieldValueResolver implements FieldValueResolver<Map<Strin
 
   @SuppressWarnings("unchecked") @Override public <T> T valueFor(Map<String, Object> map, Field field)
       throws IOException {
-    if (!map.containsKey(field.responseName())) {
-      throw new IOException("Missing value: " + field.responseName());
-    }
     return (T) map.get(field.responseName());
   }
 }
