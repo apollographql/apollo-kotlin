@@ -225,12 +225,7 @@ public class ResponseReaderTest {
 
     RealResponseReader<Map<String, Object>> responseReader = responseReader(Collections.<String, Object>emptyMap());
     for (Field field : fields) {
-      try {
-        responseReader.read(field);
-        fail("expected IOException for field: " + field);
-      } catch (IOException expected) {
-        //expected
-      }
+      responseReader.read(field);
     }
   }
 
@@ -266,7 +261,7 @@ public class ResponseReaderTest {
       try {
         responseReader.read(field);
         fail("expected NullPointerException for field: " + field);
-      } catch (IOException expected) {
+      } catch (NullPointerException expected) {
         //expected
       }
     }
