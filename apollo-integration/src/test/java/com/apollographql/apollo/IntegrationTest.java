@@ -7,6 +7,7 @@ import com.google.common.collect.FluentIterable;
 import com.apollographql.android.impl.httpcache.AllFilms;
 import com.apollographql.android.impl.httpcache.AllPlanets;
 import com.apollographql.android.impl.httpcache.type.CustomType;
+import com.apollographql.android.impl.normalizer.EpisodeHeroName;
 import com.apollographql.android.impl.normalizer.HeroName;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
@@ -19,6 +20,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
+import static com.apollographql.android.impl.normalizer.type.Episode.JEDI;
 import static com.google.common.truth.Truth.assertThat;
 
 public class IntegrationTest {
@@ -148,7 +151,33 @@ public class IntegrationTest {
     //noinspection ConstantConditions
     assertThat(body.errors()).containsExactly(new Error(
         "Cannot query field \"names\" on type \"Species\".",
-        Collections.singletonList(new Error.Location(3, 5))));
+        Collections.singletonList(new Error.Location(3, 5)), Collections.<String, Object>emptyMap()));
+  }
+
+  @Test public void errorResponse_custom_attributes() throws Exception {
+    server.enqueue(mockResponse("ResponseErrorWithCustomAttributes.json"));
+    Response<AllPlanets.Data> body = apolloClient.query(new AllPlanets()).execute();
+    assertThat(body.hasErrors()).isTrue();
+    assertThat(body.errors().get(0).customAttributes()).hasSize(4);
+    assertThat(body.errors().get(0).customAttributes().get("code")).isEqualTo(new BigDecimal(500));
+    assertThat(body.errors().get(0).customAttributes().get("status")).isEqualTo("Internal Error");
+    assertThat(body.errors().get(0).customAttributes().get("fatal")).isEqualTo(true);
+    assertThat(body.errors().get(0).customAttributes().get("path")).isEqualTo(Arrays.asList("query"));
+  }
+
+  @Test public void errorResponse_with_data() throws Exception {
+    MockResponse mockResponse = mockResponse("ResponseErrorWithData.json");
+    server.enqueue(mockResponse);
+
+    final EpisodeHeroName query = EpisodeHeroName.builder().episode(JEDI).build();
+    ApolloCall<EpisodeHeroName.Data> call = apolloClient.query(query);
+    Response<EpisodeHeroName.Data> body = call.execute();
+    assertThat(body.data()).isNotNull();
+    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
+
+    assertThat(body.errors()).containsExactly(new Error(
+        "Cannot query field \"names\" on type \"Species\".",
+        Collections.singletonList(new Error.Location(3, 5)), Collections.<String, Object>emptyMap()));
   }
 
   @Test public void allFilmsWithDate() throws Exception {
