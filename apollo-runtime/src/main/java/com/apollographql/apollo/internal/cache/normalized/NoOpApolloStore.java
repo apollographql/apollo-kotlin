@@ -83,7 +83,7 @@ public final class NoOpApolloStore implements ApolloStore, ReadableStore, Writea
   @Nonnull @Override public <D extends Operation.Data, T, V extends Operation.Variables> Response<T> read(
       @Nonnull Operation<D, T, V> operation, @Nonnull ResponseFieldMapper<D> responseFieldMapper,
       @Nonnull ResponseNormalizer<Record> responseNormalizer, @Nonnull CacheHeaders cacheHeaders) {
-    return new Response<T>(operation);
+    return Response.<T>builder(operation).build();
   }
 
   @Nullable @Override public <F extends GraphqlFragment> F read(@Nonnull ResponseFieldMapper<F> fieldMapper,

@@ -27,7 +27,8 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 public class ApolloIRGenTask extends NodeTask {
-  private static final String APOLLO_CODEGEN = "apollo-codegen/node_modules/apollo-codegen/lib/cli.js";
+  static final String APOLLO_CODEGEN_EXEC_FILE = "lib/cli.js";
+  private static final String APOLLO_CODEGEN = "apollo-codegen/node_modules/apollo-codegen/" + APOLLO_CODEGEN_EXEC_FILE;
   static final String NAME = "generate%sApolloIR";
 
   @Internal private String variant;

@@ -2,6 +2,7 @@ package com.example.scalar_types;
 
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
@@ -23,6 +24,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static final String OPERATION_DEFINITION = "";
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
+
+  private static final OperationName OPERATION_NAME = new OperationName() {
+    @Override
+    public String name() {
+      return "TestQuery";
+    }
+  };
 
   private final Operation.Variables variables;
 
@@ -48,6 +56,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   @Override
   public ResponseFieldMapper<TestQuery.Data> responseFieldMapper() {
     return new Data.Mapper();
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  @Override
+  public OperationName name() {
+    return OPERATION_NAME;
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public TestQuery build() {
+      return new TestQuery();
+    }
   }
 
   public static class Data implements Operation.Data {
@@ -169,17 +195,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return ((this.graphQlString == null) ? (that.graphQlString == null) : this.graphQlString.equals(that.graphQlString))
-         && ((this.graphQlIdNullable == null) ? (that.graphQlIdNullable == null) : this.graphQlIdNullable.equals(that.graphQlIdNullable))
-         && ((this.graphQlIdNonNullable == null) ? (that.graphQlIdNonNullable == null) : this.graphQlIdNonNullable.equals(that.graphQlIdNonNullable))
-         && ((this.graphQlIntNullable == null) ? (that.graphQlIntNullable == null) : this.graphQlIntNullable.equals(that.graphQlIntNullable))
+        return this.graphQlString.equals(that.graphQlString)
+         && this.graphQlIdNullable.equals(that.graphQlIdNullable)
+         && this.graphQlIdNonNullable.equals(that.graphQlIdNonNullable)
+         && this.graphQlIntNullable.equals(that.graphQlIntNullable)
          && this.graphQlIntNonNullable == that.graphQlIntNonNullable
-         && ((this.graphQlFloatNullable == null) ? (that.graphQlFloatNullable == null) : this.graphQlFloatNullable.equals(that.graphQlFloatNullable))
+         && this.graphQlFloatNullable.equals(that.graphQlFloatNullable)
          && Double.doubleToLongBits(this.graphQlFloatNonNullable) == Double.doubleToLongBits(that.graphQlFloatNonNullable)
-         && ((this.graphQlBooleanNullable == null) ? (that.graphQlBooleanNullable == null) : this.graphQlBooleanNullable.equals(that.graphQlBooleanNullable))
+         && this.graphQlBooleanNullable.equals(that.graphQlBooleanNullable)
          && this.graphQlBooleanNonNullable == that.graphQlBooleanNonNullable
-         && ((this.graphQlListOfInt == null) ? (that.graphQlListOfInt == null) : this.graphQlListOfInt.equals(that.graphQlListOfInt))
-         && ((this.graphQlListOfObjects == null) ? (that.graphQlListOfObjects == null) : this.graphQlListOfObjects.equals(that.graphQlListOfObjects));
+         && this.graphQlListOfInt.equals(that.graphQlListOfInt)
+         && this.graphQlListOfObjects.equals(that.graphQlListOfObjects);
       }
       return false;
     }
@@ -189,27 +215,27 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (graphQlString == null) ? 0 : graphQlString.hashCode();
+        h ^= graphQlString.hashCode();
         h *= 1000003;
-        h ^= (graphQlIdNullable == null) ? 0 : graphQlIdNullable.hashCode();
+        h ^= graphQlIdNullable.hashCode();
         h *= 1000003;
-        h ^= (graphQlIdNonNullable == null) ? 0 : graphQlIdNonNullable.hashCode();
+        h ^= graphQlIdNonNullable.hashCode();
         h *= 1000003;
-        h ^= (graphQlIntNullable == null) ? 0 : graphQlIntNullable.hashCode();
+        h ^= graphQlIntNullable.hashCode();
         h *= 1000003;
         h ^= graphQlIntNonNullable;
         h *= 1000003;
-        h ^= (graphQlFloatNullable == null) ? 0 : graphQlFloatNullable.hashCode();
+        h ^= graphQlFloatNullable.hashCode();
         h *= 1000003;
         h ^= Double.valueOf(graphQlFloatNonNullable).hashCode();
         h *= 1000003;
-        h ^= (graphQlBooleanNullable == null) ? 0 : graphQlBooleanNullable.hashCode();
+        h ^= graphQlBooleanNullable.hashCode();
         h *= 1000003;
         h ^= Boolean.valueOf(graphQlBooleanNonNullable).hashCode();
         h *= 1000003;
-        h ^= (graphQlListOfInt == null) ? 0 : graphQlListOfInt.hashCode();
+        h ^= graphQlListOfInt.hashCode();
         h *= 1000003;
-        h ^= (graphQlListOfObjects == null) ? 0 : graphQlListOfObjects.hashCode();
+        h ^= graphQlListOfObjects.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -301,7 +327,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof GraphQlListOfObject) {
         GraphQlListOfObject that = (GraphQlListOfObject) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+        return this.__typename.equals(that.__typename)
          && this.someField == that.someField;
       }
       return false;
@@ -312,7 +338,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= someField;
         $hashCode = h;

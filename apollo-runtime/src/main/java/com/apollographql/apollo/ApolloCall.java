@@ -1,12 +1,10 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.exception.ApolloCanceledException;
-import com.apollographql.apollo.cache.http.HttpCacheControl;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
@@ -42,19 +40,6 @@ public interface ApolloCall<T> extends Cancelable {
    * @throws IllegalStateException when the call has already been executed
    */
   void enqueue(@Nullable Callback<T> callback);
-
-  /**
-   * Returns a watcher to watch the changes made by this call to the normalized cache store.
-   */
-  @Nonnull ApolloWatcher<T> watcher();
-
-  /**
-   * Sets the {@link HttpCacheControl} strategy for an ApolloCall object.
-   *
-   * @param httpCacheControl the HttpCacheControl strategy to set
-   * @return The ApolloCall object with the provided HttpCacheControl strategy
-   */
-  @Nonnull ApolloCall<T> httpCacheControl(@Nonnull HttpCacheControl httpCacheControl);
 
   /**
    * Sets the {@link CacheControl} strategy for an ApolloCall object.
@@ -130,19 +115,5 @@ public interface ApolloCall<T> extends Cancelable {
     public void onCanceledError(@Nonnull ApolloCanceledException e) {
       onFailure(e);
     }
-  }
-
-  /**
-   * Factory for creating ApolloCall object.
-   */
-  interface Factory {
-    /**
-     * Creates the ApolloCall by wrapping the operation object inside.
-     *
-     * @param operation the operation which needs to be performed
-     * @return The ApolloCall object with the wrapped operation object
-     */
-    <D extends Operation.Data, T, V extends Operation.Variables> ApolloCall<T> newCall(
-        @Nonnull Operation<D, T, V> operation);
   }
 }

@@ -1,7 +1,5 @@
 package com.apollographql.apollo.internal.cache.http;
 
-import com.apollographql.apollo.cache.http.HttpCacheControl;
-
 import java.io.IOException;
 import java.util.Date;
 
@@ -16,6 +14,13 @@ import okio.Okio;
 import okio.Sink;
 import okio.Source;
 
+import static com.apollographql.apollo.internal.cache.http.HttpCache.CACHE_EXPIRE_AFTER_READ_HEADER;
+import static com.apollographql.apollo.internal.cache.http.HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER;
+import static com.apollographql.apollo.internal.cache.http.HttpCache.CACHE_FETCH_STRATEGY_HEADER;
+import static com.apollographql.apollo.internal.cache.http.HttpCache.CACHE_KEY_HEADER;
+import static com.apollographql.apollo.internal.cache.http.HttpCache.CACHE_PREFETCH_HEADER;
+import static com.apollographql.apollo.internal.cache.http.HttpCache.CACHE_SERVED_DATE_HEADER;
+
 final class Utils {
   static Response strip(Response response) {
     return response != null && response.body() != null
@@ -25,41 +30,47 @@ final class Utils {
 
   static Response withServedDateHeader(Response response) throws IOException {
     return response.newBuilder()
-        .addHeader(HttpCache.CACHE_SERVED_DATE_HEADER, HttpDate.format(new Date()))
+        .addHeader(CACHE_SERVED_DATE_HEADER, HttpDate.format(new Date()))
         .build();
   }
 
   static boolean isPrefetchResponse(Request request) {
-    return Boolean.TRUE.toString().equals(request.header(HttpCache.CACHE_PREFETCH_HEADER));
+    return Boolean.TRUE.toString().equalsIgnoreCase(request.header(CACHE_PREFETCH_HEADER));
   }
 
   static boolean shouldSkipCache(Request request) {
-    HttpCacheControl cacheControl = cacheControl(request);
-    String cacheKey = request.header(HttpCache.CACHE_KEY_HEADER);
-    return cacheControl == null
-        || cacheControl == HttpCacheControl.NETWORK_ONLY
-        || cacheKey == null;
+    String cacheKey = request.header(CACHE_KEY_HEADER);
+    HttpCacheFetchStrategy fetchStrategy = fetchStrategy(request);
+    return cacheKey == null
+        || cacheKey.isEmpty()
+        || fetchStrategy == null;
   }
 
   static boolean shouldSkipNetwork(Request request) {
-    HttpCacheControl cacheControl = cacheControl(request);
-    return cacheControl == HttpCacheControl.CACHE_ONLY;
+    String cacheKey = request.header(CACHE_KEY_HEADER);
+    HttpCacheFetchStrategy fetchStrategy = fetchStrategy(request);
+    return cacheKey != null
+        && !cacheKey.isEmpty()
+        && fetchStrategy == HttpCacheFetchStrategy.CACHE_ONLY;
+  }
+
+  static boolean isNetworkOnly(Request request) {
+    HttpCacheFetchStrategy fetchStrategy = fetchStrategy(request);
+    return fetchStrategy == HttpCacheFetchStrategy.NETWORK_ONLY;
   }
 
   static boolean isNetworkFirst(Request request) {
-    HttpCacheControl cacheControl = cacheControl(request);
-    return cacheControl == HttpCacheControl.NETWORK_FIRST
-        || cacheControl == HttpCacheControl.NETWORK_BEFORE_STALE;
+    HttpCacheFetchStrategy fetchStrategy = fetchStrategy(request);
+    return fetchStrategy == HttpCacheFetchStrategy.NETWORK_FIRST;
   }
 
-  static boolean shouldReturnStaleCache(Request request) {
-    HttpCacheControl cacheControl = cacheControl(request);
-    return cacheControl == HttpCacheControl.NETWORK_BEFORE_STALE;
-  }
+//  static boolean shouldReturnStaleCache(Request request) {
+//    String expireTimeoutHeader = request.header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER);
+//    return expireTimeoutHeader == null || expireTimeoutHeader.isEmpty();
+//  }
 
   static boolean shouldExpireAfterRead(Request request) {
-    HttpCacheControl cacheControl = cacheControl(request);
-    return cacheControl == HttpCacheControl.EXPIRE_AFTER_READ;
+    return Boolean.TRUE.toString().equalsIgnoreCase(request.header(CACHE_EXPIRE_AFTER_READ_HEADER));
   }
 
   static Response unsatisfiableCacheRequest(Request request) {
@@ -84,7 +95,7 @@ final class Utils {
     closeQuietly(responseBodySource);
   }
 
-  private static void closeQuietly(Source source) {
+  static void closeQuietly(Source source) {
     try {
       source.close();
     } catch (Exception ignore) {
@@ -92,8 +103,46 @@ final class Utils {
     }
   }
 
-  private static HttpCacheControl cacheControl(Request request) {
-    return HttpCacheControl.valueOfHttpHeader(request.header(HttpCache.CACHE_CONTROL_HEADER));
+  static void closeQuietly(Response response) {
+    try {
+      if (response != null) {
+        response.close();
+      }
+    } catch (Exception ignore) {
+      // ignore
+    }
+  }
+
+  static boolean isStale(Request request, Response response) {
+    String timeoutStr = request.header(CACHE_EXPIRE_TIMEOUT_HEADER);
+    String servedDateStr = response.header(CACHE_SERVED_DATE_HEADER);
+    if (servedDateStr == null || timeoutStr == null) {
+      return true;
+    }
+
+    long timeout = Long.parseLong(timeoutStr);
+    if (timeout == 0) {
+      return false;
+    }
+
+    Date servedDate = HttpDate.parse(servedDateStr);
+    long now = System.currentTimeMillis();
+    return servedDate == null || now - servedDate.getTime() > timeout;
+  }
+
+  private static HttpCacheFetchStrategy fetchStrategy(Request request) {
+    String fetchStrategyHeader = request.header(CACHE_FETCH_STRATEGY_HEADER);
+    if (fetchStrategyHeader == null || fetchStrategyHeader.isEmpty()) {
+      return null;
+    }
+
+    for (HttpCacheFetchStrategy fetchStrategy : HttpCacheFetchStrategy.values()) {
+      if (fetchStrategy.name().equals(fetchStrategyHeader)) {
+        return fetchStrategy;
+      }
+    }
+
+    return null;
   }
 
   private Utils() {

@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.CacheControl;
@@ -151,22 +152,37 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
             responseNormalizer.records());
       }
     }
+    cacheResponse(networkResponse);
+    return networkResponse;
+  }
 
-    final Collection<Record> records = networkResponse.cacheRecords.orNull();
-    if (records != null) {
-      dispatcher.execute(new Runnable() {
-        @Override public void run() {
-          Set<String> changedKeys = apolloStore.writeTransaction(new Transaction<WriteableStore, Set<String>>() {
-            @Nullable @Override public Set<String> execute(WriteableStore cache) {
-              return cache.merge(records, cacheHeaders);
-            }
-          });
-          apolloStore.publish(changedKeys);
-        }
-      });
+  private void cacheResponse(final InterceptorResponse networkResponse) {
+    final Optional<Collection<Record>> records = networkResponse.cacheRecords;
+    if (!records.isPresent()) {
+      return;
     }
 
-    return networkResponse;
+    final Set<String> changedKeys;
+    try {
+      changedKeys = apolloStore.writeTransaction(new Transaction<WriteableStore, Set<String>>() {
+        @Nullable @Override public Set<String> execute(WriteableStore cache) {
+          return cache.merge(records.get(), cacheHeaders);
+        }
+      });
+    } catch (Exception e) {
+      logger.e("Failed to cache operation response", e);
+      return;
+    }
+
+    dispatcher.execute(new Runnable() {
+      @Override public void run() {
+        try {
+          apolloStore.publish(changedKeys);
+        } catch (Exception e) {
+          logger.e("Failed to publish cache changes", e);
+        }
+      }
+    });
   }
 
   private InterceptorResponse resolveNetworkFirstCacheResponse(Operation operation) {

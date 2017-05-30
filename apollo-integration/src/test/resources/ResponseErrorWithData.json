@@ -1,0 +1,19 @@
+{
+  "data": {
+    "hero": {
+      "__typename": "Droid",
+      "name": "R2-D2"
+    }
+  },
+  "errors": [
+    {
+      "message": "Cannot query field \"names\" on type \"Species\".",
+      "locations": [
+        {
+          "line": 3,
+          "column": 5
+        }
+      ]
+    }
+  ]
+}

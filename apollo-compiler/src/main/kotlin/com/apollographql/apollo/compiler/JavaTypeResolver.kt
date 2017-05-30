@@ -1,6 +1,7 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.ClassNames.parameterizedGuavaOptional
+import com.apollographql.apollo.compiler.ClassNames.parameterizedJavaOptional
 import com.apollographql.apollo.compiler.ClassNames.parameterizedOptional
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.squareup.javapoet.ClassName
@@ -31,6 +32,7 @@ class JavaTypeResolver(
       when (context.nullableValueType) {
         NullableValueType.APOLLO_OPTIONAL -> parameterizedOptional(javaType)
         NullableValueType.GUAVA_OPTIONAL -> parameterizedGuavaOptional(javaType)
+        NullableValueType.JAVA_OPTIONAL -> parameterizedJavaOptional(javaType)
         else -> javaType.annotated(Annotations.NULLABLE)
       }
     } else {

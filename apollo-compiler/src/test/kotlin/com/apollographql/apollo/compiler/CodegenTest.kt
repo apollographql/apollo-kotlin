@@ -70,6 +70,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
             }
             val nullableValueType = when {
               it.name == "hero_details_guava" -> NullableValueType.GUAVA_OPTIONAL
+              it.name == "hero_details_java_optional" -> NullableValueType.JAVA_OPTIONAL
               (it.name != "hero_details_nullable" || it.name == "no_accessors") -> NullableValueType.APOLLO_OPTIONAL
               else -> NullableValueType.ANNOTATED
             }

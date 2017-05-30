@@ -3,7 +3,7 @@ package com.apollographql.apollo.rx;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloPrefetch;
-import com.apollographql.apollo.ApolloWatcher;
+import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.internal.util.Cancelable;
@@ -35,27 +35,27 @@ public final class RxApollo {
   }
 
   /**
-   * Converts an {@link ApolloWatcher} into an Observable. Honors the back pressure from downstream with the back
+   * Converts an {@link ApolloQueryWatcher} into an Observable. Honors the back pressure from downstream with the back
    * pressure strategy {@link rx.Emitter.BackpressureMode#LATEST}.
    *
-   * @param watcher the ApolloWatcher to convert
+   * @param watcher the ApolloQueryWatcher to convert
    * @param <T>     the value type
    * @return the converted Observable
    */
   @Nonnull
-  public static <T> Observable<Response<T>> from(@Nonnull final ApolloWatcher<T> watcher) {
+  public static <T> Observable<Response<T>> from(@Nonnull final ApolloQueryWatcher<T> watcher) {
     return from(watcher, Emitter.BackpressureMode.LATEST);
   }
 
   /**
-   * Converts an {@link ApolloWatcher} into an Observable.
+   * Converts an {@link ApolloQueryWatcher} into an Observable.
    *
-   * @param watcher          the ApolloWatcher to convert
+   * @param watcher          the ApolloQueryWatcher to convert
    * @param backpressureMode the back pressure strategy to apply to the observable source.
    * @param <T>              the value type
    * @return the converted Observable
    */
-  @Nonnull public static <T> Observable<Response<T>> from(@Nonnull final ApolloWatcher<T> watcher,
+  @Nonnull public static <T> Observable<Response<T>> from(@Nonnull final ApolloQueryWatcher<T> watcher,
       @Nonnull Emitter.BackpressureMode backpressureMode) {
     checkNotNull(backpressureMode, "backpressureMode == null");
     checkNotNull(watcher, "watcher == null");

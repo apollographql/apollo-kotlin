@@ -82,9 +82,9 @@ public class DroidDetails implements GraphqlFragment {
     }
     if (o instanceof DroidDetails) {
       DroidDetails that = (DroidDetails) o;
-      return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-       && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-       && ((this.primaryFunction == null) ? (that.primaryFunction == null) : this.primaryFunction.equals(that.primaryFunction));
+      return this.__typename.equals(that.__typename)
+       && this.name.equals(that.name)
+       && this.primaryFunction.equals(that.primaryFunction);
     }
     return false;
   }
@@ -94,11 +94,11 @@ public class DroidDetails implements GraphqlFragment {
     if (!$hashCodeMemoized) {
       int h = 1;
       h *= 1000003;
-      h ^= (__typename == null) ? 0 : __typename.hashCode();
+      h ^= __typename.hashCode();
       h *= 1000003;
-      h ^= (name == null) ? 0 : name.hashCode();
+      h ^= name.hashCode();
       h *= 1000003;
-      h ^= (primaryFunction == null) ? 0 : primaryFunction.hashCode();
+      h ^= primaryFunction.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }

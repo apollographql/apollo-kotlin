@@ -65,7 +65,7 @@ public class Rx2ApolloTest {
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
     EpisodeHeroName.Data data = Rx2Apollo
-        .from(apolloClient.newCall(query))
+        .from(apolloClient.query(query))
         .test()
         .await()
         .assertNoErrors()
@@ -85,7 +85,7 @@ public class Rx2ApolloTest {
     TestObserver<Response<EpisodeHeroName.Data>> testObserver = new TestObserver<>();
 
     Disposable disposable = Rx2Apollo
-        .from(apolloClient.newCall(query))
+        .from(apolloClient.query(query))
         .delay(5, TimeUnit.SECONDS)
         .subscribeWith(testObserver);
 
@@ -135,7 +135,7 @@ public class Rx2ApolloTest {
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
-    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).watcher();
+    ApolloQueryWatcher<EpisodeHeroName.Data> watcher = apolloClient.query(query).watcher();
 
     Rx2Apollo
         .from(watcher)
@@ -168,7 +168,7 @@ public class Rx2ApolloTest {
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     //Another newer call gets updated information
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
-    apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 
@@ -181,7 +181,7 @@ public class Rx2ApolloTest {
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
-    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).watcher();
+    ApolloQueryWatcher<EpisodeHeroName.Data> watcher = apolloClient.query(query).watcher();
 
     Rx2Apollo
         .from(watcher)
@@ -213,7 +213,7 @@ public class Rx2ApolloTest {
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
 
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
-    apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
+    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
 
     secondResponseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
@@ -227,7 +227,7 @@ public class Rx2ApolloTest {
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
-    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).watcher();
+    ApolloQueryWatcher<EpisodeHeroName.Data> watcher = apolloClient.query(query).watcher();
 
     Rx2Apollo
         .from(watcher)
@@ -261,7 +261,7 @@ public class Rx2ApolloTest {
     HeroAndFriendsNamesWithIDs friendsQuery = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
 
     mockWebServer.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
-    apolloClient.newCall(friendsQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    apolloClient.query(friendsQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 
@@ -274,7 +274,7 @@ public class Rx2ApolloTest {
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
-    ApolloWatcher<EpisodeHeroName.Data> watcher = apolloClient.newCall(query).watcher();
+    ApolloQueryWatcher<EpisodeHeroName.Data> watcher = apolloClient.query(query).watcher();
 
     Disposable disposable = Rx2Apollo
         .from(watcher)
@@ -307,7 +307,7 @@ public class Rx2ApolloTest {
 
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
     disposable.dispose();
-    apolloClient.newCall(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
 
     secondResponseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }

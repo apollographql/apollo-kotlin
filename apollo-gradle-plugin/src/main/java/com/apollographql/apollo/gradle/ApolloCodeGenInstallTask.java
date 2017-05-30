@@ -24,18 +24,17 @@ public class ApolloCodeGenInstallTask extends NpmTask {
   private static final String INSTALL_DIR =  "apollo-codegen/node_modules/apollo-codegen";
 
   @OutputDirectory private File installDir;
-
+  private File apolloPackageFile;
+  
   public ApolloCodeGenInstallTask() {
     // TODO: set to const when ApolloPlugin is in java
     setGroup("apollo");
     setDescription("Runs npm install for apollo-codegen");
-    installDir = new File(getProject().getBuildDir(), INSTALL_DIR);
-    installDir.mkdirs();
-
+    installDir = getProject().file(getProject().getBuildDir() + "/" + INSTALL_DIR);
     File workingDir = new File(getProject().getBuildDir(), "apollo-codegen");
     setWorkingDir(workingDir);
+    apolloPackageFile = getProject().file(workingDir + "/package.json");
 
-    final File apolloPackageFile = new File(workingDir, "package.json");
     final boolean isSameCodegenVersion = isSameApolloCodegenVersion(getApolloVersion());
 
     if (!isSameCodegenVersion) {
@@ -46,15 +45,18 @@ public class ApolloCodeGenInstallTask extends NpmTask {
         return apolloPackageFile.isFile() && isSameCodegenVersion;
       }
     });
+  }
 
+  @Override
+  public void exec() {
     if (!apolloPackageFile.isFile()) {
       writePackageFile(apolloPackageFile);
     }
     setArgs(Lists.newArrayList("install", "apollo-codegen@" + GraphQLCompiler.APOLLOCODEGEN_VERSION, "--save",
         "--save-exact"));
     getLogging().captureStandardOutput(LogLevel.INFO);
+    super.exec();
   }
-
   private static class PackageJson {
     String version;
   }

@@ -336,7 +336,7 @@ public class ApolloInterceptorChainTest {
         .body(ResponseBody.create(MediaType.parse("text/plain; charset=utf-8"), "fakeResponse"))
         .build();
 
-    Response<EpisodeHeroName.Data> apolloResponse = new Response<>(query);
+    Response<EpisodeHeroName.Data> apolloResponse = Response.<EpisodeHeroName.Data>builder(query).build();
 
     return new InterceptorResponse(okHttpResponse,
         apolloResponse, Collections.<Record>emptyList());

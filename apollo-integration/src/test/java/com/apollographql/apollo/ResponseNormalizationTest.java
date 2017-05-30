@@ -70,7 +70,7 @@ public class ResponseNormalizationTest {
     MockResponse mockResponse = mockResponse("HeroNameResponse.json");
     server.enqueue(mockResponse);
 
-    ApolloCall<HeroName.Data> call = apolloClient.newCall(new HeroName());
+    ApolloCall<HeroName.Data> call = apolloClient.query(new HeroName());
     Response<HeroName.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
@@ -88,7 +88,7 @@ public class ResponseNormalizationTest {
     server.enqueue(mockResponse);
 
     final EpisodeHeroName query = EpisodeHeroName.builder().episode(JEDI).build();
-    ApolloCall<EpisodeHeroName.Data> call = apolloClient.newCall(query);
+    ApolloCall<EpisodeHeroName.Data> call = apolloClient.query(query);
     Response<EpisodeHeroName.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
@@ -108,7 +108,7 @@ public class ResponseNormalizationTest {
 
     final HeroAppearsIn heroAppearsInQuery = new HeroAppearsIn();
 
-    ApolloCall<HeroAppearsIn.Data> call = apolloClient.newCall(heroAppearsInQuery);
+    ApolloCall<HeroAppearsIn.Data> call = apolloClient.query(heroAppearsInQuery);
     Response<HeroAppearsIn.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
@@ -126,7 +126,7 @@ public class ResponseNormalizationTest {
     server.enqueue(mockResponse);
     final HeroAndFriendsNames heroAndFriendsNameQuery = HeroAndFriendsNames.builder().episode(JEDI).build();
 
-    ApolloCall<HeroAndFriendsNames.Data> call = apolloClient.newCall(heroAndFriendsNameQuery);
+    ApolloCall<HeroAndFriendsNames.Data> call = apolloClient.query(heroAndFriendsNameQuery);
     Response<HeroAndFriendsNames.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
@@ -153,7 +153,7 @@ public class ResponseNormalizationTest {
     server.enqueue(mockResponse);
     final HeroAndFriendsNamesWithIDs heroAndFriendsWithIdsQuery = HeroAndFriendsNamesWithIDs.builder().episode(JEDI).build();
 
-    ApolloCall<HeroAndFriendsNamesWithIDs.Data> call = apolloClient.newCall(heroAndFriendsWithIdsQuery);
+    ApolloCall<HeroAndFriendsNamesWithIDs.Data> call = apolloClient.query(heroAndFriendsWithIdsQuery);
     Response<HeroAndFriendsNamesWithIDs.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
@@ -181,7 +181,7 @@ public class ResponseNormalizationTest {
     final HeroAndFriendsNamesWithIDForParentOnly heroAndFriendsWithIdsQuery = HeroAndFriendsNamesWithIDForParentOnly
         .builder().episode(JEDI).build();
 
-    ApolloCall<HeroAndFriendsNamesWithIDForParentOnly.Data> call = apolloClient.newCall(heroAndFriendsWithIdsQuery);
+    ApolloCall<HeroAndFriendsNamesWithIDForParentOnly.Data> call = apolloClient.query(heroAndFriendsWithIdsQuery);
     Response<HeroAndFriendsNamesWithIDForParentOnly.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
@@ -209,7 +209,7 @@ public class ResponseNormalizationTest {
 
     final SameHeroTwice sameHeroTwiceQuery = new SameHeroTwice();
 
-    ApolloCall<SameHeroTwice.Data> call = apolloClient.newCall(sameHeroTwiceQuery);
+    ApolloCall<SameHeroTwice.Data> call = apolloClient.query(sameHeroTwiceQuery);
     Response<SameHeroTwice.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
@@ -229,7 +229,7 @@ public class ResponseNormalizationTest {
 
     final HeroTypeDependentAliasedField aliasedQuery = HeroTypeDependentAliasedField.builder().episode(JEDI).build();
 
-    ApolloCall<HeroTypeDependentAliasedField.Data> call = apolloClient.newCall(aliasedQuery);
+    ApolloCall<HeroTypeDependentAliasedField.Data> call = apolloClient.query(aliasedQuery);
     Response<HeroTypeDependentAliasedField.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
@@ -248,7 +248,7 @@ public class ResponseNormalizationTest {
 
     final HeroTypeDependentAliasedField aliasedQuery = HeroTypeDependentAliasedField.builder().episode(EMPIRE).build();
 
-    ApolloCall<HeroTypeDependentAliasedField.Data> call = apolloClient.newCall(aliasedQuery);
+    ApolloCall<HeroTypeDependentAliasedField.Data> call = apolloClient.query(aliasedQuery);
     Response<HeroTypeDependentAliasedField.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
@@ -267,7 +267,7 @@ public class ResponseNormalizationTest {
 
     final HeroTypeDependentAliasedField aliasedQuery = HeroTypeDependentAliasedField.builder().episode(EMPIRE).build();
 
-    ApolloCall<HeroTypeDependentAliasedField.Data> call = apolloClient.newCall(aliasedQuery);
+    ApolloCall<HeroTypeDependentAliasedField.Data> call = apolloClient.query(aliasedQuery);
     Response<HeroTypeDependentAliasedField.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
@@ -285,7 +285,7 @@ public class ResponseNormalizationTest {
     server.enqueue(mockResponse);
     final HeroParentTypeDependentField aliasedQuery = HeroParentTypeDependentField.builder().episode(JEDI).build();
 
-    ApolloCall<HeroParentTypeDependentField.Data> call = apolloClient.newCall(aliasedQuery);
+    ApolloCall<HeroParentTypeDependentField.Data> call = apolloClient.query(aliasedQuery);
     Response<HeroParentTypeDependentField.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
@@ -307,7 +307,7 @@ public class ResponseNormalizationTest {
     server.enqueue(mockResponse);
     final HeroParentTypeDependentField aliasedQuery = HeroParentTypeDependentField.builder().episode(EMPIRE).build();
 
-    ApolloCall<HeroParentTypeDependentField.Data> call = apolloClient.newCall(aliasedQuery);
+    ApolloCall<HeroParentTypeDependentField.Data> call = apolloClient.query(aliasedQuery);
     Response<HeroParentTypeDependentField.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 

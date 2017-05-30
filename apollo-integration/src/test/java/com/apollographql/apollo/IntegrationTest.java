@@ -4,13 +4,14 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
-import com.apollographql.apollo.integration.httpcache.AllFilms;
-import com.apollographql.apollo.integration.httpcache.AllPlanets;
-import com.apollographql.apollo.integration.httpcache.type.CustomType;
-import com.apollographql.apollo.integration.normalizer.HeroName;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.integration.httpcache.AllFilms;
+import com.apollographql.apollo.integration.httpcache.AllPlanets;
+import com.apollographql.apollo.integration.httpcache.type.CustomType;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroName;
+import com.apollographql.apollo.integration.normalizer.HeroName;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -19,6 +20,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
+import static com.apollographql.apollo.integration.normalizer.type.Episode.JEDI;
 import static com.google.common.truth.Truth.assertThat;
 
 public class IntegrationTest {
@@ -79,7 +82,7 @@ public class IntegrationTest {
   @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
     server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"));
 
-    Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
+    Response<AllPlanets.Data> body = apolloClient.query(new AllPlanets()).execute();
     assertThat(body.hasErrors()).isFalse();
 
     assertThat(server.takeRequest().getBody().readString(Charsets.UTF_8))
@@ -142,19 +145,45 @@ public class IntegrationTest {
   }
 
   @Test public void errorResponse() throws Exception {
-    server.enqueue(mockResponse("HttpCacheTestError.json"));
-    Response<AllPlanets.Data> body = apolloClient.newCall(new AllPlanets()).execute();
+    server.enqueue(mockResponse("ResponseError.json"));
+    Response<AllPlanets.Data> body = apolloClient.query(new AllPlanets()).execute();
     assertThat(body.hasErrors()).isTrue();
     //noinspection ConstantConditions
     assertThat(body.errors()).containsExactly(new Error(
         "Cannot query field \"names\" on type \"Species\".",
-        Collections.singletonList(new Error.Location(3, 5))));
+        Collections.singletonList(new Error.Location(3, 5)), Collections.<String, Object>emptyMap()));
+  }
+
+  @Test public void errorResponse_custom_attributes() throws Exception {
+    server.enqueue(mockResponse("ResponseErrorWithCustomAttributes.json"));
+    Response<AllPlanets.Data> body = apolloClient.query(new AllPlanets()).execute();
+    assertThat(body.hasErrors()).isTrue();
+    assertThat(body.errors().get(0).customAttributes()).hasSize(4);
+    assertThat(body.errors().get(0).customAttributes().get("code")).isEqualTo(new BigDecimal(500));
+    assertThat(body.errors().get(0).customAttributes().get("status")).isEqualTo("Internal Error");
+    assertThat(body.errors().get(0).customAttributes().get("fatal")).isEqualTo(true);
+    assertThat(body.errors().get(0).customAttributes().get("path")).isEqualTo(Arrays.asList("query"));
+  }
+
+  @Test public void errorResponse_with_data() throws Exception {
+    MockResponse mockResponse = mockResponse("ResponseErrorWithData.json");
+    server.enqueue(mockResponse);
+
+    final EpisodeHeroName query = EpisodeHeroName.builder().episode(JEDI).build();
+    ApolloCall<EpisodeHeroName.Data> call = apolloClient.query(query);
+    Response<EpisodeHeroName.Data> body = call.execute();
+    assertThat(body.data()).isNotNull();
+    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
+
+    assertThat(body.errors()).containsExactly(new Error(
+        "Cannot query field \"names\" on type \"Species\".",
+        Collections.singletonList(new Error.Location(3, 5)), Collections.<String, Object>emptyMap()));
   }
 
   @Test public void allFilmsWithDate() throws Exception {
     server.enqueue(mockResponse("HttpCacheTestAllFilms.json"));
 
-    Response<AllFilms.Data> body = apolloClient.newCall(new AllFilms()).execute();
+    Response<AllFilms.Data> body = apolloClient.query(new AllFilms()).execute();
     assertThat(body.hasErrors()).isFalse();
 
 
@@ -176,7 +205,7 @@ public class IntegrationTest {
   @Test public void allPlanetQueryAsync() throws Exception {
     server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"));
     final NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
-    apolloClient.newCall(new AllPlanets()).enqueue(new ApolloCall.Callback<AllPlanets.Data>() {
+    apolloClient.query(new AllPlanets()).enqueue(new ApolloCall.Callback<AllPlanets.Data>() {
       @Override public void onResponse(@Nonnull Response<AllPlanets.Data> response) {
         assertThat(response.hasErrors()).isFalse();
         assertThat(response.data().allPlanets().planets().size()).isEqualTo(60);
@@ -195,7 +224,7 @@ public class IntegrationTest {
     MockResponse mockResponse = mockResponse("ResponseDataEmpty.json");
     server.enqueue(mockResponse);
 
-    ApolloCall<HeroName.Data> call = apolloClient.newCall(new HeroName());
+    ApolloCall<HeroName.Data> call = apolloClient.query(new HeroName());
     call.execute();
   }
 
@@ -203,7 +232,7 @@ public class IntegrationTest {
     MockResponse mockResponse = mockResponse("ResponseDataNull.json");
     server.enqueue(mockResponse);
 
-    ApolloCall<HeroName.Data> call = apolloClient.newCall(new HeroName());
+    ApolloCall<HeroName.Data> call = apolloClient.query(new HeroName());
     Response<HeroName.Data> body = call.execute();
     assertThat(body.data()).isNull();
     assertThat(body.hasErrors()).isFalse();
@@ -213,7 +242,7 @@ public class IntegrationTest {
     MockResponse mockResponse = mockResponse("ResponseDataMissing.json");
     server.enqueue(mockResponse);
 
-    ApolloCall<HeroName.Data> call = apolloClient.newCall(new HeroName());
+    ApolloCall<HeroName.Data> call = apolloClient.query(new HeroName());
     call.execute();
   }
 

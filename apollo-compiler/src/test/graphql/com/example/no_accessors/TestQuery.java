@@ -3,6 +3,7 @@ package com.example.no_accessors;
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
@@ -32,6 +33,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION + "\n"
    + HeroDetails.FRAGMENT_DEFINITION;
 
+  private static final OperationName OPERATION_NAME = new OperationName() {
+    @Override
+    public String name() {
+      return "TestQuery";
+    }
+  };
+
   private final Operation.Variables variables;
 
   public TestQuery() {
@@ -56,6 +64,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   @Override
   public ResponseFieldMapper<TestQuery.Data> responseFieldMapper() {
     return new Data.Mapper();
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  @Override
+  public OperationName name() {
+    return OPERATION_NAME;
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public TestQuery build() {
+      return new TestQuery();
+    }
   }
 
   public static class Data implements Operation.Data {
@@ -88,7 +114,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero));
+        return this.hero.equals(that.hero);
       }
       return false;
     }
@@ -98,7 +124,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (hero == null) ? 0 : hero.hashCode();
+        h ^= hero.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -173,10 +199,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof Hero) {
         Hero that = (Hero) o;
-        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-         && ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-         && ((this.appearsIn == null) ? (that.appearsIn == null) : this.appearsIn.equals(that.appearsIn))
-         && ((this.fragments == null) ? (that.fragments == null) : this.fragments.equals(that.fragments));
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name)
+         && this.appearsIn.equals(that.appearsIn)
+         && this.fragments.equals(that.fragments);
       }
       return false;
     }
@@ -186,13 +212,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h ^= __typename.hashCode();
         h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
+        h ^= name.hashCode();
         h *= 1000003;
-        h ^= (appearsIn == null) ? 0 : appearsIn.hashCode();
+        h ^= appearsIn.hashCode();
         h *= 1000003;
-        h ^= (fragments == null) ? 0 : fragments.hashCode();
+        h ^= fragments.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -229,7 +255,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         }
         if (o instanceof Fragments) {
           Fragments that = (Fragments) o;
-          return ((this.heroDetails == null) ? (that.heroDetails == null) : this.heroDetails.equals(that.heroDetails));
+          return this.heroDetails.equals(that.heroDetails);
         }
         return false;
       }
@@ -239,7 +265,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         if (!$hashCodeMemoized) {
           int h = 1;
           h *= 1000003;
-          h ^= (heroDetails == null) ? 0 : heroDetails.hashCode();
+          h ^= heroDetails.hashCode();
           $hashCode = h;
           $hashCodeMemoized = true;
         }

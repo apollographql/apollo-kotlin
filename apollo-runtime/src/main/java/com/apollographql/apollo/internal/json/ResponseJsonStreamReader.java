@@ -14,10 +14,6 @@ public class ResponseJsonStreamReader {
     this.jsonReader = jsonReader;
   }
 
-  public Map<String, Object> buffer() throws IOException {
-    return toMap(this);
-  }
-
   public boolean hasNext() throws IOException {
     return jsonReader.hasNext();
   }
@@ -110,6 +106,42 @@ public class ResponseJsonStreamReader {
     }
   }
 
+  public Object nextScalar(boolean optional) throws IOException {
+    checkNextValue(optional);
+    if (isNextNull()) {
+      skipNext();
+      return null;
+    } else if (isNextBoolean()) {
+      return nextBoolean(false);
+    } else if (isNextNumber()) {
+      return new BigDecimal(nextString(false));
+    } else {
+      return nextString(false);
+    }
+  }
+
+  public Map<String, Object> toMap() throws IOException {
+    if (isNextObject()) {
+      return readObject(this);
+    }
+
+    Map<String, Object> result = new LinkedHashMap<>();
+    while (hasNext()) {
+      String name = nextName();
+      if (isNextNull()) {
+        skipNext();
+        result.put(name, null);
+      } else if (isNextObject()) {
+        result.put(name, readObject(this));
+      } else if (isNextList()) {
+        result.put(name, readScalarList(this));
+      } else {
+        result.put(name, nextScalar(true));
+      }
+    }
+    return result;
+  }
+
   private boolean isNextObject() throws IOException {
     return jsonReader.peek() == JsonReader.Token.BEGIN_OBJECT;
   }
@@ -136,32 +168,10 @@ public class ResponseJsonStreamReader {
     }
   }
 
-  private Map<String, Object> toMap(ResponseJsonStreamReader streamReader) throws IOException {
-    if (streamReader.isNextObject()) {
-      return readObject(streamReader);
-    }
-
-    Map<String, Object> result = new LinkedHashMap<>();
-    while (streamReader.hasNext()) {
-      String name = streamReader.nextName();
-      if (streamReader.isNextNull()) {
-        streamReader.skipNext();
-        result.put(name, null);
-      } else if (streamReader.isNextObject()) {
-        result.put(name, readObject(streamReader));
-      } else if (streamReader.isNextList()) {
-        result.put(name, readScalarList(streamReader));
-      } else {
-        result.put(name, readScalar(streamReader));
-      }
-    }
-    return result;
-  }
-
   private Map<String, Object> readObject(final ResponseJsonStreamReader streamReader) throws IOException {
     return streamReader.nextObject(false, new ObjectReader<Map<String, Object>>() {
       @Override public Map<String, Object> read(ResponseJsonStreamReader streamReader) throws IOException {
-        return toMap(streamReader);
+        return streamReader.toMap();
       }
     });
   }
@@ -172,23 +182,10 @@ public class ResponseJsonStreamReader {
         if (streamReader.isNextObject()) {
           return readObject(reader);
         } else {
-          return readScalar(reader);
+          return reader.nextScalar(true);
         }
       }
     });
-  }
-
-  protected Object readScalar(ResponseJsonStreamReader streamReader) throws IOException {
-    if (streamReader.isNextNull()) {
-      streamReader.skipNext();
-      return null;
-    } else if (streamReader.isNextBoolean()) {
-      return streamReader.nextBoolean(false);
-    } else if (streamReader.isNextNumber()) {
-      return new BigDecimal(streamReader.nextString(false));
-    } else {
-      return streamReader.nextString(false);
-    }
   }
 
   public interface ObjectReader<T> {

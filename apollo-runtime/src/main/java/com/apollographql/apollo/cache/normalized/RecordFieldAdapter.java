@@ -46,7 +46,7 @@ public final class RecordFieldAdapter {
   public Map<String, Object> from(BufferedSource bufferedFieldSource) throws IOException {
     final CacheJsonStreamReader cacheJsonStreamReader =
         cacheJsonStreamReader(bufferedSourceJsonReader(bufferedFieldSource));
-    return cacheJsonStreamReader.buffer();
+    return cacheJsonStreamReader.toMap();
   }
 
   public Map<String, Object> from(String jsonFieldSource) throws IOException {

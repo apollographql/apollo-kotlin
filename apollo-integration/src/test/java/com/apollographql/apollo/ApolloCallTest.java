@@ -45,7 +45,7 @@ public class ApolloCallTest {
     EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
     mockWebServer.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
-    ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.newCall(query);
+    ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.query(query);
 
     apolloCall.cancel();
 
@@ -77,7 +77,7 @@ public class ApolloCallTest {
         .setBodyDelay(TIME_OUT_SECONDS, TimeUnit.SECONDS));
 
     final AtomicReference<ApolloException> errorRef = new AtomicReference<>();
-    ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.newCall(query);
+    ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.query(query);
     apolloCall.enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
       @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
         responseLatch.countDown();
@@ -105,7 +105,7 @@ public class ApolloCallTest {
         .setBodyDelay(TIME_OUT_SECONDS, TimeUnit.SECONDS));
 
     final AtomicReference<ApolloException> errorRef = new AtomicReference<>();
-    final ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.newCall(query);
+    final ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.query(query);
     new Thread(new Runnable() {
       @Override public void run() {
         try {

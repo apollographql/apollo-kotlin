@@ -172,7 +172,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
       @Nonnull @Override public Response<T> execute(ReadableStore cache) {
         Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key(), cacheHeaders);
         if (rootRecord == null) {
-          return new Response<>(operation);
+          return Response.<T>builder(operation).build();
         }
 
         CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
@@ -182,10 +182,13 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
         try {
           responseNormalizer.willResolveRootQuery(operation);
           T data = operation.wrapData(responseFieldMapper.map(responseReader));
-          return new Response<T>(operation, data, null, responseNormalizer.dependentKeys());
+          return Response.<T>builder(operation)
+              .data(data)
+              .dependentKeys(responseNormalizer.dependentKeys())
+              .build();
         } catch (final Exception e) {
           logger.e(e, "Failed to read cached operation data. Operation: %s", operation);
-          return new Response<>(operation);
+          return Response.<T>builder(operation).build();
         }
       }
     });

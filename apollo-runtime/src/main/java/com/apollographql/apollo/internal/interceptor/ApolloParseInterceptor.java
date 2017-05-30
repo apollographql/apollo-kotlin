@@ -71,13 +71,16 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
     //no op
   }
 
-  @SuppressWarnings("unchecked") private InterceptorResponse parse(Operation operation, okhttp3.Response
-      httpResponse) throws ApolloHttpException, ApolloParseException {
+  @SuppressWarnings("unchecked") private InterceptorResponse parse(Operation operation, okhttp3.Response httpResponse)
+      throws ApolloHttpException, ApolloParseException {
     String cacheKey = httpResponse.request().header(HttpCache.CACHE_KEY_HEADER);
     if (httpResponse.isSuccessful()) {
       try {
         HttpResponseBodyParser parser = new HttpResponseBodyParser(operation, responseFieldMapper, customTypeAdapters);
         Response parsedResponse = parser.parse(httpResponse.body(), normalizer);
+        if (parsedResponse.hasErrors() && httpCache != null) {
+          httpCache.removeQuietly(cacheKey);
+        }
         return new InterceptorResponse(httpResponse, parsedResponse, normalizer.records());
       } catch (Exception rethrown) {
         logger.e(rethrown, "Failed to parse network response for operation: %s", operation);
