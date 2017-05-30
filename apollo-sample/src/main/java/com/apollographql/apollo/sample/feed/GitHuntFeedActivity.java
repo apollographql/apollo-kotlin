@@ -74,7 +74,7 @@ public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNav
         .type(FeedType.HOT)
         .build();
     githuntFeedCall = application.apolloClient()
-        .newCall(feedQuery)
+        .query(feedQuery)
         .cacheControl(CacheControl.NETWORK_FIRST);
     githuntFeedCall.enqueue(dataCallback);
   }
