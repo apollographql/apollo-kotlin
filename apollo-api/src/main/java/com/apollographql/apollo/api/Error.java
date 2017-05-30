@@ -1,20 +1,28 @@
 package com.apollographql.apollo.api;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 
 /**
  * Represents an error response returned from the GraphQL server
  */
-public class Error {
+public final class Error {
   private final String message;
-  @Nullable private final List<Location> locations;
+  private final List<Location> locations;
+  private final Map<String, Object> customAttributes;
 
-  public Error(String message, @Nullable List<Location> locations) {
+  public Error(String message, @Nullable List<Location> locations, @Nullable Map<String, Object> customAttributes) {
     this.message = message;
-    this.locations = locations;
+    this.locations = locations != null ? unmodifiableList(locations) : Collections.<Location>emptyList();
+    this.customAttributes = customAttributes != null ? unmodifiableMap(customAttributes)
+        : Collections.<String, Object>emptyMap();
   }
 
   /**
@@ -27,34 +35,40 @@ public class Error {
   /**
    * Returns the location of the error in the GraphQL operation.
    */
-  @Nullable public List<Location> locations() {
-    return locations != null ? new ArrayList<>(locations) : null;
+  @Nonnull public List<Location> locations() {
+    return locations;
+  }
+
+  /**
+   * Returns custom attributes associated with this error
+   */
+  @Nonnull public Map<String, Object> customAttributes() {
+    return customAttributes;
   }
 
   @Override public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof Error)) return false;
 
-    Error that = (Error) o;
+    Error error = (Error) o;
 
-    //noinspection SimplifiableIfStatement
-    if (message != null ? !message.equals(that.message) : that.message != null) return false;
-    return locations != null ? locations.equals(that.locations) : that.locations == null;
+    if (message != null ? !message.equals(error.message) : error.message != null) return false;
+    if (!locations.equals(error.locations)) return false;
+    return customAttributes.equals(error.customAttributes);
   }
 
   @Override public int hashCode() {
     int result = message != null ? message.hashCode() : 0;
-    result = 31 * result + (locations != null ? locations.hashCode() : 0);
+    result = 31 * result + locations.hashCode();
+    result = 31 * result + customAttributes.hashCode();
     return result;
   }
 
   @Override public String toString() {
     return "Error{"
-        + "message='"
-        + message
-        + '\''
-        + ", locations="
-        + locations
+        + "message='" + message + '\''
+        + ", locations=" + locations
+        + ", customAttributes=" + customAttributes
         + '}';
   }
 

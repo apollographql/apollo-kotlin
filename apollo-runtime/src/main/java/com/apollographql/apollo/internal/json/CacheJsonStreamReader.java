@@ -13,8 +13,8 @@ public final class CacheJsonStreamReader extends ResponseJsonStreamReader {
     super(jsonReader);
   }
 
-  @Override protected Object readScalar(ResponseJsonStreamReader streamReader) throws IOException {
-    Object scalar = super.readScalar(streamReader);
+  @Override public Object nextScalar(boolean optional) throws IOException {
+    Object scalar = super.nextScalar(optional);
     if (scalar instanceof String) {
       String scalarString = (String) scalar;
       if (CacheReference.canDeserialize(scalarString)) {
