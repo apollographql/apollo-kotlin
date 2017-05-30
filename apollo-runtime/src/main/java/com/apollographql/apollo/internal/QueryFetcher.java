@@ -54,6 +54,7 @@ final class QueryFetcher {
           .cacheHeaders(CacheHeaders.NONE)
           .logger(builder.logger)
           .applicationInterceptors(builder.applicationInterceptors)
+          .tracker(builder.tracker)
           .dispatcher(builder.dispatcher)
           .build());
     }
@@ -126,6 +127,7 @@ final class QueryFetcher {
     ExecutorService dispatcher;
     ApolloLogger logger;
     List<ApolloInterceptor> applicationInterceptors;
+    ApolloCallTracker tracker;
 
     Builder queries(List<Query> queries) {
       this.queries = queries;
@@ -174,6 +176,11 @@ final class QueryFetcher {
 
     Builder applicationInterceptors(List<ApolloInterceptor> applicationInterceptors) {
       this.applicationInterceptors = applicationInterceptors;
+      return this;
+    }
+
+    Builder tracker(ApolloCallTracker tracker) {
+      this.tracker = tracker;
       return this;
     }
 
