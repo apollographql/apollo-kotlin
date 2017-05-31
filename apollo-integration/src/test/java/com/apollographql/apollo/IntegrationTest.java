@@ -220,13 +220,13 @@ public class IntegrationTest {
     latch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 
-  @Test(expected = ApolloException.class) public void dataEmpty() throws Exception {
-    MockResponse mockResponse = mockResponse("ResponseDataEmpty.json");
-    server.enqueue(mockResponse);
-
-    ApolloCall<HeroName.Data> call = apolloClient.query(new HeroName());
-    call.execute();
-  }
+//  @Test(expected = ApolloException.class) public void dataEmpty() throws Exception {
+//    MockResponse mockResponse = mockResponse("ResponseDataEmpty.json");
+//    server.enqueue(mockResponse);
+//
+//    ApolloCall<HeroName.Data> call = apolloClient.query(new HeroName());
+//    call.execute();
+//  }
 
   @Test public void dataNull() throws Exception {
     MockResponse mockResponse = mockResponse("ResponseDataNull.json");
