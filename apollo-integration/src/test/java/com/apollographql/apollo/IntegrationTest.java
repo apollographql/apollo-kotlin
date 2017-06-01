@@ -4,14 +4,14 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
-import com.apollographql.android.impl.httpcache.AllFilms;
-import com.apollographql.android.impl.httpcache.AllPlanets;
-import com.apollographql.android.impl.httpcache.type.CustomType;
-import com.apollographql.android.impl.normalizer.EpisodeHeroName;
-import com.apollographql.android.impl.normalizer.HeroName;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.integration.httpcache.AllFilms;
+import com.apollographql.apollo.integration.httpcache.AllPlanets;
+import com.apollographql.apollo.integration.httpcache.type.CustomType;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroName;
+import com.apollographql.apollo.integration.normalizer.HeroName;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -37,7 +37,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.apollographql.android.impl.normalizer.type.Episode.JEDI;
+import static com.apollographql.apollo.integration.normalizer.type.Episode.JEDI;
 import static com.google.common.truth.Truth.assertThat;
 
 public class IntegrationTest {

@@ -1,7 +1,7 @@
 package com.apollographql.apollo;
 
-import com.apollographql.android.impl.normalizer.EpisodeHeroName;
-import com.apollographql.android.impl.normalizer.type.Episode;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroName;
+import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;

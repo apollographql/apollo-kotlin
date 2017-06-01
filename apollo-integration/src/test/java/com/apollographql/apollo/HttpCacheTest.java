@@ -1,9 +1,9 @@
 package com.apollographql.apollo;
 
-import com.apollographql.android.impl.httpcache.AllFilms;
-import com.apollographql.android.impl.httpcache.AllPlanets;
-import com.apollographql.android.impl.httpcache.DroidDetails;
-import com.apollographql.android.impl.httpcache.type.CustomType;
+import com.apollographql.apollo.integration.httpcache.AllFilms;
+import com.apollographql.apollo.integration.httpcache.AllPlanets;
+import com.apollographql.apollo.integration.httpcache.DroidDetails;
+import com.apollographql.apollo.integration.httpcache.type.CustomType;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;

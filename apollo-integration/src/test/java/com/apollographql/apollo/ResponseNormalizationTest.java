@@ -1,14 +1,14 @@
 package com.apollographql.apollo;
 
-import com.apollographql.android.impl.normalizer.EpisodeHeroName;
-import com.apollographql.android.impl.normalizer.HeroAndFriendsNames;
-import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDForParentOnly;
-import com.apollographql.android.impl.normalizer.HeroAndFriendsNamesWithIDs;
-import com.apollographql.android.impl.normalizer.HeroAppearsIn;
-import com.apollographql.android.impl.normalizer.HeroName;
-import com.apollographql.android.impl.normalizer.HeroParentTypeDependentField;
-import com.apollographql.android.impl.normalizer.HeroTypeDependentAliasedField;
-import com.apollographql.android.impl.normalizer.SameHeroTwice;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroName;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNames;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDForParentOnly;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDs;
+import com.apollographql.apollo.integration.normalizer.HeroAppearsIn;
+import com.apollographql.apollo.integration.normalizer.HeroName;
+import com.apollographql.apollo.integration.normalizer.HeroParentTypeDependentField;
+import com.apollographql.apollo.integration.normalizer.HeroTypeDependentAliasedField;
+import com.apollographql.apollo.integration.normalizer.SameHeroTwice;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.CacheReference;
@@ -31,8 +31,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.apollographql.android.impl.normalizer.type.Episode.EMPIRE;
-import static com.apollographql.android.impl.normalizer.type.Episode.JEDI;
+import static com.apollographql.apollo.integration.normalizer.type.Episode.EMPIRE;
+import static com.apollographql.apollo.integration.normalizer.type.Episode.JEDI;
 import static com.google.common.truth.Truth.assertThat;
 
 public class ResponseNormalizationTest {

@@ -1,12 +1,12 @@
 package com.apollographql.apollo;
 
-import com.apollographql.android.impl.httpcache.AllPlanets;
-import com.apollographql.android.impl.normalizer.EpisodeHeroName;
-import com.apollographql.android.impl.normalizer.type.Episode;
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.integration.httpcache.AllPlanets;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroName;
+import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 

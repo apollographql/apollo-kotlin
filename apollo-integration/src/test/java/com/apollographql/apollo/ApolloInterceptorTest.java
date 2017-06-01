@@ -3,8 +3,8 @@ package com.apollographql.apollo;
 
 import android.support.annotation.NonNull;
 
-import com.apollographql.android.impl.normalizer.EpisodeHeroName;
-import com.apollographql.android.impl.normalizer.type.Episode;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroName;
+import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.Record;

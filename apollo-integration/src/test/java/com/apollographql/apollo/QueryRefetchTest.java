@@ -1,14 +1,15 @@
 package com.apollographql.apollo;
 
-import com.apollographql.android.impl.normalizer.CreateReview;
-import com.apollographql.android.impl.normalizer.ReviewsByEpisode;
-import com.apollographql.android.impl.normalizer.type.ColorInput;
-import com.apollographql.android.impl.normalizer.type.Episode;
-import com.apollographql.android.impl.normalizer.type.ReviewInput;
+
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
+import com.apollographql.apollo.integration.normalizer.CreateReview;
+import com.apollographql.apollo.integration.normalizer.ReviewsByEpisode;
+import com.apollographql.apollo.integration.normalizer.type.ColorInput;
+import com.apollographql.apollo.integration.normalizer.type.Episode;
+import com.apollographql.apollo.integration.normalizer.type.ReviewInput;
 
 import org.junit.After;
 import org.junit.Before;
