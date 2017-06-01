@@ -1,11 +1,12 @@
 def versions = [
-    apolloVersion    : '0.3.1-SNAPSHOT',
-    cacheVersion     : '2.0.2',
-    okHttpVersion    : '3.6.0',
-    kotlinVersion    : '1.1.2-3',
-    supportLibVersion: '25.3.1',
-    mockito          : '1.9.5',
-    testRunner       : '0.5'
+    apolloVersion                : '0.3.1-SNAPSHOT',
+    cacheVersion                 : '2.0.2',
+    okHttpVersion                : '3.6.0',
+    kotlinVersion                : '1.1.2-3',
+    supportLibVersion            : '25.3.1',
+    mockito                      : '1.9.5',
+    testRunner                   : '0.5',
+    espressoIdlingResourceVersion: '2.2.2'
 ]
 
 ext.isCi = "true" == System.getenv('CI')
@@ -47,5 +48,6 @@ ext.dep = [
     okhttpLoggingInterceptor: "com.squareup.okhttp3:logging-interceptor:$versions.okHttpVersion",
     okHttp                  : "com.squareup.okhttp3:okhttp:$versions.okHttpVersion",
     okhttpTestSupport       : "com.squareup.okhttp3:okhttp-testing-support:$versions.okHttpVersion",
-    testRunner              : "com.android.support.test:runner:$versions.testRunner"
+    testRunner              : "com.android.support.test:runner:$versions.testRunner",
+    espressoIdlingResource  : "com.android.support.test.espresso:espresso-idling-resource:$versions.espressoIdlingResourceVersion"
 ]

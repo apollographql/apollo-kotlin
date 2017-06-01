@@ -16,6 +16,7 @@ import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
+import com.apollographql.apollo.internal.ApolloCallTracker;
 import com.apollographql.apollo.internal.RealApolloCall;
 import com.apollographql.apollo.internal.RealApolloPrefetch;
 import com.apollographql.apollo.internal.ResponseFieldMapperFactory;
@@ -80,6 +81,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final CacheControl defaultCacheControl;
   private final CacheHeaders defaultCacheHeaders;
   private final ApolloLogger logger;
+  private final ApolloCallTracker tracker = new ApolloCallTracker();
   private final List<ApolloInterceptor> applicationInterceptors;
 
   private ApolloClient(Builder builder) {
@@ -114,7 +116,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
       @Nonnull Operation<D, T, V> operation) {
-    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, moshi, dispatcher, logger);
+    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory,
+        httpCache, moshi, dispatcher, logger, tracker);
   }
 
   /**
@@ -145,6 +148,20 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     return apolloStore;
   }
 
+  /**
+   * Sets the idleResourceCallback which will be called when this ApolloClient is idle.
+   */
+  public void idleCallback(IdleResourceCallback idleResourceCallback) {
+    tracker.setIdleResourceCallback(idleResourceCallback);
+  }
+
+  /**
+   * Returns the count of {@link ApolloCall} & {@link ApolloPrefetch} objects which are currently in progress.
+   */
+  public int activeCallsCount() {
+    return tracker.activeCallsCount();
+  }
+
   Response cachedHttpResponse(String cacheKey) throws IOException {
     if (httpCache != null) {
       return httpCache.read(cacheKey);
@@ -170,6 +187,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .dispatcher(dispatcher)
         .logger(logger)
         .applicationInterceptors(applicationInterceptors)
+        .tracker(tracker)
         .refetchQueries(Collections.<Query>emptyList())
         .refetchQueryNames(Collections.<OperationName>emptyList())
         .build();
@@ -349,8 +367,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * after the response source is selected (either the server, cache or both). This method can be called multiple
      * times for adding multiple application interceptors. </p>
      *
-     * <p>Note: Interceptors will be called <b>in the order in which they are added to the list of interceptors</b>
-     * and if any of the interceptors tries to short circuit the responses, then subsequent interceptors <b>won't</b> be
+     * <p>Note: Interceptors will be called <b>in the order in which they are added to the list of interceptors</b> and
+     * if any of the interceptors tries to short circuit the responses, then subsequent interceptors <b>won't</b> be
      * called.</p>
      *
      * @param interceptor Application level interceptor to add
