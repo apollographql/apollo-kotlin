@@ -2,6 +2,7 @@ package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloMutationCall;
 import com.apollographql.apollo.ApolloQueryCall;
+import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
@@ -123,7 +124,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
     Response<T> response;
     try {
-      tracker.onSyncCallInProgress(this);
+      tracker.registerCall(this);
       response = interceptorChain.proceed().parsedResponse.or(Response.<T>builder(operation).build());
     } catch (Exception e) {
       if (canceled) {
@@ -132,13 +133,14 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         throw e;
       }
     } finally {
-      tracker.onSyncCallFinished(this);
+      tracker.unregisterCall(this);
     }
 
     if (canceled) {
       throw new ApolloCanceledException("Canceled");
     }
 
+    refetchQueryWatchers();
     if (queryFetcher.isPresent()) {
       queryFetcher.get().refetchSync();
     }
@@ -150,13 +152,12 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     if (!executed.compareAndSet(false, true)) {
       throw new IllegalStateException("Already Executed");
     }
-    AsyncCall asyncCall = new AsyncCall(responseCallback);
-    tracker.onAsyncCallInProgress(asyncCall);
-    interceptorChain.proceedAsync(dispatcher, asyncCall);
+    tracker.registerCall(this);
+    interceptorChain.proceedAsync(dispatcher, interceptorCallbackProxy(responseCallback));
   }
 
   @Nonnull @Override public RealApolloQueryWatcher<T> watcher() {
-    return new RealApolloQueryWatcher<>(clone(), apolloStore);
+    return new RealApolloQueryWatcher<>(clone(), apolloStore, tracker);
   }
 
   @Nonnull @Override public RealApolloCall<T> httpCachePolicy(@Nonnull HttpCachePolicy.Policy httpCachePolicy) {
@@ -210,61 +211,69 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .build();
   }
 
-  final class AsyncCall implements ApolloInterceptor.CallBack {
+  @Nonnull @Override public Operation operation() {
+    return operation;
+  }
 
-    private final Callback<T> responseCallback;
-
-    private AsyncCall(Callback<T> callback) {
-      this.responseCallback = callback;
-    }
-
-    @Override public void onResponse(@Nonnull final ApolloInterceptor.InterceptorResponse response) {
-      try {
-
-        if (responseCallback == null) {
-          return;
+  private void refetchQueryWatchers() {
+    try {
+      for (OperationName operationName : refetchQueryNames) {
+        for (ApolloQueryWatcher queryWatcher : tracker.activeQueryWatchers(operationName)) {
+          queryWatcher.refetch();
         }
-        if (canceled) {
-          responseCallback.onCanceledError(new ApolloCanceledException("Canceled"));
-          return;
-        }
-        if (queryFetcher.isPresent()) {
-          queryFetcher.get().refetchAsync(new QueryFetcher.OnFetchCompleteCallback() {
-            @Override public void onFetchComplete() {
-              //noinspection unchecked
-              responseCallback.onResponse(response.parsedResponse.get());
-            }
-          });
-        } else { //noinspection unchecked
-          responseCallback.onResponse(response.parsedResponse.get());
-        }
-      } finally {
-        tracker.onAsyncCallFinished(this);
       }
+    } catch (Exception e) {
+      logger.e(e, "Failed to re-fetch query watcher");
     }
+  }
 
-    @Override public void onFailure(@Nonnull ApolloException e) {
-      try {
+  private ApolloInterceptor.CallBack interceptorCallbackProxy(final Callback<T> originalCallback) {
+    return new ApolloInterceptor.CallBack() {
+      @Override public void onResponse(@Nonnull final ApolloInterceptor.InterceptorResponse response) {
+        if (originalCallback == null) return;
+        try {
+          if (RealApolloCall.this.canceled) {
+            originalCallback.onCanceledError(new ApolloCanceledException("Canceled"));
+            return;
+          }
 
-        if (responseCallback == null) {
-          return;
+          refetchQueryWatchers();
+
+          if (queryFetcher.isPresent()) {
+            queryFetcher.get().refetchAsync(new QueryFetcher.OnFetchCompleteCallback() {
+              @Override public void onFetchComplete() {
+                //noinspection unchecked
+                originalCallback.onResponse(response.parsedResponse.get());
+              }
+            });
+          } else {
+            //noinspection unchecked
+            originalCallback.onResponse(response.parsedResponse.get());
+          }
+        } finally {
+          tracker.unregisterCall(RealApolloCall.this);
         }
-
-        if (canceled) {
-          responseCallback.onCanceledError(new ApolloCanceledException("Canceled", e));
-        } else if (e instanceof ApolloHttpException) {
-          responseCallback.onHttpError((ApolloHttpException) e);
-        } else if (e instanceof ApolloParseException) {
-          responseCallback.onParseError((ApolloParseException) e);
-        } else if (e instanceof ApolloNetworkException) {
-          responseCallback.onNetworkError((ApolloNetworkException) e);
-        } else {
-          responseCallback.onFailure(e);
-        }
-      } finally {
-        tracker.onAsyncCallFinished(this);
       }
-    }
+
+      @Override public void onFailure(@Nonnull ApolloException e) {
+        if (originalCallback == null) return;
+        try {
+          if (RealApolloCall.this.canceled) {
+            originalCallback.onCanceledError(new ApolloCanceledException("Canceled", e));
+          } else if (e instanceof ApolloHttpException) {
+            originalCallback.onHttpError((ApolloHttpException) e);
+          } else if (e instanceof ApolloParseException) {
+            originalCallback.onParseError((ApolloParseException) e);
+          } else if (e instanceof ApolloNetworkException) {
+            originalCallback.onNetworkError((ApolloNetworkException) e);
+          } else {
+            originalCallback.onFailure(e);
+          }
+        } finally {
+          tracker.unregisterCall(RealApolloCall.this);
+        }
+      }
+    };
   }
 
   public Builder<T> toBuilder() {
@@ -404,7 +413,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     }
 
     public Builder<T> refetchQueryNames(List<OperationName> refetchQueryNames) {
-      this.refetchQueryNames = refetchQueryNames;
+      this.refetchQueryNames = refetchQueryNames != null ? new ArrayList<>(refetchQueryNames)
+          : Collections.<OperationName>emptyList();
       return this;
     }
 

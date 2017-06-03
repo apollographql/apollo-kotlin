@@ -1,153 +1,229 @@
 package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.ApolloMutationCall;
 import com.apollographql.apollo.ApolloPrefetch;
+import com.apollographql.apollo.ApolloQueryCall;
+import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.IdleResourceCallback;
+import com.apollographql.apollo.api.Mutation;
+import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.OperationName;
+import com.apollographql.apollo.api.Query;
 
-import java.util.LinkedHashSet;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.annotation.Nonnull;
+
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
- * ApolloCallTracker is responsible for keeping track of running {@link ApolloCall} & {@link ApolloPrefetch} objects.
+ * ApolloCallTracker is responsible for keeping track of running {@link ApolloPrefetch} & {@link ApolloQueryCall}
+ * & {@link ApolloMutationCall} & {@link ApolloQueryWatcher} calls.
  */
-public final class ApolloCallTracker {
+@SuppressWarnings("WeakerAccess") public final class ApolloCallTracker {
+  private final Map<OperationName, Set<ApolloPrefetch>> activePrefetchCalls = new HashMap<>();
+  private final Map<OperationName, Set<ApolloQueryCall>> activeQueryCalls = new HashMap<>();
+  private final Map<OperationName, Set<ApolloMutationCall>> activeMutationCalls = new HashMap<>();
+  private final Map<OperationName, Set<ApolloQueryWatcher>> activeQueryWatchers = new HashMap<>();
+  private final AtomicInteger activeCallCount = new AtomicInteger();
 
   private IdleResourceCallback idleResourceCallback;
-
-  private final Set<ApolloCall> runningSyncCalls = new LinkedHashSet<>();
-  private final Set<RealApolloCall.AsyncCall> runningAsyncCalls = new LinkedHashSet<>();
-  private final Set<ApolloPrefetch> runningSyncPrefetches = new LinkedHashSet<>();
-  private final Set<RealApolloPrefetch.AsyncCall> runningAsyncPrefetches = new LinkedHashSet<>();
 
   public ApolloCallTracker() {
   }
 
   /**
-   * <p>Adds this {@link ApolloPrefetch} to the underlying data structure keeping track of the in progress synchronous
-   * prefetch objects.</p>
-   *
-   * <p><b>Note</b>: This method needs to be called right before a prefetch call is executed.</p>
-   */
-  synchronized void onSyncPrefetchInProgress(ApolloPrefetch apolloPrefetch) {
-    runningSyncPrefetches.add(apolloPrefetch);
-  }
-
-  /**
-   * <p>Removes this {@link ApolloPrefetch} from the underlying data structure keeping track of the in progress
-   * synchronous prefetch objects, if it is found, else throws an {@link AssertionError}.</p> If the removal operation
-   * is successful and no active running calls are found, then the registered
-   * {@link ApolloCallTracker#idleResourceCallback} is invoked.
-   *
-   * <p><b>Note</b>: This method needs to be called right after a prefetch call is completed (whether successful or
-   * failed).</p>
-   */
-  void onSyncPrefetchFinished(ApolloPrefetch apolloPrefetch) {
-    IdleResourceCallback idleResourceCallback;
-    int runningCallsCount;
-    synchronized (this) {
-      if (!runningSyncPrefetches.remove(apolloPrefetch)) {
-        throw new AssertionError("Prefetch call wasn't in progress");
-      }
-      runningCallsCount = activeCallsCount();
-      idleResourceCallback = this.idleResourceCallback;
-    }
-    executeCallBackIfCallsAreFinished(runningCallsCount, idleResourceCallback);
-  }
-
-  /**
-   * <p>Adds this asyncCall representing an asynchronous {@link ApolloPrefetch} to the underlying data structure keeping
-   * track of the in progress asynchronous prefetch objects.</p>
-   *
-   * <p><b>Note</b>: This method needs to be called right before a prefetch call is executed.</p>
-   */
-  synchronized void onAsyncPrefetchInProgress(RealApolloPrefetch.AsyncCall asyncCall) {
-    runningAsyncPrefetches.add(asyncCall);
-  }
-
-  /**
-   * <p>Removes this asyncCall representing an asynchronous {@link ApolloPrefetch} from the underlying data structure
-   * keeping track of the in progress asynchronous prefetch objects, if it is found, else throws an {@link
-   * AssertionError}.</p> If the removal operation is successful and no active running calls are found, then the
-   * registered {@link ApolloCallTracker#idleResourceCallback} is invoked.
-   *
-   * <p><b>Note</b>: This method needs to be called right after a prefetch call is completed (whether successful or
-   * failed).</p>
-   */
-  void onAsyncPrefetchFinished(RealApolloPrefetch.AsyncCall asyncCall) {
-    IdleResourceCallback idleResourceCallback;
-    int runningCallsCount;
-    synchronized (this) {
-      if (!runningAsyncPrefetches.remove(asyncCall)) {
-        throw new AssertionError("Prefetch call wasn't in progress");
-      }
-      runningCallsCount = activeCallsCount();
-      idleResourceCallback = this.idleResourceCallback;
-    }
-    executeCallBackIfCallsAreFinished(runningCallsCount, idleResourceCallback);
-  }
-
-  /**
-   * <p>Adds this {@link ApolloCall} to the underlying data structure keeping track of the in progress synchronous
-   * apolloCall objects.</p>
+   * <p>Adds provided {@link ApolloCall} that is currently in progress.</p>
    *
    * <p><b>Note</b>: This method needs to be called right before an apolloCall is executed.</p>
    */
-  synchronized void onSyncCallInProgress(ApolloCall apolloCall) {
-    runningSyncCalls.add(apolloCall);
+  void registerCall(@Nonnull ApolloCall call) {
+    checkNotNull(call, "call == null");
+    Operation operation = call.operation();
+    if (operation instanceof Query) {
+      registerQueryCall((ApolloQueryCall) call);
+    } else if (operation instanceof Mutation) {
+      registerMutationCall((ApolloMutationCall) call);
+    } else {
+      throw new IllegalArgumentException("Unknown call type");
+    }
   }
 
   /**
-   * <p>Removes this {@link ApolloCall} from the underlying data structure keeping track of the in progress synchronous
-   * apolloCall objects, if it is found, else throws an {@link AssertionError}.</p> If the removal operation is
-   * successful and no active running calls are found, then the registered
+   * <p>Removes provided {@link ApolloCall} that finished his execution, if it is found, else throws an
+   * {@link AssertionError}.</p>
+   *
+   * If the removal operation is successful and no active running calls are found, then the registered
    * {@link ApolloCallTracker#idleResourceCallback} is invoked.
    *
    * <p><b>Note</b>: This method needs to be called right after an apolloCall is completed (whether successful or
    * failed).</p>
    */
-  void onSyncCallFinished(ApolloCall apolloCall) {
-    IdleResourceCallback idleResourceCallback;
-    int runningCallsCount;
-    synchronized (this) {
-      if (!runningSyncCalls.remove(apolloCall)) {
-        throw new AssertionError("Call wasn't in progress");
-      }
-      runningCallsCount = activeCallsCount();
-      idleResourceCallback = this.idleResourceCallback;
+  void unregisterCall(@Nonnull ApolloCall call) {
+    checkNotNull(call, "call == null");
+    Operation operation = call.operation();
+    if (operation instanceof Query) {
+      unregisterQueryCall((ApolloQueryCall) call);
+    } else if (operation instanceof Mutation) {
+      unregisterMutationCall((ApolloMutationCall) call);
+    } else {
+      throw new IllegalArgumentException("Unknown call type");
     }
-    executeCallBackIfCallsAreFinished(runningCallsCount, idleResourceCallback);
   }
 
   /**
-   * <p>Adds this asyncCall representing an asynchronous {@link ApolloCall} to the underlying data structure keeping
-   * track of the in progress asynchronous apolloCall objects.</p>
+   * <p>Adds provided {@link ApolloPrefetch} that is currently in progress.</p>
+   *
+   * <p><b>Note</b>: This method needs to be called right before a prefetch call is executed.</p>
+   */
+  void registerPrefetchCall(@Nonnull ApolloPrefetch apolloPrefetch) {
+    checkNotNull(apolloPrefetch, "apolloPrefetch == null");
+    OperationName operationName = apolloPrefetch.operation().name();
+    registerCall(activePrefetchCalls, operationName, apolloPrefetch);
+  }
+
+  /**
+   * <p>Removes provided {@link ApolloPrefetch} that finished his execution, if it is found, else throws an
+   * {@link AssertionError}.</p>
+   *
+   * If the removal operation is successful and no active running calls are found, then the registered
+   * {@link ApolloCallTracker#idleResourceCallback} is invoked.
+   *
+   * <p><b>Note</b>: This method needs to be called right after a prefetch call is completed (whether successful or
+   * failed).</p>
+   */
+  void unregisterPrefetchCall(@Nonnull ApolloPrefetch apolloPrefetch) {
+    checkNotNull(apolloPrefetch, "apolloPrefetch == null");
+    OperationName operationName = apolloPrefetch.operation().name();
+    unregisterCall(activePrefetchCalls, operationName, apolloPrefetch);
+  }
+
+  /**
+   * Returns currently active {@link ApolloPrefetch} calls by operation name.
+   *
+   * @param operationName prefetch operation name
+   * @return set of active prefetch calls
+   */
+  @Nonnull Set<ApolloPrefetch> activePrefetchCalls(@Nonnull OperationName operationName) {
+    return activeCalls(activePrefetchCalls, operationName);
+  }
+
+  /**
+   * <p>Adds provided {@link ApolloQueryCall} that is currently in progress.</p>
    *
    * <p><b>Note</b>: This method needs to be called right before an apolloCall is executed.</p>
    */
-  synchronized void onAsyncCallInProgress(RealApolloCall<?>.AsyncCall asyncCall) {
-    runningAsyncCalls.add(asyncCall);
+  void registerQueryCall(@Nonnull ApolloQueryCall apolloQueryCall) {
+    checkNotNull(apolloQueryCall, "apolloQueryCall == null");
+    OperationName operationName = apolloQueryCall.operation().name();
+    registerCall(activeQueryCalls, operationName, apolloQueryCall);
   }
 
   /**
-   * <p>Removes this asyncCall representing an asynchronous {@link ApolloCall} from the underlying data structure
-   * keeping track of the in progress asynchronous apolloCall objects, if it is found, else throws an {@link
-   * AssertionError}.</p> If the removal operation is successful and no active running calls are found, then the
-   * registered {@link ApolloCallTracker#idleResourceCallback} is invoked.
+   * <p>Removes provided {@link ApolloQueryCall} that finished his execution, if it is found, else throws an
+   * {@link AssertionError}.</p>
+   *
+   * If the removal operation is successful and no active running calls are found, then the registered
+   * {@link ApolloCallTracker#idleResourceCallback} is invoked.
    *
    * <p><b>Note</b>: This method needs to be called right after an apolloCall is completed (whether successful or
    * failed).</p>
    */
-  void onAsyncCallFinished(RealApolloCall<?>.AsyncCall asyncCall) {
-    IdleResourceCallback idleResourceCallback;
-    int runningCallsCount;
-    synchronized (this) {
-      if (!runningAsyncCalls.remove(asyncCall)) {
-        throw new AssertionError("Call wasn't in progress");
-      }
-      runningCallsCount = activeCallsCount();
-      idleResourceCallback = this.idleResourceCallback;
-    }
-    executeCallBackIfCallsAreFinished(runningCallsCount, idleResourceCallback);
+  void unregisterQueryCall(@Nonnull ApolloQueryCall apolloQueryCall) {
+    checkNotNull(apolloQueryCall, "apolloQueryCall == null");
+    OperationName operationName = apolloQueryCall.operation().name();
+    unregisterCall(activeQueryCalls, operationName, apolloQueryCall);
+  }
+
+  /**
+   * Returns currently active {@link ApolloQueryCall} calls by operation name.
+   *
+   * @param operationName query operation name
+   * @return set of active query calls
+   */
+  @Nonnull Set<ApolloQueryCall> activeQueryCalls(@Nonnull OperationName operationName) {
+    return activeCalls(activeQueryCalls, operationName);
+  }
+
+  /**
+   * <p>Adds provided {@link ApolloMutationCall} that is currently in progress.</p>
+   *
+   * <p><b>Note</b>: This method needs to be called right before an apolloCall is executed.</p>
+   */
+  void registerMutationCall(@Nonnull ApolloMutationCall apolloMutationCall) {
+    checkNotNull(apolloMutationCall, "apolloMutationCall == null");
+    OperationName operationName = apolloMutationCall.operation().name();
+    registerCall(activeMutationCalls, operationName, apolloMutationCall);
+  }
+
+  /**
+   * <p>Removes provided {@link ApolloMutationCall} that finished his execution, if it is found, else throws an
+   * {@link AssertionError}.</p>
+   *
+   * If the removal operation is successful and no active running calls are found, then the registered
+   * {@link ApolloCallTracker#idleResourceCallback} is invoked.
+   *
+   * <p><b>Note</b>: This method needs to be called right after an apolloCall is completed (whether successful or
+   * failed).</p>
+   */
+  void unregisterMutationCall(@Nonnull ApolloMutationCall apolloMutationCall) {
+    checkNotNull(apolloMutationCall, "apolloMutationCall == null");
+    OperationName operationName = apolloMutationCall.operation().name();
+    unregisterCall(activeMutationCalls, operationName, apolloMutationCall);
+  }
+
+  /**
+   * Returns currently active {@link ApolloMutationCall} calls by operation name.
+   *
+   * @param operationName query operation name
+   * @return set of active mutation calls
+   */
+  @Nonnull Set<ApolloMutationCall> activeMutationCalls(@Nonnull OperationName operationName) {
+    return activeCalls(activeMutationCalls, operationName);
+  }
+
+  /**
+   * <p>Adds provided {@link ApolloQueryWatcher} that is currently in progress.</p>
+   *
+   * <p><b>Note</b>: This method needs to be called right before
+   * {@link ApolloQueryWatcher#enqueueAndWatch(ApolloCall.Callback)}.</p>
+   */
+  void registerQueryWatcher(@Nonnull ApolloQueryWatcher queryWatcher) {
+    checkNotNull(queryWatcher, "queryWatcher == null");
+    OperationName operationName = queryWatcher.operation().name();
+    registerCall(activeQueryWatchers, operationName, queryWatcher);
+  }
+
+  /**
+   * <p>Removes provided {@link ApolloQueryWatcher} that finished his execution, if it is found, else throws an
+   * {@link AssertionError}.</p>
+   *
+   * If the removal operation is successful and no active running calls are found, then the registered
+   * {@link ApolloCallTracker#idleResourceCallback} is invoked.
+   *
+   * <p><b>Note</b>: This method needs to be called right after an apolloCall is completed (whether successful or
+   * failed).</p>
+   */
+  void unregisterQueryWatcher(@Nonnull ApolloQueryWatcher queryWatcher) {
+    checkNotNull(queryWatcher, "queryWatcher == null");
+    OperationName operationName = queryWatcher.operation().name();
+    unregisterCall(activeQueryWatchers, operationName, queryWatcher);
+  }
+
+  /**
+   * Returns currently active {@link ApolloQueryWatcher} query watchers by operation name.
+   *
+   * @param operationName query watcher operation name
+   * @return set of active query watchers
+   */
+  @Nonnull Set<ApolloQueryWatcher> activeQueryWatchers(@Nonnull OperationName operationName) {
+    return activeCalls(activeQueryWatchers, operationName);
   }
 
   /**
@@ -161,15 +237,54 @@ public final class ApolloCallTracker {
    * Returns a total count of in progress {@link ApolloCall} & {@link ApolloPrefetch} objects.
    */
   public int activeCallsCount() {
-    return runningAsyncCalls.size()
-        + runningSyncCalls.size()
-        + runningSyncPrefetches.size()
-        + runningAsyncPrefetches.size();
+    return activeCallCount.get();
   }
 
-  private void executeCallBackIfCallsAreFinished(int runningCallsCount, IdleResourceCallback idleResourceCallback) {
-    if (runningCallsCount == 0 && idleResourceCallback != null) {
-      idleResourceCallback.onIdle();
+  private <CALL> void registerCall(Map<OperationName, Set<CALL>> registry, OperationName operationName, CALL call) {
+    //noinspection SynchronizationOnLocalVariableOrMethodParameter
+    synchronized (registry) {
+      Set<CALL> calls = registry.get(operationName);
+      if (calls == null) {
+        calls = new HashSet<>();
+        registry.put(operationName, calls);
+      }
+      calls.add(call);
+    }
+    activeCallCount.incrementAndGet();
+  }
+
+  private <CALL> void unregisterCall(Map<OperationName, Set<CALL>> registry, OperationName operationName, CALL call) {
+    //noinspection SynchronizationOnLocalVariableOrMethodParameter
+    synchronized (registry) {
+      Set<CALL> calls = registry.get(operationName);
+      if (calls == null || !calls.remove(call)) {
+        throw new AssertionError("Call wasn't registered before");
+      }
+
+      if (calls.isEmpty()) {
+        registry.remove(operationName);
+      }
+    }
+
+    if (activeCallCount.decrementAndGet() == 0) {
+      notifyIdleResource();
+    }
+  }
+
+  private <CALL> Set<CALL> activeCalls(Map<OperationName, Set<CALL>> registry, @Nonnull OperationName operationName) {
+    checkNotNull(operationName, "operationName == null");
+
+    //noinspection SynchronizationOnLocalVariableOrMethodParameter
+    synchronized (registry) {
+      Set<CALL> calls = registry.get(operationName);
+      return calls != null ? new HashSet<>(calls) : Collections.<CALL>emptySet();
+    }
+  }
+
+  private void notifyIdleResource() {
+    IdleResourceCallback callback = idleResourceCallback;
+    if (callback != null) {
+      callback.onIdle();
     }
   }
 }

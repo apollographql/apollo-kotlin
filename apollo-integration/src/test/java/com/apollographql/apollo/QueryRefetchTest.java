@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
+import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.normalizer.CreateReview;
 import com.apollographql.apollo.integration.normalizer.ReviewsByEpisode;
 import com.apollographql.apollo.integration.normalizer.type.ColorInput;
@@ -16,6 +17,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+
+import javax.annotation.Nonnull;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -101,6 +106,44 @@ public class QueryRefetchTest {
     assertThat(empireReviewsQueryResponse.data().reviews()).hasSize(4);
     assertThat(empireReviewsQueryResponse.data().reviews().get(3).stars()).isEqualTo(5);
     assertThat(empireReviewsQueryResponse.data().reviews().get(3).commentary()).isEqualTo("Awesome");
+  }
+
+  @Test public void refetch_watchers() throws Exception {
+    server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"));
+    server.enqueue(mockResponse("CreateReviewResponse.json"));
+    server.enqueue(mockResponse("ReviewsEmpireEpisodeResponseUpdated.json"));
+
+    final NamedCountDownLatch countDownMutationLatch = new NamedCountDownLatch("mutation", 1);
+    final NamedCountDownLatch countDownRefetchLatch = new NamedCountDownLatch("refetch", 2);
+    final AtomicReference<Response<ReviewsByEpisode.Data>> empireReviewsWatchResponse = new AtomicReference<>();
+    ApolloQueryWatcher<ReviewsByEpisode.Data> queryWatcher = apolloClient.query(new ReviewsByEpisode(Episode.EMPIRE))
+        .watcher()
+        .enqueueAndWatch(new ApolloCall.Callback<ReviewsByEpisode.Data>() {
+          @Override public void onResponse(@Nonnull Response<ReviewsByEpisode.Data> response) {
+            countDownMutationLatch.countDown();
+            countDownRefetchLatch.countDown();
+            empireReviewsWatchResponse.set(response);
+          }
+
+          @Override public void onFailure(@Nonnull ApolloException e) {
+          }
+        });
+
+    countDownMutationLatch.awaitOrThrowWithTimeout(3, TimeUnit.SECONDS);
+    CreateReview mutation = new CreateReview(
+        Episode.EMPIRE,
+        ReviewInput.builder().stars(5).commentary("Awesome").favoriteColor(ColorInput.builder().build()).build()
+    );
+    apolloClient.mutate(mutation).refetchQueries(queryWatcher.operation().name()).execute();
+
+    countDownRefetchLatch.awaitOrThrowWithTimeout(3, TimeUnit.SECONDS);
+    assertThat(server.getRequestCount()).isEqualTo(3);
+    Response<ReviewsByEpisode.Data> empireReviewsQueryResponse = empireReviewsWatchResponse.get();
+    assertThat(empireReviewsQueryResponse.data().reviews()).hasSize(4);
+    assertThat(empireReviewsQueryResponse.data().reviews().get(3).stars()).isEqualTo(5);
+    assertThat(empireReviewsQueryResponse.data().reviews().get(3).commentary()).isEqualTo("Awesome");
+
+    queryWatcher.cancel();
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
