@@ -118,6 +118,7 @@ public class QueryRefetchTest {
     final AtomicReference<Response<ReviewsByEpisode.Data>> empireReviewsWatchResponse = new AtomicReference<>();
     ApolloQueryWatcher<ReviewsByEpisode.Data> queryWatcher = apolloClient.query(new ReviewsByEpisode(Episode.EMPIRE))
         .watcher()
+        .refetchCacheControl(CacheControl.NETWORK_FIRST)
         .enqueueAndWatch(new ApolloCall.Callback<ReviewsByEpisode.Data>() {
           @Override public void onResponse(@Nonnull Response<ReviewsByEpisode.Data> response) {
             countDownMutationLatch.countDown();

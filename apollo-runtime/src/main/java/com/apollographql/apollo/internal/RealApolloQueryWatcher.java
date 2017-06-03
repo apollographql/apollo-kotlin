@@ -24,7 +24,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
   private RealApolloCall<T> activeCall;
   private ApolloCall.Callback<T> callback;
-  private CacheControl refetchCacheControl = CacheControl.NETWORK_FIRST;
+  private CacheControl refetchCacheControl = CacheControl.CACHE_FIRST;
   private volatile boolean canceled;
   private boolean executed = false;
   private final ApolloStore apolloStore;
