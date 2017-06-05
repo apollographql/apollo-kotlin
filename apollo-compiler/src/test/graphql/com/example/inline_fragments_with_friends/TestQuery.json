@@ -119,6 +119,10 @@
 				{
 					"name": "JEDI",
 					"description": "Star Wars Episode VI: Return of the Jedi, released in 1983."
+				},
+				{
+					"name": "DEPRECATED",
+					"description": "Test deprecated enum value"
 				}
 			]
 		}
