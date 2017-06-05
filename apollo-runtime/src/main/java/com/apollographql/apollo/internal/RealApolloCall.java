@@ -2,7 +2,6 @@ package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloMutationCall;
 import com.apollographql.apollo.ApolloQueryCall;
-import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
@@ -67,7 +66,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final List<ApolloInterceptor> applicationInterceptors;
   final List<OperationName> refetchQueryNames;
   final List<Query> refetchQueries;
-  final Optional<QueryFetcher> queryFetcher;
+  final Optional<QueryReFetcher> queryReFetcher;
   final AtomicBoolean executed = new AtomicBoolean();
   volatile boolean canceled;
 
@@ -93,11 +92,12 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     refetchQueryNames = builder.refetchQueryNames;
     refetchQueries = builder.refetchQueries;
     tracker = builder.tracker;
-    if (refetchQueries.isEmpty() || builder.apolloStore == null) {
-      queryFetcher = Optional.absent();
+    if ((refetchQueries.isEmpty() && refetchQueryNames.isEmpty()) || builder.apolloStore == null) {
+      queryReFetcher = Optional.absent();
     } else {
-      queryFetcher = Optional.of(QueryFetcher.builder()
+      queryReFetcher = Optional.of(QueryReFetcher.builder()
           .queries(builder.refetchQueries)
+          .queryWatchers(refetchQueryNames)
           .serverUrl(builder.serverUrl)
           .httpCallFactory(builder.httpCallFactory)
           .moshi(builder.moshi)
@@ -107,7 +107,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
           .dispatcher(builder.dispatcher)
           .logger(builder.logger)
           .applicationInterceptors(builder.applicationInterceptors)
-          .tracker(builder.tracker)
+          .callTracker(builder.tracker)
           .build());
     }
     interceptorChain = prepareInterceptorChain(operation);
@@ -140,9 +140,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
       throw new ApolloCanceledException("Canceled");
     }
 
-    refetchQueryWatchers();
-    if (queryFetcher.isPresent()) {
-      queryFetcher.get().refetchSync();
+    if (queryReFetcher.isPresent()) {
+      queryReFetcher.get().refetch();
     }
 
     return response;
@@ -184,8 +183,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   @Override public void cancel() {
     canceled = true;
     interceptorChain.dispose();
-    if (queryFetcher.isPresent()) {
-      queryFetcher.get().cancel();
+    if (queryReFetcher.isPresent()) {
+      queryReFetcher.get().cancel();
     }
   }
 
@@ -215,18 +214,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     return operation;
   }
 
-  private void refetchQueryWatchers() {
-    try {
-      for (OperationName operationName : refetchQueryNames) {
-        for (ApolloQueryWatcher queryWatcher : tracker.activeQueryWatchers(operationName)) {
-          queryWatcher.refetch();
-        }
-      }
-    } catch (Exception e) {
-      logger.e(e, "Failed to re-fetch query watcher");
-    }
-  }
-
   private ApolloInterceptor.CallBack interceptorCallbackProxy(final Callback<T> originalCallback) {
     return new ApolloInterceptor.CallBack() {
       @Override public void onResponse(@Nonnull final ApolloInterceptor.InterceptorResponse response) {
@@ -237,19 +224,12 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
             return;
           }
 
-          refetchQueryWatchers();
-
-          if (queryFetcher.isPresent()) {
-            queryFetcher.get().refetchAsync(new QueryFetcher.OnFetchCompleteCallback() {
-              @Override public void onFetchComplete() {
-                //noinspection unchecked
-                originalCallback.onResponse(response.parsedResponse.get());
-              }
-            });
-          } else {
-            //noinspection unchecked
-            originalCallback.onResponse(response.parsedResponse.get());
+          if (queryReFetcher.isPresent()) {
+            queryReFetcher.get().refetch();
           }
+
+          //noinspection unchecked
+          originalCallback.onResponse(response.parsedResponse.get());
         } finally {
           tracker.unregisterCall(RealApolloCall.this);
         }
@@ -328,9 +308,9 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     ExecutorService dispatcher;
     ApolloLogger logger;
     List<ApolloInterceptor> applicationInterceptors;
-    List<OperationName> refetchQueryNames;
-    ApolloCallTracker tracker;
+    List<OperationName> refetchQueryNames = emptyList();
     List<Query> refetchQueries = emptyList();
+    ApolloCallTracker tracker;
 
     public Builder<T> operation(Operation operation) {
       this.operation = operation;
