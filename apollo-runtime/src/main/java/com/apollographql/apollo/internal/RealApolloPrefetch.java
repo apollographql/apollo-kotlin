@@ -67,7 +67,7 @@ import okhttp3.Response;
     Response httpResponse;
 
     try {
-      tracker.onSyncPrefetchInProgress(this);
+      tracker.registerPrefetchCall(this);
       httpResponse = interceptorChain.proceed().httpResponse.get();
     } catch (Exception e) {
       if (canceled) {
@@ -76,7 +76,7 @@ import okhttp3.Response;
         throw e;
       }
     } finally {
-      tracker.onSyncPrefetchFinished(this);
+      tracker.unregisterPrefetchCall(this);
     }
 
     httpResponse.close();
@@ -95,62 +95,57 @@ import okhttp3.Response;
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
-    AsyncCall asyncCall = new AsyncCall(responseCallback);
-    tracker.onAsyncPrefetchInProgress(asyncCall);
-    interceptorChain.proceedAsync(dispatcher, asyncCall);
+    tracker.registerPrefetchCall(this);
+    interceptorChain.proceedAsync(dispatcher, interceptorCallbackProxy(responseCallback));
     return this;
   }
 
-  class AsyncCall implements ApolloInterceptor.CallBack {
+  @Nonnull @Override public Operation operation() {
+    return operation;
+  }
 
-    private final Callback responseCallback;
+  private ApolloInterceptor.CallBack interceptorCallbackProxy(final Callback originalCallback) {
+    return new ApolloInterceptor.CallBack() {
+      @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
+        if (originalCallback == null) return;
 
-    private AsyncCall(Callback responseCallback) {
-      this.responseCallback = responseCallback;
-    }
+        try {
+          Response httpResponse = response.httpResponse.get();
+          httpResponse.close();
 
-    @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
-      try {
-        if (responseCallback == null) return;
+          if (RealApolloPrefetch.this.canceled) {
+            originalCallback.onCanceledError(new ApolloCanceledException("Canceled"));
+            return;
+          }
 
-        Response httpResponse = response.httpResponse.get();
-        httpResponse.close();
-
-        if (canceled) {
-          responseCallback.onCanceledError(new ApolloCanceledException("Canceled"));
+          if (httpResponse.isSuccessful()) {
+            originalCallback.onSuccess();
+          } else {
+            originalCallback.onHttpError(new ApolloHttpException(httpResponse));
+          }
+        } finally {
+          tracker.unregisterPrefetchCall(RealApolloPrefetch.this);
         }
-
-        if (httpResponse.isSuccessful()) {
-          responseCallback.onSuccess();
-        } else {
-          responseCallback.onHttpError(new ApolloHttpException(httpResponse));
-        }
-      } finally {
-        tracker.onAsyncPrefetchFinished(this);
       }
-    }
 
-    @Override public void onFailure(@Nonnull ApolloException e) {
-      try {
+      @Override public void onFailure(@Nonnull ApolloException e) {
+        if (originalCallback == null) return;
 
-        if (responseCallback == null) {
-          return;
+        try {
+          if (canceled) {
+            originalCallback.onCanceledError(new ApolloCanceledException("Canceled"));
+          } else if (e instanceof ApolloHttpException) {
+            originalCallback.onHttpError((ApolloHttpException) e);
+          } else if (e instanceof ApolloNetworkException) {
+            originalCallback.onNetworkError((ApolloNetworkException) e);
+          } else {
+            originalCallback.onFailure(e);
+          }
+        } finally {
+          tracker.unregisterPrefetchCall(RealApolloPrefetch.this);
         }
-
-        if (canceled) {
-          responseCallback.onCanceledError(new ApolloCanceledException("Canceled"));
-        } else if (e instanceof ApolloHttpException) {
-          responseCallback.onHttpError((ApolloHttpException) e);
-        } else if (e instanceof ApolloNetworkException) {
-          responseCallback.onNetworkError((ApolloNetworkException) e);
-        } else {
-          responseCallback.onFailure(e);
-        }
-
-      } finally {
-        tracker.onAsyncPrefetchFinished(this);
       }
-    }
+    };
   }
 
   @Override public ApolloPrefetch clone() {

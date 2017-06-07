@@ -1,5 +1,6 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
@@ -65,6 +66,13 @@ public interface ApolloCall<T> extends Cancelable {
    * @return The cloned ApolloCall object.
    */
   @Nonnull ApolloCall<T> clone();
+
+  /**
+   * Returns GraphQl operation this call executes
+   *
+   * @return {@link Operation}
+   */
+  @Nonnull Operation operation();
 
   /**
    * Communicates responses from a server or offline requests.

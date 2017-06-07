@@ -66,7 +66,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final List<ApolloInterceptor> applicationInterceptors;
   final List<OperationName> refetchQueryNames;
   final List<Query> refetchQueries;
-  final Optional<QueryFetcher> queryFetcher;
+  final Optional<QueryReFetcher> queryReFetcher;
   final AtomicBoolean executed = new AtomicBoolean();
   volatile boolean canceled;
 
@@ -92,11 +92,12 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     refetchQueryNames = builder.refetchQueryNames;
     refetchQueries = builder.refetchQueries;
     tracker = builder.tracker;
-    if (refetchQueries.isEmpty() || builder.apolloStore == null) {
-      queryFetcher = Optional.absent();
+    if ((refetchQueries.isEmpty() && refetchQueryNames.isEmpty()) || builder.apolloStore == null) {
+      queryReFetcher = Optional.absent();
     } else {
-      queryFetcher = Optional.of(QueryFetcher.builder()
+      queryReFetcher = Optional.of(QueryReFetcher.builder()
           .queries(builder.refetchQueries)
+          .queryWatchers(refetchQueryNames)
           .serverUrl(builder.serverUrl)
           .httpCallFactory(builder.httpCallFactory)
           .moshi(builder.moshi)
@@ -106,7 +107,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
           .dispatcher(builder.dispatcher)
           .logger(builder.logger)
           .applicationInterceptors(builder.applicationInterceptors)
-          .tracker(builder.tracker)
+          .callTracker(builder.tracker)
           .build());
     }
     interceptorChain = prepareInterceptorChain(operation);
@@ -123,7 +124,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
     Response<T> response;
     try {
-      tracker.onSyncCallInProgress(this);
+      tracker.registerCall(this);
       response = interceptorChain.proceed().parsedResponse.or(Response.<T>builder(operation).build());
     } catch (Exception e) {
       if (canceled) {
@@ -132,15 +133,15 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         throw e;
       }
     } finally {
-      tracker.onSyncCallFinished(this);
+      tracker.unregisterCall(this);
     }
 
     if (canceled) {
       throw new ApolloCanceledException("Canceled");
     }
 
-    if (queryFetcher.isPresent()) {
-      queryFetcher.get().refetchSync();
+    if (queryReFetcher.isPresent()) {
+      queryReFetcher.get().refetch();
     }
 
     return response;
@@ -150,13 +151,12 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     if (!executed.compareAndSet(false, true)) {
       throw new IllegalStateException("Already Executed");
     }
-    AsyncCall asyncCall = new AsyncCall(responseCallback);
-    tracker.onAsyncCallInProgress(asyncCall);
-    interceptorChain.proceedAsync(dispatcher, asyncCall);
+    tracker.registerCall(this);
+    interceptorChain.proceedAsync(dispatcher, interceptorCallbackProxy(responseCallback));
   }
 
   @Nonnull @Override public RealApolloQueryWatcher<T> watcher() {
-    return new RealApolloQueryWatcher<>(clone(), apolloStore);
+    return new RealApolloQueryWatcher<>(clone(), apolloStore, tracker);
   }
 
   @Nonnull @Override public RealApolloCall<T> httpCachePolicy(@Nonnull HttpCachePolicy.Policy httpCachePolicy) {
@@ -183,8 +183,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   @Override public void cancel() {
     canceled = true;
     interceptorChain.dispose();
-    if (queryFetcher.isPresent()) {
-      queryFetcher.get().cancel();
+    if (queryReFetcher.isPresent()) {
+      queryReFetcher.get().cancel();
     }
   }
 
@@ -210,61 +210,50 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .build();
   }
 
-  final class AsyncCall implements ApolloInterceptor.CallBack {
+  @Nonnull @Override public Operation operation() {
+    return operation;
+  }
 
-    private final Callback<T> responseCallback;
+  private ApolloInterceptor.CallBack interceptorCallbackProxy(final Callback<T> originalCallback) {
+    return new ApolloInterceptor.CallBack() {
+      @Override public void onResponse(@Nonnull final ApolloInterceptor.InterceptorResponse response) {
+        if (originalCallback == null) return;
+        try {
+          if (RealApolloCall.this.canceled) {
+            originalCallback.onCanceledError(new ApolloCanceledException("Canceled"));
+            return;
+          }
 
-    private AsyncCall(Callback<T> callback) {
-      this.responseCallback = callback;
-    }
+          if (queryReFetcher.isPresent()) {
+            queryReFetcher.get().refetch();
+          }
 
-    @Override public void onResponse(@Nonnull final ApolloInterceptor.InterceptorResponse response) {
-      try {
-
-        if (responseCallback == null) {
-          return;
+          //noinspection unchecked
+          originalCallback.onResponse(response.parsedResponse.get());
+        } finally {
+          tracker.unregisterCall(RealApolloCall.this);
         }
-        if (canceled) {
-          responseCallback.onCanceledError(new ApolloCanceledException("Canceled"));
-          return;
-        }
-        if (queryFetcher.isPresent()) {
-          queryFetcher.get().refetchAsync(new QueryFetcher.OnFetchCompleteCallback() {
-            @Override public void onFetchComplete() {
-              //noinspection unchecked
-              responseCallback.onResponse(response.parsedResponse.get());
-            }
-          });
-        } else { //noinspection unchecked
-          responseCallback.onResponse(response.parsedResponse.get());
-        }
-      } finally {
-        tracker.onAsyncCallFinished(this);
       }
-    }
 
-    @Override public void onFailure(@Nonnull ApolloException e) {
-      try {
-
-        if (responseCallback == null) {
-          return;
+      @Override public void onFailure(@Nonnull ApolloException e) {
+        if (originalCallback == null) return;
+        try {
+          if (RealApolloCall.this.canceled) {
+            originalCallback.onCanceledError(new ApolloCanceledException("Canceled", e));
+          } else if (e instanceof ApolloHttpException) {
+            originalCallback.onHttpError((ApolloHttpException) e);
+          } else if (e instanceof ApolloParseException) {
+            originalCallback.onParseError((ApolloParseException) e);
+          } else if (e instanceof ApolloNetworkException) {
+            originalCallback.onNetworkError((ApolloNetworkException) e);
+          } else {
+            originalCallback.onFailure(e);
+          }
+        } finally {
+          tracker.unregisterCall(RealApolloCall.this);
         }
-
-        if (canceled) {
-          responseCallback.onCanceledError(new ApolloCanceledException("Canceled", e));
-        } else if (e instanceof ApolloHttpException) {
-          responseCallback.onHttpError((ApolloHttpException) e);
-        } else if (e instanceof ApolloParseException) {
-          responseCallback.onParseError((ApolloParseException) e);
-        } else if (e instanceof ApolloNetworkException) {
-          responseCallback.onNetworkError((ApolloNetworkException) e);
-        } else {
-          responseCallback.onFailure(e);
-        }
-      } finally {
-        tracker.onAsyncCallFinished(this);
       }
-    }
+    };
   }
 
   public Builder<T> toBuilder() {
@@ -319,9 +308,9 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     ExecutorService dispatcher;
     ApolloLogger logger;
     List<ApolloInterceptor> applicationInterceptors;
-    List<OperationName> refetchQueryNames;
-    ApolloCallTracker tracker;
+    List<OperationName> refetchQueryNames = emptyList();
     List<Query> refetchQueries = emptyList();
+    ApolloCallTracker tracker;
 
     public Builder<T> operation(Operation operation) {
       this.operation = operation;
@@ -404,7 +393,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     }
 
     public Builder<T> refetchQueryNames(List<OperationName> refetchQueryNames) {
-      this.refetchQueryNames = refetchQueryNames;
+      this.refetchQueryNames = refetchQueryNames != null ? new ArrayList<>(refetchQueryNames)
+          : Collections.<OperationName>emptyList();
       return this;
     }
 
