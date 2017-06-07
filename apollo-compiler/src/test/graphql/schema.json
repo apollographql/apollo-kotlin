@@ -1557,6 +1557,16 @@
               "defaultValue": null
             },
             {
+              "name": "nullableIntFieldWithDefaultValue",
+              "description": "for test purpose only",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": "10"
+            },
+            {
               "name": "commentary",
               "description": "Comment about the movie, optional",
               "type": {

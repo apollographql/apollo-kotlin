@@ -1,6 +1,7 @@
 package com.example.input_object_type.type;
 
 import java.lang.IllegalStateException;
+import java.lang.Integer;
 import java.lang.String;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -10,18 +11,26 @@ import javax.annotation.Nullable;
 public final class ReviewInput {
   private final int stars;
 
+  private final @Nullable Integer nullableIntFieldWithDefaultValue;
+
   private final @Nullable String commentary;
 
   private final @Nonnull ColorInput favoriteColor;
 
-  ReviewInput(int stars, @Nullable String commentary, @Nonnull ColorInput favoriteColor) {
+  ReviewInput(int stars, @Nullable Integer nullableIntFieldWithDefaultValue,
+      @Nullable String commentary, @Nonnull ColorInput favoriteColor) {
     this.stars = stars;
+    this.nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue;
     this.commentary = commentary;
     this.favoriteColor = favoriteColor;
   }
 
   public int stars() {
     return this.stars;
+  }
+
+  public @Nullable Integer nullableIntFieldWithDefaultValue() {
+    return this.nullableIntFieldWithDefaultValue;
   }
 
   public @Nullable String commentary() {
@@ -39,6 +48,8 @@ public final class ReviewInput {
   public static final class Builder {
     private int stars;
 
+    private @Nullable Integer nullableIntFieldWithDefaultValue = 10;
+
     private @Nullable String commentary;
 
     private @Nonnull ColorInput favoriteColor;
@@ -48,6 +59,11 @@ public final class ReviewInput {
 
     public Builder stars(int stars) {
       this.stars = stars;
+      return this;
+    }
+
+    public Builder nullableIntFieldWithDefaultValue(@Nullable Integer nullableIntFieldWithDefaultValue) {
+      this.nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue;
       return this;
     }
 
@@ -63,7 +79,7 @@ public final class ReviewInput {
 
     public ReviewInput build() {
       if (favoriteColor == null) throw new IllegalStateException("favoriteColor can't be null");
-      return new ReviewInput(stars, commentary, favoriteColor);
+      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor);
     }
   }
 }

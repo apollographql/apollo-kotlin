@@ -22,7 +22,9 @@ class BuilderTypeSpecBuilder(
       addFields(fields.map {
         val fieldName = it.first
         val fieldType = it.second
-        val defaultValue = fieldDefaultValues[fieldName]?.let { (it as? Number)?.castTo(fieldType) ?: it }
+        val defaultValue = fieldDefaultValues[fieldName]?.let {
+          (it as? Number)?.castTo(fieldType.withoutAnnotations()) ?: it
+        }
         FieldSpec.builder(fieldType, fieldName)
             .addModifiers(Modifier.PRIVATE)
             .initializer(defaultValue?.let { CodeBlock.of("\$L", it) } ?: CodeBlock.of(""))

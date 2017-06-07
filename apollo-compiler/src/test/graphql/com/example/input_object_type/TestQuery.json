@@ -89,6 +89,12 @@
 					"type": "Int!"
 				},
 				{
+					"name": "nullableIntFieldWithDefaultValue",
+					"description": "for test purpose only",
+					"type": "Int",
+					"defaultValue": 10
+				},
+				{
 					"name": "commentary",
 					"description": "Comment about the movie, optional",
 					"type": "String"
