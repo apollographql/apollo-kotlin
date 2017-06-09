@@ -4,6 +4,7 @@
 			"filePath": "src/test/graphql/com/example/fragments_with_type_condition/TestQuery.graphql",
 			"operationName": "TestQuery",
 			"operationType": "query",
+			"rootType": "Query",
 			"variables": [],
 			"source": "query TestQuery {\n  r2: hero {\n    __typename\n    ...HumanDetails\n    ...DroidDetails\n  }\n  luke: hero {\n    __typename\n    ...HumanDetails\n    ...DroidDetails\n  }\n}",
 			"fields": [
@@ -11,7 +12,15 @@
 					"responseName": "r2",
 					"fieldName": "hero",
 					"type": "Character",
-					"fields": [],
+					"isDeprecated": false,
+					"deprecationReason": null,
+					"fields": [
+						{
+							"responseName": "__typename",
+							"fieldName": "__typename",
+							"type": "String!"
+						}
+					],
 					"fragmentSpreads": [
 						"HumanDetails",
 						"DroidDetails"
@@ -22,7 +31,15 @@
 					"responseName": "luke",
 					"fieldName": "hero",
 					"type": "Character",
-					"fields": [],
+					"isDeprecated": false,
+					"deprecationReason": null,
+					"fields": [
+						{
+							"responseName": "__typename",
+							"fieldName": "__typename",
+							"type": "String!"
+						}
+					],
 					"fragmentSpreads": [
 						"HumanDetails",
 						"DroidDetails"
@@ -47,16 +64,25 @@
 			],
 			"fields": [
 				{
+					"responseName": "__typename",
+					"fieldName": "__typename",
+					"type": "String!"
+				},
+				{
 					"responseName": "name",
 					"fieldName": "name",
 					"type": "String!",
-					"description": "What this human calls themselves"
+					"description": "What this human calls themselves",
+					"isDeprecated": false,
+					"deprecationReason": null
 				},
 				{
 					"responseName": "height",
 					"fieldName": "height",
 					"type": "Float",
-					"description": "Height in the preferred unit, default is meters"
+					"description": "Height in the preferred unit, default is meters",
+					"isDeprecated": false,
+					"deprecationReason": null
 				}
 			],
 			"fragmentSpreads": [],
@@ -73,16 +99,25 @@
 			],
 			"fields": [
 				{
+					"responseName": "__typename",
+					"fieldName": "__typename",
+					"type": "String!"
+				},
+				{
 					"responseName": "name",
 					"fieldName": "name",
 					"type": "String!",
-					"description": "What others call this droid"
+					"description": "What others call this droid",
+					"isDeprecated": false,
+					"deprecationReason": null
 				},
 				{
 					"responseName": "primaryFunction",
 					"fieldName": "primaryFunction",
 					"type": "String",
-					"description": "This droid's primary function"
+					"description": "This droid's primary function",
+					"isDeprecated": false,
+					"deprecationReason": null
 				}
 			],
 			"fragmentSpreads": [],

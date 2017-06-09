@@ -1,5 +1,6 @@
 package com.example.arguments_simple.type;
 
+import java.lang.Deprecated;
 import javax.annotation.Generated;
 
 /**
@@ -20,5 +21,12 @@ public enum Episode {
   /**
    * Star Wars Episode VI: Return of the Jedi, released in 1983.
    */
-  JEDI
+  JEDI,
+
+  /**
+   * Test deprecated enum value
+   * @deprecated For test purpose only
+   */
+  @Deprecated
+  DEPRECATED
 }

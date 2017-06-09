@@ -58,8 +58,8 @@ public class ApolloIRGenTask extends NodeTask {
 
       List<String> apolloArgs = Lists.newArrayList("generate");
       apolloArgs.addAll(entry.getValue().getQueryFiles());
-      apolloArgs.addAll(Lists.newArrayList("--schema", entry.getValue().getSchemaFile().getAbsolutePath(),
-          "--output", irOutput + "/" + Utils.capitalize(variant) + "API.json", "--target", "json"));
+      apolloArgs.addAll(Lists.newArrayList("--add-typename", "--schema", entry.getValue().getSchemaFile()
+              .getAbsolutePath(), "--output", irOutput + "/" + Utils.capitalize(variant) + "API.json", "--target", "json"));
       setArgs(apolloArgs);
       super.exec();
     }

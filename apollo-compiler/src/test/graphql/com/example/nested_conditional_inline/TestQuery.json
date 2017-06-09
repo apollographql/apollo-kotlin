@@ -27,6 +27,11 @@
 					],
 					"fields": [
 						{
+							"responseName": "__typename",
+							"fieldName": "__typename",
+							"type": "String!"
+						},
+						{
 							"responseName": "name",
 							"fieldName": "name",
 							"type": "String!"
@@ -38,6 +43,11 @@
 							"typeCondition": "Human",
 							"fields": [
 								{
+									"responseName": "__typename",
+									"fieldName": "__typename",
+									"type": "String!"
+								},
+								{
 									"responseName": "name",
 									"fieldName": "name",
 									"type": "String!"
@@ -47,6 +57,11 @@
 									"fieldName": "friends",
 									"type": "[Character]",
 									"fields": [
+										{
+											"responseName": "__typename",
+											"fieldName": "__typename",
+											"type": "String!"
+										},
 										{
 											"responseName": "name",
 											"fieldName": "name",
@@ -58,6 +73,11 @@
 										{
 											"typeCondition": "Human",
 											"fields": [
+												{
+													"responseName": "__typename",
+													"fieldName": "__typename",
+													"type": "String!"
+												},
 												{
 													"responseName": "name",
 													"fieldName": "name",
@@ -86,6 +106,11 @@
 							"typeCondition": "Droid",
 							"fields": [
 								{
+									"responseName": "__typename",
+									"fieldName": "__typename",
+									"type": "String!"
+								},
+								{
 									"responseName": "name",
 									"fieldName": "name",
 									"type": "String!"
@@ -95,6 +120,11 @@
 									"fieldName": "friends",
 									"type": "[Character]",
 									"fields": [
+										{
+											"responseName": "__typename",
+											"fieldName": "__typename",
+											"type": "String!"
+										},
 										{
 											"responseName": "name",
 											"fieldName": "name",
@@ -106,6 +136,11 @@
 										{
 											"typeCondition": "Human",
 											"fields": [
+												{
+													"responseName": "__typename",
+													"fieldName": "__typename",
+													"type": "String!"
+												},
 												{
 													"responseName": "name",
 													"fieldName": "name",

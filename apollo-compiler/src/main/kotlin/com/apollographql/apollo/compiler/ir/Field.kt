@@ -15,11 +15,13 @@ data class Field(
     val fields: List<Field>? = null,
     val fragmentSpreads: List<String>? = null,
     val inlineFragments: List<InlineFragment>? = null,
-    val description: String? = null
+    val description: String? = null,
+    val isDeprecated: Boolean? = false,
+    val deprecationReason: String? = null
 ) : CodeGenerator {
 
   override fun toTypeSpec(context: CodeGenerationContext): TypeSpec {
-    val fields = if (isNonScalar()) listOf(Field("__typename", "__typename", "String!")) + fields!! else emptyList()
+    val fields = if (isNonScalar()) fields!! else emptyList()
     return SchemaTypeSpecBuilder(
         typeName = formatClassName(),
         fields = fields,
@@ -35,13 +37,33 @@ data class Field(
         .returns(toTypeName(methodResponseType(), context))
         .addStatement("return this.\$L", responseName.escapeJavaReservedWord())
         .let { if (description != null) it.addJavadoc("\$L\n", description) else it }
+        .let {
+          if (isDeprecated ?: false && !deprecationReason.isNullOrBlank()) {
+            it.addJavadoc("@deprecated \$L\n", deprecationReason)
+          } else {
+            it
+          }
+        }
         .build()
   }
 
   fun fieldSpec(context: CodeGenerationContext, publicModifier: Boolean = false): FieldSpec {
     return FieldSpec.builder(toTypeName(methodResponseType(), context), responseName.escapeJavaReservedWord())
         .addModifiers(if (publicModifier) Modifier.PUBLIC else Modifier.PRIVATE, Modifier.FINAL)
-        .let { if (publicModifier && description != null) it.addJavadoc("\$L\n", description) else it }
+        .let {
+          if (publicModifier && !description.isNullOrBlank()) {
+            it.addJavadoc("\$L\n", description)
+          } else {
+            it
+          }
+        }
+        .let {
+          if (publicModifier && isDeprecated ?: false && !deprecationReason.isNullOrBlank()) {
+            it.addJavadoc("@deprecated \$L\n", deprecationReason)
+          } else {
+            it
+          }
+        }
         .build()
   }
 
@@ -54,6 +76,16 @@ data class Field(
       return@fold map
     }))
   }
+
+  fun formatClassName() = responseName.capitalize().let { if (isList()) it.singularize() else it }
+
+  fun isOptional(): Boolean = isConditional || !methodResponseType().endsWith("!")
+
+  fun isNonScalar() = hasFragments() || (fields?.any() ?: false)
+
+  private fun hasFragments() = (fragmentSpreads?.any() ?: false) || (inlineFragments?.any() ?: false)
+
+  private fun isList(): Boolean = type.removeSuffix("!").let { it.startsWith('[') && it.endsWith(']') }
 
   private fun jsonMapToCodeBlock(jsonMap: Map<String, Any?>): CodeBlock {
     return jsonMap.entries.map { entry ->
@@ -75,10 +107,8 @@ data class Field(
 
   private fun toTypeName(responseType: String, context: CodeGenerationContext): TypeName {
     val packageName = if (isNonScalar()) "" else context.typesPackage
-    return JavaTypeResolver(context, packageName).resolve(responseType, isOptional())
+    return JavaTypeResolver(context, packageName, isDeprecated ?: false).resolve(responseType, isOptional())
   }
-
-  fun formatClassName() = responseName.capitalize().let { if (isList()) it.singularize() else it }
 
   private fun methodResponseType(): String {
     if (isNonScalar() || hasFragments()) {
@@ -100,12 +130,4 @@ data class Field(
       return type
     }
   }
-
-  fun isNonScalar() = hasFragments() || (fields?.any() ?: false)
-
-  fun hasFragments() = (fragmentSpreads?.any() ?: false) || (inlineFragments?.any() ?: false)
-
-  fun isOptional(): Boolean = isConditional || !methodResponseType().endsWith("!")
-
-  fun isList(): Boolean = type.removeSuffix("!").let { it.startsWith('[') && it.endsWith(']') }
 }

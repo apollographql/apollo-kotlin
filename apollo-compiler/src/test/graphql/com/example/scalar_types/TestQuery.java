@@ -286,8 +286,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class GraphQlListOfObject {
-    private final @Nonnull String __typename;
-
     private final int someField;
 
     private volatile String $toString;
@@ -296,13 +294,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public GraphQlListOfObject(@Nonnull String __typename, int someField) {
-      this.__typename = __typename;
+    public GraphQlListOfObject(int someField) {
       this.someField = someField;
-    }
-
-    public @Nonnull String __typename() {
-      return this.__typename;
     }
 
     public int someField() {
@@ -313,7 +306,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public String toString() {
       if ($toString == null) {
         $toString = "GraphQlListOfObject{"
-          + "__typename=" + __typename + ", "
           + "someField=" + someField
           + "}";
       }
@@ -327,8 +319,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       }
       if (o instanceof GraphQlListOfObject) {
         GraphQlListOfObject that = (GraphQlListOfObject) o;
-        return this.__typename.equals(that.__typename)
-         && this.someField == that.someField;
+        return this.someField == that.someField;
       }
       return false;
     }
@@ -337,8 +328,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public int hashCode() {
       if (!$hashCodeMemoized) {
         int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
         h *= 1000003;
         h ^= someField;
         $hashCode = h;
@@ -349,15 +338,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<GraphQlListOfObject> {
       final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
         Field.forInt("someField", "someField", null, false)
       };
 
       @Override
       public GraphQlListOfObject map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final int someField = reader.read(fields[1]);
-        return new GraphQlListOfObject(__typename, someField);
+        final int someField = reader.read(fields[0]);
+        return new GraphQlListOfObject(someField);
       }
     }
   }

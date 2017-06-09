@@ -51,6 +51,7 @@ class UpdateTestIRFilesTask extends DefaultTask {
       schema = new File('apollo-compiler/src/test/graphql/schema.json')
     }
     def apolloCodeGenProcess = """apollo-codegen generate ${queryFile.absoluteFile}
+          --add-typename
           --schema ${schema.absoluteFile}
           --output ${outputFile.absoluteFile}
           --target json""".execute()

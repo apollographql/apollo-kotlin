@@ -4,6 +4,7 @@
 			"filePath": "src/test/graphql/com/example/deprecation/TestQuery.graphql",
 			"operationName": "TestQuery",
 			"operationType": "query",
+			"rootType": "Query",
 			"variables": [
 				{
 					"name": "episode",
@@ -25,18 +26,29 @@
 							}
 						}
 					],
+					"isDeprecated": false,
+					"deprecationReason": null,
 					"fields": [
+						{
+							"responseName": "__typename",
+							"fieldName": "__typename",
+							"type": "String!"
+						},
 						{
 							"responseName": "name",
 							"fieldName": "name",
 							"type": "String!",
-							"description": "The name of the character"
+							"description": "The name of the character",
+							"isDeprecated": false,
+							"deprecationReason": null
 						},
 						{
 							"responseName": "deprecated",
 							"fieldName": "deprecated",
 							"type": "String!",
-							"description": "Test deprecated field"
+							"description": "Test deprecated field",
+							"isDeprecated": true,
+							"deprecationReason": "For test purpose only"
 						}
 					],
 					"fragmentSpreads": [],
@@ -55,19 +67,27 @@
 			"values": [
 				{
 					"name": "NEWHOPE",
-					"description": "Star Wars Episode IV: A New Hope, released in 1977."
+					"description": "Star Wars Episode IV: A New Hope, released in 1977.",
+					"isDeprecated": false,
+					"deprecationReason": null
 				},
 				{
 					"name": "EMPIRE",
-					"description": "Star Wars Episode V: The Empire Strikes Back, released in 1980."
+					"description": "Star Wars Episode V: The Empire Strikes Back, released in 1980.",
+					"isDeprecated": false,
+					"deprecationReason": null
 				},
 				{
 					"name": "JEDI",
-					"description": "Star Wars Episode VI: Return of the Jedi, released in 1983."
+					"description": "Star Wars Episode VI: Return of the Jedi, released in 1983.",
+					"isDeprecated": false,
+					"deprecationReason": null
 				},
 				{
 					"name": "DEPRECATED",
-					"description": "Test deprecated enum value"
+					"description": "Test deprecated enum value",
+					"isDeprecated": true,
+					"deprecationReason": "For test purpose only"
 				}
 			]
 		}

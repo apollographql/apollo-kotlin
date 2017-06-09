@@ -1,4 +1,4 @@
-package com.example.unique_type_name.type;
+package com.example.deprecation.type;
 
 import java.lang.Deprecated;
 import javax.annotation.Generated;

@@ -9,7 +9,8 @@ import com.squareup.javapoet.TypeName
 
 class JavaTypeResolver(
     private val context: CodeGenerationContext,
-    private val packageName: String
+    private val packageName: String,
+    private val deprecated: Boolean = false
 ) {
   fun resolve(typeName: String, isOptional: Boolean = !typeName.endsWith("!")): TypeName {
     val normalizedTypeName = typeName.removeSuffix("!")
@@ -27,16 +28,20 @@ class JavaTypeResolver(
     }
 
     return if (javaType.isPrimitive) {
-      javaType
+      javaType.let { if (deprecated) it.annotated(Annotations.DEPRECATED) else it }
     } else if (isOptional) {
       when (context.nullableValueType) {
         NullableValueType.APOLLO_OPTIONAL -> parameterizedOptional(javaType)
         NullableValueType.GUAVA_OPTIONAL -> parameterizedGuavaOptional(javaType)
         NullableValueType.JAVA_OPTIONAL -> parameterizedJavaOptional(javaType)
         else -> javaType.annotated(Annotations.NULLABLE)
+      }.let {
+        if (deprecated) it.annotated(Annotations.DEPRECATED) else it
       }
     } else {
-      javaType.annotated(Annotations.NONNULL)
+      javaType.annotated(Annotations.NONNULL).let {
+        if (deprecated) it.annotated(Annotations.DEPRECATED) else it
+      }
     }
   }
 }
