@@ -22,7 +22,7 @@ data class Fragment(
   override fun toTypeSpec(context: CodeGenerationContext): TypeSpec =
       SchemaTypeSpecBuilder(
           typeName = formatClassName(),
-          fields = listOf(Field("__typename", "__typename", "String!")) + fields,
+          fields = fields,
           fragmentSpreads = fragmentSpreads,
           inlineFragments = inlineFragments,
           context = context

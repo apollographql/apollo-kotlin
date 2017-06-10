@@ -4,6 +4,7 @@
 			"filePath": "src/test/graphql/com/example/directives/TestQuery.graphql",
 			"operationName": "TestQuery",
 			"operationType": "query",
+			"rootType": "Query",
 			"variables": [],
 			"source": "query TestQuery {\n  hero {\n    __typename\n    name @include(if: false)\n  }\n}",
 			"fields": [
@@ -11,13 +12,22 @@
 					"responseName": "hero",
 					"fieldName": "hero",
 					"type": "Character",
+					"isDeprecated": false,
+					"deprecationReason": null,
 					"fields": [
+						{
+							"responseName": "__typename",
+							"fieldName": "__typename",
+							"type": "String!"
+						},
 						{
 							"responseName": "name",
 							"fieldName": "name",
 							"type": "String!",
 							"isConditional": true,
-							"description": "The name of the character"
+							"description": "The name of the character",
+							"isDeprecated": false,
+							"deprecationReason": null
 						}
 					],
 					"fragmentSpreads": [],

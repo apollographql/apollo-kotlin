@@ -4,6 +4,7 @@
 			"filePath": "src/test/graphql/com/example/input_object_type/TestQuery.graphql",
 			"operationName": "TestQuery",
 			"operationType": "mutation",
+			"rootType": "Mutation",
 			"variables": [
 				{
 					"name": "ep",
@@ -36,18 +37,29 @@
 							}
 						}
 					],
+					"isDeprecated": false,
+					"deprecationReason": null,
 					"fields": [
+						{
+							"responseName": "__typename",
+							"fieldName": "__typename",
+							"type": "String!"
+						},
 						{
 							"responseName": "stars",
 							"fieldName": "stars",
 							"type": "Int!",
-							"description": "The number of stars this review gave, 1-5"
+							"description": "The number of stars this review gave, 1-5",
+							"isDeprecated": false,
+							"deprecationReason": null
 						},
 						{
 							"responseName": "commentary",
 							"fieldName": "commentary",
 							"type": "String",
-							"description": "Comment about the movie"
+							"description": "Comment about the movie",
+							"isDeprecated": false,
+							"deprecationReason": null
 						}
 					],
 					"fragmentSpreads": [],
@@ -66,15 +78,27 @@
 			"values": [
 				{
 					"name": "NEWHOPE",
-					"description": "Star Wars Episode IV: A New Hope, released in 1977."
+					"description": "Star Wars Episode IV: A New Hope, released in 1977.",
+					"isDeprecated": false,
+					"deprecationReason": null
 				},
 				{
 					"name": "EMPIRE",
-					"description": "Star Wars Episode V: The Empire Strikes Back, released in 1980."
+					"description": "Star Wars Episode V: The Empire Strikes Back, released in 1980.",
+					"isDeprecated": false,
+					"deprecationReason": null
 				},
 				{
 					"name": "JEDI",
-					"description": "Star Wars Episode VI: Return of the Jedi, released in 1983."
+					"description": "Star Wars Episode VI: Return of the Jedi, released in 1983.",
+					"isDeprecated": false,
+					"deprecationReason": null
+				},
+				{
+					"name": "DEPRECATED",
+					"description": "Test deprecated enum value",
+					"isDeprecated": true,
+					"deprecationReason": "For test purpose only"
 				}
 			]
 		},

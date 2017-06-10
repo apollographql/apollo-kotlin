@@ -279,6 +279,12 @@
               "description": "Star Wars Episode VI: Return of the Jedi, released in 1983.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "DEPRECATED",
+              "description": "Test deprecated enum value",
+              "isDeprecated": true,
+              "deprecationReason": "For test purpose only"
             }
           ],
           "possibleTypes": null
@@ -319,6 +325,22 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "deprecated",
+              "description": "Test deprecated field",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "For test purpose only"
             },
             {
               "name": "friends",
@@ -856,6 +878,22 @@
               "deprecationReason": null
             },
             {
+              "name": "deprecated",
+              "description": "Test deprecated field",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "For test purpose only"
+            },
+            {
               "name": "homePlanet",
               "description": "The home planet of the human, or null if unknown",
               "args": [],
@@ -1278,6 +1316,22 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "deprecated",
+              "description": "Test deprecated field",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "For test purpose only"
             },
             {
               "name": "friends",

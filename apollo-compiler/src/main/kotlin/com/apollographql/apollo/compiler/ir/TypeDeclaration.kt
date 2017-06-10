@@ -31,13 +31,30 @@ data class TypeDeclaration(
     }
 
     fun TypeSpec.Builder.addEnumConstants(): TypeSpec.Builder {
-      values?.forEach {
-        if (it.description.isNullOrEmpty()) {
-          addEnumConstant(it.name)
+      values?.forEach { value ->
+        if (value.description.isNullOrEmpty()) {
+          addEnumConstant(value.name)
+              .let {
+                if (value.isDeprecated ?: false && !value.deprecationReason.isNullOrBlank()) {
+                  it.addJavadoc("@deprecated \$L\n", value.deprecationReason)
+                } else {
+                  it
+                }
+              }
+              .let { if (value.isDeprecated ?: false) it.addAnnotation(Annotations.DEPRECATED) else it }
         } else {
-          addEnumConstant(it.name, TypeSpec.anonymousClassBuilder("")
-              .addJavadoc("\$L\n", it.description)
-              .build())
+          addEnumConstant(value.name, TypeSpec.anonymousClassBuilder("")
+              .addJavadoc("\$L\n", value.description)
+              .let {
+                if (value.isDeprecated ?: false && !value.deprecationReason.isNullOrBlank()) {
+                  it.addJavadoc("@deprecated \$L\n", value.deprecationReason)
+                } else {
+                  it
+                }
+              }
+              .let { if (value.isDeprecated ?: false) it.addAnnotation(Annotations.DEPRECATED) else it }
+              .build()
+          )
         }
       }
       return this
@@ -55,8 +72,8 @@ data class TypeDeclaration(
       InputObjectTypeSpecBuilder(name, fields ?: emptyList(), context).build()
 
   companion object {
-    val KIND_INPUT_OBJECT_TYPE : String = "InputObjectType"
-    val KIND_ENUM : String = "EnumType"
-    val KIND_SCALAR_TYPE : String = "ScalarType"
+    val KIND_INPUT_OBJECT_TYPE: String = "InputObjectType"
+    val KIND_ENUM: String = "EnumType"
+    val KIND_SCALAR_TYPE: String = "ScalarType"
   }
 }

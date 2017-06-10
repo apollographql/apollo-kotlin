@@ -4,6 +4,7 @@
 			"filePath": "src/test/graphql/com/example/fragment_in_fragment/TestQuery.graphql",
 			"operationName": "AllStarships",
 			"operationType": "query",
+			"rootType": "Root",
 			"variables": [],
 			"source": "query AllStarships {\n  allStarships(first: 7) {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        ...starshipFragment\n      }\n    }\n  }\n}",
 			"fields": [
@@ -17,19 +18,41 @@
 							"value": 7
 						}
 					],
+					"isDeprecated": false,
+					"deprecationReason": null,
 					"fields": [
+						{
+							"responseName": "__typename",
+							"fieldName": "__typename",
+							"type": "String!"
+						},
 						{
 							"responseName": "edges",
 							"fieldName": "edges",
 							"type": "[StarshipsEdge]",
 							"description": "A list of edges.",
+							"isDeprecated": false,
+							"deprecationReason": null,
 							"fields": [
+								{
+									"responseName": "__typename",
+									"fieldName": "__typename",
+									"type": "String!"
+								},
 								{
 									"responseName": "node",
 									"fieldName": "node",
 									"type": "Starship",
 									"description": "The item at the end of the edge",
-									"fields": [],
+									"isDeprecated": false,
+									"deprecationReason": null,
+									"fields": [
+										{
+											"responseName": "__typename",
+											"fieldName": "__typename",
+											"type": "String!"
+										}
+									],
 									"fragmentSpreads": [
 										"starshipFragment"
 									],
@@ -61,34 +84,65 @@
 			],
 			"fields": [
 				{
+					"responseName": "__typename",
+					"fieldName": "__typename",
+					"type": "String!"
+				},
+				{
 					"responseName": "id",
 					"fieldName": "id",
 					"type": "ID!",
-					"description": "The ID of an object"
+					"description": "The ID of an object",
+					"isDeprecated": false,
+					"deprecationReason": null
 				},
 				{
 					"responseName": "name",
 					"fieldName": "name",
 					"type": "String",
-					"description": "The name of this starship. The common name, such as \"Death Star\"."
+					"description": "The name of this starship. The common name, such as \"Death Star\".",
+					"isDeprecated": false,
+					"deprecationReason": null
 				},
 				{
 					"responseName": "pilotConnection",
 					"fieldName": "pilotConnection",
 					"type": "StarshipPilotsConnection",
+					"isDeprecated": false,
+					"deprecationReason": null,
 					"fields": [
+						{
+							"responseName": "__typename",
+							"fieldName": "__typename",
+							"type": "String!"
+						},
 						{
 							"responseName": "edges",
 							"fieldName": "edges",
 							"type": "[StarshipPilotsEdge]",
 							"description": "A list of edges.",
+							"isDeprecated": false,
+							"deprecationReason": null,
 							"fields": [
+								{
+									"responseName": "__typename",
+									"fieldName": "__typename",
+									"type": "String!"
+								},
 								{
 									"responseName": "node",
 									"fieldName": "node",
 									"type": "Person",
 									"description": "The item at the end of the edge",
-									"fields": [],
+									"isDeprecated": false,
+									"deprecationReason": null,
+									"fields": [
+										{
+											"responseName": "__typename",
+											"fieldName": "__typename",
+											"type": "String!"
+										}
+									],
 									"fragmentSpreads": [
 										"pilotFragment"
 									],
@@ -119,22 +173,38 @@
 			],
 			"fields": [
 				{
+					"responseName": "__typename",
+					"fieldName": "__typename",
+					"type": "String!"
+				},
+				{
 					"responseName": "name",
 					"fieldName": "name",
 					"type": "String",
-					"description": "The name of this person."
+					"description": "The name of this person.",
+					"isDeprecated": false,
+					"deprecationReason": null
 				},
 				{
 					"responseName": "homeworld",
 					"fieldName": "homeworld",
 					"type": "Planet",
 					"description": "A planet that this person was born on or inhabits.",
+					"isDeprecated": false,
+					"deprecationReason": null,
 					"fields": [
+						{
+							"responseName": "__typename",
+							"fieldName": "__typename",
+							"type": "String!"
+						},
 						{
 							"responseName": "name",
 							"fieldName": "name",
 							"type": "String",
-							"description": "The name of this planet."
+							"description": "The name of this planet.",
+							"isDeprecated": false,
+							"deprecationReason": null
 						}
 					],
 					"fragmentSpreads": [],

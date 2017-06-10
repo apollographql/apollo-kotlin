@@ -4,6 +4,7 @@
 			"filePath": "src/test/graphql/com/example/enum_type/TestQuery.graphql",
 			"operationName": "TestQuery",
 			"operationType": "query",
+			"rootType": "Query",
 			"variables": [],
 			"source": "query TestQuery {\n  hero {\n    __typename\n    name\n    appearsIn\n    firstAppearsIn\n  }\n}",
 			"fields": [
@@ -11,24 +12,37 @@
 					"responseName": "hero",
 					"fieldName": "hero",
 					"type": "Character",
+					"isDeprecated": false,
+					"deprecationReason": null,
 					"fields": [
+						{
+							"responseName": "__typename",
+							"fieldName": "__typename",
+							"type": "String!"
+						},
 						{
 							"responseName": "name",
 							"fieldName": "name",
 							"type": "String!",
-							"description": "The name of the character"
+							"description": "The name of the character",
+							"isDeprecated": false,
+							"deprecationReason": null
 						},
 						{
 							"responseName": "appearsIn",
 							"fieldName": "appearsIn",
 							"type": "[Episode]!",
-							"description": "The movies this character appears in"
+							"description": "The movies this character appears in",
+							"isDeprecated": false,
+							"deprecationReason": null
 						},
 						{
 							"responseName": "firstAppearsIn",
 							"fieldName": "firstAppearsIn",
 							"type": "Episode!",
-							"description": "The movie this character first appears in"
+							"description": "The movie this character first appears in",
+							"isDeprecated": false,
+							"deprecationReason": null
 						}
 					],
 					"fragmentSpreads": [],
@@ -47,15 +61,21 @@
 			"values": [
 				{
 					"name": "NEWHOPE",
-					"description": "Star Wars Episode IV: A New Hope, released in 1977. (with special symbol $S)"
+					"description": "Star Wars Episode IV: A New Hope, released in 1977. (with special symbol $S)",
+					"isDeprecated": false,
+					"deprecationReason": null
 				},
 				{
 					"name": "EMPIRE",
-					"description": "Star Wars Episode V: The Empire Strikes Back, released in 1980."
+					"description": "Star Wars Episode V: The Empire Strikes Back, released in 1980.",
+					"isDeprecated": false,
+					"deprecationReason": null
 				},
 				{
 					"name": "jedi",
-					"description": "Star Wars Episode VI: Return of the Jedi, released in 1983. (JEDI in lowercase)"
+					"description": "Star Wars Episode VI: Return of the Jedi, released in 1983. (JEDI in lowercase)",
+					"isDeprecated": false,
+					"deprecationReason": null
 				}
 			]
 		}

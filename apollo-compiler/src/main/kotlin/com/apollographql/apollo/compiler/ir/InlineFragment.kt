@@ -15,7 +15,7 @@ data class InlineFragment(
   override fun toTypeSpec(context: CodeGenerationContext): TypeSpec =
       SchemaTypeSpecBuilder(
           typeName = formatClassName(),
-          fields = listOf(Field("__typename", "__typename", "String!")) + fields,
+          fields = fields,
           fragmentSpreads = fragmentSpreads ?: emptyList(),
           inlineFragments = emptyList(),
           context = context

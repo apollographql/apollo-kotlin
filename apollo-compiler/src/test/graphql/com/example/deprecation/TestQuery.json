@@ -1,7 +1,7 @@
 {
 	"operations": [
 		{
-			"filePath": "src/test/graphql/com/example/arguments_simple/TestQuery.graphql",
+			"filePath": "src/test/graphql/com/example/deprecation/TestQuery.graphql",
 			"operationName": "TestQuery",
 			"operationType": "query",
 			"rootType": "Query",
@@ -9,13 +9,9 @@
 				{
 					"name": "episode",
 					"type": "Episode"
-				},
-				{
-					"name": "includeName",
-					"type": "Boolean!"
 				}
 			],
-			"source": "query TestQuery($episode: Episode, $includeName: Boolean!) {\n  hero(episode: $episode) {\n    __typename\n    name @include(if: $includeName)\n  }\n}",
+			"source": "query TestQuery($episode: Episode) {\n  hero(episode: $episode) {\n    __typename\n    name\n    deprecated\n  }\n}",
 			"fields": [
 				{
 					"responseName": "hero",
@@ -42,10 +38,17 @@
 							"responseName": "name",
 							"fieldName": "name",
 							"type": "String!",
-							"isConditional": true,
 							"description": "The name of the character",
 							"isDeprecated": false,
 							"deprecationReason": null
+						},
+						{
+							"responseName": "deprecated",
+							"fieldName": "deprecated",
+							"type": "String!",
+							"description": "Test deprecated field",
+							"isDeprecated": true,
+							"deprecationReason": "For test purpose only"
 						}
 					],
 					"fragmentSpreads": [],
