@@ -1,7 +1,9 @@
 package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloCall;
+import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.CustomTypeAdapter;
+import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ScalarType;
@@ -15,29 +17,31 @@ import com.apollographql.apollo.internal.util.ApolloLogger;
 import com.squareup.moshi.Moshi;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-
-final class QueryFetcher {
+final class QueryReFetcher {
   private final ApolloLogger logger;
   private final List<RealApolloCall> calls;
+  private List<OperationName> queryWatchers;
+  private ApolloCallTracker callTracker;
   private final AtomicBoolean executed = new AtomicBoolean();
-  private volatile boolean canceled;
+  OnCompleteCallback onCompleteCallback;
 
   static Builder builder() {
     return new Builder();
   }
 
-  QueryFetcher(Builder builder) {
+  QueryReFetcher(Builder builder) {
     logger = builder.logger;
     calls = new ArrayList<>(builder.queries.size());
     for (Query query : builder.queries) {
@@ -54,70 +58,69 @@ final class QueryFetcher {
           .cacheHeaders(CacheHeaders.NONE)
           .logger(builder.logger)
           .applicationInterceptors(builder.applicationInterceptors)
-          .tracker(builder.tracker)
+          .tracker(builder.callTracker)
           .dispatcher(builder.dispatcher)
           .build());
     }
+    queryWatchers = builder.queryWatchers;
+    callTracker = builder.callTracker;
   }
 
-  void refetchSync() {
+  void refetch() {
     if (!executed.compareAndSet(false, true)) {
       throw new IllegalStateException("Already Executed");
     }
 
-    for (RealApolloCall call : calls) {
-      try {
-        call.execute();
-        if (canceled) {
-          return;
-        }
-      } catch (Exception e) {
-        if (logger != null) {
-          logger.e(e, "Failed to fetch query: %s", call.operation);
-        }
-      }
-    }
-  }
-
-  void refetchAsync(@Nonnull OnFetchCompleteCallback callback) {
-    if (!executed.compareAndSet(false, true)) {
-      throw new IllegalStateException("Already Executed");
-    }
-    refetchAsync(0, checkNotNull(callback, "callback == null"));
+    refetchQueryWatchers();
+    refetchQueries();
   }
 
   void cancel() {
-    canceled = true;
+    for (RealApolloCall call : calls) {
+      call.cancel();
+    }
   }
 
-  @SuppressWarnings("unchecked") private void refetchAsync(final int nextCallIndex,
-      final OnFetchCompleteCallback callback) {
-    final RealApolloCall call = nextCallIndex < calls.size() ? calls.get(nextCallIndex) : null;
-    if (call == null) {
-      callback.onFetchComplete();
-      return;
-    }
-
-    if (canceled) {
-      return;
-    }
-
-    call.enqueue(new ApolloCall.Callback() {
-      @Override public void onResponse(@Nonnull Response response) {
-        refetchAsync(nextCallIndex + 1, callback);
-      }
-
-      @Override public void onFailure(@Nonnull ApolloException e) {
-        if (logger != null) {
-          logger.e(e, "Failed to fetch query: %s", call.operation);
+  private void refetchQueryWatchers() {
+    try {
+      for (OperationName operationName : queryWatchers) {
+        for (ApolloQueryWatcher queryWatcher : callTracker.activeQueryWatchers(operationName)) {
+          queryWatcher.refetch();
         }
-        refetchAsync(nextCallIndex + 1, callback);
       }
-    });
+    } catch (Exception e) {
+      logger.e(e, "Failed to re-fetch query watcher");
+    }
+  }
+
+  private void refetchQueries() {
+    final OnCompleteCallback completeCallback = onCompleteCallback;
+    final AtomicInteger callsLeft = new AtomicInteger(calls.size());
+    for (final RealApolloCall call : calls) {
+      //noinspection unchecked
+      call.enqueue(new ApolloCall.Callback() {
+        @Override public void onResponse(@Nonnull Response response) {
+          if (callsLeft.decrementAndGet() == 0 && completeCallback != null) {
+            completeCallback.onFetchComplete();
+          }
+        }
+
+        @Override public void onFailure(@Nonnull ApolloException e) {
+          if (logger != null) {
+            logger.e(e, "Failed to fetch query: %s", call.operation);
+          }
+
+          if (callsLeft.decrementAndGet() == 0 && completeCallback != null) {
+            completeCallback.onFetchComplete();
+          }
+        }
+      });
+    }
   }
 
   static final class Builder {
-    List<Query> queries;
+    List<Query> queries = Collections.emptyList();
+    List<OperationName> queryWatchers = Collections.emptyList();
     HttpUrl serverUrl;
     Call.Factory httpCallFactory;
     Moshi moshi;
@@ -127,10 +130,15 @@ final class QueryFetcher {
     ExecutorService dispatcher;
     ApolloLogger logger;
     List<ApolloInterceptor> applicationInterceptors;
-    ApolloCallTracker tracker;
+    ApolloCallTracker callTracker;
 
     Builder queries(List<Query> queries) {
-      this.queries = queries;
+      this.queries = queries != null ? queries : Collections.<Query>emptyList();
+      return this;
+    }
+
+    public Builder queryWatchers(List<OperationName> queryWatchers) {
+      this.queryWatchers = queryWatchers != null ? queryWatchers : Collections.<OperationName>emptyList();
       return this;
     }
 
@@ -179,20 +187,20 @@ final class QueryFetcher {
       return this;
     }
 
-    Builder tracker(ApolloCallTracker tracker) {
-      this.tracker = tracker;
+    Builder callTracker(ApolloCallTracker callTracker) {
+      this.callTracker = callTracker;
       return this;
     }
 
-    QueryFetcher build() {
-      return new QueryFetcher(this);
+    QueryReFetcher build() {
+      return new QueryReFetcher(this);
     }
 
     private Builder() {
     }
   }
 
-  interface OnFetchCompleteCallback {
+  interface OnCompleteCallback {
     void onFetchComplete();
   }
 }
