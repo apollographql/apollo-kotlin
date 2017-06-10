@@ -137,9 +137,9 @@ public class QueryRefetchTest {
         .refetchCacheControl(CacheControl.NETWORK_FIRST)
         .enqueueAndWatch(new ApolloCall.Callback<ReviewsByEpisode.Data>() {
           @Override public void onResponse(@Nonnull Response<ReviewsByEpisode.Data> response) {
+            empireReviewsWatchResponse.set(response);
             countDownBeforeMutationLatch.countDown();
             countDownRefetchLatch.countDown();
-            empireReviewsWatchResponse.set(response);
           }
 
           @Override public void onFailure(@Nonnull ApolloException e) {
@@ -153,7 +153,7 @@ public class QueryRefetchTest {
     );
     apolloClient.mutate(mutation).refetchQueries(queryWatcher.operation().name()).execute();
 
-    countDownRefetchLatch.awaitOrThrowWithTimeout(3000, TimeUnit.SECONDS);
+    countDownRefetchLatch.awaitOrThrowWithTimeout(3, TimeUnit.SECONDS);
     assertThat(server.getRequestCount()).isEqualTo(3);
     Response<ReviewsByEpisode.Data> empireReviewsQueryResponse = empireReviewsWatchResponse.get();
     assertThat(empireReviewsQueryResponse.data().reviews()).hasSize(4);
