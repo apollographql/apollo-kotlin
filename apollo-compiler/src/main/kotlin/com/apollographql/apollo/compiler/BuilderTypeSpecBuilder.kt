@@ -28,8 +28,7 @@ class BuilderTypeSpecBuilder(
           (it as? Number)?.castTo(fieldType.withoutAnnotations()) ?: it
         }
         val initializerCode = defaultValue?.let {
-          val isEnum = fieldType.isEnum(typeDeclarations)
-          if (isEnum)
+          if (fieldType.isEnum(typeDeclarations))
             CodeBlock.of("\$T.\$L", fieldType.withoutAnnotations(), defaultValue)
           else
             CodeBlock.of("\$L", defaultValue)
