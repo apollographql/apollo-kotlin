@@ -32,11 +32,10 @@ class BuilderTypeSpecBuilder(
             CodeBlock.of("\$T.\$L", fieldType.withoutAnnotations(), defaultValue)
           else
             CodeBlock.of("\$L", defaultValue)
-        }
-        fieldType.isEnum(typeDeclarations)
+        } ?: CodeBlock.of("")
         FieldSpec.builder(fieldType, fieldName)
             .addModifiers(Modifier.PRIVATE)
-            .let { if (initializerCode != null) it.initializer(initializerCode) else it }
+            .initializer(initializerCode)
             .build()
       })
 
