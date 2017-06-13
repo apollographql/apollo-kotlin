@@ -127,6 +127,12 @@
 					"name": "favoriteColor",
 					"description": "Favorite color, optional",
 					"type": "ColorInput!"
+				},
+				{
+					"name": "enumWithDefaultValue",
+					"description": "for test purpose only",
+					"type": "Episode",
+					"defaultValue": "JEDI"
 				}
 			]
 		},

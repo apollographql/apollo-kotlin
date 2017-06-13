@@ -170,13 +170,24 @@ class OperationTypeSpecBuilder(
   private fun TypeSpec.Builder.addBuilder(context: CodeGenerationContext): TypeSpec.Builder {
     addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
     if (operation.variables.isEmpty()) {
-      return BuilderTypeSpecBuilder(ClassName.get("", OPERATION_TYPE_NAME), emptyList(), emptyMap())
-          .let { addType(it.build()) }
+      return BuilderTypeSpecBuilder(
+          targetObjectClassName = ClassName.get("", OPERATION_TYPE_NAME),
+          fields = emptyList(),
+          fieldDefaultValues = emptyMap(),
+          typeDeclarations = context.typeDeclarations
+      ).let { addType(it.build()) }
     }
     return operation.variables
         .map { it.name.decapitalize() to it.type }
         .map { it.first to JavaTypeResolver(context, context.typesPackage).resolve(it.second).unwrapOptionalType() }
-        .let { BuilderTypeSpecBuilder(ClassName.get("", OPERATION_TYPE_NAME), it, emptyMap()) }
+        .let {
+          BuilderTypeSpecBuilder(
+              targetObjectClassName = ClassName.get("", OPERATION_TYPE_NAME),
+              fields = it,
+              fieldDefaultValues = emptyMap(),
+              typeDeclarations = context.typeDeclarations
+          )
+        }
         .let { addType(it.build()) }
   }
 
