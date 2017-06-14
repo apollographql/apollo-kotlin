@@ -1643,6 +1643,16 @@
                 }
               },
               "defaultValue": null
+            },
+            {
+              "name": "enumWithDefaultValue",
+              "description": "for test purpose only",
+              "type": {
+                "kind": "ENUM",
+                "name": "Episode",
+                "ofType": null
+              },
+              "defaultValue": "JEDI"
             }
           ],
           "interfaces": null,

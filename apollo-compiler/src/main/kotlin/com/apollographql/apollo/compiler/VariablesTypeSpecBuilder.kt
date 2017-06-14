@@ -82,7 +82,14 @@ class VariablesTypeSpecBuilder(
     } else {
       val builderFields = variables.map { it.name.decapitalize() to it.javaTypeName(context, context.typesPackage) }
       return addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
-          .addType(BuilderTypeSpecBuilder(VARIABLES_TYPE_NAME, builderFields, emptyMap()).build())
+          .addType(
+              BuilderTypeSpecBuilder(
+                  targetObjectClassName = VARIABLES_TYPE_NAME,
+                  fields = builderFields,
+                  fieldDefaultValues = emptyMap(),
+                  typeDeclarations = context.typeDeclarations
+              ).build()
+          )
     }
   }
 

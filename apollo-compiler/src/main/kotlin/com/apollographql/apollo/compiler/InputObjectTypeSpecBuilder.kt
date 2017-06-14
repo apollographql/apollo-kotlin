@@ -56,7 +56,14 @@ class InputObjectTypeSpecBuilder(
       val builderFields = fields.map { it.name.decapitalize() to it.javaTypeName(context) }
       val builderFieldDefaultValues = fields.associate { it.name.decapitalize() to it.defaultValue }
       return addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
-          .addType(BuilderTypeSpecBuilder(objectClassName, builderFields, builderFieldDefaultValues).build())
+          .addType(
+              BuilderTypeSpecBuilder(
+                  targetObjectClassName = objectClassName,
+                  fields = builderFields,
+                  fieldDefaultValues = builderFieldDefaultValues,
+                  typeDeclarations = context.typeDeclarations
+              ).build()
+          )
     }
   }
 
