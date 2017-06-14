@@ -18,14 +18,23 @@ public final class ColorInput {
     this.blue = blue;
   }
 
+  /**
+   * Red color
+   */
   public int red() {
     return this.red;
   }
 
+  /**
+   * Green color
+   */
   public @Nullable Double green() {
     return this.green;
   }
 
+  /**
+   * Blue color
+   */
   public double blue() {
     return this.blue;
   }
@@ -44,16 +53,25 @@ public final class ColorInput {
     Builder() {
     }
 
+    /**
+     * Red color
+     */
     public Builder red(int red) {
       this.red = red;
       return this;
     }
 
+    /**
+     * Green color
+     */
     public Builder green(@Nullable Double green) {
       this.green = green;
       return this;
     }
 
+    /**
+     * Blue color
+     */
     public Builder blue(double blue) {
       this.blue = blue;
       return this;
