@@ -17,12 +17,16 @@ public final class ReviewInput {
 
   private final @Nonnull ColorInput favoriteColor;
 
+  private final @Nullable Episode enumWithDefaultValue;
+
   ReviewInput(int stars, @Nullable Integer nullableIntFieldWithDefaultValue,
-      @Nullable String commentary, @Nonnull ColorInput favoriteColor) {
+      @Nullable String commentary, @Nonnull ColorInput favoriteColor,
+      @Nullable Episode enumWithDefaultValue) {
     this.stars = stars;
     this.nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue;
     this.commentary = commentary;
     this.favoriteColor = favoriteColor;
+    this.enumWithDefaultValue = enumWithDefaultValue;
   }
 
   /**
@@ -53,6 +57,13 @@ public final class ReviewInput {
     return this.favoriteColor;
   }
 
+  /**
+   * for test purpose only
+   */
+  public @Nullable Episode enumWithDefaultValue() {
+    return this.enumWithDefaultValue;
+  }
+
   public static Builder builder() {
     return new Builder();
   }
@@ -65,6 +76,8 @@ public final class ReviewInput {
     private @Nullable String commentary;
 
     private @Nonnull ColorInput favoriteColor;
+
+    private @Nullable Episode enumWithDefaultValue = Episode.JEDI;
 
     Builder() {
     }
@@ -101,9 +114,17 @@ public final class ReviewInput {
       return this;
     }
 
+    /**
+     * for test purpose only
+     */
+    public Builder enumWithDefaultValue(@Nullable Episode enumWithDefaultValue) {
+      this.enumWithDefaultValue = enumWithDefaultValue;
+      return this;
+    }
+
     public ReviewInput build() {
       if (favoriteColor == null) throw new IllegalStateException("favoriteColor can't be null");
-      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor);
+      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue);
     }
   }
 }

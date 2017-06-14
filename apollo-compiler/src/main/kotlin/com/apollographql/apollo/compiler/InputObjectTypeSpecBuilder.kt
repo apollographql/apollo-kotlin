@@ -70,7 +70,8 @@ class InputObjectTypeSpecBuilder(
                   targetObjectClassName = objectClassName,
                   fields = builderFields,
                   fieldDefaultValues = builderFieldDefaultValues,
-                  fieldJavaDocs = javaDocs
+                  fieldJavaDocs = javaDocs,
+                  typeDeclarations = context.typeDeclarations
               ).build()
           )
     }

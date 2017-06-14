@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.compiler.ir.TypeDeclaration
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
@@ -7,7 +8,8 @@ class BuilderTypeSpecBuilder(
     val targetObjectClassName: ClassName,
     val fields: List<Pair<String, TypeName>>,
     val fieldDefaultValues: Map<String, Any?>,
-    val fieldJavaDocs: Map<String, String>
+    val fieldJavaDocs: Map<String, String>,
+    val typeDeclarations: List<TypeDeclaration>
 ) {
   fun build(): TypeSpec {
     return TypeSpec.classBuilder(builderClassName)
@@ -26,9 +28,15 @@ class BuilderTypeSpecBuilder(
         val defaultValue = fieldDefaultValues[fieldName]?.let {
           (it as? Number)?.castTo(fieldType.withoutAnnotations()) ?: it
         }
+        val initializerCode = defaultValue?.let {
+          if (fieldType.isEnum(typeDeclarations))
+            CodeBlock.of("\$T.\$L", fieldType.withoutAnnotations(), defaultValue)
+          else
+            CodeBlock.of("\$L", defaultValue)
+        } ?: CodeBlock.of("")
         FieldSpec.builder(fieldType, fieldName)
             .addModifiers(Modifier.PRIVATE)
-            .initializer(defaultValue?.let { CodeBlock.of("\$L", it) } ?: CodeBlock.of(""))
+            .initializer(initializerCode)
             .build()
       })
 
@@ -91,5 +99,8 @@ class BuilderTypeSpecBuilder(
         } else {
           this
         }
+
+    private fun TypeName.isEnum(typeDeclarations: List<TypeDeclaration>) =
+        ((this is ClassName) && typeDeclarations.count { it.kind == "EnumType" && it.name == simpleName() } > 0)
   }
 }

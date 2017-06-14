@@ -174,7 +174,8 @@ class OperationTypeSpecBuilder(
           targetObjectClassName = ClassName.get("", OPERATION_TYPE_NAME),
           fields = emptyList(),
           fieldDefaultValues = emptyMap(),
-          fieldJavaDocs = emptyMap()
+          fieldJavaDocs = emptyMap(),
+          typeDeclarations = context.typeDeclarations
       ).let { addType(it.build()) }
     }
     return operation.variables
@@ -185,7 +186,8 @@ class OperationTypeSpecBuilder(
               targetObjectClassName = ClassName.get("", OPERATION_TYPE_NAME),
               fields = it,
               fieldDefaultValues = emptyMap(),
-              fieldJavaDocs = emptyMap()
+              fieldJavaDocs = emptyMap(),
+              typeDeclarations = context.typeDeclarations
           )
         }
         .let { addType(it.build()) }
