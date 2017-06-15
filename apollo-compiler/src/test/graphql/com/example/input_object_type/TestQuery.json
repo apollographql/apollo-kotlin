@@ -143,19 +143,19 @@
 			"fields": [
 				{
 					"name": "red",
-					"description": "",
+					"description": "Red color",
 					"type": "Int!",
 					"defaultValue": 1
 				},
 				{
 					"name": "green",
-					"description": "",
+					"description": "Green color",
 					"type": "Float",
 					"defaultValue": 0
 				},
 				{
 					"name": "blue",
-					"description": "",
+					"description": "Blue color",
 					"type": "Float!",
 					"defaultValue": 1.5
 				}

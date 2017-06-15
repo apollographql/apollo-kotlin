@@ -1667,7 +1667,7 @@
           "inputFields": [
             {
               "name": "red",
-              "description": "",
+              "description": "Red color",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -1681,7 +1681,7 @@
             },
             {
               "name": "green",
-              "description": "",
+              "description": "Green color",
               "type": {
                 "kind": "SCALAR",
                 "name": "Float",
@@ -1691,7 +1691,7 @@
             },
             {
               "name": "blue",
-              "description": "",
+              "description": "Blue color",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,

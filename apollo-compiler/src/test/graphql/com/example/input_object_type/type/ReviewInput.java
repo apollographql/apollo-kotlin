@@ -29,22 +29,37 @@ public final class ReviewInput {
     this.enumWithDefaultValue = enumWithDefaultValue;
   }
 
+  /**
+   * 0-5 stars
+   */
   public int stars() {
     return this.stars;
   }
 
+  /**
+   * for test purpose only
+   */
   public @Nullable Integer nullableIntFieldWithDefaultValue() {
     return this.nullableIntFieldWithDefaultValue;
   }
 
+  /**
+   * Comment about the movie, optional
+   */
   public @Nullable String commentary() {
     return this.commentary;
   }
 
+  /**
+   * Favorite color, optional
+   */
   public @Nonnull ColorInput favoriteColor() {
     return this.favoriteColor;
   }
 
+  /**
+   * for test purpose only
+   */
   public @Nullable Episode enumWithDefaultValue() {
     return this.enumWithDefaultValue;
   }
@@ -67,26 +82,41 @@ public final class ReviewInput {
     Builder() {
     }
 
+    /**
+     * 0-5 stars
+     */
     public Builder stars(int stars) {
       this.stars = stars;
       return this;
     }
 
+    /**
+     * for test purpose only
+     */
     public Builder nullableIntFieldWithDefaultValue(@Nullable Integer nullableIntFieldWithDefaultValue) {
       this.nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue;
       return this;
     }
 
+    /**
+     * Comment about the movie, optional
+     */
     public Builder commentary(@Nullable String commentary) {
       this.commentary = commentary;
       return this;
     }
 
+    /**
+     * Favorite color, optional
+     */
     public Builder favoriteColor(@Nonnull ColorInput favoriteColor) {
       this.favoriteColor = favoriteColor;
       return this;
     }
 
+    /**
+     * for test purpose only
+     */
     public Builder enumWithDefaultValue(@Nullable Episode enumWithDefaultValue) {
       this.enumWithDefaultValue = enumWithDefaultValue;
       return this;

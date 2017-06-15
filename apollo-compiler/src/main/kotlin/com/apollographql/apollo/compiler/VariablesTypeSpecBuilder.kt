@@ -87,6 +87,7 @@ class VariablesTypeSpecBuilder(
                   targetObjectClassName = VARIABLES_TYPE_NAME,
                   fields = builderFields,
                   fieldDefaultValues = emptyMap(),
+                  fieldJavaDocs = emptyMap(),
                   typeDeclarations = context.typeDeclarations
               ).build()
           )

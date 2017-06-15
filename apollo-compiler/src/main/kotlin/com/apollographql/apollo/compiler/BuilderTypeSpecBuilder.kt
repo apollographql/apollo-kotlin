@@ -8,6 +8,7 @@ class BuilderTypeSpecBuilder(
     val targetObjectClassName: ClassName,
     val fields: List<Pair<String, TypeName>>,
     val fieldDefaultValues: Map<String, Any?>,
+    val fieldJavaDocs: Map<String, String>,
     val typeDeclarations: List<TypeDeclaration>
 ) {
   fun build(): TypeSpec {
@@ -43,9 +44,16 @@ class BuilderTypeSpecBuilder(
       addMethods(fields.map {
         val fieldName = it.first
         val fieldType = it.second
+        val javaDoc = fieldJavaDocs[fieldName]
         MethodSpec.methodBuilder(fieldName)
             .addModifiers(Modifier.PUBLIC)
             .addParameter(ParameterSpec.builder(fieldType, fieldName).build())
+            .let {
+              if (!javaDoc.isNullOrBlank())
+                it.addJavadoc(CodeBlock.of("\$L\n", javaDoc))
+              else
+                it
+            }
             .returns(builderClassName)
             .addStatement("this.\$L = \$L", fieldName, fieldName)
             .addStatement("return this")

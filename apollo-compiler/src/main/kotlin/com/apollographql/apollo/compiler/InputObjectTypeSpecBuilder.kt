@@ -46,6 +46,12 @@ class InputObjectTypeSpecBuilder(
       addMethod(MethodSpec.methodBuilder(field.name.decapitalize())
           .addModifiers(Modifier.PUBLIC)
           .returns(field.javaTypeName(context))
+          .let {
+            if (!field.description.isNullOrBlank())
+              it.addJavadoc(CodeBlock.of("\$L\n", field.description))
+            else
+              it
+          }
           .addStatement("return this.\$L", field.name.decapitalize())
           .build())
 
@@ -55,12 +61,16 @@ class InputObjectTypeSpecBuilder(
     } else {
       val builderFields = fields.map { it.name.decapitalize() to it.javaTypeName(context) }
       val builderFieldDefaultValues = fields.associate { it.name.decapitalize() to it.defaultValue }
+      val javaDocs = fields
+          .filter { !it.description.isNullOrBlank() }
+          .associate { it.name.decapitalize() to it.description }
       return addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
           .addType(
               BuilderTypeSpecBuilder(
                   targetObjectClassName = objectClassName,
                   fields = builderFields,
                   fieldDefaultValues = builderFieldDefaultValues,
+                  fieldJavaDocs = javaDocs,
                   typeDeclarations = context.typeDeclarations
               ).build()
           )
