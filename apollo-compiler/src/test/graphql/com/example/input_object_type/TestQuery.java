@@ -196,16 +196,17 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
             .put("kind", "Variable")
             .put("variableName", "ep")
           .build())
-        .build(), true, new Field.ObjectReader<CreateReview>() {
-          @Override public CreateReview read(final ResponseReader reader) throws IOException {
-            return createReviewFieldMapper.map(reader);
-          }
-        })
+        .build(), true)
       };
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final CreateReview createReview = reader.read(fields[0]);
+        final CreateReview createReview = reader.readObject(fields[0], new ResponseReader.ObjectReader<CreateReview>() {
+          @Override
+          public CreateReview read(ResponseReader reader) throws IOException {
+            return createReviewFieldMapper.map(reader);
+          }
+        });
         return new Data(createReview);
       }
     }
@@ -299,9 +300,9 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
       @Override
       public CreateReview map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final int stars = reader.read(fields[1]);
-        final String commentary = reader.read(fields[2]);
+        final String __typename = reader.readString(fields[0]);
+        final int stars = reader.readInt(fields[1]);
+        final String commentary = reader.readString(fields[2]);
         return new CreateReview(__typename, stars, commentary);
       }
     }

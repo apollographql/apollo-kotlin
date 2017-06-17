@@ -175,24 +175,26 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Luke.Mapper lukeFieldMapper = new Luke.Mapper();
 
       final Field[] fields = {
-        Field.forObject("r2", "hero", null, true, new Field.ObjectReader<R2>() {
-          @Override public R2 read(final ResponseReader reader) throws IOException {
-            return r2FieldMapper.map(reader);
-          }
-        }),
+        Field.forObject("r2", "hero", null, true),
         Field.forObject("luke", "hero", new UnmodifiableMapBuilder<String, Object>(1)
           .put("episode", "EMPIRE")
-        .build(), true, new Field.ObjectReader<Luke>() {
-          @Override public Luke read(final ResponseReader reader) throws IOException {
-            return lukeFieldMapper.map(reader);
-          }
-        })
+        .build(), true)
       };
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final R2 r2 = reader.read(fields[0]);
-        final Luke luke = reader.read(fields[1]);
+        final R2 r2 = reader.readObject(fields[0], new ResponseReader.ObjectReader<R2>() {
+          @Override
+          public R2 read(ResponseReader reader) throws IOException {
+            return r2FieldMapper.map(reader);
+          }
+        });
+        final Luke luke = reader.readObject(fields[1], new ResponseReader.ObjectReader<Luke>() {
+          @Override
+          public Luke read(ResponseReader reader) throws IOException {
+            return lukeFieldMapper.map(reader);
+          }
+        });
         return new Data(r2, luke);
       }
     }
@@ -284,18 +286,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
-        Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection>() {
-          @Override public FriendsConnection read(final ResponseReader reader) throws IOException {
-            return friendsConnectionFieldMapper.map(reader);
-          }
-        })
+        Field.forObject("friendsConnection", "friendsConnection", null, false)
       };
 
       @Override
       public R2 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
-        final FriendsConnection friendsConnection = reader.read(fields[2]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
+        final FriendsConnection friendsConnection = reader.readObject(fields[2], new ResponseReader.ObjectReader<FriendsConnection>() {
+          @Override
+          public FriendsConnection read(ResponseReader reader) throws IOException {
+            return friendsConnectionFieldMapper.map(reader);
+          }
+        });
         return new R2(__typename, name, friendsConnection);
       }
     }
@@ -387,18 +390,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
         Field.forInt("totalCount", "totalCount", null, true),
-        Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
-          @Override public Edge read(final ResponseReader reader) throws IOException {
-            return edgeFieldMapper.map(reader);
-          }
-        })
+        Field.forObjectList("edges", "edges", null, true)
       };
 
       @Override
       public FriendsConnection map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final Integer totalCount = reader.read(fields[1]);
-        final List<Edge> edges = reader.read(fields[2]);
+        final String __typename = reader.readString(fields[0]);
+        final Integer totalCount = reader.readInt(fields[1]);
+        final List<Edge> edges = reader.readList(fields[2], new ResponseReader.ListReader<Edge>() {
+          @Override
+          public Edge read(ResponseReader.ListItemReader reader) throws IOException {
+            return reader.readObject(new ResponseReader.ObjectReader<Edge>() {
+              @Override
+              public Edge read(ResponseReader reader) throws IOException {
+                return edgeFieldMapper.map(reader);
+              }
+            });
+          }
+        });
         return new FriendsConnection(__typename, totalCount, edges);
       }
     }
@@ -474,17 +483,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
-        Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
-          @Override public Node read(final ResponseReader reader) throws IOException {
-            return nodeFieldMapper.map(reader);
-          }
-        })
+        Field.forObject("node", "node", null, true)
       };
 
       @Override
       public Edge map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final Node node = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final Node node = reader.readObject(fields[1], new ResponseReader.ObjectReader<Node>() {
+          @Override
+          public Node read(ResponseReader reader) throws IOException {
+            return nodeFieldMapper.map(reader);
+          }
+        });
         return new Edge(__typename, node);
       }
     }
@@ -563,8 +573,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Node map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
         return new Node(__typename, name);
       }
     }
@@ -671,19 +681,20 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         Field.forString("__typename", "__typename", null, false),
         Field.forString("id", "id", null, false),
         Field.forString("name", "name", null, false),
-        Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection1>() {
-          @Override public FriendsConnection1 read(final ResponseReader reader) throws IOException {
-            return friendsConnection1FieldMapper.map(reader);
-          }
-        })
+        Field.forObject("friendsConnection", "friendsConnection", null, false)
       };
 
       @Override
       public Luke map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String id = reader.read(fields[1]);
-        final String name = reader.read(fields[2]);
-        final FriendsConnection1 friendsConnection = reader.read(fields[3]);
+        final String __typename = reader.readString(fields[0]);
+        final String id = reader.readString(fields[1]);
+        final String name = reader.readString(fields[2]);
+        final FriendsConnection1 friendsConnection = reader.readObject(fields[3], new ResponseReader.ObjectReader<FriendsConnection1>() {
+          @Override
+          public FriendsConnection1 read(ResponseReader reader) throws IOException {
+            return friendsConnection1FieldMapper.map(reader);
+          }
+        });
         return new Luke(__typename, id, name, friendsConnection);
       }
     }
@@ -775,18 +786,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
         Field.forInt("totalCount", "totalCount", null, true),
-        Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge1>() {
-          @Override public Edge1 read(final ResponseReader reader) throws IOException {
-            return edge1FieldMapper.map(reader);
-          }
-        })
+        Field.forObjectList("edges", "edges", null, true)
       };
 
       @Override
       public FriendsConnection1 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final Integer totalCount = reader.read(fields[1]);
-        final List<Edge1> edges = reader.read(fields[2]);
+        final String __typename = reader.readString(fields[0]);
+        final Integer totalCount = reader.readInt(fields[1]);
+        final List<Edge1> edges = reader.readList(fields[2], new ResponseReader.ListReader<Edge1>() {
+          @Override
+          public Edge1 read(ResponseReader.ListItemReader reader) throws IOException {
+            return reader.readObject(new ResponseReader.ObjectReader<Edge1>() {
+              @Override
+              public Edge1 read(ResponseReader reader) throws IOException {
+                return edge1FieldMapper.map(reader);
+              }
+            });
+          }
+        });
         return new FriendsConnection1(__typename, totalCount, edges);
       }
     }
@@ -862,17 +879,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
-        Field.forObject("node", "node", null, true, new Field.ObjectReader<Node1>() {
-          @Override public Node1 read(final ResponseReader reader) throws IOException {
-            return node1FieldMapper.map(reader);
-          }
-        })
+        Field.forObject("node", "node", null, true)
       };
 
       @Override
       public Edge1 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final Node1 node = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final Node1 node = reader.readObject(fields[1], new ResponseReader.ObjectReader<Node1>() {
+          @Override
+          public Node1 read(ResponseReader reader) throws IOException {
+            return node1FieldMapper.map(reader);
+          }
+        });
         return new Edge1(__typename, node);
       }
     }
@@ -951,8 +969,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Node1 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
         return new Node1(__typename, name);
       }
     }

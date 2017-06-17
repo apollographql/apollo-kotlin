@@ -114,9 +114,9 @@ public class DroidDetails implements GraphqlFragment {
 
     @Override
     public DroidDetails map(ResponseReader reader) throws IOException {
-      final String __typename = reader.read(fields[0]);
-      final String name = reader.read(fields[1]);
-      final String primaryFunction = reader.read(fields[2]);
+      final String __typename = reader.readString(fields[0]);
+      final String name = reader.readString(fields[1]);
+      final String primaryFunction = reader.readString(fields[2]);
       return new DroidDetails(__typename, name, primaryFunction);
     }
   }

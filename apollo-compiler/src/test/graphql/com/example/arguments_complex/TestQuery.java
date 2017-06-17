@@ -215,16 +215,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             .put("kind", "Variable")
             .put("variableName", "episode")
           .build())
-        .build(), true, new Field.ObjectReader<HeroWithReview>() {
-          @Override public HeroWithReview read(final ResponseReader reader) throws IOException {
-            return heroWithReviewFieldMapper.map(reader);
-          }
-        })
+        .build(), true)
       };
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final HeroWithReview heroWithReview = reader.read(fields[0]);
+        final HeroWithReview heroWithReview = reader.readObject(fields[0], new ResponseReader.ObjectReader<HeroWithReview>() {
+          @Override
+          public HeroWithReview read(ResponseReader reader) throws IOException {
+            return heroWithReviewFieldMapper.map(reader);
+          }
+        });
         return new Data(heroWithReview);
       }
     }
@@ -321,9 +322,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public HeroWithReview map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
-        final Double height = reader.read(fields[2]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
+        final Double height = reader.readDouble(fields[2]);
         return new HeroWithReview(__typename, name, height);
       }
     }

@@ -124,29 +124,26 @@ public class HeroDetails implements GraphqlFragment {
     final Field[] fields = {
       Field.forString("__typename", "__typename", null, false),
       Field.forString("name", "name", null, false),
-      Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection>() {
-        @Override public FriendsConnection read(final ResponseReader reader) throws IOException {
-          return friendsConnectionFieldMapper.map(reader);
-        }
-      }),
-      Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsDroid>() {
-        @Override
-        public AsDroid read(String conditionalType, ResponseReader reader) throws IOException {
-          if (conditionalType.equals("Droid")) {
-            return asDroidFieldMapper.map(reader);
-          } else {
-            return null;
-          }
-        }
-      })
+      Field.forObject("friendsConnection", "friendsConnection", null, false),
+      Field.forInlineFragment("__typename", "__typename", Arrays.asList("Droid"))
     };
 
     @Override
     public HeroDetails map(ResponseReader reader) throws IOException {
-      final String __typename = reader.read(fields[0]);
-      final String name = reader.read(fields[1]);
-      final FriendsConnection friendsConnection = reader.read(fields[2]);
-      final AsDroid asDroid = reader.read(fields[3]);
+      final String __typename = reader.readString(fields[0]);
+      final String name = reader.readString(fields[1]);
+      final FriendsConnection friendsConnection = reader.readObject(fields[2], new ResponseReader.ObjectReader<FriendsConnection>() {
+        @Override
+        public FriendsConnection read(ResponseReader reader) throws IOException {
+          return friendsConnectionFieldMapper.map(reader);
+        }
+      });
+      final AsDroid asDroid = reader.readConditional((Field.ConditionalTypeField) fields[3], new ResponseReader.ConditionalTypeReader<AsDroid>() {
+        @Override
+        public AsDroid read(String conditionalType, ResponseReader reader) throws IOException {
+          return asDroidFieldMapper.map(reader);
+        }
+      });
       return new HeroDetails(__typename, name, friendsConnection, asDroid);
     }
   }
@@ -225,18 +222,24 @@ public class HeroDetails implements GraphqlFragment {
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
         Field.forInt("totalCount", "totalCount", null, true),
-        Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
-          @Override public Edge read(final ResponseReader reader) throws IOException {
-            return edgeFieldMapper.map(reader);
-          }
-        })
+        Field.forObjectList("edges", "edges", null, true)
       };
 
       @Override
       public FriendsConnection map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final Integer totalCount = reader.read(fields[1]);
-        final List<Edge> edges = reader.read(fields[2]);
+        final String __typename = reader.readString(fields[0]);
+        final Integer totalCount = reader.readInt(fields[1]);
+        final List<Edge> edges = reader.readList(fields[2], new ResponseReader.ListReader<Edge>() {
+          @Override
+          public Edge read(ResponseReader.ListItemReader reader) throws IOException {
+            return reader.readObject(new ResponseReader.ObjectReader<Edge>() {
+              @Override
+              public Edge read(ResponseReader reader) throws IOException {
+                return edgeFieldMapper.map(reader);
+              }
+            });
+          }
+        });
         return new FriendsConnection(__typename, totalCount, edges);
       }
     }
@@ -304,17 +307,18 @@ public class HeroDetails implements GraphqlFragment {
 
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
-        Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
-          @Override public Node read(final ResponseReader reader) throws IOException {
-            return nodeFieldMapper.map(reader);
-          }
-        })
+        Field.forObject("node", "node", null, true)
       };
 
       @Override
       public Edge map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final Node node = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final Node node = reader.readObject(fields[1], new ResponseReader.ObjectReader<Node>() {
+          @Override
+          public Node read(ResponseReader reader) throws IOException {
+            return nodeFieldMapper.map(reader);
+          }
+        });
         return new Edge(__typename, node);
       }
     }
@@ -385,8 +389,8 @@ public class HeroDetails implements GraphqlFragment {
 
       @Override
       public Node map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
         return new Node(__typename, name);
       }
     }
@@ -476,20 +480,21 @@ public class HeroDetails implements GraphqlFragment {
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
-        Field.forObject("friendsConnection", "friendsConnection", null, false, new Field.ObjectReader<FriendsConnection1>() {
-          @Override public FriendsConnection1 read(final ResponseReader reader) throws IOException {
-            return friendsConnection1FieldMapper.map(reader);
-          }
-        }),
+        Field.forObject("friendsConnection", "friendsConnection", null, false),
         Field.forString("primaryFunction", "primaryFunction", null, true)
       };
 
       @Override
       public AsDroid map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
-        final FriendsConnection1 friendsConnection = reader.read(fields[2]);
-        final String primaryFunction = reader.read(fields[3]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
+        final FriendsConnection1 friendsConnection = reader.readObject(fields[2], new ResponseReader.ObjectReader<FriendsConnection1>() {
+          @Override
+          public FriendsConnection1 read(ResponseReader reader) throws IOException {
+            return friendsConnection1FieldMapper.map(reader);
+          }
+        });
+        final String primaryFunction = reader.readString(fields[3]);
         return new AsDroid(__typename, name, friendsConnection, primaryFunction);
       }
     }
@@ -569,18 +574,24 @@ public class HeroDetails implements GraphqlFragment {
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
         Field.forInt("totalCount", "totalCount", null, true),
-        Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge1>() {
-          @Override public Edge1 read(final ResponseReader reader) throws IOException {
-            return edge1FieldMapper.map(reader);
-          }
-        })
+        Field.forObjectList("edges", "edges", null, true)
       };
 
       @Override
       public FriendsConnection1 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final Integer totalCount = reader.read(fields[1]);
-        final List<Edge1> edges = reader.read(fields[2]);
+        final String __typename = reader.readString(fields[0]);
+        final Integer totalCount = reader.readInt(fields[1]);
+        final List<Edge1> edges = reader.readList(fields[2], new ResponseReader.ListReader<Edge1>() {
+          @Override
+          public Edge1 read(ResponseReader.ListItemReader reader) throws IOException {
+            return reader.readObject(new ResponseReader.ObjectReader<Edge1>() {
+              @Override
+              public Edge1 read(ResponseReader reader) throws IOException {
+                return edge1FieldMapper.map(reader);
+              }
+            });
+          }
+        });
         return new FriendsConnection1(__typename, totalCount, edges);
       }
     }
@@ -648,17 +659,18 @@ public class HeroDetails implements GraphqlFragment {
 
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
-        Field.forObject("node", "node", null, true, new Field.ObjectReader<Node1>() {
-          @Override public Node1 read(final ResponseReader reader) throws IOException {
-            return node1FieldMapper.map(reader);
-          }
-        })
+        Field.forObject("node", "node", null, true)
       };
 
       @Override
       public Edge1 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final Node1 node = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final Node1 node = reader.readObject(fields[1], new ResponseReader.ObjectReader<Node1>() {
+          @Override
+          public Node1 read(ResponseReader reader) throws IOException {
+            return node1FieldMapper.map(reader);
+          }
+        });
         return new Edge1(__typename, node);
       }
     }
@@ -729,8 +741,8 @@ public class HeroDetails implements GraphqlFragment {
 
       @Override
       public Node1 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
         return new Node1(__typename, name);
       }
     }

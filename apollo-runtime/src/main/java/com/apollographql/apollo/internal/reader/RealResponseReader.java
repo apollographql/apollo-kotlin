@@ -1,10 +1,10 @@
 package com.apollographql.apollo.internal.reader;
 
+import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
-import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.internal.field.FieldValueResolver;
 
@@ -32,210 +32,166 @@ import java.util.Map;
     this.readerShadow = readerShadow;
   }
 
-  @Override public <T> T read(Field field) throws IOException {
-    final Object value;
+  @Override public String readString(Field field) throws IOException {
     willResolve(field);
-    switch (field.type()) {
-      case STRING:
-        value = readString(field);
-        break;
-      case INT:
-        value = readInt(field);
-        break;
-      case LONG:
-        value = readLong(field);
-        break;
-      case DOUBLE:
-        value = readDouble(field);
-        break;
-      case BOOLEAN:
-        value = readBoolean(field);
-        break;
-      case OBJECT:
-        value = readObject((Field.ObjectField) field);
-        break;
-      case SCALAR_LIST:
-        value = readScalarList((Field.ScalarListField) field);
-        break;
-      case OBJECT_LIST:
-        value = readObjectList((Field.ObjectListField) field);
-        break;
-      case CUSTOM:
-        value = readCustomType((Field.CustomTypeField) field);
-        break;
-      case CONDITIONAL:
-        value = readConditional((Field.ConditionalTypeField) field, operationVariables);
-        break;
-      default:
-        throw new IllegalArgumentException("Unsupported field type");
-    }
-    didResolve(field);
-    //noinspection unchecked
-    return (T) value;
-  }
-
-  private void willResolve(Field field) {
-    if (field.type() != Field.Type.CONDITIONAL) {
-      readerShadow.willResolve(field, operationVariables);
-    }
-  }
-
-  private void didResolve(Field field) {
-    if (field.type() != Field.Type.CONDITIONAL) {
-      readerShadow.didResolve(field, operationVariables);
-    }
-  }
-
-  String readString(Field field) throws IOException {
     String value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
     if (value == null) {
       readerShadow.didParseNull();
-      return null;
     } else {
       readerShadow.didParseScalar(value);
-      return value;
     }
+    didResolve(field);
+    return value;
   }
 
-  Integer readInt(Field field) throws IOException {
+  @Override public Integer readInt(Field field) throws IOException {
+    willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
     if (value == null) {
       readerShadow.didParseNull();
-      return null;
     } else {
       readerShadow.didParseScalar(value);
-      return value.intValue();
     }
+    didResolve(field);
+    return value != null ? value.intValue() : null;
   }
 
-  Long readLong(Field field) throws IOException {
+  @Override public Long readLong(Field field) throws IOException {
+    willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
     if (value == null) {
       readerShadow.didParseNull();
-      return null;
     } else {
       readerShadow.didParseScalar(value);
-      return value.longValue();
     }
+    didResolve(field);
+    return value != null ? value.longValue() : null;
   }
 
-  Double readDouble(Field field) throws IOException {
+  @Override public Double readDouble(Field field) throws IOException {
+    willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
     if (value == null) {
       readerShadow.didParseNull();
-      return null;
     } else {
       readerShadow.didParseScalar(value);
-      return value.doubleValue();
     }
+    didResolve(field);
+    return value != null ? value.doubleValue() : null;
   }
 
-  Boolean readBoolean(Field field) throws IOException {
+  @Override public Boolean readBoolean(Field field) throws IOException {
+    willResolve(field);
     Boolean value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
     if (value == null) {
       readerShadow.didParseNull();
-      return null;
     } else {
       readerShadow.didParseScalar(value);
-      return value;
     }
+    didResolve(field);
+    return value;
   }
 
-  @SuppressWarnings("unchecked") <T> T readObject(Field.ObjectField field) throws IOException {
+  @SuppressWarnings("unchecked") @Override
+  public <T> T readObject(Field field, ResponseReader.ObjectReader<T> objectReader)
+      throws IOException {
+    willResolve(field);
     R value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
     readerShadow.willParseObject(field, Optional.fromNullable(value));
+    final T parsedValue;
     if (value == null) {
       readerShadow.didParseNull();
-      return null;
+      parsedValue = null;
     } else {
-      final T parsedValue = (T) field.objectReader().read(new RealResponseReader(operationVariables, value,
-          fieldValueResolver, customTypeAdapters, readerShadow));
+      parsedValue = (T) objectReader.read(new RealResponseReader(operationVariables, value, fieldValueResolver,
+          customTypeAdapters, readerShadow));
       readerShadow.didParseObject(field, Optional.fromNullable(value));
-      return parsedValue;
     }
+    didResolve(field);
+    return parsedValue;
   }
 
-  @SuppressWarnings("unchecked") <T> List<T> readScalarList(Field.ScalarListField field) throws IOException {
+  @SuppressWarnings("unchecked")
+  @Override public <T> List<T> readList(Field field, ListReader listReader) throws IOException {
+    willResolve(field);
     List values = fieldValueResolver.valueFor(recordSet, field);
     checkValue(values, field.optional());
+    final List<T> result;
     if (values == null) {
       readerShadow.didParseNull();
-      return null;
+      result = null;
     } else {
-      List<T> result = new ArrayList<>();
+      result = new ArrayList<>();
       for (int i = 0; i < values.size(); i++) {
         readerShadow.willParseElement(i);
         Object value = values.get(i);
-        T item = (T) field.listReader().read(new ListItemReader(value, customTypeAdapters));
-        readerShadow.didParseScalar(value);
+        T item = (T) listReader.read(new ListItemReader(field, value));
         readerShadow.didParseElement(i);
         result.add(item);
       }
       readerShadow.didParseList(values);
-      return Collections.unmodifiableList(result);
     }
+    didResolve(field);
+    return result != null ? Collections.unmodifiableList(result) : null;
   }
 
-  @SuppressWarnings("unchecked") <T> List<T> readObjectList(Field.ObjectListField field) throws IOException {
-    List<R> values = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(values, field.optional());
-    if (values == null) {
-      return null;
-    } else {
-      List<T> result = new ArrayList<>();
-      for (int i = 0; i < values.size(); i++) {
-        readerShadow.willParseElement(i);
-        R value = values.get(i);
-        readerShadow.willParseObject(field, Optional.fromNullable(value));
-        T item = (T) field.objectReader().read(new RealResponseReader(operationVariables, value, fieldValueResolver,
-            customTypeAdapters, readerShadow));
-        readerShadow.didParseObject(field, Optional.fromNullable(value));
-        readerShadow.didParseElement(i);
-        result.add(item);
-      }
-      readerShadow.didParseList(values);
-      return Collections.unmodifiableList(result);
-    }
-  }
-
-  @SuppressWarnings("unchecked") private <T> T readCustomType(Field.CustomTypeField field) throws IOException {
+  @SuppressWarnings("unchecked") @Override public <T> T readCustomType(Field.CustomTypeField field) throws IOException {
+    willResolve(field);
     Object value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
+    final T result;
     if (value == null) {
       readerShadow.didParseNull();
-      return null;
+      result = null;
     } else {
       CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(field.scalarType());
       if (typeAdapter == null) {
         readerShadow.didParseScalar(value);
-        return (T) value;
+        result = (T) value;
       } else {
         readerShadow.didParseScalar(value);
-        return typeAdapter.decode(value.toString());
+        result = typeAdapter.decode(value.toString());
       }
     }
+    didResolve(field);
+    return result;
   }
 
-  @SuppressWarnings("unchecked") private <T> T readConditional(Field.ConditionalTypeField field,
-      Operation.Variables variables) throws IOException {
-    readerShadow.willResolve(field, variables);
+  @Override
+  public <T> T readConditional(Field.ConditionalTypeField field, ConditionalTypeReader<T> conditionalTypeReader)
+      throws IOException {
+    willResolve(field);
     String value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
+    final T result;
     if (value == null) {
       readerShadow.didParseNull();
-      readerShadow.didResolve(field, variables);
-      return null;
+      didResolve(field);
+      result = null;
+    } else if (field.type() == Field.Type.INLINE_FRAGMENT && !field.conditionalTypes().contains(value)) {
+      readerShadow.didParseScalar(value);
+      didResolve(field);
+      result = null;
     } else {
       readerShadow.didParseScalar(value);
-      readerShadow.didResolve(field, variables);
-      return (T) field.conditionalTypeReader().read(value, this);
+      didResolve(field);
+      result = (T) conditionalTypeReader.read(value, this);
     }
+    return result;
+  }
+
+  private void willResolve(Field field) {
+    readerShadow.willResolve(field, operationVariables);
+  }
+
+  private void didResolve(Field field) {
+    readerShadow.didResolve(field, operationVariables);
   }
 
   private void checkValue(Object value, boolean optional) {
@@ -244,42 +200,58 @@ import java.util.Map;
     }
   }
 
-  private static class ListItemReader implements Field.ListItemReader {
+  private class ListItemReader implements ResponseReader.ListItemReader {
+    private final Field field;
     private final Object value;
-    private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
 
-    ListItemReader(Object value, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+    ListItemReader(Field field, Object value) {
+      this.field = field;
       this.value = value;
-      this.customTypeAdapters = customTypeAdapters;
     }
 
     @Override public String readString() throws IOException {
-
+      readerShadow.didParseScalar(value);
       return (String) value;
     }
 
     @Override public Integer readInt() throws IOException {
+      readerShadow.didParseScalar(value);
       return ((BigDecimal) value).intValue();
     }
 
     @Override public Long readLong() throws IOException {
+      readerShadow.didParseScalar(value);
       return ((BigDecimal) value).longValue();
     }
 
     @Override public Double readDouble() throws IOException {
+      readerShadow.didParseScalar(value);
       return ((BigDecimal) value).doubleValue();
     }
 
     @Override public Boolean readBoolean() throws IOException {
+      readerShadow.didParseScalar(value);
       return (Boolean) value;
     }
 
-    @SuppressWarnings("unchecked") @Override public <T> T readCustomType(ScalarType scalarType) throws IOException {
+    @SuppressWarnings("unchecked")
+    @Override public <T> T readCustomType(ScalarType scalarType) throws IOException {
       CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(scalarType);
       if (typeAdapter == null) {
         throw new RuntimeException("Can't resolve custom type adapter for " + scalarType.typeName());
       }
+      readerShadow.didParseScalar(value);
       return typeAdapter.decode(value.toString());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override public <T> T readObject(ObjectReader<T> objectReader) throws IOException {
+      R value = (R) this.value;
+      readerShadow.willParseObject(field, Optional.fromNullable(value));
+      T item = (T) objectReader.read(new RealResponseReader<R>(operationVariables, value, fieldValueResolver,
+          customTypeAdapters, readerShadow));
+      readerShadow.didParseObject(field, Optional.fromNullable(value));
+      return item;
     }
   }
 }

@@ -136,16 +136,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Hero.Mapper heroFieldMapper = new Hero.Mapper();
 
       final Field[] fields = {
-        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
-          @Override public Hero read(final ResponseReader reader) throws IOException {
-            return heroFieldMapper.map(reader);
-          }
-        })
+        Field.forObject("hero", "hero", null, true)
       };
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = reader.read(fields[0]);
+        final Hero hero = reader.readObject(fields[0], new ResponseReader.ObjectReader<Hero>() {
+          @Override
+          public Hero read(ResponseReader reader) throws IOException {
+            return heroFieldMapper.map(reader);
+          }
+        });
         return new Data(hero);
       }
     }
@@ -249,20 +250,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
-        Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
-          @Override public Episode read(final Field.ListItemReader reader) throws IOException {
-            return Episode.valueOf(reader.readString());
-          }
-        }),
+        Field.forScalarList("appearsIn", "appearsIn", null, false),
         Field.forString("firstAppearsIn", "firstAppearsIn", null, false)
       };
 
       @Override
       public Hero map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
-        final List<Episode> appearsIn = reader.read(fields[2]);
-        final String firstAppearsInStr = reader.read(fields[3]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
+        final List<Episode> appearsIn = reader.readList(fields[2], new ResponseReader.ListReader<Episode>() {
+          @Override
+          public Episode read(ResponseReader.ListItemReader reader) throws IOException {
+            return Episode.valueOf(reader.readString());
+          }
+        });
+        final String firstAppearsInStr = reader.readString(fields[3]);
         final Episode firstAppearsIn;
         if (firstAppearsInStr != null) {
           firstAppearsIn = Episode.valueOf(firstAppearsInStr);

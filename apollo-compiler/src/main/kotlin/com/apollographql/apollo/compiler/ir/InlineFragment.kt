@@ -9,6 +9,7 @@ import javax.lang.model.element.Modifier
 
 data class InlineFragment(
     val typeCondition: String,
+    val possibleTypes: List<String>?,
     val fields: List<Field>,
     val fragmentSpreads: List<String>?
 ) : CodeGenerator {

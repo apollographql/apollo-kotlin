@@ -12,6 +12,7 @@ import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -141,16 +142,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Hero.Mapper heroFieldMapper = new Hero.Mapper();
 
       final Field[] fields = {
-        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
-          @Override public Hero read(final ResponseReader reader) throws IOException {
-            return heroFieldMapper.map(reader);
-          }
-        })
+        Field.forObject("hero", "hero", null, true)
       };
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = reader.read(fields[0]);
+        final Hero hero = reader.readObject(fields[0], new ResponseReader.ObjectReader<Hero>() {
+          @Override
+          public Hero read(ResponseReader reader) throws IOException {
+            return heroFieldMapper.map(reader);
+          }
+        });
         return new Data(hero);
       }
     }
@@ -252,34 +254,26 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
-        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman>() {
-          @Override
-          public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
-            if (conditionalType.equals("Human")) {
-              return asHumanFieldMapper.map(reader);
-            } else {
-              return null;
-            }
-          }
-        }),
-        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsDroid>() {
-          @Override
-          public AsDroid read(String conditionalType, ResponseReader reader) throws IOException {
-            if (conditionalType.equals("Droid")) {
-              return asDroidFieldMapper.map(reader);
-            } else {
-              return null;
-            }
-          }
-        })
+        Field.forInlineFragment("__typename", "__typename", Arrays.asList("Human")),
+        Field.forInlineFragment("__typename", "__typename", Arrays.asList("Droid"))
       };
 
       @Override
       public Hero map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
-        final AsHuman asHuman = reader.read(fields[2]);
-        final AsDroid asDroid = reader.read(fields[3]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
+        final AsHuman asHuman = reader.readConditional((Field.ConditionalTypeField) fields[2], new ResponseReader.ConditionalTypeReader<AsHuman>() {
+          @Override
+          public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
+            return asHumanFieldMapper.map(reader);
+          }
+        });
+        final AsDroid asDroid = reader.readConditional((Field.ConditionalTypeField) fields[3], new ResponseReader.ConditionalTypeReader<AsDroid>() {
+          @Override
+          public AsDroid read(String conditionalType, ResponseReader reader) throws IOException {
+            return asDroidFieldMapper.map(reader);
+          }
+        });
         return new Hero(__typename, name, asHuman, asDroid);
       }
     }
@@ -373,9 +367,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public AsHuman map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
-        final Double height = reader.read(fields[2]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
+        final Double height = reader.readDouble(fields[2]);
         return new AsHuman(__typename, name, height);
       }
     }
@@ -470,9 +464,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public AsDroid map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
-        final String primaryFunction = reader.read(fields[2]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
+        final String primaryFunction = reader.readString(fields[2]);
         return new AsDroid(__typename, name, primaryFunction);
       }
     }

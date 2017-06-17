@@ -114,9 +114,9 @@ public class HumanDetails implements GraphqlFragment {
 
     @Override
     public HumanDetails map(ResponseReader reader) throws IOException {
-      final String __typename = reader.read(fields[0]);
-      final String name = reader.read(fields[1]);
-      final Double height = reader.read(fields[2]);
+      final String __typename = reader.readString(fields[0]);
+      final String name = reader.readString(fields[1]);
+      final Double height = reader.readDouble(fields[2]);
       return new HumanDetails(__typename, name, height);
     }
   }

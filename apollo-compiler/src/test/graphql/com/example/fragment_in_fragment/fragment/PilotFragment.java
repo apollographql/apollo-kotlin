@@ -114,18 +114,19 @@ public class PilotFragment implements GraphqlFragment {
     final Field[] fields = {
       Field.forString("__typename", "__typename", null, false),
       Field.forString("name", "name", null, true),
-      Field.forObject("homeworld", "homeworld", null, true, new Field.ObjectReader<Homeworld>() {
-        @Override public Homeworld read(final ResponseReader reader) throws IOException {
-          return homeworldFieldMapper.map(reader);
-        }
-      })
+      Field.forObject("homeworld", "homeworld", null, true)
     };
 
     @Override
     public PilotFragment map(ResponseReader reader) throws IOException {
-      final String __typename = reader.read(fields[0]);
-      final String name = reader.read(fields[1]);
-      final Homeworld homeworld = reader.read(fields[2]);
+      final String __typename = reader.readString(fields[0]);
+      final String name = reader.readString(fields[1]);
+      final Homeworld homeworld = reader.readObject(fields[2], new ResponseReader.ObjectReader<Homeworld>() {
+        @Override
+        public Homeworld read(ResponseReader reader) throws IOException {
+          return homeworldFieldMapper.map(reader);
+        }
+      });
       return new PilotFragment(__typename, name, homeworld);
     }
   }
@@ -203,8 +204,8 @@ public class PilotFragment implements GraphqlFragment {
 
       @Override
       public Homeworld map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
         return new Homeworld(__typename, name);
       }
     }
