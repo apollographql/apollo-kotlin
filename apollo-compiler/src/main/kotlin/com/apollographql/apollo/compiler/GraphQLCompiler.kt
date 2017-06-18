@@ -12,7 +12,7 @@ class GraphQLCompiler {
   private val irAdapter = moshi.adapter(CodeGenerationIR::class.java)
 
   fun write(args: Arguments) {
-    val ir = irAdapter.fromJson(args.irFile.readText())
+    val ir = irAdapter.fromJson(args.irFile.readText())!!
     val irPackageName = args.irFile.absolutePath.formatPackageName()
     val fragmentsPackage = if (irPackageName.isNotEmpty()) "$irPackageName.fragment" else "fragment"
     val typesPackage = if (irPackageName.isNotEmpty()) "$irPackageName.type" else "type"

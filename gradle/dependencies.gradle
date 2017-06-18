@@ -1,7 +1,7 @@
 def versions = [
     apolloVersion                : '0.3.2-SNAPSHOT',
     cacheVersion                 : '2.0.2',
-    okHttpVersion                : '3.6.0',
+    okHttpVersion                : '3.8.1',
     kotlinVersion                : '1.1.2-3',
     supportLibVersion            : '25.3.1',
     mockito                      : '1.9.5',
@@ -30,7 +30,7 @@ ext.dep = [
     compiletesting          : 'com.google.testing.compile:compile-testing:0.11',
     cache                   : "com.nytimes.android:cache:$versions.cacheVersion",
     javaPoet                : 'com.squareup:javapoet:1.8.0',
-    moshi                   : 'com.squareup.moshi:moshi:1.4.0',
+    moshi                   : 'com.squareup.moshi:moshi:1.5.0',
     rxjava                  : 'io.reactivex:rxjava:1.2.9',
     rxjava2                 : 'io.reactivex.rxjava2:rxjava:2.0.5',
     rxandroid               : 'io.reactivex.rxjava2:rxandroid:2.0.1',
