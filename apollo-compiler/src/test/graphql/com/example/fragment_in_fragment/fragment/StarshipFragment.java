@@ -134,19 +134,20 @@ public class StarshipFragment implements GraphqlFragment {
       Field.forString("__typename", "__typename", null, false),
       Field.forString("id", "id", null, false),
       Field.forString("name", "name", null, true),
-      Field.forObject("pilotConnection", "pilotConnection", null, true, new Field.ObjectReader<PilotConnection>() {
-        @Override public PilotConnection read(final ResponseReader reader) throws IOException {
-          return pilotConnectionFieldMapper.map(reader);
-        }
-      })
+      Field.forObject("pilotConnection", "pilotConnection", null, true)
     };
 
     @Override
     public StarshipFragment map(ResponseReader reader) throws IOException {
-      final String __typename = reader.read(fields[0]);
-      final String id = reader.read(fields[1]);
-      final String name = reader.read(fields[2]);
-      final PilotConnection pilotConnection = reader.read(fields[3]);
+      final String __typename = reader.readString(fields[0]);
+      final String id = reader.readString(fields[1]);
+      final String name = reader.readString(fields[2]);
+      final PilotConnection pilotConnection = reader.readObject(fields[3], new ResponseReader.ObjectReader<PilotConnection>() {
+        @Override
+        public PilotConnection read(ResponseReader reader) throws IOException {
+          return pilotConnectionFieldMapper.map(reader);
+        }
+      });
       return new StarshipFragment(__typename, id, name, pilotConnection);
     }
   }
@@ -221,17 +222,23 @@ public class StarshipFragment implements GraphqlFragment {
 
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
-        Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
-          @Override public Edge read(final ResponseReader reader) throws IOException {
-            return edgeFieldMapper.map(reader);
-          }
-        })
+        Field.forObjectList("edges", "edges", null, true)
       };
 
       @Override
       public PilotConnection map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final List<Edge> edges = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final List<Edge> edges = reader.readList(fields[1], new ResponseReader.ListReader<Edge>() {
+          @Override
+          public Edge read(ResponseReader.ListItemReader reader) throws IOException {
+            return reader.readObject(new ResponseReader.ObjectReader<Edge>() {
+              @Override
+              public Edge read(ResponseReader reader) throws IOException {
+                return edgeFieldMapper.map(reader);
+              }
+            });
+          }
+        });
         return new PilotConnection(__typename, edges);
       }
     }
@@ -307,17 +314,18 @@ public class StarshipFragment implements GraphqlFragment {
 
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
-        Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
-          @Override public Node read(final ResponseReader reader) throws IOException {
-            return nodeFieldMapper.map(reader);
-          }
-        })
+        Field.forObject("node", "node", null, true)
       };
 
       @Override
       public Edge map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final Node node = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final Node node = reader.readObject(fields[1], new ResponseReader.ObjectReader<Node>() {
+          @Override
+          public Node read(ResponseReader reader) throws IOException {
+            return nodeFieldMapper.map(reader);
+          }
+        });
         return new Edge(__typename, node);
       }
     }
@@ -456,18 +464,18 @@ public class StarshipFragment implements GraphqlFragment {
 
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
-        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
-          @Override
-          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
-            return fragmentsFieldMapper.map(reader, conditionalType);
-          }
-        })
+        Field.forFragment("__typename", "__typename", Arrays.asList("Person"))
       };
 
       @Override
       public Node map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final Fragments fragments = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final Fragments fragments = reader.readConditional((Field.ConditionalTypeField) fields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
+          @Override
+          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
+            return fragmentsFieldMapper.map(reader, conditionalType);
+          }
+        });
         return new Node(__typename, fragments);
       }
     }

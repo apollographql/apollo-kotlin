@@ -29,18 +29,16 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
 
   @SuppressWarnings("unchecked") @Override public <T> T valueFor(Record record, Field field)
       throws IOException {
-    if (field instanceof Field.ObjectField) {
-      return (T) valueFor(record, (Field.ObjectField) field);
-    } else if (field instanceof Field.ScalarListField) {
-      return fieldValue(record, field);
-    } else if (field instanceof Field.ObjectListField) {
-      return (T) valueFor(record, (Field.ObjectListField) field);
+    if (field.type() == Field.Type.OBJECT) {
+      return (T) valueForObject(record, field);
+    } else if (field.type() == Field.Type.OBJECT_LIST) {
+      return (T) valueForObjectList(record, field);
     } else {
       return fieldValue(record, field);
     }
   }
 
-  private Record valueFor(Record record, Field.ObjectField field) throws IOException {
+  private Record valueForObject(Record record, Field field) throws IOException {
     CacheReference cacheReference;
     CacheKey fieldCacheKey = cacheKeyResolver.fromFieldArguments(field, variables);
     if (fieldCacheKey != CacheKey.NO_KEY) {
@@ -51,7 +49,7 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
     return cacheReference != null ? readableCache.read(cacheReference.key(), cacheHeaders) : null;
   }
 
-  private List<Record> valueFor(Record record, Field.ObjectListField field) throws IOException {
+  private List<Record> valueForObjectList(Record record, Field field) throws IOException {
     List<CacheReference> values = fieldValue(record, field);
     List<Record> result = new ArrayList<>();
     for (CacheReference reference : values) {

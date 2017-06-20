@@ -130,4 +130,8 @@ data class Field(
       return type
     }
   }
+
+  companion object {
+    val TYPE_NAME_FIELD = Field(responseName = "__typename", fieldName = "__typename", type = "String!")
+  }
 }

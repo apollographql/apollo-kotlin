@@ -95,8 +95,8 @@ public class HeroDetails implements GraphqlFragment {
 
     @Override
     public HeroDetails map(ResponseReader reader) throws IOException {
-      final String __typename = reader.read(fields[0]);
-      final String name = reader.read(fields[1]);
+      final String __typename = reader.readString(fields[0]);
+      final String name = reader.readString(fields[1]);
       return new HeroDetails(__typename, name);
     }
   }

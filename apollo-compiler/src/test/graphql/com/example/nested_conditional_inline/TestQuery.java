@@ -14,6 +14,7 @@ import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -193,16 +194,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             .put("kind", "Variable")
             .put("variableName", "episode")
           .build())
-        .build(), true, new Field.ObjectReader<Hero>() {
-          @Override public Hero read(final ResponseReader reader) throws IOException {
-            return heroFieldMapper.map(reader);
-          }
-        })
+        .build(), true)
       };
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = reader.read(fields[0]);
+        final Hero hero = reader.readObject(fields[0], new ResponseReader.ObjectReader<Hero>() {
+          @Override
+          public Hero read(ResponseReader reader) throws IOException {
+            return heroFieldMapper.map(reader);
+          }
+        });
         return new Data(hero);
       }
     }
@@ -301,34 +303,26 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
-        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman>() {
-          @Override
-          public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
-            if (conditionalType.equals("Human")) {
-              return asHumanFieldMapper.map(reader);
-            } else {
-              return null;
-            }
-          }
-        }),
-        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsDroid>() {
-          @Override
-          public AsDroid read(String conditionalType, ResponseReader reader) throws IOException {
-            if (conditionalType.equals("Droid")) {
-              return asDroidFieldMapper.map(reader);
-            } else {
-              return null;
-            }
-          }
-        })
+        Field.forInlineFragment("__typename", "__typename", Arrays.asList("Human")),
+        Field.forInlineFragment("__typename", "__typename", Arrays.asList("Droid"))
       };
 
       @Override
       public Hero map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
-        final AsHuman asHuman = reader.read(fields[2]);
-        final AsDroid asDroid = reader.read(fields[3]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
+        final AsHuman asHuman = reader.readConditional((Field.ConditionalTypeField) fields[2], new ResponseReader.ConditionalTypeReader<AsHuman>() {
+          @Override
+          public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
+            return asHumanFieldMapper.map(reader);
+          }
+        });
+        final AsDroid asDroid = reader.readConditional((Field.ConditionalTypeField) fields[3], new ResponseReader.ConditionalTypeReader<AsDroid>() {
+          @Override
+          public AsDroid read(String conditionalType, ResponseReader reader) throws IOException {
+            return asDroidFieldMapper.map(reader);
+          }
+        });
         return new Hero(__typename, name, asHuman, asDroid);
       }
     }
@@ -414,18 +408,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
-        Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend>() {
-          @Override public Friend read(final ResponseReader reader) throws IOException {
-            return friendFieldMapper.map(reader);
-          }
-        })
+        Field.forObjectList("friends", "friends", null, true)
       };
 
       @Override
       public AsHuman map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
-        final List<Friend> friends = reader.read(fields[2]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
+        final List<Friend> friends = reader.readList(fields[2], new ResponseReader.ListReader<Friend>() {
+          @Override
+          public Friend read(ResponseReader.ListItemReader reader) throws IOException {
+            return reader.readObject(new ResponseReader.ObjectReader<Friend>() {
+              @Override
+              public Friend read(ResponseReader reader) throws IOException {
+                return friendFieldMapper.map(reader);
+              }
+            });
+          }
+        });
         return new AsHuman(__typename, name, friends);
       }
     }
@@ -510,23 +510,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
-        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman1>() {
-          @Override
-          public AsHuman1 read(String conditionalType, ResponseReader reader) throws IOException {
-            if (conditionalType.equals("Human")) {
-              return asHuman1FieldMapper.map(reader);
-            } else {
-              return null;
-            }
-          }
-        })
+        Field.forInlineFragment("__typename", "__typename", Arrays.asList("Human"))
       };
 
       @Override
       public Friend map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
-        final AsHuman1 asHuman = reader.read(fields[2]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
+        final AsHuman1 asHuman = reader.readConditional((Field.ConditionalTypeField) fields[2], new ResponseReader.ConditionalTypeReader<AsHuman1>() {
+          @Override
+          public AsHuman1 read(String conditionalType, ResponseReader reader) throws IOException {
+            return asHuman1FieldMapper.map(reader);
+          }
+        });
         return new Friend(__typename, name, asHuman);
       }
     }
@@ -616,9 +612,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public AsHuman1 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
-        final Double height = reader.read(fields[2]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
+        final Double height = reader.readDouble(fields[2]);
         return new AsHuman1(__typename, name, height);
       }
     }
@@ -704,18 +700,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
-        Field.forList("friends", "friends", null, true, new Field.ObjectReader<Friend1>() {
-          @Override public Friend1 read(final ResponseReader reader) throws IOException {
-            return friend1FieldMapper.map(reader);
-          }
-        })
+        Field.forObjectList("friends", "friends", null, true)
       };
 
       @Override
       public AsDroid map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
-        final List<Friend1> friends = reader.read(fields[2]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
+        final List<Friend1> friends = reader.readList(fields[2], new ResponseReader.ListReader<Friend1>() {
+          @Override
+          public Friend1 read(ResponseReader.ListItemReader reader) throws IOException {
+            return reader.readObject(new ResponseReader.ObjectReader<Friend1>() {
+              @Override
+              public Friend1 read(ResponseReader reader) throws IOException {
+                return friend1FieldMapper.map(reader);
+              }
+            });
+          }
+        });
         return new AsDroid(__typename, name, friends);
       }
     }
@@ -800,23 +802,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
-        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<AsHuman2>() {
-          @Override
-          public AsHuman2 read(String conditionalType, ResponseReader reader) throws IOException {
-            if (conditionalType.equals("Human")) {
-              return asHuman2FieldMapper.map(reader);
-            } else {
-              return null;
-            }
-          }
-        })
+        Field.forInlineFragment("__typename", "__typename", Arrays.asList("Human"))
       };
 
       @Override
       public Friend1 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
-        final AsHuman2 asHuman = reader.read(fields[2]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
+        final AsHuman2 asHuman = reader.readConditional((Field.ConditionalTypeField) fields[2], new ResponseReader.ConditionalTypeReader<AsHuman2>() {
+          @Override
+          public AsHuman2 read(String conditionalType, ResponseReader reader) throws IOException {
+            return asHuman2FieldMapper.map(reader);
+          }
+        });
         return new Friend1(__typename, name, asHuman);
       }
     }
@@ -906,9 +904,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public AsHuman2 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
-        final Double height = reader.read(fields[2]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
+        final Double height = reader.readDouble(fields[2]);
         return new AsHuman2(__typename, name, height);
       }
     }

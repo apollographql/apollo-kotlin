@@ -140,16 +140,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Hero.Mapper heroFieldMapper = new Hero.Mapper();
 
       final Field[] fields = {
-        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
-          @Override public Hero read(final ResponseReader reader) throws IOException {
-            return heroFieldMapper.map(reader);
-          }
-        })
+        Field.forObject("hero", "hero", null, true)
       };
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = reader.read(fields[0]);
+        final Hero hero = reader.readObject(fields[0], new ResponseReader.ObjectReader<Hero>() {
+          @Override
+          public Hero read(ResponseReader reader) throws IOException {
+            return heroFieldMapper.map(reader);
+          }
+        });
         return new Data(hero);
       }
     }
@@ -297,29 +298,31 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
         Field.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE),
-        Field.forList("appearanceDates", "appearanceDates", null, false, new Field.ListReader<Date>() {
-          @Override public Date read(final Field.ListItemReader reader) throws IOException {
-            return reader.readCustomType(CustomType.DATE);
-          }
-        }),
+        Field.forCustomList("appearanceDates", "appearanceDates", null, false),
         Field.forCustomType("fieldWithUnsupportedType", "fieldWithUnsupportedType", null, false, CustomType.UNSUPPORTEDTYPE),
         Field.forCustomType("profileLink", "profileLink", null, false, CustomType.URL),
-        Field.forList("links", "links", null, false, new Field.ListReader<String>() {
-          @Override public String read(final Field.ListItemReader reader) throws IOException {
-            return reader.readCustomType(CustomType.URL);
-          }
-        })
+        Field.forCustomList("links", "links", null, false)
       };
 
       @Override
       public Hero map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
-        final Date birthDate = reader.read(fields[2]);
-        final List<Date> appearanceDates = reader.read(fields[3]);
-        final Object fieldWithUnsupportedType = reader.read(fields[4]);
-        final String profileLink = reader.read(fields[5]);
-        final List<String> links = reader.read(fields[6]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
+        final Date birthDate = reader.readCustomType((Field.CustomTypeField) fields[2]);
+        final List<Date> appearanceDates = reader.readList(fields[3], new ResponseReader.ListReader<Date>() {
+          @Override
+          public Date read(ResponseReader.ListItemReader reader) throws IOException {
+            return reader.readCustomType(CustomType.DATE);
+          }
+        });
+        final Object fieldWithUnsupportedType = reader.readCustomType((Field.CustomTypeField) fields[4]);
+        final String profileLink = reader.readCustomType((Field.CustomTypeField) fields[5]);
+        final List<String> links = reader.readList(fields[6], new ResponseReader.ListReader<String>() {
+          @Override
+          public String read(ResponseReader.ListItemReader reader) throws IOException {
+            return reader.readCustomType(CustomType.URL);
+          }
+        });
         return new Hero(__typename, name, birthDate, appearanceDates, fieldWithUnsupportedType, profileLink, links);
       }
     }

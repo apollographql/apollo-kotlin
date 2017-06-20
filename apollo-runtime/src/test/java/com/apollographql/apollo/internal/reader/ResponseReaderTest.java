@@ -44,7 +44,15 @@ public class ResponseReaderTest {
     recordSet.put("successFieldResponseName", "response1");
     recordSet.put("successFieldName", "response2");
     recordSet.put("classCastExceptionFieldResponseName", 1);
-    checkReadFields(recordSet, successField, classCastExceptionField, "response1");
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readString(successField)).isEqualTo("response1");
+    try {
+      responseReader.readString(classCastExceptionField);
+      fail("expected ClassCastException");
+    } catch (ClassCastException expected) {
+      // expected
+    }
   }
 
   @Test public void readInt() throws Exception {
@@ -56,7 +64,15 @@ public class ResponseReaderTest {
     recordSet.put("successFieldResponseName", BigDecimal.valueOf(1));
     recordSet.put("successFieldName", BigDecimal.valueOf(2));
     recordSet.put("classCastExceptionFieldResponseName", "anything");
-    checkReadFields(recordSet, successField, classCastExceptionField, 1);
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readInt(successField)).isEqualTo(1);
+    try {
+      responseReader.readInt(classCastExceptionField);
+      fail("expected ClassCastException");
+    } catch (ClassCastException expected) {
+      // expected
+    }
   }
 
   @Test public void readLong() throws Exception {
@@ -68,7 +84,15 @@ public class ResponseReaderTest {
     recordSet.put("successFieldResponseName", BigDecimal.valueOf(1));
     recordSet.put("successFieldName", BigDecimal.valueOf(2));
     recordSet.put("classCastExceptionFieldResponseName", "anything");
-    checkReadFields(recordSet, successField, classCastExceptionField, 1);
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readLong(successField)).isEqualTo(1);
+    try {
+      responseReader.readLong(classCastExceptionField);
+      fail("expected ClassCastException");
+    } catch (ClassCastException expected) {
+      // expected
+    }
   }
 
   @Test public void readDouble() throws Exception {
@@ -80,7 +104,15 @@ public class ResponseReaderTest {
     recordSet.put("successFieldResponseName", BigDecimal.valueOf(1.1));
     recordSet.put("successFieldName", BigDecimal.valueOf(2.2));
     recordSet.put("classCastExceptionFieldResponseName", "anything");
-    checkReadFields(recordSet, successField, classCastExceptionField, 1.1D);
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readDouble(successField)).isEqualTo(1.1D);
+    try {
+      responseReader.readDouble(classCastExceptionField);
+      fail("expected ClassCastException");
+    } catch (ClassCastException expected) {
+      // expected
+    }
   }
 
   @Test public void readBoolean() throws Exception {
@@ -92,70 +124,46 @@ public class ResponseReaderTest {
     recordSet.put("successFieldResponseName", true);
     recordSet.put("successFieldName", false);
     recordSet.put("classCastExceptionFieldResponseName", "anything");
-    checkReadFields(recordSet, successField, classCastExceptionField, true);
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readBoolean(successField)).isTrue();
+    try {
+      responseReader.readBoolean(classCastExceptionField);
+      fail("expected ClassCastException");
+    } catch (ClassCastException expected) {
+      // expected
+    }
   }
 
   @Test public void readObject() throws Exception {
     final Object responseObject1 = new Object();
     final Object responseObject2 = new Object();
-    final Field.ObjectReader objectReader = new Field.ObjectReader<Object>() {
-      @Override public Object read(ResponseReader reader) throws IOException {
-        return responseObject1;
-      }
-    };
-    Field successField = Field.forObject("successFieldResponseName", "successFieldName", null, false, objectReader);
+    Field successField = Field.forObject("successFieldResponseName", "successFieldName", null, false);
     Field classCastExceptionField = Field.forObject("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
-        null, false, new Field.ObjectReader<Object>() {
-          @Override public Object read(ResponseReader reader) throws IOException {
-            return reader.read(Field.forString("anything", "anything", null, true));
-          }
-        });
+        null, false);
 
     Map<String, Object> recordSet = new HashMap<>();
     recordSet.put("successFieldResponseName", responseObject1);
     recordSet.put("successFieldName", responseObject2);
     recordSet.put("classCastExceptionFieldResponseName", "anything");
-    checkReadFields(recordSet, successField, classCastExceptionField, responseObject1);
-  }
 
-  @Test public void readScalarList() throws Exception {
-    final Field.ListReader listReader = new Field.ListReader<String>() {
-      @Override public String read(Field.ListItemReader reader) throws IOException {
-        return reader.readString();
-      }
-    };
-
-    Field successField = Field.forList("successFieldResponseName", "successFieldName", null, false,
-        listReader);
-    Field classCastExceptionField = Field.forList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
-        null, false, listReader);
-
-    Map<String, Object> recordSet = new HashMap<>();
-    recordSet.put("successFieldResponseName", asList("value1", "value2", "value3"));
-    recordSet.put("successFieldName", asList("value4", "value5"));
-    recordSet.put("classCastExceptionFieldResponseName", "anything");
-    checkReadFields(recordSet, successField, classCastExceptionField, asList("value1", "value2", "value3"));
-  }
-
-  @Test public void readObjectList() throws Exception {
-    final Object responseObject1 = new Object();
-    final Object responseObject2 = new Object();
-
-    final Field.ObjectReader objectReader = new Field.ObjectReader() {
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readObject(successField, new ResponseReader.ObjectReader<Object>() {
       @Override public Object read(ResponseReader reader) throws IOException {
         return responseObject1;
       }
-    };
+    })).isEqualTo(responseObject1);
 
-    Field successField = Field.forList("successFieldResponseName", "successFieldName", null, false, objectReader);
-    Field classCastExceptionField = Field.forList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
-        null, false, objectReader);
-
-    Map<String, Object> recordSet = new HashMap<>();
-    recordSet.put("successFieldResponseName", asList(responseObject1));
-    recordSet.put("successFieldName", asList(responseObject2));
-    recordSet.put("classCastExceptionFieldResponseName", "anything");
-    checkReadFields(recordSet, successField, classCastExceptionField, asList(responseObject1));
+    try {
+      responseReader.readObject(classCastExceptionField, new ResponseReader.ObjectReader<Object>() {
+        @Override public Object read(ResponseReader reader) throws IOException {
+          return reader.readString(Field.forString("anything", "anything", null, true));
+        }
+      });
+      fail("expected ClassCastException");
+    } catch (ClassCastException expected) {
+      // expected
+    }
   }
 
   @Test public void readCustom() throws Exception {
@@ -166,16 +174,33 @@ public class ResponseReaderTest {
     Map<String, Object> recordSet = new HashMap<>();
     recordSet.put("successFieldResponseName", "2017-04-16");
     recordSet.put("successFieldName", "2018-04-16");
-    recordSet.put("classCastExceptionFieldResponseName", "anything");
-    checkReadFields(recordSet, successField, classCastExceptionField, DATE_TIME_FORMAT.parse("2017-04-16")
-    );
+    recordSet.put("classCastExceptionFieldResponseName", 0);
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readCustomType((Field.CustomTypeField) successField)).isEqualTo(DATE_TIME_FORMAT.parse("2017-04-16"));
+    try {
+      responseReader.readCustomType((Field.CustomTypeField) classCastExceptionField);
+      fail("expected ClassCastException");
+    } catch (ClassCastException expected) {
+      // expected
+    }
   }
 
   @Test public void readConditional() throws Exception {
     final Object responseObject1 = new Object();
     final Object responseObject2 = new Object();
 
-    Field.ConditionalTypeReader conditionalTypeReader = new Field.ConditionalTypeReader() {
+    Field successField = Field.forFragment("successFieldResponseName", "successFieldName", Collections.<String>emptyList());
+    Field classCastExceptionField = Field.forFragment("classCastExceptionFieldResponseName",
+        "classCastExceptionFieldName", Collections.<String>emptyList());
+
+    Map<String, Object> recordSet = new HashMap<>();
+    recordSet.put("successFieldResponseName", "responseObject1");
+    recordSet.put("successFieldName", "responseObject2");
+    recordSet.put("classCastExceptionFieldResponseName", 1);
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readConditional((Field.ConditionalTypeField) successField, new ResponseReader.ConditionalTypeReader<Object>() {
       @Override public Object read(String conditionalType, ResponseReader reader) throws IOException {
         if (conditionalType.equals("responseObject1")) {
           return responseObject1;
@@ -183,99 +208,342 @@ public class ResponseReaderTest {
           return responseObject2;
         }
       }
-    };
+    })).isEqualTo(responseObject1);
 
-    Field successField = Field.forConditionalType("successFieldResponseName", "successFieldName", conditionalTypeReader);
-    Field classCastExceptionField = Field.forConditionalType("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
-        conditionalTypeReader);
-
-    Map<String, Object> recordSet = new HashMap<>();
-    recordSet.put("successFieldResponseName", "responseObject1");
-    recordSet.put("successFieldName", "responseObject2");
-    recordSet.put("classCastExceptionFieldResponseName", 1);
-    checkReadFields(recordSet, successField, classCastExceptionField, responseObject1);
-  }
-
-  @Test public void optionalFieldsIOException() throws Exception {
-    List<Field> fields = asList(
-        Field.forString("stringField", "stringField", null, true),
-        Field.forInt("intField", "intField", null, true),
-        Field.forLong("longField", "longField", null, true),
-        Field.forDouble("doubleField", "doubleField", null, true),
-        Field.forBoolean("booleanField", "booleanField", null, true),
-        Field.forObject("objectField", "objectField", null, true, new Field.ObjectReader<Object>() {
-          @Override public Object read(ResponseReader reader) throws IOException {
-            return new Object();
-          }
-        }),
-        Field.forList("scalarListField", "scalarListField", null, true, new Field.ListReader<String>() {
-          @Override public String read(Field.ListItemReader reader) throws IOException {
-            return reader.readString();
-          }
-        }),
-        Field.forList("objectListField", "objectListField", null, true,
-            new Field.ObjectReader<Object>() {
-              @Override public Object read(ResponseReader reader) throws IOException {
-                return new Object();
-              }
-            }),
-        Field.forCustomType("customTypeField", "customTypeField", null, true,
-            CUSTOM_TYPE)
-    );
-
-    RealResponseReader<Map<String, Object>> responseReader = responseReader(Collections.<String, Object>emptyMap());
-    for (Field field : fields) {
-      responseReader.read(field);
-    }
-  }
-
-  @Test public void mandatoryFieldsIOException() throws Exception {
-    List<Field> fields = asList(
-        Field.forString("stringField", "stringField", null, false),
-        Field.forInt("intField", "intField", null, false),
-        Field.forLong("longField", "longField", null, false),
-        Field.forDouble("doubleField", "doubleField", null, false),
-        Field.forBoolean("booleanField", "booleanField", null, false),
-        Field.forObject("objectField", "objectField", null, false, new Field.ObjectReader<Object>() {
-          @Override public Object read(ResponseReader reader) throws IOException {
-            return new Object();
-          }
-        }),
-        Field.forList("scalarListField", "scalarListField", null, false, new Field.ListReader<String>() {
-          @Override public String read(Field.ListItemReader reader) throws IOException {
-            return reader.readString();
-          }
-        }),
-        Field.forList("objectListField", "objectListField", null, false,
-            new Field.ObjectReader<Object>() {
-              @Override public Object read(ResponseReader reader) throws IOException {
-                return new Object();
-              }
-            }),
-        Field.forCustomType("customTypeField", "customTypeField", null, false,
-            CUSTOM_TYPE)
-    );
-
-    RealResponseReader<Map<String, Object>> responseReader = responseReader(Collections.<String, Object>emptyMap());
-    for (Field field : fields) {
-      try {
-        responseReader.read(field);
-        fail("expected NullPointerException for field: " + field);
-      } catch (NullPointerException expected) {
-        //expected
-      }
-    }
-  }
-
-  private void checkReadFields(Map<String, Object> recordSet, Field successField, Field classCastExceptionField,
-      Object expectedSuccessValue) throws IOException {
-    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
-    assertThat(responseReader.read(successField)).isEqualTo(expectedSuccessValue);
     try {
-      responseReader.read(classCastExceptionField);
+      responseReader.readConditional((Field.ConditionalTypeField) classCastExceptionField, new ResponseReader.ConditionalTypeReader<Object>() {
+        @Override public Object read(String conditionalType, ResponseReader reader) throws IOException {
+          return null;
+        }
+      });
       fail("expected ClassCastException");
     } catch (ClassCastException expected) {
       // expected
+    }
+  }
+
+  @Test public void readStringList() throws Exception {
+    Field successField = Field.forScalarList("successFieldResponseName", "successFieldName", null, false);
+    Field classCastExceptionField = Field.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+        null, false);
+
+    final Map<String, Object> recordSet = new HashMap<>();
+    recordSet.put("successFieldResponseName", asList("value1", "value2", "value3"));
+    recordSet.put("successFieldName", asList("value4", "value5"));
+    recordSet.put("classCastExceptionFieldResponseName", "anything");
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readList(successField, new ResponseReader.ListReader() {
+      @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+        return reader.readString();
+      }
+    })).isEqualTo(asList("value1", "value2", "value3"));
+
+    try {
+      responseReader.readList(classCastExceptionField, new ResponseReader.ListReader() {
+        @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+          return null;
+        }
+      });
+      fail("expected ClassCastException");
+    } catch (ClassCastException expected) {
+      // expected
+    }
+  }
+
+  @Test public void readIntList() throws Exception {
+    Field successField = Field.forScalarList("successFieldResponseName", "successFieldName", null, false);
+    Field classCastExceptionField = Field.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+        null, false);
+
+    final Map<String, Object> recordSet = new HashMap<>();
+    recordSet.put("successFieldResponseName", asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3)));
+    recordSet.put("successFieldName", asList(BigDecimal.valueOf(4), BigDecimal.valueOf(5)));
+    recordSet.put("classCastExceptionFieldResponseName", "anything");
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readList(successField, new ResponseReader.ListReader() {
+      @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+        return reader.readInt();
+      }
+    })).isEqualTo(asList(1, 2, 3));
+
+    try {
+      responseReader.readList(classCastExceptionField, new ResponseReader.ListReader() {
+        @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+          return null;
+        }
+      });
+      fail("expected ClassCastException");
+    } catch (ClassCastException expected) {
+      // expected
+    }
+  }
+
+  @Test public void readLongList() throws Exception {
+    Field successField = Field.forScalarList("successFieldResponseName", "successFieldName", null, false);
+    Field classCastExceptionField = Field.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+        null, false);
+
+    final Map<String, Object> recordSet = new HashMap<>();
+    recordSet.put("successFieldResponseName", asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3)));
+    recordSet.put("successFieldName", asList(BigDecimal.valueOf(4), BigDecimal.valueOf(5)));
+    recordSet.put("classCastExceptionFieldResponseName", "anything");
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readList(successField, new ResponseReader.ListReader() {
+      @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+        return reader.readInt();
+      }
+    })).isEqualTo(asList(1, 2, 3));
+
+    try {
+      responseReader.readList(classCastExceptionField, new ResponseReader.ListReader() {
+        @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+          return null;
+        }
+      });
+      fail("expected ClassCastException");
+    } catch (ClassCastException expected) {
+      // expected
+    }
+  }
+
+  @Test public void readDoubleList() throws Exception {
+    Field successField = Field.forScalarList("successFieldResponseName", "successFieldName", null, false);
+    Field classCastExceptionField = Field.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+        null, false);
+
+    final Map<String, Object> recordSet = new HashMap<>();
+    recordSet.put("successFieldResponseName", asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3)));
+    recordSet.put("successFieldName", asList(BigDecimal.valueOf(4), BigDecimal.valueOf(5)));
+    recordSet.put("classCastExceptionFieldResponseName", "anything");
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readList(successField, new ResponseReader.ListReader() {
+      @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+        return reader.readDouble();
+      }
+    })).isEqualTo(asList(1D, 2D, 3D));
+
+    try {
+      responseReader.readList(classCastExceptionField, new ResponseReader.ListReader() {
+        @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+          return null;
+        }
+      });
+      fail("expected ClassCastException");
+    } catch (ClassCastException expected) {
+      // expected
+    }
+  }
+
+  @Test public void readBooleanList() throws Exception {
+    Field successField = Field.forScalarList("successFieldResponseName", "successFieldName", null, false);
+    Field classCastExceptionField = Field.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+        null, false);
+
+    final Map<String, Object> recordSet = new HashMap<>();
+    recordSet.put("successFieldResponseName", asList(true, false, true));
+    recordSet.put("successFieldName", asList(false, false));
+    recordSet.put("classCastExceptionFieldResponseName", "anything");
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readList(successField, new ResponseReader.ListReader() {
+      @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+        return reader.readBoolean();
+      }
+    })).isEqualTo(asList(true, false, true));
+
+    try {
+      responseReader.readList(classCastExceptionField, new ResponseReader.ListReader() {
+        @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+          return null;
+        }
+      });
+      fail("expected ClassCastException");
+    } catch (ClassCastException expected) {
+      // expected
+    }
+  }
+
+  @Test public void readCustomList() throws Exception {
+    Field successField = Field.forScalarList("successFieldResponseName", "successFieldName", null, false);
+    Field classCastExceptionField = Field.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+        null, false);
+
+    final Map<String, Object> recordSet = new HashMap<>();
+    recordSet.put("successFieldResponseName", asList("2017-04-16", "2017-04-17", "2017-04-18"));
+    recordSet.put("successFieldName", asList("2017-04-19", "2017-04-20"));
+    recordSet.put("classCastExceptionFieldResponseName", "anything");
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readList(successField, new ResponseReader.ListReader() {
+      @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+        return reader.readCustomType(CUSTOM_TYPE);
+      }
+    })).isEqualTo(asList(DATE_TIME_FORMAT.parse("2017-04-16"), DATE_TIME_FORMAT.parse("2017-04-17"), DATE_TIME_FORMAT.parse("2017-04-18")));
+
+    try {
+      responseReader.readList(classCastExceptionField, new ResponseReader.ListReader() {
+        @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+          return null;
+        }
+      });
+      fail("expected ClassCastException");
+    } catch (ClassCastException expected) {
+      // expected
+    }
+  }
+
+  @Test public void readObjectList() throws Exception {
+    Field successField = Field.forScalarList("successFieldResponseName", "successFieldName", null, false);
+    Field classCastExceptionField = Field.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+        null, false);
+
+    final Object responseObject1 = new Object();
+    final Object responseObject2 = new Object();
+    final Object responseObject3 = new Object();
+    final Object responseObject4 = new Object();
+    final Object responseObject5 = new Object();
+    final Object responseObject6 = new Object();
+
+    final Map<String, Object> recordSet = new HashMap<>();
+    recordSet.put("successFieldResponseName", asList(responseObject1, responseObject2, responseObject3));
+    recordSet.put("successFieldName", asList(responseObject4, responseObject5));
+    recordSet.put("classCastExceptionFieldResponseName", "anything");
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readList(successField, new ResponseReader.ListReader() {
+      int index = 0;
+
+      @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+        return reader.readObject(new ResponseReader.ObjectReader<Object>() {
+          @Override public Object read(ResponseReader reader) throws IOException {
+            return ((List) recordSet.get("successFieldResponseName")).get(index++);
+          }
+        });
+      }
+    })).isEqualTo(asList(responseObject1, responseObject2, responseObject3));
+
+    try {
+      responseReader.readList(classCastExceptionField, new ResponseReader.ListReader() {
+        @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+          return null;
+        }
+      });
+      fail("expected ClassCastException");
+    } catch (ClassCastException expected) {
+      // expected
+    }
+  }
+
+  @Test public void optionalFieldsIOException() throws Exception {
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(Collections.<String, Object>emptyMap());
+    responseReader.readString(Field.forString("stringField", "stringField", null, true));
+    responseReader.readInt(Field.forInt("intField", "intField", null, true));
+    responseReader.readLong(Field.forLong("longField", "longField", null, true));
+    responseReader.readDouble(Field.forDouble("doubleField", "doubleField", null, true));
+    responseReader.readBoolean(Field.forBoolean("booleanField", "booleanField", null, true));
+    responseReader.readObject(Field.forObject("objectField", "objectField", null, true), new ResponseReader.ObjectReader<Object>() {
+      @Override public Object read(ResponseReader reader) throws IOException {
+        return null;
+      }
+    });
+    responseReader.readList(Field.forScalarList("scalarListField", "scalarListField", null, true), new ResponseReader.ListReader() {
+      @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+        return null;
+      }
+    });
+    responseReader.readCustomType((Field.CustomTypeField) Field.forCustomType("customTypeField", "customTypeField",
+        null, true, CUSTOM_TYPE));
+  }
+
+  @Test public void mandatoryFieldsIOException() throws Exception {
+    final RealResponseReader<Map<String, Object>> responseReader = responseReader(Collections.<String, Object>emptyMap());
+
+    try {
+      responseReader.readString(Field.forString("stringField", "stringField", null, false));
+      fail("expected NullPointerException");
+    } catch (NullPointerException expected) {
+      //expected
+    }
+
+    try {
+      responseReader.readInt(Field.forInt("intField", "intField", null, false));
+      fail("expected NullPointerException");
+    } catch (NullPointerException expected) {
+      //expected
+    }
+
+    try {
+      responseReader.readLong(Field.forLong("longField", "longField", null, false));
+      fail("expected NullPointerException");
+    } catch (NullPointerException expected) {
+      //expected
+    }
+
+    try {
+      responseReader.readDouble(Field.forDouble("doubleField", "doubleField", null, false));
+      fail("expected NullPointerException");
+    } catch (NullPointerException expected) {
+      //expected
+    }
+
+    try {
+      responseReader.readBoolean(Field.forBoolean("booleanField", "booleanField", null, false));
+      fail("expected NullPointerException");
+    } catch (NullPointerException expected) {
+      //expected
+    }
+
+    try {
+      responseReader.readObject(Field.forObject("objectField", "objectField", null, false), new ResponseReader.ObjectReader<Object>() {
+        @Override public Object read(ResponseReader reader) throws IOException {
+          return null;
+        }
+      });
+      fail("expected NullPointerException");
+    } catch (NullPointerException expected) {
+      //expected
+    }
+
+    try {
+      responseReader.readList(Field.forScalarList("scalarListField", "scalarListField", null, false), new ResponseReader.ListReader() {
+        @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+          return null;
+        }
+      });
+      fail("expected NullPointerException");
+    } catch (NullPointerException expected) {
+      //expected
+    }
+
+    try {
+      responseReader.readCustomType((Field.CustomTypeField) Field.forCustomType("customTypeField", "customTypeField", null, false, CUSTOM_TYPE));
+      fail("expected NullPointerException");
+    } catch (NullPointerException expected) {
+      //expected
+    }
+
+    try {
+      responseReader.readConditional((Field.ConditionalTypeField) Field.forFragment("__typename", "__typename", Collections.<String>emptyList()), new ResponseReader.ConditionalTypeReader<Object>() {
+        @Override public Object read(String conditionalType, ResponseReader reader) throws IOException {
+          return null;
+        }
+      });
+      fail("expected NullPointerException");
+    } catch (NullPointerException expected) {
+      //expected
+    }
+  }
+
+  private void checkNPE(Runnable action) {
+    try {
+
+      fail("expected NullPointerException");
+    } catch (NullPointerException expected) {
+      //expected
     }
   }
 

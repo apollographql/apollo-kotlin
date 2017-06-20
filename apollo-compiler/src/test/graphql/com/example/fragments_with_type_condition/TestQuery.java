@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -156,22 +157,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Luke.Mapper lukeFieldMapper = new Luke.Mapper();
 
       final Field[] fields = {
-        Field.forObject("r2", "hero", null, true, new Field.ObjectReader<R2>() {
-          @Override public R2 read(final ResponseReader reader) throws IOException {
-            return r2FieldMapper.map(reader);
-          }
-        }),
-        Field.forObject("luke", "hero", null, true, new Field.ObjectReader<Luke>() {
-          @Override public Luke read(final ResponseReader reader) throws IOException {
-            return lukeFieldMapper.map(reader);
-          }
-        })
+        Field.forObject("r2", "hero", null, true),
+        Field.forObject("luke", "hero", null, true)
       };
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final R2 r2 = reader.read(fields[0]);
-        final Luke luke = reader.read(fields[1]);
+        final R2 r2 = reader.readObject(fields[0], new ResponseReader.ObjectReader<R2>() {
+          @Override
+          public R2 read(ResponseReader reader) throws IOException {
+            return r2FieldMapper.map(reader);
+          }
+        });
+        final Luke luke = reader.readObject(fields[1], new ResponseReader.ObjectReader<Luke>() {
+          @Override
+          public Luke read(ResponseReader reader) throws IOException {
+            return lukeFieldMapper.map(reader);
+          }
+        });
         return new Data(r2, luke);
       }
     }
@@ -327,18 +330,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
-        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
-          @Override
-          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
-            return fragmentsFieldMapper.map(reader, conditionalType);
-          }
-        })
+        Field.forFragment("__typename", "__typename", Arrays.asList("Human",
+        "Droid"))
       };
 
       @Override
       public R2 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final Fragments fragments = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final Fragments fragments = reader.readConditional((Field.ConditionalTypeField) fields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
+          @Override
+          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
+            return fragmentsFieldMapper.map(reader, conditionalType);
+          }
+        });
         return new R2(__typename, fragments);
       }
     }
@@ -494,18 +498,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
-        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
-          @Override
-          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
-            return fragmentsFieldMapper.map(reader, conditionalType);
-          }
-        })
+        Field.forFragment("__typename", "__typename", Arrays.asList("Human",
+        "Droid"))
       };
 
       @Override
       public Luke map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final Fragments fragments = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final Fragments fragments = reader.readConditional((Field.ConditionalTypeField) fields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
+          @Override
+          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
+            return fragmentsFieldMapper.map(reader, conditionalType);
+          }
+        });
         return new Luke(__typename, fragments);
       }
     }

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -147,16 +148,17 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       final Field[] fields = {
         Field.forObject("allStarships", "allStarships", new UnmodifiableMapBuilder<String, Object>(1)
           .put("first", "7.0")
-        .build(), true, new Field.ObjectReader<AllStarships1>() {
-          @Override public AllStarships1 read(final ResponseReader reader) throws IOException {
-            return allStarships1FieldMapper.map(reader);
-          }
-        })
+        .build(), true)
       };
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final AllStarships1 allStarships = reader.read(fields[0]);
+        final AllStarships1 allStarships = reader.readObject(fields[0], new ResponseReader.ObjectReader<AllStarships1>() {
+          @Override
+          public AllStarships1 read(ResponseReader reader) throws IOException {
+            return allStarships1FieldMapper.map(reader);
+          }
+        });
         return new Data(allStarships);
       }
     }
@@ -232,17 +234,23 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
-        Field.forList("edges", "edges", null, true, new Field.ObjectReader<Edge>() {
-          @Override public Edge read(final ResponseReader reader) throws IOException {
-            return edgeFieldMapper.map(reader);
-          }
-        })
+        Field.forObjectList("edges", "edges", null, true)
       };
 
       @Override
       public AllStarships1 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final List<Edge> edges = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final List<Edge> edges = reader.readList(fields[1], new ResponseReader.ListReader<Edge>() {
+          @Override
+          public Edge read(ResponseReader.ListItemReader reader) throws IOException {
+            return reader.readObject(new ResponseReader.ObjectReader<Edge>() {
+              @Override
+              public Edge read(ResponseReader reader) throws IOException {
+                return edgeFieldMapper.map(reader);
+              }
+            });
+          }
+        });
         return new AllStarships1(__typename, edges);
       }
     }
@@ -318,17 +326,18 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
-        Field.forObject("node", "node", null, true, new Field.ObjectReader<Node>() {
-          @Override public Node read(final ResponseReader reader) throws IOException {
-            return nodeFieldMapper.map(reader);
-          }
-        })
+        Field.forObject("node", "node", null, true)
       };
 
       @Override
       public Edge map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final Node node = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final Node node = reader.readObject(fields[1], new ResponseReader.ObjectReader<Node>() {
+          @Override
+          public Node read(ResponseReader reader) throws IOException {
+            return nodeFieldMapper.map(reader);
+          }
+        });
         return new Edge(__typename, node);
       }
     }
@@ -467,18 +476,18 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
-        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
-          @Override
-          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
-            return fragmentsFieldMapper.map(reader, conditionalType);
-          }
-        })
+        Field.forFragment("__typename", "__typename", Arrays.asList("Starship"))
       };
 
       @Override
       public Node map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final Fragments fragments = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final Fragments fragments = reader.readConditional((Field.ConditionalTypeField) fields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
+          @Override
+          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
+            return fragmentsFieldMapper.map(reader, conditionalType);
+          }
+        });
         return new Node(__typename, fragments);
       }
     }

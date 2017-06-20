@@ -151,24 +151,26 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Luke.Mapper lukeFieldMapper = new Luke.Mapper();
 
       final Field[] fields = {
-        Field.forObject("r2", "hero", null, true, new Field.ObjectReader<R2>() {
-          @Override public R2 read(final ResponseReader reader) throws IOException {
-            return r2FieldMapper.map(reader);
-          }
-        }),
+        Field.forObject("r2", "hero", null, true),
         Field.forObject("luke", "hero", new UnmodifiableMapBuilder<String, Object>(1)
           .put("episode", "EMPIRE")
-        .build(), true, new Field.ObjectReader<Luke>() {
-          @Override public Luke read(final ResponseReader reader) throws IOException {
-            return lukeFieldMapper.map(reader);
-          }
-        })
+        .build(), true)
       };
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final R2 r2 = reader.read(fields[0]);
-        final Luke luke = reader.read(fields[1]);
+        final R2 r2 = reader.readObject(fields[0], new ResponseReader.ObjectReader<R2>() {
+          @Override
+          public R2 read(ResponseReader reader) throws IOException {
+            return r2FieldMapper.map(reader);
+          }
+        });
+        final Luke luke = reader.readObject(fields[1], new ResponseReader.ObjectReader<Luke>() {
+          @Override
+          public Luke read(ResponseReader reader) throws IOException {
+            return lukeFieldMapper.map(reader);
+          }
+        });
         return new Data(r2, luke);
       }
     }
@@ -247,8 +249,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public R2 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
         return new R2(__typename, name);
       }
     }
@@ -342,9 +344,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Luke map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String id = reader.read(fields[1]);
-        final String name = reader.read(fields[2]);
+        final String __typename = reader.readString(fields[0]);
+        final String id = reader.readString(fields[1]);
+        final String name = reader.readString(fields[2]);
         return new Luke(__typename, id, name);
       }
     }

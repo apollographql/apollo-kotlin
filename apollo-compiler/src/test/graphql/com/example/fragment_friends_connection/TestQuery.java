@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -135,16 +136,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Hero.Mapper heroFieldMapper = new Hero.Mapper();
 
       final Field[] fields = {
-        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
-          @Override public Hero read(final ResponseReader reader) throws IOException {
-            return heroFieldMapper.map(reader);
-          }
-        })
+        Field.forObject("hero", "hero", null, true)
       };
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = reader.read(fields[0]);
+        final Hero hero = reader.readObject(fields[0], new ResponseReader.ObjectReader<Hero>() {
+          @Override
+          public Hero read(ResponseReader reader) throws IOException {
+            return heroFieldMapper.map(reader);
+          }
+        });
         return new Data(hero);
       }
     }
@@ -283,18 +285,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
-        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
-          @Override
-          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
-            return fragmentsFieldMapper.map(reader, conditionalType);
-          }
-        })
+        Field.forFragment("__typename", "__typename", Arrays.asList("Human",
+        "Droid"))
       };
 
       @Override
       public Hero map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final Fragments fragments = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final Fragments fragments = reader.readConditional((Field.ConditionalTypeField) fields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
+          @Override
+          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
+            return fragmentsFieldMapper.map(reader, conditionalType);
+          }
+        });
         return new Hero(__typename, fragments);
       }
     }

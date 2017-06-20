@@ -132,16 +132,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Hero.Mapper heroFieldMapper = new Hero.Mapper();
 
       final Field[] fields = {
-        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
-          @Override public Hero read(final ResponseReader reader) throws IOException {
-            return heroFieldMapper.map(reader);
-          }
-        })
+        Field.forObject("hero", "hero", null, true)
       };
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = reader.read(fields[0]);
+        final Hero hero = reader.readObject(fields[0], new ResponseReader.ObjectReader<Hero>() {
+          @Override
+          public Hero read(ResponseReader reader) throws IOException {
+            return heroFieldMapper.map(reader);
+          }
+        });
         return new Data(hero);
       }
     }
@@ -220,8 +221,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       @Override
       public Hero map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
         return new Hero(__typename, name);
       }
     }

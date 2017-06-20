@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -139,16 +140,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Hero.Mapper heroFieldMapper = new Hero.Mapper();
 
       final Field[] fields = {
-        Field.forObject("hero", "hero", null, true, new Field.ObjectReader<Hero>() {
-          @Override public Hero read(final ResponseReader reader) throws IOException {
-            return heroFieldMapper.map(reader);
-          }
-        })
+        Field.forObject("hero", "hero", null, true)
       };
 
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = reader.read(fields[0]);
+        final Hero hero = reader.readObject(fields[0], new ResponseReader.ObjectReader<Hero>() {
+          @Override
+          public Hero read(ResponseReader reader) throws IOException {
+            return heroFieldMapper.map(reader);
+          }
+        });
         return new Data(hero);
       }
     }
@@ -317,25 +319,27 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Field[] fields = {
         Field.forString("__typename", "__typename", null, false),
         Field.forString("name", "name", null, false),
-        Field.forList("appearsIn", "appearsIn", null, false, new Field.ListReader<Episode>() {
-          @Override public Episode read(final Field.ListItemReader reader) throws IOException {
-            return Episode.valueOf(reader.readString());
-          }
-        }),
-        Field.forConditionalType("__typename", "__typename", new Field.ConditionalTypeReader<Fragments>() {
-          @Override
-          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
-            return fragmentsFieldMapper.map(reader, conditionalType);
-          }
-        })
+        Field.forScalarList("appearsIn", "appearsIn", null, false),
+        Field.forFragment("__typename", "__typename", Arrays.asList("Human",
+        "Droid"))
       };
 
       @Override
       public Hero map(ResponseReader reader) throws IOException {
-        final String __typename = reader.read(fields[0]);
-        final String name = reader.read(fields[1]);
-        final List<Episode> appearsIn = reader.read(fields[2]);
-        final Fragments fragments = reader.read(fields[3]);
+        final String __typename = reader.readString(fields[0]);
+        final String name = reader.readString(fields[1]);
+        final List<Episode> appearsIn = reader.readList(fields[2], new ResponseReader.ListReader<Episode>() {
+          @Override
+          public Episode read(ResponseReader.ListItemReader reader) throws IOException {
+            return Episode.valueOf(reader.readString());
+          }
+        });
+        final Fragments fragments = reader.readConditional((Field.ConditionalTypeField) fields[3], new ResponseReader.ConditionalTypeReader<Fragments>() {
+          @Override
+          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
+            return fragmentsFieldMapper.map(reader, conditionalType);
+          }
+        });
         return new Hero(__typename, name, appearsIn, fragments);
       }
     }
