@@ -62,12 +62,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
   @Override @Nonnull public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain)
       throws ApolloException {
-    try {
-      httpCall = httpCall(operation);
-    } catch (IOException e) {
-      logger.e(e, "Failed to prepare http call");
-      throw new ApolloNetworkException("Failed to prepare http call", e);
-    }
+    httpCall = httpCall(operation);
 
     try {
       return new InterceptorResponse(httpCall.execute());
@@ -82,13 +77,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
     dispatcher.execute(new Runnable() {
       @Override public void run() {
-        try {
-          httpCall = httpCall(operation);
-        } catch (IOException e) {
-          logger.e(e, "Failed to prepare http call");
-          callBack.onFailure(new ApolloNetworkException("Failed to prepare http call", e));
-          return;
-        }
+        httpCall = httpCall(operation);
 
         httpCall.enqueue(new Callback() {
           @Override public void onFailure(Call call, IOException e) {
@@ -112,7 +101,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     this.httpCall = null;
   }
 
-  private Call httpCall(Operation operation) throws IOException {
+  Call httpCall(Operation operation) {
     RequestBody requestBody = httpRequestBody(operation);
     Request.Builder requestBuilder = new Request.Builder()
         .url(serverUrl)
@@ -134,16 +123,24 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     return httpCallFactory.newCall(requestBuilder.build());
   }
 
-  private RequestBody httpRequestBody(Operation operation) throws IOException {
+  private RequestBody httpRequestBody(Operation operation) {
     JsonAdapter<Operation> adapter = new OperationJsonAdapter(moshi);
     Buffer buffer = new Buffer();
-    adapter.toJson(buffer, operation);
+    try {
+      adapter.toJson(buffer, operation);
+    } catch (IOException e) {
+      throw new AssertionError(e);
+    }
     return RequestBody.create(MEDIA_TYPE, buffer.readByteString());
   }
 
-  public static String cacheKey(RequestBody requestBody) throws IOException {
+  public static String cacheKey(RequestBody requestBody) {
     Buffer hashBuffer = new Buffer();
-    requestBody.writeTo(hashBuffer);
+    try {
+      requestBody.writeTo(hashBuffer);
+    } catch (IOException e) {
+      throw new AssertionError(e);
+    }
     return hashBuffer.readByteString().md5().hex();
   }
 
