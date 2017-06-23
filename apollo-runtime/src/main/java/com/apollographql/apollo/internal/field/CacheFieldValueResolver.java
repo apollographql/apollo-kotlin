@@ -1,6 +1,6 @@
 package com.apollographql.apollo.internal.field;
 
-import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.CacheKey;
@@ -27,18 +27,18 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
     this.cacheHeaders = cacheHeaders;
   }
 
-  @SuppressWarnings("unchecked") @Override public <T> T valueFor(Record record, Field field)
+  @SuppressWarnings("unchecked") @Override public <T> T valueFor(Record record, ResponseField field)
       throws IOException {
-    if (field.type() == Field.Type.OBJECT) {
+    if (field.type() == ResponseField.Type.OBJECT) {
       return (T) valueForObject(record, field);
-    } else if (field.type() == Field.Type.OBJECT_LIST) {
+    } else if (field.type() == ResponseField.Type.OBJECT_LIST) {
       return (T) valueForObjectList(record, field);
     } else {
       return fieldValue(record, field);
     }
   }
 
-  private Record valueForObject(Record record, Field field) throws IOException {
+  private Record valueForObject(Record record, ResponseField field) throws IOException {
     CacheReference cacheReference;
     CacheKey fieldCacheKey = cacheKeyResolver.fromFieldArguments(field, variables);
     if (fieldCacheKey != CacheKey.NO_KEY) {
@@ -49,7 +49,7 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
     return cacheReference != null ? readableCache.read(cacheReference.key(), cacheHeaders) : null;
   }
 
-  private List<Record> valueForObjectList(Record record, Field field) throws IOException {
+  private List<Record> valueForObjectList(Record record, ResponseField field) throws IOException {
     List<CacheReference> values = fieldValue(record, field);
     List<Record> result = new ArrayList<>();
     for (CacheReference reference : values) {
@@ -58,7 +58,7 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
     return result;
   }
 
-  @SuppressWarnings("unchecked") private <T> T fieldValue(Record record, Field field) throws IOException {
+  @SuppressWarnings("unchecked") private <T> T fieldValue(Record record, ResponseField field) throws IOException {
     String fieldKey = field.cacheKey(variables);
     if (!record.hasField(fieldKey)) {
       throw new IOException("Missing value: " + field.fieldName());

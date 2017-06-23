@@ -1,7 +1,7 @@
 package com.apollographql.apollo.internal.reader;
 
 import com.apollographql.apollo.CustomTypeAdapter;
-import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
@@ -32,7 +32,7 @@ import java.util.Map;
     this.readerShadow = readerShadow;
   }
 
-  @Override public String readString(Field field) throws IOException {
+  @Override public String readString(ResponseField field) throws IOException {
     willResolve(field);
     String value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
@@ -45,7 +45,7 @@ import java.util.Map;
     return value;
   }
 
-  @Override public Integer readInt(Field field) throws IOException {
+  @Override public Integer readInt(ResponseField field) throws IOException {
     willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
@@ -58,7 +58,7 @@ import java.util.Map;
     return value != null ? value.intValue() : null;
   }
 
-  @Override public Long readLong(Field field) throws IOException {
+  @Override public Long readLong(ResponseField field) throws IOException {
     willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
@@ -71,7 +71,7 @@ import java.util.Map;
     return value != null ? value.longValue() : null;
   }
 
-  @Override public Double readDouble(Field field) throws IOException {
+  @Override public Double readDouble(ResponseField field) throws IOException {
     willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
@@ -84,7 +84,7 @@ import java.util.Map;
     return value != null ? value.doubleValue() : null;
   }
 
-  @Override public Boolean readBoolean(Field field) throws IOException {
+  @Override public Boolean readBoolean(ResponseField field) throws IOException {
     willResolve(field);
     Boolean value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
@@ -98,7 +98,7 @@ import java.util.Map;
   }
 
   @SuppressWarnings("unchecked") @Override
-  public <T> T readObject(Field field, ResponseReader.ObjectReader<T> objectReader)
+  public <T> T readObject(ResponseField field, ResponseReader.ObjectReader<T> objectReader)
       throws IOException {
     willResolve(field);
     R value = fieldValueResolver.valueFor(recordSet, field);
@@ -118,7 +118,7 @@ import java.util.Map;
   }
 
   @SuppressWarnings("unchecked")
-  @Override public <T> List<T> readList(Field field, ListReader listReader) throws IOException {
+  @Override public <T> List<T> readList(ResponseField field, ListReader listReader) throws IOException {
     willResolve(field);
     List values = fieldValueResolver.valueFor(recordSet, field);
     checkValue(values, field.optional());
@@ -141,7 +141,8 @@ import java.util.Map;
     return result != null ? Collections.unmodifiableList(result) : null;
   }
 
-  @SuppressWarnings("unchecked") @Override public <T> T readCustomType(Field.CustomTypeField field) throws IOException {
+  @SuppressWarnings("unchecked") @Override public <T> T readCustomType(ResponseField.CustomTypeField field)
+      throws IOException {
     willResolve(field);
     Object value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
@@ -164,7 +165,7 @@ import java.util.Map;
   }
 
   @Override
-  public <T> T readConditional(Field.ConditionalTypeField field, ConditionalTypeReader<T> conditionalTypeReader)
+  public <T> T readConditional(ResponseField.ConditionalTypeField field, ConditionalTypeReader<T> conditionalTypeReader)
       throws IOException {
     willResolve(field);
     String value = fieldValueResolver.valueFor(recordSet, field);
@@ -174,7 +175,7 @@ import java.util.Map;
       readerShadow.didParseNull();
       didResolve(field);
       result = null;
-    } else if (field.type() == Field.Type.INLINE_FRAGMENT && !field.conditionalTypes().contains(value)) {
+    } else if (field.type() == ResponseField.Type.INLINE_FRAGMENT && !field.conditionalTypes().contains(value)) {
       readerShadow.didParseScalar(value);
       didResolve(field);
       result = null;
@@ -186,11 +187,11 @@ import java.util.Map;
     return result;
   }
 
-  private void willResolve(Field field) {
+  private void willResolve(ResponseField field) {
     readerShadow.willResolve(field, operationVariables);
   }
 
-  private void didResolve(Field field) {
+  private void didResolve(ResponseField field) {
     readerShadow.didResolve(field, operationVariables);
   }
 
@@ -201,10 +202,10 @@ import java.util.Map;
   }
 
   private class ListItemReader implements ResponseReader.ListItemReader {
-    private final Field field;
+    private final ResponseField field;
     private final Object value;
 
-    ListItemReader(Field field, Object value) {
+    ListItemReader(ResponseField field, Object value) {
       this.field = field;
       this.value = value;
     }

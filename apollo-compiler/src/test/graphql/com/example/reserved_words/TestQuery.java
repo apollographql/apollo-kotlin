@@ -1,9 +1,9 @@
 package com.example.reserved_words;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -72,6 +72,59 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Data implements Operation.Data {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("abstract", "abstract", null, true),
+      ResponseField.forString("assert", "assert", null, true),
+      ResponseField.forString("boolean", "boolean", null, true),
+      ResponseField.forString("break", "break", null, true),
+      ResponseField.forString("byte", "byte", null, true),
+      ResponseField.forString("case", "case", null, true),
+      ResponseField.forString("catch", "catch", null, true),
+      ResponseField.forString("char", "char", null, true),
+      ResponseField.forString("class", "class", null, true),
+      ResponseField.forString("const", "const", null, true),
+      ResponseField.forString("continue", "continue", null, true),
+      ResponseField.forString("default", "default", null, true),
+      ResponseField.forString("do", "do", null, true),
+      ResponseField.forString("double", "double", null, true),
+      ResponseField.forString("else", "else", null, true),
+      ResponseField.forString("enum", "enum", null, true),
+      ResponseField.forString("extends", "extends", null, true),
+      ResponseField.forString("final", "final", null, true),
+      ResponseField.forString("finally", "finally", null, true),
+      ResponseField.forString("float", "float", null, true),
+      ResponseField.forString("for", "for", null, true),
+      ResponseField.forString("goto", "goto", null, true),
+      ResponseField.forString("if", "if", null, true),
+      ResponseField.forString("implements", "implements", null, true),
+      ResponseField.forString("import", "import", null, true),
+      ResponseField.forString("instanceof", "instanceof", null, true),
+      ResponseField.forString("int", "int", null, true),
+      ResponseField.forString("interface", "interface", null, true),
+      ResponseField.forString("long", "long", null, true),
+      ResponseField.forString("native", "native", null, true),
+      ResponseField.forString("new", "new", null, true),
+      ResponseField.forString("package", "package", null, true),
+      ResponseField.forString("private", "private", null, true),
+      ResponseField.forString("protected", "protected", null, true),
+      ResponseField.forString("public", "public", null, true),
+      ResponseField.forString("return", "return", null, true),
+      ResponseField.forString("short", "short", null, true),
+      ResponseField.forString("static", "static", null, true),
+      ResponseField.forString("strictfp", "strictfp", null, true),
+      ResponseField.forString("super", "super", null, true),
+      ResponseField.forString("switch", "switch", null, true),
+      ResponseField.forString("synchronized", "synchronized", null, true),
+      ResponseField.forString("this", "this", null, true),
+      ResponseField.forString("throw", "throw", null, true),
+      ResponseField.forString("throws", "throws", null, true),
+      ResponseField.forString("transient", "transient", null, true),
+      ResponseField.forString("try", "try", null, true),
+      ResponseField.forString("void", "void", null, true),
+      ResponseField.forString("volatile", "volatile", null, true),
+      ResponseField.forString("while", "while", null, true)
+    };
+
     private final Optional<String> abstract_;
 
     private final Optional<String> assert_;
@@ -678,111 +731,58 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
-      final Field[] fields = {
-        Field.forString("abstract", "abstract", null, true),
-        Field.forString("assert", "assert", null, true),
-        Field.forString("boolean", "boolean", null, true),
-        Field.forString("break", "break", null, true),
-        Field.forString("byte", "byte", null, true),
-        Field.forString("case", "case", null, true),
-        Field.forString("catch", "catch", null, true),
-        Field.forString("char", "char", null, true),
-        Field.forString("class", "class", null, true),
-        Field.forString("const", "const", null, true),
-        Field.forString("continue", "continue", null, true),
-        Field.forString("default", "default", null, true),
-        Field.forString("do", "do", null, true),
-        Field.forString("double", "double", null, true),
-        Field.forString("else", "else", null, true),
-        Field.forString("enum", "enum", null, true),
-        Field.forString("extends", "extends", null, true),
-        Field.forString("final", "final", null, true),
-        Field.forString("finally", "finally", null, true),
-        Field.forString("float", "float", null, true),
-        Field.forString("for", "for", null, true),
-        Field.forString("goto", "goto", null, true),
-        Field.forString("if", "if", null, true),
-        Field.forString("implements", "implements", null, true),
-        Field.forString("import", "import", null, true),
-        Field.forString("instanceof", "instanceof", null, true),
-        Field.forString("int", "int", null, true),
-        Field.forString("interface", "interface", null, true),
-        Field.forString("long", "long", null, true),
-        Field.forString("native", "native", null, true),
-        Field.forString("new", "new", null, true),
-        Field.forString("package", "package", null, true),
-        Field.forString("private", "private", null, true),
-        Field.forString("protected", "protected", null, true),
-        Field.forString("public", "public", null, true),
-        Field.forString("return", "return", null, true),
-        Field.forString("short", "short", null, true),
-        Field.forString("static", "static", null, true),
-        Field.forString("strictfp", "strictfp", null, true),
-        Field.forString("super", "super", null, true),
-        Field.forString("switch", "switch", null, true),
-        Field.forString("synchronized", "synchronized", null, true),
-        Field.forString("this", "this", null, true),
-        Field.forString("throw", "throw", null, true),
-        Field.forString("throws", "throws", null, true),
-        Field.forString("transient", "transient", null, true),
-        Field.forString("try", "try", null, true),
-        Field.forString("void", "void", null, true),
-        Field.forString("volatile", "volatile", null, true),
-        Field.forString("while", "while", null, true)
-      };
-
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final String abstract_ = reader.readString(fields[0]);
-        final String assert_ = reader.readString(fields[1]);
-        final String boolean_ = reader.readString(fields[2]);
-        final String break_ = reader.readString(fields[3]);
-        final String byte_ = reader.readString(fields[4]);
-        final String case_ = reader.readString(fields[5]);
-        final String catch_ = reader.readString(fields[6]);
-        final String char_ = reader.readString(fields[7]);
-        final String class_ = reader.readString(fields[8]);
-        final String const_ = reader.readString(fields[9]);
-        final String continue_ = reader.readString(fields[10]);
-        final String default_ = reader.readString(fields[11]);
-        final String do_ = reader.readString(fields[12]);
-        final String double_ = reader.readString(fields[13]);
-        final String else_ = reader.readString(fields[14]);
-        final String enum_ = reader.readString(fields[15]);
-        final String extends_ = reader.readString(fields[16]);
-        final String final_ = reader.readString(fields[17]);
-        final String finally_ = reader.readString(fields[18]);
-        final String float_ = reader.readString(fields[19]);
-        final String for_ = reader.readString(fields[20]);
-        final String goto_ = reader.readString(fields[21]);
-        final String if_ = reader.readString(fields[22]);
-        final String implements_ = reader.readString(fields[23]);
-        final String import_ = reader.readString(fields[24]);
-        final String instanceof_ = reader.readString(fields[25]);
-        final String int_ = reader.readString(fields[26]);
-        final String interface_ = reader.readString(fields[27]);
-        final String long_ = reader.readString(fields[28]);
-        final String native_ = reader.readString(fields[29]);
-        final String new_ = reader.readString(fields[30]);
-        final String package_ = reader.readString(fields[31]);
-        final String private_ = reader.readString(fields[32]);
-        final String protected_ = reader.readString(fields[33]);
-        final String public_ = reader.readString(fields[34]);
-        final String return_ = reader.readString(fields[35]);
-        final String short_ = reader.readString(fields[36]);
-        final String static_ = reader.readString(fields[37]);
-        final String strictfp_ = reader.readString(fields[38]);
-        final String super_ = reader.readString(fields[39]);
-        final String switch_ = reader.readString(fields[40]);
-        final String synchronized_ = reader.readString(fields[41]);
-        final String this_ = reader.readString(fields[42]);
-        final String throw_ = reader.readString(fields[43]);
-        final String throws_ = reader.readString(fields[44]);
-        final String transient_ = reader.readString(fields[45]);
-        final String try_ = reader.readString(fields[46]);
-        final String void_ = reader.readString(fields[47]);
-        final String volatile_ = reader.readString(fields[48]);
-        final String while_ = reader.readString(fields[49]);
+        final String abstract_ = reader.readString($responseFields[0]);
+        final String assert_ = reader.readString($responseFields[1]);
+        final String boolean_ = reader.readString($responseFields[2]);
+        final String break_ = reader.readString($responseFields[3]);
+        final String byte_ = reader.readString($responseFields[4]);
+        final String case_ = reader.readString($responseFields[5]);
+        final String catch_ = reader.readString($responseFields[6]);
+        final String char_ = reader.readString($responseFields[7]);
+        final String class_ = reader.readString($responseFields[8]);
+        final String const_ = reader.readString($responseFields[9]);
+        final String continue_ = reader.readString($responseFields[10]);
+        final String default_ = reader.readString($responseFields[11]);
+        final String do_ = reader.readString($responseFields[12]);
+        final String double_ = reader.readString($responseFields[13]);
+        final String else_ = reader.readString($responseFields[14]);
+        final String enum_ = reader.readString($responseFields[15]);
+        final String extends_ = reader.readString($responseFields[16]);
+        final String final_ = reader.readString($responseFields[17]);
+        final String finally_ = reader.readString($responseFields[18]);
+        final String float_ = reader.readString($responseFields[19]);
+        final String for_ = reader.readString($responseFields[20]);
+        final String goto_ = reader.readString($responseFields[21]);
+        final String if_ = reader.readString($responseFields[22]);
+        final String implements_ = reader.readString($responseFields[23]);
+        final String import_ = reader.readString($responseFields[24]);
+        final String instanceof_ = reader.readString($responseFields[25]);
+        final String int_ = reader.readString($responseFields[26]);
+        final String interface_ = reader.readString($responseFields[27]);
+        final String long_ = reader.readString($responseFields[28]);
+        final String native_ = reader.readString($responseFields[29]);
+        final String new_ = reader.readString($responseFields[30]);
+        final String package_ = reader.readString($responseFields[31]);
+        final String private_ = reader.readString($responseFields[32]);
+        final String protected_ = reader.readString($responseFields[33]);
+        final String public_ = reader.readString($responseFields[34]);
+        final String return_ = reader.readString($responseFields[35]);
+        final String short_ = reader.readString($responseFields[36]);
+        final String static_ = reader.readString($responseFields[37]);
+        final String strictfp_ = reader.readString($responseFields[38]);
+        final String super_ = reader.readString($responseFields[39]);
+        final String switch_ = reader.readString($responseFields[40]);
+        final String synchronized_ = reader.readString($responseFields[41]);
+        final String this_ = reader.readString($responseFields[42]);
+        final String throw_ = reader.readString($responseFields[43]);
+        final String throws_ = reader.readString($responseFields[44]);
+        final String transient_ = reader.readString($responseFields[45]);
+        final String try_ = reader.readString($responseFields[46]);
+        final String void_ = reader.readString($responseFields[47]);
+        final String volatile_ = reader.readString($responseFields[48]);
+        final String while_ = reader.readString($responseFields[49]);
         return new Data(abstract_, assert_, boolean_, break_, byte_, case_, catch_, char_, class_, const_, continue_, default_, do_, double_, else_, enum_, extends_, final_, finally_, float_, for_, goto_, if_, implements_, import_, instanceof_, int_, interface_, long_, native_, new_, package_, private_, protected_, public_, return_, short_, static_, strictfp_, super_, switch_, synchronized_, this_, throw_, throws_, transient_, try_, void_, volatile_, while_);
       }
     }

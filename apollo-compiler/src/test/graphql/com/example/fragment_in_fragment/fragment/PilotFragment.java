@@ -1,7 +1,7 @@
 package com.example.fragment_in_fragment.fragment;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.GraphqlFragment;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -18,6 +18,12 @@ import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
 public class PilotFragment implements GraphqlFragment {
+  static final ResponseField[] $responseFields = {
+    ResponseField.forString("__typename", "__typename", null, false),
+    ResponseField.forString("name", "name", null, true),
+    ResponseField.forObject("homeworld", "homeworld", null, true)
+  };
+
   public static final String FRAGMENT_DEFINITION = "fragment pilotFragment on Person {\n"
       + "  __typename\n"
       + "  name\n"
@@ -111,17 +117,11 @@ public class PilotFragment implements GraphqlFragment {
   public static final class Mapper implements ResponseFieldMapper<PilotFragment> {
     final Homeworld.Mapper homeworldFieldMapper = new Homeworld.Mapper();
 
-    final Field[] fields = {
-      Field.forString("__typename", "__typename", null, false),
-      Field.forString("name", "name", null, true),
-      Field.forObject("homeworld", "homeworld", null, true)
-    };
-
     @Override
     public PilotFragment map(ResponseReader reader) throws IOException {
-      final String __typename = reader.readString(fields[0]);
-      final String name = reader.readString(fields[1]);
-      final Homeworld homeworld = reader.readObject(fields[2], new ResponseReader.ObjectReader<Homeworld>() {
+      final String __typename = reader.readString($responseFields[0]);
+      final String name = reader.readString($responseFields[1]);
+      final Homeworld homeworld = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<Homeworld>() {
         @Override
         public Homeworld read(ResponseReader reader) throws IOException {
           return homeworldFieldMapper.map(reader);
@@ -132,6 +132,11 @@ public class PilotFragment implements GraphqlFragment {
   }
 
   public static class Homeworld {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, true)
+    };
+
     private final @Nonnull String __typename;
 
     private final Optional<String> name;
@@ -197,15 +202,10 @@ public class PilotFragment implements GraphqlFragment {
     }
 
     public static final class Mapper implements ResponseFieldMapper<Homeworld> {
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, true)
-      };
-
       @Override
       public Homeworld map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
         return new Homeworld(__typename, name);
       }
     }

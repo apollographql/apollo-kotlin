@@ -1,6 +1,6 @@
 package com.apollographql.apollo.internal.cache.normalized;
 
-import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.CacheKey;
@@ -50,12 +50,12 @@ public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     recordSet = new RecordSet();
   }
 
-  @Override public void willResolve(Field field, Operation.Variables variables) {
+  @Override public void willResolve(ResponseField field, Operation.Variables variables) {
     String key = field.cacheKey(variables);
     path.add(key);
   }
 
-  @Override public void didResolve(Field field, Operation.Variables variables) {
+  @Override public void didResolve(ResponseField field, Operation.Variables variables) {
     path.remove(path.size() - 1);
     Object value = valueStack.pop();
     String cacheKey = field.cacheKey(variables);
@@ -72,7 +72,7 @@ public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     valueStack.push(value);
   }
 
-  @Override public void willParseObject(Field field, Optional<R> objectSource) {
+  @Override public void willParseObject(ResponseField field, Optional<R> objectSource) {
     pathStack.push(path);
 
     CacheKey cacheKey = objectSource.isPresent() ? resolveCacheKey(field, objectSource.get()) : CacheKey.NO_KEY;
@@ -87,7 +87,7 @@ public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     currentRecordBuilder = Record.builder(cacheKeyValue);
   }
 
-  @Override public void didParseObject(Field field, Optional<R> objectSource) {
+  @Override public void didParseObject(ResponseField field, Optional<R> objectSource) {
     path = pathStack.pop();
     Record completedRecord = currentRecordBuilder.build();
     valueStack.push(new CacheReference(completedRecord.key()));
@@ -116,7 +116,7 @@ public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     valueStack.push(null);
   }
 
-  @Nonnull public abstract CacheKey resolveCacheKey(@Nonnull Field field, @Nonnull R record);
+  @Nonnull public abstract CacheKey resolveCacheKey(@Nonnull ResponseField field, @Nonnull R record);
 
   private String pathToString() {
     StringBuilder stringBuilder = new StringBuilder();
@@ -134,19 +134,19 @@ public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     @Override public void willResolveRootQuery(Operation operation) {
     }
 
-    @Override public void willResolve(Field field, Operation.Variables variables) {
+    @Override public void willResolve(ResponseField field, Operation.Variables variables) {
     }
 
-    @Override public void didResolve(Field field, Operation.Variables variables) {
+    @Override public void didResolve(ResponseField field, Operation.Variables variables) {
     }
 
     @Override public void didParseScalar(Object value) {
     }
 
-    @Override public void willParseObject(Field field, Optional objectSource) {
+    @Override public void willParseObject(ResponseField field, Optional objectSource) {
     }
 
-    @Override public void didParseObject(Field field, Optional objectSource) {
+    @Override public void didParseObject(ResponseField field, Optional objectSource) {
     }
 
     @Override public void didParseList(List array) {
@@ -169,7 +169,7 @@ public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
       return Collections.emptySet();
     }
 
-    @Nonnull @Override public CacheKey resolveCacheKey(@Nonnull Field field, @Nonnull Object record) {
+    @Nonnull @Override public CacheKey resolveCacheKey(@Nonnull ResponseField field, @Nonnull Object record) {
       return CacheKey.NO_KEY;
     }
   };

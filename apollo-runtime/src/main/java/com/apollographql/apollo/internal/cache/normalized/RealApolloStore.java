@@ -2,7 +2,7 @@ package com.apollographql.apollo.internal.cache.normalized;
 
 
 import com.apollographql.apollo.CustomTypeAdapter;
-import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
@@ -52,7 +52,8 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
 
   @Override public ResponseNormalizer<Map<String, Object>> networkResponseNormalizer() {
     return new ResponseNormalizer<Map<String, Object>>() {
-      @Nonnull @Override public CacheKey resolveCacheKey(@Nonnull Field field, @Nonnull Map<String, Object> record) {
+      @Nonnull @Override public CacheKey resolveCacheKey(@Nonnull ResponseField field,
+          @Nonnull Map<String, Object> record) {
         return cacheKeyResolver.fromFieldRecordSet(field, record);
       }
     };
@@ -60,7 +61,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
 
   @Override public ResponseNormalizer<Record> cacheResponseNormalizer() {
     return new ResponseNormalizer<Record>() {
-      @Nonnull @Override public CacheKey resolveCacheKey(@Nonnull Field field, @Nonnull Record record) {
+      @Nonnull @Override public CacheKey resolveCacheKey(@Nonnull ResponseField field, @Nonnull Record record) {
         return CacheKey.from(record.key());
       }
     };

@@ -1,10 +1,10 @@
 package com.example.fragments_with_type_condition;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -90,6 +90,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Data implements Operation.Data {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forObject("r2", "hero", null, true),
+      ResponseField.forObject("luke", "hero", null, true)
+    };
+
     private final Optional<R2> r2;
 
     private final Optional<Luke> luke;
@@ -156,20 +161,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       final Luke.Mapper lukeFieldMapper = new Luke.Mapper();
 
-      final Field[] fields = {
-        Field.forObject("r2", "hero", null, true),
-        Field.forObject("luke", "hero", null, true)
-      };
-
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final R2 r2 = reader.readObject(fields[0], new ResponseReader.ObjectReader<R2>() {
+        final R2 r2 = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<R2>() {
           @Override
           public R2 read(ResponseReader reader) throws IOException {
             return r2FieldMapper.map(reader);
           }
         });
-        final Luke luke = reader.readObject(fields[1], new ResponseReader.ObjectReader<Luke>() {
+        final Luke luke = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Luke>() {
           @Override
           public Luke read(ResponseReader reader) throws IOException {
             return lukeFieldMapper.map(reader);
@@ -181,6 +181,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class R2 {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forFragment("__typename", "__typename", Arrays.asList("Human",
+      "Droid"))
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull Fragments fragments;
@@ -328,16 +334,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<R2> {
       final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forFragment("__typename", "__typename", Arrays.asList("Human",
-        "Droid"))
-      };
-
       @Override
       public R2 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final Fragments fragments = reader.readConditional((Field.ConditionalTypeField) fields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
           @Override
           public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
             return fragmentsFieldMapper.map(reader, conditionalType);
@@ -349,6 +349,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Luke {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forFragment("__typename", "__typename", Arrays.asList("Human",
+      "Droid"))
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull Fragments fragments;
@@ -496,16 +502,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Luke> {
       final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forFragment("__typename", "__typename", Arrays.asList("Human",
-        "Droid"))
-      };
-
       @Override
       public Luke map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final Fragments fragments = reader.readConditional((Field.ConditionalTypeField) fields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
           @Override
           public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
             return fragmentsFieldMapper.map(reader, conditionalType);

@@ -1,7 +1,7 @@
 package com.apollographql.apollo.internal.reader;
 
 import com.apollographql.apollo.CustomTypeAdapter;
-import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.ResponseFieldMapper;
@@ -36,8 +36,8 @@ import static org.junit.Assert.fail;
 public class ResponseReaderTest {
 
   @Test public void readString() throws Exception {
-    Field successField = Field.forString("successFieldResponseName", "successFieldName", null, false);
-    Field classCastExceptionField = Field.forString("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+    ResponseField successField = ResponseField.forString("successFieldResponseName", "successFieldName", null, false);
+    ResponseField classCastExceptionField = ResponseField.forString("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false);
 
     Map<String, Object> recordSet = new HashMap<>();
@@ -56,8 +56,8 @@ public class ResponseReaderTest {
   }
 
   @Test public void readInt() throws Exception {
-    Field successField = Field.forInt("successFieldResponseName", "successFieldName", null, false);
-    Field classCastExceptionField = Field.forInt("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+    ResponseField successField = ResponseField.forInt("successFieldResponseName", "successFieldName", null, false);
+    ResponseField classCastExceptionField = ResponseField.forInt("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false);
 
     Map<String, Object> recordSet = new HashMap<>();
@@ -76,8 +76,8 @@ public class ResponseReaderTest {
   }
 
   @Test public void readLong() throws Exception {
-    Field successField = Field.forLong("successFieldResponseName", "successFieldName", null, false);
-    Field classCastExceptionField = Field.forLong("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+    ResponseField successField = ResponseField.forLong("successFieldResponseName", "successFieldName", null, false);
+    ResponseField classCastExceptionField = ResponseField.forLong("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false);
 
     Map<String, Object> recordSet = new HashMap<>();
@@ -96,8 +96,8 @@ public class ResponseReaderTest {
   }
 
   @Test public void readDouble() throws Exception {
-    Field successField = Field.forDouble("successFieldResponseName", "successFieldName", null, false);
-    Field classCastExceptionField = Field.forDouble("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+    ResponseField successField = ResponseField.forDouble("successFieldResponseName", "successFieldName", null, false);
+    ResponseField classCastExceptionField = ResponseField.forDouble("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false);
 
     Map<String, Object> recordSet = new HashMap<>();
@@ -116,8 +116,8 @@ public class ResponseReaderTest {
   }
 
   @Test public void readBoolean() throws Exception {
-    Field successField = Field.forBoolean("successFieldResponseName", "successFieldName", null, false);
-    Field classCastExceptionField = Field.forBoolean("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+    ResponseField successField = ResponseField.forBoolean("successFieldResponseName", "successFieldName", null, false);
+    ResponseField classCastExceptionField = ResponseField.forBoolean("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false);
 
     Map<String, Object> recordSet = new HashMap<>();
@@ -138,8 +138,8 @@ public class ResponseReaderTest {
   @Test public void readObject() throws Exception {
     final Object responseObject1 = new Object();
     final Object responseObject2 = new Object();
-    Field successField = Field.forObject("successFieldResponseName", "successFieldName", null, false);
-    Field classCastExceptionField = Field.forObject("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+    ResponseField successField = ResponseField.forObject("successFieldResponseName", "successFieldName", null, false);
+    ResponseField classCastExceptionField = ResponseField.forObject("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false);
 
     Map<String, Object> recordSet = new HashMap<>();
@@ -157,7 +157,7 @@ public class ResponseReaderTest {
     try {
       responseReader.readObject(classCastExceptionField, new ResponseReader.ObjectReader<Object>() {
         @Override public Object read(ResponseReader reader) throws IOException {
-          return reader.readString(Field.forString("anything", "anything", null, true));
+          return reader.readString(ResponseField.forString("anything", "anything", null, true));
         }
       });
       fail("expected ClassCastException");
@@ -167,8 +167,8 @@ public class ResponseReaderTest {
   }
 
   @Test public void readCustom() throws Exception {
-    Field successField = Field.forCustomType("successFieldResponseName", "successFieldName", null, false, CUSTOM_TYPE);
-    Field classCastExceptionField = Field.forCustomType("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+    ResponseField successField = ResponseField.forCustomType("successFieldResponseName", "successFieldName", null, false, CUSTOM_TYPE);
+    ResponseField classCastExceptionField = ResponseField.forCustomType("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false, CUSTOM_TYPE);
 
     Map<String, Object> recordSet = new HashMap<>();
@@ -177,9 +177,9 @@ public class ResponseReaderTest {
     recordSet.put("classCastExceptionFieldResponseName", 0);
 
     RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
-    assertThat(responseReader.readCustomType((Field.CustomTypeField) successField)).isEqualTo(DATE_TIME_FORMAT.parse("2017-04-16"));
+    assertThat(responseReader.readCustomType((ResponseField.CustomTypeField) successField)).isEqualTo(DATE_TIME_FORMAT.parse("2017-04-16"));
     try {
-      responseReader.readCustomType((Field.CustomTypeField) classCastExceptionField);
+      responseReader.readCustomType((ResponseField.CustomTypeField) classCastExceptionField);
       fail("expected ClassCastException");
     } catch (ClassCastException expected) {
       // expected
@@ -190,8 +190,8 @@ public class ResponseReaderTest {
     final Object responseObject1 = new Object();
     final Object responseObject2 = new Object();
 
-    Field successField = Field.forFragment("successFieldResponseName", "successFieldName", Collections.<String>emptyList());
-    Field classCastExceptionField = Field.forFragment("classCastExceptionFieldResponseName",
+    ResponseField successField = ResponseField.forFragment("successFieldResponseName", "successFieldName", Collections.<String>emptyList());
+    ResponseField classCastExceptionField = ResponseField.forFragment("classCastExceptionFieldResponseName",
         "classCastExceptionFieldName", Collections.<String>emptyList());
 
     Map<String, Object> recordSet = new HashMap<>();
@@ -200,7 +200,7 @@ public class ResponseReaderTest {
     recordSet.put("classCastExceptionFieldResponseName", 1);
 
     RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
-    assertThat(responseReader.readConditional((Field.ConditionalTypeField) successField, new ResponseReader.ConditionalTypeReader<Object>() {
+    assertThat(responseReader.readConditional((ResponseField.ConditionalTypeField) successField, new ResponseReader.ConditionalTypeReader<Object>() {
       @Override public Object read(String conditionalType, ResponseReader reader) throws IOException {
         if (conditionalType.equals("responseObject1")) {
           return responseObject1;
@@ -211,7 +211,7 @@ public class ResponseReaderTest {
     })).isEqualTo(responseObject1);
 
     try {
-      responseReader.readConditional((Field.ConditionalTypeField) classCastExceptionField, new ResponseReader.ConditionalTypeReader<Object>() {
+      responseReader.readConditional((ResponseField.ConditionalTypeField) classCastExceptionField, new ResponseReader.ConditionalTypeReader<Object>() {
         @Override public Object read(String conditionalType, ResponseReader reader) throws IOException {
           return null;
         }
@@ -223,8 +223,8 @@ public class ResponseReaderTest {
   }
 
   @Test public void readStringList() throws Exception {
-    Field successField = Field.forScalarList("successFieldResponseName", "successFieldName", null, false);
-    Field classCastExceptionField = Field.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+    ResponseField successField = ResponseField.forScalarList("successFieldResponseName", "successFieldName", null, false);
+    ResponseField classCastExceptionField = ResponseField.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false);
 
     final Map<String, Object> recordSet = new HashMap<>();
@@ -252,8 +252,8 @@ public class ResponseReaderTest {
   }
 
   @Test public void readIntList() throws Exception {
-    Field successField = Field.forScalarList("successFieldResponseName", "successFieldName", null, false);
-    Field classCastExceptionField = Field.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+    ResponseField successField = ResponseField.forScalarList("successFieldResponseName", "successFieldName", null, false);
+    ResponseField classCastExceptionField = ResponseField.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false);
 
     final Map<String, Object> recordSet = new HashMap<>();
@@ -281,8 +281,8 @@ public class ResponseReaderTest {
   }
 
   @Test public void readLongList() throws Exception {
-    Field successField = Field.forScalarList("successFieldResponseName", "successFieldName", null, false);
-    Field classCastExceptionField = Field.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+    ResponseField successField = ResponseField.forScalarList("successFieldResponseName", "successFieldName", null, false);
+    ResponseField classCastExceptionField = ResponseField.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false);
 
     final Map<String, Object> recordSet = new HashMap<>();
@@ -310,8 +310,8 @@ public class ResponseReaderTest {
   }
 
   @Test public void readDoubleList() throws Exception {
-    Field successField = Field.forScalarList("successFieldResponseName", "successFieldName", null, false);
-    Field classCastExceptionField = Field.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+    ResponseField successField = ResponseField.forScalarList("successFieldResponseName", "successFieldName", null, false);
+    ResponseField classCastExceptionField = ResponseField.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false);
 
     final Map<String, Object> recordSet = new HashMap<>();
@@ -339,8 +339,8 @@ public class ResponseReaderTest {
   }
 
   @Test public void readBooleanList() throws Exception {
-    Field successField = Field.forScalarList("successFieldResponseName", "successFieldName", null, false);
-    Field classCastExceptionField = Field.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+    ResponseField successField = ResponseField.forScalarList("successFieldResponseName", "successFieldName", null, false);
+    ResponseField classCastExceptionField = ResponseField.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false);
 
     final Map<String, Object> recordSet = new HashMap<>();
@@ -368,8 +368,8 @@ public class ResponseReaderTest {
   }
 
   @Test public void readCustomList() throws Exception {
-    Field successField = Field.forScalarList("successFieldResponseName", "successFieldName", null, false);
-    Field classCastExceptionField = Field.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+    ResponseField successField = ResponseField.forScalarList("successFieldResponseName", "successFieldName", null, false);
+    ResponseField classCastExceptionField = ResponseField.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false);
 
     final Map<String, Object> recordSet = new HashMap<>();
@@ -397,8 +397,8 @@ public class ResponseReaderTest {
   }
 
   @Test public void readObjectList() throws Exception {
-    Field successField = Field.forScalarList("successFieldResponseName", "successFieldName", null, false);
-    Field classCastExceptionField = Field.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
+    ResponseField successField = ResponseField.forScalarList("successFieldResponseName", "successFieldName", null, false);
+    ResponseField classCastExceptionField = ResponseField.forScalarList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false);
 
     final Object responseObject1 = new Object();
@@ -440,22 +440,22 @@ public class ResponseReaderTest {
 
   @Test public void optionalFieldsIOException() throws Exception {
     RealResponseReader<Map<String, Object>> responseReader = responseReader(Collections.<String, Object>emptyMap());
-    responseReader.readString(Field.forString("stringField", "stringField", null, true));
-    responseReader.readInt(Field.forInt("intField", "intField", null, true));
-    responseReader.readLong(Field.forLong("longField", "longField", null, true));
-    responseReader.readDouble(Field.forDouble("doubleField", "doubleField", null, true));
-    responseReader.readBoolean(Field.forBoolean("booleanField", "booleanField", null, true));
-    responseReader.readObject(Field.forObject("objectField", "objectField", null, true), new ResponseReader.ObjectReader<Object>() {
+    responseReader.readString(ResponseField.forString("stringField", "stringField", null, true));
+    responseReader.readInt(ResponseField.forInt("intField", "intField", null, true));
+    responseReader.readLong(ResponseField.forLong("longField", "longField", null, true));
+    responseReader.readDouble(ResponseField.forDouble("doubleField", "doubleField", null, true));
+    responseReader.readBoolean(ResponseField.forBoolean("booleanField", "booleanField", null, true));
+    responseReader.readObject(ResponseField.forObject("objectField", "objectField", null, true), new ResponseReader.ObjectReader<Object>() {
       @Override public Object read(ResponseReader reader) throws IOException {
         return null;
       }
     });
-    responseReader.readList(Field.forScalarList("scalarListField", "scalarListField", null, true), new ResponseReader.ListReader() {
+    responseReader.readList(ResponseField.forScalarList("scalarListField", "scalarListField", null, true), new ResponseReader.ListReader() {
       @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
         return null;
       }
     });
-    responseReader.readCustomType((Field.CustomTypeField) Field.forCustomType("customTypeField", "customTypeField",
+    responseReader.readCustomType((ResponseField.CustomTypeField) ResponseField.forCustomType("customTypeField", "customTypeField",
         null, true, CUSTOM_TYPE));
   }
 
@@ -463,42 +463,42 @@ public class ResponseReaderTest {
     final RealResponseReader<Map<String, Object>> responseReader = responseReader(Collections.<String, Object>emptyMap());
 
     try {
-      responseReader.readString(Field.forString("stringField", "stringField", null, false));
+      responseReader.readString(ResponseField.forString("stringField", "stringField", null, false));
       fail("expected NullPointerException");
     } catch (NullPointerException expected) {
       //expected
     }
 
     try {
-      responseReader.readInt(Field.forInt("intField", "intField", null, false));
+      responseReader.readInt(ResponseField.forInt("intField", "intField", null, false));
       fail("expected NullPointerException");
     } catch (NullPointerException expected) {
       //expected
     }
 
     try {
-      responseReader.readLong(Field.forLong("longField", "longField", null, false));
+      responseReader.readLong(ResponseField.forLong("longField", "longField", null, false));
       fail("expected NullPointerException");
     } catch (NullPointerException expected) {
       //expected
     }
 
     try {
-      responseReader.readDouble(Field.forDouble("doubleField", "doubleField", null, false));
+      responseReader.readDouble(ResponseField.forDouble("doubleField", "doubleField", null, false));
       fail("expected NullPointerException");
     } catch (NullPointerException expected) {
       //expected
     }
 
     try {
-      responseReader.readBoolean(Field.forBoolean("booleanField", "booleanField", null, false));
+      responseReader.readBoolean(ResponseField.forBoolean("booleanField", "booleanField", null, false));
       fail("expected NullPointerException");
     } catch (NullPointerException expected) {
       //expected
     }
 
     try {
-      responseReader.readObject(Field.forObject("objectField", "objectField", null, false), new ResponseReader.ObjectReader<Object>() {
+      responseReader.readObject(ResponseField.forObject("objectField", "objectField", null, false), new ResponseReader.ObjectReader<Object>() {
         @Override public Object read(ResponseReader reader) throws IOException {
           return null;
         }
@@ -509,7 +509,7 @@ public class ResponseReaderTest {
     }
 
     try {
-      responseReader.readList(Field.forScalarList("scalarListField", "scalarListField", null, false), new ResponseReader.ListReader() {
+      responseReader.readList(ResponseField.forScalarList("scalarListField", "scalarListField", null, false), new ResponseReader.ListReader() {
         @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
           return null;
         }
@@ -520,14 +520,14 @@ public class ResponseReaderTest {
     }
 
     try {
-      responseReader.readCustomType((Field.CustomTypeField) Field.forCustomType("customTypeField", "customTypeField", null, false, CUSTOM_TYPE));
+      responseReader.readCustomType((ResponseField.CustomTypeField) ResponseField.forCustomType("customTypeField", "customTypeField", null, false, CUSTOM_TYPE));
       fail("expected NullPointerException");
     } catch (NullPointerException expected) {
       //expected
     }
 
     try {
-      responseReader.readConditional((Field.ConditionalTypeField) Field.forFragment("__typename", "__typename", Collections.<String>emptyList()), new ResponseReader.ConditionalTypeReader<Object>() {
+      responseReader.readConditional((ResponseField.ConditionalTypeField) ResponseField.forFragment("__typename", "__typename", Collections.<String>emptyList()), new ResponseReader.ConditionalTypeReader<Object>() {
         @Override public Object read(String conditionalType, ResponseReader reader) throws IOException {
           return null;
         }
@@ -605,22 +605,22 @@ public class ResponseReaderTest {
     @Override public void willResolveRootQuery(Operation operation) {
     }
 
-    @Override public void willResolve(Field field, Operation.Variables variables) {
+    @Override public void willResolve(ResponseField field, Operation.Variables variables) {
     }
 
-    @Override public void didResolve(Field field, Operation.Variables variables) {
+    @Override public void didResolve(ResponseField field, Operation.Variables variables) {
     }
 
     @Override public void didParseScalar(Object value) {
     }
 
-    @Override public void willParseObject(Field field, Optional objectSource) {
+    @Override public void willParseObject(ResponseField field, Optional objectSource) {
     }
 
-    @Override public void didParseObject(Field Field, Optional objectSource) {
+    @Override public void didParseObject(ResponseField Field, Optional objectSource) {
     }
 
-    @Nonnull @Override public CacheKey resolveCacheKey(@Nonnull Field field, @Nonnull Object record) {
+    @Nonnull @Override public CacheKey resolveCacheKey(@Nonnull ResponseField field, @Nonnull Object record) {
       return CacheKey.NO_KEY;
     }
 

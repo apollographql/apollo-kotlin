@@ -1,9 +1,9 @@
 package com.example.two_heroes_unique;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -84,6 +84,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Data implements Operation.Data {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forObject("r2", "hero", null, true),
+      ResponseField.forObject("luke", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+        .put("episode", "EMPIRE")
+      .build(), true)
+    };
+
     private final Optional<R2> r2;
 
     private final Optional<Luke> luke;
@@ -150,22 +157,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       final Luke.Mapper lukeFieldMapper = new Luke.Mapper();
 
-      final Field[] fields = {
-        Field.forObject("r2", "hero", null, true),
-        Field.forObject("luke", "hero", new UnmodifiableMapBuilder<String, Object>(1)
-          .put("episode", "EMPIRE")
-        .build(), true)
-      };
-
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final R2 r2 = reader.readObject(fields[0], new ResponseReader.ObjectReader<R2>() {
+        final R2 r2 = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<R2>() {
           @Override
           public R2 read(ResponseReader reader) throws IOException {
             return r2FieldMapper.map(reader);
           }
         });
-        final Luke luke = reader.readObject(fields[1], new ResponseReader.ObjectReader<Luke>() {
+        final Luke luke = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Luke>() {
           @Override
           public Luke read(ResponseReader reader) throws IOException {
             return lukeFieldMapper.map(reader);
@@ -177,6 +177,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class R2 {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -242,21 +247,22 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static final class Mapper implements ResponseFieldMapper<R2> {
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false)
-      };
-
       @Override
       public R2 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
         return new R2(__typename, name);
       }
     }
   }
 
   public static class Luke {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("id", "id", null, false),
+      ResponseField.forString("name", "name", null, false)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String id;
@@ -336,17 +342,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static final class Mapper implements ResponseFieldMapper<Luke> {
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("id", "id", null, false),
-        Field.forString("name", "name", null, false)
-      };
-
       @Override
       public Luke map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String id = reader.readString(fields[1]);
-        final String name = reader.readString(fields[2]);
+        final String __typename = reader.readString($responseFields[0]);
+        final String id = reader.readString($responseFields[1]);
+        final String name = reader.readString($responseFields[2]);
         return new Luke(__typename, id, name);
       }
     }

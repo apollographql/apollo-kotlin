@@ -1,7 +1,7 @@
 package com.example.fragments_with_type_condition.fragment;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.GraphqlFragment;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -18,6 +18,12 @@ import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
 public class DroidDetails implements GraphqlFragment {
+  static final ResponseField[] $responseFields = {
+    ResponseField.forString("__typename", "__typename", null, false),
+    ResponseField.forString("name", "name", null, false),
+    ResponseField.forString("primaryFunction", "primaryFunction", null, true)
+  };
+
   public static final String FRAGMENT_DEFINITION = "fragment DroidDetails on Droid {\n"
       + "  __typename\n"
       + "  name\n"
@@ -106,17 +112,11 @@ public class DroidDetails implements GraphqlFragment {
   }
 
   public static final class Mapper implements ResponseFieldMapper<DroidDetails> {
-    final Field[] fields = {
-      Field.forString("__typename", "__typename", null, false),
-      Field.forString("name", "name", null, false),
-      Field.forString("primaryFunction", "primaryFunction", null, true)
-    };
-
     @Override
     public DroidDetails map(ResponseReader reader) throws IOException {
-      final String __typename = reader.readString(fields[0]);
-      final String name = reader.readString(fields[1]);
-      final String primaryFunction = reader.readString(fields[2]);
+      final String __typename = reader.readString($responseFields[0]);
+      final String name = reader.readString($responseFields[1]);
+      final String primaryFunction = reader.readString($responseFields[2]);
       return new DroidDetails(__typename, name, primaryFunction);
     }
   }

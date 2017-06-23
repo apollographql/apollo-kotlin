@@ -15,9 +15,9 @@ import static java.util.Collections.unmodifiableList;
 /**
  * Field is an abstraction for a field in a graphQL operation.
  * Field can refer to: <b>GraphQL Scalar Types, Objects or List</b>. For a complete list of types that a Field
- * object can refer to see {@link Field.Type} class.
+ * object can refer to see {@link ResponseField.Type} class.
  */
-public class Field {
+public class ResponseField {
   private final Type type;
   private final String responseName;
   private final String fieldName;
@@ -37,9 +37,9 @@ public class Field {
    * @param optional     whether the arguments passed along are optional or required
    * @return Field instance representing {@link Type#STRING}
    */
-  public static Field forString(String responseName, String fieldName, Map<String, Object> arguments,
+  public static ResponseField forString(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional) {
-    return new Field(Type.STRING, responseName, fieldName, arguments, optional);
+    return new ResponseField(Type.STRING, responseName, fieldName, arguments, optional);
   }
 
   /**
@@ -51,8 +51,9 @@ public class Field {
    * @param optional     whether the arguments passed along are optional or required
    * @return Field instance representing {@link Type#INT}
    */
-  public static Field forInt(String responseName, String fieldName, Map<String, Object> arguments, boolean optional) {
-    return new Field(Type.INT, responseName, fieldName, arguments, optional);
+  public static ResponseField forInt(String responseName, String fieldName, Map<String, Object> arguments,
+      boolean optional) {
+    return new ResponseField(Type.INT, responseName, fieldName, arguments, optional);
   }
 
   /**
@@ -64,9 +65,9 @@ public class Field {
    * @param optional     whether the arguments passed along are optional or required
    * @return Field instance representing {@link Type#LONG}
    */
-  public static Field forLong(String responseName, String fieldName, Map<String, Object> arguments,
+  public static ResponseField forLong(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional) {
-    return new Field(Type.LONG, responseName, fieldName, arguments, optional);
+    return new ResponseField(Type.LONG, responseName, fieldName, arguments, optional);
   }
 
   /**
@@ -78,9 +79,9 @@ public class Field {
    * @param optional     whether the arguments passed along are optional or required
    * @return Field instance representing {@link Type#DOUBLE}
    */
-  public static Field forDouble(String responseName, String fieldName, Map<String, Object> arguments,
+  public static ResponseField forDouble(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional) {
-    return new Field(Type.DOUBLE, responseName, fieldName, arguments, optional);
+    return new ResponseField(Type.DOUBLE, responseName, fieldName, arguments, optional);
   }
 
   /**
@@ -92,9 +93,9 @@ public class Field {
    * @param optional     whether the arguments passed along are optional or required
    * @return Field instance representing {@link Type#BOOLEAN}
    */
-  public static Field forBoolean(String responseName, String fieldName, Map<String, Object> arguments,
+  public static ResponseField forBoolean(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional) {
-    return new Field(Type.BOOLEAN, responseName, fieldName, arguments, optional);
+    return new ResponseField(Type.BOOLEAN, responseName, fieldName, arguments, optional);
   }
 
   /**
@@ -106,8 +107,9 @@ public class Field {
    * @param optional     whether the arguments passed along are optional or required
    * @return Field instance representing {@link Type#ENUM}
    */
-  public static Field forEnum(String responseName, String fieldName, Map<String, Object> arguments, boolean optional) {
-    return new Field(Type.ENUM, responseName, fieldName, arguments, optional);
+  public static ResponseField forEnum(String responseName, String fieldName, Map<String, Object> arguments,
+      boolean optional) {
+    return new ResponseField(Type.ENUM, responseName, fieldName, arguments, optional);
   }
 
   /**
@@ -119,9 +121,9 @@ public class Field {
    * @param optional     whether the arguments passed along are optional or required
    * @return Field instance representing custom {@link Type#OBJECT}
    */
-  public static Field forObject(String responseName, String fieldName, Map<String, Object> arguments,
+  public static ResponseField forObject(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional) {
-    return new Field(Type.OBJECT, responseName, fieldName, arguments, optional);
+    return new ResponseField(Type.OBJECT, responseName, fieldName, arguments, optional);
   }
 
   /**
@@ -133,9 +135,9 @@ public class Field {
    * @param optional     whether the arguments passed along are optional or required
    * @return Field instance representing {@link Type#SCALAR_LIST}
    */
-  public static Field forScalarList(String responseName, String fieldName, Map<String, Object> arguments,
+  public static ResponseField forScalarList(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional) {
-    return new Field(Type.SCALAR_LIST, responseName, fieldName, arguments, optional);
+    return new ResponseField(Type.SCALAR_LIST, responseName, fieldName, arguments, optional);
   }
 
   /**
@@ -147,9 +149,9 @@ public class Field {
    * @param optional     whether the arguments passed along are optional or required
    * @return Field instance representing {@link Type#CUSTOM_LIST}
    */
-  public static Field forCustomList(String responseName, String fieldName, Map<String, Object> arguments,
+  public static ResponseField forCustomList(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional) {
-    return new Field(Type.CUSTOM_LIST, responseName, fieldName, arguments, optional);
+    return new ResponseField(Type.CUSTOM_LIST, responseName, fieldName, arguments, optional);
   }
 
   /**
@@ -161,9 +163,9 @@ public class Field {
    * @param optional     whether the arguments passed along are optional or required
    * @return Field instance representing {@link Type#OBJECT_LIST}
    */
-  public static Field forObjectList(String responseName, String fieldName, Map<String, Object> arguments,
+  public static ResponseField forObjectList(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional) {
-    return new Field(Type.OBJECT_LIST, responseName, fieldName, arguments, optional);
+    return new ResponseField(Type.OBJECT_LIST, responseName, fieldName, arguments, optional);
   }
 
   /**
@@ -176,7 +178,7 @@ public class Field {
    * @param scalarType   the custom scalar type of the field
    * @return Field instance representing {@link Type#CUSTOM}
    */
-  public static Field forCustomType(String responseName, String fieldName, Map<String, Object> arguments,
+  public static ResponseField forCustomType(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional, ScalarType scalarType) {
     return new CustomTypeField(responseName, fieldName, arguments, optional, scalarType);
   }
@@ -189,7 +191,7 @@ public class Field {
    * @param conditionalTypes conditional GraphQL types
    * @return Field instance representing {@link Type#FRAGMENT}
    */
-  public static Field forFragment(String responseName, String fieldName, List<String> conditionalTypes) {
+  public static ResponseField forFragment(String responseName, String fieldName, List<String> conditionalTypes) {
     return new ConditionalTypeField(Type.FRAGMENT, responseName, fieldName, conditionalTypes);
   }
 
@@ -201,11 +203,12 @@ public class Field {
    * @param conditionalTypes conditional GraphQL types
    * @return Field instance representing {@link Type#INLINE_FRAGMENT}
    */
-  public static Field forInlineFragment(String responseName, String fieldName, List<String> conditionalTypes) {
+  public static ResponseField forInlineFragment(String responseName, String fieldName, List<String> conditionalTypes) {
     return new ConditionalTypeField(Type.INLINE_FRAGMENT, responseName, fieldName, conditionalTypes);
   }
 
-  private Field(Type type, String responseName, String fieldName, Map<String, Object> arguments, boolean optional) {
+  private ResponseField(Type type, String responseName, String fieldName, Map<String, Object> arguments,
+      boolean optional) {
     this.type = type;
     this.responseName = responseName;
     this.fieldName = fieldName;
@@ -344,7 +347,7 @@ public class Field {
   /**
    * Abstraction for a Field representing a custom GraphQL scalar type.
    */
-  public static final class CustomTypeField extends Field {
+  public static final class CustomTypeField extends ResponseField {
     private final ScalarType scalarType;
 
     CustomTypeField(String responseName, String fieldName, Map<String, Object> arguments, boolean optional,
@@ -361,7 +364,7 @@ public class Field {
   /**
    * Abstraction for a Field representing a custom GraphQL scalar type.
    */
-  public static final class ConditionalTypeField extends Field {
+  public static final class ConditionalTypeField extends ResponseField {
     private final List<String> conditionalTypes;
 
     ConditionalTypeField(Type type, String responseName, String fieldName, List<String> conditionalTypes) {
