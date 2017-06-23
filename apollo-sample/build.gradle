@@ -1,7 +1,9 @@
 buildscript {
+  ext.apolloReleaseVersion = '0.3.2'
+
   dependencies {
     classpath dep.androidPlugin
-    classpath dep.apolloPlugin
+    classpath "com.apollographql.apollo:gradle-plugin:$apolloReleaseVersion"
   }
 }
 
@@ -26,10 +28,11 @@ android {
 }
 
 dependencies {
+  compile "com.apollographql.apollo:apollo-runtime:$apolloReleaseVersion"
+  compile "com.apollographql.apollo:apollo-android-support:$apolloReleaseVersion"
+  compile "com.apollographql.apollo:apollo-rx2-support:$apolloReleaseVersion"
+
   compile dep.jsr305
-  compile dep.apolloRuntime
-  compile dep.apolloAndroidSupport
-  compile dep.apolloRx2Support
   compile dep.appcompat
   compile dep.okhttpLoggingInterceptor
   compile dep.recyclerView
