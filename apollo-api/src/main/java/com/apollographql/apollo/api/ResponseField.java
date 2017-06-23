@@ -51,7 +51,8 @@ public class ResponseField {
    * @param optional     whether the arguments passed along are optional or required
    * @return Field instance representing {@link Type#INT}
    */
-  public static ResponseField forInt(String responseName, String fieldName, Map<String, Object> arguments, boolean optional) {
+  public static ResponseField forInt(String responseName, String fieldName, Map<String, Object> arguments,
+      boolean optional) {
     return new ResponseField(Type.INT, responseName, fieldName, arguments, optional);
   }
 
@@ -106,7 +107,8 @@ public class ResponseField {
    * @param optional     whether the arguments passed along are optional or required
    * @return Field instance representing {@link Type#ENUM}
    */
-  public static ResponseField forEnum(String responseName, String fieldName, Map<String, Object> arguments, boolean optional) {
+  public static ResponseField forEnum(String responseName, String fieldName, Map<String, Object> arguments,
+      boolean optional) {
     return new ResponseField(Type.ENUM, responseName, fieldName, arguments, optional);
   }
 
@@ -205,7 +207,8 @@ public class ResponseField {
     return new ConditionalTypeField(Type.INLINE_FRAGMENT, responseName, fieldName, conditionalTypes);
   }
 
-  private ResponseField(Type type, String responseName, String fieldName, Map<String, Object> arguments, boolean optional) {
+  private ResponseField(Type type, String responseName, String fieldName, Map<String, Object> arguments,
+      boolean optional) {
     this.type = type;
     this.responseName = responseName;
     this.fieldName = fieldName;
