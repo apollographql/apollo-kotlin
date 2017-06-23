@@ -82,19 +82,19 @@ class ResponseFieldSpec(
     return CodeBlock
         .builder()
         .addStatement("final \$T \$LStr = \$L.\$L(\$L[\$L])", ClassNames.STRING, fieldSpec.name, READER_VAR,
-            READ_METHODS[ResponseField.Type.STRING]!!, fieldsVarName, index)
+            READ_METHODS[ResponseField.Type.STRING], fieldsVarName, index)
         .add(readValueCode)
         .build()
   }
 
   private fun readScalarCode(fieldsVarName: String, index: Int): CodeBlock {
     return CodeBlock.of("final \$T \$L = \$L.\$L(\$L[\$L]);\n", fieldSpec.type, fieldSpec.name, READER_VAR,
-        READ_METHODS[responseFieldType]!!, fieldsVarName, index)
+        READ_METHODS[responseFieldType], fieldsVarName, index)
   }
 
   private fun readCustomCode(fieldsVarName: String, index: Int): CodeBlock {
     return CodeBlock.of("final \$T \$L = \$L.\$L((\$T) \$L[\$L]);\n", fieldSpec.type, fieldSpec.name,
-        READER_VAR, READ_METHODS[responseFieldType]!!,
+        READER_VAR, READ_METHODS[responseFieldType],
         ResponseField.CustomTypeField::class.java, fieldsVarName, index)
   }
 
@@ -112,7 +112,7 @@ class ResponseFieldSpec(
             .build())
         .build()
     return CodeBlock.of("final \$T \$L = \$L.\$L(\$L[\$L], \$L);\n", fieldSpec.type, fieldSpec.name, READER_VAR,
-        READ_METHODS[responseFieldType]!!, fieldsVarName, index, readerTypeSpec)
+        READ_METHODS[responseFieldType], fieldsVarName, index, readerTypeSpec)
   }
 
   private fun readScalarListCode(fieldsVarName: String, index: Int): CodeBlock {
@@ -136,7 +136,7 @@ class ResponseFieldSpec(
             .build())
         .build()
     return CodeBlock.of("final \$T \$L = \$L.\$L(\$L[\$L], \$L);\n", fieldSpec.type, fieldSpec.name, READER_VAR,
-        READ_METHODS[responseFieldType]!!, fieldsVarName, index, readerTypeSpec)
+        READ_METHODS[responseFieldType], fieldsVarName, index, readerTypeSpec)
   }
 
   private fun readCustomListCode(fieldsVarName: String, index: Int): CodeBlock {
@@ -156,7 +156,7 @@ class ResponseFieldSpec(
             .build())
         .build()
     return CodeBlock.of("final \$T \$L = \$L.\$L(\$L[\$L], \$L);\n", fieldSpec.type, fieldSpec.name, READER_VAR,
-        READ_METHODS[responseFieldType]!!, fieldsVarName, index, readerTypeSpec)
+        READ_METHODS[responseFieldType], fieldsVarName, index, readerTypeSpec)
   }
 
   private fun readObjectListCode(fieldsVarName: String, index: Int): CodeBlock {
@@ -186,7 +186,7 @@ class ResponseFieldSpec(
             .build())
         .build()
     return CodeBlock.of("final \$T \$L = \$L.\$L(\$L[\$L], \$L);\n", fieldSpec.type, fieldSpec.name, READER_VAR,
-        READ_METHODS[responseFieldType]!!, fieldsVarName, index, listReaderTypeSpec)
+        READ_METHODS[responseFieldType], fieldsVarName, index, listReaderTypeSpec)
   }
 
   private fun readInlineFragmentCode(fieldsVarName: String, index: Int): CodeBlock {
@@ -204,7 +204,7 @@ class ResponseFieldSpec(
             .build())
         .build()
     return CodeBlock.of("final \$T \$L = \$L.\$L((\$T) \$L[\$L], \$L);\n", fieldSpec.type, fieldSpec.name, READER_VAR,
-        READ_METHODS[responseFieldType]!!, ResponseField.ConditionalTypeField::class.java,
+        READ_METHODS[responseFieldType], ResponseField.ConditionalTypeField::class.java,
         fieldsVarName, index, readerTypeSpec)
   }
 
@@ -224,7 +224,7 @@ class ResponseFieldSpec(
             .build())
         .build()
     return CodeBlock.of("final \$T \$L = \$L.\$L((\$T) \$L[\$L], \$L);\n", fieldSpec.type, fieldSpec.name, READER_VAR,
-        READ_METHODS[responseFieldType]!!, ResponseField.ConditionalTypeField::class.java,
+        READ_METHODS[responseFieldType], ResponseField.ConditionalTypeField::class.java,
         fieldsVarName, index, readerTypeSpec)
   }
 
