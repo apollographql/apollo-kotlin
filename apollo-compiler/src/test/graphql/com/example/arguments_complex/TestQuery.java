@@ -1,9 +1,9 @@
 package com.example.arguments_complex;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -142,6 +142,29 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Data implements Operation.Data {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forObject("heroWithReview", "heroWithReview", new UnmodifiableMapBuilder<String, Object>(2)
+        .put("review", new UnmodifiableMapBuilder<String, Object>(2)
+          .put("stars", new UnmodifiableMapBuilder<String, Object>(2)
+            .put("kind", "Variable")
+            .put("variableName", "stars")
+          .build())
+          .put("favoriteColor", new UnmodifiableMapBuilder<String, Object>(3)
+            .put("red", "0.0")
+            .put("green", new UnmodifiableMapBuilder<String, Object>(2)
+              .put("kind", "Variable")
+              .put("variableName", "greenValue")
+            .build())
+            .put("blue", "0.0")
+          .build())
+        .build())
+        .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
+          .put("kind", "Variable")
+          .put("variableName", "episode")
+        .build())
+      .build(), true)
+    };
+
     private final Optional<HeroWithReview> heroWithReview;
 
     private volatile String $toString;
@@ -195,32 +218,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final HeroWithReview.Mapper heroWithReviewFieldMapper = new HeroWithReview.Mapper();
 
-      final Field[] fields = {
-        Field.forObject("heroWithReview", "heroWithReview", new UnmodifiableMapBuilder<String, Object>(2)
-          .put("review", new UnmodifiableMapBuilder<String, Object>(2)
-            .put("stars", new UnmodifiableMapBuilder<String, Object>(2)
-              .put("kind", "Variable")
-              .put("variableName", "stars")
-            .build())
-            .put("favoriteColor", new UnmodifiableMapBuilder<String, Object>(3)
-              .put("red", "0.0")
-              .put("green", new UnmodifiableMapBuilder<String, Object>(2)
-                .put("kind", "Variable")
-                .put("variableName", "greenValue")
-              .build())
-              .put("blue", "0.0")
-            .build())
-          .build())
-          .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
-            .put("kind", "Variable")
-            .put("variableName", "episode")
-          .build())
-        .build(), true)
-      };
-
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final HeroWithReview heroWithReview = reader.readObject(fields[0], new ResponseReader.ObjectReader<HeroWithReview>() {
+        final HeroWithReview heroWithReview = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<HeroWithReview>() {
           @Override
           public HeroWithReview read(ResponseReader reader) throws IOException {
             return heroWithReviewFieldMapper.map(reader);
@@ -232,6 +232,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class HeroWithReview {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forDouble("height", "height", new UnmodifiableMapBuilder<String, Object>(1)
+        .put("unit", "FOOT")
+      .build(), true)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -312,19 +320,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static final class Mapper implements ResponseFieldMapper<HeroWithReview> {
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forDouble("height", "height", new UnmodifiableMapBuilder<String, Object>(1)
-          .put("unit", "FOOT")
-        .build(), true)
-      };
-
       @Override
       public HeroWithReview map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final Double height = reader.readDouble(fields[2]);
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final Double height = reader.readDouble($responseFields[2]);
         return new HeroWithReview(__typename, name, height);
       }
     }

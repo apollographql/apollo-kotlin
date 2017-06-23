@@ -1,10 +1,10 @@
 package com.example.unique_type_name;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -101,6 +101,10 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
   }
 
   public static class Data implements Operation.Data {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forObject("heroDetailQuery", "heroDetailQuery", null, true)
+    };
+
     private final Optional<HeroDetailQuery1> heroDetailQuery;
 
     private volatile String $toString;
@@ -154,13 +158,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final HeroDetailQuery1.Mapper heroDetailQuery1FieldMapper = new HeroDetailQuery1.Mapper();
 
-      final Field[] fields = {
-        Field.forObject("heroDetailQuery", "heroDetailQuery", null, true)
-      };
-
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final HeroDetailQuery1 heroDetailQuery = reader.readObject(fields[0], new ResponseReader.ObjectReader<HeroDetailQuery1>() {
+        final HeroDetailQuery1 heroDetailQuery = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<HeroDetailQuery1>() {
           @Override
           public HeroDetailQuery1 read(ResponseReader reader) throws IOException {
             return heroDetailQuery1FieldMapper.map(reader);
@@ -172,6 +172,13 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
   }
 
   public static class HeroDetailQuery1 {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forObjectList("friends", "friends", null, true),
+      ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human"))
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -267,18 +274,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
       final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forObjectList("friends", "friends", null, true),
-        Field.forInlineFragment("__typename", "__typename", Arrays.asList("Human"))
-      };
-
       @Override
       public HeroDetailQuery1 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final List<Friend> friends = reader.readList(fields[2], new ResponseReader.ListReader<Friend>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final List<Friend> friends = reader.readList($responseFields[2], new ResponseReader.ListReader<Friend>() {
           @Override
           public Friend read(ResponseReader.ListItemReader reader) throws IOException {
             return reader.readObject(new ResponseReader.ObjectReader<Friend>() {
@@ -289,7 +289,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
             });
           }
         });
-        final AsHuman asHuman = reader.readConditional((Field.ConditionalTypeField) fields[3], new ResponseReader.ConditionalTypeReader<AsHuman>() {
+        final AsHuman asHuman = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[3], new ResponseReader.ConditionalTypeReader<AsHuman>() {
           @Override
           public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
             return asHumanFieldMapper.map(reader);
@@ -301,6 +301,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
   }
 
   public static class Friend {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -366,21 +371,23 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     }
 
     public static final class Mapper implements ResponseFieldMapper<Friend> {
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false)
-      };
-
       @Override
       public Friend map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
         return new Friend(__typename, name);
       }
     }
   }
 
   public static class AsHuman {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forObjectList("friends", "friends", null, true),
+      ResponseField.forDouble("height", "height", null, true)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -477,18 +484,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public static final class Mapper implements ResponseFieldMapper<AsHuman> {
       final Friend1.Mapper friend1FieldMapper = new Friend1.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forObjectList("friends", "friends", null, true),
-        Field.forDouble("height", "height", null, true)
-      };
-
       @Override
       public AsHuman map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final List<Friend1> friends = reader.readList(fields[2], new ResponseReader.ListReader<Friend1>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final List<Friend1> friends = reader.readList($responseFields[2], new ResponseReader.ListReader<Friend1>() {
           @Override
           public Friend1 read(ResponseReader.ListItemReader reader) throws IOException {
             return reader.readObject(new ResponseReader.ObjectReader<Friend1>() {
@@ -499,13 +499,20 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
             });
           }
         });
-        final Double height = reader.readDouble(fields[3]);
+        final Double height = reader.readDouble($responseFields[3]);
         return new AsHuman(__typename, name, friends, height);
       }
     }
   }
 
   public static class Friend1 {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forScalarList("appearsIn", "appearsIn", null, false),
+      ResponseField.forObjectList("friends", "friends", null, true)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -602,24 +609,17 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public static final class Mapper implements ResponseFieldMapper<Friend1> {
       final Friend2.Mapper friend2FieldMapper = new Friend2.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forScalarList("appearsIn", "appearsIn", null, false),
-        Field.forObjectList("friends", "friends", null, true)
-      };
-
       @Override
       public Friend1 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final List<Episode> appearsIn = reader.readList(fields[2], new ResponseReader.ListReader<Episode>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final List<Episode> appearsIn = reader.readList($responseFields[2], new ResponseReader.ListReader<Episode>() {
           @Override
           public Episode read(ResponseReader.ListItemReader reader) throws IOException {
             return Episode.valueOf(reader.readString());
           }
         });
-        final List<Friend2> friends = reader.readList(fields[3], new ResponseReader.ListReader<Friend2>() {
+        final List<Friend2> friends = reader.readList($responseFields[3], new ResponseReader.ListReader<Friend2>() {
           @Override
           public Friend2 read(ResponseReader.ListItemReader reader) throws IOException {
             return reader.readObject(new ResponseReader.ObjectReader<Friend2>() {
@@ -636,6 +636,12 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
   }
 
   public static class Friend2 {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forFragment("__typename", "__typename", Arrays.asList("Human",
+      "Droid"))
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull Fragments fragments;
@@ -766,16 +772,10 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public static final class Mapper implements ResponseFieldMapper<Friend2> {
       final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forFragment("__typename", "__typename", Arrays.asList("Human",
-        "Droid"))
-      };
-
       @Override
       public Friend2 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final Fragments fragments = reader.readConditional((Field.ConditionalTypeField) fields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
           @Override
           public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
             return fragmentsFieldMapper.map(reader, conditionalType);

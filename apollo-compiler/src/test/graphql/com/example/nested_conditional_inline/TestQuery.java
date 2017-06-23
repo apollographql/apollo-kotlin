@@ -1,9 +1,9 @@
 package com.example.nested_conditional_inline;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -135,6 +135,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Data implements Operation.Data {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forObject("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+        .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
+          .put("kind", "Variable")
+          .put("variableName", "episode")
+        .build())
+      .build(), true)
+    };
+
     private final Optional<Hero> hero;
 
     private volatile String $toString;
@@ -188,18 +197,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final Hero.Mapper heroFieldMapper = new Hero.Mapper();
 
-      final Field[] fields = {
-        Field.forObject("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
-          .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
-            .put("kind", "Variable")
-            .put("variableName", "episode")
-          .build())
-        .build(), true)
-      };
-
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = reader.readObject(fields[0], new ResponseReader.ObjectReader<Hero>() {
+        final Hero hero = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<Hero>() {
           @Override
           public Hero read(ResponseReader reader) throws IOException {
             return heroFieldMapper.map(reader);
@@ -211,6 +211,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Hero {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")),
+      ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Droid"))
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -300,24 +307,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forInlineFragment("__typename", "__typename", Arrays.asList("Human")),
-        Field.forInlineFragment("__typename", "__typename", Arrays.asList("Droid"))
-      };
-
       @Override
       public Hero map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final AsHuman asHuman = reader.readConditional((Field.ConditionalTypeField) fields[2], new ResponseReader.ConditionalTypeReader<AsHuman>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final AsHuman asHuman = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[2], new ResponseReader.ConditionalTypeReader<AsHuman>() {
           @Override
           public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
             return asHumanFieldMapper.map(reader);
           }
         });
-        final AsDroid asDroid = reader.readConditional((Field.ConditionalTypeField) fields[3], new ResponseReader.ConditionalTypeReader<AsDroid>() {
+        final AsDroid asDroid = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[3], new ResponseReader.ConditionalTypeReader<AsDroid>() {
           @Override
           public AsDroid read(String conditionalType, ResponseReader reader) throws IOException {
             return asDroidFieldMapper.map(reader);
@@ -329,6 +329,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class AsHuman {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forObjectList("friends", "friends", null, true)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -405,17 +411,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<AsHuman> {
       final Friend.Mapper friendFieldMapper = new Friend.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forObjectList("friends", "friends", null, true)
-      };
-
       @Override
       public AsHuman map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final List<Friend> friends = reader.readList(fields[2], new ResponseReader.ListReader<Friend>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final List<Friend> friends = reader.readList($responseFields[2], new ResponseReader.ListReader<Friend>() {
           @Override
           public Friend read(ResponseReader.ListItemReader reader) throws IOException {
             return reader.readObject(new ResponseReader.ObjectReader<Friend>() {
@@ -432,6 +432,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Friend {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human"))
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -507,17 +513,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Friend> {
       final AsHuman1.Mapper asHuman1FieldMapper = new AsHuman1.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forInlineFragment("__typename", "__typename", Arrays.asList("Human"))
-      };
-
       @Override
       public Friend map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final AsHuman1 asHuman = reader.readConditional((Field.ConditionalTypeField) fields[2], new ResponseReader.ConditionalTypeReader<AsHuman1>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final AsHuman1 asHuman = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[2], new ResponseReader.ConditionalTypeReader<AsHuman1>() {
           @Override
           public AsHuman1 read(String conditionalType, ResponseReader reader) throws IOException {
             return asHuman1FieldMapper.map(reader);
@@ -529,6 +529,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class AsHuman1 {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forDouble("height", "height", new UnmodifiableMapBuilder<String, Object>(1)
+        .put("unit", "FOOT")
+      .build(), true)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -602,25 +610,23 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static final class Mapper implements ResponseFieldMapper<AsHuman1> {
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forDouble("height", "height", new UnmodifiableMapBuilder<String, Object>(1)
-          .put("unit", "FOOT")
-        .build(), true)
-      };
-
       @Override
       public AsHuman1 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final Double height = reader.readDouble(fields[2]);
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final Double height = reader.readDouble($responseFields[2]);
         return new AsHuman1(__typename, name, height);
       }
     }
   }
 
   public static class AsDroid {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forObjectList("friends", "friends", null, true)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -697,17 +703,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<AsDroid> {
       final Friend1.Mapper friend1FieldMapper = new Friend1.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forObjectList("friends", "friends", null, true)
-      };
-
       @Override
       public AsDroid map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final List<Friend1> friends = reader.readList(fields[2], new ResponseReader.ListReader<Friend1>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final List<Friend1> friends = reader.readList($responseFields[2], new ResponseReader.ListReader<Friend1>() {
           @Override
           public Friend1 read(ResponseReader.ListItemReader reader) throws IOException {
             return reader.readObject(new ResponseReader.ObjectReader<Friend1>() {
@@ -724,6 +724,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Friend1 {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human"))
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -799,17 +805,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Friend1> {
       final AsHuman2.Mapper asHuman2FieldMapper = new AsHuman2.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forInlineFragment("__typename", "__typename", Arrays.asList("Human"))
-      };
-
       @Override
       public Friend1 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final AsHuman2 asHuman = reader.readConditional((Field.ConditionalTypeField) fields[2], new ResponseReader.ConditionalTypeReader<AsHuman2>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final AsHuman2 asHuman = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[2], new ResponseReader.ConditionalTypeReader<AsHuman2>() {
           @Override
           public AsHuman2 read(String conditionalType, ResponseReader reader) throws IOException {
             return asHuman2FieldMapper.map(reader);
@@ -821,6 +821,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class AsHuman2 {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forDouble("height", "height", new UnmodifiableMapBuilder<String, Object>(1)
+        .put("unit", "METER")
+      .build(), true)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -894,19 +902,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static final class Mapper implements ResponseFieldMapper<AsHuman2> {
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forDouble("height", "height", new UnmodifiableMapBuilder<String, Object>(1)
-          .put("unit", "METER")
-        .build(), true)
-      };
-
       @Override
       public AsHuman2 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final Double height = reader.readDouble(fields[2]);
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final Double height = reader.readDouble($responseFields[2]);
         return new AsHuman2(__typename, name, height);
       }
     }

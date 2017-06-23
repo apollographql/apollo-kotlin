@@ -1,10 +1,10 @@
 package com.example.fragment_in_fragment;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -92,6 +92,12 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
   }
 
   public static class Data implements Operation.Data {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forObject("allStarships", "allStarships", new UnmodifiableMapBuilder<String, Object>(1)
+        .put("first", "7.0")
+      .build(), true)
+    };
+
     private final Optional<AllStarships1> allStarships;
 
     private volatile String $toString;
@@ -145,15 +151,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final AllStarships1.Mapper allStarships1FieldMapper = new AllStarships1.Mapper();
 
-      final Field[] fields = {
-        Field.forObject("allStarships", "allStarships", new UnmodifiableMapBuilder<String, Object>(1)
-          .put("first", "7.0")
-        .build(), true)
-      };
-
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final AllStarships1 allStarships = reader.readObject(fields[0], new ResponseReader.ObjectReader<AllStarships1>() {
+        final AllStarships1 allStarships = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<AllStarships1>() {
           @Override
           public AllStarships1 read(ResponseReader reader) throws IOException {
             return allStarships1FieldMapper.map(reader);
@@ -165,6 +165,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
   }
 
   public static class AllStarships1 {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forObjectList("edges", "edges", null, true)
+    };
+
     private final @Nonnull String __typename;
 
     private final Optional<List<Edge>> edges;
@@ -232,15 +237,10 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public static final class Mapper implements ResponseFieldMapper<AllStarships1> {
       final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forObjectList("edges", "edges", null, true)
-      };
-
       @Override
       public AllStarships1 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final List<Edge> edges = reader.readList(fields[1], new ResponseReader.ListReader<Edge>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final List<Edge> edges = reader.readList($responseFields[1], new ResponseReader.ListReader<Edge>() {
           @Override
           public Edge read(ResponseReader.ListItemReader reader) throws IOException {
             return reader.readObject(new ResponseReader.ObjectReader<Edge>() {
@@ -257,6 +257,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
   }
 
   public static class Edge {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forObject("node", "node", null, true)
+    };
+
     private final @Nonnull String __typename;
 
     private final Optional<Node> node;
@@ -324,15 +329,10 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public static final class Mapper implements ResponseFieldMapper<Edge> {
       final Node.Mapper nodeFieldMapper = new Node.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forObject("node", "node", null, true)
-      };
-
       @Override
       public Edge map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final Node node = reader.readObject(fields[1], new ResponseReader.ObjectReader<Node>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final Node node = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Node>() {
           @Override
           public Node read(ResponseReader reader) throws IOException {
             return nodeFieldMapper.map(reader);
@@ -344,6 +344,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
   }
 
   public static class Node {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forFragment("__typename", "__typename", Arrays.asList("Starship"))
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull Fragments fragments;
@@ -474,15 +479,10 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public static final class Mapper implements ResponseFieldMapper<Node> {
       final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forFragment("__typename", "__typename", Arrays.asList("Starship"))
-      };
-
       @Override
       public Node map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final Fragments fragments = reader.readConditional((Field.ConditionalTypeField) fields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
           @Override
           public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
             return fragmentsFieldMapper.map(reader, conditionalType);

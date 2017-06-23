@@ -1,9 +1,9 @@
 package com.example.input_object_type;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -133,6 +133,19 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
   }
 
   public static class Data implements Operation.Data {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forObject("createReview", "createReview", new UnmodifiableMapBuilder<String, Object>(2)
+        .put("review", new UnmodifiableMapBuilder<String, Object>(2)
+          .put("kind", "Variable")
+          .put("variableName", "review")
+        .build())
+        .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
+          .put("kind", "Variable")
+          .put("variableName", "ep")
+        .build())
+      .build(), true)
+    };
+
     private final Optional<CreateReview> createReview;
 
     private volatile String $toString;
@@ -186,22 +199,9 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final CreateReview.Mapper createReviewFieldMapper = new CreateReview.Mapper();
 
-      final Field[] fields = {
-        Field.forObject("createReview", "createReview", new UnmodifiableMapBuilder<String, Object>(2)
-          .put("review", new UnmodifiableMapBuilder<String, Object>(2)
-            .put("kind", "Variable")
-            .put("variableName", "review")
-          .build())
-          .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
-            .put("kind", "Variable")
-            .put("variableName", "ep")
-          .build())
-        .build(), true)
-      };
-
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final CreateReview createReview = reader.readObject(fields[0], new ResponseReader.ObjectReader<CreateReview>() {
+        final CreateReview createReview = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<CreateReview>() {
           @Override
           public CreateReview read(ResponseReader reader) throws IOException {
             return createReviewFieldMapper.map(reader);
@@ -213,6 +213,12 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
   }
 
   public static class CreateReview {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forInt("stars", "stars", null, false),
+      ResponseField.forString("commentary", "commentary", null, true)
+    };
+
     private final @Nonnull String __typename;
 
     private final int stars;
@@ -292,17 +298,11 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     }
 
     public static final class Mapper implements ResponseFieldMapper<CreateReview> {
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forInt("stars", "stars", null, false),
-        Field.forString("commentary", "commentary", null, true)
-      };
-
       @Override
       public CreateReview map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final int stars = reader.readInt(fields[1]);
-        final String commentary = reader.readString(fields[2]);
+        final String __typename = reader.readString($responseFields[0]);
+        final int stars = reader.readInt($responseFields[1]);
+        final String commentary = reader.readString($responseFields[2]);
         return new CreateReview(__typename, stars, commentary);
       }
     }

@@ -1,7 +1,7 @@
 package com.example.simple_fragment.fragment;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.GraphqlFragment;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import java.io.IOException;
@@ -16,6 +16,11 @@ import javax.annotation.Nonnull;
 
 @Generated("Apollo GraphQL")
 public class HeroDetails implements GraphqlFragment {
+  static final ResponseField[] $responseFields = {
+    ResponseField.forString("__typename", "__typename", null, false),
+    ResponseField.forString("name", "name", null, false)
+  };
+
   public static final String FRAGMENT_DEFINITION = "fragment HeroDetails on Character {\n"
       + "  __typename\n"
       + "  name\n"
@@ -88,15 +93,10 @@ public class HeroDetails implements GraphqlFragment {
   }
 
   public static final class Mapper implements ResponseFieldMapper<HeroDetails> {
-    final Field[] fields = {
-      Field.forString("__typename", "__typename", null, false),
-      Field.forString("name", "name", null, false)
-    };
-
     @Override
     public HeroDetails map(ResponseReader reader) throws IOException {
-      final String __typename = reader.readString(fields[0]);
-      final String name = reader.readString(fields[1]);
+      final String __typename = reader.readString($responseFields[0]);
+      final String name = reader.readString($responseFields[1]);
       return new HeroDetails(__typename, name);
     }
   }

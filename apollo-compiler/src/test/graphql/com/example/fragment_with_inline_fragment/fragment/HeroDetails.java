@@ -1,7 +1,7 @@
 package com.example.fragment_with_inline_fragment.fragment;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.GraphqlFragment;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -19,6 +19,13 @@ import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
 public class HeroDetails implements GraphqlFragment {
+  static final ResponseField[] $responseFields = {
+    ResponseField.forString("__typename", "__typename", null, false),
+    ResponseField.forString("name", "name", null, false),
+    ResponseField.forObject("friendsConnection", "friendsConnection", null, false),
+    ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Droid"))
+  };
+
   public static final String FRAGMENT_DEFINITION = "fragment HeroDetails on Character {\n"
       + "  __typename\n"
       + "  name\n"
@@ -137,24 +144,17 @@ public class HeroDetails implements GraphqlFragment {
 
     final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
-    final Field[] fields = {
-      Field.forString("__typename", "__typename", null, false),
-      Field.forString("name", "name", null, false),
-      Field.forObject("friendsConnection", "friendsConnection", null, false),
-      Field.forInlineFragment("__typename", "__typename", Arrays.asList("Droid"))
-    };
-
     @Override
     public HeroDetails map(ResponseReader reader) throws IOException {
-      final String __typename = reader.readString(fields[0]);
-      final String name = reader.readString(fields[1]);
-      final FriendsConnection friendsConnection = reader.readObject(fields[2], new ResponseReader.ObjectReader<FriendsConnection>() {
+      final String __typename = reader.readString($responseFields[0]);
+      final String name = reader.readString($responseFields[1]);
+      final FriendsConnection friendsConnection = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<FriendsConnection>() {
         @Override
         public FriendsConnection read(ResponseReader reader) throws IOException {
           return friendsConnectionFieldMapper.map(reader);
         }
       });
-      final AsDroid asDroid = reader.readConditional((Field.ConditionalTypeField) fields[3], new ResponseReader.ConditionalTypeReader<AsDroid>() {
+      final AsDroid asDroid = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[3], new ResponseReader.ConditionalTypeReader<AsDroid>() {
         @Override
         public AsDroid read(String conditionalType, ResponseReader reader) throws IOException {
           return asDroidFieldMapper.map(reader);
@@ -165,6 +165,12 @@ public class HeroDetails implements GraphqlFragment {
   }
 
   public static class FriendsConnection {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forInt("totalCount", "totalCount", null, true),
+      ResponseField.forObjectList("edges", "edges", null, true)
+    };
+
     private final @Nonnull String __typename;
 
     private final Optional<Integer> totalCount;
@@ -247,17 +253,11 @@ public class HeroDetails implements GraphqlFragment {
     public static final class Mapper implements ResponseFieldMapper<FriendsConnection> {
       final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forInt("totalCount", "totalCount", null, true),
-        Field.forObjectList("edges", "edges", null, true)
-      };
-
       @Override
       public FriendsConnection map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final Integer totalCount = reader.readInt(fields[1]);
-        final List<Edge> edges = reader.readList(fields[2], new ResponseReader.ListReader<Edge>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final Integer totalCount = reader.readInt($responseFields[1]);
+        final List<Edge> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge>() {
           @Override
           public Edge read(ResponseReader.ListItemReader reader) throws IOException {
             return reader.readObject(new ResponseReader.ObjectReader<Edge>() {
@@ -274,6 +274,11 @@ public class HeroDetails implements GraphqlFragment {
   }
 
   public static class Edge {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forObject("node", "node", null, true)
+    };
+
     private final @Nonnull String __typename;
 
     private final Optional<Node> node;
@@ -341,15 +346,10 @@ public class HeroDetails implements GraphqlFragment {
     public static final class Mapper implements ResponseFieldMapper<Edge> {
       final Node.Mapper nodeFieldMapper = new Node.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forObject("node", "node", null, true)
-      };
-
       @Override
       public Edge map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final Node node = reader.readObject(fields[1], new ResponseReader.ObjectReader<Node>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final Node node = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Node>() {
           @Override
           public Node read(ResponseReader reader) throws IOException {
             return nodeFieldMapper.map(reader);
@@ -361,6 +361,11 @@ public class HeroDetails implements GraphqlFragment {
   }
 
   public static class Node {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -426,21 +431,23 @@ public class HeroDetails implements GraphqlFragment {
     }
 
     public static final class Mapper implements ResponseFieldMapper<Node> {
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false)
-      };
-
       @Override
       public Node map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
         return new Node(__typename, name);
       }
     }
   }
 
   public static class AsDroid {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forObject("friendsConnection", "friendsConnection", null, false),
+      ResponseField.forString("primaryFunction", "primaryFunction", null, true)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -537,30 +544,29 @@ public class HeroDetails implements GraphqlFragment {
     public static final class Mapper implements ResponseFieldMapper<AsDroid> {
       final FriendsConnection1.Mapper friendsConnection1FieldMapper = new FriendsConnection1.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forObject("friendsConnection", "friendsConnection", null, false),
-        Field.forString("primaryFunction", "primaryFunction", null, true)
-      };
-
       @Override
       public AsDroid map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final FriendsConnection1 friendsConnection = reader.readObject(fields[2], new ResponseReader.ObjectReader<FriendsConnection1>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final FriendsConnection1 friendsConnection = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<FriendsConnection1>() {
           @Override
           public FriendsConnection1 read(ResponseReader reader) throws IOException {
             return friendsConnection1FieldMapper.map(reader);
           }
         });
-        final String primaryFunction = reader.readString(fields[3]);
+        final String primaryFunction = reader.readString($responseFields[3]);
         return new AsDroid(__typename, name, friendsConnection, primaryFunction);
       }
     }
   }
 
   public static class FriendsConnection1 {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forInt("totalCount", "totalCount", null, true),
+      ResponseField.forObjectList("edges", "edges", null, true)
+    };
+
     private final @Nonnull String __typename;
 
     private final Optional<Integer> totalCount;
@@ -643,17 +649,11 @@ public class HeroDetails implements GraphqlFragment {
     public static final class Mapper implements ResponseFieldMapper<FriendsConnection1> {
       final Edge1.Mapper edge1FieldMapper = new Edge1.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forInt("totalCount", "totalCount", null, true),
-        Field.forObjectList("edges", "edges", null, true)
-      };
-
       @Override
       public FriendsConnection1 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final Integer totalCount = reader.readInt(fields[1]);
-        final List<Edge1> edges = reader.readList(fields[2], new ResponseReader.ListReader<Edge1>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final Integer totalCount = reader.readInt($responseFields[1]);
+        final List<Edge1> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge1>() {
           @Override
           public Edge1 read(ResponseReader.ListItemReader reader) throws IOException {
             return reader.readObject(new ResponseReader.ObjectReader<Edge1>() {
@@ -670,6 +670,11 @@ public class HeroDetails implements GraphqlFragment {
   }
 
   public static class Edge1 {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forObject("node", "node", null, true)
+    };
+
     private final @Nonnull String __typename;
 
     private final Optional<Node1> node;
@@ -737,15 +742,10 @@ public class HeroDetails implements GraphqlFragment {
     public static final class Mapper implements ResponseFieldMapper<Edge1> {
       final Node1.Mapper node1FieldMapper = new Node1.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forObject("node", "node", null, true)
-      };
-
       @Override
       public Edge1 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final Node1 node = reader.readObject(fields[1], new ResponseReader.ObjectReader<Node1>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final Node1 node = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Node1>() {
           @Override
           public Node1 read(ResponseReader reader) throws IOException {
             return node1FieldMapper.map(reader);
@@ -757,6 +757,11 @@ public class HeroDetails implements GraphqlFragment {
   }
 
   public static class Node1 {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -822,15 +827,10 @@ public class HeroDetails implements GraphqlFragment {
     }
 
     public static final class Mapper implements ResponseFieldMapper<Node1> {
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false)
-      };
-
       @Override
       public Node1 map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
         return new Node1(__typename, name);
       }
     }

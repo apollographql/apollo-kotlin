@@ -1,9 +1,9 @@
 package com.example.hero_details_guava;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.google.common.base.Optional;
@@ -91,6 +91,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Data implements Operation.Data {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forObject("hero", "hero", null, true)
+    };
+
     private final Optional<Hero> hero;
 
     private volatile String $toString;
@@ -144,13 +148,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final Hero.Mapper heroFieldMapper = new Hero.Mapper();
 
-      final Field[] fields = {
-        Field.forObject("hero", "hero", null, true)
-      };
-
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = reader.readObject(fields[0], new ResponseReader.ObjectReader<Hero>() {
+        final Hero hero = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<Hero>() {
           @Override
           public Hero read(ResponseReader reader) throws IOException {
             return heroFieldMapper.map(reader);
@@ -162,6 +162,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Hero {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forObject("friendsConnection", "friendsConnection", null, false)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -244,17 +250,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Hero> {
       final FriendsConnection.Mapper friendsConnectionFieldMapper = new FriendsConnection.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forObject("friendsConnection", "friendsConnection", null, false)
-      };
-
       @Override
       public Hero map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final FriendsConnection friendsConnection = reader.readObject(fields[2], new ResponseReader.ObjectReader<FriendsConnection>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final FriendsConnection friendsConnection = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<FriendsConnection>() {
           @Override
           public FriendsConnection read(ResponseReader reader) throws IOException {
             return friendsConnectionFieldMapper.map(reader);
@@ -266,6 +266,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class FriendsConnection {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forInt("totalCount", "totalCount", null, true),
+      ResponseField.forObjectList("edges", "edges", null, true)
+    };
+
     private final @Nonnull String __typename;
 
     private final Optional<Integer> totalCount;
@@ -348,17 +354,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<FriendsConnection> {
       final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forInt("totalCount", "totalCount", null, true),
-        Field.forObjectList("edges", "edges", null, true)
-      };
-
       @Override
       public FriendsConnection map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final Integer totalCount = reader.readInt(fields[1]);
-        final List<Edge> edges = reader.readList(fields[2], new ResponseReader.ListReader<Edge>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final Integer totalCount = reader.readInt($responseFields[1]);
+        final List<Edge> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge>() {
           @Override
           public Edge read(ResponseReader.ListItemReader reader) throws IOException {
             return reader.readObject(new ResponseReader.ObjectReader<Edge>() {
@@ -375,6 +375,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Edge {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forObject("node", "node", null, true)
+    };
+
     private final @Nonnull String __typename;
 
     private final Optional<Node> node;
@@ -442,15 +447,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Edge> {
       final Node.Mapper nodeFieldMapper = new Node.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forObject("node", "node", null, true)
-      };
-
       @Override
       public Edge map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final Node node = reader.readObject(fields[1], new ResponseReader.ObjectReader<Node>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final Node node = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Node>() {
           @Override
           public Node read(ResponseReader reader) throws IOException {
             return nodeFieldMapper.map(reader);
@@ -462,6 +462,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Node {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -527,15 +532,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static final class Mapper implements ResponseFieldMapper<Node> {
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false)
-      };
-
       @Override
       public Node map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
         return new Node(__typename, name);
       }
     }

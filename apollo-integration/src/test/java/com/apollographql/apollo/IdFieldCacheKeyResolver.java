@@ -1,6 +1,6 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
@@ -11,12 +11,12 @@ import javax.annotation.Nonnull;
 
 public class IdFieldCacheKeyResolver extends CacheKeyResolver {
   @Nonnull @Override
-  public CacheKey fromFieldRecordSet(@Nonnull Field field, @Nonnull Map<String, Object> recordSet) {
+  public CacheKey fromFieldRecordSet(@Nonnull ResponseField field, @Nonnull Map<String, Object> recordSet) {
     return formatCacheKey((String) recordSet.get("id"));
   }
 
   @Nonnull @Override
-  public CacheKey fromFieldArguments(@Nonnull Field field, @Nonnull Operation.Variables variables) {
+  public CacheKey fromFieldArguments(@Nonnull ResponseField field, @Nonnull Operation.Variables variables) {
     return formatCacheKey((String) field.resolveArgument("id", variables));
   }
 

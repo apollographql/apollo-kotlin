@@ -1,10 +1,10 @@
 package com.example.no_accessors;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -86,6 +86,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Data implements Operation.Data {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forObject("hero", "hero", null, true)
+    };
+
     public final Optional<Hero> hero;
 
     private volatile String $toString;
@@ -135,13 +139,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final Hero.Mapper heroFieldMapper = new Hero.Mapper();
 
-      final Field[] fields = {
-        Field.forObject("hero", "hero", null, true)
-      };
-
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = reader.readObject(fields[0], new ResponseReader.ObjectReader<Hero>() {
+        final Hero hero = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<Hero>() {
           @Override
           public Hero read(ResponseReader reader) throws IOException {
             return heroFieldMapper.map(reader);
@@ -153,6 +153,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Hero {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forScalarList("appearsIn", "appearsIn", null, false),
+      ResponseField.forFragment("__typename", "__typename", Arrays.asList("Human",
+      "Droid"))
+    };
+
     public final @Nonnull String __typename;
 
     /**
@@ -292,25 +300,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Hero> {
       final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forScalarList("appearsIn", "appearsIn", null, false),
-        Field.forFragment("__typename", "__typename", Arrays.asList("Human",
-        "Droid"))
-      };
-
       @Override
       public Hero map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final List<Episode> appearsIn = reader.readList(fields[2], new ResponseReader.ListReader<Episode>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final List<Episode> appearsIn = reader.readList($responseFields[2], new ResponseReader.ListReader<Episode>() {
           @Override
           public Episode read(ResponseReader.ListItemReader reader) throws IOException {
             return Episode.valueOf(reader.readString());
           }
         });
-        final Fragments fragments = reader.readConditional((Field.ConditionalTypeField) fields[3], new ResponseReader.ConditionalTypeReader<Fragments>() {
+        final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[3], new ResponseReader.ConditionalTypeReader<Fragments>() {
           @Override
           public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
             return fragmentsFieldMapper.map(reader, conditionalType);

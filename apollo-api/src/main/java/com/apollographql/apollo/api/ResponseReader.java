@@ -8,23 +8,23 @@ import java.util.List;
  */
 public interface ResponseReader {
 
-  String readString(Field field) throws IOException;
+  String readString(ResponseField field) throws IOException;
 
-  Integer readInt(Field field) throws IOException;
+  Integer readInt(ResponseField field) throws IOException;
 
-  Long readLong(Field field) throws IOException;
+  Long readLong(ResponseField field) throws IOException;
 
-  Double readDouble(Field field) throws IOException;
+  Double readDouble(ResponseField field) throws IOException;
 
-  Boolean readBoolean(Field field) throws IOException;
+  Boolean readBoolean(ResponseField field) throws IOException;
 
-  <T> T readObject(Field field, ResponseReader.ObjectReader<T> objectReader) throws IOException;
+  <T> T readObject(ResponseField field, ResponseReader.ObjectReader<T> objectReader) throws IOException;
 
-  <T> List<T> readList(Field field, ResponseReader.ListReader listReader) throws IOException;
+  <T> List<T> readList(ResponseField field, ResponseReader.ListReader listReader) throws IOException;
 
-  <T> T readCustomType(Field.CustomTypeField field) throws IOException;
+  <T> T readCustomType(ResponseField.CustomTypeField field) throws IOException;
 
-  <T> T readConditional(Field.ConditionalTypeField field, ConditionalTypeReader<T> conditionalTypeReader)
+  <T> T readConditional(ResponseField.ConditionalTypeField field, ConditionalTypeReader<T> conditionalTypeReader)
       throws IOException;
 
   interface ObjectReader<T> {

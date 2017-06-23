@@ -1,9 +1,9 @@
 package com.example.simple_inline_fragment;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -88,6 +88,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Data implements Operation.Data {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forObject("hero", "hero", null, true)
+    };
+
     private final Optional<Hero> hero;
 
     private volatile String $toString;
@@ -141,13 +145,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final Hero.Mapper heroFieldMapper = new Hero.Mapper();
 
-      final Field[] fields = {
-        Field.forObject("hero", "hero", null, true)
-      };
-
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = reader.readObject(fields[0], new ResponseReader.ObjectReader<Hero>() {
+        final Hero hero = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<Hero>() {
           @Override
           public Hero read(ResponseReader reader) throws IOException {
             return heroFieldMapper.map(reader);
@@ -159,6 +159,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Hero {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")),
+      ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Droid"))
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -251,24 +258,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forInlineFragment("__typename", "__typename", Arrays.asList("Human")),
-        Field.forInlineFragment("__typename", "__typename", Arrays.asList("Droid"))
-      };
-
       @Override
       public Hero map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final AsHuman asHuman = reader.readConditional((Field.ConditionalTypeField) fields[2], new ResponseReader.ConditionalTypeReader<AsHuman>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final AsHuman asHuman = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[2], new ResponseReader.ConditionalTypeReader<AsHuman>() {
           @Override
           public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
             return asHumanFieldMapper.map(reader);
           }
         });
-        final AsDroid asDroid = reader.readConditional((Field.ConditionalTypeField) fields[3], new ResponseReader.ConditionalTypeReader<AsDroid>() {
+        final AsDroid asDroid = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[3], new ResponseReader.ConditionalTypeReader<AsDroid>() {
           @Override
           public AsDroid read(String conditionalType, ResponseReader reader) throws IOException {
             return asDroidFieldMapper.map(reader);
@@ -280,6 +280,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class AsHuman {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forDouble("height", "height", null, true)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -359,23 +365,23 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static final class Mapper implements ResponseFieldMapper<AsHuman> {
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forDouble("height", "height", null, true)
-      };
-
       @Override
       public AsHuman map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final Double height = reader.readDouble(fields[2]);
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final Double height = reader.readDouble($responseFields[2]);
         return new AsHuman(__typename, name, height);
       }
     }
   }
 
   public static class AsDroid {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forString("primaryFunction", "primaryFunction", null, true)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -456,17 +462,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static final class Mapper implements ResponseFieldMapper<AsDroid> {
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forString("primaryFunction", "primaryFunction", null, true)
-      };
-
       @Override
       public AsDroid map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final String primaryFunction = reader.readString(fields[2]);
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final String primaryFunction = reader.readString($responseFields[2]);
         return new AsDroid(__typename, name, primaryFunction);
       }
     }

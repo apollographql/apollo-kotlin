@@ -1,9 +1,9 @@
 package com.example.scalar_types;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -77,6 +77,20 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Data implements Operation.Data {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("graphQlString", "graphQlString", null, true),
+      ResponseField.forString("graphQlIdNullable", "graphQlIdNullable", null, true),
+      ResponseField.forString("graphQlIdNonNullable", "graphQlIdNonNullable", null, false),
+      ResponseField.forInt("graphQlIntNullable", "graphQlIntNullable", null, true),
+      ResponseField.forInt("graphQlIntNonNullable", "graphQlIntNonNullable", null, false),
+      ResponseField.forDouble("graphQlFloatNullable", "graphQlFloatNullable", null, true),
+      ResponseField.forDouble("graphQlFloatNonNullable", "graphQlFloatNonNullable", null, false),
+      ResponseField.forBoolean("graphQlBooleanNullable", "graphQlBooleanNullable", null, true),
+      ResponseField.forBoolean("graphQlBooleanNonNullable", "graphQlBooleanNonNullable", null, false),
+      ResponseField.forScalarList("graphQlListOfInt", "graphQlListOfInt", null, true),
+      ResponseField.forObjectList("graphQlListOfObjects", "graphQlListOfObjects", null, true)
+    };
+
     private final Optional<String> graphQlString;
 
     private final Optional<String> graphQlIdNullable;
@@ -245,38 +259,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final GraphQlListOfObject.Mapper graphQlListOfObjectFieldMapper = new GraphQlListOfObject.Mapper();
 
-      final Field[] fields = {
-        Field.forString("graphQlString", "graphQlString", null, true),
-        Field.forString("graphQlIdNullable", "graphQlIdNullable", null, true),
-        Field.forString("graphQlIdNonNullable", "graphQlIdNonNullable", null, false),
-        Field.forInt("graphQlIntNullable", "graphQlIntNullable", null, true),
-        Field.forInt("graphQlIntNonNullable", "graphQlIntNonNullable", null, false),
-        Field.forDouble("graphQlFloatNullable", "graphQlFloatNullable", null, true),
-        Field.forDouble("graphQlFloatNonNullable", "graphQlFloatNonNullable", null, false),
-        Field.forBoolean("graphQlBooleanNullable", "graphQlBooleanNullable", null, true),
-        Field.forBoolean("graphQlBooleanNonNullable", "graphQlBooleanNonNullable", null, false),
-        Field.forScalarList("graphQlListOfInt", "graphQlListOfInt", null, true),
-        Field.forObjectList("graphQlListOfObjects", "graphQlListOfObjects", null, true)
-      };
-
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final String graphQlString = reader.readString(fields[0]);
-        final String graphQlIdNullable = reader.readString(fields[1]);
-        final String graphQlIdNonNullable = reader.readString(fields[2]);
-        final Integer graphQlIntNullable = reader.readInt(fields[3]);
-        final int graphQlIntNonNullable = reader.readInt(fields[4]);
-        final Double graphQlFloatNullable = reader.readDouble(fields[5]);
-        final double graphQlFloatNonNullable = reader.readDouble(fields[6]);
-        final Boolean graphQlBooleanNullable = reader.readBoolean(fields[7]);
-        final boolean graphQlBooleanNonNullable = reader.readBoolean(fields[8]);
-        final List<Integer> graphQlListOfInt = reader.readList(fields[9], new ResponseReader.ListReader<Integer>() {
+        final String graphQlString = reader.readString($responseFields[0]);
+        final String graphQlIdNullable = reader.readString($responseFields[1]);
+        final String graphQlIdNonNullable = reader.readString($responseFields[2]);
+        final Integer graphQlIntNullable = reader.readInt($responseFields[3]);
+        final int graphQlIntNonNullable = reader.readInt($responseFields[4]);
+        final Double graphQlFloatNullable = reader.readDouble($responseFields[5]);
+        final double graphQlFloatNonNullable = reader.readDouble($responseFields[6]);
+        final Boolean graphQlBooleanNullable = reader.readBoolean($responseFields[7]);
+        final boolean graphQlBooleanNonNullable = reader.readBoolean($responseFields[8]);
+        final List<Integer> graphQlListOfInt = reader.readList($responseFields[9], new ResponseReader.ListReader<Integer>() {
           @Override
           public Integer read(ResponseReader.ListItemReader reader) throws IOException {
             return reader.readInt();
           }
         });
-        final List<GraphQlListOfObject> graphQlListOfObjects = reader.readList(fields[10], new ResponseReader.ListReader<GraphQlListOfObject>() {
+        final List<GraphQlListOfObject> graphQlListOfObjects = reader.readList($responseFields[10], new ResponseReader.ListReader<GraphQlListOfObject>() {
           @Override
           public GraphQlListOfObject read(ResponseReader.ListItemReader reader) throws IOException {
             return reader.readObject(new ResponseReader.ObjectReader<GraphQlListOfObject>() {
@@ -293,6 +293,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class GraphQlListOfObject {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forInt("someField", "someField", null, false)
+    };
+
     private final int someField;
 
     private volatile String $toString;
@@ -344,13 +348,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static final class Mapper implements ResponseFieldMapper<GraphQlListOfObject> {
-      final Field[] fields = {
-        Field.forInt("someField", "someField", null, false)
-      };
-
       @Override
       public GraphQlListOfObject map(ResponseReader reader) throws IOException {
-        final int someField = reader.readInt(fields[0]);
+        final int someField = reader.readInt($responseFields[0]);
         return new GraphQlListOfObject(someField);
       }
     }

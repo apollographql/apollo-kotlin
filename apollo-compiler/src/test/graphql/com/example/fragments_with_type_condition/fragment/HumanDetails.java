@@ -1,7 +1,7 @@
 package com.example.fragments_with_type_condition.fragment;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.GraphqlFragment;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -19,6 +19,12 @@ import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
 public class HumanDetails implements GraphqlFragment {
+  static final ResponseField[] $responseFields = {
+    ResponseField.forString("__typename", "__typename", null, false),
+    ResponseField.forString("name", "name", null, false),
+    ResponseField.forDouble("height", "height", null, true)
+  };
+
   public static final String FRAGMENT_DEFINITION = "fragment HumanDetails on Human {\n"
       + "  __typename\n"
       + "  name\n"
@@ -106,17 +112,11 @@ public class HumanDetails implements GraphqlFragment {
   }
 
   public static final class Mapper implements ResponseFieldMapper<HumanDetails> {
-    final Field[] fields = {
-      Field.forString("__typename", "__typename", null, false),
-      Field.forString("name", "name", null, false),
-      Field.forDouble("height", "height", null, true)
-    };
-
     @Override
     public HumanDetails map(ResponseReader reader) throws IOException {
-      final String __typename = reader.readString(fields[0]);
-      final String name = reader.readString(fields[1]);
-      final Double height = reader.readDouble(fields[2]);
+      final String __typename = reader.readString($responseFields[0]);
+      final String name = reader.readString($responseFields[1]);
+      final Double height = reader.readDouble($responseFields[2]);
       return new HumanDetails(__typename, name, height);
     }
   }

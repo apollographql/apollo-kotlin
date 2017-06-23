@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
@@ -270,10 +271,33 @@ fun TypeSpec.flatten(excludeTypeNames: List<String>): TypeSpec {
       .build()
 }
 
+fun TypeName.isList() =
+    (this is ParameterizedTypeName && rawType == ClassNames.LIST)
+
+fun TypeName.isEnum(context: CodeGenerationContext) =
+    ((this is ClassName) && context.typeDeclarations.count { it.kind == "EnumType" && it.name == simpleName() } > 0)
+
+fun String.isCustomScalarType(context: CodeGenerationContext) =
+    context.customTypeMap.containsKey(normalizeGraphQlType(this))
+
+fun TypeName.isScalar(context: CodeGenerationContext) = (Util.SCALAR_TYPES.contains(this) || isEnum(context))
+
+fun normalizeGraphQlType(type: String) =
+    type.removeSuffix("!").removeSurrounding(prefix = "[", suffix = "]").removeSuffix("!")
+
+fun TypeName.listParamType(): TypeName {
+  return (this as ParameterizedTypeName)
+      .typeArguments
+      .first()
+      .let { if (it is WildcardTypeName) it.upperBounds.first() else it }
+}
+
 object Util {
   const val MAPPER_TYPE_NAME: String = "Mapper"
   const val FIELD_MAPPER_VAR: String = "FieldMapper"
   const val MEMOIZED_HASH_CODE_VAR: String = "\$hashCode"
   const val MEMOIZED_HASH_CODE_FLAG_VAR: String = "\$hashCodeMemoized"
   const val MEMOIZED_TO_STRING_VAR: String = "\$toString"
+  val SCALAR_TYPES = listOf(ClassNames.STRING, TypeName.INT, TypeName.INT.box(), TypeName.LONG,
+      TypeName.LONG.box(), TypeName.DOUBLE, TypeName.DOUBLE.box(), TypeName.BOOLEAN, TypeName.BOOLEAN.box())
 }

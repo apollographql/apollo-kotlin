@@ -1,9 +1,9 @@
 package com.example.custom_scalar_type;
 
-import com.apollographql.apollo.api.Field;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.internal.Optional;
@@ -86,6 +86,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Data implements Operation.Data {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forObject("hero", "hero", null, true)
+    };
+
     private final Optional<Hero> hero;
 
     private volatile String $toString;
@@ -139,13 +143,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final Hero.Mapper heroFieldMapper = new Hero.Mapper();
 
-      final Field[] fields = {
-        Field.forObject("hero", "hero", null, true)
-      };
-
       @Override
       public Data map(ResponseReader reader) throws IOException {
-        final Hero hero = reader.readObject(fields[0], new ResponseReader.ObjectReader<Hero>() {
+        final Hero hero = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<Hero>() {
           @Override
           public Hero read(ResponseReader reader) throws IOException {
             return heroFieldMapper.map(reader);
@@ -157,6 +157,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static class Hero {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
+      ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE),
+      ResponseField.forCustomList("appearanceDates", "appearanceDates", null, false),
+      ResponseField.forCustomType("fieldWithUnsupportedType", "fieldWithUnsupportedType", null, false, CustomType.UNSUPPORTEDTYPE),
+      ResponseField.forCustomType("profileLink", "profileLink", null, false, CustomType.URL),
+      ResponseField.forCustomList("links", "links", null, false)
+    };
+
     private final @Nonnull String __typename;
 
     private final @Nonnull String name;
@@ -294,30 +304,20 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static final class Mapper implements ResponseFieldMapper<Hero> {
-      final Field[] fields = {
-        Field.forString("__typename", "__typename", null, false),
-        Field.forString("name", "name", null, false),
-        Field.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE),
-        Field.forCustomList("appearanceDates", "appearanceDates", null, false),
-        Field.forCustomType("fieldWithUnsupportedType", "fieldWithUnsupportedType", null, false, CustomType.UNSUPPORTEDTYPE),
-        Field.forCustomType("profileLink", "profileLink", null, false, CustomType.URL),
-        Field.forCustomList("links", "links", null, false)
-      };
-
       @Override
       public Hero map(ResponseReader reader) throws IOException {
-        final String __typename = reader.readString(fields[0]);
-        final String name = reader.readString(fields[1]);
-        final Date birthDate = reader.readCustomType((Field.CustomTypeField) fields[2]);
-        final List<Date> appearanceDates = reader.readList(fields[3], new ResponseReader.ListReader<Date>() {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final Date birthDate = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[2]);
+        final List<Date> appearanceDates = reader.readList($responseFields[3], new ResponseReader.ListReader<Date>() {
           @Override
           public Date read(ResponseReader.ListItemReader reader) throws IOException {
             return reader.readCustomType(CustomType.DATE);
           }
         });
-        final Object fieldWithUnsupportedType = reader.readCustomType((Field.CustomTypeField) fields[4]);
-        final String profileLink = reader.readCustomType((Field.CustomTypeField) fields[5]);
-        final List<String> links = reader.readList(fields[6], new ResponseReader.ListReader<String>() {
+        final Object fieldWithUnsupportedType = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[4]);
+        final String profileLink = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[5]);
+        final List<String> links = reader.readList($responseFields[6], new ResponseReader.ListReader<String>() {
           @Override
           public String read(ResponseReader.ListItemReader reader) throws IOException {
             return reader.readCustomType(CustomType.URL);

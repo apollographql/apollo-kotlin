@@ -1,7 +1,7 @@
 package com.apollographql.apollo.api.graphql;
 
 import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.Field;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 
 import org.junit.Test;
@@ -21,7 +21,7 @@ public class CacheKeyForFieldTest {
 
   @Test
   public void testFieldWithNoArguments() {
-    Field field = Field.forString("hero", "hero", null, false);
+    ResponseField field = ResponseField.forString("hero", "hero", null, false);
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
         return super.valueMap();
@@ -32,7 +32,7 @@ public class CacheKeyForFieldTest {
 
   @Test
   public void testFieldWithNoArgumentsWithAlias() {
-    Field field = Field.forString("r2", "hero", null, false);
+    ResponseField field = ResponseField.forString("r2", "hero", null, false);
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
         return super.valueMap();
@@ -44,7 +44,7 @@ public class CacheKeyForFieldTest {
   @Test
   public void testFieldWithArgument() {
     //noinspection unchecked
-    Field field = Field.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", "JEDI")
         .build(), false);
 
@@ -59,7 +59,7 @@ public class CacheKeyForFieldTest {
   @Test
   public void testFieldWithArgumentAndAlias() {
     //noinspection unchecked
-    Field field = Field.forString("r2", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    ResponseField field = ResponseField.forString("r2", "hero", new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", "JEDI")
         .build(), false);
 
@@ -74,7 +74,7 @@ public class CacheKeyForFieldTest {
   @Test
   public void testFieldWithVariableArgument() {
     //noinspection unchecked
-    Field field = Field.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
             .put("kind", "Variable")
             .put("variableName", "episode")
@@ -94,7 +94,7 @@ public class CacheKeyForFieldTest {
   @Test
   public void testFieldWithVariableArgumentNull() {
     //noinspection unchecked
-    Field field = Field.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
             .put("kind", "Variable")
             .put("variableName", "episode")
@@ -114,7 +114,7 @@ public class CacheKeyForFieldTest {
   @Test
   public void testFieldWithMultipleArgument() {
     //noinspection unchecked
-    Field field = Field.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", "JEDI")
         .put("color", "blue")
         .build(), false);
@@ -130,7 +130,7 @@ public class CacheKeyForFieldTest {
   @Test
   public void testFieldWithMultipleArgumentsOrderIndependent() {
     //noinspection unchecked
-    Field field = Field.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", "JEDI")
         .put("color", "blue")
         .build(), false);
@@ -142,7 +142,7 @@ public class CacheKeyForFieldTest {
     };
 
     //noinspection unchecked
-    Field fieldTwo = Field.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    ResponseField fieldTwo = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
         .put("color", "blue")
         .put("episode", "JEDI")
         .build(), false);
@@ -153,7 +153,7 @@ public class CacheKeyForFieldTest {
   @Test
   public void testFieldWithNestedObject() {
     //noinspection unchecked
-    Field field = Field.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", "JEDI")
         .put("nested", new UnmodifiableMapBuilder<String, Object>(2)
             .put("foo", 1)
@@ -172,7 +172,7 @@ public class CacheKeyForFieldTest {
   @Test
   public void testFieldWithNestedObjectAndVariables() {
     //noinspection unchecked
-    Field field = Field.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", "JEDI")
         .put("nested", new UnmodifiableMapBuilder<String, Object>(2)
             .put("foo", new UnmodifiableMapBuilder<String, Object>(2)
