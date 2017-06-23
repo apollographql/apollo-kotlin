@@ -141,7 +141,8 @@ import java.util.Map;
     return result != null ? Collections.unmodifiableList(result) : null;
   }
 
-  @SuppressWarnings("unchecked") @Override public <T> T readCustomType(ResponseField.CustomTypeField field) throws IOException {
+  @SuppressWarnings("unchecked") @Override public <T> T readCustomType(ResponseField.CustomTypeField field)
+      throws IOException {
     willResolve(field);
     Object value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());

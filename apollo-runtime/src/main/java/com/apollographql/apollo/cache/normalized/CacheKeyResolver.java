@@ -36,7 +36,9 @@ public abstract class CacheKeyResolver {
     throw new IllegalArgumentException("Unknown operation type.");
   }
 
-  @Nonnull public abstract CacheKey fromFieldRecordSet(@Nonnull ResponseField field, @Nonnull Map<String, Object> recordSet);
+  @Nonnull public abstract CacheKey fromFieldRecordSet(@Nonnull ResponseField field,
+      @Nonnull Map<String, Object> recordSet);
 
-  @Nonnull public abstract CacheKey fromFieldArguments(@Nonnull ResponseField field, @Nonnull Operation.Variables variables);
+  @Nonnull public abstract CacheKey fromFieldArguments(@Nonnull ResponseField field,
+      @Nonnull Operation.Variables variables);
 }
