@@ -5,7 +5,9 @@ import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import java.io.IOException;
 import java.lang.Object;
@@ -82,7 +84,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObject("hero", "hero", null, true)
     };
 
-    private final Optional<Hero> hero;
+    final Optional<Hero> hero;
 
     private volatile String $toString;
 
@@ -96,6 +98,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Optional<Hero> hero() {
       return this.hero;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeObject($responseFields[0], hero.isPresent() ? hero.get().marshaller() : null);
+        }
+      };
     }
 
     @Override
@@ -154,9 +165,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("name", "name", null, true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final Optional<String> name;
+    final Optional<String> name;
 
     private volatile String $toString;
 
@@ -178,6 +189,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
      */
     public Optional<String> name() {
       return this.name;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
+        }
+      };
     }
 
     @Override

@@ -5,7 +5,9 @@ import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.example.custom_scalar_type.type.CustomType;
 import java.io.IOException;
@@ -90,7 +92,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObject("hero", "hero", null, true)
     };
 
-    private final Optional<Hero> hero;
+    final Optional<Hero> hero;
 
     private volatile String $toString;
 
@@ -104,6 +106,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Optional<Hero> hero() {
       return this.hero;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeObject($responseFields[0], hero.isPresent() ? hero.get().marshaller() : null);
+        }
+      };
     }
 
     @Override
@@ -167,19 +178,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forCustomList("links", "links", null, false)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
-    private final @Nonnull Date birthDate;
+    final @Nonnull Date birthDate;
 
-    private final @Nonnull List<Date> appearanceDates;
+    final @Nonnull List<Date> appearanceDates;
 
-    private final @Nonnull Object fieldWithUnsupportedType;
+    final @Nonnull Object fieldWithUnsupportedType;
 
-    private final @Nonnull String profileLink;
+    final @Nonnull String profileLink;
 
-    private final @Nonnull List<String> links;
+    final @Nonnull List<String> links;
 
     private volatile String $toString;
 
@@ -243,6 +254,35 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
      */
     public @Nonnull List<String> links() {
       return this.links;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[2], birthDate);
+          writer.writeList($responseFields[3], new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Date $item : appearanceDates) {
+                listItemWriter.writeCustom(CustomType.DATE, $item);
+              }
+            }
+          });
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[4], fieldWithUnsupportedType);
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[5], profileLink);
+          writer.writeList($responseFields[6], new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (String $item : links) {
+                listItemWriter.writeCustom(CustomType.URL, $item);
+              }
+            }
+          });
+        }
+      };
     }
 
     @Override

@@ -32,7 +32,8 @@ data class InlineFragment(
 
   fun fieldSpec(context: CodeGenerationContext, publicModifier: Boolean = false): FieldSpec =
       FieldSpec.builder(typeName(context), formatClassName().decapitalize())
-          .addModifiers(if (publicModifier) Modifier.PUBLIC else Modifier.PRIVATE, Modifier.FINAL)
+          .let { if (publicModifier) it.addModifiers(Modifier.PUBLIC) else it }
+          .addModifiers(Modifier.FINAL)
           .build()
 
   fun formatClassName(): String = "$INTERFACE_PREFIX${typeCondition.capitalize()}"

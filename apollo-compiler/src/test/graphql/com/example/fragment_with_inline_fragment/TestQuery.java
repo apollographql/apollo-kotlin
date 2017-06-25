@@ -6,7 +6,9 @@ import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.example.fragment_with_inline_fragment.fragment.HeroDetails;
 import com.example.fragment_with_inline_fragment.type.Episode;
@@ -90,7 +92,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObject("hero", "hero", null, true)
     };
 
-    private final Optional<Hero> hero;
+    final Optional<Hero> hero;
 
     private volatile String $toString;
 
@@ -104,6 +106,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Optional<Hero> hero() {
       return this.hero;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeObject($responseFields[0], hero.isPresent() ? hero.get().marshaller() : null);
+        }
+      };
     }
 
     @Override
@@ -165,11 +176,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       "Droid"))
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
-    private final @Nonnull List<Episode> appearsIn;
+    final @Nonnull List<Episode> appearsIn;
 
     private final @Nonnull Fragments fragments;
 
@@ -207,6 +218,25 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public @Nonnull Fragments fragments() {
       return this.fragments;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          writer.writeList($responseFields[2], new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Episode $item : appearsIn) {
+                listItemWriter.writeString($item.name());
+              }
+            }
+          });
+          fragments.marshaller().marshal(writer);
+        }
+      };
     }
 
     @Override
@@ -256,7 +286,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class Fragments {
-      private final @Nonnull HeroDetails heroDetails;
+      final @Nonnull HeroDetails heroDetails;
 
       private volatile String $toString;
 
@@ -270,6 +300,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       public @Nonnull HeroDetails heroDetails() {
         return this.heroDetails;
+      }
+
+      public ResponseFieldMarshaller marshaller() {
+        return new ResponseFieldMarshaller() {
+          @Override
+          public void marshal(ResponseWriter writer) throws IOException {
+            final HeroDetails $heroDetails = heroDetails;
+            if ($heroDetails != null) {
+              $heroDetails.marshaller().marshal(writer);
+            }
+          }
+        };
       }
 
       @Override

@@ -29,7 +29,8 @@ class OperationTypeSpecBuilder(
         .addType(operation.toTypeSpec(newContext))
         .addOperationName()
         .build()
-        .flatten(excludeTypeNames = listOf(Util.MAPPER_TYPE_NAME, SchemaTypeSpecBuilder.FRAGMENTS_TYPE_NAME))
+        .flatten(excludeTypeNames = listOf(Util.RESPONSE_FIELD_MAPPER_TYPE_NAME,
+            (SchemaTypeSpecBuilder.FRAGMENTS_FIELD.type as ClassName).simpleName()))
   }
 
   private fun TypeSpec.Builder.addQuerySuperInterface(context: CodeGenerationContext): TypeSpec.Builder {
@@ -123,7 +124,7 @@ class OperationTypeSpecBuilder(
         .addAnnotation(Annotations.OVERRIDE)
         .addModifiers(Modifier.PUBLIC)
         .returns(ParameterizedTypeName.get(ClassName.get(ResponseFieldMapper::class.java), DATA_VAR_TYPE))
-        .addStatement("return new \$L.\$L()", Operation.DATA_TYPE_NAME, Util.MAPPER_TYPE_NAME)
+        .addStatement("return new \$L.\$L()", Operation.DATA_TYPE_NAME, Util.RESPONSE_FIELD_MAPPER_TYPE_NAME)
         .build())
   }
 
