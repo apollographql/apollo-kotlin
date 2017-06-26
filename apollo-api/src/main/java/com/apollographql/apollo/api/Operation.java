@@ -41,6 +41,13 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
    * Abstraction for data returned by the server in response to this operation.
    */
   interface Data {
+
+    /**
+     * Returns marshaller to serialize operation data
+     *
+     * @return {@link ResponseFieldMarshaller} to serialize operation data
+     */
+    ResponseFieldMarshaller marshaller();
   }
 
   /**

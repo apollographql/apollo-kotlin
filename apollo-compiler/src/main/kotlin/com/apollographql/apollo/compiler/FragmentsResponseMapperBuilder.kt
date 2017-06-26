@@ -36,7 +36,7 @@ class FragmentsResponseMapperBuilder(
 ) {
   fun build(): TypeSpec {
     val fragmentFields = fragments.map { FieldSpec.builder(fragmentType(it), it.decapitalize()).build() }
-    return TypeSpec.classBuilder(Util.MAPPER_TYPE_NAME)
+    return TypeSpec.classBuilder(Util.RESPONSE_FIELD_MAPPER_TYPE_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
         .addSuperinterface(RESPONSE_FIELD_MAPPER_TYPE)
         .addFields(mapperFields(fragmentFields))
@@ -54,7 +54,7 @@ class FragmentsResponseMapperBuilder(
           .addParameter(READER_PARAM)
           .addParameter(CONDITIONAL_TYPE_PARAM)
           .addException(IOException::class.java)
-          .returns(SchemaTypeSpecBuilder.FRAGMENTS_TYPE)
+          .returns(SchemaTypeSpecBuilder.FRAGMENTS_FIELD.type)
           .addCode(mapMethodCode(fragmentFields))
           .build()
 
@@ -86,7 +86,7 @@ class FragmentsResponseMapperBuilder(
 
   private fun createFragmentsCode(fragmentFields: List<FieldSpec>) =
       CodeBlock.builder()
-          .add("return new \$L(", SchemaTypeSpecBuilder.FRAGMENTS_TYPE.withoutAnnotations())
+          .add("return new \$L(", SchemaTypeSpecBuilder.FRAGMENTS_FIELD.type.withoutAnnotations())
           .add(fragmentFields
               .mapIndexed { i, fieldSpec -> CodeBlock.of("\$L\$L", if (i > 0) ", " else "", fieldSpec.name) }
               .fold(CodeBlock.builder(), CodeBlock.Builder::add)
@@ -97,7 +97,8 @@ class FragmentsResponseMapperBuilder(
       fragments
           .map { it.type as ClassName }
           .map {
-            val mapperClassName = ClassName.get(context.fragmentsPackage, it.simpleName(), Util.MAPPER_TYPE_NAME)
+            val mapperClassName = ClassName.get(context.fragmentsPackage, it.simpleName(),
+                Util.RESPONSE_FIELD_MAPPER_TYPE_NAME)
             FieldSpec.builder(mapperClassName, it.mapperFieldName(), Modifier.FINAL)
                 .initializer(CodeBlock.of("new \$T()", mapperClassName))
                 .build()
@@ -107,7 +108,7 @@ class FragmentsResponseMapperBuilder(
     private val API_RESPONSE_FIELD_MAPPER_TYPE = ClassName.get(
         FragmentResponseFieldMapper::class.java)
     private val RESPONSE_FIELD_MAPPER_TYPE = ParameterizedTypeName.get(API_RESPONSE_FIELD_MAPPER_TYPE,
-        SchemaTypeSpecBuilder.FRAGMENTS_TYPE.withoutAnnotations())
+        SchemaTypeSpecBuilder.FRAGMENTS_FIELD.type.withoutAnnotations())
     private val CONDITIONAL_TYPE_VAR = "conditionalType"
     private val CONDITIONAL_TYPE_PARAM = ParameterSpec.builder(String::class.java, CONDITIONAL_TYPE_VAR)
         .addAnnotation(Nonnull::class.java).build()

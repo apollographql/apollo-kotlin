@@ -3,7 +3,9 @@ package com.example.no_accessors.fragment;
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import java.io.IOException;
 import java.lang.Integer;
@@ -75,6 +77,21 @@ public class HeroDetails implements GraphqlFragment {
     this.name = name;
     this.friendsConnection = friendsConnection;
     this.asDroid = Optional.fromNullable(asDroid);
+  }
+
+  public ResponseFieldMarshaller marshaller() {
+    return new ResponseFieldMarshaller() {
+      @Override
+      public void marshal(ResponseWriter writer) throws IOException {
+        writer.writeString($responseFields[0], __typename);
+        writer.writeString($responseFields[1], name);
+        writer.writeObject($responseFields[2], friendsConnection.marshaller());
+        final AsDroid $asDroid = asDroid.isPresent() ? asDroid.get() : null;
+        if ($asDroid != null) {
+          $asDroid.marshaller().marshal(writer);
+        }
+      }
+    };
   }
 
   @Override
@@ -180,6 +197,24 @@ public class HeroDetails implements GraphqlFragment {
       this.edges = Optional.fromNullable(edges);
     }
 
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
+          writer.writeList($responseFields[2], edges.isPresent() ? new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Edge $item : edges.get()) {
+                listItemWriter.writeObject($item.marshaller());
+              }
+            }
+          } : null);
+        }
+      };
+    }
+
     @Override
     public String toString() {
       if ($toString == null) {
@@ -269,6 +304,16 @@ public class HeroDetails implements GraphqlFragment {
       this.node = Optional.fromNullable(node);
     }
 
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
+        }
+      };
+    }
+
     @Override
     public String toString() {
       if ($toString == null) {
@@ -346,6 +391,16 @@ public class HeroDetails implements GraphqlFragment {
     public Node(@Nonnull String __typename, @Nonnull String name) {
       this.__typename = __typename;
       this.name = name;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+        }
+      };
     }
 
     @Override
@@ -433,6 +488,18 @@ public class HeroDetails implements GraphqlFragment {
       this.name = name;
       this.friendsConnection = friendsConnection;
       this.primaryFunction = Optional.fromNullable(primaryFunction);
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          writer.writeObject($responseFields[2], friendsConnection.marshaller());
+          writer.writeString($responseFields[3], primaryFunction.isPresent() ? primaryFunction.get() : null);
+        }
+      };
     }
 
     @Override
@@ -532,6 +599,24 @@ public class HeroDetails implements GraphqlFragment {
       this.edges = Optional.fromNullable(edges);
     }
 
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
+          writer.writeList($responseFields[2], edges.isPresent() ? new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Edge1 $item : edges.get()) {
+                listItemWriter.writeObject($item.marshaller());
+              }
+            }
+          } : null);
+        }
+      };
+    }
+
     @Override
     public String toString() {
       if ($toString == null) {
@@ -621,6 +706,16 @@ public class HeroDetails implements GraphqlFragment {
       this.node = Optional.fromNullable(node);
     }
 
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
+        }
+      };
+    }
+
     @Override
     public String toString() {
       if ($toString == null) {
@@ -698,6 +793,16 @@ public class HeroDetails implements GraphqlFragment {
     public Node1(@Nonnull String __typename, @Nonnull String name) {
       this.__typename = __typename;
       this.name = name;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+        }
+      };
     }
 
     @Override

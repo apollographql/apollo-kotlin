@@ -5,7 +5,9 @@ import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import java.io.IOException;
 import java.lang.Object;
@@ -125,105 +127,105 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("while", "while", null, true)
     };
 
-    private final Optional<String> abstract_;
+    final Optional<String> abstract_;
 
-    private final Optional<String> assert_;
+    final Optional<String> assert_;
 
-    private final Optional<String> boolean_;
+    final Optional<String> boolean_;
 
-    private final Optional<String> break_;
+    final Optional<String> break_;
 
-    private final Optional<String> byte_;
+    final Optional<String> byte_;
 
-    private final Optional<String> case_;
+    final Optional<String> case_;
 
-    private final Optional<String> catch_;
+    final Optional<String> catch_;
 
-    private final Optional<String> char_;
+    final Optional<String> char_;
 
-    private final Optional<String> class_;
+    final Optional<String> class_;
 
-    private final Optional<String> const_;
+    final Optional<String> const_;
 
-    private final Optional<String> continue_;
+    final Optional<String> continue_;
 
-    private final Optional<String> default_;
+    final Optional<String> default_;
 
-    private final Optional<String> do_;
+    final Optional<String> do_;
 
-    private final Optional<String> double_;
+    final Optional<String> double_;
 
-    private final Optional<String> else_;
+    final Optional<String> else_;
 
-    private final Optional<String> enum_;
+    final Optional<String> enum_;
 
-    private final Optional<String> extends_;
+    final Optional<String> extends_;
 
-    private final Optional<String> final_;
+    final Optional<String> final_;
 
-    private final Optional<String> finally_;
+    final Optional<String> finally_;
 
-    private final Optional<String> float_;
+    final Optional<String> float_;
 
-    private final Optional<String> for_;
+    final Optional<String> for_;
 
-    private final Optional<String> goto_;
+    final Optional<String> goto_;
 
-    private final Optional<String> if_;
+    final Optional<String> if_;
 
-    private final Optional<String> implements_;
+    final Optional<String> implements_;
 
-    private final Optional<String> import_;
+    final Optional<String> import_;
 
-    private final Optional<String> instanceof_;
+    final Optional<String> instanceof_;
 
-    private final Optional<String> int_;
+    final Optional<String> int_;
 
-    private final Optional<String> interface_;
+    final Optional<String> interface_;
 
-    private final Optional<String> long_;
+    final Optional<String> long_;
 
-    private final Optional<String> native_;
+    final Optional<String> native_;
 
-    private final Optional<String> new_;
+    final Optional<String> new_;
 
-    private final Optional<String> package_;
+    final Optional<String> package_;
 
-    private final Optional<String> private_;
+    final Optional<String> private_;
 
-    private final Optional<String> protected_;
+    final Optional<String> protected_;
 
-    private final Optional<String> public_;
+    final Optional<String> public_;
 
-    private final Optional<String> return_;
+    final Optional<String> return_;
 
-    private final Optional<String> short_;
+    final Optional<String> short_;
 
-    private final Optional<String> static_;
+    final Optional<String> static_;
 
-    private final Optional<String> strictfp_;
+    final Optional<String> strictfp_;
 
-    private final Optional<String> super_;
+    final Optional<String> super_;
 
-    private final Optional<String> switch_;
+    final Optional<String> switch_;
 
-    private final Optional<String> synchronized_;
+    final Optional<String> synchronized_;
 
-    private final Optional<String> this_;
+    final Optional<String> this_;
 
-    private final Optional<String> throw_;
+    final Optional<String> throw_;
 
-    private final Optional<String> throws_;
+    final Optional<String> throws_;
 
-    private final Optional<String> transient_;
+    final Optional<String> transient_;
 
-    private final Optional<String> try_;
+    final Optional<String> try_;
 
-    private final Optional<String> void_;
+    final Optional<String> void_;
 
-    private final Optional<String> volatile_;
+    final Optional<String> volatile_;
 
-    private final Optional<String> while_;
+    final Optional<String> while_;
 
     private volatile String $toString;
 
@@ -498,6 +500,64 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Optional<String> while_() {
       return this.while_;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], abstract_.isPresent() ? abstract_.get() : null);
+          writer.writeString($responseFields[1], assert_.isPresent() ? assert_.get() : null);
+          writer.writeString($responseFields[2], boolean_.isPresent() ? boolean_.get() : null);
+          writer.writeString($responseFields[3], break_.isPresent() ? break_.get() : null);
+          writer.writeString($responseFields[4], byte_.isPresent() ? byte_.get() : null);
+          writer.writeString($responseFields[5], case_.isPresent() ? case_.get() : null);
+          writer.writeString($responseFields[6], catch_.isPresent() ? catch_.get() : null);
+          writer.writeString($responseFields[7], char_.isPresent() ? char_.get() : null);
+          writer.writeString($responseFields[8], class_.isPresent() ? class_.get() : null);
+          writer.writeString($responseFields[9], const_.isPresent() ? const_.get() : null);
+          writer.writeString($responseFields[10], continue_.isPresent() ? continue_.get() : null);
+          writer.writeString($responseFields[11], default_.isPresent() ? default_.get() : null);
+          writer.writeString($responseFields[12], do_.isPresent() ? do_.get() : null);
+          writer.writeString($responseFields[13], double_.isPresent() ? double_.get() : null);
+          writer.writeString($responseFields[14], else_.isPresent() ? else_.get() : null);
+          writer.writeString($responseFields[15], enum_.isPresent() ? enum_.get() : null);
+          writer.writeString($responseFields[16], extends_.isPresent() ? extends_.get() : null);
+          writer.writeString($responseFields[17], final_.isPresent() ? final_.get() : null);
+          writer.writeString($responseFields[18], finally_.isPresent() ? finally_.get() : null);
+          writer.writeString($responseFields[19], float_.isPresent() ? float_.get() : null);
+          writer.writeString($responseFields[20], for_.isPresent() ? for_.get() : null);
+          writer.writeString($responseFields[21], goto_.isPresent() ? goto_.get() : null);
+          writer.writeString($responseFields[22], if_.isPresent() ? if_.get() : null);
+          writer.writeString($responseFields[23], implements_.isPresent() ? implements_.get() : null);
+          writer.writeString($responseFields[24], import_.isPresent() ? import_.get() : null);
+          writer.writeString($responseFields[25], instanceof_.isPresent() ? instanceof_.get() : null);
+          writer.writeString($responseFields[26], int_.isPresent() ? int_.get() : null);
+          writer.writeString($responseFields[27], interface_.isPresent() ? interface_.get() : null);
+          writer.writeString($responseFields[28], long_.isPresent() ? long_.get() : null);
+          writer.writeString($responseFields[29], native_.isPresent() ? native_.get() : null);
+          writer.writeString($responseFields[30], new_.isPresent() ? new_.get() : null);
+          writer.writeString($responseFields[31], package_.isPresent() ? package_.get() : null);
+          writer.writeString($responseFields[32], private_.isPresent() ? private_.get() : null);
+          writer.writeString($responseFields[33], protected_.isPresent() ? protected_.get() : null);
+          writer.writeString($responseFields[34], public_.isPresent() ? public_.get() : null);
+          writer.writeString($responseFields[35], return_.isPresent() ? return_.get() : null);
+          writer.writeString($responseFields[36], short_.isPresent() ? short_.get() : null);
+          writer.writeString($responseFields[37], static_.isPresent() ? static_.get() : null);
+          writer.writeString($responseFields[38], strictfp_.isPresent() ? strictfp_.get() : null);
+          writer.writeString($responseFields[39], super_.isPresent() ? super_.get() : null);
+          writer.writeString($responseFields[40], switch_.isPresent() ? switch_.get() : null);
+          writer.writeString($responseFields[41], synchronized_.isPresent() ? synchronized_.get() : null);
+          writer.writeString($responseFields[42], this_.isPresent() ? this_.get() : null);
+          writer.writeString($responseFields[43], throw_.isPresent() ? throw_.get() : null);
+          writer.writeString($responseFields[44], throws_.isPresent() ? throws_.get() : null);
+          writer.writeString($responseFields[45], transient_.isPresent() ? transient_.get() : null);
+          writer.writeString($responseFields[46], try_.isPresent() ? try_.get() : null);
+          writer.writeString($responseFields[47], void_.isPresent() ? void_.get() : null);
+          writer.writeString($responseFields[48], volatile_.isPresent() ? volatile_.get() : null);
+          writer.writeString($responseFields[49], while_.isPresent() ? while_.get() : null);
+        }
+      };
     }
 
     @Override

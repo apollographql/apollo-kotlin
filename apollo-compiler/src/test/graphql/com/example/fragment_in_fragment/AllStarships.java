@@ -6,7 +6,9 @@ import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.example.fragment_in_fragment.fragment.PilotFragment;
@@ -98,7 +100,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       .build(), true)
     };
 
-    private final Optional<AllStarships1> allStarships;
+    final Optional<AllStarships1> allStarships;
 
     private volatile String $toString;
 
@@ -112,6 +114,15 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
     public Optional<AllStarships1> allStarships() {
       return this.allStarships;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeObject($responseFields[0], allStarships.isPresent() ? allStarships.get().marshaller() : null);
+        }
+      };
     }
 
     @Override
@@ -170,9 +181,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       ResponseField.forObjectList("edges", "edges", null, true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final Optional<List<Edge>> edges;
+    final Optional<List<Edge>> edges;
 
     private volatile String $toString;
 
@@ -194,6 +205,23 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
      */
     public Optional<List<Edge>> edges() {
       return this.edges;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeList($responseFields[1], edges.isPresent() ? new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Edge $item : edges.get()) {
+                listItemWriter.writeObject($item.marshaller());
+              }
+            }
+          } : null);
+        }
+      };
     }
 
     @Override
@@ -262,9 +290,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       ResponseField.forObject("node", "node", null, true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final Optional<Node> node;
+    final Optional<Node> node;
 
     private volatile String $toString;
 
@@ -286,6 +314,16 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
      */
     public Optional<Node> node() {
       return this.node;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
+        }
+      };
     }
 
     @Override
@@ -349,7 +387,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       ResponseField.forFragment("__typename", "__typename", Arrays.asList("Starship"))
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
     private final @Nonnull Fragments fragments;
 
@@ -370,6 +408,16 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
     public @Nonnull Fragments fragments() {
       return this.fragments;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          fragments.marshaller().marshal(writer);
+        }
+      };
     }
 
     @Override
@@ -411,7 +459,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     }
 
     public static class Fragments {
-      private final @Nonnull StarshipFragment starshipFragment;
+      final @Nonnull StarshipFragment starshipFragment;
 
       private volatile String $toString;
 
@@ -425,6 +473,18 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
       public @Nonnull StarshipFragment starshipFragment() {
         return this.starshipFragment;
+      }
+
+      public ResponseFieldMarshaller marshaller() {
+        return new ResponseFieldMarshaller() {
+          @Override
+          public void marshal(ResponseWriter writer) throws IOException {
+            final StarshipFragment $starshipFragment = starshipFragment;
+            if ($starshipFragment != null) {
+              $starshipFragment.marshaller().marshal(writer);
+            }
+          }
+        };
       }
 
       @Override

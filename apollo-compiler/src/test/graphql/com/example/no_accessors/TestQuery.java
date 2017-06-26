@@ -6,7 +6,9 @@ import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.example.no_accessors.fragment.HeroDetails;
 import com.example.no_accessors.type.Episode;
@@ -102,6 +104,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.hero = Optional.fromNullable(hero);
     }
 
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeObject($responseFields[0], hero.isPresent() ? hero.get().marshaller() : null);
+        }
+      };
+    }
+
     @Override
     public String toString() {
       if ($toString == null) {
@@ -189,6 +200,25 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.fragments = fragments;
     }
 
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          writer.writeList($responseFields[2], new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Episode $item : appearsIn) {
+                listItemWriter.writeString($item.name());
+              }
+            }
+          });
+          fragments.marshaller().marshal(writer);
+        }
+      };
+    }
+
     @Override
     public String toString() {
       if ($toString == null) {
@@ -246,6 +276,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       public Fragments(@Nonnull HeroDetails heroDetails) {
         this.heroDetails = heroDetails;
+      }
+
+      public ResponseFieldMarshaller marshaller() {
+        return new ResponseFieldMarshaller() {
+          @Override
+          public void marshal(ResponseWriter writer) throws IOException {
+            final HeroDetails $heroDetails = heroDetails;
+            if ($heroDetails != null) {
+              $heroDetails.marshaller().marshal(writer);
+            }
+          }
+        };
       }
 
       @Override

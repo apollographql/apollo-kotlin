@@ -49,7 +49,8 @@ data class Field(
 
   fun fieldSpec(context: CodeGenerationContext, publicModifier: Boolean = false): FieldSpec {
     return FieldSpec.builder(toTypeName(methodResponseType(), context), responseName.escapeJavaReservedWord())
-        .addModifiers(if (publicModifier) Modifier.PUBLIC else Modifier.PRIVATE, Modifier.FINAL)
+        .let { if (publicModifier) it.addModifiers(Modifier.PUBLIC) else it }
+        .addModifiers(Modifier.FINAL)
         .let {
           if (publicModifier && !description.isNullOrBlank()) {
             it.addJavadoc("\$L\n", description)

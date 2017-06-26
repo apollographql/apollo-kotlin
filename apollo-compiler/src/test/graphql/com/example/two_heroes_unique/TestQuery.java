@@ -5,7 +5,9 @@ import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import java.io.IOException;
@@ -91,9 +93,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       .build(), true)
     };
 
-    private final Optional<R2> r2;
+    final Optional<R2> r2;
 
-    private final Optional<Luke> luke;
+    final Optional<Luke> luke;
 
     private volatile String $toString;
 
@@ -112,6 +114,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Optional<Luke> luke() {
       return this.luke;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeObject($responseFields[0], r2.isPresent() ? r2.get().marshaller() : null);
+          writer.writeObject($responseFields[1], luke.isPresent() ? luke.get().marshaller() : null);
+        }
+      };
     }
 
     @Override
@@ -182,9 +194,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("name", "name", null, false)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
     private volatile String $toString;
 
@@ -206,6 +218,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
      */
     public @Nonnull String name() {
       return this.name;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+        }
+      };
     }
 
     @Override
@@ -263,11 +285,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("name", "name", null, false)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String id;
+    final @Nonnull String id;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
     private volatile String $toString;
 
@@ -297,6 +319,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
      */
     public @Nonnull String name() {
       return this.name;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], id);
+          writer.writeString($responseFields[2], name);
+        }
+      };
     }
 
     @Override

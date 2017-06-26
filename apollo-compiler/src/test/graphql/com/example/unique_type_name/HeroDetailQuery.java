@@ -6,7 +6,9 @@ import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.example.unique_type_name.fragment.HeroDetails;
 import com.example.unique_type_name.type.Episode;
@@ -105,7 +107,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       ResponseField.forObject("heroDetailQuery", "heroDetailQuery", null, true)
     };
 
-    private final Optional<HeroDetailQuery1> heroDetailQuery;
+    final Optional<HeroDetailQuery1> heroDetailQuery;
 
     private volatile String $toString;
 
@@ -119,6 +121,15 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     public Optional<HeroDetailQuery1> heroDetailQuery() {
       return this.heroDetailQuery;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeObject($responseFields[0], heroDetailQuery.isPresent() ? heroDetailQuery.get().marshaller() : null);
+        }
+      };
     }
 
     @Override
@@ -179,13 +190,13 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human"))
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
-    private final Optional<List<Friend>> friends;
+    final Optional<List<Friend>> friends;
 
-    private final Optional<AsHuman> asHuman;
+    final Optional<AsHuman> asHuman;
 
     private volatile String $toString;
 
@@ -221,6 +232,28 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     public Optional<AsHuman> asHuman() {
       return this.asHuman;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          writer.writeList($responseFields[2], friends.isPresent() ? new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Friend $item : friends.get()) {
+                listItemWriter.writeObject($item.marshaller());
+              }
+            }
+          } : null);
+          final AsHuman $asHuman = asHuman.isPresent() ? asHuman.get() : null;
+          if ($asHuman != null) {
+            $asHuman.marshaller().marshal(writer);
+          }
+        }
+      };
     }
 
     @Override
@@ -306,9 +339,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       ResponseField.forString("name", "name", null, false)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
     private volatile String $toString;
 
@@ -330,6 +363,16 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
      */
     public @Nonnull String name() {
       return this.name;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+        }
+      };
     }
 
     @Override
@@ -388,13 +431,13 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       ResponseField.forDouble("height", "height", null, true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
-    private final Optional<List<Friend1>> friends;
+    final Optional<List<Friend1>> friends;
 
-    private final Optional<Double> height;
+    final Optional<Double> height;
 
     private volatile String $toString;
 
@@ -433,6 +476,25 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
      */
     public Optional<Double> height() {
       return this.height;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          writer.writeList($responseFields[2], friends.isPresent() ? new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Friend1 $item : friends.get()) {
+                listItemWriter.writeObject($item.marshaller());
+              }
+            }
+          } : null);
+          writer.writeDouble($responseFields[3], height.isPresent() ? height.get() : null);
+        }
+      };
     }
 
     @Override
@@ -513,13 +575,13 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       ResponseField.forObjectList("friends", "friends", null, true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
-    private final @Nonnull List<Episode> appearsIn;
+    final @Nonnull List<Episode> appearsIn;
 
-    private final Optional<List<Friend2>> friends;
+    final Optional<List<Friend2>> friends;
 
     private volatile String $toString;
 
@@ -558,6 +620,32 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
      */
     public Optional<List<Friend2>> friends() {
       return this.friends;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          writer.writeList($responseFields[2], new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Episode $item : appearsIn) {
+                listItemWriter.writeString($item.name());
+              }
+            }
+          });
+          writer.writeList($responseFields[3], friends.isPresent() ? new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Friend2 $item : friends.get()) {
+                listItemWriter.writeObject($item.marshaller());
+              }
+            }
+          } : null);
+        }
+      };
     }
 
     @Override
@@ -642,7 +730,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       "Droid"))
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
     private final @Nonnull Fragments fragments;
 
@@ -663,6 +751,16 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     public @Nonnull Fragments fragments() {
       return this.fragments;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          fragments.marshaller().marshal(writer);
+        }
+      };
     }
 
     @Override
@@ -704,7 +802,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     }
 
     public static class Fragments {
-      private final @Nonnull HeroDetails heroDetails;
+      final @Nonnull HeroDetails heroDetails;
 
       private volatile String $toString;
 
@@ -718,6 +816,18 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
       public @Nonnull HeroDetails heroDetails() {
         return this.heroDetails;
+      }
+
+      public ResponseFieldMarshaller marshaller() {
+        return new ResponseFieldMarshaller() {
+          @Override
+          public void marshal(ResponseWriter writer) throws IOException {
+            final HeroDetails $heroDetails = heroDetails;
+            if ($heroDetails != null) {
+              $heroDetails.marshaller().marshal(writer);
+            }
+          }
+        };
       }
 
       @Override

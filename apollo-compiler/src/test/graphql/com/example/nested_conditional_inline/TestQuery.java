@@ -5,7 +5,9 @@ import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.example.nested_conditional_inline.type.Episode;
@@ -144,7 +146,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       .build(), true)
     };
 
-    private final Optional<Hero> hero;
+    final Optional<Hero> hero;
 
     private volatile String $toString;
 
@@ -158,6 +160,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Optional<Hero> hero() {
       return this.hero;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeObject($responseFields[0], hero.isPresent() ? hero.get().marshaller() : null);
+        }
+      };
     }
 
     @Override
@@ -218,13 +229,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Droid"))
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
-    private final Optional<AsHuman> asHuman;
+    final Optional<AsHuman> asHuman;
 
-    private final Optional<AsDroid> asDroid;
+    final Optional<AsDroid> asDroid;
 
     private volatile String $toString;
 
@@ -254,6 +265,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Optional<AsDroid> asDroid() {
       return this.asDroid;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          final AsHuman $asHuman = asHuman.isPresent() ? asHuman.get() : null;
+          if ($asHuman != null) {
+            $asHuman.marshaller().marshal(writer);
+          }
+          final AsDroid $asDroid = asDroid.isPresent() ? asDroid.get() : null;
+          if ($asDroid != null) {
+            $asDroid.marshaller().marshal(writer);
+          }
+        }
+      };
     }
 
     @Override
@@ -335,11 +364,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObjectList("friends", "friends", null, true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
-    private final Optional<List<Friend>> friends;
+    final Optional<List<Friend>> friends;
 
     private volatile String $toString;
 
@@ -364,6 +393,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Optional<List<Friend>> friends() {
       return this.friends;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          writer.writeList($responseFields[2], friends.isPresent() ? new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Friend $item : friends.get()) {
+                listItemWriter.writeObject($item.marshaller());
+              }
+            }
+          } : null);
+        }
+      };
     }
 
     @Override
@@ -438,11 +485,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human"))
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
-    private final Optional<AsHuman1> asHuman;
+    final Optional<AsHuman1> asHuman;
 
     private volatile String $toString;
 
@@ -466,6 +513,20 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Optional<AsHuman1> asHuman() {
       return this.asHuman;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          final AsHuman1 $asHuman = asHuman.isPresent() ? asHuman.get() : null;
+          if ($asHuman != null) {
+            $asHuman.marshaller().marshal(writer);
+          }
+        }
+      };
     }
 
     @Override
@@ -537,11 +598,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       .build(), true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
-    private final Optional<Double> height;
+    final Optional<Double> height;
 
     private volatile String $toString;
 
@@ -565,6 +626,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Optional<Double> height() {
       return this.height;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          writer.writeDouble($responseFields[2], height.isPresent() ? height.get() : null);
+        }
+      };
     }
 
     @Override
@@ -627,11 +699,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObjectList("friends", "friends", null, true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
-    private final Optional<List<Friend1>> friends;
+    final Optional<List<Friend1>> friends;
 
     private volatile String $toString;
 
@@ -656,6 +728,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Optional<List<Friend1>> friends() {
       return this.friends;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          writer.writeList($responseFields[2], friends.isPresent() ? new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Friend1 $item : friends.get()) {
+                listItemWriter.writeObject($item.marshaller());
+              }
+            }
+          } : null);
+        }
+      };
     }
 
     @Override
@@ -730,11 +820,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human"))
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
-    private final Optional<AsHuman2> asHuman;
+    final Optional<AsHuman2> asHuman;
 
     private volatile String $toString;
 
@@ -758,6 +848,20 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Optional<AsHuman2> asHuman() {
       return this.asHuman;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          final AsHuman2 $asHuman = asHuman.isPresent() ? asHuman.get() : null;
+          if ($asHuman != null) {
+            $asHuman.marshaller().marshal(writer);
+          }
+        }
+      };
     }
 
     @Override
@@ -829,11 +933,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       .build(), true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
-    private final Optional<Double> height;
+    final Optional<Double> height;
 
     private volatile String $toString;
 
@@ -857,6 +961,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Optional<Double> height() {
       return this.height;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          writer.writeDouble($responseFields[2], height.isPresent() ? height.get() : null);
+        }
+      };
     }
 
     @Override

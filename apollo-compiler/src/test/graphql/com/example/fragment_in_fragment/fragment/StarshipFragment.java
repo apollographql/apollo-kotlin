@@ -4,7 +4,9 @@ import com.apollographql.apollo.api.FragmentResponseFieldMapper;
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import java.io.IOException;
 import java.lang.Object;
@@ -44,13 +46,13 @@ public class StarshipFragment implements GraphqlFragment {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Starship"));
 
-  private final @Nonnull String __typename;
+  final @Nonnull String __typename;
 
-  private final @Nonnull String id;
+  final @Nonnull String id;
 
-  private final Optional<String> name;
+  final Optional<String> name;
 
-  private final Optional<PilotConnection> pilotConnection;
+  final Optional<PilotConnection> pilotConnection;
 
   private volatile String $toString;
 
@@ -86,6 +88,18 @@ public class StarshipFragment implements GraphqlFragment {
 
   public Optional<PilotConnection> pilotConnection() {
     return this.pilotConnection;
+  }
+
+  public ResponseFieldMarshaller marshaller() {
+    return new ResponseFieldMarshaller() {
+      @Override
+      public void marshal(ResponseWriter writer) throws IOException {
+        writer.writeString($responseFields[0], __typename);
+        writer.writeString($responseFields[1], id);
+        writer.writeString($responseFields[2], name.isPresent() ? name.get() : null);
+        writer.writeObject($responseFields[3], pilotConnection.isPresent() ? pilotConnection.get().marshaller() : null);
+      }
+    };
   }
 
   @Override
@@ -158,9 +172,9 @@ public class StarshipFragment implements GraphqlFragment {
       ResponseField.forObjectList("edges", "edges", null, true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final Optional<List<Edge>> edges;
+    final Optional<List<Edge>> edges;
 
     private volatile String $toString;
 
@@ -182,6 +196,23 @@ public class StarshipFragment implements GraphqlFragment {
      */
     public Optional<List<Edge>> edges() {
       return this.edges;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeList($responseFields[1], edges.isPresent() ? new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Edge $item : edges.get()) {
+                listItemWriter.writeObject($item.marshaller());
+              }
+            }
+          } : null);
+        }
+      };
     }
 
     @Override
@@ -250,9 +281,9 @@ public class StarshipFragment implements GraphqlFragment {
       ResponseField.forObject("node", "node", null, true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final Optional<Node> node;
+    final Optional<Node> node;
 
     private volatile String $toString;
 
@@ -274,6 +305,16 @@ public class StarshipFragment implements GraphqlFragment {
      */
     public Optional<Node> node() {
       return this.node;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
+        }
+      };
     }
 
     @Override
@@ -337,7 +378,7 @@ public class StarshipFragment implements GraphqlFragment {
       ResponseField.forFragment("__typename", "__typename", Arrays.asList("Person"))
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
     private final @Nonnull Fragments fragments;
 
@@ -358,6 +399,16 @@ public class StarshipFragment implements GraphqlFragment {
 
     public @Nonnull Fragments fragments() {
       return this.fragments;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          fragments.marshaller().marshal(writer);
+        }
+      };
     }
 
     @Override
@@ -399,7 +450,7 @@ public class StarshipFragment implements GraphqlFragment {
     }
 
     public static class Fragments {
-      private final @Nonnull PilotFragment pilotFragment;
+      final @Nonnull PilotFragment pilotFragment;
 
       private volatile String $toString;
 
@@ -413,6 +464,18 @@ public class StarshipFragment implements GraphqlFragment {
 
       public @Nonnull PilotFragment pilotFragment() {
         return this.pilotFragment;
+      }
+
+      public ResponseFieldMarshaller marshaller() {
+        return new ResponseFieldMarshaller() {
+          @Override
+          public void marshal(ResponseWriter writer) throws IOException {
+            final PilotFragment $pilotFragment = pilotFragment;
+            if ($pilotFragment != null) {
+              $pilotFragment.marshaller().marshal(writer);
+            }
+          }
+        };
       }
 
       @Override

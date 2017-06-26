@@ -3,7 +3,9 @@ package com.example.simple_fragment.fragment;
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
@@ -28,9 +30,9 @@ public class HeroDetails implements GraphqlFragment {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
 
-  private final @Nonnull String __typename;
+  final @Nonnull String __typename;
 
-  private final @Nonnull String name;
+  final @Nonnull String name;
 
   private volatile String $toString;
 
@@ -52,6 +54,16 @@ public class HeroDetails implements GraphqlFragment {
    */
   public @Nonnull String name() {
     return this.name;
+  }
+
+  public ResponseFieldMarshaller marshaller() {
+    return new ResponseFieldMarshaller() {
+      @Override
+      public void marshal(ResponseWriter writer) throws IOException {
+        writer.writeString($responseFields[0], __typename);
+        writer.writeString($responseFields[1], name);
+      }
+    };
   }
 
   @Override

@@ -3,7 +3,9 @@ package com.example.unique_type_name.fragment;
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import java.io.IOException;
 import java.lang.Integer;
@@ -43,11 +45,11 @@ public class HeroDetails implements GraphqlFragment {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
 
-  private final @Nonnull String __typename;
+  final @Nonnull String __typename;
 
-  private final @Nonnull String name;
+  final @Nonnull String name;
 
-  private final @Nonnull FriendsConnection friendsConnection;
+  final @Nonnull FriendsConnection friendsConnection;
 
   private volatile String $toString;
 
@@ -78,6 +80,17 @@ public class HeroDetails implements GraphqlFragment {
    */
   public @Nonnull FriendsConnection friendsConnection() {
     return this.friendsConnection;
+  }
+
+  public ResponseFieldMarshaller marshaller() {
+    return new ResponseFieldMarshaller() {
+      @Override
+      public void marshal(ResponseWriter writer) throws IOException {
+        writer.writeString($responseFields[0], __typename);
+        writer.writeString($responseFields[1], name);
+        writer.writeObject($responseFields[2], friendsConnection.marshaller());
+      }
+    };
   }
 
   @Override
@@ -146,11 +159,11 @@ public class HeroDetails implements GraphqlFragment {
       ResponseField.forObjectList("edges", "edges", null, true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final Optional<Integer> totalCount;
+    final Optional<Integer> totalCount;
 
-    private final Optional<List<Edge>> edges;
+    final Optional<List<Edge>> edges;
 
     private volatile String $toString;
 
@@ -181,6 +194,24 @@ public class HeroDetails implements GraphqlFragment {
      */
     public Optional<List<Edge>> edges() {
       return this.edges;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
+          writer.writeList($responseFields[2], edges.isPresent() ? new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Edge $item : edges.get()) {
+                listItemWriter.writeObject($item.marshaller());
+              }
+            }
+          } : null);
+        }
+      };
     }
 
     @Override
@@ -254,9 +285,9 @@ public class HeroDetails implements GraphqlFragment {
       ResponseField.forObject("node", "node", null, true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final Optional<Node> node;
+    final Optional<Node> node;
 
     private volatile String $toString;
 
@@ -278,6 +309,16 @@ public class HeroDetails implements GraphqlFragment {
      */
     public Optional<Node> node() {
       return this.node;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
+        }
+      };
     }
 
     @Override
@@ -341,9 +382,9 @@ public class HeroDetails implements GraphqlFragment {
       ResponseField.forString("name", "name", null, false)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
     private volatile String $toString;
 
@@ -365,6 +406,16 @@ public class HeroDetails implements GraphqlFragment {
      */
     public @Nonnull String name() {
       return this.name;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+        }
+      };
     }
 
     @Override

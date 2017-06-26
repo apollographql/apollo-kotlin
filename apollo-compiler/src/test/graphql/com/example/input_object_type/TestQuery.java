@@ -5,7 +5,9 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
@@ -146,7 +148,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       .build(), true)
     };
 
-    private final Optional<CreateReview> createReview;
+    final Optional<CreateReview> createReview;
 
     private volatile String $toString;
 
@@ -160,6 +162,15 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
     public Optional<CreateReview> createReview() {
       return this.createReview;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeObject($responseFields[0], createReview.isPresent() ? createReview.get().marshaller() : null);
+        }
+      };
     }
 
     @Override
@@ -219,11 +230,11 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       ResponseField.forString("commentary", "commentary", null, true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final int stars;
+    final int stars;
 
-    private final Optional<String> commentary;
+    final Optional<String> commentary;
 
     private volatile String $toString;
 
@@ -253,6 +264,17 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
      */
     public Optional<String> commentary() {
       return this.commentary;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeInt($responseFields[1], stars);
+          writer.writeString($responseFields[2], commentary.isPresent() ? commentary.get() : null);
+        }
+      };
     }
 
     @Override

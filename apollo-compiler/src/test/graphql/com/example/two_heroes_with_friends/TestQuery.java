@@ -5,7 +5,9 @@ import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import java.io.IOException;
@@ -115,9 +117,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       .build(), true)
     };
 
-    private final Optional<R2> r2;
+    final Optional<R2> r2;
 
-    private final Optional<Luke> luke;
+    final Optional<Luke> luke;
 
     private volatile String $toString;
 
@@ -136,6 +138,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Optional<Luke> luke() {
       return this.luke;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeObject($responseFields[0], r2.isPresent() ? r2.get().marshaller() : null);
+          writer.writeObject($responseFields[1], luke.isPresent() ? luke.get().marshaller() : null);
+        }
+      };
     }
 
     @Override
@@ -207,11 +219,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObject("friendsConnection", "friendsConnection", null, false)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
-    private final @Nonnull FriendsConnection friendsConnection;
+    final @Nonnull FriendsConnection friendsConnection;
 
     private volatile String $toString;
 
@@ -242,6 +254,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
      */
     public @Nonnull FriendsConnection friendsConnection() {
       return this.friendsConnection;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          writer.writeObject($responseFields[2], friendsConnection.marshaller());
+        }
+      };
     }
 
     @Override
@@ -311,11 +334,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObjectList("edges", "edges", null, true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final Optional<Integer> totalCount;
+    final Optional<Integer> totalCount;
 
-    private final Optional<List<Edge>> edges;
+    final Optional<List<Edge>> edges;
 
     private volatile String $toString;
 
@@ -346,6 +369,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
      */
     public Optional<List<Edge>> edges() {
       return this.edges;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
+          writer.writeList($responseFields[2], edges.isPresent() ? new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Edge $item : edges.get()) {
+                listItemWriter.writeObject($item.marshaller());
+              }
+            }
+          } : null);
+        }
+      };
     }
 
     @Override
@@ -419,9 +460,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObject("node", "node", null, true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final Optional<Node> node;
+    final Optional<Node> node;
 
     private volatile String $toString;
 
@@ -443,6 +484,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
      */
     public Optional<Node> node() {
       return this.node;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
+        }
+      };
     }
 
     @Override
@@ -506,9 +557,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("name", "name", null, false)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
     private volatile String $toString;
 
@@ -530,6 +581,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
      */
     public @Nonnull String name() {
       return this.name;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+        }
+      };
     }
 
     @Override
@@ -588,13 +649,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObject("friendsConnection", "friendsConnection", null, false)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String id;
+    final @Nonnull String id;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
-    private final @Nonnull FriendsConnection1 friendsConnection;
+    final @Nonnull FriendsConnection1 friendsConnection;
 
     private volatile String $toString;
 
@@ -633,6 +694,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
      */
     public @Nonnull FriendsConnection1 friendsConnection() {
       return this.friendsConnection;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], id);
+          writer.writeString($responseFields[2], name);
+          writer.writeObject($responseFields[3], friendsConnection.marshaller());
+        }
+      };
     }
 
     @Override
@@ -707,11 +780,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObjectList("edges", "edges", null, true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final Optional<Integer> totalCount;
+    final Optional<Integer> totalCount;
 
-    private final Optional<List<Edge1>> edges;
+    final Optional<List<Edge1>> edges;
 
     private volatile String $toString;
 
@@ -742,6 +815,24 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
      */
     public Optional<List<Edge1>> edges() {
       return this.edges;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
+          writer.writeList($responseFields[2], edges.isPresent() ? new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Edge1 $item : edges.get()) {
+                listItemWriter.writeObject($item.marshaller());
+              }
+            }
+          } : null);
+        }
+      };
     }
 
     @Override
@@ -815,9 +906,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObject("node", "node", null, true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final Optional<Node1> node;
+    final Optional<Node1> node;
 
     private volatile String $toString;
 
@@ -839,6 +930,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
      */
     public Optional<Node1> node() {
       return this.node;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
+        }
+      };
     }
 
     @Override
@@ -902,9 +1003,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("name", "name", null, false)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final @Nonnull String name;
+    final @Nonnull String name;
 
     private volatile String $toString;
 
@@ -926,6 +1027,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
      */
     public @Nonnull String name() {
       return this.name;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+        }
+      };
     }
 
     @Override

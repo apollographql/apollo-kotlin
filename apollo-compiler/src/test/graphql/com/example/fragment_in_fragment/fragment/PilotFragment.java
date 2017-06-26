@@ -3,7 +3,9 @@ package com.example.fragment_in_fragment.fragment;
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import java.io.IOException;
 import java.lang.Object;
@@ -35,11 +37,11 @@ public class PilotFragment implements GraphqlFragment {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Person"));
 
-  private final @Nonnull String __typename;
+  final @Nonnull String __typename;
 
-  private final Optional<String> name;
+  final Optional<String> name;
 
-  private final Optional<Homeworld> homeworld;
+  final Optional<Homeworld> homeworld;
 
   private volatile String $toString;
 
@@ -70,6 +72,17 @@ public class PilotFragment implements GraphqlFragment {
    */
   public Optional<Homeworld> homeworld() {
     return this.homeworld;
+  }
+
+  public ResponseFieldMarshaller marshaller() {
+    return new ResponseFieldMarshaller() {
+      @Override
+      public void marshal(ResponseWriter writer) throws IOException {
+        writer.writeString($responseFields[0], __typename);
+        writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
+        writer.writeObject($responseFields[2], homeworld.isPresent() ? homeworld.get().marshaller() : null);
+      }
+    };
   }
 
   @Override
@@ -137,9 +150,9 @@ public class PilotFragment implements GraphqlFragment {
       ResponseField.forString("name", "name", null, true)
     };
 
-    private final @Nonnull String __typename;
+    final @Nonnull String __typename;
 
-    private final Optional<String> name;
+    final Optional<String> name;
 
     private volatile String $toString;
 
@@ -161,6 +174,16 @@ public class PilotFragment implements GraphqlFragment {
      */
     public Optional<String> name() {
       return this.name;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
+        }
+      };
     }
 
     @Override

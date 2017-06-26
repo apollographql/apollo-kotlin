@@ -5,7 +5,9 @@ import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import java.io.IOException;
 import java.lang.Boolean;
@@ -91,27 +93,27 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObjectList("graphQlListOfObjects", "graphQlListOfObjects", null, true)
     };
 
-    private final Optional<String> graphQlString;
+    final Optional<String> graphQlString;
 
-    private final Optional<String> graphQlIdNullable;
+    final Optional<String> graphQlIdNullable;
 
-    private final @Nonnull String graphQlIdNonNullable;
+    final @Nonnull String graphQlIdNonNullable;
 
-    private final Optional<Integer> graphQlIntNullable;
+    final Optional<Integer> graphQlIntNullable;
 
-    private final int graphQlIntNonNullable;
+    final int graphQlIntNonNullable;
 
-    private final Optional<Double> graphQlFloatNullable;
+    final Optional<Double> graphQlFloatNullable;
 
-    private final double graphQlFloatNonNullable;
+    final double graphQlFloatNonNullable;
 
-    private final Optional<Boolean> graphQlBooleanNullable;
+    final Optional<Boolean> graphQlBooleanNullable;
 
-    private final boolean graphQlBooleanNonNullable;
+    final boolean graphQlBooleanNonNullable;
 
-    private final Optional<List<Integer>> graphQlListOfInt;
+    final Optional<List<Integer>> graphQlListOfInt;
 
-    private final Optional<List<GraphQlListOfObject>> graphQlListOfObjects;
+    final Optional<List<GraphQlListOfObject>> graphQlListOfObjects;
 
     private volatile String $toString;
 
@@ -180,6 +182,39 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Optional<List<GraphQlListOfObject>> graphQlListOfObjects() {
       return this.graphQlListOfObjects;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeString($responseFields[0], graphQlString.isPresent() ? graphQlString.get() : null);
+          writer.writeString($responseFields[1], graphQlIdNullable.isPresent() ? graphQlIdNullable.get() : null);
+          writer.writeString($responseFields[2], graphQlIdNonNullable);
+          writer.writeInt($responseFields[3], graphQlIntNullable.isPresent() ? graphQlIntNullable.get() : null);
+          writer.writeInt($responseFields[4], graphQlIntNonNullable);
+          writer.writeDouble($responseFields[5], graphQlFloatNullable.isPresent() ? graphQlFloatNullable.get() : null);
+          writer.writeDouble($responseFields[6], graphQlFloatNonNullable);
+          writer.writeBoolean($responseFields[7], graphQlBooleanNullable.isPresent() ? graphQlBooleanNullable.get() : null);
+          writer.writeBoolean($responseFields[8], graphQlBooleanNonNullable);
+          writer.writeList($responseFields[9], graphQlListOfInt.isPresent() ? new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Integer $item : graphQlListOfInt.get()) {
+                listItemWriter.writeInt($item);
+              }
+            }
+          } : null);
+          writer.writeList($responseFields[10], graphQlListOfObjects.isPresent() ? new ResponseWriter.ListWriter() {
+            @Override
+            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+              for (GraphQlListOfObject $item : graphQlListOfObjects.get()) {
+                listItemWriter.writeObject($item.marshaller());
+              }
+            }
+          } : null);
+        }
+      };
     }
 
     @Override
@@ -297,7 +332,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forInt("someField", "someField", null, false)
     };
 
-    private final int someField;
+    final int someField;
 
     private volatile String $toString;
 
@@ -311,6 +346,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public int someField() {
       return this.someField;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) throws IOException {
+          writer.writeInt($responseFields[0], someField);
+        }
+      };
     }
 
     @Override

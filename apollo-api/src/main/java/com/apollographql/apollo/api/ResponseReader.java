@@ -18,9 +18,9 @@ public interface ResponseReader {
 
   Boolean readBoolean(ResponseField field) throws IOException;
 
-  <T> T readObject(ResponseField field, ResponseReader.ObjectReader<T> objectReader) throws IOException;
+  <T> T readObject(ResponseField field, ObjectReader<T> objectReader) throws IOException;
 
-  <T> List<T> readList(ResponseField field, ResponseReader.ListReader listReader) throws IOException;
+  <T> List<T> readList(ResponseField field, ListReader listReader) throws IOException;
 
   <T> T readCustomType(ResponseField.CustomTypeField field) throws IOException;
 
@@ -53,6 +53,6 @@ public interface ResponseReader {
 
     <T> T readCustomType(ScalarType scalarType) throws IOException;
 
-    <T> T readObject(ResponseReader.ObjectReader<T> objectReader) throws IOException;
+    <T> T readObject(ObjectReader<T> objectReader) throws IOException;
   }
 }

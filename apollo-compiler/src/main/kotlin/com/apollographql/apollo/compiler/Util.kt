@@ -229,7 +229,7 @@ fun TypeSpec.withHashCodeImplementation(): TypeSpec {
       .build()
 }
 
-fun ClassName.mapperFieldName(): String = "${simpleName().decapitalize()}${Util.FIELD_MAPPER_VAR}"
+fun ClassName.mapperFieldName(): String = "${simpleName().decapitalize()}FieldMapper"
 
 fun TypeName.isOptional(): Boolean {
   val rawType = (this as? ParameterizedTypeName)?.rawType ?: this
@@ -241,6 +241,21 @@ fun TypeName.unwrapOptionalType(): TypeName {
     (this as ParameterizedTypeName).typeArguments.first().annotated(Annotations.NULLABLE)
   } else {
     this
+  }
+}
+
+fun TypeName.unwrapOptionalValue(valueVarName: String, checkPresent: Boolean = true,
+    transformation: ((CodeBlock) -> CodeBlock)? = null): CodeBlock {
+  return if (isOptional() && this is ParameterizedTypeName) {
+    val valueCode = CodeBlock.of("\$L.get()", valueVarName)
+    if (checkPresent) {
+      CodeBlock.of("\$L.isPresent() ? \$L : null", valueVarName, transformation?.invoke(valueCode) ?: valueCode)
+    } else {
+      transformation?.invoke(valueCode) ?: valueCode
+    }
+  } else {
+    val valueCode = CodeBlock.of("\$L", valueVarName)
+    transformation?.invoke(valueCode) ?: valueCode
   }
 }
 
@@ -293,8 +308,7 @@ fun TypeName.listParamType(): TypeName {
 }
 
 object Util {
-  const val MAPPER_TYPE_NAME: String = "Mapper"
-  const val FIELD_MAPPER_VAR: String = "FieldMapper"
+  const val RESPONSE_FIELD_MAPPER_TYPE_NAME: String = "Mapper"
   const val MEMOIZED_HASH_CODE_VAR: String = "\$hashCode"
   const val MEMOIZED_HASH_CODE_FLAG_VAR: String = "\$hashCodeMemoized"
   const val MEMOIZED_TO_STRING_VAR: String = "\$toString"

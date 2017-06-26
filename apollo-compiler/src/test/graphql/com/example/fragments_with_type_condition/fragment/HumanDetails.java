@@ -3,7 +3,9 @@ package com.example.fragments_with_type_condition.fragment;
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
+import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import java.io.IOException;
 import java.lang.Double;
@@ -33,11 +35,11 @@ public class HumanDetails implements GraphqlFragment {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human"));
 
-  private final @Nonnull String __typename;
+  final @Nonnull String __typename;
 
-  private final @Nonnull String name;
+  final @Nonnull String name;
 
-  private final Optional<Double> height;
+  final Optional<Double> height;
 
   private volatile String $toString;
 
@@ -67,6 +69,17 @@ public class HumanDetails implements GraphqlFragment {
    */
   public Optional<Double> height() {
     return this.height;
+  }
+
+  public ResponseFieldMarshaller marshaller() {
+    return new ResponseFieldMarshaller() {
+      @Override
+      public void marshal(ResponseWriter writer) throws IOException {
+        writer.writeString($responseFields[0], __typename);
+        writer.writeString($responseFields[1], name);
+        writer.writeDouble($responseFields[2], height.isPresent() ? height.get() : null);
+      }
+    };
   }
 
   @Override
