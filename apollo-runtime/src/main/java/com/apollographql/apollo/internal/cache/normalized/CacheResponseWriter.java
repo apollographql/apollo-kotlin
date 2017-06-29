@@ -199,7 +199,7 @@ final class CacheResponseWriter implements ResponseWriter {
     final List<Map<String, FieldDescriptor>> fieldDescriptors = new ArrayList();
     final List fieldValues = new ArrayList();
 
-    public ListItemWriter(Operation operation, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+    ListItemWriter(Operation operation, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
       this.operation = operation;
       this.customTypeAdapters = customTypeAdapters;
     }
