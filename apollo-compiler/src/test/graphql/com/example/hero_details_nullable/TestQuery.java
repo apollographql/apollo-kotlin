@@ -116,7 +116,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) throws IOException {
-          writer.writeObject($responseFields[0], hero.marshaller());
+          writer.writeObject($responseFields[0], hero != null ? hero.marshaller() : null);
         }
       };
     }
@@ -336,14 +336,14 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
         public void marshal(ResponseWriter writer) throws IOException {
           writer.writeString($responseFields[0], __typename);
           writer.writeInt($responseFields[1], totalCount);
-          writer.writeList($responseFields[2], new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[2], edges != null ? new ResponseWriter.ListWriter() {
             @Override
             public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
               for (Edge $item : edges) {
                 listItemWriter.writeObject($item.marshaller());
               }
             }
-          });
+          } : null);
         }
       };
     }
@@ -450,7 +450,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
         @Override
         public void marshal(ResponseWriter writer) throws IOException {
           writer.writeString($responseFields[0], __typename);
-          writer.writeObject($responseFields[1], node.marshaller());
+          writer.writeObject($responseFields[1], node != null ? node.marshaller() : null);
         }
       };
     }

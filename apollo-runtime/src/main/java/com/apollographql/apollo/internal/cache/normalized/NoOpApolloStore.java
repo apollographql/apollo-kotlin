@@ -91,7 +91,6 @@ public final class NoOpApolloStore implements ApolloStore, ReadableStore, Writea
     return null;
   }
 
-  @Override public boolean write(@Nonnull Operation operation, @Nonnull Operation.Data operationData) {
-    return false;
+  @Override public void write(@Nonnull Operation operation, @Nonnull Operation.Data operationData) {
   }
 }
