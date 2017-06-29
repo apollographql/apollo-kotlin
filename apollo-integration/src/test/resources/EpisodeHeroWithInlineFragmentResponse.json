@@ -1,0 +1,26 @@
+{
+  "data": {
+    "hero": {
+      "__typename": "Droid",
+      "name": "R2-D2",
+      "friends": [
+        {
+          "__typename": "Human",
+          "id": "1000",
+          "name": "Luke Skywalker",
+          "height": 1.5
+        },
+        {
+          "__typename": "Droid",
+          "name": "Android",
+          "primaryFunction": "Hunt and destroy iOS devices"
+        },
+        {
+          "__typename": "Droid",
+          "name": "Battle Droid",
+          "primaryFunction": "Controlled alternative to human soldiers"
+        }
+      ]
+    }
+  }
+}

@@ -255,7 +255,11 @@ fun TypeName.unwrapOptionalValue(valueVarName: String, checkPresent: Boolean = t
     }
   } else {
     val valueCode = CodeBlock.of("\$L", valueVarName)
-    transformation?.invoke(valueCode) ?: valueCode
+    if (annotations.contains(Annotations.NULLABLE) && checkPresent && transformation != null) {
+      CodeBlock.of("\$L != null ? \$L : null", valueVarName, transformation.invoke(valueCode))
+    } else {
+      transformation?.invoke(valueCode) ?: valueCode
+    }
   }
 }
 

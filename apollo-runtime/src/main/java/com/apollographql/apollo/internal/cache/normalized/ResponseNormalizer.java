@@ -68,11 +68,11 @@ public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     }
   }
 
-  @Override public void didParseScalar(@Nullable Object value) {
+  @Override public void didResolveScalar(@Nullable Object value) {
     valueStack.push(value);
   }
 
-  @Override public void willParseObject(ResponseField field, Optional<R> objectSource) {
+  @Override public void willResolveObject(ResponseField field, Optional<R> objectSource) {
     pathStack.push(path);
 
     CacheKey cacheKey = objectSource.isPresent() ? resolveCacheKey(field, objectSource.get()) : CacheKey.NO_KEY;
@@ -87,7 +87,7 @@ public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     currentRecordBuilder = Record.builder(cacheKeyValue);
   }
 
-  @Override public void didParseObject(ResponseField field, Optional<R> objectSource) {
+  @Override public void didResolveObject(ResponseField field, Optional<R> objectSource) {
     path = pathStack.pop();
     Record completedRecord = currentRecordBuilder.build();
     valueStack.push(new CacheReference(completedRecord.key()));
@@ -96,7 +96,7 @@ public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     currentRecordBuilder = recordStack.pop().toBuilder();
   }
 
-  @Override public void didParseList(List array) {
+  @Override public void didResolveList(List array) {
     List<Object> parsedArray = new ArrayList<>(array.size());
     for (int i = 0, size = array.size(); i < size; i++) {
       parsedArray.add(0, valueStack.pop());
@@ -104,15 +104,15 @@ public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     valueStack.push(parsedArray);
   }
 
-  @Override public void willParseElement(int atIndex) {
+  @Override public void willResolveElement(int atIndex) {
     path.add(Integer.toString(atIndex));
   }
 
-  @Override public void didParseElement(int atIndex) {
+  @Override public void didResolveElement(int atIndex) {
     path.remove(path.size() - 1);
   }
 
-  @Override public void didParseNull() {
+  @Override public void didResolveNull() {
     valueStack.push(null);
   }
 
@@ -140,25 +140,25 @@ public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
     @Override public void didResolve(ResponseField field, Operation.Variables variables) {
     }
 
-    @Override public void didParseScalar(Object value) {
+    @Override public void didResolveScalar(Object value) {
     }
 
-    @Override public void willParseObject(ResponseField field, Optional objectSource) {
+    @Override public void willResolveObject(ResponseField field, Optional objectSource) {
     }
 
-    @Override public void didParseObject(ResponseField field, Optional objectSource) {
+    @Override public void didResolveObject(ResponseField field, Optional objectSource) {
     }
 
-    @Override public void didParseList(List array) {
+    @Override public void didResolveList(List array) {
     }
 
-    @Override public void willParseElement(int atIndex) {
+    @Override public void willResolveElement(int atIndex) {
     }
 
-    @Override public void didParseElement(int atIndex) {
+    @Override public void didResolveElement(int atIndex) {
     }
 
-    @Override public void didParseNull() {
+    @Override public void didResolveNull() {
     }
 
     @Override public Collection<Record> records() {

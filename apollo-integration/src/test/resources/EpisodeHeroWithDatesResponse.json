@@ -1,0 +1,14 @@
+{
+  "data": {
+    "hero": {
+      "__typename": "Droid",
+      "heroName": "R2-D2",
+      "birthDate": "1984-04-16",
+      "showUpDates": [
+        "2017-01-16",
+        "2017-02-16",
+        "2017-03-16"
+      ]
+    }
+  }
+}

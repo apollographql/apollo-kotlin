@@ -14,17 +14,17 @@ public interface ResponseReaderShadow<R> {
 
   void didResolve(ResponseField field, Operation.Variables variables);
 
-  void didParseScalar(Object value);
+  void didResolveScalar(Object value);
 
-  void willParseObject(ResponseField objectField, Optional<R> objectSource);
+  void willResolveObject(ResponseField objectField, Optional<R> objectSource);
 
-  void didParseObject(ResponseField objectField, Optional<R> objectSource);
+  void didResolveObject(ResponseField objectField, Optional<R> objectSource);
 
-  void didParseList(List array);
+  void didResolveList(List array);
 
-  void willParseElement(int atIndex);
+  void willResolveElement(int atIndex);
 
-  void didParseElement(int atIndex);
+  void didResolveElement(int atIndex);
 
-  void didParseNull();
+  void didResolveNull();
 }
