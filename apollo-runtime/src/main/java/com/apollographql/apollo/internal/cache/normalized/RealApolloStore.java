@@ -2,10 +2,10 @@ package com.apollographql.apollo.internal.cache.normalized;
 
 
 import com.apollographql.apollo.CustomTypeAdapter;
-import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.CacheHeaders;
@@ -155,9 +155,9 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
             fieldValueResolver, customTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
         try {
           return operation.wrapData(responseFieldMapper.map(responseReader));
-        } catch (IOException e) {
+        } catch (final Exception e) {
           logger.e(e, "Failed to read cached operation data. Operation: %s", operation);
-          throw new RuntimeException(e);
+          return null;
         }
       }
     });
@@ -188,9 +188,9 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
               .data(data)
               .dependentKeys(responseNormalizer.dependentKeys())
               .build();
-        } catch (IOException e) {
+        } catch (final Exception e) {
           logger.e(e, "Failed to read cached operation data. Operation: %s", operation);
-          throw new RuntimeException(e);
+          return Response.<T>builder(operation).build();
         }
       }
     });
@@ -217,9 +217,9 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
             customTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
         try {
           return responseFieldMapper.map(responseReader);
-        } catch (final IOException e) {
+        } catch (final Exception e) {
           logger.e(e, "Failed to read cached fragment data");
-          throw new RuntimeException(e);
+          return null;
         }
       }
     });
