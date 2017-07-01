@@ -96,7 +96,8 @@ final class HttpResponseBodyParser<D extends Operation.Data, W> {
     final Map<String, Object> customAttributes = new HashMap<>();
     for (Map.Entry<String, Object> entry : reader.toMap().entrySet()) {
       if ("message".equals(entry.getKey())) {
-        message = entry.getValue().toString();
+        Object value = entry.getValue();
+        message = value != null ? value.toString() : null;
       } else if ("locations".equals(entry.getKey())) {
         List<Map<String, Object>> locationItems = (List<Map<String, Object>>) entry.getValue();
         if (locationItems != null) {

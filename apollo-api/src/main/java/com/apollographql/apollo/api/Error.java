@@ -18,7 +18,8 @@ public final class Error {
   private final List<Location> locations;
   private final Map<String, Object> customAttributes;
 
-  public Error(String message, @Nullable List<Location> locations, @Nullable Map<String, Object> customAttributes) {
+  public Error(@Nullable String message, @Nullable List<Location> locations,
+      @Nullable Map<String, Object> customAttributes) {
     this.message = message;
     this.locations = locations != null ? unmodifiableList(locations) : Collections.<Location>emptyList();
     this.customAttributes = customAttributes != null ? unmodifiableMap(customAttributes)
@@ -28,7 +29,7 @@ public final class Error {
   /**
    * Returns server error message.
    */
-  public String message() {
+  @Nullable public String message() {
     return message;
   }
 
