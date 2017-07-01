@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import java.io.IOException;
+import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -51,6 +52,9 @@ public class PilotFragment implements GraphqlFragment {
 
   public PilotFragment(@Nonnull String __typename, @Nullable String name,
       @Nullable Homeworld homeworld) {
+    if (__typename == null) {
+      throw new NullPointerException("__typename can't be null");
+    }
     this.__typename = __typename;
     this.name = Optional.fromNullable(name);
     this.homeworld = Optional.fromNullable(homeworld);
@@ -161,6 +165,9 @@ public class PilotFragment implements GraphqlFragment {
     private volatile boolean $hashCodeMemoized;
 
     public Homeworld(@Nonnull String __typename, @Nullable String name) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
       this.name = Optional.fromNullable(name);
     }

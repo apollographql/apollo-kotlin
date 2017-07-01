@@ -15,6 +15,7 @@ import com.example.input_object_type.type.Episode;
 import com.example.input_object_type.type.ReviewInput;
 import java.io.IOException;
 import java.lang.IllegalStateException;
+import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -243,6 +244,9 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     private volatile boolean $hashCodeMemoized;
 
     public CreateReview(@Nonnull String __typename, int stars, @Nullable String commentary) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
       this.stars = stars;
       this.commentary = Optional.fromNullable(commentary);

@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import java.io.IOException;
 import java.lang.Integer;
+import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -67,8 +68,17 @@ public class HeroDetails implements GraphqlFragment {
 
   public HeroDetails(@Nonnull String __typename, @Nonnull String name,
       @Nonnull FriendsConnection friendsConnection, @Nullable AsDroid asDroid) {
+    if (__typename == null) {
+      throw new NullPointerException("__typename can't be null");
+    }
     this.__typename = __typename;
+    if (name == null) {
+      throw new NullPointerException("name can't be null");
+    }
     this.name = name;
+    if (friendsConnection == null) {
+      throw new NullPointerException("friendsConnection can't be null");
+    }
     this.friendsConnection = friendsConnection;
     this.asDroid = Optional.fromNullable(asDroid);
   }
@@ -202,6 +212,9 @@ public class HeroDetails implements GraphqlFragment {
 
     public FriendsConnection(@Nonnull String __typename, @Nullable Integer totalCount,
         @Nullable List<Edge> edges) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
@@ -325,6 +338,9 @@ public class HeroDetails implements GraphqlFragment {
     private volatile boolean $hashCodeMemoized;
 
     public Edge(@Nonnull String __typename, @Nullable Node node) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
       this.node = Optional.fromNullable(node);
     }
@@ -422,7 +438,13 @@ public class HeroDetails implements GraphqlFragment {
     private volatile boolean $hashCodeMemoized;
 
     public Node(@Nonnull String __typename, @Nonnull String name) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
     }
 
@@ -519,8 +541,17 @@ public class HeroDetails implements GraphqlFragment {
 
     public AsDroid(@Nonnull String __typename, @Nonnull String name,
         @Nonnull FriendsConnection1 friendsConnection, @Nullable String primaryFunction) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
+      if (friendsConnection == null) {
+        throw new NullPointerException("friendsConnection can't be null");
+      }
       this.friendsConnection = friendsConnection;
       this.primaryFunction = Optional.fromNullable(primaryFunction);
     }
@@ -648,6 +679,9 @@ public class HeroDetails implements GraphqlFragment {
 
     public FriendsConnection1(@Nonnull String __typename, @Nullable Integer totalCount,
         @Nullable List<Edge1> edges) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
@@ -771,6 +805,9 @@ public class HeroDetails implements GraphqlFragment {
     private volatile boolean $hashCodeMemoized;
 
     public Edge1(@Nonnull String __typename, @Nullable Node1 node) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
       this.node = Optional.fromNullable(node);
     }
@@ -868,7 +905,13 @@ public class HeroDetails implements GraphqlFragment {
     private volatile boolean $hashCodeMemoized;
 
     public Node1(@Nonnull String __typename, @Nonnull String name) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
     }
 

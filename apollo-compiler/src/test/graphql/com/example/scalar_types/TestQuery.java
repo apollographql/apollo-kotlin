@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.lang.Boolean;
 import java.lang.Double;
 import java.lang.Integer;
+import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -129,6 +130,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Nullable List<GraphQlListOfObject> graphQlListOfObjects) {
       this.graphQlString = Optional.fromNullable(graphQlString);
       this.graphQlIdNullable = Optional.fromNullable(graphQlIdNullable);
+      if (graphQlIdNonNullable == null) {
+        throw new NullPointerException("graphQlIdNonNullable can't be null");
+      }
       this.graphQlIdNonNullable = graphQlIdNonNullable;
       this.graphQlIntNullable = Optional.fromNullable(graphQlIntNullable);
       this.graphQlIntNonNullable = graphQlIntNonNullable;

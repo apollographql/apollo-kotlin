@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import java.io.IOException;
+import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -48,7 +49,13 @@ public class DroidDetails implements GraphqlFragment {
 
   public DroidDetails(@Nonnull String __typename, @Nonnull String name,
       @Nullable String primaryFunction) {
+    if (__typename == null) {
+      throw new NullPointerException("__typename can't be null");
+    }
     this.__typename = __typename;
+    if (name == null) {
+      throw new NullPointerException("name can't be null");
+    }
     this.name = name;
     this.primaryFunction = Optional.fromNullable(primaryFunction);
   }

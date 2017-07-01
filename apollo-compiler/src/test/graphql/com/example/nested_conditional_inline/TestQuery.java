@@ -13,6 +13,7 @@ import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.example.nested_conditional_inline.type.Episode;
 import java.io.IOException;
 import java.lang.Double;
+import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -245,7 +246,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Hero(@Nonnull String __typename, @Nonnull String name, @Nullable AsHuman asHuman,
         @Nullable AsDroid asDroid) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
       this.asHuman = Optional.fromNullable(asHuman);
       this.asDroid = Optional.fromNullable(asDroid);
@@ -378,7 +385,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public AsHuman(@Nonnull String __typename, @Nonnull String name,
         @Nullable List<Friend> friends) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
       this.friends = Optional.fromNullable(friends);
     }
@@ -498,7 +511,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Friend(@Nonnull String __typename, @Nonnull String name, @Nullable AsHuman1 asHuman) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
       this.asHuman = Optional.fromNullable(asHuman);
     }
@@ -611,7 +630,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public AsHuman1(@Nonnull String __typename, @Nonnull String name, @Nullable Double height) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
       this.height = Optional.fromNullable(height);
     }
@@ -713,7 +738,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public AsDroid(@Nonnull String __typename, @Nonnull String name,
         @Nullable List<Friend1> friends) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
       this.friends = Optional.fromNullable(friends);
     }
@@ -833,7 +864,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Friend1(@Nonnull String __typename, @Nonnull String name, @Nullable AsHuman2 asHuman) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
       this.asHuman = Optional.fromNullable(asHuman);
     }
@@ -946,7 +983,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public AsHuman2(@Nonnull String __typename, @Nonnull String name, @Nullable Double height) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
       this.height = Optional.fromNullable(height);
     }

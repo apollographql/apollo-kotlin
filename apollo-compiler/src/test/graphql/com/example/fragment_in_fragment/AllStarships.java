@@ -14,6 +14,7 @@ import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.example.fragment_in_fragment.fragment.PilotFragment;
 import com.example.fragment_in_fragment.fragment.StarshipFragment;
 import java.io.IOException;
+import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -192,6 +193,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     private volatile boolean $hashCodeMemoized;
 
     public AllStarships1(@Nonnull String __typename, @Nullable List<Edge> edges) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
       this.edges = Optional.fromNullable(edges);
     }
@@ -301,6 +305,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     private volatile boolean $hashCodeMemoized;
 
     public Edge(@Nonnull String __typename, @Nullable Node node) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
       this.node = Optional.fromNullable(node);
     }
@@ -398,7 +405,13 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     private volatile boolean $hashCodeMemoized;
 
     public Node(@Nonnull String __typename, @Nonnull Fragments fragments) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (fragments == null) {
+        throw new NullPointerException("fragments can't be null");
+      }
       this.fragments = fragments;
     }
 
@@ -468,6 +481,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       private volatile boolean $hashCodeMemoized;
 
       public Fragments(@Nonnull StarshipFragment starshipFragment) {
+        if (starshipFragment == null) {
+          throw new NullPointerException("starshipFragment can't be null");
+        }
         this.starshipFragment = starshipFragment;
       }
 

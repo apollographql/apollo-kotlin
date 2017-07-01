@@ -13,6 +13,7 @@ import com.apollographql.apollo.api.internal.Optional;
 import com.example.fragments_with_type_condition.fragment.DroidDetails;
 import com.example.fragments_with_type_condition.fragment.HumanDetails;
 import java.io.IOException;
+import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -210,7 +211,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public R2(@Nonnull String __typename, @Nonnull Fragments fragments) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (fragments == null) {
+        throw new NullPointerException("fragments can't be null");
+      }
       this.fragments = fragments;
     }
 
@@ -282,7 +289,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       private volatile boolean $hashCodeMemoized;
 
       public Fragments(@Nonnull HumanDetails humanDetails, @Nonnull DroidDetails droidDetails) {
+        if (humanDetails == null) {
+          throw new NullPointerException("humanDetails can't be null");
+        }
         this.humanDetails = humanDetails;
+        if (droidDetails == null) {
+          throw new NullPointerException("droidDetails can't be null");
+        }
         this.droidDetails = droidDetails;
       }
 
@@ -404,7 +417,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Luke(@Nonnull String __typename, @Nonnull Fragments fragments) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (fragments == null) {
+        throw new NullPointerException("fragments can't be null");
+      }
       this.fragments = fragments;
     }
 
@@ -476,7 +495,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       private volatile boolean $hashCodeMemoized;
 
       public Fragments(@Nonnull HumanDetails humanDetails, @Nonnull DroidDetails droidDetails) {
+        if (humanDetails == null) {
+          throw new NullPointerException("humanDetails can't be null");
+        }
         this.humanDetails = humanDetails;
+        if (droidDetails == null) {
+          throw new NullPointerException("droidDetails can't be null");
+        }
         this.droidDetails = droidDetails;
       }
 

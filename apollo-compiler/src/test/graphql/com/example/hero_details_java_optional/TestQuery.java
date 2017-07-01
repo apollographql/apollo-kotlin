@@ -10,6 +10,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import java.io.IOException;
 import java.lang.Integer;
+import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -193,8 +194,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Hero(@Nonnull String __typename, @Nonnull String name,
         @Nonnull FriendsConnection friendsConnection) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
+      if (friendsConnection == null) {
+        throw new NullPointerException("friendsConnection can't be null");
+      }
       this.friendsConnection = friendsConnection;
     }
 
@@ -308,6 +318,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public FriendsConnection(@Nonnull String __typename, @Nullable Integer totalCount,
         @Nullable List<Edge> edges) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
       this.totalCount = Optional.ofNullable(totalCount);
       this.edges = Optional.ofNullable(edges);
@@ -431,6 +444,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Edge(@Nonnull String __typename, @Nullable Node node) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
       this.node = Optional.ofNullable(node);
     }
@@ -528,7 +544,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Node(@Nonnull String __typename, @Nonnull String name) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
     }
 
