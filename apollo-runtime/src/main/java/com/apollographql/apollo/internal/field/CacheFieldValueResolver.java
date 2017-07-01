@@ -51,6 +51,10 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
 
   private List<Record> valueForObjectList(Record record, ResponseField field) throws IOException {
     List<CacheReference> values = fieldValue(record, field);
+    if (values == null) {
+      return null;
+    }
+
     List<Record> result = new ArrayList<>();
     for (CacheReference reference : values) {
       result.add(readableCache.read(reference.key(), cacheHeaders));

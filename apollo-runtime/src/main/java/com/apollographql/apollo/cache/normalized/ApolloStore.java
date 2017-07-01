@@ -126,5 +126,17 @@ public interface ApolloStore {
   @Nullable <F extends GraphqlFragment> F read(@Nonnull ResponseFieldMapper<F> fieldMapper, @Nonnull CacheKey cacheKey,
       @Nonnull Operation.Variables variables);
 
+  /**
+   * Write operation to the store.
+   *
+   * @param operation     {@link Operation} response data of which should be written to the store
+   * @param operationData {@link Operation.Data} operation response data to be written to the store
+   * @param <D>           type of GraphQL operation data
+   * @param <T>           type operation cached data will be wrapped with
+   * @param <V>           type of operation variables
+   */
+  <D extends Operation.Data, T, V extends Operation.Variables> void write(@Nonnull Operation<D, T, V> operation,
+      @Nonnull D operationData);
+
   ApolloStore NO_APOLLO_STORE = new NoOpApolloStore();
 }

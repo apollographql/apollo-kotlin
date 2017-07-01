@@ -90,4 +90,7 @@ public final class NoOpApolloStore implements ApolloStore, ReadableStore, Writea
       @Nonnull CacheKey cacheKey, @Nonnull Operation.Variables variables) {
     return null;
   }
+
+  @Override public void write(@Nonnull Operation operation, @Nonnull Operation.Data operationData) {
+  }
 }

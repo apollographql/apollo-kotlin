@@ -2,10 +2,10 @@ package com.apollographql.apollo.internal.cache.normalized;
 
 
 import com.apollographql.apollo.CustomTypeAdapter;
-import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.CacheHeaders;
@@ -18,6 +18,7 @@ import com.apollographql.apollo.internal.field.CacheFieldValueResolver;
 import com.apollographql.apollo.internal.reader.RealResponseReader;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -220,6 +221,26 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
           logger.e(e, "Failed to read cached fragment data");
           return null;
         }
+      }
+    });
+  }
+
+  @Override public <D extends Operation.Data, T, V extends Operation.Variables> void write(
+      @Nonnull final Operation<D, T, V> operation, @Nonnull final D operationData) {
+    checkNotNull(operation, "operation == null");
+    checkNotNull(operationData, "operationData == null");
+    writeTransaction(new Transaction<WriteableStore, Boolean>() {
+      @Override public Boolean execute(WriteableStore cache) {
+        CacheResponseWriter cacheResponseWriter = new CacheResponseWriter(operation, customTypeAdapters);
+        try {
+          operationData.marshaller().marshal(cacheResponseWriter);
+          Collection<Record> records = cacheResponseWriter.normalize(networkResponseNormalizer());
+          merge(records, CacheHeaders.NONE);
+        } catch (IOException e) {
+          logger.e(e, "Failed to write operation data to the store");
+          throw new RuntimeException(e);
+        }
+        return true;
       }
     });
   }

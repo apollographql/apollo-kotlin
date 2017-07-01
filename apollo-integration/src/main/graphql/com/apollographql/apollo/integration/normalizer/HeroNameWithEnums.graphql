@@ -1,0 +1,7 @@
+query HeroNameWithEnums {
+  hero {
+    name
+    firstAppearsIn
+    appearsIn
+  }
+}

@@ -1,0 +1,16 @@
+query EpisodeHeroWithInlineFragment($episode: Episode) {
+  hero(episode: $episode) {
+    name
+    friends {
+      ... on Human {
+        id
+        name
+        height
+      }
+      ... on Droid {
+        name
+        primaryFunction
+      }
+    }
+  }
+}

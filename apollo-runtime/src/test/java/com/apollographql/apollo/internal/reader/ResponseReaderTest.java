@@ -611,29 +611,29 @@ public class ResponseReaderTest {
     @Override public void didResolve(ResponseField field, Operation.Variables variables) {
     }
 
-    @Override public void didParseScalar(Object value) {
+    @Override public void didResolveScalar(Object value) {
     }
 
-    @Override public void willParseObject(ResponseField field, Optional objectSource) {
+    @Override public void willResolveObject(ResponseField field, Optional objectSource) {
     }
 
-    @Override public void didParseObject(ResponseField Field, Optional objectSource) {
+    @Override public void didResolveObject(ResponseField Field, Optional objectSource) {
     }
 
     @Nonnull @Override public CacheKey resolveCacheKey(@Nonnull ResponseField field, @Nonnull Object record) {
       return CacheKey.NO_KEY;
     }
 
-    @Override public void didParseList(List array) {
+    @Override public void didResolveList(List array) {
     }
 
-    @Override public void willParseElement(int atIndex) {
+    @Override public void willResolveElement(int atIndex) {
     }
 
-    @Override public void didParseElement(int atIndex) {
+    @Override public void didResolveElement(int atIndex) {
     }
 
-    @Override public void didParseNull() {
+    @Override public void didResolveNull() {
     }
 
     @Override public Collection<Record> records() {
