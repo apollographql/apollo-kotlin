@@ -1,0 +1,10 @@
+{
+  "errors": [
+    {
+      "message": null,
+      "locations": null,
+      "code":"userNotFound",
+      "path":"loginWithPassword"
+    }
+  ]
+}

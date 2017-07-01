@@ -144,7 +144,7 @@ public class IntegrationTest {
         .asList("Gary Kurtz", "Rick McCallum"));
   }
 
-  @Test public void errorResponse() throws Exception {
+  @Test public void error_response() throws Exception {
     server.enqueue(mockResponse("ResponseError.json"));
     Response<AllPlanets.Data> body = apolloClient.query(new AllPlanets()).execute();
     assertThat(body.hasErrors()).isTrue();
@@ -152,6 +152,18 @@ public class IntegrationTest {
     assertThat(body.errors()).containsExactly(new Error(
         "Cannot query field \"names\" on type \"Species\".",
         Collections.singletonList(new Error.Location(3, 5)), Collections.<String, Object>emptyMap()));
+  }
+
+  @Test public void error_response_with_nulls_and_custom_attributes() throws Exception {
+    server.enqueue(mockResponse("ResponseErrorWithNullsAndCustomAttributes.json"));
+    Response<AllPlanets.Data> body = apolloClient.query(new AllPlanets()).execute();
+    assertThat(body.hasErrors()).isTrue();
+    assertThat(body.errors()).hasSize(1);
+    assertThat(body.errors().get(0).message()).isNull();
+    assertThat(body.errors().get(0).customAttributes()).hasSize(2);
+    assertThat(body.errors().get(0).customAttributes().get("code")).isEqualTo("userNotFound");
+    assertThat(body.errors().get(0).customAttributes().get("path")).isEqualTo("loginWithPassword");
+    assertThat(body.errors().get(0).locations()).hasSize(0);
   }
 
   @Test public void errorResponse_custom_attributes() throws Exception {
