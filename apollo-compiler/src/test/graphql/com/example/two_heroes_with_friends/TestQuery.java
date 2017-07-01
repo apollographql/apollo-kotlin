@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import java.io.IOException;
 import java.lang.Integer;
+import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -233,8 +234,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public R2(@Nonnull String __typename, @Nonnull String name,
         @Nonnull FriendsConnection friendsConnection) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
+      if (friendsConnection == null) {
+        throw new NullPointerException("friendsConnection can't be null");
+      }
       this.friendsConnection = friendsConnection;
     }
 
@@ -348,6 +358,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public FriendsConnection(@Nonnull String __typename, @Nullable Integer totalCount,
         @Nullable List<Edge> edges) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
@@ -471,6 +484,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Edge(@Nonnull String __typename, @Nullable Node node) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
       this.node = Optional.fromNullable(node);
     }
@@ -568,7 +584,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Node(@Nonnull String __typename, @Nonnull String name) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
     }
 
@@ -665,9 +687,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Luke(@Nonnull String __typename, @Nonnull String id, @Nonnull String name,
         @Nonnull FriendsConnection1 friendsConnection) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (id == null) {
+        throw new NullPointerException("id can't be null");
+      }
       this.id = id;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
+      if (friendsConnection == null) {
+        throw new NullPointerException("friendsConnection can't be null");
+      }
       this.friendsConnection = friendsConnection;
     }
 
@@ -794,6 +828,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public FriendsConnection1(@Nonnull String __typename, @Nullable Integer totalCount,
         @Nullable List<Edge1> edges) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
@@ -917,6 +954,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Edge1(@Nonnull String __typename, @Nullable Node1 node) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
       this.node = Optional.fromNullable(node);
     }
@@ -1014,7 +1054,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Node1(@Nonnull String __typename, @Nonnull String name) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
     }
 

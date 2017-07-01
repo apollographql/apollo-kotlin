@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import java.io.IOException;
 import java.lang.Double;
+import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -48,7 +49,13 @@ public class HumanDetails implements GraphqlFragment {
   private volatile boolean $hashCodeMemoized;
 
   public HumanDetails(@Nonnull String __typename, @Nonnull String name, @Nullable Double height) {
+    if (__typename == null) {
+      throw new NullPointerException("__typename can't be null");
+    }
     this.__typename = __typename;
+    if (name == null) {
+      throw new NullPointerException("name can't be null");
+    }
     this.name = name;
     this.height = Optional.fromNullable(height);
   }

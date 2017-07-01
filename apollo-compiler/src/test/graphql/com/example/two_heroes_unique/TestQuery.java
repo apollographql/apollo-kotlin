@@ -11,6 +11,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import java.io.IOException;
+import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -205,7 +206,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public R2(@Nonnull String __typename, @Nonnull String name) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
     }
 
@@ -298,8 +305,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Luke(@Nonnull String __typename, @Nonnull String id, @Nonnull String name) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (id == null) {
+        throw new NullPointerException("id can't be null");
+      }
       this.id = id;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
     }
 

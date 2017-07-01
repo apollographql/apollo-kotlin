@@ -11,6 +11,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.example.enum_type.type.Episode;
 import java.io.IOException;
+import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -187,9 +188,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Hero(@Nonnull String __typename, @Nonnull String name, @Nonnull List<Episode> appearsIn,
         @Nonnull Episode firstAppearsIn) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
+      if (appearsIn == null) {
+        throw new NullPointerException("appearsIn can't be null");
+      }
       this.appearsIn = appearsIn;
+      if (firstAppearsIn == null) {
+        throw new NullPointerException("firstAppearsIn can't be null");
+      }
       this.firstAppearsIn = firstAppearsIn;
     }
 

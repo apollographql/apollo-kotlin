@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import java.io.IOException;
+import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -62,7 +63,13 @@ public class StarshipFragment implements GraphqlFragment {
 
   public StarshipFragment(@Nonnull String __typename, @Nonnull String id, @Nullable String name,
       @Nullable PilotConnection pilotConnection) {
+    if (__typename == null) {
+      throw new NullPointerException("__typename can't be null");
+    }
     this.__typename = __typename;
+    if (id == null) {
+      throw new NullPointerException("id can't be null");
+    }
     this.id = id;
     this.name = Optional.fromNullable(name);
     this.pilotConnection = Optional.fromNullable(pilotConnection);
@@ -183,6 +190,9 @@ public class StarshipFragment implements GraphqlFragment {
     private volatile boolean $hashCodeMemoized;
 
     public PilotConnection(@Nonnull String __typename, @Nullable List<Edge> edges) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
       this.edges = Optional.fromNullable(edges);
     }
@@ -292,6 +302,9 @@ public class StarshipFragment implements GraphqlFragment {
     private volatile boolean $hashCodeMemoized;
 
     public Edge(@Nonnull String __typename, @Nullable Node node) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
       this.node = Optional.fromNullable(node);
     }
@@ -389,7 +402,13 @@ public class StarshipFragment implements GraphqlFragment {
     private volatile boolean $hashCodeMemoized;
 
     public Node(@Nonnull String __typename, @Nonnull Fragments fragments) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (fragments == null) {
+        throw new NullPointerException("fragments can't be null");
+      }
       this.fragments = fragments;
     }
 
@@ -459,6 +478,9 @@ public class StarshipFragment implements GraphqlFragment {
       private volatile boolean $hashCodeMemoized;
 
       public Fragments(@Nonnull PilotFragment pilotFragment) {
+        if (pilotFragment == null) {
+          throw new NullPointerException("pilotFragment can't be null");
+        }
         this.pilotFragment = pilotFragment;
       }
 

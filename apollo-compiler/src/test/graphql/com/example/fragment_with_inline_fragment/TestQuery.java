@@ -13,6 +13,7 @@ import com.apollographql.apollo.api.internal.Optional;
 import com.example.fragment_with_inline_fragment.fragment.HeroDetails;
 import com.example.fragment_with_inline_fragment.type.Episode;
 import java.io.IOException;
+import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -192,9 +193,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Hero(@Nonnull String __typename, @Nonnull String name, @Nonnull List<Episode> appearsIn,
         @Nonnull Fragments fragments) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
       this.name = name;
+      if (appearsIn == null) {
+        throw new NullPointerException("appearsIn can't be null");
+      }
       this.appearsIn = appearsIn;
+      if (fragments == null) {
+        throw new NullPointerException("fragments can't be null");
+      }
       this.fragments = fragments;
     }
 
@@ -295,6 +308,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       private volatile boolean $hashCodeMemoized;
 
       public Fragments(@Nonnull HeroDetails heroDetails) {
+        if (heroDetails == null) {
+          throw new NullPointerException("heroDetails can't be null");
+        }
         this.heroDetails = heroDetails;
       }
 

@@ -2,6 +2,7 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.squareup.javapoet.*
+import java.lang.NullPointerException
 import javax.lang.model.element.Modifier
 
 private val JAVA_RESERVED_WORDS = arrayOf(
@@ -68,7 +69,17 @@ fun TypeSpec.withValueInitConstructor(nullableValueGenerationType: NullableValue
                   }
                   CodeBlock.of("this.\$L = \$T.\$L(\$L);\n", it.name, factory.first, factory.second, it.name)
                 } else {
-                  CodeBlock.of("this.\$L = \$L;\n", it.name, it.name)
+                  if (it.type.annotations.contains(Annotations.NONNULL)) {
+                    CodeBlock.builder()
+                        .beginControlFlow("if (\$L == null)", it.name)
+                        .addStatement("throw new \$T(\$S)", NullPointerException::class.java,
+                            "${it.name} can't be null")
+                        .endControlFlow()
+                        .addStatement("this.\$L = \$L", it.name, it.name)
+                        .build()
+                  } else {
+                    CodeBlock.of("this.\$L = \$L;\n", it.name, it.name)
+                  }
                 }
               }
               .fold(CodeBlock.builder(), CodeBlock.Builder::add)
