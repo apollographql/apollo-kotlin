@@ -91,6 +91,24 @@ public final class NoOpApolloStore implements ApolloStore, ReadableStore, Writea
     return null;
   }
 
-  @Override public void write(@Nonnull Operation operation, @Nonnull Operation.Data operationData) {
+  @Nonnull @Override
+  public <D extends Operation.Data, T, V extends Operation.Variables> Set<String> write(
+      @Nonnull Operation<D, T, V> operation, @Nonnull D operationData) {
+    return Collections.emptySet();
+  }
+
+  @Override
+  public <D extends Operation.Data, T, V extends Operation.Variables> void writeAndPublish(
+      @Nonnull Operation<D, T, V> operation, @Nonnull D operationData) {
+  }
+
+  @Nonnull @Override
+  public Set<String> write(@Nonnull Operation operation, @Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey) {
+    return null;
+  }
+
+  @Override
+  public void writeAndPublish(@Nonnull Operation operation, @Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey) {
+
   }
 }

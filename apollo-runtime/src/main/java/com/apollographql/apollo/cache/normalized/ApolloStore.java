@@ -134,9 +134,39 @@ public interface ApolloStore {
    * @param <D>           type of GraphQL operation data
    * @param <T>           type operation cached data will be wrapped with
    * @param <V>           type of operation variables
+   * @return set of keys of {@link Record} which have changed
    */
-  <D extends Operation.Data, T, V extends Operation.Variables> void write(@Nonnull Operation<D, T, V> operation,
-      @Nonnull D operationData);
+  @Nonnull <D extends Operation.Data, T, V extends Operation.Variables> Set<String> write(
+      @Nonnull Operation<D, T, V> operation, @Nonnull D operationData);
+
+  /**
+   * Write operation to the store and publish changes of {@link Record} which have changed.
+   *
+   * @param operation     {@link Operation} response data of which should be written to the store
+   * @param operationData {@link Operation.Data} operation response data to be written to the store
+   * @param <D>           type of GraphQL operation data
+   * @param <T>           type operation cached data will be wrapped with
+   * @param <V>           type of operation variables
+   */
+  <D extends Operation.Data, T, V extends Operation.Variables> void writeAndPublish(
+      @Nonnull Operation<D, T, V> operation, @Nonnull D operationData);
+
+  /**
+   * Write fragment to the store.
+   *
+   * @param fragment data to be written to the store
+   * @return set of keys of {@link Record} which have changed
+   */
+  @Nonnull Set<String> write(@Nonnull Operation operation, @Nonnull GraphqlFragment fragment,
+      @Nonnull CacheKey cacheKey);
+
+  /**
+   * Write fragment to the store and publish changes of {@link Record} which have changed.
+   *
+   * @param fragment data to be written to the store
+   */
+  void writeAndPublish(@Nonnull Operation operation, @Nonnull GraphqlFragment fragment,
+      @Nonnull CacheKey cacheKey);
 
   ApolloStore NO_APOLLO_STORE = new NoOpApolloStore();
 }

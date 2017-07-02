@@ -40,14 +40,7 @@ public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
   }
 
   @Override public void willResolveRootQuery(Operation operation) {
-    pathStack = new SimpleStack<>();
-    recordStack = new SimpleStack<>();
-    valueStack = new SimpleStack<>();
-    dependentKeys = new HashSet<>();
-
-    path = new ArrayList<>();
-    currentRecordBuilder = Record.builder(CacheKeyResolver.rootKeyForOperation(operation).key());
-    recordSet = new RecordSet();
+    willResolveRecord(CacheKeyResolver.rootKeyForOperation(operation));
   }
 
   @Override public void willResolve(ResponseField field, Operation.Variables variables) {
@@ -117,6 +110,17 @@ public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
   }
 
   @Nonnull public abstract CacheKey resolveCacheKey(@Nonnull ResponseField field, @Nonnull R record);
+
+  void willResolveRecord(CacheKey cacheKey) {
+    pathStack = new SimpleStack<>();
+    recordStack = new SimpleStack<>();
+    valueStack = new SimpleStack<>();
+    dependentKeys = new HashSet<>();
+
+    path = new ArrayList<>();
+    currentRecordBuilder = Record.builder(cacheKey.key());
+    recordSet = new RecordSet();
+  }
 
   private String pathToString() {
     StringBuilder stringBuilder = new StringBuilder();

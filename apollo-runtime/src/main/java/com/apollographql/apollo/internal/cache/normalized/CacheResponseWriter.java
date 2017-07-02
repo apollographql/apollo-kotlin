@@ -19,13 +19,13 @@ import java.util.List;
 import java.util.Map;
 
 final class CacheResponseWriter implements ResponseWriter {
-  private final Operation operation;
+  private final Operation.Variables operationVariables;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   final Map<String, FieldDescriptor> fieldDescriptors = new LinkedHashMap<>();
   final Map<String, Object> fieldValues = new LinkedHashMap<>();
 
-  CacheResponseWriter(Operation operation, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
-    this.operation = operation;
+  CacheResponseWriter(Operation.Variables operationVariables, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+    this.operationVariables = operationVariables;
     this.customTypeAdapters = customTypeAdapters;
   }
 
@@ -66,7 +66,7 @@ final class CacheResponseWriter implements ResponseWriter {
       return;
     }
 
-    CacheResponseWriter nestedResponseWriter = new CacheResponseWriter(operation, customTypeAdapters);
+    CacheResponseWriter nestedResponseWriter = new CacheResponseWriter(operationVariables, customTypeAdapters);
     marshaller.marshal(nestedResponseWriter);
 
     fieldDescriptors.put(field.responseName(), new ObjectFieldDescriptor(field, nestedResponseWriter.fieldDescriptors));
@@ -82,7 +82,7 @@ final class CacheResponseWriter implements ResponseWriter {
       return;
     }
 
-    ListItemWriter listItemWriter = new ListItemWriter(operation, customTypeAdapters);
+    ListItemWriter listItemWriter = new ListItemWriter(operationVariables, customTypeAdapters);
     listWriter.write(listItemWriter);
 
     fieldDescriptors.put(field.responseName(), new ListFieldDescriptor(field, listItemWriter.fieldDescriptors));
@@ -90,8 +90,7 @@ final class CacheResponseWriter implements ResponseWriter {
   }
 
   public Collection<Record> normalize(ResponseNormalizer<Map<String, Object>> responseNormalizer) {
-    responseNormalizer.willResolveRootQuery(operation);
-    normalize(operation, responseNormalizer, fieldDescriptors, fieldValues);
+    normalize(operationVariables, responseNormalizer, fieldDescriptors, fieldValues);
     return responseNormalizer.records();
   }
 
@@ -103,13 +102,13 @@ final class CacheResponseWriter implements ResponseWriter {
     }
   }
 
-  @SuppressWarnings("unchecked") private void normalize(Operation operation,
+  @SuppressWarnings("unchecked") private void normalize(Operation.Variables operationVariables,
       ResponseNormalizer<Map<String, Object>> responseNormalizer, Map<String, FieldDescriptor> fieldDescriptors,
       Map<String, Object> fieldValues) {
     for (String fieldResponseName : fieldDescriptors.keySet()) {
       FieldDescriptor fieldDescriptor = fieldDescriptors.get(fieldResponseName);
       Object fieldValue = fieldValues.get(fieldResponseName);
-      responseNormalizer.willResolve(fieldDescriptor.field, operation.variables());
+      responseNormalizer.willResolve(fieldDescriptor.field, operationVariables);
 
       switch (fieldDescriptor.field.type()) {
         case OBJECT: {
@@ -142,7 +141,7 @@ final class CacheResponseWriter implements ResponseWriter {
         }
       }
 
-      responseNormalizer.didResolve(fieldDescriptor.field, operation.variables());
+      responseNormalizer.didResolve(fieldDescriptor.field, operationVariables);
     }
   }
 
@@ -152,7 +151,7 @@ final class CacheResponseWriter implements ResponseWriter {
     if (objectFieldValues == null) {
       responseNormalizer.didResolveNull();
     } else {
-      normalize(operation, responseNormalizer, objectFieldDescriptor.childFields, objectFieldValues);
+      normalize(operationVariables, responseNormalizer, objectFieldDescriptor.childFields, objectFieldValues);
     }
     responseNormalizer.didResolveObject(objectFieldDescriptor.field, Optional.fromNullable(objectFieldValues));
   }
@@ -165,7 +164,7 @@ final class CacheResponseWriter implements ResponseWriter {
       for (int i = 0; i < listFieldDescriptor.items.size(); i++) {
         responseNormalizer.willResolveElement(i);
         responseNormalizer.willResolveObject(listFieldDescriptor.field, Optional.fromNullable(listFieldValues.get(i)));
-        normalize(operation, responseNormalizer, listFieldDescriptor.items.get(i), listFieldValues.get(i));
+        normalize(operationVariables, responseNormalizer, listFieldDescriptor.items.get(i), listFieldValues.get(i));
         responseNormalizer.didResolveObject(listFieldDescriptor.field, Optional.fromNullable(listFieldValues.get(i)));
         responseNormalizer.didResolveElement(i);
       }
@@ -194,13 +193,13 @@ final class CacheResponseWriter implements ResponseWriter {
   }
 
   @SuppressWarnings("unchecked") private static final class ListItemWriter implements ResponseWriter.ListItemWriter {
-    final Operation operation;
+    final Operation.Variables operationVariables;
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
     final List<Map<String, FieldDescriptor>> fieldDescriptors = new ArrayList();
     final List fieldValues = new ArrayList();
 
-    ListItemWriter(Operation operation, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
-      this.operation = operation;
+    ListItemWriter(Operation.Variables operationVariables, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+      this.operationVariables = operationVariables;
       this.customTypeAdapters = customTypeAdapters;
     }
 
@@ -234,7 +233,7 @@ final class CacheResponseWriter implements ResponseWriter {
     }
 
     @Override public void writeObject(ResponseFieldMarshaller marshaller) throws IOException {
-      CacheResponseWriter nestedResponseWriter = new CacheResponseWriter(operation, customTypeAdapters);
+      CacheResponseWriter nestedResponseWriter = new CacheResponseWriter(operationVariables, customTypeAdapters);
       marshaller.marshal(nestedResponseWriter);
 
       fieldDescriptors.add(nestedResponseWriter.fieldDescriptors);
