@@ -155,18 +155,22 @@ public interface ApolloStore {
    * Write fragment to the store.
    *
    * @param fragment data to be written to the store
+   * @param cacheKey {@link CacheKey} to be used as root record key
+   * @param {@link   Operation.Variables} required for fragment arguments resolving
    * @return set of keys of {@link Record} which have changed
    */
-  @Nonnull Set<String> write(@Nonnull Operation operation, @Nonnull GraphqlFragment fragment,
-      @Nonnull CacheKey cacheKey);
+  @Nonnull Set<String> write(@Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey,
+      @Nonnull Operation.Variables variables);
 
   /**
    * Write fragment to the store and publish changes of {@link Record} which have changed.
    *
    * @param fragment data to be written to the store
+   * @param cacheKey {@link CacheKey} to be used as root record key
+   * @param {@link   Operation.Variables} required for fragment arguments resolving
    */
-  void writeAndPublish(@Nonnull Operation operation, @Nonnull GraphqlFragment fragment,
-      @Nonnull CacheKey cacheKey);
+  void writeAndPublish(@Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey,
+      @Nonnull Operation.Variables variables);
 
   ApolloStore NO_APOLLO_STORE = new NoOpApolloStore();
 }

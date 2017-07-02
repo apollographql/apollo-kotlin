@@ -252,11 +252,11 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     publish(changedKeys);
   }
 
-  @Override @Nonnull public Set<String> write(@Nonnull final Operation operation,
-      @Nonnull final GraphqlFragment fragment, @Nonnull final CacheKey cacheKey) {
-    checkNotNull(operation, "operation == null");
+  @Override @Nonnull public Set<String> write(@Nonnull final GraphqlFragment fragment, @Nonnull final CacheKey cacheKey,
+      @Nonnull final Operation.Variables variables) {
     checkNotNull(fragment, "fragment == null");
     checkNotNull(cacheKey, "cacheKey == null");
+    checkNotNull(variables, "operation == null");
 
     if (cacheKey == CacheKey.NO_KEY) {
       throw new IllegalArgumentException("undefined cache key");
@@ -264,7 +264,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
 
     return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
       @Override public Set<String> execute(WriteableStore cache) {
-        CacheResponseWriter cacheResponseWriter = new CacheResponseWriter(operation.variables(), customTypeAdapters);
+        CacheResponseWriter cacheResponseWriter = new CacheResponseWriter(variables, customTypeAdapters);
         try {
           fragment.marshaller().marshal(cacheResponseWriter);
           ResponseNormalizer<Map<String, Object>> responseNormalizer = networkResponseNormalizer();
@@ -279,9 +279,9 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     });
   }
 
-  @Override public void writeAndPublish(@Nonnull Operation operation, @Nonnull GraphqlFragment fragment,
-      @Nonnull CacheKey cacheKey) {
-    Set<String> changedKeys = write(operation, fragment, cacheKey);
+  @Override public void writeAndPublish(@Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey,
+      @Nonnull Operation.Variables variables) {
+    Set<String> changedKeys = write(fragment, cacheKey, variables);
     publish(changedKeys);
   }
 }

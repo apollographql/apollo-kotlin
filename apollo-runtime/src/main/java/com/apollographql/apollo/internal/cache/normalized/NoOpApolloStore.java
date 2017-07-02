@@ -102,13 +102,13 @@ public final class NoOpApolloStore implements ApolloStore, ReadableStore, Writea
       @Nonnull Operation<D, T, V> operation, @Nonnull D operationData) {
   }
 
-  @Nonnull @Override
-  public Set<String> write(@Nonnull Operation operation, @Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey) {
-    return null;
+  @Nonnull @Override public Set<String> write(@Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey,
+      @Nonnull Operation.Variables variables) {
+    return Collections.emptySet();
   }
 
   @Override
-  public void writeAndPublish(@Nonnull Operation operation, @Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey) {
-
+  public void writeAndPublish(@Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey,
+      @Nonnull Operation.Variables variables) {
   }
 }

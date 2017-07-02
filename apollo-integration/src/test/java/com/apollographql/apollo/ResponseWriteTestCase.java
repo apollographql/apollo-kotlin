@@ -381,7 +381,6 @@ public class ResponseWriteTestCase {
     assertThat(hero.fragments().heroWithFriendsFragment().friends().get(2).fragments().humanWithIdFragment().name()).isEqualTo("Leia Organa");
 
     apolloClient.apolloStore().write(
-        query,
         new HeroWithFriendsFragment(
             hero.fragments().heroWithFriendsFragment().__typename(),
             hero.fragments().heroWithFriendsFragment().id(),
@@ -408,15 +407,16 @@ public class ResponseWriteTestCase {
                     )
                 )
             )
-        ), CacheKey.from(hero.fragments().heroWithFriendsFragment().id()));
+        ), CacheKey.from(hero.fragments().heroWithFriendsFragment().id()), query.variables()
+    );
 
     apolloClient.apolloStore().write(
-        query,
         new HumanWithIdFragment(
             "Human",
             "1002",
             "Beast"
-        ), CacheKey.from("1002"));
+        ), CacheKey.from("1002"), query.variables()
+    );
 
     hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
