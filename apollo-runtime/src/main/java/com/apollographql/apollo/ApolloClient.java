@@ -7,6 +7,8 @@ import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
+import com.apollographql.apollo.cache.http.HttpCache;
+import com.apollographql.apollo.cache.http.HttpCacheInterceptor;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.cache.http.HttpCacheStore;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
@@ -22,7 +24,6 @@ import com.apollographql.apollo.internal.ApolloCallTracker;
 import com.apollographql.apollo.internal.RealApolloCall;
 import com.apollographql.apollo.internal.RealApolloPrefetch;
 import com.apollographql.apollo.internal.ResponseFieldMapperFactory;
-import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.cache.normalized.RealApolloStore;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
@@ -43,6 +44,7 @@ import javax.annotation.Nullable;
 
 import okhttp3.Call;
 import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
@@ -418,7 +420,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       HttpCache httpCache = null;
       if (httpCacheStore != null) {
         httpCache = new HttpCache(httpCacheStore, apolloLogger);
-        if (localClient) {
+        if (localClient || shouldAddHttpCacheInterceptor(callFactory)) {
           apolloLogger.w("Created local client, adding passed in HttpCache");
           callFactory = ((OkHttpClient) callFactory).newBuilder().addInterceptor(httpCache.interceptor()).build();
         }
@@ -458,6 +460,18 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
           return new Thread(runnable, "Apollo Dispatcher");
         }
       });
+    }
+
+    private static boolean shouldAddHttpCacheInterceptor(Call.Factory callFactory) {
+      if (callFactory instanceof OkHttpClient) {
+        OkHttpClient client = (OkHttpClient) callFactory;
+        for (Interceptor interceptor : client.interceptors()) {
+          if (interceptor instanceof HttpCacheInterceptor) {
+            return true;
+          }
+        }
+      }
+      return false;
     }
   }
 }
