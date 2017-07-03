@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.cache.http;
+package com.apollographql.apollo.cache.http;
 
 import java.io.IOException;
 

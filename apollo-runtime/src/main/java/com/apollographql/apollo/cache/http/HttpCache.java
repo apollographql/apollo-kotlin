@@ -1,8 +1,5 @@
-package com.apollographql.apollo.internal.cache.http;
+package com.apollographql.apollo.cache.http;
 
-import com.apollographql.apollo.cache.http.HttpCacheRecord;
-import com.apollographql.apollo.cache.http.HttpCacheRecordEditor;
-import com.apollographql.apollo.cache.http.HttpCacheStore;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.io.IOException;
@@ -16,7 +13,7 @@ import okio.Sink;
 import okio.Source;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-import static com.apollographql.apollo.internal.cache.http.Utils.copyResponseBody;
+import static com.apollographql.apollo.cache.http.Utils.copyResponseBody;
 
 @SuppressWarnings("WeakerAccess") public final class HttpCache {
   public static final String CACHE_KEY_HEADER = "X-APOLLO-CACHE-KEY";

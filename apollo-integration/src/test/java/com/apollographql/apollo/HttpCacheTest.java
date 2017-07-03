@@ -1,16 +1,16 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
+import com.apollographql.apollo.cache.http.HttpCache;
+import com.apollographql.apollo.cache.http.HttpCachePolicy;
+import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.integration.httpcache.AllFilmsQuery;
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.httpcache.DroidDetailsQuery;
 import com.apollographql.apollo.integration.httpcache.type.CustomType;
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
-import com.apollographql.apollo.cache.http.HttpCachePolicy;
-import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.exception.ApolloHttpException;
-import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
