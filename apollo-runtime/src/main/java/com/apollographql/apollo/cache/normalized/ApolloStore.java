@@ -140,7 +140,8 @@ public interface ApolloStore {
       @Nonnull Operation<D, T, V> operation, @Nonnull D operationData);
 
   /**
-   * Write operation to the store and publish changes of {@link Record} which have changed.
+   * Write operation to the store and publish changes of {@link Record} which have changed, that will notify any
+   * {@link com.apollographql.apollo.ApolloQueryWatcher} that depends on these {@link Record} to re-fetch.
    *
    * @param operation     {@link Operation} response data of which should be written to the store
    * @param operationData {@link Operation.Data} operation response data to be written to the store
@@ -163,7 +164,8 @@ public interface ApolloStore {
       @Nonnull Operation.Variables variables);
 
   /**
-   * Write fragment to the store and publish changes of {@link Record} which have changed.
+   * Write fragment to the store and publish changes of {@link Record} which have changed, that will notify any
+   * {@link com.apollographql.apollo.ApolloQueryWatcher} that depends on these {@link Record} to re-fetch.
    *
    * @param fragment data to be written to the store
    * @param cacheKey {@link CacheKey} to be used as root record key
