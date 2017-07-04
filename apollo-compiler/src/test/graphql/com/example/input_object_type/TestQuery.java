@@ -13,7 +13,6 @@ import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
 import com.example.input_object_type.type.Episode;
 import com.example.input_object_type.type.ReviewInput;
-import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.NullPointerException;
 import java.lang.Object;
@@ -168,7 +167,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeObject($responseFields[0], createReview.isPresent() ? createReview.get().marshaller() : null);
         }
       };
@@ -212,10 +211,10 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       final CreateReview.Mapper createReviewFieldMapper = new CreateReview.Mapper();
 
       @Override
-      public Data map(ResponseReader reader) throws IOException {
+      public Data map(ResponseReader reader) {
         final CreateReview createReview = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<CreateReview>() {
           @Override
-          public CreateReview read(ResponseReader reader) throws IOException {
+          public CreateReview read(ResponseReader reader) {
             return createReviewFieldMapper.map(reader);
           }
         });
@@ -273,7 +272,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeInt($responseFields[1], stars);
           writer.writeString($responseFields[2], commentary.isPresent() ? commentary.get() : null);
@@ -325,7 +324,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
     public static final class Mapper implements ResponseFieldMapper<CreateReview> {
       @Override
-      public CreateReview map(ResponseReader reader) throws IOException {
+      public CreateReview map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final int stars = reader.readInt($responseFields[1]);
         final String commentary = reader.readString($responseFields[2]);

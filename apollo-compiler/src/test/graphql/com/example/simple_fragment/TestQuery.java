@@ -11,7 +11,6 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.example.simple_fragment.fragment.HeroDetails;
-import java.io.IOException;
 import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
@@ -108,7 +107,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeObject($responseFields[0], hero.isPresent() ? hero.get().marshaller() : null);
         }
       };
@@ -152,10 +151,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Hero.Mapper heroFieldMapper = new Hero.Mapper();
 
       @Override
-      public Data map(ResponseReader reader) throws IOException {
+      public Data map(ResponseReader reader) {
         final Hero hero = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<Hero>() {
           @Override
-          public Hero read(ResponseReader reader) throws IOException {
+          public Hero read(ResponseReader reader) {
             return heroFieldMapper.map(reader);
           }
         });
@@ -203,7 +202,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           fragments.marshaller().marshal(writer);
         }
@@ -271,7 +270,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       public ResponseFieldMarshaller marshaller() {
         return new ResponseFieldMarshaller() {
           @Override
-          public void marshal(ResponseWriter writer) throws IOException {
+          public void marshal(ResponseWriter writer) {
             final HeroDetails $heroDetails = heroDetails;
             if ($heroDetails != null) {
               $heroDetails.marshaller().marshal(writer);
@@ -318,8 +317,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();
 
         @Override
-        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) throws
-            IOException {
+        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) {
           HeroDetails heroDetails = null;
           if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) {
             heroDetails = heroDetailsFieldMapper.map(reader);
@@ -333,11 +331,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
       @Override
-      public Hero map(ResponseReader reader) throws IOException {
+      public Hero map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
           @Override
-          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
+          public Fragments read(String conditionalType, ResponseReader reader) {
             return fragmentsFieldMapper.map(reader, conditionalType);
           }
         });

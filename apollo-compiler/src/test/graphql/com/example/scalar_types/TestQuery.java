@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
-import java.io.IOException;
 import java.lang.Boolean;
 import java.lang.Double;
 import java.lang.Integer;
@@ -191,7 +190,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], graphQlString.isPresent() ? graphQlString.get() : null);
           writer.writeString($responseFields[1], graphQlIdNullable.isPresent() ? graphQlIdNullable.get() : null);
           writer.writeString($responseFields[2], graphQlIdNonNullable);
@@ -203,7 +202,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeBoolean($responseFields[8], graphQlBooleanNonNullable);
           writer.writeList($responseFields[9], graphQlListOfInt.isPresent() ? new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+            public void write(ResponseWriter.ListItemWriter listItemWriter) {
               for (Integer $item : graphQlListOfInt.get()) {
                 listItemWriter.writeInt($item);
               }
@@ -211,7 +210,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           } : null);
           writer.writeList($responseFields[10], graphQlListOfObjects.isPresent() ? new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+            public void write(ResponseWriter.ListItemWriter listItemWriter) {
               for (GraphQlListOfObject $item : graphQlListOfObjects.get()) {
                 listItemWriter.writeObject($item.marshaller());
               }
@@ -299,7 +298,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final GraphQlListOfObject.Mapper graphQlListOfObjectFieldMapper = new GraphQlListOfObject.Mapper();
 
       @Override
-      public Data map(ResponseReader reader) throws IOException {
+      public Data map(ResponseReader reader) {
         final String graphQlString = reader.readString($responseFields[0]);
         final String graphQlIdNullable = reader.readString($responseFields[1]);
         final String graphQlIdNonNullable = reader.readString($responseFields[2]);
@@ -311,16 +310,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final boolean graphQlBooleanNonNullable = reader.readBoolean($responseFields[8]);
         final List<Integer> graphQlListOfInt = reader.readList($responseFields[9], new ResponseReader.ListReader<Integer>() {
           @Override
-          public Integer read(ResponseReader.ListItemReader reader) throws IOException {
+          public Integer read(ResponseReader.ListItemReader reader) {
             return reader.readInt();
           }
         });
         final List<GraphQlListOfObject> graphQlListOfObjects = reader.readList($responseFields[10], new ResponseReader.ListReader<GraphQlListOfObject>() {
           @Override
-          public GraphQlListOfObject read(ResponseReader.ListItemReader reader) throws IOException {
+          public GraphQlListOfObject read(ResponseReader.ListItemReader reader) {
             return reader.readObject(new ResponseReader.ObjectReader<GraphQlListOfObject>() {
               @Override
-              public GraphQlListOfObject read(ResponseReader reader) throws IOException {
+              public GraphQlListOfObject read(ResponseReader reader) {
                 return graphQlListOfObjectFieldMapper.map(reader);
               }
             });
@@ -355,7 +354,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeInt($responseFields[0], someField);
         }
       };
@@ -397,7 +396,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<GraphQlListOfObject> {
       @Override
-      public GraphQlListOfObject map(ResponseReader reader) throws IOException {
+      public GraphQlListOfObject map(ResponseReader reader) {
         final int someField = reader.readInt($responseFields[0]);
         return new GraphQlListOfObject(someField);
       }

@@ -11,7 +11,6 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.example.arguments_complex.type.Episode;
-import java.io.IOException;
 import java.lang.Double;
 import java.lang.NullPointerException;
 import java.lang.Object;
@@ -187,7 +186,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeObject($responseFields[0], heroWithReview.isPresent() ? heroWithReview.get().marshaller() : null);
         }
       };
@@ -231,10 +230,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final HeroWithReview.Mapper heroWithReviewFieldMapper = new HeroWithReview.Mapper();
 
       @Override
-      public Data map(ResponseReader reader) throws IOException {
+      public Data map(ResponseReader reader) {
         final HeroWithReview heroWithReview = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<HeroWithReview>() {
           @Override
-          public HeroWithReview read(ResponseReader reader) throws IOException {
+          public HeroWithReview read(ResponseReader reader) {
             return heroWithReviewFieldMapper.map(reader);
           }
         });
@@ -298,7 +297,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
           writer.writeDouble($responseFields[2], height.isPresent() ? height.get() : null);
@@ -350,7 +349,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<HeroWithReview> {
       @Override
-      public HeroWithReview map(ResponseReader reader) throws IOException {
+      public HeroWithReview map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
         final Double height = reader.readDouble($responseFields[2]);

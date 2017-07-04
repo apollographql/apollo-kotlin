@@ -10,7 +10,6 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
-import java.io.IOException;
 import java.lang.Integer;
 import java.lang.NullPointerException;
 import java.lang.Object;
@@ -144,7 +143,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeObject($responseFields[0], r2.isPresent() ? r2.get().marshaller() : null);
           writer.writeObject($responseFields[1], luke.isPresent() ? luke.get().marshaller() : null);
         }
@@ -195,16 +194,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Luke.Mapper lukeFieldMapper = new Luke.Mapper();
 
       @Override
-      public Data map(ResponseReader reader) throws IOException {
+      public Data map(ResponseReader reader) {
         final R2 r2 = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<R2>() {
           @Override
-          public R2 read(ResponseReader reader) throws IOException {
+          public R2 read(ResponseReader reader) {
             return r2FieldMapper.map(reader);
           }
         });
         final Luke luke = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Luke>() {
           @Override
-          public Luke read(ResponseReader reader) throws IOException {
+          public Luke read(ResponseReader reader) {
             return lukeFieldMapper.map(reader);
           }
         });
@@ -269,7 +268,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
           writer.writeObject($responseFields[2], friendsConnection.marshaller());
@@ -323,12 +322,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final FriendsConnection.Mapper friendsConnectionFieldMapper = new FriendsConnection.Mapper();
 
       @Override
-      public R2 map(ResponseReader reader) throws IOException {
+      public R2 map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
         final FriendsConnection friendsConnection = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<FriendsConnection>() {
           @Override
-          public FriendsConnection read(ResponseReader reader) throws IOException {
+          public FriendsConnection read(ResponseReader reader) {
             return friendsConnectionFieldMapper.map(reader);
           }
         });
@@ -387,12 +386,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
           writer.writeList($responseFields[2], edges.isPresent() ? new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+            public void write(ResponseWriter.ListItemWriter listItemWriter) {
               for (Edge $item : edges.get()) {
                 listItemWriter.writeObject($item.marshaller());
               }
@@ -448,15 +447,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
 
       @Override
-      public FriendsConnection map(ResponseReader reader) throws IOException {
+      public FriendsConnection map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final Integer totalCount = reader.readInt($responseFields[1]);
         final List<Edge> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge>() {
           @Override
-          public Edge read(ResponseReader.ListItemReader reader) throws IOException {
+          public Edge read(ResponseReader.ListItemReader reader) {
             return reader.readObject(new ResponseReader.ObjectReader<Edge>() {
               @Override
-              public Edge read(ResponseReader reader) throws IOException {
+              public Edge read(ResponseReader reader) {
                 return edgeFieldMapper.map(reader);
               }
             });
@@ -505,7 +504,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
         }
@@ -554,11 +553,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Node.Mapper nodeFieldMapper = new Node.Mapper();
 
       @Override
-      public Edge map(ResponseReader reader) throws IOException {
+      public Edge map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final Node node = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Node>() {
           @Override
-          public Node read(ResponseReader reader) throws IOException {
+          public Node read(ResponseReader reader) {
             return nodeFieldMapper.map(reader);
           }
         });
@@ -608,7 +607,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
         }
@@ -655,7 +654,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<Node> {
       @Override
-      public Node map(ResponseReader reader) throws IOException {
+      public Node map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
         return new Node(__typename, name);
@@ -733,7 +732,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], id);
           writer.writeString($responseFields[2], name);
@@ -792,13 +791,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final FriendsConnection1.Mapper friendsConnection1FieldMapper = new FriendsConnection1.Mapper();
 
       @Override
-      public Luke map(ResponseReader reader) throws IOException {
+      public Luke map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String id = reader.readString($responseFields[1]);
         final String name = reader.readString($responseFields[2]);
         final FriendsConnection1 friendsConnection = reader.readObject($responseFields[3], new ResponseReader.ObjectReader<FriendsConnection1>() {
           @Override
-          public FriendsConnection1 read(ResponseReader reader) throws IOException {
+          public FriendsConnection1 read(ResponseReader reader) {
             return friendsConnection1FieldMapper.map(reader);
           }
         });
@@ -857,12 +856,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
           writer.writeList($responseFields[2], edges.isPresent() ? new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+            public void write(ResponseWriter.ListItemWriter listItemWriter) {
               for (Edge1 $item : edges.get()) {
                 listItemWriter.writeObject($item.marshaller());
               }
@@ -918,15 +917,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Edge1.Mapper edge1FieldMapper = new Edge1.Mapper();
 
       @Override
-      public FriendsConnection1 map(ResponseReader reader) throws IOException {
+      public FriendsConnection1 map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final Integer totalCount = reader.readInt($responseFields[1]);
         final List<Edge1> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge1>() {
           @Override
-          public Edge1 read(ResponseReader.ListItemReader reader) throws IOException {
+          public Edge1 read(ResponseReader.ListItemReader reader) {
             return reader.readObject(new ResponseReader.ObjectReader<Edge1>() {
               @Override
-              public Edge1 read(ResponseReader reader) throws IOException {
+              public Edge1 read(ResponseReader reader) {
                 return edge1FieldMapper.map(reader);
               }
             });
@@ -975,7 +974,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
         }
@@ -1024,11 +1023,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Node1.Mapper node1FieldMapper = new Node1.Mapper();
 
       @Override
-      public Edge1 map(ResponseReader reader) throws IOException {
+      public Edge1 map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final Node1 node = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Node1>() {
           @Override
-          public Node1 read(ResponseReader reader) throws IOException {
+          public Node1 read(ResponseReader reader) {
             return node1FieldMapper.map(reader);
           }
         });
@@ -1078,7 +1077,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
         }
@@ -1125,7 +1124,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<Node1> {
       @Override
-      public Node1 map(ResponseReader reader) throws IOException {
+      public Node1 map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
         return new Node1(__typename, name);

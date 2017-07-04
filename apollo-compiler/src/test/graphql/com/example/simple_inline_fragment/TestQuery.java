@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
-import java.io.IOException;
 import java.lang.Double;
 import java.lang.NullPointerException;
 import java.lang.Object;
@@ -114,7 +113,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeObject($responseFields[0], hero.isPresent() ? hero.get().marshaller() : null);
         }
       };
@@ -158,10 +157,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Hero.Mapper heroFieldMapper = new Hero.Mapper();
 
       @Override
-      public Data map(ResponseReader reader) throws IOException {
+      public Data map(ResponseReader reader) {
         final Hero hero = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<Hero>() {
           @Override
-          public Hero read(ResponseReader reader) throws IOException {
+          public Hero read(ResponseReader reader) {
             return heroFieldMapper.map(reader);
           }
         });
@@ -228,7 +227,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
           final AsHuman $asHuman = asHuman.isPresent() ? asHuman.get() : null;
@@ -295,18 +294,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
       @Override
-      public Hero map(ResponseReader reader) throws IOException {
+      public Hero map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
         final AsHuman asHuman = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[2], new ResponseReader.ConditionalTypeReader<AsHuman>() {
           @Override
-          public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
+          public AsHuman read(String conditionalType, ResponseReader reader) {
             return asHumanFieldMapper.map(reader);
           }
         });
         final AsDroid asDroid = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[3], new ResponseReader.ConditionalTypeReader<AsDroid>() {
           @Override
-          public AsDroid read(String conditionalType, ResponseReader reader) throws IOException {
+          public AsDroid read(String conditionalType, ResponseReader reader) {
             return asDroidFieldMapper.map(reader);
           }
         });
@@ -367,7 +366,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
           writer.writeDouble($responseFields[2], height.isPresent() ? height.get() : null);
@@ -419,7 +418,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<AsHuman> {
       @Override
-      public AsHuman map(ResponseReader reader) throws IOException {
+      public AsHuman map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
         final Double height = reader.readDouble($responseFields[2]);
@@ -481,7 +480,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
           writer.writeString($responseFields[2], primaryFunction.isPresent() ? primaryFunction.get() : null);
@@ -533,7 +532,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<AsDroid> {
       @Override
-      public AsDroid map(ResponseReader reader) throws IOException {
+      public AsDroid map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
         final String primaryFunction = reader.readString($responseFields[2]);

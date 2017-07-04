@@ -7,7 +7,6 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
-import java.io.IOException;
 import java.lang.Integer;
 import java.lang.NullPointerException;
 import java.lang.Object;
@@ -95,7 +94,7 @@ public class HeroDetails implements GraphqlFragment {
   public ResponseFieldMarshaller marshaller() {
     return new ResponseFieldMarshaller() {
       @Override
-      public void marshal(ResponseWriter writer) throws IOException {
+      public void marshal(ResponseWriter writer) {
         writer.writeString($responseFields[0], __typename);
         writer.writeString($responseFields[1], name);
         writer.writeObject($responseFields[2], friendsConnection.marshaller());
@@ -149,12 +148,12 @@ public class HeroDetails implements GraphqlFragment {
     final FriendsConnection.Mapper friendsConnectionFieldMapper = new FriendsConnection.Mapper();
 
     @Override
-    public HeroDetails map(ResponseReader reader) throws IOException {
+    public HeroDetails map(ResponseReader reader) {
       final String __typename = reader.readString($responseFields[0]);
       final String name = reader.readString($responseFields[1]);
       final FriendsConnection friendsConnection = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<FriendsConnection>() {
         @Override
-        public FriendsConnection read(ResponseReader reader) throws IOException {
+        public FriendsConnection read(ResponseReader reader) {
           return friendsConnectionFieldMapper.map(reader);
         }
       });
@@ -212,12 +211,12 @@ public class HeroDetails implements GraphqlFragment {
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
           writer.writeList($responseFields[2], edges.isPresent() ? new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+            public void write(ResponseWriter.ListItemWriter listItemWriter) {
               for (Edge $item : edges.get()) {
                 listItemWriter.writeObject($item.marshaller());
               }
@@ -273,15 +272,15 @@ public class HeroDetails implements GraphqlFragment {
       final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
 
       @Override
-      public FriendsConnection map(ResponseReader reader) throws IOException {
+      public FriendsConnection map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final Integer totalCount = reader.readInt($responseFields[1]);
         final List<Edge> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge>() {
           @Override
-          public Edge read(ResponseReader.ListItemReader reader) throws IOException {
+          public Edge read(ResponseReader.ListItemReader reader) {
             return reader.readObject(new ResponseReader.ObjectReader<Edge>() {
               @Override
-              public Edge read(ResponseReader reader) throws IOException {
+              public Edge read(ResponseReader reader) {
                 return edgeFieldMapper.map(reader);
               }
             });
@@ -330,7 +329,7 @@ public class HeroDetails implements GraphqlFragment {
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
         }
@@ -379,11 +378,11 @@ public class HeroDetails implements GraphqlFragment {
       final Node.Mapper nodeFieldMapper = new Node.Mapper();
 
       @Override
-      public Edge map(ResponseReader reader) throws IOException {
+      public Edge map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final Node node = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Node>() {
           @Override
-          public Node read(ResponseReader reader) throws IOException {
+          public Node read(ResponseReader reader) {
             return nodeFieldMapper.map(reader);
           }
         });
@@ -433,7 +432,7 @@ public class HeroDetails implements GraphqlFragment {
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
         }
@@ -480,7 +479,7 @@ public class HeroDetails implements GraphqlFragment {
 
     public static final class Mapper implements ResponseFieldMapper<Node> {
       @Override
-      public Node map(ResponseReader reader) throws IOException {
+      public Node map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
         return new Node(__typename, name);

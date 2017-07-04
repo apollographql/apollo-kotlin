@@ -62,15 +62,10 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
   @Override @Nonnull public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain)
       throws ApolloException {
+    httpCall = httpCall(operation);
     try {
-      httpCall = httpCall(operation);
-    } catch (IOException e) {
-      logger.e(e, "Failed to prepare http call");
-      throw new ApolloNetworkException("Failed to prepare http call", e);
-    }
-
-    try {
-      return new InterceptorResponse(httpCall.execute());
+      Response response = httpCall.execute();
+      return new InterceptorResponse(response);
     } catch (IOException e) {
       logger.e(e, "Failed to execute http call");
       throw new ApolloNetworkException("Failed to execute http call", e);
@@ -82,21 +77,14 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
     dispatcher.execute(new Runnable() {
       @Override public void run() {
-        try {
-          httpCall = httpCall(operation);
-        } catch (IOException e) {
-          logger.e(e, "Failed to prepare http call");
-          callBack.onFailure(new ApolloNetworkException("Failed to prepare http call", e));
-          return;
-        }
-
+        httpCall = httpCall(operation);
         httpCall.enqueue(new Callback() {
-          @Override public void onFailure(Call call, IOException e) {
+          @Override public void onFailure(@Nonnull Call call, @Nonnull IOException e) {
             logger.e(e, "Failed to execute http call");
             callBack.onFailure(new ApolloNetworkException("Failed to execute http call", e));
           }
 
-          @Override public void onResponse(Call call, Response response) throws IOException {
+          @Override public void onResponse(@Nonnull Call call, @Nonnull Response response) throws IOException {
             callBack.onResponse(new ApolloInterceptor.InterceptorResponse(response));
           }
         });
@@ -112,7 +100,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     this.httpCall = null;
   }
 
-  private Call httpCall(Operation operation) throws IOException {
+  private Call httpCall(Operation operation) {
     RequestBody requestBody = httpRequestBody(operation);
     Request.Builder requestBuilder = new Request.Builder()
         .url(serverUrl)
@@ -134,16 +122,26 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     return httpCallFactory.newCall(requestBuilder.build());
   }
 
-  private RequestBody httpRequestBody(Operation operation) throws IOException {
+  private RequestBody httpRequestBody(Operation operation) {
     JsonAdapter<Operation> adapter = new OperationJsonAdapter(moshi);
     Buffer buffer = new Buffer();
-    adapter.toJson(buffer, operation);
+    try {
+      adapter.toJson(buffer, operation);
+    } catch (IOException e) {
+      // should never happen
+      throw new RuntimeException(e);
+    }
     return RequestBody.create(MEDIA_TYPE, buffer.readByteString());
   }
 
-  public static String cacheKey(RequestBody requestBody) throws IOException {
+  public static String cacheKey(RequestBody requestBody) {
     Buffer hashBuffer = new Buffer();
-    requestBody.writeTo(hashBuffer);
+    try {
+      requestBody.writeTo(hashBuffer);
+    } catch (IOException e) {
+      // should never happen
+      throw new RuntimeException(e);
+    }
     return hashBuffer.readByteString().md5().hex();
   }
 
@@ -154,11 +152,11 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       this.moshi = moshi;
     }
 
-    @Override public Operation fromJson(JsonReader reader) throws IOException {
+    @Override public Operation fromJson(@Nonnull JsonReader reader) throws IOException {
       throw new IllegalStateException("This should not be called ever.");
     }
 
-    @Override public void toJson(JsonWriter writer, Operation value) throws IOException {
+    @Override public void toJson(@Nonnull JsonWriter writer, Operation value) throws IOException {
       writer.beginObject();
       writer.name("query").value(value.queryDocument().replaceAll("\\n", ""));
       Operation.Variables variables = value.variables();

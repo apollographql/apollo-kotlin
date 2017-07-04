@@ -7,7 +7,6 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
-import java.io.IOException;
 import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
@@ -81,7 +80,7 @@ public class PilotFragment implements GraphqlFragment {
   public ResponseFieldMarshaller marshaller() {
     return new ResponseFieldMarshaller() {
       @Override
-      public void marshal(ResponseWriter writer) throws IOException {
+      public void marshal(ResponseWriter writer) {
         writer.writeString($responseFields[0], __typename);
         writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
         writer.writeObject($responseFields[2], homeworld.isPresent() ? homeworld.get().marshaller() : null);
@@ -135,12 +134,12 @@ public class PilotFragment implements GraphqlFragment {
     final Homeworld.Mapper homeworldFieldMapper = new Homeworld.Mapper();
 
     @Override
-    public PilotFragment map(ResponseReader reader) throws IOException {
+    public PilotFragment map(ResponseReader reader) {
       final String __typename = reader.readString($responseFields[0]);
       final String name = reader.readString($responseFields[1]);
       final Homeworld homeworld = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<Homeworld>() {
         @Override
-        public Homeworld read(ResponseReader reader) throws IOException {
+        public Homeworld read(ResponseReader reader) {
           return homeworldFieldMapper.map(reader);
         }
       });
@@ -186,7 +185,7 @@ public class PilotFragment implements GraphqlFragment {
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
         }
@@ -233,7 +232,7 @@ public class PilotFragment implements GraphqlFragment {
 
     public static final class Mapper implements ResponseFieldMapper<Homeworld> {
       @Override
-      public Homeworld map(ResponseReader reader) throws IOException {
+      public Homeworld map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
         return new Homeworld(__typename, name);

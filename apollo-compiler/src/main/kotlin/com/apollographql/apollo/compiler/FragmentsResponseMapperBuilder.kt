@@ -5,7 +5,6 @@ import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.Fragment
 import com.squareup.javapoet.*
-import java.io.IOException
 import javax.annotation.Nonnull
 import javax.lang.model.element.Modifier
 
@@ -19,7 +18,7 @@ import javax.lang.model.element.Modifier
  *   final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();
  *
  *   @Override
- *   public Fragments map(ResponseReader reader, @Nonnull String conditionalType) throws IOException {
+ *   public Fragments map(ResponseReader reader, @Nonnull String conditionalType) {
  *     HeroDetails heroDetails = null;
  *     if (conditionalType.equals(HeroDetails.TYPE_CONDITION)) {
  *       heroDetails = heroDetailsFieldMapper.map(reader);
@@ -53,7 +52,6 @@ class FragmentsResponseMapperBuilder(
           .addAnnotation(Override::class.java)
           .addParameter(READER_PARAM)
           .addParameter(CONDITIONAL_TYPE_PARAM)
-          .addException(IOException::class.java)
           .returns(SchemaTypeSpecBuilder.FRAGMENTS_FIELD.type)
           .addCode(mapMethodCode(fragmentFields))
           .build()

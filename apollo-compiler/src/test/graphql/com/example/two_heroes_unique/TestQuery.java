@@ -10,7 +10,6 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
-import java.io.IOException;
 import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
@@ -120,7 +119,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeObject($responseFields[0], r2.isPresent() ? r2.get().marshaller() : null);
           writer.writeObject($responseFields[1], luke.isPresent() ? luke.get().marshaller() : null);
         }
@@ -171,16 +170,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Luke.Mapper lukeFieldMapper = new Luke.Mapper();
 
       @Override
-      public Data map(ResponseReader reader) throws IOException {
+      public Data map(ResponseReader reader) {
         final R2 r2 = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<R2>() {
           @Override
-          public R2 read(ResponseReader reader) throws IOException {
+          public R2 read(ResponseReader reader) {
             return r2FieldMapper.map(reader);
           }
         });
         final Luke luke = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Luke>() {
           @Override
-          public Luke read(ResponseReader reader) throws IOException {
+          public Luke read(ResponseReader reader) {
             return lukeFieldMapper.map(reader);
           }
         });
@@ -230,7 +229,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
         }
@@ -277,7 +276,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<R2> {
       @Override
-      public R2 map(ResponseReader reader) throws IOException {
+      public R2 map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
         return new R2(__typename, name);
@@ -340,7 +339,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], id);
           writer.writeString($responseFields[2], name);
@@ -392,7 +391,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<Luke> {
       @Override
-      public Luke map(ResponseReader reader) throws IOException {
+      public Luke map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String id = reader.readString($responseFields[1]);
         final String name = reader.readString($responseFields[2]);

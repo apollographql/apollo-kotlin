@@ -12,7 +12,6 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.example.unique_type_name.fragment.HeroDetails;
 import com.example.unique_type_name.type.Episode;
-import java.io.IOException;
 import java.lang.Double;
 import java.lang.NullPointerException;
 import java.lang.Object;
@@ -127,7 +126,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeObject($responseFields[0], heroDetailQuery.isPresent() ? heroDetailQuery.get().marshaller() : null);
         }
       };
@@ -171,10 +170,10 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       final HeroDetailQuery1.Mapper heroDetailQuery1FieldMapper = new HeroDetailQuery1.Mapper();
 
       @Override
-      public Data map(ResponseReader reader) throws IOException {
+      public Data map(ResponseReader reader) {
         final HeroDetailQuery1 heroDetailQuery = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<HeroDetailQuery1>() {
           @Override
-          public HeroDetailQuery1 read(ResponseReader reader) throws IOException {
+          public HeroDetailQuery1 read(ResponseReader reader) {
             return heroDetailQuery1FieldMapper.map(reader);
           }
         });
@@ -244,12 +243,12 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
           writer.writeList($responseFields[2], friends.isPresent() ? new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+            public void write(ResponseWriter.ListItemWriter listItemWriter) {
               for (Friend $item : friends.get()) {
                 listItemWriter.writeObject($item.marshaller());
               }
@@ -315,15 +314,15 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
       @Override
-      public HeroDetailQuery1 map(ResponseReader reader) throws IOException {
+      public HeroDetailQuery1 map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
         final List<Friend> friends = reader.readList($responseFields[2], new ResponseReader.ListReader<Friend>() {
           @Override
-          public Friend read(ResponseReader.ListItemReader reader) throws IOException {
+          public Friend read(ResponseReader.ListItemReader reader) {
             return reader.readObject(new ResponseReader.ObjectReader<Friend>() {
               @Override
-              public Friend read(ResponseReader reader) throws IOException {
+              public Friend read(ResponseReader reader) {
                 return friendFieldMapper.map(reader);
               }
             });
@@ -331,7 +330,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         });
         final AsHuman asHuman = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[3], new ResponseReader.ConditionalTypeReader<AsHuman>() {
           @Override
-          public AsHuman read(String conditionalType, ResponseReader reader) throws IOException {
+          public AsHuman read(String conditionalType, ResponseReader reader) {
             return asHumanFieldMapper.map(reader);
           }
         });
@@ -381,7 +380,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
         }
@@ -428,7 +427,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     public static final class Mapper implements ResponseFieldMapper<Friend> {
       @Override
-      public Friend map(ResponseReader reader) throws IOException {
+      public Friend map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
         return new Friend(__typename, name);
@@ -500,12 +499,12 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
           writer.writeList($responseFields[2], friends.isPresent() ? new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+            public void write(ResponseWriter.ListItemWriter listItemWriter) {
               for (Friend1 $item : friends.get()) {
                 listItemWriter.writeObject($item.marshaller());
               }
@@ -566,15 +565,15 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       final Friend1.Mapper friend1FieldMapper = new Friend1.Mapper();
 
       @Override
-      public AsHuman map(ResponseReader reader) throws IOException {
+      public AsHuman map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
         final List<Friend1> friends = reader.readList($responseFields[2], new ResponseReader.ListReader<Friend1>() {
           @Override
-          public Friend1 read(ResponseReader.ListItemReader reader) throws IOException {
+          public Friend1 read(ResponseReader.ListItemReader reader) {
             return reader.readObject(new ResponseReader.ObjectReader<Friend1>() {
               @Override
-              public Friend1 read(ResponseReader reader) throws IOException {
+              public Friend1 read(ResponseReader reader) {
                 return friend1FieldMapper.map(reader);
               }
             });
@@ -653,12 +652,12 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
           writer.writeList($responseFields[2], new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+            public void write(ResponseWriter.ListItemWriter listItemWriter) {
               for (Episode $item : appearsIn) {
                 listItemWriter.writeString($item.name());
               }
@@ -666,7 +665,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
           });
           writer.writeList($responseFields[3], friends.isPresent() ? new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+            public void write(ResponseWriter.ListItemWriter listItemWriter) {
               for (Friend2 $item : friends.get()) {
                 listItemWriter.writeObject($item.marshaller());
               }
@@ -726,21 +725,21 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       final Friend2.Mapper friend2FieldMapper = new Friend2.Mapper();
 
       @Override
-      public Friend1 map(ResponseReader reader) throws IOException {
+      public Friend1 map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
         final List<Episode> appearsIn = reader.readList($responseFields[2], new ResponseReader.ListReader<Episode>() {
           @Override
-          public Episode read(ResponseReader.ListItemReader reader) throws IOException {
+          public Episode read(ResponseReader.ListItemReader reader) {
             return Episode.valueOf(reader.readString());
           }
         });
         final List<Friend2> friends = reader.readList($responseFields[3], new ResponseReader.ListReader<Friend2>() {
           @Override
-          public Friend2 read(ResponseReader.ListItemReader reader) throws IOException {
+          public Friend2 read(ResponseReader.ListItemReader reader) {
             return reader.readObject(new ResponseReader.ObjectReader<Friend2>() {
               @Override
-              public Friend2 read(ResponseReader reader) throws IOException {
+              public Friend2 read(ResponseReader reader) {
                 return friend2FieldMapper.map(reader);
               }
             });
@@ -790,7 +789,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           fragments.marshaller().marshal(writer);
         }
@@ -858,7 +857,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       public ResponseFieldMarshaller marshaller() {
         return new ResponseFieldMarshaller() {
           @Override
-          public void marshal(ResponseWriter writer) throws IOException {
+          public void marshal(ResponseWriter writer) {
             final HeroDetails $heroDetails = heroDetails;
             if ($heroDetails != null) {
               $heroDetails.marshaller().marshal(writer);
@@ -905,8 +904,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();
 
         @Override
-        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) throws
-            IOException {
+        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) {
           HeroDetails heroDetails = null;
           if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) {
             heroDetails = heroDetailsFieldMapper.map(reader);
@@ -920,11 +918,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
       @Override
-      public Friend2 map(ResponseReader reader) throws IOException {
+      public Friend2 map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
           @Override
-          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
+          public Fragments read(String conditionalType, ResponseReader reader) {
             return fragmentsFieldMapper.map(reader, conditionalType);
           }
         });
