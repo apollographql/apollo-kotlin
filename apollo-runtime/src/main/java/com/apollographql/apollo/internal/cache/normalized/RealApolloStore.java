@@ -225,23 +225,63 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     });
   }
 
-  @Override public <D extends Operation.Data, T, V extends Operation.Variables> void write(
+  @Override @Nonnull public <D extends Operation.Data, T, V extends Operation.Variables> Set<String> write(
       @Nonnull final Operation<D, T, V> operation, @Nonnull final D operationData) {
     checkNotNull(operation, "operation == null");
     checkNotNull(operationData, "operationData == null");
-    writeTransaction(new Transaction<WriteableStore, Boolean>() {
-      @Override public Boolean execute(WriteableStore cache) {
-        CacheResponseWriter cacheResponseWriter = new CacheResponseWriter(operation, customTypeAdapters);
+    return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
+      @Override public Set<String> execute(WriteableStore cache) {
+        CacheResponseWriter cacheResponseWriter = new CacheResponseWriter(operation.variables(), customTypeAdapters);
         try {
           operationData.marshaller().marshal(cacheResponseWriter);
-          Collection<Record> records = cacheResponseWriter.normalize(networkResponseNormalizer());
-          merge(records, CacheHeaders.NONE);
+          ResponseNormalizer<Map<String, Object>> responseNormalizer = networkResponseNormalizer();
+          responseNormalizer.willResolveRootQuery(operation);
+          Collection<Record> records = cacheResponseWriter.normalize(responseNormalizer);
+          return merge(records, CacheHeaders.NONE);
         } catch (IOException e) {
           logger.e(e, "Failed to write operation data to the store");
           throw new RuntimeException(e);
         }
-        return true;
       }
     });
+  }
+
+  @Override public <D extends Operation.Data, T, V extends Operation.Variables> void writeAndPublish(
+      @Nonnull Operation<D, T, V> operation, @Nonnull D operationData) {
+    Set<String> changedKeys = write(operation, operationData);
+    publish(changedKeys);
+  }
+
+  @Override @Nonnull public Set<String> write(@Nonnull final GraphqlFragment fragment, @Nonnull final CacheKey cacheKey,
+      @Nonnull final Operation.Variables variables) {
+    checkNotNull(fragment, "fragment == null");
+    checkNotNull(cacheKey, "cacheKey == null");
+    checkNotNull(variables, "operation == null");
+
+    if (cacheKey == CacheKey.NO_KEY) {
+      throw new IllegalArgumentException("undefined cache key");
+    }
+
+    return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
+      @Override public Set<String> execute(WriteableStore cache) {
+        CacheResponseWriter cacheResponseWriter = new CacheResponseWriter(variables, customTypeAdapters);
+        try {
+          fragment.marshaller().marshal(cacheResponseWriter);
+          ResponseNormalizer<Map<String, Object>> responseNormalizer = networkResponseNormalizer();
+          responseNormalizer.willResolveRecord(cacheKey);
+          Collection<Record> records = cacheResponseWriter.normalize(responseNormalizer);
+          return merge(records, CacheHeaders.NONE);
+        } catch (IOException e) {
+          logger.e(e, "Failed to write operation data to the store");
+          throw new RuntimeException(e);
+        }
+      }
+    });
+  }
+
+  @Override public void writeAndPublish(@Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey,
+      @Nonnull Operation.Variables variables) {
+    Set<String> changedKeys = write(fragment, cacheKey, variables);
+    publish(changedKeys);
   }
 }

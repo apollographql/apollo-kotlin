@@ -134,9 +134,45 @@ public interface ApolloStore {
    * @param <D>           type of GraphQL operation data
    * @param <T>           type operation cached data will be wrapped with
    * @param <V>           type of operation variables
+   * @return set of keys of {@link Record} which have changed
    */
-  <D extends Operation.Data, T, V extends Operation.Variables> void write(@Nonnull Operation<D, T, V> operation,
-      @Nonnull D operationData);
+  @Nonnull <D extends Operation.Data, T, V extends Operation.Variables> Set<String> write(
+      @Nonnull Operation<D, T, V> operation, @Nonnull D operationData);
+
+  /**
+   * Write operation to the store and publish changes of {@link Record} which have changed, that will notify any
+   * {@link com.apollographql.apollo.ApolloQueryWatcher} that depends on these {@link Record} to re-fetch.
+   *
+   * @param operation     {@link Operation} response data of which should be written to the store
+   * @param operationData {@link Operation.Data} operation response data to be written to the store
+   * @param <D>           type of GraphQL operation data
+   * @param <T>           type operation cached data will be wrapped with
+   * @param <V>           type of operation variables
+   */
+  <D extends Operation.Data, T, V extends Operation.Variables> void writeAndPublish(
+      @Nonnull Operation<D, T, V> operation, @Nonnull D operationData);
+
+  /**
+   * Write fragment to the store.
+   *
+   * @param fragment data to be written to the store
+   * @param cacheKey {@link CacheKey} to be used as root record key
+   * @param {@link   Operation.Variables} required for fragment arguments resolving
+   * @return set of keys of {@link Record} which have changed
+   */
+  @Nonnull Set<String> write(@Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey,
+      @Nonnull Operation.Variables variables);
+
+  /**
+   * Write fragment to the store and publish changes of {@link Record} which have changed, that will notify any
+   * {@link com.apollographql.apollo.ApolloQueryWatcher} that depends on these {@link Record} to re-fetch.
+   *
+   * @param fragment data to be written to the store
+   * @param cacheKey {@link CacheKey} to be used as root record key
+   * @param {@link   Operation.Variables} required for fragment arguments resolving
+   */
+  void writeAndPublish(@Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey,
+      @Nonnull Operation.Variables variables);
 
   ApolloStore NO_APOLLO_STORE = new NoOpApolloStore();
 }

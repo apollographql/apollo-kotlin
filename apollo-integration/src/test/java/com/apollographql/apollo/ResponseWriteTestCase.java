@@ -1,6 +1,7 @@
 package com.apollographql.apollo;
 
 import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
@@ -257,7 +258,7 @@ public class ResponseWriteTestCase {
                 "R222-D222",
                 asList(
                     new HeroWithFriendsFragment.Friend(
-                        "Droid",
+                        "Human",
                         new HeroWithFriendsFragment.Friend.Fragments(
                             new HumanWithIdFragment(
                                 "Human",
@@ -355,5 +356,80 @@ public class ResponseWriteTestCase {
     assertThat(hero.friends().get(1).__typename()).isEqualTo("Droid");
     assertThat(hero.friends().get(1).asDroid().name()).isEqualTo("RD");
     assertThat(hero.friends().get(1).asDroid().primaryFunction()).isEqualTo("Entertainment");
+  }
+
+  @Test
+  public void fragments() throws Exception {
+    server.enqueue(mockResponse("HeroAndFriendsWithFragmentResponse.json"));
+
+    HeroAndFriendsWithFragments query = new HeroAndFriendsWithFragments(Episode.NEWHOPE);
+    HeroAndFriendsWithFragments.Hero hero = apolloClient.query(query).execute().data().hero();
+
+    assertThat(hero.__typename()).isEqualTo("Droid");
+    assertThat(hero.fragments().heroWithFriendsFragment().__typename()).isEqualTo("Droid");
+    assertThat(hero.fragments().heroWithFriendsFragment().id()).isEqualTo("2001");
+    assertThat(hero.fragments().heroWithFriendsFragment().name()).isEqualTo("R2-D2");
+    assertThat(hero.fragments().heroWithFriendsFragment().friends()).hasSize(3);
+    assertThat(hero.fragments().heroWithFriendsFragment().friends().get(0).fragments().humanWithIdFragment().__typename()).isEqualTo("Human");
+    assertThat(hero.fragments().heroWithFriendsFragment().friends().get(0).fragments().humanWithIdFragment().id()).isEqualTo("1000");
+    assertThat(hero.fragments().heroWithFriendsFragment().friends().get(0).fragments().humanWithIdFragment().name()).isEqualTo("Luke Skywalker");
+    assertThat(hero.fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().__typename()).isEqualTo("Human");
+    assertThat(hero.fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().id()).isEqualTo("1002");
+    assertThat(hero.fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().name()).isEqualTo("Han Solo");
+    assertThat(hero.fragments().heroWithFriendsFragment().friends().get(2).fragments().humanWithIdFragment().__typename()).isEqualTo("Human");
+    assertThat(hero.fragments().heroWithFriendsFragment().friends().get(2).fragments().humanWithIdFragment().id()).isEqualTo("1003");
+    assertThat(hero.fragments().heroWithFriendsFragment().friends().get(2).fragments().humanWithIdFragment().name()).isEqualTo("Leia Organa");
+
+    apolloClient.apolloStore().write(
+        new HeroWithFriendsFragment(
+            hero.fragments().heroWithFriendsFragment().__typename(),
+            hero.fragments().heroWithFriendsFragment().id(),
+            "R222-D222",
+            asList(
+                new HeroWithFriendsFragment.Friend(
+                    "Human",
+                    new HeroWithFriendsFragment.Friend.Fragments(
+                        new HumanWithIdFragment(
+                            "Human",
+                            "1000",
+                            "SuperMan"
+                        )
+                    )
+                ),
+                new HeroWithFriendsFragment.Friend(
+                    "Human",
+                    new HeroWithFriendsFragment.Friend.Fragments(
+                        new HumanWithIdFragment(
+                            "Human",
+                            "1002",
+                            "Han Solo"
+                        )
+                    )
+                )
+            )
+        ), CacheKey.from(hero.fragments().heroWithFriendsFragment().id()), query.variables()
+    );
+
+    apolloClient.apolloStore().write(
+        new HumanWithIdFragment(
+            "Human",
+            "1002",
+            "Beast"
+        ), CacheKey.from("1002"), query.variables()
+    );
+
+    hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
+    assertThat(hero.__typename()).isEqualTo("Droid");
+    assertThat(hero.fragments().heroWithFriendsFragment().__typename()).isEqualTo("Droid");
+    assertThat(hero.fragments().heroWithFriendsFragment().id()).isEqualTo("2001");
+    assertThat(hero.fragments().heroWithFriendsFragment().name()).isEqualTo("R222-D222");
+    assertThat(hero.fragments().heroWithFriendsFragment().friends()).hasSize(2);
+    assertThat(hero.fragments().heroWithFriendsFragment().friends().get(0).fragments().humanWithIdFragment().__typename()).isEqualTo("Human");
+    assertThat(hero.fragments().heroWithFriendsFragment().friends().get(0).fragments().humanWithIdFragment().id()).isEqualTo("1000");
+    assertThat(hero.fragments().heroWithFriendsFragment().friends().get(0).fragments().humanWithIdFragment().name()).isEqualTo("SuperMan");
+    assertThat(hero.fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().__typename()).isEqualTo("Human");
+    assertThat(hero.fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().id()).isEqualTo("1002");
+    assertThat(hero.fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().name()).isEqualTo("Beast");
+
   }
 }
