@@ -24,6 +24,7 @@ data class Field(
     val fields = if (isNonScalar()) fields!! else emptyList()
     return SchemaTypeSpecBuilder(
         typeName = formatClassName(),
+        schemaType = type,
         fields = fields,
         fragmentSpreads = fragmentSpreads ?: emptyList(),
         inlineFragments = inlineFragments ?: emptyList(),

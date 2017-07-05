@@ -15,7 +15,13 @@ data class Operation(
     val fragmentsReferenced: List<String>
 ) : CodeGenerator {
   override fun toTypeSpec(context: CodeGenerationContext): TypeSpec =
-      SchemaTypeSpecBuilder(DATA_TYPE_NAME, fields, emptyList(), emptyList(), context)
+      SchemaTypeSpecBuilder(
+          typeName = DATA_TYPE_NAME,
+          fields = fields,
+          fragmentSpreads = emptyList(),
+          inlineFragments = emptyList(),
+          context = context
+      )
           .build(Modifier.PUBLIC, Modifier.STATIC)
           .toBuilder()
           .addSuperinterface(Operation.Data::class.java)

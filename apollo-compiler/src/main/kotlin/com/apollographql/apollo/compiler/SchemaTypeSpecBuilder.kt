@@ -5,11 +5,11 @@ import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.Field
 import com.apollographql.apollo.compiler.ir.InlineFragment
 import com.squareup.javapoet.*
-import java.io.IOException
 import javax.lang.model.element.Modifier
 
 class SchemaTypeSpecBuilder(
     val typeName: String,
+    val schemaType: String = "",
     val fields: List<Field>,
     val fragmentSpreads: List<String>,
     val inlineFragments: List<InlineFragment>,
@@ -102,7 +102,7 @@ class SchemaTypeSpecBuilder(
     fun isOptional(fragmentName: String): Boolean {
       return context.ir.fragments
           .find { it.fragmentName == fragmentName }
-          ?.let { it.typeCondition == typeName } ?: true
+          ?.let { it.typeCondition != normalizeGraphQlType(schemaType) } ?: true
     }
 
     fun fragmentFields(): List<FieldSpec> {
