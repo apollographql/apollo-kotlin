@@ -8,7 +8,6 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
-import java.io.IOException;
 import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
@@ -100,7 +99,7 @@ public class StarshipFragment implements GraphqlFragment {
   public ResponseFieldMarshaller marshaller() {
     return new ResponseFieldMarshaller() {
       @Override
-      public void marshal(ResponseWriter writer) throws IOException {
+      public void marshal(ResponseWriter writer) {
         writer.writeString($responseFields[0], __typename);
         writer.writeString($responseFields[1], id);
         writer.writeString($responseFields[2], name.isPresent() ? name.get() : null);
@@ -159,13 +158,13 @@ public class StarshipFragment implements GraphqlFragment {
     final PilotConnection.Mapper pilotConnectionFieldMapper = new PilotConnection.Mapper();
 
     @Override
-    public StarshipFragment map(ResponseReader reader) throws IOException {
+    public StarshipFragment map(ResponseReader reader) {
       final String __typename = reader.readString($responseFields[0]);
       final String id = reader.readString($responseFields[1]);
       final String name = reader.readString($responseFields[2]);
       final PilotConnection pilotConnection = reader.readObject($responseFields[3], new ResponseReader.ObjectReader<PilotConnection>() {
         @Override
-        public PilotConnection read(ResponseReader reader) throws IOException {
+        public PilotConnection read(ResponseReader reader) {
           return pilotConnectionFieldMapper.map(reader);
         }
       });
@@ -211,11 +210,11 @@ public class StarshipFragment implements GraphqlFragment {
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeList($responseFields[1], edges.isPresent() ? new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+            public void write(ResponseWriter.ListItemWriter listItemWriter) {
               for (Edge $item : edges.get()) {
                 listItemWriter.writeObject($item.marshaller());
               }
@@ -267,14 +266,14 @@ public class StarshipFragment implements GraphqlFragment {
       final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
 
       @Override
-      public PilotConnection map(ResponseReader reader) throws IOException {
+      public PilotConnection map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final List<Edge> edges = reader.readList($responseFields[1], new ResponseReader.ListReader<Edge>() {
           @Override
-          public Edge read(ResponseReader.ListItemReader reader) throws IOException {
+          public Edge read(ResponseReader.ListItemReader reader) {
             return reader.readObject(new ResponseReader.ObjectReader<Edge>() {
               @Override
-              public Edge read(ResponseReader reader) throws IOException {
+              public Edge read(ResponseReader reader) {
                 return edgeFieldMapper.map(reader);
               }
             });
@@ -323,7 +322,7 @@ public class StarshipFragment implements GraphqlFragment {
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
         }
@@ -372,11 +371,11 @@ public class StarshipFragment implements GraphqlFragment {
       final Node.Mapper nodeFieldMapper = new Node.Mapper();
 
       @Override
-      public Edge map(ResponseReader reader) throws IOException {
+      public Edge map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final Node node = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Node>() {
           @Override
-          public Node read(ResponseReader reader) throws IOException {
+          public Node read(ResponseReader reader) {
             return nodeFieldMapper.map(reader);
           }
         });
@@ -423,7 +422,7 @@ public class StarshipFragment implements GraphqlFragment {
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           fragments.marshaller().marshal(writer);
         }
@@ -491,7 +490,7 @@ public class StarshipFragment implements GraphqlFragment {
       public ResponseFieldMarshaller marshaller() {
         return new ResponseFieldMarshaller() {
           @Override
-          public void marshal(ResponseWriter writer) throws IOException {
+          public void marshal(ResponseWriter writer) {
             final PilotFragment $pilotFragment = pilotFragment;
             if ($pilotFragment != null) {
               $pilotFragment.marshaller().marshal(writer);
@@ -538,8 +537,7 @@ public class StarshipFragment implements GraphqlFragment {
         final PilotFragment.Mapper pilotFragmentFieldMapper = new PilotFragment.Mapper();
 
         @Override
-        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) throws
-            IOException {
+        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) {
           PilotFragment pilotFragment = null;
           if (PilotFragment.POSSIBLE_TYPES.contains(conditionalType)) {
             pilotFragment = pilotFragmentFieldMapper.map(reader);
@@ -553,11 +551,11 @@ public class StarshipFragment implements GraphqlFragment {
       final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
       @Override
-      public Node map(ResponseReader reader) throws IOException {
+      public Node map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
           @Override
-          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
+          public Fragments read(String conditionalType, ResponseReader reader) {
             return fragmentsFieldMapper.map(reader, conditionalType);
           }
         });

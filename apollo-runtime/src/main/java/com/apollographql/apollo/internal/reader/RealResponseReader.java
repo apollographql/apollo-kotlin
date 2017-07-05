@@ -8,7 +8,6 @@ import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.internal.field.FieldValueResolver;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +31,7 @@ import java.util.Map;
     this.readerShadow = readerShadow;
   }
 
-  @Override public String readString(ResponseField field) throws IOException {
+  @Override public String readString(ResponseField field) {
     willResolve(field);
     String value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
@@ -45,7 +44,7 @@ import java.util.Map;
     return value;
   }
 
-  @Override public Integer readInt(ResponseField field) throws IOException {
+  @Override public Integer readInt(ResponseField field) {
     willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
@@ -58,7 +57,7 @@ import java.util.Map;
     return value != null ? value.intValue() : null;
   }
 
-  @Override public Long readLong(ResponseField field) throws IOException {
+  @Override public Long readLong(ResponseField field) {
     willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
@@ -71,7 +70,7 @@ import java.util.Map;
     return value != null ? value.longValue() : null;
   }
 
-  @Override public Double readDouble(ResponseField field) throws IOException {
+  @Override public Double readDouble(ResponseField field) {
     willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
@@ -84,7 +83,7 @@ import java.util.Map;
     return value != null ? value.doubleValue() : null;
   }
 
-  @Override public Boolean readBoolean(ResponseField field) throws IOException {
+  @Override public Boolean readBoolean(ResponseField field) {
     willResolve(field);
     Boolean value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
@@ -98,8 +97,7 @@ import java.util.Map;
   }
 
   @SuppressWarnings("unchecked") @Override
-  public <T> T readObject(ResponseField field, ResponseReader.ObjectReader<T> objectReader)
-      throws IOException {
+  public <T> T readObject(ResponseField field, ResponseReader.ObjectReader<T> objectReader) {
     willResolve(field);
     R value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
@@ -118,7 +116,7 @@ import java.util.Map;
   }
 
   @SuppressWarnings("unchecked")
-  @Override public <T> List<T> readList(ResponseField field, ListReader listReader) throws IOException {
+  @Override public <T> List<T> readList(ResponseField field, ListReader listReader) {
     willResolve(field);
     List values = fieldValueResolver.valueFor(recordSet, field);
     checkValue(values, field.optional());
@@ -141,8 +139,7 @@ import java.util.Map;
     return result != null ? Collections.unmodifiableList(result) : null;
   }
 
-  @SuppressWarnings("unchecked") @Override public <T> T readCustomType(ResponseField.CustomTypeField field)
-      throws IOException {
+  @SuppressWarnings("unchecked") @Override public <T> T readCustomType(ResponseField.CustomTypeField field) {
     willResolve(field);
     Object value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
@@ -165,8 +162,8 @@ import java.util.Map;
   }
 
   @Override
-  public <T> T readConditional(ResponseField.ConditionalTypeField field, ConditionalTypeReader<T> conditionalTypeReader)
-      throws IOException {
+  public <T> T readConditional(ResponseField.ConditionalTypeField field,
+      ConditionalTypeReader<T> conditionalTypeReader) {
     willResolve(field);
     String value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
@@ -210,33 +207,33 @@ import java.util.Map;
       this.value = value;
     }
 
-    @Override public String readString() throws IOException {
+    @Override public String readString() {
       readerShadow.didResolveScalar(value);
       return (String) value;
     }
 
-    @Override public Integer readInt() throws IOException {
+    @Override public Integer readInt() {
       readerShadow.didResolveScalar(value);
       return ((BigDecimal) value).intValue();
     }
 
-    @Override public Long readLong() throws IOException {
+    @Override public Long readLong() {
       readerShadow.didResolveScalar(value);
       return ((BigDecimal) value).longValue();
     }
 
-    @Override public Double readDouble() throws IOException {
+    @Override public Double readDouble() {
       readerShadow.didResolveScalar(value);
       return ((BigDecimal) value).doubleValue();
     }
 
-    @Override public Boolean readBoolean() throws IOException {
+    @Override public Boolean readBoolean() {
       readerShadow.didResolveScalar(value);
       return (Boolean) value;
     }
 
     @SuppressWarnings("unchecked")
-    @Override public <T> T readCustomType(ScalarType scalarType) throws IOException {
+    @Override public <T> T readCustomType(ScalarType scalarType) {
       CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(scalarType);
       if (typeAdapter == null) {
         throw new RuntimeException("Can't resolve custom type adapter for " + scalarType.typeName());
@@ -246,7 +243,7 @@ import java.util.Map;
     }
 
     @SuppressWarnings("unchecked")
-    @Override public <T> T readObject(ObjectReader<T> objectReader) throws IOException {
+    @Override public <T> T readObject(ObjectReader<T> objectReader) {
       R value = (R) this.value;
       readerShadow.willResolveObject(field, Optional.fromNullable(value));
       T item = (T) objectReader.read(new RealResponseReader<R>(operationVariables, value, fieldValueResolver,

@@ -1,41 +1,39 @@
 package com.apollographql.apollo.api;
 
-import java.io.IOException;
-
 public interface ResponseWriter {
-  void writeString(ResponseField field, String value) throws IOException;
+  void writeString(ResponseField field, String value);
 
-  void writeInt(ResponseField field, Integer value) throws IOException;
+  void writeInt(ResponseField field, Integer value);
 
-  void writeLong(ResponseField field, Long value) throws IOException;
+  void writeLong(ResponseField field, Long value);
 
-  void writeDouble(ResponseField field, Double value) throws IOException;
+  void writeDouble(ResponseField field, Double value);
 
-  void writeBoolean(ResponseField field, Boolean value) throws IOException;
+  void writeBoolean(ResponseField field, Boolean value);
 
-  void writeCustom(ResponseField.CustomTypeField field, Object value) throws IOException;
+  void writeCustom(ResponseField.CustomTypeField field, Object value);
 
-  void writeObject(ResponseField field, ResponseFieldMarshaller marshaller) throws IOException;
+  void writeObject(ResponseField field, ResponseFieldMarshaller marshaller);
 
-  void writeList(ResponseField field, ListWriter listWriter) throws IOException;
+  void writeList(ResponseField field, ListWriter listWriter);
 
   interface ListWriter {
-    void write(ListItemWriter listItemWriter) throws IOException;
+    void write(ListItemWriter listItemWriter);
   }
 
   interface ListItemWriter {
-    void writeString(String value) throws IOException;
+    void writeString(String value);
 
-    void writeInt(Integer value) throws IOException;
+    void writeInt(Integer value);
 
-    void writeLong(Long value) throws IOException;
+    void writeLong(Long value);
 
-    void writeDouble(Double value) throws IOException;
+    void writeDouble(Double value);
 
-    void writeBoolean(Boolean value) throws IOException;
+    void writeBoolean(Boolean value);
 
-    void writeCustom(ScalarType scalarType, Object value) throws IOException;
+    void writeCustom(ScalarType scalarType, Object value);
 
-    void writeObject(ResponseFieldMarshaller marshaller) throws IOException;
+    void writeObject(ResponseFieldMarshaller marshaller);
   }
 }

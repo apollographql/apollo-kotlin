@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
-import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -505,7 +504,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], abstract_.isPresent() ? abstract_.get() : null);
           writer.writeString($responseFields[1], assert_.isPresent() ? assert_.get() : null);
           writer.writeString($responseFields[2], boolean_.isPresent() ? boolean_.get() : null);
@@ -792,7 +791,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
       @Override
-      public Data map(ResponseReader reader) throws IOException {
+      public Data map(ResponseReader reader) {
         final String abstract_ = reader.readString($responseFields[0]);
         final String assert_ = reader.readString($responseFields[1]);
         final String boolean_ = reader.readString($responseFields[2]);

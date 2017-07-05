@@ -7,9 +7,7 @@ import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Handler;
 
 import javax.annotation.Nonnull;
 
@@ -25,7 +23,7 @@ public final class TestUtils {
 
     @Override public ResponseFieldMapper<Data> responseFieldMapper() {
       return new ResponseFieldMapper<Data>() {
-        @Override public Data map(ResponseReader responseReader) throws IOException {
+        @Override public Data map(ResponseReader responseReader) {
           return null;
         }
       };

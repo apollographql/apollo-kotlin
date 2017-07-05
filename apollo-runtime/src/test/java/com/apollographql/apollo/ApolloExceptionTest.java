@@ -53,7 +53,7 @@ import static junit.framework.Assert.fail;
 
       @Override public ResponseFieldMapper<Data> responseFieldMapper() {
         return new ResponseFieldMapper<Data>() {
-          @Override public Data map(ResponseReader responseReader) throws IOException {
+          @Override public Data map(ResponseReader responseReader) {
             return null;
           }
         };

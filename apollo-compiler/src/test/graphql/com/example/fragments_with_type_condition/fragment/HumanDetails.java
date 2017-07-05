@@ -7,7 +7,6 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
-import java.io.IOException;
 import java.lang.Double;
 import java.lang.NullPointerException;
 import java.lang.Object;
@@ -81,7 +80,7 @@ public class HumanDetails implements GraphqlFragment {
   public ResponseFieldMarshaller marshaller() {
     return new ResponseFieldMarshaller() {
       @Override
-      public void marshal(ResponseWriter writer) throws IOException {
+      public void marshal(ResponseWriter writer) {
         writer.writeString($responseFields[0], __typename);
         writer.writeString($responseFields[1], name);
         writer.writeDouble($responseFields[2], height.isPresent() ? height.get() : null);
@@ -133,7 +132,7 @@ public class HumanDetails implements GraphqlFragment {
 
   public static final class Mapper implements ResponseFieldMapper<HumanDetails> {
     @Override
-    public HumanDetails map(ResponseReader reader) throws IOException {
+    public HumanDetails map(ResponseReader reader) {
       final String __typename = reader.readString($responseFields[0]);
       final String name = reader.readString($responseFields[1]);
       final Double height = reader.readDouble($responseFields[2]);

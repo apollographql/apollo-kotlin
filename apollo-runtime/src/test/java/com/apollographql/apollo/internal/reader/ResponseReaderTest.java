@@ -149,14 +149,14 @@ public class ResponseReaderTest {
 
     RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
     assertThat(responseReader.readObject(successField, new ResponseReader.ObjectReader<Object>() {
-      @Override public Object read(ResponseReader reader) throws IOException {
+      @Override public Object read(ResponseReader reader) {
         return responseObject1;
       }
     })).isEqualTo(responseObject1);
 
     try {
       responseReader.readObject(classCastExceptionField, new ResponseReader.ObjectReader<Object>() {
-        @Override public Object read(ResponseReader reader) throws IOException {
+        @Override public Object read(ResponseReader reader) {
           return reader.readString(ResponseField.forString("anything", "anything", null, true));
         }
       });
@@ -201,7 +201,7 @@ public class ResponseReaderTest {
 
     RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
     assertThat(responseReader.readConditional((ResponseField.ConditionalTypeField) successField, new ResponseReader.ConditionalTypeReader<Object>() {
-      @Override public Object read(String conditionalType, ResponseReader reader) throws IOException {
+      @Override public Object read(String conditionalType, ResponseReader reader) {
         if (conditionalType.equals("responseObject1")) {
           return responseObject1;
         } else {
@@ -212,7 +212,7 @@ public class ResponseReaderTest {
 
     try {
       responseReader.readConditional((ResponseField.ConditionalTypeField) classCastExceptionField, new ResponseReader.ConditionalTypeReader<Object>() {
-        @Override public Object read(String conditionalType, ResponseReader reader) throws IOException {
+        @Override public Object read(String conditionalType, ResponseReader reader) {
           return null;
         }
       });
@@ -234,14 +234,14 @@ public class ResponseReaderTest {
 
     RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
     assertThat(responseReader.readList(successField, new ResponseReader.ListReader() {
-      @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+      @Override public Object read(ResponseReader.ListItemReader reader) {
         return reader.readString();
       }
     })).isEqualTo(asList("value1", "value2", "value3"));
 
     try {
       responseReader.readList(classCastExceptionField, new ResponseReader.ListReader() {
-        @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+        @Override public Object read(ResponseReader.ListItemReader reader) {
           return null;
         }
       });
@@ -263,14 +263,14 @@ public class ResponseReaderTest {
 
     RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
     assertThat(responseReader.readList(successField, new ResponseReader.ListReader() {
-      @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+      @Override public Object read(ResponseReader.ListItemReader reader) {
         return reader.readInt();
       }
     })).isEqualTo(asList(1, 2, 3));
 
     try {
       responseReader.readList(classCastExceptionField, new ResponseReader.ListReader() {
-        @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+        @Override public Object read(ResponseReader.ListItemReader reader) {
           return null;
         }
       });
@@ -292,14 +292,14 @@ public class ResponseReaderTest {
 
     RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
     assertThat(responseReader.readList(successField, new ResponseReader.ListReader() {
-      @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+      @Override public Object read(ResponseReader.ListItemReader reader) {
         return reader.readInt();
       }
     })).isEqualTo(asList(1, 2, 3));
 
     try {
       responseReader.readList(classCastExceptionField, new ResponseReader.ListReader() {
-        @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+        @Override public Object read(ResponseReader.ListItemReader reader) {
           return null;
         }
       });
@@ -321,14 +321,14 @@ public class ResponseReaderTest {
 
     RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
     assertThat(responseReader.readList(successField, new ResponseReader.ListReader() {
-      @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+      @Override public Object read(ResponseReader.ListItemReader reader) {
         return reader.readDouble();
       }
     })).isEqualTo(asList(1D, 2D, 3D));
 
     try {
       responseReader.readList(classCastExceptionField, new ResponseReader.ListReader() {
-        @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+        @Override public Object read(ResponseReader.ListItemReader reader) {
           return null;
         }
       });
@@ -350,14 +350,14 @@ public class ResponseReaderTest {
 
     RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
     assertThat(responseReader.readList(successField, new ResponseReader.ListReader() {
-      @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+      @Override public Object read(ResponseReader.ListItemReader reader) {
         return reader.readBoolean();
       }
     })).isEqualTo(asList(true, false, true));
 
     try {
       responseReader.readList(classCastExceptionField, new ResponseReader.ListReader() {
-        @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+        @Override public Object read(ResponseReader.ListItemReader reader) {
           return null;
         }
       });
@@ -379,14 +379,14 @@ public class ResponseReaderTest {
 
     RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
     assertThat(responseReader.readList(successField, new ResponseReader.ListReader() {
-      @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+      @Override public Object read(ResponseReader.ListItemReader reader) {
         return reader.readCustomType(CUSTOM_TYPE);
       }
     })).isEqualTo(asList(DATE_TIME_FORMAT.parse("2017-04-16"), DATE_TIME_FORMAT.parse("2017-04-17"), DATE_TIME_FORMAT.parse("2017-04-18")));
 
     try {
       responseReader.readList(classCastExceptionField, new ResponseReader.ListReader() {
-        @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+        @Override public Object read(ResponseReader.ListItemReader reader) {
           return null;
         }
       });
@@ -417,9 +417,9 @@ public class ResponseReaderTest {
     assertThat(responseReader.readList(successField, new ResponseReader.ListReader() {
       int index = 0;
 
-      @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+      @Override public Object read(ResponseReader.ListItemReader reader) {
         return reader.readObject(new ResponseReader.ObjectReader<Object>() {
-          @Override public Object read(ResponseReader reader) throws IOException {
+          @Override public Object read(ResponseReader reader) {
             return ((List) recordSet.get("successFieldResponseName")).get(index++);
           }
         });
@@ -428,7 +428,7 @@ public class ResponseReaderTest {
 
     try {
       responseReader.readList(classCastExceptionField, new ResponseReader.ListReader() {
-        @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+        @Override public Object read(ResponseReader.ListItemReader reader) {
           return null;
         }
       });
@@ -446,12 +446,12 @@ public class ResponseReaderTest {
     responseReader.readDouble(ResponseField.forDouble("doubleField", "doubleField", null, true));
     responseReader.readBoolean(ResponseField.forBoolean("booleanField", "booleanField", null, true));
     responseReader.readObject(ResponseField.forObject("objectField", "objectField", null, true), new ResponseReader.ObjectReader<Object>() {
-      @Override public Object read(ResponseReader reader) throws IOException {
+      @Override public Object read(ResponseReader reader) {
         return null;
       }
     });
     responseReader.readList(ResponseField.forScalarList("scalarListField", "scalarListField", null, true), new ResponseReader.ListReader() {
-      @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+      @Override public Object read(ResponseReader.ListItemReader reader) {
         return null;
       }
     });
@@ -499,7 +499,7 @@ public class ResponseReaderTest {
 
     try {
       responseReader.readObject(ResponseField.forObject("objectField", "objectField", null, false), new ResponseReader.ObjectReader<Object>() {
-        @Override public Object read(ResponseReader reader) throws IOException {
+        @Override public Object read(ResponseReader reader) {
           return null;
         }
       });
@@ -510,7 +510,7 @@ public class ResponseReaderTest {
 
     try {
       responseReader.readList(ResponseField.forScalarList("scalarListField", "scalarListField", null, false), new ResponseReader.ListReader() {
-        @Override public Object read(ResponseReader.ListItemReader reader) throws IOException {
+        @Override public Object read(ResponseReader.ListItemReader reader) {
           return null;
         }
       });
@@ -528,7 +528,7 @@ public class ResponseReaderTest {
 
     try {
       responseReader.readConditional((ResponseField.ConditionalTypeField) ResponseField.forFragment("__typename", "__typename", Collections.<String>emptyList()), new ResponseReader.ConditionalTypeReader<Object>() {
-        @Override public Object read(String conditionalType, ResponseReader reader) throws IOException {
+        @Override public Object read(String conditionalType, ResponseReader reader) {
           return null;
         }
       });

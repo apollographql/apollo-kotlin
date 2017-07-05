@@ -1,6 +1,5 @@
 package com.apollographql.apollo.api;
 
-import java.io.IOException;
 import java.util.List;
 
 /*
@@ -8,51 +7,50 @@ import java.util.List;
  */
 public interface ResponseReader {
 
-  String readString(ResponseField field) throws IOException;
+  String readString(ResponseField field);
 
-  Integer readInt(ResponseField field) throws IOException;
+  Integer readInt(ResponseField field);
 
-  Long readLong(ResponseField field) throws IOException;
+  Long readLong(ResponseField field);
 
-  Double readDouble(ResponseField field) throws IOException;
+  Double readDouble(ResponseField field);
 
-  Boolean readBoolean(ResponseField field) throws IOException;
+  Boolean readBoolean(ResponseField field);
 
-  <T> T readObject(ResponseField field, ObjectReader<T> objectReader) throws IOException;
+  <T> T readObject(ResponseField field, ObjectReader<T> objectReader);
 
-  <T> List<T> readList(ResponseField field, ListReader listReader) throws IOException;
+  <T> List<T> readList(ResponseField field, ListReader listReader);
 
-  <T> T readCustomType(ResponseField.CustomTypeField field) throws IOException;
+  <T> T readCustomType(ResponseField.CustomTypeField field);
 
-  <T> T readConditional(ResponseField.ConditionalTypeField field, ConditionalTypeReader<T> conditionalTypeReader)
-      throws IOException;
+  <T> T readConditional(ResponseField.ConditionalTypeField field, ConditionalTypeReader<T> conditionalTypeReader);
 
   interface ObjectReader<T> {
-    T read(ResponseReader reader) throws IOException;
+    T read(ResponseReader reader);
   }
 
   interface ListReader<T> {
-    T read(ListItemReader reader) throws IOException;
+    T read(ListItemReader reader);
   }
 
   interface ConditionalTypeReader<T> {
-    T read(String conditionalType, ResponseReader reader) throws IOException;
+    T read(String conditionalType, ResponseReader reader);
   }
 
   interface ListItemReader {
 
-    String readString() throws IOException;
+    String readString();
 
-    Integer readInt() throws IOException;
+    Integer readInt();
 
-    Long readLong() throws IOException;
+    Long readLong();
 
-    Double readDouble() throws IOException;
+    Double readDouble();
 
-    Boolean readBoolean() throws IOException;
+    Boolean readBoolean();
 
-    <T> T readCustomType(ScalarType scalarType) throws IOException;
+    <T> T readCustomType(ScalarType scalarType);
 
-    <T> T readObject(ObjectReader<T> objectReader) throws IOException;
+    <T> T readObject(ObjectReader<T> objectReader);
   }
 }

@@ -37,7 +37,7 @@ public class CacheControlTest {
 
       @Override public ResponseFieldMapper<Data> responseFieldMapper() {
         return new ResponseFieldMapper<Data>() {
-          @Override public Data map(ResponseReader responseReader) throws IOException {
+          @Override public Data map(ResponseReader responseReader) {
             return null;
           }
         };

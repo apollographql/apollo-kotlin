@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
-import java.io.IOException;
 import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
@@ -104,7 +103,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeObject($responseFields[0], hero.isPresent() ? hero.get().marshaller() : null);
         }
       };
@@ -148,10 +147,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Hero.Mapper heroFieldMapper = new Hero.Mapper();
 
       @Override
-      public Data map(ResponseReader reader) throws IOException {
+      public Data map(ResponseReader reader) {
         final Hero hero = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<Hero>() {
           @Override
-          public Hero read(ResponseReader reader) throws IOException {
+          public Hero read(ResponseReader reader) {
             return heroFieldMapper.map(reader);
           }
         });
@@ -198,7 +197,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
         }
@@ -245,7 +244,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<Hero> {
       @Override
-      public Hero map(ResponseReader reader) throws IOException {
+      public Hero map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
         return new Hero(__typename, name);

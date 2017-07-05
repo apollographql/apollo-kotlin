@@ -13,7 +13,6 @@ import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.example.fragment_in_fragment.fragment.PilotFragment;
 import com.example.fragment_in_fragment.fragment.StarshipFragment;
-import java.io.IOException;
 import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
@@ -120,7 +119,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeObject($responseFields[0], allStarships.isPresent() ? allStarships.get().marshaller() : null);
         }
       };
@@ -164,10 +163,10 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       final AllStarships1.Mapper allStarships1FieldMapper = new AllStarships1.Mapper();
 
       @Override
-      public Data map(ResponseReader reader) throws IOException {
+      public Data map(ResponseReader reader) {
         final AllStarships1 allStarships = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<AllStarships1>() {
           @Override
-          public AllStarships1 read(ResponseReader reader) throws IOException {
+          public AllStarships1 read(ResponseReader reader) {
             return allStarships1FieldMapper.map(reader);
           }
         });
@@ -214,11 +213,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeList($responseFields[1], edges.isPresent() ? new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+            public void write(ResponseWriter.ListItemWriter listItemWriter) {
               for (Edge $item : edges.get()) {
                 listItemWriter.writeObject($item.marshaller());
               }
@@ -270,14 +269,14 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
 
       @Override
-      public AllStarships1 map(ResponseReader reader) throws IOException {
+      public AllStarships1 map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final List<Edge> edges = reader.readList($responseFields[1], new ResponseReader.ListReader<Edge>() {
           @Override
-          public Edge read(ResponseReader.ListItemReader reader) throws IOException {
+          public Edge read(ResponseReader.ListItemReader reader) {
             return reader.readObject(new ResponseReader.ObjectReader<Edge>() {
               @Override
-              public Edge read(ResponseReader reader) throws IOException {
+              public Edge read(ResponseReader reader) {
                 return edgeFieldMapper.map(reader);
               }
             });
@@ -326,7 +325,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
         }
@@ -375,11 +374,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       final Node.Mapper nodeFieldMapper = new Node.Mapper();
 
       @Override
-      public Edge map(ResponseReader reader) throws IOException {
+      public Edge map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final Node node = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Node>() {
           @Override
-          public Node read(ResponseReader reader) throws IOException {
+          public Node read(ResponseReader reader) {
             return nodeFieldMapper.map(reader);
           }
         });
@@ -426,7 +425,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           fragments.marshaller().marshal(writer);
         }
@@ -494,7 +493,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       public ResponseFieldMarshaller marshaller() {
         return new ResponseFieldMarshaller() {
           @Override
-          public void marshal(ResponseWriter writer) throws IOException {
+          public void marshal(ResponseWriter writer) {
             final StarshipFragment $starshipFragment = starshipFragment;
             if ($starshipFragment != null) {
               $starshipFragment.marshaller().marshal(writer);
@@ -541,8 +540,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
         final StarshipFragment.Mapper starshipFragmentFieldMapper = new StarshipFragment.Mapper();
 
         @Override
-        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) throws
-            IOException {
+        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) {
           StarshipFragment starshipFragment = null;
           if (StarshipFragment.POSSIBLE_TYPES.contains(conditionalType)) {
             starshipFragment = starshipFragmentFieldMapper.map(reader);
@@ -556,11 +554,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
       @Override
-      public Node map(ResponseReader reader) throws IOException {
+      public Node map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
           @Override
-          public Fragments read(String conditionalType, ResponseReader reader) throws IOException {
+          public Fragments read(String conditionalType, ResponseReader reader) {
             return fragmentsFieldMapper.map(reader, conditionalType);
           }
         });

@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.Record;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,27 +28,27 @@ final class CacheResponseWriter implements ResponseWriter {
     this.customTypeAdapters = customTypeAdapters;
   }
 
-  @Override public void writeString(ResponseField field, String value) throws IOException {
+  @Override public void writeString(ResponseField field, String value) {
     writeScalarFieldValue(field, value);
   }
 
-  @Override public void writeInt(ResponseField field, Integer value) throws IOException {
+  @Override public void writeInt(ResponseField field, Integer value) {
     writeScalarFieldValue(field, value != null ? BigDecimal.valueOf(value) : null);
   }
 
-  @Override public void writeLong(ResponseField field, Long value) throws IOException {
+  @Override public void writeLong(ResponseField field, Long value) {
     writeScalarFieldValue(field, value != null ? BigDecimal.valueOf(value) : null);
   }
 
-  @Override public void writeDouble(ResponseField field, Double value) throws IOException {
+  @Override public void writeDouble(ResponseField field, Double value) {
     writeScalarFieldValue(field, value != null ? BigDecimal.valueOf(value) : null);
   }
 
-  @Override public void writeBoolean(ResponseField field, Boolean value) throws IOException {
+  @Override public void writeBoolean(ResponseField field, Boolean value) {
     writeScalarFieldValue(field, value);
   }
 
-  @Override public void writeCustom(ResponseField.CustomTypeField field, Object value) throws IOException {
+  @Override public void writeCustom(ResponseField.CustomTypeField field, Object value) {
     CustomTypeAdapter typeAdapter = customTypeAdapters.get(field.scalarType());
     if (typeAdapter == null) {
       writeScalarFieldValue(field, value);
@@ -58,7 +57,7 @@ final class CacheResponseWriter implements ResponseWriter {
     }
   }
 
-  @Override public void writeObject(ResponseField field, ResponseFieldMarshaller marshaller) throws IOException {
+  @Override public void writeObject(ResponseField field, ResponseFieldMarshaller marshaller) {
     checkFieldValue(field, marshaller);
     if (marshaller == null) {
       fieldDescriptors.put(field.responseName(), new ObjectFieldDescriptor(field,
@@ -73,7 +72,7 @@ final class CacheResponseWriter implements ResponseWriter {
     fieldValues.put(field.responseName(), nestedResponseWriter.fieldValues);
   }
 
-  @Override public void writeList(ResponseField field, ListWriter listWriter) throws IOException {
+  @Override public void writeList(ResponseField field, ListWriter listWriter) {
     checkFieldValue(field, listWriter);
 
     if (listWriter == null) {
@@ -203,27 +202,27 @@ final class CacheResponseWriter implements ResponseWriter {
       this.customTypeAdapters = customTypeAdapters;
     }
 
-    @Override public void writeString(String value) throws IOException {
+    @Override public void writeString(String value) {
       fieldValues.add(value);
     }
 
-    @Override public void writeInt(Integer value) throws IOException {
+    @Override public void writeInt(Integer value) {
       fieldValues.add(value);
     }
 
-    @Override public void writeLong(Long value) throws IOException {
+    @Override public void writeLong(Long value) {
       fieldValues.add(value);
     }
 
-    @Override public void writeDouble(Double value) throws IOException {
+    @Override public void writeDouble(Double value) {
       fieldValues.add(value);
     }
 
-    @Override public void writeBoolean(Boolean value) throws IOException {
+    @Override public void writeBoolean(Boolean value) {
       fieldValues.add(value);
     }
 
-    @Override public void writeCustom(ScalarType scalarType, Object value) throws IOException {
+    @Override public void writeCustom(ScalarType scalarType, Object value) {
       CustomTypeAdapter typeAdapter = customTypeAdapters.get(scalarType);
       if (typeAdapter == null) {
         fieldValues.add(value);
@@ -232,7 +231,7 @@ final class CacheResponseWriter implements ResponseWriter {
       }
     }
 
-    @Override public void writeObject(ResponseFieldMarshaller marshaller) throws IOException {
+    @Override public void writeObject(ResponseFieldMarshaller marshaller) {
       CacheResponseWriter nestedResponseWriter = new CacheResponseWriter(operationVariables, customTypeAdapters);
       marshaller.marshal(nestedResponseWriter);
 

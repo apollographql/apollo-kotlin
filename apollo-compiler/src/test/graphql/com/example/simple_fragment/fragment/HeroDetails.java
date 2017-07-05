@@ -6,7 +6,6 @@ import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
-import java.io.IOException;
 import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
@@ -66,7 +65,7 @@ public class HeroDetails implements GraphqlFragment {
   public ResponseFieldMarshaller marshaller() {
     return new ResponseFieldMarshaller() {
       @Override
-      public void marshal(ResponseWriter writer) throws IOException {
+      public void marshal(ResponseWriter writer) {
         writer.writeString($responseFields[0], __typename);
         writer.writeString($responseFields[1], name);
       }
@@ -113,7 +112,7 @@ public class HeroDetails implements GraphqlFragment {
 
   public static final class Mapper implements ResponseFieldMapper<HeroDetails> {
     @Override
-    public HeroDetails map(ResponseReader reader) throws IOException {
+    public HeroDetails map(ResponseReader reader) {
       final String __typename = reader.readString($responseFields[0]);
       final String name = reader.readString($responseFields[1]);
       return new HeroDetails(__typename, name);

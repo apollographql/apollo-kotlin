@@ -10,7 +10,6 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.example.custom_scalar_type.type.CustomType;
-import java.io.IOException;
 import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
@@ -112,7 +111,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeObject($responseFields[0], hero.isPresent() ? hero.get().marshaller() : null);
         }
       };
@@ -156,10 +155,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       final Hero.Mapper heroFieldMapper = new Hero.Mapper();
 
       @Override
-      public Data map(ResponseReader reader) throws IOException {
+      public Data map(ResponseReader reader) {
         final Hero hero = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<Hero>() {
           @Override
-          public Hero read(ResponseReader reader) throws IOException {
+          public Hero read(ResponseReader reader) {
             return heroFieldMapper.map(reader);
           }
         });
@@ -281,13 +280,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
-        public void marshal(ResponseWriter writer) throws IOException {
+        public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
           writer.writeCustom((ResponseField.CustomTypeField) $responseFields[2], birthDate);
           writer.writeList($responseFields[3], new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+            public void write(ResponseWriter.ListItemWriter listItemWriter) {
               for (Date $item : appearanceDates) {
                 listItemWriter.writeCustom(CustomType.DATE, $item);
               }
@@ -297,7 +296,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeCustom((ResponseField.CustomTypeField) $responseFields[5], profileLink);
           writer.writeList($responseFields[6], new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) throws IOException {
+            public void write(ResponseWriter.ListItemWriter listItemWriter) {
               for (String $item : links) {
                 listItemWriter.writeCustom(CustomType.URL, $item);
               }
@@ -367,13 +366,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<Hero> {
       @Override
-      public Hero map(ResponseReader reader) throws IOException {
+      public Hero map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
         final Date birthDate = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[2]);
         final List<Date> appearanceDates = reader.readList($responseFields[3], new ResponseReader.ListReader<Date>() {
           @Override
-          public Date read(ResponseReader.ListItemReader reader) throws IOException {
+          public Date read(ResponseReader.ListItemReader reader) {
             return reader.readCustomType(CustomType.DATE);
           }
         });
@@ -381,7 +380,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final String profileLink = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[5]);
         final List<String> links = reader.readList($responseFields[6], new ResponseReader.ListReader<String>() {
           @Override
-          public String read(ResponseReader.ListItemReader reader) throws IOException {
+          public String read(ResponseReader.ListItemReader reader) {
             return reader.readCustomType(CustomType.URL);
           }
         });

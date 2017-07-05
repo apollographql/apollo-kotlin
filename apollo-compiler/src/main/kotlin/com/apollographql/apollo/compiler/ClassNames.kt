@@ -1,6 +1,9 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.api.*
+import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.Mutation
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder
 import com.apollographql.apollo.api.internal.Utils
@@ -17,7 +20,6 @@ object ClassNames {
   val GRAPHQL_MUTATION: ClassName = ClassName.get(Mutation::class.java)
   val GRAPHQL_OPERATION_VARIABLES: ClassName = ClassName.get("", "${GRAPHQL_OPERATION.simpleName()}.Variables")
   val ILLEGAL_STATE_EXCEPTION: TypeName = ClassName.get(IllegalStateException::class.java)
-  val API_RESPONSE_READER: ClassName = ClassName.get(ResponseReader::class.java)
   val MAP: ClassName = ClassName.get(Map::class.java)
   val HASH_MAP: ClassName = ClassName.get(HashMap::class.java)
   val UNMODIFIABLE_MAP_BUILDER: ClassName = ClassName.get(UnmodifiableMapBuilder::class.java)
