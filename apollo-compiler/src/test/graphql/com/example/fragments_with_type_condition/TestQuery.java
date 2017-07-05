@@ -277,9 +277,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class Fragments {
-      final @Nonnull HumanDetails humanDetails;
+      final Optional<HumanDetails> humanDetails;
 
-      final @Nonnull DroidDetails droidDetails;
+      final Optional<DroidDetails> droidDetails;
 
       private volatile String $toString;
 
@@ -287,22 +287,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       private volatile boolean $hashCodeMemoized;
 
-      public Fragments(@Nonnull HumanDetails humanDetails, @Nonnull DroidDetails droidDetails) {
-        if (humanDetails == null) {
-          throw new NullPointerException("humanDetails can't be null");
-        }
-        this.humanDetails = humanDetails;
-        if (droidDetails == null) {
-          throw new NullPointerException("droidDetails can't be null");
-        }
-        this.droidDetails = droidDetails;
+      public Fragments(@Nullable HumanDetails humanDetails, @Nullable DroidDetails droidDetails) {
+        this.humanDetails = Optional.fromNullable(humanDetails);
+        this.droidDetails = Optional.fromNullable(droidDetails);
       }
 
-      public @Nonnull HumanDetails humanDetails() {
+      public Optional<HumanDetails> humanDetails() {
         return this.humanDetails;
       }
 
-      public @Nonnull DroidDetails droidDetails() {
+      public Optional<DroidDetails> droidDetails() {
         return this.droidDetails;
       }
 
@@ -310,11 +304,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final HumanDetails $humanDetails = humanDetails;
+            final HumanDetails $humanDetails = humanDetails.isPresent() ? humanDetails.get() : null;
             if ($humanDetails != null) {
               $humanDetails.marshaller().marshal(writer);
             }
-            final DroidDetails $droidDetails = droidDetails;
+            final DroidDetails $droidDetails = droidDetails.isPresent() ? droidDetails.get() : null;
             if ($droidDetails != null) {
               $droidDetails.marshaller().marshal(writer);
             }
@@ -482,9 +476,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class Fragments {
-      final @Nonnull HumanDetails humanDetails;
+      final Optional<HumanDetails> humanDetails;
 
-      final @Nonnull DroidDetails droidDetails;
+      final Optional<DroidDetails> droidDetails;
 
       private volatile String $toString;
 
@@ -492,22 +486,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       private volatile boolean $hashCodeMemoized;
 
-      public Fragments(@Nonnull HumanDetails humanDetails, @Nonnull DroidDetails droidDetails) {
-        if (humanDetails == null) {
-          throw new NullPointerException("humanDetails can't be null");
-        }
-        this.humanDetails = humanDetails;
-        if (droidDetails == null) {
-          throw new NullPointerException("droidDetails can't be null");
-        }
-        this.droidDetails = droidDetails;
+      public Fragments(@Nullable HumanDetails humanDetails, @Nullable DroidDetails droidDetails) {
+        this.humanDetails = Optional.fromNullable(humanDetails);
+        this.droidDetails = Optional.fromNullable(droidDetails);
       }
 
-      public @Nonnull HumanDetails humanDetails() {
+      public Optional<HumanDetails> humanDetails() {
         return this.humanDetails;
       }
 
-      public @Nonnull DroidDetails droidDetails() {
+      public Optional<DroidDetails> droidDetails() {
         return this.droidDetails;
       }
 
@@ -515,11 +503,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final HumanDetails $humanDetails = humanDetails;
+            final HumanDetails $humanDetails = humanDetails.isPresent() ? humanDetails.get() : null;
             if ($humanDetails != null) {
               $humanDetails.marshaller().marshal(writer);
             }
-            final DroidDetails $droidDetails = droidDetails;
+            final DroidDetails $droidDetails = droidDetails.isPresent() ? droidDetails.get() : null;
             if ($droidDetails != null) {
               $droidDetails.marshaller().marshal(writer);
             }
