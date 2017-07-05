@@ -162,7 +162,8 @@ import java.util.Map;
   }
 
   @Override
-  public <T> T readConditional(ResponseField.ConditionalTypeField field, ConditionalTypeReader<T> conditionalTypeReader) {
+  public <T> T readConditional(ResponseField.ConditionalTypeField field,
+      ConditionalTypeReader<T> conditionalTypeReader) {
     willResolve(field);
     String value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
