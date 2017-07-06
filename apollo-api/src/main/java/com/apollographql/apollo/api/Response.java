@@ -17,6 +17,7 @@ public final class Response<T> {
   private final T data;
   private final List<Error> errors;
   private Set<String> dependentKeys;
+  private final boolean fromCache;
 
   public static <T> Response.Builder<T> builder(@Nonnull final Operation operation) {
     return new Builder<>(operation);
@@ -28,6 +29,7 @@ public final class Response<T> {
     errors = builder.errors != null ? unmodifiableList(builder.errors) : Collections.<Error>emptyList();
     dependentKeys = builder.dependentKeys != null ? unmodifiableSet(builder.dependentKeys)
         : Collections.<String>emptySet();
+    fromCache = builder.fromCache;
   }
 
   public Operation operation() {
@@ -50,11 +52,16 @@ public final class Response<T> {
     return !errors.isEmpty();
   }
 
+  public boolean fromCache() {
+    return fromCache;
+  }
+
   public static final class Builder<T> {
     private final Operation operation;
     private T data;
     private List<Error> errors;
     private Set<String> dependentKeys;
+    private boolean fromCache;
 
     Builder(@Nonnull final Operation operation) {
       this.operation = checkNotNull(operation, "operation == null");
@@ -72,6 +79,11 @@ public final class Response<T> {
 
     public Builder<T> dependentKeys(@Nullable Set<String> dependentKeys) {
       this.dependentKeys = dependentKeys;
+      return this;
+    }
+
+    public Builder<T> fromCache(boolean fromCache) {
+      this.fromCache = fromCache;
       return this;
     }
 

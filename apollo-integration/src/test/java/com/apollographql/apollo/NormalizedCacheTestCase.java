@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -41,7 +42,10 @@ public class NormalizedCacheTestCase {
   @Before public void setUp() {
     server = new MockWebServer();
 
-    OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .writeTimeout(2, TimeUnit.SECONDS)
+        .readTimeout(2, TimeUnit.SECONDS)
+        .build();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
@@ -381,4 +385,14 @@ public class NormalizedCacheTestCase {
     assertThat(fragment.name()).isEqualTo("Leia Organa");
   }
 
+  @Test public void fromCacheFlag() throws Exception {
+    server.enqueue(mockResponse("HeroNameResponse.json"));
+    assertThat(apolloClient.query(new EpisodeHeroName(Episode.EMPIRE)).execute().fromCache()).isFalse();
+
+    server.enqueue(mockResponse("HeroNameResponse.json"));
+    assertThat(apolloClient.query(new EpisodeHeroName(Episode.EMPIRE)).cacheControl(CacheControl.NETWORK_ONLY).execute().fromCache()).isFalse();
+    assertThat(apolloClient.query(new EpisodeHeroName(Episode.EMPIRE)).cacheControl(CacheControl.CACHE_ONLY).execute().fromCache()).isTrue();
+    assertThat(apolloClient.query(new EpisodeHeroName(Episode.EMPIRE)).cacheControl(CacheControl.CACHE_FIRST).execute().fromCache()).isTrue();
+    assertThat(apolloClient.query(new EpisodeHeroName(Episode.EMPIRE)).cacheControl(CacheControl.NETWORK_FIRST).execute().fromCache()).isTrue();
+  }
 }

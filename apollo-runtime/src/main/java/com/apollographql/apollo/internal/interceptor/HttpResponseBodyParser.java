@@ -35,12 +35,12 @@ final class HttpResponseBodyParser<D extends Operation.Data, W> {
     this.customTypeAdapters = customTypeAdapters;
   }
 
-  public Response<W> parse(ResponseBody responseBody,
+  public Response<W> parse(okhttp3.Response response,
       final ResponseNormalizer<Map<String, Object>> networkResponseNormalizer) throws IOException {
     networkResponseNormalizer.willResolveRootQuery(operation);
     BufferedSourceJsonReader jsonReader = null;
     try {
-      jsonReader = new BufferedSourceJsonReader(responseBody.source());
+      jsonReader = new BufferedSourceJsonReader(response.body().source());
       jsonReader.beginObject();
 
       ResponseJsonStreamReader responseStreamReader = responseJsonStreamReader(jsonReader);
@@ -68,6 +68,7 @@ final class HttpResponseBodyParser<D extends Operation.Data, W> {
       jsonReader.endObject();
       return Response.<W>builder(operation)
           .data(operation.wrapData(data))
+          .fromCache(response.cacheResponse() != null)
           .errors(errors)
           .dependentKeys(networkResponseNormalizer.dependentKeys())
           .build();

@@ -73,6 +73,8 @@ public class HttpCacheTest {
             return lastHttResponse;
           }
         })
+        .readTimeout(2, TimeUnit.SECONDS)
+        .writeTimeout(2, TimeUnit.SECONDS)
         .build();
 
     apolloClient = ApolloClient.builder()
@@ -389,6 +391,17 @@ public class HttpCacheTest {
     assertThat(lastHttResponse.networkResponse()).isNotNull();
     assertThat(lastHttResponse.cacheResponse()).isNull();
     checkCachedResponse("/HttpCacheTestAllPlanets.json");
+  }
+
+  @Test public void fromCacheFlag() throws Exception {
+    enqueueResponse("/HttpCacheTestAllPlanets.json");
+    assertThat(apolloClient.query(new AllPlanets()).execute().fromCache()).isFalse();
+
+    enqueueResponse("/HttpCacheTestAllPlanets.json");
+    assertThat(apolloClient.query(new AllPlanets()).httpCachePolicy(HttpCachePolicy.NETWORK_ONLY).execute().fromCache()).isFalse();
+    assertThat(apolloClient.query(new AllPlanets()).httpCachePolicy(HttpCachePolicy.CACHE_ONLY).execute().fromCache()).isTrue();
+    assertThat(apolloClient.query(new AllPlanets()).httpCachePolicy(HttpCachePolicy.CACHE_FIRST).execute().fromCache()).isTrue();
+    assertThat(apolloClient.query(new AllPlanets()).httpCachePolicy(HttpCachePolicy.NETWORK_FIRST).execute().fromCache()).isTrue();
   }
 
   private void enqueueResponse(String fileName) throws IOException {

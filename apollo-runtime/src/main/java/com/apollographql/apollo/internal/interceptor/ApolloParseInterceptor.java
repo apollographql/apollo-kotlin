@@ -77,7 +77,7 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
     if (httpResponse.isSuccessful()) {
       try {
         HttpResponseBodyParser parser = new HttpResponseBodyParser(operation, responseFieldMapper, customTypeAdapters);
-        Response parsedResponse = parser.parse(httpResponse.body(), normalizer);
+        Response parsedResponse = parser.parse(httpResponse, normalizer);
         if (parsedResponse.hasErrors() && httpCache != null) {
           httpCache.removeQuietly(cacheKey);
         }
