@@ -27,7 +27,17 @@ data class Operation(
           .addSuperinterface(Operation.Data::class.java)
           .build()
 
+  fun isMutation() : Boolean {
+    return operationType == TYPE_MUTATION
+  }
+
+  fun isQuery() : Boolean {
+    return operationType == TYPE_QUERY
+  }
+
   companion object {
     val DATA_TYPE_NAME = "Data"
+    val TYPE_MUTATION = "mutation"
+    val TYPE_QUERY = "query"
   }
 }

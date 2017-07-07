@@ -1,17 +1,29 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.compiler.ir.*
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.ResponseFieldMapper
+import com.apollographql.apollo.compiler.ir.*
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
 class OperationTypeSpecBuilder(
     val operation: Operation,
-    val fragments: List<Fragment>
+    val fragments: List<Fragment>,
+    useSemanticNaming: Boolean
 ) : CodeGenerator {
-  private val OPERATION_TYPE_NAME = operation.operationName.capitalize()
-  private val DATA_VAR_TYPE = ClassName.get("", "$OPERATION_TYPE_NAME.Data")
+  private val OPERATION_TYPE_NAME: String
+  private val DATA_VAR_TYPE: ClassName
+
+  init {
+    if (useSemanticNaming && operation.isMutation() && !operation.operationName.endsWith("Mutation")) {
+      OPERATION_TYPE_NAME = operation.operationName.capitalize() + "Mutation"
+    } else if (useSemanticNaming && operation.isQuery() && !operation.operationName.endsWith("Query")) {
+      OPERATION_TYPE_NAME = operation.operationName.capitalize() + "Query"
+    } else {
+      OPERATION_TYPE_NAME = operation.operationName.capitalize()
+    }
+    DATA_VAR_TYPE = ClassName.get("", "$OPERATION_TYPE_NAME.Data")
+  }
 
   override fun toTypeSpec(context: CodeGenerationContext): TypeSpec {
     val newContext = context.copy(reservedTypeNames = context.reservedTypeNames.plus(OPERATION_TYPE_NAME))
@@ -34,8 +46,7 @@ class OperationTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addQuerySuperInterface(context: CodeGenerationContext): TypeSpec.Builder {
-    val isMutation = operation.operationType == "mutation"
-    val superInterfaceClassName = if (isMutation) ClassNames.GRAPHQL_MUTATION else ClassNames.GRAPHQL_QUERY
+    val superInterfaceClassName = if (operation.isMutation()) ClassNames.GRAPHQL_MUTATION else ClassNames.GRAPHQL_QUERY
     return if (operation.variables.isNotEmpty()) {
       addSuperinterface(ParameterizedTypeName.get(superInterfaceClassName, DATA_VAR_TYPE,
           wrapperType(context), variablesType()))

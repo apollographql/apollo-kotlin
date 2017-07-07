@@ -26,6 +26,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
         if (expectedFileMatcher.matches(expectedFile)) {
           val expected = expectedFile.toFile()
 
+          System.out.print(expectedFile.fileName)
           val actualClassName = actualClassName(expectedFile)
           val actual = findActual(actualClassName)
 
@@ -74,13 +75,19 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
               (it.name != "hero_details_nullable" || it.name == "no_accessors") -> NullableValueType.APOLLO_OPTIONAL
               else -> NullableValueType.ANNOTATED
             }
+            val useSemanticNaming = when {
+              it.name == "hero_details_semantic_naming" -> true
+              it.name == "mutation_create_review_semantic_naming" -> true
+              else -> false
+            }
             val generateAccessors = (it.name != "no_accessors")
             val args = GraphQLCompiler.Arguments(
-                irFile = File(it, "TestQuery.json"),
+                irFile = File(it, "TestOperation.json"),
                 outputDir = GraphQLCompiler.Companion.OUTPUT_DIRECTORY.fold(File("build"), ::File),
                 customTypeMap = customTypeMap,
                 nullableValueType = nullableValueType,
-                generateAccessors = generateAccessors)
+                generateAccessors = generateAccessors,
+                useSemanticNaming = useSemanticNaming)
             arrayOf(it.name, args)
           }
     }
