@@ -19,8 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.ResponseBody;
-
 import static com.apollographql.apollo.internal.json.ApolloJsonReader.responseJsonStreamReader;
 
 final class HttpResponseBodyParser<D extends Operation.Data, W> {
