@@ -12,7 +12,7 @@ public class ApolloExtension {
   private Map<String, String> customTypeMapping = new LinkedHashMap<>();
   private String nullableValueType = NullableValueType.ANNOTATED.getValue();
   private boolean generateAccessors = true;
-  private boolean useSemanticNaming = false;
+  private boolean useSemanticNaming = true;
 
   public Map<String, String> getCustomTypeMapping() {
     return customTypeMapping;

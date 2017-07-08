@@ -3,7 +3,7 @@ package com.apollographql.apollo;
 
 import android.support.annotation.NonNull;
 
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroName;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
@@ -68,7 +68,7 @@ public class ApolloInterceptorTest {
   public void syncApplicationInterceptorCanShortCircuitResponses() throws IOException, ApolloException {
     mockWebServer.shutdown();
 
-    EpisodeHeroName query = createHeroNameQuery();
+    EpisodeHeroNameQuery query = createHeroNameQuery();
 
     final InterceptorResponse expectedResponse = prepareInterceptorResponse(query);
 
@@ -91,7 +91,7 @@ public class ApolloInterceptorTest {
 
     client = createApolloClient(interceptor);
 
-    Response<EpisodeHeroName.Data> actualResponse = client.query(query).execute();
+    Response<EpisodeHeroNameQuery.Data> actualResponse = client.query(query).execute();
 
     assertThat(expectedResponse.parsedResponse.get()).isEqualTo(actualResponse);
   }
@@ -104,7 +104,7 @@ public class ApolloInterceptorTest {
 
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
-    EpisodeHeroName query = createHeroNameQuery();
+    EpisodeHeroNameQuery query = createHeroNameQuery();
 
     final InterceptorResponse expectedResponse = prepareInterceptorResponse(query);
 
@@ -127,8 +127,8 @@ public class ApolloInterceptorTest {
 
     client = createApolloClient(interceptor);
 
-    client.query(query).enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
-      @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+    client.query(query).enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
+      @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
         assertThat(expectedResponse.parsedResponse.get()).isEqualTo(response);
         responseLatch.countDown();
       }
@@ -145,7 +145,7 @@ public class ApolloInterceptorTest {
   public void syncApplicationInterceptorRewritesResponsesFromServer() throws IOException, ApolloException {
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
-    EpisodeHeroName query = createHeroNameQuery();
+    EpisodeHeroNameQuery query = createHeroNameQuery();
 
     final InterceptorResponse rewrittenResponse = prepareInterceptorResponse(query);
 
@@ -169,7 +169,7 @@ public class ApolloInterceptorTest {
 
     client = createApolloClient(interceptor);
 
-    Response<EpisodeHeroName.Data> actualResponse = client.query(query).execute();
+    Response<EpisodeHeroNameQuery.Data> actualResponse = client.query(query).execute();
 
     assertThat(rewrittenResponse.parsedResponse.get()).isEqualTo(actualResponse);
   }
@@ -180,7 +180,7 @@ public class ApolloInterceptorTest {
 
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
-    EpisodeHeroName query = createHeroNameQuery();
+    EpisodeHeroNameQuery query = createHeroNameQuery();
 
     final InterceptorResponse rewrittenResponse = prepareInterceptorResponse(query);
 
@@ -211,8 +211,8 @@ public class ApolloInterceptorTest {
 
     client = createApolloClient(interceptor);
 
-    client.query(query).enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
-      @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+    client.query(query).enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
+      @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
         assertThat(rewrittenResponse.parsedResponse.get()).isEqualTo(response);
         responseLatch.countDown();
       }
@@ -229,7 +229,7 @@ public class ApolloInterceptorTest {
   public void syncApplicationInterceptorThrowsApolloException() {
 
     final String apolloException = "ApolloException";
-    EpisodeHeroName query = createHeroNameQuery();
+    EpisodeHeroNameQuery query = createHeroNameQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
@@ -263,7 +263,7 @@ public class ApolloInterceptorTest {
     final NamedCountDownLatch responseLatch = new NamedCountDownLatch("responseLatch", 1);
 
     final String message = "ApolloException";
-    EpisodeHeroName query = createHeroNameQuery();
+    EpisodeHeroNameQuery query = createHeroNameQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
 
@@ -287,8 +287,8 @@ public class ApolloInterceptorTest {
     client = createApolloClient(interceptor);
 
     client.query(query)
-        .enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
-          @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+        .enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
+          @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
 
           }
 
@@ -304,7 +304,7 @@ public class ApolloInterceptorTest {
   @Test
   public void syncApplicationInterceptorThrowsRuntimeException() {
 
-    EpisodeHeroName query = createHeroNameQuery();
+    EpisodeHeroNameQuery query = createHeroNameQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
@@ -338,7 +338,7 @@ public class ApolloInterceptorTest {
     NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
 
     final String message = "RuntimeException";
-    EpisodeHeroName query = createHeroNameQuery();
+    EpisodeHeroNameQuery query = createHeroNameQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
 
@@ -371,8 +371,8 @@ public class ApolloInterceptorTest {
 
     client
         .query(query)
-        .enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
-          @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+        .enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
+          @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
 
           }
 
@@ -386,7 +386,7 @@ public class ApolloInterceptorTest {
 
   @Test
   public void syncApplicationInterceptorReturnsNull() {
-    EpisodeHeroName query = createHeroNameQuery();
+    EpisodeHeroNameQuery query = createHeroNameQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
@@ -419,7 +419,7 @@ public class ApolloInterceptorTest {
   public void asyncApplicationInterceptorReturnsNull() throws TimeoutException, InterruptedException {
     NamedCountDownLatch latch = new NamedCountDownLatch("first", 1);
 
-    EpisodeHeroName query = createHeroNameQuery();
+    EpisodeHeroNameQuery query = createHeroNameQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
@@ -449,8 +449,8 @@ public class ApolloInterceptorTest {
         .dispatcher(new ExceptionHandlingExecutor(null, NullPointerException.class, latch))
         .build();
 
-    client.query(query).enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
-      @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+    client.query(query).enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
+      @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
 
       }
 
@@ -467,7 +467,7 @@ public class ApolloInterceptorTest {
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
 
-    EpisodeHeroName query = createHeroNameQuery();
+    EpisodeHeroNameQuery query = createHeroNameQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
@@ -489,7 +489,7 @@ public class ApolloInterceptorTest {
 
     client = createApolloClient(interceptor);
 
-    Response<EpisodeHeroName.Data> actualResponse = client.query(query).execute();
+    Response<EpisodeHeroNameQuery.Data> actualResponse = client.query(query).execute();
     assertThat(actualResponse.data().hero().name()).isEqualTo("Artoo");
   }
 
@@ -497,7 +497,7 @@ public class ApolloInterceptorTest {
   public void onShortCircuitingResponseSubsequentInterceptorsAreNotCalled() throws IOException, ApolloException {
     mockWebServer.shutdown();
 
-    EpisodeHeroName query = createHeroNameQuery();
+    EpisodeHeroNameQuery query = createHeroNameQuery();
     final InterceptorResponse expectedResponse = prepareInterceptorResponse(query);
 
     ApolloInterceptor firstInterceptor = new ApolloInterceptor() {
@@ -540,7 +540,7 @@ public class ApolloInterceptorTest {
         .addApplicationInterceptor(secondInterceptor)
         .build();
 
-    Response<EpisodeHeroName.Data> actualResponse = client.query(query).execute();
+    Response<EpisodeHeroNameQuery.Data> actualResponse = client.query(query).execute();
     assertThat(expectedResponse.parsedResponse.get()).isEqualTo(actualResponse);
   }
 
@@ -548,7 +548,7 @@ public class ApolloInterceptorTest {
   public void onApolloCallCanceledAsyncApolloInterceptorIsDisposed() throws ApolloException, TimeoutException, InterruptedException {
     final NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
 
-    EpisodeHeroName query = createHeroNameQuery();
+    EpisodeHeroNameQuery query = createHeroNameQuery();
     final InterceptorResponse fakeResponse = prepareInterceptorResponse(query);
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
@@ -574,10 +574,10 @@ public class ApolloInterceptorTest {
 
     client = createApolloClient(interceptor);
 
-    ApolloCall<EpisodeHeroName.Data> apolloCall = client.query(query);
+    ApolloCall<EpisodeHeroNameQuery.Data> apolloCall = client.query(query);
 
-    apolloCall.enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
-      @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+    apolloCall.enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
+      @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
         Assert.fail("Received a response, even though the request has been canceled");
       }
 
@@ -593,8 +593,8 @@ public class ApolloInterceptorTest {
     latch.awaitOrThrowWithTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
   }
 
-  @NonNull private EpisodeHeroName createHeroNameQuery() {
-    return EpisodeHeroName
+  @NonNull private EpisodeHeroNameQuery createHeroNameQuery() {
+    return EpisodeHeroNameQuery
         .builder()
         .episode(Episode.EMPIRE)
         .build();
@@ -608,7 +608,7 @@ public class ApolloInterceptorTest {
         .build();
   }
 
-  @NonNull private InterceptorResponse prepareInterceptorResponse(EpisodeHeroName query) {
+  @NonNull private InterceptorResponse prepareInterceptorResponse(EpisodeHeroNameQuery query) {
     Request request = new Request.Builder()
         .url(mockWebServer.url("/"))
         .build();
@@ -621,7 +621,7 @@ public class ApolloInterceptorTest {
         .body(ResponseBody.create(MediaType.parse("text/plain; charset=utf-8"), "fakeResponse"))
         .build();
 
-    Response<EpisodeHeroName.Data> apolloResponse = Response.<EpisodeHeroName.Data>builder(query).build();
+    Response<EpisodeHeroNameQuery.Data> apolloResponse = Response.<EpisodeHeroNameQuery.Data>builder(query).build();
 
     return new InterceptorResponse(okHttpResponse,
         apolloResponse, Collections.<Record>emptyList());

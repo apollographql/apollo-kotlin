@@ -4,8 +4,8 @@ import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.integration.httpcache.AllPlanets;
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroName;
+import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
@@ -77,7 +77,7 @@ public class ApolloPrefetchTest {
   public void ApolloPrefetchNotCalled_WhenCanceled() throws IOException, InterruptedException {
     final NamedCountDownLatch responseLatch = new NamedCountDownLatch("ApolloPrefetchNotCalled_WhenCanceled", 1);
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
     ApolloPrefetch prefetch = apolloClient.prefetch(query);
@@ -105,7 +105,7 @@ public class ApolloPrefetchTest {
   public void apolloCanceledExceptionEnqueue() throws Exception {
     final NamedCountDownLatch responseLatch = new NamedCountDownLatch("apolloCanceledExceptionEnqueue", 1);
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json")
         .setBodyDelay(TIME_OUT_SECONDS, TimeUnit.SECONDS));
 
@@ -133,7 +133,7 @@ public class ApolloPrefetchTest {
   public void apolloCanceledExceptionExecute() throws Exception {
     final NamedCountDownLatch responseLatch = new NamedCountDownLatch("apolloCanceledExceptionExecute", 1);
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json")
         .setBodyDelay(TIME_OUT_SECONDS, TimeUnit.SECONDS));
 
@@ -159,9 +159,9 @@ public class ApolloPrefetchTest {
 
   @Test public void prefetchDefault() throws IOException, ApolloException {
     enqueueResponse("HttpCacheTestAllPlanets.json");
-    apolloClient.prefetch(new AllPlanets()).execute();
+    apolloClient.prefetch(new AllPlanetsQuery()).execute();
     checkCachedResponse("HttpCacheTestAllPlanets.json");
-    assertThat(apolloClient.query(new AllPlanets())
+    assertThat(apolloClient.query(new AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.CACHE_ONLY.expireAfter(2, TimeUnit.SECONDS)).execute()
         .hasErrors()).isFalse();
   }
@@ -173,9 +173,9 @@ public class ApolloPrefetchTest {
         .build();
 
     enqueueResponse("HttpCacheTestAllPlanets.json");
-    apolloClient.prefetch(new AllPlanets()).execute();
+    apolloClient.prefetch(new AllPlanetsQuery()).execute();
     enqueueResponse("HttpCacheTestAllPlanets.json");
-    assertThat(apolloClient.query(new AllPlanets()).execute().hasErrors()).isFalse();
+    assertThat(apolloClient.query(new AllPlanetsQuery()).execute().hasErrors()).isFalse();
   }
 
   @Test public void prefetchFileSystemWriteFailure() throws IOException {
@@ -185,7 +185,7 @@ public class ApolloPrefetchTest {
     enqueueResponse("HttpCacheTestAllPlanets.json");
     faultyCacheStore.failStrategy(FaultyHttpCacheStore.FailStrategy.FAIL_HEADER_WRITE);
     try {
-      apolloClient.prefetch(new AllPlanets()).execute();
+      apolloClient.prefetch(new AllPlanetsQuery()).execute();
       fail("exception expected");
     } catch (Exception expected) {
     }
@@ -194,7 +194,7 @@ public class ApolloPrefetchTest {
     enqueueResponse("HttpCacheTestAllPlanets.json");
     faultyCacheStore.failStrategy(FaultyHttpCacheStore.FailStrategy.FAIL_BODY_WRITE);
     try {
-      apolloClient.prefetch(new AllPlanets()).execute();
+      apolloClient.prefetch(new AllPlanetsQuery()).execute();
       fail("exception expected");
     } catch (Exception expected) {
     }

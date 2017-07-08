@@ -1,10 +1,10 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroName;
-import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
+import com.apollographql.apollo.integration.normalizer.type.Episode;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -42,15 +42,15 @@ public class ApolloCallTest {
   public void apolloCallNotCalled_WhenCanceled() throws Exception {
     final NamedCountDownLatch responseLatch = new NamedCountDownLatch("apolloCallNotCalled_WhenCanceled", 1);
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     mockWebServer.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
-    ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.query(query);
+    ApolloCall<EpisodeHeroNameQuery.Data> apolloCall = apolloClient.query(query);
 
     apolloCall.cancel();
 
-    apolloCall.enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
-      @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+    apolloCall.enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
+      @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
         responseLatch.countDown();
         if (responseLatch.getCount() == 0) {
           fail("Received callback, although apollo call has already been canceled");
@@ -72,14 +72,14 @@ public class ApolloCallTest {
   public void apolloCanceledExceptionEnqueue() throws Exception {
     final NamedCountDownLatch responseLatch = new NamedCountDownLatch("apolloCanceledExceptionEnqueue", 1);
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     mockWebServer.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json")
         .setBodyDelay(TIME_OUT_SECONDS, TimeUnit.SECONDS));
 
     final AtomicReference<ApolloException> errorRef = new AtomicReference<>();
-    ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.query(query);
-    apolloCall.enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
-      @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+    ApolloCall<EpisodeHeroNameQuery.Data> apolloCall = apolloClient.query(query);
+    apolloCall.enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
+      @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
         responseLatch.countDown();
       }
 
@@ -100,12 +100,12 @@ public class ApolloCallTest {
   public void apolloCanceledExceptionExecute() throws Exception {
     final NamedCountDownLatch responseLatch = new NamedCountDownLatch("apolloCanceledExceptionExecute", 1);
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     mockWebServer.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json")
         .setBodyDelay(TIME_OUT_SECONDS, TimeUnit.SECONDS));
 
     final AtomicReference<ApolloException> errorRef = new AtomicReference<>();
-    final ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.query(query);
+    final ApolloCall<EpisodeHeroNameQuery.Data> apolloCall = apolloClient.query(query);
     new Thread(new Runnable() {
       @Override public void run() {
         try {

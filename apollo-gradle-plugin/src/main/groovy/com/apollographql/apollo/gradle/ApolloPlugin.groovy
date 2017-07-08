@@ -113,7 +113,7 @@ class ApolloPlugin implements Plugin<Project> {
 
     ApolloIRGenTask sourceSetIRTask = createApolloIRGenTask(sourceSet.name, [sourceSet])
     ApolloClassGenTask sourceSetClassTask = createApolloClassGenTask(sourceSet.name, project.apollo.customTypeMapping,
-        project.apollo.nullableValueType, project.apollo.generateAccessors)
+        project.apollo.nullableValueType, project.apollo.generateAccessors, project.apollo.useSemanticNaming)
     apolloIRGenTask.dependsOn(sourceSetIRTask)
     apolloClassGenTask.dependsOn(sourceSetClassTask)
 

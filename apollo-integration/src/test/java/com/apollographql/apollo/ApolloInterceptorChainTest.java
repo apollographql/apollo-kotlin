@@ -3,7 +3,7 @@ package com.apollographql.apollo;
 
 import android.support.annotation.NonNull;
 
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroName;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
@@ -50,7 +50,7 @@ public class ApolloInterceptorChainTest {
   public void onProceedCalled_chainPassesControlToInterceptor() throws ApolloException, TimeoutException, InterruptedException {
     final AtomicInteger counter = new AtomicInteger(1);
 
-    EpisodeHeroName query = createQuery();
+    EpisodeHeroNameQuery query = createQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
@@ -83,7 +83,7 @@ public class ApolloInterceptorChainTest {
   public void onProceedAsyncCalled_chainPassesControlToInterceptor() throws TimeoutException, InterruptedException {
     final AtomicInteger counter = new AtomicInteger(1);
 
-    EpisodeHeroName query = createQuery();
+    EpisodeHeroNameQuery query = createQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
@@ -124,7 +124,7 @@ public class ApolloInterceptorChainTest {
   @Test
   public void onProceedCalled_correctInterceptorResponseIsReceived() throws ApolloException {
 
-    EpisodeHeroName query = createQuery();
+    EpisodeHeroNameQuery query = createQuery();
 
     final InterceptorResponse expectedResponse = prepareInterceptorResponse(query);
 
@@ -156,7 +156,7 @@ public class ApolloInterceptorChainTest {
   public void onProceedAsyncCalled_correctInterceptorResponseIsReceived() throws TimeoutException, InterruptedException {
     final AtomicInteger counter = new AtomicInteger(1);
 
-    EpisodeHeroName query = createQuery();
+    EpisodeHeroNameQuery query = createQuery();
     final InterceptorResponse expectedResponse = prepareInterceptorResponse(query);
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
@@ -202,7 +202,7 @@ public class ApolloInterceptorChainTest {
   public void onProceedCalled_correctExceptionIsCaught() {
 
     final String message = "ApolloException";
-    EpisodeHeroName query = createQuery();
+    EpisodeHeroNameQuery query = createQuery();
 
     ApolloInterceptor Interceptor = new ApolloInterceptor() {
       @Nonnull @Override
@@ -239,7 +239,7 @@ public class ApolloInterceptorChainTest {
     final AtomicInteger counter = new AtomicInteger(1);
 
     final String message = "ApolloException";
-    EpisodeHeroName query = createQuery();
+    EpisodeHeroNameQuery query = createQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
@@ -286,7 +286,7 @@ public class ApolloInterceptorChainTest {
   public void onDisposeCalled_interceptorIsDisposed() {
 
     final AtomicInteger counter = new AtomicInteger(1);
-    EpisodeHeroName query = createQuery();
+    EpisodeHeroNameQuery query = createQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
@@ -315,15 +315,15 @@ public class ApolloInterceptorChainTest {
   }
 
   @NonNull
-  private EpisodeHeroName createQuery() {
-    return EpisodeHeroName
+  private EpisodeHeroNameQuery createQuery() {
+    return EpisodeHeroNameQuery
         .builder()
         .episode(Episode.EMPIRE)
         .build();
   }
 
   @NonNull
-  private InterceptorResponse prepareInterceptorResponse(EpisodeHeroName query) {
+  private InterceptorResponse prepareInterceptorResponse(EpisodeHeroNameQuery query) {
     Request request = new Request.Builder()
         .url("https://localhost:8080/")
         .build();
@@ -336,7 +336,7 @@ public class ApolloInterceptorChainTest {
         .body(ResponseBody.create(MediaType.parse("text/plain; charset=utf-8"), "fakeResponse"))
         .build();
 
-    Response<EpisodeHeroName.Data> apolloResponse = Response.<EpisodeHeroName.Data>builder(query).build();
+    Response<EpisodeHeroNameQuery.Data> apolloResponse = Response.<EpisodeHeroNameQuery.Data>builder(query).build();
 
     return new InterceptorResponse(okHttpResponse,
         apolloResponse, Collections.<Record>emptyList());

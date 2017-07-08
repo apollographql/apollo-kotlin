@@ -1,6 +1,6 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroName;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
@@ -53,10 +53,10 @@ public class AsyncNormalizedCacheTestCase {
   }
 
   @Test public void testAsync() throws IOException, InterruptedException, ApolloException {
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
 
     server.enqueue(mockResponse("HeroNameResponse.json"));
-    Response<EpisodeHeroName.Data> body = apolloClient.query(query).execute();
+    Response<EpisodeHeroNameQuery.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
     for (int i = 0; i < 500; i++) {
@@ -66,8 +66,8 @@ public class AsyncNormalizedCacheTestCase {
     final CountDownLatch latch = new CountDownLatch(1000);
     for (int i = 0; i < 1000; i++) {
       apolloClient.query(query).cacheControl(i % 2 == 0 ? CacheControl.NETWORK_FIRST : CacheControl.CACHE_ONLY)
-          .enqueue(new ApolloCall.Callback<EpisodeHeroName.Data>() {
-            @Override public void onResponse(@Nonnull Response<EpisodeHeroName.Data> response) {
+          .enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
+            @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
               assertThat(response.hasErrors()).isFalse();
               latch.countDown();
             }

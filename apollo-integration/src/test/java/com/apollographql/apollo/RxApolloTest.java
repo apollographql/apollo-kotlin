@@ -1,7 +1,7 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroName;
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDs;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
@@ -57,10 +57,10 @@ public class RxApolloTest {
   }
 
   @Test public void testRxCallProducesValue() throws IOException {
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
-    Response<EpisodeHeroName.Data> response = RxApollo
+    Response<EpisodeHeroNameQuery.Data> response = RxApollo
         .from(apolloClient.query(query))
         .test()
         .awaitTerminalEvent()
@@ -72,11 +72,11 @@ public class RxApolloTest {
   }
 
   @Test public void textRxCallIsCancelledWhenUnsubscribed() throws IOException {
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
-    ApolloCall<EpisodeHeroName.Data> call = apolloClient.query(query);
-    TestSubscriber<Response<EpisodeHeroName.Data>> subscriber = new TestSubscriber<>();
+    ApolloCall<EpisodeHeroNameQuery.Data> call = apolloClient.query(query);
+    TestSubscriber<Response<EpisodeHeroNameQuery.Data>> subscriber = new TestSubscriber<>();
     Subscription subscription = RxApollo
         .from(call)
         .delay(RX_DELAY_SECONDS, TimeUnit.SECONDS)
@@ -89,7 +89,7 @@ public class RxApolloTest {
   }
 
   @Test public void testRxPrefetchCompletes() throws IOException {
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
     RxApollo
@@ -102,7 +102,7 @@ public class RxApolloTest {
 
   @Test public void testRxPrefetchIsCanceledWhenUnsubscribed() throws IOException {
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
     ApolloPrefetch prefetch = apolloClient.prefetch(query);
@@ -124,12 +124,12 @@ public class RxApolloTest {
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
-    ApolloQueryWatcher<EpisodeHeroName.Data> watcher = apolloClient.query(query).watcher();
+    ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
 
-    RxApollo.from(watcher).subscribe(new Observer<Response<EpisodeHeroName.Data>>() {
+    RxApollo.from(watcher).subscribe(new Observer<Response<EpisodeHeroNameQuery.Data>>() {
       @Override public void onCompleted() {
       }
 
@@ -139,7 +139,7 @@ public class RxApolloTest {
         secondResponseLatch.countDown();
       }
 
-      @Override public void onNext(Response<EpisodeHeroName.Data> response) {
+      @Override public void onNext(Response<EpisodeHeroNameQuery.Data> response) {
         if (secondResponseLatch.getCount() == 2) {
           assertThat(response.data().hero().name()).isEqualTo("R2-D2");
         } else if (secondResponseLatch.getCount() == 1) {
@@ -162,12 +162,12 @@ public class RxApolloTest {
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
-    ApolloQueryWatcher<EpisodeHeroName.Data> watcher = apolloClient.query(query).watcher();
+    ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
 
-    RxApollo.from(watcher).subscribe(new Observer<Response<EpisodeHeroName.Data>>() {
+    RxApollo.from(watcher).subscribe(new Observer<Response<EpisodeHeroNameQuery.Data>>() {
       @Override public void onCompleted() {
       }
 
@@ -177,7 +177,7 @@ public class RxApolloTest {
         secondResponseLatch.countDown();
       }
 
-      @Override public void onNext(Response<EpisodeHeroName.Data> response) {
+      @Override public void onNext(Response<EpisodeHeroNameQuery.Data> response) {
         assertThat(response.data().hero().name()).isEqualTo("R2-D2");
         firstResponseLatch.countDown();
         secondResponseLatch.countDown();
@@ -204,11 +204,11 @@ public class RxApolloTest {
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
 
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
 
-    ApolloQueryWatcher<EpisodeHeroName.Data> watcher = apolloClient.query(query).watcher();
+    ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
 
-    RxApollo.from(watcher).subscribe(new Observer<Response<EpisodeHeroName.Data>>() {
+    RxApollo.from(watcher).subscribe(new Observer<Response<EpisodeHeroNameQuery.Data>>() {
       @Override public void onCompleted() {
 
       }
@@ -219,7 +219,7 @@ public class RxApolloTest {
         secondResponseLatch.countDown();
       }
 
-      @Override public void onNext(Response<EpisodeHeroName.Data> response) {
+      @Override public void onNext(Response<EpisodeHeroNameQuery.Data> response) {
         if (secondResponseLatch.getCount() == 2) {
           assertThat(response.data().hero().name()).isEqualTo("R2-D2");
         } else if (secondResponseLatch.getCount() == 1) {
@@ -231,7 +231,7 @@ public class RxApolloTest {
     });
 
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-    HeroAndFriendsNamesWithIDs friendsQuery = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
+    HeroAndFriendsNamesWithIDsQuery friendsQuery = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
 
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
     apolloClient.query(friendsQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();

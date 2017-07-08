@@ -1,14 +1,5 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroName;
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNames;
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDForParentOnly;
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDs;
-import com.apollographql.apollo.integration.normalizer.HeroAppearsIn;
-import com.apollographql.apollo.integration.normalizer.HeroName;
-import com.apollographql.apollo.integration.normalizer.HeroParentTypeDependentField;
-import com.apollographql.apollo.integration.normalizer.HeroTypeDependentAliasedField;
-import com.apollographql.apollo.integration.normalizer.SameHeroTwice;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.CacheReference;
@@ -17,6 +8,15 @@ import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDForParentOnlyQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAppearsInQuery;
+import com.apollographql.apollo.integration.normalizer.HeroNameQuery;
+import com.apollographql.apollo.integration.normalizer.HeroParentTypeDependentFieldQuery;
+import com.apollographql.apollo.integration.normalizer.HeroTypeDependentAliasedFieldQuery;
+import com.apollographql.apollo.integration.normalizer.SameHeroTwiceQuery;
 
 import org.junit.After;
 import org.junit.Before;
@@ -70,15 +70,15 @@ public class ResponseNormalizationTest {
     MockResponse mockResponse = mockResponse("HeroNameResponse.json");
     server.enqueue(mockResponse);
 
-    ApolloCall<HeroName.Data> call = apolloClient.query(new HeroName());
-    Response<HeroName.Data> body = call.execute();
+    ApolloCall<HeroNameQuery.Data> call = apolloClient.query(new HeroNameQuery());
+    Response<HeroNameQuery.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE);
     CacheReference reference = (CacheReference) record.field("hero");
     assertThat(reference).isEqualTo(new CacheReference("hero"));
 
-    final Record heroRecord = normalizedCache.loadRecord(reference.key(),CacheHeaders.NONE);
+    final Record heroRecord = normalizedCache.loadRecord(reference.key(), CacheHeaders.NONE);
     assertThat(heroRecord.field("name")).isEqualTo("R2-D2");
   }
 
@@ -87,16 +87,16 @@ public class ResponseNormalizationTest {
     MockResponse mockResponse = mockResponse("EpisodeHeroNameResponse.json");
     server.enqueue(mockResponse);
 
-    final EpisodeHeroName query = EpisodeHeroName.builder().episode(JEDI).build();
-    ApolloCall<EpisodeHeroName.Data> call = apolloClient.query(query);
-    Response<EpisodeHeroName.Data> body = call.execute();
+    final EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(JEDI).build();
+    ApolloCall<EpisodeHeroNameQuery.Data> call = apolloClient.query(query);
+    Response<EpisodeHeroNameQuery.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
-    Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY,CacheHeaders.NONE);
+    Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE);
     CacheReference reference = (CacheReference) record.field("hero(episode:JEDI)");
     assertThat(reference).isEqualTo(new CacheReference("hero(episode:JEDI)"));
 
-    final Record heroRecord = normalizedCache.loadRecord(reference.key(),CacheHeaders.NONE);
+    final Record heroRecord = normalizedCache.loadRecord(reference.key(), CacheHeaders.NONE);
     assertThat(heroRecord.field("name")).isEqualTo("R2-D2");
   }
 
@@ -106,17 +106,17 @@ public class ResponseNormalizationTest {
     MockResponse mockResponse = mockResponse("HeroAppearsInResponse.json");
     server.enqueue(mockResponse);
 
-    final HeroAppearsIn heroAppearsInQuery = new HeroAppearsIn();
+    final HeroAppearsInQuery heroAppearsInQuery = new HeroAppearsInQuery();
 
-    ApolloCall<HeroAppearsIn.Data> call = apolloClient.query(heroAppearsInQuery);
-    Response<HeroAppearsIn.Data> body = call.execute();
+    ApolloCall<HeroAppearsInQuery.Data> call = apolloClient.query(heroAppearsInQuery);
+    Response<HeroAppearsInQuery.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
-    Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY,CacheHeaders.NONE);
+    Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE);
     CacheReference heroReference = (CacheReference) record.field("hero");
     assertThat(heroReference).isEqualTo(new CacheReference("hero"));
 
-    final Record hero = normalizedCache.loadRecord(heroReference.key(),CacheHeaders.NONE);
+    final Record hero = normalizedCache.loadRecord(heroReference.key(), CacheHeaders.NONE);
     assertThat(hero.field("appearsIn")).isEqualTo(Arrays.asList("NEWHOPE", "EMPIRE", "JEDI"));
   }
 
@@ -124,17 +124,17 @@ public class ResponseNormalizationTest {
   public void testHeroAndFriendsNamesQueryWithoutIDs() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("HeroAndFriendsNameResponse.json");
     server.enqueue(mockResponse);
-    final HeroAndFriendsNames heroAndFriendsNameQuery = HeroAndFriendsNames.builder().episode(JEDI).build();
+    final HeroAndFriendsNamesQuery heroAndFriendsNameQuery = HeroAndFriendsNamesQuery.builder().episode(JEDI).build();
 
-    ApolloCall<HeroAndFriendsNames.Data> call = apolloClient.query(heroAndFriendsNameQuery);
-    Response<HeroAndFriendsNames.Data> body = call.execute();
+    ApolloCall<HeroAndFriendsNamesQuery.Data> call = apolloClient.query(heroAndFriendsNameQuery);
+    Response<HeroAndFriendsNamesQuery.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
-    Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY,CacheHeaders.NONE);
+    Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:JEDI)");
     assertThat(heroReference).isEqualTo(new CacheReference("hero(episode:JEDI)"));
 
-    final Record heroRecord = normalizedCache.loadRecord(heroReference.key(),CacheHeaders.NONE);
+    final Record heroRecord = normalizedCache.loadRecord(heroReference.key(), CacheHeaders.NONE);
     assertThat(heroRecord.field("name")).isEqualTo("R2-D2");
 
     assertThat(heroRecord.field("friends")).isEqualTo(Arrays.asList(
@@ -151,17 +151,18 @@ public class ResponseNormalizationTest {
   public void testHeroAndFriendsNamesQueryWithIDs() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("HeroAndFriendsNameWithIdsResponse.json");
     server.enqueue(mockResponse);
-    final HeroAndFriendsNamesWithIDs heroAndFriendsWithIdsQuery = HeroAndFriendsNamesWithIDs.builder().episode(JEDI).build();
+    final HeroAndFriendsNamesWithIDsQuery heroAndFriendsWithIdsQuery =
+        HeroAndFriendsNamesWithIDsQuery.builder().episode(JEDI).build();
 
-    ApolloCall<HeroAndFriendsNamesWithIDs.Data> call = apolloClient.query(heroAndFriendsWithIdsQuery);
-    Response<HeroAndFriendsNamesWithIDs.Data> body = call.execute();
+    ApolloCall<HeroAndFriendsNamesWithIDsQuery.Data> call = apolloClient.query(heroAndFriendsWithIdsQuery);
+    Response<HeroAndFriendsNamesWithIDsQuery.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
-    Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY,CacheHeaders.NONE);
+    Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:JEDI)");
     assertThat(heroReference).isEqualTo(new CacheReference("2001"));
 
-    final Record heroRecord = normalizedCache.loadRecord(heroReference.key(),CacheHeaders.NONE);
+    final Record heroRecord = normalizedCache.loadRecord(heroReference.key(), CacheHeaders.NONE);
     assertThat(heroRecord.field("name")).isEqualTo("R2-D2");
 
     assertThat(heroRecord.field("friends")).isEqualTo(Arrays.asList(
@@ -170,7 +171,7 @@ public class ResponseNormalizationTest {
         new CacheReference("1003")
     ));
 
-    final Record luke = normalizedCache.loadRecord("1000",CacheHeaders.NONE);
+    final Record luke = normalizedCache.loadRecord("1000", CacheHeaders.NONE);
     assertThat(luke.field("name")).isEqualTo("Luke Skywalker");
   }
 
@@ -178,18 +179,18 @@ public class ResponseNormalizationTest {
   public void testHeroAndFriendsNamesWithIDForParentOnly() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("HeroAndFriendsNameWithIdsParentOnlyResponse.json");
     server.enqueue(mockResponse);
-    final HeroAndFriendsNamesWithIDForParentOnly heroAndFriendsWithIdsQuery = HeroAndFriendsNamesWithIDForParentOnly
-        .builder().episode(JEDI).build();
+    final HeroAndFriendsNamesWithIDForParentOnlyQuery heroAndFriendsWithIdsQuery
+        = HeroAndFriendsNamesWithIDForParentOnlyQuery.builder().episode(JEDI).build();
 
-    ApolloCall<HeroAndFriendsNamesWithIDForParentOnly.Data> call = apolloClient.query(heroAndFriendsWithIdsQuery);
-    Response<HeroAndFriendsNamesWithIDForParentOnly.Data> body = call.execute();
+    ApolloCall<HeroAndFriendsNamesWithIDForParentOnlyQuery.Data> call = apolloClient.query(heroAndFriendsWithIdsQuery);
+    Response<HeroAndFriendsNamesWithIDForParentOnlyQuery.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
-    Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY,CacheHeaders.NONE);
+    Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:JEDI)");
     assertThat(heroReference).isEqualTo(new CacheReference("2001"));
 
-    final Record heroRecord = normalizedCache.loadRecord(heroReference.key(),CacheHeaders.NONE);
+    final Record heroRecord = normalizedCache.loadRecord(heroReference.key(), CacheHeaders.NONE);
     assertThat(heroRecord.field("name")).isEqualTo("R2-D2");
 
     assertThat(heroRecord.field("friends")).isEqualTo(Arrays.asList(
@@ -198,7 +199,7 @@ public class ResponseNormalizationTest {
         new CacheReference("2001.friends.2")
     ));
 
-    final Record luke = normalizedCache.loadRecord("2001.friends.0",CacheHeaders.NONE);
+    final Record luke = normalizedCache.loadRecord("2001.friends.0", CacheHeaders.NONE);
     assertThat(luke.field("name")).isEqualTo("Luke Skywalker");
   }
 
@@ -207,14 +208,14 @@ public class ResponseNormalizationTest {
     MockResponse mockResponse = mockResponse("SameHeroTwiceResponse.json");
     server.enqueue(mockResponse);
 
-    final SameHeroTwice sameHeroTwiceQuery = new SameHeroTwice();
+    final SameHeroTwiceQuery sameHeroTwiceQuery = new SameHeroTwiceQuery();
 
-    ApolloCall<SameHeroTwice.Data> call = apolloClient.query(sameHeroTwiceQuery);
-    Response<SameHeroTwice.Data> body = call.execute();
+    ApolloCall<SameHeroTwiceQuery.Data> call = apolloClient.query(sameHeroTwiceQuery);
+    Response<SameHeroTwiceQuery.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
     Record record = normalizedCache
-        .loadRecord(QUERY_ROOT_KEY,CacheHeaders.NONE);
+        .loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE);
     CacheReference heroReference = (CacheReference) record.field("hero");
 
     final Record hero = normalizedCache.loadRecord(heroReference.key(), CacheHeaders.NONE);
@@ -227,16 +228,17 @@ public class ResponseNormalizationTest {
     MockResponse mockResponse = mockResponse("HeroTypeDependentAliasedFieldResponse.json");
     server.enqueue(mockResponse);
 
-    final HeroTypeDependentAliasedField aliasedQuery = HeroTypeDependentAliasedField.builder().episode(JEDI).build();
+    final HeroTypeDependentAliasedFieldQuery aliasedQuery =
+        HeroTypeDependentAliasedFieldQuery.builder().episode(JEDI).build();
 
-    ApolloCall<HeroTypeDependentAliasedField.Data> call = apolloClient.query(aliasedQuery);
-    Response<HeroTypeDependentAliasedField.Data> body = call.execute();
+    ApolloCall<HeroTypeDependentAliasedFieldQuery.Data> call = apolloClient.query(aliasedQuery);
+    Response<HeroTypeDependentAliasedFieldQuery.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
-    Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY,CacheHeaders.NONE);
+    Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:JEDI)");
 
-    final Record hero = normalizedCache.loadRecord(heroReference.key(),CacheHeaders.NONE);
+    final Record hero = normalizedCache.loadRecord(heroReference.key(), CacheHeaders.NONE);
     assertThat(hero.field("primaryFunction")).isEqualTo("Astromech");
     assertThat(hero.field("__typename")).isEqualTo("Droid");
   }
@@ -246,16 +248,17 @@ public class ResponseNormalizationTest {
     MockResponse mockResponse = mockResponse("HeroTypeDependentAliasedFieldResponseHuman.json");
     server.enqueue(mockResponse);
 
-    final HeroTypeDependentAliasedField aliasedQuery = HeroTypeDependentAliasedField.builder().episode(EMPIRE).build();
+    final HeroTypeDependentAliasedFieldQuery aliasedQuery = HeroTypeDependentAliasedFieldQuery.builder().episode(EMPIRE)
+        .build();
 
-    ApolloCall<HeroTypeDependentAliasedField.Data> call = apolloClient.query(aliasedQuery);
-    Response<HeroTypeDependentAliasedField.Data> body = call.execute();
+    ApolloCall<HeroTypeDependentAliasedFieldQuery.Data> call = apolloClient.query(aliasedQuery);
+    Response<HeroTypeDependentAliasedFieldQuery.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
-    Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY,CacheHeaders.NONE);
+    Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:EMPIRE)");
 
-    final Record hero = normalizedCache.loadRecord(heroReference.key(),CacheHeaders.NONE);
+    final Record hero = normalizedCache.loadRecord(heroReference.key(), CacheHeaders.NONE);
     assertThat(hero.field("homePlanet")).isEqualTo("Tatooine");
     assertThat(hero.field("__typename")).isEqualTo("Human");
   }
@@ -265,16 +268,17 @@ public class ResponseNormalizationTest {
     MockResponse mockResponse = mockResponse("HeroTypeDependentAliasedFieldResponseHuman.json");
     server.enqueue(mockResponse);
 
-    final HeroTypeDependentAliasedField aliasedQuery = HeroTypeDependentAliasedField.builder().episode(EMPIRE).build();
+    final HeroTypeDependentAliasedFieldQuery aliasedQuery = HeroTypeDependentAliasedFieldQuery.builder().episode(EMPIRE)
+        .build();
 
-    ApolloCall<HeroTypeDependentAliasedField.Data> call = apolloClient.query(aliasedQuery);
-    Response<HeroTypeDependentAliasedField.Data> body = call.execute();
+    ApolloCall<HeroTypeDependentAliasedFieldQuery.Data> call = apolloClient.query(aliasedQuery);
+    Response<HeroTypeDependentAliasedFieldQuery.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
-    Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY,CacheHeaders.NONE);
+    Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:EMPIRE)");
 
-    final Record hero = normalizedCache.loadRecord(heroReference.key(),CacheHeaders.NONE);
+    final Record hero = normalizedCache.loadRecord(heroReference.key(), CacheHeaders.NONE);
     assertThat(hero.field("homePlanet")).isEqualTo("Tatooine");
     assertThat(hero.field("__typename")).isEqualTo("Human");
   }
@@ -283,10 +287,11 @@ public class ResponseNormalizationTest {
   public void testHeroParentTypeDependentFieldDroid() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("HeroParentTypeDependentFieldDroidResponse.json");
     server.enqueue(mockResponse);
-    final HeroParentTypeDependentField aliasedQuery = HeroParentTypeDependentField.builder().episode(JEDI).build();
+    final HeroParentTypeDependentFieldQuery aliasedQuery =
+        HeroParentTypeDependentFieldQuery.builder().episode(JEDI).build();
 
-    ApolloCall<HeroParentTypeDependentField.Data> call = apolloClient.query(aliasedQuery);
-    Response<HeroParentTypeDependentField.Data> body = call.execute();
+    ApolloCall<HeroParentTypeDependentFieldQuery.Data> call = apolloClient.query(aliasedQuery);
+    Response<HeroParentTypeDependentFieldQuery.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
     Record lukeRecord = normalizedCache
@@ -295,7 +300,7 @@ public class ResponseNormalizationTest {
     assertThat(lukeRecord.field("height(unit:METER)")).isEqualTo(BigDecimal.valueOf(1.72));
 
     final List<Object> friends = (List<Object>) normalizedCache
-        .loadRecord("hero(episode:JEDI)",CacheHeaders.NONE).field("friends");
+        .loadRecord("hero(episode:JEDI)", CacheHeaders.NONE).field("friends");
     assertThat(friends.get(0)).isEqualTo(new CacheReference("hero(episode:JEDI).friends.0"));
     assertThat(friends.get(1)).isEqualTo(new CacheReference("hero(episode:JEDI).friends.1"));
     assertThat(friends.get(2)).isEqualTo(new CacheReference("hero(episode:JEDI).friends.2"));
@@ -305,14 +310,15 @@ public class ResponseNormalizationTest {
   public void testHeroParentTypeDependentFieldHuman() throws IOException, ApolloException {
     MockResponse mockResponse = mockResponse("HeroParentTypeDependentFieldHumanResponse.json");
     server.enqueue(mockResponse);
-    final HeroParentTypeDependentField aliasedQuery = HeroParentTypeDependentField.builder().episode(EMPIRE).build();
+    final HeroParentTypeDependentFieldQuery aliasedQuery =
+        HeroParentTypeDependentFieldQuery.builder().episode(EMPIRE).build();
 
-    ApolloCall<HeroParentTypeDependentField.Data> call = apolloClient.query(aliasedQuery);
-    Response<HeroParentTypeDependentField.Data> body = call.execute();
+    ApolloCall<HeroParentTypeDependentFieldQuery.Data> call = apolloClient.query(aliasedQuery);
+    Response<HeroParentTypeDependentFieldQuery.Data> body = call.execute();
     assertThat(body.hasErrors()).isFalse();
 
     Record lukeRecord = normalizedCache
-        .loadRecord("hero(episode:EMPIRE).friends.0",CacheHeaders.NONE);
+        .loadRecord("hero(episode:EMPIRE).friends.0", CacheHeaders.NONE);
     assertThat(lukeRecord.field("name")).isEqualTo("Han Solo");
     assertThat(lukeRecord.field("height(unit:FOOT)")).isEqualTo(BigDecimal.valueOf(5.905512));
   }
