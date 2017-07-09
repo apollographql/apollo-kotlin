@@ -312,7 +312,8 @@ public class HttpCacheTest {
 
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     faultyCacheStore.failStrategy(FaultyHttpCacheStore.FailStrategy.FAIL_HEADER_READ);
-    assertThat(apolloClient.query(new AllPlanetsQuery()).httpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(2, TimeUnit.SECONDS))
+    assertThat(apolloClient.query(new AllPlanetsQuery())
+        .httpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(2, TimeUnit.SECONDS))
         .execute().hasErrors()).isFalse();
     assertThat(server.getRequestCount()).isEqualTo(2);
 
