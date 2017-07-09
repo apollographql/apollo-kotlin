@@ -157,7 +157,7 @@ You first need to define the mapping in your build.gradle file. This will tell t
 ```gradle
 apollo {
     customTypeMapping['DateTime'] = "java.util.Date"
-    customTypeMapping['Currency'] = "java.util.BigDecimal"
+    customTypeMapping['Currency'] = "java.math.BigDecimal"
 }
 ```
 
