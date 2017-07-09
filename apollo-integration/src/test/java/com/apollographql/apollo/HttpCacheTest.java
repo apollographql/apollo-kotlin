@@ -396,13 +396,18 @@ public class HttpCacheTest {
 
   @Test public void fromCacheFlag() throws Exception {
     enqueueResponse("/HttpCacheTestAllPlanets.json");
-    assertThat(apolloClient.query(new AllPlanets()).execute().fromCache()).isFalse();
+    assertThat(apolloClient.query(new AllPlanetsQuery()).execute().fromCache()).isFalse();
 
     enqueueResponse("/HttpCacheTestAllPlanets.json");
-    assertThat(apolloClient.query(new AllPlanets()).httpCachePolicy(HttpCachePolicy.NETWORK_ONLY).execute().fromCache()).isFalse();
-    assertThat(apolloClient.query(new AllPlanets()).httpCachePolicy(HttpCachePolicy.CACHE_ONLY).execute().fromCache()).isTrue();
-    assertThat(apolloClient.query(new AllPlanets()).httpCachePolicy(HttpCachePolicy.CACHE_FIRST).execute().fromCache()).isTrue();
-    assertThat(apolloClient.query(new AllPlanets()).httpCachePolicy(HttpCachePolicy.NETWORK_FIRST).execute().fromCache()).isTrue();
+    assertThat(apolloClient.query(new AllPlanetsQuery()).httpCachePolicy(HttpCachePolicy.NETWORK_ONLY).execute()
+        .fromCache()).isFalse();
+    assertThat(apolloClient.query(new AllPlanetsQuery()).httpCachePolicy(HttpCachePolicy.CACHE_ONLY).execute()
+        .fromCache()).isTrue();
+    assertThat(apolloClient.query(new AllPlanetsQuery()).httpCachePolicy(HttpCachePolicy.CACHE_FIRST).execute()
+        .fromCache
+        ()).isTrue();
+    assertThat(apolloClient.query(new AllPlanetsQuery()).httpCachePolicy(HttpCachePolicy.NETWORK_FIRST).execute()
+        .fromCache()).isTrue();
   }
 
   private void enqueueResponse(String fileName) throws IOException {
