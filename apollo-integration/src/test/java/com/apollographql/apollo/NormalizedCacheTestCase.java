@@ -388,12 +388,16 @@ public class NormalizedCacheTestCase {
 
   @Test public void fromCacheFlag() throws Exception {
     server.enqueue(mockResponse("HeroNameResponse.json"));
-    assertThat(apolloClient.query(new EpisodeHeroName(Episode.EMPIRE)).execute().fromCache()).isFalse();
+    assertThat(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).execute().fromCache()).isFalse();
 
     server.enqueue(mockResponse("HeroNameResponse.json"));
-    assertThat(apolloClient.query(new EpisodeHeroName(Episode.EMPIRE)).cacheControl(CacheControl.NETWORK_ONLY).execute().fromCache()).isFalse();
-    assertThat(apolloClient.query(new EpisodeHeroName(Episode.EMPIRE)).cacheControl(CacheControl.CACHE_ONLY).execute().fromCache()).isTrue();
-    assertThat(apolloClient.query(new EpisodeHeroName(Episode.EMPIRE)).cacheControl(CacheControl.CACHE_FIRST).execute().fromCache()).isTrue();
-    assertThat(apolloClient.query(new EpisodeHeroName(Episode.EMPIRE)).cacheControl(CacheControl.NETWORK_FIRST).execute().fromCache()).isTrue();
+    assertThat(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).cacheControl(CacheControl.NETWORK_ONLY)
+        .execute().fromCache()).isFalse();
+    assertThat(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).cacheControl(CacheControl.CACHE_ONLY)
+        .execute().fromCache()).isTrue();
+    assertThat(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).cacheControl(CacheControl.CACHE_FIRST)
+        .execute().fromCache()).isTrue();
+    assertThat(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).cacheControl(CacheControl.NETWORK_FIRST)
+        .execute().fromCache()).isTrue();
   }
 }
