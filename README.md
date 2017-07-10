@@ -370,5 +370,5 @@ compile 'com.apollographql.apollo:apollo-rx2-support:x.y.z'
 ```
 The MIT License (MIT)
 
-Copyright (c) 2016 Meteor Development Group, Inc.
+Copyright (c) 2017 Meteor Development Group, Inc.
 ```
