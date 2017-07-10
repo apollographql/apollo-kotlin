@@ -25,8 +25,10 @@ public class ApolloClassGenTask extends SourceTask {
   @Input private NullableValueType nullValueType;
   @Input private boolean generateAccessors;
   @OutputDirectory private File outputDir;
+  private Boolean useSemanticNaming;
 
-  public void init(String buildVariant, Map<String, String> typeMapping, String nullableValueType, boolean accessors) {
+  public void init(String buildVariant, Map<String, String> typeMapping, String nullableValueType, boolean accessors,
+      boolean semanticNaming) {
     variant = buildVariant;
     customTypeMapping = typeMapping;
     nullValueType = nullableValueType == null ? NullableValueType.ANNOTATED
@@ -34,6 +36,7 @@ public class ApolloClassGenTask extends SourceTask {
     generateAccessors = accessors;
     outputDir = new File(getProject().getBuildDir() + "/" + Joiner.on(File.separator).join(GraphQLCompiler.Companion
         .getOUTPUT_DIRECTORY()));
+    useSemanticNaming = semanticNaming;
   }
 
   @TaskAction
@@ -42,7 +45,7 @@ public class ApolloClassGenTask extends SourceTask {
       @Override
       public void execute(InputFileDetails inputFileDetails) {
         GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(inputFileDetails.getFile(), outputDir,
-            customTypeMapping, nullValueType, generateAccessors);
+            customTypeMapping, nullValueType, generateAccessors, useSemanticNaming);
         new GraphQLCompiler().write(args);
       }
     });

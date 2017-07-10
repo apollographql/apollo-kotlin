@@ -32,7 +32,7 @@ buildscript {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
   }
   dependencies {
-    classpath 'com.apollographql.apollo:gradle-plugin:0.3.3-SNAPSHOT'
+    classpath 'com.apollographql.apollo:gradle-plugin:0.4.0-SNAPSHOT'
   }
 }
 ```

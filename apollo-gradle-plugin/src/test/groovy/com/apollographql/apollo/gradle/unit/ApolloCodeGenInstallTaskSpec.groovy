@@ -47,6 +47,7 @@ class ApolloCodeGenInstallTaskSpec extends Specification {
     project.evaluate()
 
     then:
+    println "files:" + (new File(project.buildDir).listFiles())
     File packageFile = new File(project.buildDir, "apollo-codegen/package.json")
     assert packageFile.isFile()
     def input = new JsonSlurper().parseText(packageFile.text)

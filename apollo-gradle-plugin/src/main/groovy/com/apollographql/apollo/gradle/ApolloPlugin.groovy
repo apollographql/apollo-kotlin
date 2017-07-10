@@ -102,7 +102,7 @@ class ApolloPlugin implements Plugin<Project> {
   private void addVariantTasks(Object variant, Task apolloIRGenTask, Task apolloClassGenTask, Collection<?> sourceSets) {
     ApolloIRGenTask variantIRTask = createApolloIRGenTask(variant.name, sourceSets)
     ApolloClassGenTask variantClassTask = createApolloClassGenTask(variant.name, project.apollo.customTypeMapping,
-        project.apollo.nullableValueType, project.apollo.generateAccessors)
+        project.apollo.nullableValueType, project.apollo.generateAccessors, project.apollo.useSemanticNaming)
     variant.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir)
     apolloIRGenTask.dependsOn(variantIRTask)
     apolloClassGenTask.dependsOn(variantClassTask)
@@ -113,7 +113,7 @@ class ApolloPlugin implements Plugin<Project> {
 
     ApolloIRGenTask sourceSetIRTask = createApolloIRGenTask(sourceSet.name, [sourceSet])
     ApolloClassGenTask sourceSetClassTask = createApolloClassGenTask(sourceSet.name, project.apollo.customTypeMapping,
-        project.apollo.nullableValueType, project.apollo.generateAccessors)
+        project.apollo.nullableValueType, project.apollo.generateAccessors, project.apollo.useSemanticNaming)
     apolloIRGenTask.dependsOn(sourceSetIRTask)
     apolloClassGenTask.dependsOn(sourceSetClassTask)
 
@@ -148,7 +148,8 @@ class ApolloPlugin implements Plugin<Project> {
   }
 
   private ApolloClassGenTask createApolloClassGenTask(String name, Map<String, String> customTypeMapping,
-                                                      String nullableValueType, boolean generateAccessors) {
+                                                      String nullableValueType, boolean generateAccessors,
+                                                      boolean useSemanticNaming) {
     String taskName = String.format(ApolloClassGenTask.NAME, name.capitalize())
     ApolloClassGenTask task = project.tasks.create(taskName, ApolloClassGenTask) {
       group = TASK_GROUP
@@ -157,7 +158,7 @@ class ApolloPlugin implements Plugin<Project> {
       source = project.tasks.findByName(String.format(ApolloIRGenTask.NAME, name.capitalize())).outputDir
       include "**${File.separatorChar}*API.json"
     }
-    task.init(name, customTypeMapping, nullableValueType, generateAccessors)
+    task.init(name, customTypeMapping, nullableValueType, generateAccessors, useSemanticNaming)
     return task
   }
 

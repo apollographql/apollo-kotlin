@@ -39,13 +39,13 @@ class UpdateTestIRFilesTask extends DefaultTask {
 
   def generateIRFile(testDir) {
     logger.info("Generating IR file for: ${testDir.name}")
-    def testQueryFileName = 'TestQuery.graphql'
-    File queryFile = new File(testDir, testQueryFileName)
+    def testOperationFileName = 'TestOperation.graphql'
+    File queryFile = new File(testDir, testOperationFileName)
     if (!queryFile.exists()) {
-      logger.warn("Skipping generating IR file for test: ${testDir.name}. Expected file `TestQuery.json` not found.")
+      logger.warn("Skipping generating IR file for test: ${testDir.name}. Expected file `TestOperation.json` not found.")
       return
     }
-    File outputFile = new File(testDir, 'TestQuery.json')
+    File outputFile = new File(testDir, 'TestOperation.json')
     File schema = new File(testDir, 'schema.json') //Check for custom schema
     if (!schema.exists()) {
       schema = new File('apollo-compiler/src/test/graphql/schema.json')
@@ -71,7 +71,7 @@ class UpdateTestIRFilesTask extends DefaultTask {
     def outputFileContents = outputFile.text
     outputFile.withWriter { w ->
       w << outputFileContents.replaceAll("\"filePath\": \".*\"",
-          "\"filePath\": \"src/test/graphql/com/example/${testDir.name}/${testQueryFileName}\"")
+          "\"filePath\": \"src/test/graphql/com/example/${testDir.name}/${testOperationFileName}\"")
     }
   }
 

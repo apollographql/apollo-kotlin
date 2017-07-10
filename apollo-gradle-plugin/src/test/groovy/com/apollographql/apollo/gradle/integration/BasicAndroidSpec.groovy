@@ -38,8 +38,8 @@ class BasicAndroidSpec extends Specification {
         "build/generated/source/apollo/generatedIR/debug/src/main/graphql/DebugAPI.json").isFile()
 
     // Java classes generated successfully
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/Films.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/com/example/FilmsQuery.java").isFile()
     assert new File(testProjectDir, "build/generated/source/apollo/fragment/SpeciesInformation.java").isFile()
 
     // verify that the custom type generated was Object.class because no customType mapping was specified
@@ -48,9 +48,9 @@ class BasicAndroidSpec extends Specification {
         "return Object.class;")
 
     // Optional is not added to the generated classes
-    assert !new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").getText(
+    assert !new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("Optional")
-     assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").getText(
+     assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("import javax.annotation.Nullable;")
   }
 
@@ -168,10 +168,10 @@ class BasicAndroidSpec extends Specification {
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").isFile()
-    assert !new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").getText(
+    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").isFile()
+    assert !new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("Optional")
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").getText(
+    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("import javax.annotation.Nullable;")
   }
 
@@ -189,8 +189,8 @@ class BasicAndroidSpec extends Specification {
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").getText(
+    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("import com.apollographql.apollo.api.internal.Optional;")
   }
 
@@ -208,9 +208,26 @@ class BasicAndroidSpec extends Specification {
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").getText(
+    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("import com.google.common.base.Optional;")
+  }
+
+  def "adding useSemanticNaming = `false` in Apollo Extension generates classes without query suffix"() {
+    setup: "a testProject with a previous build and a modified build script"
+    replaceTextInFile(new File("$testProjectDir/build.gradle")) {
+      it.replace("apollo {", "apollo {\n useSemanticNaming = false \n")
+    }
+
+    when:
+    def result = GradleRunner.create().withProjectDir(testProjectDir)
+        .withPluginClasspath()
+        .withArguments("clean", "generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
+        .forwardStdError(new OutputStreamWriter(System.err)).build()
+
+    then:
+    result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
+    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").isFile()
   }
 
   def cleanupSpec() {

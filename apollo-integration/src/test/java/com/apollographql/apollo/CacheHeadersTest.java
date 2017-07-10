@@ -2,7 +2,7 @@ package com.apollographql.apollo;
 
 import android.support.annotation.NonNull;
 
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNames;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
@@ -77,7 +77,7 @@ public class CacheHeadersTest {
 
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
     CacheHeaders cacheHeaders = CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build();
-    apolloClient.query(new HeroAndFriendsNames(Episode.NEWHOPE))
+    apolloClient.query(new HeroAndFriendsNamesQuery(Episode.NEWHOPE))
         .cacheHeaders(cacheHeaders)
         .execute();
   }
@@ -117,7 +117,7 @@ public class CacheHeadersTest {
 
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
 
-    apolloClient.query(new HeroAndFriendsNames(Episode.NEWHOPE)).execute();
+    apolloClient.query(new HeroAndFriendsNamesQuery(Episode.NEWHOPE)).execute();
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {

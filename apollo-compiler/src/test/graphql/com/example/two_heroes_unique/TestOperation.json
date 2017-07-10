@@ -1,0 +1,79 @@
+{
+	"operations": [
+		{
+			"filePath": "src/test/graphql/com/example/two_heroes_unique/TestOperation.graphql",
+			"operationName": "TestQuery",
+			"operationType": "query",
+			"rootType": "Query",
+			"variables": [],
+			"source": "query TestQuery {\n  r2: hero {\n    __typename\n    name\n  }\n  luke: hero(episode: EMPIRE) {\n    __typename\n    id\n    name\n  }\n}",
+			"fields": [
+				{
+					"responseName": "r2",
+					"fieldName": "hero",
+					"type": "Character",
+					"isDeprecated": false,
+					"deprecationReason": null,
+					"fields": [
+						{
+							"responseName": "__typename",
+							"fieldName": "__typename",
+							"type": "String!"
+						},
+						{
+							"responseName": "name",
+							"fieldName": "name",
+							"type": "String!",
+							"description": "The name of the character",
+							"isDeprecated": false,
+							"deprecationReason": null
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				},
+				{
+					"responseName": "luke",
+					"fieldName": "hero",
+					"type": "Character",
+					"args": [
+						{
+							"name": "episode",
+							"value": "EMPIRE"
+						}
+					],
+					"isDeprecated": false,
+					"deprecationReason": null,
+					"fields": [
+						{
+							"responseName": "__typename",
+							"fieldName": "__typename",
+							"type": "String!"
+						},
+						{
+							"responseName": "id",
+							"fieldName": "id",
+							"type": "ID!",
+							"description": "The ID of the character",
+							"isDeprecated": false,
+							"deprecationReason": null
+						},
+						{
+							"responseName": "name",
+							"fieldName": "name",
+							"type": "String!",
+							"description": "The name of the character",
+							"isDeprecated": false,
+							"deprecationReason": null
+						}
+					],
+					"fragmentSpreads": [],
+					"inlineFragments": []
+				}
+			],
+			"fragmentsReferenced": []
+		}
+	],
+	"fragments": [],
+	"typesUsed": []
+}

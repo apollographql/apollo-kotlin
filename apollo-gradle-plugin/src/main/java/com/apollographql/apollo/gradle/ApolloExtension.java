@@ -12,6 +12,7 @@ public class ApolloExtension {
   private Map<String, String> customTypeMapping = new LinkedHashMap<>();
   private String nullableValueType = NullableValueType.ANNOTATED.getValue();
   private boolean generateAccessors = true;
+  private boolean useSemanticNaming = true;
 
   public Map<String, String> getCustomTypeMapping() {
     return customTypeMapping;
@@ -27,6 +28,14 @@ public class ApolloExtension {
 
   public void setNullableValueType(String nullableValueType) {
     this.nullableValueType = nullableValueType;
+  }
+
+  public void setUseSemanticNaming(boolean useSemanticNaming) {
+    this.useSemanticNaming = useSemanticNaming;
+  }
+
+  public boolean isUseSemanticNaming() {
+    return useSemanticNaming;
   }
 
   public boolean isGenerateAccessors() {

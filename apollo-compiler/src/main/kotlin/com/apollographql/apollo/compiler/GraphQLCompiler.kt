@@ -25,7 +25,8 @@ class GraphQLCompiler {
         customTypeMap = supportedScalarTypeMapping,
         nullableValueType = args.nullableValueType,
         generateAccessors = args.generateAccessors,
-        ir = ir)
+        ir = ir,
+        useSemanticNaming = args.useSemanticNaming)
     ir.writeJavaFiles(context, args.outputDir)
   }
 
@@ -45,7 +46,7 @@ class GraphQLCompiler {
       JavaFile.builder(context.typesPackage, typeSpec).build().writeTo(outputDir)
     }
 
-    operations.map { OperationTypeSpecBuilder(it, fragments) }
+    operations.map { OperationTypeSpecBuilder(it, fragments, context.useSemanticNaming) }
         .forEach {
           val packageName = it.operation.filePath.formatPackageName()
           val typeSpec = it.toTypeSpec(context.copy())
@@ -71,5 +72,6 @@ class GraphQLCompiler {
       val outputDir: File,
       val customTypeMap: Map<String, String>,
       val nullableValueType: NullableValueType,
-      val generateAccessors: Boolean)
+      val generateAccessors: Boolean,
+      val useSemanticNaming: Boolean)
 }

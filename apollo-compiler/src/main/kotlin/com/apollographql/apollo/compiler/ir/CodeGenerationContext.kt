@@ -10,5 +10,6 @@ data class CodeGenerationContext(
     val customTypeMap: Map<String, String>,
     val nullableValueType: NullableValueType,
     val generateAccessors: Boolean,
-    val ir:CodeGenerationIR
+    val ir: CodeGenerationIR,
+    val useSemanticNaming: Boolean
 )

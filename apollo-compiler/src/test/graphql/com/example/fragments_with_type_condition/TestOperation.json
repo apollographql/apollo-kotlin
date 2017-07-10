@@ -1,0 +1,129 @@
+{
+	"operations": [
+		{
+			"filePath": "src/test/graphql/com/example/fragments_with_type_condition/TestOperation.graphql",
+			"operationName": "TestQuery",
+			"operationType": "query",
+			"rootType": "Query",
+			"variables": [],
+			"source": "query TestQuery {\n  r2: hero {\n    __typename\n    ...HumanDetails\n    ...DroidDetails\n  }\n  luke: hero {\n    __typename\n    ...HumanDetails\n    ...DroidDetails\n  }\n}",
+			"fields": [
+				{
+					"responseName": "r2",
+					"fieldName": "hero",
+					"type": "Character",
+					"isDeprecated": false,
+					"deprecationReason": null,
+					"fields": [
+						{
+							"responseName": "__typename",
+							"fieldName": "__typename",
+							"type": "String!"
+						}
+					],
+					"fragmentSpreads": [
+						"HumanDetails",
+						"DroidDetails"
+					],
+					"inlineFragments": []
+				},
+				{
+					"responseName": "luke",
+					"fieldName": "hero",
+					"type": "Character",
+					"isDeprecated": false,
+					"deprecationReason": null,
+					"fields": [
+						{
+							"responseName": "__typename",
+							"fieldName": "__typename",
+							"type": "String!"
+						}
+					],
+					"fragmentSpreads": [
+						"HumanDetails",
+						"DroidDetails"
+					],
+					"inlineFragments": []
+				}
+			],
+			"fragmentsReferenced": [
+				"HumanDetails",
+				"DroidDetails"
+			]
+		}
+	],
+	"fragments": [
+		{
+			"filePath": "src/test/graphql/com/example/fragments_with_type_condition/TestOperation.graphql",
+			"fragmentName": "HumanDetails",
+			"source": "fragment HumanDetails on Human {\n  __typename\n  name\n  height\n}",
+			"typeCondition": "Human",
+			"possibleTypes": [
+				"Human"
+			],
+			"fields": [
+				{
+					"responseName": "__typename",
+					"fieldName": "__typename",
+					"type": "String!"
+				},
+				{
+					"responseName": "name",
+					"fieldName": "name",
+					"type": "String!",
+					"description": "What this human calls themselves",
+					"isDeprecated": false,
+					"deprecationReason": null
+				},
+				{
+					"responseName": "height",
+					"fieldName": "height",
+					"type": "Float",
+					"description": "Height in the preferred unit, default is meters",
+					"isDeprecated": false,
+					"deprecationReason": null
+				}
+			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
+			"fragmentsReferenced": []
+		},
+		{
+			"filePath": "src/test/graphql/com/example/fragments_with_type_condition/TestOperation.graphql",
+			"fragmentName": "DroidDetails",
+			"source": "fragment DroidDetails on Droid {\n  __typename\n  name\n  primaryFunction\n}",
+			"typeCondition": "Droid",
+			"possibleTypes": [
+				"Droid"
+			],
+			"fields": [
+				{
+					"responseName": "__typename",
+					"fieldName": "__typename",
+					"type": "String!"
+				},
+				{
+					"responseName": "name",
+					"fieldName": "name",
+					"type": "String!",
+					"description": "What others call this droid",
+					"isDeprecated": false,
+					"deprecationReason": null
+				},
+				{
+					"responseName": "primaryFunction",
+					"fieldName": "primaryFunction",
+					"type": "String",
+					"description": "This droid's primary function",
+					"isDeprecated": false,
+					"deprecationReason": null
+				}
+			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
+			"fragmentsReferenced": []
+		}
+	],
+	"typesUsed": []
+}
