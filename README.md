@@ -156,16 +156,15 @@ You first need to define the mapping in your build.gradle file. This will tell t
 
 ```gradle
 apollo {
-    customTypeMapping {
-        DateTime = "java.util.Date"
-    }
+    customTypeMapping['DateTime'] = "java.util.Date"
+    customTypeMapping['Currency'] = "java.math.BigDecimal"
 }
 ```
 
 Then register your custom adapter:
 
 ```java
-CustomTypeAdapter<Date> dateCustomTypeAdapter = new CustomTypeAdapter<Date>() {
+CustomTypeAdapter<Date> customTypeAdapter = new CustomTypeAdapter<Date>() {
     @Override
     public Date decode(String value) {
         try {
@@ -174,16 +173,20 @@ CustomTypeAdapter<Date> dateCustomTypeAdapter = new CustomTypeAdapter<Date>() {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public String encode(Date value) {
         return ISO8601_DATE_FORMAT.format(value);
     }
 };
 
-ApolloConverterFactory apolloConverterFactory = new ApolloConverterFactory.Builder()
-        .withCustomTypeAdapter(CustomType.DATETIME, dateCustomTypeAdapter)
-        .withResponseFieldMappers(ResponseFieldMappers.MAPPERS)
-        .build();
+// use on creating ApolloClient
+ApolloClient.builder()
+    .serverUrl(serverUrl)
+    .okHttpClient(okHttpClient)
+    .normalizedCache(normalizedCacheFactory, cacheKeyResolver)
+    .addCustomTypeAdapter(CustomType.DATETIME, customTypeAdapter)
+    .build();
 ```
 
 ## Support For Cached Responses
