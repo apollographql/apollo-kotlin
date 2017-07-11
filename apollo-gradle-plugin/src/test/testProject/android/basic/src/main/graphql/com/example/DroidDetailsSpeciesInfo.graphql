@@ -7,6 +7,6 @@ query DroidDetailsSpeciesInfo {
   }
 }
 
-fragment SpeciesInformation on Species{
+fragment SpeciesInformation on Species {
   classification
 }

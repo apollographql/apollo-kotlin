@@ -7,17 +7,17 @@ import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.integration.httpcache.AllPlanets;
-import com.apollographql.apollo.integration.normalizer.CharacterDetails;
-import com.apollographql.apollo.integration.normalizer.CharacterNameById;
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroName;
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNames;
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDForParentOnly;
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDs;
-import com.apollographql.apollo.integration.normalizer.HeroAppearsIn;
-import com.apollographql.apollo.integration.normalizer.HeroParentTypeDependentField;
-import com.apollographql.apollo.integration.normalizer.HeroTypeDependentAliasedField;
-import com.apollographql.apollo.integration.normalizer.SameHeroTwice;
+import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
+import com.apollographql.apollo.integration.normalizer.CharacterDetailsQuery;
+import com.apollographql.apollo.integration.normalizer.CharacterNameByIdQuery;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDForParentOnlyQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAppearsInQuery;
+import com.apollographql.apollo.integration.normalizer.HeroParentTypeDependentFieldQuery;
+import com.apollographql.apollo.integration.normalizer.HeroTypeDependentAliasedFieldQuery;
+import com.apollographql.apollo.integration.normalizer.SameHeroTwiceQuery;
 import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragment;
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
@@ -69,9 +69,9 @@ public class NormalizedCacheTestCase {
   @Test public void episodeHeroName() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroNameResponse.json"));
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
 
-    Response<EpisodeHeroName.Data> body = apolloClient.query(query).execute();
+    Response<EpisodeHeroNameQuery.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
     body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
@@ -82,9 +82,9 @@ public class NormalizedCacheTestCase {
   @Test public void heroAndFriendsNameResponse() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
 
-    HeroAndFriendsNames query = HeroAndFriendsNames.builder().episode(Episode.JEDI).build();
+    HeroAndFriendsNamesQuery query = HeroAndFriendsNamesQuery.builder().episode(Episode.JEDI).build();
 
-    Response<HeroAndFriendsNames.Data> body = apolloClient.query(query).execute();
+    Response<HeroAndFriendsNamesQuery.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
     body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
@@ -99,9 +99,9 @@ public class NormalizedCacheTestCase {
   @Test public void heroAndFriendsNamesWithIDs() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
 
-    HeroAndFriendsNamesWithIDs query = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
+    HeroAndFriendsNamesWithIDsQuery query = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
 
-    Response<HeroAndFriendsNamesWithIDs.Data> body = apolloClient.query(query).execute();
+    Response<HeroAndFriendsNamesWithIDsQuery.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
     body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
@@ -120,10 +120,10 @@ public class NormalizedCacheTestCase {
   @Test public void heroAndFriendsNameWithIdsForParentOnly() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsParentOnlyResponse.json"));
 
-    HeroAndFriendsNamesWithIDForParentOnly query = HeroAndFriendsNamesWithIDForParentOnly.builder()
+    HeroAndFriendsNamesWithIDForParentOnlyQuery query = HeroAndFriendsNamesWithIDForParentOnlyQuery.builder()
         .episode(Episode.NEWHOPE).build();
 
-    Response<HeroAndFriendsNamesWithIDForParentOnly.Data> body = apolloClient.query(query).execute();
+    Response<HeroAndFriendsNamesWithIDForParentOnlyQuery.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
     body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
@@ -139,9 +139,9 @@ public class NormalizedCacheTestCase {
   @Test public void heroAppearsInResponse() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroAppearsInResponse.json"));
 
-    HeroAppearsIn query = new HeroAppearsIn();
+    HeroAppearsInQuery query = new HeroAppearsInQuery();
 
-    Response<HeroAppearsIn.Data> body = apolloClient.query(query).execute();
+    Response<HeroAppearsInQuery.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
     body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
@@ -155,9 +155,9 @@ public class NormalizedCacheTestCase {
   @Test public void heroParentTypeDependentField() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroParentTypeDependentFieldDroidResponse.json"));
 
-    HeroParentTypeDependentField query = HeroParentTypeDependentField.builder().episode(Episode.NEWHOPE).build();
+    HeroParentTypeDependentFieldQuery query = HeroParentTypeDependentFieldQuery.builder().episode(Episode.NEWHOPE).build();
 
-    Response<HeroParentTypeDependentField.Data> body = apolloClient.query(query).execute();
+    Response<HeroParentTypeDependentFieldQuery.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
     body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
@@ -173,9 +173,10 @@ public class NormalizedCacheTestCase {
   @Test public void heroTypeDependentAliasedField() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroTypeDependentAliasedFieldResponse.json"));
 
-    HeroTypeDependentAliasedField query = HeroTypeDependentAliasedField.builder().episode(Episode.NEWHOPE).build();
+    HeroTypeDependentAliasedFieldQuery query
+        = HeroTypeDependentAliasedFieldQuery.builder().episode(Episode.NEWHOPE).build();
 
-    Response<HeroTypeDependentAliasedField.Data> body = apolloClient.query(query).execute();
+    Response<HeroTypeDependentAliasedFieldQuery.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
     body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
@@ -197,9 +198,9 @@ public class NormalizedCacheTestCase {
   @Test public void sameHeroTwice() throws IOException, ApolloException {
     server.enqueue(mockResponse("SameHeroTwiceResponse.json"));
 
-    SameHeroTwice query = new SameHeroTwice();
+    SameHeroTwiceQuery query = new SameHeroTwiceQuery();
 
-    Response<SameHeroTwice.Data> body = apolloClient.query(query).execute();
+    Response<SameHeroTwiceQuery.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
     body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
@@ -214,9 +215,9 @@ public class NormalizedCacheTestCase {
   @Test public void cacheFirst() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroNameResponse.json"));
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
 
-    Response<EpisodeHeroName.Data> body = apolloClient.query(query).execute();
+    Response<EpisodeHeroNameQuery.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
     body = apolloClient.query(query).cacheControl(CacheControl.CACHE_FIRST).execute();
@@ -227,9 +228,9 @@ public class NormalizedCacheTestCase {
   @Test public void cacheOnly() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroNameResponse.json"));
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
 
-    Response<EpisodeHeroName.Data> body = apolloClient.query(query).execute();
+    Response<EpisodeHeroNameQuery.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
     body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
@@ -240,9 +241,9 @@ public class NormalizedCacheTestCase {
   @Test public void networkFirst() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroNameResponse.json"));
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
 
-    Response<EpisodeHeroName.Data> body = apolloClient.query(query).execute();
+    Response<EpisodeHeroNameQuery.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
     server.enqueue(mockResponse("HeroNameResponse.json"));
@@ -261,9 +262,9 @@ public class NormalizedCacheTestCase {
   @Test public void networkOnly() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroNameResponse.json"));
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
 
-    Response<EpisodeHeroName.Data> body = apolloClient.query(query).execute();
+    Response<EpisodeHeroNameQuery.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
 
     server.enqueue(mockResponse("HeroNameResponse.json"));
@@ -275,11 +276,11 @@ public class NormalizedCacheTestCase {
 
   @Test public void masterDetailSuccess() throws Exception {
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
-    HeroAndFriendsNamesWithIDs query = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
+    HeroAndFriendsNamesWithIDsQuery query = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
     apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
 
-    CharacterNameById character = CharacterNameById.builder().id("1002").build();
-    CharacterNameById.Data characterData = apolloClient.query(character).cacheControl(CacheControl.CACHE_ONLY)
+    CharacterNameByIdQuery character = CharacterNameByIdQuery.builder().id("1002").build();
+    CharacterNameByIdQuery.Data characterData = apolloClient.query(character).cacheControl(CacheControl.CACHE_ONLY)
         .execute().data();
 
     assertThat(characterData).isNotNull();
@@ -289,11 +290,11 @@ public class NormalizedCacheTestCase {
 
   @Test public void masterDetailFailIncomplete() throws Exception {
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
-    HeroAndFriendsNamesWithIDs query = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
+    HeroAndFriendsNamesWithIDsQuery query = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
     apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
 
-    CharacterDetails character = CharacterDetails.builder().id("1002").build();
-    CharacterDetails.Data characterData = apolloClient.query(character).cacheControl(CacheControl.CACHE_ONLY)
+    CharacterDetailsQuery character = CharacterDetailsQuery.builder().id("1002").build();
+    CharacterDetailsQuery.Data characterData = apolloClient.query(character).cacheControl(CacheControl.CACHE_ONLY)
         .execute().data();
 
     assertThat(characterData).isNull();
@@ -301,28 +302,28 @@ public class NormalizedCacheTestCase {
 
   @Test public void independentQueriesGoToNetworkWhenCacheMiss() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroNameResponse.json"));
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
-    Response<EpisodeHeroName.Data> body = apolloClient.query(query).execute();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
+    Response<EpisodeHeroNameQuery.Data> body = apolloClient.query(query).execute();
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data()).isNotNull();
 
     server.enqueue(mockResponse("AllPlanetsNullableField.json"));
-    AllPlanets allPlanetsQuery = new AllPlanets();
-    final Response<AllPlanets.Data> allPlanetsResponse = apolloClient.query(allPlanetsQuery).execute();
+    AllPlanetsQuery allPlanetsQuery = new AllPlanetsQuery();
+    final Response<AllPlanetsQuery.Data> allPlanetsResponse = apolloClient.query(allPlanetsQuery).execute();
     assertThat(allPlanetsResponse.hasErrors()).isFalse();
     assertThat(allPlanetsResponse.data().allPlanets()).isNotNull();
   }
 
   @Test public void cacheOnlyMissReturnsNullData() throws IOException, ApolloException {
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
-    Response<EpisodeHeroName.Data> body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
+    Response<EpisodeHeroNameQuery.Data> body = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(body.data()).isNull();
   }
 
   @Test public void cacheResponseWithNullableFields() throws IOException, ApolloException {
     server.enqueue(mockResponse("AllPlanetsNullableField.json"));
-    AllPlanets query = new AllPlanets();
-    Response<AllPlanets.Data> body = apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    AllPlanetsQuery query = new AllPlanetsQuery();
+    Response<AllPlanetsQuery.Data> body = apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
 
     assertThat(body).isNotNull();
     assertThat(body.hasErrors()).isFalse();
@@ -335,10 +336,10 @@ public class NormalizedCacheTestCase {
   @Test public void readOperationFromStore() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
 
-    HeroAndFriendsNamesWithIDs query = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
+    HeroAndFriendsNamesWithIDsQuery query = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
     apolloClient.query(query).execute();
 
-    HeroAndFriendsNamesWithIDs.Data data = apolloClient.apolloStore().read(query);
+    HeroAndFriendsNamesWithIDsQuery.Data data = apolloClient.apolloStore().read(query);
     assertThat(data.hero().id()).isEqualTo("2001");
     assertThat(data.hero().name()).isEqualTo("R2-D2");
     assertThat(data.hero().friends()).hasSize(3);
@@ -353,7 +354,7 @@ public class NormalizedCacheTestCase {
   @Test public void readFragmentFromStore() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroAndFriendsWithFragmentResponse.json"));
 
-    HeroAndFriendsNamesWithIDs query = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
+    HeroAndFriendsNamesWithIDsQuery query = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
     apolloClient.query(query).execute();
 
     HeroWithFriendsFragment heroWithFriendsFragment = apolloClient.apolloStore().read(
@@ -387,12 +388,16 @@ public class NormalizedCacheTestCase {
 
   @Test public void fromCacheFlag() throws Exception {
     server.enqueue(mockResponse("HeroNameResponse.json"));
-    assertThat(apolloClient.query(new EpisodeHeroName(Episode.EMPIRE)).execute().fromCache()).isFalse();
+    assertThat(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).execute().fromCache()).isFalse();
 
     server.enqueue(mockResponse("HeroNameResponse.json"));
-    assertThat(apolloClient.query(new EpisodeHeroName(Episode.EMPIRE)).cacheControl(CacheControl.NETWORK_ONLY).execute().fromCache()).isFalse();
-    assertThat(apolloClient.query(new EpisodeHeroName(Episode.EMPIRE)).cacheControl(CacheControl.CACHE_ONLY).execute().fromCache()).isTrue();
-    assertThat(apolloClient.query(new EpisodeHeroName(Episode.EMPIRE)).cacheControl(CacheControl.CACHE_FIRST).execute().fromCache()).isTrue();
-    assertThat(apolloClient.query(new EpisodeHeroName(Episode.EMPIRE)).cacheControl(CacheControl.NETWORK_FIRST).execute().fromCache()).isTrue();
+    assertThat(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).cacheControl(CacheControl.NETWORK_ONLY)
+        .execute().fromCache()).isFalse();
+    assertThat(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).cacheControl(CacheControl.CACHE_ONLY)
+        .execute().fromCache()).isTrue();
+    assertThat(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).cacheControl(CacheControl.CACHE_FIRST)
+        .execute().fromCache()).isTrue();
+    assertThat(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).cacheControl(CacheControl.NETWORK_FIRST)
+        .execute().fromCache()).isTrue();
   }
 }

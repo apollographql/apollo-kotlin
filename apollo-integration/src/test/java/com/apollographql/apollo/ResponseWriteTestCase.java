@@ -5,11 +5,11 @@ import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroWithDates;
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroWithInlineFragment;
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDs;
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsWithFragments;
-import com.apollographql.apollo.integration.normalizer.HeroNameWithEnums;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroWithDatesQuery;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroWithInlineFragmentQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsWithFragmentsQuery;
+import com.apollographql.apollo.integration.normalizer.HeroNameWithEnumsQuery;
 import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragment;
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment;
 import com.apollographql.apollo.integration.normalizer.type.CustomType;
@@ -79,8 +79,8 @@ public class ResponseWriteTestCase {
   public void customType() throws Exception {
     server.enqueue(mockResponse("EpisodeHeroWithDatesResponse.json"));
 
-    EpisodeHeroWithDates query = EpisodeHeroWithDates.builder().episode(JEDI).build();
-    EpisodeHeroWithDates.Hero hero = apolloClient.query(query).execute().data().hero();
+    EpisodeHeroWithDatesQuery query = EpisodeHeroWithDatesQuery.builder().episode(JEDI).build();
+    EpisodeHeroWithDatesQuery.Hero hero = apolloClient.query(query).execute().data().hero();
 
     assertThat(hero.__typename()).isEqualTo("Droid");
     assertThat(hero.heroName()).isEqualTo("R2-D2");
@@ -90,13 +90,13 @@ public class ResponseWriteTestCase {
     assertThat(DATE_TIME_FORMAT.format(hero.showUpDates().get(1))).isEqualTo("2017-02-16");
     assertThat(DATE_TIME_FORMAT.format(hero.showUpDates().get(2))).isEqualTo("2017-03-16");
 
-    hero = new EpisodeHeroWithDates.Hero(
+    hero = new EpisodeHeroWithDatesQuery.Hero(
         hero.__typename(),
         "R222-D222",
         DATE_TIME_FORMAT.parse("1985-04-16"),
         Collections.<Date>emptyList()
     );
-    apolloClient.apolloStore().write(query, new EpisodeHeroWithDates.Data(hero));
+    apolloClient.apolloStore().write(query, new EpisodeHeroWithDatesQuery.Data(hero));
 
     hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
@@ -104,7 +104,7 @@ public class ResponseWriteTestCase {
     assertThat(DATE_TIME_FORMAT.format(hero.birthDate())).isEqualTo("1985-04-16");
     assertThat(hero.showUpDates()).hasSize(0);
 
-    hero = new EpisodeHeroWithDates.Hero(
+    hero = new EpisodeHeroWithDatesQuery.Hero(
         hero.__typename(),
         "R22-D22",
         DATE_TIME_FORMAT.parse("1986-04-16"),
@@ -113,7 +113,7 @@ public class ResponseWriteTestCase {
             DATE_TIME_FORMAT.parse("2017-05-16")
         )
     );
-    apolloClient.apolloStore().write(query, new EpisodeHeroWithDates.Data(hero));
+    apolloClient.apolloStore().write(query, new EpisodeHeroWithDatesQuery.Data(hero));
 
     hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
@@ -128,8 +128,8 @@ public class ResponseWriteTestCase {
   public void enums() throws Exception {
     server.enqueue(mockResponse("HeroNameWithEnumsResponse.json"));
 
-    HeroNameWithEnums query = new HeroNameWithEnums();
-    HeroNameWithEnums.Hero hero = apolloClient.query(query).execute().data().hero();
+    HeroNameWithEnumsQuery query = new HeroNameWithEnumsQuery();
+    HeroNameWithEnumsQuery.Hero hero = apolloClient.query(query).execute().data().hero();
 
     assertThat(hero.__typename()).isEqualTo("Droid");
     assertThat(hero.name()).isEqualTo("R2-D2");
@@ -139,13 +139,13 @@ public class ResponseWriteTestCase {
     assertThat(hero.appearsIn().get(1)).isEqualTo(Episode.EMPIRE);
     assertThat(hero.appearsIn().get(2)).isEqualTo(Episode.JEDI);
 
-    hero = new HeroNameWithEnums.Hero(
+    hero = new HeroNameWithEnumsQuery.Hero(
         hero.__typename(),
         "R222-D222",
         Episode.JEDI,
         Collections.<Episode>emptyList()
     );
-    apolloClient.apolloStore().write(query, new HeroNameWithEnums.Data(hero));
+    apolloClient.apolloStore().write(query, new HeroNameWithEnumsQuery.Data(hero));
 
     hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
@@ -153,13 +153,13 @@ public class ResponseWriteTestCase {
     assertThat(hero.firstAppearsIn()).isEqualTo(Episode.JEDI);
     assertThat(hero.appearsIn()).hasSize(0);
 
-    hero = new HeroNameWithEnums.Hero(
+    hero = new HeroNameWithEnumsQuery.Hero(
         hero.__typename(),
         "R22-D22",
         Episode.JEDI,
         asList(Episode.EMPIRE)
     );
-    apolloClient.apolloStore().write(query, new HeroNameWithEnums.Data(hero));
+    apolloClient.apolloStore().write(query, new HeroNameWithEnumsQuery.Data(hero));
 
     hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
@@ -173,8 +173,8 @@ public class ResponseWriteTestCase {
   public void objects() throws Exception {
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
 
-    HeroAndFriendsNamesWithIDs query = new HeroAndFriendsNamesWithIDs(JEDI);
-    HeroAndFriendsNamesWithIDs.Hero hero = apolloClient.query(query).execute().data().hero();
+    HeroAndFriendsNamesWithIDsQuery query = new HeroAndFriendsNamesWithIDsQuery(JEDI);
+    HeroAndFriendsNamesWithIDsQuery.Hero hero = apolloClient.query(query).execute().data().hero();
 
     assertThat(hero.__typename()).isEqualTo("Droid");
     assertThat(hero.name()).isEqualTo("R2-D2");
@@ -190,13 +190,13 @@ public class ResponseWriteTestCase {
     assertThat(hero.friends().get(2).id()).isEqualTo("1003");
     assertThat(hero.friends().get(2).name()).isEqualTo("Leia Organa");
 
-    hero = new HeroAndFriendsNamesWithIDs.Hero(
+    hero = new HeroAndFriendsNamesWithIDsQuery.Hero(
         hero.__typename(),
         hero.id(),
         "R222-D222",
         null
     );
-    apolloClient.apolloStore().write(query, new HeroAndFriendsNamesWithIDs.Data(hero));
+    apolloClient.apolloStore().write(query, new HeroAndFriendsNamesWithIDsQuery.Data(hero));
 
     hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
@@ -204,18 +204,18 @@ public class ResponseWriteTestCase {
     assertThat(hero.id()).isEqualTo("2001");
     assertThat(hero.friends()).isNull();
 
-    HeroAndFriendsNamesWithIDs.Friend friend = new HeroAndFriendsNamesWithIDs.Friend(
+    HeroAndFriendsNamesWithIDsQuery.Friend friend = new HeroAndFriendsNamesWithIDsQuery.Friend(
         "Human",
         "1002",
         "Han Soloooo"
     );
-    hero = new HeroAndFriendsNamesWithIDs.Hero(
+    hero = new HeroAndFriendsNamesWithIDsQuery.Hero(
         hero.__typename(),
         hero.id(),
         "R222-D222",
         singletonList(friend)
     );
-    apolloClient.apolloStore().write(query, new HeroAndFriendsNamesWithIDs.Data(hero));
+    apolloClient.apolloStore().write(query, new HeroAndFriendsNamesWithIDsQuery.Data(hero));
 
     hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
@@ -231,8 +231,8 @@ public class ResponseWriteTestCase {
   public void operation_with_fragments() throws Exception {
     server.enqueue(mockResponse("HeroAndFriendsWithFragmentResponse.json"));
 
-    HeroAndFriendsWithFragments query = new HeroAndFriendsWithFragments(Episode.NEWHOPE);
-    HeroAndFriendsWithFragments.Hero hero = apolloClient.query(query).execute().data().hero();
+    HeroAndFriendsWithFragmentsQuery query = new HeroAndFriendsWithFragmentsQuery(Episode.NEWHOPE);
+    HeroAndFriendsWithFragmentsQuery.Hero hero = apolloClient.query(query).execute().data().hero();
 
     assertThat(hero.__typename()).isEqualTo("Droid");
     assertThat(hero.fragments().heroWithFriendsFragment().__typename()).isEqualTo("Droid");
@@ -249,9 +249,9 @@ public class ResponseWriteTestCase {
     assertThat(hero.fragments().heroWithFriendsFragment().friends().get(2).fragments().humanWithIdFragment().id()).isEqualTo("1003");
     assertThat(hero.fragments().heroWithFriendsFragment().friends().get(2).fragments().humanWithIdFragment().name()).isEqualTo("Leia Organa");
 
-    hero = new HeroAndFriendsWithFragments.Hero(
+    hero = new HeroAndFriendsWithFragmentsQuery.Hero(
         hero.__typename(),
-        new HeroAndFriendsWithFragments.Hero.Fragments(
+        new HeroAndFriendsWithFragmentsQuery.Hero.Fragments(
             new HeroWithFriendsFragment(
                 hero.fragments().heroWithFriendsFragment().__typename(),
                 hero.fragments().heroWithFriendsFragment().id(),
@@ -281,7 +281,7 @@ public class ResponseWriteTestCase {
             )
         )
     );
-    apolloClient.apolloStore().write(query, new HeroAndFriendsWithFragments.Data(hero));
+    apolloClient.apolloStore().write(query, new HeroAndFriendsWithFragmentsQuery.Data(hero));
 
     hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
@@ -301,8 +301,8 @@ public class ResponseWriteTestCase {
   public void operation_with_inline_fragments() throws Exception {
     server.enqueue(mockResponse("EpisodeHeroWithInlineFragmentResponse.json"));
 
-    EpisodeHeroWithInlineFragment query = new EpisodeHeroWithInlineFragment(Episode.NEWHOPE);
-    EpisodeHeroWithInlineFragment.Hero hero = apolloClient.query(query).execute().data().hero();
+    EpisodeHeroWithInlineFragmentQuery query = new EpisodeHeroWithInlineFragmentQuery(Episode.NEWHOPE);
+    EpisodeHeroWithInlineFragmentQuery.Hero hero = apolloClient.query(query).execute().data().hero();
 
     assertThat(hero.__typename()).isEqualTo("Droid");
     assertThat(hero.name()).isEqualTo("R2-D2");
@@ -318,13 +318,13 @@ public class ResponseWriteTestCase {
     assertThat(hero.friends().get(2).asDroid().name()).isEqualTo("Battle Droid");
     assertThat(hero.friends().get(2).asDroid().primaryFunction()).isEqualTo("Controlled alternative to human soldiers");
 
-    hero = new EpisodeHeroWithInlineFragment.Hero(
+    hero = new EpisodeHeroWithInlineFragmentQuery.Hero(
         hero.__typename(),
         "R22-D22",
         asList(
-            new EpisodeHeroWithInlineFragment.Friend(
+            new EpisodeHeroWithInlineFragmentQuery.Friend(
                 "Human",
-                new EpisodeHeroWithInlineFragment.AsHuman(
+                new EpisodeHeroWithInlineFragmentQuery.AsHuman(
                     "Human",
                     "1002",
                     "Han Solo",
@@ -332,10 +332,10 @@ public class ResponseWriteTestCase {
                 ),
                 null
             ),
-            new EpisodeHeroWithInlineFragment.Friend(
+            new EpisodeHeroWithInlineFragmentQuery.Friend(
                 "Droid",
                 null,
-                new EpisodeHeroWithInlineFragment.AsDroid(
+                new EpisodeHeroWithInlineFragmentQuery.AsDroid(
                     "Droid",
                     "RD",
                     "Entertainment"
@@ -343,7 +343,7 @@ public class ResponseWriteTestCase {
             )
         )
     );
-    apolloClient.apolloStore().write(query, new EpisodeHeroWithInlineFragment.Data(hero));
+    apolloClient.apolloStore().write(query, new EpisodeHeroWithInlineFragmentQuery.Data(hero));
 
     hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
@@ -362,8 +362,8 @@ public class ResponseWriteTestCase {
   public void fragments() throws Exception {
     server.enqueue(mockResponse("HeroAndFriendsWithFragmentResponse.json"));
 
-    HeroAndFriendsWithFragments query = new HeroAndFriendsWithFragments(Episode.NEWHOPE);
-    HeroAndFriendsWithFragments.Hero hero = apolloClient.query(query).execute().data().hero();
+    HeroAndFriendsWithFragmentsQuery query = new HeroAndFriendsWithFragmentsQuery(Episode.NEWHOPE);
+    HeroAndFriendsWithFragmentsQuery.Hero hero = apolloClient.query(query).execute().data().hero();
 
     assertThat(hero.__typename()).isEqualTo("Droid");
     assertThat(hero.fragments().heroWithFriendsFragment().__typename()).isEqualTo("Droid");

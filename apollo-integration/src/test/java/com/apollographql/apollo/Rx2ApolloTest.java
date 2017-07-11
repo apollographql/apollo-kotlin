@@ -1,7 +1,7 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroName;
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDs;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheControl;
@@ -61,10 +61,10 @@ public class Rx2ApolloTest {
 
   @Test
   public void testRx2CallProducesValue() throws IOException, InterruptedException {
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
-    EpisodeHeroName.Data data = Rx2Apollo
+    EpisodeHeroNameQuery.Data data = Rx2Apollo
         .from(apolloClient.query(query))
         .test()
         .await()
@@ -79,10 +79,10 @@ public class Rx2ApolloTest {
 
   @Test
   public void testRx2CallIsCanceledWhenDisposed() throws IOException {
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
-    TestObserver<Response<EpisodeHeroName.Data>> testObserver = new TestObserver<>();
+    TestObserver<Response<EpisodeHeroNameQuery.Data>> testObserver = new TestObserver<>();
 
     Disposable disposable = Rx2Apollo
         .from(apolloClient.query(query))
@@ -97,7 +97,7 @@ public class Rx2ApolloTest {
 
   @Test
   public void testRx2PrefetchCompletes() throws IOException, InterruptedException {
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
     Rx2Apollo
@@ -110,10 +110,10 @@ public class Rx2ApolloTest {
 
   @Test
   public void testRx2PrefetchIsCanceledWhenDisposed() throws IOException {
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
-    TestObserver<EpisodeHeroName.Data> testObserver = new TestObserver<>();
+    TestObserver<EpisodeHeroNameQuery.Data> testObserver = new TestObserver<>();
 
     Disposable disposable = Rx2Apollo
         .from(apolloClient.prefetch(query))
@@ -132,20 +132,20 @@ public class Rx2ApolloTest {
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
-    ApolloQueryWatcher<EpisodeHeroName.Data> watcher = apolloClient.query(query).watcher();
+    ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
 
     Rx2Apollo
         .from(watcher)
-        .map(new Function<Response<EpisodeHeroName.Data>, EpisodeHeroName.Data>() {
-          @Override public EpisodeHeroName.Data apply(Response<EpisodeHeroName.Data> response) throws Exception {
+        .map(new Function<Response<EpisodeHeroNameQuery.Data>, EpisodeHeroNameQuery.Data>() {
+          @Override public EpisodeHeroNameQuery.Data apply(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
             return response.data();
           }
         })
-        .subscribe(new DisposableObserver<EpisodeHeroName.Data>() {
-          @Override public void onNext(EpisodeHeroName.Data data) {
+        .subscribe(new DisposableObserver<EpisodeHeroNameQuery.Data>() {
+          @Override public void onNext(EpisodeHeroNameQuery.Data data) {
             if (secondResponseLatch.getCount() == 2) {
               assertThat(data.hero().name()).isEqualTo("R2-D2");
             } else if (secondResponseLatch.getCount() == 1) {
@@ -178,20 +178,20 @@ public class Rx2ApolloTest {
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResultLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResultLatch", 2);
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
-    ApolloQueryWatcher<EpisodeHeroName.Data> watcher = apolloClient.query(query).watcher();
+    ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
 
     Rx2Apollo
         .from(watcher)
-        .map(new Function<Response<EpisodeHeroName.Data>, EpisodeHeroName.Data>() {
-          @Override public EpisodeHeroName.Data apply(Response<EpisodeHeroName.Data> response) throws Exception {
+        .map(new Function<Response<EpisodeHeroNameQuery.Data>, EpisodeHeroNameQuery.Data>() {
+          @Override public EpisodeHeroNameQuery.Data apply(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
             return response.data();
           }
         })
-        .subscribe(new DisposableObserver<EpisodeHeroName.Data>() {
-          @Override public void onNext(EpisodeHeroName.Data data) {
+        .subscribe(new DisposableObserver<EpisodeHeroNameQuery.Data>() {
+          @Override public void onNext(EpisodeHeroNameQuery.Data data) {
             assertThat(data.hero().name()).isEqualTo("R2-D2");
             firstResponseLatch.countDown();
             secondResponseLatch.countDown();
@@ -225,19 +225,19 @@ public class Rx2ApolloTest {
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
 
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
 
-    ApolloQueryWatcher<EpisodeHeroName.Data> watcher = apolloClient.query(query).watcher();
+    ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
 
     Rx2Apollo
         .from(watcher)
-        .map(new Function<Response<EpisodeHeroName.Data>, EpisodeHeroName.Data>() {
-          @Override public EpisodeHeroName.Data apply(Response<EpisodeHeroName.Data> response) throws Exception {
+        .map(new Function<Response<EpisodeHeroNameQuery.Data>, EpisodeHeroNameQuery.Data>() {
+          @Override public EpisodeHeroNameQuery.Data apply(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
             return response.data();
           }
         })
-        .subscribe(new DisposableObserver<EpisodeHeroName.Data>() {
-          @Override public void onNext(EpisodeHeroName.Data data) {
+        .subscribe(new DisposableObserver<EpisodeHeroNameQuery.Data>() {
+          @Override public void onNext(EpisodeHeroNameQuery.Data data) {
             if (secondResponseLatch.getCount() == 2) {
               assertThat(data.hero().name()).isEqualTo("R2-D2");
             } else if (secondResponseLatch.getCount() == 1) {
@@ -258,7 +258,7 @@ public class Rx2ApolloTest {
         });
 
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-    HeroAndFriendsNamesWithIDs friendsQuery = HeroAndFriendsNamesWithIDs.builder().episode(Episode.NEWHOPE).build();
+    HeroAndFriendsNamesWithIDsQuery friendsQuery = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
 
     mockWebServer.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
     apolloClient.query(friendsQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
@@ -271,20 +271,20 @@ public class Rx2ApolloTest {
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
 
-    EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
-    ApolloQueryWatcher<EpisodeHeroName.Data> watcher = apolloClient.query(query).watcher();
+    ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
 
     Disposable disposable = Rx2Apollo
         .from(watcher)
-        .map(new Function<Response<EpisodeHeroName.Data>, EpisodeHeroName.Data>() {
-          @Override public EpisodeHeroName.Data apply(Response<EpisodeHeroName.Data> response) throws Exception {
+        .map(new Function<Response<EpisodeHeroNameQuery.Data>, EpisodeHeroNameQuery.Data>() {
+          @Override public EpisodeHeroNameQuery.Data apply(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
             return response.data();
           }
         })
-        .subscribeWith(new DisposableObserver<EpisodeHeroName.Data>() {
-          @Override public void onNext(EpisodeHeroName.Data data) {
+        .subscribeWith(new DisposableObserver<EpisodeHeroNameQuery.Data>() {
+          @Override public void onNext(EpisodeHeroNameQuery.Data data) {
             assertThat(data.hero().name()).isEqualTo("R2-D2");
             firstResponseLatch.countDown();
             secondResponseLatch.countDown();

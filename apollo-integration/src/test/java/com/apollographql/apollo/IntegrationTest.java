@@ -7,11 +7,11 @@ import com.google.common.collect.FluentIterable;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.integration.httpcache.AllFilms;
-import com.apollographql.apollo.integration.httpcache.AllPlanets;
+import com.apollographql.apollo.integration.httpcache.AllFilmsQuery;
+import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.httpcache.type.CustomType;
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroName;
-import com.apollographql.apollo.integration.normalizer.HeroName;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
+import com.apollographql.apollo.integration.normalizer.HeroNameQuery;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -82,7 +82,7 @@ public class IntegrationTest {
   @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
     server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"));
 
-    Response<AllPlanets.Data> body = apolloClient.query(new AllPlanets()).execute();
+    Response<AllPlanetsQuery.Data> body = apolloClient.query(new AllPlanetsQuery()).execute();
     assertThat(body.hasErrors()).isFalse();
 
     assertThat(server.takeRequest().getBody().readString(Charsets.UTF_8))
@@ -116,12 +116,12 @@ public class IntegrationTest {
             + "  surfaceWater"
             + "}\",\"variables\":{}}");
 
-    AllPlanets.Data data = body.data();
+    AllPlanetsQuery.Data data = body.data();
     assertThat(data.allPlanets().planets().size()).isEqualTo(60);
 
     List<String> planets = FluentIterable.from(data.allPlanets().planets())
-        .transform(new Function<AllPlanets.Planet, String>() {
-          @Override public String apply(AllPlanets.Planet planet) {
+        .transform(new Function<AllPlanetsQuery.Planet, String>() {
+          @Override public String apply(AllPlanetsQuery.Planet planet) {
             return planet.fragments().planetFragment().name();
           }
         }).toList();
@@ -134,7 +134,7 @@ public class IntegrationTest {
         .split("\\s*,\\s*")
     ));
 
-    AllPlanets.Planet firstPlanet = data.allPlanets().planets().get(0);
+    AllPlanetsQuery.Planet firstPlanet = data.allPlanets().planets().get(0);
     assertThat(firstPlanet.fragments().planetFragment().climates()).isEqualTo(Collections.singletonList("arid"));
     assertThat(firstPlanet.fragments().planetFragment().surfaceWater()).isWithin(1d);
     assertThat(firstPlanet.filmConnection().totalCount()).isEqualTo(5);
@@ -146,7 +146,7 @@ public class IntegrationTest {
 
   @Test public void error_response() throws Exception {
     server.enqueue(mockResponse("ResponseError.json"));
-    Response<AllPlanets.Data> body = apolloClient.query(new AllPlanets()).execute();
+    Response<AllPlanetsQuery.Data> body = apolloClient.query(new AllPlanetsQuery()).execute();
     assertThat(body.hasErrors()).isTrue();
     //noinspection ConstantConditions
     assertThat(body.errors()).containsExactly(new Error(
@@ -156,7 +156,7 @@ public class IntegrationTest {
 
   @Test public void error_response_with_nulls_and_custom_attributes() throws Exception {
     server.enqueue(mockResponse("ResponseErrorWithNullsAndCustomAttributes.json"));
-    Response<AllPlanets.Data> body = apolloClient.query(new AllPlanets()).execute();
+    Response<AllPlanetsQuery.Data> body = apolloClient.query(new AllPlanetsQuery()).execute();
     assertThat(body.hasErrors()).isTrue();
     assertThat(body.errors()).hasSize(1);
     assertThat(body.errors().get(0).message()).isNull();
@@ -168,7 +168,7 @@ public class IntegrationTest {
 
   @Test public void errorResponse_custom_attributes() throws Exception {
     server.enqueue(mockResponse("ResponseErrorWithCustomAttributes.json"));
-    Response<AllPlanets.Data> body = apolloClient.query(new AllPlanets()).execute();
+    Response<AllPlanetsQuery.Data> body = apolloClient.query(new AllPlanetsQuery()).execute();
     assertThat(body.hasErrors()).isTrue();
     assertThat(body.errors().get(0).customAttributes()).hasSize(4);
     assertThat(body.errors().get(0).customAttributes().get("code")).isEqualTo(new BigDecimal(500));
@@ -181,9 +181,9 @@ public class IntegrationTest {
     MockResponse mockResponse = mockResponse("ResponseErrorWithData.json");
     server.enqueue(mockResponse);
 
-    final EpisodeHeroName query = EpisodeHeroName.builder().episode(JEDI).build();
-    ApolloCall<EpisodeHeroName.Data> call = apolloClient.query(query);
-    Response<EpisodeHeroName.Data> body = call.execute();
+    final EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(JEDI).build();
+    ApolloCall<EpisodeHeroNameQuery.Data> call = apolloClient.query(query);
+    Response<EpisodeHeroNameQuery.Data> body = call.execute();
     assertThat(body.data()).isNotNull();
     assertThat(body.data().hero().name()).isEqualTo("R2-D2");
 
@@ -195,16 +195,16 @@ public class IntegrationTest {
   @Test public void allFilmsWithDate() throws Exception {
     server.enqueue(mockResponse("HttpCacheTestAllFilms.json"));
 
-    Response<AllFilms.Data> body = apolloClient.query(new AllFilms()).execute();
+    Response<AllFilmsQuery.Data> body = apolloClient.query(new AllFilmsQuery()).execute();
     assertThat(body.hasErrors()).isFalse();
 
 
-    AllFilms.Data data = body.data();
+    AllFilmsQuery.Data data = body.data();
     assertThat(data.allFilms().films()).hasSize(6);
 
     List<String> dates = FluentIterable.from(data.allFilms().films())
-        .transform(new Function<AllFilms.Film, String>() {
-          @Override public String apply(AllFilms.Film film) {
+        .transform(new Function<AllFilmsQuery.Film, String>() {
+          @Override public String apply(AllFilmsQuery.Film film) {
             Date releaseDate = film.releaseDate();
             return dateCustomTypeAdapter.encode(releaseDate);
           }
@@ -217,8 +217,8 @@ public class IntegrationTest {
   @Test public void allPlanetQueryAsync() throws Exception {
     server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"));
     final NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
-    apolloClient.query(new AllPlanets()).enqueue(new ApolloCall.Callback<AllPlanets.Data>() {
-      @Override public void onResponse(@Nonnull Response<AllPlanets.Data> response) {
+    apolloClient.query(new AllPlanetsQuery()).enqueue(new ApolloCall.Callback<AllPlanetsQuery.Data>() {
+      @Override public void onResponse(@Nonnull Response<AllPlanetsQuery.Data> response) {
         assertThat(response.hasErrors()).isFalse();
         assertThat(response.data().allPlanets().planets().size()).isEqualTo(60);
         latch.countDown();
@@ -244,8 +244,8 @@ public class IntegrationTest {
     MockResponse mockResponse = mockResponse("ResponseDataNull.json");
     server.enqueue(mockResponse);
 
-    ApolloCall<HeroName.Data> call = apolloClient.query(new HeroName());
-    Response<HeroName.Data> body = call.execute();
+    ApolloCall<HeroNameQuery.Data> call = apolloClient.query(new HeroNameQuery());
+    Response<HeroNameQuery.Data> body = call.execute();
     assertThat(body.data()).isNull();
     assertThat(body.hasErrors()).isFalse();
   }
@@ -254,7 +254,7 @@ public class IntegrationTest {
     MockResponse mockResponse = mockResponse("ResponseDataMissing.json");
     server.enqueue(mockResponse);
 
-    ApolloCall<HeroName.Data> call = apolloClient.query(new HeroName());
+    ApolloCall<HeroNameQuery.Data> call = apolloClient.query(new HeroNameQuery());
     call.execute();
   }
 

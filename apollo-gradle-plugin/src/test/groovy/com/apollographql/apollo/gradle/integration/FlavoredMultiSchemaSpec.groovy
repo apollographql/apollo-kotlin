@@ -89,7 +89,7 @@ class FlavoredMultiSchemaSpec extends Specification {
     assert new File(testProjectDir, "build/generated/source/apollo/generatedIR/fullRelease/src/release/graphql/com/starwars/api/FullReleaseAPI.json").isFile()
 
     // generates java classes for queries under the release source set
-    assert new File(testProjectDir, "build/generated/source/apollo/com/starwars/api/starship/Starship.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/com/starwars/api/starship/StarshipQuery.java").isFile()
     assertDemoDebugGenerationSucces()
   }
 
@@ -108,17 +108,17 @@ class FlavoredMultiSchemaSpec extends Specification {
     // For Front Page
     assert new File(testProjectDir, "build/generated/source/apollo/com/frontpage/api/fragment/PostDetails.java").isFile()
 
-    assert new File(testProjectDir, "build/generated/source/apollo/com/frontpage/api/posts/Upvote.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/com/frontpage/api/posts/UpvoteMutation.java").isFile()
 
     // For Star Wars
     assert new File(testProjectDir, "build/generated/source/apollo/com/starwars/api/fragment/HeroDetails.java").isFile()
     assert new File(testProjectDir, "build/generated/source/apollo/com/starwars/api/type/ReviewInput.java").isFile()
     assert new File(testProjectDir, "build/generated/source/apollo/com/starwars/api/type/Episode.java").isFile()
 
-    assert new File(testProjectDir, "build/generated/source/apollo/com/starwars/api/hero/HeroName.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/com/starwars/api/hero/HeroAndFriends.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/com/starwars/api/review/CreateAwesomeReview.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/com/starwars/api/review/CreateReviewForEpisode.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/com/starwars/api/hero/HeroNameQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/com/starwars/api/hero/HeroAndFriendsQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/com/starwars/api/review/CreateAwesomeReviewMutation.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/com/starwars/api/review/CreateReviewForEpisodeMutation.java").isFile()
 
     // For GitHunt
     assert new File(testProjectDir, "build/generated/source/apollo/com/githunt/api/fragment/FeedCommentFragment.java").isFile()
@@ -126,7 +126,7 @@ class FlavoredMultiSchemaSpec extends Specification {
     assert new File(testProjectDir, "build/generated/source/apollo/com/githunt/api/type/FeedType.java").isFile()
 
     assert new File(testProjectDir, "build/generated/source/apollo/com/githunt/api/feed/FeedQuery.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/com/githunt/api/profile/CurrentUserForLayout.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/com/githunt/api/profile/CurrentUserForLayoutQuery.java").isFile()
   }
 
   private static File setupFlavoredAndroidProject() {

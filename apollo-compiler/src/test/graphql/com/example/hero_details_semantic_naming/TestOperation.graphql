@@ -1,0 +1,13 @@
+query HeroDetails {
+  hero {
+    name
+    friendsConnection {
+      totalCount
+      edges {
+        node {
+          name
+        }
+      }
+    }
+  }
+}
