@@ -88,7 +88,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   @Override public void clearAll() {
     writeTransaction(new Transaction<WriteableStore, Boolean>() {
       @Override public Boolean execute(WriteableStore cache) {
-        cache.clearAll();
+        normalizedCache.clearAll();
         return true;
       }
     });
