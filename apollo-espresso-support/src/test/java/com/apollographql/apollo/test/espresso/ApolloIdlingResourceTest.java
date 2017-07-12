@@ -45,6 +45,13 @@ public class ApolloIdlingResourceTest {
   private static final String IDLING_RESOURCE_NAME = "apolloIdlingResource";
 
   private static final Query EMPTY_QUERY = new Query() {
+
+    OperationName operationName = new OperationName() {
+      @Override public String name() {
+        return "EmptyQuery";
+      }
+    };
+
     @Override public String queryDocument() {
       return "";
     }
@@ -66,7 +73,7 @@ public class ApolloIdlingResourceTest {
     }
 
     @Nonnull @Override public OperationName name() {
-      return null;
+      return operationName;
     }
   };
 

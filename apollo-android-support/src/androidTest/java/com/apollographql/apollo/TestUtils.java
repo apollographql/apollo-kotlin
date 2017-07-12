@@ -13,6 +13,13 @@ import javax.annotation.Nonnull;
 
 public final class TestUtils {
   public static final Query EMPTY_QUERY = new Query() {
+
+    OperationName operationName = new OperationName() {
+      @Override public String name() {
+        return "EmptyQuery";
+      }
+    };
+
     @Override public String queryDocument() {
       return "";
     }
@@ -34,7 +41,7 @@ public final class TestUtils {
     }
 
     @Nonnull @Override public OperationName name() {
-      return null;
+      return operationName;
     }
   };
 
