@@ -127,7 +127,10 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     return defaultCacheHeaders;
   }
 
-  void clearHttpCache() {
+  /**
+   * Clear all entries from the {@link HttpCache}, if present.
+   */
+  public void clearHttpCache() {
     if (httpCache != null) {
       httpCache.clear();
     }
