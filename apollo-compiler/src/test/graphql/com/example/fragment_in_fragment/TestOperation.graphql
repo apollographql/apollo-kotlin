@@ -14,7 +14,7 @@ fragment starshipFragment on Starship {
   pilotConnection {
     edges {
       node {
-        ...pilotFragment
+       name
       }
     }
   }

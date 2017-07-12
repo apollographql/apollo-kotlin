@@ -66,7 +66,9 @@
 					"inlineFragments": []
 				}
 			],
-			"fragmentsReferenced": []
+			"fragmentsReferenced": [],
+			"sourceWithFragments": "mutation TestQuery($ep: Episode!, $review: ReviewInput!) {\n  createReview(episode: $ep, review: $review) {\n    __typename\n    stars\n    commentary\n  }\n}",
+			"operationId": "557e9010a4f6274a5409cc73de928653c878c931099afa98357c530df729a448"
 		}
 	],
 	"fragments": [],

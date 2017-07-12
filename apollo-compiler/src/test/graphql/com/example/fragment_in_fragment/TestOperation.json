@@ -51,6 +51,80 @@
 											"responseName": "__typename",
 											"fieldName": "__typename",
 											"type": "String!"
+										},
+										{
+											"responseName": "id",
+											"fieldName": "id",
+											"type": "ID!",
+											"description": "The ID of an object",
+											"isDeprecated": false,
+											"deprecationReason": null
+										},
+										{
+											"responseName": "name",
+											"fieldName": "name",
+											"type": "String",
+											"description": "The name of this starship. The common name, such as \"Death Star\".",
+											"isDeprecated": false,
+											"deprecationReason": null
+										},
+										{
+											"responseName": "pilotConnection",
+											"fieldName": "pilotConnection",
+											"type": "StarshipPilotsConnection",
+											"isDeprecated": false,
+											"deprecationReason": null,
+											"fields": [
+												{
+													"responseName": "__typename",
+													"fieldName": "__typename",
+													"type": "String!"
+												},
+												{
+													"responseName": "edges",
+													"fieldName": "edges",
+													"type": "[StarshipPilotsEdge]",
+													"description": "A list of edges.",
+													"isDeprecated": false,
+													"deprecationReason": null,
+													"fields": [
+														{
+															"responseName": "__typename",
+															"fieldName": "__typename",
+															"type": "String!"
+														},
+														{
+															"responseName": "node",
+															"fieldName": "node",
+															"type": "Person",
+															"description": "The item at the end of the edge",
+															"isDeprecated": false,
+															"deprecationReason": null,
+															"fields": [
+																{
+																	"responseName": "__typename",
+																	"fieldName": "__typename",
+																	"type": "String!"
+																},
+																{
+																	"responseName": "name",
+																	"fieldName": "name",
+																	"type": "String",
+																	"description": "The name of this person.",
+																	"isDeprecated": false,
+																	"deprecationReason": null
+																}
+															],
+															"fragmentSpreads": [],
+															"inlineFragments": []
+														}
+													],
+													"fragmentSpreads": [],
+													"inlineFragments": []
+												}
+											],
+											"fragmentSpreads": [],
+											"inlineFragments": []
 										}
 									],
 									"fragmentSpreads": [
@@ -68,16 +142,17 @@
 				}
 			],
 			"fragmentsReferenced": [
-				"starshipFragment",
-				"pilotFragment"
-			]
+				"starshipFragment"
+			],
+			"sourceWithFragments": "query AllStarships {\n  allStarships(first: 7) {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        ...starshipFragment\n      }\n    }\n  }\n}\nfragment starshipFragment on Starship {\n  __typename\n  id\n  name\n  pilotConnection {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n}",
+			"operationId": "6eecf02f3732c0572b6dd1967c1ec6e4f23856f7ebd0967401bcda3b78499334"
 		}
 	],
 	"fragments": [
 		{
 			"filePath": "src/test/graphql/com/example/fragment_in_fragment/TestOperation.graphql",
 			"fragmentName": "starshipFragment",
-			"source": "fragment starshipFragment on Starship {\n  __typename\n  id\n  name\n  pilotConnection {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        ...pilotFragment\n      }\n    }\n  }\n}",
+			"source": "fragment starshipFragment on Starship {\n  __typename\n  id\n  name\n  pilotConnection {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n}",
 			"typeCondition": "Starship",
 			"possibleTypes": [
 				"Starship"
@@ -141,11 +216,17 @@
 											"responseName": "__typename",
 											"fieldName": "__typename",
 											"type": "String!"
+										},
+										{
+											"responseName": "name",
+											"fieldName": "name",
+											"type": "String",
+											"description": "The name of this person.",
+											"isDeprecated": false,
+											"deprecationReason": null
 										}
 									],
-									"fragmentSpreads": [
-										"pilotFragment"
-									],
+									"fragmentSpreads": [],
 									"inlineFragments": []
 								}
 							],
@@ -159,9 +240,7 @@
 			],
 			"fragmentSpreads": [],
 			"inlineFragments": [],
-			"fragmentsReferenced": [
-				"pilotFragment"
-			]
+			"fragmentsReferenced": []
 		},
 		{
 			"filePath": "src/test/graphql/com/example/fragment_in_fragment/TestOperation.graphql",

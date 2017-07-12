@@ -166,11 +166,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Hero {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, false),
       ResponseField.forFragment("__typename", "__typename", Arrays.asList("Human",
       "Droid"))
     };
 
     final @Nonnull String __typename;
+
+    final @Nonnull String name;
 
     private final @Nonnull Fragments fragments;
 
@@ -180,11 +183,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Hero(@Nonnull String __typename, @Nonnull Fragments fragments) {
+    public Hero(@Nonnull String __typename, @Nonnull String name, @Nonnull Fragments fragments) {
       if (__typename == null) {
         throw new NullPointerException("__typename can't be null");
       }
       this.__typename = __typename;
+      if (name == null) {
+        throw new NullPointerException("name can't be null");
+      }
+      this.name = name;
       if (fragments == null) {
         throw new NullPointerException("fragments can't be null");
       }
@@ -193,6 +200,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public @Nonnull String __typename() {
       return this.__typename;
+    }
+
+    /**
+     * The name of the character
+     */
+    public @Nonnull String name() {
+      return this.name;
     }
 
     public @Nonnull Fragments fragments() {
@@ -204,6 +218,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
           fragments.marshaller().marshal(writer);
         }
       };
@@ -214,6 +229,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if ($toString == null) {
         $toString = "Hero{"
           + "__typename=" + __typename + ", "
+          + "name=" + name + ", "
           + "fragments=" + fragments
           + "}";
       }
@@ -228,6 +244,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (o instanceof Hero) {
         Hero that = (Hero) o;
         return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name)
          && this.fragments.equals(that.fragments);
       }
       return false;
@@ -239,6 +256,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         int h = 1;
         h *= 1000003;
         h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
         h *= 1000003;
         h ^= fragments.hashCode();
         $hashCode = h;
@@ -333,13 +352,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public Hero map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
+        final String name = reader.readString($responseFields[1]);
+        final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[2], new ResponseReader.ConditionalTypeReader<Fragments>() {
           @Override
           public Fragments read(String conditionalType, ResponseReader reader) {
             return fragmentsFieldMapper.map(reader, conditionalType);
           }
         });
-        return new Hero(__typename, fragments);
+        return new Hero(__typename, name, fragments);
       }
     }
   }

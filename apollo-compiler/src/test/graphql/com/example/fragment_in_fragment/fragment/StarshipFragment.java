@@ -387,10 +387,16 @@ public class StarshipFragment implements GraphqlFragment {
   public static class Node {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, true),
+      ResponseField.forObject("homeworld", "homeworld", null, true),
       ResponseField.forFragment("__typename", "__typename", Arrays.asList("Person"))
     };
 
     final @Nonnull String __typename;
+
+    final Optional<String> name;
+
+    final Optional<Homeworld> homeworld;
 
     private final @Nonnull Fragments fragments;
 
@@ -400,11 +406,14 @@ public class StarshipFragment implements GraphqlFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public Node(@Nonnull String __typename, @Nonnull Fragments fragments) {
+    public Node(@Nonnull String __typename, @Nullable String name, @Nullable Homeworld homeworld,
+        @Nonnull Fragments fragments) {
       if (__typename == null) {
         throw new NullPointerException("__typename can't be null");
       }
       this.__typename = __typename;
+      this.name = Optional.fromNullable(name);
+      this.homeworld = Optional.fromNullable(homeworld);
       if (fragments == null) {
         throw new NullPointerException("fragments can't be null");
       }
@@ -413,6 +422,20 @@ public class StarshipFragment implements GraphqlFragment {
 
     public @Nonnull String __typename() {
       return this.__typename;
+    }
+
+    /**
+     * The name of this person.
+     */
+    public Optional<String> name() {
+      return this.name;
+    }
+
+    /**
+     * A planet that this person was born on or inhabits.
+     */
+    public Optional<Homeworld> homeworld() {
+      return this.homeworld;
     }
 
     public @Nonnull Fragments fragments() {
@@ -424,6 +447,8 @@ public class StarshipFragment implements GraphqlFragment {
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
+          writer.writeObject($responseFields[2], homeworld.isPresent() ? homeworld.get().marshaller() : null);
           fragments.marshaller().marshal(writer);
         }
       };
@@ -434,6 +459,8 @@ public class StarshipFragment implements GraphqlFragment {
       if ($toString == null) {
         $toString = "Node{"
           + "__typename=" + __typename + ", "
+          + "name=" + name + ", "
+          + "homeworld=" + homeworld + ", "
           + "fragments=" + fragments
           + "}";
       }
@@ -448,6 +475,8 @@ public class StarshipFragment implements GraphqlFragment {
       if (o instanceof Node) {
         Node that = (Node) o;
         return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name)
+         && this.homeworld.equals(that.homeworld)
          && this.fragments.equals(that.fragments);
       }
       return false;
@@ -459,6 +488,10 @@ public class StarshipFragment implements GraphqlFragment {
         int h = 1;
         h *= 1000003;
         h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
+        h *= 1000003;
+        h ^= homeworld.hashCode();
         h *= 1000003;
         h ^= fragments.hashCode();
         $hashCode = h;
@@ -548,18 +581,120 @@ public class StarshipFragment implements GraphqlFragment {
     }
 
     public static final class Mapper implements ResponseFieldMapper<Node> {
+      final Homeworld.Mapper homeworldFieldMapper = new Homeworld.Mapper();
+
       final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
 
       @Override
       public Node map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
+        final String name = reader.readString($responseFields[1]);
+        final Homeworld homeworld = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<Homeworld>() {
+          @Override
+          public Homeworld read(ResponseReader reader) {
+            return homeworldFieldMapper.map(reader);
+          }
+        });
+        final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[3], new ResponseReader.ConditionalTypeReader<Fragments>() {
           @Override
           public Fragments read(String conditionalType, ResponseReader reader) {
             return fragmentsFieldMapper.map(reader, conditionalType);
           }
         });
-        return new Node(__typename, fragments);
+        return new Node(__typename, name, homeworld, fragments);
+      }
+    }
+  }
+
+  public static class Homeworld {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, true)
+    };
+
+    final @Nonnull String __typename;
+
+    final Optional<String> name;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public Homeworld(@Nonnull String __typename, @Nullable String name) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
+      this.__typename = __typename;
+      this.name = Optional.fromNullable(name);
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * The name of this planet.
+     */
+    public Optional<String> name() {
+      return this.name;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Homeworld{"
+          + "__typename=" + __typename + ", "
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Homeworld) {
+        Homeworld that = (Homeworld) o;
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Homeworld> {
+      @Override
+      public Homeworld map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        return new Homeworld(__typename, name);
       }
     }
   }
