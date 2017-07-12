@@ -63,7 +63,7 @@ public class ApolloCallbackTest {
         countDownLatch.countDown();
       }
     }, callbackHandler));
-    countDownLatch.await(2, TimeUnit.SECONDS);
+    countDownLatch.await(5, TimeUnit.SECONDS);
     assertThat(invoked.get()).isTrue();
   }
 
@@ -84,7 +84,7 @@ public class ApolloCallbackTest {
         countDownLatch.countDown();
       }
     }, callbackHandler));
-    countDownLatch.await(2, TimeUnit.SECONDS);
+    countDownLatch.await(5, TimeUnit.SECONDS);
     assertThat(invoked.get()).isTrue();
   }
 
@@ -106,7 +106,7 @@ public class ApolloCallbackTest {
         countDownLatch.countDown();
       }
     }, callbackHandler));
-    countDownLatch.await(2, TimeUnit.SECONDS);
+    countDownLatch.await(5, TimeUnit.SECONDS);
     assertThat(invoked.get()).isTrue();
   }
 
@@ -136,7 +136,7 @@ public class ApolloCallbackTest {
         fail("Expected onResponse");
       }
     }, callbackHandler));
-    countDownLatch.await(2, TimeUnit.SECONDS);
+    countDownLatch.await(5, TimeUnit.SECONDS);
     assertThat(invoked.get()).isTrue();
   }
 
