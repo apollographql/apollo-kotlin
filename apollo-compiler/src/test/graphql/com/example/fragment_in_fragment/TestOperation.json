@@ -113,9 +113,36 @@
 																	"description": "The name of this person.",
 																	"isDeprecated": false,
 																	"deprecationReason": null
+																},
+																{
+																	"responseName": "homeworld",
+																	"fieldName": "homeworld",
+																	"type": "Planet",
+																	"description": "A planet that this person was born on or inhabits.",
+																	"isDeprecated": false,
+																	"deprecationReason": null,
+																	"fields": [
+																		{
+																			"responseName": "__typename",
+																			"fieldName": "__typename",
+																			"type": "String!"
+																		},
+																		{
+																			"responseName": "name",
+																			"fieldName": "name",
+																			"type": "String",
+																			"description": "The name of this planet.",
+																			"isDeprecated": false,
+																			"deprecationReason": null
+																		}
+																	],
+																	"fragmentSpreads": [],
+																	"inlineFragments": []
 																}
 															],
-															"fragmentSpreads": [],
+															"fragmentSpreads": [
+																"pilotFragment"
+															],
 															"inlineFragments": []
 														}
 													],
@@ -142,17 +169,18 @@
 				}
 			],
 			"fragmentsReferenced": [
+				"pilotFragment",
 				"starshipFragment"
 			],
-			"sourceWithFragments": "query AllStarships {\n  allStarships(first: 7) {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        ...starshipFragment\n      }\n    }\n  }\n}\nfragment starshipFragment on Starship {\n  __typename\n  id\n  name\n  pilotConnection {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n}",
-			"operationId": "6eecf02f3732c0572b6dd1967c1ec6e4f23856f7ebd0967401bcda3b78499334"
+			"sourceWithFragments": "query AllStarships {\n  allStarships(first: 7) {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        ...starshipFragment\n      }\n    }\n  }\n}\nfragment pilotFragment on Person {\n  __typename\n  name\n  homeworld {\n    __typename\n    name\n  }\n}\nfragment starshipFragment on Starship {\n  __typename\n  id\n  name\n  pilotConnection {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        ...pilotFragment\n      }\n    }\n  }\n}",
+			"operationId": "6bc63c6c2eaea4bbf8a55313dbfee24c55d43b654411215b84780cf8f04699f3"
 		}
 	],
 	"fragments": [
 		{
 			"filePath": "src/test/graphql/com/example/fragment_in_fragment/TestOperation.graphql",
 			"fragmentName": "starshipFragment",
-			"source": "fragment starshipFragment on Starship {\n  __typename\n  id\n  name\n  pilotConnection {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n}",
+			"source": "fragment starshipFragment on Starship {\n  __typename\n  id\n  name\n  pilotConnection {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        ...pilotFragment\n      }\n    }\n  }\n}",
 			"typeCondition": "Starship",
 			"possibleTypes": [
 				"Starship"
@@ -224,9 +252,36 @@
 											"description": "The name of this person.",
 											"isDeprecated": false,
 											"deprecationReason": null
+										},
+										{
+											"responseName": "homeworld",
+											"fieldName": "homeworld",
+											"type": "Planet",
+											"description": "A planet that this person was born on or inhabits.",
+											"isDeprecated": false,
+											"deprecationReason": null,
+											"fields": [
+												{
+													"responseName": "__typename",
+													"fieldName": "__typename",
+													"type": "String!"
+												},
+												{
+													"responseName": "name",
+													"fieldName": "name",
+													"type": "String",
+													"description": "The name of this planet.",
+													"isDeprecated": false,
+													"deprecationReason": null
+												}
+											],
+											"fragmentSpreads": [],
+											"inlineFragments": []
 										}
 									],
-									"fragmentSpreads": [],
+									"fragmentSpreads": [
+										"pilotFragment"
+									],
 									"inlineFragments": []
 								}
 							],
@@ -240,7 +295,9 @@
 			],
 			"fragmentSpreads": [],
 			"inlineFragments": [],
-			"fragmentsReferenced": []
+			"fragmentsReferenced": [
+				"pilotFragment"
+			]
 		},
 		{
 			"filePath": "src/test/graphql/com/example/fragment_in_fragment/TestOperation.graphql",

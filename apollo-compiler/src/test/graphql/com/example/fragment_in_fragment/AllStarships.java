@@ -11,6 +11,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
+import com.example.fragment_in_fragment.fragment.PilotFragment;
 import com.example.fragment_in_fragment.fragment.StarshipFragment;
 import java.lang.NullPointerException;
 import java.lang.Object;
@@ -38,7 +39,8 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       + "}";
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION + "\n"
-   + StarshipFragment.FRAGMENT_DEFINITION;
+   + StarshipFragment.FRAGMENT_DEFINITION + "\n"
+   + PilotFragment.FRAGMENT_DEFINITION;
 
   private static final OperationName OPERATION_NAME = new OperationName() {
     @Override
@@ -839,6 +841,228 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
   public static class Node1 {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("name", "name", null, true),
+      ResponseField.forObject("homeworld", "homeworld", null, true),
+      ResponseField.forFragment("__typename", "__typename", Arrays.asList("Person"))
+    };
+
+    final @Nonnull String __typename;
+
+    final Optional<String> name;
+
+    final Optional<Homeworld> homeworld;
+
+    private final @Nonnull Fragments fragments;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public Node1(@Nonnull String __typename, @Nullable String name, @Nullable Homeworld homeworld,
+        @Nonnull Fragments fragments) {
+      if (__typename == null) {
+        throw new NullPointerException("__typename can't be null");
+      }
+      this.__typename = __typename;
+      this.name = Optional.fromNullable(name);
+      this.homeworld = Optional.fromNullable(homeworld);
+      if (fragments == null) {
+        throw new NullPointerException("fragments can't be null");
+      }
+      this.fragments = fragments;
+    }
+
+    public @Nonnull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * The name of this person.
+     */
+    public Optional<String> name() {
+      return this.name;
+    }
+
+    /**
+     * A planet that this person was born on or inhabits.
+     */
+    public Optional<Homeworld> homeworld() {
+      return this.homeworld;
+    }
+
+    public @Nonnull Fragments fragments() {
+      return this.fragments;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name.isPresent() ? name.get() : null);
+          writer.writeObject($responseFields[2], homeworld.isPresent() ? homeworld.get().marshaller() : null);
+          fragments.marshaller().marshal(writer);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Node1{"
+          + "__typename=" + __typename + ", "
+          + "name=" + name + ", "
+          + "homeworld=" + homeworld + ", "
+          + "fragments=" + fragments
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Node1) {
+        Node1 that = (Node1) o;
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name)
+         && this.homeworld.equals(that.homeworld)
+         && this.fragments.equals(that.fragments);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
+        h *= 1000003;
+        h ^= homeworld.hashCode();
+        h *= 1000003;
+        h ^= fragments.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static class Fragments {
+      final @Nonnull PilotFragment pilotFragment;
+
+      private volatile String $toString;
+
+      private volatile int $hashCode;
+
+      private volatile boolean $hashCodeMemoized;
+
+      public Fragments(@Nonnull PilotFragment pilotFragment) {
+        if (pilotFragment == null) {
+          throw new NullPointerException("pilotFragment can't be null");
+        }
+        this.pilotFragment = pilotFragment;
+      }
+
+      public @Nonnull PilotFragment pilotFragment() {
+        return this.pilotFragment;
+      }
+
+      public ResponseFieldMarshaller marshaller() {
+        return new ResponseFieldMarshaller() {
+          @Override
+          public void marshal(ResponseWriter writer) {
+            final PilotFragment $pilotFragment = pilotFragment;
+            if ($pilotFragment != null) {
+              $pilotFragment.marshaller().marshal(writer);
+            }
+          }
+        };
+      }
+
+      @Override
+      public String toString() {
+        if ($toString == null) {
+          $toString = "Fragments{"
+            + "pilotFragment=" + pilotFragment
+            + "}";
+        }
+        return $toString;
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (o instanceof Fragments) {
+          Fragments that = (Fragments) o;
+          return this.pilotFragment.equals(that.pilotFragment);
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= pilotFragment.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
+      }
+
+      public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
+        final PilotFragment.Mapper pilotFragmentFieldMapper = new PilotFragment.Mapper();
+
+        @Override
+        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) {
+          PilotFragment pilotFragment = null;
+          if (PilotFragment.POSSIBLE_TYPES.contains(conditionalType)) {
+            pilotFragment = pilotFragmentFieldMapper.map(reader);
+          }
+          return new Fragments(pilotFragment);
+        }
+      }
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Node1> {
+      final Homeworld.Mapper homeworldFieldMapper = new Homeworld.Mapper();
+
+      final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
+
+      @Override
+      public Node1 map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final Homeworld homeworld = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<Homeworld>() {
+          @Override
+          public Homeworld read(ResponseReader reader) {
+            return homeworldFieldMapper.map(reader);
+          }
+        });
+        final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[3], new ResponseReader.ConditionalTypeReader<Fragments>() {
+          @Override
+          public Fragments read(String conditionalType, ResponseReader reader) {
+            return fragmentsFieldMapper.map(reader, conditionalType);
+          }
+        });
+        return new Node1(__typename, name, homeworld, fragments);
+      }
+    }
+  }
+
+  public static class Homeworld {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false),
       ResponseField.forString("name", "name", null, true)
     };
 
@@ -852,7 +1076,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
     private volatile boolean $hashCodeMemoized;
 
-    public Node1(@Nonnull String __typename, @Nullable String name) {
+    public Homeworld(@Nonnull String __typename, @Nullable String name) {
       if (__typename == null) {
         throw new NullPointerException("__typename can't be null");
       }
@@ -865,7 +1089,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     }
 
     /**
-     * The name of this person.
+     * The name of this planet.
      */
     public Optional<String> name() {
       return this.name;
@@ -884,7 +1108,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "Node1{"
+        $toString = "Homeworld{"
           + "__typename=" + __typename + ", "
           + "name=" + name
           + "}";
@@ -897,8 +1121,8 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       if (o == this) {
         return true;
       }
-      if (o instanceof Node1) {
-        Node1 that = (Node1) o;
+      if (o instanceof Homeworld) {
+        Homeworld that = (Homeworld) o;
         return this.__typename.equals(that.__typename)
          && this.name.equals(that.name);
       }
@@ -919,12 +1143,12 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       return $hashCode;
     }
 
-    public static final class Mapper implements ResponseFieldMapper<Node1> {
+    public static final class Mapper implements ResponseFieldMapper<Homeworld> {
       @Override
-      public Node1 map(ResponseReader reader) {
+      public Homeworld map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
-        return new Node1(__typename, name);
+        return new Homeworld(__typename, name);
       }
     }
   }
