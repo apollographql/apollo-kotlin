@@ -1,13 +1,14 @@
 package com.apollographql.apollo.internal.reader;
 
 import com.apollographql.apollo.CustomTypeAdapter;
-import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
@@ -15,7 +16,6 @@ import com.apollographql.apollo.internal.field.MapFieldValueResolver;
 
 import org.junit.Test;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -538,13 +538,50 @@ public class ResponseReaderTest {
     }
   }
 
-  private void checkNPE(Runnable action) {
-    try {
+  @Test public void read_scalar_list_with_nulls() throws Exception {
+    ResponseField scalarList = ResponseField.forScalarList("list", "list", null, false);
 
-      fail("expected NullPointerException");
-    } catch (NullPointerException expected) {
-      //expected
-    }
+    final Map<String, Object> recordSet = new HashMap<>();
+    recordSet.put("list", asList(null, "item1", "item2", null, "item3", null));
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readList(scalarList, new ResponseReader.ListReader() {
+      @Override public Object read(ResponseReader.ListItemReader reader) {
+        return reader.readString();
+      }
+    })).isEqualTo(asList("item1", "item2", "item3"));
+  }
+
+  @Test public void read_object_list_with_nulls() throws Exception {
+    final ResponseField listField = ResponseField.forObjectList("list", "list", null, false);
+    final ResponseField indexField = ResponseField.forObjectList("index", "index", null, false);
+    final List responseObjects = asList(new Object(), new Object(), new Object());
+    final Map<String, Object> recordSet = new HashMap<>();
+    recordSet.put("list", asList(
+        null,
+        new UnmodifiableMapBuilder<String, Object>(1)
+            .put("index", "0")
+            .build(),
+        new UnmodifiableMapBuilder<String, Object>(1)
+            .put("index", "1")
+            .build(),
+        null,
+        new UnmodifiableMapBuilder<String, Object>(1)
+            .put("index", "2")
+            .build(),
+        null
+    ));
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readList(listField, new ResponseReader.ListReader() {
+      @Override public Object read(ResponseReader.ListItemReader reader) {
+        return reader.readObject(new ResponseReader.ObjectReader<Object>() {
+          @Override public Object read(ResponseReader reader) {
+            return responseObjects.get(Integer.parseInt(reader.readString(indexField)));
+          }
+        });
+      }
+    })).isEqualTo(responseObjects);
   }
 
   @SuppressWarnings("unchecked") private static RealResponseReader<Map<String, Object>> responseReader(

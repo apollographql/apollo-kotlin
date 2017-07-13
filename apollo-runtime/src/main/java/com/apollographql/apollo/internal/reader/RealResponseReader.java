@@ -129,9 +129,11 @@ import java.util.Map;
       for (int i = 0; i < values.size(); i++) {
         readerShadow.willResolveElement(i);
         Object value = values.get(i);
-        T item = (T) listReader.read(new ListItemReader(field, value));
-        readerShadow.didResolveElement(i);
-        result.add(item);
+        if (value != null) {
+          T item = (T) listReader.read(new ListItemReader(field, value));
+          readerShadow.didResolveElement(i);
+          result.add(item);
+        }
       }
       readerShadow.didResolveList(values);
     }
