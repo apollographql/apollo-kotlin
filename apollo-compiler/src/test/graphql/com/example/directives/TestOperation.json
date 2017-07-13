@@ -34,7 +34,9 @@
 					"inlineFragments": []
 				}
 			],
-			"fragmentsReferenced": []
+			"fragmentsReferenced": [],
+			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name @include(if: false)\n  }\n}",
+			"operationId": "384c8fb221beb93fcac3079204836dfd77c15c3355f745834564f2d777e8e80d"
 		}
 	],
 	"fragments": [],

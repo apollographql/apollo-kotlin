@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -249,35 +250,63 @@ public class ResponseWriteTestCase {
     assertThat(hero.fragments().heroWithFriendsFragment().friends().get(2).fragments().humanWithIdFragment().id()).isEqualTo("1003");
     assertThat(hero.fragments().heroWithFriendsFragment().friends().get(2).fragments().humanWithIdFragment().name()).isEqualTo("Leia Organa");
 
+    final HumanWithIdFragment supermanAsHumanFragment = new HumanWithIdFragment(
+        "Human",
+        "1006",
+        "SuperMan"
+    );
+
+    final HumanWithIdFragment beastAsHumanFragment = new HumanWithIdFragment(
+        "Human",
+        "1004",
+        "Beast");
+
+    final List<HeroWithFriendsFragment.Friend> newFriends = asList(
+        new HeroWithFriendsFragment.Friend(
+            "Human",
+            new HeroWithFriendsFragment.AsHuman("Human",
+                "1006",
+                "SuperMan",
+                new HeroWithFriendsFragment.AsHuman.Fragments(supermanAsHumanFragment)),
+            new HeroWithFriendsFragment.Friend.Fragments(supermanAsHumanFragment)
+        ),
+        new HeroWithFriendsFragment.Friend(
+            "Human",
+            new HeroWithFriendsFragment.AsHuman("Human",
+                "1004",
+                "Beast",
+                new HeroWithFriendsFragment.AsHuman.Fragments(beastAsHumanFragment)),
+            new HeroWithFriendsFragment.Friend.Fragments(beastAsHumanFragment)
+        )
+    );
+
+    List<HeroAndFriendsWithFragmentsQuery.Friend> newFriendsOnHero = asList(
+        new HeroAndFriendsWithFragmentsQuery.Friend(
+            "Human",
+            new HeroAndFriendsWithFragmentsQuery.AsHuman("Human",
+                "1006",
+                "Superman",
+                new HeroAndFriendsWithFragmentsQuery.AsHuman.Fragments(supermanAsHumanFragment)),
+            new HeroAndFriendsWithFragmentsQuery.Friend.Fragments(supermanAsHumanFragment)
+        ),
+        new HeroAndFriendsWithFragmentsQuery.Friend("Human",
+            new HeroAndFriendsWithFragmentsQuery.AsHuman("Human",
+                "1004",
+                "Beast",
+                new HeroAndFriendsWithFragmentsQuery.AsHuman.Fragments(beastAsHumanFragment)),
+            new HeroAndFriendsWithFragmentsQuery.Friend.Fragments(beastAsHumanFragment)));
+
     hero = new HeroAndFriendsWithFragmentsQuery.Hero(
         hero.__typename(),
+        hero.id(),
+        "R222-D222",
+        newFriendsOnHero,
         new HeroAndFriendsWithFragmentsQuery.Hero.Fragments(
             new HeroWithFriendsFragment(
                 hero.fragments().heroWithFriendsFragment().__typename(),
                 hero.fragments().heroWithFriendsFragment().id(),
                 "R222-D222",
-                asList(
-                    new HeroWithFriendsFragment.Friend(
-                        "Human",
-                        new HeroWithFriendsFragment.Friend.Fragments(
-                            new HumanWithIdFragment(
-                                "Human",
-                                "1006",
-                                "SuperMan"
-                            )
-                        )
-                    ),
-                    new HeroWithFriendsFragment.Friend(
-                        "Human",
-                        new HeroWithFriendsFragment.Friend.Fragments(
-                            new HumanWithIdFragment(
-                                "Human",
-                                "1004",
-                                "Beast"
-                            )
-                        )
-                    )
-                )
+                newFriends
             )
         )
     );
@@ -380,6 +409,17 @@ public class ResponseWriteTestCase {
     assertThat(hero.fragments().heroWithFriendsFragment().friends().get(2).fragments().humanWithIdFragment().id()).isEqualTo("1003");
     assertThat(hero.fragments().heroWithFriendsFragment().friends().get(2).fragments().humanWithIdFragment().name()).isEqualTo("Leia Organa");
 
+    final HumanWithIdFragment hanSoloAsHumanFragment = new HumanWithIdFragment(
+        "Human",
+        "1006",
+        "SuperMan"
+    );
+
+    final HumanWithIdFragment supermanAsHumanFragment = new HumanWithIdFragment(
+        "Human",
+        "1004",
+        "Beast");
+
     apolloClient.apolloStore().write(
         new HeroWithFriendsFragment(
             hero.fragments().heroWithFriendsFragment().__typename(),
@@ -388,22 +428,24 @@ public class ResponseWriteTestCase {
             asList(
                 new HeroWithFriendsFragment.Friend(
                     "Human",
-                    new HeroWithFriendsFragment.Friend.Fragments(
-                        new HumanWithIdFragment(
-                            "Human",
-                            "1000",
-                            "SuperMan"
-                        )
-                    )
+                    new HeroWithFriendsFragment.AsHuman("Human",
+                        "1000",
+                        "Superman",
+                        new HeroWithFriendsFragment.AsHuman.Fragments(supermanAsHumanFragment)),
+                    new HeroWithFriendsFragment.Friend.Fragments(supermanAsHumanFragment)
                 ),
                 new HeroWithFriendsFragment.Friend(
                     "Human",
-                    new HeroWithFriendsFragment.Friend.Fragments(
-                        new HumanWithIdFragment(
-                            "Human",
-                            "1002",
-                            "Han Solo"
+                    new HeroWithFriendsFragment.AsHuman(
+                        "Human",
+                        "1002",
+                        "Han Solo",
+                        new HeroWithFriendsFragment.AsHuman.Fragments(
+                            hanSoloAsHumanFragment
                         )
+                    ),
+                    new HeroWithFriendsFragment.Friend.Fragments(
+                        hanSoloAsHumanFragment
                     )
                 )
             )

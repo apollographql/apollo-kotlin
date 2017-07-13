@@ -29,6 +29,73 @@
 							"deprecationReason": null
 						},
 						{
+							"responseName": "friendsConnection",
+							"fieldName": "friendsConnection",
+							"type": "FriendsConnection!",
+							"description": "The friends of the character exposed as a connection with edges",
+							"isDeprecated": false,
+							"deprecationReason": null,
+							"fields": [
+								{
+									"responseName": "__typename",
+									"fieldName": "__typename",
+									"type": "String!"
+								},
+								{
+									"responseName": "totalCount",
+									"fieldName": "totalCount",
+									"type": "Int",
+									"description": "The total number of friends",
+									"isDeprecated": false,
+									"deprecationReason": null
+								},
+								{
+									"responseName": "edges",
+									"fieldName": "edges",
+									"type": "[FriendsEdge]",
+									"description": "The edges for each of the character's friends.",
+									"isDeprecated": false,
+									"deprecationReason": null,
+									"fields": [
+										{
+											"responseName": "__typename",
+											"fieldName": "__typename",
+											"type": "String!"
+										},
+										{
+											"responseName": "node",
+											"fieldName": "node",
+											"type": "Character",
+											"description": "The character represented by this friendship edge",
+											"isDeprecated": false,
+											"deprecationReason": null,
+											"fields": [
+												{
+													"responseName": "__typename",
+													"fieldName": "__typename",
+													"type": "String!"
+												},
+												{
+													"responseName": "name",
+													"fieldName": "name",
+													"type": "String!",
+													"description": "The name of the character",
+													"isDeprecated": false,
+													"deprecationReason": null
+												}
+											],
+											"fragmentSpreads": [],
+											"inlineFragments": []
+										}
+									],
+									"fragmentSpreads": [],
+									"inlineFragments": []
+								}
+							],
+							"fragmentSpreads": [],
+							"inlineFragments": []
+						},
+						{
 							"responseName": "appearsIn",
 							"fieldName": "appearsIn",
 							"type": "[Episode]!",
@@ -40,12 +107,122 @@
 					"fragmentSpreads": [
 						"HeroDetails"
 					],
-					"inlineFragments": []
+					"inlineFragments": [
+						{
+							"typeCondition": "Droid",
+							"possibleTypes": [
+								"Droid"
+							],
+							"fields": [
+								{
+									"responseName": "__typename",
+									"fieldName": "__typename",
+									"type": "String!"
+								},
+								{
+									"responseName": "name",
+									"fieldName": "name",
+									"type": "String!",
+									"description": "What others call this droid",
+									"isDeprecated": false,
+									"deprecationReason": null
+								},
+								{
+									"responseName": "friendsConnection",
+									"fieldName": "friendsConnection",
+									"type": "FriendsConnection!",
+									"description": "The friends of the droid exposed as a connection with edges",
+									"isDeprecated": false,
+									"deprecationReason": null,
+									"fields": [
+										{
+											"responseName": "__typename",
+											"fieldName": "__typename",
+											"type": "String!"
+										},
+										{
+											"responseName": "totalCount",
+											"fieldName": "totalCount",
+											"type": "Int",
+											"description": "The total number of friends",
+											"isDeprecated": false,
+											"deprecationReason": null
+										},
+										{
+											"responseName": "edges",
+											"fieldName": "edges",
+											"type": "[FriendsEdge]",
+											"description": "The edges for each of the character's friends.",
+											"isDeprecated": false,
+											"deprecationReason": null,
+											"fields": [
+												{
+													"responseName": "__typename",
+													"fieldName": "__typename",
+													"type": "String!"
+												},
+												{
+													"responseName": "node",
+													"fieldName": "node",
+													"type": "Character",
+													"description": "The character represented by this friendship edge",
+													"isDeprecated": false,
+													"deprecationReason": null,
+													"fields": [
+														{
+															"responseName": "__typename",
+															"fieldName": "__typename",
+															"type": "String!"
+														},
+														{
+															"responseName": "name",
+															"fieldName": "name",
+															"type": "String!",
+															"description": "The name of the character",
+															"isDeprecated": false,
+															"deprecationReason": null
+														}
+													],
+													"fragmentSpreads": [],
+													"inlineFragments": []
+												}
+											],
+											"fragmentSpreads": [],
+											"inlineFragments": []
+										}
+									],
+									"fragmentSpreads": [],
+									"inlineFragments": []
+								},
+								{
+									"responseName": "primaryFunction",
+									"fieldName": "primaryFunction",
+									"type": "String",
+									"description": "This droid's primary function",
+									"isDeprecated": false,
+									"deprecationReason": null
+								},
+								{
+									"responseName": "appearsIn",
+									"fieldName": "appearsIn",
+									"type": "[Episode]!",
+									"description": "The movies this droid appears in",
+									"isDeprecated": false,
+									"deprecationReason": null
+								}
+							],
+							"fragmentSpreads": [
+								"HeroDetails"
+							]
+						}
+					]
 				}
 			],
 			"fragmentsReferenced": [
 				"HeroDetails"
-			]
+			],
+			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name\n    ...HeroDetails\n    appearsIn\n  }\n}\nfragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n  ... on Droid {\n    __typename\n    name\n    primaryFunction\n  }\n}",
+			"operationId": "eb09ddd8f931e755957a2631da5129303c0e13d9c20314c5ae3d2522d636b6e1"
 		}
 	],
 	"fragments": [
