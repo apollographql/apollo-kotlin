@@ -132,17 +132,12 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     if (cacheControl == CacheControl.CACHE_ONLY || cacheControl == CacheControl.CACHE_FIRST) {
       ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
 
-      Response cachedResponse = null;
-      try {
-        cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer, cacheHeaders);
-        if (cachedResponse.data() != null) {
-          logger.d("Cache HIT for operation %s", operation);
-        }
-      } catch (Exception e) {
-        logger.e(e, "Failed to read cached response");
+      Response cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer, cacheHeaders);
+      if (cachedResponse.data() != null) {
+        logger.d("Cache HIT for operation %s", operation);
       }
 
-      if (cacheControl == CacheControl.CACHE_ONLY || (cachedResponse != null && cachedResponse.data() != null)) {
+      if (cacheControl == CacheControl.CACHE_ONLY || cachedResponse.data() != null) {
         return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
       }
     }
@@ -155,15 +150,12 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
         || !networkResponse.httpResponse.get().isSuccessful());
     if (networkFailed && cacheControl != CacheControl.NETWORK_ONLY) {
       ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
-      try {
-        Response cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer, cacheHeaders);
-        if (cachedResponse.data() != null) {
-          logger.d("Cache HIT for operation %s", operation);
-          return new InterceptorResponse(networkResponse.httpResponse.get(), cachedResponse,
-              responseNormalizer.records());
-        }
-      } catch (Exception e) {
-        logger.e(e, "Failed to read cached response");
+      Response cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer, cacheHeaders);
+      if (cachedResponse.data() != null) {
+        logger.d("Cache HIT for operation %s", operation);
+        return new InterceptorResponse(networkResponse.httpResponse.get(), cachedResponse,
+            responseNormalizer.records());
+      } else {
         logger.d("Cache MISS for operation %s", operation);
       }
     }
@@ -207,14 +199,10 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
   private InterceptorResponse resolveNetworkFirstCacheResponse(Operation operation) {
     if (cacheControl == CacheControl.NETWORK_FIRST) {
       ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
-      try {
-        Response cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer, cacheHeaders);
-        if (cachedResponse.data() != null) {
-          logger.d("Cache HIT for operation %s", operation);
-          return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
-        }
-      } catch (Exception e) {
-        logger.e(e, "Failed to read cached response");
+      Response cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer, cacheHeaders);
+      if (cachedResponse.data() != null) {
+        logger.d("Cache HIT for operation %s", operation);
+        return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
       }
     }
     logger.d("Cache MISS for operation %s", operation);

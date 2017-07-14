@@ -403,33 +403,41 @@ public class NormalizedCacheTestCase {
 
   @Test public void remove_from_store() throws Exception {
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
-    HeroAndFriendsNamesWithIDsQuery query = new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE);
-    HeroAndFriendsNamesWithIDsQuery.Data heroAndFriendsNamesData = apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute().data();
-    assertThat(heroAndFriendsNamesData).isNotNull();
-    assertThat(heroAndFriendsNamesData.hero()).isNotNull();
-    assertThat(heroAndFriendsNamesData.hero().name()).isEqualTo("R2-D2");
+    HeroAndFriendsNamesWithIDsQuery masterQuery = new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE);
+    Response<HeroAndFriendsNamesWithIDsQuery.Data> masterQueryResponse = apolloClient.query(masterQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    assertThat(masterQueryResponse.data()).isNotNull();
+    assertThat(masterQueryResponse.data().hero()).isNotNull();
+    assertThat(masterQueryResponse.data().hero().name()).isEqualTo("R2-D2");
 
-    CharacterNameByIdQuery character = new CharacterNameByIdQuery("1002");
-    CharacterNameByIdQuery.Data characterData = apolloClient.query(character).cacheControl(CacheControl.CACHE_ONLY).execute().data();
-    assertThat(characterData).isNotNull();
-    assertThat(characterData.character()).isNotNull();
-    assertThat(characterData.character().asHuman().name()).isEqualTo("Han Solo");
+    CharacterNameByIdQuery detailQuery = new CharacterNameByIdQuery("1002");
+    Response<CharacterNameByIdQuery.Data> detailQueryResponse = apolloClient.query(detailQuery).cacheControl(CacheControl.CACHE_ONLY).execute();
+    assertThat(detailQueryResponse.fromCache()).isTrue();
+    assertThat(detailQueryResponse.data()).isNotNull();
+    assertThat(detailQueryResponse.data().character()).isNotNull();
+    assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Han Solo");
 
     // test remove root query object
     assertThat(apolloClient.apolloStore().remove(CacheKey.from("2001"))).isTrue();
-    assertThat(apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data()).isNull();
+    masterQueryResponse = apolloClient.query(masterQuery).cacheControl(CacheControl.CACHE_ONLY).execute();
+    assertThat(masterQueryResponse.fromCache()).isTrue();
+    assertThat(masterQueryResponse.data()).isNull();
 
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
-    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    apolloClient.query(masterQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
 
-    characterData = apolloClient.query(character).cacheControl(CacheControl.CACHE_ONLY).execute().data();
-    assertThat(characterData).isNotNull();
-    assertThat(characterData.character()).isNotNull();
-    assertThat(characterData.character().asHuman().name()).isEqualTo("Han Solo");
+    detailQueryResponse = apolloClient.query(detailQuery).cacheControl(CacheControl.CACHE_ONLY).execute();
+    assertThat(detailQueryResponse.fromCache()).isTrue();
+    assertThat(detailQueryResponse.data()).isNotNull();
+    assertThat(detailQueryResponse.data().character()).isNotNull();
+    assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Han Solo");
 
     // test remove object from the list
     assertThat(apolloClient.apolloStore().remove(CacheKey.from("1002"))).isTrue();
-    assertThat(apolloClient.query(character).cacheControl(CacheControl.CACHE_ONLY).execute().data()).isNull();
-    assertThat(apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data()).isNull();
+    detailQueryResponse = apolloClient.query(detailQuery).cacheControl(CacheControl.CACHE_ONLY).execute();
+    assertThat(detailQueryResponse.fromCache()).isTrue();
+    assertThat(detailQueryResponse.data()).isNull();
+    masterQueryResponse = apolloClient.query(masterQuery).cacheControl(CacheControl.CACHE_ONLY).execute();
+    assertThat(masterQueryResponse.fromCache()).isTrue();
+    assertThat(masterQueryResponse.data()).isNull();
   }
 }

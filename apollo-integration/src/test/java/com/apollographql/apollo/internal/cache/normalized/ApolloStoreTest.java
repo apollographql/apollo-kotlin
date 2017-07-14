@@ -1,12 +1,15 @@
 package com.apollographql.apollo.internal.cache.normalized;
 
+import com.apollographql.apollo.Logger;
 import com.apollographql.apollo.NamedCountDownLatch;
+import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
+import com.apollographql.apollo.internal.util.ApolloLogger;
 import com.squareup.moshi.Moshi;
 
 import org.junit.Test;
@@ -39,7 +42,7 @@ public class ApolloStoreTest {
       @Override public boolean remove(@Nonnull CacheKey cacheKey) {
         return false;
       }
-    }, CacheKeyResolver.DEFAULT, Collections.EMPTY_MAP);
+    }, CacheKeyResolver.DEFAULT, Collections.EMPTY_MAP, new ApolloLogger(Optional.<Logger>absent()));
     realApolloStore.clearAll();
     latch.awaitOrThrowWithTimeout(3, TimeUnit.SECONDS);
   }
