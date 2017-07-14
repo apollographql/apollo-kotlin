@@ -415,8 +415,8 @@ public class NormalizedCacheTestCase {
     assertThat(characterData.character()).isNotNull();
     assertThat(characterData.character().asHuman().name()).isEqualTo("Han Solo");
 
-    assertThat(apolloClient.apolloStore().remove(CacheKey.from("1002"))).isTrue();
-    assertThat(apolloClient.query(character).cacheControl(CacheControl.CACHE_ONLY).execute().data()).isNull();
+    // test remove root query object
+    assertThat(apolloClient.apolloStore().remove(CacheKey.from("2001"))).isTrue();
     assertThat(apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data()).isNull();
 
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
@@ -427,7 +427,9 @@ public class NormalizedCacheTestCase {
     assertThat(characterData.character()).isNotNull();
     assertThat(characterData.character().asHuman().name()).isEqualTo("Han Solo");
 
-    assertThat(apolloClient.apolloStore().remove(CacheKey.from("2001"))).isTrue();
+    // test remove object from the list
+    assertThat(apolloClient.apolloStore().remove(CacheKey.from("1002"))).isTrue();
+    assertThat(apolloClient.query(character).cacheControl(CacheControl.CACHE_ONLY).execute().data()).isNull();
     assertThat(apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data()).isNull();
   }
 }

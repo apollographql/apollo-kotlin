@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteStatement;
 
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
+import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
@@ -18,6 +19,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static com.apollographql.apollo.cache.ApolloCacheHeaders.EVICT_AFTER_READ;
 import static com.apollographql.apollo.cache.ApolloCacheHeaders.DO_NOT_STORE;
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLUMN_KEY;
@@ -125,9 +127,9 @@ public final class SqlNormalizedCache extends NormalizedCache {
     updateStatement.executeInsert();
   }
 
-  void deleteRecord(String key) {
+  boolean deleteRecord(String key) {
     deleteStatement.bindString(1, key);
-    deleteStatement.executeUpdateDelete();
+    return deleteStatement.executeUpdateDelete() > 0;
   }
 
   Optional<Record> selectRecordForKey(String key) {
@@ -154,5 +156,10 @@ public final class SqlNormalizedCache extends NormalizedCache {
 
   public void close() {
     dbHelper.close();
+  }
+
+  @Override public boolean remove(@Nonnull CacheKey cacheKey) {
+    checkNotNull(cacheKey, "cacheKey == null");
+    return deleteRecord(cacheKey.key());
   }
 }
