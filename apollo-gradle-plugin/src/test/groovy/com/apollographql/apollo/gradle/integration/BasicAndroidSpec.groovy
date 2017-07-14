@@ -37,6 +37,12 @@ class BasicAndroidSpec extends Specification {
     assert new File(testProjectDir,
         "build/generated/source/apollo/generatedIR/debug/src/main/graphql/DebugAPI.json").isFile()
 
+    // OperationIdMap.json generated successfully
+    assert new File(testProjectDir,
+        "build/generated/source/apollo/generatedIR/release/src/main/graphql/ReleaseOperationIdMap.json").isFile()
+    assert new File(testProjectDir,
+        "build/generated/source/apollo/generatedIR/debug/src/main/graphql/DebugOperationIdMap.json").isFile()
+
     // Java classes generated successfully
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").isFile()
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/FilmsQuery.java").isFile()

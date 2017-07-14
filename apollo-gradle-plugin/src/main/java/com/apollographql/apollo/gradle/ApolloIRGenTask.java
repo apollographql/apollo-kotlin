@@ -55,11 +55,14 @@ public class ApolloIRGenTask extends NodeTask {
     for (Map.Entry<String, ApolloCodegenArgs> entry : schemaQueryMap.entrySet()) {
       String irOutput = outputDir.getAbsolutePath() + "/" + getProject().relativePath(entry.getValue().getSchemaFile().getParent());
       new File(irOutput).mkdirs();
-
       List<String> apolloArgs = Lists.newArrayList("generate");
       apolloArgs.addAll(entry.getValue().getQueryFiles());
-      apolloArgs.addAll(Lists.newArrayList("--add-typename", "--schema", entry.getValue().getSchemaFile()
-              .getAbsolutePath(), "--output", irOutput + "/" + Utils.capitalize(variant) + "API.json", "--target", "json"));
+      apolloArgs.addAll(Lists.newArrayList("--add-typename",
+          "--schema", entry.getValue().getSchemaFile().getAbsolutePath(),
+          "--output", irOutput + "/" + Utils.capitalize(variant) + "API.json",
+          "--operation-ids-path", irOutput + "/" + Utils.capitalize(variant) + "OperationIdMap.json",
+          "--merge-in-fields-from-fragment-spreads", "false",
+          "--target", "json"));
       setArgs(apolloArgs);
       super.exec();
     }
