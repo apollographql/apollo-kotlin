@@ -44,7 +44,19 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
     } else {
       cacheReference = fieldValue(record, field);
     }
-    return cacheReference != null ? readableCache.read(cacheReference.key(), cacheHeaders) : null;
+
+    if (cacheReference != null) {
+      Record referencedRecord = readableCache.read(cacheReference.key(), cacheHeaders);
+      if (referencedRecord == null) {
+        // we are unable to find record in the cache by reference,
+        // means it was removed intentionally by using imperative store API or
+        // evicted from LRU cache, we must prevent of further resolving cache response as it's broken
+        throw new IllegalStateException("Cache MISS: failed to find record in cache by reference");
+      }
+      return referencedRecord;
+    }
+
+    return null;
   }
 
   private List<Record> valueForObjectList(Record record, ResponseField field) {

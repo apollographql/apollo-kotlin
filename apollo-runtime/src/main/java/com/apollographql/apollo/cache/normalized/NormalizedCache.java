@@ -102,4 +102,11 @@ public abstract class NormalizedCache {
    */
   public abstract void clearAll();
 
+  /**
+   * Remove cached record by the key
+   *
+   * @param cacheKey of record to be removed
+   * @return {@code true} if record with such key was successfully removed, {@code false} otherwise
+   */
+  public abstract boolean remove(@Nonnull CacheKey cacheKey);
 }

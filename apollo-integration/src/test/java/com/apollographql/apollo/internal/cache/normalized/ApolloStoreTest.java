@@ -2,6 +2,7 @@ package com.apollographql.apollo.internal.cache.normalized;
 
 import com.apollographql.apollo.NamedCountDownLatch;
 import com.apollographql.apollo.cache.CacheHeaders;
+import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
@@ -33,6 +34,10 @@ public class ApolloStoreTest {
 
       @Override public void clearAll() {
         latch.countDown();
+      }
+
+      @Override public boolean remove(@Nonnull CacheKey cacheKey) {
+        return false;
       }
     }, CacheKeyResolver.DEFAULT, Collections.EMPTY_MAP);
     realApolloStore.clearAll();

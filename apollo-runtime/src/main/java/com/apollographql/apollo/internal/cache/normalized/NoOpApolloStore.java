@@ -49,6 +49,10 @@ public final class NoOpApolloStore implements ApolloStore, ReadableStore, Writea
   @Override public void clearAll() {
   }
 
+  @Override public boolean remove(@Nonnull CacheKey cacheKey) {
+    return false;
+  }
+
   @Override public ResponseNormalizer<Map<String, Object>> networkResponseNormalizer() {
     //noinspection unchecked
     return ResponseNormalizer.NO_OP_NORMALIZER;

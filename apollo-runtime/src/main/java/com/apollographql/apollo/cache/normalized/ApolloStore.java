@@ -51,6 +51,14 @@ public interface ApolloStore {
   void clearAll();
 
   /**
+   * Remove cached record by the key
+   *
+   * @param cacheKey of record to be removed
+   * @return {@code true} if record with such key was successfully removed, {@code false} otherwise
+   */
+  boolean remove(@Nonnull CacheKey cacheKey);
+
+  /**
    * @return The {@link ResponseNormalizer} used to generate normalized records from the network.
    */
   ResponseNormalizer<Map<String, Object>> networkResponseNormalizer();

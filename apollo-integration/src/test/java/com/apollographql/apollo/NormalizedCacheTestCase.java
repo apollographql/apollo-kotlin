@@ -386,7 +386,7 @@ public class NormalizedCacheTestCase {
     assertThat(fragment.name()).isEqualTo("Leia Organa");
   }
 
-  @Test public void fromCacheFlag() throws Exception {
+  @Test public void from_cache_flag() throws Exception {
     server.enqueue(mockResponse("HeroNameResponse.json"));
     assertThat(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).execute().fromCache()).isFalse();
 
@@ -399,5 +399,35 @@ public class NormalizedCacheTestCase {
         .execute().fromCache()).isTrue();
     assertThat(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).cacheControl(CacheControl.NETWORK_FIRST)
         .execute().fromCache()).isTrue();
+  }
+
+  @Test public void remove_from_store() throws Exception {
+    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
+    HeroAndFriendsNamesWithIDsQuery query = new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE);
+    HeroAndFriendsNamesWithIDsQuery.Data heroAndFriendsNamesData = apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute().data();
+    assertThat(heroAndFriendsNamesData).isNotNull();
+    assertThat(heroAndFriendsNamesData.hero()).isNotNull();
+    assertThat(heroAndFriendsNamesData.hero().name()).isEqualTo("R2-D2");
+
+    CharacterNameByIdQuery character = new CharacterNameByIdQuery("1002");
+    CharacterNameByIdQuery.Data characterData = apolloClient.query(character).cacheControl(CacheControl.CACHE_ONLY).execute().data();
+    assertThat(characterData).isNotNull();
+    assertThat(characterData.character()).isNotNull();
+    assertThat(characterData.character().asHuman().name()).isEqualTo("Han Solo");
+
+    assertThat(apolloClient.apolloStore().remove(CacheKey.from("1002"))).isTrue();
+    assertThat(apolloClient.query(character).cacheControl(CacheControl.CACHE_ONLY).execute().data()).isNull();
+    assertThat(apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data()).isNull();
+
+    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
+    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+
+    characterData = apolloClient.query(character).cacheControl(CacheControl.CACHE_ONLY).execute().data();
+    assertThat(characterData).isNotNull();
+    assertThat(characterData.character()).isNotNull();
+    assertThat(characterData.character().asHuman().name()).isEqualTo("Han Solo");
+
+    assertThat(apolloClient.apolloStore().remove(CacheKey.from("2001"))).isTrue();
+    assertThat(apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data()).isNull();
   }
 }

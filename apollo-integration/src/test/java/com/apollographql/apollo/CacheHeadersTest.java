@@ -2,6 +2,7 @@ package com.apollographql.apollo;
 
 import android.support.annotation.NonNull;
 
+import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
@@ -60,6 +61,9 @@ public class CacheHeadersTest {
       @Override public void clearAll() {
       }
 
+      @Override public boolean remove(@Nonnull CacheKey cacheKey) {
+        return false;
+      }
     };
 
     final NormalizedCacheFactory<NormalizedCache> cacheFactory = new NormalizedCacheFactory<NormalizedCache>() {
@@ -96,7 +100,10 @@ public class CacheHeadersTest {
       }
 
       @Override public void clearAll() {
+      }
 
+      @Override public boolean remove(@Nonnull CacheKey cacheKey) {
+        return false;
       }
     };
 

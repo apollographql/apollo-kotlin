@@ -4,6 +4,7 @@ import com.apollographql.apollo.api.internal.Function;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
+import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.Record;
@@ -18,6 +19,8 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
  * A {@link NormalizedCache} backed by an in memory {@link Cache}. Can be configured with an optional secondaryCache
@@ -116,6 +119,21 @@ public final class LruNormalizedCache extends NormalizedCache {
   @Override public void clearAll() {
     clearPrimaryCache();
     clearSecondaryCache();
+  }
+
+  @Override public boolean remove(@Nonnull CacheKey cacheKey) {
+    checkNotNull(cacheKey, "cacheKey == null");
+    boolean result = false;
+    if (lruCache.getIfPresent(cacheKey.key()) != null) {
+      lruCache.invalidate(cacheKey.key());
+      result = true;
+    }
+
+    if (secondaryCache.isPresent()) {
+      result |= secondaryCache.get().remove(cacheKey);
+    }
+
+    return result;
   }
 
   /**

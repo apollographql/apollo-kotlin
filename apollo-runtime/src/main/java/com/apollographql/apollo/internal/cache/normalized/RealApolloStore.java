@@ -94,6 +94,15 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     });
   }
 
+  @Override public boolean remove(@Nonnull final CacheKey cacheKey) {
+    checkNotNull(cacheKey, "cacheKey == null");
+    return writeTransaction(new Transaction<WriteableStore, Boolean>() {
+      @Override public Boolean execute(WriteableStore cache) {
+        return normalizedCache.remove(cacheKey);
+      }
+    });
+  }
+
   @Override public <R> R readTransaction(Transaction<ReadableStore, R> transaction) {
     lock.readLock().lock();
     try {
