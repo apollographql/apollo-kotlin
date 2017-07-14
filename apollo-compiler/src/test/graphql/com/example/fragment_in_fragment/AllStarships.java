@@ -56,6 +56,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
   }
 
   @Override
+  public String operationId() {
+    return "6bc63c6c2eaea4bbf8a55313dbfee24c55d43b654411215b84780cf8f04699f3";
+  }
+
+  @Override
   public String queryDocument() {
     return QUERY_DOCUMENT;
   }

@@ -100,7 +100,9 @@
 					"inlineFragments": []
 				}
 			],
-			"fragmentsReferenced": []
+			"fragmentsReferenced": [],
+			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name\n    friendsConnection {\n      __typename\n      totalCount\n      edges {\n        __typename\n        node {\n          __typename\n          name\n        }\n      }\n    }\n  }\n}",
+			"operationId": "bd31d2946fb8bd87d560a73a4e14753bd9ea366bc94001f86d5a5fef0b459bee"
 		}
 	],
 	"fragments": [],

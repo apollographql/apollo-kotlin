@@ -205,7 +205,9 @@
 					"inlineFragments": []
 				}
 			],
-			"fragmentsReferenced": []
+			"fragmentsReferenced": [],
+			"sourceWithFragments": "query TestQuery {\n  r2: hero {\n    __typename\n    name\n    friendsConnection {\n      __typename\n      totalCount\n      edges {\n        __typename\n        node {\n          __typename\n          name\n        }\n      }\n    }\n  }\n  luke: hero(episode: EMPIRE) {\n    __typename\n    id\n    name\n    friendsConnection {\n      __typename\n      totalCount\n      edges {\n        __typename\n        node {\n          __typename\n          name\n        }\n      }\n    }\n  }\n}",
+			"operationId": "e8d7fac5e934be8f96520ce424ad3d9a447507405f3e43733873897b8ec27ec6"
 		}
 	],
 	"fragments": [],

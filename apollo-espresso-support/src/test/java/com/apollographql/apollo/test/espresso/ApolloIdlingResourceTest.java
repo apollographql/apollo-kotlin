@@ -75,6 +75,10 @@ public class ApolloIdlingResourceTest {
     @Nonnull @Override public OperationName name() {
       return operationName;
     }
+
+    @Nonnull @Override public String operationId() {
+      return "";
+    }
   };
 
   @Before

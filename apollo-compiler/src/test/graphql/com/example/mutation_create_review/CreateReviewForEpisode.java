@@ -53,6 +53,11 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
   }
 
   @Override
+  public String operationId() {
+    return "eb015fa9dd6e305a9228393e61579154ae22719f6a18df6d00b45659ee2e7f7f";
+  }
+
+  @Override
   public String queryDocument() {
     return QUERY_DOCUMENT;
   }

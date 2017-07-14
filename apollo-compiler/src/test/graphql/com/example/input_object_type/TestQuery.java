@@ -53,6 +53,11 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
   }
 
   @Override
+  public String operationId() {
+    return "557e9010a4f6274a5409cc73de928653c878c931099afa98357c530df729a448";
+  }
+
+  @Override
   public String queryDocument() {
     return QUERY_DOCUMENT;
   }

@@ -46,6 +46,10 @@ public class ResponseFetcherTest {
         return null;
       }
 
+      @Nonnull @Override public String operationId() {
+        return "";
+      }
+
       @Override public Object wrapData(Data data) {
         return data;
       }

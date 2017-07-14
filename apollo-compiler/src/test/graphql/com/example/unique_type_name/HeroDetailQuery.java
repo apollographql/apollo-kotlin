@@ -65,6 +65,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
   }
 
   @Override
+  public String operationId() {
+    return "1bffe51c14b1ef09ab54127a8e231d654eac3570c6106b924e0ac9d351061acb";
+  }
+
+  @Override
   public String queryDocument() {
     return QUERY_DOCUMENT;
   }

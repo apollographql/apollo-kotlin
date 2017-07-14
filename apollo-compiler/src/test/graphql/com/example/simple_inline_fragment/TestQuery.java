@@ -52,6 +52,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   @Override
+  public String operationId() {
+    return "b0f3f33d97a1ff5035984e7472107997adaecc8512a8c63358f594dd01faf007";
+  }
+
+  @Override
   public String queryDocument() {
     return QUERY_DOCUMENT;
   }

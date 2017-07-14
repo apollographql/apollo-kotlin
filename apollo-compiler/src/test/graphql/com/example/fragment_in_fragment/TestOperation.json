@@ -70,7 +70,9 @@
 			"fragmentsReferenced": [
 				"starshipFragment",
 				"pilotFragment"
-			]
+			],
+			"sourceWithFragments": "query AllStarships {\n  allStarships(first: 7) {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        ...starshipFragment\n      }\n    }\n  }\n}\nfragment pilotFragment on Person {\n  __typename\n  name\n  homeworld {\n    __typename\n    name\n  }\n}\nfragment starshipFragment on Starship {\n  __typename\n  id\n  name\n  pilotConnection {\n    __typename\n    edges {\n      __typename\n      node {\n        __typename\n        ...pilotFragment\n      }\n    }\n  }\n}",
+			"operationId": "6bc63c6c2eaea4bbf8a55313dbfee24c55d43b654411215b84780cf8f04699f3"
 		}
 	],
 	"fragments": [

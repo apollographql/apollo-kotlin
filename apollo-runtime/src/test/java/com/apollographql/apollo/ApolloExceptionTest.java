@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
 
@@ -61,6 +60,10 @@ import static junit.framework.Assert.fail;
 
       @Nonnull @Override public OperationName name() {
         return null;
+      }
+
+      @Nonnull @Override public String operationId() {
+        return "";
       }
 
       @Override public Object wrapData(Data data) {
