@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -405,15 +406,12 @@ public class NormalizedCacheTestCase {
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
     HeroAndFriendsNamesWithIDsQuery masterQuery = new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE);
     Response<HeroAndFriendsNamesWithIDsQuery.Data> masterQueryResponse = apolloClient.query(masterQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
-    assertThat(masterQueryResponse.data()).isNotNull();
-    assertThat(masterQueryResponse.data().hero()).isNotNull();
     assertThat(masterQueryResponse.data().hero().name()).isEqualTo("R2-D2");
+    assertThat(masterQueryResponse.data().hero().friends()).hasSize(3);
 
     CharacterNameByIdQuery detailQuery = new CharacterNameByIdQuery("1002");
     Response<CharacterNameByIdQuery.Data> detailQueryResponse = apolloClient.query(detailQuery).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(detailQueryResponse.fromCache()).isTrue();
-    assertThat(detailQueryResponse.data()).isNotNull();
-    assertThat(detailQueryResponse.data().character()).isNotNull();
     assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Han Solo");
 
     // test remove root query object
@@ -425,19 +423,67 @@ public class NormalizedCacheTestCase {
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
     apolloClient.query(masterQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
 
+    detailQuery = new CharacterNameByIdQuery("1002");
     detailQueryResponse = apolloClient.query(detailQuery).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(detailQueryResponse.fromCache()).isTrue();
-    assertThat(detailQueryResponse.data()).isNotNull();
-    assertThat(detailQueryResponse.data().character()).isNotNull();
     assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Han Solo");
 
     // test remove object from the list
     assertThat(apolloClient.apolloStore().remove(CacheKey.from("1002"))).isTrue();
+
+    detailQuery = new CharacterNameByIdQuery("1002");
     detailQueryResponse = apolloClient.query(detailQuery).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(detailQueryResponse.fromCache()).isTrue();
     assertThat(detailQueryResponse.data()).isNull();
     masterQueryResponse = apolloClient.query(masterQuery).cacheControl(CacheControl.CACHE_ONLY).execute();
     assertThat(masterQueryResponse.fromCache()).isTrue();
     assertThat(masterQueryResponse.data()).isNull();
+
+    detailQuery = new CharacterNameByIdQuery("1003");
+    detailQueryResponse = apolloClient.query(detailQuery).cacheControl(CacheControl.CACHE_ONLY).execute();
+    assertThat(detailQueryResponse.fromCache()).isTrue();
+    assertThat(detailQueryResponse.data()).isNotNull();
+    assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Leia Organa");
+  }
+
+  @Test public void remove_multiple_from_store() throws Exception {
+    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
+
+    HeroAndFriendsNamesWithIDsQuery masterQuery = new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE);
+    Response<HeroAndFriendsNamesWithIDsQuery.Data> masterQueryResponse = apolloClient.query(masterQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    assertThat(masterQueryResponse.data().hero().name()).isEqualTo("R2-D2");
+    assertThat(masterQueryResponse.data().hero().friends()).hasSize(3);
+
+    CharacterNameByIdQuery detailQuery = new CharacterNameByIdQuery("1000");
+    Response<CharacterNameByIdQuery.Data> detailQueryResponse = apolloClient.query(detailQuery).cacheControl(CacheControl.CACHE_ONLY).execute();
+    assertThat(detailQueryResponse.fromCache()).isTrue();
+    assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Luke Skywalker");
+
+    detailQuery = new CharacterNameByIdQuery("1002");
+    detailQueryResponse = apolloClient.query(detailQuery).cacheControl(CacheControl.CACHE_ONLY).execute();
+    assertThat(detailQueryResponse.fromCache()).isTrue();
+    assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Han Solo");
+
+    detailQuery = new CharacterNameByIdQuery("1003");
+    detailQueryResponse = apolloClient.query(detailQuery).cacheControl(CacheControl.CACHE_ONLY).execute();
+    assertThat(detailQueryResponse.fromCache()).isTrue();
+    assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Leia Organa");
+
+    assertThat(apolloClient.apolloStore().remove(Arrays.asList(CacheKey.from("1002"), CacheKey.from("1000")))).isEqualTo(2);
+
+    detailQuery = new CharacterNameByIdQuery("1000");
+    detailQueryResponse = apolloClient.query(detailQuery).cacheControl(CacheControl.CACHE_ONLY).execute();
+    assertThat(detailQueryResponse.fromCache()).isTrue();
+    assertThat(detailQueryResponse.data()).isNull();
+
+    detailQuery = new CharacterNameByIdQuery("1002");
+    detailQueryResponse = apolloClient.query(detailQuery).cacheControl(CacheControl.CACHE_ONLY).execute();
+    assertThat(detailQueryResponse.fromCache()).isTrue();
+    assertThat(detailQueryResponse.data()).isNull();
+
+    detailQuery = new CharacterNameByIdQuery("1003");
+    detailQueryResponse = apolloClient.query(detailQuery).cacheControl(CacheControl.CACHE_ONLY).execute();
+    assertThat(detailQueryResponse.fromCache()).isTrue();
+    assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Leia Organa");
   }
 }

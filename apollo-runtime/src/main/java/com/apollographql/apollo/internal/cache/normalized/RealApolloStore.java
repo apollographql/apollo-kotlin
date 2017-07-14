@@ -20,6 +20,7 @@ import com.apollographql.apollo.internal.util.ApolloLogger;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -102,6 +103,21 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     return writeTransaction(new Transaction<WriteableStore, Boolean>() {
       @Override public Boolean execute(WriteableStore cache) {
         return normalizedCache.remove(cacheKey);
+      }
+    });
+  }
+
+  @Override public int remove(@Nonnull final List<CacheKey> cacheKeys) {
+    checkNotNull(cacheKeys, "cacheKey == null");
+    return writeTransaction(new Transaction<WriteableStore, Integer>() {
+      @Override public Integer execute(WriteableStore cache) {
+        int count = 0;
+        for (CacheKey cacheKey : cacheKeys) {
+          if (normalizedCache.remove(cacheKey)) {
+            count++;
+          }
+        }
+        return count;
       }
     });
   }
