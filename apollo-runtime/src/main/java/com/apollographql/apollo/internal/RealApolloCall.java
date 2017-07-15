@@ -89,7 +89,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     apolloStore = builder.apolloStore;
     responseFetcher = builder.responseFetcher;
     cacheHeaders = builder.cacheHeaders;
-    fetchOptions = FetchOptions.NETWORK.edit().cacheHeaders(cacheHeaders).build();
+    fetchOptions = FetchOptions.NETWORK_ONLY.edit().cacheHeaders(cacheHeaders).build();
     dispatcher = builder.dispatcher;
     logger = builder.logger;
     applicationInterceptors = builder.applicationInterceptors;

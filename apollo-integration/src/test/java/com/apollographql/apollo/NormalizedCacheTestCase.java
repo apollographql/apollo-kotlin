@@ -33,10 +33,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.apollographql.apollo.fetcher.ApolloResponseFetcher.CACHE_FIRST;
-import static com.apollographql.apollo.fetcher.ApolloResponseFetcher.CACHE_ONLY;
-import static com.apollographql.apollo.fetcher.ApolloResponseFetcher.NETWORK_FIRST;
-import static com.apollographql.apollo.fetcher.ApolloResponseFetcher.NETWORK_ONLY;
+import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_FIRST;
+import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
+import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_FIRST;
+import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 import static com.google.common.truth.Truth.assertThat;
 
 public class NormalizedCacheTestCase {

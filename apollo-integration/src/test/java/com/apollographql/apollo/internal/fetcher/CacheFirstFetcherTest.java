@@ -13,7 +13,7 @@ import java.util.concurrent.TimeoutException;
 
 import okhttp3.mockwebserver.MockResponse;
 
-import static com.apollographql.apollo.fetcher.ApolloResponseFetcher.CACHE_FIRST;
+import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_FIRST;
 import static com.google.common.truth.Truth.assertThat;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 

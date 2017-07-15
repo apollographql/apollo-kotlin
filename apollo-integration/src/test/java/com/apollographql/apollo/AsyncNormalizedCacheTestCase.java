@@ -1,6 +1,6 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.fetcher.ApolloResponseFetcher;
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.api.Response;
@@ -65,8 +65,8 @@ public class AsyncNormalizedCacheTestCase {
 
     final CountDownLatch latch = new CountDownLatch(1000);
     for (int i = 0; i < 1000; i++) {
-      apolloClient.query(query).responseFetcher(i % 2 == 0 ? ApolloResponseFetcher.NETWORK_FIRST
-          : ApolloResponseFetcher.CACHE_ONLY)
+      apolloClient.query(query).responseFetcher(i % 2 == 0 ? ApolloResponseFetchers.NETWORK_FIRST
+          : ApolloResponseFetchers.CACHE_ONLY)
           .enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
             @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
               assertThat(response.hasErrors()).isFalse();

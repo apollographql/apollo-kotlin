@@ -14,7 +14,7 @@ public final class FetchOptions {
   public final boolean fetchFromCache;
   public final CacheHeaders cacheHeaders;
 
-  public static final FetchOptions NETWORK = new FetchOptions(false, CacheHeaders.NONE);
+  public static final FetchOptions NETWORK_ONLY = new FetchOptions(false, CacheHeaders.NONE);
 
   public FetchOptions(boolean fetchFromCache, @Nonnull CacheHeaders cacheHeaders) {
     this.fetchFromCache = fetchFromCache;
@@ -60,7 +60,7 @@ public final class FetchOptions {
     private CacheHeaders cacheHeaders;
 
     public Builder() {
-      this(NETWORK);
+      this(NETWORK_ON);
     }
 
     public Builder(FetchOptions fetchOptions) {

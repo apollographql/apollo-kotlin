@@ -11,7 +11,7 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.exception.ApolloParseException;
-import com.apollographql.apollo.fetcher.ApolloResponseFetcher;
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 
 import java.util.Collections;
@@ -25,7 +25,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
   private RealApolloCall<T> activeCall;
   private ApolloCall.Callback<T> callback;
-  private ResponseFetcher refetchResponseFetcher = ApolloResponseFetcher.CACHE_FIRST;
+  private ResponseFetcher refetchResponseFetcher = ApolloResponseFetchers.CACHE_FIRST;
   private volatile boolean canceled;
   private boolean executed = false;
   private final ApolloStore apolloStore;

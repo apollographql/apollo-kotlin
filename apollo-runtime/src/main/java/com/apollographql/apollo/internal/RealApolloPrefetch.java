@@ -70,7 +70,7 @@ import okhttp3.Response;
 
     try {
       tracker.registerPrefetchCall(this);
-      httpResponse = interceptorChain.proceed(FetchOptions.NETWORK).httpResponse.get();
+      httpResponse = interceptorChain.proceed(FetchOptions.NETWORK_ONLY).httpResponse.get();
     } catch (Exception e) {
       if (canceled) {
         throw new ApolloCanceledException("Canceled", e);
@@ -103,7 +103,7 @@ import okhttp3.Response;
       }
     }
     tracker.registerPrefetchCall(this);
-    interceptorChain.proceedAsync(dispatcher, FetchOptions.NETWORK,
+    interceptorChain.proceedAsync(dispatcher, FetchOptions.NETWORK_ONLY,
         interceptorCallbackProxy(responseCallback));
   }
 

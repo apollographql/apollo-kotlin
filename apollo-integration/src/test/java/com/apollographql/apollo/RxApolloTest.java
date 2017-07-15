@@ -27,7 +27,7 @@ import rx.Subscription;
 import rx.observers.AssertableSubscriber;
 import rx.observers.TestSubscriber;
 
-import static com.apollographql.apollo.fetcher.ApolloResponseFetcher.NETWORK_ONLY;
+import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 import static com.google.common.truth.Truth.assertThat;
 
 public class RxApolloTest {

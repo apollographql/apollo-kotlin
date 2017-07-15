@@ -6,7 +6,7 @@ import com.apollographql.apollo.internal.fetcher.CacheAndNetworkFetcher;
 import com.apollographql.apollo.internal.fetcher.NetworkFirstFetcher;
 import com.apollographql.apollo.internal.fetcher.NetworkOnlyFetcher;
 
-public final class ApolloResponseFetcher {
+public final class ApolloResponseFetchers {
 
   /**
    * Signals the apollo client to <b>only</b> fetch the data from the normalized cache. If it's not present in

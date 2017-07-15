@@ -8,7 +8,7 @@ import com.apollographql.apollo.IdFieldCacheKeyResolver;
 import com.apollographql.apollo.NamedCountDownLatch;
 import com.apollographql.apollo.Utils;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.fetcher.ApolloResponseFetcher;
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
@@ -32,7 +32,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.apollographql.apollo.fetcher.ApolloResponseFetcher.CACHE_ONLY;
+import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.google.common.truth.Truth.assertThat;
 
 public class QueryRefetchTest {
@@ -90,7 +90,7 @@ public class QueryRefetchTest {
   @Test public void refetch_query_pre_cached() throws Exception {
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"));
     ReviewsByEpisodeQuery empireReviewsQuery = new ReviewsByEpisodeQuery(Episode.EMPIRE);
-    apolloClient.query(empireReviewsQuery).responseFetcher(ApolloResponseFetcher.NETWORK_FIRST).execute();
+    apolloClient.query(empireReviewsQuery).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST).execute();
 
     Response<ReviewsByEpisodeQuery.Data> empireReviewsQueryResponse = apolloClient.query(empireReviewsQuery)
         .responseFetcher(CACHE_ONLY).execute();
@@ -134,7 +134,7 @@ public class QueryRefetchTest {
     final AtomicReference<Response<ReviewsByEpisodeQuery.Data>> empireReviewsWatchResponse = new AtomicReference<>();
     ApolloQueryWatcher<ReviewsByEpisodeQuery.Data> queryWatcher = apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE))
         .watcher()
-        .refetchResponseFetcher(ApolloResponseFetcher.NETWORK_FIRST)
+        .refetchResponseFetcher(ApolloResponseFetchers.NETWORK_FIRST)
         .enqueueAndWatch(new ApolloCall.Callback<ReviewsByEpisodeQuery.Data>() {
           @Override public void onResponse(@Nonnull Response<ReviewsByEpisodeQuery.Data> response) {
             empireReviewsWatchResponse.set(response);

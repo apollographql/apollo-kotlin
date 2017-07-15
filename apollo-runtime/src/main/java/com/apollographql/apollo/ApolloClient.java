@@ -14,7 +14,7 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
-import com.apollographql.apollo.fetcher.ApolloResponseFetcher;
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.internal.ApolloCallTracker;
@@ -103,7 +103,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   @Override
   public <D extends Mutation.Data, T, V extends Mutation.Variables> ApolloMutationCall<T> mutate(
       @Nonnull Mutation<D, T, V> mutation) {
-    return newCall(mutation).responseFetcher(ApolloResponseFetcher.NETWORK_ONLY);
+    return newCall(mutation).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY);
   }
 
   @Override
@@ -204,7 +204,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     Optional<NormalizedCacheFactory> cacheFactory = Optional.absent();
     Optional<CacheKeyResolver> cacheKeyResolver = Optional.absent();
     HttpCachePolicy.Policy defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY;
-    ResponseFetcher defaultResponseFetcher = ApolloResponseFetcher.CACHE_FIRST;
+    ResponseFetcher defaultResponseFetcher = ApolloResponseFetchers.CACHE_FIRST;
     CacheHeaders defaultCacheHeaders = CacheHeaders.NONE;
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
     private final Moshi.Builder moshiBuilder = new Moshi.Builder();

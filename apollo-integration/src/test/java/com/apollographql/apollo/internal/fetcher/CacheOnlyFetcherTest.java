@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static com.apollographql.apollo.fetcher.ApolloResponseFetcher.CACHE_ONLY;
-import static com.apollographql.apollo.fetcher.ApolloResponseFetcher.NETWORK_ONLY;
+import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
+import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 import static com.google.common.truth.Truth.assertThat;
 
 public class CacheOnlyFetcherTest extends BaseFetcherTest {
