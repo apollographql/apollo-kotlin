@@ -15,10 +15,12 @@ import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.internal.field.CacheFieldValueResolver;
 import com.apollographql.apollo.internal.reader.RealResponseReader;
+import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -36,12 +38,14 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final ReadWriteLock lock;
   private final Set<RecordChangeSubscriber> subscribers;
+  private final ApolloLogger logger;
 
   public RealApolloStore(@Nonnull NormalizedCache normalizedCache, @Nonnull CacheKeyResolver cacheKeyResolver,
-      @Nonnull final Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+      @Nonnull final Map<ScalarType, CustomTypeAdapter> customTypeAdapters, @Nonnull ApolloLogger logger) {
     this.normalizedCache = checkNotNull(normalizedCache, "cacheStore == null");
     this.cacheKeyResolver = checkNotNull(cacheKeyResolver, "cacheKeyResolver == null");
     this.customTypeAdapters = checkNotNull(customTypeAdapters, "customTypeAdapters == null");
+    this.logger = checkNotNull(logger, "logger == null");
     this.lock = new ReentrantReadWriteLock();
     this.subscribers = Collections.newSetFromMap(new WeakHashMap<RecordChangeSubscriber, Boolean>());
   }
@@ -90,6 +94,30 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
       @Override public Boolean execute(WriteableStore cache) {
         normalizedCache.clearAll();
         return true;
+      }
+    });
+  }
+
+  @Override public boolean remove(@Nonnull final CacheKey cacheKey) {
+    checkNotNull(cacheKey, "cacheKey == null");
+    return writeTransaction(new Transaction<WriteableStore, Boolean>() {
+      @Override public Boolean execute(WriteableStore cache) {
+        return normalizedCache.remove(cacheKey);
+      }
+    });
+  }
+
+  @Override public int remove(@Nonnull final List<CacheKey> cacheKeys) {
+    checkNotNull(cacheKeys, "cacheKey == null");
+    return writeTransaction(new Transaction<WriteableStore, Integer>() {
+      @Override public Integer execute(WriteableStore cache) {
+        int count = 0;
+        for (CacheKey cacheKey : cacheKeys) {
+          if (normalizedCache.remove(cacheKey)) {
+            count++;
+          }
+        }
+        return count;
       }
     });
   }
@@ -171,13 +199,18 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
             cacheKeyResolver(), cacheHeaders);
         RealResponseReader<Record> responseReader = new RealResponseReader<>(operation.variables(), rootRecord,
             fieldValueResolver, customTypeAdapters, responseNormalizer);
-        responseNormalizer.willResolveRootQuery(operation);
-        T data = operation.wrapData(responseFieldMapper.map(responseReader));
-        return Response.<T>builder(operation)
-            .data(data)
-            .fromCache(true)
-            .dependentKeys(responseNormalizer.dependentKeys())
-            .build();
+        try {
+          responseNormalizer.willResolveRootQuery(operation);
+          T data = operation.wrapData(responseFieldMapper.map(responseReader));
+          return Response.<T>builder(operation)
+              .data(data)
+              .fromCache(true)
+              .dependentKeys(responseNormalizer.dependentKeys())
+              .build();
+        } catch (Exception e) {
+          logger.e(e, "Failed to read cache response");
+          return Response.<T>builder(operation).fromCache(true).build();
+        }
       }
     });
   }

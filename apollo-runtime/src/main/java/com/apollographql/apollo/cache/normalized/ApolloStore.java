@@ -11,6 +11,7 @@ import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.cache.normalized.Transaction;
 import com.apollographql.apollo.internal.cache.normalized.WriteableStore;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,6 +50,22 @@ public interface ApolloStore {
    * Clear all records from this {@link ApolloStore}.
    */
   void clearAll();
+
+  /**
+   * Remove cache record by the key
+   *
+   * @param cacheKey of record to be removed
+   * @return {@code true} if record with such key was successfully removed, {@code false} otherwise
+   */
+  boolean remove(@Nonnull CacheKey cacheKey);
+
+  /**
+   * Remove cache records by the list of keys
+   *
+   * @param cacheKeys keys of records to be removed
+   * @return the count of records been removed
+   */
+  int remove(@Nonnull List<CacheKey> cacheKeys);
 
   /**
    * @return The {@link ResponseNormalizer} used to generate normalized records from the network.

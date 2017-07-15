@@ -13,6 +13,7 @@ import com.apollographql.apollo.cache.normalized.Record;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,6 +48,14 @@ public final class NoOpApolloStore implements ApolloStore, ReadableStore, Writea
   }
 
   @Override public void clearAll() {
+  }
+
+  @Override public boolean remove(@Nonnull CacheKey cacheKey) {
+    return false;
+  }
+
+  @Override public int remove(@Nonnull List<CacheKey> cacheKeys) {
+    return 0;
   }
 
   @Override public ResponseNormalizer<Map<String, Object>> networkResponseNormalizer() {
