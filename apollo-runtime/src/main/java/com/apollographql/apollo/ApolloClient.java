@@ -345,8 +345,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
-     * Set the default {@link ResponseFetcher} that will create a {@link ResponseFetcher} to be passed
-     * to each new {@link ApolloCall}.
+     * Set the default {@link ResponseFetcher} to be used with each new {@link ApolloCall}.
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */

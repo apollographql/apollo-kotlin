@@ -63,11 +63,12 @@ public class Rx2Apollo {
   }
 
   /**
-   * Converts an {@link ApolloCall} to an {@link Observable}.
+   * Converts an {@link ApolloCall} to an {@link Observable}. The number of emissions this Observable
+   * will have is based on the {@link com.apollographql.apollo.fetcher.ResponseFetcher} used with the call.
    *
    * @param originalCall the ApolloCall to convert
    * @param <T>          the value type.
-   * @return the converted Single
+   * @return the converted Observable
    * @throws NullPointerException if originalCall == null
    */
   @Nonnull public static <T> Observable<Response<T>> from(@Nonnull final ApolloCall<T> originalCall) {

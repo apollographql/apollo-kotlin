@@ -79,7 +79,8 @@ public final class RxApollo {
   }
 
   /**
-   * Converts an {@link ApolloCall} to a Observable.
+   * Converts an {@link ApolloCall} to a Observable. The number of emissions this Observable will have
+   * is based on the {@link com.apollographql.apollo.fetcher.ResponseFetcher} used with the call.
    *
    * @param call             the ApolloCall to convert
    * @param <T>              the value type
@@ -115,7 +116,9 @@ public final class RxApollo {
   }
 
   /**
-   * Converts an {@link ApolloCall} to a Observable with backpressure mode {@link rx.Emitter.BackpressureMode#BUFFER}.
+   * Converts an {@link ApolloCall} to a Observable with
+   * backpressure mode {@link rx.Emitter.BackpressureMode#BUFFER}. The number of emissions this Observable will have
+   * is based on the {@link com.apollographql.apollo.fetcher.ResponseFetcher} used with the call.
    *
    * @param call the ApolloCall to convert
    * @param <T>  the value type

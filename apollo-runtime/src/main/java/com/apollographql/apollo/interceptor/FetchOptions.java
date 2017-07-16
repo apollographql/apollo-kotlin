@@ -60,7 +60,7 @@ public final class FetchOptions {
     private CacheHeaders cacheHeaders;
 
     public Builder() {
-      this(NETWORK_ON);
+      this(NETWORK_ONLY);
     }
 
     public Builder(FetchOptions fetchOptions) {
