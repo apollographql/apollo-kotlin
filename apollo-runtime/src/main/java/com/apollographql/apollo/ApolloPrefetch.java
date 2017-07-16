@@ -54,7 +54,7 @@ public interface ApolloPrefetch extends Cancelable {
   ApolloPrefetch clone();
 
   /**
-   * Returns GraphQl operation this call executes
+   * Returns GraphQL operation this call executes
    *
    * @return {@link Operation}
    */

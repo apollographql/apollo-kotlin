@@ -18,14 +18,14 @@ public interface ApolloQueryWatcher<T> extends Cancelable {
   @Nonnull ApolloQueryWatcher<T> refetchResponseFetcher(@Nonnull ResponseFetcher fetcher);
 
   /**
-   * Returns GraphQl watched operation.
+   * Returns GraphQL watched operation.
    *
    * @return {@link Operation}
    */
   @Nonnull Operation operation();
 
   /**
-   * Re-fetches watched GraphQl query.
+   * Re-fetches watched GraphQL query.
    */
   void refetch();
 }

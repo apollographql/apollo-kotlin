@@ -69,7 +69,7 @@ public interface ApolloCall<T> extends Cancelable {
   @Nonnull ApolloCall<T> clone();
 
   /**
-   * Returns GraphQl operation this call executes
+   * Returns GraphQL operation this call executes
    *
    * @return {@link Operation}
    */
@@ -81,19 +81,24 @@ public interface ApolloCall<T> extends Cancelable {
   abstract class Callback<T> {
 
     /**
-     * Gets called when GraphQl response is received and parsed successfully.
+     * Gets called when GraphQL response is received and parsed successfully. Depending on the
+     * {@link ResponseFetcher} used with the call, this may be called multiple times. {@link #onCompleted()}
+     * will be called after the final call to onResponse.
      *
-     * @param response the GraphQl response
+     * @param response the GraphQL response
      */
     public abstract void onResponse(@Nonnull Response<T> response);
 
     /**
      * Gets called when an unexpected exception occurs while creating the request or processing the response.
+     * Will be called at most one time. It is considered a terminal event. After called,
+     * neither {@link #onResponse(Response)} or {@link #onCompleted()} will be called again.
      */
     public abstract void onFailure(@Nonnull ApolloException e);
 
     /**
-     * Gets called when the {@link #onResponse(Response)} has been called for the last time.
+     * Gets called when the {@link #onResponse(Response)} has been called for the last time. Not called in the
+     * case of an error. {@link #onFailure(ApolloException)} will be called instead.
      */
     public void onCompleted() { }
 
