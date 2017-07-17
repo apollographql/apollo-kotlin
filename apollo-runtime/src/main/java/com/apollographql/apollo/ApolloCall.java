@@ -46,7 +46,7 @@ public interface ApolloCall<T> extends Cancelable {
    * Sets the {@link ResponseFetcher} strategy for an ApolloCall object.
    *
    * @param fetcher the {@link ResponseFetcher} to use.
-   * @return The ApolloCall object with the provided CacheControl strategy
+   * @return The ApolloCall object with the provided {@link ResponseFetcher}
    */
   @Nonnull ApolloCall<T> responseFetcher(@Nonnull ResponseFetcher fetcher);
 
