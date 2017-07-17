@@ -107,7 +107,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
       return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
     }
     logger.d("Cache MISS for operation %s", operation);
-    return new InterceptorResponse(null, null, responseNormalizer.records());
+    throw new ApolloException(String.format("Cache miss for operation %s", operation));
   }
 
   private void cacheResponse(final InterceptorResponse networkResponse, final FetchOptions options) {
