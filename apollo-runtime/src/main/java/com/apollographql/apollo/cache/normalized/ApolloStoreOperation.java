@@ -4,6 +4,7 @@ import com.apollographql.apollo.exception.ApolloException;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Apollo store operation to be performed.
@@ -32,7 +33,7 @@ public abstract class ApolloStoreOperation<T> {
   }
 
   private final ExecutorService dispatcher;
-  private volatile Callback<T> callback;
+  private AtomicReference<Callback<T>> callback = new AtomicReference<>();
   private final AtomicBoolean executed = new AtomicBoolean();
 
   protected ApolloStoreOperation(ExecutorService dispatcher) {
@@ -65,7 +66,7 @@ public abstract class ApolloStoreOperation<T> {
    */
   public void enqueue(final Callback<T> callback) {
     checkIfExecuted();
-    this.callback = callback;
+    this.callback.set(callback);
     dispatcher.submit(new Runnable() {
       @Override public void run() {
         T result;
@@ -82,20 +83,18 @@ public abstract class ApolloStoreOperation<T> {
   }
 
   private void notifySuccess(T result) {
-    Callback<T> callback = this.callback;
+    Callback<T> callback = this.callback.getAndSet(null);
     if (callback == null) {
       return;
     }
-
     callback.onSuccess(result);
   }
 
   private void notifyFailure(Throwable t) {
-    Callback<T> callback = this.callback;
+    Callback<T> callback = this.callback.getAndSet(null);
     if (callback == null) {
       return;
     }
-
     callback.onFailure(t);
   }
 
