@@ -6,6 +6,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.annotation.Nullable;
+
 /**
  * Apollo store operation to be performed.
  * <p>
@@ -64,7 +66,7 @@ public abstract class ApolloStoreOperation<T> {
    *
    * @param callback to be notified about operation result
    */
-  public void enqueue(final Callback<T> callback) {
+  public void enqueue(@Nullable final Callback<T> callback) {
     checkIfExecuted();
     this.callback.set(callback);
     dispatcher.submit(new Runnable() {
