@@ -403,15 +403,15 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         okHttpClient = okHttpClient.newBuilder().addInterceptor(httpCache.interceptor()).build();
       }
 
+      if (dispatcher == null) {
+        dispatcher = defaultDispatcher();
+      }
+
       if (cacheFactory.isPresent() && cacheKeyResolver.isPresent()) {
         final NormalizedCache normalizedCache =
             cacheFactory.get().createNormalizedCache(RecordFieldAdapter.create(moshi));
         this.apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), customTypeAdapters,
             dispatcher, apolloLogger);
-      }
-
-      if (dispatcher == null) {
-        dispatcher = defaultDispatcher();
       }
 
       return new ApolloClient(this);
