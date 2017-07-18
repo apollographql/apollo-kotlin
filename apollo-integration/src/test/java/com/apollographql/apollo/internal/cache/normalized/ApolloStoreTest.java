@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -42,7 +43,7 @@ public class ApolloStoreTest {
       @Override public boolean remove(@Nonnull CacheKey cacheKey) {
         return false;
       }
-    }, CacheKeyResolver.DEFAULT, Collections.EMPTY_MAP, null, new ApolloLogger(Optional.<Logger>absent()));
+    }, CacheKeyResolver.DEFAULT, Collections.EMPTY_MAP, Executors.newSingleThreadExecutor(), new ApolloLogger(Optional.<Logger>absent()));
     realApolloStore.clearAll().execute();
     latch.awaitOrThrowWithTimeout(3, TimeUnit.SECONDS);
   }
