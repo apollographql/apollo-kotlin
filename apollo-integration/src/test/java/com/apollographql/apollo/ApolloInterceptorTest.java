@@ -574,8 +574,6 @@ public class ApolloInterceptorTest {
     final NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
 
     EpisodeHeroNameQuery query = createHeroNameQuery();
-    final InterceptorResponse fakeResponse = prepareInterceptorResponse(query);
-
     ApolloInterceptor interceptor = new ApolloInterceptor() {
 
       volatile boolean disposed;
@@ -589,11 +587,7 @@ public class ApolloInterceptorTest {
       @Override
       public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
           @Nonnull ExecutorService dispatcher, @Nonnull FetchOptions fetchOptions, @Nonnull final CallBack callBack) {
-        dispatcher.execute(new Runnable() {
-          @Override public void run() {
-              callBack.onResponse(fakeResponse);
-          }
-        });
+        chain.proceedAsync(dispatcher, fetchOptions, callBack);
       }
 
       @Override public void dispose() {
