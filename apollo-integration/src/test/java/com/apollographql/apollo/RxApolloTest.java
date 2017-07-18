@@ -1,13 +1,12 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
-import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
+import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.rx.RxApollo;
 
 import junit.framework.Assert;
@@ -28,6 +27,7 @@ import rx.Subscription;
 import rx.observers.AssertableSubscriber;
 import rx.observers.TestSubscriber;
 
+import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 import static com.google.common.truth.Truth.assertThat;
 
 public class RxApolloTest {
@@ -153,7 +153,7 @@ public class RxApolloTest {
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     //Another newer call gets updated information
     server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
-    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    apolloClient.query(query).responseFetcher(NETWORK_ONLY).execute();
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 
@@ -190,11 +190,11 @@ public class RxApolloTest {
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
 
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
-    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
+    apolloClient.query(query).responseFetcher(NETWORK_ONLY).enqueue(null);
 
     // Wait 3 seconds to make sure no double callback.
     // Successful if timeout _is_ reached
-    secondResponseLatch.await(3, TimeUnit.SECONDS);
+    secondResponseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 
   @Test
@@ -231,10 +231,12 @@ public class RxApolloTest {
     });
 
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-    HeroAndFriendsNamesWithIDsQuery friendsQuery = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
+    HeroAndFriendsNamesWithIDsQuery friendsQuery = HeroAndFriendsNamesWithIDsQuery.builder()
+        .episode(Episode.NEWHOPE)
+        .build();
 
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
-    apolloClient.query(friendsQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    apolloClient.query(friendsQuery).responseFetcher(NETWORK_ONLY).execute();
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 

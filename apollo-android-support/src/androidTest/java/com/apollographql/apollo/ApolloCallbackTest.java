@@ -34,6 +34,7 @@ import static junit.framework.Assert.fail;
 public class ApolloCallbackTest {
   @Rule public final MockWebServer server = new MockWebServer();
   private ApolloClient apolloClient;
+  private static final int TIMEOUT_SECONDS = 2;
 
   @Before public void setUp() throws Exception {
     apolloClient = ApolloClient.builder()
@@ -63,7 +64,7 @@ public class ApolloCallbackTest {
         countDownLatch.countDown();
       }
     }, callbackHandler));
-    countDownLatch.await(2, TimeUnit.SECONDS);
+    countDownLatch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS);
     assertThat(invoked.get()).isTrue();
   }
 
@@ -84,7 +85,7 @@ public class ApolloCallbackTest {
         countDownLatch.countDown();
       }
     }, callbackHandler));
-    countDownLatch.await(2, TimeUnit.SECONDS);
+    countDownLatch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS);
     assertThat(invoked.get()).isTrue();
   }
 
@@ -106,7 +107,7 @@ public class ApolloCallbackTest {
         countDownLatch.countDown();
       }
     }, callbackHandler));
-    countDownLatch.await(2, TimeUnit.SECONDS);
+    countDownLatch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS);
     assertThat(invoked.get()).isTrue();
   }
 
@@ -136,7 +137,7 @@ public class ApolloCallbackTest {
         fail("Expected onResponse");
       }
     }, callbackHandler));
-    countDownLatch.await(2, TimeUnit.SECONDS);
+    countDownLatch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS);
     assertThat(invoked.get()).isTrue();
   }
 

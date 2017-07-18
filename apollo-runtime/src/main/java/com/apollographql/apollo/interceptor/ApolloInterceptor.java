@@ -25,22 +25,24 @@ public interface ApolloInterceptor {
    *
    * @param operation the GraphQL Operation object contained within the outgoing request.
    * @param chain     the ApolloInterceptorChain object containing the next set of interceptors.
+   * @param options   the {@link FetchOptions} to use to execute the operation.
    * @return This interceptor's response after performing operations.
    * @throws ApolloException if an error occurred while performing operations on the request/response.
    */
-  @Nonnull InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException;
+  @Nonnull InterceptorResponse intercept(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+      @Nonnull FetchOptions options) throws ApolloException;
 
   /**
    * Intercepts the outgoing request and performs non blocking operations on the request or the response returned by
    * the next set of interceptors in the chain.
-   *
    * @param operation  the GraphQL Operation object contained within the outgoing request.
    * @param chain      the ApolloInterceptorChain object containing the next set of interceptors.
    * @param dispatcher the ExecutorService which dispatches the non blocking operations on the request/response.
+   * @param options    the {@link FetchOptions} to use to execute the operation.
    * @param callBack   the Callback which will handle the interceptor's response or failure exception.
    */
   void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
-      @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack);
+      @Nonnull ExecutorService dispatcher, @Nonnull FetchOptions options, @Nonnull CallBack callBack);
 
   /**
    * Disposes of the resources which are no longer required.
@@ -57,7 +59,7 @@ public interface ApolloInterceptor {
 
     /**
      * Gets called when the interceptor returns a response after successfully performing operations on the
-     * request/response.
+     * request/response. May be called multiple times.
      *
      * @param response The response returned by the interceptor.
      */
@@ -65,9 +67,14 @@ public interface ApolloInterceptor {
 
     /**
      * Gets called when an unexpected exception occurs while performing operations on the request or processing the
-     * response returned by the next set of interceptors.
+     * response returned by the next set of interceptors. Will be called at most once.
      */
     void onFailure(@Nonnull ApolloException e);
+
+    /**
+     * Called after the last call to {@link #onResponse}. Do not call after {@link #onFailure(ApolloException)}.
+     */
+    void onCompleted();
   }
 
   /**

@@ -14,8 +14,6 @@ import rx.Completable;
 import rx.CompletableSubscriber;
 import rx.Emitter;
 import rx.Observable;
-import rx.Single;
-import rx.SingleSubscriber;
 import rx.Subscription;
 import rx.exceptions.Exceptions;
 import rx.functions.Action0;
@@ -81,30 +79,53 @@ public final class RxApollo {
   }
 
   /**
-   * Converts an {@link ApolloCall} to a Single.
+   * Converts an {@link ApolloCall} to a Observable. The number of emissions this Observable will have
+   * is based on the {@link com.apollographql.apollo.fetcher.ResponseFetcher} used with the call.
+   *
+   * @param call             the ApolloCall to convert
+   * @param <T>              the value type
+   * @param backpressureMode The {@link rx.Emitter.BackpressureMode} to use.
+   * @return the converted Observable
+   */
+  @Nonnull public static <T> Observable<Response<T>> from(@Nonnull final ApolloCall<T> call,
+      Emitter.BackpressureMode backpressureMode) {
+    checkNotNull(call, "call == null");
+    return Observable.create(new Action1<Emitter<Response<T>>>() {
+      @Override public void call(final Emitter<Response<T>> emitter) {
+        emitter.setCancellation(new Cancellable() {
+          @Override public void cancel() throws Exception {
+            call.cancel();
+          }
+        });
+        call.enqueue(new ApolloCall.Callback<T>() {
+          @Override public void onResponse(@Nonnull Response<T> response) {
+            emitter.onNext(response);
+          }
+
+          @Override public void onFailure(@Nonnull ApolloException e) {
+            Exceptions.throwIfFatal(e);
+            emitter.onError(e);
+          }
+
+          @Override public void onCompleted() {
+            emitter.onCompleted();
+          }
+        });
+      }
+    }, backpressureMode);
+  }
+
+  /**
+   * Converts an {@link ApolloCall} to a Observable with
+   * backpressure mode {@link rx.Emitter.BackpressureMode#BUFFER}. The number of emissions this Observable will have
+   * is based on the {@link com.apollographql.apollo.fetcher.ResponseFetcher} used with the call.
    *
    * @param call the ApolloCall to convert
    * @param <T>  the value type
-   * @return the converted Single
+   * @return the converted Observable
    */
-  @Nonnull public static <T> Single<Response<T>> from(@Nonnull final ApolloCall<T> call) {
-    checkNotNull(call, "call == null");
-    return Single.create(new Single.OnSubscribe<Response<T>>() {
-      @Override public void call(SingleSubscriber<? super Response<T>> subscriber) {
-        cancelOnSingleUnsubscribe(subscriber, call);
-        try {
-          Response<T> response = call.execute();
-          if (!subscriber.isUnsubscribed()) {
-            subscriber.onSuccess(response);
-          }
-        } catch (ApolloException e) {
-          Exceptions.throwIfFatal(e);
-          if (!subscriber.isUnsubscribed()) {
-            subscriber.onError(e);
-          }
-        }
-      }
-    });
+  @Nonnull public static <T> Observable<Response<T>> from(@Nonnull final ApolloCall<T> call) {
+    return from(call, Emitter.BackpressureMode.BUFFER);
   }
 
   /**
@@ -145,11 +166,4 @@ public final class RxApollo {
     return subscription;
   }
 
-  private static <T> void cancelOnSingleUnsubscribe(SingleSubscriber<? super T> subscriber, final Cancelable toCancel) {
-    subscriber.add(Subscriptions.create(new Action0() {
-      @Override public void call() {
-        toCancel.cancel();
-      }
-    }));
-  }
 }

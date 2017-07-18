@@ -13,6 +13,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
+import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.RealApolloCall;
 
 import org.junit.After;
@@ -40,6 +41,13 @@ public class ApolloCallTrackerTest {
   private static final String SERVER_URL = "http://localhost:1234";
   private static final int TIMEOUT_SECONDS = 2;
   private static final Query EMPTY_QUERY = new Query() {
+
+    OperationName operationName = new OperationName() {
+      @Override public String name() {
+        return "EmptyQuery";
+      }
+    };
+
     @Override public String queryDocument() {
       return "";
     }
@@ -61,7 +69,7 @@ public class ApolloCallTrackerTest {
     }
 
     @Nonnull @Override public OperationName name() {
-      return null;
+      return operationName;
     }
   };
 
@@ -149,7 +157,7 @@ public class ApolloCallTrackerTest {
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
-      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+      public InterceptorResponse intercept(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull FetchOptions options) throws ApolloException {
         try {
           firstLatch.countDown();
           secondLatch.await();
@@ -161,7 +169,7 @@ public class ApolloCallTrackerTest {
 
       @Override
       public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+          @Nonnull ExecutorService dispatcher, @Nonnull FetchOptions options, @Nonnull CallBack callBack) {
       }
 
       @Override public void dispose() {
@@ -221,7 +229,7 @@ public class ApolloCallTrackerTest {
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
-      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+      public InterceptorResponse intercept(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull FetchOptions options) throws ApolloException {
         firstLatch.countDown();
         try {
           secondLatch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS);
@@ -233,7 +241,7 @@ public class ApolloCallTrackerTest {
 
       @Override
       public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+          @Nonnull ExecutorService dispatcher, @Nonnull FetchOptions options, @Nonnull CallBack callBack) {
       }
 
       @Override public void dispose() {

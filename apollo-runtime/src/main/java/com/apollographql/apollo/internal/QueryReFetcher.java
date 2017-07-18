@@ -10,8 +10,8 @@ import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
-import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 import com.squareup.moshi.Moshi;
@@ -54,7 +54,7 @@ final class QueryReFetcher {
           .customTypeAdapters(builder.customTypeAdapters)
           .apolloStore(builder.apolloStore)
           .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY)
-          .cacheControl(CacheControl.NETWORK_ONLY)
+          .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
           .cacheHeaders(CacheHeaders.NONE)
           .logger(builder.logger)
           .applicationInterceptors(builder.applicationInterceptors)

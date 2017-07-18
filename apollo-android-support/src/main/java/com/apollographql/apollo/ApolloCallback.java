@@ -46,6 +46,14 @@ public final class ApolloCallback<T> extends ApolloCall.Callback<T> {
     });
   }
 
+  @Override public void onCompleted() {
+    handler.post(new Runnable() {
+      @Override public void run() {
+        delegate.onCompleted();
+      }
+    });
+  }
+
   @Override public void onFailure(@Nonnull final ApolloException e) {
     handler.post(new Runnable() {
       @Override public void run() {

@@ -13,14 +13,15 @@ import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
-import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.exception.ApolloParseException;
+import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
+import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.interceptor.ApolloCacheInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloParseInterceptor;
@@ -57,8 +58,9 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final ResponseFieldMapperFactory responseFieldMapperFactory;
   final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   final ApolloStore apolloStore;
-  final CacheControl cacheControl;
   final CacheHeaders cacheHeaders;
+  final FetchOptions fetchOptions;
+  final ResponseFetcher responseFetcher;
   final ApolloInterceptorChain interceptorChain;
   final ExecutorService dispatcher;
   final ApolloLogger logger;
@@ -69,6 +71,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final Optional<QueryReFetcher> queryReFetcher;
   final AtomicBoolean executed = new AtomicBoolean();
   volatile boolean canceled;
+  volatile boolean completed;
 
   public static <T> Builder<T> builder() {
     return new Builder<>();
@@ -84,14 +87,16 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     responseFieldMapperFactory = builder.responseFieldMapperFactory;
     customTypeAdapters = builder.customTypeAdapters;
     apolloStore = builder.apolloStore;
-    cacheControl = builder.cacheControl;
+    responseFetcher = builder.responseFetcher;
     cacheHeaders = builder.cacheHeaders;
+    fetchOptions = FetchOptions.NETWORK_ONLY.edit().cacheHeaders(cacheHeaders).build();
     dispatcher = builder.dispatcher;
     logger = builder.logger;
     applicationInterceptors = builder.applicationInterceptors;
     refetchQueryNames = builder.refetchQueryNames;
     refetchQueries = builder.refetchQueries;
     tracker = builder.tracker;
+
     if ((refetchQueries.isEmpty() && refetchQueryNames.isEmpty()) || builder.apolloStore == null) {
       queryReFetcher = Optional.absent();
     } else {
@@ -125,7 +130,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     Response<T> response;
     try {
       tracker.registerCall(this);
-      response = interceptorChain.proceed().parsedResponse.or(Response.<T>builder(operation).build());
+      response = interceptorChain.proceed(fetchOptions).parsedResponse.or(Response.<T>builder(operation).build());
     } catch (Exception e) {
       if (canceled) {
         throw new ApolloCanceledException("Canceled", e);
@@ -151,8 +156,13 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     if (!executed.compareAndSet(false, true)) {
       throw new IllegalStateException("Already Executed");
     }
+    if (canceled) {
+      if (responseCallback != null) {
+        responseCallback.onCanceledError(new ApolloCanceledException("Canceled"));
+      }
+    }
     tracker.registerCall(this);
-    interceptorChain.proceedAsync(dispatcher, interceptorCallbackProxy(responseCallback));
+    interceptorChain.proceedAsync(dispatcher, fetchOptions, interceptorCallbackProxy(responseCallback));
   }
 
   @Nonnull @Override public RealApolloQueryWatcher<T> watcher() {
@@ -166,10 +176,10 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .build();
   }
 
-  @Nonnull @Override public RealApolloCall<T> cacheControl(@Nonnull CacheControl cacheControl) {
+  @Nonnull @Override public RealApolloCall<T> responseFetcher(@Nonnull ResponseFetcher fetcher) {
     if (executed.get()) throw new IllegalStateException("Already Executed");
     return toBuilder()
-        .cacheControl(checkNotNull(cacheControl, "cacheControl == null"))
+        .responseFetcher(checkNotNull(fetcher, "responseFetcher == null"))
         .build();
   }
 
@@ -218,28 +228,23 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     return new ApolloInterceptor.CallBack() {
       @Override public void onResponse(@Nonnull final ApolloInterceptor.InterceptorResponse response) {
         if (originalCallback == null) return;
-        try {
-          if (RealApolloCall.this.canceled) {
-            originalCallback.onCanceledError(new ApolloCanceledException("Canceled"));
-            return;
-          }
-
-          if (queryReFetcher.isPresent()) {
-            queryReFetcher.get().refetch();
-          }
-
-          //noinspection unchecked
-          originalCallback.onResponse(response.parsedResponse.get());
-        } finally {
-          tracker.unregisterCall(RealApolloCall.this);
+        if (completed) {
+          throw new IllegalStateException("onResponse called after onCompleted for operation: "
+              + operation.name().name());
         }
+        if (RealApolloCall.this.canceled) {
+          return;
+        }
+        //noinspection unchecked
+        originalCallback.onResponse(response.parsedResponse.get());
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
         if (originalCallback == null) return;
+
         try {
           if (RealApolloCall.this.canceled) {
-            originalCallback.onCanceledError(new ApolloCanceledException("Canceled", e));
+            logger.w(e, "Call was canceled, but experienced exception.");
           } else if (e instanceof ApolloHttpException) {
             originalCallback.onHttpError((ApolloHttpException) e);
           } else if (e instanceof ApolloParseException) {
@@ -251,6 +256,24 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
           }
         } finally {
           tracker.unregisterCall(RealApolloCall.this);
+        }
+      }
+
+      @Override public void onCompleted() {
+        if (originalCallback == null) return;
+        if (completed) {
+          throw new IllegalStateException("onCompleted already called for operation: " + operation.name()
+              .name());
+        }
+        if (RealApolloCall.this.canceled) return;
+        try {
+          if (queryReFetcher.isPresent()) {
+            queryReFetcher.get().refetch();
+          }
+          originalCallback.onCompleted();
+        } finally {
+          tracker.unregisterCall(RealApolloCall.this);
+          completed = true;
         }
       }
     };
@@ -267,8 +290,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .responseFieldMapperFactory(responseFieldMapperFactory)
         .customTypeAdapters(customTypeAdapters)
         .apolloStore(apolloStore)
-        .cacheControl(cacheControl)
         .cacheHeaders(cacheHeaders)
+        .responseFetcher(responseFetcher)
         .dispatcher(dispatcher)
         .logger(logger)
         .applicationInterceptors(applicationInterceptors)
@@ -283,8 +306,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     ResponseFieldMapper responseFieldMapper = responseFieldMapperFactory.create(operation);
 
     interceptors.addAll(applicationInterceptors);
-    interceptors.add(new ApolloCacheInterceptor(apolloStore, cacheControl, cacheHeaders, responseFieldMapper,
-        customTypeAdapters, dispatcher, logger));
+    interceptors.add(responseFetcher.provideInterceptor(logger));
+    interceptors.add(new ApolloCacheInterceptor(apolloStore, responseFieldMapper, dispatcher, logger));
     interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
         customTypeAdapters, logger));
     interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCachePolicy, false, moshi, logger));
@@ -302,7 +325,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     ResponseFieldMapperFactory responseFieldMapperFactory;
     Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
     ApolloStore apolloStore;
-    CacheControl cacheControl;
+    ResponseFetcher responseFetcher;
     CacheHeaders cacheHeaders;
     ApolloInterceptorChain interceptorChain;
     ExecutorService dispatcher;
@@ -357,8 +380,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
       return this;
     }
 
-    public Builder<T> cacheControl(CacheControl cacheControl) {
-      this.cacheControl = cacheControl;
+    public Builder<T> responseFetcher(ResponseFetcher responseFetcher) {
+      this.responseFetcher = responseFetcher;
       return this;
     }
 

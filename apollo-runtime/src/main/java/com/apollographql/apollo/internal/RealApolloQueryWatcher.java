@@ -6,12 +6,13 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.Utils;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
-import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.exception.ApolloParseException;
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
+import com.apollographql.apollo.fetcher.ResponseFetcher;
 
 import java.util.Collections;
 import java.util.Set;
@@ -24,7 +25,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
   private RealApolloCall<T> activeCall;
   private ApolloCall.Callback<T> callback;
-  private CacheControl refetchCacheControl = CacheControl.CACHE_FIRST;
+  private ResponseFetcher refetchResponseFetcher = ApolloResponseFetchers.CACHE_FIRST;
   private volatile boolean canceled;
   private boolean executed = false;
   private final ApolloStore apolloStore;
@@ -55,12 +56,12 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
     return this;
   }
 
-  @Nonnull @Override public RealApolloQueryWatcher<T> refetchCacheControl(@Nonnull CacheControl cacheControl) {
+  @Nonnull @Override public RealApolloQueryWatcher<T> refetchResponseFetcher(@Nonnull ResponseFetcher fetcher) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
     }
-    checkNotNull(cacheControl, "httpCacheControl == null");
-    this.refetchCacheControl = cacheControl;
+    checkNotNull(fetcher, "responseFetcher == null");
+    this.refetchResponseFetcher = fetcher;
     return this;
   }
 
@@ -91,7 +92,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
       apolloStore.unsubscribe(recordChangeSubscriber);
       activeCall.cancel();
       if (!canceled) {
-        activeCall = activeCall.clone().cacheControl(refetchCacheControl);
+        activeCall = activeCall.clone().responseFetcher(refetchResponseFetcher);
         activeCall.enqueue(callbackProxy(this.callback));
       }
     }

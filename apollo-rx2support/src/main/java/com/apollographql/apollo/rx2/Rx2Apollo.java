@@ -15,9 +15,6 @@ import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Single;
-import io.reactivex.SingleEmitter;
-import io.reactivex.SingleOnSubscribe;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.exceptions.Exceptions;
 
@@ -66,30 +63,40 @@ public class Rx2Apollo {
   }
 
   /**
-   * Converts an {@link ApolloCall} to a synchronous Single.
+   * Converts an {@link ApolloCall} to an {@link Observable}. The number of emissions this Observable
+   * will have is based on the {@link com.apollographql.apollo.fetcher.ResponseFetcher} used with the call.
    *
    * @param originalCall the ApolloCall to convert
    * @param <T>          the value type.
-   * @return the converted Single
+   * @return the converted Observable
    * @throws NullPointerException if originalCall == null
    */
-  @Nonnull public static <T> Single<Response<T>> from(@Nonnull final ApolloCall<T> originalCall) {
+  @Nonnull public static <T> Observable<Response<T>> from(@Nonnull final ApolloCall<T> originalCall) {
     checkNotNull(originalCall, "call == null");
 
-    return Single.create(new SingleOnSubscribe<Response<T>>() {
-      @Override public void subscribe(SingleEmitter<Response<T>> emitter) {
-        cancelOnSingleDisposed(emitter, originalCall);
-        try {
-          Response<T> response = originalCall.execute();
-          if (!emitter.isDisposed()) {
-            emitter.onSuccess(response);
+    return Observable.create(new ObservableOnSubscribe<Response<T>>() {
+      @Override public void subscribe(final ObservableEmitter<Response<T>> emitter) throws Exception {
+        cancelOnObservableDisposed(emitter, originalCall);
+        originalCall.enqueue(new ApolloCall.Callback<T>() {
+          @Override public void onResponse(@Nonnull Response<T> response) {
+            if (!emitter.isDisposed()) {
+              emitter.onNext(response);
+            }
           }
-        } catch (ApolloException e) {
-          Exceptions.throwIfFatal(e);
-          if (!emitter.isDisposed()) {
-            emitter.onError(e);
+
+          @Override public void onFailure(@Nonnull ApolloException e) {
+            Exceptions.throwIfFatal(e);
+            if (!emitter.isDisposed()) {
+              emitter.onError(e);
+            }
           }
-        }
+
+          @Override public void onCompleted() {
+            if (!emitter.isDisposed()) {
+              emitter.onComplete();
+            }
+          }
+        });
       }
     });
   }
@@ -123,10 +130,6 @@ public class Rx2Apollo {
   }
 
   private static void cancelOnCompletableDisposed(CompletableEmitter emitter, final Cancelable cancelable) {
-    emitter.setDisposable(getRx2Disposable(cancelable));
-  }
-
-  private static <T> void cancelOnSingleDisposed(SingleEmitter<T> emitter, final Cancelable cancelable) {
     emitter.setDisposable(getRx2Disposable(cancelable));
   }
 

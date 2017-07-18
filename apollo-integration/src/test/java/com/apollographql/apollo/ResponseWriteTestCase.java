@@ -1,6 +1,6 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
@@ -98,7 +98,7 @@ public class ResponseWriteTestCase {
     );
     apolloClient.apolloStore().write(query, new EpisodeHeroWithDatesQuery.Data(hero));
 
-    hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
+    hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
     assertThat(hero.heroName()).isEqualTo("R222-D222");
     assertThat(DATE_TIME_FORMAT.format(hero.birthDate())).isEqualTo("1985-04-16");
@@ -115,7 +115,7 @@ public class ResponseWriteTestCase {
     );
     apolloClient.apolloStore().write(query, new EpisodeHeroWithDatesQuery.Data(hero));
 
-    hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
+    hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
     assertThat(hero.heroName()).isEqualTo("R22-D22");
     assertThat(DATE_TIME_FORMAT.format(hero.birthDate())).isEqualTo("1986-04-16");
@@ -147,7 +147,7 @@ public class ResponseWriteTestCase {
     );
     apolloClient.apolloStore().write(query, new HeroNameWithEnumsQuery.Data(hero));
 
-    hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
+    hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
     assertThat(hero.name()).isEqualTo("R222-D222");
     assertThat(hero.firstAppearsIn()).isEqualTo(Episode.JEDI);
@@ -161,7 +161,7 @@ public class ResponseWriteTestCase {
     );
     apolloClient.apolloStore().write(query, new HeroNameWithEnumsQuery.Data(hero));
 
-    hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
+    hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
     assertThat(hero.name()).isEqualTo("R22-D22");
     assertThat(hero.firstAppearsIn()).isEqualTo(Episode.JEDI);
@@ -198,7 +198,7 @@ public class ResponseWriteTestCase {
     );
     apolloClient.apolloStore().write(query, new HeroAndFriendsNamesWithIDsQuery.Data(hero));
 
-    hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
+    hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
     assertThat(hero.name()).isEqualTo("R222-D222");
     assertThat(hero.id()).isEqualTo("2001");
@@ -217,7 +217,7 @@ public class ResponseWriteTestCase {
     );
     apolloClient.apolloStore().write(query, new HeroAndFriendsNamesWithIDsQuery.Data(hero));
 
-    hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
+    hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
     assertThat(hero.name()).isEqualTo("R222-D222");
     assertThat(hero.id()).isEqualTo("2001");
@@ -283,7 +283,7 @@ public class ResponseWriteTestCase {
     );
     apolloClient.apolloStore().write(query, new HeroAndFriendsWithFragmentsQuery.Data(hero));
 
-    hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
+    hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
     assertThat(hero.fragments().heroWithFriendsFragment().__typename()).isEqualTo("Droid");
     assertThat(hero.fragments().heroWithFriendsFragment().id()).isEqualTo("2001");
@@ -345,7 +345,7 @@ public class ResponseWriteTestCase {
     );
     apolloClient.apolloStore().write(query, new EpisodeHeroWithInlineFragmentQuery.Data(hero));
 
-    hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
+    hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
     assertThat(hero.name()).isEqualTo("R22-D22");
     assertThat(hero.friends()).hasSize(2);
@@ -418,7 +418,7 @@ public class ResponseWriteTestCase {
         ), CacheKey.from("1002"), query.variables()
     );
 
-    hero = apolloClient.query(query).cacheControl(CacheControl.CACHE_ONLY).execute().data().hero();
+    hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
     assertThat(hero.fragments().heroWithFriendsFragment().__typename()).isEqualTo("Droid");
     assertThat(hero.fragments().heroWithFriendsFragment().id()).isEqualTo("2001");
