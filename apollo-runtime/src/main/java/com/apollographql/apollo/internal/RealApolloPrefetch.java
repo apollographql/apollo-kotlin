@@ -2,6 +2,7 @@ package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloPrefetch;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
@@ -38,6 +39,8 @@ import okhttp3.Response;
   final ApolloInterceptorChain interceptorChain;
   volatile boolean executed;
   volatile boolean canceled;
+  volatile boolean completed;
+  Optional<Callback> callback = Optional.absent();
 
   public RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
       Moshi moshi, ExecutorService dispatcher, ApolloLogger logger, ApolloCallTracker
@@ -97,59 +100,79 @@ import okhttp3.Response;
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
+    this.callback = Optional.fromNullable(responseCallback);
     if (canceled) {
-      if (responseCallback != null) {
-        responseCallback.onCanceledError(new ApolloCanceledException("Canceled"));
+      if (callback.isPresent()) {
+        callback.get().onCanceledError(new ApolloCanceledException("Canceled"));
+        return;
+      } else {
+        throw new IllegalStateException("Prefetch was canceled");
       }
     }
     tracker.registerPrefetchCall(this);
-    interceptorChain.proceedAsync(dispatcher, FetchOptions.NETWORK_ONLY,
-        interceptorCallbackProxy(responseCallback));
+    interceptorChain.proceedAsync(dispatcher, FetchOptions.NETWORK_ONLY, interceptorCallbackProxy());
   }
 
   @Nonnull @Override public Operation operation() {
     return operation;
   }
 
-  private ApolloInterceptor.CallBack interceptorCallbackProxy(final Callback originalCallback) {
+  private ApolloInterceptor.CallBack interceptorCallbackProxy() {
     return new ApolloInterceptor.CallBack() {
       @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
-        Response httpResponse = response.httpResponse.get();
-        try {
-          if (originalCallback == null) return;
-          if (RealApolloPrefetch.this.canceled) return;
-
-          if (httpResponse.isSuccessful()) {
-            originalCallback.onSuccess();
-          } else {
-            originalCallback.onHttpError(new ApolloHttpException(httpResponse));
+        synchronized (RealApolloPrefetch.this) {
+          if (completed) {
+            throw new IllegalStateException("onResponse called after onCompleted for prefetch of operation: "
+                + operation.name().name());
           }
-        } finally {
-          tracker.unregisterPrefetchCall(RealApolloPrefetch.this);
-          httpResponse.close();
+          Response httpResponse = response.httpResponse.get();
+          try {
+            if (!callback.isPresent()) {
+              logger.d("onResponse for operation: %s. No callback present. Successful: %b",
+                  operation.name().name(), httpResponse.isSuccessful());
+              return;
+            }
+            if (RealApolloPrefetch.this.canceled) return;
+
+            if (httpResponse.isSuccessful()) {
+              callback.get().onSuccess();
+            } else {
+              callback.get().onHttpError(new ApolloHttpException(httpResponse));
+            }
+          } finally {
+            tracker.unregisterPrefetchCall(RealApolloPrefetch.this);
+            httpResponse.close();
+          }
         }
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        if (originalCallback == null) return;
-        try {
-          if (canceled) {
-            logger.w(e, "Call was canceled, but experienced exception.");
-          } else if (e instanceof ApolloHttpException) {
-            originalCallback.onHttpError((ApolloHttpException) e);
-          } else if (e instanceof ApolloNetworkException) {
-            originalCallback.onNetworkError((ApolloNetworkException) e);
-          } else {
-            originalCallback.onFailure(e);
+        synchronized (RealApolloPrefetch.this){
+          if (!callback.isPresent()) {
+            logger.d(e, "onFailure for prefetch of operation: %s. No callback present.", operation.name().name());
+            return;
           }
-        } finally {
-          tracker.unregisterPrefetchCall(RealApolloPrefetch.this);
+          try {
+            if (canceled) {
+              logger.w(e, "Call was canceled, but experienced exception.");
+            } else if (e instanceof ApolloHttpException) {
+              callback.get().onHttpError((ApolloHttpException) e);
+            } else if (e instanceof ApolloNetworkException) {
+              callback.get().onNetworkError((ApolloNetworkException) e);
+            } else {
+              callback.get().onFailure(e);
+            }
+          } finally {
+            tracker.unregisterPrefetchCall(RealApolloPrefetch.this);
+          }
         }
       }
 
       @Override public void onCompleted() {
-        // Prefetch is only called with NETWORK_ONLY, so callback api does not need onComplete as it is the same as
-        // onResponse.
+        synchronized (RealApolloPrefetch.this) {
+          callback = Optional.absent();
+          completed = true;
+        }
       }
     };
   }
@@ -160,6 +183,7 @@ import okhttp3.Response;
 
   @Override public void cancel() {
     canceled = true;
+    callback = Optional.absent();
     interceptorChain.dispose();
   }
 

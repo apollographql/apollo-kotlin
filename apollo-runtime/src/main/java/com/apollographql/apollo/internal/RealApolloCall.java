@@ -70,6 +70,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final List<Query> refetchQueries;
   final Optional<QueryReFetcher> queryReFetcher;
   final AtomicBoolean executed = new AtomicBoolean();
+  Optional<Callback<T>> callback = Optional.absent();
   volatile boolean canceled;
   volatile boolean completed;
 
@@ -153,16 +154,22 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   }
 
   @Override public void enqueue(@Nullable final Callback<T> responseCallback) {
-    if (!executed.compareAndSet(false, true)) {
-      throw new IllegalStateException("Already Executed");
-    }
-    if (canceled) {
-      if (responseCallback != null) {
-        responseCallback.onCanceledError(new ApolloCanceledException("Canceled"));
+    synchronized (this) {
+      if (!executed.compareAndSet(false, true)) {
+        throw new IllegalStateException("Already Executed");
       }
+      this.callback = Optional.fromNullable(responseCallback);
+      if (canceled) {
+        if (this.callback.isPresent()) {
+          this.callback.get().onCanceledError(new ApolloCanceledException("Canceled"));
+          return;
+        } else {
+          throw new IllegalStateException("Call was canceled");
+        }
+      }
+      tracker.registerCall(this);
     }
-    tracker.registerCall(this);
-    interceptorChain.proceedAsync(dispatcher, fetchOptions, interceptorCallbackProxy(responseCallback));
+    interceptorChain.proceedAsync(dispatcher, fetchOptions, interceptorCallbackProxy());
   }
 
   @Nonnull @Override public RealApolloQueryWatcher<T> watcher() {
@@ -191,10 +198,13 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   }
 
   @Override public void cancel() {
-    canceled = true;
-    interceptorChain.dispose();
-    if (queryReFetcher.isPresent()) {
-      queryReFetcher.get().cancel();
+    synchronized (this) {
+      canceled = true;
+      callback = Optional.absent();
+      interceptorChain.dispose();
+      if (queryReFetcher.isPresent()) {
+        queryReFetcher.get().cancel();
+      }
     }
   }
 
@@ -224,56 +234,70 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     return operation;
   }
 
-  private ApolloInterceptor.CallBack interceptorCallbackProxy(final Callback<T> originalCallback) {
+  private ApolloInterceptor.CallBack interceptorCallbackProxy() {
     return new ApolloInterceptor.CallBack() {
       @Override public void onResponse(@Nonnull final ApolloInterceptor.InterceptorResponse response) {
-        if (originalCallback == null) return;
-        if (completed) {
-          throw new IllegalStateException("onResponse called after onCompleted for operation: "
-              + operation.name().name());
+        synchronized (RealApolloCall.this) {
+          if (completed) {
+            throw new IllegalStateException("onResponse called after onCompleted for operation: "
+                + operation.name().name());
+          }
+          if (!callback.isPresent()) {
+            logger.d("onResponse for operation: %s. No callback present.", operation.name().name());
+            return;
+          }
+          if (RealApolloCall.this.canceled) {
+            return;
+          }
+          //noinspection unchecked
+          callback.get().onResponse(response.parsedResponse.get());
         }
-        if (RealApolloCall.this.canceled) {
-          return;
-        }
-        //noinspection unchecked
-        originalCallback.onResponse(response.parsedResponse.get());
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        if (originalCallback == null) return;
-
-        try {
-          if (RealApolloCall.this.canceled) {
-            logger.w(e, "Call was canceled, but experienced exception.");
-          } else if (e instanceof ApolloHttpException) {
-            originalCallback.onHttpError((ApolloHttpException) e);
-          } else if (e instanceof ApolloParseException) {
-            originalCallback.onParseError((ApolloParseException) e);
-          } else if (e instanceof ApolloNetworkException) {
-            originalCallback.onNetworkError((ApolloNetworkException) e);
-          } else {
-            originalCallback.onFailure(e);
+        synchronized (RealApolloCall.this) {
+          if (!callback.isPresent()) {
+            logger.d(e, "onFailure for operation: %s. No callback present.", operation.name().name());
+            return;
           }
-        } finally {
-          tracker.unregisterCall(RealApolloCall.this);
+          try {
+            if (RealApolloCall.this.canceled) {
+              logger.w(e, "Call was canceled, but experienced exception.");
+            } else if (e instanceof ApolloHttpException) {
+              callback.get().onHttpError((ApolloHttpException) e);
+            } else if (e instanceof ApolloParseException) {
+              callback.get().onParseError((ApolloParseException) e);
+            } else if (e instanceof ApolloNetworkException) {
+              callback.get().onNetworkError((ApolloNetworkException) e);
+            } else {
+              callback.get().onFailure(e);
+            }
+          } finally {
+            tracker.unregisterCall(RealApolloCall.this);
+          }
         }
       }
 
       @Override public void onCompleted() {
-        if (originalCallback == null) return;
-        if (completed) {
-          throw new IllegalStateException("onCompleted already called for operation: " + operation.name()
-              .name());
-        }
-        if (RealApolloCall.this.canceled) return;
-        try {
-          if (queryReFetcher.isPresent()) {
-            queryReFetcher.get().refetch();
+        synchronized (RealApolloCall.this) {
+          if (completed) {
+            throw new IllegalStateException("onCompleted already called for operation: " + operation.name().name());
           }
-          originalCallback.onCompleted();
-        } finally {
-          tracker.unregisterCall(RealApolloCall.this);
-          completed = true;
+          if (!callback.isPresent()) {
+            logger.d("onCompleted for operation: %s. No callback present.", operation.name().name());
+            return;
+          }
+          if (RealApolloCall.this.canceled) return;
+          try {
+            if (queryReFetcher.isPresent()) {
+              queryReFetcher.get().refetch();
+            }
+            callback.get().onCompleted();
+          } finally {
+            tracker.unregisterCall(RealApolloCall.this);
+            completed = true;
+            callback = Optional.absent();
+          }
         }
       }
     };

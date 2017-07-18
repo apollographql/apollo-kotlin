@@ -4,6 +4,7 @@ import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.exception.ApolloCanceledException;
@@ -24,10 +25,10 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
   private RealApolloCall<T> activeCall;
-  private ApolloCall.Callback<T> callback;
+  private Optional<ApolloCall.Callback<T>> callback = Optional.absent();
   private ResponseFetcher refetchResponseFetcher = ApolloResponseFetchers.CACHE_FIRST;
-  private volatile boolean canceled;
-  private boolean executed = false;
+  private boolean canceled;
+  private boolean executed;
   private final ApolloStore apolloStore;
   private Set<String> dependentKeys = Collections.emptySet();
   private final ApolloCallTracker tracker;
@@ -49,25 +50,26 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed.");
       executed = true;
+      this.callback = Optional.fromNullable(callback);
+      tracker.registerQueryWatcher(this);
     }
-    this.callback = callback;
-    tracker.registerQueryWatcher(this);
-    activeCall.enqueue(callbackProxy(this.callback));
+    activeCall.enqueue(callbackProxy());
     return this;
   }
 
   @Nonnull @Override public RealApolloQueryWatcher<T> refetchResponseFetcher(@Nonnull ResponseFetcher fetcher) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
+      checkNotNull(fetcher, "responseFetcher == null");
+      this.refetchResponseFetcher = fetcher;
     }
-    checkNotNull(fetcher, "responseFetcher == null");
-    this.refetchResponseFetcher = fetcher;
     return this;
   }
 
   @Override public void cancel() {
     synchronized (this) {
       canceled = true;
+      callback = Optional.absent();
       try {
         activeCall.cancel();
         apolloStore.unsubscribe(recordChangeSubscriber);
@@ -86,50 +88,67 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
   }
 
   @Override public void refetch() {
-    if (canceled) return;
-
     synchronized (this) {
+      if (canceled) return;
       apolloStore.unsubscribe(recordChangeSubscriber);
       activeCall.cancel();
       if (!canceled) {
         activeCall = activeCall.clone().responseFetcher(refetchResponseFetcher);
-        activeCall.enqueue(callbackProxy(this.callback));
+        activeCall.enqueue(callbackProxy());
       }
     }
   }
 
-  private ApolloCall.Callback<T> callbackProxy(final ApolloCall.Callback<T> sourceCallback) {
+  private ApolloCall.Callback<T> callbackProxy() {
     return new ApolloCall.Callback<T>() {
       @Override public void onResponse(@Nonnull Response<T> response) {
-        if (canceled) return;
-        dependentKeys = response.dependentKeys();
-        apolloStore.subscribe(recordChangeSubscriber);
-        sourceCallback.onResponse(response);
+        synchronized (RealApolloQueryWatcher.this) {
+          if (canceled) return;
+          if (!callback.isPresent()) return;
+          dependentKeys = response.dependentKeys();
+          apolloStore.subscribe(recordChangeSubscriber);
+          callback.get().onResponse(response);
+        }
       }
 
       @Override public void onHttpError(@Nonnull ApolloHttpException e) {
-        if (canceled) return;
-        sourceCallback.onHttpError(e);
+        synchronized (RealApolloQueryWatcher.this) {
+          if (canceled) return;
+          if (!callback.isPresent()) return;
+          callback.get().onHttpError(e);
+        }
       }
 
       @Override public void onNetworkError(@Nonnull ApolloNetworkException e) {
-        if (canceled) return;
-        sourceCallback.onNetworkError(e);
+        synchronized (RealApolloQueryWatcher.this) {
+          if (canceled) return;
+          if (!callback.isPresent()) return;
+          callback.get().onNetworkError(e);
+        }
       }
 
       @Override public void onParseError(@Nonnull ApolloParseException e) {
-        if (canceled) return;
-        sourceCallback.onParseError(e);
+        synchronized (RealApolloQueryWatcher.this) {
+          if (canceled) return;
+          if (!callback.isPresent()) return;
+          callback.get().onParseError(e);
+        }
       }
 
       @Override public void onCanceledError(@Nonnull ApolloCanceledException e) {
-        if (canceled) return;
-        sourceCallback.onCanceledError(e);
+        synchronized (RealApolloQueryWatcher.this) {
+          if (canceled) return;
+          if (!callback.isPresent()) return;
+          callback.get().onCanceledError(e);
+        }
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        if (canceled) return;
-        sourceCallback.onFailure(e);
+        synchronized (RealApolloQueryWatcher.this) {
+          if (canceled) return;
+          if (!callback.isPresent()) return;
+          callback.get().onFailure(e);
+        }
       }
     };
   }
