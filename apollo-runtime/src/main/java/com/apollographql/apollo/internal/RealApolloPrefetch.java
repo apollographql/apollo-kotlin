@@ -147,7 +147,7 @@ import okhttp3.Response;
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        synchronized (RealApolloPrefetch.this){
+        synchronized (RealApolloPrefetch.this) {
           if (!callback.isPresent()) {
             logger.d(e, "onFailure for prefetch of operation: %s. No callback present.", operation.name().name());
             return;
