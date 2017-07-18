@@ -9,6 +9,7 @@ import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
+import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
@@ -39,7 +40,8 @@ import okhttp3.Response;
   volatile boolean canceled;
 
   public RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
-      Moshi moshi, ExecutorService dispatcher, ApolloLogger logger, ApolloCallTracker callTracker) {
+      Moshi moshi, ExecutorService dispatcher, ApolloLogger logger, ApolloCallTracker
+      callTracker) {
     this.operation = operation;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
@@ -68,7 +70,7 @@ import okhttp3.Response;
 
     try {
       tracker.registerPrefetchCall(this);
-      httpResponse = interceptorChain.proceed().httpResponse.get();
+      httpResponse = interceptorChain.proceed(FetchOptions.NETWORK_ONLY).httpResponse.get();
     } catch (Exception e) {
       if (canceled) {
         throw new ApolloCanceledException("Canceled", e);
@@ -90,14 +92,19 @@ import okhttp3.Response;
     }
   }
 
-  @Nonnull @Override public ApolloPrefetch enqueue(@Nullable final Callback responseCallback) {
+  @Override public void enqueue(@Nullable final Callback responseCallback) {
     synchronized (this) {
       if (executed) throw new IllegalStateException("Already Executed");
       executed = true;
     }
+    if (canceled) {
+      if (responseCallback != null) {
+        responseCallback.onCanceledError(new ApolloCanceledException("Canceled"));
+      }
+    }
     tracker.registerPrefetchCall(this);
-    interceptorChain.proceedAsync(dispatcher, interceptorCallbackProxy(responseCallback));
-    return this;
+    interceptorChain.proceedAsync(dispatcher, FetchOptions.NETWORK_ONLY,
+        interceptorCallbackProxy(responseCallback));
   }
 
   @Nonnull @Override public Operation operation() {
@@ -107,16 +114,10 @@ import okhttp3.Response;
   private ApolloInterceptor.CallBack interceptorCallbackProxy(final Callback originalCallback) {
     return new ApolloInterceptor.CallBack() {
       @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
-        if (originalCallback == null) return;
-
+        Response httpResponse = response.httpResponse.get();
         try {
-          Response httpResponse = response.httpResponse.get();
-          httpResponse.close();
-
-          if (RealApolloPrefetch.this.canceled) {
-            originalCallback.onCanceledError(new ApolloCanceledException("Canceled"));
-            return;
-          }
+          if (originalCallback == null) return;
+          if (RealApolloPrefetch.this.canceled) return;
 
           if (httpResponse.isSuccessful()) {
             originalCallback.onSuccess();
@@ -125,15 +126,15 @@ import okhttp3.Response;
           }
         } finally {
           tracker.unregisterPrefetchCall(RealApolloPrefetch.this);
+          httpResponse.close();
         }
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
         if (originalCallback == null) return;
-
         try {
           if (canceled) {
-            originalCallback.onCanceledError(new ApolloCanceledException("Canceled"));
+            logger.w(e, "Call was canceled, but experienced exception.");
           } else if (e instanceof ApolloHttpException) {
             originalCallback.onHttpError((ApolloHttpException) e);
           } else if (e instanceof ApolloNetworkException) {
@@ -144,6 +145,11 @@ import okhttp3.Response;
         } finally {
           tracker.unregisterPrefetchCall(RealApolloPrefetch.this);
         }
+      }
+
+      @Override public void onCompleted() {
+        // Prefetch is only called with NETWORK_ONLY, so callback api does not need onComplete as it is the same as
+        // onResponse.
       }
     };
   }

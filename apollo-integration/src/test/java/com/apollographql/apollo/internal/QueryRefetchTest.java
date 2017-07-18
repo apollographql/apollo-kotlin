@@ -8,7 +8,7 @@ import com.apollographql.apollo.IdFieldCacheKeyResolver;
 import com.apollographql.apollo.NamedCountDownLatch;
 import com.apollographql.apollo.Utils;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
@@ -32,6 +32,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
+import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.google.common.truth.Truth.assertThat;
 
 public class QueryRefetchTest {
@@ -79,8 +80,8 @@ public class QueryRefetchTest {
 
     assertThat(server.getRequestCount()).isEqualTo(2);
 
-    Response<ReviewsByEpisodeQuery.Data> empireReviewsQueryResponse = apolloClient.query(empireReviewsQuery).cacheControl
-        (CacheControl.CACHE_ONLY).execute();
+    Response<ReviewsByEpisodeQuery.Data> empireReviewsQueryResponse = apolloClient.query(empireReviewsQuery)
+        .responseFetcher(CACHE_ONLY).execute();
     assertThat(empireReviewsQueryResponse.data().reviews()).hasSize(3);
     assertThat(empireReviewsQueryResponse.data().reviews().get(2).stars()).isEqualTo(5);
     assertThat(empireReviewsQueryResponse.data().reviews().get(2).commentary()).isEqualTo("Amazing");
@@ -89,10 +90,10 @@ public class QueryRefetchTest {
   @Test public void refetch_query_pre_cached() throws Exception {
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"));
     ReviewsByEpisodeQuery empireReviewsQuery = new ReviewsByEpisodeQuery(Episode.EMPIRE);
-    apolloClient.query(empireReviewsQuery).cacheControl(CacheControl.NETWORK_FIRST).execute();
+    apolloClient.query(empireReviewsQuery).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST).execute();
 
     Response<ReviewsByEpisodeQuery.Data> empireReviewsQueryResponse = apolloClient.query(empireReviewsQuery)
-        .cacheControl(CacheControl.CACHE_ONLY).execute();
+        .responseFetcher(CACHE_ONLY).execute();
     assertThat(empireReviewsQueryResponse.data().reviews()).hasSize(3);
     assertThat(empireReviewsQueryResponse.data().reviews().get(2).stars()).isEqualTo(5);
     assertThat(empireReviewsQueryResponse.data().reviews().get(2).commentary()).isEqualTo("Amazing");
@@ -117,8 +118,7 @@ public class QueryRefetchTest {
 
     assertThat(server.getRequestCount()).isEqualTo(3);
 
-    empireReviewsQueryResponse = apolloClient.query(empireReviewsQuery).cacheControl
-        (CacheControl.CACHE_ONLY).execute();
+    empireReviewsQueryResponse = apolloClient.query(empireReviewsQuery).responseFetcher(CACHE_ONLY).execute();
     assertThat(empireReviewsQueryResponse.data().reviews()).hasSize(4);
     assertThat(empireReviewsQueryResponse.data().reviews().get(3).stars()).isEqualTo(5);
     assertThat(empireReviewsQueryResponse.data().reviews().get(3).commentary()).isEqualTo("Awesome");
@@ -134,7 +134,7 @@ public class QueryRefetchTest {
     final AtomicReference<Response<ReviewsByEpisodeQuery.Data>> empireReviewsWatchResponse = new AtomicReference<>();
     ApolloQueryWatcher<ReviewsByEpisodeQuery.Data> queryWatcher = apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE))
         .watcher()
-        .refetchCacheControl(CacheControl.NETWORK_FIRST)
+        .refetchResponseFetcher(ApolloResponseFetchers.NETWORK_FIRST)
         .enqueueAndWatch(new ApolloCall.Callback<ReviewsByEpisodeQuery.Data>() {
           @Override public void onResponse(@Nonnull Response<ReviewsByEpisodeQuery.Data> response) {
             empireReviewsWatchResponse.set(response);

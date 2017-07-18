@@ -5,11 +5,13 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
+import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.util.ApolloLogger;
@@ -31,6 +33,7 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
   private final ResponseFieldMapper responseFieldMapper;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final ApolloLogger logger;
+  private volatile boolean disposed;
 
   public ApolloParseInterceptor(HttpCache httpCache, ResponseNormalizer<Map<String, Object>> normalizer,
       ResponseFieldMapper responseFieldMapper, Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
@@ -42,33 +45,43 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
     this.logger = logger;
   }
 
-  @Override @Nonnull public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain)
+  @Override @Nonnull public InterceptorResponse intercept(@Nonnull Operation operation,
+      @Nonnull ApolloInterceptorChain chain, @Nonnull FetchOptions fetchOptions)
       throws ApolloException {
-    InterceptorResponse response = chain.proceed();
+    if (disposed) throw new ApolloCanceledException("Canceled");
+    InterceptorResponse response = chain.proceed(fetchOptions);
     return parse(operation, response.httpResponse.get());
   }
 
   @Override
   public void interceptAsync(@Nonnull final Operation operation, @Nonnull ApolloInterceptorChain chain,
-      @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
-    chain.proceedAsync(dispatcher, new CallBack() {
+      @Nonnull ExecutorService dispatcher, @Nonnull FetchOptions fetchOptions, @Nonnull final CallBack callBack) {
+    if (disposed) return;
+    chain.proceedAsync(dispatcher, fetchOptions, new CallBack() {
       @Override public void onResponse(@Nonnull InterceptorResponse response) {
         try {
+          if (disposed) return;
           InterceptorResponse result = parse(operation, response.httpResponse.get());
           callBack.onResponse(result);
+          callBack.onCompleted();
         } catch (ApolloException e) {
           onFailure(e);
         }
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
+        if (disposed) return;
         callBack.onFailure(e);
+      }
+
+      @Override public void onCompleted() {
+        // call onCompleted in onResponse in case of error
       }
     });
   }
 
   @Override public void dispose() {
-    //no op
+    disposed = true;
   }
 
   @SuppressWarnings("unchecked") private InterceptorResponse parse(Operation operation, okhttp3.Response httpResponse)

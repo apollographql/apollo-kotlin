@@ -3,10 +3,12 @@ package com.apollographql.apollo.internal.interceptor;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
+import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
+import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 import com.squareup.moshi.JsonAdapter;
@@ -34,7 +36,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 /**
  * ApolloServerInterceptor is a concrete {@link ApolloInterceptor} responsible for making the network calls to the
  * server. It is the last interceptor in the chain of interceptors and hence doesn't call
- * {@link ApolloInterceptorChain#proceed()} on the interceptor chain.
+ * {@link ApolloInterceptorChain#proceed(FetchOptions)} on the interceptor chain.
  */
 @SuppressWarnings("WeakerAccess") public final class ApolloServerInterceptor implements ApolloInterceptor {
   private static final String ACCEPT_TYPE = "application/json";
@@ -48,6 +50,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   final Moshi moshi;
   final ApolloLogger logger;
   volatile Call httpCall;
+  volatile boolean disposed;
 
   public ApolloServerInterceptor(@Nonnull HttpUrl serverUrl, @Nonnull Call.Factory httpCallFactory,
       @Nullable HttpCachePolicy.Policy cachePolicy, boolean prefetch, @Nonnull Moshi moshi,
@@ -60,8 +63,9 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     this.logger = checkNotNull(logger, "logger == null");
   }
 
-  @Override @Nonnull public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain)
-      throws ApolloException {
+  @Override @Nonnull public InterceptorResponse intercept(@Nonnull Operation operation,
+      @Nonnull ApolloInterceptorChain chain, @Nonnull FetchOptions options) throws ApolloException {
+    if (disposed) throw new ApolloCanceledException("Canceled");
     httpCall = httpCall(operation);
     try {
       Response response = httpCall.execute();
@@ -74,18 +78,22 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
   @Override
   public void interceptAsync(@Nonnull final Operation operation, @Nonnull final ApolloInterceptorChain chain,
-      @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+      @Nonnull ExecutorService dispatcher, @Nonnull FetchOptions fetchOptions, @Nonnull final CallBack callBack) {
+    if (disposed) return;
     dispatcher.execute(new Runnable() {
       @Override public void run() {
         httpCall = httpCall(operation);
         httpCall.enqueue(new Callback() {
           @Override public void onFailure(@Nonnull Call call, @Nonnull IOException e) {
-            logger.e(e, "Failed to execute http call");
+            if (disposed) return;
+            logger.e(e, "Failed to execute http call for operation %s", operation.name().name());
             callBack.onFailure(new ApolloNetworkException("Failed to execute http call", e));
           }
 
           @Override public void onResponse(@Nonnull Call call, @Nonnull Response response) throws IOException {
+            if (disposed) return;
             callBack.onResponse(new ApolloInterceptor.InterceptorResponse(response));
+            callBack.onCompleted();
           }
         });
       }
@@ -93,6 +101,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   }
 
   @Override public void dispose() {
+    disposed = true;
     Call httpCall = this.httpCall;
     if (httpCall != null) {
       httpCall.cancel();

@@ -1,13 +1,13 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
-import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
+import com.apollographql.apollo.integration.normalizer.type.Episode;
 
 import junit.framework.Assert;
 
@@ -25,6 +25,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
+import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
+import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 import static com.google.common.truth.Truth.assertThat;
 
 public class ApolloWatcherTest {
@@ -40,6 +42,16 @@ public class ApolloWatcherTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
+          .logger(new Logger() {
+            @Override
+            public void log(int priority, @Nonnull String message, @Nonnull Optional<Throwable> t, @Nonnull Object... args) {
+              String throwableTrace = "";
+              if (t.isPresent()) {
+                throwableTrace = t.get().getMessage();
+              }
+              System.out.println(String.format(message, args) + " " + throwableTrace);
+            }
+          })
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .build();
   }
@@ -82,7 +94,7 @@ public class ApolloWatcherTest {
 
     // Another newer call gets updated information
     server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
-    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    apolloClient.query(query).responseFetcher(NETWORK_ONLY).execute();
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     watcher.cancel();
   }
@@ -116,7 +128,7 @@ public class ApolloWatcherTest {
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
 
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
-    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
+    apolloClient.query(query).responseFetcher(NETWORK_ONLY).enqueue(null);
 
     // Wait 3 seconds to make sure no double callback.
     // Successful if timeout _is_ reached
@@ -152,10 +164,12 @@ public class ApolloWatcherTest {
         });
 
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-    HeroAndFriendsNamesWithIDsQuery friendsQuery = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
+    HeroAndFriendsNamesWithIDsQuery friendsQuery = HeroAndFriendsNamesWithIDsQuery.builder()
+        .episode(Episode.NEWHOPE)
+        .build();
 
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
-    apolloClient.query(friendsQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    apolloClient.query(friendsQuery).responseFetcher(NETWORK_ONLY).execute();
 
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     watcher.cancel();
@@ -191,7 +205,7 @@ public class ApolloWatcherTest {
     HeroAndFriendsNamesWithIDsQuery friendsQuery = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
 
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
-    apolloClient.query(friendsQuery).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
+    apolloClient.query(friendsQuery).responseFetcher(NETWORK_ONLY).enqueue(null);
 
     // Wait 3 seconds to make sure no double callback.
     // Successful if timeout _is_ reached
@@ -207,7 +221,7 @@ public class ApolloWatcherTest {
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
     ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
-    watcher.refetchCacheControl(CacheControl.NETWORK_ONLY) //Force network instead of CACHE_FIRST default
+    watcher.refetchResponseFetcher(NETWORK_ONLY) //Force network instead of CACHE_FIRST default
         .enqueueAndWatch(
             new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
               @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
@@ -234,7 +248,7 @@ public class ApolloWatcherTest {
     //To verify that the updated response comes from server use a different name change
     // -- this is for the refetch
     server.enqueue(mockResponse("EpisodeHeroNameResponseNameChangeTwo.json"));
-    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
+    apolloClient.query(query).responseFetcher(NETWORK_ONLY).enqueue(null);
 
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     watcher.cancel();
@@ -264,8 +278,7 @@ public class ApolloWatcherTest {
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
 
     ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query)
-        .cacheControl(CacheControl.CACHE_ONLY)
-        .watcher();
+        .responseFetcher(CACHE_ONLY).watcher();
     watcher.enqueueAndWatch(
         new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
@@ -286,14 +299,15 @@ public class ApolloWatcherTest {
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     //Another newer call gets updated information
     server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
-    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
+    apolloClient.query(query).responseFetcher(NETWORK_ONLY).enqueue(null);
 
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     watcher.cancel();
   }
 
   @Test
-  public void testQueryWatcherNotCalled_WhenCanceled() throws IOException, TimeoutException, InterruptedException, ApolloException {
+  public void testQueryWatcherNotCalled_WhenCanceled() throws IOException, TimeoutException,
+      InterruptedException, ApolloException {
 
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
@@ -323,7 +337,7 @@ public class ApolloWatcherTest {
 
     server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
     watcher.cancel();
-    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    apolloClient.query(query).responseFetcher(NETWORK_ONLY).execute();
 
     //Wait for 3 seconds to check that callback is not called twice.
     //Test is successful if timeout is reached.

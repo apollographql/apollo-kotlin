@@ -4,12 +4,12 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.exception.ApolloParseException;
+import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.internal.util.Cancelable;
 
 import javax.annotation.Nonnull;
@@ -43,15 +43,16 @@ public interface ApolloCall<T> extends Cancelable {
   void enqueue(@Nullable Callback<T> callback);
 
   /**
-   * Sets the {@link CacheControl} strategy for an ApolloCall object.
+   * Sets the {@link ResponseFetcher} strategy for an ApolloCall object.
    *
-   * @param cacheControl the CacheControl strategy to set
-   * @return The ApolloCall object with the provided CacheControl strategy
+   * @param fetcher the {@link ResponseFetcher} to use.
+   * @return The ApolloCall object with the provided {@link ResponseFetcher}
    */
-  @Nonnull ApolloCall<T> cacheControl(@Nonnull CacheControl cacheControl);
+  @Nonnull ApolloCall<T> responseFetcher(@Nonnull ResponseFetcher fetcher);
 
   /**
-   * Sets the {@link CacheHeaders} to use for this call.
+   * Sets the {@link CacheHeaders} to use for this call. {@link com.apollographql.apollo.interceptor.FetchOptions} will
+   * be configured with this headers, and will be accessible from the {@link ResponseFetcher} used for this call.
    *
    * @param cacheHeaders the {@link CacheHeaders} that will be passed with records generated from this request to {@link
    *                     com.apollographql.apollo.cache.normalized.NormalizedCache}. Standardized cache headers are
@@ -68,7 +69,7 @@ public interface ApolloCall<T> extends Cancelable {
   @Nonnull ApolloCall<T> clone();
 
   /**
-   * Returns GraphQl operation this call executes
+   * Returns GraphQL operation this call executes
    *
    * @return {@link Operation}
    */
@@ -80,16 +81,26 @@ public interface ApolloCall<T> extends Cancelable {
   abstract class Callback<T> {
 
     /**
-     * Gets called when GraphQl response is received and parsed successfully.
+     * Gets called when GraphQL response is received and parsed successfully. Depending on the
+     * {@link ResponseFetcher} used with the call, this may be called multiple times. {@link #onCompleted()}
+     * will be called after the final call to onResponse.
      *
-     * @param response the GraphQl response
+     * @param response the GraphQL response
      */
     public abstract void onResponse(@Nonnull Response<T> response);
 
     /**
      * Gets called when an unexpected exception occurs while creating the request or processing the response.
+     * Will be called at most one time. It is considered a terminal event. After called,
+     * neither {@link #onResponse(Response)} or {@link #onCompleted()} will be called again.
      */
     public abstract void onFailure(@Nonnull ApolloException e);
+
+    /**
+     * Gets called when the {@link #onResponse(Response)} has been called for the last time. Not called in the
+     * case of an error. {@link #onFailure(ApolloException)} will be called instead.
+     */
+    public void onCompleted() { }
 
     /**
      * Gets called when an http request error takes place. This is the case when the returned http status code doesn't

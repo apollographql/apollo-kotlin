@@ -20,7 +20,6 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.fail;
 
 public class ApolloCallTest {
   private static final long TIME_OUT_SECONDS = 3;
@@ -39,12 +38,13 @@ public class ApolloCallTest {
   }
 
   @Test
-  public void apolloCallNotCalled_WhenCanceled() throws Exception {
-    final NamedCountDownLatch responseLatch = new NamedCountDownLatch("apolloCallNotCalled_WhenCanceled", 1);
+  public void cancelCallBeforeEnqueueTriggersOnFailure() throws Exception {
+    final NamedCountDownLatch responseLatch = new NamedCountDownLatch("cancelCallBeforeEnqueueTriggersOnFailure", 1);
 
     EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     mockWebServer.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
+    final AtomicReference<ApolloException> errorRef = new AtomicReference<>();
     ApolloCall<EpisodeHeroNameQuery.Data> apolloCall = apolloClient.query(query);
 
     apolloCall.cancel();
@@ -52,39 +52,35 @@ public class ApolloCallTest {
     apolloCall.enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
       @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
         responseLatch.countDown();
-        if (responseLatch.getCount() == 0) {
-          fail("Received callback, although apollo call has already been canceled");
-        }
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
         responseLatch.countDown();
-        fail(e.getMessage());
+        errorRef.set(e);
       }
     });
-
-    //Wait for 3 seconds to check that callback is not called.
-    //Test is successful if timeout is reached.
-    responseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    responseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    assertThat(errorRef.get()).isInstanceOf(ApolloCanceledException.class);
   }
 
   @Test
-  public void apolloCanceledExceptionEnqueue() throws Exception {
-    final NamedCountDownLatch responseLatch = new NamedCountDownLatch("apolloCanceledExceptionEnqueue", 1);
+  public void cancelAfterCallingEnqueueHasNoCallback() throws Exception {
+    final NamedCountDownLatch responseLatch = new NamedCountDownLatch("cancelAfterCallingEnqueueHasNoCallback", 1);
 
     EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     mockWebServer.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json")
         .setBodyDelay(TIME_OUT_SECONDS, TimeUnit.SECONDS));
 
-    final AtomicReference<ApolloException> errorRef = new AtomicReference<>();
     ApolloCall<EpisodeHeroNameQuery.Data> apolloCall = apolloClient.query(query);
+    final AtomicReference<String> errorState = new AtomicReference<>(null);
     apolloCall.enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
       @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
+        errorState.set("onResponse should not be called after cancel");
         responseLatch.countDown();
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        errorRef.set(e);
+        errorState.set("onFailure should not be called after cancel");
         responseLatch.countDown();
       }
     });
@@ -92,8 +88,7 @@ public class ApolloCallTest {
     Thread.sleep(500);
     apolloCall.cancel();
     responseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-
-    assertThat(errorRef.get()).isInstanceOf(ApolloCanceledException.class);
+    assertThat(errorState.get()).isNull();
   }
 
   @Test

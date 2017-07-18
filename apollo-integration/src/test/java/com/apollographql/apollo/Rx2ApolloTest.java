@@ -1,13 +1,13 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
-import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
+import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import org.junit.After;
@@ -168,7 +168,7 @@ public class Rx2ApolloTest {
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     //Another newer call gets updated information
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
-    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    apolloClient.query(query).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY).execute();
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 
@@ -213,7 +213,7 @@ public class Rx2ApolloTest {
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
 
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
-    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).enqueue(null);
+    apolloClient.query(query).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY).enqueue(null);
 
     secondResponseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
@@ -261,7 +261,7 @@ public class Rx2ApolloTest {
     HeroAndFriendsNamesWithIDsQuery friendsQuery = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
 
     mockWebServer.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
-    apolloClient.query(friendsQuery).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    apolloClient.query(friendsQuery).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY).execute();
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 
@@ -307,7 +307,7 @@ public class Rx2ApolloTest {
 
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
     disposable.dispose();
-    apolloClient.query(query).cacheControl(CacheControl.NETWORK_ONLY).execute();
+    apolloClient.query(query).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY).execute();
 
     secondResponseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }

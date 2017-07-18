@@ -11,6 +11,7 @@ import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
+import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
 
 import org.junit.After;
@@ -54,13 +55,15 @@ public class ApolloInterceptorChainTest {
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
-      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+      public InterceptorResponse intercept(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull FetchOptions fetchOptions) throws ApolloException {
         counter.decrementAndGet();
         return null;
       }
 
       @Override
-      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull FetchOptions fetchOptions, @Nonnull CallBack callBack) {
 
       }
 
@@ -72,7 +75,7 @@ public class ApolloInterceptorChainTest {
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     chain = new RealApolloInterceptorChain(query, interceptors);
 
-    chain.proceed();
+    chain.proceed(FetchOptions.NETWORK_ONLY);
 
     if (counter.get() != 0) {
       Assert.fail("Control not passed to the interceptor");
@@ -87,12 +90,15 @@ public class ApolloInterceptorChainTest {
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
-      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+      public InterceptorResponse intercept(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull FetchOptions options)
+          throws ApolloException {
         return null;
       }
 
       @Override
-      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull FetchOptions options, @Nonnull CallBack callBack) {
         counter.decrementAndGet();
       }
 
@@ -104,12 +110,16 @@ public class ApolloInterceptorChainTest {
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     chain = new RealApolloInterceptorChain(query, interceptors);
 
-    chain.proceedAsync(Utils.immediateExecutorService(), new CallBack() {
+    chain.proceedAsync(Utils.immediateExecutorService(), FetchOptions.NETWORK_ONLY, new CallBack() {
       @Override public void onResponse(@Nonnull InterceptorResponse response) {
 
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
+
+      }
+
+      @Override public void onCompleted() {
 
       }
     });
@@ -130,12 +140,14 @@ public class ApolloInterceptorChainTest {
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
-      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+      public InterceptorResponse intercept(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull FetchOptions options) throws ApolloException {
         return expectedResponse;
       }
 
       @Override
-      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull FetchOptions options, @Nonnull CallBack callBack) {
 
       }
 
@@ -147,7 +159,7 @@ public class ApolloInterceptorChainTest {
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     chain = new RealApolloInterceptorChain(query, interceptors);
 
-    InterceptorResponse actualResponse = chain.proceed();
+    InterceptorResponse actualResponse = chain.proceed(FetchOptions.NETWORK_ONLY);
 
     assertThat(actualResponse).isEqualTo(expectedResponse);
   }
@@ -161,12 +173,13 @@ public class ApolloInterceptorChainTest {
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
-      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+      public InterceptorResponse intercept(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull FetchOptions options) throws ApolloException {
         return null;
       }
 
       @Override
-      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull ExecutorService dispatcher, @Nonnull FetchOptions options, @Nonnull final CallBack callBack) {
         dispatcher.execute(new Runnable() {
           @Override public void run() {
             callBack.onResponse(expectedResponse);
@@ -182,13 +195,17 @@ public class ApolloInterceptorChainTest {
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     chain = new RealApolloInterceptorChain(query, interceptors);
 
-    chain.proceedAsync(Utils.immediateExecutorService(), new CallBack() {
+    chain.proceedAsync(Utils.immediateExecutorService(), FetchOptions.NETWORK_ONLY, new CallBack() {
       @Override public void onResponse(@Nonnull InterceptorResponse response) {
         assertThat(response).isEqualTo(expectedResponse);
         counter.decrementAndGet();
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
+
+      }
+
+      @Override public void onCompleted() {
 
       }
     });
@@ -206,12 +223,14 @@ public class ApolloInterceptorChainTest {
 
     ApolloInterceptor Interceptor = new ApolloInterceptor() {
       @Nonnull @Override
-      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+      public InterceptorResponse intercept(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull FetchOptions options)
+          throws ApolloException {
         throw new ApolloException(message);
       }
 
       @Override
-      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull FetchOptions options, @Nonnull CallBack callBack) {
 
       }
 
@@ -226,7 +245,7 @@ public class ApolloInterceptorChainTest {
     chain = new RealApolloInterceptorChain(query, interceptors);
 
     try {
-      chain.proceed();
+      chain.proceed(FetchOptions.NETWORK_ONLY);
     } catch (Exception e) {
       assertThat(e.getMessage()).isEqualTo(message);
       assertThat(e).isInstanceOf(ApolloException.class);
@@ -243,13 +262,14 @@ public class ApolloInterceptorChainTest {
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
-      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+      public InterceptorResponse intercept(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull FetchOptions fetchOptions) throws ApolloException {
         return null;
       }
 
       @Override
       public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+          @Nonnull ExecutorService dispatcher, @Nonnull FetchOptions options, @Nonnull final CallBack callBack) {
         dispatcher.execute(new Runnable() {
           @Override public void run() {
             ApolloException apolloException = new ApolloException(message);
@@ -266,7 +286,7 @@ public class ApolloInterceptorChainTest {
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     chain = new RealApolloInterceptorChain(query, interceptors);
 
-    chain.proceedAsync(Utils.immediateExecutorService(), new CallBack() {
+    chain.proceedAsync(Utils.immediateExecutorService(), FetchOptions.NETWORK_ONLY, new CallBack() {
       @Override public void onResponse(@Nonnull InterceptorResponse response) {
 
       }
@@ -274,6 +294,10 @@ public class ApolloInterceptorChainTest {
       @Override public void onFailure(@Nonnull ApolloException e) {
         assertThat(e.getMessage()).isEqualTo(message);
         counter.decrementAndGet();
+      }
+
+      @Override public void onCompleted() {
+
       }
     });
 
@@ -290,12 +314,14 @@ public class ApolloInterceptorChainTest {
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Nonnull @Override
-      public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain) throws ApolloException {
+      public InterceptorResponse intercept(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull FetchOptions fetchOptions) throws ApolloException {
         return null;
       }
 
       @Override
-      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain, @Nonnull
+          ExecutorService dispatcher, @Nonnull FetchOptions fetchOptions, @Nonnull CallBack callBack) {
 
       }
 

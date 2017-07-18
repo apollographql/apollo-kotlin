@@ -1,5 +1,6 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.exception.ApolloCanceledException;
@@ -11,7 +12,6 @@ import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -74,59 +74,58 @@ public class ApolloPrefetchTest {
   }
 
   @Test
-  public void ApolloPrefetchNotCalled_WhenCanceled() throws IOException, InterruptedException {
-    final NamedCountDownLatch responseLatch = new NamedCountDownLatch("ApolloPrefetchNotCalled_WhenCanceled", 1);
+  public void cancelPrefetchBeforeEnqueueTriggersOnFailure() throws Exception {
+    final NamedCountDownLatch responseLatch
+        = new NamedCountDownLatch("cancelPrefetchBeforeEnqueueTriggersOnFailure", 1);
 
     EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
-    ApolloPrefetch prefetch = apolloClient.prefetch(query);
+    final AtomicReference<ApolloException> errorRef = new AtomicReference<>();
+    ApolloCall<EpisodeHeroNameQuery.Data> apolloCall = apolloClient.query(query);
 
-    prefetch.cancel();
+    apolloCall.cancel();
 
-    prefetch.enqueue(new ApolloPrefetch.Callback() {
-      @Override public void onSuccess() {
+    apolloCall.enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
+      @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
         responseLatch.countDown();
-        if (responseLatch.getCount() == 0) {
-          Assert.fail("Received callback, although apollo prefetch has already been canceled");
-        }
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
         responseLatch.countDown();
-        Assert.fail(e.getMessage());
+        errorRef.set(e);
       }
     });
-
-    responseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    responseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    assertThat(errorRef.get()).isInstanceOf(ApolloCanceledException.class);
   }
 
   @Test
-  public void apolloCanceledExceptionEnqueue() throws Exception {
-    final NamedCountDownLatch responseLatch = new NamedCountDownLatch("apolloCanceledExceptionEnqueue", 1);
+  public void cancelAfterEnqueuingHasNoCallback() throws Exception {
+    final NamedCountDownLatch responseLatch = new NamedCountDownLatch("cancelAfterEnqueuingHasNoCallback", 1);
 
     EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json")
         .setBodyDelay(TIME_OUT_SECONDS, TimeUnit.SECONDS));
 
-    final AtomicReference<ApolloException> errorRef = new AtomicReference<>();
-    ApolloPrefetch apolloCall = apolloClient.prefetch(query);
-    apolloCall.enqueue(new ApolloPrefetch.Callback() {
+    ApolloPrefetch apolloPrefetch = apolloClient.prefetch(query);
+    final AtomicReference<String> errorState = new AtomicReference<>(null);
+    apolloPrefetch.enqueue(new ApolloPrefetch.Callback() {
       @Override public void onSuccess() {
+        errorState.set("onSuccess should not be called after cancel");
         responseLatch.countDown();
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        errorRef.set(e);
+        errorState.set("onFailure should not be called after cancel");
         responseLatch.countDown();
       }
     });
 
     Thread.sleep(500);
-    apolloCall.cancel();
+    apolloPrefetch.cancel();
     responseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-
-    assertThat(errorRef.get()).isInstanceOf(ApolloCanceledException.class);
+    assertThat(errorState.get()).isNull();
   }
 
   @Test

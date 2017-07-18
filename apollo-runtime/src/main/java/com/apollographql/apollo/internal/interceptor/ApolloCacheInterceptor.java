@@ -1,25 +1,22 @@
 package com.apollographql.apollo.internal.interceptor;
 
-import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
-import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
-import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.Record;
+import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
+import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.cache.normalized.Transaction;
 import com.apollographql.apollo.internal.cache.normalized.WriteableStore;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
@@ -30,144 +27,90 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
  * ApolloCacheInterceptor is a concrete {@link ApolloInterceptor} responsible for serving requests from the normalized
- * cache. It takes the following actions based on the {@link CacheControl} set:
- *
- * <ol> <li> <b>CACHE_ONLY</b>: First tries to get the data from the normalized cache. If the data doesn't exist or
- * there was an error inflating the models, it returns the
- * {@link com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse}
- * with the GraphQL {@link Operation} object wrapped inside. </li>
- *
- * <li><b>CACHE_FIRST</b>: First tries to get the data from the normalized cache. If the data doesn't exist or there was
- * an error inflating the models, it then makes a network request.</li>
- *
- * <li><b>NETWORK_FIRST</b>: First tries to get the data from the network. If there was an error getting data from the
- * network, it tries to get it from the normalized cache. If it is not present in the cache, then it rethrows the
- * network exception.</li>
- *
- * <li><b>NETWORK_ONLY</b>: First tries to get the data from the network. If the network request fails, it throws an
- * exception.</li>
- *
- * </ol>
+ * cache if {@link FetchOptions#fetchFromCache} is true. Saves all network responses to cache.
  */
 public final class ApolloCacheInterceptor implements ApolloInterceptor {
   private final ApolloStore apolloStore;
-  private final CacheControl cacheControl;
-  private final CacheHeaders cacheHeaders;
   private final ResponseFieldMapper responseFieldMapper;
-  private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final ExecutorService dispatcher;
   private final ApolloLogger logger;
+  private volatile boolean disposed;
 
-  public ApolloCacheInterceptor(@Nonnull ApolloStore apolloStore, @Nonnull CacheControl cacheControl,
-      @Nonnull CacheHeaders cacheHeaders,
-      @Nonnull ResponseFieldMapper responseFieldMapper,
-      @Nonnull Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
+  public ApolloCacheInterceptor(@Nonnull ApolloStore apolloStore, @Nonnull ResponseFieldMapper responseFieldMapper,
       @Nonnull ExecutorService dispatcher, @Nonnull ApolloLogger logger) {
     this.apolloStore = checkNotNull(apolloStore, "cache == null");
-    this.cacheControl = checkNotNull(cacheControl, "cacheControl == null");
-    this.cacheHeaders = checkNotNull(cacheHeaders, "cacheHeaders == null");
     this.responseFieldMapper = checkNotNull(responseFieldMapper, "responseFieldMapper == null");
-    this.customTypeAdapters = checkNotNull(customTypeAdapters, "customTypeAdapters == null");
     this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
     this.logger = checkNotNull(logger, "logger == null");
   }
 
-  @Nonnull @Override public InterceptorResponse intercept(Operation operation, ApolloInterceptorChain chain)
-      throws ApolloException {
-    InterceptorResponse cachedResponse = resolveCacheFirstResponse(operation);
-    if (cachedResponse != null) {
-      return cachedResponse;
+  @Nonnull @Override
+  public InterceptorResponse intercept(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
+      @Nonnull FetchOptions options) throws ApolloException {
+    if (disposed) throw new ApolloCanceledException("Canceled");
+    if (options.fetchFromCache) {
+      return resolveFromCache(operation, options);
     }
-
-    InterceptorResponse networkResponse;
-    try {
-      networkResponse = chain.proceed();
-    } catch (Exception e) {
-      InterceptorResponse networkFirstCacheResponse = resolveNetworkFirstCacheResponse(operation);
-      if (networkFirstCacheResponse != null) {
-        logger.d(e, "Failed to fetch network response for operation %s, return cached one", operation);
-        return networkFirstCacheResponse;
-      }
-      throw e;
-    }
-    return handleNetworkResponse(operation, networkResponse);
+    InterceptorResponse networkResponse = chain.proceed(options);
+    cacheResponse(networkResponse, options);
+    return networkResponse;
   }
 
   @Override
   public void interceptAsync(@Nonnull final Operation operation, @Nonnull final ApolloInterceptorChain chain,
-      @Nonnull final ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+      @Nonnull final ExecutorService dispatcher, @Nonnull final FetchOptions options,
+      @Nonnull final CallBack callBack) {
     dispatcher.execute(new Runnable() {
       @Override public void run() {
-        //Imperative strategy
-        final InterceptorResponse cachedResponse = resolveCacheFirstResponse(operation);
-        if (cachedResponse != null) {
-          callBack.onResponse(cachedResponse);
-          return;
-        }
-
-        chain.proceedAsync(dispatcher, new CallBack() {
-          @Override public void onResponse(@Nonnull InterceptorResponse response) {
-            callBack.onResponse(handleNetworkResponse(operation, response));
+        if (disposed) return;
+        if (options.fetchFromCache) {
+          final InterceptorResponse cachedResponse;
+          try {
+            cachedResponse = resolveFromCache(operation, options);
+            callBack.onResponse(cachedResponse);
+            callBack.onCompleted();
+          } catch (ApolloException e) {
+            callBack.onFailure(e);
           }
+        } else {
+          chain.proceedAsync(dispatcher, options, new CallBack() {
+            @Override public void onResponse(@Nonnull InterceptorResponse networkResponse) {
+              if (disposed) return;
+              cacheResponse(networkResponse, options);
+              callBack.onResponse(networkResponse);
+              callBack.onCompleted();
+            }
 
-          @Override public void onFailure(@Nonnull ApolloException e) {
-            InterceptorResponse response = resolveNetworkFirstCacheResponse(operation);
-            if (response != null) {
-              logger.d(e, "Failed to fetch network response for operation %s, return cached one", operation);
-              callBack.onResponse(response);
-            } else {
+            @Override public void onFailure(@Nonnull ApolloException e) {
               callBack.onFailure(e);
             }
-          }
-        });
+
+            @Override public void onCompleted() {
+            }
+          });
+        }
       }
     });
   }
 
   @Override public void dispose() {
-    //no op
+    disposed = true;
   }
 
-  private InterceptorResponse resolveCacheFirstResponse(Operation operation) {
-    if (cacheControl == CacheControl.CACHE_ONLY || cacheControl == CacheControl.CACHE_FIRST) {
-      ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
+  private InterceptorResponse resolveFromCache(Operation operation, FetchOptions options) throws ApolloException {
+    ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
 
-      Response cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer, cacheHeaders);
-      if (cachedResponse.data() != null) {
-        logger.d("Cache HIT for operation %s", operation);
-      }
-
-      if (cacheControl == CacheControl.CACHE_ONLY || cachedResponse.data() != null) {
-        return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
-      }
+      Response cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer,
+          options.cacheHeaders);
+    if (cachedResponse.data() != null) {
+      logger.d("Cache HIT for operation %s", operation);
+      return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
     }
     logger.d("Cache MISS for operation %s", operation);
-    return null;
+    throw new ApolloException(String.format("Cache miss for operation %s", operation));
   }
 
-  private InterceptorResponse handleNetworkResponse(Operation operation, InterceptorResponse networkResponse) {
-    boolean networkFailed = (!networkResponse.httpResponse.isPresent()
-        || !networkResponse.httpResponse.get().isSuccessful());
-    if (networkFailed && cacheControl != CacheControl.NETWORK_ONLY) {
-      ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
-      Response cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer, cacheHeaders);
-      if (cachedResponse.data() != null) {
-        logger.d("Cache HIT for operation %s", operation);
-        return new InterceptorResponse(networkResponse.httpResponse.get(), cachedResponse,
-            responseNormalizer.records());
-      } else {
-        logger.d("Cache MISS for operation %s", operation);
-      }
-    }
-
-    if (!networkFailed) {
-      cacheResponse(networkResponse);
-    }
-
-    return networkResponse;
-  }
-
-  private void cacheResponse(final InterceptorResponse networkResponse) {
+  private void cacheResponse(final InterceptorResponse networkResponse, final FetchOptions options) {
     final Optional<Collection<Record>> records = networkResponse.cacheRecords;
     if (!records.isPresent()) {
       return;
@@ -177,7 +120,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     try {
       changedKeys = apolloStore.writeTransaction(new Transaction<WriteableStore, Set<String>>() {
         @Nullable @Override public Set<String> execute(WriteableStore cache) {
-          return cache.merge(records.get(), cacheHeaders);
+          return cache.merge(records.get(), options.cacheHeaders);
         }
       });
     } catch (Exception e) {
@@ -194,18 +137,5 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
         }
       }
     });
-  }
-
-  private InterceptorResponse resolveNetworkFirstCacheResponse(Operation operation) {
-    if (cacheControl == CacheControl.NETWORK_FIRST) {
-      ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
-      Response cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer, cacheHeaders);
-      if (cachedResponse.data() != null) {
-        logger.d("Cache HIT for operation %s", operation);
-        return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
-      }
-    }
-    logger.d("Cache MISS for operation %s", operation);
-    return null;
   }
 }

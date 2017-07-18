@@ -4,7 +4,7 @@ import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
-import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.fetcher.ResponseFetcher;
 
 import javax.annotation.Nonnull;
 
@@ -28,9 +28,24 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
    */
   @Nonnull ApolloQueryCall<T> httpCachePolicy(@Nonnull HttpCachePolicy.Policy httpCachePolicy);
 
-  @Nonnull @Override ApolloQueryCall<T> cacheControl(@Nonnull CacheControl cacheControl);
-
+  /**
+   * Sets the {@link CacheHeaders} to use for this call. {@link com.apollographql.apollo.interceptor.FetchOptions} will
+   * be configured with this headers, and will be accessible from the {@link ResponseFetcher} used for this call.
+   *
+   * @param cacheHeaders the {@link CacheHeaders} that will be passed with records generated from this request to {@link
+   *                     com.apollographql.apollo.cache.normalized.NormalizedCache}. Standardized cache headers are
+   *                     defined in {@link com.apollographql.apollo.cache.ApolloCacheHeaders}.
+   * @return The ApolloCall object with the provided {@link CacheHeaders}.
+   */
   @Nonnull @Override ApolloQueryCall<T> cacheHeaders(@Nonnull CacheHeaders cacheHeaders);
+
+  /**
+   * Sets the {@link ResponseFetcher} strategy for an ApolloCall object.
+   *
+   * @param fetcher the {@link ResponseFetcher} to use.
+   * @return The ApolloCall object with the provided CacheControl strategy
+   */
+  @Nonnull ApolloQueryCall<T> responseFetcher(@Nonnull ResponseFetcher fetcher);
 
   @Nonnull @Override ApolloQueryCall<T> clone();
 

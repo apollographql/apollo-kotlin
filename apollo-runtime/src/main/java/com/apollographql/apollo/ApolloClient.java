@@ -11,11 +11,12 @@ import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.cache.http.HttpCacheStore;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
-import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
+import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.internal.ApolloCallTracker;
 import com.apollographql.apollo.internal.RealApolloCall;
@@ -79,7 +80,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final ResponseFieldMapperFactory responseFieldMapperFactory = new ResponseFieldMapperFactory();
   private final ExecutorService dispatcher;
   private final HttpCachePolicy.Policy defaultHttpCachePolicy;
-  private final CacheControl defaultCacheControl;
+  private final ResponseFetcher defaultResponseFetcher;
   private final CacheHeaders defaultCacheHeaders;
   private final ApolloLogger logger;
   private final ApolloCallTracker tracker = new ApolloCallTracker();
@@ -95,7 +96,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     this.dispatcher = builder.dispatcher;
     this.defaultHttpCachePolicy = builder.defaultHttpCachePolicy;
     this.defaultCacheHeaders = builder.defaultCacheHeaders;
-    this.defaultCacheControl = builder.defaultCacheControl;
+    this.defaultResponseFetcher = builder.defaultResponseFetcher;
     this.logger = builder.apolloLogger;
     this.applicationInterceptors = builder.applicationInterceptors;
   }
@@ -103,7 +104,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   @Override
   public <D extends Mutation.Data, T, V extends Mutation.Variables> ApolloMutationCall<T> mutate(
       @Nonnull Mutation<D, T, V> mutation) {
-    return newCall(mutation).cacheControl(CacheControl.NETWORK_ONLY);
+    return newCall(mutation).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY);
   }
 
   @Override
@@ -117,8 +118,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
       @Nonnull Operation<D, T, V> operation) {
-    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory,
-        httpCache, moshi, dispatcher, logger, tracker);
+    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, moshi, dispatcher, logger, tracker);
   }
 
   /**
@@ -188,7 +188,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .responseFieldMapperFactory(responseFieldMapperFactory)
         .customTypeAdapters(customTypeAdapters)
         .apolloStore(apolloStore)
-        .cacheControl(defaultCacheControl)
+        .responseFetcher(defaultResponseFetcher)
         .cacheHeaders(defaultCacheHeaders)
         .dispatcher(dispatcher)
         .logger(logger)
@@ -207,7 +207,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     Optional<NormalizedCacheFactory> cacheFactory = Optional.absent();
     Optional<CacheKeyResolver> cacheKeyResolver = Optional.absent();
     HttpCachePolicy.Policy defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY;
-    CacheControl defaultCacheControl = CacheControl.CACHE_FIRST;
+    ResponseFetcher defaultResponseFetcher = ApolloResponseFetchers.CACHE_FIRST;
     CacheHeaders defaultCacheHeaders = CacheHeaders.NONE;
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
     private final Moshi.Builder moshiBuilder = new Moshi.Builder();
@@ -337,24 +337,23 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
-     * Set the default {@link CacheControl} strategy that will be used for each new
-     * {@link ApolloCall}.
-     *
-     * @return The {@link Builder} object to be used for chaining method calls
-     */
-    public Builder defaultCacheControl(@Nonnull CacheControl cacheControl) {
-      this.defaultCacheControl = checkNotNull(cacheControl, "cacheControl == null");
-      return this;
-    }
-
-    /**
      * Set the default {@link CacheHeaders} strategy that will be passed
-     * to each new {@link ApolloCall}.
+     * to the {@link com.apollographql.apollo.interceptor.FetchOptions} used in each new {@link ApolloCall}.
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder defaultCacheHeaders(@Nonnull CacheHeaders cacheHeaders) {
       this.defaultCacheHeaders = checkNotNull(cacheHeaders, "cacheHeaders == null");
+      return this;
+    }
+
+    /**
+     * Set the default {@link ResponseFetcher} to be used with each new {@link ApolloCall}.
+     *
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
+    public Builder defaultResponseFetcher(@Nonnull ResponseFetcher defaultResponseFetcher) {
+      this.defaultResponseFetcher = checkNotNull(defaultResponseFetcher, "defaultResponseFetcher == null");
       return this;
     }
 
