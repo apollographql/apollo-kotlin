@@ -1,7 +1,7 @@
 package com.apollographql.apollo.compiler.ir
 
 import com.apollographql.apollo.compiler.Annotations
-import com.apollographql.apollo.compiler.InputObjectTypeSpecBuilder
+import com.apollographql.apollo.compiler.InputTypeSpecBuilder
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
@@ -69,7 +69,7 @@ data class TypeDeclaration(
   }
 
   private fun inputObjectToTypeSpec(context: CodeGenerationContext) =
-      InputObjectTypeSpecBuilder(name, fields ?: emptyList(), context).build()
+      InputTypeSpecBuilder(name, fields ?: emptyList(), context).build()
 
   companion object {
     val KIND_INPUT_OBJECT_TYPE: String = "InputObjectType"

@@ -9,6 +9,8 @@ public interface InputFieldWriter {
 
   void writeInt(@Nonnull String fieldName, Integer value) throws IOException;
 
+  void writeLong(@Nonnull String fieldName, Long value) throws IOException;
+
   void writeDouble(@Nonnull String fieldName, Double value) throws IOException;
 
   void writeBoolean(@Nonnull String fieldName, Boolean value) throws IOException;
@@ -27,6 +29,8 @@ public interface InputFieldWriter {
     void writeString(String value) throws IOException;
 
     void writeInt(Integer value) throws IOException;
+
+    void writeLong(Long value) throws IOException;
 
     void writeDouble(Double value) throws IOException;
 

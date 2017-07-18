@@ -1653,6 +1653,44 @@
                 "ofType": null
               },
               "defaultValue": "JEDI"
+            },
+            {
+              "name": "nullableEnum",
+              "description": "for test purpose only",
+              "type": {
+                "kind": "ENUM",
+                "name": "Episode",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "listOfCustomScalar",
+              "description": "for test purpose only",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Date",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "name": "listOfEnums",
+              "description": "for test purpose only",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "Episode",
+                  "ofType": null
+                }
+              }
             }
           ],
           "interfaces": null,
@@ -1702,6 +1740,16 @@
                 }
               },
               "defaultValue": "1.5"
+            },
+            {
+              "name": "enumWithDefaultValue",
+              "description": "for test purpose only",
+              "type": {
+                "kind": "ENUM",
+                "name": "Episode",
+                "ofType": null
+              },
+              "defaultValue": "JEDI"
             }
           ],
           "interfaces": null,

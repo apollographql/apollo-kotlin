@@ -12,7 +12,7 @@ class JavaTypeResolver(
     private val packageName: String,
     private val deprecated: Boolean = false
 ) {
-  fun resolve(typeName: String, isOptional: Boolean = !typeName.endsWith("!")): TypeName {
+  fun resolve(typeName: String, isOptional: Boolean = !typeName.endsWith("!"), nullableValueType: NullableValueType? = null): TypeName {
     val normalizedTypeName = typeName.removeSuffix("!")
     val isList = normalizedTypeName.startsWith('[') && normalizedTypeName.endsWith(']')
     val customScalarType = context.customTypeMap[normalizedTypeName]
@@ -30,7 +30,7 @@ class JavaTypeResolver(
     return if (javaType.isPrimitive) {
       javaType.let { if (deprecated) it.annotated(Annotations.DEPRECATED) else it }
     } else if (isOptional) {
-      when (context.nullableValueType) {
+      when (nullableValueType ?: context.nullableValueType) {
         NullableValueType.APOLLO_OPTIONAL -> parameterizedOptional(javaType)
         NullableValueType.GUAVA_OPTIONAL -> parameterizedGuavaOptional(javaType)
         NullableValueType.JAVA_OPTIONAL -> parameterizedJavaOptional(javaType)
