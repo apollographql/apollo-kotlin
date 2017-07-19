@@ -39,6 +39,15 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
   }
 
+  @Override public void writeLong(@Nonnull String fieldName, Long value) throws IOException {
+    checkNotNull(fieldName, "fieldName == null");
+    if (value != null) {
+      jsonWriter.name(fieldName).value(value);
+    } else {
+      jsonWriter.name(fieldName).nullValue();
+    }
+  }
+
   @Override public void writeDouble(@Nonnull String fieldName, Double value) throws IOException {
     checkNotNull(fieldName, "fieldName == null");
     if (value != null) {
@@ -105,6 +114,12 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
 
     @Override public void writeInt(Integer value) throws IOException {
+      if (value != null) {
+        jsonWriter.value(value);
+      }
+    }
+
+    @Override public void writeLong(Long value) throws IOException {
       if (value != null) {
         jsonWriter.value(value);
       }
