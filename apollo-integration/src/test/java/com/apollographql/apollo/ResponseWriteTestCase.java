@@ -96,7 +96,7 @@ public class ResponseWriteTestCase {
         DATE_TIME_FORMAT.parse("1985-04-16"),
         Collections.<Date>emptyList()
     );
-    apolloClient.apolloStore().write(query, new EpisodeHeroWithDatesQuery.Data(hero));
+    apolloClient.apolloStore().write(query, new EpisodeHeroWithDatesQuery.Data(hero)).execute();
 
     hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
@@ -113,7 +113,7 @@ public class ResponseWriteTestCase {
             DATE_TIME_FORMAT.parse("2017-05-16")
         )
     );
-    apolloClient.apolloStore().write(query, new EpisodeHeroWithDatesQuery.Data(hero));
+    apolloClient.apolloStore().write(query, new EpisodeHeroWithDatesQuery.Data(hero)).execute();
 
     hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
@@ -145,7 +145,7 @@ public class ResponseWriteTestCase {
         Episode.JEDI,
         Collections.<Episode>emptyList()
     );
-    apolloClient.apolloStore().write(query, new HeroNameWithEnumsQuery.Data(hero));
+    apolloClient.apolloStore().write(query, new HeroNameWithEnumsQuery.Data(hero)).execute();
 
     hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
@@ -159,7 +159,7 @@ public class ResponseWriteTestCase {
         Episode.JEDI,
         asList(Episode.EMPIRE)
     );
-    apolloClient.apolloStore().write(query, new HeroNameWithEnumsQuery.Data(hero));
+    apolloClient.apolloStore().write(query, new HeroNameWithEnumsQuery.Data(hero)).execute();
 
     hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
@@ -196,7 +196,7 @@ public class ResponseWriteTestCase {
         "R222-D222",
         null
     );
-    apolloClient.apolloStore().write(query, new HeroAndFriendsNamesWithIDsQuery.Data(hero));
+    apolloClient.apolloStore().write(query, new HeroAndFriendsNamesWithIDsQuery.Data(hero)).execute();
 
     hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
@@ -215,7 +215,7 @@ public class ResponseWriteTestCase {
         "R222-D222",
         singletonList(friend)
     );
-    apolloClient.apolloStore().write(query, new HeroAndFriendsNamesWithIDsQuery.Data(hero));
+    apolloClient.apolloStore().write(query, new HeroAndFriendsNamesWithIDsQuery.Data(hero)).execute();
 
     hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
@@ -281,7 +281,7 @@ public class ResponseWriteTestCase {
             )
         )
     );
-    apolloClient.apolloStore().write(query, new HeroAndFriendsWithFragmentsQuery.Data(hero));
+    apolloClient.apolloStore().write(query, new HeroAndFriendsWithFragmentsQuery.Data(hero)).execute();
 
     hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
@@ -343,7 +343,7 @@ public class ResponseWriteTestCase {
             )
         )
     );
-    apolloClient.apolloStore().write(query, new EpisodeHeroWithInlineFragmentQuery.Data(hero));
+    apolloClient.apolloStore().write(query, new EpisodeHeroWithInlineFragmentQuery.Data(hero)).execute();
 
     hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");
@@ -408,7 +408,7 @@ public class ResponseWriteTestCase {
                 )
             )
         ), CacheKey.from(hero.fragments().heroWithFriendsFragment().id()), query.variables()
-    );
+    ).execute();
 
     apolloClient.apolloStore().write(
         new HumanWithIdFragment(
@@ -416,7 +416,7 @@ public class ResponseWriteTestCase {
             "1002",
             "Beast"
         ), CacheKey.from("1002"), query.variables()
-    );
+    ).execute();
 
     hero = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data().hero();
     assertThat(hero.__typename()).isEqualTo("Droid");

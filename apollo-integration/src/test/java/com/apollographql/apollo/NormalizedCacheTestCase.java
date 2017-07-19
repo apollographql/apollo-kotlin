@@ -288,7 +288,7 @@ public class NormalizedCacheTestCase {
     HeroAndFriendsNamesWithIDsQuery query = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
     apolloClient.query(query).execute();
 
-    HeroAndFriendsNamesWithIDsQuery.Data data = apolloClient.apolloStore().read(query);
+    HeroAndFriendsNamesWithIDsQuery.Data data = apolloClient.apolloStore().read(query).execute();
     assertThat(data.hero().id()).isEqualTo("2001");
     assertThat(data.hero().name()).isEqualTo("R2-D2");
     assertThat(data.hero().friends()).hasSize(3);
@@ -307,7 +307,7 @@ public class NormalizedCacheTestCase {
     apolloClient.query(query).execute();
 
     HeroWithFriendsFragment heroWithFriendsFragment = apolloClient.apolloStore().read(
-        new HeroWithFriendsFragment.Mapper(), CacheKey.from("2001"), Operation.EMPTY_VARIABLES);
+        new HeroWithFriendsFragment.Mapper(), CacheKey.from("2001"), Operation.EMPTY_VARIABLES).execute();
 
     assertThat(heroWithFriendsFragment.id()).isEqualTo("2001");
     assertThat(heroWithFriendsFragment.name()).isEqualTo("R2-D2");
@@ -320,17 +320,17 @@ public class NormalizedCacheTestCase {
     assertThat(heroWithFriendsFragment.friends().get(2).fragments().humanWithIdFragment().name()).isEqualTo("Leia Organa");
 
     HumanWithIdFragment fragment = apolloClient.apolloStore().read(new HumanWithIdFragment.Mapper(),
-        CacheKey.from("1000"), Operation.EMPTY_VARIABLES);
+        CacheKey.from("1000"), Operation.EMPTY_VARIABLES).execute();
     assertThat(fragment.id()).isEqualTo("1000");
     assertThat(fragment.name()).isEqualTo("Luke Skywalker");
 
     fragment = apolloClient.apolloStore().read(new HumanWithIdFragment.Mapper(), CacheKey.from("1002"),
-        Operation.EMPTY_VARIABLES);
+        Operation.EMPTY_VARIABLES).execute();
     assertThat(fragment.id()).isEqualTo("1002");
     assertThat(fragment.name()).isEqualTo("Han Solo");
 
     fragment = apolloClient.apolloStore().read(new HumanWithIdFragment.Mapper(), CacheKey.from("1003"),
-        Operation.EMPTY_VARIABLES);
+        Operation.EMPTY_VARIABLES).execute();
     assertThat(fragment.id()).isEqualTo("1003");
     assertThat(fragment.name()).isEqualTo("Leia Organa");
   }
@@ -370,7 +370,7 @@ public class NormalizedCacheTestCase {
     assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Han Solo");
 
     // test remove root query object
-    assertThat(apolloClient.apolloStore().remove(CacheKey.from("2001"))).isTrue();
+    assertThat(apolloClient.apolloStore().remove(CacheKey.from("2001")).execute()).isTrue();
     masterQueryResponse = apolloClient.query(masterQuery).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute();
     assertThat(masterQueryResponse.fromCache()).isTrue();
     assertThat(masterQueryResponse.data()).isNull();
@@ -384,7 +384,7 @@ public class NormalizedCacheTestCase {
     assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Han Solo");
 
     // test remove object from the list
-    assertThat(apolloClient.apolloStore().remove(CacheKey.from("1002"))).isTrue();
+    assertThat(apolloClient.apolloStore().remove(CacheKey.from("1002")).execute()).isTrue();
 
     detailQuery = new CharacterNameByIdQuery("1002");
     detailQueryResponse = apolloClient.query(detailQuery).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute();
@@ -426,7 +426,8 @@ public class NormalizedCacheTestCase {
     assertThat(detailQueryResponse.fromCache()).isTrue();
     assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Leia Organa");
 
-    assertThat(apolloClient.apolloStore().remove(Arrays.asList(CacheKey.from("1002"), CacheKey.from("1000")))).isEqualTo(2);
+    assertThat(apolloClient.apolloStore().remove(Arrays.asList(CacheKey.from("1002"), CacheKey.from("1000")))
+        .execute()).isEqualTo(2);
 
     detailQuery = new CharacterNameByIdQuery("1000");
     detailQueryResponse = apolloClient.query(detailQuery).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute();

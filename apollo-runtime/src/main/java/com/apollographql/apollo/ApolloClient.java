@@ -10,6 +10,7 @@ import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.cache.http.HttpCacheStore;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
+import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
@@ -141,9 +142,11 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
 
   /**
    * Clear all entries from the normalized cache.
+   *
+   * @return {@link ApolloStoreOperation} operation to execute
    */
-  public void clearNormalizedCache() {
-    apolloStore.clearAll();
+  public @Nonnull ApolloStoreOperation<Boolean> clearNormalizedCache() {
+    return apolloStore.clearAll();
   }
 
   /**
@@ -416,15 +419,15 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         okHttpClient = okHttpClient.newBuilder().addInterceptor(httpCache.interceptor()).build();
       }
 
+      if (dispatcher == null) {
+        dispatcher = defaultDispatcher();
+      }
+
       if (cacheFactory.isPresent() && cacheKeyResolver.isPresent()) {
         final NormalizedCache normalizedCache =
             cacheFactory.get().createNormalizedCache(RecordFieldAdapter.create(moshi));
         this.apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), customTypeAdapters,
-            apolloLogger);
-      }
-
-      if (dispatcher == null) {
-        dispatcher = defaultDispatcher();
+            dispatcher, apolloLogger);
       }
 
       return new ApolloClient(this);

@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
+import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
@@ -99,9 +100,10 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
 
   private InterceptorResponse resolveFromCache(Operation operation, FetchOptions options) throws ApolloException {
     ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
-
-      Response cachedResponse = apolloStore.read(operation, responseFieldMapper, responseNormalizer,
-          options.cacheHeaders);
+    //noinspection unchecked
+    ApolloStoreOperation<Response> apolloStoreOperation = apolloStore.read(operation, responseFieldMapper,
+        responseNormalizer, options.cacheHeaders);
+    Response cachedResponse = apolloStoreOperation.execute();
     if (cachedResponse.data() != null) {
       logger.d("Cache HIT for operation %s", operation);
       return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
