@@ -82,6 +82,13 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
     @Nonnull public Map<String, Object> valueMap() {
       return Collections.emptyMap();
     }
+
+    @Nonnull public InputFieldMarshaller marshaller() {
+      return new InputFieldMarshaller() {
+        @Override public void marshal(InputFieldWriter writer) {
+        }
+      };
+    }
   }
 
   Variables EMPTY_VARIABLES = new Variables();

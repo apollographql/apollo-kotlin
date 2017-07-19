@@ -1,5 +1,7 @@
 package com.example.mutation_create_review;
 
+import com.apollographql.apollo.api.InputFieldMarshaller;
+import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
@@ -13,6 +15,7 @@ import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
 import com.example.mutation_create_review.type.Episode;
 import com.example.mutation_create_review.type.ReviewInput;
+import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.NullPointerException;
 import java.lang.Object;
@@ -111,6 +114,17 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
     @Override
     public Map<String, Object> valueMap() {
       return Collections.unmodifiableMap(valueMap);
+    }
+
+    @Override
+    public InputFieldMarshaller marshaller() {
+      return new InputFieldMarshaller() {
+        @Override
+        public void marshal(InputFieldWriter writer) throws IOException {
+          writer.writeString("ep", ep.name());
+          writer.writeObject("review", review.marshaller());
+        }
+      };
     }
   }
 

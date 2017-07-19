@@ -135,6 +135,21 @@
 					"description": "for test purpose only",
 					"type": "Episode",
 					"defaultValue": "JEDI"
+				},
+				{
+					"name": "nullableEnum",
+					"description": "for test purpose only",
+					"type": "Episode"
+				},
+				{
+					"name": "listOfCustomScalar",
+					"description": "for test purpose only",
+					"type": "[Date]"
+				},
+				{
+					"name": "listOfEnums",
+					"description": "for test purpose only",
+					"type": "[Episode]"
 				}
 			]
 		},
@@ -160,8 +175,19 @@
 					"description": "Blue color",
 					"type": "Float!",
 					"defaultValue": 1.5
+				},
+				{
+					"name": "enumWithDefaultValue",
+					"description": "for test purpose only",
+					"type": "Episode",
+					"defaultValue": "JEDI"
 				}
 			]
+		},
+		{
+			"kind": "ScalarType",
+			"name": "Date",
+			"description": "The `Date` scalar type represents date format."
 		}
 	]
 }

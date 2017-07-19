@@ -1,11 +1,14 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.api.InputFieldMarshaller
+import com.apollographql.apollo.api.InputFieldWriter
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.TypeDeclarationField
 import com.squareup.javapoet.*
+import java.io.IOException
 import javax.lang.model.element.Modifier
 
-class InputObjectTypeSpecBuilder(
+class InputTypeSpecBuilder(
     val name: String,
     val fields: List<TypeDeclarationField>,
     val context: CodeGenerationContext
@@ -19,6 +22,7 @@ class InputObjectTypeSpecBuilder(
           .addConstructor()
           .addFields()
           .addBuilder()
+          .addMethod(marshallerMethodSpec())
           .build()
 
   private fun TypeSpec.Builder.addConstructor(): TypeSpec.Builder {
@@ -77,6 +81,35 @@ class InputObjectTypeSpecBuilder(
     }
   }
 
+  private fun marshallerMethodSpec(): MethodSpec {
+    val writeCode = fields
+        .map { InputFieldSpec.build(name = it.name, graphQLType = it.type, context = context) }
+        .map {
+          it.writeValueCode(
+              writerParam = CodeBlock.of("\$L", WRITER_PARAM.name),
+              marshaller = CodeBlock.of("$MARSHALLER_PARAM_NAME()")
+          )
+        }
+        .fold(CodeBlock.builder(), CodeBlock.Builder::add)
+        .build()
+    val methodSpec = MethodSpec.methodBuilder("marshal")
+        .addModifiers(Modifier.PUBLIC)
+        .addAnnotation(Override::class.java)
+        .addParameter(WRITER_PARAM)
+        .addException(IOException::class.java)
+        .addCode(writeCode)
+        .build()
+    val marshallerType = TypeSpec.anonymousClassBuilder("")
+        .addSuperinterface(InputFieldMarshaller::class.java)
+        .addMethod(methodSpec)
+        .build()
+    return MethodSpec.methodBuilder(MARSHALLER_PARAM_NAME)
+        .addModifiers(Modifier.PUBLIC)
+        .returns(InputFieldMarshaller::class.java)
+        .addStatement("return \$L", marshallerType)
+        .build()
+  }
+
   private fun TypeSpec.Builder.addFields(): TypeSpec.Builder {
     fields.forEach { field ->
       addFieldDefinition(field)
@@ -86,6 +119,8 @@ class InputObjectTypeSpecBuilder(
   }
 
   companion object {
+    private val WRITER_PARAM = ParameterSpec.builder(InputFieldWriter::class.java, "writer").build()
+    private const val MARSHALLER_PARAM_NAME = "marshaller"
     private fun TypeDeclarationField.javaTypeName(context: CodeGenerationContext) =
         JavaTypeResolver(context, context.typesPackage).resolve(type, !type.endsWith("!")).unwrapOptionalType()
   }

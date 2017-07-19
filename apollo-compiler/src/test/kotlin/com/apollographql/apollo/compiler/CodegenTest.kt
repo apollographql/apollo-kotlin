@@ -64,7 +64,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
       return File("src/test/graphql/com/example/").listFiles()
           .filter { it.isDirectory }
           .map {
-            val customTypeMap = if (it.name == "custom_scalar_type") {
+            val customTypeMap = if (it.name == "custom_scalar_type" || it.name == "input_object_type") {
               mapOf("Date" to "java.util.Date", "URL" to "java.lang.String")
             } else {
               emptyMap()

@@ -1,5 +1,7 @@
 package com.example.arguments_complex;
 
+import com.apollographql.apollo.api.InputFieldMarshaller;
+import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
@@ -11,6 +13,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.example.arguments_complex.type.Episode;
+import java.io.IOException;
 import java.lang.Double;
 import java.lang.NullPointerException;
 import java.lang.Object;
@@ -115,6 +118,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     @Override
     public Map<String, Object> valueMap() {
       return Collections.unmodifiableMap(valueMap);
+    }
+
+    @Override
+    public InputFieldMarshaller marshaller() {
+      return new InputFieldMarshaller() {
+        @Override
+        public void marshal(InputFieldWriter writer) throws IOException {
+          writer.writeString("episode", episode != null ? episode.name() : null);
+          writer.writeInt("stars", stars);
+          writer.writeDouble("greenValue", greenValue);
+        }
+      };
     }
   }
 

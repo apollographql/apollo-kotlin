@@ -1,8 +1,11 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.api.InputFieldMarshaller
+import com.apollographql.apollo.api.InputFieldWriter
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.Variable
 import com.squareup.javapoet.*
+import java.io.IOException
 import java.util.*
 import javax.lang.model.element.Modifier
 
@@ -19,6 +22,7 @@ class VariablesTypeSpecBuilder(
           .addConstructor()
           .addVariableAccessors()
           .addValueMapAccessor()
+          .addMethod(marshallerMethodSpec())
           .build()
 
   private fun TypeSpec.Builder.addVariableFields(): TypeSpec.Builder =
@@ -94,6 +98,36 @@ class VariablesTypeSpecBuilder(
     }
   }
 
+  private fun marshallerMethodSpec(): MethodSpec {
+    val writeCode = variables
+        .map { InputFieldSpec.build(name = it.name, graphQLType = it.type, context = context) }
+        .map {
+          it.writeValueCode(
+              writerParam = CodeBlock.of("\$L", WRITER_PARAM.name),
+              marshaller = CodeBlock.of("${MARSHALLER_PARAM_NAME}()")
+          )
+        }
+        .fold(CodeBlock.builder(), CodeBlock.Builder::add)
+        .build()
+    val methodSpec = MethodSpec.methodBuilder("marshal")
+        .addModifiers(Modifier.PUBLIC)
+        .addAnnotation(Override::class.java)
+        .addParameter(WRITER_PARAM)
+        .addException(IOException::class.java)
+        .addCode(writeCode)
+        .build()
+    val marshallerType = TypeSpec.anonymousClassBuilder("")
+        .addSuperinterface(InputFieldMarshaller::class.java)
+        .addMethod(methodSpec)
+        .build()
+    return MethodSpec.methodBuilder(MARSHALLER_PARAM_NAME)
+        .addAnnotation(Override::class.java)
+        .addModifiers(Modifier.PUBLIC)
+        .returns(InputFieldMarshaller::class.java)
+        .addStatement("return \$L", marshallerType)
+        .build()
+  }
+
   companion object {
     private val VARIABLES_CLASS_NAME: String = "Variables"
     private val VARIABLES_TYPE_NAME: ClassName = ClassName.get("", VARIABLES_CLASS_NAME)
@@ -101,5 +135,7 @@ class VariablesTypeSpecBuilder(
         JavaTypeResolver(context, packageName).resolve(type).unwrapOptionalType()
 
     private val VALUE_MAP_FIELD_NAME = "valueMap"
+    private val WRITER_PARAM = ParameterSpec.builder(InputFieldWriter::class.java, "writer").build()
+    private const val MARSHALLER_PARAM_NAME = "marshaller"
   }
 }
