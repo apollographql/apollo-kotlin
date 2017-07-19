@@ -25,7 +25,13 @@ public class ResponseFetcherTest {
 
   @Before public void setUp() {
     okHttpClient = new OkHttpClient.Builder().build();
+
     emptyQuery = new Query() {
+      OperationName operationName = new OperationName() {
+        @Override public String name() {
+          return "emptyQuery";
+        }
+      };
       @Override public String queryDocument() {
         return "";
       }
@@ -43,7 +49,11 @@ public class ResponseFetcherTest {
       }
 
       @Nonnull @Override public OperationName name() {
-        return null;
+        return operationName;
+      }
+
+      @Nonnull @Override public String operationId() {
+        return "";
       }
 
       @Override public Object wrapData(Data data) {

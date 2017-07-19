@@ -50,18 +50,21 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   final boolean prefetch;
   final ApolloLogger logger;
   final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  final boolean sendOperationIdentifiers;
   volatile Call httpCall;
   volatile boolean disposed;
 
   public ApolloServerInterceptor(@Nonnull HttpUrl serverUrl, @Nonnull Call.Factory httpCallFactory,
       @Nullable HttpCachePolicy.Policy cachePolicy, boolean prefetch,
-      @Nonnull Map<ScalarType, CustomTypeAdapter> customTypeAdapters, @Nonnull ApolloLogger logger) {
+      @Nonnull Map<ScalarType, CustomTypeAdapter> customTypeAdapters, @Nonnull ApolloLogger logger,
+      boolean sendOperationIdentifiers) {
     this.serverUrl = checkNotNull(serverUrl, "serverUrl == null");
     this.httpCallFactory = checkNotNull(httpCallFactory, "httpCallFactory == null");
     this.cachePolicy = Optional.fromNullable(cachePolicy);
     this.prefetch = prefetch;
     this.customTypeAdapters = checkNotNull(customTypeAdapters, "customTypeAdapters == null");
     this.logger = checkNotNull(logger, "logger == null");
+    this.sendOperationIdentifiers = sendOperationIdentifiers;
   }
 
   @Override @Nonnull public InterceptorResponse intercept(@Nonnull Operation operation,
@@ -149,7 +152,11 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     Buffer buffer = new Buffer();
     JsonWriter jsonWriter = JsonWriter.of(buffer);
     jsonWriter.beginObject();
-    jsonWriter.name("query").value(operation.queryDocument().replaceAll("\\n", ""));
+    if (sendOperationIdentifiers) {
+      jsonWriter.name("id").value(operation.operationId());
+    } else {
+      jsonWriter.name("query").value(operation.queryDocument().replaceAll("\\n", ""));
+    }
     jsonWriter.name("variables").beginObject();
     operation.variables().marshaller().marshal(new InputFieldJsonWriter(jsonWriter, customTypeAdapters));
     jsonWriter.endObject();

@@ -16,6 +16,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.AbstractExecutorService;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -41,6 +44,7 @@ public class ApolloWatcherTest {
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
+        .dispatcher(immediateExecutorService())
         .okHttpClient(okHttpClient)
           .logger(new Logger() {
             @Override
@@ -346,5 +350,33 @@ public class ApolloWatcherTest {
 
   private MockResponse mockResponse(String fileName) throws IOException {
     return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
+  }
+
+  private ExecutorService immediateExecutorService() {
+    return new AbstractExecutorService() {
+      @Override public void shutdown() {
+
+      }
+
+      @Override public List<Runnable> shutdownNow() {
+        return null;
+      }
+
+      @Override public boolean isShutdown() {
+        return false;
+      }
+
+      @Override public boolean isTerminated() {
+        return false;
+      }
+
+      @Override public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
+        return false;
+      }
+
+      @Override public void execute(Runnable runnable) {
+        runnable.run();
+      }
+    };
   }
 }

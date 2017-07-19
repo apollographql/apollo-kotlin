@@ -45,7 +45,9 @@
 			],
 			"fragmentsReferenced": [
 				"HeroDetails"
-			]
+			],
+			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name\n    ...HeroDetails\n    appearsIn\n  }\n}\nfragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n  ... on Droid {\n    __typename\n    name\n    primaryFunction\n  }\n}",
+			"operationId": "eb09ddd8f931e755957a2631da5129303c0e13d9c20314c5ae3d2522d636b6e1"
 		}
 	],
 	"fragments": [

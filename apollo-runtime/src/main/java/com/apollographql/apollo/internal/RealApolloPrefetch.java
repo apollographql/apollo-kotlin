@@ -38,12 +38,13 @@ import okhttp3.Response;
   final ApolloLogger logger;
   final ApolloCallTracker tracker;
   final ApolloInterceptorChain interceptorChain;
+  final boolean sendOperationIds;
   volatile boolean executed;
   volatile boolean canceled;
 
   public RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ExecutorService dispatcher, ApolloLogger logger,
-      ApolloCallTracker callTracker) {
+      ApolloCallTracker callTracker, boolean sendOperationIds) {
     this.operation = operation;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
@@ -52,9 +53,10 @@ import okhttp3.Response;
     this.dispatcher = dispatcher;
     this.logger = logger;
     this.tracker = callTracker;
+    this.sendOperationIds = sendOperationIds;
     interceptorChain = new RealApolloInterceptorChain(operation, Collections.<ApolloInterceptor>singletonList(
         new ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCachePolicy.NETWORK_ONLY, true,
-            customTypeAdapters, logger)
+            customTypeAdapters, logger, sendOperationIds)
     ));
   }
 
@@ -158,7 +160,7 @@ import okhttp3.Response;
 
   @Override public ApolloPrefetch clone() {
     return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, customTypeAdapters, dispatcher,
-        logger, tracker);
+        logger, tracker, sendOperationIds);
   }
 
   @Override public void cancel() {

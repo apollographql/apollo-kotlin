@@ -12,7 +12,9 @@ data class Operation(
     val source: String,
     val fields: List<Field>,
     val filePath: String,
-    val fragmentsReferenced: List<String>
+    val fragmentsReferenced: List<String>,
+    val operationId: String
+
 ) : CodeGenerator {
   override fun toTypeSpec(context: CodeGenerationContext): TypeSpec =
       SchemaTypeSpecBuilder(

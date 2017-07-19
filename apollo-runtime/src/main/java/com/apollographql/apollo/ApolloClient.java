@@ -10,6 +10,7 @@ import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.cache.http.HttpCacheStore;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
+import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
@@ -84,6 +85,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final ApolloLogger logger;
   private final ApolloCallTracker tracker = new ApolloCallTracker();
   private final List<ApolloInterceptor> applicationInterceptors;
+  private final boolean sendOperationIdentifiers;
 
   private ApolloClient(Builder builder) {
     this.serverUrl = builder.serverUrl;
@@ -98,6 +100,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     this.defaultResponseFetcher = builder.defaultResponseFetcher;
     this.logger = builder.apolloLogger;
     this.applicationInterceptors = builder.applicationInterceptors;
+    this.sendOperationIdentifiers = builder.sendOperationIdentifiers;
   }
 
   @Override
@@ -139,9 +142,11 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
 
   /**
    * Clear all entries from the normalized cache.
+   *
+   * @return {@link ApolloStoreOperation} operation to execute
    */
-  public void clearNormalizedCache() {
-    apolloStore.clearAll();
+  public @Nonnull ApolloStoreOperation<Boolean> clearNormalizedCache() {
+    return apolloStore.clearAll();
   }
 
   /**
@@ -193,6 +198,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .tracker(tracker)
         .refetchQueries(Collections.<Query>emptyList())
         .refetchQueryNames(Collections.<OperationName>emptyList())
+        .sendOperationIdentifiers(sendOperationIdentifiers)
         .build();
   }
 
@@ -214,6 +220,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     HttpCache httpCache;
     ApolloLogger apolloLogger;
     final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
+    boolean sendOperationIdentifiers;
 
     private Builder() {
     }
@@ -382,6 +389,17 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
+     *
+     * @param sendOperationIdentifiers True if ApolloClient should send a operation identifier instead of the operation
+     *                        definition. Default: false.
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
+    public Builder sendOperationIdentifiers(boolean sendOperationIdentifiers) {
+      this.sendOperationIdentifiers = sendOperationIdentifiers;
+      return this;
+    }
+
+    /**
      * Builds the {@link ApolloClient} instance using the configured values.
      *
      * Note that if the {@link #dispatcher} is not called, then a default {@link ExecutorService} is used.
@@ -400,15 +418,15 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         okHttpClient = okHttpClient.newBuilder().addInterceptor(httpCache.interceptor()).build();
       }
 
+      if (dispatcher == null) {
+        dispatcher = defaultDispatcher();
+      }
+
       if (cacheFactory.isPresent() && cacheKeyResolver.isPresent()) {
         final NormalizedCache normalizedCache =
             cacheFactory.get().createNormalizedCache(RecordFieldAdapter.create(moshi));
         this.apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), customTypeAdapters,
-            apolloLogger);
-      }
-
-      if (dispatcher == null) {
-        dispatcher = defaultDispatcher();
+            dispatcher, apolloLogger);
       }
 
       return new ApolloClient(this);

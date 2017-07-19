@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
+import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
@@ -47,15 +48,16 @@ public final class NoOpApolloStore implements ApolloStore, ReadableStore, Writea
   @Override public void publish(Set<String> keys) {
   }
 
-  @Override public void clearAll() {
+  @Nonnull @Override public ApolloStoreOperation<Boolean> clearAll() {
+    return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
   }
 
-  @Override public boolean remove(@Nonnull CacheKey cacheKey) {
-    return false;
+  @Nonnull @Override public ApolloStoreOperation<Boolean> remove(@Nonnull CacheKey cacheKey) {
+    return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
   }
 
-  @Override public int remove(@Nonnull List<CacheKey> cacheKeys) {
-    return 0;
+  @Nonnull @Override public ApolloStoreOperation<Integer> remove(@Nonnull List<CacheKey> cacheKeys) {
+    return ApolloStoreOperation.emptyOperation(0);
   }
 
   @Override public ResponseNormalizer<Map<String, Object>> networkResponseNormalizer() {
@@ -84,40 +86,46 @@ public final class NoOpApolloStore implements ApolloStore, ReadableStore, Writea
     return null;
   }
 
-  @Nullable @Override public <D extends Operation.Data, T, V extends Operation.Variables> T read(
+  @Nonnull @Override
+  public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<T> read(
       @Nonnull Operation<D, T, V> operation) {
-    return null;
-  }
-
-  @Nonnull @Override public <D extends Operation.Data, T, V extends Operation.Variables> Response<T> read(
-      @Nonnull Operation<D, T, V> operation, @Nonnull ResponseFieldMapper<D> responseFieldMapper,
-      @Nonnull ResponseNormalizer<Record> responseNormalizer, @Nonnull CacheHeaders cacheHeaders) {
-    return Response.<T>builder(operation).build();
-  }
-
-  @Nullable @Override public <F extends GraphqlFragment> F read(@Nonnull ResponseFieldMapper<F> fieldMapper,
-      @Nonnull CacheKey cacheKey, @Nonnull Operation.Variables variables) {
-    return null;
+    return ApolloStoreOperation.emptyOperation(null);
   }
 
   @Nonnull @Override
-  public <D extends Operation.Data, T, V extends Operation.Variables> Set<String> write(
+  public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Response<T>> read(
+      @Nonnull Operation<D, T, V> operation, @Nonnull ResponseFieldMapper<D> responseFieldMapper,
+      @Nonnull ResponseNormalizer<Record> responseNormalizer, @Nonnull CacheHeaders cacheHeaders) {
+    return ApolloStoreOperation.emptyOperation(Response.<T>builder(operation).build());
+  }
+
+  @Nonnull @Override
+  public <F extends GraphqlFragment> ApolloStoreOperation<F> read(@Nonnull ResponseFieldMapper<F> fieldMapper,
+      @Nonnull CacheKey cacheKey, @Nonnull Operation.Variables variables) {
+    return ApolloStoreOperation.emptyOperation(null);
+  }
+
+  @Nonnull @Override
+  public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Set<String>> write(
       @Nonnull Operation<D, T, V> operation, @Nonnull D operationData) {
-    return Collections.emptySet();
+    return ApolloStoreOperation.emptyOperation(Collections.<String>emptySet());
   }
 
-  @Override
-  public <D extends Operation.Data, T, V extends Operation.Variables> void writeAndPublish(
+  @Nonnull @Override
+  public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean> writeAndPublish(
       @Nonnull Operation<D, T, V> operation, @Nonnull D operationData) {
+    return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
   }
 
-  @Nonnull @Override public Set<String> write(@Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey,
+  @Nonnull @Override
+  public ApolloStoreOperation<Set<String>> write(@Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey,
       @Nonnull Operation.Variables variables) {
-    return Collections.emptySet();
+    return ApolloStoreOperation.emptyOperation(Collections.<String>emptySet());
   }
 
-  @Override
-  public void writeAndPublish(@Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey,
+  @Nonnull @Override
+  public ApolloStoreOperation<Boolean> writeAndPublish(@Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey,
       @Nonnull Operation.Variables variables) {
+    return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
   }
 }

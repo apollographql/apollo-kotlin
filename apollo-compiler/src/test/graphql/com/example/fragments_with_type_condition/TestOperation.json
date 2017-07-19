@@ -50,7 +50,9 @@
 			"fragmentsReferenced": [
 				"HumanDetails",
 				"DroidDetails"
-			]
+			],
+			"sourceWithFragments": "query TestQuery {\n  r2: hero {\n    __typename\n    ...HumanDetails\n    ...DroidDetails\n  }\n  luke: hero {\n    __typename\n    ...HumanDetails\n    ...DroidDetails\n  }\n}\nfragment DroidDetails on Droid {\n  __typename\n  name\n  primaryFunction\n}\nfragment HumanDetails on Human {\n  __typename\n  name\n  height\n}",
+			"operationId": "185ee12f775bf02624bb5f646f5ed2de3009860b79380264ce4716e65fba947d"
 		}
 	],
 	"fragments": [

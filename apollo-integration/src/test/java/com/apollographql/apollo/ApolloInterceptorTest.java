@@ -568,12 +568,12 @@ public class ApolloInterceptorTest {
   }
 
   @Test
-  public void onApolloCallCanceledAsyncApolloInterceptorIsDisposed() throws ApolloException, TimeoutException, InterruptedException {
+  public void onApolloCallCanceledAsyncApolloInterceptorIsDisposed() throws ApolloException, TimeoutException,
+      InterruptedException, IOException {
+    mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID).setBodyDelay(1, TimeUnit.SECONDS));
     final NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
 
     EpisodeHeroNameQuery query = createHeroNameQuery();
-    final InterceptorResponse fakeResponse = prepareInterceptorResponse(query);
-
     ApolloInterceptor interceptor = new ApolloInterceptor() {
 
       volatile boolean disposed;
@@ -587,13 +587,7 @@ public class ApolloInterceptorTest {
       @Override
       public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
           @Nonnull ExecutorService dispatcher, @Nonnull FetchOptions fetchOptions, @Nonnull final CallBack callBack) {
-        dispatcher.execute(new Runnable() {
-          @Override public void run() {
-            if (!disposed) {
-              callBack.onResponse(fakeResponse);
-            }
-          }
-        });
+        chain.proceedAsync(dispatcher, fetchOptions, callBack);
       }
 
       @Override public void dispose() {

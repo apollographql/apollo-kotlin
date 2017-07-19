@@ -143,7 +143,9 @@
 			],
 			"fragmentsReferenced": [
 				"HeroDetails"
-			]
+			],
+			"sourceWithFragments": "query HeroDetailQuery {\n  heroDetailQuery {\n    __typename\n    name\n    friends {\n      __typename\n      name\n    }\n    ... on Human {\n      __typename\n      height\n      friends {\n        __typename\n        appearsIn\n        friends {\n          __typename\n          ...HeroDetails\n        }\n      }\n    }\n  }\n}\nfragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n}",
+			"operationId": "1bffe51c14b1ef09ab54127a8e231d654eac3570c6106b924e0ac9d351061acb"
 		}
 	],
 	"fragments": [

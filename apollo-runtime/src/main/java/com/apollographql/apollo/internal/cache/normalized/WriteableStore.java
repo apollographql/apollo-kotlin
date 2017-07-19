@@ -11,7 +11,4 @@ import javax.annotation.Nonnull;
 public interface WriteableStore extends ReadableStore {
 
   Set<String> merge(@Nonnull Collection<Record> recordCollection, @Nonnull CacheHeaders cacheHeaders);
-
-  void clearAll();
-
 }

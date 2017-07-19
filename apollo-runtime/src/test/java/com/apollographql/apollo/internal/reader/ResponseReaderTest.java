@@ -636,6 +636,10 @@ public class ResponseReaderTest {
     @Nonnull @Override public OperationName name() {
       return null;
     }
+
+    @Nonnull @Override public String operationId() {
+      return "";
+    }
   };
 
   @SuppressWarnings("unchecked") private static final ResponseNormalizer NO_OP_NORMALIZER = new ResponseNormalizer() {

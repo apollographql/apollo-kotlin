@@ -55,7 +55,9 @@
 					"inlineFragments": []
 				}
 			],
-			"fragmentsReferenced": []
+			"fragmentsReferenced": [],
+			"sourceWithFragments": "query TestQuery($episode: Episode) {\n  hero(episode: $episode) {\n    __typename\n    name\n    deprecated\n  }\n}",
+			"operationId": "c86775f24ab7d183b6c219a6df0eba15f39b9efb6ca5ef235e3142c11b447fcd"
 		}
 	],
 	"fragments": [],

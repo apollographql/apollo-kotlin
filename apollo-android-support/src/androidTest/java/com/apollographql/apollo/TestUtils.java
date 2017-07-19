@@ -43,6 +43,10 @@ public final class TestUtils {
     @Nonnull @Override public OperationName name() {
       return operationName;
     }
+
+    @Nonnull @Override public String operationId() {
+      return "";
+    }
   };
 
   public static Looper createBackgroundLooper() throws Exception {

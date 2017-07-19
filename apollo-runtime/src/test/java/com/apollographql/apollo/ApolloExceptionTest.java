@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
 
@@ -43,6 +42,11 @@ import static junit.framework.Assert.fail;
         .build();
 
     emptyQuery = new Query() {
+      OperationName operationName = new OperationName() {
+        @Override public String name() {
+          return "emptyQuery";
+        }
+      };
       @Override public String queryDocument() {
         return "";
       }
@@ -60,7 +64,11 @@ import static junit.framework.Assert.fail;
       }
 
       @Nonnull @Override public OperationName name() {
-        return null;
+        return operationName;
+      }
+
+      @Nonnull @Override public String operationId() {
+        return "";
       }
 
       @Override public Object wrapData(Data data) {

@@ -67,6 +67,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final List<OperationName> refetchQueryNames;
   final List<Query> refetchQueries;
   final Optional<QueryReFetcher> queryReFetcher;
+  final boolean sendOperationdIdentifiers;
   final AtomicBoolean executed = new AtomicBoolean();
   volatile boolean canceled;
   volatile boolean completed;
@@ -111,6 +112,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
           .callTracker(builder.tracker)
           .build());
     }
+    sendOperationdIdentifiers = builder.sendOperationIdentifiers;
     interceptorChain = prepareInterceptorChain(operation);
   }
 
@@ -292,7 +294,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .applicationInterceptors(applicationInterceptors)
         .tracker(tracker)
         .refetchQueryNames(refetchQueryNames)
-        .refetchQueries(refetchQueries);
+        .refetchQueries(refetchQueries)
+        .sendOperationIdentifiers(sendOperationdIdentifiers);
   }
 
   private ApolloInterceptorChain prepareInterceptorChain(Operation operation) {
@@ -329,6 +332,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     List<OperationName> refetchQueryNames = emptyList();
     List<Query> refetchQueries = emptyList();
     ApolloCallTracker tracker;
+    boolean sendOperationIdentifiers;
 
     public Builder<T> operation(Operation operation) {
       this.operation = operation;
@@ -413,6 +417,11 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
     public Builder<T> refetchQueries(List<Query> refetchQueries) {
       this.refetchQueries = refetchQueries != null ? new ArrayList<>(refetchQueries) : Collections.<Query>emptyList();
+      return this;
+    }
+
+    public Builder<T> sendOperationIdentifiers(boolean sendOperationIdentifiers) {
+      this.sendOperationIdentifiers = sendOperationIdentifiers;
       return this;
     }
 

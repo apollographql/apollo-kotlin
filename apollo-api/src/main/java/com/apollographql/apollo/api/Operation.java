@@ -38,6 +38,13 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
   @Nonnull OperationName name();
 
   /**
+   * Returns a unique identifier for this operation.
+   *
+   * @return operation identifier.
+   */
+  @Nonnull String operationId();
+
+  /**
    * Abstraction for data returned by the server in response to this operation.
    */
   interface Data {

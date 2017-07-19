@@ -50,8 +50,15 @@ class UpdateTestIRFilesTask extends DefaultTask {
     if (!schema.exists()) {
       schema = new File('apollo-compiler/src/test/graphql/schema.json')
     }
+
+    def idFileDir = new File("apollo-compiler/build/apollo-codegen/${testDir.name}")
+    idFileDir.mkdirs()
+    def idFile = new File(idFileDir, "id.json")
+
     def apolloCodeGenProcess = """apollo-codegen generate ${queryFile.absoluteFile}
           --add-typename
+          --operation-ids-path ${idFile.toString()}
+          --merge-in-fields-from-fragment-spreads false
           --schema ${schema.absoluteFile}
           --output ${outputFile.absoluteFile}
           --target json""".execute()

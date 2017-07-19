@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -24,7 +25,7 @@ import javax.annotation.Nullable;
 
 public class ApolloStoreTest {
 
-  @Test public void storeClearAllCallsNormalizedCacheClearAll() throws TimeoutException, InterruptedException {
+  @Test public void storeClearAllCallsNormalizedCacheClearAll() throws Exception {
     final NamedCountDownLatch latch = new NamedCountDownLatch("storeClearAllCallsNormalizedCacheClearAll", 1);
     final RealApolloStore realApolloStore = new RealApolloStore(new NormalizedCache(RecordFieldAdapter.create(new Moshi.Builder().build())) {
       @Nullable @Override public Record loadRecord(@Nonnull String key, @Nonnull CacheHeaders cacheHeaders) {
@@ -42,8 +43,8 @@ public class ApolloStoreTest {
       @Override public boolean remove(@Nonnull CacheKey cacheKey) {
         return false;
       }
-    }, CacheKeyResolver.DEFAULT, Collections.EMPTY_MAP, new ApolloLogger(Optional.<Logger>absent()));
-    realApolloStore.clearAll();
+    }, CacheKeyResolver.DEFAULT, Collections.EMPTY_MAP, Executors.newSingleThreadExecutor(), new ApolloLogger(Optional.<Logger>absent()));
+    realApolloStore.clearAll().execute();
     latch.awaitOrThrowWithTimeout(3, TimeUnit.SECONDS);
   }
 
