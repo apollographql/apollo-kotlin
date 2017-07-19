@@ -121,7 +121,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
       @Nonnull Operation<D, T, V> operation) {
     return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, customTypeAdapters, dispatcher,
-        logger, tracker);
+        logger, tracker, sendOperationIdentifiers);
   }
 
   /**
