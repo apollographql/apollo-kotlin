@@ -42,6 +42,11 @@ import static junit.framework.Assert.fail;
         .build();
 
     emptyQuery = new Query() {
+      OperationName operationName = new OperationName() {
+        @Override public String name() {
+          return "emptyQuery";
+        }
+      };
       @Override public String queryDocument() {
         return "";
       }
@@ -59,7 +64,7 @@ import static junit.framework.Assert.fail;
       }
 
       @Nonnull @Override public OperationName name() {
-        return null;
+        return operationName;
       }
 
       @Nonnull @Override public String operationId() {
