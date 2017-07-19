@@ -153,6 +153,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     jsonWriter.name("variables").beginObject();
     operation.variables().marshaller().marshal(new InputFieldJsonWriter(jsonWriter, customTypeAdapters));
     jsonWriter.endObject();
+    jsonWriter.endObject();
     jsonWriter.close();
     return RequestBody.create(MEDIA_TYPE, buffer.readByteString());
   }
