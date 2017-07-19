@@ -1,5 +1,6 @@
 language: android
 sudo: true
+dist: precise
 
 android:
   components:
