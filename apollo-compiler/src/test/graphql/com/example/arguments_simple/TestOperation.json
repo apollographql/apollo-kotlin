@@ -52,7 +52,9 @@
 					"inlineFragments": []
 				}
 			],
-			"fragmentsReferenced": []
+			"fragmentsReferenced": [],
+			"sourceWithFragments": "query TestQuery($episode: Episode, $includeName: Boolean!) {\n  hero(episode: $episode) {\n    __typename\n    name @include(if: $includeName)\n  }\n}",
+			"operationId": "125df1054cbcf295890b4747e575075f18f2be2635a6b313ab793d1d91a4d4f2"
 		}
 	],
 	"fragments": [],

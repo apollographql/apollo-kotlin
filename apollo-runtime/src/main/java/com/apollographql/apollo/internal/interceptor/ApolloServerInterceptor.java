@@ -49,18 +49,20 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   final boolean prefetch;
   final Moshi moshi;
   final ApolloLogger logger;
+  final boolean sendOperationIdentifiers;
   volatile Call httpCall;
   volatile boolean disposed;
 
   public ApolloServerInterceptor(@Nonnull HttpUrl serverUrl, @Nonnull Call.Factory httpCallFactory,
       @Nullable HttpCachePolicy.Policy cachePolicy, boolean prefetch, @Nonnull Moshi moshi,
-      @Nonnull ApolloLogger logger) {
+      @Nonnull ApolloLogger logger, boolean sendOperationIdentifiers) {
     this.serverUrl = checkNotNull(serverUrl, "serverUrl == null");
     this.httpCallFactory = checkNotNull(httpCallFactory, "httpCallFactory == null");
     this.cachePolicy = Optional.fromNullable(cachePolicy);
     this.prefetch = prefetch;
     this.moshi = checkNotNull(moshi, "moshi == null");
     this.logger = checkNotNull(logger, "logger == null");
+    this.sendOperationIdentifiers = sendOperationIdentifiers;
   }
 
   @Override @Nonnull public InterceptorResponse intercept(@Nonnull Operation operation,
@@ -132,7 +134,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   }
 
   private RequestBody httpRequestBody(Operation operation) {
-    JsonAdapter<Operation> adapter = new OperationJsonAdapter(moshi);
+    JsonAdapter<Operation> adapter = new OperationJsonAdapter(moshi, sendOperationIdentifiers);
     Buffer buffer = new Buffer();
     try {
       adapter.toJson(buffer, operation);
@@ -156,9 +158,11 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
   static final class OperationJsonAdapter extends JsonAdapter<Operation> {
     private final Moshi moshi;
+    private final boolean sendOperationIdentifiers;
 
-    OperationJsonAdapter(Moshi moshi) {
+    OperationJsonAdapter(Moshi moshi, boolean sendOperationIdentifiers) {
       this.moshi = moshi;
+      this.sendOperationIdentifiers = sendOperationIdentifiers;
     }
 
     @Override public Operation fromJson(@Nonnull JsonReader reader) throws IOException {
@@ -167,7 +171,11 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
     @Override public void toJson(@Nonnull JsonWriter writer, Operation value) throws IOException {
       writer.beginObject();
-      writer.name("query").value(value.queryDocument().replaceAll("\\n", ""));
+      if (sendOperationIdentifiers) {
+        writer.name("id").value(value.operationId());
+      } else {
+        writer.name("query").value(value.queryDocument().replaceAll("\\n", ""));
+      }
       Operation.Variables variables = value.variables();
       if (variables != null) {
         //noinspection unchecked

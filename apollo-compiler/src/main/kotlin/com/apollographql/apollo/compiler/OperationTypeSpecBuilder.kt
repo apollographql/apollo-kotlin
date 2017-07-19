@@ -30,8 +30,9 @@ class OperationTypeSpecBuilder(
     return TypeSpec.classBuilder(operationTypeName)
         .addAnnotation(Annotations.GENERATED_BY_APOLLO)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-        .addQuerySuperInterface(context)
+        .addOperationSuperInterface(context)
         .addOperationDefinition(operation)
+        .addOperationId(operation)
         .addQueryDocumentDefinition(fragments, newContext)
         .addConstructor(context)
         .addMethod(wrapDataMethod(context))
@@ -45,7 +46,7 @@ class OperationTypeSpecBuilder(
             (SchemaTypeSpecBuilder.FRAGMENTS_FIELD.type as ClassName).simpleName()))
   }
 
-  private fun TypeSpec.Builder.addQuerySuperInterface(context: CodeGenerationContext): TypeSpec.Builder {
+  private fun TypeSpec.Builder.addOperationSuperInterface(context: CodeGenerationContext): TypeSpec.Builder {
     val superInterfaceClassName = if (operation.isMutation()) ClassNames.GRAPHQL_MUTATION else ClassNames.GRAPHQL_QUERY
     return if (operation.variables.isNotEmpty()) {
       addSuperinterface(ParameterizedTypeName.get(superInterfaceClassName, dataVarType,
@@ -62,6 +63,15 @@ class OperationTypeSpecBuilder(
         .initializer("\$S", operation.source)
         .build()
     )
+  }
+
+  private fun TypeSpec.Builder.addOperationId(operation: Operation): TypeSpec.Builder {
+    return addMethod(MethodSpec.methodBuilder(OPERATION_ID_ACCESSOR_NAME)
+        .addAnnotation(Annotations.OVERRIDE)
+        .addModifiers(Modifier.PUBLIC)
+        .returns(ClassNames.STRING)
+        .addStatement("return \$S", operation.operationId)
+        .build())
   }
 
   private fun TypeSpec.Builder.addQueryDocumentDefinition(fragments: List<Fragment>,
@@ -244,6 +254,7 @@ class OperationTypeSpecBuilder(
     private val OPERATION_DEFINITION_FIELD_NAME = "OPERATION_DEFINITION"
     private val QUERY_DOCUMENT_FIELD_NAME = "QUERY_DOCUMENT"
     private val QUERY_DOCUMENT_ACCESSOR_NAME = "queryDocument"
+    private val OPERATION_ID_ACCESSOR_NAME = "operationId"
     private val VARIABLES_VAR = "variables"
   }
 }

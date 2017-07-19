@@ -55,6 +55,11 @@ public final class HeroDetailsQuery implements Query<HeroDetailsQuery.Data, Opti
   }
 
   @Override
+  public String operationId() {
+    return "04c4c609078258b0ad954a88e05fb068e53815a35051bb61cde8cc14107583bc";
+  }
+
+  @Override
   public String queryDocument() {
     return QUERY_DOCUMENT;
   }

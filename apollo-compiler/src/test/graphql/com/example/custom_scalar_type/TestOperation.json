@@ -73,7 +73,9 @@
 					"inlineFragments": []
 				}
 			],
-			"fragmentsReferenced": []
+			"fragmentsReferenced": [],
+			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name\n    birthDate\n    appearanceDates\n    fieldWithUnsupportedType\n    profileLink\n    links\n  }\n}",
+			"operationId": "97c3220729cb6b43bfbb66f24be53a88482515ea92d3ba9783fce882bc58fc53"
 		}
 	],
 	"fragments": [],
