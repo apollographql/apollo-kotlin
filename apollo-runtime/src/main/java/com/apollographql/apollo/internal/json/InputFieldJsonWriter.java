@@ -152,7 +152,9 @@ public class InputFieldJsonWriter implements InputFieldWriter {
 
     @Override public void writeObject(InputFieldMarshaller marshaller) throws IOException {
       if (marshaller != null) {
+        jsonWriter.beginObject();
         marshaller.marshal(new InputFieldJsonWriter(jsonWriter, customTypeAdapters));
+        jsonWriter.endObject();
       }
     }
   }
