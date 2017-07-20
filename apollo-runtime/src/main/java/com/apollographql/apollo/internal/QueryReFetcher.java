@@ -14,7 +14,6 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.internal.util.ApolloLogger;
-import com.squareup.moshi.Moshi;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,7 +48,6 @@ final class QueryReFetcher {
           .operation(query)
           .serverUrl(builder.serverUrl)
           .httpCallFactory(builder.httpCallFactory)
-          .moshi(builder.moshi)
           .responseFieldMapperFactory(builder.responseFieldMapperFactory)
           .customTypeAdapters(builder.customTypeAdapters)
           .apolloStore(builder.apolloStore)
@@ -123,7 +121,6 @@ final class QueryReFetcher {
     List<OperationName> queryWatchers = Collections.emptyList();
     HttpUrl serverUrl;
     Call.Factory httpCallFactory;
-    Moshi moshi;
     ResponseFieldMapperFactory responseFieldMapperFactory;
     Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
     ApolloStore apolloStore;
@@ -149,11 +146,6 @@ final class QueryReFetcher {
 
     Builder httpCallFactory(Call.Factory httpCallFactory) {
       this.httpCallFactory = httpCallFactory;
-      return this;
-    }
-
-    Builder moshi(Moshi moshi) {
-      this.moshi = moshi;
       return this;
     }
 

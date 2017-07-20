@@ -120,8 +120,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
       @Nonnull Operation<D, T, V> operation) {
-    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory,
-        httpCache, moshi, dispatcher, logger, tracker, sendOperationIdentifiers);
+    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, customTypeAdapters, dispatcher,
+        logger, tracker, sendOperationIdentifiers);
   }
 
   /**
@@ -187,7 +187,6 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .httpCallFactory(httpCallFactory)
         .httpCache(httpCache)
         .httpCachePolicy(defaultHttpCachePolicy)
-        .moshi(moshi)
         .responseFieldMapperFactory(responseFieldMapperFactory)
         .customTypeAdapters(customTypeAdapters)
         .apolloStore(apolloStore)

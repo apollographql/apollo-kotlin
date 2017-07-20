@@ -1,6 +1,8 @@
 package com.apollographql.apollo.internal.interceptor;
 
+import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.exception.ApolloCanceledException;
@@ -10,13 +12,12 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
+import com.apollographql.apollo.internal.json.InputFieldJsonWriter;
+import com.apollographql.apollo.internal.json.JsonWriter;
 import com.apollographql.apollo.internal.util.ApolloLogger;
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.JsonReader;
-import com.squareup.moshi.JsonWriter;
-import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
@@ -47,20 +48,21 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   final okhttp3.Call.Factory httpCallFactory;
   final Optional<HttpCachePolicy.Policy> cachePolicy;
   final boolean prefetch;
-  final Moshi moshi;
   final ApolloLogger logger;
+  final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   final boolean sendOperationIdentifiers;
   volatile Call httpCall;
   volatile boolean disposed;
 
   public ApolloServerInterceptor(@Nonnull HttpUrl serverUrl, @Nonnull Call.Factory httpCallFactory,
-      @Nullable HttpCachePolicy.Policy cachePolicy, boolean prefetch, @Nonnull Moshi moshi,
-      @Nonnull ApolloLogger logger, boolean sendOperationIdentifiers) {
+      @Nullable HttpCachePolicy.Policy cachePolicy, boolean prefetch,
+      @Nonnull Map<ScalarType, CustomTypeAdapter> customTypeAdapters, @Nonnull ApolloLogger logger,
+      boolean sendOperationIdentifiers) {
     this.serverUrl = checkNotNull(serverUrl, "serverUrl == null");
     this.httpCallFactory = checkNotNull(httpCallFactory, "httpCallFactory == null");
     this.cachePolicy = Optional.fromNullable(cachePolicy);
     this.prefetch = prefetch;
-    this.moshi = checkNotNull(moshi, "moshi == null");
+    this.customTypeAdapters = checkNotNull(customTypeAdapters, "customTypeAdapters == null");
     this.logger = checkNotNull(logger, "logger == null");
     this.sendOperationIdentifiers = sendOperationIdentifiers;
   }
@@ -68,7 +70,13 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   @Override @Nonnull public InterceptorResponse intercept(@Nonnull Operation operation,
       @Nonnull ApolloInterceptorChain chain, @Nonnull FetchOptions options) throws ApolloException {
     if (disposed) throw new ApolloCanceledException("Canceled");
-    httpCall = httpCall(operation);
+    try {
+      httpCall = httpCall(operation);
+    } catch (IOException e) {
+      logger.e(e, "Failed to prepare http call");
+      throw new ApolloNetworkException("Failed to prepare http call", e);
+    }
+
     try {
       Response response = httpCall.execute();
       return new InterceptorResponse(response);
@@ -84,7 +92,14 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     if (disposed) return;
     dispatcher.execute(new Runnable() {
       @Override public void run() {
-        httpCall = httpCall(operation);
+        try {
+          httpCall = httpCall(operation);
+        } catch (IOException e) {
+          logger.e(e, "Failed to prepare http call for operation %s", operation.name().name());
+          callBack.onFailure(new ApolloNetworkException("Failed to prepare http call", e));
+          return;
+        }
+
         httpCall.enqueue(new Callback() {
           @Override public void onFailure(@Nonnull Call call, @Nonnull IOException e) {
             if (disposed) return;
@@ -111,7 +126,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     this.httpCall = null;
   }
 
-  private Call httpCall(Operation operation) {
+  private Call httpCall(Operation operation) throws IOException {
     RequestBody requestBody = httpRequestBody(operation);
     Request.Builder requestBuilder = new Request.Builder()
         .url(serverUrl)
@@ -133,15 +148,20 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     return httpCallFactory.newCall(requestBuilder.build());
   }
 
-  private RequestBody httpRequestBody(Operation operation) {
-    JsonAdapter<Operation> adapter = new OperationJsonAdapter(moshi, sendOperationIdentifiers);
+  private RequestBody httpRequestBody(Operation operation) throws IOException {
     Buffer buffer = new Buffer();
-    try {
-      adapter.toJson(buffer, operation);
-    } catch (IOException e) {
-      // should never happen
-      throw new RuntimeException(e);
+    JsonWriter jsonWriter = JsonWriter.of(buffer);
+    jsonWriter.beginObject();
+    if (sendOperationIdentifiers) {
+      jsonWriter.name("id").value(operation.operationId());
+    } else {
+      jsonWriter.name("query").value(operation.queryDocument().replaceAll("\\n", ""));
     }
+    jsonWriter.name("variables").beginObject();
+    operation.variables().marshaller().marshal(new InputFieldJsonWriter(jsonWriter, customTypeAdapters));
+    jsonWriter.endObject();
+    jsonWriter.endObject();
+    jsonWriter.close();
     return RequestBody.create(MEDIA_TYPE, buffer.readByteString());
   }
 
@@ -154,37 +174,5 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       throw new RuntimeException(e);
     }
     return hashBuffer.readByteString().md5().hex();
-  }
-
-  static final class OperationJsonAdapter extends JsonAdapter<Operation> {
-    private final Moshi moshi;
-    private final boolean sendOperationIdentifiers;
-
-    OperationJsonAdapter(Moshi moshi, boolean sendOperationIdentifiers) {
-      this.moshi = moshi;
-      this.sendOperationIdentifiers = sendOperationIdentifiers;
-    }
-
-    @Override public Operation fromJson(@Nonnull JsonReader reader) throws IOException {
-      throw new IllegalStateException("This should not be called ever.");
-    }
-
-    @Override public void toJson(@Nonnull JsonWriter writer, Operation value) throws IOException {
-      writer.beginObject();
-      if (sendOperationIdentifiers) {
-        writer.name("id").value(value.operationId());
-      } else {
-        writer.name("query").value(value.queryDocument().replaceAll("\\n", ""));
-      }
-      Operation.Variables variables = value.variables();
-      if (variables != null) {
-        //noinspection unchecked
-        JsonAdapter<Operation.Variables> adapter =
-            (JsonAdapter<Operation.Variables>) moshi.adapter(variables.getClass());
-        writer.name("variables");
-        adapter.toJson(writer, variables);
-      }
-      writer.endObject();
-    }
   }
 }

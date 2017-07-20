@@ -28,7 +28,6 @@ import com.apollographql.apollo.internal.interceptor.ApolloParseInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
 import com.apollographql.apollo.internal.util.ApolloLogger;
-import com.squareup.moshi.Moshi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,7 +53,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final Call.Factory httpCallFactory;
   final HttpCache httpCache;
   final HttpCachePolicy.Policy httpCachePolicy;
-  final Moshi moshi;
   final ResponseFieldMapperFactory responseFieldMapperFactory;
   final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   final ApolloStore apolloStore;
@@ -84,7 +82,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     httpCallFactory = builder.httpCallFactory;
     httpCache = builder.httpCache;
     httpCachePolicy = builder.httpCachePolicy;
-    moshi = builder.moshi;
     responseFieldMapperFactory = builder.responseFieldMapperFactory;
     customTypeAdapters = builder.customTypeAdapters;
     apolloStore = builder.apolloStore;
@@ -106,7 +103,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
           .queryWatchers(refetchQueryNames)
           .serverUrl(builder.serverUrl)
           .httpCallFactory(builder.httpCallFactory)
-          .moshi(builder.moshi)
           .responseFieldMapperFactory(builder.responseFieldMapperFactory)
           .customTypeAdapters(builder.customTypeAdapters)
           .apolloStore(builder.apolloStore)
@@ -288,7 +284,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .httpCallFactory(httpCallFactory)
         .httpCache(httpCache)
         .httpCachePolicy(httpCachePolicy)
-        .moshi(moshi)
         .responseFieldMapperFactory(responseFieldMapperFactory)
         .customTypeAdapters(customTypeAdapters)
         .apolloStore(apolloStore)
@@ -313,8 +308,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     interceptors.add(new ApolloCacheInterceptor(apolloStore, responseFieldMapper, dispatcher, logger));
     interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
         customTypeAdapters, logger));
-    interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCachePolicy, false, moshi, logger,
-        sendOperationdIdentifiers));
+    interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCachePolicy, false,
+        customTypeAdapters, logger, sendOperationdIdentifiers));
 
     return new RealApolloInterceptorChain(operation, interceptors);
   }
@@ -325,7 +320,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     Call.Factory httpCallFactory;
     HttpCache httpCache;
     HttpCachePolicy.Policy httpCachePolicy;
-    Moshi moshi;
     ResponseFieldMapperFactory responseFieldMapperFactory;
     Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
     ApolloStore apolloStore;
@@ -362,11 +356,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
     public Builder<T> httpCachePolicy(HttpCachePolicy.Policy httpCachePolicy) {
       this.httpCachePolicy = httpCachePolicy;
-      return this;
-    }
-
-    public Builder<T> moshi(Moshi moshi) {
-      this.moshi = moshi;
       return this;
     }
 

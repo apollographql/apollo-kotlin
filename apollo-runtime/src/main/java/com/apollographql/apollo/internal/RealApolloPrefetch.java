@@ -1,7 +1,9 @@
 package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloPrefetch;
+import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
@@ -14,9 +16,9 @@ import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
 import com.apollographql.apollo.internal.util.ApolloLogger;
-import com.squareup.moshi.Moshi;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
@@ -31,7 +33,7 @@ import okhttp3.Response;
   final HttpUrl serverUrl;
   final Call.Factory httpCallFactory;
   final HttpCache httpCache;
-  final Moshi moshi;
+  final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   final ExecutorService dispatcher;
   final ApolloLogger logger;
   final ApolloCallTracker tracker;
@@ -41,20 +43,20 @@ import okhttp3.Response;
   volatile boolean canceled;
 
   public RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
-      Moshi moshi, ExecutorService dispatcher, ApolloLogger logger, ApolloCallTracker callTracker,
-      boolean sendOperationIds) {
+      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ExecutorService dispatcher, ApolloLogger logger,
+      ApolloCallTracker callTracker, boolean sendOperationIds) {
     this.operation = operation;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
     this.httpCache = httpCache;
-    this.moshi = moshi;
+    this.customTypeAdapters = customTypeAdapters;
     this.dispatcher = dispatcher;
     this.logger = logger;
     this.tracker = callTracker;
     this.sendOperationIds = sendOperationIds;
     interceptorChain = new RealApolloInterceptorChain(operation, Collections.<ApolloInterceptor>singletonList(
-        new ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCachePolicy.NETWORK_ONLY, true, moshi,
-            logger, sendOperationIds)
+        new ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCachePolicy.NETWORK_ONLY, true,
+            customTypeAdapters, logger, sendOperationIds)
     ));
   }
 
@@ -157,8 +159,8 @@ import okhttp3.Response;
   }
 
   @Override public ApolloPrefetch clone() {
-    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, moshi, dispatcher, logger,
-        tracker, sendOperationIds);
+    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, customTypeAdapters, dispatcher,
+        logger, tracker, sendOperationIds);
   }
 
   @Override public void cancel() {
