@@ -467,11 +467,11 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         OkHttpClient client = (OkHttpClient) callFactory;
         for (Interceptor interceptor : client.interceptors()) {
           if (interceptor instanceof HttpCacheInterceptor) {
-            return true;
+            return false;
           }
         }
       }
-      return false;
+      return true;
     }
   }
 }
