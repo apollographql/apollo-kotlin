@@ -8,9 +8,8 @@ import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
+import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
 import com.apollographql.apollo.internal.util.ApolloLogger;
-import com.squareup.moshi.Moshi;
 
 import org.junit.Test;
 
@@ -18,7 +17,6 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,7 +25,7 @@ public class ApolloStoreTest {
 
   @Test public void storeClearAllCallsNormalizedCacheClearAll() throws Exception {
     final NamedCountDownLatch latch = new NamedCountDownLatch("storeClearAllCallsNormalizedCacheClearAll", 1);
-    final RealApolloStore realApolloStore = new RealApolloStore(new NormalizedCache(RecordFieldAdapter.create(new Moshi.Builder().build())) {
+    final RealApolloStore realApolloStore = new RealApolloStore(new NormalizedCache(RecordFieldJsonAdapter.create()) {
       @Nullable @Override public Record loadRecord(@Nonnull String key, @Nonnull CacheHeaders cacheHeaders) {
         return null;
       }

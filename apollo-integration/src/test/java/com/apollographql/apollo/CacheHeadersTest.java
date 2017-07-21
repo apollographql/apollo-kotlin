@@ -10,9 +10,8 @@ import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
+import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
 import com.apollographql.apollo.exception.ApolloException;
-import com.squareup.moshi.Moshi;
 
 import org.junit.After;
 import org.junit.Before;
@@ -47,7 +46,7 @@ public class CacheHeadersTest {
 
   @Test
   public void testHeadersReceived() throws ApolloException, IOException {
-    final NormalizedCache normalizedCache = new NormalizedCache(RecordFieldAdapter.create(new Moshi.Builder().build())) {
+    final NormalizedCache normalizedCache = new NormalizedCache(RecordFieldJsonAdapter.create()) {
       @Nullable @Override public Record loadRecord(@NonNull String key, @NonNull CacheHeaders cacheHeaders) {
         assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)).isTrue();
         return null;
@@ -67,7 +66,7 @@ public class CacheHeadersTest {
     };
 
     final NormalizedCacheFactory<NormalizedCache> cacheFactory = new NormalizedCacheFactory<NormalizedCache>() {
-      @Override public NormalizedCache createNormalizedCache(RecordFieldAdapter recordFieldAdapter) {
+      @Override public NormalizedCache createNormalizedCache(RecordFieldJsonAdapter recordFieldAdapter) {
         return normalizedCache;
       }
     };
@@ -88,7 +87,7 @@ public class CacheHeadersTest {
 
   @Test
   public void testDefaultHeadersReceived() throws IOException, ApolloException {
-    final NormalizedCache normalizedCache = new NormalizedCache(RecordFieldAdapter.create(new Moshi.Builder().build())) {
+    final NormalizedCache normalizedCache = new NormalizedCache(RecordFieldJsonAdapter.create()) {
       @Nullable @Override public Record loadRecord(@NonNull String key, @NonNull CacheHeaders cacheHeaders) {
         assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)).isTrue();
         return null;
@@ -108,7 +107,7 @@ public class CacheHeadersTest {
     };
 
     final NormalizedCacheFactory<NormalizedCache> cacheFactory = new NormalizedCacheFactory<NormalizedCache>() {
-      @Override public NormalizedCache createNormalizedCache(RecordFieldAdapter recordFieldAdapter) {
+      @Override public NormalizedCache createNormalizedCache(RecordFieldJsonAdapter recordFieldAdapter) {
         return normalizedCache;
       }
     };

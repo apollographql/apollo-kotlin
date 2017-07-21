@@ -2,7 +2,7 @@ package com.apollographql.apollo.cache.normalized.lru;
 
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
-import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
+import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -24,7 +24,7 @@ public final class LruNormalizedCacheFactory implements NormalizedCacheFactory<L
     this.optionalSecondaryCache = Optional.fromNullable(secondaryCacheFactory);
   }
 
-  @Override public LruNormalizedCache createNormalizedCache(RecordFieldAdapter fieldAdapter) {
+  @Override public LruNormalizedCache createNormalizedCache(RecordFieldJsonAdapter fieldAdapter) {
     return new LruNormalizedCache(fieldAdapter, evictionPolicy, optionalSecondaryCache);
   }
 }

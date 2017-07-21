@@ -14,7 +14,7 @@ import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
-import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
+import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
@@ -25,9 +25,6 @@ import com.apollographql.apollo.internal.ResponseFieldMapperFactory;
 import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.cache.normalized.RealApolloStore;
 import com.apollographql.apollo.internal.util.ApolloLogger;
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.JsonWriter;
-import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,7 +47,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-
 
 /**
  * ApolloClient class represents the abstraction for the graphQL client that will be used to execute queries and read
@@ -76,7 +72,6 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final HttpCache httpCache;
   private final ApolloStore apolloStore;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
-  private final Moshi moshi;
   private final ResponseFieldMapperFactory responseFieldMapperFactory = new ResponseFieldMapperFactory();
   private final ExecutorService dispatcher;
   private final HttpCachePolicy.Policy defaultHttpCachePolicy;
@@ -93,7 +88,6 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     this.httpCache = builder.httpCache;
     this.apolloStore = builder.apolloStore;
     this.customTypeAdapters = builder.customTypeAdapters;
-    this.moshi = builder.moshi;
     this.dispatcher = builder.dispatcher;
     this.defaultHttpCachePolicy = builder.defaultHttpCachePolicy;
     this.defaultCacheHeaders = builder.defaultCacheHeaders;
@@ -213,8 +207,6 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     ResponseFetcher defaultResponseFetcher = ApolloResponseFetchers.CACHE_FIRST;
     CacheHeaders defaultCacheHeaders = CacheHeaders.NONE;
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
-    private final Moshi.Builder moshiBuilder = new Moshi.Builder();
-    Moshi moshi;
     ExecutorService dispatcher;
     Optional<Logger> logger = Optional.absent();
     HttpCache httpCache;
@@ -304,18 +296,6 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     public <T> Builder addCustomTypeAdapter(@Nonnull ScalarType scalarType,
         @Nonnull final CustomTypeAdapter<T> customTypeAdapter) {
       customTypeAdapters.put(scalarType, customTypeAdapter);
-      moshiBuilder.add(scalarType.javaType(), new JsonAdapter<T>() {
-        @Override
-        public T fromJson(com.squareup.moshi.JsonReader reader) throws IOException {
-          return customTypeAdapter.decode(reader.nextString());
-        }
-
-        @Override
-        public void toJson(JsonWriter writer, T value) throws IOException {
-          //noinspection unchecked
-          writer.value(customTypeAdapter.encode(value));
-        }
-      });
       return this;
     }
 
@@ -411,7 +391,6 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       checkNotNull(serverUrl, "serverUrl is null");
 
       apolloLogger = new ApolloLogger(logger);
-      moshi = moshiBuilder.build();
 
       if (httpCacheStore != null) {
         httpCache = new HttpCache(httpCacheStore, apolloLogger);
@@ -424,7 +403,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
 
       if (cacheFactory.isPresent() && cacheKeyResolver.isPresent()) {
         final NormalizedCache normalizedCache =
-            cacheFactory.get().createNormalizedCache(RecordFieldAdapter.create(moshi));
+            cacheFactory.get().createNormalizedCache(RecordFieldJsonAdapter.create());
         this.apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), customTypeAdapters,
             dispatcher, apolloLogger);
       }

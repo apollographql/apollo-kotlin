@@ -31,16 +31,16 @@ import javax.annotation.Nullable;
  */
 public abstract class NormalizedCache {
 
-  private RecordFieldAdapter recordFieldAdapter;
+  private RecordFieldJsonAdapter recordFieldAdapter;
 
   /**
    * @param recordFieldAdapter An adapter which can deserialize and deserialize {@link Record}
    */
-  public NormalizedCache(RecordFieldAdapter recordFieldAdapter) {
+  public NormalizedCache(RecordFieldJsonAdapter recordFieldAdapter) {
     this.recordFieldAdapter = recordFieldAdapter;
   }
 
-  protected RecordFieldAdapter recordAdapter() {
+  protected RecordFieldJsonAdapter recordAdapter() {
     return recordFieldAdapter;
   }
 

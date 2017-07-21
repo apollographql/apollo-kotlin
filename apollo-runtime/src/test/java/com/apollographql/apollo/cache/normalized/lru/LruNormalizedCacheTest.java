@@ -4,8 +4,7 @@ import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
-import com.squareup.moshi.Moshi;
+import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,10 +18,10 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class LruNormalizedCacheTest {
 
-  private RecordFieldAdapter basicFieldAdapter;
+  private RecordFieldJsonAdapter basicFieldAdapter;
 
   @Before public void createFieldAdapter() {
-    basicFieldAdapter = RecordFieldAdapter.create(new Moshi.Builder().build());
+    basicFieldAdapter = RecordFieldJsonAdapter.create();
   }
 
   @Test

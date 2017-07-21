@@ -9,7 +9,7 @@ import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
+import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -54,7 +54,7 @@ public final class SqlNormalizedCache extends NormalizedCache {
   private final SQLiteStatement deleteStatement;
   private final SQLiteStatement deleteAllRecordsStatement;
 
-  SqlNormalizedCache(RecordFieldAdapter recordFieldAdapter, ApolloSqlHelper dbHelper) {
+  SqlNormalizedCache(RecordFieldJsonAdapter recordFieldAdapter, ApolloSqlHelper dbHelper) {
     super(recordFieldAdapter);
     this.dbHelper = dbHelper;
     database = dbHelper.getWritableDatabase();
