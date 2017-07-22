@@ -10,11 +10,11 @@ import com.apollographql.apollo.api.ScalarType;
 public interface NormalizedCacheFactory<T extends NormalizedCache> {
 
   /**
-   * @param recordFieldAdapter A {@link RecordFieldAdapter} configured with the custom scalar adapters set in {@link
+   * @param recordFieldAdapter A {@link RecordFieldJsonAdapter} configured with the custom scalar adapters set in {@link
    *                           com.apollographql.apollo.ApolloClient.Builder#addCustomTypeAdapter(ScalarType,
    *                           CustomTypeAdapter)}.
    * @return An implementation of {@link NormalizedCache}.
    */
-  T createNormalizedCache(RecordFieldAdapter recordFieldAdapter);
+  T createNormalizedCache(RecordFieldJsonAdapter recordFieldAdapter);
 
 }

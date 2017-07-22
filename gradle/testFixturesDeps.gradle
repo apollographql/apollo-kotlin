@@ -7,7 +7,6 @@ ext.supportDeps = [
 ext.apolloRuntimeCompileDeps = [
     dep.supportAnnotations,
     dep.okHttp,
-    dep.moshi
 ]
 
 ext.apolloApiCompileDeps = [

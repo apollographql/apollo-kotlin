@@ -6,7 +6,6 @@ sourceCompatibility = JavaVersion.VERSION_1_7
 dependencies {
   compile dep.jsr305
   compile dep.okHttp
-  compile dep.moshi
   compile dep.cache
 
   compile project(":apollo-api")

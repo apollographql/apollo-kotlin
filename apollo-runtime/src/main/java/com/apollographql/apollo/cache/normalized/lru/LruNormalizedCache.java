@@ -8,7 +8,7 @@ import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.cache.normalized.RecordFieldAdapter;
+import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.cache.Weigher;
@@ -33,7 +33,7 @@ public final class LruNormalizedCache extends NormalizedCache {
   private final Cache<String, Record> lruCache;
   private final Optional<NormalizedCache> secondaryCache;
 
-  LruNormalizedCache(final RecordFieldAdapter recordFieldAdapter,
+  LruNormalizedCache(final RecordFieldJsonAdapter recordFieldAdapter,
       EvictionPolicy evictionPolicy,
       Optional<NormalizedCacheFactory> secondaryNormalizedCache) {
     super(recordFieldAdapter);

@@ -1,9 +1,6 @@
 package com.apollographql.apollo.cache.normalized;
 
 import com.apollographql.apollo.CustomTypeAdapter;
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.JsonWriter;
-import com.squareup.moshi.Moshi;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +15,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class RecordFieldAdapterTest {
 
-  RecordFieldAdapter recordFieldAdapter;
+  RecordFieldJsonAdapter recordFieldAdapter;
   CustomTypeAdapter<TestCustomScalar> customTypeAdapter;
 
   @Before public void setUpAdapter() {
@@ -32,21 +29,7 @@ public class RecordFieldAdapterTest {
         return "#" + value.fieldOne;
       }
     };
-
-    Moshi moshi = new Moshi.Builder().add(TestCustomScalar.class, new JsonAdapter<TestCustomScalar>() {
-      @Override
-      public TestCustomScalar fromJson(com.squareup.moshi.JsonReader reader) throws IOException {
-        return customTypeAdapter.decode(reader.nextString());
-      }
-
-      @Override
-      public void toJson(JsonWriter writer, TestCustomScalar value) throws IOException {
-        //noinspection unchecked
-        writer.value(customTypeAdapter.encode(value));
-      }
-    }).build();
-
-    recordFieldAdapter = RecordFieldAdapter.create(moshi);
+    recordFieldAdapter = RecordFieldJsonAdapter.create();
   }
 
   @Test
@@ -65,7 +48,6 @@ public class RecordFieldAdapterTest {
     recordBuilder.addField("string", expectedStringValue);
     recordBuilder.addField("boolean", expectedBooleanValue);
     recordBuilder.addField("cacheReference", expectedCacheReference);
-    recordBuilder.addField("customScalar", customScalar);
     recordBuilder.addField("scalarList", expectedScalarList);
     recordBuilder.addField("referenceList", expectedCacheReferenceList);
     Record record = recordBuilder.build();
@@ -81,8 +63,5 @@ public class RecordFieldAdapterTest {
         .containsExactlyElementsIn(expectedScalarList).inOrder();
     assertThat((Iterable) deserializedMap.get("referenceList"))
         .containsExactlyElementsIn(expectedCacheReferenceList).inOrder();
-
-    //We expect that custom scalars are read back still in their serialized format.
-    assertThat(deserializedMap.get("customScalar")).isEqualTo(customTypeAdapter.encode(customScalar));
   }
 }
