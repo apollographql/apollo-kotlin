@@ -434,7 +434,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       ApolloStore apolloStore = this.apolloStore;
       if (cacheFactory.isPresent() && cacheKeyResolver.isPresent()) {
         final NormalizedCache normalizedCache =
-            cacheFactory.get().createNormalizedCache(RecordFieldJsonAdapter.create(moshi));
+            cacheFactory.get().createNormalizedCache(RecordFieldJsonAdapter.create());
         apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), customTypeAdapters,
             dispatcher, apolloLogger);
       }
