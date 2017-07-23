@@ -78,8 +78,7 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
       } else {
         throw e;
       }
-    }
-    finally {
+    } finally {
       terminate();
     }
     httpResponse.close();
