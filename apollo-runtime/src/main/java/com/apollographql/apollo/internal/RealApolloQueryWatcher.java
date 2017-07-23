@@ -83,8 +83,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
         try {
           activeCall.cancel();
           apolloStore.unsubscribe(recordChangeSubscriber);
-        }
-        finally {
+        } finally {
           tracker.unregisterQueryWatcher(this);
           originalCallback.set(null);
           state.set(CANCELED);
@@ -97,6 +96,8 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
       case TERMINATED:
         // These are not illegal states, but cancelling does nothing
         break;
+      default:
+        throw new IllegalStateException("Unknown state");
     }
   }
 
@@ -121,6 +122,8 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
         throw new IllegalStateException("Cannot refetch a canceled watcher,");
       case TERMINATED:
         throw new IllegalStateException("Cannot refetch a watcher which has experienced an error.");
+      default:
+        throw new IllegalStateException("Unknown state");
 
     }
 
@@ -169,6 +172,8 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
       case TERMINATED:
       case ACTIVE:
         throw new IllegalStateException("Already Executed");
+      default:
+        throw new IllegalStateException("Unknown state");
     }
     state.set(ACTIVE);
   }
@@ -182,8 +187,9 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
       case TERMINATED:
         throw new IllegalStateException(
             CallState.IllegalStateMessage.forCurrentState(state.get()).expected(ACTIVE, CANCELED));
+      default:
+        throw new IllegalStateException("Unknown state");
     }
-    throw new IllegalStateException("Unknown state: " + state.get().name());
   }
 
   private synchronized Optional<ApolloCall.Callback<T>> terminate() {
@@ -198,8 +204,9 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
       case TERMINATED:
         throw new IllegalStateException(
             CallState.IllegalStateMessage.forCurrentState(state.get()).expected(ACTIVE, CANCELED));
+      default:
+        throw new IllegalStateException("Unknown state");
     }
-    throw new IllegalStateException("Unknown state: " + state.get().name());
   }
 
 }

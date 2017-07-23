@@ -44,7 +44,10 @@ import okhttp3.Call;
 import okhttp3.HttpUrl;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-import static com.apollographql.apollo.internal.CallState.*;
+import static com.apollographql.apollo.internal.CallState.ACTIVE;
+import static com.apollographql.apollo.internal.CallState.CANCELED;
+import static com.apollographql.apollo.internal.CallState.IDLE;
+import static com.apollographql.apollo.internal.CallState.TERMINATED;
 import static java.util.Collections.emptyList;
 
 @SuppressWarnings("WeakerAccess")
@@ -169,13 +172,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .build();
   }
 
-  /**
-   * Cancels this {@link RealApolloCall}. If the call has already completed, nothing will happen.
-   * If the call is outgoing, an {@link ApolloCanceledException} will be thrown if the call was started
-   * with {@link #execute()}. If the call was started with {@link #enqueue(Callback)} t
-   * the {@link com.apollographql.apollo.ApolloCall.Callback} will be disposed, and will receive no more events. The
-   * call will attempt to abort and release resources, if possible.
-   */
   @Override public synchronized void cancel() {
     switch (state.get()) {
       case ACTIVE:
@@ -184,8 +180,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
           if (queryReFetcher.isPresent()) {
             queryReFetcher.get().cancel();
           }
-        }
-        finally {
+        } finally {
           tracker.unregisterCall(this);
           originalCallback.set(null);
           state.set(CANCELED);
@@ -198,6 +193,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
       case TERMINATED:
         // These are not illegal states, but cancelling does nothing
         break;
+      default:
+        throw new IllegalStateException("Unknown state");
     }
   }
 
@@ -302,6 +299,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
       case TERMINATED:
       case ACTIVE:
         throw new IllegalStateException("Already Executed");
+      default:
+        throw new IllegalStateException("Unknown state");
     }
     state.set(ACTIVE);
   }
@@ -314,9 +313,10 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
       case IDLE:
       case TERMINATED:
         throw new IllegalStateException(
-            IllegalStateMessage.forCurrentState(state.get()).expected(ACTIVE, CANCELED));
+            CallState.IllegalStateMessage.forCurrentState(state.get()).expected(ACTIVE, CANCELED));
+      default:
+        throw new IllegalStateException("Unknown state");
     }
-    throw new IllegalStateException("Unknown state: " + state.get().name());
   }
 
   private synchronized Optional<Callback<T>> terminate() {
@@ -330,9 +330,10 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
       case IDLE:
       case TERMINATED:
         throw new IllegalStateException(
-            IllegalStateMessage.forCurrentState(state.get()).expected(ACTIVE, CANCELED));
+            CallState.IllegalStateMessage.forCurrentState(state.get()).expected(ACTIVE, CANCELED));
+      default:
+        throw new IllegalStateException("Unknown state");
     }
-    throw new IllegalStateException("Unknown state: " + state.get().name());
   }
 
   private ApolloInterceptorChain prepareInterceptorChain(Operation operation) {

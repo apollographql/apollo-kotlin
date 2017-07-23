@@ -30,7 +30,10 @@ import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 
-import static com.apollographql.apollo.internal.CallState.*;
+import static com.apollographql.apollo.internal.CallState.ACTIVE;
+import static com.apollographql.apollo.internal.CallState.CANCELED;
+import static com.apollographql.apollo.internal.CallState.IDLE;
+import static com.apollographql.apollo.internal.CallState.TERMINATED;
 
 @SuppressWarnings("WeakerAccess") public final class RealApolloPrefetch implements ApolloPrefetch {
   final Operation operation;
@@ -123,7 +126,7 @@ import static com.apollographql.apollo.internal.CallState.*;
       @Override public void onFailure(@Nonnull ApolloException e) {
           Optional<Callback> callback = terminate();
           if (!callback.isPresent()) {
-            logger.e(e," onFailure for prefetch operation: %s. No callback present.", operation().name().name());
+            logger.e(e, "onFailure for prefetch operation: %s. No callback present.", operation().name().name());
             return;
           }
           if (e instanceof ApolloHttpException) {
@@ -166,6 +169,8 @@ import static com.apollographql.apollo.internal.CallState.*;
       case TERMINATED:
         // These are not illegal states, but cancelling does nothing
         break;
+      default:
+        throw new IllegalStateException("Unknown state");
     }
   }
 
@@ -184,6 +189,8 @@ import static com.apollographql.apollo.internal.CallState.*;
       case TERMINATED:
       case ACTIVE:
         throw new IllegalStateException("Already Executed");
+      default:
+        throw new IllegalStateException("Unknown state");
     }
     state.set(ACTIVE);
   }
@@ -199,8 +206,9 @@ import static com.apollographql.apollo.internal.CallState.*;
       case IDLE:
       case TERMINATED:
         throw new IllegalStateException(
-            IllegalStateMessage.forCurrentState(state.get()).expected(ACTIVE, CANCELED));
+            CallState.IllegalStateMessage.forCurrentState(state.get()).expected(ACTIVE, CANCELED));
+      default:
+        throw new IllegalStateException("Unknown state");
     }
-    throw new IllegalStateException("Unknown state: " + state.get().name());
   }
 }
