@@ -151,7 +151,7 @@ public final class SqlNormalizedCache extends NormalizedCache {
   Record cursorToRecord(Cursor cursor) throws IOException {
     String key = cursor.getString(1);
     String jsonOfFields = cursor.getString(2);
-    return new Record(key, recordAdapter().from(jsonOfFields));
+    return Record.builder(key).addFields(recordAdapter().from(jsonOfFields)).build();
   }
 
   public void close() {

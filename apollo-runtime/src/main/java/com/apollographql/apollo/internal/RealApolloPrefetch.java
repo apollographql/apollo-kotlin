@@ -54,7 +54,7 @@ import okhttp3.Response;
     this.logger = logger;
     this.tracker = callTracker;
     this.sendOperationIds = sendOperationIds;
-    interceptorChain = new RealApolloInterceptorChain(operation, Collections.<ApolloInterceptor>singletonList(
+    interceptorChain = new RealApolloInterceptorChain(Collections.<ApolloInterceptor>singletonList(
         new ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCachePolicy.NETWORK_ONLY, true,
             customTypeAdapters, logger, sendOperationIds)
     ));
@@ -74,7 +74,9 @@ import okhttp3.Response;
 
     try {
       tracker.registerPrefetchCall(this);
-      httpResponse = interceptorChain.proceed(FetchOptions.NETWORK_ONLY).httpResponse.get();
+      ApolloInterceptor.InterceptorRequest request = new ApolloInterceptor.InterceptorRequest(operation,
+          FetchOptions.NETWORK_ONLY);
+      httpResponse = interceptorChain.proceed(request).httpResponse.get();
     } catch (Exception e) {
       if (canceled) {
         throw new ApolloCanceledException("Canceled", e);
@@ -107,8 +109,9 @@ import okhttp3.Response;
       }
     }
     tracker.registerPrefetchCall(this);
-    interceptorChain.proceedAsync(dispatcher, FetchOptions.NETWORK_ONLY,
-        interceptorCallbackProxy(responseCallback));
+    ApolloInterceptor.InterceptorRequest request = new ApolloInterceptor.InterceptorRequest(operation,
+        FetchOptions.NETWORK_ONLY);
+    interceptorChain.proceedAsync(request, dispatcher, interceptorCallbackProxy(responseCallback));
   }
 
   @Nonnull @Override public Operation operation() {
