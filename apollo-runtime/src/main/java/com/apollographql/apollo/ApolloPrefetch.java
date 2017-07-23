@@ -61,6 +61,15 @@ public interface ApolloPrefetch extends Cancelable {
   @Nonnull Operation operation();
 
   /**
+   * Cancels this {@link ApolloPrefetch}. If the call has already completed, nothing will happen.
+   * If the call is outgoing, an {@link ApolloCanceledException} will be thrown if the call was started
+   * with {@link #execute()}. If the call was started with {@link #enqueue(Callback)}
+   * the {@link com.apollographql.apollo.ApolloPrefetch.Callback} will be disposed, and will receive no more events.
+   * The call will attempt to abort and release resources, if possible.
+   */
+  @Override void cancel();
+
+  /**
    * Communicates responses from the server.
    */
   abstract class Callback {

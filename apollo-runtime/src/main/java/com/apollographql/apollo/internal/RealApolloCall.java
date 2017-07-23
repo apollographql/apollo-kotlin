@@ -35,7 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,6 +44,10 @@ import okhttp3.Call;
 import okhttp3.HttpUrl;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import static com.apollographql.apollo.internal.CallState.ACTIVE;
+import static com.apollographql.apollo.internal.CallState.CANCELED;
+import static com.apollographql.apollo.internal.CallState.IDLE;
+import static com.apollographql.apollo.internal.CallState.TERMINATED;
 import static java.util.Collections.emptyList;
 
 @SuppressWarnings("WeakerAccess")
@@ -68,9 +72,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final List<Query> refetchQueries;
   final Optional<QueryReFetcher> queryReFetcher;
   final boolean sendOperationdIdentifiers;
-  final AtomicBoolean executed = new AtomicBoolean();
-  volatile boolean canceled;
-  volatile boolean completed;
+  final AtomicReference<CallState> state = new AtomicReference<>(IDLE);
+  final AtomicReference<Callback<T>> originalCallback = new AtomicReference<>();
 
   public static <T> Builder<T> builder() {
     return new Builder<>();
@@ -117,87 +120,92 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   }
 
   @SuppressWarnings("unchecked") @Nonnull @Override public Response<T> execute() throws ApolloException {
-    if (!executed.compareAndSet(false, true)) {
-      throw new IllegalStateException("Already Executed");
-    }
-
-    if (canceled) {
-      throw new ApolloCanceledException("Canceled");
-    }
-
+    activate(Optional.<Callback<T>>absent());
     Response<T> response;
     try {
-      tracker.registerCall(this);
       response = interceptorChain.proceed(fetchOptions).parsedResponse.or(Response.<T>builder(operation).build());
     } catch (Exception e) {
-      if (canceled) {
-        throw new ApolloCanceledException("Canceled", e);
+      if (state.get() == CANCELED) {
+        throw new ApolloCanceledException("Call canceled", e);
       } else {
         throw e;
       }
     } finally {
-      tracker.unregisterCall(this);
+      terminate();
     }
-
-    if (canceled) {
-      throw new ApolloCanceledException("Canceled");
-    }
-
     if (queryReFetcher.isPresent()) {
       queryReFetcher.get().refetch();
     }
-
     return response;
   }
 
   @Override public void enqueue(@Nullable final Callback<T> responseCallback) {
-    if (!executed.compareAndSet(false, true)) {
-      throw new IllegalStateException("Already Executed");
-    }
-    if (canceled) {
+    try {
+      activate(Optional.fromNullable(responseCallback));
+    } catch (ApolloCanceledException e) {
       if (responseCallback != null) {
-        responseCallback.onCanceledError(new ApolloCanceledException("Canceled"));
+        responseCallback.onCanceledError(e);
+      } else {
+        logger.e(e, "Operation: %s was canceled", operation().name().name());
       }
+      return;
     }
-    tracker.registerCall(this);
-    interceptorChain.proceedAsync(dispatcher, fetchOptions, interceptorCallbackProxy(responseCallback));
+    interceptorChain.proceedAsync(dispatcher, fetchOptions, interceptorCallbackProxy());
   }
 
   @Nonnull @Override public RealApolloQueryWatcher<T> watcher() {
-    return new RealApolloQueryWatcher<>(clone(), apolloStore, tracker);
+    return new RealApolloQueryWatcher<>(clone(), apolloStore, logger, tracker);
   }
 
   @Nonnull @Override public RealApolloCall<T> httpCachePolicy(@Nonnull HttpCachePolicy.Policy httpCachePolicy) {
-    if (executed.get()) throw new IllegalStateException("Already Executed");
+    if (state.get() != IDLE) throw new IllegalStateException("Already Executed");
     return toBuilder()
         .httpCachePolicy(checkNotNull(httpCachePolicy, "httpCachePolicy == null"))
         .build();
   }
 
   @Nonnull @Override public RealApolloCall<T> responseFetcher(@Nonnull ResponseFetcher fetcher) {
-    if (executed.get()) throw new IllegalStateException("Already Executed");
+    if (state.get() != IDLE) throw new IllegalStateException("Already Executed");
     return toBuilder()
         .responseFetcher(checkNotNull(fetcher, "responseFetcher == null"))
         .build();
   }
 
   @Nonnull @Override public RealApolloCall<T> cacheHeaders(@Nonnull CacheHeaders cacheHeaders) {
-    if (executed.get()) throw new IllegalStateException("Already Executed");
+    if (state.get() != IDLE) throw new IllegalStateException("Already Executed");
     return toBuilder()
         .cacheHeaders(checkNotNull(cacheHeaders, "cacheHeaders == null"))
         .build();
   }
 
-  @Override public void cancel() {
-    canceled = true;
-    interceptorChain.dispose();
-    if (queryReFetcher.isPresent()) {
-      queryReFetcher.get().cancel();
+  @Override public synchronized void cancel() {
+    switch (state.get()) {
+      case ACTIVE:
+        try {
+          interceptorChain.dispose();
+          if (queryReFetcher.isPresent()) {
+            queryReFetcher.get().cancel();
+          }
+        } finally {
+          tracker.unregisterCall(this);
+          originalCallback.set(null);
+          state.set(CANCELED);
+        }
+        break;
+      case IDLE:
+        state.set(CANCELED);
+        break;
+      case CANCELED:
+      case TERMINATED:
+        // These are not illegal states, but cancelling does nothing
+        break;
+      default:
+        throw new IllegalStateException("Unknown state");
     }
   }
 
   @Override public boolean isCanceled() {
-    return canceled;
+    return state.get() == CANCELED;
   }
 
   @Override @Nonnull public RealApolloCall<T> clone() {
@@ -205,14 +213,14 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   }
 
   @Nonnull @Override public ApolloMutationCall<T> refetchQueries(@Nonnull OperationName... operationNames) {
-    if (executed.get()) throw new IllegalStateException("Already Executed");
+    if (state.get() != IDLE) throw new IllegalStateException("Already Executed");
     return toBuilder()
         .refetchQueryNames(Arrays.asList(checkNotNull(operationNames, "operationNames == null")))
         .build();
   }
 
   @Nonnull @Override public ApolloMutationCall<T> refetchQueries(@Nonnull Query... queries) {
-    if (executed.get()) throw new IllegalStateException("Already Executed");
+    if (state.get() != IDLE) throw new IllegalStateException("Already Executed");
     return toBuilder()
         .refetchQueries(Arrays.asList(checkNotNull(queries, "queries == null")))
         .build();
@@ -222,57 +230,45 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     return operation;
   }
 
-  private ApolloInterceptor.CallBack interceptorCallbackProxy(final Callback<T> originalCallback) {
+  private ApolloInterceptor.CallBack interceptorCallbackProxy() {
     return new ApolloInterceptor.CallBack() {
       @Override public void onResponse(@Nonnull final ApolloInterceptor.InterceptorResponse response) {
-        if (originalCallback == null) return;
-        if (completed) {
-          throw new IllegalStateException("onResponse called after onCompleted for operation: "
-              + operation.name().name());
-        }
-        if (RealApolloCall.this.canceled) {
+        Optional<Callback<T>> callback = responseCallback();
+        if (!callback.isPresent()) {
+          logger.d("onResponse for operation: %s. No callback present.", operation().name().name());
           return;
         }
         //noinspection unchecked
-        originalCallback.onResponse(response.parsedResponse.get());
+        callback.get().onResponse(response.parsedResponse.get());
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        if (originalCallback == null) return;
-
-        try {
-          if (RealApolloCall.this.canceled) {
-            logger.w(e, "Call was canceled, but experienced exception.");
-          } else if (e instanceof ApolloHttpException) {
-            originalCallback.onHttpError((ApolloHttpException) e);
-          } else if (e instanceof ApolloParseException) {
-            originalCallback.onParseError((ApolloParseException) e);
-          } else if (e instanceof ApolloNetworkException) {
-            originalCallback.onNetworkError((ApolloNetworkException) e);
-          } else {
-            originalCallback.onFailure(e);
-          }
-        } finally {
-          tracker.unregisterCall(RealApolloCall.this);
+        Optional<Callback<T>> callback = terminate();
+        if (!callback.isPresent()) {
+          logger.d(e, "onFailure for operation: %s. No callback present.", operation().name().name());
+          return;
+        }
+        if (e instanceof ApolloHttpException) {
+          callback.get().onHttpError((ApolloHttpException) e);
+        } else if (e instanceof ApolloParseException) {
+          callback.get().onParseError((ApolloParseException) e);
+        } else if (e instanceof ApolloNetworkException) {
+          callback.get().onNetworkError((ApolloNetworkException) e);
+        } else {
+          callback.get().onFailure(e);
         }
       }
 
       @Override public void onCompleted() {
-        if (originalCallback == null) return;
-        if (completed) {
-          throw new IllegalStateException("onCompleted already called for operation: " + operation.name()
-              .name());
+        Optional<Callback<T>> callback = terminate();
+        if (queryReFetcher.isPresent()) {
+          queryReFetcher.get().refetch();
         }
-        if (RealApolloCall.this.canceled) return;
-        try {
-          if (queryReFetcher.isPresent()) {
-            queryReFetcher.get().refetch();
-          }
-          originalCallback.onCompleted();
-        } finally {
-          tracker.unregisterCall(RealApolloCall.this);
-          completed = true;
+        if (!callback.isPresent()) {
+          logger.d("onCompleted for operation: %s. No callback present.", operation().name().name());
+          return;
         }
+        callback.get().onCompleted();
       }
     };
   }
@@ -296,6 +292,54 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .refetchQueryNames(refetchQueryNames)
         .refetchQueries(refetchQueries)
         .sendOperationIdentifiers(sendOperationdIdentifiers);
+  }
+
+  private synchronized void activate(Optional<Callback<T>> callback) throws ApolloCanceledException {
+    switch (state.get()) {
+      case IDLE:
+        originalCallback.set(callback.orNull());
+        tracker.registerCall(this);
+        break;
+      case CANCELED:
+        throw new ApolloCanceledException("Call is cancelled.");
+      case TERMINATED:
+      case ACTIVE:
+        throw new IllegalStateException("Already Executed");
+      default:
+        throw new IllegalStateException("Unknown state");
+    }
+    state.set(ACTIVE);
+  }
+
+  private synchronized Optional<Callback<T>> responseCallback() {
+    switch (state.get()) {
+      case ACTIVE:
+      case CANCELED:
+        return Optional.fromNullable(originalCallback.get());
+      case IDLE:
+      case TERMINATED:
+        throw new IllegalStateException(
+            CallState.IllegalStateMessage.forCurrentState(state.get()).expected(ACTIVE, CANCELED));
+      default:
+        throw new IllegalStateException("Unknown state");
+    }
+  }
+
+  private synchronized Optional<Callback<T>> terminate() {
+    switch (state.get()) {
+      case ACTIVE:
+        tracker.unregisterCall(this);
+        state.set(TERMINATED);
+        return Optional.fromNullable(originalCallback.getAndSet(null));
+      case CANCELED:
+        return Optional.fromNullable(originalCallback.getAndSet(null));
+      case IDLE:
+      case TERMINATED:
+        throw new IllegalStateException(
+            CallState.IllegalStateMessage.forCurrentState(state.get()).expected(ACTIVE, CANCELED));
+      default:
+        throw new IllegalStateException("Unknown state");
+    }
   }
 
   private ApolloInterceptorChain prepareInterceptorChain(Operation operation) {

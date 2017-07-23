@@ -76,6 +76,15 @@ public interface ApolloCall<T> extends Cancelable {
   @Nonnull Operation operation();
 
   /**
+   * Cancels this {@link ApolloCall}. If the call has already completed, nothing will happen.
+   * If the call is outgoing, an {@link ApolloCanceledException} will be thrown if the call was started
+   * with {@link #execute()}. If the call was started with {@link #enqueue(Callback)}
+   * the {@link com.apollographql.apollo.ApolloCall.Callback} will be disposed, and will receive no more events. The
+   * call will attempt to abort and release resources, if possible.
+   */
+  @Override void cancel();
+
+  /**
    * Communicates responses from a server or offline requests.
    */
   abstract class Callback<T> {
