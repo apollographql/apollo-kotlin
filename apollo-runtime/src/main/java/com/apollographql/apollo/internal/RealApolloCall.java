@@ -124,6 +124,12 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     Response<T> response;
     try {
       response = interceptorChain.proceed(fetchOptions).parsedResponse.or(Response.<T>builder(operation).build());
+    } catch (Exception e) {
+      if (state.get() == CANCELED) {
+        throw new ApolloCanceledException("Call canceled", e);
+      } else {
+        throw e;
+      }
     } finally {
       terminate();
     }

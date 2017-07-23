@@ -72,10 +72,14 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
     Response httpResponse;
     try {
       httpResponse = interceptorChain.proceed(FetchOptions.NETWORK_ONLY).httpResponse.get();
+    } catch (Exception e) {
       if (state.get() == CANCELED) {
-        throw new ApolloCanceledException("Canceled");
+        throw new ApolloCanceledException("Call canceled", e);
+      } else {
+        throw e;
       }
-    } finally {
+    }
+    finally {
       terminate();
     }
     httpResponse.close();
@@ -88,6 +92,7 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
     try {
       activate(Optional.fromNullable(responseCallback));
     } catch (ApolloCanceledException e) {
+      terminate();
       if (responseCallback != null) {
         responseCallback.onFailure(e);
       } else {
@@ -118,7 +123,6 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
             callback.get().onHttpError(new ApolloHttpException(httpResponse));
           }
         } finally {
-          tracker.unregisterPrefetchCall(RealApolloPrefetch.this);
           httpResponse.close();
         }
       }
