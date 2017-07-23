@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.cache.http.HttpCache;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
@@ -12,7 +13,6 @@ import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.interceptor.FetchOptions;
-import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 

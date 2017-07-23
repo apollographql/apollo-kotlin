@@ -7,6 +7,8 @@ import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
+import com.apollographql.apollo.cache.http.HttpCache;
+import com.apollographql.apollo.cache.http.HttpCacheInterceptor;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.cache.http.HttpCacheStore;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
@@ -22,7 +24,6 @@ import com.apollographql.apollo.internal.ApolloCallTracker;
 import com.apollographql.apollo.internal.RealApolloCall;
 import com.apollographql.apollo.internal.RealApolloPrefetch;
 import com.apollographql.apollo.internal.ResponseFieldMapperFactory;
-import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.cache.normalized.RealApolloStore;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
@@ -43,6 +44,7 @@ import javax.annotation.Nullable;
 
 import okhttp3.Call;
 import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
@@ -82,19 +84,30 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final List<ApolloInterceptor> applicationInterceptors;
   private final boolean sendOperationIdentifiers;
 
-  private ApolloClient(Builder builder) {
-    this.serverUrl = builder.serverUrl;
-    this.httpCallFactory = builder.okHttpClient;
-    this.httpCache = builder.httpCache;
-    this.apolloStore = builder.apolloStore;
-    this.customTypeAdapters = builder.customTypeAdapters;
-    this.dispatcher = builder.dispatcher;
-    this.defaultHttpCachePolicy = builder.defaultHttpCachePolicy;
-    this.defaultCacheHeaders = builder.defaultCacheHeaders;
-    this.defaultResponseFetcher = builder.defaultResponseFetcher;
-    this.logger = builder.apolloLogger;
-    this.applicationInterceptors = builder.applicationInterceptors;
-    this.sendOperationIdentifiers = builder.sendOperationIdentifiers;
+  private ApolloClient(HttpUrl serverUrl,
+      Call.Factory httpCallFactory,
+      HttpCache httpCache,
+      ApolloStore apolloStore,
+      Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
+      ExecutorService dispatcher,
+      HttpCachePolicy.Policy defaultHttpCachePolicy,
+        ResponseFetcher defaultResponseFetcher,
+      CacheHeaders defaultCacheHeaders,
+      ApolloLogger logger,
+      List<ApolloInterceptor> applicationInterceptors,
+    boolean sendOperationIdentifiers) {
+    this.serverUrl = serverUrl;
+    this.httpCallFactory = httpCallFactory;
+    this.httpCache = httpCache;
+    this.apolloStore = apolloStore;
+    this.customTypeAdapters = customTypeAdapters;
+    this.dispatcher = dispatcher;
+    this.defaultHttpCachePolicy = defaultHttpCachePolicy;
+    this.defaultResponseFetcher = defaultResponseFetcher;
+    this.defaultCacheHeaders = defaultCacheHeaders;
+    this.logger = logger;
+    this.applicationInterceptors = applicationInterceptors;
+    this.sendOperationIdentifiers = sendOperationIdentifiers;
   }
 
   @Override
@@ -197,7 +210,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   }
 
   @SuppressWarnings("WeakerAccess") public static class Builder {
-    OkHttpClient okHttpClient;
+    Call.Factory callFactory;
     HttpUrl serverUrl;
     HttpCacheStore httpCacheStore;
     ApolloStore apolloStore = ApolloStore.NO_APOLLO_STORE;
@@ -209,8 +222,6 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
     ExecutorService dispatcher;
     Optional<Logger> logger = Optional.absent();
-    HttpCache httpCache;
-    ApolloLogger apolloLogger;
     final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
     boolean sendOperationIdentifiers;
 
@@ -224,7 +235,16 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder okHttpClient(@Nonnull OkHttpClient okHttpClient) {
-      this.okHttpClient = checkNotNull(okHttpClient, "okHttpClient is null");
+      return callFactory(checkNotNull(okHttpClient, "okHttpClient is null"));
+    }
+
+    /**
+     * Set the custom call factory for creating {@link Call} instances.
+     * <p>
+     * Note: Calling {@link #okHttpClient(OkHttpClient)} automatically sets this value.
+     */
+    public Builder callFactory(@Nonnull Call.Factory factory) {
+      this.callFactory = checkNotNull(factory, "factory == null");
       return this;
     }
 
@@ -387,37 +407,71 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * @return The configured {@link ApolloClient}
      */
     public ApolloClient build() {
-      checkNotNull(okHttpClient, "okHttpClient is null");
       checkNotNull(serverUrl, "serverUrl is null");
 
-      apolloLogger = new ApolloLogger(logger);
+      ApolloLogger apolloLogger = new ApolloLogger(logger);
 
-      if (httpCacheStore != null) {
-        httpCache = new HttpCache(httpCacheStore, apolloLogger);
-        okHttpClient = okHttpClient.newBuilder().addInterceptor(httpCache.interceptor()).build();
+      okhttp3.Call.Factory callFactory = this.callFactory;
+      boolean localClient = this.callFactory == null;
+      if (localClient) {
+        callFactory = new OkHttpClient();
       }
 
+      HttpCache httpCache = null;
+      if (httpCacheStore != null) {
+        httpCache = new HttpCache(httpCacheStore, apolloLogger);
+        if (localClient || shouldAddHttpCacheInterceptor(callFactory)) {
+          apolloLogger.w("Created local client, adding passed in HttpCache");
+          callFactory = ((OkHttpClient) callFactory).newBuilder().addInterceptor(httpCache.interceptor()).build();
+        }
+      }
+
+      ExecutorService dispatcher = this.dispatcher;
       if (dispatcher == null) {
         dispatcher = defaultDispatcher();
       }
 
+      ApolloStore apolloStore = this.apolloStore;
       if (cacheFactory.isPresent() && cacheKeyResolver.isPresent()) {
         final NormalizedCache normalizedCache =
             cacheFactory.get().createNormalizedCache(RecordFieldJsonAdapter.create());
-        this.apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), customTypeAdapters,
+        apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), customTypeAdapters,
             dispatcher, apolloLogger);
       }
 
-      return new ApolloClient(this);
+      return new ApolloClient(serverUrl,
+          callFactory,
+          httpCache,
+          apolloStore,
+          customTypeAdapters,
+          dispatcher,
+          defaultHttpCachePolicy,
+          defaultResponseFetcher,
+          defaultCacheHeaders,
+          apolloLogger,
+          applicationInterceptors,
+          sendOperationIdentifiers);
     }
 
     private ExecutorService defaultDispatcher() {
       return new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
           new SynchronousQueue<Runnable>(), new ThreadFactory() {
-        @Override public Thread newThread(Runnable runnable) {
+        @Override public Thread newThread(@Nonnull Runnable runnable) {
           return new Thread(runnable, "Apollo Dispatcher");
         }
       });
+    }
+
+    private static boolean shouldAddHttpCacheInterceptor(Call.Factory callFactory) {
+      if (callFactory instanceof OkHttpClient) {
+        OkHttpClient client = (OkHttpClient) callFactory;
+        for (Interceptor interceptor : client.interceptors()) {
+          if (interceptor instanceof HttpCacheInterceptor) {
+            return false;
+          }
+        }
+      }
+      return true;
     }
   }
 }

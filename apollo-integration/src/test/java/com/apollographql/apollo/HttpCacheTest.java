@@ -1,16 +1,18 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
+import com.apollographql.apollo.cache.http.HttpCache;
+import com.apollographql.apollo.cache.http.HttpCachePolicy;
+import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.integration.httpcache.AllFilmsQuery;
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.httpcache.DroidDetailsQuery;
 import com.apollographql.apollo.integration.httpcache.type.CustomType;
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
-import com.apollographql.apollo.cache.http.HttpCachePolicy;
-import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.exception.ApolloHttpException;
-import com.apollographql.apollo.internal.cache.http.HttpCache;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
+import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import org.junit.After;
 import org.junit.Before;
@@ -65,14 +67,10 @@ public class HttpCacheTest {
     cacheStore = new MockHttpCacheStore();
     cacheStore.delegate = new DiskLruHttpCacheStore(inMemoryFileSystem, new File("/cache/"), Integer.MAX_VALUE);
 
+    HttpCache cache = new HttpCache(cacheStore, new ApolloLogger(Optional.<Logger>absent()));
     okHttpClient = new OkHttpClient.Builder()
-        .addInterceptor(new Interceptor() {
-          @Override public okhttp3.Response intercept(Chain chain) throws IOException {
-            lastHttRequest = chain.request();
-            lastHttResponse = chain.proceed(lastHttRequest);
-            return lastHttResponse;
-          }
-        })
+        .addInterceptor(new TrackingInterceptor())
+        .addInterceptor(cache.interceptor())
         .readTimeout(2, TimeUnit.SECONDS)
         .writeTimeout(2, TimeUnit.SECONDS)
         .build();
@@ -136,7 +134,9 @@ public class HttpCacheTest {
 
     ApolloClient apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
-        .okHttpClient(okHttpClient)
+        .okHttpClient(new OkHttpClient.Builder()
+            .addInterceptor(new TrackingInterceptor())
+            .build())
         .build();
 
     assertThat(apolloClient.query(new AllPlanetsQuery()).execute().hasErrors()).isFalse();
@@ -430,5 +430,13 @@ public class HttpCacheTest {
 
   private MockResponse mockResponse(String fileName) throws IOException {
     return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), fileName), 32);
+  }
+
+  private class TrackingInterceptor implements Interceptor {
+    @Override public okhttp3.Response intercept(Chain chain) throws IOException {
+      lastHttRequest = chain.request();
+      lastHttResponse = chain.proceed(lastHttRequest);
+      return lastHttResponse;
+    }
   }
 }
