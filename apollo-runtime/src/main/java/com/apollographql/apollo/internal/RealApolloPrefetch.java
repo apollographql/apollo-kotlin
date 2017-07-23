@@ -92,7 +92,6 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
     try {
       activate(Optional.fromNullable(responseCallback));
     } catch (ApolloCanceledException e) {
-      terminate();
       if (responseCallback != null) {
         responseCallback.onFailure(e);
       } else {
