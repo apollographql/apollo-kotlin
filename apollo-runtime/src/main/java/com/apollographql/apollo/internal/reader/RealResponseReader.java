@@ -131,9 +131,9 @@ import java.util.Map;
         Object value = values.get(i);
         if (value != null) {
           T item = (T) listReader.read(new ListItemReader(field, value));
-          readerShadow.didResolveElement(i);
           result.add(item);
         }
+        readerShadow.didResolveElement(i);
       }
       readerShadow.didResolveList(values);
     }
