@@ -8,6 +8,7 @@ import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDForParentOnlyQuery;
@@ -323,4 +324,24 @@ public class ResponseNormalizationTest {
     assertThat(lukeRecord.field("height(unit:FOOT)")).isEqualTo(BigDecimal.valueOf(5.905512));
   }
 
+  @Test public void list_of_objects_with_null_object() throws Exception {
+    server.enqueue(mockResponse("AllPlanetsListOfObjectWithNullObject.json"));
+
+    AllPlanetsQuery query = new AllPlanetsQuery();
+
+    Response<AllPlanetsQuery.Data> body = apolloClient.query(query).execute();
+    assertThat(body.hasErrors()).isFalse();
+
+    Record record =  normalizedCache
+        .loadRecord("allPlanets(first:300.0).planets.0", CacheHeaders.NONE);
+    assertThat(record.field("filmConnection")).isNull();
+
+    record =  normalizedCache
+        .loadRecord("allPlanets(first:300.0).planets.0.filmConnection", CacheHeaders.NONE);
+    assertThat(record).isNull();
+
+    record =  normalizedCache
+        .loadRecord("allPlanets(first:300.0).planets.1.filmConnection", CacheHeaders.NONE);
+    assertThat(record).isNotNull();
+  }
 }

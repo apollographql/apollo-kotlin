@@ -109,8 +109,8 @@ import java.util.Map;
     } else {
       parsedValue = (T) objectReader.read(new RealResponseReader(operationVariables, value, fieldValueResolver,
           customTypeAdapters, readerShadow));
-      readerShadow.didResolveObject(field, Optional.fromNullable(value));
     }
+    readerShadow.didResolveObject(field, Optional.fromNullable(value));
     didResolve(field);
     return parsedValue;
   }
