@@ -1,0 +1,47 @@
+{
+  "data": {
+    "allPlanets": {
+      "__typename": "PlanetsConnection",
+      "planets": [
+        {
+          "__typename": "Planet",
+          "name": "Tatooine",
+          "climates": [
+            "arid"
+          ],
+          "surfaceWater": 1,
+          "filmConnection": null
+        },
+        {
+          "__typename": "Planet",
+          "name": "Alderaan",
+          "climates": [
+            "temperate"
+          ],
+          "surfaceWater": 40,
+          "filmConnection": {
+            "__typename": "PlanetFilmsConnection",
+            "totalCount": 2,
+            "films": [
+              {
+                "__typename": "Film",
+                "title": "A New Hope",
+                "producers": [
+                  "Gary Kurtz",
+                  "Rick McCallum"
+                ]
+              },
+              {
+                "__typename": "Film",
+                "title": "Revenge of the Sith",
+                "producers": [
+                  "Rick McCallum"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
