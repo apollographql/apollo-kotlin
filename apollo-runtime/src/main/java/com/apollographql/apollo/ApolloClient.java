@@ -470,8 +470,9 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
             return false;
           }
         }
+        return true;
       }
-      return true;
+      return false;
     }
   }
 }
