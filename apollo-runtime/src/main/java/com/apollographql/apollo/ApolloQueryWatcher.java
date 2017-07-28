@@ -28,4 +28,12 @@ public interface ApolloQueryWatcher<T> extends Cancelable {
    * Re-fetches watched GraphQL query.
    */
   void refetch();
+
+  /**
+   * Cancels this {@link ApolloQueryWatcher}. The {@link com.apollographql.apollo.ApolloCall.Callback}
+   * will be disposed, and will receive no more events. Any active operations will attempt to abort and
+   * release resources, if possible.
+   */
+  @Override void cancel();
+
 }

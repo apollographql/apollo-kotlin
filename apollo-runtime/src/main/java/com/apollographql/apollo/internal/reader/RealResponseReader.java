@@ -109,8 +109,8 @@ import java.util.Map;
     } else {
       parsedValue = (T) objectReader.read(new RealResponseReader(operationVariables, value, fieldValueResolver,
           customTypeAdapters, readerShadow));
-      readerShadow.didResolveObject(field, Optional.fromNullable(value));
     }
+    readerShadow.didResolveObject(field, Optional.fromNullable(value));
     didResolve(field);
     return parsedValue;
   }
@@ -131,9 +131,9 @@ import java.util.Map;
         Object value = values.get(i);
         if (value != null) {
           T item = (T) listReader.read(new ListItemReader(field, value));
-          readerShadow.didResolveElement(i);
           result.add(item);
         }
+        readerShadow.didResolveElement(i);
       }
       readerShadow.didResolveList(values);
     }

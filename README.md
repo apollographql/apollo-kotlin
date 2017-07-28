@@ -8,7 +8,7 @@ Apollo-Android is a GraphQL compliant client that generates Java models from sta
 
 ## Adding Apollo to your Project
 
-The latest Gradle plugin version is 0.3.3.
+The latest Gradle plugin version is 0.4.0.
 
 To use this plugin, add the dependency to your project's build.gradle file:
 
@@ -18,7 +18,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.apollographql.apollo:gradle-plugin:0.3.3'
+        classpath 'com.apollographql.apollo:gradle-plugin:0.4.0'
     }
 }
 ```
@@ -32,7 +32,7 @@ buildscript {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
   }
   dependencies {
-    classpath 'com.apollographql.apollo:gradle-plugin:0.4.0-SNAPSHOT'
+    classpath 'com.apollographql.apollo:gradle-plugin:0.4.1-SNAPSHOT'
   }
 }
 ```

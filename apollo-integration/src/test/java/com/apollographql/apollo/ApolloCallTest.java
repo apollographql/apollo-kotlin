@@ -3,6 +3,7 @@ package com.apollographql.apollo;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 
@@ -100,7 +101,8 @@ public class ApolloCallTest {
         .setBodyDelay(TIME_OUT_SECONDS, TimeUnit.SECONDS));
 
     final AtomicReference<ApolloException> errorRef = new AtomicReference<>();
-    final ApolloCall<EpisodeHeroNameQuery.Data> apolloCall = apolloClient.query(query);
+    final ApolloCall<EpisodeHeroNameQuery.Data> apolloCall = apolloClient.query(query)
+        .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY);
     new Thread(new Runnable() {
       @Override public void run() {
         try {

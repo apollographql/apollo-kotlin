@@ -82,10 +82,12 @@ public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
 
   @Override public void didResolveObject(ResponseField field, Optional<R> objectSource) {
     path = pathStack.pop();
-    Record completedRecord = currentRecordBuilder.build();
-    valueStack.push(new CacheReference(completedRecord.key()));
-    dependentKeys.add(completedRecord.key());
-    recordSet.merge(completedRecord);
+    if (objectSource.isPresent()) {
+      Record completedRecord = currentRecordBuilder.build();
+      valueStack.push(new CacheReference(completedRecord.key()));
+      dependentKeys.add(completedRecord.key());
+      recordSet.merge(completedRecord);
+    }
     currentRecordBuilder = recordStack.pop().toBuilder();
   }
 
