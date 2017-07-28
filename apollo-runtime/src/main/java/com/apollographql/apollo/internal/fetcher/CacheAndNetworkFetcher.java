@@ -14,11 +14,11 @@ import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
 
 /**
- * Signal the apollo client to fetch the data from both the network and the cache. If cached data is not
- * present, only network data will be returned. If cached data is available, but network experiences an error,
- * cached data is returned. If cache data is not available, and network data is not available, the error
- * of the network request will be propagated. If both network and cache are available, both will be returned.
- * Cache data is guaranteed to be returned first.
+ * Signal the apollo client to fetch the data from both the network and the cache. If cached data is not present, only
+ * network data will be returned. If cached data is available, but network experiences an error, cached data is
+ * returned. If cache data is not available, and network data is not available, the error of the network request will be
+ * propagated. If both network and cache are available, both will be returned. Cache data is guaranteed to be returned
+ * first.
  */
 public final class CacheAndNetworkFetcher implements ResponseFetcher {
 
@@ -37,17 +37,18 @@ public final class CacheAndNetworkFetcher implements ResponseFetcher {
     private volatile boolean disposed;
 
     @Nonnull @Override
-    public InterceptorResponse intercept(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
-        @Nonnull FetchOptions options) throws ApolloException {
+    public InterceptorResponse intercept(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
+        throws ApolloException {
       throw new IllegalStateException(CacheAndNetworkFetcher.class.getSimpleName() + "Can only be used asynchronously");
     }
 
     @Override
-    public void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
-        @Nonnull ExecutorService dispatcher, @Nonnull FetchOptions options, @Nonnull CallBack callBack) {
+    public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
+        @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
       if (disposed) return;
       originalCallback = callBack;
-      chain.proceedAsync(dispatcher, options.toCacheFetchOptions(), new CallBack() {
+      InterceptorRequest cacheRequest = request.withFetchOptions(request.fetchOptions.toCacheFetchOptions());
+      chain.proceedAsync(cacheRequest, dispatcher, new CallBack() {
         @Override public void onResponse(@Nonnull InterceptorResponse response) {
           handleCacheResponse(response);
         }
@@ -61,7 +62,8 @@ public final class CacheAndNetworkFetcher implements ResponseFetcher {
         }
       });
 
-      chain.proceedAsync(dispatcher, options.toNetworkFetchOptions(), new CallBack() {
+      InterceptorRequest networkRequest = request.withFetchOptions(request.fetchOptions.toNetworkFetchOptions());
+      chain.proceedAsync(networkRequest, dispatcher, new CallBack() {
         @Override public void onResponse(@Nonnull InterceptorResponse response) {
           handleNetworkResponse(response);
         }
@@ -129,5 +131,4 @@ public final class CacheAndNetworkFetcher implements ResponseFetcher {
       }
     }
   }
-
 }

@@ -12,6 +12,8 @@ import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
 
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+
 /**
  * ApolloInterceptor is responsible for observing and modifying the requests going out and the corresponding responses
  * coming back in. Typical responsibilities include adding or removing headers from the request or response objects,
@@ -105,9 +107,13 @@ public interface ApolloInterceptor {
     public final Operation operation;
     public final FetchOptions fetchOptions;
 
-    public InterceptorRequest(Operation operation, FetchOptions fetchOptions) {
-      this.operation = operation;
-      this.fetchOptions = fetchOptions;
+    public InterceptorRequest(@Nonnull Operation operation, @Nonnull FetchOptions fetchOptions) {
+      this.operation = checkNotNull(operation, "operation == null");
+      this.fetchOptions = checkNotNull(fetchOptions, "fetchOptions == null");
+    }
+
+    public InterceptorRequest withFetchOptions(@Nonnull FetchOptions fetchOptions) {
+      return new InterceptorRequest(operation, fetchOptions);
     }
   }
 }
