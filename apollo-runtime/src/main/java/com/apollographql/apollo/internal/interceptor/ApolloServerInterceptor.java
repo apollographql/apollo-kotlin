@@ -11,7 +11,6 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.json.InputFieldJsonWriter;
 import com.apollographql.apollo.internal.json.JsonWriter;
 import com.apollographql.apollo.internal.util.ApolloLogger;
