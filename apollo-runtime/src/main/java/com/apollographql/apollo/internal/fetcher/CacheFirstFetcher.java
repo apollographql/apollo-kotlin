@@ -5,7 +5,6 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.util.concurrent.ExecutorService;
