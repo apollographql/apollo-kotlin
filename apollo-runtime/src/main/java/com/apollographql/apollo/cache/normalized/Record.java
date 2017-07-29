@@ -42,7 +42,7 @@ public final class Record {
 
     public Builder addFields(@Nonnull Map<String, Object> fields) {
       checkNotNull(fields, "fields == null");
-      fields.putAll(fields);
+      this.fields.putAll(fields);
       return this;
     }
 
