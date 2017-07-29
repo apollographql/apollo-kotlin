@@ -1,12 +1,10 @@
 package com.apollographql.apollo.internal.fetcher;
 
-import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.util.concurrent.ExecutorService;
@@ -14,9 +12,9 @@ import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
 
 /**
- * Signals the apollo client to first fetch the data from the network. If network request fails, then the
- * data is fetched from the normalized cache. If the data is not present in the normalized cache, then the
- * exception which led to the network request failure is rethrown.
+ * Signals the apollo client to first fetch the data from the network. If network request fails, then the data is
+ * fetched from the normalized cache. If the data is not present in the normalized cache, then the exception which led
+ * to the network request failure is rethrown.
  */
 public final class NetworkFirstFetcher implements ResponseFetcher {
 
@@ -33,15 +31,18 @@ public final class NetworkFirstFetcher implements ResponseFetcher {
     }
 
     @Nonnull @Override
-    public InterceptorResponse intercept(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
-        @Nonnull FetchOptions options) throws ApolloException {
+    public InterceptorResponse intercept(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
+        throws ApolloException {
       if (disposed) throw new ApolloCanceledException("Canceled");
+
+      InterceptorRequest networkRequest = request.withFetchOptions(request.fetchOptions.toNetworkFetchOptions());
       try {
-        return chain.proceed(options.toNetworkFetchOptions());
+        return chain.proceed(networkRequest);
       } catch (ApolloException e) {
-        InterceptorResponse networkFirstCacheResponse = chain.proceed(options.toCacheFetchOptions());
+        InterceptorRequest cacheRequest = request.withFetchOptions(request.fetchOptions.toCacheFetchOptions());
+        InterceptorResponse networkFirstCacheResponse = chain.proceed(cacheRequest);
         if (networkFirstCacheResponse.parsedResponse.isPresent()) {
-          logger.d(e, "Failed to fetch network response for operation %s, return cached one", operation);
+          logger.d(e, "Failed to fetch network response for operation %s, return cached one", request.operation);
           return networkFirstCacheResponse;
         }
         throw e;
@@ -49,18 +50,20 @@ public final class NetworkFirstFetcher implements ResponseFetcher {
     }
 
     @Override
-    public void interceptAsync(@Nonnull final Operation operation, @Nonnull final ApolloInterceptorChain chain,
-        @Nonnull final ExecutorService dispatcher, @Nonnull final FetchOptions options,
-        @Nonnull final CallBack callBack) {
-      chain.proceedAsync(dispatcher, options.toNetworkFetchOptions(), new CallBack() {
+    public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull final ApolloInterceptorChain chain,
+        @Nonnull final ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+      InterceptorRequest networkRequest = request.withFetchOptions(request.fetchOptions.toNetworkFetchOptions());
+      chain.proceedAsync(networkRequest, dispatcher, new CallBack() {
         @Override public void onResponse(@Nonnull InterceptorResponse response) {
           callBack.onResponse(response);
         }
 
         @Override public void onFailure(@Nonnull ApolloException e) {
-          logger.d(e, "Failed to fetch network response for operation %s, trying to return cached one", operation);
+          logger.d(e, "Failed to fetch network response for operation %s, trying to return cached one",
+              request.operation);
           if (!disposed) {
-            chain.proceedAsync(dispatcher, options.toCacheFetchOptions(), callBack);
+            InterceptorRequest cacheRequest = request.withFetchOptions(request.fetchOptions.toCacheFetchOptions());
+            chain.proceedAsync(cacheRequest, dispatcher, callBack);
           }
         }
 
@@ -75,6 +78,4 @@ public final class NetworkFirstFetcher implements ResponseFetcher {
       disposed = true;
     }
   }
-
-
 }

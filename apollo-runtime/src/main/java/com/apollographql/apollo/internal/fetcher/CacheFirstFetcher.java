@@ -1,12 +1,10 @@
 package com.apollographql.apollo.internal.fetcher;
 
-import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.util.concurrent.ExecutorService;
@@ -14,9 +12,9 @@ import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
 
 /**
- * Signals the apollo client to first fetch the data from the normalized cache. If it's not present in the
- * normalized cache or if an exception occurs while trying to fetch it from the normalized cache, then the data is
- * instead fetched from the network.
+ * Signals the apollo client to first fetch the data from the normalized cache. If it's not present in the normalized
+ * cache or if an exception occurs while trying to fetch it from the normalized cache, then the data is instead fetched
+ * from the network.
  */
 public final class CacheFirstFetcher implements ResponseFetcher {
 
@@ -29,31 +27,34 @@ public final class CacheFirstFetcher implements ResponseFetcher {
     private volatile boolean disposed;
 
     @Nonnull @Override
-    public InterceptorResponse intercept(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
-        @Nonnull FetchOptions options) throws ApolloException {
+    public InterceptorResponse intercept(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
+        throws ApolloException {
       if (disposed) throw new ApolloCanceledException("Canceled");
-      FetchOptions cacheFetchOptions = options.toCacheFetchOptions();
+
       InterceptorResponse response;
+      InterceptorRequest cacheRequest = request.withFetchOptions(request.fetchOptions.toCacheFetchOptions());
       try {
-        response = chain.proceed(cacheFetchOptions);
+        response = chain.proceed(cacheRequest);
       } catch (ApolloException exception) {
-        response = chain.proceed(options.toNetworkFetchOptions());
+        InterceptorRequest networkRequest = request.withFetchOptions(request.fetchOptions.toNetworkFetchOptions());
+        response = chain.proceed(networkRequest);
       }
       return response;
     }
 
     @Override
-    public void interceptAsync(@Nonnull final Operation operation, @Nonnull final ApolloInterceptorChain chain,
-        @Nonnull final ExecutorService dispatcher, @Nonnull final FetchOptions options,
-        @Nonnull final CallBack callBack) {
-      chain.proceedAsync(dispatcher, options.toCacheFetchOptions(), new CallBack() {
+    public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull final ApolloInterceptorChain chain,
+        @Nonnull final ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+      InterceptorRequest cacheRequest = request.withFetchOptions(request.fetchOptions.toCacheFetchOptions());
+      chain.proceedAsync(cacheRequest, dispatcher, new CallBack() {
         @Override public void onResponse(@Nonnull InterceptorResponse response) {
           callBack.onResponse(response);
         }
 
         @Override public void onFailure(@Nonnull ApolloException e) {
           if (!disposed) {
-            chain.proceedAsync(dispatcher, options.toNetworkFetchOptions(), callBack);
+            InterceptorRequest networkRequest = request.withFetchOptions(request.fetchOptions.toNetworkFetchOptions());
+            chain.proceedAsync(networkRequest, dispatcher, callBack);
           }
         }
 
@@ -67,5 +68,4 @@ public final class CacheFirstFetcher implements ResponseFetcher {
       disposed = true;
     }
   }
-
 }

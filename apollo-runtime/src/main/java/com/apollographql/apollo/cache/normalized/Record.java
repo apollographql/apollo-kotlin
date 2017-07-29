@@ -6,33 +6,44 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
- * A normalized entry that corresponds to a response object. Object fields are stored
- * if they are a GraphQL Scalars. If a field is a GraphQL Object a {@link CacheReference} will be stored instead.
+ * A normalized entry that corresponds to a response object. Object fields are stored if they are a GraphQL Scalars. If
+ * a field is a GraphQL Object a {@link CacheReference} will be stored instead.
  */
 public final class Record {
+  private static final int UNKNOWN_SIZE_ESTIMATE = -1;
 
   private final String key;
   private final Map<String, Object> fields;
-  private static final int UNKNOWN_SIZE_ESTIMATE = -1;
+  private volatile UUID version;
   private volatile int sizeInBytes = UNKNOWN_SIZE_ESTIMATE;
 
   public static class Builder {
     private final Map<String, Object> fields;
     private final String key;
+    private UUID version;
 
-    public Builder(String key) {
-      this(key, new LinkedHashMap<String, Object>());
-    }
-
-    public Builder(String key, Map<String, Object> fields) {
+    public Builder(String key, Map<String, Object> fields, UUID version) {
       this.key = key;
       this.fields = fields;
+      this.version = version;
     }
 
-    public Builder addField(String key, Object value) {
-      fields.put(key, value);
+    public Builder addField(@Nonnull String key, @Nullable Object value) {
+      fields.put(checkNotNull(key, "key == null"), value);
+      return this;
+    }
+
+    public Builder addFields(@Nonnull Map<String, Object> fields) {
+      checkNotNull(fields, "fields == null");
+      this.fields.putAll(fields);
       return this;
     }
 
@@ -40,27 +51,28 @@ public final class Record {
       return key;
     }
 
+    public Builder version(UUID version) {
+      this.version = version;
+      return this;
+    }
+
     public Record build() {
-      return new Record(key, fields);
+      return new Record(key, fields, version);
     }
   }
 
-  public static Builder builder(String key) {
-    return new Builder(key);
+  public static Builder builder(@Nonnull String key) {
+    return new Builder(checkNotNull(key, "key == null"), new LinkedHashMap<String, Object>(), null);
   }
 
   public Builder toBuilder() {
-    return new Builder(key(), this.fields);
+    return new Builder(key(), this.fields, version);
   }
 
-  public Record(String cacheKey) {
-    this.key = cacheKey;
-    fields = new LinkedHashMap<>();
-  }
-
-  public Record(String key, Map<String, Object> fields) {
+  Record(String key, Map<String, Object> fields, UUID version) {
     this.key = key;
     this.fields = fields;
+    this.version = version;
   }
 
   public Object field(String fieldKey) {
@@ -73,6 +85,10 @@ public final class Record {
 
   public String key() {
     return key;
+  }
+
+  public UUID version() {
+    return version;
   }
 
   /**
@@ -92,6 +108,7 @@ public final class Record {
         adjustSizeEstimate(newFieldValue, oldFieldValue);
       }
     }
+    version = otherRecord.version;
     return changedKeys;
   }
 

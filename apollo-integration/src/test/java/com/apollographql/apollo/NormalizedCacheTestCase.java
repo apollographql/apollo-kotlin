@@ -247,14 +247,12 @@ public class NormalizedCacheTestCase {
 
   @Test public void independentQueriesGoToNetworkWhenCacheMiss() throws IOException, ApolloException {
     server.enqueue(mockResponse("HeroNameResponse.json"));
-    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
-    Response<EpisodeHeroNameQuery.Data> body = apolloClient.query(query).execute();
+    Response<EpisodeHeroNameQuery.Data> body = apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).execute();
     assertThat(body.hasErrors()).isFalse();
     assertThat(body.data()).isNotNull();
 
     server.enqueue(mockResponse("AllPlanetsNullableField.json"));
-    AllPlanetsQuery allPlanetsQuery = new AllPlanetsQuery();
-    final Response<AllPlanetsQuery.Data> allPlanetsResponse = apolloClient.query(allPlanetsQuery).execute();
+    final Response<AllPlanetsQuery.Data> allPlanetsResponse = apolloClient.query(new AllPlanetsQuery()).execute();
     assertThat(allPlanetsResponse.hasErrors()).isFalse();
     assertThat(allPlanetsResponse.data().allPlanets()).isNotNull();
   }

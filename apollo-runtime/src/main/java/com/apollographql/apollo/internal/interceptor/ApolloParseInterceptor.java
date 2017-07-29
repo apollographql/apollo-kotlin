@@ -12,7 +12,6 @@ import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
@@ -45,23 +44,22 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
     this.logger = logger;
   }
 
-  @Override @Nonnull public InterceptorResponse intercept(@Nonnull Operation operation,
-      @Nonnull ApolloInterceptorChain chain, @Nonnull FetchOptions fetchOptions)
-      throws ApolloException {
+  @Override @Nonnull public InterceptorResponse intercept(@Nonnull InterceptorRequest request,
+      @Nonnull ApolloInterceptorChain chain) throws ApolloException {
     if (disposed) throw new ApolloCanceledException("Canceled");
-    InterceptorResponse response = chain.proceed(fetchOptions);
-    return parse(operation, response.httpResponse.get());
+    InterceptorResponse response = chain.proceed(request);
+    return parse(request.operation, response.httpResponse.get());
   }
 
   @Override
-  public void interceptAsync(@Nonnull final Operation operation, @Nonnull ApolloInterceptorChain chain,
-      @Nonnull ExecutorService dispatcher, @Nonnull FetchOptions fetchOptions, @Nonnull final CallBack callBack) {
+  public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
+      @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
     if (disposed) return;
-    chain.proceedAsync(dispatcher, fetchOptions, new CallBack() {
+    chain.proceedAsync(request, dispatcher, new CallBack() {
       @Override public void onResponse(@Nonnull InterceptorResponse response) {
         try {
           if (disposed) return;
-          InterceptorResponse result = parse(operation, response.httpResponse.get());
+          InterceptorResponse result = parse(request.operation, response.httpResponse.get());
           callBack.onResponse(result);
           callBack.onCompleted();
         } catch (ApolloException e) {
