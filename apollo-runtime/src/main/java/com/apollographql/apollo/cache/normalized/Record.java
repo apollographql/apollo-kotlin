@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -35,8 +36,8 @@ public final class Record {
       this.version = version;
     }
 
-    public Builder addField(@Nonnull String key, @Nonnull Object value) {
-      fields.put(checkNotNull(key, "key == null"), checkNotNull(value, "value == null"));
+    public Builder addField(@Nonnull String key, @Nullable Object value) {
+      fields.put(checkNotNull(key, "key == null"), value);
       return this;
     }
 
