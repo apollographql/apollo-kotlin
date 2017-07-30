@@ -218,6 +218,8 @@ public abstract class Optional<T> implements Serializable {
 
   public abstract <V> Optional<V> flatMap(Function<? super T, Optional<V>> function);
 
+  public abstract Optional<T> apply(Action<T> action);
+
   /**
    * Returns {@code true} if {@code object} is an {@code Optional} instance, and either the contained references are
    * {@linkplain Object#equals equal} to each other or both are absent. Note that {@code Optional} instances of

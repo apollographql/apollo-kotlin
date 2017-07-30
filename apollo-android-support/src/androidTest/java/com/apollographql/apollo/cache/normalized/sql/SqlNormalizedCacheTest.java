@@ -28,7 +28,7 @@ public class SqlNormalizedCacheTest {
   public void setUp() {
     ApolloSqlHelper apolloSqlHelper = ApolloSqlHelper.create(InstrumentationRegistry.getTargetContext(),
         IN_MEMORY_DB);
-    sqlStore = new SqlNormalizedCacheFactory(apolloSqlHelper).createNormalizedCache(RecordFieldJsonAdapter.create());
+    sqlStore = new SqlNormalizedCacheFactory(apolloSqlHelper).create(RecordFieldJsonAdapter.create());
   }
 
   @Test

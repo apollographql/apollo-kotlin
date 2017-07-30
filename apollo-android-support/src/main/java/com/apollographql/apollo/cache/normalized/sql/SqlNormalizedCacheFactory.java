@@ -5,15 +5,14 @@ import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
-public final class SqlNormalizedCacheFactory implements NormalizedCacheFactory<SqlNormalizedCache> {
-
+public final class SqlNormalizedCacheFactory extends NormalizedCacheFactory<SqlNormalizedCache> {
   private final ApolloSqlHelper helper;
 
   public SqlNormalizedCacheFactory(ApolloSqlHelper helper) {
     this.helper = checkNotNull(helper, "helper == null");
   }
 
-  @Override public SqlNormalizedCache createNormalizedCache(RecordFieldJsonAdapter recordFieldAdapter) {
+  @Override public SqlNormalizedCache create(RecordFieldJsonAdapter recordFieldAdapter) {
     return new SqlNormalizedCache(recordFieldAdapter, helper);
   }
 }
