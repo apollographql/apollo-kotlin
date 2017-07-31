@@ -291,7 +291,7 @@ Converting ApolloCall to a Single:
 EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
 //Create an ApolloCall object
-ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.newCall(query);
+ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.query(query);
 
 //RxJava1 Single
 Single<EpisodeHeroName.Data> single1 = RxApollo.from(apolloCall);
@@ -321,7 +321,7 @@ Converting ApolloWatcher to an Observable:
 EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
 //Create an ApolloWatcher object
-ApolloWatcher<EpisodeHeroName.Data> apolloWatcher = apolloClient.newCall(query).watcher();
+ApolloWatcher<EpisodeHeroName.Data> apolloWatcher = apolloClient.query(query).watcher();
 
 //RxJava1 Observable
 Observable<EpisodeHeroName.Data> observable1 = RxApollo.from(apolloWatcher);
