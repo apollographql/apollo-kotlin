@@ -146,8 +146,9 @@ public class ApolloWatcherTest {
     // Someone writes to the store directly
     Set<String> changedKeys = apolloClient.apolloStore().writeTransaction(new Transaction<WriteableStore, Set<String>>() {
       @Nullable @Override public Set<String> execute(WriteableStore cache) {
-        Record record = new Record("2001");
-        record.fields().put("name", "Artoo");
+        Record record = Record.builder("2001")
+            .addField("name", "Artoo")
+            .build();
         return cache.merge(Collections.singletonList(record), CacheHeaders.NONE);
       }
     });
