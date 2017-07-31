@@ -111,11 +111,11 @@ You can use the generated classes to make requests to your GraphQL API.  Apollo 
 
 In our sample project, we have the base url pointing to `https://githunt-api.herokuapp.com/graphql`
 
-There is also a #newCall instance method on ApolloClient that can take as input any Query or Mutation that you have generated using Apollo.
+There is also a #query && #mutation instance method on ApolloClient that can take as input any Query or Mutation that you have generated using Apollo.
 
 ```java
 
-apolloClient.newCall(FeedQuery.builder()
+apolloClient.query(FeedQuery.builder()
                 .limit(10)
                 .type(FeedType.HOT)
                 .build()).enqueue(new ApolloCall.Callback<FeedQuery.Data>() {
