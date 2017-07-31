@@ -103,16 +103,16 @@ public class ApolloCallTest {
     final AtomicReference<ApolloException> errorRef = new AtomicReference<>();
     final ApolloCall<EpisodeHeroNameQuery.Data> apolloCall = apolloClient.query(query)
         .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY);
-    new Thread(new Runnable() {
-      @Override public void run() {
-        try {
-          apolloCall.execute();
-        } catch (ApolloException e) {
-          errorRef.set(e);
-        }
+    apolloCall.enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
+      @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
         responseLatch.countDown();
       }
-    }).start();
+
+      @Override public void onFailure(@Nonnull ApolloException e) {
+        errorRef.set(e);
+        responseLatch.countDown();
+      }
+    });
 
     Thread.sleep(500);
     apolloCall.cancel();
