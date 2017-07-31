@@ -111,11 +111,11 @@ You can use the generated classes to make requests to your GraphQL API.  Apollo 
 
 In our sample project, we have the base url pointing to `https://githunt-api.herokuapp.com/graphql`
 
-There is also a #newCall instance method on ApolloClient that can take as input any Query or Mutation that you have generated using Apollo.
+There is also a #query && #mutation instance method on ApolloClient that can take as input any Query or Mutation that you have generated using Apollo.
 
 ```java
 
-apolloClient.newCall(FeedQuery.builder()
+apolloClient.query(FeedQuery.builder()
                 .limit(10)
                 .type(FeedType.HOT)
                 .build()).enqueue(new ApolloCall.Callback<FeedQuery.Data>() {
@@ -291,7 +291,7 @@ Converting ApolloCall to a Single:
 EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
 //Create an ApolloCall object
-ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.newCall(query);
+ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.query(query);
 
 //RxJava1 Single
 Single<EpisodeHeroName.Data> single1 = RxApollo.from(apolloCall);
@@ -321,7 +321,7 @@ Converting ApolloWatcher to an Observable:
 EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
 
 //Create an ApolloWatcher object
-ApolloWatcher<EpisodeHeroName.Data> apolloWatcher = apolloClient.newCall(query).watcher();
+ApolloWatcher<EpisodeHeroName.Data> apolloWatcher = apolloClient.query(query).watcher();
 
 //RxJava1 Observable
 Observable<EpisodeHeroName.Data> observable1 = RxApollo.from(apolloWatcher);
