@@ -27,6 +27,7 @@ import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -115,6 +116,8 @@ public class ApolloWatcherTest {
       TimeoutException, ApolloException {
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
+    final AtomicReference<String> firstHeroName = new AtomicReference<>();
+    final AtomicReference<String> secondHeroName = new AtomicReference<>();
 
     EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
@@ -124,9 +127,9 @@ public class ApolloWatcherTest {
         new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
             if (secondResponseLatch.getCount() == 2) {
-              assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+              firstHeroName.set(response.data().hero().name());
             } else if (secondResponseLatch.getCount() == 1) {
-              assertThat(response.data().hero().name()).isEqualTo("Artoo");
+              secondHeroName.set(response.data().hero().name());
             }
             firstResponseLatch.countDown();
             secondResponseLatch.countDown();
@@ -138,6 +141,7 @@ public class ApolloWatcherTest {
         });
 
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    assertThat(firstHeroName.get()).isEqualTo("R2-D2");
 
     // Someone writes to the store directly
     Set<String> changedKeys = apolloClient.apolloStore().writeTransaction(new Transaction<WriteableStore, Set<String>>() {
@@ -150,6 +154,9 @@ public class ApolloWatcherTest {
     apolloClient.apolloStore().publish(changedKeys);
 
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+
+    assertThat(secondHeroName.get()).isEqualTo("Artoo");
+
     watcher.cancel();
   }
 
