@@ -11,7 +11,6 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.json.InputFieldJsonWriter;
 import com.apollographql.apollo.internal.json.JsonWriter;
 import com.apollographql.apollo.internal.util.ApolloLogger;
@@ -36,8 +35,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
  * ApolloServerInterceptor is a concrete {@link ApolloInterceptor} responsible for making the network calls to the
- * server. It is the last interceptor in the chain of interceptors and hence doesn't call
- * {@link ApolloInterceptorChain#proceed(FetchOptions)} on the interceptor chain.
+ * server. It is the last interceptor in the chain of interceptors and hence doesn't call {@link
+ * ApolloInterceptorChain#proceed(FetchOptions)} on the interceptor chain.
  */
 @SuppressWarnings("WeakerAccess") public final class ApolloServerInterceptor implements ApolloInterceptor {
   private static final String ACCEPT_TYPE = "application/json";
@@ -67,11 +66,11 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     this.sendOperationIdentifiers = sendOperationIdentifiers;
   }
 
-  @Override @Nonnull public InterceptorResponse intercept(@Nonnull Operation operation,
-      @Nonnull ApolloInterceptorChain chain, @Nonnull FetchOptions options) throws ApolloException {
+  @Override @Nonnull public InterceptorResponse intercept(@Nonnull InterceptorRequest request,
+      @Nonnull ApolloInterceptorChain chain) throws ApolloException {
     if (disposed) throw new ApolloCanceledException("Canceled");
     try {
-      httpCall = httpCall(operation);
+      httpCall = httpCall(request.operation);
     } catch (IOException e) {
       logger.e(e, "Failed to prepare http call");
       throw new ApolloNetworkException("Failed to prepare http call", e);
@@ -87,15 +86,15 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   }
 
   @Override
-  public void interceptAsync(@Nonnull final Operation operation, @Nonnull final ApolloInterceptorChain chain,
-      @Nonnull ExecutorService dispatcher, @Nonnull FetchOptions fetchOptions, @Nonnull final CallBack callBack) {
+  public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull final ApolloInterceptorChain chain,
+      @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
     if (disposed) return;
     dispatcher.execute(new Runnable() {
       @Override public void run() {
         try {
-          httpCall = httpCall(operation);
+          httpCall = httpCall(request.operation);
         } catch (IOException e) {
-          logger.e(e, "Failed to prepare http call for operation %s", operation.name().name());
+          logger.e(e, "Failed to prepare http call for operation %s", request.operation.name().name());
           callBack.onFailure(new ApolloNetworkException("Failed to prepare http call", e));
           return;
         }
@@ -103,7 +102,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         httpCall.enqueue(new Callback() {
           @Override public void onFailure(@Nonnull Call call, @Nonnull IOException e) {
             if (disposed) return;
-            logger.e(e, "Failed to execute http call for operation %s", operation.name().name());
+            logger.e(e, "Failed to execute http call for operation %s", request.operation.name().name());
             callBack.onFailure(new ApolloNetworkException("Failed to execute http call", e));
           }
 

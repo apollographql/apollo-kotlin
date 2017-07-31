@@ -123,7 +123,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     activate(Optional.<Callback<T>>absent());
     Response<T> response;
     try {
-      response = interceptorChain.proceed(fetchOptions).parsedResponse.or(Response.<T>builder(operation).build());
+      ApolloInterceptor.InterceptorRequest request = new ApolloInterceptor.InterceptorRequest(operation, fetchOptions);
+      response = interceptorChain.proceed(request).parsedResponse.or(Response.<T>builder(operation).build());
     } catch (Exception e) {
       if (state.get() == CANCELED) {
         throw new ApolloCanceledException("Call canceled", e);
@@ -150,7 +151,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
       }
       return;
     }
-    interceptorChain.proceedAsync(dispatcher, fetchOptions, interceptorCallbackProxy());
+    ApolloInterceptor.InterceptorRequest request = new ApolloInterceptor.InterceptorRequest(operation, fetchOptions);
+    interceptorChain.proceedAsync(request, dispatcher, interceptorCallbackProxy());
   }
 
   @Nonnull @Override public RealApolloQueryWatcher<T> watcher() {
@@ -355,7 +357,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCachePolicy, false,
         customTypeAdapters, logger, sendOperationdIdentifiers));
 
-    return new RealApolloInterceptorChain(operation, interceptors);
+    return new RealApolloInterceptorChain(interceptors);
   }
 
   public static final class Builder<T> {

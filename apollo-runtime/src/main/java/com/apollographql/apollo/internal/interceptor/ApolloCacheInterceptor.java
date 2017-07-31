@@ -3,6 +3,7 @@ package com.apollographql.apollo.internal.interceptor;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
+import com.apollographql.apollo.api.internal.Function;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
@@ -17,7 +18,9 @@ import com.apollographql.apollo.internal.cache.normalized.Transaction;
 import com.apollographql.apollo.internal.cache.normalized.WriteableStore;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
@@ -46,38 +49,37 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
   }
 
   @Nonnull @Override
-  public InterceptorResponse intercept(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
-      @Nonnull FetchOptions options) throws ApolloException {
+  public InterceptorResponse intercept(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
+      throws ApolloException {
     if (disposed) throw new ApolloCanceledException("Canceled");
-    if (options.fetchFromCache) {
-      return resolveFromCache(operation, options);
+    if (request.fetchOptions.fetchFromCache) {
+      return resolveFromCache(request.operation, request.fetchOptions);
     }
-    InterceptorResponse networkResponse = chain.proceed(options);
-    cacheResponse(networkResponse, options);
+    InterceptorResponse networkResponse = chain.proceed(request);
+    cacheResponse(networkResponse, request);
     return networkResponse;
   }
 
   @Override
-  public void interceptAsync(@Nonnull final Operation operation, @Nonnull final ApolloInterceptorChain chain,
-      @Nonnull final ExecutorService dispatcher, @Nonnull final FetchOptions options,
-      @Nonnull final CallBack callBack) {
+  public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull final ApolloInterceptorChain chain,
+      @Nonnull final ExecutorService dispatcher, @Nonnull final CallBack callBack) {
     dispatcher.execute(new Runnable() {
       @Override public void run() {
         if (disposed) return;
-        if (options.fetchFromCache) {
+        if (request.fetchOptions.fetchFromCache) {
           final InterceptorResponse cachedResponse;
           try {
-            cachedResponse = resolveFromCache(operation, options);
+            cachedResponse = resolveFromCache(request.operation, request.fetchOptions);
             callBack.onResponse(cachedResponse);
             callBack.onCompleted();
           } catch (ApolloException e) {
             callBack.onFailure(e);
           }
         } else {
-          chain.proceedAsync(dispatcher, options, new CallBack() {
+          chain.proceedAsync(request, dispatcher, new CallBack() {
             @Override public void onResponse(@Nonnull InterceptorResponse networkResponse) {
               if (disposed) return;
-              cacheResponse(networkResponse, options);
+              cacheResponse(networkResponse, request);
               callBack.onResponse(networkResponse);
               callBack.onCompleted();
             }
@@ -112,8 +114,20 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     throw new ApolloException(String.format("Cache miss for operation %s", operation));
   }
 
-  private void cacheResponse(final InterceptorResponse networkResponse, final FetchOptions options) {
-    final Optional<Collection<Record>> records = networkResponse.cacheRecords;
+  private void cacheResponse(final InterceptorResponse networkResponse,
+      final ApolloInterceptor.InterceptorRequest request) {
+    final Optional<List<Record>> records = networkResponse.cacheRecords.map(
+        new Function<Collection<Record>, List<Record>>() {
+          @Nonnull @Override public List<Record> apply(@Nonnull Collection<Record> records) {
+            final List<Record> result = new ArrayList<>(records.size());
+            for (Record record : records) {
+              result.add(record.toBuilder().version(request.uniqueId).build());
+            }
+            return result;
+          }
+        }
+    );
+
     if (!records.isPresent()) {
       return;
     }
@@ -122,7 +136,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     try {
       changedKeys = apolloStore.writeTransaction(new Transaction<WriteableStore, Set<String>>() {
         @Nullable @Override public Set<String> execute(WriteableStore cache) {
-          return cache.merge(records.get(), options.cacheHeaders);
+          return cache.merge(records.get(), request.fetchOptions.cacheHeaders);
         }
       });
     } catch (Exception e) {

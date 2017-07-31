@@ -7,14 +7,17 @@ import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
 
 import java.util.Collection;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nonnull;
 
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+
 /**
- * ApolloInterceptor is responsible for observing and modifying the requests going out and the corresponding
- * responses coming back in. Typical responsibilities include adding or removing headers from the request or response
- * objects, transforming the returned responses from one type to another, etc.
+ * ApolloInterceptor is responsible for observing and modifying the requests going out and the corresponding responses
+ * coming back in. Typical responsibilities include adding or removing headers from the request or response objects,
+ * transforming the returned responses from one type to another, etc.
  */
 public interface ApolloInterceptor {
 
@@ -23,26 +26,25 @@ public interface ApolloInterceptor {
    * set of interceptors in the chain, and returns an {@link InterceptorResponse} if the operations succeeded or throws
    * an exception if the operations failed.
    *
-   * @param operation the GraphQL Operation object contained within the outgoing request.
-   * @param chain     the ApolloInterceptorChain object containing the next set of interceptors.
-   * @param options   the {@link FetchOptions} to use to execute the operation.
+   * @param request outgoing request object.
+   * @param chain   the ApolloInterceptorChain object containing the next set of interceptors.
    * @return This interceptor's response after performing operations.
    * @throws ApolloException if an error occurred while performing operations on the request/response.
    */
-  @Nonnull InterceptorResponse intercept(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
-      @Nonnull FetchOptions options) throws ApolloException;
+  @Nonnull InterceptorResponse intercept(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
+      throws ApolloException;
 
   /**
-   * Intercepts the outgoing request and performs non blocking operations on the request or the response returned by
-   * the next set of interceptors in the chain.
-   * @param operation  the GraphQL Operation object contained within the outgoing request.
+   * Intercepts the outgoing request and performs non blocking operations on the request or the response returned by the
+   * next set of interceptors in the chain.
+   *
+   * @param request    outgoing request object.
    * @param chain      the ApolloInterceptorChain object containing the next set of interceptors.
    * @param dispatcher the ExecutorService which dispatches the non blocking operations on the request/response.
-   * @param options    the {@link FetchOptions} to use to execute the operation.
    * @param callBack   the Callback which will handle the interceptor's response or failure exception.
    */
-  void interceptAsync(@Nonnull Operation operation, @Nonnull ApolloInterceptorChain chain,
-      @Nonnull ExecutorService dispatcher, @Nonnull FetchOptions options, @Nonnull CallBack callBack);
+  void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
+      @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack);
 
   /**
    * Disposes of the resources which are no longer required.
@@ -94,6 +96,24 @@ public interface ApolloInterceptor {
       this.httpResponse = Optional.fromNullable(httpResponse);
       this.parsedResponse = Optional.fromNullable(parsedResponse);
       this.cacheRecords = Optional.fromNullable(cacheRecords);
+    }
+  }
+
+  /**
+   * Request to be proceed with {@link ApolloInterceptor}
+   */
+  final class InterceptorRequest {
+    public final UUID uniqueId = UUID.randomUUID();
+    public final Operation operation;
+    public final FetchOptions fetchOptions;
+
+    public InterceptorRequest(@Nonnull Operation operation, @Nonnull FetchOptions fetchOptions) {
+      this.operation = checkNotNull(operation, "operation == null");
+      this.fetchOptions = checkNotNull(fetchOptions, "fetchOptions == null");
+    }
+
+    public InterceptorRequest withFetchOptions(@Nonnull FetchOptions fetchOptions) {
+      return new InterceptorRequest(operation, fetchOptions);
     }
   }
 }
