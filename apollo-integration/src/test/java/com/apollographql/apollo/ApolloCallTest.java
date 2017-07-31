@@ -105,15 +105,11 @@ public class ApolloCallTest {
 
     new Thread(new Runnable() {
       @Override public void run() {
-        try {
-          Thread.sleep(500);
-        } catch (Exception ignore) {
-        }
         call.cancel();
       }
     }).start();
 
-     try {
+    try {
       call.execute();
       fail("expected ApolloException");
     } catch (ApolloException e) {
