@@ -2,7 +2,6 @@ package com.apollographql.apollo.cache.normalized;
 
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
 
 import java.util.ArrayList;
