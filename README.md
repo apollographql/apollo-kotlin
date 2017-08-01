@@ -349,6 +349,46 @@ disposable.clear();
 
 For a concrete example of using Rx wrappers for apollo types, checkout the sample app in the [`apollo-sample`](apollo-sample) module.
 
+##  Gradle Configuration of Apollo Android
+Apollo Android comes with logical defaults that will work for the majority of use cases, below you will find additional configuration that will add Optional Support, Semantic Query Naming & reduction in method count of generated code.
+
+### Optional Support
+By default Apollo-Android will return `null` when a graph api returns a `null` field.  Apollo allows you to configure the generated code to instead use a Guava `Optional<T>` or a shaded`Apollo Optional<T>` rather than simply returning the scalar value or null.
+
+### Usage
+
+```java
+apollo {
+  nullableValueType = "apolloOptional"  //use one or the other
+  nullableValueType = "guavaOptional"   //use one or the other
+}
+```
+
+### Reduce Method count
+By default Apollo-Android will create a getter for each field present in your query.  Alternatively, you can set a flag to make the field public allowing direct field access without the need of generating an accessor. A use case of this configuration is to reduce method count of generated code.
+
+### Usage
+```java
+apollo {
+  generateAccessors = false
+}
+```
+### Semantic Naming
+By default Apollo-Android expects queries to be written as follows:
+```Query someQuery{....}```
+alternatively you can turn on Semantic Naming which will allow you to define queries without the Query suffix:
+```Query some{....}```
+
+With Semantic Naming enabled you will still see a SomeQuery.java generated same as the first query above.
+
+### Usage 
+
+```java
+apollo {
+  useSemanticNaming = false
+}
+```
+
 ### Download
 
 RxJava1:
