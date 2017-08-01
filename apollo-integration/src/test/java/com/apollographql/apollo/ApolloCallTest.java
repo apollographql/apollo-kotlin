@@ -97,7 +97,7 @@ public class ApolloCallTest {
 
   @Test
   public void apolloCanceledExceptionExecute() throws Exception {
-    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = new EpisodeHeroNameQuery(Episode.EMPIRE);
     mockWebServer.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json")
         .setBodyDelay(TIME_OUT_SECONDS, TimeUnit.SECONDS));
 
@@ -105,6 +105,10 @@ public class ApolloCallTest {
 
     new Thread(new Runnable() {
       @Override public void run() {
+        try {
+          Thread.sleep(TimeUnit.SECONDS.toMillis(TIME_OUT_SECONDS / 2));
+        } catch (Throwable ignore) {
+        }
         call.cancel();
       }
     }).start();
