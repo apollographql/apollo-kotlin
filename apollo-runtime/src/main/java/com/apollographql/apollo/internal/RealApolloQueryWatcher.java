@@ -116,6 +116,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
         activeCall.cancel();
         activeCall = activeCall.clone().responseFetcher(refetchResponseFetcher);
         activeCall.enqueue(callbackProxy());
+        break;
       case IDLE:
         throw new IllegalStateException("Cannot refetch a watcher which has not first called enqueueAndWatch.");
       case CANCELED:

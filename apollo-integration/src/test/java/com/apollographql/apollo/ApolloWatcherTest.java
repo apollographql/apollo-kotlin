@@ -2,12 +2,16 @@ package com.apollographql.apollo;
 
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.cache.CacheHeaders;
+import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
+import com.apollographql.apollo.internal.cache.normalized.Transaction;
+import com.apollographql.apollo.internal.cache.normalized.WriteableStore;
 
 import junit.framework.Assert;
 
@@ -16,13 +20,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -102,6 +110,57 @@ public class ApolloWatcherTest {
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     watcher.cancel();
   }
+
+  @Test
+  public void testQueryWatcherUpdated_Store_write() throws IOException, InterruptedException,
+      TimeoutException, ApolloException {
+    final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
+    final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
+    final AtomicReference<String> firstHeroName = new AtomicReference<>();
+    final AtomicReference<String> secondHeroName = new AtomicReference<>();
+
+    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
+    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+
+    ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
+    watcher.enqueueAndWatch(
+        new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
+          @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
+            if (secondResponseLatch.getCount() == 2) {
+              firstHeroName.set(response.data().hero().name());
+            } else if (secondResponseLatch.getCount() == 1) {
+              secondHeroName.set(response.data().hero().name());
+            }
+            firstResponseLatch.countDown();
+            secondResponseLatch.countDown();
+          }
+
+          @Override public void onFailure(@Nonnull ApolloException e) {
+            Assert.fail(e.getMessage());
+          }
+        });
+
+    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    assertThat(firstHeroName.get()).isEqualTo("R2-D2");
+
+    // Someone writes to the store directly
+    Set<String> changedKeys = apolloClient.apolloStore().writeTransaction(new Transaction<WriteableStore, Set<String>>() {
+      @Nullable @Override public Set<String> execute(WriteableStore cache) {
+        Record record = Record.builder("2001")
+            .addField("name", "Artoo")
+            .build();
+        return cache.merge(Collections.singletonList(record), CacheHeaders.NONE);
+      }
+    });
+    apolloClient.apolloStore().publish(changedKeys);
+
+    secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+
+    assertThat(secondHeroName.get()).isEqualTo("Artoo");
+
+    watcher.cancel();
+  }
+
 
   @Test
   public void testQueryWatcherNotUpdated_SameQuery_SameResults() throws IOException, InterruptedException,
