@@ -31,6 +31,10 @@ public final class NoOpApolloStore implements ApolloStore, ReadableStore, Writea
     return Collections.emptySet();
   }
 
+  @Override public Set<String> merge(Record record, @Nonnull CacheHeaders cacheHeaders) {
+    return Collections.emptySet();
+  }
+
   @Nullable @Override public Record read(@Nonnull String key, @Nonnull CacheHeaders cacheHeaders) {
     return null;
   }
