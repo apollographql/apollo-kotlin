@@ -91,11 +91,11 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
       ExecutorService dispatcher,
       HttpCachePolicy.Policy defaultHttpCachePolicy,
-        ResponseFetcher defaultResponseFetcher,
+      ResponseFetcher defaultResponseFetcher,
       CacheHeaders defaultCacheHeaders,
       ApolloLogger logger,
       List<ApolloInterceptor> applicationInterceptors,
-    boolean sendOperationIdentifiers) {
+      boolean sendOperationIdentifiers) {
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
     this.httpCache = httpCache;
@@ -239,9 +239,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
-     * Set the custom call factory for creating {@link Call} instances.
-     * <p>
-     * Note: Calling {@link #okHttpClient(OkHttpClient)} automatically sets this value.
+     * Set the custom call factory for creating {@link Call} instances. <p> Note: Calling {@link
+     * #okHttpClient(OkHttpClient)} automatically sets this value.
      */
     public Builder callFactory(@Nonnull Call.Factory factory) {
       this.callFactory = checkNotNull(factory, "factory == null");
@@ -341,8 +340,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
-     * Set the default {@link CacheHeaders} strategy that will be passed
-     * to the {@link com.apollographql.apollo.interceptor.FetchOptions} used in each new {@link ApolloCall}.
+     * Set the default {@link CacheHeaders} strategy that will be passed to the {@link
+     * com.apollographql.apollo.interceptor.FetchOptions} used in each new {@link ApolloCall}.
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */
@@ -389,9 +388,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
-     *
      * @param sendOperationIdentifiers True if ApolloClient should send a operation identifier instead of the operation
-     *                        definition. Default: false.
+     *                                 definition. Default: false.
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder sendOperationIdentifiers(boolean sendOperationIdentifiers) {
@@ -433,10 +431,9 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
 
       ApolloStore apolloStore = this.apolloStore;
       if (cacheFactory.isPresent() && cacheKeyResolver.isPresent()) {
-        final NormalizedCache normalizedCache =
-            cacheFactory.get().createNormalizedCache(RecordFieldJsonAdapter.create());
-        apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), customTypeAdapters,
-            dispatcher, apolloLogger);
+        final NormalizedCache normalizedCache = cacheFactory.get().createChain(RecordFieldJsonAdapter.create());
+        apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), customTypeAdapters, dispatcher,
+            apolloLogger);
       }
 
       return new ApolloClient(serverUrl,

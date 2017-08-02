@@ -66,7 +66,7 @@ public class CacheHeadersTest {
     };
 
     final NormalizedCacheFactory<NormalizedCache> cacheFactory = new NormalizedCacheFactory<NormalizedCache>() {
-      @Override public NormalizedCache createNormalizedCache(RecordFieldJsonAdapter recordFieldAdapter) {
+      @Override public NormalizedCache create(RecordFieldJsonAdapter recordFieldAdapter) {
         return normalizedCache;
       }
     };
@@ -107,7 +107,7 @@ public class CacheHeadersTest {
     };
 
     final NormalizedCacheFactory<NormalizedCache> cacheFactory = new NormalizedCacheFactory<NormalizedCache>() {
-      @Override public NormalizedCache createNormalizedCache(RecordFieldJsonAdapter recordFieldAdapter) {
+      @Override public NormalizedCache create(RecordFieldJsonAdapter recordFieldAdapter) {
         return normalizedCache;
       }
     };

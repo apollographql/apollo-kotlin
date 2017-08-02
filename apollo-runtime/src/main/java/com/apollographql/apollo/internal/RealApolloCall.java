@@ -183,6 +183,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   @Override public synchronized void cancel() {
     switch (state.get()) {
       case ACTIVE:
+        state.set(CANCELED);
         try {
           interceptorChain.dispose();
           if (queryReFetcher.isPresent()) {
@@ -191,7 +192,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         } finally {
           tracker.unregisterCall(this);
           originalCallback.set(null);
-          state.set(CANCELED);
         }
         break;
       case IDLE:

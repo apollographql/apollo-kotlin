@@ -7,6 +7,8 @@ import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,6 +23,7 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
 import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.Assert.fail;
 
 public class ApolloCallTest {
   private static final long TIME_OUT_SECONDS = 3;
@@ -94,31 +97,28 @@ public class ApolloCallTest {
 
   @Test
   public void apolloCanceledExceptionExecute() throws Exception {
-    final NamedCountDownLatch responseLatch = new NamedCountDownLatch("apolloCanceledExceptionExecute", 1);
-
-    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
+    EpisodeHeroNameQuery query = new EpisodeHeroNameQuery(Episode.EMPIRE);
     mockWebServer.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json")
         .setBodyDelay(TIME_OUT_SECONDS, TimeUnit.SECONDS));
 
-    final AtomicReference<ApolloException> errorRef = new AtomicReference<>();
-    final ApolloCall<EpisodeHeroNameQuery.Data> apolloCall = apolloClient.query(query)
-        .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY);
+    final ApolloCall call = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY);
+
     new Thread(new Runnable() {
       @Override public void run() {
         try {
-          apolloCall.execute();
-        } catch (ApolloException e) {
-          errorRef.set(e);
+          Thread.sleep(TimeUnit.SECONDS.toMillis(TIME_OUT_SECONDS / 2));
+        } catch (Throwable ignore) {
         }
-        responseLatch.countDown();
+        call.cancel();
       }
     }).start();
 
-    Thread.sleep(500);
-    apolloCall.cancel();
-    responseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-
-    assertThat(errorRef.get()).isInstanceOf(ApolloCanceledException.class);
+    try {
+      call.execute();
+      fail("expected ApolloException");
+    } catch (ApolloException e) {
+      assertThat(e).isInstanceOf(ApolloCanceledException.class);
+    }
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {

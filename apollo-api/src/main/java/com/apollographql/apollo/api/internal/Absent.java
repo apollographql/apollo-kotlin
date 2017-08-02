@@ -82,6 +82,11 @@ final class Absent<T> extends Optional<T> {
     return Optional.absent();
   }
 
+  @Override public Optional<T> apply(Action<T> action) {
+    checkNotNull(action);
+    return Optional.absent();
+  }
+
   @Override
   public Set<T> asSet() {
     return Collections.emptySet();

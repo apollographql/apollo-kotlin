@@ -4,6 +4,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
+import com.apollographql.apollo.api.internal.Action;
+import com.apollographql.apollo.api.internal.Function;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.CacheKey;
@@ -64,18 +66,35 @@ public final class SqlNormalizedCache extends NormalizedCache {
     deleteAllRecordsStatement = database.compileStatement(DELETE_ALL_RECORD_STATEMENT);
   }
 
-  @Nullable public Record loadRecord(@Nonnull String key, @Nonnull CacheHeaders cacheHeaders) {
-    Record record = selectRecordForKey(key).orNull();
-    if (cacheHeaders.hasHeader(EVICT_AFTER_READ) && record != null) {
-      deleteRecord(key);
-    }
-    return record;
+  @Nullable public Record loadRecord(@Nonnull final String key, @Nonnull final CacheHeaders cacheHeaders) {
+    return selectRecordForKey(key)
+        .apply(new Action<Record>() {
+          @Override public void apply(@Nonnull Record record) {
+            if (cacheHeaders.hasHeader(EVICT_AFTER_READ)) {
+              deleteRecord(key);
+            }
+          }
+        })
+        .or(nextCache().flatMap(new Function<NormalizedCache, Optional<Record>>() {
+          @Nonnull @Override public Optional<Record> apply(@Nonnull NormalizedCache cache) {
+            return Optional.fromNullable(cache.loadRecord(key, cacheHeaders));
+          }
+        }))
+        .orNull();
   }
 
-  @Nonnull public Set<String> merge(@Nonnull Record apolloRecord, @Nonnull CacheHeaders cacheHeaders) {
+  @Nonnull public Set<String> merge(@Nonnull final Record apolloRecord, @Nonnull final CacheHeaders cacheHeaders) {
     if (cacheHeaders.hasHeader(DO_NOT_STORE)) {
       return Collections.emptySet();
     }
+
+    //noinspection ResultOfMethodCallIgnored
+    nextCache().apply(new Action<NormalizedCache>() {
+      @Override public void apply(@Nonnull NormalizedCache cache) {
+        cache.merge(apolloRecord, cacheHeaders);
+      }
+    });
+
     Optional<Record> optionalOldRecord = selectRecordForKey(apolloRecord.key());
     Set<String> changedKeys;
     if (!optionalOldRecord.isPresent()) {
@@ -88,15 +107,26 @@ public final class SqlNormalizedCache extends NormalizedCache {
         updateRecord(oldRecord.key(), recordAdapter().toJson(oldRecord.fields()));
       }
     }
+
     return changedKeys;
   }
 
-  @Nonnull @Override public Set<String> merge(@Nonnull Collection<Record> recordSet,
-      @Nonnull CacheHeaders cacheHeaders) {
+  @Nonnull @Override public Set<String> merge(@Nonnull final Collection<Record> recordSet,
+      @Nonnull final CacheHeaders cacheHeaders) {
     if (cacheHeaders.hasHeader(DO_NOT_STORE)) {
       return Collections.emptySet();
     }
-    Set<String> changedKeys = Collections.emptySet();
+
+    //noinspection ResultOfMethodCallIgnored
+    nextCache().apply(new Action<NormalizedCache>() {
+      @Override public void apply(@Nonnull NormalizedCache cache) {
+        for (Record record : recordSet) {
+          cache.merge(record, cacheHeaders);
+        }
+      }
+    });
+
+    Set<String> changedKeys;
     try {
       database.beginTransaction();
       changedKeys = super.merge(recordSet, cacheHeaders);
@@ -108,7 +138,30 @@ public final class SqlNormalizedCache extends NormalizedCache {
   }
 
   @Override public void clearAll() {
-    deleteAllRecordsStatement.execute();
+    //noinspection ResultOfMethodCallIgnored
+    nextCache().apply(new Action<NormalizedCache>() {
+      @Override public void apply(@Nonnull NormalizedCache cache) {
+        cache.clearAll();
+      }
+    });
+    clearCurrentCache();
+  }
+
+  @Override public boolean remove(@Nonnull final CacheKey cacheKey) {
+    checkNotNull(cacheKey, "cacheKey == null");
+    boolean result;
+
+    result = nextCache().map(new Function<NormalizedCache, Boolean>() {
+      @Nonnull @Override public Boolean apply(@Nonnull NormalizedCache cache) {
+        return cache.remove(cacheKey);
+      }
+    }).or(Boolean.FALSE);
+
+    return result | deleteRecord(cacheKey.key());
+  }
+
+  public void close() {
+    dbHelper.close();
   }
 
   long createRecord(String key, String fields) {
@@ -154,12 +207,7 @@ public final class SqlNormalizedCache extends NormalizedCache {
     return Record.builder(key).addFields(recordAdapter().from(jsonOfFields)).build();
   }
 
-  public void close() {
-    dbHelper.close();
-  }
-
-  @Override public boolean remove(@Nonnull CacheKey cacheKey) {
-    checkNotNull(cacheKey, "cacheKey == null");
-    return deleteRecord(cacheKey.key());
+  void clearCurrentCache() {
+    deleteAllRecordsStatement.execute();
   }
 }

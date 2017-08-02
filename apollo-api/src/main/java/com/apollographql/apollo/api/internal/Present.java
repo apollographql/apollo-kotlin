@@ -20,6 +20,7 @@ package com.apollographql.apollo.api.internal;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
@@ -67,6 +68,16 @@ final class Present<T> extends Optional<T> {
     checkNotNull(function);
     return checkNotNull(function.apply(reference),
         "the Function passed to Optional.flatMap() must not return null.");
+  }
+
+  @Override public Optional<T> apply(final Action<T> action) {
+    checkNotNull(action);
+    return map(new Function<T, T>() {
+      @Nonnull @Override public T apply(@Nonnull T t) {
+        action.apply(t);
+        return t;
+      }
+    });
   }
 
   @Override public T orNull() {
