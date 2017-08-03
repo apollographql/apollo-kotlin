@@ -176,6 +176,10 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     return normalizedCache.merge(checkNotNull(recordSet, "recordSet == null"), cacheHeaders);
   }
 
+  @Override public Set<String> merge(Record record, @Nonnull CacheHeaders cacheHeaders) {
+    return normalizedCache.merge(checkNotNull(record, "record == null"), cacheHeaders);
+  }
+
   @Override public CacheKeyResolver cacheKeyResolver() {
     return cacheKeyResolver;
   }
