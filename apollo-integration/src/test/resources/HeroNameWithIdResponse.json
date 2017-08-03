@@ -1,0 +1,9 @@
+{
+  "data": {
+    "hero": {
+      "__typename": "Human",
+      "id": "1000",
+      "name": "SuperMan"
+    }
+  }
+}

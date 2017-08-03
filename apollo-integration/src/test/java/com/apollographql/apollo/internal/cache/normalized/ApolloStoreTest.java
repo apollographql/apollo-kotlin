@@ -8,7 +8,6 @@ import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import org.junit.Test;
@@ -25,7 +24,7 @@ public class ApolloStoreTest {
 
   @Test public void storeClearAllCallsNormalizedCacheClearAll() throws Exception {
     final NamedCountDownLatch latch = new NamedCountDownLatch("storeClearAllCallsNormalizedCacheClearAll", 1);
-    final RealApolloStore realApolloStore = new RealApolloStore(new NormalizedCache(RecordFieldJsonAdapter.create()) {
+    final RealApolloStore realApolloStore = new RealApolloStore(new NormalizedCache() {
       @Nullable @Override public Record loadRecord(@Nonnull String key, @Nonnull CacheHeaders cacheHeaders) {
         return null;
       }
