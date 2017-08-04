@@ -55,9 +55,10 @@ public final class SqlNormalizedCache extends NormalizedCache {
   private final SQLiteStatement updateStatement;
   private final SQLiteStatement deleteStatement;
   private final SQLiteStatement deleteAllRecordsStatement;
+  private final RecordFieldJsonAdapter recordFieldAdapter;
 
   SqlNormalizedCache(RecordFieldJsonAdapter recordFieldAdapter, ApolloSqlHelper dbHelper) {
-    super(recordFieldAdapter);
+    this.recordFieldAdapter = recordFieldAdapter;
     this.dbHelper = dbHelper;
     database = dbHelper.getWritableDatabase();
     insertStatement = database.compileStatement(INSERT_STATEMENT);
@@ -98,13 +99,13 @@ public final class SqlNormalizedCache extends NormalizedCache {
     Optional<Record> optionalOldRecord = selectRecordForKey(apolloRecord.key());
     Set<String> changedKeys;
     if (!optionalOldRecord.isPresent()) {
-      createRecord(apolloRecord.key(), recordAdapter().toJson(apolloRecord.fields()));
+      createRecord(apolloRecord.key(), recordFieldAdapter.toJson(apolloRecord.fields()));
       changedKeys = Collections.emptySet();
     } else {
       Record oldRecord = optionalOldRecord.get();
       changedKeys = oldRecord.mergeWith(apolloRecord);
       if (!changedKeys.isEmpty()) {
-        updateRecord(oldRecord.key(), recordAdapter().toJson(oldRecord.fields()));
+        updateRecord(oldRecord.key(), recordFieldAdapter.toJson(oldRecord.fields()));
       }
     }
 
@@ -204,7 +205,7 @@ public final class SqlNormalizedCache extends NormalizedCache {
   Record cursorToRecord(Cursor cursor) throws IOException {
     String key = cursor.getString(1);
     String jsonOfFields = cursor.getString(2);
-    return Record.builder(key).addFields(recordAdapter().from(jsonOfFields)).build();
+    return Record.builder(key).addFields(recordFieldAdapter.from(jsonOfFields)).build();
   }
 
   void clearCurrentCache() {

@@ -32,15 +32,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
  * See {@link com.apollographql.apollo.cache.normalized.lru.LruNormalizedCache} for a in memory cache.
  */
 public abstract class NormalizedCache {
-  private RecordFieldJsonAdapter recordFieldAdapter;
   private Optional<NormalizedCache> nextCache = Optional.absent();
-
-  /**
-   * @param recordFieldAdapter An adapter which can deserialize and deserialize {@link Record}
-   */
-  public NormalizedCache(RecordFieldJsonAdapter recordFieldAdapter) {
-    this.recordFieldAdapter = recordFieldAdapter;
-  }
 
   /**
    * @param key          The key of the record to read.
@@ -120,9 +112,4 @@ public abstract class NormalizedCache {
   public final Optional<NormalizedCache> nextCache() {
     return nextCache;
   }
-
-  protected final RecordFieldJsonAdapter recordAdapter() {
-    return recordFieldAdapter;
-  }
-
 }

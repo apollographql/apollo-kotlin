@@ -16,6 +16,6 @@ public final class LruNormalizedCacheFactory extends NormalizedCacheFactory<LruN
   }
 
   @Override public LruNormalizedCache create(final RecordFieldJsonAdapter fieldAdapter) {
-    return new LruNormalizedCache(fieldAdapter, evictionPolicy);
+    return new LruNormalizedCache(evictionPolicy);
   }
 }

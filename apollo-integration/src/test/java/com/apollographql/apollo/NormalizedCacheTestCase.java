@@ -361,9 +361,8 @@ public class NormalizedCacheTestCase {
     assertThat(masterQueryResponse.data().hero().friends()).hasSize(3);
 
     CharacterNameByIdQuery detailQuery = new CharacterNameByIdQuery("1002");
-    Response<CharacterNameByIdQuery.Data> detailQueryResponse = apolloClient.query(detailQuery).responseFetcher
-        (ApolloResponseFetchers
-        .CACHE_ONLY).execute();
+    Response<CharacterNameByIdQuery.Data> detailQueryResponse = apolloClient.query(detailQuery)
+        .responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute();
     assertThat(detailQueryResponse.fromCache()).isTrue();
     assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Han Solo");
 

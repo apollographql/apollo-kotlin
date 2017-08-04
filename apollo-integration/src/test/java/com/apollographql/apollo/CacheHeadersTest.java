@@ -2,16 +2,16 @@ package com.apollographql.apollo;
 
 import android.support.annotation.NonNull;
 
-import com.apollographql.apollo.cache.normalized.CacheKey;
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery;
-import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
+import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery;
+import com.apollographql.apollo.integration.normalizer.type.Episode;
 
 import org.junit.After;
 import org.junit.Before;
@@ -46,7 +46,7 @@ public class CacheHeadersTest {
 
   @Test
   public void testHeadersReceived() throws ApolloException, IOException {
-    final NormalizedCache normalizedCache = new NormalizedCache(RecordFieldJsonAdapter.create()) {
+    final NormalizedCache normalizedCache = new NormalizedCache() {
       @Nullable @Override public Record loadRecord(@NonNull String key, @NonNull CacheHeaders cacheHeaders) {
         assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)).isTrue();
         return null;
@@ -87,7 +87,7 @@ public class CacheHeadersTest {
 
   @Test
   public void testDefaultHeadersReceived() throws IOException, ApolloException {
-    final NormalizedCache normalizedCache = new NormalizedCache(RecordFieldJsonAdapter.create()) {
+    final NormalizedCache normalizedCache = new NormalizedCache() {
       @Nullable @Override public Record loadRecord(@NonNull String key, @NonNull CacheHeaders cacheHeaders) {
         assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)).isTrue();
         return null;

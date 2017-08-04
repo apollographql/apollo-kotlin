@@ -8,7 +8,6 @@ import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.cache.Weigher;
@@ -31,8 +30,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 public final class LruNormalizedCache extends NormalizedCache {
   private final Cache<String, Record> lruCache;
 
-  LruNormalizedCache(final RecordFieldJsonAdapter recordFieldAdapter, EvictionPolicy evictionPolicy) {
-    super(recordFieldAdapter);
+  LruNormalizedCache(EvictionPolicy evictionPolicy) {
     final CacheBuilder<Object, Object> lruCacheBuilder = CacheBuilder.newBuilder();
     if (evictionPolicy.maxSizeBytes().isPresent()) {
       lruCacheBuilder.maximumWeight(evictionPolicy.maxSizeBytes().get())

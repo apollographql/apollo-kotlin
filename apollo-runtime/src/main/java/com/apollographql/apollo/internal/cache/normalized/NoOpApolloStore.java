@@ -17,13 +17,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * An alternative to {@link RealApolloStore} for when a no-operation cache
- * is needed.
+ * An alternative to {@link RealApolloStore} for when a no-operation cache is needed.
  */
 public final class NoOpApolloStore implements ApolloStore, ReadableStore, WriteableStore {
 
@@ -131,5 +131,27 @@ public final class NoOpApolloStore implements ApolloStore, ReadableStore, Writea
   public ApolloStoreOperation<Boolean> writeAndPublish(@Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey,
       @Nonnull Operation.Variables variables) {
     return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
+  }
+
+  @Nonnull @Override
+  public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Set<String>>
+  writeOptimisticUpdates(@Nonnull Operation<D, T, V> operation, @Nonnull D operationData, @Nonnull UUID updateVersion) {
+    return ApolloStoreOperation.emptyOperation(Collections.<String>emptySet());
+  }
+
+  @Nonnull @Override
+  public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean>
+  writeOptimisticUpdatesAndPublish(@Nonnull Operation<D, T, V> operation, @Nonnull D operationData,
+      @Nonnull UUID updateVersion) {
+    return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
+  }
+
+  @Nonnull @Override
+  public ApolloStoreOperation<Boolean> rollbackOptimisticUpdatesAndPublish(@Nonnull UUID updateVersion) {
+    return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
+  }
+
+  @Nonnull @Override public ApolloStoreOperation<Set<String>> rollbackOptimisticUpdates(@Nonnull UUID updateVersion) {
+    return ApolloStoreOperation.emptyOperation(Collections.<String>emptySet());
   }
 }
