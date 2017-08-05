@@ -30,11 +30,12 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
     checkNotNull(cacheHeaders, "cacheHeaders == null");
 
     try {
-      final Optional<Record> nonOptimisticRecord = nextCache().flatMap(new Function<NormalizedCache, Optional<Record>>() {
-        @Nonnull @Override public Optional<Record> apply(@Nonnull NormalizedCache cache) {
-          return Optional.fromNullable(cache.loadRecord(key, cacheHeaders));
-        }
-      });
+      final Optional<Record> nonOptimisticRecord = nextCache()
+          .flatMap(new Function<NormalizedCache, Optional<Record>>() {
+            @Nonnull @Override public Optional<Record> apply(@Nonnull NormalizedCache cache) {
+              return Optional.fromNullable(cache.loadRecord(key, cacheHeaders));
+            }
+          });
       final Record optimisticRecord = lruCache.getIfPresent(key);
       if (optimisticRecord != null) {
         return nonOptimisticRecord.transform(new Function<Record, Record>() {
@@ -119,7 +120,8 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
     Map<String, Record> cachedRecords = lruCache.asMap();
     List<String> invalidateKeys = new ArrayList<>();
     for (Map.Entry<String, Record> cachedRecordEntry : cachedRecords.entrySet()) {
-      if (mutationId.equals(cachedRecordEntry.getValue().mutationId()) || cachedRecordEntry.getValue().mutationId() == null) {
+      if (mutationId.equals(cachedRecordEntry.getValue().mutationId())
+          || cachedRecordEntry.getValue().mutationId() == null) {
         invalidateKeys.add(cachedRecordEntry.getKey());
       }
     }
