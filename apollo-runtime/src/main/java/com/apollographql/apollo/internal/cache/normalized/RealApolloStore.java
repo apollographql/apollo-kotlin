@@ -182,7 +182,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   }
 
   @Override public Set<String> merge(Record record, @Nonnull CacheHeaders cacheHeaders) {
-    return normalizedCache.merge(checkNotNull(record, "record == null"), cacheHeaders);
+    return optimisticCache.merge(checkNotNull(record, "record == null"), cacheHeaders);
   }
 
   @Override public CacheKeyResolver cacheKeyResolver() {
@@ -283,10 +283,10 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   @Nonnull @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Set<String>>
   writeOptimisticUpdates(@Nonnull final Operation<D, T, V> operation, @Nonnull final D operationData,
-      @Nonnull final UUID updateVersion) {
+      @Nonnull final UUID mutationId) {
     return new ApolloStoreOperation<Set<String>>(dispatcher) {
       @Override protected Set<String> perform() {
-        return doWrite(operation, operationData, true, updateVersion);
+        return doWrite(operation, operationData, true, mutationId);
       }
     };
   }
@@ -294,10 +294,10 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   @Nonnull @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean>
   writeOptimisticUpdatesAndPublish(@Nonnull final Operation<D, T, V> operation, @Nonnull final D operationData,
-      @Nonnull final UUID updateVersion) {
+      @Nonnull final UUID mutationId) {
     return new ApolloStoreOperation<Boolean>(dispatcher) {
       @Override protected Boolean perform() {
-        Set<String> changedKeys = doWrite(operation, operationData, true, updateVersion);
+        Set<String> changedKeys = doWrite(operation, operationData, true, mutationId);
         publish(changedKeys);
         return Boolean.TRUE;
       }
@@ -305,12 +305,12 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   }
 
   @Nonnull @Override
-  public ApolloStoreOperation<Set<String>> rollbackOptimisticUpdates(@Nonnull final UUID updateVersion) {
+  public ApolloStoreOperation<Set<String>> rollbackOptimisticUpdates(@Nonnull final UUID mutationId) {
     return new ApolloStoreOperation<Set<String>>(dispatcher) {
       @Override protected Set<String> perform() {
         return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
           @Override public Set<String> execute(WriteableStore cache) {
-            return optimisticCache.removeOptimisticUpdates(updateVersion);
+            return optimisticCache.removeOptimisticUpdates(mutationId);
           }
         });
       }
@@ -318,12 +318,12 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   }
 
   @Nonnull @Override
-  public ApolloStoreOperation<Boolean> rollbackOptimisticUpdatesAndPublish(@Nonnull final UUID updateVersion) {
+  public ApolloStoreOperation<Boolean> rollbackOptimisticUpdatesAndPublish(@Nonnull final UUID mutationId) {
     return new ApolloStoreOperation<Boolean>(dispatcher) {
       @Override protected Boolean perform() {
         Set<String> changedKeys = writeTransaction(new Transaction<WriteableStore, Set<String>>() {
           @Override public Set<String> execute(WriteableStore cache) {
-            return optimisticCache.removeOptimisticUpdates(updateVersion);
+            return optimisticCache.removeOptimisticUpdates(mutationId);
           }
         });
         publish(changedKeys);
@@ -402,7 +402,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
 
   private <D extends Operation.Data, T, V extends Operation.Variables> Set<String> doWrite(
       final Operation<D, T, V> operation, final D operationData, final boolean optimistic,
-      final UUID optimisticUpdateVersion) {
+      final UUID mutationId) {
     return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
       @Override public Set<String> execute(WriteableStore cache) {
         CacheResponseWriter cacheResponseWriter = new CacheResponseWriter(operation.variables(),
@@ -414,7 +414,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
         if (optimistic) {
           List<Record> updatedRecords = new ArrayList<>();
           for (Record record : records) {
-            updatedRecords.add(record.toBuilder().version(optimisticUpdateVersion).build());
+            updatedRecords.add(record.toBuilder().mutationId(mutationId).build());
           }
           return optimisticCache.mergeOptimisticUpdates(updatedRecords);
         } else {
