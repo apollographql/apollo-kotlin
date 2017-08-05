@@ -2,6 +2,7 @@ package com.apollographql.apollo.cache.normalized;
 
 import com.apollographql.apollo.internal.cache.normalized.RecordWeigher;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;

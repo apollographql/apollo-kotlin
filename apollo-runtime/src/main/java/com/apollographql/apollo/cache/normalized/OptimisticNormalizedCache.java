@@ -30,12 +30,11 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
     checkNotNull(cacheHeaders, "cacheHeaders == null");
 
     try {
-      final Optional<Record> nonOptimisticRecord = nextCache()
-          .flatMap(new Function<NormalizedCache, Optional<Record>>() {
-            @Nonnull @Override public Optional<Record> apply(@Nonnull NormalizedCache cache) {
-              return Optional.fromNullable(cache.loadRecord(key, cacheHeaders));
-            }
-          });
+      final Optional<Record> nonOptimisticRecord = nextCache().flatMap(new Function<NormalizedCache, Optional<Record>>() {
+        @Nonnull @Override public Optional<Record> apply(@Nonnull NormalizedCache cache) {
+          return Optional.fromNullable(cache.loadRecord(key, cacheHeaders));
+        }
+      });
       final Record optimisticRecord = lruCache.getIfPresent(key);
       if (optimisticRecord != null) {
         return nonOptimisticRecord.transform(new Function<Record, Record>() {
