@@ -82,16 +82,17 @@ public final class RxApollo {
    * Converts an {@link ApolloCall} to a Observable. The number of emissions this Observable will have
    * is based on the {@link com.apollographql.apollo.fetcher.ResponseFetcher} used with the call.
    *
-   * @param call             the ApolloCall to convert
+   * @param originalCall             the ApolloCall to convert
    * @param <T>              the value type
    * @param backpressureMode The {@link rx.Emitter.BackpressureMode} to use.
    * @return the converted Observable
    */
-  @Nonnull public static <T> Observable<Response<T>> from(@Nonnull final ApolloCall<T> call,
+  @Nonnull public static <T> Observable<Response<T>> from(@Nonnull final ApolloCall<T> originalCall,
       Emitter.BackpressureMode backpressureMode) {
-    checkNotNull(call, "call == null");
+    checkNotNull(originalCall, "call == null");
     return Observable.create(new Action1<Emitter<Response<T>>>() {
       @Override public void call(final Emitter<Response<T>> emitter) {
+        final ApolloCall<T> call = originalCall.clone();
         emitter.setCancellation(new Cancellable() {
           @Override public void cancel() throws Exception {
             call.cancel();
