@@ -74,6 +74,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final boolean sendOperationdIdentifiers;
   final AtomicReference<CallState> state = new AtomicReference<>(IDLE);
   final AtomicReference<Callback<T>> originalCallback = new AtomicReference<>();
+  final Optional<Operation.Data> optimisticUpdates;
 
   public static <T> Builder<T> builder() {
     return new Builder<>();
@@ -117,13 +118,15 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     }
     sendOperationdIdentifiers = builder.sendOperationIdentifiers;
     interceptorChain = prepareInterceptorChain(operation);
+    optimisticUpdates = builder.optimisticUpdates;
   }
 
   @SuppressWarnings("unchecked") @Nonnull @Override public Response<T> execute() throws ApolloException {
     activate(Optional.<Callback<T>>absent());
     Response<T> response;
     try {
-      ApolloInterceptor.InterceptorRequest request = new ApolloInterceptor.InterceptorRequest(operation, fetchOptions);
+      ApolloInterceptor.InterceptorRequest request = new ApolloInterceptor.InterceptorRequest(operation, fetchOptions,
+          optimisticUpdates);
       response = interceptorChain.proceed(request).parsedResponse.or(Response.<T>builder(operation).build());
     } catch (Exception e) {
       if (state.get() == CANCELED) {
@@ -151,7 +154,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
       }
       return;
     }
-    ApolloInterceptor.InterceptorRequest request = new ApolloInterceptor.InterceptorRequest(operation, fetchOptions);
+    ApolloInterceptor.InterceptorRequest request = new ApolloInterceptor.InterceptorRequest(operation, fetchOptions,
+        optimisticUpdates);
     interceptorChain.proceedAsync(request, dispatcher, interceptorCallbackProxy());
   }
 
@@ -293,7 +297,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .tracker(tracker)
         .refetchQueryNames(refetchQueryNames)
         .refetchQueries(refetchQueries)
-        .sendOperationIdentifiers(sendOperationdIdentifiers);
+        .sendOperationIdentifiers(sendOperationdIdentifiers)
+        .optimisticUpdates(optimisticUpdates);
   }
 
   private synchronized void activate(Optional<Callback<T>> callback) throws ApolloCanceledException {
@@ -379,6 +384,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     List<Query> refetchQueries = emptyList();
     ApolloCallTracker tracker;
     boolean sendOperationIdentifiers;
+    Optional<Operation.Data> optimisticUpdates;
 
     public Builder<T> operation(Operation operation) {
       this.operation = operation;
@@ -468,6 +474,11 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
     public Builder<T> sendOperationIdentifiers(boolean sendOperationIdentifiers) {
       this.sendOperationIdentifiers = sendOperationIdentifiers;
+      return this;
+    }
+
+    public Builder<T> optimisticUpdates(Optional<Operation.Data> optimisticUpdates) {
+      this.optimisticUpdates = optimisticUpdates;
       return this;
     }
 

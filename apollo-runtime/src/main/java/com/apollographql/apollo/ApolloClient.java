@@ -117,6 +117,14 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   }
 
   @Override
+  public <D extends Mutation.Data, T, V extends Mutation.Variables> ApolloMutationCall<T> mutate(
+      @Nonnull Mutation<D, T, V> mutation, @Nonnull D withOptimisticUpdates) {
+    checkNotNull(withOptimisticUpdates, "withOptimisticUpdate == null");
+    return newCall(mutation).toBuilder().responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
+        .optimisticUpdates(Optional.<Operation.Data>fromNullable(withOptimisticUpdates)).build();
+  }
+
+  @Override
   public <D extends Query.Data, T, V extends Query.Variables> ApolloQueryCall<T> query(@Nonnull Query<D, T, V> query) {
     return newCall(query);
   }

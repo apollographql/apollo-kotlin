@@ -1,0 +1,10 @@
+{
+  "data": {
+    "updateReview": {
+      "__typename": "Review",
+      "id" : "empireReview2",
+      "stars": 4,
+      "commentary": "Not Bad"
+    }
+  }
+}

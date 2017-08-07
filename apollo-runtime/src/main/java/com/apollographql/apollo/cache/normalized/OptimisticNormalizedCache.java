@@ -105,7 +105,7 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
     final Record oldRecord = lruCache.getIfPresent(record.key());
     if (oldRecord == null) {
       lruCache.put(record.key(), record);
-      return Collections.emptySet();
+      return Collections.singleton(record.key());
     } else {
       Set<String> changedKeys = oldRecord.mergeWith(record);
       //re-insert to trigger new weight calculation

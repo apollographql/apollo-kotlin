@@ -3,21 +3,25 @@
     "reviews": [
       {
         "__typename": "Review",
+        "id" : "empireReview1",
         "stars": 1,
         "commentary": "Boring"
       },
       {
         "__typename": "Review",
+        "id" : "empireReview2",
         "stars": 2,
         "commentary": "So so"
       },
       {
         "__typename": "Review",
+        "id" : "empireReview3",
         "stars": 5,
         "commentary": "Amazing"
       },
       {
         "__typename": "Review",
+        "id" : "empireReview4",
         "stars": 5,
         "commentary": "Awesome"
       }

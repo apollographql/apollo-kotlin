@@ -1,23 +1,33 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
+import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroNameWithEnumsQuery;
 import com.apollographql.apollo.integration.normalizer.HeroNameWithIdQuery;
+import com.apollographql.apollo.integration.normalizer.ReviewsByEpisodeQuery;
+import com.apollographql.apollo.integration.normalizer.UpdateReviewMutation;
+import com.apollographql.apollo.integration.normalizer.type.ColorInput;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
+import com.apollographql.apollo.integration.normalizer.type.ReviewInput;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nonnull;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -33,8 +43,8 @@ public class OptimisticCacheTestCase {
     server = new MockWebServer();
 
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .writeTimeout(2, TimeUnit.SECONDS)
-        .readTimeout(2, TimeUnit.SECONDS)
+        .writeTimeout(5, TimeUnit.SECONDS)
+        .readTimeout(5, TimeUnit.SECONDS)
         .build();
 
     apolloClient = ApolloClient.builder()
@@ -209,5 +219,89 @@ public class OptimisticCacheTestCase {
     assertThat(data.hero().name()).isEqualTo("R2-D2");
     assertThat(data.hero().firstAppearsIn()).isEqualTo(Episode.EMPIRE);
     assertThat(data.hero().appearsIn()).isEqualTo(Arrays.asList(Episode.NEWHOPE, Episode.EMPIRE, Episode.JEDI));
+  }
+
+  @Test public void mutation_and_query_watcher() throws Exception {
+    server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"));
+    final NamedCountDownLatch watcherFirstCallLatch = new NamedCountDownLatch("WatcherFirstCall", 1);
+    final List<ReviewsByEpisodeQuery.Data> watcherData = new ArrayList<>();
+    apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST)
+        .watcher().refetchResponseFetcher(ApolloResponseFetchers.CACHE_FIRST)
+        .enqueueAndWatch(new ApolloCall.Callback<ReviewsByEpisodeQuery.Data>() {
+          @Override public void onResponse(@Nonnull Response<ReviewsByEpisodeQuery.Data> response) {
+            watcherData.add(response.data());
+            watcherFirstCallLatch.countDown();
+          }
+
+          @Override public void onFailure(@Nonnull ApolloException e) {
+            watcherFirstCallLatch.countDown();
+          }
+        });
+    watcherFirstCallLatch.awaitOrThrowWithTimeout(2, TimeUnit.SECONDS);
+
+    server.enqueue(mockResponse("UpdateReviewResponse.json").setBodyDelay(2, TimeUnit.SECONDS));
+    UpdateReviewMutation updateReviewMutation = new UpdateReviewMutation(
+        "empireReview2",
+        ReviewInput.builder()
+            .commentary("Great")
+            .stars(5)
+            .favoriteColor(ColorInput.builder().build())
+            .build()
+    );
+    final NamedCountDownLatch mutationCallLatch = new NamedCountDownLatch("MutationCall", 1);
+    apolloClient.mutate(updateReviewMutation, new UpdateReviewMutation.Data(new UpdateReviewMutation.UpdateReview(
+        "Review", "empireReview2", 5, "Great"))).enqueue(
+        new ApolloCall.Callback<UpdateReviewMutation.Data>() {
+          @Override public void onResponse(@Nonnull Response<UpdateReviewMutation.Data> response) {
+            mutationCallLatch.countDown();
+          }
+
+          @Override public void onFailure(@Nonnull ApolloException e) {
+            mutationCallLatch.countDown();
+          }
+        }
+    );
+    mutationCallLatch.await(3, TimeUnit.SECONDS);
+
+    // sleep a while to wait if watcher gets another notification
+    Thread.sleep(TimeUnit.SECONDS.toMillis(2));
+
+    assertThat(watcherData).hasSize(3);
+
+    // before mutation and optimistic updates
+    assertThat(watcherData.get(0).reviews()).hasSize(3);
+    assertThat(watcherData.get(0).reviews().get(0).id()).isEqualTo("empireReview1");
+    assertThat(watcherData.get(0).reviews().get(0).stars()).isEqualTo(1);
+    assertThat(watcherData.get(0).reviews().get(0).commentary()).isEqualTo("Boring");
+    assertThat(watcherData.get(0).reviews().get(1).id()).isEqualTo("empireReview2");
+    assertThat(watcherData.get(0).reviews().get(1).stars()).isEqualTo(2);
+    assertThat(watcherData.get(0).reviews().get(1).commentary()).isEqualTo("So-so");
+    assertThat(watcherData.get(0).reviews().get(2).id()).isEqualTo("empireReview3");
+    assertThat(watcherData.get(0).reviews().get(2).stars()).isEqualTo(5);
+    assertThat(watcherData.get(0).reviews().get(2).commentary()).isEqualTo("Amazing");
+
+    // optimistic updates
+    assertThat(watcherData.get(1).reviews()).hasSize(3);
+    assertThat(watcherData.get(1).reviews().get(0).id()).isEqualTo("empireReview1");
+    assertThat(watcherData.get(1).reviews().get(0).stars()).isEqualTo(1);
+    assertThat(watcherData.get(1).reviews().get(0).commentary()).isEqualTo("Boring");
+    assertThat(watcherData.get(1).reviews().get(1).id()).isEqualTo("empireReview2");
+    assertThat(watcherData.get(1).reviews().get(1).stars()).isEqualTo(5);
+    assertThat(watcherData.get(1).reviews().get(1).commentary()).isEqualTo("Great");
+    assertThat(watcherData.get(1).reviews().get(2).id()).isEqualTo("empireReview3");
+    assertThat(watcherData.get(1).reviews().get(2).stars()).isEqualTo(5);
+    assertThat(watcherData.get(1).reviews().get(2).commentary()).isEqualTo("Amazing");
+
+    // after mutation with rolled back optimistic updates
+    assertThat(watcherData.get(2).reviews()).hasSize(3);
+    assertThat(watcherData.get(2).reviews().get(0).id()).isEqualTo("empireReview1");
+    assertThat(watcherData.get(2).reviews().get(0).stars()).isEqualTo(1);
+    assertThat(watcherData.get(2).reviews().get(0).commentary()).isEqualTo("Boring");
+    assertThat(watcherData.get(2).reviews().get(1).id()).isEqualTo("empireReview2");
+    assertThat(watcherData.get(2).reviews().get(1).stars()).isEqualTo(4);
+    assertThat(watcherData.get(2).reviews().get(1).commentary()).isEqualTo("Not Bad");
+    assertThat(watcherData.get(2).reviews().get(2).id()).isEqualTo("empireReview3");
+    assertThat(watcherData.get(2).reviews().get(2).stars()).isEqualTo(5);
+    assertThat(watcherData.get(2).reviews().get(2).commentary()).isEqualTo("Amazing");
   }
 }

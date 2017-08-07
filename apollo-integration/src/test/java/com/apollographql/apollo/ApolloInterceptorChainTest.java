@@ -3,7 +3,9 @@ package com.apollographql.apollo;
 
 import android.support.annotation.NonNull;
 
+import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
@@ -73,7 +75,7 @@ public class ApolloInterceptorChainTest {
 
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     chain = new RealApolloInterceptorChain(interceptors);
-    chain.proceed(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY));
+    chain.proceed(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent()));
 
     if (counter.get() != 0) {
       Assert.fail("Control not passed to the interceptor");
@@ -106,7 +108,7 @@ public class ApolloInterceptorChainTest {
 
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     chain = new RealApolloInterceptorChain(interceptors);
-    chain.proceedAsync(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY),
+    chain.proceedAsync(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent()),
         Utils.immediateExecutorService(), new CallBack() {
           @Override public void onResponse(@Nonnull InterceptorResponse response) {
 
@@ -157,7 +159,7 @@ public class ApolloInterceptorChainTest {
     chain = new RealApolloInterceptorChain(interceptors);
 
     InterceptorResponse actualResponse = chain.proceed(new ApolloInterceptor.InterceptorRequest(query,
-        FetchOptions.NETWORK_ONLY));
+        FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent()));
 
     assertThat(actualResponse).isEqualTo(expectedResponse);
   }
@@ -194,7 +196,7 @@ public class ApolloInterceptorChainTest {
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     chain = new RealApolloInterceptorChain(interceptors);
 
-    chain.proceedAsync(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY),
+    chain.proceedAsync(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent()),
         Utils.immediateExecutorService(), new CallBack() {
           @Override public void onResponse(@Nonnull InterceptorResponse response) {
             assertThat(response).isEqualTo(expectedResponse);
@@ -245,7 +247,7 @@ public class ApolloInterceptorChainTest {
     chain = new RealApolloInterceptorChain(interceptors);
 
     try {
-      chain.proceed(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY));
+      chain.proceed(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent()));
     } catch (Exception e) {
       assertThat(e.getMessage()).isEqualTo(message);
       assertThat(e).isInstanceOf(ApolloException.class);
@@ -286,7 +288,7 @@ public class ApolloInterceptorChainTest {
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     chain = new RealApolloInterceptorChain(interceptors);
 
-    chain.proceedAsync(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY),
+    chain.proceedAsync(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent()),
         Utils.immediateExecutorService(), new CallBack() {
           @Override public void onResponse(@Nonnull InterceptorResponse response) {
 
