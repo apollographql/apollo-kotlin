@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,15 +30,24 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
     checkNotNull(cacheHeaders, "cacheHeaders == null");
 
     try {
-      return lruCache.get(key, new Callable<Record>() {
-        @Override public Record call() throws Exception {
-          return nextCache().flatMap(new Function<NormalizedCache, Optional<Record>>() {
+      final Optional<Record> nonOptimisticRecord = nextCache()
+          .flatMap(new Function<NormalizedCache, Optional<Record>>() {
             @Nonnull @Override public Optional<Record> apply(@Nonnull NormalizedCache cache) {
               return Optional.fromNullable(cache.loadRecord(key, cacheHeaders));
             }
-          }).get(); // lruCache.get(key, callable) requires non-null.
-        }
-      });
+          });
+      final Record optimisticRecord = lruCache.getIfPresent(key);
+      if (optimisticRecord != null) {
+        return nonOptimisticRecord.transform(new Function<Record, Record>() {
+          @Nonnull @Override public Record apply(@Nonnull Record record) {
+            Record result = record.toBuilder().build();
+            result.mergeWith(optimisticRecord);
+            return result;
+          }
+        }).or(optimisticRecord);
+      } else {
+        return nonOptimisticRecord.orNull();
+      }
     } catch (Exception ignore) {
       return null;
     }
@@ -106,13 +114,14 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
     }
   }
 
-  @Nonnull public Set<String> removeOptimisticUpdates(@Nonnull final UUID version) {
-    checkNotNull(version, "version == null");
+  @Nonnull public Set<String> removeOptimisticUpdates(@Nonnull final UUID mutationId) {
+    checkNotNull(mutationId, "mutationId == null");
 
     Map<String, Record> cachedRecords = lruCache.asMap();
     List<String> invalidateKeys = new ArrayList<>();
     for (Map.Entry<String, Record> cachedRecordEntry : cachedRecords.entrySet()) {
-      if (version.equals(cachedRecordEntry.getValue().version()) || cachedRecordEntry.getValue().version() == null) {
+      if (mutationId.equals(cachedRecordEntry.getValue().mutationId())
+          || cachedRecordEntry.getValue().mutationId() == null) {
         invalidateKeys.add(cachedRecordEntry.getKey());
       }
     }

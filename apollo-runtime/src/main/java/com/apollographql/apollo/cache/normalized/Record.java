@@ -22,18 +22,18 @@ public final class Record {
 
   private final String key;
   private final Map<String, Object> fields;
-  private volatile UUID version;
+  private volatile UUID mutationId;
   private volatile int sizeInBytes = UNKNOWN_SIZE_ESTIMATE;
 
   public static class Builder {
     private final Map<String, Object> fields;
     private final String key;
-    private UUID version;
+    private UUID mutationId;
 
-    public Builder(String key, Map<String, Object> fields, UUID version) {
+    public Builder(String key, Map<String, Object> fields, UUID mutationId) {
       this.key = key;
-      this.fields = fields;
-      this.version = version;
+      this.fields = new LinkedHashMap<>(fields);
+      this.mutationId = mutationId;
     }
 
     public Builder addField(@Nonnull String key, @Nullable Object value) {
@@ -51,13 +51,13 @@ public final class Record {
       return key;
     }
 
-    public Builder version(UUID version) {
-      this.version = version;
+    public Builder mutationId(UUID mutationId) {
+      this.mutationId = mutationId;
       return this;
     }
 
     public Record build() {
-      return new Record(key, fields, version);
+      return new Record(key, fields, mutationId);
     }
   }
 
@@ -66,13 +66,13 @@ public final class Record {
   }
 
   public Builder toBuilder() {
-    return new Builder(key(), this.fields, version);
+    return new Builder(key(), this.fields, mutationId);
   }
 
-  Record(String key, Map<String, Object> fields, UUID version) {
+  Record(String key, Map<String, Object> fields, UUID mutationId) {
     this.key = key;
     this.fields = fields;
-    this.version = version;
+    this.mutationId = mutationId;
   }
 
   public Object field(String fieldKey) {
@@ -87,8 +87,8 @@ public final class Record {
     return key;
   }
 
-  public UUID version() {
-    return version;
+  public UUID mutationId() {
+    return mutationId;
   }
 
   /**
@@ -108,7 +108,7 @@ public final class Record {
         adjustSizeEstimate(newFieldValue, oldFieldValue);
       }
     }
-    version = otherRecord.version;
+    mutationId = otherRecord.mutationId;
     return changedKeys;
   }
 

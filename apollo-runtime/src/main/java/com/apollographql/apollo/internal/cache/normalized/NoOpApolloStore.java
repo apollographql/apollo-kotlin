@@ -135,23 +135,23 @@ public final class NoOpApolloStore implements ApolloStore, ReadableStore, Writea
 
   @Nonnull @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Set<String>>
-  writeOptimisticUpdates(@Nonnull Operation<D, T, V> operation, @Nonnull D operationData, @Nonnull UUID updateVersion) {
+  writeOptimisticUpdates(@Nonnull Operation<D, T, V> operation, @Nonnull D operationData, @Nonnull UUID mutationId) {
     return ApolloStoreOperation.emptyOperation(Collections.<String>emptySet());
   }
 
   @Nonnull @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean>
   writeOptimisticUpdatesAndPublish(@Nonnull Operation<D, T, V> operation, @Nonnull D operationData,
-      @Nonnull UUID updateVersion) {
+      @Nonnull UUID mutationId) {
     return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
   }
 
   @Nonnull @Override
-  public ApolloStoreOperation<Boolean> rollbackOptimisticUpdatesAndPublish(@Nonnull UUID updateVersion) {
+  public ApolloStoreOperation<Boolean> rollbackOptimisticUpdatesAndPublish(@Nonnull UUID mutationId) {
     return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
   }
 
-  @Nonnull @Override public ApolloStoreOperation<Set<String>> rollbackOptimisticUpdates(@Nonnull UUID updateVersion) {
+  @Nonnull @Override public ApolloStoreOperation<Set<String>> rollbackOptimisticUpdates(@Nonnull UUID mutationId) {
     return ApolloStoreOperation.emptyOperation(Collections.<String>emptySet());
   }
 }

@@ -121,7 +121,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
           @Nonnull @Override public List<Record> apply(@Nonnull Collection<Record> records) {
             final List<Record> result = new ArrayList<>(records.size());
             for (Record record : records) {
-              result.add(record.toBuilder().version(request.uniqueId).build());
+              result.add(record.toBuilder().mutationId(request.uniqueId).build());
             }
             return result;
           }

@@ -206,12 +206,12 @@ public interface ApolloStore {
    *
    * @param operation     {@link Operation} response data of which should be written to the store
    * @param operationData {@link Operation.Data} operation response data to be written to the store
-   * @param updateVersion optimistic update version that will be required to rollback changes
+   * @param mutationId    mutation unique identifier
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of {@link Record} which
    * have changed
    */
   @Nonnull <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Set<String>>
-  writeOptimisticUpdates(@Nonnull Operation<D, T, V> operation, @Nonnull D operationData, @Nonnull UUID updateVersion);
+  writeOptimisticUpdates(@Nonnull Operation<D, T, V> operation, @Nonnull D operationData, @Nonnull UUID mutationId);
 
   /**
    * Write operation data to the optimistic store and publish changes of {@link Record}s which have changed, that will
@@ -219,30 +219,30 @@ public interface ApolloStore {
    *
    * @param operation     {@link Operation} response data of which should be written to the store
    * @param operationData {@link Operation.Data} operation response data to be written to the store
-   * @param updateVersion optimistic update version that will be required to rollback changes
+   * @param mutationId    mutation unique identifier
    * @return {@ApolloStoreOperation} to be performed
    */
   @Nonnull <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean>
   writeOptimisticUpdatesAndPublish(@Nonnull Operation<D, T, V> operation, @Nonnull D operationData,
-      @Nonnull UUID updateVersion);
+      @Nonnull UUID mutationId);
 
   /**
    * Rollback operation data optimistic updates.
    *
-   * @param updateVersion optimistic update version to rollback
+   * @param mutationId mutation unique identifier
    * @return {@ApolloStoreOperation} to be performed
    */
-  @Nonnull ApolloStoreOperation<Set<String>> rollbackOptimisticUpdates(@Nonnull UUID updateVersion);
+  @Nonnull ApolloStoreOperation<Set<String>> rollbackOptimisticUpdates(@Nonnull UUID mutationId);
 
   /**
    * Rollback operation data optimistic updates and publish changes of {@link Record}s which have changed, that will
    * notify any {@linkcom.apollographql.apollo.ApolloQueryWatcher} that depends on these {@link Record} to re-fetch.
    *
-   * @param updateVersion optimistic update version to rollback
+   * @param mutationId mutation unique identifier
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of {@link Record} which
    * have changed
    */
-  @Nonnull ApolloStoreOperation<Boolean> rollbackOptimisticUpdatesAndPublish(@Nonnull UUID updateVersion);
+  @Nonnull ApolloStoreOperation<Boolean> rollbackOptimisticUpdatesAndPublish(@Nonnull UUID mutationId);
 
   ApolloStore NO_APOLLO_STORE = new NoOpApolloStore();
 }
