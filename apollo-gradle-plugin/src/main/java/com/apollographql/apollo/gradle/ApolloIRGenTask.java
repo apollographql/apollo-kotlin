@@ -39,7 +39,7 @@ public class ApolloIRGenTask extends NodeTask {
   public void init(String variantName, ImmutableList<String> variantSourceSets) {
     variant = variantName;
     sourceSets = variantSourceSets;
-    outputDir = new File(getProject().getBuildDir() + "/" +
+    outputDir = new File(getProject().getBuildDir() + File.separator +
         Joiner.on(File.separator).join(GraphQLCompiler.Companion.getOUTPUT_DIRECTORY()) + "/generatedIR/" + variant);
   }
 
@@ -53,14 +53,15 @@ public class ApolloIRGenTask extends NodeTask {
 
     ImmutableMap<String, ApolloCodegenArgs> schemaQueryMap = buildSchemaQueryMap(getInputs().getSourceFiles().getFiles());
     for (Map.Entry<String, ApolloCodegenArgs> entry : schemaQueryMap.entrySet()) {
-      String irOutput = outputDir.getAbsolutePath() + "/" + getProject().relativePath(entry.getValue().getSchemaFile().getParent());
+      String irOutput = outputDir.getAbsolutePath() + File.separator + getProject().relativePath(entry.getValue()
+          .getSchemaFile().getParent());
       new File(irOutput).mkdirs();
       List<String> apolloArgs = Lists.newArrayList("generate");
       apolloArgs.addAll(entry.getValue().getQueryFiles());
       apolloArgs.addAll(Lists.newArrayList("--add-typename",
           "--schema", entry.getValue().getSchemaFile().getAbsolutePath(),
-          "--output", irOutput + "/" + Utils.capitalize(variant) + "API.json",
-          "--operation-ids-path", irOutput + "/" + Utils.capitalize(variant) + "OperationIdMap.json",
+          "--output", irOutput + File.separator + Utils.capitalize(variant) + "API.json",
+          "--operation-ids-path", irOutput + File.separator + Utils.capitalize(variant) + "OperationIdMap.json",
           "--merge-in-fields-from-fragment-spreads", "false",
           "--target", "json"));
       setArgs(apolloArgs);
@@ -166,7 +167,7 @@ public class ApolloIRGenTask extends NodeTask {
     Path absolutePath = Paths.get(file.getAbsolutePath());
     Path basePath = Paths.get(getProject().file("src").getAbsolutePath());
 
-    return basePath.relativize(absolutePath).toString().split("/")[0];
+    return basePath.relativize(absolutePath).toString().split(File.separator)[0];
   }
 
   /**
@@ -176,7 +177,7 @@ public class ApolloIRGenTask extends NodeTask {
    */
   private String getPathRelativeToSourceSet(File file) {
     Path absolutePath = Paths.get(file.getAbsolutePath());
-    Path basePath = Paths.get(getProject().file("src").getAbsolutePath() + "/" + getSourceSetNameFromFile(file));
+    Path basePath = Paths.get(getProject().file("src").getAbsolutePath() + File.separator + getSourceSetNameFromFile(file));
 
     return basePath.relativize(absolutePath).toString();
   }
