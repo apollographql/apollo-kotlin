@@ -20,6 +20,8 @@ import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -49,15 +51,31 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
   }
 
   @Nonnull @Override
-  public InterceptorResponse intercept(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
+  public InterceptorResponse intercept(@Nonnull final InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
       throws ApolloException {
     if (disposed) throw new ApolloCanceledException("Canceled");
+
     if (request.fetchOptions.fetchFromCache) {
       return resolveFromCache(request.operation, request.fetchOptions);
     }
-    InterceptorResponse networkResponse = chain.proceed(request);
-    cacheResponse(networkResponse, request);
-    return networkResponse;
+
+    writeOptimisticUpdatesAndPublish(request);
+
+    try {
+      InterceptorResponse networkResponse = chain.proceed(request);
+
+      Set<String> networkResponseCacheKeys = cacheResponse(networkResponse, request);
+      Set<String> rolledBackCacheKeys = rollbackOptimisticUpdates(request);
+      Set<String> changedCacheKeys = new HashSet<>();
+      changedCacheKeys.addAll(rolledBackCacheKeys);
+      changedCacheKeys.addAll(networkResponseCacheKeys);
+      publishCacheKeys(changedCacheKeys);
+
+      return networkResponse;
+    } catch (Exception rethrow) {
+      rollbackOptimisticUpdatesAndPublish(request);
+      throw rethrow;
+    }
   }
 
   @Override
@@ -76,16 +94,30 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
             callBack.onFailure(e);
           }
         } else {
+          writeOptimisticUpdatesAndPublish(request);
           chain.proceedAsync(request, dispatcher, new CallBack() {
             @Override public void onResponse(@Nonnull InterceptorResponse networkResponse) {
               if (disposed) return;
-              cacheResponse(networkResponse, request);
+
+              try {
+                Set<String> networkResponseCacheKeys = cacheResponse(networkResponse, request);
+                Set<String> rolledBackCacheKeys = rollbackOptimisticUpdates(request);
+                Set<String> changedCacheKeys = new HashSet<>();
+                changedCacheKeys.addAll(rolledBackCacheKeys);
+                changedCacheKeys.addAll(networkResponseCacheKeys);
+                publishCacheKeys(changedCacheKeys);
+              } catch (Exception rethrow) {
+                rollbackOptimisticUpdatesAndPublish(request);
+                throw rethrow;
+              }
+
               callBack.onResponse(networkResponse);
               callBack.onCompleted();
             }
 
-            @Override public void onFailure(@Nonnull ApolloException e) {
-              callBack.onFailure(e);
+            @Override public void onFailure(@Nonnull ApolloException t) {
+              rollbackOptimisticUpdatesAndPublish(request);
+              callBack.onFailure(t);
             }
 
             @Override public void onCompleted() {
@@ -114,7 +146,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     throw new ApolloException(String.format("Cache miss for operation %s", operation));
   }
 
-  private void cacheResponse(final InterceptorResponse networkResponse,
+  private Set<String> cacheResponse(final InterceptorResponse networkResponse,
       final ApolloInterceptor.InterceptorRequest request) {
     final Optional<List<Record>> records = networkResponse.cacheRecords.map(
         new Function<Collection<Record>, List<Record>>() {
@@ -129,27 +161,65 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     );
 
     if (!records.isPresent()) {
-      return;
+      return Collections.emptySet();
     }
 
-    final Set<String> changedKeys;
     try {
-      changedKeys = apolloStore.writeTransaction(new Transaction<WriteableStore, Set<String>>() {
+      return apolloStore.writeTransaction(new Transaction<WriteableStore, Set<String>>() {
         @Nullable @Override public Set<String> execute(WriteableStore cache) {
           return cache.merge(records.get(), request.fetchOptions.cacheHeaders);
         }
       });
     } catch (Exception e) {
       logger.e("Failed to cache operation response", e);
-      return;
+      return Collections.emptySet();
     }
+  }
 
+  private void writeOptimisticUpdatesAndPublish(final InterceptorRequest request) {
     dispatcher.execute(new Runnable() {
       @Override public void run() {
         try {
-          apolloStore.publish(changedKeys);
+          if (request.optimisticUpdates.isPresent()) {
+            Operation.Data optimisticUpdates = request.optimisticUpdates.get();
+            apolloStore.writeOptimisticUpdatesAndPublish(request.operation, optimisticUpdates, request.uniqueId)
+                .execute();
+          }
         } catch (Exception e) {
-          logger.e("Failed to publish cache changes", e);
+          logger.e(e, "failed to write operation optimistic updates, for: %s", request.operation);
+        }
+      }
+    });
+  }
+
+  private void rollbackOptimisticUpdatesAndPublish(final InterceptorRequest request) {
+    dispatcher.execute(new Runnable() {
+      @Override public void run() {
+        try {
+          apolloStore.rollbackOptimisticUpdatesAndPublish(request.uniqueId).execute();
+        } catch (Exception e) {
+          logger.e(e, "failed to rollback operation optimistic updates, for: %s", request.operation);
+        }
+      }
+    });
+  }
+
+  private Set<String> rollbackOptimisticUpdates(final InterceptorRequest request) {
+    try {
+      return apolloStore.rollbackOptimisticUpdates(request.uniqueId).execute();
+    } catch (Exception e) {
+      logger.e(e, "failed to rollback operation optimistic updates, for: %s", request.operation);
+      return Collections.emptySet();
+    }
+  }
+
+  private void publishCacheKeys(final Set<String> cacheKeys) {
+    dispatcher.execute(new Runnable() {
+      @Override public void run() {
+        try {
+          apolloStore.publish(cacheKeys);
+        } catch (Exception e) {
+          logger.e(e, "Failed to publish cache changes");
         }
       }
     });

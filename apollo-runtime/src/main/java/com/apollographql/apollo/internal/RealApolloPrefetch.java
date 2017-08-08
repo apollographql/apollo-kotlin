@@ -72,7 +72,7 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
     Response httpResponse;
     try {
       ApolloInterceptor.InterceptorRequest request = new ApolloInterceptor.InterceptorRequest(operation,
-          FetchOptions.NETWORK_ONLY);
+          FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent());
       httpResponse = interceptorChain.proceed(request).httpResponse.get();
     } catch (Exception e) {
       if (state.get() == CANCELED) {
@@ -101,7 +101,7 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
       return;
     }
     ApolloInterceptor.InterceptorRequest request = new ApolloInterceptor.InterceptorRequest(operation,
-        FetchOptions.NETWORK_ONLY);
+        FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent());
     interceptorChain.proceedAsync(request, dispatcher, interceptorCallbackProxy());
   }
 

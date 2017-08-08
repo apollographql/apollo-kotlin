@@ -106,14 +106,17 @@ public interface ApolloInterceptor {
     public final UUID uniqueId = UUID.randomUUID();
     public final Operation operation;
     public final FetchOptions fetchOptions;
+    public final Optional<Operation.Data> optimisticUpdates;
 
-    public InterceptorRequest(@Nonnull Operation operation, @Nonnull FetchOptions fetchOptions) {
+    public InterceptorRequest(@Nonnull Operation operation, @Nonnull FetchOptions fetchOptions,
+        Optional<Operation.Data> optimisticUpdates) {
       this.operation = checkNotNull(operation, "operation == null");
       this.fetchOptions = checkNotNull(fetchOptions, "fetchOptions == null");
+      this.optimisticUpdates = optimisticUpdates;
     }
 
     public InterceptorRequest withFetchOptions(@Nonnull FetchOptions fetchOptions) {
-      return new InterceptorRequest(operation, fetchOptions);
+      return new InterceptorRequest(operation, fetchOptions, optimisticUpdates);
     }
   }
 }

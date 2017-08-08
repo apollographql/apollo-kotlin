@@ -3,6 +3,7 @@
     "reviews": [
       {
         "__typename": "Review",
+        "id" : "jediReview1",
         "stars": 5,
         "commentary": "Fascinating"
       }

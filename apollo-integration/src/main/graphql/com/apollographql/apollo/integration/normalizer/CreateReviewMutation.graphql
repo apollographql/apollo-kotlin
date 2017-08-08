@@ -1,5 +1,6 @@
 mutation CreateReview($episode: Episode!, $review: ReviewInput!) {
   createReview(episode: $episode, review: $review) {
+    id
     stars
     commentary
   }

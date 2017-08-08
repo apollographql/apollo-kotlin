@@ -39,10 +39,24 @@ public interface ApolloMutationCall<T> extends ApolloCall<T> {
     /**
      * Creates and prepares a new {@link ApolloMutationCall} call.
      *
-     * @param mutation the mutation which needs to be performed
+     * @param mutation the {@link Mutation} which needs to be performed
      * @return prepared {@link ApolloMutationCall} call to be executed at some point in the future
      */
     <D extends Mutation.Data, T, V extends Mutation.Variables> ApolloMutationCall<T> mutate(
         @Nonnull Mutation<D, T, V> mutation);
+
+    /**
+     * <p>Creates and prepares a new {@link ApolloMutationCall} call with optimistic updates.</p>
+     *
+     * Provided optimistic updates will be stored in {@link com.apollographql.apollo.cache.normalized.ApolloStore}
+     * immediately before mutation execution. Any {@link ApolloQueryWatcher} dependent on the changed cache records will
+     * be re-fetched.
+     *
+     * @param mutation              the {@link Mutation} which needs to be performed
+     * @param withOptimisticUpdates optimistic updates for this mutation
+     * @return prepared {@link ApolloMutationCall} call to be executed at some point in the future
+     */
+    <D extends Mutation.Data, T, V extends Mutation.Variables> ApolloMutationCall<T> mutate(
+        @Nonnull Mutation<D, T, V> mutation, @Nonnull D withOptimisticUpdates);
   }
 }
