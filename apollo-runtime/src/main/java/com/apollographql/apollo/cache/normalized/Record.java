@@ -91,6 +91,10 @@ public final class Record {
     return mutationId;
   }
 
+  public Record clone() {
+    return toBuilder().build();
+  }
+
   /**
    * @param otherRecord The record to merge into this record.
    * @return A set of field keys which have changed, or were added. A field key incorporates any GraphQL arguments in
