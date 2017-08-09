@@ -30,10 +30,10 @@ public class ApolloCodeGenInstallTask extends NpmTask {
     // TODO: set to const when ApolloPlugin is in java
     setGroup("apollo");
     setDescription("Runs npm install for apollo-codegen");
-    installDir = getProject().file(getProject().getBuildDir() + "/" + INSTALL_DIR);
+    installDir = getProject().file(getProject().getBuildDir() + File.separator + INSTALL_DIR);
     File workingDir = new File(getProject().getBuildDir(), "apollo-codegen");
     setWorkingDir(workingDir);
-    apolloPackageFile = getProject().file(workingDir + "/package.json");
+    apolloPackageFile = getProject().file(workingDir + File.separator + "package.json");
 
     final boolean isSameCodegenVersion = isSameApolloCodegenVersion(getApolloVersion());
 

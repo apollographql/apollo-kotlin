@@ -34,7 +34,7 @@ public class ApolloClassGenTask extends SourceTask {
     nullValueType = nullableValueType == null ? NullableValueType.ANNOTATED
         : NullableValueType.Companion.findByValue(nullableValueType);
     generateAccessors = accessors;
-    outputDir = new File(getProject().getBuildDir() + "/" + Joiner.on(File.separator).join(GraphQLCompiler.Companion
+    outputDir = new File(getProject().getBuildDir() + File.separator + Joiner.on(File.separator).join(GraphQLCompiler.Companion
         .getOUTPUT_DIRECTORY()));
     useSemanticNaming = semanticNaming;
   }
