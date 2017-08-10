@@ -7,12 +7,11 @@ import com.apollographql.apollo.cache.CacheHeaders;
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -23,7 +22,7 @@ import javax.annotation.Nullable;
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 public final class OptimisticNormalizedCache extends NormalizedCache {
-  private final Cache<String, Record> lruCache = CacheBuilder.newBuilder().build();
+  private final Cache<String, RecordJournal> lruCache = CacheBuilder.newBuilder().build();
 
   @Nullable @Override public Record loadRecord(@Nonnull final String key, @Nonnull final CacheHeaders cacheHeaders) {
     checkNotNull(key, "key == null");
@@ -36,15 +35,15 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
               return Optional.fromNullable(cache.loadRecord(key, cacheHeaders));
             }
           });
-      final Record optimisticRecord = lruCache.getIfPresent(key);
-      if (optimisticRecord != null) {
-        return nonOptimisticRecord.transform(new Function<Record, Record>() {
+      final RecordJournal journal = lruCache.getIfPresent(key);
+      if (journal != null) {
+        return nonOptimisticRecord.map(new Function<Record, Record>() {
           @Nonnull @Override public Record apply(@Nonnull Record record) {
-            Record result = record.toBuilder().build();
-            result.mergeWith(optimisticRecord);
+            Record result = record.clone();
+            result.mergeWith(journal.snapshot);
             return result;
           }
-        }).or(optimisticRecord);
+        }).or(journal.snapshot.clone());
       } else {
         return nonOptimisticRecord.orNull();
       }
@@ -102,31 +101,78 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
   @Nonnull public Set<String> mergeOptimisticUpdate(@Nonnull final Record record) {
     checkNotNull(record, "record == null");
 
-    final Record oldRecord = lruCache.getIfPresent(record.key());
-    if (oldRecord == null) {
-      lruCache.put(record.key(), record);
+    final RecordJournal journal = lruCache.getIfPresent(record.key());
+    if (journal == null) {
+      lruCache.put(record.key(), new RecordJournal(record));
       return Collections.singleton(record.key());
     } else {
-      Set<String> changedKeys = oldRecord.mergeWith(record);
-      //re-insert to trigger new weight calculation
-      lruCache.put(record.key(), oldRecord);
-      return changedKeys;
+      return journal.commit(record);
     }
   }
 
   @Nonnull public Set<String> removeOptimisticUpdates(@Nonnull final UUID mutationId) {
     checkNotNull(mutationId, "mutationId == null");
 
-    Map<String, Record> cachedRecords = lruCache.asMap();
-    List<String> invalidateKeys = new ArrayList<>();
-    for (Map.Entry<String, Record> cachedRecordEntry : cachedRecords.entrySet()) {
-      if (mutationId.equals(cachedRecordEntry.getValue().mutationId())
-          || cachedRecordEntry.getValue().mutationId() == null) {
-        invalidateKeys.add(cachedRecordEntry.getKey());
+    Set<String> changedCacheKeys = new HashSet<>();
+    Set<String> removedKeys = new HashSet<>();
+    Map<String, RecordJournal> recordJournals = lruCache.asMap();
+    for (Map.Entry<String, RecordJournal> entry : recordJournals.entrySet()) {
+      String cacheKey = entry.getKey();
+      RecordJournal journal = entry.getValue();
+      changedCacheKeys.addAll(journal.revert(mutationId));
+      if (journal.history.isEmpty()) {
+        removedKeys.add(cacheKey);
       }
     }
-    lruCache.invalidateAll(invalidateKeys);
+    lruCache.invalidateAll(removedKeys);
+    return changedCacheKeys;
+  }
 
-    return new HashSet<>(invalidateKeys);
+  private final class RecordJournal {
+    Record snapshot;
+    final LinkedList<Record> history = new LinkedList<>();
+
+    RecordJournal(Record mutationRecord) {
+      this.snapshot = mutationRecord.clone();
+      this.history.add(mutationRecord.clone());
+    }
+
+    /**
+     * Commits new version of record to the history and invalidate snapshot version.
+     */
+    Set<String> commit(Record record) {
+      history.addLast(record.clone());
+      return snapshot.mergeWith(record);
+    }
+
+    /**
+     * Lookups record by mutation id, if it's found removes it from the history and invalidates snapshot record.
+     * Snapshot record is superposition of all record versions in the history.
+     */
+    Set<String> revert(UUID mutationId) {
+      int recordIndex = -1;
+      for (int i = 0; i < history.size(); i++) {
+        if (mutationId.equals(history.get(i).mutationId())) {
+          recordIndex = i;
+          break;
+        }
+      }
+
+      if (recordIndex == -1) {
+        return Collections.emptySet();
+      }
+
+      Set<String> changedKeys = new HashSet<>();
+      changedKeys.add(history.remove(recordIndex).key());
+      for (int i = Math.max(0, recordIndex - 1); i < history.size(); i++) {
+        Record record = history.get(i);
+        if (i == Math.max(0, recordIndex - 1)) {
+          snapshot = record.clone();
+        } else {
+          changedKeys.addAll(snapshot.mergeWith(record));
+        }
+      }
+      return changedKeys;
+    }
   }
 }
