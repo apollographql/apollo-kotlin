@@ -10,6 +10,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
+import com.example.two_heroes_unique.type.CustomType;
 import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
@@ -292,7 +293,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Luke {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("id", "id", null, false),
+      ResponseField.forCustomType("id", "id", null, false, CustomType.ID),
       ResponseField.forString("name", "name", null, false)
     };
 
@@ -346,7 +347,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], id);
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[1], id);
           writer.writeString($responseFields[2], name);
         }
       };
@@ -398,7 +399,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public Luke map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final String id = reader.readString($responseFields[1]);
+        final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[1]);
         final String name = reader.readString($responseFields[2]);
         return new Luke(__typename, id, name);
       }

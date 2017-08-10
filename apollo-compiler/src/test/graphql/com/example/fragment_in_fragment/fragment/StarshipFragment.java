@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
+import com.example.fragment_in_fragment.type.CustomType;
 import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
@@ -23,7 +24,7 @@ import javax.annotation.Nullable;
 public class StarshipFragment implements GraphqlFragment {
   static final ResponseField[] $responseFields = {
     ResponseField.forString("__typename", "__typename", null, false),
-    ResponseField.forString("id", "id", null, false),
+    ResponseField.forCustomType("id", "id", null, false, CustomType.ID),
     ResponseField.forString("name", "name", null, true),
     ResponseField.forObject("pilotConnection", "pilotConnection", null, true)
   };
@@ -101,7 +102,7 @@ public class StarshipFragment implements GraphqlFragment {
       @Override
       public void marshal(ResponseWriter writer) {
         writer.writeString($responseFields[0], __typename);
-        writer.writeString($responseFields[1], id);
+        writer.writeCustom((ResponseField.CustomTypeField) $responseFields[1], id);
         writer.writeString($responseFields[2], name.isPresent() ? name.get() : null);
         writer.writeObject($responseFields[3], pilotConnection.isPresent() ? pilotConnection.get().marshaller() : null);
       }
@@ -160,7 +161,7 @@ public class StarshipFragment implements GraphqlFragment {
     @Override
     public StarshipFragment map(ResponseReader reader) {
       final String __typename = reader.readString($responseFields[0]);
-      final String id = reader.readString($responseFields[1]);
+      final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[1]);
       final String name = reader.readString($responseFields[2]);
       final PilotConnection pilotConnection = reader.readObject($responseFields[3], new ResponseReader.ObjectReader<PilotConnection>() {
         @Override

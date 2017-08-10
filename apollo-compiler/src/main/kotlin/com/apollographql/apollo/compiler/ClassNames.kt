@@ -13,6 +13,7 @@ import com.squareup.javapoet.TypeName
 import java.util.*
 
 object ClassNames {
+  val OBJECT: ClassName = ClassName.get(Object::class.java)
   val STRING: ClassName = ClassName.get(String::class.java)
   val LIST: ClassName = ClassName.get(List::class.java)
   val GRAPHQL_OPERATION: ClassName = ClassName.get(Operation::class.java)

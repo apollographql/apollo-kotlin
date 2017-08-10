@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.InputFieldWriter;
 import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Integer;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;

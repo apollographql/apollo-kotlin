@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
+import com.example.scalar_types.type.CustomType;
 import java.lang.Boolean;
 import java.lang.Double;
 import java.lang.Integer;
@@ -86,8 +87,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("graphQlString", "graphQlString", null, true),
-      ResponseField.forString("graphQlIdNullable", "graphQlIdNullable", null, true),
-      ResponseField.forString("graphQlIdNonNullable", "graphQlIdNonNullable", null, false),
+      ResponseField.forCustomType("graphQlIdNullable", "graphQlIdNullable", null, true, CustomType.ID),
+      ResponseField.forCustomType("graphQlIdNonNullable", "graphQlIdNonNullable", null, false, CustomType.ID),
       ResponseField.forInt("graphQlIntNullable", "graphQlIntNullable", null, true),
       ResponseField.forInt("graphQlIntNonNullable", "graphQlIntNonNullable", null, false),
       ResponseField.forDouble("graphQlFloatNullable", "graphQlFloatNullable", null, true),
@@ -197,8 +198,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], graphQlString.isPresent() ? graphQlString.get() : null);
-          writer.writeString($responseFields[1], graphQlIdNullable.isPresent() ? graphQlIdNullable.get() : null);
-          writer.writeString($responseFields[2], graphQlIdNonNullable);
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[1], graphQlIdNullable.isPresent() ? graphQlIdNullable.get() : null);
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[2], graphQlIdNonNullable);
           writer.writeInt($responseFields[3], graphQlIntNullable.isPresent() ? graphQlIntNullable.get() : null);
           writer.writeInt($responseFields[4], graphQlIntNonNullable);
           writer.writeDouble($responseFields[5], graphQlFloatNullable.isPresent() ? graphQlFloatNullable.get() : null);
@@ -305,8 +306,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public Data map(ResponseReader reader) {
         final String graphQlString = reader.readString($responseFields[0]);
-        final String graphQlIdNullable = reader.readString($responseFields[1]);
-        final String graphQlIdNonNullable = reader.readString($responseFields[2]);
+        final String graphQlIdNullable = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[1]);
+        final String graphQlIdNonNullable = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[2]);
         final Integer graphQlIntNullable = reader.readInt($responseFields[3]);
         final int graphQlIntNonNullable = reader.readInt($responseFields[4]);
         final Double graphQlFloatNullable = reader.readDouble($responseFields[5]);

@@ -2,6 +2,7 @@ package com.example.mutation_create_review.type;
 
 import com.apollographql.apollo.api.ScalarType;
 import java.lang.Class;
+import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import javax.annotation.Generated;
@@ -17,6 +18,18 @@ public enum CustomType implements ScalarType {
     @Override
     public Class javaType() {
       return Object.class;
+    }
+  },
+
+  ID {
+    @Override
+    public String typeName() {
+      return "ID";
+    }
+
+    @Override
+    public Class javaType() {
+      return String.class;
     }
   }
 }

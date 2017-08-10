@@ -2,6 +2,7 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
+import com.apollographql.apollo.compiler.ir.ScalarType
 import com.apollographql.apollo.compiler.ir.TypeDeclaration
 import com.squareup.javapoet.JavaFile
 import com.squareup.moshi.Moshi
@@ -16,13 +17,13 @@ class GraphQLCompiler {
     val irPackageName = args.irFile.absolutePath.formatPackageName()
     val fragmentsPackage = if (irPackageName.isNotEmpty()) "$irPackageName.fragment" else "fragment"
     val typesPackage = if (irPackageName.isNotEmpty()) "$irPackageName.type" else "type"
-    val supportedScalarTypeMapping = args.customTypeMap.supportedScalarTypeMapping(ir.typesUsed)
+    val customTypeMap = args.customTypeMap.supportedTypeMap(ir.typesUsed)
     val context = CodeGenerationContext(
         reservedTypeNames = emptyList(),
         typeDeclarations = ir.typesUsed,
         fragmentsPackage = fragmentsPackage,
         typesPackage = typesPackage,
-        customTypeMap = supportedScalarTypeMapping,
+        customTypeMap = customTypeMap,
         nullableValueType = args.nullableValueType,
         generateAccessors = args.generateAccessors,
         ir = ir,
@@ -57,9 +58,12 @@ class GraphQLCompiler {
   private fun List<TypeDeclaration>.supportedTypeDeclarations() =
       filter { it.kind == TypeDeclaration.KIND_ENUM || it.kind == TypeDeclaration.KIND_INPUT_OBJECT_TYPE }
 
-  private fun Map<String, String>.supportedScalarTypeMapping(typeDeclarations: List<TypeDeclaration>) =
-      typeDeclarations.filter { it.kind == TypeDeclaration.KIND_SCALAR_TYPE }
-          .associate { it.name to (this[it.name] ?: "Object") }
+  private fun Map<String, String>.supportedTypeMap(typeDeclarations: List<TypeDeclaration>): Map<String, String> {
+    val idScalarTypeMap = ScalarType.ID.name to (this[ScalarType.ID.name] ?: ClassNames.STRING.toString())
+    return typeDeclarations.filter { it.kind == TypeDeclaration.KIND_SCALAR_TYPE }
+        .associate { it.name to (this[it.name] ?: ClassNames.OBJECT.toString()) }
+        .plus(idScalarTypeMap)
+  }
 
   companion object {
     const val FILE_EXTENSION = "graphql"
