@@ -13,8 +13,12 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+
+import static com.google.common.truth.Truth.assertThat;
 
 public class SendOperationIdentifiersTest {
 
@@ -70,6 +74,34 @@ public class SendOperationIdentifiersTest {
 
     apolloClient.query(heroAndFriendsNamesQuery).execute();
     countDownLatch.await(3, TimeUnit.SECONDS);
+  }
+
+  @Test public void operation_id_http_request_header() throws Exception {
+    final HeroAndFriendsNamesQuery heroAndFriendsNamesQuery = new HeroAndFriendsNamesQuery(Episode.EMPIRE);
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .addInterceptor(new Interceptor() {
+          @Override public okhttp3.Response intercept(Chain chain) throws IOException {
+            Request request = chain.request();
+            assertThat(request.header("X-APOLLO-OPERATION-ID")).isEqualTo(heroAndFriendsNamesQuery.operationId());
+            return chain.proceed(chain.request());
+          }
+        })
+        .addNetworkInterceptor(new Interceptor() {
+          @Override public Response intercept(Chain chain) throws IOException {
+            Request request = chain.request();
+            assertThat(request.header("X-APOLLO-OPERATION-ID")).isEqualTo(heroAndFriendsNamesQuery.operationId());
+            return chain.proceed(chain.request());
+          }
+        })
+        .build();
+
+    ApolloClient apolloClient = ApolloClient.builder()
+        .serverUrl(server.url("/"))
+        .okHttpClient(okHttpClient)
+        .build();
+
+    enqueueResponse("/HeroAndFriendsNameResponse.json");
+    apolloClient.query(heroAndFriendsNamesQuery).execute();
   }
 
   private void enqueueResponse(String fileName) throws IOException {
