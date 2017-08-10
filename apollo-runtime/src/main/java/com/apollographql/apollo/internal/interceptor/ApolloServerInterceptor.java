@@ -39,6 +39,9 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
  * ApolloInterceptorChain#proceed(FetchOptions)} on the interceptor chain.
  */
 @SuppressWarnings("WeakerAccess") public final class ApolloServerInterceptor implements ApolloInterceptor {
+  private static final String HEADER_ACCEPT_TYPE = "Accept";
+  private static final String HEADER_CONTENT_TYPE = "CONTENT_TYPE";
+  private static final String HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID";
   private static final String ACCEPT_TYPE = "application/json";
   private static final String CONTENT_TYPE = "application/json";
   private static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
@@ -130,8 +133,9 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     Request.Builder requestBuilder = new Request.Builder()
         .url(serverUrl)
         .post(requestBody)
-        .header("Accept", ACCEPT_TYPE)
-        .header("Content-Type", CONTENT_TYPE);
+        .header(HEADER_ACCEPT_TYPE, ACCEPT_TYPE)
+        .header(HEADER_CONTENT_TYPE, CONTENT_TYPE)
+        .header(HEADER_APOLLO_OPERATION_ID, operation.operationId());
 
     if (cachePolicy.isPresent()) {
       HttpCachePolicy.Policy cachePolicy = this.cachePolicy.get();
