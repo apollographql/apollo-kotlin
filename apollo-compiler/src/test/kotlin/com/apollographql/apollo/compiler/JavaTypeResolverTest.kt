@@ -26,9 +26,6 @@ class JavaTypeResolverTest {
     Assert.assertEquals(ClassNames.STRING.annotated(Annotations.NONNULL), defaultResolver.resolve("String!"))
     Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.STRING), defaultResolver.resolve("String", true))
 
-    Assert.assertEquals(ClassNames.STRING.annotated(Annotations.NONNULL), defaultResolver.resolve("ID!"))
-    Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.STRING), defaultResolver.resolve("ID", true))
-
     Assert.assertEquals(TypeName.INT, defaultResolver.resolve("Int!"))
     Assert.assertEquals(ClassNames.parameterizedOptional(TypeName.INT.box()), defaultResolver.resolve("Int", true))
 
@@ -46,11 +43,6 @@ class JavaTypeResolverTest {
         defaultResolver.resolve("[String!]!"))
     Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.parameterizedListOf(ClassNames.STRING)),
         defaultResolver.resolve("[String!]", true))
-
-    Assert.assertEquals(ClassNames.parameterizedListOf(ClassNames.STRING).annotated(Annotations.NONNULL),
-        defaultResolver.resolve("[ID]!"))
-    Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.parameterizedListOf(ClassNames.STRING)),
-        defaultResolver.resolve("[ID]", true))
 
     Assert.assertEquals(ClassNames.parameterizedListOf(TypeName.INT.box()).annotated(Annotations.NONNULL),
         defaultResolver.resolve("[Int]!"))
@@ -83,13 +75,18 @@ class JavaTypeResolverTest {
 
   @Test
   fun resolveCustomScalarType() {
-    val context = defaultContext.copy(customTypeMap = mapOf("Date" to "java.util.Date", "UnsupportedType" to "Object"))
+    val context = defaultContext.copy(customTypeMap = mapOf("Date" to "java.util.Date", "UnsupportedType" to "Object",
+        "ID" to "java.lang.Integer"))
     Assert.assertEquals(ClassName.get(Date::class.java).annotated(Annotations.NONNULL),
         JavaTypeResolver(context, packageName).resolve("Date", false))
     Assert.assertEquals(ClassNames.parameterizedOptional(Date::class.java),
         JavaTypeResolver(context, packageName).resolve("Date", true))
     Assert.assertEquals(ClassNames.parameterizedOptional(ClassName.get("", "Object")),
         JavaTypeResolver(context, packageName).resolve("UnsupportedType", true))
+    Assert.assertEquals(ClassName.get(Integer::class.java).annotated(Annotations.NONNULL),
+        JavaTypeResolver(context, packageName).resolve("ID", false))
+    Assert.assertEquals(ClassNames.parameterizedOptional(Integer::class.java),
+        JavaTypeResolver(context, packageName).resolve("ID", true))
   }
 
   companion object {

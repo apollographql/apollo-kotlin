@@ -1,27 +1,13 @@
-package com.example.input_object_type.type;
+package com.example.unique_type_name.type;
 
 import com.apollographql.apollo.api.ScalarType;
 import java.lang.Class;
-import java.lang.Integer;
 import java.lang.Override;
 import java.lang.String;
-import java.util.Date;
 import javax.annotation.Generated;
 
 @Generated("Apollo GraphQL")
 public enum CustomType implements ScalarType {
-  DATE {
-    @Override
-    public String typeName() {
-      return "Date";
-    }
-
-    @Override
-    public Class javaType() {
-      return Date.class;
-    }
-  },
-
   ID {
     @Override
     public String typeName() {
@@ -30,7 +16,7 @@ public enum CustomType implements ScalarType {
 
     @Override
     public Class javaType() {
-      return Integer.class;
+      return String.class;
     }
   }
 }

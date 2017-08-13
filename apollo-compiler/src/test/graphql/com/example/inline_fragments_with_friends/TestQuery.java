@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
+import com.example.inline_fragments_with_friends.type.CustomType;
 import com.example.inline_fragments_with_friends.type.Episode;
 import java.lang.Double;
 import java.lang.NullPointerException;
@@ -740,7 +741,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Friend1 {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("id", "id", null, false)
+      ResponseField.forCustomType("id", "id", null, false, CustomType.ID)
     };
 
     final @Nonnull String __typename;
@@ -780,7 +781,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], id);
+          writer.writeCustom((ResponseField.CustomTypeField) $responseFields[1], id);
         }
       };
     }
@@ -827,7 +828,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public Friend1 map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final String id = reader.readString($responseFields[1]);
+        final String id = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[1]);
         return new Friend1(__typename, id);
       }
     }
