@@ -27,7 +27,9 @@ class GraphQLCompiler {
         nullableValueType = args.nullableValueType,
         generateAccessors = args.generateAccessors,
         ir = ir,
-        useSemanticNaming = args.useSemanticNaming)
+        useSemanticNaming = args.useSemanticNaming,
+        generateModelBuilder = args.generateModelBuilder
+    )
     ir.writeJavaFiles(context, args.outputDir)
   }
 
@@ -77,5 +79,7 @@ class GraphQLCompiler {
       val customTypeMap: Map<String, String>,
       val nullableValueType: NullableValueType,
       val generateAccessors: Boolean,
-      val useSemanticNaming: Boolean)
+      val useSemanticNaming: Boolean,
+      val generateModelBuilder: Boolean
+  )
 }

@@ -10,9 +10,9 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.Utils;
 import com.example.fragment_with_inline_fragment.fragment.HeroDetails;
 import com.example.fragment_with_inline_fragment.type.Episode;
-import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -156,6 +156,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return $hashCode;
     }
 
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.hero = hero.isPresent() ? hero.get() : null;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final Hero.Mapper heroFieldMapper = new Hero.Mapper();
 
@@ -167,6 +177,22 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             return heroFieldMapper.map(reader);
           }
         });
+        return new Data(hero);
+      }
+    }
+
+    public static final class Builder {
+      private @Nullable Hero hero;
+
+      Builder() {
+      }
+
+      public Builder hero(@Nullable Hero hero) {
+        this.hero = hero;
+        return this;
+      }
+
+      public Data build() {
         return new Data(hero);
       }
     }
@@ -197,22 +223,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Hero(@Nonnull String __typename, @Nonnull String name, @Nonnull List<Episode> appearsIn,
         @Nonnull Fragments fragments) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (name == null) {
-        throw new NullPointerException("name can't be null");
-      }
-      this.name = name;
-      if (appearsIn == null) {
-        throw new NullPointerException("appearsIn can't be null");
-      }
-      this.appearsIn = appearsIn;
-      if (fragments == null) {
-        throw new NullPointerException("fragments can't be null");
-      }
-      this.fragments = fragments;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
+      this.appearsIn = Utils.checkNotNull(appearsIn, "appearsIn == null");
+      this.fragments = Utils.checkNotNull(fragments, "fragments == null");
     }
 
     public @Nonnull String __typename() {
@@ -302,6 +316,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return $hashCode;
     }
 
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.__typename = __typename;
+      builder.name = name;
+      builder.appearsIn = appearsIn;
+      builder.fragments = fragments;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
     public static class Fragments {
       final @Nonnull HeroDetails heroDetails;
 
@@ -312,10 +339,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       private volatile boolean $hashCodeMemoized;
 
       public Fragments(@Nonnull HeroDetails heroDetails) {
-        if (heroDetails == null) {
-          throw new NullPointerException("heroDetails can't be null");
-        }
-        this.heroDetails = heroDetails;
+        this.heroDetails = Utils.checkNotNull(heroDetails, "heroDetails == null");
       }
 
       public @Nonnull HeroDetails heroDetails() {
@@ -401,6 +425,47 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             return fragmentsFieldMapper.map(reader, conditionalType);
           }
         });
+        return new Hero(__typename, name, appearsIn, fragments);
+      }
+    }
+
+    public static final class Builder {
+      private @Nonnull String __typename;
+
+      private @Nonnull String name;
+
+      private @Nonnull List<Episode> appearsIn;
+
+      private @Nonnull Fragments fragments;
+
+      Builder() {
+      }
+
+      public Builder __typename(@Nonnull String __typename) {
+        this.__typename = __typename;
+        return this;
+      }
+
+      public Builder name(@Nonnull String name) {
+        this.name = name;
+        return this;
+      }
+
+      public Builder appearsIn(@Nonnull List<Episode> appearsIn) {
+        this.appearsIn = appearsIn;
+        return this;
+      }
+
+      public Builder fragments(@Nonnull Fragments fragments) {
+        this.fragments = fragments;
+        return this;
+      }
+
+      public Hero build() {
+        Utils.checkNotNull(__typename, "__typename == null");
+        Utils.checkNotNull(name, "name == null");
+        Utils.checkNotNull(appearsIn, "appearsIn == null");
+        Utils.checkNotNull(fragments, "fragments == null");
         return new Hero(__typename, name, appearsIn, fragments);
       }
     }

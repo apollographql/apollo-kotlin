@@ -9,10 +9,10 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.Utils;
 import com.example.inline_fragments_with_friends.type.CustomType;
 import com.example.inline_fragments_with_friends.type.Episode;
 import java.lang.Double;
-import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -209,14 +209,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Hero(@Nonnull String __typename, @Nonnull String name, @Nullable AsHuman asHuman,
         @Nullable AsDroid asDroid) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (name == null) {
-        throw new NullPointerException("name can't be null");
-      }
-      this.name = name;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
       this.asHuman = Optional.fromNullable(asHuman);
       this.asDroid = Optional.fromNullable(asDroid);
     }
@@ -354,14 +348,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public AsHuman(@Nonnull String __typename, @Nonnull String name, @Nullable Double height,
         @Nullable List<Friend> friends) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (name == null) {
-        throw new NullPointerException("name can't be null");
-      }
-      this.name = name;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
       this.height = Optional.fromNullable(height);
       this.friends = Optional.fromNullable(friends);
     }
@@ -497,14 +485,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Friend(@Nonnull String __typename, @Nonnull List<Episode> appearsIn) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (appearsIn == null) {
-        throw new NullPointerException("appearsIn can't be null");
-      }
-      this.appearsIn = appearsIn;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.appearsIn = Utils.checkNotNull(appearsIn, "appearsIn == null");
     }
 
     public @Nonnull String __typename() {
@@ -612,14 +594,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public AsDroid(@Nonnull String __typename, @Nonnull String name,
         @Nullable List<Friend1> friends, @Nullable String primaryFunction) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (name == null) {
-        throw new NullPointerException("name can't be null");
-      }
-      this.name = name;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
       this.friends = Optional.fromNullable(friends);
       this.primaryFunction = Optional.fromNullable(primaryFunction);
     }
@@ -755,14 +731,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Friend1(@Nonnull String __typename, @Nonnull String id) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (id == null) {
-        throw new NullPointerException("id can't be null");
-      }
-      this.id = id;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.id = Utils.checkNotNull(id, "id == null");
     }
 
     public @Nonnull String __typename() {

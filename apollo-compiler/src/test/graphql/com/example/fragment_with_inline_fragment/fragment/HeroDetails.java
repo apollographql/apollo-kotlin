@@ -7,8 +7,8 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.Utils;
 import java.lang.Integer;
-import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -67,18 +67,9 @@ public class HeroDetails implements GraphqlFragment {
 
   public HeroDetails(@Nonnull String __typename, @Nonnull String name,
       @Nonnull FriendsConnection friendsConnection, @Nullable AsDroid asDroid) {
-    if (__typename == null) {
-      throw new NullPointerException("__typename can't be null");
-    }
-    this.__typename = __typename;
-    if (name == null) {
-      throw new NullPointerException("name can't be null");
-    }
-    this.name = name;
-    if (friendsConnection == null) {
-      throw new NullPointerException("friendsConnection can't be null");
-    }
-    this.friendsConnection = friendsConnection;
+    this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    this.name = Utils.checkNotNull(name, "name == null");
+    this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
     this.asDroid = Optional.fromNullable(asDroid);
   }
 
@@ -165,6 +156,19 @@ public class HeroDetails implements GraphqlFragment {
     return $hashCode;
   }
 
+  public Builder toBuilder() {
+    Builder builder = new Builder();
+    builder.__typename = __typename;
+    builder.name = name;
+    builder.friendsConnection = friendsConnection;
+    builder.asDroid = asDroid.isPresent() ? asDroid.get() : null;
+    return builder;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
   public static final class Mapper implements ResponseFieldMapper<HeroDetails> {
     final FriendsConnection.Mapper friendsConnectionFieldMapper = new FriendsConnection.Mapper();
 
@@ -211,10 +215,7 @@ public class HeroDetails implements GraphqlFragment {
 
     public FriendsConnection(@Nonnull String __typename, @Nullable Integer totalCount,
         @Nullable List<Edge> edges) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
     }
@@ -297,6 +298,18 @@ public class HeroDetails implements GraphqlFragment {
       return $hashCode;
     }
 
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.__typename = __typename;
+      builder.totalCount = totalCount.isPresent() ? totalCount.get() : null;
+      builder.edges = edges.isPresent() ? edges.get() : null;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
     public static final class Mapper implements ResponseFieldMapper<FriendsConnection> {
       final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
 
@@ -315,6 +328,37 @@ public class HeroDetails implements GraphqlFragment {
             });
           }
         });
+        return new FriendsConnection(__typename, totalCount, edges);
+      }
+    }
+
+    public static final class Builder {
+      private @Nonnull String __typename;
+
+      private @Nullable Integer totalCount;
+
+      private @Nullable List<Edge> edges;
+
+      Builder() {
+      }
+
+      public Builder __typename(@Nonnull String __typename) {
+        this.__typename = __typename;
+        return this;
+      }
+
+      public Builder totalCount(@Nullable Integer totalCount) {
+        this.totalCount = totalCount;
+        return this;
+      }
+
+      public Builder edges(@Nullable List<Edge> edges) {
+        this.edges = edges;
+        return this;
+      }
+
+      public FriendsConnection build() {
+        Utils.checkNotNull(__typename, "__typename == null");
         return new FriendsConnection(__typename, totalCount, edges);
       }
     }
@@ -337,10 +381,7 @@ public class HeroDetails implements GraphqlFragment {
     private volatile boolean $hashCodeMemoized;
 
     public Edge(@Nonnull String __typename, @Nullable Node node) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.node = Optional.fromNullable(node);
     }
 
@@ -403,6 +444,17 @@ public class HeroDetails implements GraphqlFragment {
       return $hashCode;
     }
 
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.__typename = __typename;
+      builder.node = node.isPresent() ? node.get() : null;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
     public static final class Mapper implements ResponseFieldMapper<Edge> {
       final Node.Mapper nodeFieldMapper = new Node.Mapper();
 
@@ -415,6 +467,30 @@ public class HeroDetails implements GraphqlFragment {
             return nodeFieldMapper.map(reader);
           }
         });
+        return new Edge(__typename, node);
+      }
+    }
+
+    public static final class Builder {
+      private @Nonnull String __typename;
+
+      private @Nullable Node node;
+
+      Builder() {
+      }
+
+      public Builder __typename(@Nonnull String __typename) {
+        this.__typename = __typename;
+        return this;
+      }
+
+      public Builder node(@Nullable Node node) {
+        this.node = node;
+        return this;
+      }
+
+      public Edge build() {
+        Utils.checkNotNull(__typename, "__typename == null");
         return new Edge(__typename, node);
       }
     }
@@ -437,14 +513,8 @@ public class HeroDetails implements GraphqlFragment {
     private volatile boolean $hashCodeMemoized;
 
     public Node(@Nonnull String __typename, @Nonnull String name) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (name == null) {
-        throw new NullPointerException("name can't be null");
-      }
-      this.name = name;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
     }
 
     public @Nonnull String __typename() {
@@ -506,11 +576,47 @@ public class HeroDetails implements GraphqlFragment {
       return $hashCode;
     }
 
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.__typename = __typename;
+      builder.name = name;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
     public static final class Mapper implements ResponseFieldMapper<Node> {
       @Override
       public Node map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
+        return new Node(__typename, name);
+      }
+    }
+
+    public static final class Builder {
+      private @Nonnull String __typename;
+
+      private @Nonnull String name;
+
+      Builder() {
+      }
+
+      public Builder __typename(@Nonnull String __typename) {
+        this.__typename = __typename;
+        return this;
+      }
+
+      public Builder name(@Nonnull String name) {
+        this.name = name;
+        return this;
+      }
+
+      public Node build() {
+        Utils.checkNotNull(__typename, "__typename == null");
+        Utils.checkNotNull(name, "name == null");
         return new Node(__typename, name);
       }
     }
@@ -540,18 +646,9 @@ public class HeroDetails implements GraphqlFragment {
 
     public AsDroid(@Nonnull String __typename, @Nonnull String name,
         @Nonnull FriendsConnection1 friendsConnection, @Nullable String primaryFunction) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (name == null) {
-        throw new NullPointerException("name can't be null");
-      }
-      this.name = name;
-      if (friendsConnection == null) {
-        throw new NullPointerException("friendsConnection can't be null");
-      }
-      this.friendsConnection = friendsConnection;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
+      this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
       this.primaryFunction = Optional.fromNullable(primaryFunction);
     }
 
@@ -678,10 +775,7 @@ public class HeroDetails implements GraphqlFragment {
 
     public FriendsConnection1(@Nonnull String __typename, @Nullable Integer totalCount,
         @Nullable List<Edge1> edges) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
     }
@@ -764,6 +858,18 @@ public class HeroDetails implements GraphqlFragment {
       return $hashCode;
     }
 
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.__typename = __typename;
+      builder.totalCount = totalCount.isPresent() ? totalCount.get() : null;
+      builder.edges = edges.isPresent() ? edges.get() : null;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
     public static final class Mapper implements ResponseFieldMapper<FriendsConnection1> {
       final Edge1.Mapper edge1FieldMapper = new Edge1.Mapper();
 
@@ -782,6 +888,37 @@ public class HeroDetails implements GraphqlFragment {
             });
           }
         });
+        return new FriendsConnection1(__typename, totalCount, edges);
+      }
+    }
+
+    public static final class Builder {
+      private @Nonnull String __typename;
+
+      private @Nullable Integer totalCount;
+
+      private @Nullable List<Edge1> edges;
+
+      Builder() {
+      }
+
+      public Builder __typename(@Nonnull String __typename) {
+        this.__typename = __typename;
+        return this;
+      }
+
+      public Builder totalCount(@Nullable Integer totalCount) {
+        this.totalCount = totalCount;
+        return this;
+      }
+
+      public Builder edges(@Nullable List<Edge1> edges) {
+        this.edges = edges;
+        return this;
+      }
+
+      public FriendsConnection1 build() {
+        Utils.checkNotNull(__typename, "__typename == null");
         return new FriendsConnection1(__typename, totalCount, edges);
       }
     }
@@ -804,10 +941,7 @@ public class HeroDetails implements GraphqlFragment {
     private volatile boolean $hashCodeMemoized;
 
     public Edge1(@Nonnull String __typename, @Nullable Node1 node) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.node = Optional.fromNullable(node);
     }
 
@@ -870,6 +1004,17 @@ public class HeroDetails implements GraphqlFragment {
       return $hashCode;
     }
 
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.__typename = __typename;
+      builder.node = node.isPresent() ? node.get() : null;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
     public static final class Mapper implements ResponseFieldMapper<Edge1> {
       final Node1.Mapper node1FieldMapper = new Node1.Mapper();
 
@@ -882,6 +1027,30 @@ public class HeroDetails implements GraphqlFragment {
             return node1FieldMapper.map(reader);
           }
         });
+        return new Edge1(__typename, node);
+      }
+    }
+
+    public static final class Builder {
+      private @Nonnull String __typename;
+
+      private @Nullable Node1 node;
+
+      Builder() {
+      }
+
+      public Builder __typename(@Nonnull String __typename) {
+        this.__typename = __typename;
+        return this;
+      }
+
+      public Builder node(@Nullable Node1 node) {
+        this.node = node;
+        return this;
+      }
+
+      public Edge1 build() {
+        Utils.checkNotNull(__typename, "__typename == null");
         return new Edge1(__typename, node);
       }
     }
@@ -904,14 +1073,8 @@ public class HeroDetails implements GraphqlFragment {
     private volatile boolean $hashCodeMemoized;
 
     public Node1(@Nonnull String __typename, @Nonnull String name) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (name == null) {
-        throw new NullPointerException("name can't be null");
-      }
-      this.name = name;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
     }
 
     public @Nonnull String __typename() {
@@ -973,6 +1136,17 @@ public class HeroDetails implements GraphqlFragment {
       return $hashCode;
     }
 
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.__typename = __typename;
+      builder.name = name;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
     public static final class Mapper implements ResponseFieldMapper<Node1> {
       @Override
       public Node1 map(ResponseReader reader) {
@@ -980,6 +1154,71 @@ public class HeroDetails implements GraphqlFragment {
         final String name = reader.readString($responseFields[1]);
         return new Node1(__typename, name);
       }
+    }
+
+    public static final class Builder {
+      private @Nonnull String __typename;
+
+      private @Nonnull String name;
+
+      Builder() {
+      }
+
+      public Builder __typename(@Nonnull String __typename) {
+        this.__typename = __typename;
+        return this;
+      }
+
+      public Builder name(@Nonnull String name) {
+        this.name = name;
+        return this;
+      }
+
+      public Node1 build() {
+        Utils.checkNotNull(__typename, "__typename == null");
+        Utils.checkNotNull(name, "name == null");
+        return new Node1(__typename, name);
+      }
+    }
+  }
+
+  public static final class Builder {
+    private @Nonnull String __typename;
+
+    private @Nonnull String name;
+
+    private @Nonnull FriendsConnection friendsConnection;
+
+    private @Nullable AsDroid asDroid;
+
+    Builder() {
+    }
+
+    public Builder __typename(@Nonnull String __typename) {
+      this.__typename = __typename;
+      return this;
+    }
+
+    public Builder name(@Nonnull String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder friendsConnection(@Nonnull FriendsConnection friendsConnection) {
+      this.friendsConnection = friendsConnection;
+      return this;
+    }
+
+    public Builder asDroid(@Nullable AsDroid asDroid) {
+      this.asDroid = asDroid;
+      return this;
+    }
+
+    public HeroDetails build() {
+      Utils.checkNotNull(__typename, "__typename == null");
+      Utils.checkNotNull(name, "name == null");
+      Utils.checkNotNull(friendsConnection, "friendsConnection == null");
+      return new HeroDetails(__typename, name, friendsConnection, asDroid);
     }
   }
 }

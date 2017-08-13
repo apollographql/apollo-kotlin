@@ -20,23 +20,34 @@ data class Fragment(
 ) : CodeGenerator {
 
   /** Returns the Java interface that represents this Fragment object. */
-  override fun toTypeSpec(context: CodeGenerationContext): TypeSpec =
-      SchemaTypeSpecBuilder(
-          typeName = formatClassName(),
-          fields = fields,
-          fragmentSpreads = fragmentSpreads,
-          inlineFragments = inlineFragments,
-          context = context
-      )
-          .build(Modifier.PUBLIC)
-          .toBuilder()
-          .addSuperinterface(ClassNames.FRAGMENT)
-          .addAnnotation(Annotations.GENERATED_BY_APOLLO)
-          .addFragmentDefinitionField()
-          .addTypeConditionField()
-          .build()
-          .flatten(excludeTypeNames = listOf(Util.RESPONSE_FIELD_MAPPER_TYPE_NAME,
-              (SchemaTypeSpecBuilder.FRAGMENTS_FIELD.type as ClassName).simpleName()))
+  override fun toTypeSpec(context: CodeGenerationContext): TypeSpec {
+    return SchemaTypeSpecBuilder(
+        typeName = formatClassName(),
+        fields = fields,
+        fragmentSpreads = fragmentSpreads,
+        inlineFragments = inlineFragments,
+        context = context
+    )
+        .build(Modifier.PUBLIC)
+        .toBuilder()
+        .addSuperinterface(ClassNames.FRAGMENT)
+        .addAnnotation(Annotations.GENERATED_BY_APOLLO)
+        .addFragmentDefinitionField()
+        .addTypeConditionField()
+        .build()
+        .flatten(excludeTypeNames = listOf(
+            Util.RESPONSE_FIELD_MAPPER_TYPE_NAME,
+            (SchemaTypeSpecBuilder.FRAGMENTS_FIELD.type as ClassName).simpleName(),
+            BuilderTypeSpecBuilder.CLASS_NAME
+        ))
+        .let {
+          if (context.generateModelBuilder) {
+            it.withBuilder()
+          } else {
+            it
+          }
+        }
+  }
 
   fun formatClassName() = fragmentName.capitalize()
 

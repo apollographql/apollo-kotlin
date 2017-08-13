@@ -10,8 +10,8 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.Utils;
 import com.example.simple_fragment.fragment.HeroDetails;
-import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -186,14 +186,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Hero(@Nonnull String __typename, @Nonnull Fragments fragments) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (fragments == null) {
-        throw new NullPointerException("fragments can't be null");
-      }
-      this.fragments = fragments;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.fragments = Utils.checkNotNull(fragments, "fragments == null");
     }
 
     public @Nonnull String __typename() {
@@ -262,10 +256,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       private volatile boolean $hashCodeMemoized;
 
       public Fragments(@Nonnull HeroDetails heroDetails) {
-        if (heroDetails == null) {
-          throw new NullPointerException("heroDetails can't be null");
-        }
-        this.heroDetails = heroDetails;
+        this.heroDetails = Utils.checkNotNull(heroDetails, "heroDetails == null");
       }
 
       public @Nonnull HeroDetails heroDetails() {

@@ -70,13 +70,8 @@ fun TypeSpec.withValueInitConstructor(nullableValueGenerationType: NullableValue
                   CodeBlock.of("this.\$L = \$T.\$L(\$L);\n", it.name, factory.first, factory.second, it.name)
                 } else {
                   if (it.type.annotations.contains(Annotations.NONNULL)) {
-                    CodeBlock.builder()
-                        .beginControlFlow("if (\$L == null)", it.name)
-                        .addStatement("throw new \$T(\$S)", NullPointerException::class.java,
-                            "${it.name} can't be null")
-                        .endControlFlow()
-                        .addStatement("this.\$L = \$L", it.name, it.name)
-                        .build()
+                    CodeBlock.of("this.\$L = \$T.checkNotNull(\$L, \$S);\n", it.name, ClassNames.API_UTILS, it.name,
+                        "${it.name} == null")
                   } else {
                     CodeBlock.of("this.\$L = \$L;\n", it.name, it.name)
                   }
@@ -299,6 +294,43 @@ fun TypeSpec.flatten(excludeTypeNames: List<String>): TypeSpec {
       .toBuilder()
       .addTypes(nestedTypeSpecs)
       .build()
+}
+
+fun TypeSpec.withBuilder(): TypeSpec {
+  if (fieldSpecs.isEmpty()) {
+    return this
+  } else {
+    val fields = fieldSpecs
+        .filter { !it.modifiers.contains(Modifier.STATIC) }
+        .filterNot { it.name.startsWith(prefix = "$") }
+
+    val builderVariable = BuilderTypeSpecBuilder.CLASS_NAME.decapitalize()
+    val builderClass = ClassName.get("", BuilderTypeSpecBuilder.CLASS_NAME)
+    val toBuilderMethod = MethodSpec.methodBuilder("toBuilder")
+        .addModifiers(Modifier.PUBLIC)
+        .returns(builderClass)
+        .addStatement("\$T \$L = new \$T()", builderClass, builderVariable, builderClass)
+        .addCode(fields
+            .map { CodeBlock.of("\$L.\$L = \$L;\n", builderVariable, it.name, it.type.unwrapOptionalValue(it.name)) }
+            .fold(CodeBlock.builder()) { builder, code -> builder.add(code) }
+            .build()
+        )
+        .addStatement("return \$L", builderVariable)
+        .build()
+    return toBuilder()
+        .addMethod(toBuilderMethod)
+        .addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
+        .addType(
+            BuilderTypeSpecBuilder(
+                targetObjectClassName = ClassName.get("", name),
+                fields = fields.map { it.name to it.type.unwrapOptionalType() },
+                fieldDefaultValues = emptyMap(),
+                fieldJavaDocs = emptyMap(),
+                typeDeclarations = emptyList()
+            ).build()
+        )
+        .build()
+  }
 }
 
 fun TypeName.isList() =

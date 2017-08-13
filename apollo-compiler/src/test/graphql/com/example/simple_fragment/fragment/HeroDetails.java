@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
-import java.lang.NullPointerException;
+import com.apollographql.apollo.api.internal.Utils;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -41,14 +41,8 @@ public class HeroDetails implements GraphqlFragment {
   private volatile boolean $hashCodeMemoized;
 
   public HeroDetails(@Nonnull String __typename, @Nonnull String name) {
-    if (__typename == null) {
-      throw new NullPointerException("__typename can't be null");
-    }
-    this.__typename = __typename;
-    if (name == null) {
-      throw new NullPointerException("name can't be null");
-    }
-    this.name = name;
+    this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    this.name = Utils.checkNotNull(name, "name == null");
   }
 
   public @Nonnull String __typename() {

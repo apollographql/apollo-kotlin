@@ -42,8 +42,11 @@ class OperationTypeSpecBuilder(
         .addType(operation.toTypeSpec(newContext))
         .addOperationName()
         .build()
-        .flatten(excludeTypeNames = listOf(Util.RESPONSE_FIELD_MAPPER_TYPE_NAME,
-            (SchemaTypeSpecBuilder.FRAGMENTS_FIELD.type as ClassName).simpleName()))
+        .flatten(excludeTypeNames = listOf(
+            Util.RESPONSE_FIELD_MAPPER_TYPE_NAME,
+            (SchemaTypeSpecBuilder.FRAGMENTS_FIELD.type as ClassName).simpleName(),
+            BuilderTypeSpecBuilder.CLASS_NAME
+        ))
   }
 
   private fun TypeSpec.Builder.addOperationSuperInterface(context: CodeGenerationContext): TypeSpec.Builder {

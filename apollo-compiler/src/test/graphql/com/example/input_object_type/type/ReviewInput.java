@@ -2,8 +2,8 @@ package com.example.input_object_type.type;
 
 import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
+import com.apollographql.apollo.api.internal.Utils;
 import java.io.IOException;
-import java.lang.IllegalStateException;
 import java.lang.Integer;
 import java.lang.Override;
 import java.lang.String;
@@ -220,7 +220,7 @@ public final class ReviewInput {
     }
 
     public ReviewInput build() {
-      if (favoriteColor == null) throw new IllegalStateException("favoriteColor can't be null");
+      Utils.checkNotNull(favoriteColor, "favoriteColor == null");
       return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nullableEnum, listOfCustomScalar, listOfEnums);
     }
   }

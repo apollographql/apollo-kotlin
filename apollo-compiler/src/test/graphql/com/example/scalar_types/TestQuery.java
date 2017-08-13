@@ -9,11 +9,11 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.Utils;
 import com.example.scalar_types.type.CustomType;
 import java.lang.Boolean;
 import java.lang.Double;
 import java.lang.Integer;
-import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -135,10 +135,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Nullable List<GraphQlListOfObject> graphQlListOfObjects) {
       this.graphQlString = Optional.fromNullable(graphQlString);
       this.graphQlIdNullable = Optional.fromNullable(graphQlIdNullable);
-      if (graphQlIdNonNullable == null) {
-        throw new NullPointerException("graphQlIdNonNullable can't be null");
-      }
-      this.graphQlIdNonNullable = graphQlIdNonNullable;
+      this.graphQlIdNonNullable = Utils.checkNotNull(graphQlIdNonNullable, "graphQlIdNonNullable == null");
       this.graphQlIntNullable = Optional.fromNullable(graphQlIntNullable);
       this.graphQlIntNonNullable = graphQlIntNonNullable;
       this.graphQlFloatNullable = Optional.fromNullable(graphQlFloatNullable);

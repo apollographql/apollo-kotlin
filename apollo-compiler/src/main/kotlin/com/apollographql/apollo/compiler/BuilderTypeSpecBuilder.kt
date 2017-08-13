@@ -12,7 +12,7 @@ class BuilderTypeSpecBuilder(
     val typeDeclarations: List<TypeDeclaration>
 ) {
   fun build(): TypeSpec {
-    return TypeSpec.classBuilder(builderClassName)
+    return TypeSpec.classBuilder(builderClass)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
         .addBuilderFields()
         .addMethod(MethodSpec.constructorBuilder().build())
@@ -54,7 +54,7 @@ class BuilderTypeSpecBuilder(
               else
                 it
             }
-            .returns(builderClassName)
+            .returns(builderClass)
             .addStatement("this.\$L = \$L", fieldName, fieldName)
             .addStatement("return this")
             .build()
@@ -66,8 +66,7 @@ class BuilderTypeSpecBuilder(
       !fieldType.isPrimitive && fieldType.annotations.contains(Annotations.NONNULL)
     }.map {
       val fieldName = it.first
-      CodeBlock.of("if (\$L == null) throw new \$T(\$S);\n", fieldName,
-          ClassNames.ILLEGAL_STATE_EXCEPTION, "$fieldName can't be null")
+      CodeBlock.of("\$T.checkNotNull(\$L, \$S);\n", ClassNames.API_UTILS, fieldName, "$fieldName == null")
     }.fold(CodeBlock.builder(), CodeBlock.Builder::add)
 
     return addMethod(MethodSpec
@@ -81,14 +80,15 @@ class BuilderTypeSpecBuilder(
   }
 
   companion object {
-    private val builderClassName = ClassName.get("", "Builder")
+    val CLASS_NAME: String = "Builder"
+    private val builderClass = ClassName.get("", CLASS_NAME)
 
     fun builderFactoryMethod(): MethodSpec =
         MethodSpec
             .methodBuilder("builder")
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-            .returns(builderClassName)
-            .addStatement("return new \$T()", builderClassName)
+            .returns(builderClass)
+            .addStatement("return new \$T()", builderClass)
             .build()
 
     private fun Number.castTo(type: TypeName) =

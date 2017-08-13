@@ -9,8 +9,8 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.Utils;
 import com.example.custom_scalar_type.type.CustomType;
-import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -206,34 +206,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public Hero(@Nonnull String __typename, @Nonnull String name, @Nonnull Date birthDate,
         @Nonnull List<Date> appearanceDates, @Nonnull Object fieldWithUnsupportedType,
         @Nonnull String profileLink, @Nonnull List<String> links) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (name == null) {
-        throw new NullPointerException("name can't be null");
-      }
-      this.name = name;
-      if (birthDate == null) {
-        throw new NullPointerException("birthDate can't be null");
-      }
-      this.birthDate = birthDate;
-      if (appearanceDates == null) {
-        throw new NullPointerException("appearanceDates can't be null");
-      }
-      this.appearanceDates = appearanceDates;
-      if (fieldWithUnsupportedType == null) {
-        throw new NullPointerException("fieldWithUnsupportedType can't be null");
-      }
-      this.fieldWithUnsupportedType = fieldWithUnsupportedType;
-      if (profileLink == null) {
-        throw new NullPointerException("profileLink can't be null");
-      }
-      this.profileLink = profileLink;
-      if (links == null) {
-        throw new NullPointerException("links can't be null");
-      }
-      this.links = links;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
+      this.birthDate = Utils.checkNotNull(birthDate, "birthDate == null");
+      this.appearanceDates = Utils.checkNotNull(appearanceDates, "appearanceDates == null");
+      this.fieldWithUnsupportedType = Utils.checkNotNull(fieldWithUnsupportedType, "fieldWithUnsupportedType == null");
+      this.profileLink = Utils.checkNotNull(profileLink, "profileLink == null");
+      this.links = Utils.checkNotNull(links, "links == null");
     }
 
     public @Nonnull String __typename() {
