@@ -1,6 +1,7 @@
 package com.apollographql.apollo;
 
 import android.os.Handler;
+import android.os.Looper;
 
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
@@ -13,7 +14,12 @@ import javax.annotation.Nonnull;
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
- * Android wrapper for {@link ApolloCall.Callback} to be operated on specified {@link Handler}
+ * <p>Android wrapper for {@link ApolloCall.Callback} to be operated on specified {@link Handler}</p>
+ *
+ * <b>NOTE:</b> {@link #onHttpError(ApolloHttpException)} will be called on the background thread if provided handler is
+ * attached to the main looper. This behaviour is intentional as {@link ApolloHttpException} internally has a reference
+ * to raw {@link okhttp3.Response} that must be closed on the background, otherwise it throws {@link
+ * android.os.NetworkOnMainThreadException} exception.
  */
 public final class ApolloCallback<T> extends ApolloCall.Callback<T> {
   private final ApolloCall.Callback<T> delegate;
@@ -63,11 +69,15 @@ public final class ApolloCallback<T> extends ApolloCall.Callback<T> {
   }
 
   @Override public void onHttpError(@Nonnull final ApolloHttpException e) {
-    handler.post(new Runnable() {
-      @Override public void run() {
-        delegate.onHttpError(e);
-      }
-    });
+    if (Looper.getMainLooper() == handler.getLooper()) {
+      delegate.onHttpError(e);
+    } else {
+      handler.post(new Runnable() {
+        @Override public void run() {
+          delegate.onHttpError(e);
+        }
+      });
+    }
   }
 
   @Override public void onNetworkError(@Nonnull final ApolloNetworkException e) {

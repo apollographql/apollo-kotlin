@@ -104,8 +104,11 @@ public interface ApolloCall<T> extends Cancelable {
     public void onCompleted() { }
 
     /**
-     * Gets called when an http request error takes place. This is the case when the returned http status code doesn't
-     * lie in the range 200 (inclusive) and 300 (exclusive).
+     * <p>Gets called when an http request error takes place. This is the case when the returned http status code
+     * doesn't lie in the range 200 (inclusive) and 300 (exclusive).</p>
+     *
+     * <b>NOTE:</b> by overriding this callback you must call {@link okhttp3.Response#close()} on {@link
+     * ApolloHttpException#rawResponse} to close the network connection.
      */
     public void onHttpError(@Nonnull ApolloHttpException e) {
       onFailure(e);
