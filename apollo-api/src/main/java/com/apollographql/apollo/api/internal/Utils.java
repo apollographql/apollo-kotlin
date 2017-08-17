@@ -2,6 +2,7 @@ package com.apollographql.apollo.api.internal;
 
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -21,7 +22,7 @@ public final class Utils {
    * @return The object itself
    * @throws NullPointerException if the object is null
    */
-  public static <T> T checkNotNull(T reference, @Nullable Object errorMessage) {
+  @Nonnull public static <T> T checkNotNull(T reference, @Nullable Object errorMessage) {
     if (reference == null) {
       throw new NullPointerException(String.valueOf(errorMessage));
     }
@@ -63,11 +64,10 @@ public final class Utils {
    * @return The object itself
    * @throws NullPointerException if the object is null
    */
-  public static <T> T checkNotNull(T reference) {
+  @Nonnull public static <T> T checkNotNull(T reference) {
     if (reference == null) {
       throw new NullPointerException();
     }
     return reference;
   }
-
 }
