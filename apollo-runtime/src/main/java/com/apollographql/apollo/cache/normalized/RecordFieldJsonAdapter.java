@@ -35,6 +35,7 @@ public final class RecordFieldJsonAdapter {
     checkNotNull(fields, "fields == null");
     Buffer buffer = new Buffer();
     JsonWriter jsonWriter = JsonWriter.of(buffer);
+    jsonWriter.setSerializeNulls(true);
 
     try {
       jsonWriter.beginObject();

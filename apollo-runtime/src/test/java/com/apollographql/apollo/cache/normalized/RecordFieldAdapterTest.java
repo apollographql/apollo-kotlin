@@ -50,8 +50,8 @@ public class RecordFieldAdapterTest {
     recordBuilder.addField("cacheReference", expectedCacheReference);
     recordBuilder.addField("scalarList", expectedScalarList);
     recordBuilder.addField("referenceList", expectedCacheReferenceList);
+    recordBuilder.addField("nullValue", null);
     Record record = recordBuilder.build();
-
 
     String json = recordFieldAdapter.toJson(record.fields());
     Map<String, Object> deserializedMap = recordFieldAdapter.from(json);
@@ -63,5 +63,7 @@ public class RecordFieldAdapterTest {
         .containsExactlyElementsIn(expectedScalarList).inOrder();
     assertThat((Iterable) deserializedMap.get("referenceList"))
         .containsExactlyElementsIn(expectedCacheReferenceList).inOrder();
+    assertThat(deserializedMap.containsKey("nullValue")).isTrue();
+    assertThat(deserializedMap.get("nullValue")).isNull();
   }
 }
