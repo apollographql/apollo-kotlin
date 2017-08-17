@@ -10,10 +10,10 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.Utils;
 import com.example.unique_type_name.fragment.HeroDetails;
 import com.example.unique_type_name.type.Episode;
 import java.lang.Double;
-import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -211,14 +211,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     public HeroDetailQuery1(@Nonnull String __typename, @Nonnull String name,
         @Nullable List<Friend> friends, @Nullable AsHuman asHuman) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (name == null) {
-        throw new NullPointerException("name can't be null");
-      }
-      this.name = name;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
       this.friends = Optional.fromNullable(friends);
       this.asHuman = Optional.fromNullable(asHuman);
     }
@@ -361,14 +355,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     private volatile boolean $hashCodeMemoized;
 
     public Friend(@Nonnull String __typename, @Nonnull String name) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (name == null) {
-        throw new NullPointerException("name can't be null");
-      }
-      this.name = name;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
     }
 
     public @Nonnull String __typename() {
@@ -464,14 +452,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     public AsHuman(@Nonnull String __typename, @Nonnull String name,
         @Nullable List<Friend1> friends, @Nullable Double height) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (name == null) {
-        throw new NullPointerException("name can't be null");
-      }
-      this.name = name;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
       this.friends = Optional.fromNullable(friends);
       this.height = Optional.fromNullable(height);
     }
@@ -614,18 +596,9 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     public Friend1(@Nonnull String __typename, @Nonnull String name,
         @Nonnull List<Episode> appearsIn, @Nullable List<Friend2> friends) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (name == null) {
-        throw new NullPointerException("name can't be null");
-      }
-      this.name = name;
-      if (appearsIn == null) {
-        throw new NullPointerException("appearsIn can't be null");
-      }
-      this.appearsIn = appearsIn;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
+      this.appearsIn = Utils.checkNotNull(appearsIn, "appearsIn == null");
       this.friends = Optional.fromNullable(friends);
     }
 
@@ -773,14 +746,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     private volatile boolean $hashCodeMemoized;
 
     public Friend2(@Nonnull String __typename, @Nonnull Fragments fragments) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (fragments == null) {
-        throw new NullPointerException("fragments can't be null");
-      }
-      this.fragments = fragments;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.fragments = Utils.checkNotNull(fragments, "fragments == null");
     }
 
     public @Nonnull String __typename() {
@@ -849,10 +816,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       private volatile boolean $hashCodeMemoized;
 
       public Fragments(@Nonnull HeroDetails heroDetails) {
-        if (heroDetails == null) {
-          throw new NullPointerException("heroDetails can't be null");
-        }
-        this.heroDetails = heroDetails;
+        this.heroDetails = Utils.checkNotNull(heroDetails, "heroDetails == null");
       }
 
       public @Nonnull HeroDetails heroDetails() {

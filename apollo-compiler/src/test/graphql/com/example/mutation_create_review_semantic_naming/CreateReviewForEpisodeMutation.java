@@ -16,8 +16,6 @@ import com.apollographql.apollo.api.internal.Utils;
 import com.example.mutation_create_review_semantic_naming.type.Episode;
 import com.example.mutation_create_review_semantic_naming.type.ReviewInput;
 import java.io.IOException;
-import java.lang.IllegalStateException;
-import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -89,6 +87,31 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
     return OPERATION_NAME;
   }
 
+  public static final class Builder {
+    private @Nonnull Episode ep;
+
+    private @Nonnull ReviewInput review;
+
+    Builder() {
+    }
+
+    public Builder ep(@Nonnull Episode ep) {
+      this.ep = ep;
+      return this;
+    }
+
+    public Builder review(@Nonnull ReviewInput review) {
+      this.review = review;
+      return this;
+    }
+
+    public CreateReviewForEpisodeMutation build() {
+      Utils.checkNotNull(ep, "ep == null");
+      Utils.checkNotNull(review, "review == null");
+      return new CreateReviewForEpisodeMutation(ep, review);
+    }
+  }
+
   public static final class Variables extends Operation.Variables {
     private final @Nonnull Episode ep;
 
@@ -125,31 +148,6 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
           writer.writeObject("review", review.marshaller());
         }
       };
-    }
-  }
-
-  public static final class Builder {
-    private @Nonnull Episode ep;
-
-    private @Nonnull ReviewInput review;
-
-    Builder() {
-    }
-
-    public Builder ep(@Nonnull Episode ep) {
-      this.ep = ep;
-      return this;
-    }
-
-    public Builder review(@Nonnull ReviewInput review) {
-      this.review = review;
-      return this;
-    }
-
-    public CreateReviewForEpisodeMutation build() {
-      if (ep == null) throw new IllegalStateException("ep can't be null");
-      if (review == null) throw new IllegalStateException("review can't be null");
-      return new CreateReviewForEpisodeMutation(ep, review);
     }
   }
 
@@ -262,10 +260,7 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
     private volatile boolean $hashCodeMemoized;
 
     public CreateReview(@Nonnull String __typename, int stars, @Nullable String commentary) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.stars = stars;
       this.commentary = Optional.fromNullable(commentary);
     }

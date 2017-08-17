@@ -7,8 +7,8 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.Utils;
 import java.lang.Integer;
-import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -59,18 +59,9 @@ public class HeroDetails implements GraphqlFragment {
 
   public HeroDetails(@Nonnull String __typename, @Nonnull String name,
       @Nonnull FriendsConnection friendsConnection) {
-    if (__typename == null) {
-      throw new NullPointerException("__typename can't be null");
-    }
-    this.__typename = __typename;
-    if (name == null) {
-      throw new NullPointerException("name can't be null");
-    }
-    this.name = name;
-    if (friendsConnection == null) {
-      throw new NullPointerException("friendsConnection can't be null");
-    }
-    this.friendsConnection = friendsConnection;
+    this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    this.name = Utils.checkNotNull(name, "name == null");
+    this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
   }
 
   public @Nonnull String __typename() {
@@ -182,10 +173,7 @@ public class HeroDetails implements GraphqlFragment {
 
     public FriendsConnection(@Nonnull String __typename, @Nullable Integer totalCount,
         @Nullable List<Edge> edges) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
     }
@@ -308,10 +296,7 @@ public class HeroDetails implements GraphqlFragment {
     private volatile boolean $hashCodeMemoized;
 
     public Edge(@Nonnull String __typename, @Nullable Node node) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.node = Optional.fromNullable(node);
     }
 
@@ -408,14 +393,8 @@ public class HeroDetails implements GraphqlFragment {
     private volatile boolean $hashCodeMemoized;
 
     public Node(@Nonnull String __typename, @Nonnull String name) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (name == null) {
-        throw new NullPointerException("name can't be null");
-      }
-      this.name = name;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
     }
 
     public @Nonnull String __typename() {

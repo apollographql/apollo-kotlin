@@ -29,7 +29,15 @@ data class Field(
         fragmentSpreads = fragmentSpreads ?: emptyList(),
         inlineFragments = inlineFragments ?: emptyList(),
         context = context
-    ).build(Modifier.PUBLIC, Modifier.STATIC)
+    )
+        .build(Modifier.PUBLIC, Modifier.STATIC)
+        .let {
+          if (context.generateModelBuilder) {
+            it.withBuilder()
+          } else {
+            it
+          }
+        }
   }
 
   fun accessorMethodSpec(context: CodeGenerationContext): MethodSpec {

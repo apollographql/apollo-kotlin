@@ -2,6 +2,7 @@ package com.apollographql.apollo.compiler.ir
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.compiler.SchemaTypeSpecBuilder
+import com.apollographql.apollo.compiler.withBuilder
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
@@ -28,12 +29,19 @@ data class Operation(
           .toBuilder()
           .addSuperinterface(Operation.Data::class.java)
           .build()
+          .let {
+            if (context.generateModelBuilder) {
+              it.withBuilder()
+            } else {
+              it
+            }
+          }
 
-  fun isMutation() : Boolean {
+  fun isMutation(): Boolean {
     return operationType == TYPE_MUTATION
   }
 
-  fun isQuery() : Boolean {
+  fun isQuery(): Boolean {
     return operationType == TYPE_QUERY
   }
 

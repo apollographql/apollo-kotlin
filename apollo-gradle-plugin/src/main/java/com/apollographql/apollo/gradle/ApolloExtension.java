@@ -13,6 +13,7 @@ public class ApolloExtension {
   private String nullableValueType = NullableValueType.ANNOTATED.getValue();
   private boolean generateAccessors = true;
   private boolean useSemanticNaming = true;
+  private boolean generateModelBuilder;
 
   public Map<String, String> getCustomTypeMapping() {
     return customTypeMapping;
@@ -44,6 +45,14 @@ public class ApolloExtension {
 
   public void setGenerateAccessors(boolean generateAccessors) {
     this.generateAccessors = generateAccessors;
+  }
+
+  public boolean isGenerateModelBuilder() {
+    return generateModelBuilder;
+  }
+
+  public void generateModelBuilder(boolean generateModelBuilder) {
+    this.generateModelBuilder = generateModelBuilder;
   }
 
   public void setCustomTypeMapping(Closure closure) {

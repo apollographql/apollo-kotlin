@@ -80,6 +80,10 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
               it.name == "mutation_create_review_semantic_naming" -> true
               else -> false
             }
+            val generateModelBuilder = when {
+              it.name == "fragment_with_inline_fragment" -> true
+              else -> false
+            }
             val generateAccessors = (it.name != "no_accessors")
             val args = GraphQLCompiler.Arguments(
                 irFile = File(it, "TestOperation.json"),
@@ -87,7 +91,9 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
                 customTypeMap = customTypeMap,
                 nullableValueType = nullableValueType,
                 generateAccessors = generateAccessors,
-                useSemanticNaming = useSemanticNaming)
+                useSemanticNaming = useSemanticNaming,
+                generateModelBuilder = generateModelBuilder
+            )
             arrayOf(it.name, args)
           }
     }

@@ -11,9 +11,9 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
+import com.apollographql.apollo.api.internal.Utils;
 import com.example.fragment_in_fragment.fragment.PilotFragment;
 import com.example.fragment_in_fragment.fragment.StarshipFragment;
-import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -197,10 +197,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     private volatile boolean $hashCodeMemoized;
 
     public AllStarships1(@Nonnull String __typename, @Nullable List<Edge> edges) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.edges = Optional.fromNullable(edges);
     }
 
@@ -309,10 +306,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     private volatile boolean $hashCodeMemoized;
 
     public Edge(@Nonnull String __typename, @Nullable Node node) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.node = Optional.fromNullable(node);
     }
 
@@ -409,14 +403,8 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     private volatile boolean $hashCodeMemoized;
 
     public Node(@Nonnull String __typename, @Nonnull Fragments fragments) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (fragments == null) {
-        throw new NullPointerException("fragments can't be null");
-      }
-      this.fragments = fragments;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.fragments = Utils.checkNotNull(fragments, "fragments == null");
     }
 
     public @Nonnull String __typename() {
@@ -485,10 +473,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       private volatile boolean $hashCodeMemoized;
 
       public Fragments(@Nonnull StarshipFragment starshipFragment) {
-        if (starshipFragment == null) {
-          throw new NullPointerException("starshipFragment can't be null");
-        }
-        this.starshipFragment = starshipFragment;
+        this.starshipFragment = Utils.checkNotNull(starshipFragment, "starshipFragment == null");
       }
 
       public @Nonnull StarshipFragment starshipFragment() {

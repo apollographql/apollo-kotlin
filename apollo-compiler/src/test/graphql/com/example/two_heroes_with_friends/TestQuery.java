@@ -10,9 +10,9 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
+import com.apollographql.apollo.api.internal.Utils;
 import com.example.two_heroes_with_friends.type.CustomType;
 import java.lang.Integer;
-import java.lang.NullPointerException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -239,18 +239,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public R2(@Nonnull String __typename, @Nonnull String name,
         @Nonnull FriendsConnection friendsConnection) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (name == null) {
-        throw new NullPointerException("name can't be null");
-      }
-      this.name = name;
-      if (friendsConnection == null) {
-        throw new NullPointerException("friendsConnection can't be null");
-      }
-      this.friendsConnection = friendsConnection;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
+      this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
     }
 
     public @Nonnull String __typename() {
@@ -363,10 +354,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public FriendsConnection(@Nonnull String __typename, @Nullable Integer totalCount,
         @Nullable List<Edge> edges) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
     }
@@ -489,10 +477,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Edge(@Nonnull String __typename, @Nullable Node node) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.node = Optional.fromNullable(node);
     }
 
@@ -589,14 +574,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Node(@Nonnull String __typename, @Nonnull String name) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (name == null) {
-        throw new NullPointerException("name can't be null");
-      }
-      this.name = name;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
     }
 
     public @Nonnull String __typename() {
@@ -692,22 +671,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public Luke(@Nonnull String __typename, @Nonnull String id, @Nonnull String name,
         @Nonnull FriendsConnection1 friendsConnection) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (id == null) {
-        throw new NullPointerException("id can't be null");
-      }
-      this.id = id;
-      if (name == null) {
-        throw new NullPointerException("name can't be null");
-      }
-      this.name = name;
-      if (friendsConnection == null) {
-        throw new NullPointerException("friendsConnection can't be null");
-      }
-      this.friendsConnection = friendsConnection;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.id = Utils.checkNotNull(id, "id == null");
+      this.name = Utils.checkNotNull(name, "name == null");
+      this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
     }
 
     public @Nonnull String __typename() {
@@ -833,10 +800,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public FriendsConnection1(@Nonnull String __typename, @Nullable Integer totalCount,
         @Nullable List<Edge1> edges) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
     }
@@ -959,10 +923,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Edge1(@Nonnull String __typename, @Nullable Node1 node) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.node = Optional.fromNullable(node);
     }
 
@@ -1059,14 +1020,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Node1(@Nonnull String __typename, @Nonnull String name) {
-      if (__typename == null) {
-        throw new NullPointerException("__typename can't be null");
-      }
-      this.__typename = __typename;
-      if (name == null) {
-        throw new NullPointerException("name can't be null");
-      }
-      this.name = name;
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
     }
 
     public @Nonnull String __typename() {
