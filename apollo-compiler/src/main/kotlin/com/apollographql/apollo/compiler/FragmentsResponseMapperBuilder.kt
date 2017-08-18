@@ -30,11 +30,10 @@ import javax.lang.model.element.Modifier
  *```
  */
 class FragmentsResponseMapperBuilder(
-    val fragments: List<String>,
+    val fragmentFields: List<FieldSpec>,
     val context: CodeGenerationContext
 ) {
   fun build(): TypeSpec {
-    val fragmentFields = fragments.map { FieldSpec.builder(fragmentType(it), it.decapitalize()).build() }
     return TypeSpec.classBuilder(Util.RESPONSE_FIELD_MAPPER_TYPE_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
         .addSuperinterface(RESPONSE_FIELD_MAPPER_TYPE)
@@ -42,9 +41,6 @@ class FragmentsResponseMapperBuilder(
         .addMethod(mapMethod(fragmentFields))
         .build()
   }
-
-  private fun fragmentType(fragmentName: String) =
-      ClassName.get(context.fragmentsPackage, fragmentName.capitalize())
 
   private fun mapMethod(fragmentFields: List<FieldSpec>) =
       MethodSpec.methodBuilder("map")
@@ -66,7 +62,9 @@ class FragmentsResponseMapperBuilder(
   private fun initFragmentsCode(fragmentFields: List<FieldSpec>) =
       CodeBlock.builder()
           .add(fragmentFields
-              .fold(CodeBlock.builder()) { builder, field -> builder.addStatement("\$T \$N = null", field.type, field) }
+              .fold(CodeBlock.builder()) { builder, field ->
+                builder.addStatement("\$T \$N = null", field.type.unwrapOptionalType(withoutAnnotations = true), field)
+              }
               .build())
           .add(fragmentFields
               .fold(CodeBlock.builder()) { builder, field -> builder.add(initFragmentCode(field)) }
@@ -74,7 +72,7 @@ class FragmentsResponseMapperBuilder(
           .build()
 
   private fun initFragmentCode(fragmentField: FieldSpec): CodeBlock {
-    val fieldClass = fragmentField.type as ClassName
+    val fieldClass = fragmentField.type.unwrapOptionalType(withoutAnnotations = true) as ClassName
     return CodeBlock.builder()
         .beginControlFlow("if (\$T.\$L.contains(\$L))", fieldClass, Fragment.POSSIBLE_TYPES_VAR, CONDITIONAL_TYPE_VAR)
         .addStatement("\$N = \$L.map(\$L)", fragmentField, fieldClass.mapperFieldName(), READER_VAR)
@@ -86,14 +84,21 @@ class FragmentsResponseMapperBuilder(
       CodeBlock.builder()
           .add("return new \$L(", SchemaTypeSpecBuilder.FRAGMENTS_FIELD.type.withoutAnnotations())
           .add(fragmentFields
-              .mapIndexed { i, fieldSpec -> CodeBlock.of("\$L\$L", if (i > 0) ", " else "", fieldSpec.name) }
+              .mapIndexed { i, fieldSpec ->
+                if (fieldSpec.type.isOptional()) {
+                  CodeBlock.of("\$L\$L", if (i > 0) ", " else "", fieldSpec.name)
+                } else {
+                  CodeBlock.of("\$L\$T.checkNotNull(\$L, \$S)", if (i > 0) ", " else "", ClassNames.API_UTILS,
+                      fieldSpec.name, "${fieldSpec.name} == null")
+                }
+              }
               .fold(CodeBlock.builder(), CodeBlock.Builder::add)
               .build())
           .build()
 
   private fun mapperFields(fragments: List<FieldSpec>) =
       fragments
-          .map { it.type as ClassName }
+          .map { it.type.unwrapOptionalType(withoutAnnotations = true) as ClassName }
           .map {
             val mapperClassName = ClassName.get(context.fragmentsPackage, it.simpleName(),
                 Util.RESPONSE_FIELD_MAPPER_TYPE_NAME)

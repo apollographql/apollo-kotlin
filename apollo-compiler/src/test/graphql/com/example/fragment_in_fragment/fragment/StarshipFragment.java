@@ -522,7 +522,7 @@ public class StarshipFragment implements GraphqlFragment {
           if (PilotFragment.POSSIBLE_TYPES.contains(conditionalType)) {
             pilotFragment = pilotFragmentFieldMapper.map(reader);
           }
-          return new Fragments(pilotFragment);
+          return new Fragments(Utils.checkNotNull(pilotFragment, "pilotFragment == null"));
         }
       }
     }

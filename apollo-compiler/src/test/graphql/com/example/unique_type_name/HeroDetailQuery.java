@@ -878,7 +878,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
           if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) {
             heroDetails = heroDetailsFieldMapper.map(reader);
           }
-          return new Fragments(heroDetails);
+          return new Fragments(Utils.checkNotNull(heroDetails, "heroDetails == null"));
         }
       }
     }

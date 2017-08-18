@@ -163,8 +163,8 @@ class SchemaTypeSpecBuilder(
           .build()
     }
 
-    val mapper = FragmentsResponseMapperBuilder(fragmentSpreads, context).build()
     val fragmentFields = fragmentFields()
+    val mapper = FragmentsResponseMapperBuilder(fragmentFields, context).build()
     return TypeSpec.classBuilder(FRAGMENTS_FIELD.name.capitalize())
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
         .addFields(fragmentFields)
