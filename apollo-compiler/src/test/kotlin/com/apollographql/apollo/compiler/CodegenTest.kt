@@ -72,8 +72,9 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
             val nullableValueType = when {
               it.name == "hero_details_guava" -> NullableValueType.GUAVA_OPTIONAL
               it.name == "hero_details_java_optional" -> NullableValueType.JAVA_OPTIONAL
-              (it.name != "hero_details_nullable" || it.name == "no_accessors") -> NullableValueType.APOLLO_OPTIONAL
-              else -> NullableValueType.ANNOTATED
+              it.name == "fragments_with_type_condition_nullable" -> NullableValueType.ANNOTATED
+              it.name == "hero_details_nullable" -> NullableValueType.ANNOTATED
+              else -> NullableValueType.APOLLO_OPTIONAL
             }
             val useSemanticNaming = when {
               it.name == "hero_details_semantic_naming" -> true
