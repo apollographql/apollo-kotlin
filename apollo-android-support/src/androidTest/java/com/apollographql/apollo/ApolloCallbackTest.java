@@ -15,9 +15,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nonnull;
 
@@ -50,71 +52,82 @@ public class ApolloCallbackTest {
     final CountDownLatch countDownLatch = new CountDownLatch(1);
     final AtomicBoolean invoked = new AtomicBoolean();
     final Handler callbackHandler = mockCallbackHandler(invoked);
+    final AtomicReference<ApolloException> exceptionRef = new AtomicReference<>();
     server.enqueue(new MockResponse().setResponseCode(401).setBody("Unauthorized request!"));
     apolloClient.query(EMPTY_QUERY).enqueue(ApolloCallback.wrap(new ApolloCall.Callback() {
       @Override public void onResponse(@Nonnull Response response) {
-        fail("Expected onHttpError");
+        countDownLatch.countDown();
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        fail("Expected onHttpError");
+        exceptionRef.set(e);
+        countDownLatch.countDown();
       }
 
       @Override public void onHttpError(@Nonnull ApolloHttpException e) {
+        exceptionRef.set(e);
         countDownLatch.countDown();
       }
     }, callbackHandler));
     countDownLatch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS);
     assertThat(invoked.get()).isTrue();
+    assertThat(exceptionRef.get()).isInstanceOf(ApolloHttpException.class);
   }
 
   @Test public void onNetworkError() throws Exception {
     final CountDownLatch countDownLatch = new CountDownLatch(1);
     final AtomicBoolean invoked = new AtomicBoolean();
     final Handler callbackHandler = mockCallbackHandler(invoked);
+    final AtomicReference<ApolloException> exceptionRef = new AtomicReference<>();
     apolloClient.query(EMPTY_QUERY).enqueue(ApolloCallback.wrap(new ApolloCall.Callback() {
       @Override public void onResponse(@Nonnull Response response) {
-        fail("Expected onNetworkError");
+        countDownLatch.countDown();
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        fail("Expected onNetworkError");
+        countDownLatch.countDown();
       }
 
       @Override public void onNetworkError(@Nonnull ApolloNetworkException e) {
+        exceptionRef.set(e);
         countDownLatch.countDown();
       }
     }, callbackHandler));
     countDownLatch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS);
     assertThat(invoked.get()).isTrue();
+    assertThat(exceptionRef.get()).isInstanceOf(ApolloNetworkException.class);
   }
 
   @Test public void onParseError() throws Exception {
     final CountDownLatch countDownLatch = new CountDownLatch(1);
     final AtomicBoolean invoked = new AtomicBoolean();
     final Handler callbackHandler = mockCallbackHandler(invoked);
+    final AtomicReference<ApolloException> exceptionRef = new AtomicReference<>();
     server.enqueue(new MockResponse().setResponseCode(200).setBody("nonsense"));
     apolloClient.query(EMPTY_QUERY).enqueue(ApolloCallback.wrap(new ApolloCall.Callback() {
       @Override public void onResponse(@Nonnull Response response) {
-        fail("Expected onParseError");
+        countDownLatch.countDown();
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        fail("Expected onParseError");
+        countDownLatch.countDown();
       }
 
       @Override public void onParseError(@Nonnull ApolloParseException e) {
+        exceptionRef.set(e);
         countDownLatch.countDown();
       }
     }, callbackHandler));
     countDownLatch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS);
     assertThat(invoked.get()).isTrue();
+    assertThat(exceptionRef.get()).isInstanceOf(ApolloParseException.class);
   }
 
   @Test public void onResponse() throws Exception {
     final CountDownLatch countDownLatch = new CountDownLatch(1);
     final AtomicBoolean invoked = new AtomicBoolean();
     final Handler callbackHandler = mockCallbackHandler(invoked);
+    final AtomicReference<Response> responseRef = new AtomicReference<>();
     server.enqueue(new MockResponse().setResponseCode(200).setBody("{" +
         "  \"errors\": [" +
         "    {" +
@@ -130,15 +143,17 @@ public class ApolloCallbackTest {
         "}"));
     apolloClient.query(EMPTY_QUERY).enqueue(ApolloCallback.wrap(new ApolloCall.Callback() {
       @Override public void onResponse(@Nonnull Response response) {
+        responseRef.set(response);
         countDownLatch.countDown();
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        fail("Expected onResponse");
+        countDownLatch.countDown();
       }
     }, callbackHandler));
     countDownLatch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS);
     assertThat(invoked.get()).isTrue();
+    assertThat(responseRef.get()).isNotNull();
   }
 
   private static Handler mockCallbackHandler(final AtomicBoolean invokeTracker) throws Exception {
