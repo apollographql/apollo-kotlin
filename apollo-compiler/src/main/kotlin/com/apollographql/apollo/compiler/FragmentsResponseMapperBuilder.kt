@@ -85,7 +85,7 @@ class FragmentsResponseMapperBuilder(
           .add("return new \$L(", SchemaTypeSpecBuilder.FRAGMENTS_FIELD.type.withoutAnnotations())
           .add(fragmentFields
               .mapIndexed { i, fieldSpec ->
-                if (fieldSpec.type.isOptional()) {
+                if (fieldSpec.type.isNullable()) {
                   CodeBlock.of("\$L\$L", if (i > 0) ", " else "", fieldSpec.name)
                 } else {
                   CodeBlock.of("\$L\$T.checkNotNull(\$L, \$S)", if (i > 0) ", " else "", ClassNames.API_UTILS,

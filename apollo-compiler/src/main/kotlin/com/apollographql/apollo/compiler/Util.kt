@@ -2,7 +2,6 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.squareup.javapoet.*
-import java.lang.NullPointerException
 import javax.lang.model.element.Modifier
 
 private val JAVA_RESERVED_WORDS = arrayOf(
@@ -236,6 +235,8 @@ fun TypeSpec.withHashCodeImplementation(): TypeSpec {
 }
 
 fun ClassName.mapperFieldName(): String = "${simpleName().decapitalize()}FieldMapper"
+
+fun TypeName.isNullable(): Boolean = isOptional() || annotations.contains(Annotations.NULLABLE)
 
 fun TypeName.isOptional(): Boolean {
   val rawType = (this as? ParameterizedTypeName)?.rawType ?: this
