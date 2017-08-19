@@ -12,18 +12,21 @@
 					"responseName": "hero",
 					"fieldName": "hero",
 					"type": "Character",
+					"isConditional": false,
 					"isDeprecated": false,
 					"deprecationReason": null,
 					"fields": [
 						{
 							"responseName": "__typename",
 							"fieldName": "__typename",
-							"type": "String!"
+							"type": "String!",
+							"isConditional": false
 						},
 						{
 							"responseName": "name",
 							"fieldName": "name",
 							"type": "String!",
+							"isConditional": false,
 							"description": "The name of the character",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -32,6 +35,7 @@
 							"responseName": "birthDate",
 							"fieldName": "birthDate",
 							"type": "Date!",
+							"isConditional": false,
 							"description": "The date character was born.",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -40,6 +44,7 @@
 							"responseName": "appearanceDates",
 							"fieldName": "appearanceDates",
 							"type": "[Date!]!",
+							"isConditional": false,
 							"description": "The dates of appearances",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -48,6 +53,7 @@
 							"responseName": "fieldWithUnsupportedType",
 							"fieldName": "fieldWithUnsupportedType",
 							"type": "UnsupportedType!",
+							"isConditional": false,
 							"description": "The date character was born.",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -56,6 +62,7 @@
 							"responseName": "profileLink",
 							"fieldName": "profileLink",
 							"type": "URL!",
+							"isConditional": false,
 							"description": "Profile link",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -64,6 +71,7 @@
 							"responseName": "links",
 							"fieldName": "links",
 							"type": "[URL!]!",
+							"isConditional": false,
 							"description": "Links",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -73,6 +81,8 @@
 					"inlineFragments": []
 				}
 			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
 			"fragmentsReferenced": [],
 			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name\n    birthDate\n    appearanceDates\n    fieldWithUnsupportedType\n    profileLink\n    links\n  }\n}",
 			"operationId": "97c3220729cb6b43bfbb66f24be53a88482515ea92d3ba9783fce882bc58fc53"

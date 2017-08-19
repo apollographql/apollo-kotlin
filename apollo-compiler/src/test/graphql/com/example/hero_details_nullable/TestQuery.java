@@ -13,6 +13,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -98,7 +99,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
-      ResponseField.forObject("hero", "hero", null, true)
+      ResponseField.forObject("hero", "hero", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nullable Hero hero;
@@ -178,9 +179,9 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
   public static class Hero {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, false),
-      ResponseField.forObject("friendsConnection", "friendsConnection", null, false)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObject("friendsConnection", "friendsConnection", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -293,9 +294,9 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
   public static class FriendsConnection {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forInt("totalCount", "totalCount", null, true),
-      ResponseField.forObjectList("edges", "edges", null, true)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObjectList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -420,8 +421,8 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
   public static class Edge {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forObject("node", "node", null, true)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObject("node", "node", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -517,8 +518,8 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
   public static class Node {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, false)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;

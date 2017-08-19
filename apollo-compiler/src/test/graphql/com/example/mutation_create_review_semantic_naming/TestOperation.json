@@ -37,18 +37,21 @@
 							}
 						}
 					],
+					"isConditional": false,
 					"isDeprecated": false,
 					"deprecationReason": null,
 					"fields": [
 						{
 							"responseName": "__typename",
 							"fieldName": "__typename",
-							"type": "String!"
+							"type": "String!",
+							"isConditional": false
 						},
 						{
 							"responseName": "stars",
 							"fieldName": "stars",
 							"type": "Int!",
+							"isConditional": false,
 							"description": "The number of stars this review gave, 1-5",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -57,6 +60,7 @@
 							"responseName": "commentary",
 							"fieldName": "commentary",
 							"type": "String",
+							"isConditional": false,
 							"description": "Comment about the movie",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -66,6 +70,8 @@
 					"inlineFragments": []
 				}
 			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
 			"fragmentsReferenced": [],
 			"sourceWithFragments": "mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {\n  createReview(episode: $ep, review: $review) {\n    __typename\n    stars\n    commentary\n  }\n}",
 			"operationId": "eb015fa9dd6e305a9228393e61579154ae22719f6a18df6d00b45659ee2e7f7f"

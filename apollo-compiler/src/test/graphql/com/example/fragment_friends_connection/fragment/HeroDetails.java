@@ -22,9 +22,9 @@ import javax.annotation.Nullable;
 @Generated("Apollo GraphQL")
 public class HeroDetails implements GraphqlFragment {
   static final ResponseField[] $responseFields = {
-    ResponseField.forString("__typename", "__typename", null, false),
-    ResponseField.forString("name", "name", null, false),
-    ResponseField.forObject("friendsConnection", "friendsConnection", null, false)
+    ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+    ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
+    ResponseField.forObject("friendsConnection", "friendsConnection", null, false, Collections.<ResponseField.Condition>emptyList())
   };
 
   public static final String FRAGMENT_DEFINITION = "fragment HeroDetails on Character {\n"
@@ -154,9 +154,9 @@ public class HeroDetails implements GraphqlFragment {
 
   public static class FriendsConnection {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forInt("totalCount", "totalCount", null, true),
-      ResponseField.forObjectList("edges", "edges", null, true)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObjectList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -281,8 +281,8 @@ public class HeroDetails implements GraphqlFragment {
 
   public static class Edge {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forObject("node", "node", null, true)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObject("node", "node", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -378,8 +378,8 @@ public class HeroDetails implements GraphqlFragment {
 
   public static class Node {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, false)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;

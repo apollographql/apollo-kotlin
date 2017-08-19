@@ -23,10 +23,10 @@ import javax.annotation.Nullable;
 @Generated("Apollo GraphQL")
 public class StarshipFragment implements GraphqlFragment {
   static final ResponseField[] $responseFields = {
-    ResponseField.forString("__typename", "__typename", null, false),
-    ResponseField.forCustomType("id", "id", null, false, CustomType.ID),
-    ResponseField.forString("name", "name", null, true),
-    ResponseField.forObject("pilotConnection", "pilotConnection", null, true)
+    ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+    ResponseField.forCustomType("id", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList()),
+    ResponseField.forString("name", "name", null, true, Collections.<ResponseField.Condition>emptyList()),
+    ResponseField.forObject("pilotConnection", "pilotConnection", null, true, Collections.<ResponseField.Condition>emptyList())
   };
 
   public static final String FRAGMENT_DEFINITION = "fragment starshipFragment on Starship {\n"
@@ -169,8 +169,8 @@ public class StarshipFragment implements GraphqlFragment {
 
   public static class PilotConnection {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forObjectList("edges", "edges", null, true)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObjectList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -278,8 +278,8 @@ public class StarshipFragment implements GraphqlFragment {
 
   public static class Edge {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forObject("node", "node", null, true)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObject("node", "node", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -375,7 +375,7 @@ public class StarshipFragment implements GraphqlFragment {
 
   public static class Node {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forFragment("__typename", "__typename", Arrays.asList("Person"))
     };
 
@@ -533,7 +533,7 @@ public class StarshipFragment implements GraphqlFragment {
       @Override
       public Node map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
+        final Fragments fragments = reader.readConditional($responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
           @Override
           public Fragments read(String conditionalType, ResponseReader reader) {
             return fragmentsFieldMapper.map(reader, conditionalType);

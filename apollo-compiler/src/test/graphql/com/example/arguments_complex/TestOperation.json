@@ -51,18 +51,21 @@
 							}
 						}
 					],
+					"isConditional": false,
 					"isDeprecated": false,
 					"deprecationReason": null,
 					"fields": [
 						{
 							"responseName": "__typename",
 							"fieldName": "__typename",
-							"type": "String!"
+							"type": "String!",
+							"isConditional": false
 						},
 						{
 							"responseName": "name",
 							"fieldName": "name",
 							"type": "String!",
+							"isConditional": false,
 							"description": "What this human calls themselves",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -77,6 +80,7 @@
 									"value": "FOOT"
 								}
 							],
+							"isConditional": false,
 							"description": "Height in the preferred unit, default is meters",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -86,6 +90,8 @@
 					"inlineFragments": []
 				}
 			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
 			"fragmentsReferenced": [],
 			"sourceWithFragments": "query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {\n  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}}) {\n    __typename\n    name\n    height(unit: FOOT)\n  }\n}",
 			"operationId": "4905a0fccc07f97ecd6d660f5a68d4d49ffedc3f4688b76d17288dec1a1fdf93"

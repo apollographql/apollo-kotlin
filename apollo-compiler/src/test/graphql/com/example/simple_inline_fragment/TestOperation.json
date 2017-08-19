@@ -12,18 +12,21 @@
 					"responseName": "hero",
 					"fieldName": "hero",
 					"type": "Character",
+					"isConditional": false,
 					"isDeprecated": false,
 					"deprecationReason": null,
 					"fields": [
 						{
 							"responseName": "__typename",
 							"fieldName": "__typename",
-							"type": "String!"
+							"type": "String!",
+							"isConditional": false
 						},
 						{
 							"responseName": "name",
 							"fieldName": "name",
 							"type": "String!",
+							"isConditional": false,
 							"description": "The name of the character",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -40,12 +43,14 @@
 								{
 									"responseName": "__typename",
 									"fieldName": "__typename",
-									"type": "String!"
+									"type": "String!",
+									"isConditional": false
 								},
 								{
 									"responseName": "name",
 									"fieldName": "name",
 									"type": "String!",
+									"isConditional": false,
 									"description": "What this human calls themselves",
 									"isDeprecated": false,
 									"deprecationReason": null
@@ -54,6 +59,7 @@
 									"responseName": "height",
 									"fieldName": "height",
 									"type": "Float",
+									"isConditional": false,
 									"description": "Height in the preferred unit, default is meters",
 									"isDeprecated": false,
 									"deprecationReason": null
@@ -70,12 +76,14 @@
 								{
 									"responseName": "__typename",
 									"fieldName": "__typename",
-									"type": "String!"
+									"type": "String!",
+									"isConditional": false
 								},
 								{
 									"responseName": "name",
 									"fieldName": "name",
 									"type": "String!",
+									"isConditional": false,
 									"description": "What others call this droid",
 									"isDeprecated": false,
 									"deprecationReason": null
@@ -84,6 +92,7 @@
 									"responseName": "primaryFunction",
 									"fieldName": "primaryFunction",
 									"type": "String",
+									"isConditional": false,
 									"description": "This droid's primary function",
 									"isDeprecated": false,
 									"deprecationReason": null
@@ -94,6 +103,8 @@
 					]
 				}
 			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
 			"fragmentsReferenced": [],
 			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name\n    ... on Human {\n      __typename\n      height\n    }\n    ... on Droid {\n      __typename\n      primaryFunction\n    }\n  }\n}",
 			"operationId": "b0f3f33d97a1ff5035984e7472107997adaecc8512a8c63358f594dd01faf007"

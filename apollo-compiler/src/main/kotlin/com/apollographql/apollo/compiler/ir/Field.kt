@@ -17,7 +17,8 @@ data class Field(
     val inlineFragments: List<InlineFragment>? = null,
     val description: String? = null,
     val isDeprecated: Boolean? = false,
-    val deprecationReason: String? = null
+    val deprecationReason: String? = null,
+    val conditions: List<Condition>? = null
 ) : CodeGenerator {
 
   override fun toTypeSpec(context: CodeGenerationContext): TypeSpec {

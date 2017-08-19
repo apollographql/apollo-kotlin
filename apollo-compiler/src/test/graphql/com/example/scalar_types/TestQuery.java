@@ -17,6 +17,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -86,17 +87,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("graphQlString", "graphQlString", null, true),
-      ResponseField.forCustomType("graphQlIdNullable", "graphQlIdNullable", null, true, CustomType.ID),
-      ResponseField.forCustomType("graphQlIdNonNullable", "graphQlIdNonNullable", null, false, CustomType.ID),
-      ResponseField.forInt("graphQlIntNullable", "graphQlIntNullable", null, true),
-      ResponseField.forInt("graphQlIntNonNullable", "graphQlIntNonNullable", null, false),
-      ResponseField.forDouble("graphQlFloatNullable", "graphQlFloatNullable", null, true),
-      ResponseField.forDouble("graphQlFloatNonNullable", "graphQlFloatNonNullable", null, false),
-      ResponseField.forBoolean("graphQlBooleanNullable", "graphQlBooleanNullable", null, true),
-      ResponseField.forBoolean("graphQlBooleanNonNullable", "graphQlBooleanNonNullable", null, false),
-      ResponseField.forScalarList("graphQlListOfInt", "graphQlListOfInt", null, true),
-      ResponseField.forObjectList("graphQlListOfObjects", "graphQlListOfObjects", null, true)
+      ResponseField.forString("graphQlString", "graphQlString", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forCustomType("graphQlIdNullable", "graphQlIdNullable", null, true, CustomType.ID, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forCustomType("graphQlIdNonNullable", "graphQlIdNonNullable", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forInt("graphQlIntNullable", "graphQlIntNullable", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forInt("graphQlIntNonNullable", "graphQlIntNonNullable", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forDouble("graphQlFloatNullable", "graphQlFloatNullable", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forDouble("graphQlFloatNonNullable", "graphQlFloatNonNullable", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forBoolean("graphQlBooleanNullable", "graphQlBooleanNullable", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forBoolean("graphQlBooleanNonNullable", "graphQlBooleanNonNullable", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forScalarList("graphQlListOfInt", "graphQlListOfInt", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObjectList("graphQlListOfObjects", "graphQlListOfObjects", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final Optional<String> graphQlString;
@@ -335,7 +336,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class GraphQlListOfObject {
     static final ResponseField[] $responseFields = {
-      ResponseField.forInt("someField", "someField", null, false)
+      ResponseField.forInt("someField", "someField", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final int someField;

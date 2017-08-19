@@ -22,9 +22,9 @@ import javax.annotation.Nullable;
 @Generated("Apollo GraphQL")
 public class HumanDetails implements GraphqlFragment {
   static final ResponseField[] $responseFields = {
-    ResponseField.forString("__typename", "__typename", null, false),
-    ResponseField.forString("name", "name", null, false),
-    ResponseField.forDouble("height", "height", null, true)
+    ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+    ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
+    ResponseField.forDouble("height", "height", null, true, Collections.<ResponseField.Condition>emptyList())
   };
 
   public static final String FRAGMENT_DEFINITION = "fragment HumanDetails on Human {\n"

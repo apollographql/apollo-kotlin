@@ -17,6 +17,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -94,7 +95,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
-      ResponseField.forObject("hero", "hero", null, true)
+      ResponseField.forObject("hero", "hero", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final Optional<Hero> hero;
@@ -200,9 +201,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Hero {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, false),
-      ResponseField.forScalarList("appearsIn", "appearsIn", null, false),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forScalarList("appearsIn", "appearsIn", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forFragment("__typename", "__typename", Arrays.asList("Human",
       "Droid"))
     };
@@ -419,7 +420,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             return Episode.valueOf(reader.readString());
           }
         });
-        final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[3], new ResponseReader.ConditionalTypeReader<Fragments>() {
+        final Fragments fragments = reader.readConditional($responseFields[3], new ResponseReader.ConditionalTypeReader<Fragments>() {
           @Override
           public Fragments read(String conditionalType, ResponseReader reader) {
             return fragmentsFieldMapper.map(reader, conditionalType);

@@ -30,19 +30,28 @@
 							}
 						}
 					],
+					"isConditional": false,
 					"isDeprecated": false,
 					"deprecationReason": null,
 					"fields": [
 						{
 							"responseName": "__typename",
 							"fieldName": "__typename",
-							"type": "String!"
+							"type": "String!",
+							"isConditional": false
 						},
 						{
 							"responseName": "name",
 							"fieldName": "name",
 							"type": "String!",
 							"isConditional": true,
+							"conditions": [
+								{
+									"kind": "BooleanCondition",
+									"variableName": "includeName",
+									"inverted": false
+								}
+							],
 							"description": "The name of the character",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -52,6 +61,8 @@
 					"inlineFragments": []
 				}
 			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
 			"fragmentsReferenced": [],
 			"sourceWithFragments": "query TestQuery($episode: Episode, $includeName: Boolean!) {\n  hero(episode: $episode) {\n    __typename\n    name @include(if: $includeName)\n  }\n}",
 			"operationId": "125df1054cbcf295890b4747e575075f18f2be2635a6b313ab793d1d91a4d4f2"

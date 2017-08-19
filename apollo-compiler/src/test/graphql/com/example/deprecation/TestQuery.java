@@ -138,7 +138,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           .put("kind", "Variable")
           .put("variableName", "episode")
         .build())
-      .build(), true)
+      .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final Optional<Hero> hero;
@@ -218,9 +218,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Hero {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, false),
-      ResponseField.forString("deprecated", "deprecated", null, false)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("deprecated", "deprecated", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;

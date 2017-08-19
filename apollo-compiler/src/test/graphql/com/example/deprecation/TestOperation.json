@@ -26,18 +26,21 @@
 							}
 						}
 					],
+					"isConditional": false,
 					"isDeprecated": false,
 					"deprecationReason": null,
 					"fields": [
 						{
 							"responseName": "__typename",
 							"fieldName": "__typename",
-							"type": "String!"
+							"type": "String!",
+							"isConditional": false
 						},
 						{
 							"responseName": "name",
 							"fieldName": "name",
 							"type": "String!",
+							"isConditional": false,
 							"description": "The name of the character",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -46,6 +49,7 @@
 							"responseName": "deprecated",
 							"fieldName": "deprecated",
 							"type": "String!",
+							"isConditional": false,
 							"description": "Test deprecated field",
 							"isDeprecated": true,
 							"deprecationReason": "For test purpose only"
@@ -55,6 +59,8 @@
 					"inlineFragments": []
 				}
 			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
 			"fragmentsReferenced": [],
 			"sourceWithFragments": "query TestQuery($episode: Episode) {\n  hero(episode: $episode) {\n    __typename\n    name\n    deprecated\n  }\n}",
 			"operationId": "c86775f24ab7d183b6c219a6df0eba15f39b9efb6ca5ef235e3142c11b447fcd"

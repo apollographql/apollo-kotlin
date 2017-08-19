@@ -17,6 +17,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -107,7 +108,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
-      ResponseField.forObject("hero", "hero", null, true)
+      ResponseField.forObject("hero", "hero", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final Optional<Hero> hero;
@@ -187,8 +188,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Hero {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, false),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")),
       ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Droid"))
     };
@@ -307,13 +308,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       public Hero map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
-        final AsHuman asHuman = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[2], new ResponseReader.ConditionalTypeReader<AsHuman>() {
+        final AsHuman asHuman = reader.readConditional($responseFields[2], new ResponseReader.ConditionalTypeReader<AsHuman>() {
           @Override
           public AsHuman read(String conditionalType, ResponseReader reader) {
             return asHumanFieldMapper.map(reader);
           }
         });
-        final AsDroid asDroid = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[3], new ResponseReader.ConditionalTypeReader<AsDroid>() {
+        final AsDroid asDroid = reader.readConditional($responseFields[3], new ResponseReader.ConditionalTypeReader<AsDroid>() {
           @Override
           public AsDroid read(String conditionalType, ResponseReader reader) {
             return asDroidFieldMapper.map(reader);
@@ -326,10 +327,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class AsHuman {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, false),
-      ResponseField.forDouble("height", "height", null, true),
-      ResponseField.forObjectList("friends", "friends", null, true)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forDouble("height", "height", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObjectList("friends", "friends", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -470,8 +471,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Friend {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forScalarList("appearsIn", "appearsIn", null, false)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forScalarList("appearsIn", "appearsIn", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -572,19 +573,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class AsDroid {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, false),
-      ResponseField.forObjectList("friends", "friends", null, true),
-      ResponseField.forString("primaryFunction", "primaryFunction", null, true)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("primaryFunction", "primaryFunction", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObjectList("friends", "friends", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
 
     final @Nonnull String name;
 
-    final Optional<List<Friend1>> friends;
-
     final Optional<String> primaryFunction;
+
+    final Optional<List<Friend1>> friends;
 
     private volatile String $toString;
 
@@ -593,11 +594,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public AsDroid(@Nonnull String __typename, @Nonnull String name,
-        @Nullable List<Friend1> friends, @Nullable String primaryFunction) {
+        @Nullable String primaryFunction, @Nullable List<Friend1> friends) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
-      this.friends = Optional.fromNullable(friends);
       this.primaryFunction = Optional.fromNullable(primaryFunction);
+      this.friends = Optional.fromNullable(friends);
     }
 
     public @Nonnull String __typename() {
@@ -612,17 +613,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     /**
-     * This droid's friends, or an empty list if they have none
-     */
-    public Optional<List<Friend1>> friends() {
-      return this.friends;
-    }
-
-    /**
      * This droid's primary function
      */
     public Optional<String> primaryFunction() {
       return this.primaryFunction;
+    }
+
+    /**
+     * This droid's friends, or an empty list if they have none
+     */
+    public Optional<List<Friend1>> friends() {
+      return this.friends;
     }
 
     public ResponseFieldMarshaller marshaller() {
@@ -631,7 +632,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
-          writer.writeList($responseFields[2], friends.isPresent() ? new ResponseWriter.ListWriter() {
+          writer.writeString($responseFields[2], primaryFunction.isPresent() ? primaryFunction.get() : null);
+          writer.writeList($responseFields[3], friends.isPresent() ? new ResponseWriter.ListWriter() {
             @Override
             public void write(ResponseWriter.ListItemWriter listItemWriter) {
               for (Friend1 $item : friends.get()) {
@@ -639,7 +641,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
               }
             }
           } : null);
-          writer.writeString($responseFields[3], primaryFunction.isPresent() ? primaryFunction.get() : null);
         }
       };
     }
@@ -650,8 +651,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         $toString = "AsDroid{"
           + "__typename=" + __typename + ", "
           + "name=" + name + ", "
-          + "friends=" + friends + ", "
-          + "primaryFunction=" + primaryFunction
+          + "primaryFunction=" + primaryFunction + ", "
+          + "friends=" + friends
           + "}";
       }
       return $toString;
@@ -666,8 +667,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         AsDroid that = (AsDroid) o;
         return this.__typename.equals(that.__typename)
          && this.name.equals(that.name)
-         && this.friends.equals(that.friends)
-         && this.primaryFunction.equals(that.primaryFunction);
+         && this.primaryFunction.equals(that.primaryFunction)
+         && this.friends.equals(that.friends);
       }
       return false;
     }
@@ -681,9 +682,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         h *= 1000003;
         h ^= name.hashCode();
         h *= 1000003;
-        h ^= friends.hashCode();
-        h *= 1000003;
         h ^= primaryFunction.hashCode();
+        h *= 1000003;
+        h ^= friends.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -697,7 +698,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       public AsDroid map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
-        final List<Friend1> friends = reader.readList($responseFields[2], new ResponseReader.ListReader<Friend1>() {
+        final String primaryFunction = reader.readString($responseFields[2]);
+        final List<Friend1> friends = reader.readList($responseFields[3], new ResponseReader.ListReader<Friend1>() {
           @Override
           public Friend1 read(ResponseReader.ListItemReader reader) {
             return reader.readObject(new ResponseReader.ObjectReader<Friend1>() {
@@ -708,16 +710,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             });
           }
         });
-        final String primaryFunction = reader.readString($responseFields[3]);
-        return new AsDroid(__typename, name, friends, primaryFunction);
+        return new AsDroid(__typename, name, primaryFunction, friends);
       }
     }
   }
 
   public static class Friend1 {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forCustomType("id", "id", null, false, CustomType.ID)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forCustomType("id", "id", null, false, CustomType.ID, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;

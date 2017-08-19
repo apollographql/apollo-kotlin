@@ -12,13 +12,15 @@
 					"responseName": "r2",
 					"fieldName": "hero",
 					"type": "Character",
+					"isConditional": false,
 					"isDeprecated": false,
 					"deprecationReason": null,
 					"fields": [
 						{
 							"responseName": "__typename",
 							"fieldName": "__typename",
-							"type": "String!"
+							"type": "String!",
+							"isConditional": false
 						}
 					],
 					"fragmentSpreads": [
@@ -31,13 +33,15 @@
 					"responseName": "luke",
 					"fieldName": "hero",
 					"type": "Character",
+					"isConditional": false,
 					"isDeprecated": false,
 					"deprecationReason": null,
 					"fields": [
 						{
 							"responseName": "__typename",
 							"fieldName": "__typename",
-							"type": "String!"
+							"type": "String!",
+							"isConditional": false
 						}
 					],
 					"fragmentSpreads": [
@@ -47,33 +51,37 @@
 					"inlineFragments": []
 				}
 			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
 			"fragmentsReferenced": [
 				"HumanDetails",
 				"DroidDetails"
 			],
-			"sourceWithFragments": "query TestQuery {\n  r2: hero {\n    __typename\n    ...HumanDetails\n    ...DroidDetails\n  }\n  luke: hero {\n    __typename\n    ...HumanDetails\n    ...DroidDetails\n  }\n}\nfragment DroidDetails on Droid {\n  __typename\n  name\n  primaryFunction\n}\nfragment HumanDetails on Human {\n  __typename\n  name\n  height\n}",
-			"operationId": "185ee12f775bf02624bb5f646f5ed2de3009860b79380264ce4716e65fba947d"
+			"sourceWithFragments": "query TestQuery {\n  r2: hero {\n    __typename\n    ...HumanDetails\n    ...DroidDetails\n  }\n  luke: hero {\n    __typename\n    ...HumanDetails\n    ...DroidDetails\n  }\n}\nfragment HumanDetails on Human {\n  __typename\n  name\n  height\n}\nfragment DroidDetails on Droid {\n  __typename\n  name\n  primaryFunction\n}",
+			"operationId": "caec283b7a9499b14fe44cbe6e118fe4463bc96e7d186acafc10453fb30fbaa0"
 		}
 	],
 	"fragments": [
 		{
-			"filePath": "src/test/graphql/com/example/fragments_with_type_condition/TestOperation.graphql",
-			"fragmentName": "HumanDetails",
-			"source": "fragment HumanDetails on Human {\n  __typename\n  name\n  height\n}",
 			"typeCondition": "Human",
 			"possibleTypes": [
 				"Human"
 			],
+			"fragmentName": "HumanDetails",
+			"filePath": "src/test/graphql/com/example/fragments_with_type_condition_nullable/TestOperation.graphql",
+			"source": "fragment HumanDetails on Human {\n  __typename\n  name\n  height\n}",
 			"fields": [
 				{
 					"responseName": "__typename",
 					"fieldName": "__typename",
-					"type": "String!"
+					"type": "String!",
+					"isConditional": false
 				},
 				{
 					"responseName": "name",
 					"fieldName": "name",
 					"type": "String!",
+					"isConditional": false,
 					"description": "What this human calls themselves",
 					"isDeprecated": false,
 					"deprecationReason": null
@@ -82,33 +90,35 @@
 					"responseName": "height",
 					"fieldName": "height",
 					"type": "Float",
+					"isConditional": false,
 					"description": "Height in the preferred unit, default is meters",
 					"isDeprecated": false,
 					"deprecationReason": null
 				}
 			],
 			"fragmentSpreads": [],
-			"inlineFragments": [],
-			"fragmentsReferenced": []
+			"inlineFragments": []
 		},
 		{
-			"filePath": "src/test/graphql/com/example/fragments_with_type_condition/TestOperation.graphql",
-			"fragmentName": "DroidDetails",
-			"source": "fragment DroidDetails on Droid {\n  __typename\n  name\n  primaryFunction\n}",
 			"typeCondition": "Droid",
 			"possibleTypes": [
 				"Droid"
 			],
+			"fragmentName": "DroidDetails",
+			"filePath": "src/test/graphql/com/example/fragments_with_type_condition_nullable/TestOperation.graphql",
+			"source": "fragment DroidDetails on Droid {\n  __typename\n  name\n  primaryFunction\n}",
 			"fields": [
 				{
 					"responseName": "__typename",
 					"fieldName": "__typename",
-					"type": "String!"
+					"type": "String!",
+					"isConditional": false
 				},
 				{
 					"responseName": "name",
 					"fieldName": "name",
 					"type": "String!",
+					"isConditional": false,
 					"description": "What others call this droid",
 					"isDeprecated": false,
 					"deprecationReason": null
@@ -117,14 +127,14 @@
 					"responseName": "primaryFunction",
 					"fieldName": "primaryFunction",
 					"type": "String",
+					"isConditional": false,
 					"description": "This droid's primary function",
 					"isDeprecated": false,
 					"deprecationReason": null
 				}
 			],
 			"fragmentSpreads": [],
-			"inlineFragments": [],
-			"fragmentsReferenced": []
+			"inlineFragments": []
 		}
 	],
 	"typesUsed": []

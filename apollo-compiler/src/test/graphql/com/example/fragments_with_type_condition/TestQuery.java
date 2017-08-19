@@ -17,6 +17,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
+import java.util.Collections;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,7 +56,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   @Override
   public String operationId() {
-    return "185ee12f775bf02624bb5f646f5ed2de3009860b79380264ce4716e65fba947d";
+    return "caec283b7a9499b14fe44cbe6e118fe4463bc96e7d186acafc10453fb30fbaa0";
   }
 
   @Override
@@ -98,8 +99,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
-      ResponseField.forObject("r2", "hero", null, true),
-      ResponseField.forObject("luke", "hero", null, true)
+      ResponseField.forObject("r2", "hero", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObject("luke", "hero", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final Optional<R2> r2;
@@ -199,7 +200,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class R2 {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forFragment("__typename", "__typename", Arrays.asList("Human",
       "Droid"))
     };
@@ -379,7 +380,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public R2 map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
+        final Fragments fragments = reader.readConditional($responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
           @Override
           public Fragments read(String conditionalType, ResponseReader reader) {
             return fragmentsFieldMapper.map(reader, conditionalType);
@@ -392,7 +393,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Luke {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forFragment("__typename", "__typename", Arrays.asList("Human",
       "Droid"))
     };
@@ -572,7 +573,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public Luke map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
+        final Fragments fragments = reader.readConditional($responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
           @Override
           public Fragments read(String conditionalType, ResponseReader reader) {
             return fragmentsFieldMapper.map(reader, conditionalType);
