@@ -17,7 +17,7 @@ jdk:
 
 script:
   - ./gradlew clean build connectedCheck -x checkstyleTest --stacktrace --max-workers=2 -x apollo-gradle-plugin:test -x apollo-integration:build -x apollo-integration:connectedCheck
-  - travis_wait 15 .buildscript/integration_tests_composite.sh
+  - .buildscript/integration_tests_composite.sh
 
 before_script:
   - echo no | android create avd --force -n test -t android-15 --abi armeabi-v7a
