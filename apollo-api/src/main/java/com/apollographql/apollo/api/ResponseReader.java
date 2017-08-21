@@ -23,7 +23,7 @@ public interface ResponseReader {
 
   <T> T readCustomType(ResponseField.CustomTypeField field);
 
-  <T> T readConditional(ResponseField.ConditionalTypeField field, ConditionalTypeReader<T> conditionalTypeReader);
+  <T> T readConditional(ResponseField field, ConditionalTypeReader<T> conditionalTypeReader);
 
   interface ObjectReader<T> {
     T read(ResponseReader reader);

@@ -12,13 +12,15 @@
 					"responseName": "hero",
 					"fieldName": "hero",
 					"type": "Character",
+					"isConditional": false,
 					"isDeprecated": false,
 					"deprecationReason": null,
 					"fields": [
 						{
 							"responseName": "__typename",
 							"fieldName": "__typename",
-							"type": "String!"
+							"type": "String!",
+							"isConditional": false
 						}
 					],
 					"fragmentSpreads": [
@@ -27,6 +29,8 @@
 					"inlineFragments": []
 				}
 			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
 			"fragmentsReferenced": [
 				"HeroDetails"
 			],
@@ -36,32 +40,33 @@
 	],
 	"fragments": [
 		{
-			"filePath": "src/test/graphql/com/example/simple_fragment/TestOperation.graphql",
-			"fragmentName": "HeroDetails",
-			"source": "fragment HeroDetails on Character {\n  __typename\n  name\n}",
 			"typeCondition": "Character",
 			"possibleTypes": [
 				"Human",
 				"Droid"
 			],
+			"fragmentName": "HeroDetails",
+			"filePath": "src/test/graphql/com/example/simple_fragment/TestOperation.graphql",
+			"source": "fragment HeroDetails on Character {\n  __typename\n  name\n}",
 			"fields": [
 				{
 					"responseName": "__typename",
 					"fieldName": "__typename",
-					"type": "String!"
+					"type": "String!",
+					"isConditional": false
 				},
 				{
 					"responseName": "name",
 					"fieldName": "name",
 					"type": "String!",
+					"isConditional": false,
 					"description": "The name of the character",
 					"isDeprecated": false,
 					"deprecationReason": null
 				}
 			],
 			"fragmentSpreads": [],
-			"inlineFragments": [],
-			"fragmentsReferenced": []
+			"inlineFragments": []
 		}
 	],
 	"typesUsed": []

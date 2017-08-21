@@ -18,6 +18,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -57,7 +58,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
   @Override
   public String operationId() {
-    return "6bc63c6c2eaea4bbf8a55313dbfee24c55d43b654411215b84780cf8f04699f3";
+    return "f3b63150118cfccd52140c4ca6aec578235d7ea99c5b905f14138c49f7f5fc7d";
   }
 
   @Override
@@ -102,7 +103,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     static final ResponseField[] $responseFields = {
       ResponseField.forObject("allStarships", "allStarships", new UnmodifiableMapBuilder<String, Object>(1)
         .put("first", "7.0")
-      .build(), true)
+      .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final Optional<AllStarships1> allStarships;
@@ -182,8 +183,8 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
   public static class AllStarships1 {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forObjectList("edges", "edges", null, true)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObjectList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -291,8 +292,8 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
   public static class Edge {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forObject("node", "node", null, true)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObject("node", "node", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -388,7 +389,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
   public static class Node {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forFragment("__typename", "__typename", Arrays.asList("Starship"))
     };
 
@@ -546,7 +547,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       @Override
       public Node map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final Fragments fragments = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
+        final Fragments fragments = reader.readConditional($responseFields[1], new ResponseReader.ConditionalTypeReader<Fragments>() {
           @Override
           public Fragments read(String conditionalType, ResponseReader reader) {
             return fragmentsFieldMapper.map(reader, conditionalType);

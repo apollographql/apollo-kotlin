@@ -184,7 +184,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           .put("kind", "Variable")
           .put("variableName", "episode")
         .build())
-      .build(), true)
+      .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final Optional<HeroWithReview> heroWithReview;
@@ -264,11 +264,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class HeroWithReview {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, false),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forDouble("height", "height", new UnmodifiableMapBuilder<String, Object>(1)
         .put("unit", "FOOT")
-      .build(), true)
+      .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;

@@ -138,7 +138,7 @@ public class ApolloPrefetchTest {
 
     final AtomicReference<ApolloException> errorRef = new AtomicReference<>();
     final ApolloPrefetch apolloCall = apolloClient.prefetch(query);
-    new Thread(new Runnable() {
+        new Thread(new Runnable() {
       @Override public void run() {
         try {
           apolloCall.execute();

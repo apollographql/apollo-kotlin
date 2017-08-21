@@ -12,18 +12,21 @@
 					"responseName": "hero",
 					"fieldName": "hero",
 					"type": "Character",
+					"isConditional": false,
 					"isDeprecated": false,
 					"deprecationReason": null,
 					"fields": [
 						{
 							"responseName": "__typename",
 							"fieldName": "__typename",
-							"type": "String!"
+							"type": "String!",
+							"isConditional": false
 						},
 						{
 							"responseName": "name",
 							"fieldName": "name",
 							"type": "String!",
+							"isConditional": false,
 							"description": "The name of the character",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -40,12 +43,14 @@
 								{
 									"responseName": "__typename",
 									"fieldName": "__typename",
-									"type": "String!"
+									"type": "String!",
+									"isConditional": false
 								},
 								{
 									"responseName": "name",
 									"fieldName": "name",
 									"type": "String!",
+									"isConditional": false,
 									"description": "What this human calls themselves",
 									"isDeprecated": false,
 									"deprecationReason": null
@@ -54,6 +59,7 @@
 									"responseName": "height",
 									"fieldName": "height",
 									"type": "Float",
+									"isConditional": false,
 									"description": "Height in the preferred unit, default is meters",
 									"isDeprecated": false,
 									"deprecationReason": null
@@ -62,6 +68,7 @@
 									"responseName": "friends",
 									"fieldName": "friends",
 									"type": "[Character]",
+									"isConditional": false,
 									"description": "This human's friends, or an empty list if they have none",
 									"isDeprecated": false,
 									"deprecationReason": null,
@@ -69,12 +76,14 @@
 										{
 											"responseName": "__typename",
 											"fieldName": "__typename",
-											"type": "String!"
+											"type": "String!",
+											"isConditional": false
 										},
 										{
 											"responseName": "appearsIn",
 											"fieldName": "appearsIn",
 											"type": "[Episode]!",
+											"isConditional": false,
 											"description": "The movies this character appears in",
 											"isDeprecated": false,
 											"deprecationReason": null
@@ -95,13 +104,24 @@
 								{
 									"responseName": "__typename",
 									"fieldName": "__typename",
-									"type": "String!"
+									"type": "String!",
+									"isConditional": false
 								},
 								{
 									"responseName": "name",
 									"fieldName": "name",
 									"type": "String!",
+									"isConditional": false,
 									"description": "What others call this droid",
+									"isDeprecated": false,
+									"deprecationReason": null
+								},
+								{
+									"responseName": "primaryFunction",
+									"fieldName": "primaryFunction",
+									"type": "String",
+									"isConditional": false,
+									"description": "This droid's primary function",
 									"isDeprecated": false,
 									"deprecationReason": null
 								},
@@ -109,6 +129,7 @@
 									"responseName": "friends",
 									"fieldName": "friends",
 									"type": "[Character]",
+									"isConditional": false,
 									"description": "This droid's friends, or an empty list if they have none",
 									"isDeprecated": false,
 									"deprecationReason": null,
@@ -116,12 +137,14 @@
 										{
 											"responseName": "__typename",
 											"fieldName": "__typename",
-											"type": "String!"
+											"type": "String!",
+											"isConditional": false
 										},
 										{
 											"responseName": "id",
 											"fieldName": "id",
 											"type": "ID!",
+											"isConditional": false,
 											"description": "The ID of the character",
 											"isDeprecated": false,
 											"deprecationReason": null
@@ -129,14 +152,6 @@
 									],
 									"fragmentSpreads": [],
 									"inlineFragments": []
-								},
-								{
-									"responseName": "primaryFunction",
-									"fieldName": "primaryFunction",
-									"type": "String",
-									"description": "This droid's primary function",
-									"isDeprecated": false,
-									"deprecationReason": null
 								}
 							],
 							"fragmentSpreads": []
@@ -144,6 +159,8 @@
 					]
 				}
 			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
 			"fragmentsReferenced": [],
 			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name\n    ... on Human {\n      __typename\n      height\n      friends {\n        __typename\n        appearsIn\n      }\n    }\n    ... on Droid {\n      __typename\n      primaryFunction\n      friends {\n        __typename\n        id\n      }\n    }\n  }\n}",
 			"operationId": "a730adeac9d8f65ae02cdf7c8785745a5d05071a3f101e0651c62bb5fbe3f2f9"

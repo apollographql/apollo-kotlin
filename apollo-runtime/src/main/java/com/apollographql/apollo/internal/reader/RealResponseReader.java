@@ -164,26 +164,30 @@ import java.util.Map;
   }
 
   @Override
-  public <T> T readConditional(ResponseField.ConditionalTypeField field,
-      ConditionalTypeReader<T> conditionalTypeReader) {
+  public <T> T readConditional(ResponseField field, ConditionalTypeReader<T> conditionalTypeReader) {
     willResolve(field);
     String value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(value, field.optional());
-    final T result;
     if (value == null) {
       readerShadow.didResolveNull();
       didResolve(field);
-      result = null;
-    } else if (field.type() == ResponseField.Type.INLINE_FRAGMENT && !field.conditionalTypes().contains(value)) {
-      readerShadow.didResolveScalar(value);
-      didResolve(field);
-      result = null;
+      return null;
     } else {
       readerShadow.didResolveScalar(value);
       didResolve(field);
-      result = (T) conditionalTypeReader.read(value, this);
+      if (field.type() == ResponseField.Type.INLINE_FRAGMENT) {
+        for (ResponseField.Condition condition : field.conditions()) {
+          if (condition instanceof ResponseField.TypeNameCondition) {
+            if (((ResponseField.TypeNameCondition) condition).typeName().equals(value)) {
+              return (T) conditionalTypeReader.read(value, this);
+            }
+          }
+        }
+        return null;
+      } else {
+        return (T) conditionalTypeReader.read(value, this);
+      }
     }
-    return result;
   }
 
   private void willResolve(ResponseField field) {

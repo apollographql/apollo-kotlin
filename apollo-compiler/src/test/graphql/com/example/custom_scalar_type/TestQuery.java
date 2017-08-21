@@ -14,6 +14,7 @@ import com.example.custom_scalar_type.type.CustomType;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Generated;
@@ -94,7 +95,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
-      ResponseField.forObject("hero", "hero", null, true)
+      ResponseField.forObject("hero", "hero", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final Optional<Hero> hero;
@@ -174,13 +175,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Hero {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, false),
-      ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE),
-      ResponseField.forCustomList("appearanceDates", "appearanceDates", null, false),
-      ResponseField.forCustomType("fieldWithUnsupportedType", "fieldWithUnsupportedType", null, false, CustomType.UNSUPPORTEDTYPE),
-      ResponseField.forCustomType("profileLink", "profileLink", null, false, CustomType.URL),
-      ResponseField.forCustomList("links", "links", null, false)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forCustomList("appearanceDates", "appearanceDates", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forCustomType("fieldWithUnsupportedType", "fieldWithUnsupportedType", null, false, CustomType.UNSUPPORTEDTYPE, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forCustomType("profileLink", "profileLink", null, false, CustomType.URL, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forCustomList("links", "links", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;

@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +22,7 @@ public class CacheKeyForFieldTest {
 
   @Test
   public void testFieldWithNoArguments() {
-    ResponseField field = ResponseField.forString("hero", "hero", null, false);
+    ResponseField field = ResponseField.forString("hero", "hero", null, false, Collections.<ResponseField.Condition>emptyList());
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
         return super.valueMap();
@@ -32,7 +33,7 @@ public class CacheKeyForFieldTest {
 
   @Test
   public void testFieldWithNoArgumentsWithAlias() {
-    ResponseField field = ResponseField.forString("r2", "hero", null, false);
+    ResponseField field = ResponseField.forString("r2", "hero", null, false, Collections.<ResponseField.Condition>emptyList());
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
         return super.valueMap();
@@ -46,7 +47,7 @@ public class CacheKeyForFieldTest {
     //noinspection unchecked
     ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", "JEDI")
-        .build(), false);
+        .build(), false, Collections.<ResponseField.Condition>emptyList());
 
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
@@ -61,7 +62,7 @@ public class CacheKeyForFieldTest {
     //noinspection unchecked
     ResponseField field = ResponseField.forString("r2", "hero", new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", "JEDI")
-        .build(), false);
+        .build(), false, Collections.<ResponseField.Condition>emptyList());
 
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
@@ -79,7 +80,7 @@ public class CacheKeyForFieldTest {
             .put("kind", "Variable")
             .put("variableName", "episode")
             .build())
-        .build(), false);
+        .build(), false, Collections.<ResponseField.Condition>emptyList());
 
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
@@ -99,7 +100,7 @@ public class CacheKeyForFieldTest {
             .put("kind", "Variable")
             .put("variableName", "episode")
             .build())
-        .build(), false);
+        .build(), false, Collections.<ResponseField.Condition>emptyList());
 
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
@@ -117,7 +118,7 @@ public class CacheKeyForFieldTest {
     ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", "JEDI")
         .put("color", "blue")
-        .build(), false);
+        .build(), false, Collections.<ResponseField.Condition>emptyList());
 
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
@@ -133,7 +134,7 @@ public class CacheKeyForFieldTest {
     ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", "JEDI")
         .put("color", "blue")
-        .build(), false);
+        .build(), false, Collections.<ResponseField.Condition>emptyList());
 
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
@@ -145,7 +146,7 @@ public class CacheKeyForFieldTest {
     ResponseField fieldTwo = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
         .put("color", "blue")
         .put("episode", "JEDI")
-        .build(), false);
+        .build(), false, Collections.<ResponseField.Condition>emptyList());
 
     assertThat(fieldTwo.cacheKey(variables)).isEqualTo(field.cacheKey(variables));
   }
@@ -159,7 +160,7 @@ public class CacheKeyForFieldTest {
             .put("foo", 1)
             .put("bar", 2)
             .build())
-        .build(), false);
+        .build(), false, Collections.<ResponseField.Condition>emptyList());
 
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
@@ -181,7 +182,7 @@ public class CacheKeyForFieldTest {
                 .build())
             .put("bar", "2")
             .build())
-        .build(), false);
+        .build(), false, Collections.<ResponseField.Condition>emptyList());
 
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {

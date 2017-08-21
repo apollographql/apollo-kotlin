@@ -1,5 +1,8 @@
-query TestQuery {
+query TestQuery($includeName: Boolean!, $skipFriends: Boolean!) {
   hero {
-    name @include(if: false)
+    name @include(if: $includeName)
+    friendsConnection @skip(if: $skipFriends) {
+      totalCount
+    }
   }
 }

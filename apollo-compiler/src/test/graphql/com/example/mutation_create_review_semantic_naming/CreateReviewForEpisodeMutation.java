@@ -162,7 +162,7 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
           .put("kind", "Variable")
           .put("variableName", "ep")
         .build())
-      .build(), true)
+      .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final Optional<CreateReview> createReview;
@@ -242,9 +242,9 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
 
   public static class CreateReview {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forInt("stars", "stars", null, false),
-      ResponseField.forString("commentary", "commentary", null, true)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forInt("stars", "stars", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("commentary", "commentary", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;

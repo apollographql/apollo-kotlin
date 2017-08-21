@@ -161,7 +161,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           .put("kind", "Variable")
           .put("variableName", "episode")
         .build())
-      .build(), true)
+      .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final Optional<Hero> hero;
@@ -241,8 +241,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Hero {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, false),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")),
       ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Droid"))
     };
@@ -358,13 +358,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       public Hero map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
-        final AsHuman asHuman = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[2], new ResponseReader.ConditionalTypeReader<AsHuman>() {
+        final AsHuman asHuman = reader.readConditional($responseFields[2], new ResponseReader.ConditionalTypeReader<AsHuman>() {
           @Override
           public AsHuman read(String conditionalType, ResponseReader reader) {
             return asHumanFieldMapper.map(reader);
           }
         });
-        final AsDroid asDroid = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[3], new ResponseReader.ConditionalTypeReader<AsDroid>() {
+        final AsDroid asDroid = reader.readConditional($responseFields[3], new ResponseReader.ConditionalTypeReader<AsDroid>() {
           @Override
           public AsDroid read(String conditionalType, ResponseReader reader) {
             return asDroidFieldMapper.map(reader);
@@ -377,9 +377,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class AsHuman {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, false),
-      ResponseField.forObjectList("friends", "friends", null, true)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObjectList("friends", "friends", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -498,8 +498,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Friend {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, false),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human"))
     };
 
@@ -596,7 +596,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       public Friend map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
-        final AsHuman1 asHuman = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[2], new ResponseReader.ConditionalTypeReader<AsHuman1>() {
+        final AsHuman1 asHuman = reader.readConditional($responseFields[2], new ResponseReader.ConditionalTypeReader<AsHuman1>() {
           @Override
           public AsHuman1 read(String conditionalType, ResponseReader reader) {
             return asHuman1FieldMapper.map(reader);
@@ -609,11 +609,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class AsHuman1 {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, false),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forDouble("height", "height", new UnmodifiableMapBuilder<String, Object>(1)
         .put("unit", "FOOT")
-      .build(), true)
+      .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -712,9 +712,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class AsDroid {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, false),
-      ResponseField.forObjectList("friends", "friends", null, true)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObjectList("friends", "friends", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -833,8 +833,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Friend1 {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, false),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human"))
     };
 
@@ -931,7 +931,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       public Friend1 map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final String name = reader.readString($responseFields[1]);
-        final AsHuman2 asHuman = reader.readConditional((ResponseField.ConditionalTypeField) $responseFields[2], new ResponseReader.ConditionalTypeReader<AsHuman2>() {
+        final AsHuman2 asHuman = reader.readConditional($responseFields[2], new ResponseReader.ConditionalTypeReader<AsHuman2>() {
           @Override
           public AsHuman2 read(String conditionalType, ResponseReader reader) {
             return asHuman2FieldMapper.map(reader);
@@ -944,11 +944,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class AsHuman2 {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, false),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forDouble("height", "height", new UnmodifiableMapBuilder<String, Object>(1)
         .put("unit", "METER")
-      .build(), true)
+      .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;

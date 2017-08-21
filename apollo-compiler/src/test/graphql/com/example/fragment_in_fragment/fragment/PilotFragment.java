@@ -21,9 +21,9 @@ import javax.annotation.Nullable;
 @Generated("Apollo GraphQL")
 public class PilotFragment implements GraphqlFragment {
   static final ResponseField[] $responseFields = {
-    ResponseField.forString("__typename", "__typename", null, false),
-    ResponseField.forString("name", "name", null, true),
-    ResponseField.forObject("homeworld", "homeworld", null, true)
+    ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+    ResponseField.forString("name", "name", null, true, Collections.<ResponseField.Condition>emptyList()),
+    ResponseField.forObject("homeworld", "homeworld", null, true, Collections.<ResponseField.Condition>emptyList())
   };
 
   public static final String FRAGMENT_DEFINITION = "fragment pilotFragment on Person {\n"
@@ -146,8 +146,8 @@ public class PilotFragment implements GraphqlFragment {
 
   public static class Homeworld {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false),
-      ResponseField.forString("name", "name", null, true)
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;

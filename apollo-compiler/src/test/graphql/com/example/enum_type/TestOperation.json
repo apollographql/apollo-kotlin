@@ -12,18 +12,21 @@
 					"responseName": "hero",
 					"fieldName": "hero",
 					"type": "Character",
+					"isConditional": false,
 					"isDeprecated": false,
 					"deprecationReason": null,
 					"fields": [
 						{
 							"responseName": "__typename",
 							"fieldName": "__typename",
-							"type": "String!"
+							"type": "String!",
+							"isConditional": false
 						},
 						{
 							"responseName": "name",
 							"fieldName": "name",
 							"type": "String!",
+							"isConditional": false,
 							"description": "The name of the character",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -32,6 +35,7 @@
 							"responseName": "appearsIn",
 							"fieldName": "appearsIn",
 							"type": "[Episode]!",
+							"isConditional": false,
 							"description": "The movies this character appears in",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -40,6 +44,7 @@
 							"responseName": "firstAppearsIn",
 							"fieldName": "firstAppearsIn",
 							"type": "Episode!",
+							"isConditional": false,
 							"description": "The movie this character first appears in",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -49,6 +54,8 @@
 					"inlineFragments": []
 				}
 			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
 			"fragmentsReferenced": [],
 			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name\n    appearsIn\n    firstAppearsIn\n  }\n}",
 			"operationId": "b21e7723eade7c2801671c52c5de16f21ea29cb902dd88d8ebf42c334a07e7c0"

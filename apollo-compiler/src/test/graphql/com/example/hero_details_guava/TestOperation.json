@@ -12,18 +12,21 @@
 					"responseName": "hero",
 					"fieldName": "hero",
 					"type": "Character",
+					"isConditional": false,
 					"isDeprecated": false,
 					"deprecationReason": null,
 					"fields": [
 						{
 							"responseName": "__typename",
 							"fieldName": "__typename",
-							"type": "String!"
+							"type": "String!",
+							"isConditional": false
 						},
 						{
 							"responseName": "name",
 							"fieldName": "name",
 							"type": "String!",
+							"isConditional": false,
 							"description": "The name of the character",
 							"isDeprecated": false,
 							"deprecationReason": null
@@ -32,6 +35,7 @@
 							"responseName": "friendsConnection",
 							"fieldName": "friendsConnection",
 							"type": "FriendsConnection!",
+							"isConditional": false,
 							"description": "The friends of the character exposed as a connection with edges",
 							"isDeprecated": false,
 							"deprecationReason": null,
@@ -39,12 +43,14 @@
 								{
 									"responseName": "__typename",
 									"fieldName": "__typename",
-									"type": "String!"
+									"type": "String!",
+									"isConditional": false
 								},
 								{
 									"responseName": "totalCount",
 									"fieldName": "totalCount",
 									"type": "Int",
+									"isConditional": false,
 									"description": "The total number of friends",
 									"isDeprecated": false,
 									"deprecationReason": null
@@ -53,6 +59,7 @@
 									"responseName": "edges",
 									"fieldName": "edges",
 									"type": "[FriendsEdge]",
+									"isConditional": false,
 									"description": "The edges for each of the character's friends.",
 									"isDeprecated": false,
 									"deprecationReason": null,
@@ -60,12 +67,14 @@
 										{
 											"responseName": "__typename",
 											"fieldName": "__typename",
-											"type": "String!"
+											"type": "String!",
+											"isConditional": false
 										},
 										{
 											"responseName": "node",
 											"fieldName": "node",
 											"type": "Character",
+											"isConditional": false,
 											"description": "The character represented by this friendship edge",
 											"isDeprecated": false,
 											"deprecationReason": null,
@@ -73,12 +82,14 @@
 												{
 													"responseName": "__typename",
 													"fieldName": "__typename",
-													"type": "String!"
+													"type": "String!",
+													"isConditional": false
 												},
 												{
 													"responseName": "name",
 													"fieldName": "name",
 													"type": "String!",
+													"isConditional": false,
 													"description": "The name of the character",
 													"isDeprecated": false,
 													"deprecationReason": null
@@ -100,6 +111,8 @@
 					"inlineFragments": []
 				}
 			],
+			"fragmentSpreads": [],
+			"inlineFragments": [],
 			"fragmentsReferenced": [],
 			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name\n    friendsConnection {\n      __typename\n      totalCount\n      edges {\n        __typename\n        node {\n          __typename\n          name\n        }\n      }\n    }\n  }\n}",
 			"operationId": "bd31d2946fb8bd87d560a73a4e14753bd9ea366bc94001f86d5a5fef0b459bee"
