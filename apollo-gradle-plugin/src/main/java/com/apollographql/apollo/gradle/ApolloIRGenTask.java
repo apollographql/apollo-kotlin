@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 
 import javax.annotation.Nullable;
 
@@ -167,7 +168,7 @@ public class ApolloIRGenTask extends NodeTask {
     Path absolutePath = Paths.get(file.getAbsolutePath());
     Path basePath = Paths.get(getProject().file("src").getAbsolutePath());
 
-    return basePath.relativize(absolutePath).toString().split(File.separator)[0];
+    return basePath.relativize(absolutePath).toString().split(Matcher.quoteReplacement(File.separator))[0];
   }
 
   /**
