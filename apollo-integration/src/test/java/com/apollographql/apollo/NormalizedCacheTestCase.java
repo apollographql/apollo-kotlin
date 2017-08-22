@@ -11,6 +11,7 @@ import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.normalizer.CharacterDetailsQuery;
 import com.apollographql.apollo.integration.normalizer.CharacterNameByIdQuery;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsDirectivesQuery;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDForParentOnlyQuery;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
@@ -440,5 +441,31 @@ public class NormalizedCacheTestCase {
     detailQueryResponse = apolloClient.query(detailQuery).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute();
     assertThat(detailQueryResponse.fromCache()).isTrue();
     assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Leia Organa");
+  }
+
+  @Test public void skip_include_directive() throws Exception {
+    server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
+    apolloClient.query(new HeroAndFriendsNamesQuery(Episode.JEDI)).execute();
+
+    Response<HeroAndFriendsDirectivesQuery.Data> body = apolloClient.query(HeroAndFriendsDirectivesQuery.builder()
+        .episode(Episode.JEDI).includeName(true).skipFriends(false).build()).execute();
+    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
+    assertThat(body.data().hero().friends()).hasSize(3);
+    assertThat(body.data().hero().friends().get(0).name()).isEqualTo("Luke Skywalker");
+    assertThat(body.data().hero().friends().get(1).name()).isEqualTo("Han Solo");
+    assertThat(body.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
+
+    body = apolloClient.query(HeroAndFriendsDirectivesQuery.builder()
+        .episode(Episode.JEDI).includeName(false).skipFriends(false).build()).execute();
+    assertThat(body.data().hero().name()).isNull();
+    assertThat(body.data().hero().friends()).hasSize(3);
+    assertThat(body.data().hero().friends().get(0).name()).isEqualTo("Luke Skywalker");
+    assertThat(body.data().hero().friends().get(1).name()).isEqualTo("Han Solo");
+    assertThat(body.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
+
+    body = apolloClient.query(HeroAndFriendsDirectivesQuery.builder()
+        .episode(Episode.JEDI).includeName(true).skipFriends(true).build()).execute();
+    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
+    assertThat(body.data().hero().friends()).isNull();
   }
 }
