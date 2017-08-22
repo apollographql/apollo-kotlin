@@ -11,12 +11,14 @@ import com.apollographql.apollo.internal.cache.normalized.ReadableStore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public final class CacheFieldValueResolver implements FieldValueResolver<Record> {
   private final ReadableStore readableCache;
   private final Operation.Variables variables;
   private final CacheKeyResolver cacheKeyResolver;
   private final CacheHeaders cacheHeaders;
+  private final Map<String, Object> variableValues;
 
   public CacheFieldValueResolver(ReadableStore readableCache, Operation.Variables variables,
       CacheKeyResolver cacheKeyResolver, CacheHeaders cacheHeaders) {
@@ -24,10 +26,13 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
     this.variables = variables;
     this.cacheKeyResolver = cacheKeyResolver;
     this.cacheHeaders = cacheHeaders;
+    this.variableValues = variables.valueMap();
   }
 
   @SuppressWarnings("unchecked") @Override public <T> T valueFor(Record record, ResponseField field) {
-    if (field.type() == ResponseField.Type.OBJECT) {
+    if (shouldSkip(field, variableValues)) {
+      return null;
+    } else if (field.type() == ResponseField.Type.OBJECT) {
       return (T) valueForObject(record, field);
     } else if (field.type() == ResponseField.Type.OBJECT_LIST) {
       return (T) valueForObjectList(record, field);
@@ -85,5 +90,26 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
       throw new NullPointerException("Missing value: " + field.fieldName());
     }
     return (T) record.field(fieldKey);
+  }
+
+  private static boolean shouldSkip(ResponseField field, Map<String, Object> variableValues) {
+    for (ResponseField.Condition condition : field.conditions()) {
+      if (condition instanceof ResponseField.BooleanCondition) {
+        ResponseField.BooleanCondition booleanCondition = (ResponseField.BooleanCondition) condition;
+        Boolean conditionValue = (Boolean) variableValues.get(booleanCondition.variableName());
+        if (booleanCondition.inverted()) {
+          // means it's a skip directive
+          if (conditionValue == Boolean.TRUE) {
+            return true;
+          }
+        } else {
+          // means it's an include directive
+          if (conditionValue == Boolean.FALSE) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 }
