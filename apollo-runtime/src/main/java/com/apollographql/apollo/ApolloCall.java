@@ -23,17 +23,6 @@ import javax.annotation.Nullable;
  * object.</p>
  */
 public interface ApolloCall<T> extends Cancelable {
-
-  /**
-   * Sends the request immediately and blocks until the response can be processed or is an error.
-   *
-   * @return The successful or failed {@link Response}
-   * @throws ApolloException       if the request could not be executed due to a cancellation, a timeout, network
-   *                               failure or a parsing error
-   * @throws IllegalStateException when the call has already been executed
-   */
-  @Nonnull Response<T> execute() throws ApolloException;
-
   /**
    * Schedules the request to be executed at some point in the future.
    *

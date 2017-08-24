@@ -33,7 +33,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -75,7 +75,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final ApolloStore apolloStore;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final ResponseFieldMapperFactory responseFieldMapperFactory = new ResponseFieldMapperFactory();
-  private final ExecutorService dispatcher;
+  private final Executor dispatcher;
   private final HttpCachePolicy.Policy defaultHttpCachePolicy;
   private final ResponseFetcher defaultResponseFetcher;
   private final CacheHeaders defaultCacheHeaders;
@@ -89,7 +89,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       HttpCache httpCache,
       ApolloStore apolloStore,
       Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
-      ExecutorService dispatcher,
+      Executor dispatcher,
       HttpCachePolicy.Policy defaultHttpCachePolicy,
       ResponseFetcher defaultResponseFetcher,
       CacheHeaders defaultCacheHeaders,
@@ -228,7 +228,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     ResponseFetcher defaultResponseFetcher = ApolloResponseFetchers.CACHE_FIRST;
     CacheHeaders defaultCacheHeaders = CacheHeaders.NONE;
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new LinkedHashMap<>();
-    ExecutorService dispatcher;
+    Executor dispatcher;
     Optional<Logger> logger = Optional.absent();
     final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
     boolean sendOperationIdentifiers;
@@ -327,11 +327,11 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
-     * The #{@link ExecutorService} to use for dispatching the requests.
+     * The #{@link Executor} to use for dispatching the requests.
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder dispatcher(@Nonnull ExecutorService dispatcher) {
+    public Builder dispatcher(@Nonnull Executor dispatcher) {
       this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
       return this;
     }
@@ -408,7 +408,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     /**
      * Builds the {@link ApolloClient} instance using the configured values.
      *
-     * Note that if the {@link #dispatcher} is not called, then a default {@link ExecutorService} is used.
+     * Note that if the {@link #dispatcher} is not called, then a default {@link Executor} is used.
      *
      * @return The configured {@link ApolloClient}
      */
@@ -432,7 +432,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         }
       }
 
-      ExecutorService dispatcher = this.dispatcher;
+      Executor dispatcher = this.dispatcher;
       if (dispatcher == null) {
         dispatcher = defaultDispatcher();
       }
@@ -458,7 +458,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
           sendOperationIdentifiers);
     }
 
-    private ExecutorService defaultDispatcher() {
+    private Executor defaultDispatcher() {
       return new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
           new SynchronousQueue<Runnable>(), new ThreadFactory() {
         @Override public Thread newThread(@Nonnull Runnable runnable) {

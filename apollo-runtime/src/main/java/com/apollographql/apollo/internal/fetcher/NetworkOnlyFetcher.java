@@ -7,7 +7,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Nonnull;
 
@@ -25,18 +25,9 @@ public final class NetworkOnlyFetcher implements ResponseFetcher {
 
     private volatile boolean disposed;
 
-    @Nonnull @Override
-    public InterceptorResponse intercept(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
-        throws ApolloException {
-      if (disposed) throw new ApolloCanceledException("Canceled");
-
-      InterceptorRequest networkRequest = request.withFetchOptions(request.fetchOptions.toNetworkFetchOptions());
-      return chain.proceed(networkRequest);
-    }
-
     @Override
     public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-        @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+        @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
       InterceptorRequest networkRequest = request.withFetchOptions(request.fetchOptions.toNetworkFetchOptions());
       chain.proceedAsync(networkRequest, dispatcher, callBack);
     }

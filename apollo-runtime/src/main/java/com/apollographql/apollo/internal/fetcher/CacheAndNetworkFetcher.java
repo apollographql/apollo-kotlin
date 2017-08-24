@@ -7,7 +7,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Nonnull;
 
@@ -34,15 +34,9 @@ public final class CacheAndNetworkFetcher implements ResponseFetcher {
     private ApolloInterceptor.CallBack originalCallback;
     private volatile boolean disposed;
 
-    @Nonnull @Override
-    public InterceptorResponse intercept(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
-        throws ApolloException {
-      throw new IllegalStateException(CacheAndNetworkFetcher.class.getSimpleName() + "Can only be used asynchronously");
-    }
-
     @Override
     public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-        @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+        @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
       if (disposed) return;
       originalCallback = callBack;
       InterceptorRequest cacheRequest = request.withFetchOptions(request.fetchOptions.toCacheFetchOptions());

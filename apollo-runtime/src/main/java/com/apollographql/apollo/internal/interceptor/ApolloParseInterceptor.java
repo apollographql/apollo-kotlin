@@ -17,7 +17,7 @@ import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.io.Closeable;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Nonnull;
 
@@ -44,16 +44,9 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
     this.logger = logger;
   }
 
-  @Override @Nonnull public InterceptorResponse intercept(@Nonnull InterceptorRequest request,
-      @Nonnull ApolloInterceptorChain chain) throws ApolloException {
-    if (disposed) throw new ApolloCanceledException("Canceled");
-    InterceptorResponse response = chain.proceed(request);
-    return parse(request.operation, response.httpResponse.get());
-  }
-
   @Override
   public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-      @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+      @Nonnull Executor dispatcher, @Nonnull final CallBack callBack) {
     if (disposed) return;
     chain.proceedAsync(request, dispatcher, new CallBack() {
       @Override public void onResponse(@Nonnull InterceptorResponse response) {

@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -43,11 +43,11 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final ReadWriteLock lock;
   private final Set<RecordChangeSubscriber> subscribers;
-  private final ExecutorService dispatcher;
+  private final Executor dispatcher;
   private final ApolloLogger logger;
 
   public RealApolloStore(@Nonnull NormalizedCache normalizedCache, @Nonnull CacheKeyResolver cacheKeyResolver,
-      @Nonnull final Map<ScalarType, CustomTypeAdapter> customTypeAdapters, @Nonnull ExecutorService dispatcher,
+      @Nonnull final Map<ScalarType, CustomTypeAdapter> customTypeAdapters, @Nonnull Executor dispatcher,
       @Nonnull ApolloLogger logger) {
     checkNotNull(normalizedCache, "cacheStore == null");
 

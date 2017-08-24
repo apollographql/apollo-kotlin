@@ -20,7 +20,7 @@ import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nonnull;
@@ -41,7 +41,7 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
   final Call.Factory httpCallFactory;
   final HttpCache httpCache;
   final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
-  final ExecutorService dispatcher;
+  final Executor dispatcher;
   final ApolloLogger logger;
   final ApolloCallTracker tracker;
   final ApolloInterceptorChain interceptorChain;
@@ -50,7 +50,7 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
   final AtomicReference<ApolloPrefetch.Callback> originalCallback = new AtomicReference<>();
 
   public RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, ExecutorService dispatcher, ApolloLogger logger,
+      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, Executor dispatcher, ApolloLogger logger,
       ApolloCallTracker callTracker, boolean sendOperationIds) {
     this.operation = operation;
     this.serverUrl = serverUrl;
@@ -65,28 +65,6 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
         new ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCachePolicy.NETWORK_ONLY, true,
             customTypeAdapters, logger, sendOperationIds)
     ));
-  }
-
-  @Override public void execute() throws ApolloException {
-    activate(Optional.<Callback>absent());
-    Response httpResponse;
-    try {
-      ApolloInterceptor.InterceptorRequest request = new ApolloInterceptor.InterceptorRequest(operation,
-          FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent());
-      httpResponse = interceptorChain.proceed(request).httpResponse.get();
-    } catch (Exception e) {
-      if (state.get() == CANCELED) {
-        throw new ApolloCanceledException("Call canceled", e);
-      } else {
-        throw e;
-      }
-    } finally {
-      terminate();
-    }
-    httpResponse.close();
-    if (!httpResponse.isSuccessful()) {
-      throw new ApolloHttpException(httpResponse);
-    }
   }
 
   @Override public void enqueue(@Nullable final Callback responseCallback) {
