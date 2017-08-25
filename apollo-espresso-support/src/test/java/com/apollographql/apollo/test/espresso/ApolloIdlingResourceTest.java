@@ -11,15 +11,15 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +35,6 @@ import okhttp3.mockwebserver.MockWebServer;
 import static com.google.common.truth.Truth.assertThat;
 
 public class ApolloIdlingResourceTest {
-
   private ApolloIdlingResource idlingResource;
   private ApolloClient apolloClient;
   private MockWebServer server;
@@ -179,7 +178,11 @@ public class ApolloIdlingResourceTest {
 
     apolloClient = ApolloClient.builder()
         .okHttpClient(okHttpClient)
-        .dispatcher(immediateExecutorService())
+        .dispatcher(new Executor() {
+          @Override public void execute(Runnable command) {
+            command.run();
+          }
+        })
         .serverUrl(server.url("/"))
         .build();
 
@@ -193,7 +196,7 @@ public class ApolloIdlingResourceTest {
     });
 
     assertThat(counter.get()).isEqualTo(1);
-    apolloClient.query(EMPTY_QUERY).execute();
+    Rx2Apollo.from(apolloClient.query(EMPTY_QUERY)).blockingFirst();
     assertThat(counter.get()).isEqualTo(0);
   }
 
@@ -213,33 +216,5 @@ public class ApolloIdlingResourceTest {
         .append("  ]")
         .append("}")
         .toString());
-  }
-
-  private ExecutorService immediateExecutorService() {
-    return new AbstractExecutorService() {
-      @Override public void shutdown() {
-
-      }
-
-      @Override public List<Runnable> shutdownNow() {
-        return null;
-      }
-
-      @Override public boolean isShutdown() {
-        return false;
-      }
-
-      @Override public boolean isTerminated() {
-        return false;
-      }
-
-      @Override public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
-        return false;
-      }
-
-      @Override public void execute(Runnable runnable) {
-        runnable.run();
-      }
-    };
   }
 }
