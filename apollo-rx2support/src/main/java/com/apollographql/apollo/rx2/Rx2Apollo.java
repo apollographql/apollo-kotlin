@@ -76,8 +76,9 @@ public class Rx2Apollo {
 
     return Observable.create(new ObservableOnSubscribe<Response<T>>() {
       @Override public void subscribe(final ObservableEmitter<Response<T>> emitter) throws Exception {
-        cancelOnObservableDisposed(emitter, originalCall);
-        originalCall.enqueue(new ApolloCall.Callback<T>() {
+        ApolloCall<T> call = originalCall.clone();
+        cancelOnObservableDisposed(emitter, call);
+        call.enqueue(new ApolloCall.Callback<T>() {
           @Override public void onResponse(@Nonnull Response<T> response) {
             if (!emitter.isDisposed()) {
               emitter.onNext(response);
