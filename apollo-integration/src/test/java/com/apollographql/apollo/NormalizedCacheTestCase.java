@@ -5,8 +5,6 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
-import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.normalizer.CharacterDetailsQuery;
 import com.apollographql.apollo.integration.normalizer.CharacterNameByIdQuery;
@@ -31,10 +29,14 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.functions.Predicate;
 import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
+import static com.apollographql.apollo.Utils.cacheAndAssertCachedResponse;
+import static com.apollographql.apollo.Utils.assertResponse;
+import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
+import static com.apollographql.apollo.Utils.mockResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_FIRST;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_FIRST;
@@ -57,7 +59,7 @@ public class NormalizedCacheTestCase {
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
-        .dispatcher(Utils.immediateExecutorService())
+        .dispatcher(Utils.immediateExecutor())
         .build();
   }
 
@@ -68,242 +70,321 @@ public class NormalizedCacheTestCase {
     }
   }
 
-  private MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
+  @Test public void episodeHeroName() throws Exception {
+    cacheAndAssertCachedResponse(
+        server,
+        "HeroNameResponse.json",
+        apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)),
+        new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
+          @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
+            assertThat(response.hasErrors()).isFalse();
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            return true;
+          }
+        }
+    );
   }
 
-  @Test public void episodeHeroName() throws IOException, ApolloException {
-    server.enqueue(mockResponse("HeroNameResponse.json"));
-
-    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
-
-    Response<EpisodeHeroNameQuery.Data> body = apolloClient.query(query).execute();
-    assertThat(body.hasErrors()).isFalse();
-
-    body = apolloClient.query(query).responseFetcher(CACHE_ONLY).execute();
-    assertThat(body.hasErrors()).isFalse();
-    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
+  @Test public void heroAndFriendsNameResponse() throws Exception {
+    cacheAndAssertCachedResponse(
+        server,
+        "HeroAndFriendsNameResponse.json",
+        apolloClient.query(new HeroAndFriendsNamesQuery(Episode.JEDI)),
+        new Predicate<Response<HeroAndFriendsNamesQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesQuery.Data> response) throws Exception {
+            assertThat(response.hasErrors()).isFalse();
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.data().hero().friends()).hasSize(3);
+            assertThat(response.data().hero().friends().get(0).name()).isEqualTo("Luke Skywalker");
+            assertThat(response.data().hero().friends().get(1).name()).isEqualTo("Han Solo");
+            assertThat(response.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
+            return true;
+          }
+        }
+    );
   }
 
-  @Test public void heroAndFriendsNameResponse() throws IOException, ApolloException {
-    server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
-
-    HeroAndFriendsNamesQuery query = HeroAndFriendsNamesQuery.builder().episode(Episode.JEDI).build();
-
-    Response<HeroAndFriendsNamesQuery.Data> body = apolloClient.query(query).execute();
-    assertThat(body.hasErrors()).isFalse();
-
-    body = apolloClient.query(query).responseFetcher(CACHE_ONLY).execute();
-    assertThat(body.hasErrors()).isFalse();
-    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
-    assertThat(body.data().hero().friends()).hasSize(3);
-    assertThat(body.data().hero().friends().get(0).name()).isEqualTo("Luke Skywalker");
-    assertThat(body.data().hero().friends().get(1).name()).isEqualTo("Han Solo");
-    assertThat(body.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
+  @Test public void heroAndFriendsNamesWithIDs() throws Exception {
+    cacheAndAssertCachedResponse(
+        server,
+        "HeroAndFriendsNameWithIdsResponse.json",
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            assertThat(response.hasErrors()).isFalse();
+            assertThat(response.data().hero().id()).isEqualTo("2001");
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.data().hero().friends()).hasSize(3);
+            assertThat(response.data().hero().friends().get(0).id()).isEqualTo("1000");
+            assertThat(response.data().hero().friends().get(0).name()).isEqualTo("Luke Skywalker");
+            assertThat(response.data().hero().friends().get(1).id()).isEqualTo("1002");
+            assertThat(response.data().hero().friends().get(1).name()).isEqualTo("Han Solo");
+            assertThat(response.data().hero().friends().get(2).id()).isEqualTo("1003");
+            assertThat(response.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
+            return true;
+          }
+        }
+    );
   }
 
-  @Test public void heroAndFriendsNamesWithIDs() throws IOException, ApolloException {
-    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
-
-    HeroAndFriendsNamesWithIDsQuery query = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
-
-    Response<HeroAndFriendsNamesWithIDsQuery.Data> body = apolloClient.query(query).execute();
-    assertThat(body.hasErrors()).isFalse();
-
-    body = apolloClient.query(query).responseFetcher(CACHE_ONLY).execute();
-    assertThat(body.hasErrors()).isFalse();
-    assertThat(body.data().hero().id()).isEqualTo("2001");
-    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
-    assertThat(body.data().hero().friends()).hasSize(3);
-    assertThat(body.data().hero().friends().get(0).id()).isEqualTo("1000");
-    assertThat(body.data().hero().friends().get(0).name()).isEqualTo("Luke Skywalker");
-    assertThat(body.data().hero().friends().get(1).id()).isEqualTo("1002");
-    assertThat(body.data().hero().friends().get(1).name()).isEqualTo("Han Solo");
-    assertThat(body.data().hero().friends().get(2).id()).isEqualTo("1003");
-    assertThat(body.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
+  @Test public void heroAndFriendsNameWithIdsForParentOnly() throws Exception {
+    cacheAndAssertCachedResponse(
+        server,
+        "HeroAndFriendsNameWithIdsParentOnlyResponse.json",
+        apolloClient.query(new HeroAndFriendsNamesWithIDForParentOnlyQuery(Episode.NEWHOPE)),
+        new Predicate<Response<HeroAndFriendsNamesWithIDForParentOnlyQuery.Data>>() {
+          @Override
+          public boolean test(Response<HeroAndFriendsNamesWithIDForParentOnlyQuery.Data> response) throws Exception {
+            assertThat(response.hasErrors()).isFalse();
+            assertThat(response.data().hero().id()).isEqualTo("2001");
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.data().hero().friends()).hasSize(3);
+            assertThat(response.data().hero().friends().get(0).name()).isEqualTo("Luke Skywalker");
+            assertThat(response.data().hero().friends().get(1).name()).isEqualTo("Han Solo");
+            assertThat(response.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
+            return true;
+          }
+        }
+    );
   }
 
-  @Test public void heroAndFriendsNameWithIdsForParentOnly() throws IOException, ApolloException {
-    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsParentOnlyResponse.json"));
-
-    HeroAndFriendsNamesWithIDForParentOnlyQuery query = HeroAndFriendsNamesWithIDForParentOnlyQuery.builder()
-        .episode(Episode.NEWHOPE).build();
-
-    Response<HeroAndFriendsNamesWithIDForParentOnlyQuery.Data> body = apolloClient.query(query).execute();
-    assertThat(body.hasErrors()).isFalse();
-
-    body = apolloClient.query(query).responseFetcher(CACHE_ONLY).execute();
-    assertThat(body.hasErrors()).isFalse();
-    assertThat(body.data().hero().id()).isEqualTo("2001");
-    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
-    assertThat(body.data().hero().friends()).hasSize(3);
-    assertThat(body.data().hero().friends().get(0).name()).isEqualTo("Luke Skywalker");
-    assertThat(body.data().hero().friends().get(1).name()).isEqualTo("Han Solo");
-    assertThat(body.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
+  @Test public void heroAppearsInResponse() throws Exception {
+    cacheAndAssertCachedResponse(
+        server,
+        "HeroAppearsInResponse.json",
+        apolloClient.query(new HeroAppearsInQuery()),
+        new Predicate<Response<HeroAppearsInQuery.Data>>() {
+          @Override
+          public boolean test(Response<HeroAppearsInQuery.Data> response) throws Exception {
+            assertThat(response.hasErrors()).isFalse();
+            assertThat(response.hasErrors()).isFalse();
+            assertThat(response.data().hero().appearsIn()).hasSize(3);
+            assertThat(response.data().hero().appearsIn().get(0).name()).isEqualTo("NEWHOPE");
+            assertThat(response.data().hero().appearsIn().get(1).name()).isEqualTo("EMPIRE");
+            assertThat(response.data().hero().appearsIn().get(2).name()).isEqualTo("JEDI");
+            return true;
+          }
+        }
+    );
   }
 
-  @Test public void heroAppearsInResponse() throws IOException, ApolloException {
-    server.enqueue(mockResponse("HeroAppearsInResponse.json"));
-
-    HeroAppearsInQuery query = new HeroAppearsInQuery();
-
-    Response<HeroAppearsInQuery.Data> body = apolloClient.query(query).execute();
-    assertThat(body.hasErrors()).isFalse();
-
-    body = apolloClient.query(query).responseFetcher(CACHE_ONLY).execute();
-    assertThat(body.hasErrors()).isFalse();
-    assertThat(body.data().hero().appearsIn()).hasSize(3);
-    assertThat(body.data().hero().appearsIn().get(0).name()).isEqualTo("NEWHOPE");
-    assertThat(body.data().hero().appearsIn().get(1).name()).isEqualTo("EMPIRE");
-    assertThat(body.data().hero().appearsIn().get(2).name()).isEqualTo("JEDI");
+  @Test public void heroParentTypeDependentField() throws Exception {
+    cacheAndAssertCachedResponse(
+        server,
+        "HeroParentTypeDependentFieldDroidResponse.json",
+        apolloClient.query(new HeroParentTypeDependentFieldQuery(Episode.NEWHOPE)),
+        new Predicate<Response<HeroParentTypeDependentFieldQuery.Data>>() {
+          @Override public boolean test(Response<HeroParentTypeDependentFieldQuery.Data> response) throws Exception {
+            assertThat(response.hasErrors()).isFalse();
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.data().hero().asDroid().name()).isEqualTo("R2-D2");
+            assertThat(response.data().hero().asDroid().friends()).hasSize(3);
+            assertThat(response.data().hero().asDroid().friends().get(0).name()).isEqualTo("Luke Skywalker");
+            assertThat(response.data().hero().asDroid().friends().get(0).asHuman().name()).isEqualTo("Luke Skywalker");
+            assertThat(response.data().hero().asDroid().friends().get(0).asHuman().height()).isWithin(1.72);
+            return true;
+          }
+        }
+    );
   }
 
-  @Test public void heroParentTypeDependentField() throws IOException, ApolloException {
-    server.enqueue(mockResponse("HeroParentTypeDependentFieldDroidResponse.json"));
-
-    HeroParentTypeDependentFieldQuery query = HeroParentTypeDependentFieldQuery.builder()
-        .episode(Episode.NEWHOPE).build();
-
-    Response<HeroParentTypeDependentFieldQuery.Data> body = apolloClient.query(query).execute();
-    assertThat(body.hasErrors()).isFalse();
-
-    body = apolloClient.query(query).responseFetcher(CACHE_ONLY).execute();
-    assertThat(body.hasErrors()).isFalse();
-    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
-    assertThat(body.data().hero().asDroid().name()).isEqualTo("R2-D2");
-    assertThat(body.data().hero().asDroid().friends()).hasSize(3);
-    assertThat(body.data().hero().asDroid().friends().get(0).name()).isEqualTo("Luke Skywalker");
-    assertThat(body.data().hero().asDroid().friends().get(0).asHuman().name()).isEqualTo("Luke Skywalker");
-    assertThat(body.data().hero().asDroid().friends().get(0).asHuman().height()).isWithin(1.72);
-  }
-
-  @Test public void heroTypeDependentAliasedField() throws IOException, ApolloException {
-    server.enqueue(mockResponse("HeroTypeDependentAliasedFieldResponse.json"));
-
-    HeroTypeDependentAliasedFieldQuery query
-        = HeroTypeDependentAliasedFieldQuery.builder().episode(Episode.NEWHOPE).build();
-
-    Response<HeroTypeDependentAliasedFieldQuery.Data> body = apolloClient.query(query).execute();
-    assertThat(body.hasErrors()).isFalse();
-
-    body = apolloClient.query(query).responseFetcher(CACHE_ONLY).execute();
-    assertThat(body.hasErrors()).isFalse();
-    assertThat(body.data().hero().asHuman()).isNull();
-    assertThat(body.data().hero().asDroid().property()).isEqualTo("Astromech");
-
+  @Test public void heroTypeDependentAliasedField() throws Exception {
+    cacheAndAssertCachedResponse(
+        server,
+        "HeroTypeDependentAliasedFieldResponse.json",
+        apolloClient.query(new HeroTypeDependentAliasedFieldQuery(Episode.NEWHOPE)),
+        new Predicate<Response<HeroTypeDependentAliasedFieldQuery.Data>>() {
+          @Override
+          public boolean test(Response<HeroTypeDependentAliasedFieldQuery.Data> response) throws Exception {
+            assertThat(response.hasErrors()).isFalse();
+            assertThat(response.data().hero().asHuman()).isNull();
+            assertThat(response.data().hero().asDroid().property()).isEqualTo("Astromech");
+            return true;
+          }
+        }
+    );
     server.enqueue(mockResponse("HeroTypeDependentAliasedFieldResponseHuman.json"));
-
-    body = apolloClient.query(query).responseFetcher(NETWORK_ONLY).execute();
-    assertThat(body.hasErrors()).isFalse();
-
-    body = apolloClient.query(query).responseFetcher(CACHE_ONLY).execute();
-    assertThat(body.hasErrors()).isFalse();
-    assertThat(body.data().hero().asDroid()).isNull();
-    assertThat(body.data().hero().asHuman().property()).isEqualTo("Tatooine");
+    cacheAndAssertCachedResponse(
+        server,
+        "HeroTypeDependentAliasedFieldResponse.json",
+        apolloClient.query(new HeroTypeDependentAliasedFieldQuery(Episode.NEWHOPE)),
+        new Predicate<Response<HeroTypeDependentAliasedFieldQuery.Data>>() {
+          @Override
+          public boolean test(Response<HeroTypeDependentAliasedFieldQuery.Data> response) throws Exception {
+            assertThat(response.hasErrors()).isFalse();
+            assertThat(response.data().hero().asDroid()).isNull();
+            assertThat(response.data().hero().asHuman().property()).isEqualTo("Tatooine");
+            return true;
+          }
+        }
+    );
   }
 
-  @Test public void sameHeroTwice() throws IOException, ApolloException {
-    server.enqueue(mockResponse("SameHeroTwiceResponse.json"));
-
-    SameHeroTwiceQuery query = new SameHeroTwiceQuery();
-
-    Response<SameHeroTwiceQuery.Data> body = apolloClient.query(query).execute();
-    assertThat(body.hasErrors()).isFalse();
-
-    body = apolloClient.query(query).responseFetcher(CACHE_ONLY).execute();
-    assertThat(body.hasErrors()).isFalse();
-    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
-    assertThat(body.data().r2().appearsIn()).hasSize(3);
-    assertThat(body.data().r2().appearsIn().get(0).name()).isEqualTo("NEWHOPE");
-    assertThat(body.data().r2().appearsIn().get(1).name()).isEqualTo("EMPIRE");
-    assertThat(body.data().r2().appearsIn().get(2).name()).isEqualTo("JEDI");
+  @Test public void sameHeroTwice() throws Exception {
+    cacheAndAssertCachedResponse(
+        server,
+        "SameHeroTwiceResponse.json",
+        apolloClient.query(new SameHeroTwiceQuery()),
+        new Predicate<Response<SameHeroTwiceQuery.Data>>() {
+          @Override public boolean test(Response<SameHeroTwiceQuery.Data> response) throws Exception {
+            assertThat(response.hasErrors()).isFalse();
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.data().r2().appearsIn()).hasSize(3);
+            assertThat(response.data().r2().appearsIn().get(0).name()).isEqualTo("NEWHOPE");
+            assertThat(response.data().r2().appearsIn().get(1).name()).isEqualTo("EMPIRE");
+            assertThat(response.data().r2().appearsIn().get(2).name()).isEqualTo("JEDI");
+            return true;
+          }
+        }
+    );
   }
 
   @Test public void masterDetailSuccess() throws Exception {
-    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
-    HeroAndFriendsNamesWithIDsQuery query = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
-    apolloClient.query(query).responseFetcher(NETWORK_ONLY).execute();
+    enqueueAndAssertResponse(
+        server,
+        "HeroAndFriendsNameWithIdsResponse.json",
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).responseFetcher(NETWORK_ONLY),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
 
-    CharacterNameByIdQuery character = CharacterNameByIdQuery.builder().id("1002").build();
-    CharacterNameByIdQuery.Data characterData = apolloClient.query(character).responseFetcher(
-        CACHE_ONLY)
-        .execute().data();
-
-    assertThat(characterData).isNotNull();
-    assertThat(characterData.character()).isNotNull();
-    assertThat(characterData.character().asHuman().name()).isEqualTo("Han Solo");
+    assertResponse(
+        apolloClient.query(new CharacterNameByIdQuery("1002")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterNameByIdQuery.Data>>() {
+          @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
+            assertThat(response.data().character()).isNotNull();
+            assertThat(response.data().character().asHuman().name()).isEqualTo("Han Solo");
+            return true;
+          }
+        }
+    );
   }
 
   @Test public void masterDetailFailIncomplete() throws Exception {
-    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
-    HeroAndFriendsNamesWithIDsQuery query = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
-    apolloClient.query(query).responseFetcher(NETWORK_ONLY).execute();
+    enqueueAndAssertResponse(
+        server,
+        "HeroAndFriendsNameWithIdsResponse.json",
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).responseFetcher(NETWORK_ONLY),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
 
-    CharacterDetailsQuery character = CharacterDetailsQuery.builder().id("1002").build();
-    CharacterDetailsQuery.Data characterData = apolloClient.query(character).responseFetcher(CACHE_ONLY)
-        .execute().data();
-
-    assertThat(characterData).isNull();
+    assertResponse(
+        apolloClient.query(new CharacterDetailsQuery("1002")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterDetailsQuery.Data>>() {
+          @Override public boolean test(Response<CharacterDetailsQuery.Data> response) throws Exception {
+            assertThat(response.data()).isNull();
+            return true;
+          }
+        }
+    );
   }
 
-  @Test public void independentQueriesGoToNetworkWhenCacheMiss() throws IOException, ApolloException {
-    server.enqueue(mockResponse("HeroNameResponse.json"));
-    Response<EpisodeHeroNameQuery.Data> body = apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).execute();
-    assertThat(body.hasErrors()).isFalse();
-    assertThat(body.data()).isNotNull();
 
-    server.enqueue(mockResponse("AllPlanetsNullableField.json"));
-    final Response<AllPlanetsQuery.Data> allPlanetsResponse = apolloClient.query(new AllPlanetsQuery()).execute();
-    assertThat(allPlanetsResponse.hasErrors()).isFalse();
-    assertThat(allPlanetsResponse.data().allPlanets()).isNotNull();
+  @Test public void independentQueriesGoToNetworkWhenCacheMiss() throws Exception {
+    enqueueAndAssertResponse(
+        server,
+        "HeroNameResponse.json",
+        apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)),
+        new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
+          @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
+            assertThat(response.hasErrors()).isFalse();
+            assertThat(response.data()).isNotNull();
+            return true;
+          }
+        }
+    );
+
+    enqueueAndAssertResponse(
+        server,
+        "AllPlanetsNullableField.json",
+        apolloClient.query(new AllPlanetsQuery()),
+        new Predicate<Response<AllPlanetsQuery.Data>>() {
+          @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
+            assertThat(response.hasErrors()).isFalse();
+            assertThat(response.data().allPlanets()).isNotNull();
+            return true;
+          }
+        }
+    );
   }
 
-  @Test public void cacheOnlyMissReturnsNullData() throws IOException, ApolloException {
-    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
-    Response<EpisodeHeroNameQuery.Data> body = apolloClient.query(query)
-        .responseFetcher(CACHE_ONLY)
-        .execute();
-    assertThat(body.data()).isNull();
+  @Test public void cacheOnlyMissReturnsNullData() throws Exception {
+    assertResponse(
+        apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
+          @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
+            return response.data() == null;
+          }
+        }
+    );
   }
 
-  @Test public void cacheResponseWithNullableFields() throws IOException, ApolloException {
-    server.enqueue(mockResponse("AllPlanetsNullableField.json"));
-    AllPlanetsQuery query = new AllPlanetsQuery();
-    Response<AllPlanetsQuery.Data> body = apolloClient.query(query)
-        .responseFetcher(NETWORK_ONLY)
-        .execute();
+  @Test public void cacheResponseWithNullableFields() throws Exception {
+    enqueueAndAssertResponse(
+        server,
+        "AllPlanetsNullableField.json",
+        apolloClient.query(new AllPlanetsQuery()).responseFetcher(NETWORK_ONLY),
+        new Predicate<Response<AllPlanetsQuery.Data>>() {
+          @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
+            assertThat(response).isNotNull();
+            assertThat(response.hasErrors()).isFalse();
+            return true;
+          }
+        }
+    );
 
-    assertThat(body).isNotNull();
-    assertThat(body.hasErrors()).isFalse();
-
-    body = apolloClient.query(query).responseFetcher(CACHE_ONLY).execute();
-    assertThat(body).isNotNull();
-    assertThat(body.hasErrors()).isFalse();
+    assertResponse(
+        apolloClient.query(new AllPlanetsQuery()).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<AllPlanetsQuery.Data>>() {
+          @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
+            assertThat(response).isNotNull();
+            assertThat(response.hasErrors()).isFalse();
+            return true;
+          }
+        }
+    );
   }
 
-  @Test public void readOperationFromStore() throws IOException, ApolloException {
-    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
-
-    HeroAndFriendsNamesWithIDsQuery query = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
-    apolloClient.query(query).execute();
-
-    HeroAndFriendsNamesWithIDsQuery.Data data = apolloClient.apolloStore().read(query).execute();
-    assertThat(data.hero().id()).isEqualTo("2001");
-    assertThat(data.hero().name()).isEqualTo("R2-D2");
-    assertThat(data.hero().friends()).hasSize(3);
-    assertThat(data.hero().friends().get(0).id()).isEqualTo("1000");
-    assertThat(data.hero().friends().get(0).name()).isEqualTo("Luke Skywalker");
-    assertThat(data.hero().friends().get(1).id()).isEqualTo("1002");
-    assertThat(data.hero().friends().get(1).name()).isEqualTo("Han Solo");
-    assertThat(data.hero().friends().get(2).id()).isEqualTo("1003");
-    assertThat(data.hero().friends().get(2).name()).isEqualTo("Leia Organa");
+  @Test public void readOperationFromStore() throws Exception {
+    enqueueAndAssertResponse(
+        server,
+        "HeroAndFriendsNameWithIdsResponse.json",
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().id()).isEqualTo("2001");
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.data().hero().friends()).hasSize(3);
+            assertThat(response.data().hero().friends().get(0).id()).isEqualTo("1000");
+            assertThat(response.data().hero().friends().get(0).name()).isEqualTo("Luke Skywalker");
+            assertThat(response.data().hero().friends().get(1).id()).isEqualTo("1002");
+            assertThat(response.data().hero().friends().get(1).name()).isEqualTo("Han Solo");
+            assertThat(response.data().hero().friends().get(2).id()).isEqualTo("1003");
+            assertThat(response.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
+            return true;
+          }
+        }
+    );
   }
 
-  @Test public void readFragmentFromStore() throws IOException, ApolloException {
-    server.enqueue(mockResponse("HeroAndFriendsWithFragmentResponse.json"));
-
-    HeroAndFriendsNamesWithIDsQuery query = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
-    apolloClient.query(query).execute();
+  @Test public void readFragmentFromStore() throws Exception {
+    enqueueAndAssertResponse(
+        server,
+        "HeroAndFriendsWithFragmentResponse.json",
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
 
     HeroWithFriendsFragment heroWithFriendsFragment = apolloClient.apolloStore().read(
         new HeroWithFriendsFragment.Mapper(), CacheKey.from("2001"), Operation.EMPTY_VARIABLES).execute();
@@ -334,138 +415,289 @@ public class NormalizedCacheTestCase {
     assertThat(fragment.name()).isEqualTo("Leia Organa");
   }
 
-  @Test public void from_cache_flag() throws Exception {
-    server.enqueue(mockResponse("HeroNameResponse.json"));
-    assertThat(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).execute().fromCache()).isFalse();
+  @Test public void fromCacheFlag() throws Exception {
+    enqueueAndAssertResponse(
+        server,
+        "HeroNameResponse.json",
+        apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)),
+        new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
+          @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
+            return !response.fromCache();
+          }
+        }
+    );
 
-    server.enqueue(mockResponse("HeroNameResponse.json"));
-    assertThat(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE))
-        .responseFetcher(NETWORK_ONLY)
-        .execute().fromCache()).isFalse();
-    assertThat(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE))
-        .responseFetcher(CACHE_ONLY)
-        .execute().fromCache()).isTrue();
-    assertThat(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE))
-        .responseFetcher(CACHE_FIRST)
-        .execute().fromCache()).isTrue();
-    assertThat(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE))
-        .responseFetcher(NETWORK_FIRST)
-        .execute().fromCache()).isTrue();
+    enqueueAndAssertResponse(
+        server,
+        "HeroNameResponse.json",
+        apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).responseFetcher(NETWORK_ONLY),
+        new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
+          @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
+            return !response.fromCache();
+          }
+        }
+    );
+
+    assertResponse(
+        apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
+          @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
+            return response.fromCache();
+          }
+        }
+    );
+
+    assertResponse(
+        apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).responseFetcher(CACHE_FIRST),
+        new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
+          @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
+            return response.fromCache();
+          }
+        }
+    );
+
+    assertResponse(
+        apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).responseFetcher(NETWORK_FIRST),
+        new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
+          @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
+            return response.fromCache();
+          }
+        }
+    );
   }
 
-  @Test public void remove_from_store() throws Exception {
-    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
-    HeroAndFriendsNamesWithIDsQuery masterQuery = new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE);
-    Response<HeroAndFriendsNamesWithIDsQuery.Data> masterQueryResponse = apolloClient.query(masterQuery)
-        .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY).execute();
-    assertThat(masterQueryResponse.data().hero().name()).isEqualTo("R2-D2");
-    assertThat(masterQueryResponse.data().hero().friends()).hasSize(3);
+  @Test public void removeFromStore() throws Exception {
+    enqueueAndAssertResponse(
+        server,
+        "HeroAndFriendsNameWithIdsResponse.json",
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).responseFetcher(NETWORK_ONLY),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.data().hero().friends()).hasSize(3);
+            return true;
+          }
+        }
+    );
 
-    CharacterNameByIdQuery detailQuery = new CharacterNameByIdQuery("1002");
-    Response<CharacterNameByIdQuery.Data> detailQueryResponse = apolloClient.query(detailQuery)
-        .responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute();
-    assertThat(detailQueryResponse.fromCache()).isTrue();
-    assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Han Solo");
+    assertResponse(
+        apolloClient.query(new CharacterNameByIdQuery("1002")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterNameByIdQuery.Data>>() {
+          @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(response.data().character().asHuman().name()).isEqualTo("Han Solo");
+            return true;
+          }
+        }
+    );
 
     // test remove root query object
     assertThat(apolloClient.apolloStore().remove(CacheKey.from("2001")).execute()).isTrue();
-    masterQueryResponse = apolloClient.query(masterQuery).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute();
-    assertThat(masterQueryResponse.fromCache()).isTrue();
-    assertThat(masterQueryResponse.data()).isNull();
 
-    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
-    apolloClient.query(masterQuery).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY).execute();
+    assertResponse(
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(response.data()).isNull();
+            return true;
+          }
+        }
+    );
 
-    detailQuery = new CharacterNameByIdQuery("1002");
-    detailQueryResponse = apolloClient.query(detailQuery).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute();
-    assertThat(detailQueryResponse.fromCache()).isTrue();
-    assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Han Solo");
+    enqueueAndAssertResponse(
+        server,
+        "HeroAndFriendsNameWithIdsResponse.json",
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).responseFetcher(NETWORK_ONLY),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
+
+    assertResponse(
+        apolloClient.query(new CharacterNameByIdQuery("1002")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterNameByIdQuery.Data>>() {
+          @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(response.data().character().asHuman().name()).isEqualTo("Han Solo");
+            return true;
+          }
+        }
+    );
 
     // test remove object from the list
     assertThat(apolloClient.apolloStore().remove(CacheKey.from("1002")).execute()).isTrue();
 
-    detailQuery = new CharacterNameByIdQuery("1002");
-    detailQueryResponse = apolloClient.query(detailQuery).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute();
-    assertThat(detailQueryResponse.fromCache()).isTrue();
-    assertThat(detailQueryResponse.data()).isNull();
-    masterQueryResponse = apolloClient.query(masterQuery).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute();
-    assertThat(masterQueryResponse.fromCache()).isTrue();
-    assertThat(masterQueryResponse.data()).isNull();
+    assertResponse(
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(response.data()).isNull();
+            return true;
+          }
+        }
+    );
 
-    detailQuery = new CharacterNameByIdQuery("1003");
-    detailQueryResponse = apolloClient.query(detailQuery).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute();
-    assertThat(detailQueryResponse.fromCache()).isTrue();
-    assertThat(detailQueryResponse.data()).isNotNull();
-    assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Leia Organa");
+    assertResponse(
+        apolloClient.query(new CharacterNameByIdQuery("1002")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterNameByIdQuery.Data>>() {
+          @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(response.data()).isNull();
+            return true;
+          }
+        }
+    );
+
+    assertResponse(
+        apolloClient.query(new CharacterNameByIdQuery("1003")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterNameByIdQuery.Data>>() {
+          @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(response.data()).isNotNull();
+            assertThat(response.data().character().asHuman().name()).isEqualTo("Leia Organa");
+            return true;
+          }
+        }
+    );
   }
 
-  @Test public void remove_multiple_from_store() throws Exception {
-    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
+  @Test public void removeMultipleFromStore() throws Exception {
+    enqueueAndAssertResponse(
+        server,
+        "HeroAndFriendsNameWithIdsResponse.json",
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).responseFetcher(NETWORK_ONLY),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.data().hero().friends()).hasSize(3);
+            return true;
+          }
+        }
+    );
 
-    HeroAndFriendsNamesWithIDsQuery masterQuery = new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE);
-    Response<HeroAndFriendsNamesWithIDsQuery.Data> masterQueryResponse = apolloClient.query(masterQuery)
-        .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY).execute();
-    assertThat(masterQueryResponse.data().hero().name()).isEqualTo("R2-D2");
-    assertThat(masterQueryResponse.data().hero().friends()).hasSize(3);
+    assertResponse(
+        apolloClient.query(new CharacterNameByIdQuery("1000")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterNameByIdQuery.Data>>() {
+          @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(response.data().character().asHuman().name()).isEqualTo("Luke Skywalker");
+            return true;
+          }
+        }
+    );
 
-    CharacterNameByIdQuery detailQuery = new CharacterNameByIdQuery("1000");
-    Response<CharacterNameByIdQuery.Data> detailQueryResponse = apolloClient.query(detailQuery)
-        .responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute();
-    assertThat(detailQueryResponse.fromCache()).isTrue();
-    assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Luke Skywalker");
+    assertResponse(
+        apolloClient.query(new CharacterNameByIdQuery("1002")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterNameByIdQuery.Data>>() {
+          @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(response.data().character().asHuman().name()).isEqualTo("Han Solo");
+            return true;
+          }
+        }
+    );
 
-    detailQuery = new CharacterNameByIdQuery("1002");
-    detailQueryResponse = apolloClient.query(detailQuery).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute();
-    assertThat(detailQueryResponse.fromCache()).isTrue();
-    assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Han Solo");
-
-    detailQuery = new CharacterNameByIdQuery("1003");
-    detailQueryResponse = apolloClient.query(detailQuery).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute();
-    assertThat(detailQueryResponse.fromCache()).isTrue();
-    assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Leia Organa");
+    assertResponse(
+        apolloClient.query(new CharacterNameByIdQuery("1003")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterNameByIdQuery.Data>>() {
+          @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(response.data().character().asHuman().name()).isEqualTo("Leia Organa");
+            return true;
+          }
+        }
+    );
 
     assertThat(apolloClient.apolloStore().remove(Arrays.asList(CacheKey.from("1002"), CacheKey.from("1000")))
         .execute()).isEqualTo(2);
 
-    detailQuery = new CharacterNameByIdQuery("1000");
-    detailQueryResponse = apolloClient.query(detailQuery).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute();
-    assertThat(detailQueryResponse.fromCache()).isTrue();
-    assertThat(detailQueryResponse.data()).isNull();
+    assertResponse(
+        apolloClient.query(new CharacterNameByIdQuery("1000")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterNameByIdQuery.Data>>() {
+          @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(response.data()).isNull();
+            return true;
+          }
+        }
+    );
 
-    detailQuery = new CharacterNameByIdQuery("1002");
-    detailQueryResponse = apolloClient.query(detailQuery).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute();
-    assertThat(detailQueryResponse.fromCache()).isTrue();
-    assertThat(detailQueryResponse.data()).isNull();
+    assertResponse(
+        apolloClient.query(new CharacterNameByIdQuery("1002")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterNameByIdQuery.Data>>() {
+          @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(response.data()).isNull();
+            return true;
+          }
+        }
+    );
 
-    detailQuery = new CharacterNameByIdQuery("1003");
-    detailQueryResponse = apolloClient.query(detailQuery).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute();
-    assertThat(detailQueryResponse.fromCache()).isTrue();
-    assertThat(detailQueryResponse.data().character().asHuman().name()).isEqualTo("Leia Organa");
+    assertResponse(
+        apolloClient.query(new CharacterNameByIdQuery("1003")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterNameByIdQuery.Data>>() {
+          @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(response.data().character().asHuman().name()).isEqualTo("Leia Organa");
+            return true;
+          }
+        }
+    );
   }
 
-  @Test public void skip_include_directive() throws Exception {
-    server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
-    apolloClient.query(new HeroAndFriendsNamesQuery(Episode.JEDI)).execute();
+  @Test public void skipIncludeDirective() throws Exception {
+    enqueueAndAssertResponse(
+        server,
+        "HeroAndFriendsNameResponse.json",
+        apolloClient.query(new HeroAndFriendsNamesQuery(Episode.JEDI)),
+        new Predicate<Response<HeroAndFriendsNamesQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
 
-    Response<HeroAndFriendsDirectivesQuery.Data> body = apolloClient.query(HeroAndFriendsDirectivesQuery.builder()
-        .episode(Episode.JEDI).includeName(true).skipFriends(false).build()).execute();
-    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
-    assertThat(body.data().hero().friends()).hasSize(3);
-    assertThat(body.data().hero().friends().get(0).name()).isEqualTo("Luke Skywalker");
-    assertThat(body.data().hero().friends().get(1).name()).isEqualTo("Han Solo");
-    assertThat(body.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
+    assertResponse(
+        apolloClient.query(HeroAndFriendsDirectivesQuery.builder().episode(Episode.JEDI).includeName(true).skipFriends(false).build()),
+        new Predicate<Response<HeroAndFriendsDirectivesQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsDirectivesQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.data().hero().friends()).hasSize(3);
+            assertThat(response.data().hero().friends().get(0).name()).isEqualTo("Luke Skywalker");
+            assertThat(response.data().hero().friends().get(1).name()).isEqualTo("Han Solo");
+            assertThat(response.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
+            return true;
+          }
+        }
+    );
 
-    body = apolloClient.query(HeroAndFriendsDirectivesQuery.builder()
-        .episode(Episode.JEDI).includeName(false).skipFriends(false).build()).execute();
-    assertThat(body.data().hero().name()).isNull();
-    assertThat(body.data().hero().friends()).hasSize(3);
-    assertThat(body.data().hero().friends().get(0).name()).isEqualTo("Luke Skywalker");
-    assertThat(body.data().hero().friends().get(1).name()).isEqualTo("Han Solo");
-    assertThat(body.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
+    assertResponse(
+        apolloClient.query(HeroAndFriendsDirectivesQuery.builder().episode(Episode.JEDI).includeName(false).skipFriends(false).build()),
+        new Predicate<Response<HeroAndFriendsDirectivesQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsDirectivesQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().name()).isNull();
+            assertThat(response.data().hero().friends()).hasSize(3);
+            assertThat(response.data().hero().friends().get(0).name()).isEqualTo("Luke Skywalker");
+            assertThat(response.data().hero().friends().get(1).name()).isEqualTo("Han Solo");
+            assertThat(response.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
+            return true;
+          }
+        }
+    );
 
-    body = apolloClient.query(HeroAndFriendsDirectivesQuery.builder()
-        .episode(Episode.JEDI).includeName(true).skipFriends(true).build()).execute();
-    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
-    assertThat(body.data().hero().friends()).isNull();
+    assertResponse(
+        apolloClient.query(HeroAndFriendsDirectivesQuery.builder().episode(Episode.JEDI).includeName(true).skipFriends(true).build()),
+        new Predicate<Response<HeroAndFriendsDirectivesQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsDirectivesQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.data().hero().friends()).isNull();
+            return true;
+          }
+        }
+    );
   }
 }

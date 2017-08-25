@@ -32,10 +32,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import io.reactivex.functions.Predicate;
 import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
+import static com.apollographql.apollo.Utils.TIME_OUT_SECONDS;
+import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
+import static com.apollographql.apollo.Utils.mockResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 import static com.google.common.truth.Truth.assertThat;
@@ -43,7 +46,6 @@ import static com.google.common.truth.Truth.assertThat;
 public class ApolloWatcherTest {
   private ApolloClient apolloClient;
   private MockWebServer server;
-  private static final int TIME_OUT_SECONDS = 3;
 
   @Before public void setUp() throws IOException {
     server = new MockWebServer();
@@ -54,16 +56,16 @@ public class ApolloWatcherTest {
         .serverUrl(server.url("/"))
         .dispatcher(immediateExecutorService())
         .okHttpClient(okHttpClient)
-          .logger(new Logger() {
-            @Override
-            public void log(int priority, @Nonnull String message, @Nonnull Optional<Throwable> t, @Nonnull Object... args) {
-              String throwableTrace = "";
-              if (t.isPresent()) {
-                throwableTrace = t.get().getMessage();
-              }
-              System.out.println(String.format(message, args) + " " + throwableTrace);
+        .logger(new Logger() {
+          @Override
+          public void log(int priority, @Nonnull String message, @Nonnull Optional<Throwable> t, @Nonnull Object... args) {
+            String throwableTrace = "";
+            if (t.isPresent()) {
+              throwableTrace = t.get().getMessage();
             }
-          })
+            System.out.println(String.format(message, args) + " " + throwableTrace);
+          }
+        })
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .build();
   }
@@ -76,8 +78,7 @@ public class ApolloWatcherTest {
   }
 
   @Test
-  public void testQueryWatcherUpdated_SameQuery_DifferentResults() throws IOException, InterruptedException,
-      TimeoutException, ApolloException {
+  public void testQueryWatcherUpdated_SameQuery_DifferentResults() throws Exception {
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
 
@@ -105,8 +106,17 @@ public class ApolloWatcherTest {
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
 
     // Another newer call gets updated information
-    server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
-    apolloClient.query(query).responseFetcher(NETWORK_ONLY).execute();
+    enqueueAndAssertResponse(
+        server,
+        "EpisodeHeroNameResponseNameChange.json",
+        apolloClient.query(query).responseFetcher(NETWORK_ONLY),
+        new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
+          @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
+
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     watcher.cancel();
   }
@@ -161,7 +171,6 @@ public class ApolloWatcherTest {
     watcher.cancel();
   }
 
-
   @Test
   public void testQueryWatcherNotUpdated_SameQuery_SameResults() throws IOException, InterruptedException,
       TimeoutException {
@@ -200,8 +209,7 @@ public class ApolloWatcherTest {
   }
 
   @Test
-  public void testQueryWatcherUpdated_DifferentQuery_DifferentResults() throws IOException, InterruptedException,
-      TimeoutException, ApolloException {
+  public void testQueryWatcherUpdated_DifferentQuery_DifferentResults() throws Exception {
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
 
@@ -231,8 +239,16 @@ public class ApolloWatcherTest {
         .episode(Episode.NEWHOPE)
         .build();
 
-    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
-    apolloClient.query(friendsQuery).responseFetcher(NETWORK_ONLY).execute();
+    enqueueAndAssertResponse(
+        server,
+        "HeroAndFriendsNameWithIdsNameChange.json",
+        apolloClient.query(friendsQuery).responseFetcher(NETWORK_ONLY),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
 
     secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     watcher.cancel();
@@ -369,8 +385,7 @@ public class ApolloWatcherTest {
   }
 
   @Test
-  public void testQueryWatcherNotCalled_WhenCanceled() throws IOException, TimeoutException,
-      InterruptedException, ApolloException {
+  public void testQueryWatcherNotCalled_WhenCanceled() throws Exception {
 
     final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
     final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
@@ -398,17 +413,21 @@ public class ApolloWatcherTest {
 
     firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
 
-    server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
     watcher.cancel();
-    apolloClient.query(query).responseFetcher(NETWORK_ONLY).execute();
+    enqueueAndAssertResponse(
+        server,
+        "EpisodeHeroNameResponseNameChange.json",
+        apolloClient.query(query).responseFetcher(NETWORK_ONLY),
+        new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
+          @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
 
     //Wait for 3 seconds to check that callback is not called twice.
     //Test is successful if timeout is reached.
     secondResponseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-  }
-
-  private MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
   }
 
   private ExecutorService immediateExecutorService() {

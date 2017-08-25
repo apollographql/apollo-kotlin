@@ -15,14 +15,12 @@ import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -39,49 +37,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class ApolloInterceptorChainTest {
 
-  private static final int TIMEOUT_SECONDS = 2;
-
-  private ApolloInterceptorChain chain;
-
-  @After
-  public void tearDown() {
-    chain = null;
-  }
-
-  @Test
-  public void onProceedCalled_chainPassesControlToInterceptor() throws ApolloException, TimeoutException, InterruptedException {
-    final AtomicInteger counter = new AtomicInteger(1);
-
-    EpisodeHeroNameQuery query = createQuery();
-
-    ApolloInterceptor interceptor = new ApolloInterceptor() {
-      @Nonnull @Override
-      public InterceptorResponse intercept(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
-          throws ApolloException {
-        counter.decrementAndGet();
-        return null;
-      }
-
-      @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
-
-      }
-
-      @Override public void dispose() {
-
-      }
-    };
-
-    List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
-    chain = new RealApolloInterceptorChain(interceptors);
-    chain.proceed(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent()));
-
-    if (counter.get() != 0) {
-      Assert.fail("Control not passed to the interceptor");
-    }
-  }
-
   @Test
   public void onProceedAsyncCalled_chainPassesControlToInterceptor() throws TimeoutException, InterruptedException {
     final AtomicInteger counter = new AtomicInteger(1);
@@ -89,15 +44,9 @@ public class ApolloInterceptorChainTest {
     EpisodeHeroNameQuery query = createQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
-      @Nonnull @Override
-      public InterceptorResponse intercept(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
-          throws ApolloException {
-        return null;
-      }
-
       @Override
       public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
+          @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
         counter.decrementAndGet();
       }
 
@@ -107,9 +56,9 @@ public class ApolloInterceptorChainTest {
     };
 
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
-    chain = new RealApolloInterceptorChain(interceptors);
+    RealApolloInterceptorChain chain = new RealApolloInterceptorChain(interceptors);
     chain.proceedAsync(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent()),
-        Utils.immediateExecutorService(), new CallBack() {
+        Utils.immediateExecutor(), new CallBack() {
           @Override public void onResponse(@Nonnull InterceptorResponse response) {
 
           }
@@ -131,40 +80,6 @@ public class ApolloInterceptorChainTest {
   }
 
   @Test
-  public void onProceedCalled_correctInterceptorResponseIsReceived() throws ApolloException {
-
-    EpisodeHeroNameQuery query = createQuery();
-
-    final InterceptorResponse expectedResponse = prepareInterceptorResponse(query);
-
-    ApolloInterceptor interceptor = new ApolloInterceptor() {
-      @Nonnull @Override
-      public InterceptorResponse intercept(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
-          throws ApolloException {
-        return expectedResponse;
-      }
-
-      @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
-
-      }
-
-      @Override public void dispose() {
-
-      }
-    };
-
-    List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
-    chain = new RealApolloInterceptorChain(interceptors);
-
-    InterceptorResponse actualResponse = chain.proceed(new ApolloInterceptor.InterceptorRequest(query,
-        FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent()));
-
-    assertThat(actualResponse).isEqualTo(expectedResponse);
-  }
-
-  @Test
   public void onProceedAsyncCalled_correctInterceptorResponseIsReceived() throws TimeoutException, InterruptedException {
     final AtomicInteger counter = new AtomicInteger(1);
 
@@ -172,15 +87,9 @@ public class ApolloInterceptorChainTest {
     final InterceptorResponse expectedResponse = prepareInterceptorResponse(query);
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
-      @Nonnull @Override
-      public InterceptorResponse intercept(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
-          throws ApolloException {
-        return null;
-      }
-
       @Override
       public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+          @Nonnull Executor dispatcher, @Nonnull final CallBack callBack) {
         dispatcher.execute(new Runnable() {
           @Override public void run() {
             callBack.onResponse(expectedResponse);
@@ -194,10 +103,9 @@ public class ApolloInterceptorChainTest {
     };
 
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
-    chain = new RealApolloInterceptorChain(interceptors);
-
+    RealApolloInterceptorChain chain = new RealApolloInterceptorChain(interceptors);
     chain.proceedAsync(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent()),
-        Utils.immediateExecutorService(), new CallBack() {
+        Utils.immediateExecutor(), new CallBack() {
           @Override public void onResponse(@Nonnull InterceptorResponse response) {
             assertThat(response).isEqualTo(expectedResponse);
             counter.decrementAndGet();
@@ -218,60 +126,15 @@ public class ApolloInterceptorChainTest {
   }
 
   @Test
-  public void onProceedCalled_correctExceptionIsCaught() {
-
-    final String message = "ApolloException";
-    EpisodeHeroNameQuery query = createQuery();
-
-    ApolloInterceptor Interceptor = new ApolloInterceptor() {
-      @Nonnull @Override
-      public InterceptorResponse intercept(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
-          throws ApolloException {
-        throw new ApolloException(message);
-      }
-
-      @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull ExecutorService dispatcher, @Nonnull CallBack callBack) {
-
-      }
-
-      @Override public void dispose() {
-
-      }
-    };
-
-    List<ApolloInterceptor> interceptors = new ArrayList<>();
-    interceptors.add(Interceptor);
-
-    chain = new RealApolloInterceptorChain(interceptors);
-
-    try {
-      chain.proceed(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent()));
-    } catch (Exception e) {
-      assertThat(e.getMessage()).isEqualTo(message);
-      assertThat(e).isInstanceOf(ApolloException.class);
-    }
-  }
-
-  @Test
   public void onProceedAsyncCalled_correctExceptionIsCaught() throws TimeoutException, InterruptedException {
-
     final AtomicInteger counter = new AtomicInteger(1);
 
     final String message = "ApolloException";
     EpisodeHeroNameQuery query = createQuery();
-
     ApolloInterceptor interceptor = new ApolloInterceptor() {
-      @Nonnull @Override
-      public InterceptorResponse intercept(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
-          throws ApolloException {
-        return null;
-      }
-
       @Override
       public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+          @Nonnull Executor dispatcher, @Nonnull final CallBack callBack) {
         dispatcher.execute(new Runnable() {
           @Override public void run() {
             ApolloException apolloException = new ApolloException(message);
@@ -286,10 +149,9 @@ public class ApolloInterceptorChainTest {
     };
 
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
-    chain = new RealApolloInterceptorChain(interceptors);
-
+    RealApolloInterceptorChain chain = new RealApolloInterceptorChain(interceptors);
     chain.proceedAsync(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent()),
-        Utils.immediateExecutorService(), new CallBack() {
+        Utils.immediateExecutor(), new CallBack() {
           @Override public void onResponse(@Nonnull InterceptorResponse response) {
 
           }
@@ -311,20 +173,13 @@ public class ApolloInterceptorChainTest {
 
   @Test
   public void onDisposeCalled_interceptorIsDisposed() {
-
     final AtomicInteger counter = new AtomicInteger(1);
     EpisodeHeroNameQuery query = createQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
-      @Nonnull @Override
-      public InterceptorResponse intercept(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
-          throws ApolloException {
-        return null;
-      }
-
       @Override
       public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain, @Nonnull
-          ExecutorService dispatcher, @Nonnull CallBack callBack) {
+          Executor dispatcher, @Nonnull CallBack callBack) {
 
       }
 
@@ -334,10 +189,8 @@ public class ApolloInterceptorChainTest {
     };
 
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
-    chain = new RealApolloInterceptorChain(interceptors);
-
+    RealApolloInterceptorChain chain = new RealApolloInterceptorChain(interceptors);
     chain.dispose();
-
     if (counter.get() != 0) {
       Assert.fail("Interceptor's dispose method not called");
     }

@@ -3,13 +3,10 @@ package com.apollographql.apollo;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
-import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.rx.RxApollo;
-
-import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
@@ -17,28 +14,28 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import rx.Observer;
 import rx.Subscription;
-import rx.observers.AssertableSubscriber;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.observers.TestSubscriber;
 
+import static com.apollographql.apollo.Utils.TIME_OUT_SECONDS;
+import static com.apollographql.apollo.Utils.mockResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 import static com.google.common.truth.Truth.assertThat;
 
 public class RxApolloTest {
-
   private ApolloClient apolloClient;
   private MockWebServer server;
 
-  private static final int RX_DELAY_SECONDS = 2;
-  private static final long TIME_OUT_SECONDS = 3;
+  private static final String FILE_EPISODE_HERO_NAME_WITH_ID = "EpisodeHeroNameResponseWithId.json";
+  private static final String FILE_EPISODE_HERO_NAME_CHANGE = "EpisodeHeroNameResponseNameChange.json";
 
-  @Before public void setUp() {
+  @Before public void setup() {
     server = new MockWebServer();
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
 
@@ -49,198 +46,209 @@ public class RxApolloTest {
         .build();
   }
 
-  @After public void tearDown() {
+  @After
+  public void tearDown() {
     try {
       server.shutdown();
-    } catch (IOException ignored) {
+    } catch (IOException ignore) {
+      //ignore
     }
   }
 
-  @Test public void testRxCallProducesValue() throws IOException {
-    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+  @Test
+  public void callProducesValue() throws Exception {
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
-    Response<EpisodeHeroNameQuery.Data> response = RxApollo
-        .from(apolloClient.query(query))
-        .test()
-        .awaitTerminalEvent()
-        .assertNoErrors()
-        .assertCompleted()
-        .getOnNextEvents()
-        .get(0);
-    assertThat(response.data().hero().name()).isEqualTo("R2-D2");
-  }
-
-  @Test public void textRxCallIsCancelledWhenUnsubscribed() throws IOException {
-    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
-
-    ApolloCall<EpisodeHeroNameQuery.Data> call = apolloClient.query(query);
-    TestSubscriber<Response<EpisodeHeroNameQuery.Data>> subscriber = new TestSubscriber<>();
-    Subscription subscription = RxApollo
-        .from(call)
-        .delay(RX_DELAY_SECONDS, TimeUnit.SECONDS)
-        .subscribe(subscriber);
-    subscription.unsubscribe();
-    subscriber
-        .assertUnsubscribed();
-    subscriber.assertNoValues();
-
-  }
-
-  @Test public void testRxPrefetchCompletes() throws IOException {
-    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
-
+    TestSubscriber<Response<EpisodeHeroNameQuery.Data>> testSubscriber = new TestSubscriber<>();
     RxApollo
-        .from(apolloClient.prefetch(query))
-        .test()
-        .awaitTerminalEvent()
-        .assertNoErrors()
-        .assertCompleted();
-  }
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)))
+        .subscribe(testSubscriber);
 
-  @Test public void testRxPrefetchIsCanceledWhenUnsubscribed() throws IOException {
+    testSubscriber.awaitTerminalEvent(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    testSubscriber.assertNoErrors();
+    testSubscriber.assertCompleted();
+    testSubscriber.assertValueCount(1);
+    assertThat(testSubscriber.getOnNextEvents().get(0).data().hero().name()).isEqualTo("R2-D2");
 
-    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
-
-    ApolloPrefetch prefetch = apolloClient.prefetch(query);
-
-    AssertableSubscriber<Void> subscriber = RxApollo
-        .from(prefetch)
-        .delay(RX_DELAY_SECONDS, TimeUnit.SECONDS)
-        .test();
-
-    subscriber.unsubscribe();
-
-    subscriber.assertUnsubscribed();
-    subscriber.assertNotCompleted();
   }
 
   @Test
-  public void testRxQueryWatcherUpdated_SameQuery_DifferentResults() throws IOException, InterruptedException,
-      TimeoutException, ApolloException {
-    final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
-    final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
+  public void callIsCanceledWhenUnsubscribe() throws Exception {
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID).setBodyDelay(TIME_OUT_SECONDS, TimeUnit.SECONDS));
 
-    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+    TestSubscriber<Response<EpisodeHeroNameQuery.Data>> testSubscriber = new TestSubscriber<>();
+    Subscription subscription = RxApollo
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)))
+        .subscribe(testSubscriber);
 
-    ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
-
-    RxApollo.from(watcher).subscribe(new Observer<Response<EpisodeHeroNameQuery.Data>>() {
-      @Override public void onCompleted() {
-      }
-
-      @Override public void onError(Throwable e) {
-        Assert.fail(e.getMessage());
-        firstResponseLatch.countDown();
-        secondResponseLatch.countDown();
-      }
-
-      @Override public void onNext(Response<EpisodeHeroNameQuery.Data> response) {
-        if (secondResponseLatch.getCount() == 2) {
-          assertThat(response.data().hero().name()).isEqualTo("R2-D2");
-        } else if (secondResponseLatch.getCount() == 1) {
-          assertThat(response.data().hero().name()).isEqualTo("Artoo");
-        }
-        firstResponseLatch.countDown();
-        secondResponseLatch.countDown();
-      }
-    });
-
-    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-    //Another newer call gets updated information
-    server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
-    apolloClient.query(query).responseFetcher(NETWORK_ONLY).execute();
-    secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    subscription.unsubscribe();
+    testSubscriber.awaitTerminalEvent(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    testSubscriber.assertNotCompleted();
+    testSubscriber.assertValueCount(0);
+    testSubscriber.assertNoErrors();
+    assertThat(testSubscriber.isUnsubscribed()).isTrue();
   }
 
   @Test
-  public void testRxQueryWatcherNotUpdated_SameQuery_SameResults() throws IOException, InterruptedException, TimeoutException {
-    final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
-    final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
+  public void prefetchCompletes() throws Exception {
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
-    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+    TestSubscriber<Response<EpisodeHeroNameQuery.Data>> testSubscriber = new TestSubscriber<>();
+    RxApollo
+        .from(apolloClient.prefetch(new EpisodeHeroNameQuery(Episode.EMPIRE)))
+        .subscribe(testSubscriber);
 
-    ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
-
-    RxApollo.from(watcher).subscribe(new Observer<Response<EpisodeHeroNameQuery.Data>>() {
-      @Override public void onCompleted() {
-      }
-
-      @Override public void onError(Throwable e) {
-        Assert.fail(e.getMessage());
-        firstResponseLatch.countDown();
-        secondResponseLatch.countDown();
-      }
-
-      @Override public void onNext(Response<EpisodeHeroNameQuery.Data> response) {
-        assertThat(response.data().hero().name()).isEqualTo("R2-D2");
-        firstResponseLatch.countDown();
-        secondResponseLatch.countDown();
-        if (secondResponseLatch.getCount() == 0) {
-          Assert.fail("Received two callbacks, although data should not have changed.");
-        }
-      }
-    });
-
-    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
-    apolloClient.query(query).responseFetcher(NETWORK_ONLY).enqueue(null);
-
-    // Wait 3 seconds to make sure no double callback.
-    // Successful if timeout _is_ reached
-    secondResponseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    testSubscriber.awaitTerminalEvent(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    testSubscriber.assertNoErrors();
+    testSubscriber.assertValueCount(0);
+    testSubscriber.assertCompleted();
   }
 
   @Test
-  public void testQueryRxWatcherUpdated_DifferentQuery_DifferentResults() throws IOException, InterruptedException,
-      TimeoutException, ApolloException {
-    final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
-    final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
+  public void prefetchIsCanceledWhenDisposed() throws Exception {
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID).setBodyDelay(TIME_OUT_SECONDS, TimeUnit.SECONDS));
 
-    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
-    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
-
-    ApolloQueryWatcher<EpisodeHeroNameQuery.Data> watcher = apolloClient.query(query).watcher();
-
-    RxApollo.from(watcher).subscribe(new Observer<Response<EpisodeHeroNameQuery.Data>>() {
-      @Override public void onCompleted() {
-
-      }
-
-      @Override public void onError(Throwable e) {
-        Assert.fail(e.getMessage());
-        firstResponseLatch.countDown();
-        secondResponseLatch.countDown();
-      }
-
-      @Override public void onNext(Response<EpisodeHeroNameQuery.Data> response) {
-        if (secondResponseLatch.getCount() == 2) {
-          assertThat(response.data().hero().name()).isEqualTo("R2-D2");
-        } else if (secondResponseLatch.getCount() == 1) {
-          assertThat(response.data().hero().name()).isEqualTo("Artoo");
-        }
-        firstResponseLatch.countDown();
-        secondResponseLatch.countDown();
-      }
-    });
-
-    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-    HeroAndFriendsNamesWithIDsQuery friendsQuery = HeroAndFriendsNamesWithIDsQuery.builder()
-        .episode(Episode.NEWHOPE)
-        .build();
-
-    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
-    apolloClient.query(friendsQuery).responseFetcher(NETWORK_ONLY).execute();
-    secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    final TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
+    Subscription subscription = RxApollo
+        .from(apolloClient.prefetch(new EpisodeHeroNameQuery(Episode.EMPIRE)))
+        .subscribe(new Action0() {
+          @Override public void call() {
+            testSubscriber.onCompleted();
+          }
+        }, new Action1<Throwable>() {
+          @Override public void call(Throwable throwable) {
+            testSubscriber.onError(throwable);
+          }
+        });
+    subscription.unsubscribe();
+    testSubscriber.awaitTerminalEvent(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    testSubscriber.assertNotCompleted();
+    testSubscriber.assertValueCount(0);
+    testSubscriber.assertNoErrors();
+    assertThat(subscription.isUnsubscribed()).isTrue();
   }
 
-  private MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
+  @Test
+  public void queryWatcherUpdatedSameQueryDifferentResults() throws Exception {
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+
+    final TestSubscriber<Response<EpisodeHeroNameQuery.Data>> testSubscriber = new TestSubscriber<>();
+    RxApollo
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).watcher())
+        .doOnNext(new Action1<Response<EpisodeHeroNameQuery.Data>>() {
+          AtomicBoolean executed = new AtomicBoolean();
+
+          @Override public void call(Response<EpisodeHeroNameQuery.Data> response) {
+            if (executed.compareAndSet(false, true)) {
+              try {
+                server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
+              } catch (Exception ignore) {
+              }
+
+              apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE))
+                  .responseFetcher(NETWORK_ONLY)
+                  .enqueue(null);
+            }
+          }
+        })
+        .take(2)
+        .subscribe(testSubscriber);
+
+    testSubscriber.awaitTerminalEvent(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    testSubscriber.assertValueCount(2);
+    assertThat(testSubscriber.getOnNextEvents().get(0).data().hero().name()).isEqualTo("R2-D2");
+    assertThat(testSubscriber.getOnNextEvents().get(1).data().hero().name()).isEqualTo("Artoo");
+  }
+
+  @Test
+  public void queryWatcherNotUpdatedSameQuerySameResults() throws Exception {
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+
+    final TestSubscriber<Response<EpisodeHeroNameQuery.Data>> testSubscriber = new TestSubscriber<>();
+    RxApollo
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).watcher())
+        .doOnNext(new Action1<Response<EpisodeHeroNameQuery.Data>>() {
+          AtomicBoolean executed = new AtomicBoolean();
+
+          @Override public void call(Response<EpisodeHeroNameQuery.Data> response) {
+            if (executed.compareAndSet(false, true)) {
+              try {
+                server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+              } catch (Exception ignore) {
+              }
+              apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).responseFetcher(NETWORK_ONLY)
+                  .enqueue(null);
+            }
+          }
+        })
+        .take(2)
+        .subscribe(testSubscriber);
+
+    testSubscriber.awaitTerminalEvent(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    testSubscriber.assertValueCount(1);
+    assertThat(testSubscriber.getOnNextEvents().get(0).data().hero().name()).isEqualTo("R2-D2");
+  }
+
+  @Test
+  public void queryWatcherUpdatedDifferentQueryDifferentResults() throws Exception {
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+
+    final TestSubscriber<Response<EpisodeHeroNameQuery.Data>> testSubscriber = new TestSubscriber<>();
+    RxApollo
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).watcher())
+        .doOnNext(new Action1<Response<EpisodeHeroNameQuery.Data>>() {
+          AtomicBoolean executed = new AtomicBoolean();
+
+          @Override public void call(Response<EpisodeHeroNameQuery.Data> response) {
+            if (executed.compareAndSet(false, true)) {
+              try {
+                server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
+              } catch (Exception ignore) {
+              }
+              apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).enqueue(null);
+            }
+          }
+        })
+        .take(2)
+        .subscribe(testSubscriber);
+
+    testSubscriber.awaitTerminalEvent(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    testSubscriber.assertValueCount(2);
+    assertThat(testSubscriber.getOnNextEvents().get(0).data().hero().name()).isEqualTo("R2-D2");
+    assertThat(testSubscriber.getOnNextEvents().get(1).data().hero().name()).isEqualTo("Artoo");
+  }
+
+  @Test
+  public void queryWatcherNotCalledWhenCanceled() throws Exception {
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+
+    final TestSubscriber<Response<EpisodeHeroNameQuery.Data>> testSubscriber = new TestSubscriber<>();
+    Subscription subscription = RxApollo
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).watcher())
+        .doOnNext(new Action1<Response<EpisodeHeroNameQuery.Data>>() {
+          AtomicBoolean executed = new AtomicBoolean();
+
+          @Override public void call(Response<EpisodeHeroNameQuery.Data> response) {
+            if (executed.compareAndSet(false, true)) {
+              try {
+                server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE).setBodyDelay(TIME_OUT_SECONDS, TimeUnit.SECONDS));
+              } catch (Exception ignore) {
+              }
+              apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).responseFetcher(NETWORK_ONLY).enqueue(null);
+            }
+          }
+        })
+        .subscribe(testSubscriber);
+
+    try {
+      Thread.sleep(TimeUnit.SECONDS.toMillis(TIME_OUT_SECONDS));
+    } catch (Exception ignore) {
+    }
+
+    subscription.unsubscribe();
+
+    testSubscriber.awaitTerminalEvent(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    testSubscriber.assertValueCount(1);
+    assertThat(testSubscriber.getOnNextEvents().get(0).data().hero().name()).isEqualTo("R2-D2");
   }
 }

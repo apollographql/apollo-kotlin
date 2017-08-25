@@ -4,6 +4,7 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
+import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import org.junit.Test;
 
@@ -16,35 +17,6 @@ import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ON
 import static com.google.common.truth.Truth.assertThat;
 
 public class CacheOnlyFetcherTest extends BaseFetcherTest {
-
-  @Test public void execute() throws IOException, ApolloException, InterruptedException {
-
-    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
-    Response<EpisodeHeroNameQuery.Data> responseData;
-
-    // Is null when cache empty
-    responseData = apolloClient.query(query).responseFetcher(CACHE_ONLY).execute();
-    assertThat(responseData.data()).isNull();
-    assertThat(responseData.fromCache()).isTrue();
-    assertThat(server.getRequestCount()).isEqualTo(0);
-
-    // Populate cache
-    server.enqueue(mockResponse("HeroNameResponse.json"));
-    responseData = apolloClient.query(query).responseFetcher(NETWORK_ONLY).execute();
-    assertThat(responseData.hasErrors()).isFalse();
-    assertThat(responseData.data().hero().name()).isEqualTo("R2-D2");
-    assertThat(server.getRequestCount()).isEqualTo(1);
-
-    // Success after cache populated
-    server.enqueue(mockResponse("HeroNameResponse.json"));
-    responseData = apolloClient.query(query).responseFetcher(CACHE_ONLY).execute();
-    assertThat(responseData.hasErrors()).isFalse();
-    assertThat(responseData.fromCache()).isTrue();
-    assertThat(responseData.data().hero().name()).isEqualTo("R2-D2");
-    assertThat(server.getRequestCount()).isEqualTo(1);
-
-  }
-
   @Test public void enqueue() throws IOException, ApolloException, TimeoutException, InterruptedException {
     EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     TrackingCallback trackingCallback;
@@ -61,8 +33,9 @@ public class CacheOnlyFetcherTest extends BaseFetcherTest {
 
     // Populate cache
     server.enqueue(mockResponse("HeroNameResponse.json"));
+
     final Response<EpisodeHeroNameQuery.Data> responseData
-        = apolloClient.query(query).responseFetcher(NETWORK_ONLY).execute();
+        = Rx2Apollo.from(apolloClient.query(query).responseFetcher(NETWORK_ONLY)).blockingFirst();
     assertThat(responseData.hasErrors()).isFalse();
     assertThat(responseData.data().hero().name()).isEqualTo("R2-D2");
     assertThat(server.getRequestCount()).isEqualTo(1);

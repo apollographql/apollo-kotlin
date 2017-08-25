@@ -42,7 +42,7 @@ class BaseFetcherTest {
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
-        .dispatcher(Utils.immediateExecutorService())
+        .dispatcher(Utils.immediateExecutor())
         .build();
   }
 

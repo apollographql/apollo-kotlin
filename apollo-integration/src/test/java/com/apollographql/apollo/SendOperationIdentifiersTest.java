@@ -1,6 +1,5 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 
@@ -8,88 +7,67 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import io.reactivex.functions.Predicate;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 
+import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
 import static com.google.common.truth.Truth.assertThat;
 
 public class SendOperationIdentifiersTest {
-
   @Rule public final MockWebServer server = new MockWebServer();
 
-  @Test public void sendOperationIdsTrue() throws InterruptedException, ApolloException, IOException {
-    enqueueResponse("/HeroAndFriendsNameResponse.json");
-    final HeroAndFriendsNamesQuery heroAndFriendsNamesQuery = new HeroAndFriendsNamesQuery(Episode.EMPIRE);
-    final String expectedId = heroAndFriendsNamesQuery.operationId();
-    final CountDownLatch countDownLatch = new CountDownLatch(1);
-    OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .addInterceptor(new Interceptor() {
-          @Override public okhttp3.Response intercept(Chain chain) throws IOException {
-            if (chain.request().body().toString().contains("id: " + expectedId)) {
-              countDownLatch.countDown();
-            }
-            return chain.proceed(chain.request());
-          }
-        })
-        .build();
-
+  @Test public void sendOperationIdsTrue() throws Exception {
+    final HeroAndFriendsNamesQuery query = new HeroAndFriendsNamesQuery(Episode.EMPIRE);
     ApolloClient apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .sendOperationIdentifiers(true)
-        .okHttpClient(okHttpClient)
         .build();
+    apolloClient.query(query).enqueue(null);
 
-    apolloClient.query(heroAndFriendsNamesQuery).execute();
-    countDownLatch.await(3, TimeUnit.SECONDS);
+    String serverRequest = server.takeRequest().getBody().readUtf8();
+    assertThat(serverRequest.contains(String.format("\"id\":\"%s\"", query.operationId()))).isTrue();
   }
 
-  @Test public void doesNotSendOperationIdsWhenFalse() throws InterruptedException, ApolloException, IOException {
-    enqueueResponse("/HeroAndFriendsNameResponse.json");
-    final HeroAndFriendsNamesQuery heroAndFriendsNamesQuery = new HeroAndFriendsNamesQuery(Episode.EMPIRE);
-    final String expectedQueryDocument = heroAndFriendsNamesQuery.queryDocument();
-    final CountDownLatch countDownLatch = new CountDownLatch(1);
-    OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .addInterceptor(new Interceptor() {
-          @Override public okhttp3.Response intercept(Chain chain) throws IOException {
-            if (chain.request().body().toString().contains("query: " + expectedQueryDocument)) {
-              countDownLatch.countDown();
-            }
-            return chain.proceed(chain.request());
-          }
-        })
-        .build();
-
+  @Test public void doesNotSendOperationIdsWhenFalse() throws Exception {
+    final HeroAndFriendsNamesQuery query = new HeroAndFriendsNamesQuery(Episode.EMPIRE);
     ApolloClient apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .sendOperationIdentifiers(false)
-        .okHttpClient(okHttpClient)
         .build();
+    apolloClient.query(query).enqueue(null);
 
-    apolloClient.query(heroAndFriendsNamesQuery).execute();
-    countDownLatch.await(3, TimeUnit.SECONDS);
+    String serverRequest = server.takeRequest().getBody().readUtf8();
+    assertThat(serverRequest.contains("\"id\":\"")).isFalse();
+    assertThat(serverRequest.contains("\"query\":")).isTrue();
   }
 
-  @Test public void operation_id_http_request_header() throws Exception {
+  @Test public void operationIdHttpRequestHeader() throws Exception {
     final HeroAndFriendsNamesQuery heroAndFriendsNamesQuery = new HeroAndFriendsNamesQuery(Episode.EMPIRE);
+    final AtomicBoolean applicationInterceptorHeader = new AtomicBoolean();
+    final AtomicBoolean networkInterceptorHeader = new AtomicBoolean();
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
         .addInterceptor(new Interceptor() {
           @Override public okhttp3.Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
-            assertThat(request.header("X-APOLLO-OPERATION-ID")).isEqualTo(heroAndFriendsNamesQuery.operationId());
+            if (request.header("X-APOLLO-OPERATION-ID").equals(heroAndFriendsNamesQuery.operationId())) {
+              applicationInterceptorHeader.set(true);
+            }
             return chain.proceed(chain.request());
           }
         })
         .addNetworkInterceptor(new Interceptor() {
           @Override public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
-            assertThat(request.header("X-APOLLO-OPERATION-ID")).isEqualTo(heroAndFriendsNamesQuery.operationId());
+            if (request.header("X-APOLLO-OPERATION-ID").equals(heroAndFriendsNamesQuery.operationId())) {
+              networkInterceptorHeader.set(true);
+            }
             return chain.proceed(chain.request());
           }
         })
@@ -100,15 +78,19 @@ public class SendOperationIdentifiersTest {
         .okHttpClient(okHttpClient)
         .build();
 
-    enqueueResponse("/HeroAndFriendsNameResponse.json");
-    apolloClient.query(heroAndFriendsNamesQuery).execute();
-  }
+    enqueueAndAssertResponse(
+        server,
+        "HeroAndFriendsNameResponse.json",
+        apolloClient.query(heroAndFriendsNamesQuery),
+        new Predicate<com.apollographql.apollo.api.Response<HeroAndFriendsNamesQuery.Data>>() {
+          @Override
+          public boolean test(com.apollographql.apollo.api.Response<HeroAndFriendsNamesQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
 
-  private void enqueueResponse(String fileName) throws IOException {
-    server.enqueue(mockResponse(fileName));
-  }
-
-  private MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), fileName), 32);
+    assertThat(applicationInterceptorHeader.get()).isTrue();
+    assertThat(networkInterceptorHeader.get()).isTrue();
   }
 }

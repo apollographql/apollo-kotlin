@@ -12,6 +12,7 @@ import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
+import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import org.junit.After;
 import org.junit.Before;
@@ -20,6 +21,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,6 +34,7 @@ import okhttp3.mockwebserver.MockWebServer;
 import static com.google.common.truth.Truth.assertThat;
 
 public class CacheHeadersTest {
+  private static final int TIME_OUT_SECONDS = 3;
 
   private MockWebServer server;
 
@@ -46,14 +50,15 @@ public class CacheHeadersTest {
 
   @Test
   public void testHeadersReceived() throws ApolloException, IOException {
+    final AtomicBoolean hasHeader = new AtomicBoolean();
     final NormalizedCache normalizedCache = new NormalizedCache() {
       @Nullable @Override public Record loadRecord(@NonNull String key, @NonNull CacheHeaders cacheHeaders) {
-        assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)).isTrue();
+        hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE));
         return null;
       }
 
       @Nonnull @Override public Set<String> merge(@NonNull Record record, @NonNull CacheHeaders cacheHeaders) {
-        assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)).isTrue();
+        hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE));
         return Collections.emptySet();
       }
 
@@ -77,24 +82,24 @@ public class CacheHeadersTest {
         .okHttpClient(new OkHttpClient())
         .build();
 
-
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
     CacheHeaders cacheHeaders = CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build();
-    apolloClient.query(new HeroAndFriendsNamesQuery(Episode.NEWHOPE))
-        .cacheHeaders(cacheHeaders)
-        .execute();
+    Rx2Apollo.from(apolloClient.query(new HeroAndFriendsNamesQuery(Episode.NEWHOPE)).cacheHeaders(cacheHeaders))
+        .test().awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    assertThat(hasHeader.get()).isTrue();
   }
 
   @Test
   public void testDefaultHeadersReceived() throws IOException, ApolloException {
+    final AtomicBoolean hasHeader = new AtomicBoolean();
     final NormalizedCache normalizedCache = new NormalizedCache() {
       @Nullable @Override public Record loadRecord(@NonNull String key, @NonNull CacheHeaders cacheHeaders) {
-        assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)).isTrue();
+        hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE));
         return null;
       }
 
       @Nonnull @Override public Set<String> merge(@NonNull Record record, @NonNull CacheHeaders cacheHeaders) {
-        assertThat(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)).isTrue();
+        hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE));
         return Collections.emptySet();
       }
 
@@ -122,8 +127,9 @@ public class CacheHeadersTest {
         .build();
 
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
-
-    apolloClient.query(new HeroAndFriendsNamesQuery(Episode.NEWHOPE)).execute();
+    Rx2Apollo.from(apolloClient.query(new HeroAndFriendsNamesQuery(Episode.NEWHOPE)).cacheHeaders(cacheHeaders))
+        .test().awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    assertThat(hasHeader.get()).isTrue();
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
