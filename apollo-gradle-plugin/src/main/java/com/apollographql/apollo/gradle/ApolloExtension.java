@@ -51,7 +51,7 @@ public class ApolloExtension {
     return generateModelBuilder;
   }
 
-  public void generateModelBuilder(boolean generateModelBuilder) {
+  public void setGenerateModelBuilder(boolean generateModelBuilder) {
     this.generateModelBuilder = generateModelBuilder;
   }
 
