@@ -6,6 +6,7 @@ import com.apollographql.apollo.ApolloPrefetch;
 import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.internal.util.Cancelable;
 
 import javax.annotation.Nonnull;
@@ -79,7 +80,7 @@ public final class RxApollo {
 
   /**
    * Converts an {@link ApolloCall} to a Observable. The number of emissions this Observable will have is based on the
-   * {@link com.apollographql.apollo.fetcher.ResponseFetcher} used with the call.
+   * {@link ResponseFetcher} used with the call.
    *
    * @param call             the ApolloCall to convert
    * @param <T>              the value type
@@ -116,8 +117,7 @@ public final class RxApollo {
 
   /**
    * Converts an {@link ApolloCall} to a Observable with backpressure mode {@link rx.Emitter.BackpressureMode#BUFFER}.
-   * The number of emissions this Observable will have is based on the {@link com.apollographql.apollo.fetcher.ResponseFetcher}
-   * used with the call.
+   * The number of emissions this Observable will have is based on the {@link ResponseFetcher} used with the call.
    *
    * @param call the ApolloCall to convert
    * @param <T>  the value type

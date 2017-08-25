@@ -1,6 +1,5 @@
 package com.apollographql.apollo.internal.interceptor;
 
-import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 
