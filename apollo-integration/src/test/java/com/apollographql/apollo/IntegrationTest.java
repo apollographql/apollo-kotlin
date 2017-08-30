@@ -12,6 +12,7 @@ import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.httpcache.type.CustomType;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery;
+import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -33,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
+import io.reactivex.functions.Predicate;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -82,8 +84,39 @@ public class IntegrationTest {
   @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
     server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"));
 
-    Response<AllPlanetsQuery.Data> body = apolloClient.query(new AllPlanetsQuery()).execute();
-    assertThat(body.hasErrors()).isFalse();
+    assertResponse(
+        apolloClient.query(new AllPlanetsQuery()),
+        new Predicate<Response<AllPlanetsQuery.Data>>() {
+          @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
+            assertThat(response.data().allPlanets().planets().size()).isEqualTo(60);
+
+            List<String> planets = FluentIterable.from(response.data().allPlanets().planets())
+                .transform(new Function<AllPlanetsQuery.Planet, String>() {
+                  @Override public String apply(AllPlanetsQuery.Planet planet) {
+                    return planet.fragments().planetFragment().name();
+                  }
+                }).toList();
+            assertThat(planets).isEqualTo(Arrays.asList(("Tatooine, Alderaan, Yavin IV, Hoth, Dagobah, Bespin, Endor, Naboo, "
+                + "Coruscant, Kamino, Geonosis, Utapau, Mustafar, Kashyyyk, Polis Massa, Mygeeto, Felucia, Cato Neimoidia, "
+                + "Saleucami, Stewjon, Eriadu, Corellia, Rodia, Nal Hutta, Dantooine, Bestine IV, Ord Mantell, unknown, "
+                + "Trandosha, Socorro, Mon Cala, Chandrila, Sullust, Toydaria, Malastare, Dathomir, Ryloth, Aleen Minor, "
+                + "Vulpter, Troiken, Tund, Haruun Kal, Cerea, Glee Anselm, Iridonia, Tholoth, Iktotch, Quermia, Dorin, "
+                + "Champala, Mirial, Serenno, Concord Dawn, Zolan, Ojom, Skako, Muunilinst, Shili, Kalee, Umbara")
+                .split("\\s*,\\s*")
+            ));
+
+            AllPlanetsQuery.Planet firstPlanet = response.data().allPlanets().planets().get(0);
+            assertThat(firstPlanet.fragments().planetFragment().climates()).isEqualTo(Collections.singletonList("arid"));
+            assertThat(firstPlanet.fragments().planetFragment().surfaceWater()).isWithin(1d);
+            assertThat(firstPlanet.filmConnection().totalCount()).isEqualTo(5);
+            assertThat(firstPlanet.filmConnection().films().size()).isEqualTo(5);
+            assertThat(firstPlanet.filmConnection().films().get(0).fragments().filmFragment().title()).isEqualTo("A New Hope");
+            assertThat(firstPlanet.filmConnection().films().get(0).fragments().filmFragment().producers()).isEqualTo(Arrays
+                .asList("Gary Kurtz", "Rick McCallum"));
+            return true;
+          }
+        }
+    );
 
     assertThat(server.takeRequest().getBody().readString(Charsets.UTF_8))
         .isEqualTo("{\"query\":\"query AllPlanets {  "
@@ -115,150 +148,132 @@ public class IntegrationTest {
             + "  climates"
             + "  surfaceWater"
             + "}\",\"variables\":{}}");
-
-    AllPlanetsQuery.Data data = body.data();
-    assertThat(data.allPlanets().planets().size()).isEqualTo(60);
-
-    List<String> planets = FluentIterable.from(data.allPlanets().planets())
-        .transform(new Function<AllPlanetsQuery.Planet, String>() {
-          @Override public String apply(AllPlanetsQuery.Planet planet) {
-            return planet.fragments().planetFragment().name();
-          }
-        }).toList();
-    assertThat(planets).isEqualTo(Arrays.asList(("Tatooine, Alderaan, Yavin IV, Hoth, Dagobah, Bespin, Endor, Naboo, "
-        + "Coruscant, Kamino, Geonosis, Utapau, Mustafar, Kashyyyk, Polis Massa, Mygeeto, Felucia, Cato Neimoidia, "
-        + "Saleucami, Stewjon, Eriadu, Corellia, Rodia, Nal Hutta, Dantooine, Bestine IV, Ord Mantell, unknown, "
-        + "Trandosha, Socorro, Mon Cala, Chandrila, Sullust, Toydaria, Malastare, Dathomir, Ryloth, Aleen Minor, "
-        + "Vulpter, Troiken, Tund, Haruun Kal, Cerea, Glee Anselm, Iridonia, Tholoth, Iktotch, Quermia, Dorin, "
-        + "Champala, Mirial, Serenno, Concord Dawn, Zolan, Ojom, Skako, Muunilinst, Shili, Kalee, Umbara")
-        .split("\\s*,\\s*")
-    ));
-
-    AllPlanetsQuery.Planet firstPlanet = data.allPlanets().planets().get(0);
-    assertThat(firstPlanet.fragments().planetFragment().climates()).isEqualTo(Collections.singletonList("arid"));
-    assertThat(firstPlanet.fragments().planetFragment().surfaceWater()).isWithin(1d);
-    assertThat(firstPlanet.filmConnection().totalCount()).isEqualTo(5);
-    assertThat(firstPlanet.filmConnection().films().size()).isEqualTo(5);
-    assertThat(firstPlanet.filmConnection().films().get(0).fragments().filmFragment().title()).isEqualTo("A New Hope");
-    assertThat(firstPlanet.filmConnection().films().get(0).fragments().filmFragment().producers()).isEqualTo(Arrays
-        .asList("Gary Kurtz", "Rick McCallum"));
   }
 
   @Test public void error_response() throws Exception {
     server.enqueue(mockResponse("ResponseError.json"));
-    Response<AllPlanetsQuery.Data> body = apolloClient.query(new AllPlanetsQuery()).execute();
-    assertThat(body.hasErrors()).isTrue();
-    //noinspection ConstantConditions
-    assertThat(body.errors()).containsExactly(new Error(
-        "Cannot query field \"names\" on type \"Species\".",
-        Collections.singletonList(new Error.Location(3, 5)), Collections.<String, Object>emptyMap()));
+    assertResponse(
+        apolloClient.query(new AllPlanetsQuery()),
+        new Predicate<Response<AllPlanetsQuery.Data>>() {
+          @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
+            assertThat(response.hasErrors()).isTrue();
+            //noinspection ConstantConditions
+            assertThat(response.errors()).containsExactly(new Error(
+                "Cannot query field \"names\" on type \"Species\".",
+                Collections.singletonList(new Error.Location(3, 5)), Collections.<String, Object>emptyMap()));
+            return true;
+          }
+        }
+    );
   }
 
   @Test public void error_response_with_nulls_and_custom_attributes() throws Exception {
     server.enqueue(mockResponse("ResponseErrorWithNullsAndCustomAttributes.json"));
-    Response<AllPlanetsQuery.Data> body = apolloClient.query(new AllPlanetsQuery()).execute();
-    assertThat(body.hasErrors()).isTrue();
-    assertThat(body.errors()).hasSize(1);
-    assertThat(body.errors().get(0).message()).isNull();
-    assertThat(body.errors().get(0).customAttributes()).hasSize(2);
-    assertThat(body.errors().get(0).customAttributes().get("code")).isEqualTo("userNotFound");
-    assertThat(body.errors().get(0).customAttributes().get("path")).isEqualTo("loginWithPassword");
-    assertThat(body.errors().get(0).locations()).hasSize(0);
+    assertResponse(
+        apolloClient.query(new AllPlanetsQuery()),
+        new Predicate<Response<AllPlanetsQuery.Data>>() {
+          @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
+            assertThat(response.hasErrors()).isTrue();
+            assertThat(response.errors()).hasSize(1);
+            assertThat(response.errors().get(0).message()).isNull();
+            assertThat(response.errors().get(0).customAttributes()).hasSize(2);
+            assertThat(response.errors().get(0).customAttributes().get("code")).isEqualTo("userNotFound");
+            assertThat(response.errors().get(0).customAttributes().get("path")).isEqualTo("loginWithPassword");
+            assertThat(response.errors().get(0).locations()).hasSize(0);
+            return true;
+          }
+        }
+    );
   }
 
   @Test public void errorResponse_custom_attributes() throws Exception {
     server.enqueue(mockResponse("ResponseErrorWithCustomAttributes.json"));
-    Response<AllPlanetsQuery.Data> body = apolloClient.query(new AllPlanetsQuery()).execute();
-    assertThat(body.hasErrors()).isTrue();
-    assertThat(body.errors().get(0).customAttributes()).hasSize(4);
-    assertThat(body.errors().get(0).customAttributes().get("code")).isEqualTo(new BigDecimal(500));
-    assertThat(body.errors().get(0).customAttributes().get("status")).isEqualTo("Internal Error");
-    assertThat(body.errors().get(0).customAttributes().get("fatal")).isEqualTo(true);
-    assertThat(body.errors().get(0).customAttributes().get("path")).isEqualTo(Arrays.asList("query"));
+    assertResponse(
+        apolloClient.query(new AllPlanetsQuery()),
+        new Predicate<Response<AllPlanetsQuery.Data>>() {
+          @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
+            assertThat(response.hasErrors()).isTrue();
+            assertThat(response.errors().get(0).customAttributes()).hasSize(4);
+            assertThat(response.errors().get(0).customAttributes().get("code")).isEqualTo(new BigDecimal(500));
+            assertThat(response.errors().get(0).customAttributes().get("status")).isEqualTo("Internal Error");
+            assertThat(response.errors().get(0).customAttributes().get("fatal")).isEqualTo(true);
+            assertThat(response.errors().get(0).customAttributes().get("path")).isEqualTo(Arrays.asList("query"));
+            return true;
+          }
+        }
+    );
   }
 
   @Test public void errorResponse_with_data() throws Exception {
-    MockResponse mockResponse = mockResponse("ResponseErrorWithData.json");
-    server.enqueue(mockResponse);
-
-    final EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(JEDI).build();
-    ApolloCall<EpisodeHeroNameQuery.Data> call = apolloClient.query(query);
-    Response<EpisodeHeroNameQuery.Data> body = call.execute();
-    assertThat(body.data()).isNotNull();
-    assertThat(body.data().hero().name()).isEqualTo("R2-D2");
-
-    assertThat(body.errors()).containsExactly(new Error(
-        "Cannot query field \"names\" on type \"Species\".",
-        Collections.singletonList(new Error.Location(3, 5)), Collections.<String, Object>emptyMap()));
+    server.enqueue(mockResponse("ResponseErrorWithData.json"));
+    assertResponse(
+        apolloClient.query(new EpisodeHeroNameQuery(JEDI)),
+        new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
+          @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
+            assertThat(response.data()).isNotNull();
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.errors()).containsExactly(new Error(
+                "Cannot query field \"names\" on type \"Species\".",
+                Collections.singletonList(new Error.Location(3, 5)), Collections.<String, Object>emptyMap()));
+            return true;
+          }
+        }
+    );
   }
 
   @Test public void allFilmsWithDate() throws Exception {
     server.enqueue(mockResponse("HttpCacheTestAllFilms.json"));
-
-    Response<AllFilmsQuery.Data> body = apolloClient.query(new AllFilmsQuery()).execute();
-    assertThat(body.hasErrors()).isFalse();
-
-
-    AllFilmsQuery.Data data = body.data();
-    assertThat(data.allFilms().films()).hasSize(6);
-
-    List<String> dates = FluentIterable.from(data.allFilms().films())
-        .transform(new Function<AllFilmsQuery.Film, String>() {
-          @Override public String apply(AllFilmsQuery.Film film) {
-            Date releaseDate = film.releaseDate();
-            return dateCustomTypeAdapter.encode(releaseDate);
+    assertResponse(
+        apolloClient.query(new AllFilmsQuery()),
+        new Predicate<Response<AllFilmsQuery.Data>>() {
+          @Override public boolean test(Response<AllFilmsQuery.Data> response) throws Exception {
+            assertThat(response.hasErrors()).isFalse();
+            assertThat(response.data().allFilms().films()).hasSize(6);
+            List<String> dates = FluentIterable.from(response.data().allFilms().films())
+                .transform(new Function<AllFilmsQuery.Film, String>() {
+                  @Override public String apply(AllFilmsQuery.Film film) {
+                    Date releaseDate = film.releaseDate();
+                    return dateCustomTypeAdapter.encode(releaseDate);
+                  }
+                }).copyInto(new ArrayList<String>());
+            assertThat(dates).isEqualTo(Arrays.asList("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19",
+                "2002-05-16", "2005-05-19"));
+            return true;
           }
-        }).copyInto(new ArrayList<String>());
-
-    assertThat(dates).isEqualTo(Arrays.asList("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19", "2002-05-16",
-        "2005-05-19"));
+        }
+    );
   }
-
-  @Test public void allPlanetQueryAsync() throws Exception {
-    server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"));
-    final NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
-    apolloClient.query(new AllPlanetsQuery()).enqueue(new ApolloCall.Callback<AllPlanetsQuery.Data>() {
-      @Override public void onResponse(@Nonnull Response<AllPlanetsQuery.Data> response) {
-        assertThat(response.hasErrors()).isFalse();
-        assertThat(response.data().allPlanets().planets().size()).isEqualTo(60);
-        latch.countDown();
-      }
-
-      @Override public void onFailure(@Nonnull ApolloException e) {
-        latch.countDown();
-        Assert.fail("expected success");
-      }
-    });
-    latch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-  }
-
-//  @Test(expected = ApolloException.class) public void dataEmpty() throws Exception {
-//    MockResponse mockResponse = mockResponse("ResponseDataEmpty.json");
-//    server.enqueue(mockResponse);
-//
-//    ApolloCall<HeroName.Data> call = apolloClient.query(new HeroName());
-//    call.execute();
-//  }
 
   @Test public void dataNull() throws Exception {
-    MockResponse mockResponse = mockResponse("ResponseDataNull.json");
-    server.enqueue(mockResponse);
-
-    ApolloCall<HeroNameQuery.Data> call = apolloClient.query(new HeroNameQuery());
-    Response<HeroNameQuery.Data> body = call.execute();
-    assertThat(body.data()).isNull();
-    assertThat(body.hasErrors()).isFalse();
+    server.enqueue(mockResponse("ResponseDataNull.json"));
+    assertResponse(
+        apolloClient.query(new HeroNameQuery()),
+        new Predicate<Response<HeroNameQuery.Data>>() {
+          @Override public boolean test(Response<HeroNameQuery.Data> response) throws Exception {
+            assertThat(response.data()).isNull();
+            assertThat(response.hasErrors()).isFalse();
+            return true;
+          }
+        }
+    );
   }
 
-  @Test(expected = ApolloException.class) public void fieldMissing() throws Exception {
-    MockResponse mockResponse = mockResponse("ResponseDataMissing.json");
-    server.enqueue(mockResponse);
-
-    ApolloCall<HeroNameQuery.Data> call = apolloClient.query(new HeroNameQuery());
-    call.execute();
+  @Test public void fieldMissing() throws Exception {
+    server.enqueue(mockResponse("ResponseDataMissing.json"));
+    Rx2Apollo.from(apolloClient.query(new HeroNameQuery()))
+        .test()
+        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+        .assertError(ApolloException.class);
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
     return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
+  }
+
+  private static <T> void assertResponse(ApolloCall<T> call, Predicate<Response<T>> predicate) {
+    Rx2Apollo.from(call)
+        .test()
+        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+        .assertValue(predicate);
   }
 }

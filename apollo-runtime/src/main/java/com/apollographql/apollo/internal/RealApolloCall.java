@@ -6,7 +6,6 @@ import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
-import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
@@ -34,7 +33,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nonnull;
@@ -64,7 +63,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final FetchOptions fetchOptions;
   final ResponseFetcher responseFetcher;
   final ApolloInterceptorChain interceptorChain;
-  final ExecutorService dispatcher;
+  final Executor dispatcher;
   final ApolloLogger logger;
   final ApolloCallTracker tracker;
   final List<ApolloInterceptor> applicationInterceptors;
@@ -119,28 +118,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     sendOperationdIdentifiers = builder.sendOperationIdentifiers;
     interceptorChain = prepareInterceptorChain(operation);
     optimisticUpdates = builder.optimisticUpdates;
-  }
-
-  @SuppressWarnings("unchecked") @Nonnull @Override public Response<T> execute() throws ApolloException {
-    activate(Optional.<Callback<T>>absent());
-    Response<T> response;
-    try {
-      ApolloInterceptor.InterceptorRequest request = new ApolloInterceptor.InterceptorRequest(operation, fetchOptions,
-          optimisticUpdates);
-      response = interceptorChain.proceed(request).parsedResponse.or(Response.<T>builder(operation).build());
-    } catch (Exception e) {
-      if (state.get() == CANCELED) {
-        throw new ApolloCanceledException("Call canceled", e);
-      } else {
-        throw e;
-      }
-    } finally {
-      terminate();
-    }
-    if (queryReFetcher.isPresent()) {
-      queryReFetcher.get().refetch();
-    }
-    return response;
   }
 
   @Override public void enqueue(@Nullable final Callback<T> responseCallback) {
@@ -377,7 +354,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     ResponseFetcher responseFetcher;
     CacheHeaders cacheHeaders;
     ApolloInterceptorChain interceptorChain;
-    ExecutorService dispatcher;
+    Executor dispatcher;
     ApolloLogger logger;
     List<ApolloInterceptor> applicationInterceptors;
     List<OperationName> refetchQueryNames = emptyList();
@@ -441,7 +418,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
       return this;
     }
 
-    public Builder<T> dispatcher(ExecutorService dispatcher) {
+    public Builder<T> dispatcher(Executor dispatcher) {
       this.dispatcher = dispatcher;
       return this;
     }

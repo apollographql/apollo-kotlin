@@ -29,10 +29,15 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
+import io.reactivex.functions.Predicate;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
+import static com.apollographql.apollo.Utils.TIME_OUT_SECONDS;
+import static com.apollographql.apollo.Utils.assertResponse;
+import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
+import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.google.common.truth.Truth.assertThat;
 
 public class OptimisticCacheTestCase {
@@ -43,15 +48,15 @@ public class OptimisticCacheTestCase {
     server = new MockWebServer();
 
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .writeTimeout(5, TimeUnit.SECONDS)
-        .readTimeout(5, TimeUnit.SECONDS)
+        .writeTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+        .readTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .build();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
-        .dispatcher(Utils.immediateExecutorService())
+        .dispatcher(Utils.immediateExecutor())
         .build();
   }
 
@@ -67,9 +72,18 @@ public class OptimisticCacheTestCase {
   }
 
   @Test public void simple() throws Exception {
-    server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
     HeroAndFriendsNamesQuery query = new HeroAndFriendsNamesQuery(Episode.JEDI);
-    apolloClient.query(query).execute();
+
+    enqueueAndAssertResponse(
+        server,
+        "HeroAndFriendsNameResponse.json",
+        apolloClient.query(query),
+        new Predicate<Response<HeroAndFriendsNamesQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
 
     UUID mutationId = UUID.randomUUID();
     HeroAndFriendsNamesQuery.Data data = new HeroAndFriendsNamesQuery.Data(new HeroAndFriendsNamesQuery.Hero(
@@ -88,28 +102,54 @@ public class OptimisticCacheTestCase {
     ));
     apolloClient.apolloStore().writeOptimisticUpdatesAndPublish(query, data, mutationId).execute();
 
-    data = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data();
-    assertThat(data.hero().name()).isEqualTo("R222-D222");
-    assertThat(data.hero().friends()).hasSize(2);
-    assertThat(data.hero().friends().get(0).name()).isEqualTo("SuperMan");
-    assertThat(data.hero().friends().get(1).name()).isEqualTo("Batman");
+    assertResponse(
+        apolloClient.query(query).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroAndFriendsNamesQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().name()).isEqualTo("R222-D222");
+            assertThat(response.data().hero().friends()).hasSize(2);
+            assertThat(response.data().hero().friends().get(0).name()).isEqualTo("SuperMan");
+            assertThat(response.data().hero().friends().get(1).name()).isEqualTo("Batman");
+            return true;
+          }
+        }
+    );
 
     apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId).execute();
 
-    data = apolloClient.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data();
-    assertThat(data.hero().name()).isEqualTo("R2-D2");
-    assertThat(data.hero().friends()).hasSize(3);
-    assertThat(data.hero().friends().get(0).name()).isEqualTo("Luke Skywalker");
-    assertThat(data.hero().friends().get(1).name()).isEqualTo("Han Solo");
-    assertThat(data.hero().friends().get(2).name()).isEqualTo("Leia Organa");
+    assertResponse(
+        apolloClient.query(query).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroAndFriendsNamesQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.data().hero().friends()).hasSize(3);
+            assertThat(response.data().hero().friends().get(0).name()).isEqualTo("Luke Skywalker");
+            assertThat(response.data().hero().friends().get(1).name()).isEqualTo("Han Solo");
+            assertThat(response.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
+            return true;
+          }
+        }
+    );
   }
 
   @Test public void two_optimistic_two_rollback() throws Exception {
-    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
     HeroAndFriendsNamesWithIDsQuery query1 = new HeroAndFriendsNamesWithIDsQuery(Episode.JEDI);
-    apolloClient.query(query1).execute();
-
     UUID mutationId1 = UUID.randomUUID();
+
+    HeroNameWithIdQuery query2 = new HeroNameWithIdQuery();
+    UUID mutationId2 = UUID.randomUUID();
+
+    enqueueAndAssertResponse(
+        server,
+        "HeroAndFriendsNameWithIdsResponse.json",
+        apolloClient.query(query1),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
+
     HeroAndFriendsNamesWithIDsQuery.Data data1 = new HeroAndFriendsNamesWithIDsQuery.Data(
         new HeroAndFriendsNamesWithIDsQuery.Hero(
             "Droid",
@@ -132,20 +172,33 @@ public class OptimisticCacheTestCase {
     apolloClient.apolloStore().writeOptimisticUpdatesAndPublish(query1, data1, mutationId1).execute();
 
     // check if query1 see optimistic updates
-    data1 = apolloClient.query(query1).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data();
-    assertThat(data1.hero().id()).isEqualTo("2001");
-    assertThat(data1.hero().name()).isEqualTo("R222-D222");
-    assertThat(data1.hero().friends()).hasSize(2);
-    assertThat(data1.hero().friends().get(0).id()).isEqualTo("1000");
-    assertThat(data1.hero().friends().get(0).name()).isEqualTo("SuperMan");
-    assertThat(data1.hero().friends().get(1).id()).isEqualTo("1003");
-    assertThat(data1.hero().friends().get(1).name()).isEqualTo("Batman");
+    assertResponse(
+        apolloClient.query(query1).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().id()).isEqualTo("2001");
+            assertThat(response.data().hero().name()).isEqualTo("R222-D222");
+            assertThat(response.data().hero().friends()).hasSize(2);
+            assertThat(response.data().hero().friends().get(0).id()).isEqualTo("1000");
+            assertThat(response.data().hero().friends().get(0).name()).isEqualTo("SuperMan");
+            assertThat(response.data().hero().friends().get(1).id()).isEqualTo("1003");
+            assertThat(response.data().hero().friends().get(1).name()).isEqualTo("Batman");
+            return true;
+          }
+        }
+    );
 
-    server.enqueue(mockResponse("HeroNameWithIdResponse.json"));
-    HeroNameWithIdQuery query2 = new HeroNameWithIdQuery();
-    apolloClient.query(query2).execute();
+    enqueueAndAssertResponse(
+        server,
+        "HeroNameWithIdResponse.json",
+        apolloClient.query(query2),
+        new Predicate<Response<HeroNameWithIdQuery.Data>>() {
+          @Override public boolean test(Response<HeroNameWithIdQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
 
-    UUID mutationId2 = UUID.randomUUID();
     HeroNameWithIdQuery.Data data2 = new HeroNameWithIdQuery.Data(new HeroNameWithIdQuery.Hero(
         "Human",
         "1000",
@@ -154,52 +207,95 @@ public class OptimisticCacheTestCase {
     apolloClient.apolloStore().writeOptimisticUpdatesAndPublish(query2, data2, mutationId2).execute();
 
     // check if query1 see the latest optimistic updates
-    data1 = apolloClient.query(query1).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data();
-    assertThat(data1.hero().id()).isEqualTo("2001");
-    assertThat(data1.hero().name()).isEqualTo("R222-D222");
-    assertThat(data1.hero().friends()).hasSize(2);
-    assertThat(data1.hero().friends().get(0).id()).isEqualTo("1000");
-    assertThat(data1.hero().friends().get(0).name()).isEqualTo("Beast");
-    assertThat(data1.hero().friends().get(1).id()).isEqualTo("1003");
-    assertThat(data1.hero().friends().get(1).name()).isEqualTo("Batman");
+    assertResponse(
+        apolloClient.query(query1).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().id()).isEqualTo("2001");
+            assertThat(response.data().hero().name()).isEqualTo("R222-D222");
+            assertThat(response.data().hero().friends()).hasSize(2);
+            assertThat(response.data().hero().friends().get(0).id()).isEqualTo("1000");
+            assertThat(response.data().hero().friends().get(0).name()).isEqualTo("Beast");
+            assertThat(response.data().hero().friends().get(1).id()).isEqualTo("1003");
+            assertThat(response.data().hero().friends().get(1).name()).isEqualTo("Batman");
+            return true;
+          }
+        }
+    );
 
     // check if query2 see the latest optimistic updates
-    data2 = apolloClient.query(query2).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data();
-    assertThat(data2.hero().id()).isEqualTo("1000");
-    assertThat(data2.hero().name()).isEqualTo("Beast");
+    assertResponse(
+        apolloClient.query(query2).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroNameWithIdQuery.Data>>() {
+          @Override public boolean test(Response<HeroNameWithIdQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().id()).isEqualTo("1000");
+            assertThat(response.data().hero().name()).isEqualTo("Beast");
+            return true;
+          }
+        }
+    );
 
     // rollback query1 optimistic updates
     apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId1).execute();
 
     // check if query1 see the latest optimistic updates
-    data1 = apolloClient.query(query1).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data();
-    assertThat(data1.hero().id()).isEqualTo("2001");
-    assertThat(data1.hero().name()).isEqualTo("R2-D2");
-    assertThat(data1.hero().friends()).hasSize(3);
-    assertThat(data1.hero().friends().get(0).id()).isEqualTo("1000");
-    assertThat(data1.hero().friends().get(0).name()).isEqualTo("Beast");
-    assertThat(data1.hero().friends().get(1).id()).isEqualTo("1002");
-    assertThat(data1.hero().friends().get(1).name()).isEqualTo("Han Solo");
-    assertThat(data1.hero().friends().get(2).id()).isEqualTo("1003");
-    assertThat(data1.hero().friends().get(2).name()).isEqualTo("Leia Organa");
+    assertResponse(
+        apolloClient.query(query1).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().id()).isEqualTo("2001");
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.data().hero().friends()).hasSize(3);
+            assertThat(response.data().hero().friends().get(0).id()).isEqualTo("1000");
+            assertThat(response.data().hero().friends().get(0).name()).isEqualTo("Beast");
+            assertThat(response.data().hero().friends().get(1).id()).isEqualTo("1002");
+            assertThat(response.data().hero().friends().get(1).name()).isEqualTo("Han Solo");
+            assertThat(response.data().hero().friends().get(2).id()).isEqualTo("1003");
+            assertThat(response.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
+            return true;
+          }
+        }
+    );
 
     // check if query2 see the latest optimistic updates
-    data2 = apolloClient.query(query2).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data();
-    assertThat(data2.hero().id()).isEqualTo("1000");
-    assertThat(data2.hero().name()).isEqualTo("Beast");
+    assertResponse(
+        apolloClient.query(query2).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroNameWithIdQuery.Data>>() {
+          @Override public boolean test(Response<HeroNameWithIdQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().id()).isEqualTo("1000");
+            assertThat(response.data().hero().name()).isEqualTo("Beast");
+            return true;
+          }
+        }
+    );
 
     // rollback query2 optimistic updates
     apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId2).execute();
 
     // check if query2 see the latest optimistic updates
-    data2 = apolloClient.query(query2).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data();
-    assertThat(data2.hero().id()).isEqualTo("1000");
-    assertThat(data2.hero().name()).isEqualTo("SuperMan");
+    assertResponse(
+        apolloClient.query(query2).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroNameWithIdQuery.Data>>() {
+          @Override public boolean test(Response<HeroNameWithIdQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().id()).isEqualTo("1000");
+            assertThat(response.data().hero().name()).isEqualTo("SuperMan");
+            return true;
+          }
+        }
+    );
   }
 
   @Test public void full_persisted_partial_optimistic() throws Exception {
-    server.enqueue(mockResponse("HeroNameWithEnumsResponse.json"));
-    apolloClient.query(new HeroNameWithEnumsQuery()).execute();
+    enqueueAndAssertResponse(
+        server,
+        "HeroNameWithEnumsResponse.json",
+        apolloClient.query(new HeroNameWithEnumsQuery()),
+        new Predicate<Response<HeroNameWithEnumsQuery.Data>>() {
+          @Override public boolean test(Response<HeroNameWithEnumsQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
 
     UUID mutationId = UUID.randomUUID();
     apolloClient.apolloStore().writeOptimisticUpdates(
@@ -208,17 +304,31 @@ public class OptimisticCacheTestCase {
         mutationId
     ).execute();
 
-    HeroNameWithEnumsQuery.Data data = apolloClient.query(new HeroNameWithEnumsQuery()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data();
-    assertThat(data.hero().name()).isEqualTo("R22-D22");
-    assertThat(data.hero().firstAppearsIn()).isEqualTo(Episode.EMPIRE);
-    assertThat(data.hero().appearsIn()).isEqualTo(Arrays.asList(Episode.NEWHOPE, Episode.EMPIRE, Episode.JEDI));
+    assertResponse(
+        apolloClient.query(new HeroNameWithEnumsQuery()).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroNameWithEnumsQuery.Data>>() {
+          @Override public boolean test(Response<HeroNameWithEnumsQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().name()).isEqualTo("R22-D22");
+            assertThat(response.data().hero().firstAppearsIn()).isEqualTo(Episode.EMPIRE);
+            assertThat(response.data().hero().appearsIn()).isEqualTo(Arrays.asList(Episode.NEWHOPE, Episode.EMPIRE, Episode.JEDI));
+            return true;
+          }
+        }
+    );
 
     apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId).execute();
 
-    data = apolloClient.query(new HeroNameWithEnumsQuery()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data();
-    assertThat(data.hero().name()).isEqualTo("R2-D2");
-    assertThat(data.hero().firstAppearsIn()).isEqualTo(Episode.EMPIRE);
-    assertThat(data.hero().appearsIn()).isEqualTo(Arrays.asList(Episode.NEWHOPE, Episode.EMPIRE, Episode.JEDI));
+    assertResponse(
+        apolloClient.query(new HeroNameWithEnumsQuery()).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroNameWithEnumsQuery.Data>>() {
+          @Override public boolean test(Response<HeroNameWithEnumsQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.data().hero().firstAppearsIn()).isEqualTo(Episode.EMPIRE);
+            assertThat(response.data().hero().appearsIn()).isEqualTo(Arrays.asList(Episode.NEWHOPE, Episode.EMPIRE, Episode.JEDI));
+            return true;
+          }
+        }
+    );
   }
 
   @Test public void mutation_and_query_watcher() throws Exception {
@@ -306,15 +416,34 @@ public class OptimisticCacheTestCase {
   }
 
   @Test public void two_optimistic_reverse_rollback_order() throws Exception {
-    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
     HeroAndFriendsNamesWithIDsQuery query1 = new HeroAndFriendsNamesWithIDsQuery(Episode.JEDI);
-    apolloClient.query(query1).execute();
-
-    server.enqueue(mockResponse("HeroNameWithIdResponse.json"));
-    HeroNameWithIdQuery query2 = new HeroNameWithIdQuery();
-    apolloClient.query(query2).execute();
-
     UUID mutationId1 = UUID.randomUUID();
+
+    HeroNameWithIdQuery query2 = new HeroNameWithIdQuery();
+    UUID mutationId2 = UUID.randomUUID();
+
+    enqueueAndAssertResponse(
+        server,
+        "HeroAndFriendsNameWithIdsResponse.json",
+        apolloClient.query(query1),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
+
+    enqueueAndAssertResponse(
+        server,
+        "HeroNameWithIdResponse.json",
+        apolloClient.query(query2),
+        new Predicate<Response<HeroNameWithIdQuery.Data>>() {
+          @Override public boolean test(Response<HeroNameWithIdQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
+
     HeroAndFriendsNamesWithIDsQuery.Data data1 = new HeroAndFriendsNamesWithIDsQuery.Data(
         new HeroAndFriendsNamesWithIDsQuery.Hero(
             "Droid",
@@ -336,7 +465,6 @@ public class OptimisticCacheTestCase {
     );
     apolloClient.apolloStore().writeOptimisticUpdatesAndPublish(query1, data1, mutationId1).execute();
 
-    UUID mutationId2 = UUID.randomUUID();
     HeroNameWithIdQuery.Data data2 = new HeroNameWithIdQuery.Data(new HeroNameWithIdQuery.Hero(
         "Human",
         "1000",
@@ -345,56 +473,98 @@ public class OptimisticCacheTestCase {
     apolloClient.apolloStore().writeOptimisticUpdatesAndPublish(query2, data2, mutationId2).execute();
 
     // check if query1 see optimistic updates
-    data1 = apolloClient.query(query1).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data();
-    assertThat(data1.hero().id()).isEqualTo("2001");
-    assertThat(data1.hero().name()).isEqualTo("R222-D222");
-    assertThat(data1.hero().friends()).hasSize(2);
-    assertThat(data1.hero().friends().get(0).id()).isEqualTo("1000");
-    assertThat(data1.hero().friends().get(0).name()).isEqualTo("Spiderman");
-    assertThat(data1.hero().friends().get(1).id()).isEqualTo("1003");
-    assertThat(data1.hero().friends().get(1).name()).isEqualTo("Batman");
+    assertResponse(
+        apolloClient.query(query1).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().id()).isEqualTo("2001");
+            assertThat(response.data().hero().name()).isEqualTo("R222-D222");
+            assertThat(response.data().hero().friends()).hasSize(2);
+            assertThat(response.data().hero().friends().get(0).id()).isEqualTo("1000");
+            assertThat(response.data().hero().friends().get(0).name()).isEqualTo("Spiderman");
+            assertThat(response.data().hero().friends().get(1).id()).isEqualTo("1003");
+            assertThat(response.data().hero().friends().get(1).name()).isEqualTo("Batman");
+            return true;
+          }
+        }
+    );
 
     // check if query2 see the latest optimistic updates
-    data2 = apolloClient.query(query2).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data();
-    assertThat(data2.hero().id()).isEqualTo("1000");
-    assertThat(data2.hero().name()).isEqualTo("Spiderman");
+    assertResponse(
+        apolloClient.query(query2).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroNameWithIdQuery.Data>>() {
+          @Override public boolean test(Response<HeroNameWithIdQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().id()).isEqualTo("1000");
+            assertThat(response.data().hero().name()).isEqualTo("Spiderman");
+            return true;
+          }
+        }
+    );
 
     // rollback query2 optimistic updates
     apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId2).execute();
 
     // check if query1 see the latest optimistic updates
-    data1 = apolloClient.query(query1).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data();
-    assertThat(data1.hero().id()).isEqualTo("2001");
-    assertThat(data1.hero().name()).isEqualTo("R222-D222");
-    assertThat(data1.hero().friends()).hasSize(2);
-    assertThat(data1.hero().friends().get(0).id()).isEqualTo("1000");
-    assertThat(data1.hero().friends().get(0).name()).isEqualTo("Robocop");
-    assertThat(data1.hero().friends().get(1).id()).isEqualTo("1003");
-    assertThat(data1.hero().friends().get(1).name()).isEqualTo("Batman");
+    assertResponse(
+        apolloClient.query(query1).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().id()).isEqualTo("2001");
+            assertThat(response.data().hero().name()).isEqualTo("R222-D222");
+            assertThat(response.data().hero().friends()).hasSize(2);
+            assertThat(response.data().hero().friends().get(0).id()).isEqualTo("1000");
+            assertThat(response.data().hero().friends().get(0).name()).isEqualTo("Robocop");
+            assertThat(response.data().hero().friends().get(1).id()).isEqualTo("1003");
+            assertThat(response.data().hero().friends().get(1).name()).isEqualTo("Batman");
+            return true;
+          }
+        }
+    );
 
     // check if query2 see the latest optimistic updates
-    data2 = apolloClient.query(query2).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data();
-    assertThat(data2.hero().id()).isEqualTo("1000");
-    assertThat(data2.hero().name()).isEqualTo("Robocop");
+    assertResponse(
+        apolloClient.query(query2).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroNameWithIdQuery.Data>>() {
+          @Override public boolean test(Response<HeroNameWithIdQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().id()).isEqualTo("1000");
+            assertThat(response.data().hero().name()).isEqualTo("Robocop");
+            return true;
+          }
+        }
+    );
 
     // rollback query1 optimistic updates
     apolloClient.apolloStore().rollbackOptimisticUpdates(mutationId1).execute();
 
     // check if query1 see the latest non-optimistic updates
-    data1 = apolloClient.query(query1).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data();
-    assertThat(data1.hero().id()).isEqualTo("2001");
-    assertThat(data1.hero().name()).isEqualTo("R2-D2");
-    assertThat(data1.hero().friends()).hasSize(3);
-    assertThat(data1.hero().friends().get(0).id()).isEqualTo("1000");
-    assertThat(data1.hero().friends().get(0).name()).isEqualTo("SuperMan");
-    assertThat(data1.hero().friends().get(1).id()).isEqualTo("1002");
-    assertThat(data1.hero().friends().get(1).name()).isEqualTo("Han Solo");
-    assertThat(data1.hero().friends().get(2).id()).isEqualTo("1003");
-    assertThat(data1.hero().friends().get(2).name()).isEqualTo("Leia Organa");
+    assertResponse(
+        apolloClient.query(query1).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().id()).isEqualTo("2001");
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.data().hero().friends()).hasSize(3);
+            assertThat(response.data().hero().friends().get(0).id()).isEqualTo("1000");
+            assertThat(response.data().hero().friends().get(0).name()).isEqualTo("SuperMan");
+            assertThat(response.data().hero().friends().get(1).id()).isEqualTo("1002");
+            assertThat(response.data().hero().friends().get(1).name()).isEqualTo("Han Solo");
+            assertThat(response.data().hero().friends().get(2).id()).isEqualTo("1003");
+            assertThat(response.data().hero().friends().get(2).name()).isEqualTo("Leia Organa");
+            return true;
+          }
+        }
+    );
 
     // check if query2 see the latest non-optimistic updates
-    data2 = apolloClient.query(query2).responseFetcher(ApolloResponseFetchers.CACHE_ONLY).execute().data();
-    assertThat(data2.hero().id()).isEqualTo("1000");
-    assertThat(data2.hero().name()).isEqualTo("SuperMan");
+    assertResponse(
+        apolloClient.query(query2).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroNameWithIdQuery.Data>>() {
+          @Override public boolean test(Response<HeroNameWithIdQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().id()).isEqualTo("1000");
+            assertThat(response.data().hero().name()).isEqualTo("SuperMan");
+            return true;
+          }
+        }
+    );
   }
 }

@@ -2,7 +2,7 @@ package com.apollographql.apollo.cache.normalized;
 
 import com.apollographql.apollo.exception.ApolloException;
 
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -34,11 +34,11 @@ public abstract class ApolloStoreOperation<T> {
     };
   }
 
-  private final ExecutorService dispatcher;
+  private final Executor dispatcher;
   private AtomicReference<Callback<T>> callback = new AtomicReference<>();
   private final AtomicBoolean executed = new AtomicBoolean();
 
-  protected ApolloStoreOperation(ExecutorService dispatcher) {
+  protected ApolloStoreOperation(Executor dispatcher) {
     this.dispatcher = dispatcher;
   }
 
@@ -69,7 +69,7 @@ public abstract class ApolloStoreOperation<T> {
   public void enqueue(@Nullable final Callback<T> callback) {
     checkIfExecuted();
     this.callback.set(callback);
-    dispatcher.submit(new Runnable() {
+    dispatcher.execute(new Runnable() {
       @Override public void run() {
         T result;
         try {

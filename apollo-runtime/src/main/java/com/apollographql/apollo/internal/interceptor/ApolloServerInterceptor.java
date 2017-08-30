@@ -6,8 +6,6 @@ import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.http.HttpCache;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
-import com.apollographql.apollo.exception.ApolloCanceledException;
-import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
@@ -17,7 +15,7 @@ import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -69,28 +67,9 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     this.sendOperationIdentifiers = sendOperationIdentifiers;
   }
 
-  @Override @Nonnull public InterceptorResponse intercept(@Nonnull InterceptorRequest request,
-      @Nonnull ApolloInterceptorChain chain) throws ApolloException {
-    if (disposed) throw new ApolloCanceledException("Canceled");
-    try {
-      httpCall = httpCall(request.operation);
-    } catch (IOException e) {
-      logger.e(e, "Failed to prepare http call");
-      throw new ApolloNetworkException("Failed to prepare http call", e);
-    }
-
-    try {
-      Response response = httpCall.execute();
-      return new InterceptorResponse(response);
-    } catch (IOException e) {
-      logger.e(e, "Failed to execute http call");
-      throw new ApolloNetworkException("Failed to execute http call", e);
-    }
-  }
-
   @Override
   public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull final ApolloInterceptorChain chain,
-      @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+      @Nonnull Executor dispatcher, @Nonnull final CallBack callBack) {
     if (disposed) return;
     dispatcher.execute(new Runnable() {
       @Override public void run() {

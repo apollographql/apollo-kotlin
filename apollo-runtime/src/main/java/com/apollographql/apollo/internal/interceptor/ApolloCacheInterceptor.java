@@ -8,7 +8,6 @@ import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
@@ -24,7 +23,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,49 +37,21 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 public final class ApolloCacheInterceptor implements ApolloInterceptor {
   private final ApolloStore apolloStore;
   private final ResponseFieldMapper responseFieldMapper;
-  private final ExecutorService dispatcher;
+  private final Executor dispatcher;
   private final ApolloLogger logger;
   private volatile boolean disposed;
 
   public ApolloCacheInterceptor(@Nonnull ApolloStore apolloStore, @Nonnull ResponseFieldMapper responseFieldMapper,
-      @Nonnull ExecutorService dispatcher, @Nonnull ApolloLogger logger) {
+      @Nonnull Executor dispatcher, @Nonnull ApolloLogger logger) {
     this.apolloStore = checkNotNull(apolloStore, "cache == null");
     this.responseFieldMapper = checkNotNull(responseFieldMapper, "responseFieldMapper == null");
     this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
     this.logger = checkNotNull(logger, "logger == null");
   }
 
-  @Nonnull @Override
-  public InterceptorResponse intercept(@Nonnull final InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
-      throws ApolloException {
-    if (disposed) throw new ApolloCanceledException("Canceled");
-
-    if (request.fetchOptions.fetchFromCache) {
-      return resolveFromCache(request.operation, request.fetchOptions);
-    }
-
-    writeOptimisticUpdatesAndPublish(request);
-
-    try {
-      InterceptorResponse networkResponse = chain.proceed(request);
-
-      Set<String> networkResponseCacheKeys = cacheResponse(networkResponse, request);
-      Set<String> rolledBackCacheKeys = rollbackOptimisticUpdates(request);
-      Set<String> changedCacheKeys = new HashSet<>();
-      changedCacheKeys.addAll(rolledBackCacheKeys);
-      changedCacheKeys.addAll(networkResponseCacheKeys);
-      publishCacheKeys(changedCacheKeys);
-
-      return networkResponse;
-    } catch (Exception rethrow) {
-      rollbackOptimisticUpdatesAndPublish(request);
-      throw rethrow;
-    }
-  }
-
   @Override
   public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull final ApolloInterceptorChain chain,
-      @Nonnull final ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+      @Nonnull final Executor dispatcher, @Nonnull final CallBack callBack) {
     dispatcher.execute(new Runnable() {
       @Override public void run() {
         if (disposed) return;

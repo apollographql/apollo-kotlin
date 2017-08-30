@@ -39,6 +39,7 @@ dependencies {
   testCompile dep.junit
   testCompile dep.truth
   testCompile dep.mockWebServer
+  testCompile project(':apollo-rx2support')
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

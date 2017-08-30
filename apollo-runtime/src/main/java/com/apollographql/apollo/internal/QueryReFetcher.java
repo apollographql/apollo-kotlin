@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -124,7 +124,7 @@ final class QueryReFetcher {
     ResponseFieldMapperFactory responseFieldMapperFactory;
     Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
     ApolloStore apolloStore;
-    ExecutorService dispatcher;
+    Executor dispatcher;
     ApolloLogger logger;
     List<ApolloInterceptor> applicationInterceptors;
     ApolloCallTracker callTracker;
@@ -164,7 +164,7 @@ final class QueryReFetcher {
       return this;
     }
 
-    Builder dispatcher(ExecutorService dispatcher) {
+    Builder dispatcher(Executor dispatcher) {
       this.dispatcher = dispatcher;
       return this;
     }

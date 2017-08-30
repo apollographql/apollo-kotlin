@@ -17,6 +17,7 @@ import com.apollographql.apollo.integration.normalizer.ReviewsByEpisodeQuery;
 import com.apollographql.apollo.integration.normalizer.type.ColorInput;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.integration.normalizer.type.ReviewInput;
+import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import org.junit.After;
 import org.junit.Before;
@@ -28,11 +29,17 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nonnull;
 
+import io.reactivex.functions.Predicate;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
+import static com.apollographql.apollo.Utils.TIME_OUT_SECONDS;
+import static com.apollographql.apollo.Utils.assertResponse;
+import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
+import static com.apollographql.apollo.Utils.mockResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
+import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_FIRST;
 import static com.google.common.truth.Truth.assertThat;
 
 public class QueryRefetchTest {
@@ -58,73 +65,104 @@ public class QueryRefetchTest {
     }
   }
 
-  @Test public void refetch_query_no_pre_cached() throws Exception {
-    server.enqueue(mockResponse("CreateReviewResponse.json"));
+  @Test public void refetchNoPreCachedQuery() throws Exception {
     CreateReviewMutation mutation = new CreateReviewMutation(
         Episode.EMPIRE,
         ReviewInput.builder().stars(5).commentary("Awesome").favoriteColor(ColorInput.builder().build()).build()
     );
 
+    server.enqueue(mockResponse("CreateReviewResponse.json"));
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"));
-    ReviewsByEpisodeQuery empireReviewsQuery = new ReviewsByEpisodeQuery(Episode.EMPIRE);
 
-    final NamedCountDownLatch completionCountDownLatch = new NamedCountDownLatch("refetch_query_no_pre_cached", 1);
-    RealApolloCall call = (RealApolloCall) apolloClient.mutate(mutation).refetchQueries(empireReviewsQuery);
+    final NamedCountDownLatch completionCountDownLatch = new NamedCountDownLatch("refetchNoPreCachedQuery", 1);
+    RealApolloCall call = (RealApolloCall) apolloClient.mutate(mutation).refetchQueries(new ReviewsByEpisodeQuery(Episode.EMPIRE));
     ((QueryReFetcher) call.queryReFetcher.get()).onCompleteCallback = new QueryReFetcher.OnCompleteCallback() {
       @Override public void onFetchComplete() {
         completionCountDownLatch.countDown();
       }
     };
-    call.execute();
-    completionCountDownLatch.awaitOrThrowWithTimeout(30000, TimeUnit.SECONDS);
 
+    Rx2Apollo
+        .from(call)
+        .test()
+        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+
+    completionCountDownLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     assertThat(server.getRequestCount()).isEqualTo(2);
-
-    Response<ReviewsByEpisodeQuery.Data> empireReviewsQueryResponse = apolloClient.query(empireReviewsQuery)
-        .responseFetcher(CACHE_ONLY).execute();
-    assertThat(empireReviewsQueryResponse.data().reviews()).hasSize(3);
-    assertThat(empireReviewsQueryResponse.data().reviews().get(2).stars()).isEqualTo(5);
-    assertThat(empireReviewsQueryResponse.data().reviews().get(2).commentary()).isEqualTo("Amazing");
+    assertResponse(
+        apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<ReviewsByEpisodeQuery.Data>>() {
+          @Override public boolean test(Response<ReviewsByEpisodeQuery.Data> response) throws Exception {
+            assertThat(response.data().reviews()).hasSize(3);
+            assertThat(response.data().reviews().get(2).stars()).isEqualTo(5);
+            assertThat(response.data().reviews().get(2).commentary()).isEqualTo("Amazing");
+            return true;
+          }
+        }
+    );
   }
 
-  @Test public void refetch_query_pre_cached() throws Exception {
-    server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"));
-    ReviewsByEpisodeQuery empireReviewsQuery = new ReviewsByEpisodeQuery(Episode.EMPIRE);
-    apolloClient.query(empireReviewsQuery).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST).execute();
+  @Test public void refetchPreCachedQuery() throws Exception {
+    enqueueAndAssertResponse(
+        server,
+        "ReviewsEmpireEpisodeResponse.json",
+        apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(NETWORK_FIRST),
+        new Predicate<Response<ReviewsByEpisodeQuery.Data>>() {
+          @Override public boolean test(Response<ReviewsByEpisodeQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
 
-    Response<ReviewsByEpisodeQuery.Data> empireReviewsQueryResponse = apolloClient.query(empireReviewsQuery)
-        .responseFetcher(CACHE_ONLY).execute();
-    assertThat(empireReviewsQueryResponse.data().reviews()).hasSize(3);
-    assertThat(empireReviewsQueryResponse.data().reviews().get(2).stars()).isEqualTo(5);
-    assertThat(empireReviewsQueryResponse.data().reviews().get(2).commentary()).isEqualTo("Amazing");
+    assertResponse(
+        apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<ReviewsByEpisodeQuery.Data>>() {
+          @Override public boolean test(Response<ReviewsByEpisodeQuery.Data> response) throws Exception {
+            assertThat(response.data().reviews()).hasSize(3);
+            assertThat(response.data().reviews().get(2).stars()).isEqualTo(5);
+            assertThat(response.data().reviews().get(2).commentary()).isEqualTo("Amazing");
+            return true;
+          }
+        }
+    );
 
-    server.enqueue(mockResponse("CreateReviewResponse.json"));
     CreateReviewMutation mutation = new CreateReviewMutation(
         Episode.EMPIRE,
         ReviewInput.builder().stars(5).commentary("Awesome").favoriteColor(ColorInput.builder().build()).build()
     );
 
+    server.enqueue(mockResponse("CreateReviewResponse.json"));
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponseUpdated.json"));
 
     final NamedCountDownLatch completionCountDownLatch = new NamedCountDownLatch("refetch_query_no_pre_cached", 1);
-    RealApolloCall call = (RealApolloCall) apolloClient.mutate(mutation).refetchQueries(empireReviewsQuery);
+    RealApolloCall call = (RealApolloCall) apolloClient.mutate(mutation).refetchQueries(new ReviewsByEpisodeQuery(Episode.EMPIRE));
     ((QueryReFetcher) call.queryReFetcher.get()).onCompleteCallback = new QueryReFetcher.OnCompleteCallback() {
       @Override public void onFetchComplete() {
         completionCountDownLatch.countDown();
       }
     };
-    call.execute();
-    completionCountDownLatch.awaitOrThrowWithTimeout(3, TimeUnit.SECONDS);
 
+    Rx2Apollo
+        .from(call)
+        .test()
+        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    completionCountDownLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     assertThat(server.getRequestCount()).isEqualTo(3);
 
-    empireReviewsQueryResponse = apolloClient.query(empireReviewsQuery).responseFetcher(CACHE_ONLY).execute();
-    assertThat(empireReviewsQueryResponse.data().reviews()).hasSize(4);
-    assertThat(empireReviewsQueryResponse.data().reviews().get(3).stars()).isEqualTo(5);
-    assertThat(empireReviewsQueryResponse.data().reviews().get(3).commentary()).isEqualTo("Awesome");
+    assertResponse(
+        apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<ReviewsByEpisodeQuery.Data>>() {
+          @Override public boolean test(Response<ReviewsByEpisodeQuery.Data> response) throws Exception {
+            assertThat(response.data().reviews()).hasSize(4);
+            assertThat(response.data().reviews().get(3).stars()).isEqualTo(5);
+            assertThat(response.data().reviews().get(3).commentary()).isEqualTo("Awesome");
+            return true;
+          }
+        }
+    );
   }
 
-  @Test public void refetch_watchers() throws Exception {
+  @Test public void refetchWatchers() throws Exception {
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"));
     server.enqueue(mockResponse("CreateReviewResponse.json"));
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponseUpdated.json"));
@@ -134,7 +172,7 @@ public class QueryRefetchTest {
     final AtomicReference<Response<ReviewsByEpisodeQuery.Data>> empireReviewsWatchResponse = new AtomicReference<>();
     ApolloQueryWatcher<ReviewsByEpisodeQuery.Data> queryWatcher = apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE))
         .watcher()
-        .refetchResponseFetcher(ApolloResponseFetchers.NETWORK_FIRST)
+        .refetchResponseFetcher(NETWORK_FIRST)
         .enqueueAndWatch(new ApolloCall.Callback<ReviewsByEpisodeQuery.Data>() {
           @Override public void onResponse(@Nonnull Response<ReviewsByEpisodeQuery.Data> response) {
             empireReviewsWatchResponse.set(response);
@@ -146,24 +184,23 @@ public class QueryRefetchTest {
           }
         });
 
-    countDownBeforeMutationLatch.awaitOrThrowWithTimeout(3, TimeUnit.SECONDS);
+    countDownBeforeMutationLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     CreateReviewMutation mutation = new CreateReviewMutation(
         Episode.EMPIRE,
         ReviewInput.builder().stars(5).commentary("Awesome").favoriteColor(ColorInput.builder().build()).build()
     );
-    apolloClient.mutate(mutation).refetchQueries(queryWatcher.operation().name()).execute();
-
-    countDownRefetchLatch.awaitOrThrowWithTimeout(3, TimeUnit.SECONDS);
+    Rx2Apollo
+        .from(apolloClient.mutate(mutation).refetchQueries(queryWatcher.operation().name()))
+        .test()
+        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    countDownRefetchLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     assertThat(server.getRequestCount()).isEqualTo(3);
+
     Response<ReviewsByEpisodeQuery.Data> empireReviewsQueryResponse = empireReviewsWatchResponse.get();
     assertThat(empireReviewsQueryResponse.data().reviews()).hasSize(4);
     assertThat(empireReviewsQueryResponse.data().reviews().get(3).stars()).isEqualTo(5);
     assertThat(empireReviewsQueryResponse.data().reviews().get(3).commentary()).isEqualTo("Awesome");
 
     queryWatcher.cancel();
-  }
-
-  private MockResponse mockResponse(String fileName) throws IOException {
-    return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
   }
 }

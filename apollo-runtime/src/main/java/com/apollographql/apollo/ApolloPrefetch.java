@@ -27,16 +27,6 @@ import okhttp3.Response;
  * {@link ApolloPrefetch} object.</p>
  */
 public interface ApolloPrefetch extends Cancelable {
-
-  /**
-   * Sends the request immediately and blocks until the response can be processed or is an error.
-   *
-   * @throws ApolloException       if the request could not be executed due to a cancellation, a timeout or a network
-   *                               failure
-   * @throws IllegalStateException when the call has already been executed
-   */
-  void execute() throws ApolloException;
-
   /**
    * Schedules the request to be executed at some point in the future.
    *

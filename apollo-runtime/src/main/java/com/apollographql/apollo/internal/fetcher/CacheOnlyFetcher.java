@@ -2,14 +2,13 @@ package com.apollographql.apollo.internal.fetcher;
 
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Nonnull;
 
@@ -29,22 +28,9 @@ public final class CacheOnlyFetcher implements ResponseFetcher {
 
     private volatile boolean disposed;
 
-    @Nonnull @Override
-    public InterceptorResponse intercept(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
-        throws ApolloException {
-      if (disposed) throw new ApolloCanceledException("Canceled");
-
-      InterceptorRequest cacheRequest = request.withFetchOptions(request.fetchOptions.toCacheFetchOptions());
-      try {
-        return chain.proceed(cacheRequest);
-      } catch (Exception e) {
-        return cacheMissResponse(request.operation);
-      }
-    }
-
     @Override
     public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-        @Nonnull ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+        @Nonnull Executor dispatcher, @Nonnull final CallBack callBack) {
       InterceptorRequest cacheRequest = request.withFetchOptions(request.fetchOptions.toCacheFetchOptions());
       chain.proceedAsync(cacheRequest, dispatcher, new CallBack() {
         @Override public void onResponse(@Nonnull InterceptorResponse response) {

@@ -17,18 +17,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 
 public class CacheAndNetworkFetcherTest extends BaseFetcherTest {
-  @Test public void executeThrowsException() throws IOException, ApolloException, InterruptedException {
-    EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
-    // not supported
-    boolean exception = false;
-    try {
-      apolloClient.query(query).responseFetcher(CACHE_AND_NETWORK).execute();
-    } catch (IllegalStateException e) {
-      exception = true;
-    }
-    assertThat(exception).isTrue();
-  }
-
   @Test public void enqueue() throws IOException, ApolloException, TimeoutException, InterruptedException {
     EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     TrackingCallback trackingCallback;

@@ -1,13 +1,12 @@
 package com.apollographql.apollo.internal.fetcher;
 
-import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Nonnull;
 
@@ -30,28 +29,9 @@ public final class NetworkFirstFetcher implements ResponseFetcher {
       this.logger = logger;
     }
 
-    @Nonnull @Override
-    public InterceptorResponse intercept(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain)
-        throws ApolloException {
-      if (disposed) throw new ApolloCanceledException("Canceled");
-
-      InterceptorRequest networkRequest = request.withFetchOptions(request.fetchOptions.toNetworkFetchOptions());
-      try {
-        return chain.proceed(networkRequest);
-      } catch (ApolloException e) {
-        InterceptorRequest cacheRequest = request.withFetchOptions(request.fetchOptions.toCacheFetchOptions());
-        InterceptorResponse networkFirstCacheResponse = chain.proceed(cacheRequest);
-        if (networkFirstCacheResponse.parsedResponse.isPresent()) {
-          logger.d(e, "Failed to fetch network response for operation %s, return cached one", request.operation);
-          return networkFirstCacheResponse;
-        }
-        throw e;
-      }
-    }
-
     @Override
     public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull final ApolloInterceptorChain chain,
-        @Nonnull final ExecutorService dispatcher, @Nonnull final CallBack callBack) {
+        @Nonnull final Executor dispatcher, @Nonnull final CallBack callBack) {
       InterceptorRequest networkRequest = request.withFetchOptions(request.fetchOptions.toNetworkFetchOptions());
       chain.proceedAsync(networkRequest, dispatcher, new CallBack() {
         @Override public void onResponse(@Nonnull InterceptorResponse response) {

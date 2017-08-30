@@ -21,8 +21,8 @@ import io.reactivex.exceptions.Exceptions;
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
- * The Rx2Apollo class provides methods for converting ApolloCall, ApolloPrefetch
- * and ApolloWatcher types to RxJava 2 sources.
+ * The Rx2Apollo class provides methods for converting ApolloCall, ApolloPrefetch and ApolloWatcher types to RxJava 2
+ * sources.
  */
 public class Rx2Apollo {
 
@@ -63,8 +63,8 @@ public class Rx2Apollo {
   }
 
   /**
-   * Converts an {@link ApolloCall} to an {@link Observable}. The number of emissions this Observable
-   * will have is based on the {@link com.apollographql.apollo.fetcher.ResponseFetcher} used with the call.
+   * Converts an {@link ApolloCall} to an {@link Observable}. The number of emissions this Observable will have is based
+   * on the {@link com.apollographql.apollo.fetcher.ResponseFetcher} used with the call.
    *
    * @param originalCall the ApolloCall to convert
    * @param <T>          the value type.
@@ -112,19 +112,22 @@ public class Rx2Apollo {
     checkNotNull(prefetch, "prefetch == null");
 
     return Completable.create(new CompletableOnSubscribe() {
-      @Override public void subscribe(CompletableEmitter emitter) {
+      @Override public void subscribe(final CompletableEmitter emitter) {
         cancelOnCompletableDisposed(emitter, prefetch);
-        try {
-          prefetch.execute();
-          if (!emitter.isDisposed()) {
-            emitter.onComplete();
+        prefetch.enqueue(new ApolloPrefetch.Callback() {
+          @Override public void onSuccess() {
+            if (!emitter.isDisposed()) {
+              emitter.onComplete();
+            }
           }
-        } catch (ApolloException e) {
-          Exceptions.throwIfFatal(e);
-          if (!emitter.isDisposed()) {
-            emitter.onError(e);
+
+          @Override public void onFailure(@Nonnull ApolloException e) {
+            Exceptions.throwIfFatal(e);
+            if (!emitter.isDisposed()) {
+              emitter.onError(e);
+            }
           }
-        }
+        });
       }
     });
   }
