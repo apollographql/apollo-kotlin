@@ -104,8 +104,11 @@ public final class Record {
     Set<String> changedKeys = new HashSet<>();
     for (Map.Entry<String, Object> field : otherRecord.fields.entrySet()) {
       Object newFieldValue = field.getValue();
+      boolean hasOldFieldValue = this.fields.containsKey(field.getKey());
       Object oldFieldValue = this.fields.get(field.getKey());
-      if ((oldFieldValue == null && newFieldValue != null)
+
+      if (!hasOldFieldValue
+          || (oldFieldValue == null && newFieldValue != null)
           || (oldFieldValue != null && !oldFieldValue.equals(newFieldValue))) {
         this.fields.put(field.getKey(), newFieldValue);
         changedKeys.add(key() + "." + field.getKey());
