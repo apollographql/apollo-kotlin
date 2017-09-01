@@ -173,7 +173,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forScalarList("appearsIn", "appearsIn", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forList("appearsIn", "appearsIn", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("firstAppearsIn", "firstAppearsIn", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
@@ -230,12 +230,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
-          writer.writeList($responseFields[2], new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[2], appearsIn, new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) {
-              for (Episode $item : appearsIn) {
-                listItemWriter.writeString($item.name());
-              }
+            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
+              listItemWriter.writeString(((com.example.enum_type.type.Episode) value).name());
             }
           });
           writer.writeString($responseFields[3], firstAppearsIn.name());
@@ -296,8 +294,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final String name = reader.readString($responseFields[1]);
         final List<Episode> appearsIn = reader.readList($responseFields[2], new ResponseReader.ListReader<Episode>() {
           @Override
-          public Episode read(ResponseReader.ListItemReader reader) {
-            return Episode.valueOf(reader.readString());
+          public Episode read(ResponseReader.ListItemReader listItemReader) {
+            return Episode.valueOf(listItemReader.readString());
           }
         });
         final String firstAppearsInStr = reader.readString($responseFields[3]);

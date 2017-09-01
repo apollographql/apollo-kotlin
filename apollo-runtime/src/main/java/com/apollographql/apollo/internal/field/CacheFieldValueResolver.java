@@ -32,12 +32,18 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
   @SuppressWarnings("unchecked") @Override public <T> T valueFor(Record record, ResponseField field) {
     if (shouldSkip(field, variableValues)) {
       return null;
-    } else if (field.type() == ResponseField.Type.OBJECT) {
-      return (T) valueForObject(record, field);
-    } else if (field.type() == ResponseField.Type.OBJECT_LIST) {
-      return (T) valueForObjectList(record, field);
-    } else {
-      return fieldValue(record, field);
+    }
+
+    switch (field.type()) {
+      case OBJECT:
+        return (T) valueForObject(record, field);
+
+      case LIST: {
+        return (T) valueForList((List) fieldValue(record, field));
+      }
+
+      default:
+        return fieldValue(record, field);
     }
   }
 
@@ -64,25 +70,32 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
     return null;
   }
 
-  private List<Record> valueForObjectList(Record record, ResponseField field) {
-    List<CacheReference> values = fieldValue(record, field);
+  @SuppressWarnings("unchecked") private List valueForList(List values) {
     if (values == null) {
       return null;
     }
 
-    List<Record> result = new ArrayList<>();
-    for (CacheReference reference : values) {
-      Record referencedRecord = readableCache.read(reference.key(), cacheHeaders);
-      if (referencedRecord == null) {
-        // we are unable to find record in the cache by reference,
-        // means it was removed intentionally by using imperative store API or
-        // evicted from LRU cache, we must prevent of further resolving cache response as it's broken
-        throw new IllegalStateException("Cache MISS: failed to find record in cache by reference");
+    List result = new ArrayList();
+    for (Object value : values) {
+      if (value instanceof CacheReference) {
+        CacheReference reference = (CacheReference) value;
+        Record referencedRecord = readableCache.read(reference.key(), cacheHeaders);
+        if (referencedRecord == null) {
+          // we are unable to find record in the cache by reference,
+          // means it was removed intentionally by using imperative store API or
+          // evicted from LRU cache, we must prevent of further resolving cache response as it's broken
+          throw new IllegalStateException("Cache MISS: failed to find record in cache by reference");
+        }
+        result.add(referencedRecord);
+      } else if (value instanceof List) {
+        result.add(valueForList((List) value));
+      } else {
+        result.add(value);
       }
-      result.add(referencedRecord);
     }
     return result;
   }
+
 
   @SuppressWarnings("unchecked") private <T> T fieldValue(Record record, ResponseField field) {
     String fieldKey = field.cacheKey(variables);

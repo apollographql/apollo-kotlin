@@ -134,48 +134,18 @@ public class ResponseField {
   }
 
   /**
-   * Factory method for creating a Field instance representing {@link Type#SCALAR_LIST}.
+   * Factory method for creating a Field instance representing {@link Type#LIST}.
    *
    * @param responseName alias for the result of a field
    * @param fieldName    name of the field in the GraphQL operation
    * @param arguments    arguments to be passed along with the field
    * @param optional     whether the arguments passed along are optional or required
    * @param conditions   list of conditions for this field
-   * @return Field instance representing {@link Type#SCALAR_LIST}
+   * @return Field instance representing {@link Type#LIST}
    */
-  public static ResponseField forScalarList(String responseName, String fieldName, Map<String, Object> arguments,
+  public static ResponseField forList(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional, List<Condition> conditions) {
-    return new ResponseField(Type.SCALAR_LIST, responseName, fieldName, arguments, optional, conditions);
-  }
-
-  /**
-   * Factory method for creating a Field instance representing {@link Type#CUSTOM_LIST}.
-   *
-   * @param responseName alias for the result of a field
-   * @param fieldName    name of the field in the GraphQL operation
-   * @param arguments    arguments to be passed along with the field
-   * @param optional     whether the arguments passed along are optional or required
-   * @param conditions   list of conditions for this field
-   * @return Field instance representing {@link Type#CUSTOM_LIST}
-   */
-  public static ResponseField forCustomList(String responseName, String fieldName, Map<String, Object> arguments,
-      boolean optional, List<Condition> conditions) {
-    return new ResponseField(Type.CUSTOM_LIST, responseName, fieldName, arguments, optional, conditions);
-  }
-
-  /**
-   * Factory method for creating a Field instance representing {@link Type#OBJECT_LIST}.
-   *
-   * @param responseName alias for the result of a field
-   * @param fieldName    name of the field in the GraphQL operation
-   * @param arguments    arguments to be passed along with the field
-   * @param optional     whether the arguments passed along are optional or required
-   * @param conditions   list of conditions for this field
-   * @return Field instance representing {@link Type#OBJECT_LIST}
-   */
-  public static ResponseField forObjectList(String responseName, String fieldName, Map<String, Object> arguments,
-      boolean optional, List<Condition> conditions) {
-    return new ResponseField(Type.OBJECT_LIST, responseName, fieldName, arguments, optional, conditions);
+    return new ResponseField(Type.LIST, responseName, fieldName, arguments, optional, conditions);
   }
 
   /**
@@ -362,9 +332,7 @@ public class ResponseField {
     BOOLEAN,
     ENUM,
     OBJECT,
-    SCALAR_LIST,
-    CUSTOM_LIST,
-    OBJECT_LIST,
+    LIST,
     CUSTOM,
     FRAGMENT,
     INLINE_FRAGMENT

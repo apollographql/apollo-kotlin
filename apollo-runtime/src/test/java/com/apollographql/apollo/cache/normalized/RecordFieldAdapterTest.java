@@ -39,10 +39,9 @@ public class RecordFieldAdapterTest {
     String expectedStringValue = "StringValue";
     Boolean expectedBooleanValue = true;
     CacheReference expectedCacheReference = new CacheReference("foo");
-    List<CacheReference> expectedCacheReferenceList = Arrays.asList(new CacheReference("bar"), new CacheReference
-        ("baz"));
+    List<CacheReference> expectedCacheReferenceList = Arrays.asList(new CacheReference("bar"), new CacheReference("baz"));
     List<Object> expectedScalarList = Arrays.<Object>asList("scalarOne", "scalarTwo");
-    TestCustomScalar customScalar = new TestCustomScalar("fieldOne");
+    List<List<String>> expectedListOfScalarList = Arrays.asList(Arrays.asList("scalarOne", "scalarTwo"));
 
     recordBuilder.addField("bigDecimal", expectedBigDecimal);
     recordBuilder.addField("string", expectedStringValue);
@@ -51,6 +50,7 @@ public class RecordFieldAdapterTest {
     recordBuilder.addField("scalarList", expectedScalarList);
     recordBuilder.addField("referenceList", expectedCacheReferenceList);
     recordBuilder.addField("nullValue", null);
+    recordBuilder.addField("listOfScalarList", expectedListOfScalarList);
     Record record = recordBuilder.build();
 
     String json = recordFieldAdapter.toJson(record.fields());
@@ -59,11 +59,11 @@ public class RecordFieldAdapterTest {
     assertThat(deserializedMap.get("string")).isEqualTo(expectedStringValue);
     assertThat(deserializedMap.get("boolean")).isEqualTo(expectedBooleanValue);
     assertThat(deserializedMap.get("cacheReference")).isEqualTo(expectedCacheReference);
-    assertThat((Iterable) deserializedMap.get("scalarList"))
-        .containsExactlyElementsIn(expectedScalarList).inOrder();
-    assertThat((Iterable) deserializedMap.get("referenceList"))
-        .containsExactlyElementsIn(expectedCacheReferenceList).inOrder();
+    assertThat((Iterable) deserializedMap.get("scalarList")).containsExactlyElementsIn(expectedScalarList).inOrder();
+    assertThat((Iterable) deserializedMap.get("referenceList")).containsExactlyElementsIn(expectedCacheReferenceList).inOrder();
     assertThat(deserializedMap.containsKey("nullValue")).isTrue();
     assertThat(deserializedMap.get("nullValue")).isNull();
+    assertThat((List) deserializedMap.get("listOfScalarList")).hasSize(1);
+    assertThat((Iterable) ((List) deserializedMap.get("listOfScalarList")).get(0)).containsExactlyElementsIn(expectedScalarList).inOrder();
   }
 }

@@ -10,6 +10,7 @@ import com.apollographql.apollo.integration.normalizer.EpisodeHeroWithInlineFrag
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsWithFragmentsQuery;
 import com.apollographql.apollo.integration.normalizer.HeroNameWithEnumsQuery;
+import com.apollographql.apollo.integration.normalizer.StarshipByIdQuery;
 import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragment;
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment;
 import com.apollographql.apollo.integration.normalizer.type.CustomType;
@@ -531,6 +532,47 @@ public class ResponseWriteTestCase {
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().__typename()).isEqualTo("Human");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().id()).isEqualTo("1002");
             assertThat(response.data().hero().fragments().heroWithFriendsFragment().friends().get(1).fragments().humanWithIdFragment().name()).isEqualTo("Beast");
+            return true;
+          }
+        }
+    );
+  }
+
+  @Test public void listOfList() throws Exception {
+    StarshipByIdQuery query = new StarshipByIdQuery("Starship1");
+
+    enqueueAndAssertResponse(
+        server,
+        "StarshipByIdResponse.json",
+        apolloClient.query(query),
+        new Predicate<Response<StarshipByIdQuery.Data>>() {
+          @Override public boolean test(Response<StarshipByIdQuery.Data> response) throws Exception {
+            assertThat(response.data().starship().__typename()).isEqualTo("Starship");
+            assertThat(response.data().starship().name()).isEqualTo("SuperRocket");
+            assertThat(response.data().starship().coordinates()).hasSize(3);
+            assertThat(response.data().starship().coordinates()).containsExactly(asList(100d, 200d), asList(300d, 400d),
+                asList(500d, 600d));
+            return true;
+          }
+        }
+    );
+
+    StarshipByIdQuery.Starship starship = new StarshipByIdQuery.Starship(
+        "Starship",
+        "Starship1",
+        "SuperRocket",
+        asList(asList(900d, 800d), asList(700d, 600d))
+    );
+    apolloClient.apolloStore().write(query, new StarshipByIdQuery.Data(starship)).execute();
+
+    assertCachedQueryResponse(
+        query,
+        new Predicate<Response<StarshipByIdQuery.Data>>() {
+          @Override public boolean test(Response<StarshipByIdQuery.Data> response) throws Exception {
+            assertThat(response.data().starship().__typename()).isEqualTo("Starship");
+            assertThat(response.data().starship().name()).isEqualTo("SuperRocket");
+            assertThat(response.data().starship().coordinates()).hasSize(2);
+            assertThat(response.data().starship().coordinates()).containsExactly(asList(900d, 800d), asList(700d, 600d));
             return true;
           }
         }

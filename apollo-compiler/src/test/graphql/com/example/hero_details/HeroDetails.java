@@ -297,7 +297,7 @@ public final class HeroDetails implements Query<HeroDetails.Data, Optional<HeroD
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forObjectList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -343,14 +343,12 @@ public final class HeroDetails implements Query<HeroDetails.Data, Optional<HeroD
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
-          writer.writeList($responseFields[2], edges.isPresent() ? new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[2], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) {
-              for (Edge $item : edges.get()) {
-                listItemWriter.writeObject($item.marshaller());
-              }
+            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
+              listItemWriter.writeObject(((Edge) value).marshaller());
             }
-          } : null);
+          });
         }
       };
     }
@@ -406,8 +404,8 @@ public final class HeroDetails implements Query<HeroDetails.Data, Optional<HeroD
         final Integer totalCount = reader.readInt($responseFields[1]);
         final List<Edge> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge>() {
           @Override
-          public Edge read(ResponseReader.ListItemReader reader) {
-            return reader.readObject(new ResponseReader.ObjectReader<Edge>() {
+          public Edge read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readObject(new ResponseReader.ObjectReader<Edge>() {
               @Override
               public Edge read(ResponseReader reader) {
                 return edgeFieldMapper.map(reader);

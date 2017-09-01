@@ -134,7 +134,7 @@ public class ResponseJsonStreamReader {
       } else if (isNextObject()) {
         result.put(name, readObject(this));
       } else if (isNextList()) {
-        result.put(name, readScalarList(this));
+        result.put(name, readList(this));
       } else {
         result.put(name, nextScalar(true));
       }
@@ -176,10 +176,12 @@ public class ResponseJsonStreamReader {
     });
   }
 
-  private List<?> readScalarList(final ResponseJsonStreamReader streamReader) throws IOException {
+  private List<?> readList(final ResponseJsonStreamReader streamReader) throws IOException {
     return streamReader.nextList(false, new ListReader<Object>() {
       @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
-        if (streamReader.isNextObject()) {
+        if (streamReader.isNextList()) {
+          return readList(reader);
+        } else if (streamReader.isNextObject()) {
           return readObject(reader);
         } else {
           return reader.nextScalar(true);

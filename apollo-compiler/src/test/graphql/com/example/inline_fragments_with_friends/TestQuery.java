@@ -330,7 +330,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forDouble("height", "height", null, true, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forObjectList("friends", "friends", null, true, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forList("friends", "friends", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -387,14 +387,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
           writer.writeDouble($responseFields[2], height.isPresent() ? height.get() : null);
-          writer.writeList($responseFields[3], friends.isPresent() ? new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[3], friends.isPresent() ? friends.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) {
-              for (Friend $item : friends.get()) {
-                listItemWriter.writeObject($item.marshaller());
-              }
+            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
+              listItemWriter.writeObject(((Friend) value).marshaller());
             }
-          } : null);
+          });
         }
       };
     }
@@ -455,8 +453,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final Double height = reader.readDouble($responseFields[2]);
         final List<Friend> friends = reader.readList($responseFields[3], new ResponseReader.ListReader<Friend>() {
           @Override
-          public Friend read(ResponseReader.ListItemReader reader) {
-            return reader.readObject(new ResponseReader.ObjectReader<Friend>() {
+          public Friend read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readObject(new ResponseReader.ObjectReader<Friend>() {
               @Override
               public Friend read(ResponseReader reader) {
                 return friendFieldMapper.map(reader);
@@ -472,7 +470,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Friend {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forScalarList("appearsIn", "appearsIn", null, false, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forList("appearsIn", "appearsIn", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -506,12 +504,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
-          writer.writeList($responseFields[1], new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[1], appearsIn, new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) {
-              for (Episode $item : appearsIn) {
-                listItemWriter.writeString($item.name());
-              }
+            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
+              listItemWriter.writeString(((com.example.inline_fragments_with_friends.type.Episode) value).name());
             }
           });
         }
@@ -562,8 +558,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final String __typename = reader.readString($responseFields[0]);
         final List<Episode> appearsIn = reader.readList($responseFields[1], new ResponseReader.ListReader<Episode>() {
           @Override
-          public Episode read(ResponseReader.ListItemReader reader) {
-            return Episode.valueOf(reader.readString());
+          public Episode read(ResponseReader.ListItemReader listItemReader) {
+            return Episode.valueOf(listItemReader.readString());
           }
         });
         return new Friend(__typename, appearsIn);
@@ -576,7 +572,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("primaryFunction", "primaryFunction", null, true, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forObjectList("friends", "friends", null, true, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forList("friends", "friends", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -633,14 +629,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
           writer.writeString($responseFields[2], primaryFunction.isPresent() ? primaryFunction.get() : null);
-          writer.writeList($responseFields[3], friends.isPresent() ? new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[3], friends.isPresent() ? friends.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) {
-              for (Friend1 $item : friends.get()) {
-                listItemWriter.writeObject($item.marshaller());
-              }
+            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
+              listItemWriter.writeObject(((Friend1) value).marshaller());
             }
-          } : null);
+          });
         }
       };
     }
@@ -701,8 +695,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final String primaryFunction = reader.readString($responseFields[2]);
         final List<Friend1> friends = reader.readList($responseFields[3], new ResponseReader.ListReader<Friend1>() {
           @Override
-          public Friend1 read(ResponseReader.ListItemReader reader) {
-            return reader.readObject(new ResponseReader.ObjectReader<Friend1>() {
+          public Friend1 read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readObject(new ResponseReader.ObjectReader<Friend1>() {
               @Override
               public Friend1 read(ResponseReader reader) {
                 return friend1FieldMapper.map(reader);

@@ -19,7 +19,7 @@ public interface ResponseReader {
 
   <T> T readObject(ResponseField field, ObjectReader<T> objectReader);
 
-  <T> List<T> readList(ResponseField field, ListReader listReader);
+  <T> List<T> readList(ResponseField field, ListReader<T> listReader);
 
   <T> T readCustomType(ResponseField.CustomTypeField field);
 
@@ -52,5 +52,7 @@ public interface ResponseReader {
     <T> T readCustomType(ScalarType scalarType);
 
     <T> T readObject(ObjectReader<T> objectReader);
+
+    <T> List<T> readList(ListReader<T> listReader);
   }
 }

@@ -1,0 +1,7 @@
+query TestQuery($id: ID!) {
+  starship(id: $id) {
+    id,
+    name,
+    coordinates
+  }
+}

@@ -38,9 +38,7 @@ class ResponseFieldSpec(
       ResponseField.Type.CUSTOM -> readCustomCode(readerParam, fieldParam)
       ResponseField.Type.ENUM -> readEnumCode(readerParam, fieldParam)
       ResponseField.Type.OBJECT -> readObjectCode(readerParam, fieldParam)
-      ResponseField.Type.SCALAR_LIST -> readScalarListCode(readerParam, fieldParam)
-      ResponseField.Type.CUSTOM_LIST -> readCustomListCode(readerParam, fieldParam)
-      ResponseField.Type.OBJECT_LIST -> readObjectListCode(readerParam, fieldParam)
+      ResponseField.Type.LIST -> readListCode(readerParam, fieldParam)
       ResponseField.Type.INLINE_FRAGMENT -> readInlineFragmentCode(readerParam, fieldParam)
       ResponseField.Type.FRAGMENT -> readFragmentsCode(readerParam, fieldParam)
     }
@@ -56,9 +54,7 @@ class ResponseFieldSpec(
       ResponseField.Type.ENUM -> writeEnumCode(writerParam, fieldParam)
       ResponseField.Type.CUSTOM -> writeCustomCode(writerParam, fieldParam)
       ResponseField.Type.OBJECT -> writeObjectCode(writerParam, fieldParam, marshaller)
-      ResponseField.Type.SCALAR_LIST -> writeScalarList(writerParam, fieldParam)
-      ResponseField.Type.CUSTOM_LIST -> writeCustomList(writerParam, fieldParam)
-      ResponseField.Type.OBJECT_LIST -> writeObjectList(writerParam, fieldParam, marshaller)
+      ResponseField.Type.LIST -> writeListCode(writerParam, fieldParam, marshaller)
       ResponseField.Type.INLINE_FRAGMENT -> writeInlineFragmentCode(writerParam, marshaller)
       ResponseField.Type.FRAGMENT -> writeFragmentsCode(writerParam, marshaller)
       else -> CodeBlock.of("")
@@ -123,7 +119,7 @@ class ResponseFieldSpec(
 
   private fun readObjectCode(readerParam: CodeBlock, fieldParam: CodeBlock): CodeBlock {
     val readerTypeSpec = TypeSpec.anonymousClassBuilder("")
-        .superclass(responseFieldObjectReaderTypeName(normalizedFieldSpec.type))
+        .superclass(responseFieldObjectReaderType(normalizedFieldSpec.type))
         .addMethod(MethodSpec
             .methodBuilder("read")
             .addModifiers(Modifier.PUBLIC)
@@ -138,14 +134,67 @@ class ResponseFieldSpec(
         READ_METHODS[responseFieldType], fieldParam, readerTypeSpec)
   }
 
-  private fun readScalarListCode(readerParam: CodeBlock, fieldParam: CodeBlock): CodeBlock {
-    val rawFieldType = with(normalizedFieldSpec.type) { if (isList()) listParamType() else this }
-    val readMethod = SCALAR_LIST_ITEM_READ_METHODS[rawFieldType] ?: "readString"
-    val readStatement = if (rawFieldType.isEnum(context)) {
-      CodeBlock.of("return \$T.valueOf(\$L.\$L());\n", rawFieldType, RESPONSE_LIST_ITEM_READER_PARAM.name, readMethod)
-    } else {
-      CodeBlock.of("return \$L.\$L();\n", RESPONSE_LIST_ITEM_READER_PARAM.name, readMethod)
+  private fun readListItemStatement(rawFieldType: TypeName): CodeBlock {
+    fun readScalar(): CodeBlock {
+      val readMethod = SCALAR_LIST_ITEM_READ_METHODS[rawFieldType] ?: "readString"
+      return if (rawFieldType.isEnum(context)) {
+        CodeBlock.of("return \$T.valueOf(\$L.\$L());\n", rawFieldType, RESPONSE_LIST_ITEM_READER_PARAM.name, readMethod)
+      } else {
+        CodeBlock.of("return \$L.\$L();\n", RESPONSE_LIST_ITEM_READER_PARAM.name, readMethod)
+      }
     }
+
+    fun readCustom(): CodeBlock {
+      val customScalarEnum = CustomEnumTypeSpecBuilder.className(context)
+      val customScalarEnumConst = normalizeGraphQlType(irField.type).toUpperCase(Locale.ENGLISH)
+      return CodeBlock.of("return \$L.readCustomType(\$T.\$L);\n", RESPONSE_LIST_ITEM_READER_PARAM.name,
+          customScalarEnum,
+          customScalarEnumConst)
+    }
+
+    fun readObject(): CodeBlock {
+      val objectReaderTypeSpec = TypeSpec.anonymousClassBuilder("")
+          .superclass(responseFieldObjectReaderType(rawFieldType))
+          .addMethod(MethodSpec
+              .methodBuilder("read")
+              .addModifiers(Modifier.PUBLIC)
+              .addAnnotation(Override::class.java)
+              .returns(rawFieldType)
+              .addParameter(RESPONSE_READER_PARAM)
+              .addStatement("return \$L.map(\$L)", (rawFieldType as ClassName).mapperFieldName(),
+                  RESPONSE_READER_PARAM.name)
+              .build())
+          .build()
+      return CodeBlock.of("return \$L.readObject(\$L);\n", RESPONSE_LIST_ITEM_READER_PARAM.name, objectReaderTypeSpec)
+    }
+
+    fun readList(): CodeBlock {
+      val rawFieldType = rawFieldType.listParamType()
+      val readItemCode = readListItemStatement(rawFieldType)
+      val listItemReaderTypeSpec = TypeSpec.anonymousClassBuilder("")
+          .superclass(responseFieldListItemReaderType(rawFieldType))
+          .addMethod(MethodSpec
+              .methodBuilder("read")
+              .addModifiers(Modifier.PUBLIC)
+              .addAnnotation(Override::class.java)
+              .returns(rawFieldType)
+              .addParameter(RESPONSE_LIST_ITEM_READER_PARAM)
+              .addCode(readItemCode)
+              .build())
+          .build()
+      return CodeBlock.of("return \$L.readList(\$L);\n", RESPONSE_LIST_ITEM_READER_PARAM.name, listItemReaderTypeSpec)
+    }
+
+    return when {
+      rawFieldType.isList() -> readList()
+      irField.type.isCustomScalarType(context) -> return readCustom()
+      rawFieldType.isScalar(context) -> return readScalar()
+      else -> return readObject()
+    }
+  }
+
+  private fun readListCode(readerParam: CodeBlock, fieldParam: CodeBlock): CodeBlock {
+    val rawFieldType = normalizedFieldSpec.type.listParamType()
     val readerTypeSpec = TypeSpec.anonymousClassBuilder("")
         .superclass(responseFieldListItemReaderType(rawFieldType))
         .addMethod(MethodSpec
@@ -154,65 +203,16 @@ class ResponseFieldSpec(
             .addAnnotation(Override::class.java)
             .returns(rawFieldType)
             .addParameter(RESPONSE_LIST_ITEM_READER_PARAM)
-            .addCode(readStatement)
+            .addCode(readListItemStatement(rawFieldType))
             .build())
         .build()
     return CodeBlock.of("final \$T \$L = \$L.\$L(\$L, \$L);\n", normalizedFieldSpec.type, fieldSpec.name, readerParam,
         READ_METHODS[responseFieldType], fieldParam, readerTypeSpec)
-  }
-
-  private fun readCustomListCode(readerParam: CodeBlock, fieldParam: CodeBlock): CodeBlock {
-    val rawFieldType = normalizedFieldSpec.type.let { if (it.isList()) it.listParamType() else it }
-    val customScalarEnum = CustomEnumTypeSpecBuilder.className(context)
-    val customScalarEnumConst = normalizeGraphQlType(irField.type).toUpperCase(Locale.ENGLISH)
-    val readerTypeSpec = TypeSpec.anonymousClassBuilder("")
-        .superclass(responseFieldListItemReaderType(rawFieldType))
-        .addMethod(MethodSpec
-            .methodBuilder("read")
-            .addModifiers(Modifier.PUBLIC)
-            .addAnnotation(Override::class.java)
-            .returns(rawFieldType)
-            .addParameter(RESPONSE_LIST_ITEM_READER_PARAM)
-            .addStatement("return \$L.readCustomType(\$T.\$L)", RESPONSE_LIST_ITEM_READER_PARAM.name, customScalarEnum,
-                customScalarEnumConst)
-            .build())
-        .build()
-    return CodeBlock.of("final \$T \$L = \$L.\$L(\$L, \$L);\n", normalizedFieldSpec.type, fieldSpec.name, readerParam,
-        READ_METHODS[responseFieldType], fieldParam, readerTypeSpec)
-  }
-
-  private fun readObjectListCode(readerParam: CodeBlock, fieldParam: CodeBlock): CodeBlock {
-    val rawFieldType = normalizedFieldSpec.type.let { if (it.isList()) it.listParamType() else it }
-    val objectReaderTypeSpec = TypeSpec.anonymousClassBuilder("")
-        .superclass(responseFieldObjectReaderTypeName(rawFieldType))
-        .addMethod(MethodSpec
-            .methodBuilder("read")
-            .addModifiers(Modifier.PUBLIC)
-            .addAnnotation(Override::class.java)
-            .returns(rawFieldType)
-            .addParameter(RESPONSE_READER_PARAM)
-            .addStatement("return \$L.map(\$L)", (rawFieldType as ClassName).mapperFieldName(),
-                RESPONSE_READER_PARAM.name)
-            .build())
-        .build()
-    val listReaderTypeSpec = TypeSpec.anonymousClassBuilder("")
-        .superclass(responseFieldListItemReaderType(rawFieldType))
-        .addMethod(MethodSpec
-            .methodBuilder("read")
-            .addModifiers(Modifier.PUBLIC)
-            .addAnnotation(Override::class.java)
-            .returns(rawFieldType)
-            .addParameter(RESPONSE_LIST_ITEM_READER_PARAM)
-            .addStatement("return \$L.readObject(\$L)", RESPONSE_LIST_ITEM_READER_PARAM.name, objectReaderTypeSpec)
-            .build())
-        .build()
-    return CodeBlock.of("final \$T \$L = \$L.\$L(\$L, \$L);\n", normalizedFieldSpec.type, fieldSpec.name, readerParam,
-        READ_METHODS[responseFieldType], fieldParam, listReaderTypeSpec)
   }
 
   private fun readInlineFragmentCode(readerParam: CodeBlock, fieldParam: CodeBlock): CodeBlock {
     val readerTypeSpec = TypeSpec.anonymousClassBuilder("")
-        .superclass(conditionalResponseFieldReaderTypeName(normalizedFieldSpec.type))
+        .superclass(conditionalResponseFieldReaderType(normalizedFieldSpec.type))
         .addMethod(MethodSpec
             .methodBuilder("read")
             .addModifiers(Modifier.PUBLIC)
@@ -230,7 +230,7 @@ class ResponseFieldSpec(
 
   private fun readFragmentsCode(readerParam: CodeBlock, fieldParam: CodeBlock): CodeBlock {
     val readerTypeSpec = TypeSpec.anonymousClassBuilder("")
-        .superclass(conditionalResponseFieldReaderTypeName(FRAGMENTS_CLASS))
+        .superclass(conditionalResponseFieldReaderType(FRAGMENTS_CLASS))
         .addMethod(MethodSpec
             .methodBuilder("read")
             .addModifiers(Modifier.PUBLIC)
@@ -273,85 +273,59 @@ class ResponseFieldSpec(
     return CodeBlock.of("\$L.\$L(\$L, \$L);\n", writerParam, WRITE_METHODS[responseFieldType], fieldParam, valueCode)
   }
 
-  private fun writeScalarList(writerParam: CodeBlock, fieldParam: CodeBlock): CodeBlock {
-    val rawFieldType = with(normalizedFieldSpec.type) { if (isList()) listParamType() else this }
-    val writeMethod = SCALAR_LIST_ITEM_WRITE_METHODS[rawFieldType] ?: "writeString"
-    val writeStatement = CodeBlock.builder()
-        .beginControlFlow("for (\$T \$L : \$L)", rawFieldType, "\$item",
-            fieldSpec.type.unwrapOptionalValue(fieldSpec.name, false))
-        .add(
-            if (rawFieldType.isEnum(context)) {
-              CodeBlock.of("\$L.\$L(\$L.name());\n", RESPONSE_LIST_ITEM_WRITER_PARAM.name, writeMethod, "\$item")
-            } else {
-              CodeBlock.of("\$L.\$L(\$L);\n", RESPONSE_LIST_ITEM_WRITER_PARAM.name, writeMethod, "\$item")
-            })
-        .endControlFlow()
-        .build()
-    val listWriterType = TypeSpec.anonymousClassBuilder("")
-        .addSuperinterface(ResponseWriter.ListWriter::class.java)
-        .addMethod(MethodSpec.methodBuilder("write")
-            .addModifiers(Modifier.PUBLIC)
-            .addAnnotation(Override::class.java)
-            .addParameter(RESPONSE_LIST_ITEM_WRITER_PARAM)
-            .addCode(writeStatement)
-            .build()
-        )
-        .build()
-    val valueCode = fieldSpec.type.unwrapOptionalValue(fieldSpec.name) {
-      CodeBlock.of("\$L", listWriterType)
+  private fun writeListItemStatement(listItemType: TypeName, marshaller: CodeBlock): CodeBlock {
+    fun writeScalar(): CodeBlock {
+      val writeMethod = SCALAR_LIST_ITEM_WRITE_METHODS[listItemType] ?: "writeString"
+      return CodeBlock.builder()
+          .add(
+              if (listItemType.isEnum(context)) {
+                CodeBlock.of("\$L.\$L(((\$L) \$L).name());\n", RESPONSE_LIST_ITEM_WRITER_PARAM.name, writeMethod, listItemType, OBJECT_VALUE_PARAM.name)
+              } else {
+                CodeBlock.of("\$L.\$L(\$L);\n", RESPONSE_LIST_ITEM_WRITER_PARAM.name, writeMethod, OBJECT_VALUE_PARAM.name)
+              })
+          .build()
     }
-    return CodeBlock.of("\$L.\$L(\$L, \$L);\n", writerParam, WRITE_METHODS[responseFieldType], fieldParam, valueCode)
+
+    fun writeCustom(): CodeBlock {
+      val customScalarEnum = CustomEnumTypeSpecBuilder.className(context)
+      val customScalarEnumConst = normalizeGraphQlType(irField.type).toUpperCase(Locale.ENGLISH)
+      return CodeBlock.builder()
+          .addStatement("\$L.writeCustom(\$T.\$L, \$L)", RESPONSE_LIST_ITEM_WRITER_PARAM.name,
+              customScalarEnum, customScalarEnumConst, OBJECT_VALUE_PARAM.name)
+          .build()
+    }
+
+    fun writeObject(): CodeBlock {
+      return CodeBlock.builder()
+          .addStatement("\$L.writeObject(((\$L) \$L).\$L)", RESPONSE_LIST_ITEM_WRITER_PARAM.name, listItemType, OBJECT_VALUE_PARAM.name, marshaller)
+          .build()
+    }
+
+    return when {
+      irField.type.isCustomScalarType(context) -> writeCustom()
+      listItemType.isScalar(context) -> writeScalar()
+      else -> writeObject()
+    }
   }
 
-  private fun writeCustomList(writerParam: CodeBlock, fieldParam: CodeBlock): CodeBlock {
-    val rawFieldType = normalizedFieldSpec.type.let { if (it.isList()) it.listParamType() else it }
-    val customScalarEnum = CustomEnumTypeSpecBuilder.className(context)
-    val customScalarEnumConst = normalizeGraphQlType(irField.type).toUpperCase(Locale.ENGLISH)
-    val writeStatement = CodeBlock.builder()
-        .beginControlFlow("for (\$T \$L : \$L)", rawFieldType, "\$item",
-            fieldSpec.type.unwrapOptionalValue(fieldSpec.name, false))
-        .addStatement("\$L.writeCustom(\$T.\$L, \$L)", RESPONSE_LIST_ITEM_WRITER_PARAM.name,
-            customScalarEnum, customScalarEnumConst, "\$item")
-        .endControlFlow()
-        .build()
+  private fun writeListCode(writerParam: CodeBlock, fieldParam: CodeBlock, marshaller: CodeBlock): CodeBlock {
+    var listItemType = normalizedFieldSpec.type.listParamType()
+    while (listItemType.isList()) {
+      listItemType = listItemType.listParamType()
+    }
     val listWriterType = TypeSpec.anonymousClassBuilder("")
         .addSuperinterface(ResponseWriter.ListWriter::class.java)
         .addMethod(MethodSpec.methodBuilder("write")
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(Override::class.java)
+            .addParameter(OBJECT_VALUE_PARAM)
             .addParameter(RESPONSE_LIST_ITEM_WRITER_PARAM)
-            .addCode(writeStatement)
+            .addCode(writeListItemStatement(listItemType, marshaller))
             .build()
         )
         .build()
-    val valueCode = fieldSpec.type.unwrapOptionalValue(fieldSpec.name) {
-      CodeBlock.of("\$L", listWriterType)
-    }
-    return CodeBlock.of("\$L.\$L(\$L, \$L);\n", writerParam, WRITE_METHODS[responseFieldType], fieldParam, valueCode)
-  }
-
-  private fun writeObjectList(writerParam: CodeBlock, fieldParam: CodeBlock, marshaller: CodeBlock): CodeBlock {
-    val rawFieldType = with(normalizedFieldSpec.type) { if (isList()) listParamType() else this }
-    val writeStatement = CodeBlock.builder()
-        .beginControlFlow("for (\$T \$L : \$L)", rawFieldType, "\$item",
-            fieldSpec.type.unwrapOptionalValue(fieldSpec.name, false))
-        .addStatement("\$L.writeObject(\$L.\$L)", RESPONSE_LIST_ITEM_WRITER_PARAM.name, "\$item", marshaller)
-        .endControlFlow()
-        .build()
-    val listWriterType = TypeSpec.anonymousClassBuilder("")
-        .addSuperinterface(ResponseWriter.ListWriter::class.java)
-        .addMethod(MethodSpec.methodBuilder("write")
-            .addModifiers(Modifier.PUBLIC)
-            .addAnnotation(Override::class.java)
-            .addParameter(RESPONSE_LIST_ITEM_WRITER_PARAM)
-            .addCode(writeStatement)
-            .build()
-        )
-        .build()
-    val valueCode = fieldSpec.type.unwrapOptionalValue(fieldSpec.name) {
-      CodeBlock.of("\$L", listWriterType)
-    }
-    return CodeBlock.of("\$L.\$L(\$L, \$L);\n", writerParam, WRITE_METHODS[responseFieldType], fieldParam, valueCode)
+    return CodeBlock.of("\$L.\$L(\$L, \$L, \$L);\n", writerParam, WRITE_METHODS[responseFieldType], fieldParam,
+        fieldSpec.type.unwrapOptionalValue(fieldSpec.name), listWriterType)
   }
 
   private fun writeInlineFragmentCode(writerParam: CodeBlock, marshaller: CodeBlock): CodeBlock {
@@ -368,10 +342,10 @@ class ResponseFieldSpec(
     return CodeBlock.of("\$L.\$L.marshal(\$L);\n", fieldSpec.name, marshaller, writerParam)
   }
 
-  private fun responseFieldObjectReaderTypeName(type: TypeName) =
+  private fun responseFieldObjectReaderType(type: TypeName) =
       ParameterizedTypeName.get(ClassName.get(ResponseReader.ObjectReader::class.java), type)
 
-  private fun conditionalResponseFieldReaderTypeName(type: TypeName) =
+  private fun conditionalResponseFieldReaderType(type: TypeName) =
       ParameterizedTypeName.get(ClassName.get(ResponseReader.ConditionalTypeReader::class.java), type)
 
   private fun responseFieldListItemReaderType(type: TypeName) =
@@ -408,9 +382,7 @@ class ResponseFieldSpec(
         ResponseField.Type.BOOLEAN to "forBoolean",
         ResponseField.Type.ENUM to "forString",
         ResponseField.Type.OBJECT to "forObject",
-        ResponseField.Type.SCALAR_LIST to "forScalarList",
-        ResponseField.Type.CUSTOM_LIST to "forCustomList",
-        ResponseField.Type.OBJECT_LIST to "forObjectList",
+        ResponseField.Type.LIST to "forList",
         ResponseField.Type.CUSTOM to "forCustomType",
         ResponseField.Type.FRAGMENT to "forFragment",
         ResponseField.Type.INLINE_FRAGMENT to "forInlineFragment"
@@ -423,9 +395,7 @@ class ResponseFieldSpec(
         ResponseField.Type.BOOLEAN to "readBoolean",
         ResponseField.Type.ENUM to "readString",
         ResponseField.Type.OBJECT to "readObject",
-        ResponseField.Type.SCALAR_LIST to "readList",
-        ResponseField.Type.CUSTOM_LIST to "readList",
-        ResponseField.Type.OBJECT_LIST to "readList",
+        ResponseField.Type.LIST to "readList",
         ResponseField.Type.CUSTOM to "readCustomType",
         ResponseField.Type.FRAGMENT to "readConditional",
         ResponseField.Type.INLINE_FRAGMENT to "readConditional"
@@ -439,9 +409,7 @@ class ResponseFieldSpec(
         ResponseField.Type.ENUM to "writeString",
         ResponseField.Type.CUSTOM to "writeCustom",
         ResponseField.Type.OBJECT to "writeObject",
-        ResponseField.Type.SCALAR_LIST to "writeList",
-        ResponseField.Type.CUSTOM_LIST to "writeList",
-        ResponseField.Type.OBJECT_LIST to "writeList"
+        ResponseField.Type.LIST to "writeList"
     )
     private val SCALAR_LIST_ITEM_READ_METHODS = mapOf(
         ClassNames.STRING to "readString",
@@ -468,7 +436,8 @@ class ResponseFieldSpec(
     private val RESPONSE_READER_PARAM =
         ParameterSpec.builder(ResponseReader::class.java, "reader").build()
     private val RESPONSE_LIST_ITEM_READER_PARAM =
-        ParameterSpec.builder(ResponseReader.ListItemReader::class.java, "reader").build()
+        ParameterSpec.builder(ResponseReader.ListItemReader::class.java, "listItemReader").build()
+    private val OBJECT_VALUE_PARAM = ParameterSpec.builder(Object::class.java, "value").build()
     private val RESPONSE_LIST_ITEM_WRITER_PARAM =
         ParameterSpec.builder(ResponseWriter.ListItemWriter::class.java, "listItemWriter").build()
 

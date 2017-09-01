@@ -178,10 +178,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.DATE, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forCustomList("appearanceDates", "appearanceDates", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forList("appearanceDates", "appearanceDates", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forCustomType("fieldWithUnsupportedType", "fieldWithUnsupportedType", null, false, CustomType.UNSUPPORTEDTYPE, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forCustomType("profileLink", "profileLink", null, false, CustomType.URL, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forCustomList("links", "links", null, false, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forList("links", "links", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -269,22 +269,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeString($responseFields[0], __typename);
           writer.writeString($responseFields[1], name);
           writer.writeCustom((ResponseField.CustomTypeField) $responseFields[2], birthDate);
-          writer.writeList($responseFields[3], new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[3], appearanceDates, new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) {
-              for (Date $item : appearanceDates) {
-                listItemWriter.writeCustom(CustomType.DATE, $item);
-              }
+            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
+              listItemWriter.writeCustom(CustomType.DATE, value);
             }
           });
           writer.writeCustom((ResponseField.CustomTypeField) $responseFields[4], fieldWithUnsupportedType);
           writer.writeCustom((ResponseField.CustomTypeField) $responseFields[5], profileLink);
-          writer.writeList($responseFields[6], new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[6], links, new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) {
-              for (String $item : links) {
-                listItemWriter.writeCustom(CustomType.URL, $item);
-              }
+            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
+              listItemWriter.writeCustom(CustomType.URL, value);
             }
           });
         }
@@ -357,16 +353,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final Date birthDate = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[2]);
         final List<Date> appearanceDates = reader.readList($responseFields[3], new ResponseReader.ListReader<Date>() {
           @Override
-          public Date read(ResponseReader.ListItemReader reader) {
-            return reader.readCustomType(CustomType.DATE);
+          public Date read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readCustomType(CustomType.DATE);
           }
         });
         final Object fieldWithUnsupportedType = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[4]);
         final String profileLink = reader.readCustomType((ResponseField.CustomTypeField) $responseFields[5]);
         final List<String> links = reader.readList($responseFields[6], new ResponseReader.ListReader<String>() {
           @Override
-          public String read(ResponseReader.ListItemReader reader) {
-            return reader.readCustomType(CustomType.URL);
+          public String read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readCustomType(CustomType.URL);
           }
         });
         return new Hero(__typename, name, birthDate, appearanceDates, fieldWithUnsupportedType, profileLink, links);

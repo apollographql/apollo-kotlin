@@ -1,39 +1,44 @@
 package com.apollographql.apollo.api;
 
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public interface ResponseWriter {
-  void writeString(ResponseField field, String value);
+  void writeString(@Nonnull ResponseField field, @Nullable String value);
 
-  void writeInt(ResponseField field, Integer value);
+  void writeInt(@Nonnull ResponseField field, @Nullable Integer value);
 
-  void writeLong(ResponseField field, Long value);
+  void writeLong(@Nonnull ResponseField field, @Nullable Long value);
 
-  void writeDouble(ResponseField field, Double value);
+  void writeDouble(@Nonnull ResponseField field, @Nullable Double value);
 
-  void writeBoolean(ResponseField field, Boolean value);
+  void writeBoolean(@Nonnull ResponseField field, @Nullable Boolean value);
 
-  void writeCustom(ResponseField.CustomTypeField field, Object value);
+  void writeCustom(@Nonnull ResponseField.CustomTypeField field, @Nullable Object value);
 
-  void writeObject(ResponseField field, ResponseFieldMarshaller marshaller);
+  void writeObject(@Nonnull ResponseField field, @Nullable ResponseFieldMarshaller marshaller);
 
-  void writeList(ResponseField field, ListWriter listWriter);
+  void writeList(@Nonnull ResponseField field, @Nullable List values, @Nonnull ListWriter listWriter);
 
   interface ListWriter {
-    void write(ListItemWriter listItemWriter);
+    void write(@Nullable Object value, @Nonnull ListItemWriter listItemWriter);
   }
 
   interface ListItemWriter {
-    void writeString(String value);
+    void writeString(@Nullable Object value);
 
-    void writeInt(Integer value);
+    void writeInt(@Nullable Object value);
 
-    void writeLong(Long value);
+    void writeLong(@Nullable Object value);
 
-    void writeDouble(Double value);
+    void writeDouble(@Nullable Object value);
 
-    void writeBoolean(Boolean value);
+    void writeBoolean(@Nullable Object value);
 
-    void writeCustom(ScalarType scalarType, Object value);
+    void writeCustom(@Nonnull ScalarType scalarType, @Nullable Object value);
 
-    void writeObject(ResponseFieldMarshaller marshaller);
+    void writeObject(@Nullable ResponseFieldMarshaller marshaller);
   }
 }

@@ -17,6 +17,7 @@ import com.apollographql.apollo.integration.normalizer.HeroAppearsInQuery;
 import com.apollographql.apollo.integration.normalizer.HeroParentTypeDependentFieldQuery;
 import com.apollographql.apollo.integration.normalizer.HeroTypeDependentAliasedFieldQuery;
 import com.apollographql.apollo.integration.normalizer.SameHeroTwiceQuery;
+import com.apollographql.apollo.integration.normalizer.StarshipByIdQuery;
 import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragment;
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
@@ -42,6 +43,7 @@ import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_FIRST;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 import static com.google.common.truth.Truth.assertThat;
+import static java.util.Arrays.asList;
 
 public class NormalizedCacheTestCase {
   private ApolloClient apolloClient;
@@ -612,7 +614,7 @@ public class NormalizedCacheTestCase {
         }
     );
 
-    assertThat(apolloClient.apolloStore().remove(Arrays.asList(CacheKey.from("1002"), CacheKey.from("1000")))
+    assertThat(apolloClient.apolloStore().remove(asList(CacheKey.from("1002"), CacheKey.from("1000")))
         .execute()).isEqualTo(2);
 
     assertResponse(
@@ -695,6 +697,38 @@ public class NormalizedCacheTestCase {
           @Override public boolean test(Response<HeroAndFriendsDirectivesQuery.Data> response) throws Exception {
             assertThat(response.data().hero().name()).isEqualTo("R2-D2");
             assertThat(response.data().hero().friends()).isNull();
+            return true;
+          }
+        }
+    );
+  }
+
+  @Test public void listOfList() throws Exception {
+    enqueueAndAssertResponse(
+        server,
+        "StarshipByIdResponse.json",
+        apolloClient.query(new StarshipByIdQuery("Starship1")),
+        new Predicate<Response<StarshipByIdQuery.Data>>() {
+          @Override public boolean test(Response<StarshipByIdQuery.Data> response) throws Exception {
+            assertThat(response.data().starship().__typename()).isEqualTo("Starship");
+            assertThat(response.data().starship().name()).isEqualTo("SuperRocket");
+            assertThat(response.data().starship().coordinates()).hasSize(3);
+            assertThat(response.data().starship().coordinates()).containsExactly(asList(100d, 200d), asList(300d, 400d),
+                asList(500d, 600d));
+            return true;
+          }
+        }
+    );
+
+    assertResponse(
+        apolloClient.query(new StarshipByIdQuery("Starship1")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<StarshipByIdQuery.Data>>() {
+          @Override public boolean test(Response<StarshipByIdQuery.Data> response) throws Exception {
+            assertThat(response.data().starship().__typename()).isEqualTo("Starship");
+            assertThat(response.data().starship().name()).isEqualTo("SuperRocket");
+            assertThat(response.data().starship().coordinates()).hasSize(3);
+            assertThat(response.data().starship().coordinates()).containsExactly(asList(100d, 200d), asList(300d, 400d),
+                asList(500d, 600d));
             return true;
           }
         }
