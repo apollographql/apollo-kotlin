@@ -14,6 +14,7 @@ public final class RecordWeigher {
   private static final int SIZE_OF_ARRAY_OVERHEAD = 16;
   private static final int SIZE_OF_RECORD_OVERHEAD = 16;
   private static final int SIZE_OF_CACHE_REFERENCE_OVERHEAD = 16;
+  private static final int SIZE_OF_NULL = 4;
 
   public static int byteChange(Object newValue, Object oldValue) {
     return weighField(newValue) - weighField(oldValue);
@@ -43,6 +44,8 @@ public final class RecordWeigher {
       return SIZE_OF_BIG_DECIMAL;
     } else if (field instanceof CacheReference) {
       return SIZE_OF_CACHE_REFERENCE_OVERHEAD + ((CacheReference) field).key().getBytes().length;
+    } else if (field == null) {
+      return SIZE_OF_NULL;
     }
     throw new IllegalStateException("Unknown field type in Record. " + field.getClass().getName());
   }
