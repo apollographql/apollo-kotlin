@@ -26,6 +26,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.functions.Predicate;
@@ -73,6 +74,21 @@ public class ResponseNormalizationTest {
 
     final Record heroRecord = normalizedCache.loadRecord(reference.key(), CacheHeaders.NONE);
     assertThat(heroRecord.field("name")).isEqualTo("R2-D2");
+  }
+
+  @Test public void testMergeNull() throws Exception {
+    Record record = Record.builder("Key")
+        .addField("field1", "value1")
+        .build();
+    normalizedCache.merge(Collections.singletonList(record), CacheHeaders.NONE);
+
+    Record newRecord = record.toBuilder()
+        .addField("field2", null)
+        .build();
+    normalizedCache.merge(Collections.singletonList(newRecord), CacheHeaders.NONE);
+
+    final Record finalRecord = normalizedCache.loadRecord(record.key(), CacheHeaders.NONE);
+    assertThat(finalRecord.hasField("field2")).isTrue();
   }
 
   @Test
