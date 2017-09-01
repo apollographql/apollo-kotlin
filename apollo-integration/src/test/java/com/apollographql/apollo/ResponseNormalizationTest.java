@@ -3,6 +3,7 @@ package com.apollographql.apollo;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.CacheHeaders;
+import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheReference;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
@@ -89,6 +90,8 @@ public class ResponseNormalizationTest {
 
     final Record finalRecord = normalizedCache.loadRecord(record.key(), CacheHeaders.NONE);
     assertThat(finalRecord.hasField("field2")).isTrue();
+
+    normalizedCache.remove(CacheKey.from(record.key()));
   }
 
   @Test
