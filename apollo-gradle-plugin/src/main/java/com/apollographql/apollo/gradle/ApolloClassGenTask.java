@@ -15,30 +15,23 @@ import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
 import org.gradle.api.tasks.incremental.InputFileDetails;
 
 import java.io.File;
-import java.util.Map;
 
 public class ApolloClassGenTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses";
 
   @Internal private String variant;
-  @Input private Map<String, String> customTypeMapping;
-  @Input private NullableValueType nullValueType;
-  @Input private boolean generateAccessors;
+  @Internal private ApolloExtension apolloExtension;
   @OutputDirectory private File outputDir;
-  private Boolean useSemanticNaming;
-  private Boolean generateModelBuilder;
+  private NullableValueType nullableValueType;
 
-  public void init(String buildVariant, Map<String, String> typeMapping, String nullableValueType, boolean accessors,
-      boolean semanticNaming, boolean modelBuilder) {
-    variant = buildVariant;
-    customTypeMapping = typeMapping;
-    nullValueType = nullableValueType == null ? NullableValueType.ANNOTATED
-        : NullableValueType.Companion.findByValue(nullableValueType);
-    generateAccessors = accessors;
+  public void init(String variant, ApolloExtension apolloExtension) {
+    this.variant = variant;
+    this.apolloExtension = apolloExtension;
+    nullableValueType = apolloExtension.getNullableValueType() == null
+        ? NullableValueType.ANNOTATED
+        : NullableValueType.Companion.findByValue(apolloExtension.getNullableValueType());
     outputDir = new File(getProject().getBuildDir() + File.separator + Joiner.on(File.separator).join(GraphQLCompiler.Companion
         .getOUTPUT_DIRECTORY()));
-    useSemanticNaming = semanticNaming;
-    generateModelBuilder = modelBuilder;
   }
 
   @TaskAction
@@ -47,7 +40,9 @@ public class ApolloClassGenTask extends SourceTask {
       @Override
       public void execute(InputFileDetails inputFileDetails) {
         GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(inputFileDetails.getFile(), outputDir,
-            customTypeMapping, nullValueType, generateAccessors, useSemanticNaming, generateModelBuilder);
+            apolloExtension.getCustomTypeMapping(), nullableValueType, apolloExtension.isGenerateAccessors(),
+            apolloExtension.isUseSemanticNaming(), apolloExtension.isGenerateModelBuilder(),
+            apolloExtension.getOutputPackageName());
         new GraphQLCompiler().write(args);
       }
     });
@@ -69,27 +64,19 @@ public class ApolloClassGenTask extends SourceTask {
     this.outputDir = outputDir;
   }
 
-  public Map<String, String> getCustomTypeMapping() {
-    return customTypeMapping;
+  public NullableValueType getNullableValueType() {
+    return nullableValueType;
   }
 
-  public void setCustomTypeMapping(Map<String, String> customTypeMapping) {
-    this.customTypeMapping = customTypeMapping;
+  public void setNullableValueType(NullableValueType nullableValueType) {
+    this.nullableValueType = nullableValueType;
   }
 
-  public NullableValueType getNullValueType() {
-    return nullValueType;
+  public ApolloExtension getApolloExtension() {
+    return apolloExtension;
   }
 
-  public void setNullValueType(NullableValueType nullValueType) {
-    this.nullValueType = nullValueType;
-  }
-
-  public boolean shouldGenerateAccessors() {
-    return generateAccessors;
-  }
-
-  public void setGenerateAccessors(boolean generateAccessors) {
-    this.generateAccessors = generateAccessors;
+  public void setApolloExtension(ApolloExtension apolloExtension) {
+    this.apolloExtension = apolloExtension;
   }
 }

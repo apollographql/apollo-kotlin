@@ -4,11 +4,13 @@ import com.apollographql.apollo.compiler.GraphQLCompiler
 import org.apache.commons.io.FileUtils
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
+import org.gradle.testkit.runner.UnexpectedBuildFailure
 import spock.lang.Shared
 import spock.lang.Specification
 
 import static com.apollographql.apollo.gradle.ApolloPluginTestHelper.*
 import static org.apache.commons.io.FileUtils.copyFile
+
 /**
  * The ordering of the tests in this file matters, cleanup only happens after all feature
  * methods run.
@@ -234,6 +236,73 @@ class BasicAndroidSpec extends Specification {
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").isFile()
+  }
+
+  def "set explicit path path to schema.json but missing package name fails"() {
+    setup: "a testProject with a previous build and a modified build script"
+    replaceTextInFile(new File("$testProjectDir/build.gradle")) {
+      it.replace("apollo {",
+          "apollo {\n " +
+              "schemaFilePath = \"/graphql/schema/my-schema.json\"\n "
+      )
+    }
+
+    when:
+    new File("$testProjectDir/src/main/graphql/schema.json").delete()
+    String schemaFilesFixtures = "src/test/testProject/android/schemaFilesFixtures"
+    copyFile(new File(schemaFilesFixtures + "/oldswapi.json"),
+        new File("$testProjectDir/graphql/schema/my-schema.json"))
+
+    def buildFailure = false
+    try {
+      GradleRunner.create()
+          .withProjectDir(testProjectDir)
+          .withPluginClasspath()
+          .withArguments("clean", "generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
+          .forwardStdError(new OutputStreamWriter(System.err))
+          .build()
+    } catch (UnexpectedBuildFailure e) {
+      buildFailure = true
+    }
+
+    then:
+    if (!buildFailure) {
+      throw new RuntimeException("expected failure")
+    }
+    assert !new File(testProjectDir,
+        "build/generated/source/apollo/generatedIR/debug/src/main/graphql/com/myexample/DebugAPI.json").isFile()
+    assert !new File(testProjectDir,
+        "build/generated/source/apollo/generatedIR/release/src/main/graphql/com/myexample/ReleaseAPI.json").isFile()
+    assert !new File(testProjectDir, "build/generated/source/apollo/com/myexample/DroidDetailsQuery.java").isFile()
+  }
+
+  def "set explicit path path to schema.json and target package name generates classes successfully"() {
+    setup: "a testProject with a previous build and a modified build script"
+    replaceTextInFile(new File("$testProjectDir/build.gradle")) {
+      it.replace("apollo {",
+          "apollo {\n " +
+              "schemaFilePath = \"graphql/schema/my-schema.json\"\n " +
+              "outputPackageName = \"com.myexample\"\n"
+      )
+    }
+
+    when:
+    new File("$testProjectDir/src/main/graphql/schema.json").delete()
+    String schemaFilesFixtures = "src/test/testProject/android/schemaFilesFixtures"
+    copyFile(new File(schemaFilesFixtures + "/oldswapi.json"),
+        new File("$testProjectDir/graphql/schema/my-schema.json"))
+    def result = GradleRunner.create().withProjectDir(testProjectDir)
+        .withPluginClasspath()
+        .withArguments("clean", "generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
+        .forwardStdError(new OutputStreamWriter(System.err)).build()
+
+    then:
+    result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
+    assert new File(testProjectDir,
+        "build/generated/source/apollo/generatedIR/debug/src/main/graphql/com/myexample/DebugAPI.json").isFile()
+    assert new File(testProjectDir,
+        "build/generated/source/apollo/generatedIR/release/src/main/graphql/com/myexample/ReleaseAPI.json").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/com/myexample/DroidDetailsQuery.java").isFile()
   }
 
   def cleanupSpec() {

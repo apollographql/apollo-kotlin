@@ -14,7 +14,7 @@ class GraphQLCompiler {
 
   fun write(args: Arguments) {
     val ir = irAdapter.fromJson(args.irFile.readText())!!
-    val irPackageName = args.irFile.absolutePath.formatPackageName()
+    val irPackageName = args.outputPackageName ?: args.irFile.absolutePath.formatPackageName()
     val fragmentsPackage = if (irPackageName.isNotEmpty()) "$irPackageName.fragment" else "fragment"
     val typesPackage = if (irPackageName.isNotEmpty()) "$irPackageName.type" else "type"
     val customTypeMap = args.customTypeMap.supportedTypeMap(ir.typesUsed)
@@ -30,10 +30,15 @@ class GraphQLCompiler {
         useSemanticNaming = args.useSemanticNaming,
         generateModelBuilder = args.generateModelBuilder
     )
-    ir.writeJavaFiles(context, args.outputDir)
+    ir.writeJavaFiles(
+        context = context,
+        outputDir = args.outputDir,
+        outputPackageName = args.outputPackageName
+    )
   }
 
-  private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File) {
+  private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File,
+      outputPackageName: String?) {
     fragments.forEach {
       val typeSpec = it.toTypeSpec(context.copy())
       JavaFile.builder(context.fragmentsPackage, typeSpec).build().writeTo(outputDir)
@@ -51,7 +56,7 @@ class GraphQLCompiler {
 
     operations.map { OperationTypeSpecBuilder(it, fragments, context.useSemanticNaming) }
         .forEach {
-          val packageName = it.operation.filePath.formatPackageName()
+          val packageName = outputPackageName ?: it.operation.filePath.formatPackageName()
           val typeSpec = it.toTypeSpec(context.copy())
           JavaFile.builder(packageName, typeSpec).build().writeTo(outputDir)
         }
@@ -80,6 +85,7 @@ class GraphQLCompiler {
       val nullableValueType: NullableValueType,
       val generateAccessors: Boolean,
       val useSemanticNaming: Boolean,
-      val generateModelBuilder: Boolean
+      val generateModelBuilder: Boolean,
+      val outputPackageName: String?
   )
 }
