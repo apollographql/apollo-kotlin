@@ -191,14 +191,7 @@ class SchemaTypeSpecBuilder(
   private fun responseFieldSpecs(nameOverrideMap: Map<String, String>): List<ResponseFieldSpec> {
     fun responseFieldType(schemaField: Field, fieldSpec: FieldSpec): ResponseField.Type {
       if (fieldSpec.type.isList()) {
-        val rawFieldType = fieldSpec.type.let { if (it.isList()) it.listParamType() else it }
-        if (schemaField.type.isCustomScalarType(context)) {
-          return ResponseField.Type.CUSTOM_LIST
-        } else if (rawFieldType.isScalar(context)) {
-          return ResponseField.Type.SCALAR_LIST
-        } else {
-          return ResponseField.Type.OBJECT_LIST
-        }
+        return ResponseField.Type.LIST
       }
 
       if (schemaField.type.isCustomScalarType(context)) {
@@ -302,7 +295,13 @@ class SchemaTypeSpecBuilder(
       return responseFieldSpecs
           .filter { !it.irField.type.isCustomScalarType(context) }
           .map { it.normalizedFieldSpec.type }
-          .map { it.let { if (it.isList()) it.listParamType() else it } }
+          .map {
+            var rawType = if (it.isList()) it.listParamType() else it
+            while (rawType.isList()) {
+              rawType = rawType.listParamType()
+            }
+            rawType
+          }
           .filter { !it.isScalar(context) }
           .map { it.unwrapOptionalType().withoutAnnotations() }
           .map { it as ClassName }

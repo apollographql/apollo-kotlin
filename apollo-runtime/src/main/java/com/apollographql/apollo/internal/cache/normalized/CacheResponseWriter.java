@@ -12,43 +12,44 @@ import com.apollographql.apollo.cache.normalized.Record;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 final class CacheResponseWriter implements ResponseWriter {
   private final Operation.Variables operationVariables;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   final Map<String, FieldDescriptor> fieldDescriptors = new LinkedHashMap<>();
-  final Map<String, Object> fieldValues = new LinkedHashMap<>();
 
   CacheResponseWriter(Operation.Variables operationVariables, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
     this.operationVariables = operationVariables;
     this.customTypeAdapters = customTypeAdapters;
   }
 
-  @Override public void writeString(ResponseField field, String value) {
+  @Override public void writeString(@Nonnull ResponseField field, @Nullable String value) {
     writeScalarFieldValue(field, value);
   }
 
-  @Override public void writeInt(ResponseField field, Integer value) {
+  @Override public void writeInt(@Nonnull ResponseField field, @Nullable Integer value) {
     writeScalarFieldValue(field, value != null ? BigDecimal.valueOf(value) : null);
   }
 
-  @Override public void writeLong(ResponseField field, Long value) {
+  @Override public void writeLong(@Nonnull ResponseField field, @Nullable Long value) {
     writeScalarFieldValue(field, value != null ? BigDecimal.valueOf(value) : null);
   }
 
-  @Override public void writeDouble(ResponseField field, Double value) {
+  @Override public void writeDouble(@Nonnull ResponseField field, @Nullable Double value) {
     writeScalarFieldValue(field, value != null ? BigDecimal.valueOf(value) : null);
   }
 
-  @Override public void writeBoolean(ResponseField field, Boolean value) {
+  @Override public void writeBoolean(@Nonnull ResponseField field, @Nullable Boolean value) {
     writeScalarFieldValue(field, value);
   }
 
-  @Override public void writeCustom(ResponseField.CustomTypeField field, Object value) {
+  @Override public void writeCustom(@Nonnull ResponseField.CustomTypeField field, @Nullable Object value) {
     CustomTypeAdapter typeAdapter = customTypeAdapters.get(field.scalarType());
     if (typeAdapter == null) {
       writeScalarFieldValue(field, value);
@@ -57,84 +58,115 @@ final class CacheResponseWriter implements ResponseWriter {
     }
   }
 
-  @Override public void writeObject(ResponseField field, ResponseFieldMarshaller marshaller) {
+  @Override public void writeObject(@Nonnull ResponseField field, @Nullable ResponseFieldMarshaller marshaller) {
     checkFieldValue(field, marshaller);
     if (marshaller == null) {
-      fieldDescriptors.put(field.responseName(), new ObjectFieldDescriptor(field,
-          Collections.<String, FieldDescriptor>emptyMap()));
+      fieldDescriptors.put(field.responseName(), new FieldDescriptor(field, null));
       return;
     }
 
     CacheResponseWriter nestedResponseWriter = new CacheResponseWriter(operationVariables, customTypeAdapters);
     marshaller.marshal(nestedResponseWriter);
 
-    fieldDescriptors.put(field.responseName(), new ObjectFieldDescriptor(field, nestedResponseWriter.fieldDescriptors));
-    fieldValues.put(field.responseName(), nestedResponseWriter.fieldValues);
+    fieldDescriptors.put(field.responseName(), new FieldDescriptor(field, nestedResponseWriter.fieldDescriptors));
   }
 
-  @Override public void writeList(ResponseField field, ListWriter listWriter) {
-    checkFieldValue(field, listWriter);
+  @Override
+  public void writeList(@Nonnull ResponseField field, @Nullable List values, @Nonnull ListWriter listWriter) {
+    checkFieldValue(field, values);
 
-    if (listWriter == null) {
-      fieldDescriptors.put(field.responseName(), new ListFieldDescriptor(field,
-          Collections.<Map<String, FieldDescriptor>>emptyList()));
+    if (values == null) {
+      fieldDescriptors.put(field.responseName(), new FieldDescriptor(field, null));
       return;
     }
 
-    ListItemWriter listItemWriter = new ListItemWriter(operationVariables, customTypeAdapters);
-    listWriter.write(listItemWriter);
-
-    fieldDescriptors.put(field.responseName(), new ListFieldDescriptor(field, listItemWriter.fieldDescriptors));
-    fieldValues.put(field.responseName(), listItemWriter.fieldValues);
+    List items = writeListItemValues(values, listWriter);
+    fieldDescriptors.put(field.responseName(), new FieldDescriptor(field, items));
   }
 
   public Collection<Record> normalize(ResponseNormalizer<Map<String, Object>> responseNormalizer) {
-    normalize(operationVariables, responseNormalizer, fieldDescriptors, fieldValues);
+    normalize(operationVariables, responseNormalizer, fieldDescriptors);
     return responseNormalizer.records();
+  }
+
+  @SuppressWarnings("unchecked") private List writeListItemValues(List values, ListWriter listWriter) {
+    ListItemWriter listItemWriter = new ListItemWriter(operationVariables, customTypeAdapters);
+    List items = new ArrayList();
+    for (Object value : values) {
+      if (value instanceof List) {
+        List nestedItems = writeListItemValues((List) value, listWriter);
+        items.add(nestedItems);
+      } else {
+        listWriter.write(value, listItemWriter);
+        items.add(listItemWriter.value);
+      }
+    }
+    return items;
   }
 
   private void writeScalarFieldValue(ResponseField field, Object value) {
     checkFieldValue(field, value);
-    fieldDescriptors.put(field.responseName(), new FieldDescriptor(field));
-    if (value != null) {
-      fieldValues.put(field.responseName(), value);
+    fieldDescriptors.put(field.responseName(), new FieldDescriptor(field, value));
+  }
+
+  @SuppressWarnings("unchecked")
+  private Map<String, Object> rawFieldValues(Map<String, FieldDescriptor> fieldDescriptors) {
+    Map<String, Object> fieldValues = new LinkedHashMap<>();
+    for (Map.Entry<String, FieldDescriptor> entry : fieldDescriptors.entrySet()) {
+      String fieldResponseName = entry.getKey();
+      Object fieldValue = entry.getValue().value;
+      if (fieldValue == null) {
+        fieldValues.put(fieldResponseName, null);
+      } else if (fieldValue instanceof Map) {
+        Map<String, Object> nestedMap = rawFieldValues((Map<String, FieldDescriptor>) fieldValue);
+        fieldValues.put(fieldResponseName, nestedMap);
+      } else if (fieldValue instanceof List) {
+        fieldValues.put(fieldResponseName, rawListFieldValues((List) fieldValue));
+      } else {
+        fieldValues.put(fieldResponseName, fieldValue);
+      }
     }
+    return fieldValues;
+  }
+
+  @SuppressWarnings("unchecked") private List rawListFieldValues(List values) {
+    List listValues = new ArrayList();
+    for (Object value : values) {
+      if (value instanceof Map) {
+        listValues.add(rawFieldValues((Map<String, FieldDescriptor>) value));
+      } else if (value instanceof List) {
+        listValues.add(rawListFieldValues((List) value));
+      } else {
+        listValues.add(value);
+      }
+    }
+    return listValues;
   }
 
   @SuppressWarnings("unchecked") private void normalize(Operation.Variables operationVariables,
-      ResponseNormalizer<Map<String, Object>> responseNormalizer, Map<String, FieldDescriptor> fieldDescriptors,
-      Map<String, Object> fieldValues) {
+      ResponseNormalizer<Map<String, Object>> responseNormalizer, Map<String, FieldDescriptor> fieldDescriptors) {
+    Map<String, Object> rawFieldValues = rawFieldValues(fieldDescriptors);
     for (String fieldResponseName : fieldDescriptors.keySet()) {
       FieldDescriptor fieldDescriptor = fieldDescriptors.get(fieldResponseName);
-      Object fieldValue = fieldValues.get(fieldResponseName);
+      Object rawFieldValue = rawFieldValues.get(fieldResponseName);
       responseNormalizer.willResolve(fieldDescriptor.field, operationVariables);
 
       switch (fieldDescriptor.field.type()) {
         case OBJECT: {
-          ObjectFieldDescriptor objectFieldDescriptor = (ObjectFieldDescriptor) fieldDescriptor;
-          Map<String, Object> objectFieldValues = (Map<String, Object>) fieldValue;
-          normalizeObjectField(objectFieldDescriptor, objectFieldValues, responseNormalizer);
+          normalizeObjectField(fieldDescriptor, (Map<String, Object>) rawFieldValue, responseNormalizer);
           break;
         }
 
-        case OBJECT_LIST: {
-          ListFieldDescriptor listFieldDescriptor = (ListFieldDescriptor) fieldDescriptor;
-          List<Map<String, Object>> listFieldValues = (List<Map<String, Object>>) fieldValue;
-          normalizeObjectListField(listFieldDescriptor, listFieldValues, responseNormalizer);
-          break;
-        }
-
-        case CUSTOM_LIST:
-        case SCALAR_LIST: {
-          normalizeScalarList((List) fieldValue, responseNormalizer);
+        case LIST: {
+          normalizeList(fieldDescriptor.field, (List) fieldDescriptor.value, (List) rawFieldValue, responseNormalizer);
           break;
         }
 
         default: {
-          if (fieldValue == null) {
+          if (rawFieldValue == null) {
             responseNormalizer.didResolveNull();
           } else {
-            responseNormalizer.didResolveScalar(fieldValue);
+            responseNormalizer.didResolveScalar(rawFieldValue);
           }
           break;
         }
@@ -144,44 +176,42 @@ final class CacheResponseWriter implements ResponseWriter {
     }
   }
 
-  private void normalizeObjectField(ObjectFieldDescriptor objectFieldDescriptor, Map<String, Object> objectFieldValues,
-      ResponseNormalizer<Map<String, Object>> responseNormalizer) {
-    responseNormalizer.willResolveObject(objectFieldDescriptor.field, Optional.fromNullable(objectFieldValues));
-    if (objectFieldValues == null) {
+  @SuppressWarnings("unchecked") private void normalizeObjectField(FieldDescriptor fieldDescriptor,
+      Map<String, Object> rawFieldValues, ResponseNormalizer<Map<String, Object>> responseNormalizer) {
+    responseNormalizer.willResolveObject(fieldDescriptor.field, Optional.fromNullable(rawFieldValues));
+    if (fieldDescriptor.value == null) {
       responseNormalizer.didResolveNull();
     } else {
-      normalize(operationVariables, responseNormalizer, objectFieldDescriptor.childFields, objectFieldValues);
+      normalize(operationVariables, responseNormalizer, (Map<String, FieldDescriptor>) fieldDescriptor.value);
     }
-    responseNormalizer.didResolveObject(objectFieldDescriptor.field, Optional.fromNullable(objectFieldValues));
+    responseNormalizer.didResolveObject(fieldDescriptor.field, Optional.fromNullable(rawFieldValues));
   }
 
-  private void normalizeObjectListField(ListFieldDescriptor listFieldDescriptor,
-      List<Map<String, Object>> listFieldValues, ResponseNormalizer<Map<String, Object>> responseNormalizer) {
-    if (listFieldValues == null) {
+  @SuppressWarnings("unchecked") private void normalizeList(ResponseField listResponseField, List fieldValues,
+      List rawFieldValues, ResponseNormalizer<Map<String, Object>> responseNormalizer) {
+    if (fieldValues == null) {
       responseNormalizer.didResolveNull();
-    } else {
-      for (int i = 0; i < listFieldDescriptor.items.size(); i++) {
-        responseNormalizer.willResolveElement(i);
-        responseNormalizer.willResolveObject(listFieldDescriptor.field, Optional.fromNullable(listFieldValues.get(i)));
-        normalize(operationVariables, responseNormalizer, listFieldDescriptor.items.get(i), listFieldValues.get(i));
-        responseNormalizer.didResolveObject(listFieldDescriptor.field, Optional.fromNullable(listFieldValues.get(i)));
-        responseNormalizer.didResolveElement(i);
-      }
-      responseNormalizer.didResolveList(listFieldValues);
+      return;
     }
-  }
 
-  private void normalizeScalarList(List listFieldValues, ResponseNormalizer<Map<String, Object>> responseNormalizer) {
-    if (listFieldValues == null) {
-      responseNormalizer.didResolveNull();
-    } else {
-      for (int i = 0; i < listFieldValues.size(); i++) {
-        responseNormalizer.willResolveElement(i);
-        responseNormalizer.didResolveScalar(listFieldValues.get(i));
-        responseNormalizer.didResolveElement(i);
+    for (int i = 0; i < fieldValues.size(); i++) {
+      responseNormalizer.willResolveElement(i);
+
+      Object fieldValue = fieldValues.get(i);
+      if (fieldValue instanceof Map) {
+        responseNormalizer.willResolveObject(listResponseField,
+            Optional.fromNullable((Map<String, Object>) rawFieldValues.get(i)));
+        normalize(operationVariables, responseNormalizer, (Map<String, FieldDescriptor>) fieldValue);
+        responseNormalizer.didResolveObject(listResponseField,
+            Optional.fromNullable((Map<String, Object>) rawFieldValues.get(i)));
+      } else if (fieldValue instanceof List) {
+        normalizeList(listResponseField, (List) fieldValue, (List) rawFieldValues.get(i), responseNormalizer);
+      } else {
+        responseNormalizer.didResolveScalar(rawFieldValues.get(i));
       }
-      responseNormalizer.didResolveList(listFieldValues);
+      responseNormalizer.didResolveElement(i);
     }
+    responseNormalizer.didResolveList(rawFieldValues);
   }
 
   private static void checkFieldValue(ResponseField field, Object value) {
@@ -194,75 +224,56 @@ final class CacheResponseWriter implements ResponseWriter {
   @SuppressWarnings("unchecked") private static final class ListItemWriter implements ResponseWriter.ListItemWriter {
     final Operation.Variables operationVariables;
     final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
-    final List<Map<String, FieldDescriptor>> fieldDescriptors = new ArrayList();
-    final List fieldValues = new ArrayList();
+    Object value;
 
     ListItemWriter(Operation.Variables operationVariables, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
       this.operationVariables = operationVariables;
       this.customTypeAdapters = customTypeAdapters;
     }
 
-    @Override public void writeString(String value) {
-      fieldValues.add(value);
+    @Override public void writeString(@Nullable Object value) {
+      this.value = value;
     }
 
-    @Override public void writeInt(Integer value) {
-      fieldValues.add(value);
+    @Override public void writeInt(@Nullable Object value) {
+      this.value = value != null ? BigDecimal.valueOf((Integer) value) : null;
     }
 
-    @Override public void writeLong(Long value) {
-      fieldValues.add(value);
+    @Override public void writeLong(@Nullable Object value) {
+      this.value = value != null ? BigDecimal.valueOf((Long) value) : null;
     }
 
-    @Override public void writeDouble(Double value) {
-      fieldValues.add(value);
+    @Override public void writeDouble(@Nullable Object value) {
+      this.value = value != null ? BigDecimal.valueOf((Double) value) : null;
     }
 
-    @Override public void writeBoolean(Boolean value) {
-      fieldValues.add(value);
+    @Override public void writeBoolean(@Nullable Object value) {
+      this.value = value;
     }
 
-    @Override public void writeCustom(ScalarType scalarType, Object value) {
+    @Override public void writeCustom(@Nonnull ScalarType scalarType, @Nullable Object value) {
       CustomTypeAdapter typeAdapter = customTypeAdapters.get(scalarType);
       if (typeAdapter == null) {
-        fieldValues.add(value);
+        this.value = value;
       } else {
-        fieldValues.add(typeAdapter.encode(value));
+        this.value = typeAdapter.encode(value);
       }
     }
 
     @Override public void writeObject(ResponseFieldMarshaller marshaller) {
       CacheResponseWriter nestedResponseWriter = new CacheResponseWriter(operationVariables, customTypeAdapters);
       marshaller.marshal(nestedResponseWriter);
-
-      fieldDescriptors.add(nestedResponseWriter.fieldDescriptors);
-      fieldValues.add(nestedResponseWriter.fieldValues);
+      value = nestedResponseWriter.fieldDescriptors;
     }
   }
 
   private static class FieldDescriptor {
     final ResponseField field;
+    final Object value;
 
-    FieldDescriptor(ResponseField field) {
+    FieldDescriptor(ResponseField field, Object value) {
       this.field = field;
-    }
-  }
-
-  private static final class ObjectFieldDescriptor extends FieldDescriptor {
-    final Map<String, FieldDescriptor> childFields;
-
-    ObjectFieldDescriptor(ResponseField field, Map<String, FieldDescriptor> childFields) {
-      super(field);
-      this.childFields = childFields;
-    }
-  }
-
-  private static final class ListFieldDescriptor extends FieldDescriptor {
-    final List<Map<String, FieldDescriptor>> items;
-
-    ListFieldDescriptor(ResponseField field, List<Map<String, FieldDescriptor>> items) {
-      super(field);
-      this.items = items;
+      this.value = value;
     }
   }
 }

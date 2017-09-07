@@ -296,7 +296,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forObjectList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -342,14 +342,12 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeInt($responseFields[1], totalCount);
-          writer.writeList($responseFields[2], edges != null ? new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[2], edges, new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) {
-              for (Edge $item : edges) {
-                listItemWriter.writeObject($item.marshaller());
-              }
+            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
+              listItemWriter.writeObject(((Edge) value).marshaller());
             }
-          } : null);
+          });
         }
       };
     }
@@ -405,8 +403,8 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
         final Integer totalCount = reader.readInt($responseFields[1]);
         final List<Edge> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge>() {
           @Override
-          public Edge read(ResponseReader.ListItemReader reader) {
-            return reader.readObject(new ResponseReader.ObjectReader<Edge>() {
+          public Edge read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readObject(new ResponseReader.ObjectReader<Edge>() {
               @Override
               public Edge read(ResponseReader reader) {
                 return edgeFieldMapper.map(reader);

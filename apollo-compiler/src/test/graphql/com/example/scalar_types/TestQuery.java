@@ -96,8 +96,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forDouble("graphQlFloatNonNullable", "graphQlFloatNonNullable", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forBoolean("graphQlBooleanNullable", "graphQlBooleanNullable", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forBoolean("graphQlBooleanNonNullable", "graphQlBooleanNonNullable", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forScalarList("graphQlListOfInt", "graphQlListOfInt", null, true, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forObjectList("graphQlListOfObjects", "graphQlListOfObjects", null, true, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forList("graphQlListOfInt", "graphQlListOfInt", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forList("graphQlListOfObjects", "graphQlListOfObjects", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final Optional<String> graphQlString;
@@ -204,22 +204,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeDouble($responseFields[6], graphQlFloatNonNullable);
           writer.writeBoolean($responseFields[7], graphQlBooleanNullable.isPresent() ? graphQlBooleanNullable.get() : null);
           writer.writeBoolean($responseFields[8], graphQlBooleanNonNullable);
-          writer.writeList($responseFields[9], graphQlListOfInt.isPresent() ? new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[9], graphQlListOfInt.isPresent() ? graphQlListOfInt.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) {
-              for (Integer $item : graphQlListOfInt.get()) {
-                listItemWriter.writeInt($item);
-              }
+            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
+              listItemWriter.writeInt(value);
             }
-          } : null);
-          writer.writeList($responseFields[10], graphQlListOfObjects.isPresent() ? new ResponseWriter.ListWriter() {
+          });
+          writer.writeList($responseFields[10], graphQlListOfObjects.isPresent() ? graphQlListOfObjects.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) {
-              for (GraphQlListOfObject $item : graphQlListOfObjects.get()) {
-                listItemWriter.writeObject($item.marshaller());
-              }
+            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
+              listItemWriter.writeObject(((GraphQlListOfObject) value).marshaller());
             }
-          } : null);
+          });
         }
       };
     }
@@ -314,14 +310,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final boolean graphQlBooleanNonNullable = reader.readBoolean($responseFields[8]);
         final List<Integer> graphQlListOfInt = reader.readList($responseFields[9], new ResponseReader.ListReader<Integer>() {
           @Override
-          public Integer read(ResponseReader.ListItemReader reader) {
-            return reader.readInt();
+          public Integer read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readInt();
           }
         });
         final List<GraphQlListOfObject> graphQlListOfObjects = reader.readList($responseFields[10], new ResponseReader.ListReader<GraphQlListOfObject>() {
           @Override
-          public GraphQlListOfObject read(ResponseReader.ListItemReader reader) {
-            return reader.readObject(new ResponseReader.ObjectReader<GraphQlListOfObject>() {
+          public GraphQlListOfObject read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readObject(new ResponseReader.ObjectReader<GraphQlListOfObject>() {
               @Override
               public GraphQlListOfObject read(ResponseReader reader) {
                 return graphQlListOfObjectFieldMapper.map(reader);

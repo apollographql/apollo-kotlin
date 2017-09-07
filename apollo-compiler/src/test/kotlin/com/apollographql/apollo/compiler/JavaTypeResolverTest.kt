@@ -60,6 +60,13 @@ class JavaTypeResolverTest {
         defaultResolver.resolve("[Float]!"))
     Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.parameterizedListOf(TypeName.DOUBLE.box())),
         defaultResolver.resolve("[Float]", true))
+
+    Assert.assertEquals(ClassNames.parameterizedListOf(ClassNames.parameterizedListOf(ClassNames.STRING)).annotated(
+        Annotations.NONNULL),
+        defaultResolver.resolve("[[String!]!]!"))
+    Assert.assertEquals(ClassNames.parameterizedOptional(
+        ClassNames.parameterizedListOf(ClassNames.parameterizedListOf(ClassNames.STRING))),
+        defaultResolver.resolve("[[String]]", true))
   }
 
   @Test

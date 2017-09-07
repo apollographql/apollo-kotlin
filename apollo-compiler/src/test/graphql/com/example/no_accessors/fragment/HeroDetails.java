@@ -190,7 +190,7 @@ public class HeroDetails implements GraphqlFragment {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forObjectList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     public final @Nonnull String __typename;
@@ -224,14 +224,12 @@ public class HeroDetails implements GraphqlFragment {
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
-          writer.writeList($responseFields[2], edges.isPresent() ? new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[2], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) {
-              for (Edge $item : edges.get()) {
-                listItemWriter.writeObject($item.marshaller());
-              }
+            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
+              listItemWriter.writeObject(((Edge) value).marshaller());
             }
-          } : null);
+          });
         }
       };
     }
@@ -287,8 +285,8 @@ public class HeroDetails implements GraphqlFragment {
         final Integer totalCount = reader.readInt($responseFields[1]);
         final List<Edge> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge>() {
           @Override
-          public Edge read(ResponseReader.ListItemReader reader) {
-            return reader.readObject(new ResponseReader.ObjectReader<Edge>() {
+          public Edge read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readObject(new ResponseReader.ObjectReader<Edge>() {
               @Override
               public Edge read(ResponseReader reader) {
                 return edgeFieldMapper.map(reader);
@@ -579,7 +577,7 @@ public class HeroDetails implements GraphqlFragment {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forObjectList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     public final @Nonnull String __typename;
@@ -613,14 +611,12 @@ public class HeroDetails implements GraphqlFragment {
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
-          writer.writeList($responseFields[2], edges.isPresent() ? new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[2], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) {
-              for (Edge1 $item : edges.get()) {
-                listItemWriter.writeObject($item.marshaller());
-              }
+            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
+              listItemWriter.writeObject(((Edge1) value).marshaller());
             }
-          } : null);
+          });
         }
       };
     }
@@ -676,8 +672,8 @@ public class HeroDetails implements GraphqlFragment {
         final Integer totalCount = reader.readInt($responseFields[1]);
         final List<Edge1> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge1>() {
           @Override
-          public Edge1 read(ResponseReader.ListItemReader reader) {
-            return reader.readObject(new ResponseReader.ObjectReader<Edge1>() {
+          public Edge1 read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readObject(new ResponseReader.ObjectReader<Edge1>() {
               @Override
               public Edge1 read(ResponseReader reader) {
                 return edge1FieldMapper.map(reader);
@@ -981,7 +977,7 @@ public class HeroDetails implements GraphqlFragment {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forObjectList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     public final @Nonnull String __typename;
@@ -1015,14 +1011,12 @@ public class HeroDetails implements GraphqlFragment {
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
           writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
-          writer.writeList($responseFields[2], edges.isPresent() ? new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[2], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(ResponseWriter.ListItemWriter listItemWriter) {
-              for (Edge2 $item : edges.get()) {
-                listItemWriter.writeObject($item.marshaller());
-              }
+            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
+              listItemWriter.writeObject(((Edge2) value).marshaller());
             }
-          } : null);
+          });
         }
       };
     }
@@ -1078,8 +1072,8 @@ public class HeroDetails implements GraphqlFragment {
         final Integer totalCount = reader.readInt($responseFields[1]);
         final List<Edge2> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge2>() {
           @Override
-          public Edge2 read(ResponseReader.ListItemReader reader) {
-            return reader.readObject(new ResponseReader.ObjectReader<Edge2>() {
+          public Edge2 read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readObject(new ResponseReader.ObjectReader<Edge2>() {
               @Override
               public Edge2 read(ResponseReader reader) {
                 return edge2FieldMapper.map(reader);

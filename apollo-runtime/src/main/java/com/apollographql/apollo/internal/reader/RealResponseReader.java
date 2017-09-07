@@ -1,8 +1,8 @@
 package com.apollographql.apollo.internal.reader;
 
 import com.apollographql.apollo.CustomTypeAdapter;
-import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
@@ -116,7 +116,7 @@ import java.util.Map;
   }
 
   @SuppressWarnings("unchecked")
-  @Override public <T> List<T> readList(ResponseField field, ListReader listReader) {
+  @Override public <T> List<T> readList(ResponseField field, ListReader<T> listReader) {
     willResolve(field);
     List values = fieldValueResolver.valueFor(recordSet, field);
     checkValue(values, field.optional());
@@ -256,6 +256,26 @@ import java.util.Map;
           customTypeAdapters, readerShadow));
       readerShadow.didResolveObject(field, Optional.fromNullable(value));
       return item;
+    }
+
+    @Override public <T> List<T> readList(ListReader<T> listReader) {
+      List values = (List) value;
+      if (values == null) {
+        return null;
+      }
+
+      List<T> result = new ArrayList<>();
+      for (int i = 0; i < values.size(); i++) {
+        readerShadow.willResolveElement(i);
+        Object value = values.get(i);
+        if (value != null) {
+          T item = (T) listReader.read(new ListItemReader(field, value));
+          result.add(item);
+        }
+        readerShadow.didResolveElement(i);
+      }
+      readerShadow.didResolveList(values);
+      return Collections.unmodifiableList(result);
     }
   }
 }
