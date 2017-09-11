@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.internal.Action;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.http.HttpCache;
@@ -251,7 +252,26 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
           logger.d("onCompleted for operation: %s. No callback present.", operation().name().name());
           return;
         }
-        callback.get().onCompleted();
+        callback.get().onStatusEvent(StatusEvent.COMPLETED);
+      }
+
+      @Override public void onFetch(final ApolloInterceptor.FetchSourceType sourceType) {
+        responseCallback().apply(new Action<Callback<T>>() {
+          @Override public void apply(@Nonnull Callback<T> callback) {
+            switch (sourceType) {
+              case CACHE:
+                callback.onStatusEvent(StatusEvent.FETCH_CACHE);
+                break;
+
+              case NETWORK:
+                callback.onStatusEvent(StatusEvent.FETCH_NETWORK);
+                break;
+
+              default:
+                break;
+            }
+          }
+        });
       }
     };
   }
@@ -283,6 +303,11 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
       case IDLE:
         originalCallback.set(callback.orNull());
         tracker.registerCall(this);
+        callback.apply(new Action<Callback<T>>() {
+          @Override public void apply(@Nonnull Callback<T> callback) {
+            callback.onStatusEvent(StatusEvent.SCHEDULED);
+          }
+        });
         break;
       case CANCELED:
         throw new ApolloCanceledException("Call is cancelled.");

@@ -73,6 +73,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     if (disposed) return;
     dispatcher.execute(new Runnable() {
       @Override public void run() {
+        callBack.onFetch(FetchSourceType.NETWORK);
+
         try {
           httpCall = httpCall(request.operation);
         } catch (IOException e) {

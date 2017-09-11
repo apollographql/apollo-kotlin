@@ -87,10 +87,11 @@ public interface ApolloCall<T> extends Cancelable {
     public abstract void onFailure(@Nonnull ApolloException e);
 
     /**
-     * Gets called when the {@link #onResponse(Response)} has been called for the last time. Not called in the
-     * case of an error. {@link #onFailure(ApolloException)} will be called instead.
+     * Gets called whenever any action happen to this {@link ApolloCall}.
+     *
+     * @param event status that corresponds to a {@link ApolloCall} action
      */
-    public void onCompleted() { }
+    public void onStatusEvent(@Nonnull StatusEvent event) { }
 
     /**
      * <p>Gets called when an http request error takes place. This is the case when the returned http status code
@@ -127,5 +128,27 @@ public interface ApolloCall<T> extends Cancelable {
     public void onCanceledError(@Nonnull ApolloCanceledException e) {
       onFailure(e);
     }
+  }
+
+  /**
+   * Represents a status event that corresponds to a {@link ApolloCall} action
+   */
+  enum StatusEvent {
+    /**
+     * {@link ApolloCall} is scheduled for execution
+     */
+    SCHEDULED,
+    /**
+     * {@link ApolloCall} fetches response from cache
+     */
+    FETCH_CACHE,
+    /**
+     * {@link ApolloCall} fetches response from network
+     */
+    FETCH_NETWORK,
+    /**
+     * {@link ApolloCall} is finished its execution
+     */
+    COMPLETED
   }
 }

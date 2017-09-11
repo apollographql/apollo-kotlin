@@ -52,10 +52,10 @@ public final class ApolloCallback<T> extends ApolloCall.Callback<T> {
     });
   }
 
-  @Override public void onCompleted() {
+  @Override public void onStatusEvent(@Nonnull final ApolloCall.StatusEvent event) {
     handler.post(new Runnable() {
       @Override public void run() {
-        delegate.onCompleted();
+        delegate.onStatusEvent(event);
       }
     });
   }

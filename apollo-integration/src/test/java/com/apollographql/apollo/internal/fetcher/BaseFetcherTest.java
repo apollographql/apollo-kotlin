@@ -68,10 +68,12 @@ class BaseFetcherTest {
       completedOrErrorLatch.countDown();
     }
 
-    @Override public void onCompleted() {
-      if (completed) throw new IllegalStateException("onCompleted already called Do not reuse tracking callback.");
-      completed = true;
-      completedOrErrorLatch.countDown();
+    @Override public void onStatusEvent(@Nonnull ApolloCall.StatusEvent event) {
+      if (event == ApolloCall.StatusEvent.COMPLETED) {
+        if (completed) throw new IllegalStateException("onCompleted already called Do not reuse tracking callback.");
+        completed = true;
+        completedOrErrorLatch.countDown();
+      }
     }
   }
 
