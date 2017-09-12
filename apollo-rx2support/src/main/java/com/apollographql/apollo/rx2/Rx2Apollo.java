@@ -91,8 +91,8 @@ public class Rx2Apollo {
             }
           }
 
-          @Override public void onCompleted() {
-            if (!emitter.isDisposed()) {
+          @Override public void onStatusEvent(@Nonnull ApolloCall.StatusEvent event) {
+            if (event == ApolloCall.StatusEvent.COMPLETED && !emitter.isDisposed()) {
               emitter.onComplete();
             }
           }

@@ -36,7 +36,7 @@ public final class CacheAndNetworkFetcher implements ResponseFetcher {
 
     @Override
     public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-        @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
+        @Nonnull Executor dispatcher, @Nonnull final CallBack callBack) {
       if (disposed) return;
       originalCallback = callBack;
       InterceptorRequest cacheRequest = request.withFetchOptions(request.fetchOptions.toCacheFetchOptions());
@@ -50,7 +50,10 @@ public final class CacheAndNetworkFetcher implements ResponseFetcher {
         }
 
         @Override public void onCompleted() {
+        }
 
+        @Override public void onFetch(FetchSourceType sourceType) {
+          callBack.onFetch(sourceType);
         }
       });
 
@@ -65,7 +68,10 @@ public final class CacheAndNetworkFetcher implements ResponseFetcher {
         }
 
         @Override public void onCompleted() {
+        }
 
+        @Override public void onFetch(FetchSourceType sourceType) {
+          callBack.onFetch(sourceType);
         }
       });
     }

@@ -107,8 +107,10 @@ public final class RxApollo {
             emitter.onError(e);
           }
 
-          @Override public void onCompleted() {
-            emitter.onCompleted();
+          @Override public void onStatusEvent(@Nonnull ApolloCall.StatusEvent event) {
+            if (event == ApolloCall.StatusEvent.COMPLETED) {
+              emitter.onCompleted();
+            }
           }
         });
       }

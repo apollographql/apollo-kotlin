@@ -67,6 +67,10 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
       @Override public void onCompleted() {
         // call onCompleted in onResponse in case of error
       }
+
+      @Override public void onFetch(FetchSourceType sourceType) {
+        callBack.onFetch(sourceType);
+      }
     });
   }
 

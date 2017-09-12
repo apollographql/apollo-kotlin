@@ -6,7 +6,10 @@ import com.google.common.collect.FluentIterable;
 
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
+import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.integration.httpcache.AllFilmsQuery;
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.httpcache.type.CustomType;
@@ -15,7 +18,6 @@ import com.apollographql.apollo.integration.normalizer.HeroNameQuery;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,6 +32,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
@@ -71,6 +74,8 @@ public class IntegrationTest {
         .serverUrl(server.url("/"))
         .okHttpClient(new OkHttpClient.Builder().build())
         .addCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
+        .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
+        .defaultResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
         .build();
   }
 
@@ -266,6 +271,31 @@ public class IntegrationTest {
         .assertError(ApolloException.class);
   }
 
+  @Test public void statusEvents() throws Exception {
+    server.enqueue(mockResponse("HeroNameResponse.json"));
+    List<ApolloCall.StatusEvent> statusEvents = enqueueAndAwaitForStatusEvents(
+        apolloClient.query(new HeroNameQuery()),
+        new NamedCountDownLatch("statusEvents", 1)
+    );
+    assertThat(statusEvents).isEqualTo(Arrays.asList(ApolloCall.StatusEvent.SCHEDULED, ApolloCall.StatusEvent
+        .FETCH_NETWORK, ApolloCall.StatusEvent.COMPLETED));
+
+    statusEvents = enqueueAndAwaitForStatusEvents(
+        apolloClient.query(new HeroNameQuery()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        new NamedCountDownLatch("statusEvents", 1)
+    );
+    assertThat(statusEvents).isEqualTo(Arrays.asList(ApolloCall.StatusEvent.SCHEDULED, ApolloCall.StatusEvent
+        .FETCH_CACHE, ApolloCall.StatusEvent.COMPLETED));
+
+    server.enqueue(mockResponse("HeroNameResponse.json").setBodyDelay(1, TimeUnit.SECONDS));
+    statusEvents = enqueueAndAwaitForStatusEvents(
+        apolloClient.query(new HeroNameQuery()).responseFetcher(ApolloResponseFetchers.CACHE_AND_NETWORK),
+        new NamedCountDownLatch("statusEvents", 1)
+    );
+    assertThat(statusEvents).isEqualTo(Arrays.asList(ApolloCall.StatusEvent.SCHEDULED, ApolloCall.StatusEvent
+        .FETCH_CACHE, ApolloCall.StatusEvent.FETCH_NETWORK, ApolloCall.StatusEvent.COMPLETED));
+  }
+
   private MockResponse mockResponse(String fileName) throws IOException {
     return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
   }
@@ -275,5 +305,26 @@ public class IntegrationTest {
         .test()
         .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(predicate);
+  }
+
+  private <T> List<ApolloCall.StatusEvent> enqueueAndAwaitForStatusEvents(ApolloQueryCall<T> call,
+      final CountDownLatch latch) throws Exception {
+    final List<ApolloCall.StatusEvent> statusEvents = new ArrayList<>();
+    call.enqueue(new ApolloCall.Callback<T>() {
+      @Override public void onResponse(@Nonnull Response<T> response) {
+      }
+
+      @Override public void onFailure(@Nonnull ApolloException e) {
+      }
+
+      @Override public void onStatusEvent(@Nonnull ApolloCall.StatusEvent event) {
+        statusEvents.add(event);
+        if (event == ApolloCall.StatusEvent.COMPLETED) {
+          latch.countDown();
+        }
+      }
+    });
+    latch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    return statusEvents;
   }
 }

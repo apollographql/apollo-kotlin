@@ -56,6 +56,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
       @Override public void run() {
         if (disposed) return;
         if (request.fetchOptions.fetchFromCache) {
+          callBack.onFetch(FetchSourceType.CACHE);
           final InterceptorResponse cachedResponse;
           try {
             cachedResponse = resolveFromCache(request.operation, request.fetchOptions);
@@ -92,6 +93,10 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
             }
 
             @Override public void onCompleted() {
+            }
+
+            @Override public void onFetch(FetchSourceType sourceType) {
+              callBack.onFetch(sourceType);
             }
           });
         }

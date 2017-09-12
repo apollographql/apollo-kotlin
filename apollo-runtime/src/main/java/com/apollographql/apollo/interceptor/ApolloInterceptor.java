@@ -54,6 +54,13 @@ public interface ApolloInterceptor {
     void onResponse(@Nonnull InterceptorResponse response);
 
     /**
+     * Called when interceptor starts fetching response from source type
+     *
+     * @param sourceType type of source been used to fetch response from
+     */
+    void onFetch(FetchSourceType sourceType);
+
+    /**
      * Gets called when an unexpected exception occurs while performing operations on the request or processing the
      * response returned by the next set of interceptors. Will be called at most once.
      */
@@ -63,6 +70,20 @@ public interface ApolloInterceptor {
      * Called after the last call to {@link #onResponse}. Do not call after {@link #onFailure(ApolloException)}.
      */
     void onCompleted();
+  }
+
+  /**
+   * Fetch source type
+   */
+  enum FetchSourceType {
+    /**
+     * Response is fetched from the cache (SQLite or memory or both)
+     */
+    CACHE,
+    /**
+     * Response is fetched from the network
+     */
+    NETWORK
   }
 
   /**

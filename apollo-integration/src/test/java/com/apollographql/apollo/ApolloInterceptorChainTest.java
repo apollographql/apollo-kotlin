@@ -70,6 +70,10 @@ public class ApolloInterceptorChainTest {
           @Override public void onCompleted() {
 
           }
+
+          @Override public void onFetch(ApolloInterceptor.FetchSourceType sourceType) {
+
+          }
         });
 
     //If counter's count doesn't go down to zero, it means interceptor's interceptAsync wasn't called
@@ -118,6 +122,10 @@ public class ApolloInterceptorChainTest {
           @Override public void onCompleted() {
 
           }
+
+          @Override public void onFetch(ApolloInterceptor.FetchSourceType sourceType) {
+
+          }
         });
 
     if (counter.get() != 0) {
@@ -162,6 +170,10 @@ public class ApolloInterceptorChainTest {
           }
 
           @Override public void onCompleted() {
+
+          }
+
+          @Override public void onFetch(ApolloInterceptor.FetchSourceType sourceType) {
 
           }
         });

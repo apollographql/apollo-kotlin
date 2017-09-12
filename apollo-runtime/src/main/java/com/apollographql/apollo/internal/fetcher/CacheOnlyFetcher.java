@@ -46,6 +46,10 @@ public final class CacheOnlyFetcher implements ResponseFetcher {
         @Override public void onCompleted() {
           callBack.onCompleted();
         }
+
+        @Override public void onFetch(FetchSourceType sourceType) {
+          callBack.onFetch(sourceType);
+        }
       });
     }
 

@@ -4,8 +4,8 @@ import com.apollographql.apollo.ApolloPrefetch;
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ScalarType;
-import com.apollographql.apollo.cache.http.HttpCache;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.cache.http.HttpCache;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
@@ -126,6 +126,9 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
       @Override public void onCompleted() {
         // Prefetch is only called with NETWORK_ONLY, so callback api does not need onComplete as it is the same as
         // onResponse.
+      }
+
+      @Override public void onFetch(ApolloInterceptor.FetchSourceType sourceType) {
       }
     };
   }
