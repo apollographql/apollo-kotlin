@@ -18,10 +18,13 @@ import org.gradle.api.tasks.OutputDirectory;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
@@ -34,57 +37,96 @@ public class ApolloIRGenTask extends NodeTask {
 
   @Internal private String variant;
   @Internal private ImmutableList<String> sourceSets;
+  @Internal private ApolloExtension extension;
 
-  @OutputDirectory private File outputDir;
+  @OutputDirectory private File outputFolder;
 
-  public void init(String variantName, ImmutableList<String> variantSourceSets) {
-    variant = variantName;
-    sourceSets = variantSourceSets;
-    outputDir = new File(getProject().getBuildDir() + File.separator +
+  public void init(String variant, ImmutableList<String> sourceSets, ApolloExtension extension) {
+    this.variant = variant;
+    this.sourceSets = sourceSets;
+    this.extension = extension;
+    outputFolder = new File(getProject().getBuildDir() + File.separator +
         Joiner.on(File.separator).join(GraphQLCompiler.Companion.getOUTPUT_DIRECTORY()) + "/generatedIR/" + variant);
   }
 
   @Override
   public void exec() {
+    File schemaFile = null;
+    if (extension.getSchemaFilePath() != null) {
+      schemaFile = Paths.get(extension.getSchemaFilePath()).toFile();
+      if (!schemaFile.exists()) {
+        schemaFile = Paths.get(getProject().getRootDir().getAbsolutePath(), extension.getSchemaFilePath()).toFile();
+      }
+
+      if (!schemaFile.exists()) {
+        throw new GradleException("Provided schema file path doesn't exists: " + extension.getSchemaFilePath() +
+            ". Please ensure a valid schema file exists");
+      }
+    }
+
+    File targetPackageFolder = null;
+    if (schemaFile != null) {
+      if (extension.getOutputPackageName() == null || extension.getOutputPackageName().trim().isEmpty()) {
+        throw new GradleException("Missing explicit targetPackageName option. Please ensure a valid package name is provided");
+      } else {
+        targetPackageFolder = new File(outputFolder.getAbsolutePath()
+            + File.separator + "src"
+            + File.separator + "main"
+            + File.separator + "graphql"
+            + File.separator + extension.getOutputPackageName().replace(".", File.separator));
+      }
+    }
+
     File apolloScript = new File(getProject().getBuildDir(), APOLLO_CODEGEN);
     if (!apolloScript.isFile()) {
       throw new GradleException("Apollo-codegen was not found in node_modules. Please run the installApolloCodegen task.");
     }
     setScript(apolloScript);
 
-    ImmutableMap<String, ApolloCodegenArgs> schemaQueryMap = buildSchemaQueryMap(getInputs().getSourceFiles().getFiles());
-    for (Map.Entry<String, ApolloCodegenArgs> entry : schemaQueryMap.entrySet()) {
-      String irOutput = outputDir.getAbsolutePath() + File.separator + getProject().relativePath(entry.getValue()
-          .getSchemaFile().getParent());
-      new File(irOutput).mkdirs();
-      List<String> apolloArgs = Lists.newArrayList("generate");
-      apolloArgs.addAll(entry.getValue().getQueryFiles());
-      apolloArgs.addAll(Lists.newArrayList("--add-typename",
-          "--schema", entry.getValue().getSchemaFile().getAbsolutePath(),
-          "--output", irOutput + File.separator + Utils.capitalize(variant) + "API.json",
-          "--operation-ids-path", irOutput + File.separator + Utils.capitalize(variant) + "OperationIdMap.json",
+    final List<ApolloCodegenArgs> codegenArgs;
+    if (schemaFile == null) {
+      codegenArgs = codeGenArgs(getInputs().getSourceFiles().getFiles());
+    } else {
+      Set<String> queryFilePaths = new HashSet<>();
+      for (File queryFile : queryFilesFrom(getInputs().getSourceFiles().getFiles())) {
+        queryFilePaths.add(queryFile.getAbsolutePath());
+      }
+      codegenArgs = Collections.singletonList(new ApolloCodegenArgs(schemaFile, queryFilePaths, targetPackageFolder));
+    }
+
+    for (ApolloCodegenArgs codegenArg : codegenArgs) {
+      codegenArg.irOutputFolder.mkdirs();
+
+      List<String> apolloArgs = new ArrayList<>();
+      apolloArgs.add("generate");
+      apolloArgs.addAll(codegenArg.queryFilePaths);
+      apolloArgs.addAll(Arrays.asList(
+          "--add-typename",
+          "--schema", codegenArg.schemaFile.getAbsolutePath(),
+          "--output", codegenArg.irOutputFolder.getAbsolutePath() + File.separator + Utils.capitalize(variant) + "API.json",
+          "--operation-ids-path", codegenArg.irOutputFolder.getAbsolutePath() + File.separator + Utils.capitalize(variant) + "OperationIdMap.json",
           "--merge-in-fields-from-fragment-spreads", "false",
-          "--target", "json"));
+          "--target", "json"
+      ));
       setArgs(apolloArgs);
       super.exec();
     }
   }
 
   /**
-   * Extracts schema files from the task inputs and sorts them in a way similar to the Gradle lookup priority.
-   * That is, build variant source set, build type source set, product flavor source set and finally main
-   * source set.
+   * Extracts schema files from the task inputs and sorts them in a way similar to the Gradle lookup priority. That is,
+   * build variant source set, build type source set, product flavor source set and finally main source set.
    *
    * The schema file under the source set with the highest priority is used and all the graphql query files under the
    * schema file's subdirectories from all source sets are used to generate the IR.
    *
-   * If any of the schema file's ancestor directories contain a schema file, a GradleException is
-   * thrown. This is considered to be an ambiguous case.
+   * If any of the schema file's ancestor directories contain a schema file, a GradleException is thrown. This is
+   * considered to be an ambiguous case.
    *
    * @param files - task input files which consist of .graphql query files and schema.json files
    * @return - a map with schema files as a key and associated query files as a value
    */
-  private ImmutableMap<String, ApolloCodegenArgs> buildSchemaQueryMap(Set<File> files) {
+  private List<ApolloCodegenArgs> codeGenArgs(Set<File> files) {
     final List<File> schemaFiles = getSchemaFilesFrom(files);
 
     if (schemaFiles.isEmpty()) {
@@ -93,8 +135,8 @@ public class ApolloIRGenTask extends NodeTask {
     }
 
     if (illegalSchemasFound(schemaFiles)) {
-            throw new GradleException("Found an ancestor directory to a schema file that contains another schema file." +
-                " Please ensure no schema files exist on the path to another one");
+      throw new GradleException("Found an ancestor directory to a schema file that contains another schema file." +
+          " Please ensure no schema files exist on the path to another one");
     }
 
     ImmutableMap.Builder<String, ApolloCodegenArgs> schemaQueryMap = ImmutableMap.builder();
@@ -112,9 +154,9 @@ public class ApolloIRGenTask extends NodeTask {
         @Nullable @Override public String apply(@Nullable File file) {
           return file.getAbsolutePath();
         }
-      }).toSet()));
+      }).toSet(), new File(outputFolder.getAbsolutePath() + File.separator + getProject().relativePath(f.getParent()))));
     }
-    return schemaQueryMap.build();
+    return schemaQueryMap.build().values().asList();
   }
 
   /**
@@ -136,6 +178,15 @@ public class ApolloIRGenTask extends NodeTask {
       }
     });
   }
+
+  private List<File> queryFilesFrom(Set<File> files) {
+    return FluentIterable.from(files).filter(new Predicate<File>() {
+      @Override public boolean apply(@Nullable File file) {
+        return file != null && !file.getName().equals(GraphQLSourceDirectorySet.SCHEMA_FILE_NAME);
+      }
+    }).toList();
+  }
+
   /**
    * Checks whether a schema file share an ancestor directory that also contains a schema file
    *
@@ -159,8 +210,8 @@ public class ApolloIRGenTask extends NodeTask {
   }
 
   /**
-   * Returns the source set folder name given a file path. Assumes the source set name
-   * follows the "src" folder based on the inputs received from GraphQLSourceDirectorySet.
+   * Returns the source set folder name given a file path. Assumes the source set name follows the "src" folder based on
+   * the inputs received from GraphQLSourceDirectorySet.
    *
    * @return - sourceSet name
    */
@@ -183,7 +234,7 @@ public class ApolloIRGenTask extends NodeTask {
     return basePath.relativize(absolutePath).toString();
   }
 
-  public File getOutputDir() {
-    return outputDir;
+  public File getOutputFolder() {
+    return outputFolder;
   }
 }

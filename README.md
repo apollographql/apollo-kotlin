@@ -389,6 +389,21 @@ apollo {
 }
 ```
 
+### Explicit Schema location
+By default Apollo-Android tries to lookup GraphQL schema file in `/graphql` folder, the same folder where all your GraphQL queries are stored. 
+For example if query files are located at `/src/main/graphql/com/example/api` then the schema file should be placed to the same location `/src/main/graphql/com/example/api`. Relative path of schema file to `/src/main/graphql` root folder defines the package name for generated models, in our example the package name of generated models will be `com.example.api`.
+
+Alternatively, you can explicitly provide GraphQL schema file location and package name for generated models:
+
+#### Usage
+
+```groovy
+apollo {
+  schemaFilePath = "/path_to_schema_file/my-schema.json"
+  outputPackageName = "com.my-example.graphql.api"
+}
+```
+
 ### Download
 
 RxJava1:

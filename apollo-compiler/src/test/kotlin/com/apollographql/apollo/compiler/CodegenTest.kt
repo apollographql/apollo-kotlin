@@ -93,7 +93,8 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
                 nullableValueType = nullableValueType,
                 generateAccessors = generateAccessors,
                 useSemanticNaming = useSemanticNaming,
-                generateModelBuilder = generateModelBuilder
+                generateModelBuilder = generateModelBuilder,
+                outputPackageName = null
             )
             arrayOf(it.name, args)
           }

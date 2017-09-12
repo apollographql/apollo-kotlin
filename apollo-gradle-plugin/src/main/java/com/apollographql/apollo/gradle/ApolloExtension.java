@@ -14,6 +14,8 @@ public class ApolloExtension {
   private boolean generateAccessors = true;
   private boolean useSemanticNaming = true;
   private boolean generateModelBuilder;
+  private String schemaFilePath;
+  private String outputPackageName;
 
   public Map<String, String> getCustomTypeMapping() {
     return customTypeMapping;
@@ -59,5 +61,21 @@ public class ApolloExtension {
     closure.setDelegate(customTypeMapping);
     closure.setResolveStrategy(Closure.DELEGATE_FIRST);
     closure.call();
+  }
+
+  public String getSchemaFilePath() {
+    return schemaFilePath;
+  }
+
+  public void setSchemaFilePath(String schemaFilePath) {
+    this.schemaFilePath = schemaFilePath;
+  }
+
+  public String getOutputPackageName() {
+    return outputPackageName;
+  }
+
+  public void setOutputPackageName(String outputPackageName) {
+    this.outputPackageName = outputPackageName;
   }
 }

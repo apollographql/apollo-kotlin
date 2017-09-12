@@ -4,20 +4,13 @@ import java.io.File;
 import java.util.Set;
 
 final class ApolloCodegenArgs {
-  private final File schemaFile;
-  private final Set<String> queryFiles;
+  final File schemaFile;
+  final Set<String> queryFilePaths;
+  final File irOutputFolder;
 
-  ApolloCodegenArgs(File schema, Set<String> queries) {
-      schemaFile = schema;
-      queryFiles = queries;
-    }
-
-  File getSchemaFile() {
-    return schemaFile;
+  ApolloCodegenArgs(File schemaFile, Set<String> queryFilePaths, File irOutputFolder) {
+    this.schemaFile = schemaFile;
+    this.queryFilePaths = queryFilePaths;
+    this.irOutputFolder = irOutputFolder;
   }
-
-  Set<String> getQueryFiles() {
-    return queryFiles;
-  }
-
 }
