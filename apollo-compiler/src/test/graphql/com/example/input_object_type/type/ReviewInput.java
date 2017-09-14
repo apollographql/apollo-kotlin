@@ -1,5 +1,6 @@
 package com.example.input_object_type.type;
 
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.internal.Utils;
@@ -17,24 +18,24 @@ import javax.annotation.Nullable;
 public final class ReviewInput {
   private final int stars;
 
-  private final @Nullable Integer nullableIntFieldWithDefaultValue;
+  private final Input<Integer> nullableIntFieldWithDefaultValue;
 
-  private final @Nullable String commentary;
+  private final Input<String> commentary;
 
   private final @Nonnull ColorInput favoriteColor;
 
-  private final @Nullable Episode enumWithDefaultValue;
+  private final Input<Episode> enumWithDefaultValue;
 
-  private final @Nullable Episode nullableEnum;
+  private final Input<Episode> nullableEnum;
 
-  private final @Nullable List<Date> listOfCustomScalar;
+  private final Input<List<Date>> listOfCustomScalar;
 
-  private final @Nullable List<Episode> listOfEnums;
+  private final Input<List<Episode>> listOfEnums;
 
-  ReviewInput(int stars, @Nullable Integer nullableIntFieldWithDefaultValue,
-      @Nullable String commentary, @Nonnull ColorInput favoriteColor,
-      @Nullable Episode enumWithDefaultValue, @Nullable Episode nullableEnum,
-      @Nullable List<Date> listOfCustomScalar, @Nullable List<Episode> listOfEnums) {
+  ReviewInput(int stars, Input<Integer> nullableIntFieldWithDefaultValue, Input<String> commentary,
+      @Nonnull ColorInput favoriteColor, Input<Episode> enumWithDefaultValue,
+      Input<Episode> nullableEnum, Input<List<Date>> listOfCustomScalar,
+      Input<List<Episode>> listOfEnums) {
     this.stars = stars;
     this.nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue;
     this.commentary = commentary;
@@ -56,14 +57,14 @@ public final class ReviewInput {
    * for test purpose only
    */
   public @Nullable Integer nullableIntFieldWithDefaultValue() {
-    return this.nullableIntFieldWithDefaultValue;
+    return this.nullableIntFieldWithDefaultValue.value;
   }
 
   /**
    * Comment about the movie, optional
    */
   public @Nullable String commentary() {
-    return this.commentary;
+    return this.commentary.value;
   }
 
   /**
@@ -77,28 +78,28 @@ public final class ReviewInput {
    * for test purpose only
    */
   public @Nullable Episode enumWithDefaultValue() {
-    return this.enumWithDefaultValue;
+    return this.enumWithDefaultValue.value;
   }
 
   /**
    * for test purpose only
    */
   public @Nullable Episode nullableEnum() {
-    return this.nullableEnum;
+    return this.nullableEnum.value;
   }
 
   /**
    * for test purpose only
    */
   public @Nullable List<Date> listOfCustomScalar() {
-    return this.listOfCustomScalar;
+    return this.listOfCustomScalar.value;
   }
 
   /**
    * for test purpose only
    */
   public @Nullable List<Episode> listOfEnums() {
-    return this.listOfEnums;
+    return this.listOfEnums.value;
   }
 
   public static Builder builder() {
@@ -110,27 +111,39 @@ public final class ReviewInput {
       @Override
       public void marshal(InputFieldWriter writer) throws IOException {
         writer.writeInt("stars", stars);
-        writer.writeInt("nullableIntFieldWithDefaultValue", nullableIntFieldWithDefaultValue);
-        writer.writeString("commentary", commentary);
+        if (nullableIntFieldWithDefaultValue.defined) {
+          writer.writeInt("nullableIntFieldWithDefaultValue", nullableIntFieldWithDefaultValue.value);
+        }
+        if (commentary.defined) {
+          writer.writeString("commentary", commentary.value);
+        }
         writer.writeObject("favoriteColor", favoriteColor.marshaller());
-        writer.writeString("enumWithDefaultValue", enumWithDefaultValue != null ? enumWithDefaultValue.name() : null);
-        writer.writeString("nullableEnum", nullableEnum != null ? nullableEnum.name() : null);
-        writer.writeList("listOfCustomScalar", listOfCustomScalar != null ? new InputFieldWriter.ListWriter() {
-          @Override
-          public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
-            for (Date $item : listOfCustomScalar) {
-              listItemWriter.writeCustom(CustomType.DATE, $item);
+        if (enumWithDefaultValue.defined) {
+          writer.writeString("enumWithDefaultValue", enumWithDefaultValue.value != null ? enumWithDefaultValue.value.name() : null);
+        }
+        if (nullableEnum.defined) {
+          writer.writeString("nullableEnum", nullableEnum.value != null ? nullableEnum.value.name() : null);
+        }
+        if (listOfCustomScalar.defined) {
+          writer.writeList("listOfCustomScalar", listOfCustomScalar.value != null ? new InputFieldWriter.ListWriter() {
+            @Override
+            public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Date $item : listOfCustomScalar.value) {
+                listItemWriter.writeCustom(CustomType.DATE, $item);
+              }
             }
-          }
-        } : null);
-        writer.writeList("listOfEnums", listOfEnums != null ? new InputFieldWriter.ListWriter() {
-          @Override
-          public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
-            for (Episode $item : listOfEnums) {
-              listItemWriter.writeString($item.name());
+          } : null);
+        }
+        if (listOfEnums.defined) {
+          writer.writeList("listOfEnums", listOfEnums.value != null ? new InputFieldWriter.ListWriter() {
+            @Override
+            public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
+              for (Episode $item : listOfEnums.value) {
+                listItemWriter.writeString($item.name());
+              }
             }
-          }
-        } : null);
+          } : null);
+        }
       }
     };
   }
@@ -138,19 +151,19 @@ public final class ReviewInput {
   public static final class Builder {
     private int stars;
 
-    private @Nullable Integer nullableIntFieldWithDefaultValue = 10;
+    private Input<Integer> nullableIntFieldWithDefaultValue = Input.fromNullable(10);
 
-    private @Nullable String commentary;
+    private Input<String> commentary = Input.absent();
 
     private @Nonnull ColorInput favoriteColor;
 
-    private @Nullable Episode enumWithDefaultValue = Episode.JEDI;
+    private Input<Episode> enumWithDefaultValue = Input.fromNullable(Episode.JEDI);
 
-    private @Nullable Episode nullableEnum;
+    private Input<Episode> nullableEnum = Input.absent();
 
-    private @Nullable List<Date> listOfCustomScalar;
+    private Input<List<Date>> listOfCustomScalar = Input.absent();
 
-    private @Nullable List<Episode> listOfEnums;
+    private Input<List<Episode>> listOfEnums = Input.absent();
 
     Builder() {
     }
@@ -167,7 +180,7 @@ public final class ReviewInput {
      * for test purpose only
      */
     public Builder nullableIntFieldWithDefaultValue(@Nullable Integer nullableIntFieldWithDefaultValue) {
-      this.nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue;
+      this.nullableIntFieldWithDefaultValue = Input.fromNullable(nullableIntFieldWithDefaultValue);
       return this;
     }
 
@@ -175,7 +188,7 @@ public final class ReviewInput {
      * Comment about the movie, optional
      */
     public Builder commentary(@Nullable String commentary) {
-      this.commentary = commentary;
+      this.commentary = Input.fromNullable(commentary);
       return this;
     }
 
@@ -191,7 +204,7 @@ public final class ReviewInput {
      * for test purpose only
      */
     public Builder enumWithDefaultValue(@Nullable Episode enumWithDefaultValue) {
-      this.enumWithDefaultValue = enumWithDefaultValue;
+      this.enumWithDefaultValue = Input.fromNullable(enumWithDefaultValue);
       return this;
     }
 
@@ -199,7 +212,7 @@ public final class ReviewInput {
      * for test purpose only
      */
     public Builder nullableEnum(@Nullable Episode nullableEnum) {
-      this.nullableEnum = nullableEnum;
+      this.nullableEnum = Input.fromNullable(nullableEnum);
       return this;
     }
 
@@ -207,7 +220,7 @@ public final class ReviewInput {
      * for test purpose only
      */
     public Builder listOfCustomScalar(@Nullable List<Date> listOfCustomScalar) {
-      this.listOfCustomScalar = listOfCustomScalar;
+      this.listOfCustomScalar = Input.fromNullable(listOfCustomScalar);
       return this;
     }
 
@@ -215,7 +228,7 @@ public final class ReviewInput {
      * for test purpose only
      */
     public Builder listOfEnums(@Nullable List<Episode> listOfEnums) {
-      this.listOfEnums = listOfEnums;
+      this.listOfEnums = Input.fromNullable(listOfEnums);
       return this;
     }
 
