@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.reader;
+package com.apollographql.apollo.internal.response;
 
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;

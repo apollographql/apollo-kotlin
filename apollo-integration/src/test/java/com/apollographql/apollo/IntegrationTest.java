@@ -6,6 +6,7 @@ import com.google.common.collect.FluentIterable;
 
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
@@ -15,6 +16,8 @@ import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.httpcache.type.CustomType;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery;
+import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
+import com.apollographql.apollo.internal.response.OperationResponseParser;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import org.junit.After;
@@ -41,6 +44,7 @@ import io.reactivex.functions.Predicate;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import okio.Buffer;
 
 import static com.apollographql.apollo.integration.normalizer.type.Episode.JEDI;
 import static com.google.common.truth.Truth.assertThat;
@@ -294,6 +298,17 @@ public class IntegrationTest {
     );
     assertThat(statusEvents).isEqualTo(Arrays.asList(ApolloCall.StatusEvent.SCHEDULED, ApolloCall.StatusEvent
         .FETCH_CACHE, ApolloCall.StatusEvent.FETCH_NETWORK, ApolloCall.StatusEvent.COMPLETED));
+  }
+
+  @Test public void operationResponseParser() throws Exception {
+    String json = Utils.readFileToString(getClass(), "/HeroNameResponse.json");
+
+    HeroNameQuery query = new HeroNameQuery();
+    Response<HeroNameQuery.Data> response = new OperationResponseParser<>(query, query.responseFieldMapper(),
+        Collections.<ScalarType, CustomTypeAdapter>emptyMap(), ResponseNormalizer.NO_OP_NORMALIZER)
+        .parse(new Buffer().writeUtf8(json));
+
+    assertThat(response.data().hero().name()).isEqualTo("R2-D2");
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {
