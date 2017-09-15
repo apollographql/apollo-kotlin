@@ -34,7 +34,7 @@ import java.util.Map;
   @Override public String readString(ResponseField field) {
     willResolve(field);
     String value = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(value, field.optional());
+    checkValue(field, value);
     if (value == null) {
       readerShadow.didResolveNull();
     } else {
@@ -47,7 +47,7 @@ import java.util.Map;
   @Override public Integer readInt(ResponseField field) {
     willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(value, field.optional());
+    checkValue(field, value);
     if (value == null) {
       readerShadow.didResolveNull();
     } else {
@@ -60,7 +60,7 @@ import java.util.Map;
   @Override public Long readLong(ResponseField field) {
     willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(value, field.optional());
+    checkValue(field, value);
     if (value == null) {
       readerShadow.didResolveNull();
     } else {
@@ -73,7 +73,7 @@ import java.util.Map;
   @Override public Double readDouble(ResponseField field) {
     willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(value, field.optional());
+    checkValue(field, value);
     if (value == null) {
       readerShadow.didResolveNull();
     } else {
@@ -86,7 +86,7 @@ import java.util.Map;
   @Override public Boolean readBoolean(ResponseField field) {
     willResolve(field);
     Boolean value = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(value, field.optional());
+    checkValue(field, value);
     if (value == null) {
       readerShadow.didResolveNull();
     } else {
@@ -100,7 +100,7 @@ import java.util.Map;
   public <T> T readObject(ResponseField field, ResponseReader.ObjectReader<T> objectReader) {
     willResolve(field);
     R value = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(value, field.optional());
+    checkValue(field, value);
     readerShadow.willResolveObject(field, Optional.fromNullable(value));
     final T parsedValue;
     if (value == null) {
@@ -119,7 +119,7 @@ import java.util.Map;
   @Override public <T> List<T> readList(ResponseField field, ListReader<T> listReader) {
     willResolve(field);
     List values = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(values, field.optional());
+    checkValue(field, values);
     final List<T> result;
     if (values == null) {
       readerShadow.didResolveNull();
@@ -144,7 +144,7 @@ import java.util.Map;
   @SuppressWarnings("unchecked") @Override public <T> T readCustomType(ResponseField.CustomTypeField field) {
     willResolve(field);
     Object value = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(value, field.optional());
+    checkValue(field, value);
     final T result;
     if (value == null) {
       readerShadow.didResolveNull();
@@ -167,7 +167,7 @@ import java.util.Map;
   public <T> T readConditional(ResponseField field, ConditionalTypeReader<T> conditionalTypeReader) {
     willResolve(field);
     String value = fieldValueResolver.valueFor(recordSet, field);
-    checkValue(value, field.optional());
+    checkValue(field, value);
     if (value == null) {
       readerShadow.didResolveNull();
       didResolve(field);
@@ -198,9 +198,9 @@ import java.util.Map;
     readerShadow.didResolve(field, operationVariables);
   }
 
-  private void checkValue(Object value, boolean optional) {
-    if (!optional && value == null) {
-      throw new NullPointerException("corrupted response reader, expected non null value");
+  private void checkValue(ResponseField field, Object value) {
+    if (!field.optional() && value == null) {
+      throw new NullPointerException("corrupted response reader, expected non null value for " + field.fieldName());
     }
   }
 
