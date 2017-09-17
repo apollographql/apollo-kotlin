@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.interceptor;
+package com.apollographql.apollo.internal.response;
 
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Error;
@@ -10,7 +10,6 @@ import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.field.MapFieldValueResolver;
 import com.apollographql.apollo.internal.json.BufferedSourceJsonReader;
 import com.apollographql.apollo.internal.json.ResponseJsonStreamReader;
-import com.apollographql.apollo.internal.reader.RealResponseReader;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -19,31 +18,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okio.BufferedSource;
+
 import static com.apollographql.apollo.internal.json.ApolloJsonReader.responseJsonStreamReader;
 
-final class HttpResponseBodyParser<D extends Operation.Data, W> {
+public class OperationResponseParser<D extends Operation.Data, W> {
   private final Operation<D, W, ?> operation;
   private final ResponseFieldMapper responseFieldMapper;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  private final ResponseNormalizer<Map<String, Object>> responseNormalizer;
 
-  HttpResponseBodyParser(Operation<D, W, ?> operation, ResponseFieldMapper responseFieldMapper,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+  public OperationResponseParser(Operation<D, W, ?> operation, ResponseFieldMapper responseFieldMapper,
+      Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
+      ResponseNormalizer<Map<String, Object>> responseNormalizer) {
     this.operation = operation;
     this.responseFieldMapper = responseFieldMapper;
     this.customTypeAdapters = customTypeAdapters;
+    this.responseNormalizer = responseNormalizer;
   }
 
-  public Response<W> parse(okhttp3.Response response,
-      final ResponseNormalizer<Map<String, Object>> networkResponseNormalizer) throws IOException {
-    networkResponseNormalizer.willResolveRootQuery(operation);
+  public Response<W> parse(BufferedSource source) throws IOException {
+    responseNormalizer.willResolveRootQuery(operation);
     BufferedSourceJsonReader jsonReader = null;
     try {
-      jsonReader = new BufferedSourceJsonReader(response.body().source());
+      jsonReader = new BufferedSourceJsonReader(source);
       jsonReader.beginObject();
 
-      ResponseJsonStreamReader responseStreamReader = responseJsonStreamReader(jsonReader);
       D data = null;
       List<Error> errors = null;
+      ResponseJsonStreamReader responseStreamReader = responseJsonStreamReader(jsonReader);
       while (responseStreamReader.hasNext()) {
         String name = responseStreamReader.nextName();
         if ("data".equals(name)) {
@@ -52,8 +55,7 @@ final class HttpResponseBodyParser<D extends Operation.Data, W> {
             @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
               Map<String, Object> buffer = reader.toMap();
               RealResponseReader<Map<String, Object>> realResponseReader = new RealResponseReader<>(
-                  operation.variables(), buffer, new MapFieldValueResolver(), customTypeAdapters,
-                  networkResponseNormalizer);
+                  operation.variables(), buffer, new MapFieldValueResolver(), customTypeAdapters, responseNormalizer);
               return responseFieldMapper.map(realResponseReader);
             }
           });
@@ -66,9 +68,8 @@ final class HttpResponseBodyParser<D extends Operation.Data, W> {
       jsonReader.endObject();
       return Response.<W>builder(operation)
           .data(operation.wrapData(data))
-          .fromCache(response.cacheResponse() != null)
           .errors(errors)
-          .dependentKeys(networkResponseNormalizer.dependentKeys())
+          .dependentKeys(responseNormalizer.dependentKeys())
           .build();
     } finally {
       if (jsonReader != null) {

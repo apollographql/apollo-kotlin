@@ -13,6 +13,7 @@ import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.field.MapFieldValueResolver;
+import com.apollographql.apollo.internal.response.RealResponseReader;
 
 import org.junit.Test;
 

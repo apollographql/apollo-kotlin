@@ -56,6 +56,14 @@ public final class Response<T> {
     return fromCache;
   }
 
+  public Builder<T> toBuilder() {
+    return new Builder<T>(operation)
+        .data(data)
+        .errors(errors)
+        .dependentKeys(dependentKeys)
+        .fromCache(fromCache);
+  }
+
   public static final class Builder<T> {
     private final Operation operation;
     private T data;

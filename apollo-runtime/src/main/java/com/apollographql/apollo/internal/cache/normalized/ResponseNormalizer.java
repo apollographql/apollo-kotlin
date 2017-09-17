@@ -8,7 +8,7 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.CacheReference;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.RecordSet;
-import com.apollographql.apollo.internal.reader.ResponseReaderShadow;
+import com.apollographql.apollo.internal.response.ResponseReaderShadow;
 import com.apollographql.apollo.internal.util.SimpleStack;
 
 import java.util.ArrayList;

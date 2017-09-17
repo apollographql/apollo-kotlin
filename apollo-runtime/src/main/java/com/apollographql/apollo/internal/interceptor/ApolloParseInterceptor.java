@@ -12,6 +12,7 @@ import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
+import com.apollographql.apollo.internal.response.OperationResponseParser;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.io.Closeable;
@@ -83,8 +84,12 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
     String cacheKey = httpResponse.request().header(HttpCache.CACHE_KEY_HEADER);
     if (httpResponse.isSuccessful()) {
       try {
-        HttpResponseBodyParser parser = new HttpResponseBodyParser(operation, responseFieldMapper, customTypeAdapters);
-        Response parsedResponse = parser.parse(httpResponse, normalizer);
+        OperationResponseParser parser = new OperationResponseParser(operation, responseFieldMapper,
+            customTypeAdapters, normalizer);
+        Response parsedResponse = parser.parse(httpResponse.body().source())
+            .toBuilder()
+            .fromCache(httpResponse.cacheResponse() != null)
+            .build();
         if (parsedResponse.hasErrors() && httpCache != null) {
           httpCache.removeQuietly(cacheKey);
         }
