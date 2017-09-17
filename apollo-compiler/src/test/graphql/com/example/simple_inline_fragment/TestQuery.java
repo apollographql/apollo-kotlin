@@ -27,11 +27,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       + "    __typename\n"
       + "    name\n"
       + "    ... on Human {\n"
-      + "      __typename\n"
       + "      height\n"
       + "    }\n"
       + "    ... on Droid {\n"
-      + "      __typename\n"
       + "      primaryFunction\n"
       + "    }\n"
       + "  }\n"
@@ -54,7 +52,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   @Override
   public String operationId() {
-    return "b0f3f33d97a1ff5035984e7472107997adaecc8512a8c63358f594dd01faf007";
+    return "212ff92146147cf94d8e05687d2660c3ead0b054e92d86a52e24eb15880c6dfd";
   }
 
   @Override

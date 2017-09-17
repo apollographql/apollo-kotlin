@@ -52,8 +52,8 @@
 			"fragmentsReferenced": [
 				"HeroDetails"
 			],
-			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name\n    ...HeroDetails\n    appearsIn\n  }\n}\nfragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n  ... on Droid {\n    __typename\n    name\n    primaryFunction\n  }\n}",
-			"operationId": "eb09ddd8f931e755957a2631da5129303c0e13d9c20314c5ae3d2522d636b6e1"
+			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name\n    ...HeroDetails\n    appearsIn\n  }\n}\nfragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n  ... on Droid {\n    name\n    primaryFunction\n  }\n}",
+			"operationId": "82ed8ea1e7e7b7d0344905a747cc94a1228c7ea59c809e9feb9c9d3604ff07cd"
 		}
 	],
 	"fragments": [
@@ -65,7 +65,7 @@
 			],
 			"fragmentName": "HeroDetails",
 			"filePath": "src/test/graphql/com/example/no_accessors/TestOperation.graphql",
-			"source": "fragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n  ... on Droid {\n    __typename\n    name\n    primaryFunction\n  }\n}",
+			"source": "fragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n  }\n  ... on Droid {\n    name\n    primaryFunction\n  }\n}",
 			"fields": [
 				{
 					"responseName": "__typename",
@@ -160,105 +160,6 @@
 			],
 			"fragmentSpreads": [],
 			"inlineFragments": [
-				{
-					"typeCondition": "Human",
-					"possibleTypes": [
-						"Human"
-					],
-					"fields": [
-						{
-							"responseName": "__typename",
-							"fieldName": "__typename",
-							"type": "String!",
-							"isConditional": false
-						},
-						{
-							"responseName": "name",
-							"fieldName": "name",
-							"type": "String!",
-							"isConditional": false,
-							"description": "What this human calls themselves",
-							"isDeprecated": false,
-							"deprecationReason": null
-						},
-						{
-							"responseName": "friendsConnection",
-							"fieldName": "friendsConnection",
-							"type": "FriendsConnection!",
-							"isConditional": false,
-							"description": "The friends of the human exposed as a connection with edges",
-							"isDeprecated": false,
-							"deprecationReason": null,
-							"fields": [
-								{
-									"responseName": "__typename",
-									"fieldName": "__typename",
-									"type": "String!",
-									"isConditional": false
-								},
-								{
-									"responseName": "totalCount",
-									"fieldName": "totalCount",
-									"type": "Int",
-									"isConditional": false,
-									"description": "The total number of friends",
-									"isDeprecated": false,
-									"deprecationReason": null
-								},
-								{
-									"responseName": "edges",
-									"fieldName": "edges",
-									"type": "[FriendsEdge]",
-									"isConditional": false,
-									"description": "The edges for each of the character's friends.",
-									"isDeprecated": false,
-									"deprecationReason": null,
-									"fields": [
-										{
-											"responseName": "__typename",
-											"fieldName": "__typename",
-											"type": "String!",
-											"isConditional": false
-										},
-										{
-											"responseName": "node",
-											"fieldName": "node",
-											"type": "Character",
-											"isConditional": false,
-											"description": "The character represented by this friendship edge",
-											"isDeprecated": false,
-											"deprecationReason": null,
-											"fields": [
-												{
-													"responseName": "__typename",
-													"fieldName": "__typename",
-													"type": "String!",
-													"isConditional": false
-												},
-												{
-													"responseName": "name",
-													"fieldName": "name",
-													"type": "String!",
-													"isConditional": false,
-													"description": "The name of the character",
-													"isDeprecated": false,
-													"deprecationReason": null
-												}
-											],
-											"fragmentSpreads": [],
-											"inlineFragments": []
-										}
-									],
-									"fragmentSpreads": [],
-									"inlineFragments": []
-								}
-							],
-							"fragmentSpreads": [],
-							"inlineFragments": []
-						}
-					],
-					"fragmentSpreads": []
-				},
 				{
 					"typeCondition": "Droid",
 					"possibleTypes": [
