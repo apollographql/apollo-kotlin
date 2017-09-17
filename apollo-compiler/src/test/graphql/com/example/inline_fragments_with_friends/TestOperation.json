@@ -6,7 +6,7 @@
 			"operationType": "query",
 			"rootType": "Query",
 			"variables": [],
-			"source": "query TestQuery {\n  hero {\n    __typename\n    name\n    ... on Human {\n      __typename\n      height\n      friends {\n        __typename\n        appearsIn\n      }\n    }\n    ... on Droid {\n      __typename\n      primaryFunction\n      friends {\n        __typename\n        id\n      }\n    }\n  }\n}",
+			"source": "query TestQuery {\n  hero {\n    __typename\n    name\n    ... on Human {\n      height\n      friends {\n        __typename\n        appearsIn\n      }\n    }\n    ... on Droid {\n      primaryFunction\n      friends {\n        __typename\n        id\n      }\n    }\n  }\n}",
 			"fields": [
 				{
 					"responseName": "hero",
@@ -162,8 +162,8 @@
 			"fragmentSpreads": [],
 			"inlineFragments": [],
 			"fragmentsReferenced": [],
-			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name\n    ... on Human {\n      __typename\n      height\n      friends {\n        __typename\n        appearsIn\n      }\n    }\n    ... on Droid {\n      __typename\n      primaryFunction\n      friends {\n        __typename\n        id\n      }\n    }\n  }\n}",
-			"operationId": "a730adeac9d8f65ae02cdf7c8785745a5d05071a3f101e0651c62bb5fbe3f2f9"
+			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name\n    ... on Human {\n      height\n      friends {\n        __typename\n        appearsIn\n      }\n    }\n    ... on Droid {\n      primaryFunction\n      friends {\n        __typename\n        id\n      }\n    }\n  }\n}",
+			"operationId": "3026923a1bf30eb616b31b5ff348bc1129472e73edf6a0c0c16e359e0900b088"
 		}
 	],
 	"fragments": [],
