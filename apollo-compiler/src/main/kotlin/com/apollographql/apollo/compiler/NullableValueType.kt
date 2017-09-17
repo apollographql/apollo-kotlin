@@ -4,7 +4,8 @@ enum class NullableValueType(val value: String) {
   ANNOTATED("annotated"),
   APOLLO_OPTIONAL("apolloOptional"),
   GUAVA_OPTIONAL("guavaOptional"),
-  JAVA_OPTIONAL("javaOptional");
+  JAVA_OPTIONAL("javaOptional"),
+  INPUT_TYPE("inputType");
 
   companion object {
     fun findByValue(value: String): NullableValueType? = NullableValueType.values().find { it.value == value }

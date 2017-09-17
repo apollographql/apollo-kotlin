@@ -241,6 +241,7 @@ fun TypeName.isNullable(): Boolean = isOptional() || annotations.contains(Annota
 fun TypeName.isOptional(): Boolean {
   val rawType = (this as? ParameterizedTypeName)?.rawType ?: this
   return rawType == ClassNames.OPTIONAL || rawType == ClassNames.GUAVA_OPTIONAL || rawType == ClassNames.JAVA_OPTIONAL
+      || rawType == ClassNames.INPUT_TYPE
 }
 
 fun TypeName.unwrapOptionalType(withoutAnnotations: Boolean = false): TypeName {
@@ -251,22 +252,47 @@ fun TypeName.unwrapOptionalType(withoutAnnotations: Boolean = false): TypeName {
   }.let { if (withoutAnnotations) it.withoutAnnotations() else it }
 }
 
-fun TypeName.unwrapOptionalValue(valueVarName: String, checkPresent: Boolean = true,
+fun TypeName.unwrapOptionalValue(varName: String, checkIfPresent: Boolean = true,
     transformation: ((CodeBlock) -> CodeBlock)? = null): CodeBlock {
   return if (isOptional() && this is ParameterizedTypeName) {
-    val valueCode = CodeBlock.of("\$L.get()", valueVarName)
-    if (checkPresent) {
-      CodeBlock.of("\$L.isPresent() ? \$L : null", valueVarName, transformation?.invoke(valueCode) ?: valueCode)
+    if (rawType == ClassNames.INPUT_TYPE) {
+      val valueCode = CodeBlock.of("\$L.value", varName)
+      if (checkIfPresent) {
+        CodeBlock.of("\$L != null ? \$L : null", valueCode, transformation?.invoke(valueCode) ?: valueCode)
+      } else {
+        transformation?.invoke(valueCode) ?: valueCode
+      }
     } else {
-      transformation?.invoke(valueCode) ?: valueCode
+      val valueCode = CodeBlock.of("\$L.get()", varName)
+      if (checkIfPresent) {
+        CodeBlock.of("\$L.isPresent() ? \$L : null", varName, transformation?.invoke(valueCode) ?: valueCode)
+      } else {
+        transformation?.invoke(valueCode) ?: valueCode
+      }
     }
   } else {
-    val valueCode = CodeBlock.of("\$L", valueVarName)
-    if (annotations.contains(Annotations.NULLABLE) && checkPresent && transformation != null) {
-      CodeBlock.of("\$L != null ? \$L : null", valueVarName, transformation.invoke(valueCode))
+    val valueCode = CodeBlock.of("\$L", varName)
+    if (annotations.contains(Annotations.NULLABLE) && checkIfPresent && transformation != null) {
+      CodeBlock.of("\$L != null ? \$L : null", varName, transformation.invoke(valueCode))
     } else {
       transformation?.invoke(valueCode) ?: valueCode
     }
+  }
+}
+
+fun TypeName.wrapOptionalValue(value: CodeBlock): CodeBlock {
+  return if (this.isOptional() && this is ParameterizedTypeName) {
+    CodeBlock.of("\$T.fromNullable(\$L)", rawType, value)
+  } else {
+    value
+  }
+}
+
+fun TypeName.defaultOptionalValue(): CodeBlock {
+  return if (this.isOptional() && this is ParameterizedTypeName) {
+    CodeBlock.of("\$T.absent()", rawType)
+  } else {
+    CodeBlock.of("")
   }
 }
 

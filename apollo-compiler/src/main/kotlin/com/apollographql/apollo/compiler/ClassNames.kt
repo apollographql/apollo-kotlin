@@ -1,9 +1,6 @@
 package com.apollographql.apollo.compiler
 
-import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.Mutation
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.*
 import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder
 import com.apollographql.apollo.api.internal.Utils
@@ -29,6 +26,7 @@ object ClassNames {
   val JAVA_OPTIONAL: ClassName = ClassName.get("java.util", "Optional")
   val API_UTILS: ClassName = ClassName.get(Utils::class.java)
   val FRAGMENT: ClassName = ClassName.get(GraphqlFragment::class.java)
+  val INPUT_TYPE: ClassName = ClassName.get(Input::class.java)
 
   fun <K : Any> parameterizedListOf(type: Class<K>): TypeName =
       ParameterizedTypeName.get(LIST, ClassName.get(type))
@@ -55,13 +53,13 @@ object ClassNames {
   fun parameterizedOptional(type: TypeName): TypeName =
       ParameterizedTypeName.get(OPTIONAL, type)
 
-  fun <K : Any> parameterizedGuavaOptional(type: Class<K>): TypeName =
-      ParameterizedTypeName.get(GUAVA_OPTIONAL, ClassName.get(type))
-
   fun parameterizedGuavaOptional(type: TypeName): TypeName =
       ParameterizedTypeName.get(GUAVA_OPTIONAL, type)
 
   fun parameterizedJavaOptional(type: TypeName): TypeName =
       ParameterizedTypeName.get(JAVA_OPTIONAL, type)
+
+  fun parameterizedInputType(type: TypeName): TypeName =
+      ParameterizedTypeName.get(INPUT_TYPE, type)
 
 }

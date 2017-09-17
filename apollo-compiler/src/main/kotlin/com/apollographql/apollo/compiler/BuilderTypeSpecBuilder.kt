@@ -21,44 +21,47 @@ class BuilderTypeSpecBuilder(
         .build()
   }
 
-  private fun TypeSpec.Builder.addBuilderFields(): TypeSpec.Builder =
-      addFields(fields.map {
-        val fieldName = it.first
-        val fieldType = it.second
-        val defaultValue = fieldDefaultValues[fieldName]?.let {
-          (it as? Number)?.castTo(fieldType.withoutAnnotations()) ?: it
-        }
-        val initializerCode = defaultValue?.let {
-          if (fieldType.isEnum(typeDeclarations))
-            CodeBlock.of("\$T.\$L", fieldType.withoutAnnotations(), defaultValue)
-          else
-            CodeBlock.of("\$L", defaultValue)
-        } ?: CodeBlock.of("")
-        FieldSpec.builder(fieldType, fieldName)
-            .addModifiers(Modifier.PRIVATE)
-            .initializer(initializerCode)
-            .build()
-      })
+  private fun TypeSpec.Builder.addBuilderFields(): TypeSpec.Builder {
+    return addFields(fields.map {
+      val fieldName = it.first
+      val fieldType = it.second
+      val initializerCode = fieldDefaultValues[fieldName]
+          ?.let { (it as? Number)?.castTo(fieldType.unwrapOptionalType(true)) ?: it }
+          ?.let { defaultValue ->
+            if (fieldType.unwrapOptionalType(true).isEnum(typeDeclarations))
+              CodeBlock.of("\$T.\$L", fieldType.unwrapOptionalType(true), defaultValue)
+            else
+              CodeBlock.of("\$L", defaultValue)
+          }
+          ?.let { fieldType.wrapOptionalValue(it) }
+          ?: fieldType.defaultOptionalValue()
+      FieldSpec.builder(fieldType, fieldName)
+          .addModifiers(Modifier.PRIVATE)
+          .initializer(initializerCode)
+          .build()
+    })
+  }
 
-  private fun TypeSpec.Builder.addBuilderMethods(): TypeSpec.Builder =
-      addMethods(fields.map {
-        val fieldName = it.first
-        val fieldType = it.second
-        val javaDoc = fieldJavaDocs[fieldName]
-        MethodSpec.methodBuilder(fieldName)
-            .addModifiers(Modifier.PUBLIC)
-            .addParameter(ParameterSpec.builder(fieldType, fieldName).build())
-            .let {
-              if (!javaDoc.isNullOrBlank())
-                it.addJavadoc(CodeBlock.of("\$L\n", javaDoc))
-              else
-                it
-            }
-            .returns(builderClass)
-            .addStatement("this.\$L = \$L", fieldName, fieldName)
-            .addStatement("return this")
-            .build()
-      })
+  private fun TypeSpec.Builder.addBuilderMethods(): TypeSpec.Builder {
+    return addMethods(fields.map {
+      val fieldName = it.first
+      val fieldType = it.second
+      val javaDoc = fieldJavaDocs[fieldName]
+      MethodSpec.methodBuilder(fieldName)
+          .addModifiers(Modifier.PUBLIC)
+          .addParameter(ParameterSpec.builder(fieldType.unwrapOptionalType(), fieldName).build())
+          .let {
+            if (!javaDoc.isNullOrBlank())
+              it.addJavadoc(CodeBlock.of("\$L\n", javaDoc))
+            else
+              it
+          }
+          .returns(builderClass)
+          .addStatement("this.\$L = \$L", fieldName, fieldType.wrapOptionalValue(CodeBlock.of("\$L", fieldName)))
+          .addStatement("return this")
+          .build()
+    })
+  }
 
   private fun TypeSpec.Builder.addBuilderBuildMethod(): TypeSpec.Builder {
     val validationCodeBuilder = fields.filter {
@@ -83,24 +86,27 @@ class BuilderTypeSpecBuilder(
     val CLASS_NAME: String = "Builder"
     private val builderClass = ClassName.get("", CLASS_NAME)
 
-    fun builderFactoryMethod(): MethodSpec =
-        MethodSpec
-            .methodBuilder("builder")
-            .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-            .returns(builderClass)
-            .addStatement("return new \$T()", builderClass)
-            .build()
+    fun builderFactoryMethod(): MethodSpec {
+      return MethodSpec
+          .methodBuilder("builder")
+          .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+          .returns(builderClass)
+          .addStatement("return new \$T()", builderClass)
+          .build()
+    }
 
-    private fun Number.castTo(type: TypeName) =
-        if (type == TypeName.INT || type == TypeName.INT.box()) {
-          toInt()
-        } else if (type == TypeName.FLOAT || type == TypeName.FLOAT.box()) {
-          toDouble()
-        } else {
-          this
-        }
+    private fun Number.castTo(type: TypeName): Number {
+      return if (type == TypeName.INT || type == TypeName.INT.box()) {
+        toInt()
+      } else if (type == TypeName.FLOAT || type == TypeName.FLOAT.box()) {
+        toDouble()
+      } else {
+        this
+      }
+    }
 
-    private fun TypeName.isEnum(typeDeclarations: List<TypeDeclaration>) =
-        ((this is ClassName) && typeDeclarations.count { it.kind == "EnumType" && it.name == simpleName() } > 0)
+    private fun TypeName.isEnum(typeDeclarations: List<TypeDeclaration>): Boolean {
+      return ((this is ClassName) && typeDeclarations.count { it.kind == "EnumType" && it.name == simpleName() } > 0)
+    }
   }
 }

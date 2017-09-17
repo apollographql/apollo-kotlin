@@ -100,11 +100,18 @@ class VariablesTypeSpecBuilder(
 
   private fun marshallerMethodSpec(): MethodSpec {
     val writeCode = variables
-        .map { InputFieldSpec.build(name = it.name, graphQLType = it.type, context = context) }
+        .map {
+          InputFieldSpec.build(
+              name = it.name,
+              graphQLType = it.type,
+              context = context,
+              nullableValueType = NullableValueType.ANNOTATED
+          )
+        }
         .map {
           it.writeValueCode(
               writerParam = CodeBlock.of("\$L", WRITER_PARAM.name),
-              marshaller = CodeBlock.of("${MARSHALLER_PARAM_NAME}()")
+              marshaller = CodeBlock.of("\$L()", MARSHALLER_PARAM_NAME)
           )
         }
         .fold(CodeBlock.builder(), CodeBlock.Builder::add)

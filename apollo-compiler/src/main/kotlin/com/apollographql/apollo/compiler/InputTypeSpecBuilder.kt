@@ -40,25 +40,6 @@ class InputTypeSpecBuilder(
     )
   }
 
-  private fun TypeSpec.Builder.addFieldDefinition(field: TypeDeclarationField): TypeSpec.Builder =
-      addField(FieldSpec
-          .builder(field.javaTypeName(context), field.name.decapitalize())
-          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
-          .build())
-
-  private fun TypeSpec.Builder.addFieldAccessor(field: TypeDeclarationField) =
-      addMethod(MethodSpec.methodBuilder(field.name.decapitalize())
-          .addModifiers(Modifier.PUBLIC)
-          .returns(field.javaTypeName(context))
-          .let {
-            if (!field.description.isNullOrBlank())
-              it.addJavadoc(CodeBlock.of("\$L\n", field.description))
-            else
-              it
-          }
-          .addStatement("return this.\$L", field.name.decapitalize())
-          .build())
-
   private fun TypeSpec.Builder.addBuilder(): TypeSpec.Builder {
     if (fields.isEmpty()) {
       return this
@@ -83,7 +64,13 @@ class InputTypeSpecBuilder(
 
   private fun marshallerMethodSpec(): MethodSpec {
     val writeCode = fields
-        .map { InputFieldSpec.build(name = it.name, graphQLType = it.type, context = context) }
+        .map {
+          InputFieldSpec.build(
+              name = it.name,
+              graphQLType = it.type,
+              context = context
+          )
+        }
         .map {
           it.writeValueCode(
               writerParam = CodeBlock.of("\$L", WRITER_PARAM.name),
@@ -111,17 +98,43 @@ class InputTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addFields(): TypeSpec.Builder {
+    fun addFieldDefinition(field: TypeDeclarationField) {
+      addField(FieldSpec
+          .builder(field.javaTypeName(context), field.name.decapitalize())
+          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+          .build())
+    }
+
+    fun addFieldAccessor(field: TypeDeclarationField) {
+      val optional = !field.type.endsWith("!")
+      addMethod(MethodSpec.methodBuilder(field.name.decapitalize())
+          .addModifiers(Modifier.PUBLIC)
+          .returns(field.javaTypeName(context).unwrapOptionalType())
+          .let {
+            if (!field.description.isNullOrBlank())
+              it.addJavadoc(CodeBlock.of("\$L\n", field.description))
+            else
+              it
+          }
+          .addStatement("return this.\$L\$L", field.name.decapitalize(), if (optional) ".value" else "")
+          .build())
+    }
+
     fields.forEach { field ->
       addFieldDefinition(field)
       addFieldAccessor(field)
     }
+
     return this
+  }
+
+  private fun TypeDeclarationField.javaTypeName(context: CodeGenerationContext): TypeName {
+    return JavaTypeResolver(context, context.typesPackage)
+        .resolve(typeName = type, nullableValueType = NullableValueType.INPUT_TYPE)
   }
 
   companion object {
     private val WRITER_PARAM = ParameterSpec.builder(InputFieldWriter::class.java, "writer").build()
     private const val MARSHALLER_PARAM_NAME = "marshaller"
-    private fun TypeDeclarationField.javaTypeName(context: CodeGenerationContext) =
-        JavaTypeResolver(context, context.typesPackage).resolve(type, !type.endsWith("!")).unwrapOptionalType()
   }
 }

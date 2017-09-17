@@ -1,5 +1,6 @@
 package com.example.input_object_type.type;
 
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
 import java.io.IOException;
@@ -12,13 +13,13 @@ import javax.annotation.Nullable;
 public final class ColorInput {
   private final int red;
 
-  private final @Nullable Double green;
+  private final Input<Double> green;
 
   private final double blue;
 
-  private final @Nullable Episode enumWithDefaultValue;
+  private final Input<Episode> enumWithDefaultValue;
 
-  ColorInput(int red, @Nullable Double green, double blue, @Nullable Episode enumWithDefaultValue) {
+  ColorInput(int red, Input<Double> green, double blue, Input<Episode> enumWithDefaultValue) {
     this.red = red;
     this.green = green;
     this.blue = blue;
@@ -36,7 +37,7 @@ public final class ColorInput {
    * Green color
    */
   public @Nullable Double green() {
-    return this.green;
+    return this.green.value;
   }
 
   /**
@@ -50,7 +51,7 @@ public final class ColorInput {
    * for test purpose only
    */
   public @Nullable Episode enumWithDefaultValue() {
-    return this.enumWithDefaultValue;
+    return this.enumWithDefaultValue.value;
   }
 
   public static Builder builder() {
@@ -62,9 +63,13 @@ public final class ColorInput {
       @Override
       public void marshal(InputFieldWriter writer) throws IOException {
         writer.writeInt("red", red);
-        writer.writeDouble("green", green);
+        if (green.defined) {
+          writer.writeDouble("green", green.value);
+        }
         writer.writeDouble("blue", blue);
-        writer.writeString("enumWithDefaultValue", enumWithDefaultValue != null ? enumWithDefaultValue.name() : null);
+        if (enumWithDefaultValue.defined) {
+          writer.writeString("enumWithDefaultValue", enumWithDefaultValue.value != null ? enumWithDefaultValue.value.name() : null);
+        }
       }
     };
   }
@@ -72,11 +77,11 @@ public final class ColorInput {
   public static final class Builder {
     private int red = 1;
 
-    private @Nullable Double green = 0.0;
+    private Input<Double> green = Input.fromNullable(0.0);
 
     private double blue = 1.5;
 
-    private @Nullable Episode enumWithDefaultValue = Episode.JEDI;
+    private Input<Episode> enumWithDefaultValue = Input.fromNullable(Episode.JEDI);
 
     Builder() {
     }
@@ -93,7 +98,7 @@ public final class ColorInput {
      * Green color
      */
     public Builder green(@Nullable Double green) {
-      this.green = green;
+      this.green = Input.fromNullable(green);
       return this;
     }
 
@@ -109,7 +114,7 @@ public final class ColorInput {
      * for test purpose only
      */
     public Builder enumWithDefaultValue(@Nullable Episode enumWithDefaultValue) {
-      this.enumWithDefaultValue = enumWithDefaultValue;
+      this.enumWithDefaultValue = Input.fromNullable(enumWithDefaultValue);
       return this;
     }
 
