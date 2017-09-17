@@ -28,7 +28,7 @@ public final class CacheFirstFetcher implements ResponseFetcher {
     @Override
     public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull final ApolloInterceptorChain chain,
         @Nonnull final Executor dispatcher, @Nonnull final CallBack callBack) {
-      InterceptorRequest cacheRequest = request.withFetchOptions(request.fetchOptions.toCacheFetchOptions());
+      InterceptorRequest cacheRequest = request.toBuilder().fetchFromCache(true).build();
       chain.proceedAsync(cacheRequest, dispatcher, new CallBack() {
         @Override public void onResponse(@Nonnull InterceptorResponse response) {
           callBack.onResponse(response);
@@ -36,7 +36,7 @@ public final class CacheFirstFetcher implements ResponseFetcher {
 
         @Override public void onFailure(@Nonnull ApolloException e) {
           if (!disposed) {
-            InterceptorRequest networkRequest = request.withFetchOptions(request.fetchOptions.toNetworkFetchOptions());
+            InterceptorRequest networkRequest = request.toBuilder().fetchFromCache(false).build();
             chain.proceedAsync(networkRequest, dispatcher, callBack);
           }
         }

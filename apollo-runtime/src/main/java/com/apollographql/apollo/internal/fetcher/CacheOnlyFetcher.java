@@ -26,12 +26,10 @@ public final class CacheOnlyFetcher implements ResponseFetcher {
 
   private static final class CacheOnlyInterceptor implements ApolloInterceptor {
 
-    private volatile boolean disposed;
-
     @Override
     public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
         @Nonnull Executor dispatcher, @Nonnull final CallBack callBack) {
-      InterceptorRequest cacheRequest = request.withFetchOptions(request.fetchOptions.toCacheFetchOptions());
+      InterceptorRequest cacheRequest = request.toBuilder().fetchFromCache(true).build();
       chain.proceedAsync(cacheRequest, dispatcher, new CallBack() {
         @Override public void onResponse(@Nonnull InterceptorResponse response) {
           callBack.onResponse(response);

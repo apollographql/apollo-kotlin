@@ -22,7 +22,6 @@ import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.interceptor.ApolloCacheInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloParseInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
@@ -61,7 +60,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   final ApolloStore apolloStore;
   final CacheHeaders cacheHeaders;
-  final FetchOptions fetchOptions;
   final ResponseFetcher responseFetcher;
   final ApolloInterceptorChain interceptorChain;
   final Executor dispatcher;
@@ -91,7 +89,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     apolloStore = builder.apolloStore;
     responseFetcher = builder.responseFetcher;
     cacheHeaders = builder.cacheHeaders;
-    fetchOptions = FetchOptions.NETWORK_ONLY.edit().cacheHeaders(cacheHeaders).build();
     dispatcher = builder.dispatcher;
     logger = builder.logger;
     applicationInterceptors = builder.applicationInterceptors;
@@ -132,8 +129,12 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
       }
       return;
     }
-    ApolloInterceptor.InterceptorRequest request = new ApolloInterceptor.InterceptorRequest(operation, fetchOptions,
-        optimisticUpdates);
+
+    ApolloInterceptor.InterceptorRequest request = ApolloInterceptor.InterceptorRequest.builder(operation)
+        .cacheHeaders(cacheHeaders)
+        .fetchFromCache(false)
+        .optimisticUpdates(optimisticUpdates)
+        .build();
     interceptorChain.proceedAsync(request, dispatcher, interceptorCallbackProxy());
   }
 
@@ -386,7 +387,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     List<Query> refetchQueries = emptyList();
     ApolloCallTracker tracker;
     boolean sendOperationIdentifiers;
-    Optional<Operation.Data> optimisticUpdates;
+    Optional<Operation.Data> optimisticUpdates = Optional.absent();
 
     public Builder<T> operation(Operation operation) {
       this.operation = operation;

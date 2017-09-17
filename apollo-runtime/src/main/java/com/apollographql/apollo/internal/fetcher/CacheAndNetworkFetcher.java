@@ -39,7 +39,7 @@ public final class CacheAndNetworkFetcher implements ResponseFetcher {
         @Nonnull Executor dispatcher, @Nonnull final CallBack callBack) {
       if (disposed) return;
       originalCallback = callBack;
-      InterceptorRequest cacheRequest = request.withFetchOptions(request.fetchOptions.toCacheFetchOptions());
+      InterceptorRequest cacheRequest = request.toBuilder().fetchFromCache(true).build();
       chain.proceedAsync(cacheRequest, dispatcher, new CallBack() {
         @Override public void onResponse(@Nonnull InterceptorResponse response) {
           handleCacheResponse(response);
@@ -57,7 +57,7 @@ public final class CacheAndNetworkFetcher implements ResponseFetcher {
         }
       });
 
-      InterceptorRequest networkRequest = request.withFetchOptions(request.fetchOptions.toNetworkFetchOptions());
+      InterceptorRequest networkRequest = request.toBuilder().fetchFromCache(false).build();
       chain.proceedAsync(networkRequest, dispatcher, new CallBack() {
         @Override public void onResponse(@Nonnull InterceptorResponse response) {
           handleNetworkResponse(response);
