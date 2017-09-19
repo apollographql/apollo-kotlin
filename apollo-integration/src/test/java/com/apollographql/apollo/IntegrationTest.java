@@ -18,6 +18,7 @@ import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.response.OperationResponseParser;
+import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import org.junit.After;
@@ -305,7 +306,7 @@ public class IntegrationTest {
 
     HeroNameQuery query = new HeroNameQuery();
     Response<HeroNameQuery.Data> response = new OperationResponseParser<>(query, query.responseFieldMapper(),
-        Collections.<ScalarType, CustomTypeAdapter>emptyMap(), ResponseNormalizer.NO_OP_NORMALIZER)
+        new ScalarTypeAdapters(Collections.EMPTY_MAP), ResponseNormalizer.NO_OP_NORMALIZER)
         .parse(new Buffer().writeUtf8(json));
 
     assertThat(response.data().hero().name()).isEqualTo("R2-D2");

@@ -2,23 +2,21 @@ package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloQueryWatcher;
-import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
+import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -49,7 +47,7 @@ final class QueryReFetcher {
           .serverUrl(builder.serverUrl)
           .httpCallFactory(builder.httpCallFactory)
           .responseFieldMapperFactory(builder.responseFieldMapperFactory)
-          .customTypeAdapters(builder.customTypeAdapters)
+          .scalarTypeAdapters(builder.scalarTypeAdapters)
           .apolloStore(builder.apolloStore)
           .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY)
           .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
@@ -122,7 +120,7 @@ final class QueryReFetcher {
     HttpUrl serverUrl;
     Call.Factory httpCallFactory;
     ResponseFieldMapperFactory responseFieldMapperFactory;
-    Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+    ScalarTypeAdapters scalarTypeAdapters;
     ApolloStore apolloStore;
     Executor dispatcher;
     ApolloLogger logger;
@@ -154,8 +152,8 @@ final class QueryReFetcher {
       return this;
     }
 
-    Builder customTypeAdapters(Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
-      this.customTypeAdapters = customTypeAdapters;
+    Builder scalarTypeAdapters(ScalarTypeAdapters scalarTypeAdapters) {
+      this.scalarTypeAdapters = scalarTypeAdapters;
       return this;
     }
 

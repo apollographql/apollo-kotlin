@@ -1,12 +1,10 @@
 package com.apollographql.apollo.internal.cache.normalized;
 
-import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
-import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
@@ -17,6 +15,7 @@ import com.apollographql.apollo.cache.normalized.OptimisticNormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.internal.field.CacheFieldValueResolver;
 import com.apollographql.apollo.internal.response.RealResponseReader;
+import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.util.ArrayList;
@@ -40,20 +39,20 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 public final class RealApolloStore implements ApolloStore, ReadableStore, WriteableStore {
   private final OptimisticNormalizedCache optimisticCache;
   private final CacheKeyResolver cacheKeyResolver;
-  private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  private final ScalarTypeAdapters scalarTypeAdapters;
   private final ReadWriteLock lock;
   private final Set<RecordChangeSubscriber> subscribers;
   private final Executor dispatcher;
   private final ApolloLogger logger;
 
   public RealApolloStore(@Nonnull NormalizedCache normalizedCache, @Nonnull CacheKeyResolver cacheKeyResolver,
-      @Nonnull final Map<ScalarType, CustomTypeAdapter> customTypeAdapters, @Nonnull Executor dispatcher,
+      @Nonnull final ScalarTypeAdapters scalarTypeAdapters, @Nonnull Executor dispatcher,
       @Nonnull ApolloLogger logger) {
     checkNotNull(normalizedCache, "cacheStore == null");
 
     this.optimisticCache = (OptimisticNormalizedCache) new OptimisticNormalizedCache().chain(normalizedCache);
     this.cacheKeyResolver = checkNotNull(cacheKeyResolver, "cacheKeyResolver == null");
-    this.customTypeAdapters = checkNotNull(customTypeAdapters, "customTypeAdapters == null");
+    this.scalarTypeAdapters = checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null");
     this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
     this.logger = checkNotNull(logger, "logger == null");
     this.lock = new ReentrantReadWriteLock();
@@ -205,7 +204,6 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
       @Nonnull final ResponseNormalizer<Record> responseNormalizer, @Nonnull final CacheHeaders cacheHeaders) {
     checkNotNull(operation, "operation == null");
     checkNotNull(responseNormalizer, "responseNormalizer == null");
-    checkNotNull(customTypeAdapters, "customTypeAdapters == null");
     return new ApolloStoreOperation<Response<T>>(dispatcher) {
       @Override protected Response<T> perform() {
         return doRead(operation, responseFieldMapper, responseNormalizer, cacheHeaders);
@@ -345,7 +343,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
             cacheKeyResolver(), CacheHeaders.NONE);
         //noinspection unchecked
         RealResponseReader<Record> responseReader = new RealResponseReader<>(operation.variables(), rootRecord,
-            fieldValueResolver, customTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
+            fieldValueResolver, scalarTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
         return operation.wrapData(responseFieldMapper.map(responseReader));
       }
     });
@@ -364,7 +362,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
         CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
             cacheKeyResolver(), cacheHeaders);
         RealResponseReader<Record> responseReader = new RealResponseReader<>(operation.variables(), rootRecord,
-            fieldValueResolver, customTypeAdapters, responseNormalizer);
+            fieldValueResolver, scalarTypeAdapters, responseNormalizer);
         try {
           responseNormalizer.willResolveRootQuery(operation);
           T data = operation.wrapData(responseFieldMapper.map(responseReader));
@@ -394,7 +392,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
             cacheKeyResolver(), CacheHeaders.NONE);
         //noinspection unchecked
         RealResponseReader<Record> responseReader = new RealResponseReader<>(variables, rootRecord,
-            fieldValueResolver, customTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
+            fieldValueResolver, scalarTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
         return responseFieldMapper.map(responseReader);
       }
     });
@@ -406,7 +404,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
       @Override public Set<String> execute(WriteableStore cache) {
         CacheResponseWriter cacheResponseWriter = new CacheResponseWriter(operation.variables(),
-            customTypeAdapters);
+            scalarTypeAdapters);
         operationData.marshaller().marshal(cacheResponseWriter);
         ResponseNormalizer<Map<String, Object>> responseNormalizer = networkResponseNormalizer();
         responseNormalizer.willResolveRootQuery(operation);
@@ -428,7 +426,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
       final Operation.Variables variables) {
     return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
       @Override public Set<String> execute(WriteableStore cache) {
-        CacheResponseWriter cacheResponseWriter = new CacheResponseWriter(variables, customTypeAdapters);
+        CacheResponseWriter cacheResponseWriter = new CacheResponseWriter(variables, scalarTypeAdapters);
         fragment.marshaller().marshal(cacheResponseWriter);
         ResponseNormalizer<Map<String, Object>> responseNormalizer = networkResponseNormalizer();
         responseNormalizer.willResolveRecord(cacheKey);

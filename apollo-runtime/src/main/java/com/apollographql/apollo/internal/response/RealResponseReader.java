@@ -12,22 +12,21 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @SuppressWarnings("WeakerAccess") public final class RealResponseReader<R> implements ResponseReader {
   private final Operation.Variables operationVariables;
   private final R recordSet;
-  private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  private final ScalarTypeAdapters scalarTypeAdapters;
   private final FieldValueResolver<R> fieldValueResolver;
   private final ResponseReaderShadow<R> readerShadow;
 
   public RealResponseReader(Operation.Variables operationVariables, R recordSet,
-      FieldValueResolver<R> fieldValueResolver, Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
+      FieldValueResolver<R> fieldValueResolver, ScalarTypeAdapters scalarTypeAdapters,
       ResponseReaderShadow<R> readerShadow) {
     this.operationVariables = operationVariables;
     this.recordSet = recordSet;
     this.fieldValueResolver = fieldValueResolver;
-    this.customTypeAdapters = customTypeAdapters;
+    this.scalarTypeAdapters = scalarTypeAdapters;
     this.readerShadow = readerShadow;
   }
 
@@ -108,7 +107,7 @@ import java.util.Map;
       parsedValue = null;
     } else {
       parsedValue = (T) objectReader.read(new RealResponseReader(operationVariables, value, fieldValueResolver,
-          customTypeAdapters, readerShadow));
+          scalarTypeAdapters, readerShadow));
     }
     readerShadow.didResolveObject(field, Optional.fromNullable(value));
     didResolve(field);
@@ -150,14 +149,9 @@ import java.util.Map;
       readerShadow.didResolveNull();
       result = null;
     } else {
-      CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(field.scalarType());
-      if (typeAdapter == null) {
-        readerShadow.didResolveScalar(value);
-        result = (T) value;
-      } else {
-        readerShadow.didResolveScalar(value);
-        result = typeAdapter.decode(value.toString());
-      }
+      CustomTypeAdapter<T> typeAdapter = scalarTypeAdapters.adapterFor(field.scalarType());
+      readerShadow.didResolveScalar(value);
+      result = typeAdapter.decode(value.toString());
     }
     didResolve(field);
     return result;
@@ -240,10 +234,7 @@ import java.util.Map;
 
     @SuppressWarnings("unchecked")
     @Override public <T> T readCustomType(ScalarType scalarType) {
-      CustomTypeAdapter<T> typeAdapter = customTypeAdapters.get(scalarType);
-      if (typeAdapter == null) {
-        throw new RuntimeException("Can't resolve custom type adapter for " + scalarType.typeName());
-      }
+      CustomTypeAdapter<T> typeAdapter = scalarTypeAdapters.adapterFor(scalarType);
       readerShadow.didResolveScalar(value);
       return typeAdapter.decode(value.toString());
     }
@@ -253,7 +244,7 @@ import java.util.Map;
       R value = (R) this.value;
       readerShadow.willResolveObject(field, Optional.fromNullable(value));
       T item = (T) objectReader.read(new RealResponseReader<R>(operationVariables, value, fieldValueResolver,
-          customTypeAdapters, readerShadow));
+          scalarTypeAdapters, readerShadow));
       readerShadow.didResolveObject(field, Optional.fromNullable(value));
       return item;
     }

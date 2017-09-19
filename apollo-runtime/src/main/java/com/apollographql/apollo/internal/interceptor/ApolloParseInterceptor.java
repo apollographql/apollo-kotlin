@@ -1,10 +1,8 @@
 package com.apollographql.apollo.internal.interceptor;
 
-import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
-import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.http.HttpCache;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
@@ -13,6 +11,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.response.OperationResponseParser;
+import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.io.Closeable;
@@ -30,17 +29,16 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
   private final HttpCache httpCache;
   private final ResponseNormalizer<Map<String, Object>> normalizer;
   private final ResponseFieldMapper responseFieldMapper;
-  private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  private final ScalarTypeAdapters scalarTypeAdapters;
   private final ApolloLogger logger;
   private volatile boolean disposed;
 
   public ApolloParseInterceptor(HttpCache httpCache, ResponseNormalizer<Map<String, Object>> normalizer,
-      ResponseFieldMapper responseFieldMapper, Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
-      ApolloLogger logger) {
+      ResponseFieldMapper responseFieldMapper, ScalarTypeAdapters scalarTypeAdapters, ApolloLogger logger) {
     this.httpCache = httpCache;
     this.normalizer = normalizer;
     this.responseFieldMapper = responseFieldMapper;
-    this.customTypeAdapters = customTypeAdapters;
+    this.scalarTypeAdapters = scalarTypeAdapters;
     this.logger = logger;
   }
 
@@ -84,8 +82,8 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
     String cacheKey = httpResponse.request().header(HttpCache.CACHE_KEY_HEADER);
     if (httpResponse.isSuccessful()) {
       try {
-        OperationResponseParser parser = new OperationResponseParser(operation, responseFieldMapper,
-            customTypeAdapters, normalizer);
+        OperationResponseParser parser = new OperationResponseParser(operation, responseFieldMapper, scalarTypeAdapters,
+            normalizer);
         Response parsedResponse = parser.parse(httpResponse.body().source())
             .toBuilder()
             .fromCache(httpResponse.cacheResponse() != null)

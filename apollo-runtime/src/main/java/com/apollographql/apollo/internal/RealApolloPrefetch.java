@@ -1,9 +1,7 @@
 package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloPrefetch;
-import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.http.HttpCache;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
@@ -16,10 +14,10 @@ import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
+import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -40,7 +38,7 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
   final HttpUrl serverUrl;
   final Call.Factory httpCallFactory;
   final HttpCache httpCache;
-  final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  final ScalarTypeAdapters scalarTypeAdapters;
   final Executor dispatcher;
   final ApolloLogger logger;
   final ApolloCallTracker tracker;
@@ -50,20 +48,20 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
   final AtomicReference<ApolloPrefetch.Callback> originalCallback = new AtomicReference<>();
 
   public RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory, HttpCache httpCache,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters, Executor dispatcher, ApolloLogger logger,
-      ApolloCallTracker callTracker, boolean sendOperationIds) {
+      ScalarTypeAdapters scalarTypeAdapters, Executor dispatcher, ApolloLogger logger, ApolloCallTracker callTracker,
+      boolean sendOperationIds) {
     this.operation = operation;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
     this.httpCache = httpCache;
-    this.customTypeAdapters = customTypeAdapters;
+    this.scalarTypeAdapters = scalarTypeAdapters;
     this.dispatcher = dispatcher;
     this.logger = logger;
     this.tracker = callTracker;
     this.sendOperationIds = sendOperationIds;
     interceptorChain = new RealApolloInterceptorChain(Collections.<ApolloInterceptor>singletonList(
         new ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCachePolicy.NETWORK_ONLY, true,
-            customTypeAdapters, logger, sendOperationIds)
+            scalarTypeAdapters, logger, sendOperationIds)
     ));
   }
 
@@ -134,7 +132,7 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
   }
 
   @Override public ApolloPrefetch clone() {
-    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, customTypeAdapters, dispatcher,
+    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, scalarTypeAdapters, dispatcher,
         logger, tracker, sendOperationIds);
   }
 
