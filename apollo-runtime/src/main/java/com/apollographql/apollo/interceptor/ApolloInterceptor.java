@@ -3,6 +3,7 @@ package com.apollographql.apollo.interceptor;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
 
@@ -112,18 +113,62 @@ public interface ApolloInterceptor {
   final class InterceptorRequest {
     public final UUID uniqueId = UUID.randomUUID();
     public final Operation operation;
-    public final FetchOptions fetchOptions;
+    public final CacheHeaders cacheHeaders;
+    public final boolean fetchFromCache;
     public final Optional<Operation.Data> optimisticUpdates;
 
-    public InterceptorRequest(@Nonnull Operation operation, @Nonnull FetchOptions fetchOptions,
-        Optional<Operation.Data> optimisticUpdates) {
-      this.operation = checkNotNull(operation, "operation == null");
-      this.fetchOptions = checkNotNull(fetchOptions, "fetchOptions == null");
+    InterceptorRequest(Operation operation, CacheHeaders cacheHeaders, Optional<Operation.Data> optimisticUpdates,
+        boolean fetchFromCache) {
+      this.operation = operation;
+      this.cacheHeaders = cacheHeaders;
       this.optimisticUpdates = optimisticUpdates;
+      this.fetchFromCache = fetchFromCache;
     }
 
-    public InterceptorRequest withFetchOptions(@Nonnull FetchOptions fetchOptions) {
-      return new InterceptorRequest(operation, fetchOptions, optimisticUpdates);
+    public Builder toBuilder() {
+      return new Builder(operation)
+          .cacheHeaders(cacheHeaders)
+          .fetchFromCache(fetchFromCache)
+          .optimisticUpdates(optimisticUpdates.orNull());
+    }
+
+    public static Builder builder(@Nonnull Operation operation) {
+      return new Builder(operation);
+    }
+
+    public static final class Builder {
+      private final Operation operation;
+      private CacheHeaders cacheHeaders = CacheHeaders.NONE;
+      private boolean fetchFromCache;
+      private Optional<Operation.Data> optimisticUpdates = Optional.absent();
+
+      Builder(@Nonnull Operation operation) {
+        this.operation = checkNotNull(operation, "operation == null");
+      }
+
+      public Builder cacheHeaders(@Nonnull CacheHeaders cacheHeaders) {
+        this.cacheHeaders = checkNotNull(cacheHeaders, "cacheHeaders == null");
+        return this;
+      }
+
+      public Builder fetchFromCache(boolean fetchFromCache) {
+        this.fetchFromCache = fetchFromCache;
+        return this;
+      }
+
+      public Builder optimisticUpdates(Operation.Data optimisticUpdates) {
+        this.optimisticUpdates = Optional.fromNullable(optimisticUpdates);
+        return this;
+      }
+
+      public Builder optimisticUpdates(@Nonnull Optional<Operation.Data> optimisticUpdates) {
+        this.optimisticUpdates = checkNotNull(optimisticUpdates, "optimisticUpdates == null");
+        return this;
+      }
+
+      public InterceptorRequest build() {
+        return new InterceptorRequest(operation, cacheHeaders, optimisticUpdates, fetchFromCache);
+      }
     }
   }
 }

@@ -11,7 +11,6 @@ import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.cache.normalized.Transaction;
 import com.apollographql.apollo.internal.cache.normalized.WriteableStore;
@@ -32,7 +31,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
  * ApolloCacheInterceptor is a concrete {@link ApolloInterceptor} responsible for serving requests from the normalized
- * cache if {@link FetchOptions#fetchFromCache} is true. Saves all network responses to cache.
+ * cache if {@link InterceptorRequest#fetchFromCache} is true. Saves all network responses to cache.
  */
 public final class ApolloCacheInterceptor implements ApolloInterceptor {
   private final ApolloStore apolloStore;
@@ -55,11 +54,11 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     dispatcher.execute(new Runnable() {
       @Override public void run() {
         if (disposed) return;
-        if (request.fetchOptions.fetchFromCache) {
+        if (request.fetchFromCache) {
           callBack.onFetch(FetchSourceType.CACHE);
           final InterceptorResponse cachedResponse;
           try {
-            cachedResponse = resolveFromCache(request.operation, request.fetchOptions);
+            cachedResponse = resolveFromCache(request);
             callBack.onResponse(cachedResponse);
             callBack.onCompleted();
           } catch (ApolloException e) {
@@ -108,22 +107,22 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     disposed = true;
   }
 
-  private InterceptorResponse resolveFromCache(Operation operation, FetchOptions options) throws ApolloException {
+  private InterceptorResponse resolveFromCache(InterceptorRequest request) throws ApolloException {
     ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
     //noinspection unchecked
-    ApolloStoreOperation<Response> apolloStoreOperation = apolloStore.read(operation, responseFieldMapper,
-        responseNormalizer, options.cacheHeaders);
+    ApolloStoreOperation<Response> apolloStoreOperation = apolloStore.read(request.operation, responseFieldMapper,
+        responseNormalizer, request.cacheHeaders);
     Response cachedResponse = apolloStoreOperation.execute();
     if (cachedResponse.data() != null) {
-      logger.d("Cache HIT for operation %s", operation);
+      logger.d("Cache HIT for operation %s", request.operation);
       return new InterceptorResponse(null, cachedResponse, responseNormalizer.records());
     }
-    logger.d("Cache MISS for operation %s", operation);
-    throw new ApolloException(String.format("Cache miss for operation %s", operation));
+    logger.d("Cache MISS for operation %s", request.operation);
+    throw new ApolloException(String.format("Cache miss for operation %s", request.operation));
   }
 
   private Set<String> cacheResponse(final InterceptorResponse networkResponse,
-      final ApolloInterceptor.InterceptorRequest request) {
+      final InterceptorRequest request) {
     final Optional<List<Record>> records = networkResponse.cacheRecords.map(
         new Function<Collection<Record>, List<Record>>() {
           @Nonnull @Override public List<Record> apply(@Nonnull Collection<Record> records) {
@@ -143,7 +142,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     try {
       return apolloStore.writeTransaction(new Transaction<WriteableStore, Set<String>>() {
         @Nullable @Override public Set<String> execute(WriteableStore cache) {
-          return cache.merge(records.get(), request.fetchOptions.cacheHeaders);
+          return cache.merge(records.get(), request.cacheHeaders);
         }
       });
     } catch (Exception e) {

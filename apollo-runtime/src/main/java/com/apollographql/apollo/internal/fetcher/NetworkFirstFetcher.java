@@ -32,7 +32,7 @@ public final class NetworkFirstFetcher implements ResponseFetcher {
     @Override
     public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull final ApolloInterceptorChain chain,
         @Nonnull final Executor dispatcher, @Nonnull final CallBack callBack) {
-      InterceptorRequest networkRequest = request.withFetchOptions(request.fetchOptions.toNetworkFetchOptions());
+      InterceptorRequest networkRequest = request.toBuilder().fetchFromCache(false).build();
       chain.proceedAsync(networkRequest, dispatcher, new CallBack() {
         @Override public void onResponse(@Nonnull InterceptorResponse response) {
           callBack.onResponse(response);
@@ -42,7 +42,7 @@ public final class NetworkFirstFetcher implements ResponseFetcher {
           logger.d(e, "Failed to fetch network response for operation %s, trying to return cached one",
               request.operation);
           if (!disposed) {
-            InterceptorRequest cacheRequest = request.withFetchOptions(request.fetchOptions.toCacheFetchOptions());
+            InterceptorRequest cacheRequest = request.toBuilder().fetchFromCache(true).build();
             chain.proceedAsync(cacheRequest, dispatcher, callBack);
           }
         }

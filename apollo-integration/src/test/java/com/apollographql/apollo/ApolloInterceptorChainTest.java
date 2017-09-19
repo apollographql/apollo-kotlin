@@ -3,16 +3,13 @@ package com.apollographql.apollo;
 
 import android.support.annotation.NonNull;
 
-import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
 
 import org.junit.Assert;
@@ -57,22 +54,19 @@ public class ApolloInterceptorChainTest {
 
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     RealApolloInterceptorChain chain = new RealApolloInterceptorChain(interceptors);
-    chain.proceedAsync(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent()),
-        Utils.immediateExecutor(), new CallBack() {
+    chain.proceedAsync(
+        ApolloInterceptor.InterceptorRequest.builder(query).fetchFromCache(false).build(), Utils.immediateExecutor(),
+        new CallBack() {
           @Override public void onResponse(@Nonnull InterceptorResponse response) {
-
           }
 
           @Override public void onFailure(@Nonnull ApolloException e) {
-
           }
 
           @Override public void onCompleted() {
-
           }
 
           @Override public void onFetch(ApolloInterceptor.FetchSourceType sourceType) {
-
           }
         });
 
@@ -108,7 +102,7 @@ public class ApolloInterceptorChainTest {
 
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     RealApolloInterceptorChain chain = new RealApolloInterceptorChain(interceptors);
-    chain.proceedAsync(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent()),
+    chain.proceedAsync(ApolloInterceptor.InterceptorRequest.builder(query).fetchFromCache(false).build(),
         Utils.immediateExecutor(), new CallBack() {
           @Override public void onResponse(@Nonnull InterceptorResponse response) {
             assertThat(response).isEqualTo(expectedResponse);
@@ -158,7 +152,7 @@ public class ApolloInterceptorChainTest {
 
     List<ApolloInterceptor> interceptors = Collections.singletonList(interceptor);
     RealApolloInterceptorChain chain = new RealApolloInterceptorChain(interceptors);
-    chain.proceedAsync(new ApolloInterceptor.InterceptorRequest(query, FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent()),
+    chain.proceedAsync(ApolloInterceptor.InterceptorRequest.builder(query).fetchFromCache(false).build(),
         Utils.immediateExecutor(), new CallBack() {
           @Override public void onResponse(@Nonnull InterceptorResponse response) {
 

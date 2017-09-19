@@ -13,7 +13,6 @@ import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.interceptor.FetchOptions;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
 import com.apollographql.apollo.internal.util.ApolloLogger;
@@ -78,8 +77,8 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
       }
       return;
     }
-    ApolloInterceptor.InterceptorRequest request = new ApolloInterceptor.InterceptorRequest(operation,
-        FetchOptions.NETWORK_ONLY, Optional.<Operation.Data>absent());
+
+    ApolloInterceptor.InterceptorRequest request = ApolloInterceptor.InterceptorRequest.builder(operation).build();
     interceptorChain.proceedAsync(request, dispatcher, interceptorCallbackProxy());
   }
 

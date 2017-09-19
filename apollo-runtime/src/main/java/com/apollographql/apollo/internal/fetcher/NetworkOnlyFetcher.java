@@ -20,18 +20,14 @@ public final class NetworkOnlyFetcher implements ResponseFetcher {
   }
 
   private static final class NetworkOnlyInterceptor implements ApolloInterceptor {
-
-    private volatile boolean disposed;
-
     @Override
     public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
         @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
-      InterceptorRequest networkRequest = request.withFetchOptions(request.fetchOptions.toNetworkFetchOptions());
+      InterceptorRequest networkRequest = request.toBuilder().fetchFromCache(false).build();
       chain.proceedAsync(networkRequest, dispatcher, callBack);
     }
 
     @Override public void dispose() {
-      disposed = true;
     }
   }
 }
