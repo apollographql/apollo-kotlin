@@ -20,6 +20,7 @@ import java.util.Map;
   private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
   private final FieldValueResolver<R> fieldValueResolver;
   private final ResponseReaderShadow<R> readerShadow;
+  private final Map<String, Object> variableValues;
 
   public RealResponseReader(Operation.Variables operationVariables, R recordSet,
       FieldValueResolver<R> fieldValueResolver, Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
@@ -29,9 +30,14 @@ import java.util.Map;
     this.fieldValueResolver = fieldValueResolver;
     this.customTypeAdapters = customTypeAdapters;
     this.readerShadow = readerShadow;
+    this.variableValues = operationVariables.valueMap();
   }
 
   @Override public String readString(ResponseField field) {
+    if (shouldSkip(field)) {
+      return null;
+    }
+
     willResolve(field);
     String value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
@@ -45,6 +51,10 @@ import java.util.Map;
   }
 
   @Override public Integer readInt(ResponseField field) {
+    if (shouldSkip(field)) {
+      return null;
+    }
+
     willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
@@ -58,6 +68,10 @@ import java.util.Map;
   }
 
   @Override public Long readLong(ResponseField field) {
+    if (shouldSkip(field)) {
+      return null;
+    }
+
     willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
@@ -71,6 +85,10 @@ import java.util.Map;
   }
 
   @Override public Double readDouble(ResponseField field) {
+    if (shouldSkip(field)) {
+      return null;
+    }
+
     willResolve(field);
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
@@ -84,6 +102,10 @@ import java.util.Map;
   }
 
   @Override public Boolean readBoolean(ResponseField field) {
+    if (shouldSkip(field)) {
+      return null;
+    }
+
     willResolve(field);
     Boolean value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
@@ -98,6 +120,10 @@ import java.util.Map;
 
   @SuppressWarnings("unchecked") @Override
   public <T> T readObject(ResponseField field, ResponseReader.ObjectReader<T> objectReader) {
+    if (shouldSkip(field)) {
+      return null;
+    }
+
     willResolve(field);
     R value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
@@ -117,6 +143,10 @@ import java.util.Map;
 
   @SuppressWarnings("unchecked")
   @Override public <T> List<T> readList(ResponseField field, ListReader<T> listReader) {
+    if (shouldSkip(field)) {
+      return null;
+    }
+
     willResolve(field);
     List values = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, values);
@@ -142,6 +172,10 @@ import java.util.Map;
   }
 
   @SuppressWarnings("unchecked") @Override public <T> T readCustomType(ResponseField.CustomTypeField field) {
+    if (shouldSkip(field)) {
+      return null;
+    }
+
     willResolve(field);
     Object value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
@@ -165,6 +199,10 @@ import java.util.Map;
 
   @Override
   public <T> T readConditional(ResponseField field, ConditionalTypeReader<T> conditionalTypeReader) {
+    if (shouldSkip(field)) {
+      return null;
+    }
+
     willResolve(field);
     String value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
@@ -188,6 +226,27 @@ import java.util.Map;
         return (T) conditionalTypeReader.read(value, this);
       }
     }
+  }
+
+  private boolean shouldSkip(ResponseField field) {
+    for (ResponseField.Condition condition : field.conditions()) {
+      if (condition instanceof ResponseField.BooleanCondition) {
+        ResponseField.BooleanCondition booleanCondition = (ResponseField.BooleanCondition) condition;
+        Boolean conditionValue = (Boolean) variableValues.get(booleanCondition.variableName());
+        if (booleanCondition.inverted()) {
+          // means it's a skip directive
+          if (conditionValue == Boolean.TRUE) {
+            return true;
+          }
+        } else {
+          // means it's an include directive
+          if (conditionValue == Boolean.FALSE) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 
   private void willResolve(ResponseField field) {

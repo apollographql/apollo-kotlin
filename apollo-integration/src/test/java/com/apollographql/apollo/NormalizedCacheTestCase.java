@@ -655,16 +655,16 @@ public class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameResponse.json",
-        apolloClient.query(new HeroAndFriendsNamesQuery(Episode.JEDI)),
-        new Predicate<Response<HeroAndFriendsNamesQuery.Data>>() {
-          @Override public boolean test(Response<HeroAndFriendsNamesQuery.Data> response) throws Exception {
+        apolloClient.query(HeroAndFriendsDirectivesQuery.builder().episode(Episode.JEDI).includeName(true).skipFriends(false).build()),
+        new Predicate<Response<HeroAndFriendsDirectivesQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsDirectivesQuery.Data> response) throws Exception {
             return !response.hasErrors();
           }
         }
     );
 
     assertResponse(
-        apolloClient.query(HeroAndFriendsDirectivesQuery.builder().episode(Episode.JEDI).includeName(true).skipFriends(false).build()),
+        apolloClient.query(HeroAndFriendsDirectivesQuery.builder().episode(Episode.JEDI).includeName(true).skipFriends(false).build()).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroAndFriendsDirectivesQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsDirectivesQuery.Data> response) throws Exception {
             assertThat(response.data().hero().name()).isEqualTo("R2-D2");
@@ -678,7 +678,7 @@ public class NormalizedCacheTestCase {
     );
 
     assertResponse(
-        apolloClient.query(HeroAndFriendsDirectivesQuery.builder().episode(Episode.JEDI).includeName(false).skipFriends(false).build()),
+        apolloClient.query(HeroAndFriendsDirectivesQuery.builder().episode(Episode.JEDI).includeName(false).skipFriends(false).build()).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroAndFriendsDirectivesQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsDirectivesQuery.Data> response) throws Exception {
             assertThat(response.data().hero().name()).isNull();
@@ -692,11 +692,45 @@ public class NormalizedCacheTestCase {
     );
 
     assertResponse(
-        apolloClient.query(HeroAndFriendsDirectivesQuery.builder().episode(Episode.JEDI).includeName(true).skipFriends(true).build()),
+        apolloClient.query(HeroAndFriendsDirectivesQuery.builder().episode(Episode.JEDI).includeName(true).skipFriends(true).build()).responseFetcher(CACHE_ONLY),
         new Predicate<Response<HeroAndFriendsDirectivesQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsDirectivesQuery.Data> response) throws Exception {
             assertThat(response.data().hero().name()).isEqualTo("R2-D2");
             assertThat(response.data().hero().friends()).isNull();
+            return true;
+          }
+        }
+    );
+  }
+
+  @Test public void skipIncludeDirectiveUnsatisfiedCache() throws Exception {
+    enqueueAndAssertResponse(
+        server,
+        "HeroNameResponse.json",
+        apolloClient.query(HeroAndFriendsDirectivesQuery.builder().episode(Episode.JEDI).includeName(true).skipFriends(true).build()),
+        new Predicate<Response<HeroAndFriendsDirectivesQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsDirectivesQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
+
+    assertResponse(
+        apolloClient.query(HeroAndFriendsDirectivesQuery.builder().episode(Episode.JEDI).includeName(true).skipFriends(true).build()).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroAndFriendsDirectivesQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsDirectivesQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.data().hero().friends()).isNull();
+            return true;
+          }
+        }
+    );
+
+    assertResponse(
+        apolloClient.query(HeroAndFriendsDirectivesQuery.builder().episode(Episode.JEDI).includeName(true).skipFriends(false).build()).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<HeroAndFriendsDirectivesQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsDirectivesQuery.Data> response) throws Exception {
+            assertThat(response.data()).isNull();
             return true;
           }
         }
