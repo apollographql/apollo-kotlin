@@ -1,17 +1,20 @@
 query FeedQuery($type: FeedType!, $limit: Int!) {
   feedEntries: feed(type: $type, limit: $limit) {
-    id
-    repository {
-      ...RepositoryFragment
-    }
-    postedBy {
-      login
-    }
+    ...EntryPreview
+  }
+}
+
+fragment EntryPreview on Entry {
+  id
+  repository {
+    ...RepositoryFragment
+  }
+  postedBy {
+    login
   }
 }
 
 fragment RepositoryFragment on Repository {
-  name
   full_name
   owner {
     login

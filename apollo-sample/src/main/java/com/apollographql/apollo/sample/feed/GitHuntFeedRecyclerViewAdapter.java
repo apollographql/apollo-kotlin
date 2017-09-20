@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.apollographql.apollo.sample.FeedQuery;
+import com.apollographql.apollo.sample.FeedQuery.FeedEntry;
 import com.apollographql.apollo.sample.R;
 import com.apollographql.apollo.sample.fragment.RepositoryFragment;
 
@@ -16,14 +16,14 @@ import java.util.List;
 class GitHuntFeedRecyclerViewAdapter extends
     RecyclerView.Adapter<GitHuntFeedRecyclerViewAdapter.FeedItemViewHolder> {
 
-  private List<FeedQuery.FeedEntry> feed = Collections.emptyList();
+  private List<FeedEntry> feed = Collections.emptyList();
   private GitHuntNavigator navigator;
 
   GitHuntFeedRecyclerViewAdapter(GitHuntNavigator navigator) {
     this.navigator = navigator;
   }
 
-  public void setFeed(List<FeedQuery.FeedEntry> feed) {
+  public void setFeed(List<FeedEntry> feed) {
     this.feed = feed;
     this.notifyDataSetChanged();
   }
@@ -37,7 +37,7 @@ class GitHuntFeedRecyclerViewAdapter extends
   }
 
   @Override public void onBindViewHolder(FeedItemViewHolder holder, int position) {
-    final FeedQuery.FeedEntry feedEntry = this.feed.get(position);
+    final FeedEntry feedEntry = this.feed.get(position);
     holder.setFeedItem(feedEntry, navigator);
   }
 
@@ -56,8 +56,9 @@ class GitHuntFeedRecyclerViewAdapter extends
       feedEntryContainer = itemView.findViewById(R.id.feed_entry_container);
     }
 
-    void setFeedItem(FeedQuery.FeedEntry feedItem, final GitHuntNavigator navigator) {
-      final RepositoryFragment repositoryFragment = feedItem.repository().fragments().repositoryFragment();
+    void setFeedItem(FeedEntry feedItem, final GitHuntNavigator navigator) {
+      final RepositoryFragment repositoryFragment =
+          feedItem.fragments().entryPreview().repository().fragments().repositoryFragment();
       repositoryTitle.setText(repositoryFragment.full_name());
       feedEntryContainer.setOnClickListener(new View.OnClickListener() {
         @Override public void onClick(View v) {

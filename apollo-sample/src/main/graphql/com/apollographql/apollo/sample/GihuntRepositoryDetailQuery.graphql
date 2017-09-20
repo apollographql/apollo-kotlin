@@ -13,3 +13,10 @@ query EntryDetailQuery($repoFullName: String!) {
     }
   }
 }
+
+query EntryDetailPreviewQuery($repoFullName: String!) {
+  entry(repoFullName: $repoFullName) {
+    ...EntryPreview
+  }
+}
+

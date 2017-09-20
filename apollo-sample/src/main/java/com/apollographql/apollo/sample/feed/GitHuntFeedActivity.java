@@ -15,13 +15,17 @@ import android.widget.ProgressBar;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloCallback;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.sample.FeedQuery;
+import com.apollographql.apollo.sample.FeedQuery.FeedEntry;
 import com.apollographql.apollo.sample.GitHuntApplication;
 import com.apollographql.apollo.sample.R;
 import com.apollographql.apollo.sample.detail.GitHuntEntryDetailActivity;
 import com.apollographql.apollo.sample.type.FeedType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -55,10 +59,30 @@ public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNav
     fetchFeed();
   }
 
+  // Example using standard Callback
   private ApolloCall.Callback<FeedQuery.Data> dataCallback
       = new ApolloCallback<>(new ApolloCall.Callback<FeedQuery.Data>() {
     @Override public void onResponse(@Nonnull Response<FeedQuery.Data> response) {
-      feedAdapter.setFeed(response.data().feedEntries());
+
+      // You can consider using Optionals to make the null checks cleaner
+      FeedQuery.Data responseData = response.data();
+      if (responseData == null) {
+        Log.e(TAG, "No result data.");
+        return;
+      }
+      final List<FeedEntry> feedEntries = responseData.feedEntries();
+      if (feedEntries == null) {
+        Log.e(TAG, "No feed data.");
+        return;
+      }
+      // See GitHuntEntryDetailActivity to see example with RxJava2
+      List<FeedEntry> feedEntriesWithRepositories = new ArrayList<>();
+      for (FeedEntry entry : feedEntries) {
+        if (entry.fragments().entryPreview().repository() != null) {
+          feedEntriesWithRepositories.add(entry);
+        }
+      }
+      feedAdapter.setFeed(feedEntriesWithRepositories);
       progressBar.setVisibility(View.GONE);
       content.setVisibility(View.VISIBLE);
     }
@@ -75,7 +99,7 @@ public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNav
         .build();
     githuntFeedCall = application.apolloClient()
         .query(feedQuery)
-        .cacheControl(CacheControl.NETWORK_FIRST);
+        .responseFetcher(ApolloResponseFetchers.NETWORK_FIRST);
     githuntFeedCall.enqueue(dataCallback);
   }
 
