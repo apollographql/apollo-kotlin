@@ -4,9 +4,9 @@ import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -14,11 +14,11 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 public class InputFieldJsonWriter implements InputFieldWriter {
   private final JsonWriter jsonWriter;
-  private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  private final ScalarTypeAdapters scalarTypeAdapters;
 
-  public InputFieldJsonWriter(JsonWriter jsonWriter, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+  public InputFieldJsonWriter(JsonWriter jsonWriter, ScalarTypeAdapters scalarTypeAdapters) {
     this.jsonWriter = jsonWriter;
-    this.customTypeAdapters = customTypeAdapters;
+    this.scalarTypeAdapters = scalarTypeAdapters;
   }
 
   @Override public void writeString(@Nonnull String fieldName, String value) throws IOException {
@@ -68,11 +68,11 @@ public class InputFieldJsonWriter implements InputFieldWriter {
 
   @Override public void writeCustom(@Nonnull String fieldName, ScalarType scalarType, Object value) throws IOException {
     checkNotNull(fieldName, "fieldName == null");
-    CustomTypeAdapter customTypeAdapter = customTypeAdapters.get(scalarType);
-    if (customTypeAdapter != null) {
+    if (value != null) {
+      CustomTypeAdapter customTypeAdapter = scalarTypeAdapters.adapterFor(scalarType);
       writeString(fieldName, customTypeAdapter.encode(value));
     } else {
-      writeString(fieldName, value != null ? value.toString() : null);
+      writeString(fieldName, null);
     }
   }
 
@@ -91,7 +91,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     checkNotNull(fieldName, "fieldName == null");
     if (listWriter != null) {
       jsonWriter.name(fieldName).beginArray();
-      listWriter.write(new JsonListItemWriter(jsonWriter, customTypeAdapters));
+      listWriter.write(new JsonListItemWriter(jsonWriter, scalarTypeAdapters));
       jsonWriter.endArray();
     } else {
       jsonWriter.name(fieldName).nullValue();
@@ -100,11 +100,11 @@ public class InputFieldJsonWriter implements InputFieldWriter {
 
   private static final class JsonListItemWriter implements ListItemWriter {
     private final JsonWriter jsonWriter;
-    private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+    private final ScalarTypeAdapters scalarTypeAdapters;
 
-    JsonListItemWriter(JsonWriter jsonWriter, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+    JsonListItemWriter(JsonWriter jsonWriter, ScalarTypeAdapters scalarTypeAdapters) {
       this.jsonWriter = jsonWriter;
-      this.customTypeAdapters = customTypeAdapters;
+      this.scalarTypeAdapters = scalarTypeAdapters;
     }
 
     @Override public void writeString(String value) throws IOException {
@@ -138,22 +138,16 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
 
     @Override public void writeCustom(ScalarType scalarType, Object value) throws IOException {
-      if (value == null) {
-        return;
-      }
-
-      CustomTypeAdapter customTypeAdapter = customTypeAdapters.get(scalarType);
-      if (customTypeAdapter != null) {
+      if (value != null) {
+        CustomTypeAdapter customTypeAdapter = scalarTypeAdapters.adapterFor(scalarType);
         writeString(customTypeAdapter.encode(value));
-      } else {
-        writeString(value.toString());
       }
     }
 
     @Override public void writeObject(InputFieldMarshaller marshaller) throws IOException {
       if (marshaller != null) {
         jsonWriter.beginObject();
-        marshaller.marshal(new InputFieldJsonWriter(jsonWriter, customTypeAdapters));
+        marshaller.marshal(new InputFieldJsonWriter(jsonWriter, scalarTypeAdapters));
         jsonWriter.endObject();
       }
     }

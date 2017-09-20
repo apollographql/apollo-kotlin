@@ -2,12 +2,10 @@ package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.ApolloMutationCall;
 import com.apollographql.apollo.ApolloQueryCall;
-import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
-import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Action;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
@@ -26,13 +24,13 @@ import com.apollographql.apollo.internal.interceptor.ApolloCacheInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloParseInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
+import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -57,7 +55,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final HttpCache httpCache;
   final HttpCachePolicy.Policy httpCachePolicy;
   final ResponseFieldMapperFactory responseFieldMapperFactory;
-  final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  final ScalarTypeAdapters scalarTypeAdapters;
   final ApolloStore apolloStore;
   final CacheHeaders cacheHeaders;
   final ResponseFetcher responseFetcher;
@@ -85,7 +83,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     httpCache = builder.httpCache;
     httpCachePolicy = builder.httpCachePolicy;
     responseFieldMapperFactory = builder.responseFieldMapperFactory;
-    customTypeAdapters = builder.customTypeAdapters;
+    scalarTypeAdapters = builder.scalarTypeAdapters;
     apolloStore = builder.apolloStore;
     responseFetcher = builder.responseFetcher;
     cacheHeaders = builder.cacheHeaders;
@@ -105,7 +103,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
           .serverUrl(builder.serverUrl)
           .httpCallFactory(builder.httpCallFactory)
           .responseFieldMapperFactory(builder.responseFieldMapperFactory)
-          .customTypeAdapters(builder.customTypeAdapters)
+          .scalarTypeAdapters(builder.scalarTypeAdapters)
           .apolloStore(builder.apolloStore)
           .dispatcher(builder.dispatcher)
           .logger(builder.logger)
@@ -285,7 +283,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .httpCache(httpCache)
         .httpCachePolicy(httpCachePolicy)
         .responseFieldMapperFactory(responseFieldMapperFactory)
-        .customTypeAdapters(customTypeAdapters)
+        .scalarTypeAdapters(scalarTypeAdapters)
         .apolloStore(apolloStore)
         .cacheHeaders(cacheHeaders)
         .responseFetcher(responseFetcher)
@@ -361,9 +359,9 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     interceptors.add(responseFetcher.provideInterceptor(logger));
     interceptors.add(new ApolloCacheInterceptor(apolloStore, responseFieldMapper, dispatcher, logger));
     interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
-        customTypeAdapters, logger));
+        scalarTypeAdapters, logger));
     interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCachePolicy, false,
-        customTypeAdapters, logger, sendOperationdIdentifiers));
+        scalarTypeAdapters, logger, sendOperationdIdentifiers));
 
     return new RealApolloInterceptorChain(interceptors);
   }
@@ -375,7 +373,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     HttpCache httpCache;
     HttpCachePolicy.Policy httpCachePolicy;
     ResponseFieldMapperFactory responseFieldMapperFactory;
-    Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+    ScalarTypeAdapters scalarTypeAdapters;
     ApolloStore apolloStore;
     ResponseFetcher responseFetcher;
     CacheHeaders cacheHeaders;
@@ -419,8 +417,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
       return this;
     }
 
-    public Builder<T> customTypeAdapters(Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
-      this.customTypeAdapters = customTypeAdapters;
+    public Builder<T> scalarTypeAdapters(ScalarTypeAdapters scalarTypeAdapters) {
+      this.scalarTypeAdapters = scalarTypeAdapters;
       return this;
     }
 

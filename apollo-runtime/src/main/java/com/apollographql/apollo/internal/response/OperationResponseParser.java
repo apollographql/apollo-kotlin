@@ -1,11 +1,9 @@
 package com.apollographql.apollo.internal.response;
 
-import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
-import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.field.MapFieldValueResolver;
 import com.apollographql.apollo.internal.json.BufferedSourceJsonReader;
@@ -25,15 +23,14 @@ import static com.apollographql.apollo.internal.json.ApolloJsonReader.responseJs
 public class OperationResponseParser<D extends Operation.Data, W> {
   private final Operation<D, W, ?> operation;
   private final ResponseFieldMapper responseFieldMapper;
-  private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  private final ScalarTypeAdapters scalarTypeAdapters;
   private final ResponseNormalizer<Map<String, Object>> responseNormalizer;
 
   public OperationResponseParser(Operation<D, W, ?> operation, ResponseFieldMapper responseFieldMapper,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
-      ResponseNormalizer<Map<String, Object>> responseNormalizer) {
+      ScalarTypeAdapters scalarTypeAdapters, ResponseNormalizer<Map<String, Object>> responseNormalizer) {
     this.operation = operation;
     this.responseFieldMapper = responseFieldMapper;
-    this.customTypeAdapters = customTypeAdapters;
+    this.scalarTypeAdapters = scalarTypeAdapters;
     this.responseNormalizer = responseNormalizer;
   }
 
@@ -55,7 +52,7 @@ public class OperationResponseParser<D extends Operation.Data, W> {
             @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
               Map<String, Object> buffer = reader.toMap();
               RealResponseReader<Map<String, Object>> realResponseReader = new RealResponseReader<>(
-                  operation.variables(), buffer, new MapFieldValueResolver(), customTypeAdapters, responseNormalizer);
+                  operation.variables(), buffer, new MapFieldValueResolver(), scalarTypeAdapters, responseNormalizer);
               return responseFieldMapper.map(realResponseReader);
             }
           });

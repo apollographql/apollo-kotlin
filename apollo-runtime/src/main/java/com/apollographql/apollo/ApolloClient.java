@@ -25,6 +25,7 @@ import com.apollographql.apollo.internal.RealApolloCall;
 import com.apollographql.apollo.internal.RealApolloPrefetch;
 import com.apollographql.apollo.internal.ResponseFieldMapperFactory;
 import com.apollographql.apollo.internal.cache.normalized.RealApolloStore;
+import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.io.IOException;
@@ -73,7 +74,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final Call.Factory httpCallFactory;
   private final HttpCache httpCache;
   private final ApolloStore apolloStore;
-  private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  private final ScalarTypeAdapters scalarTypeAdapters;
   private final ResponseFieldMapperFactory responseFieldMapperFactory = new ResponseFieldMapperFactory();
   private final Executor dispatcher;
   private final HttpCachePolicy.Policy defaultHttpCachePolicy;
@@ -88,7 +89,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       Call.Factory httpCallFactory,
       HttpCache httpCache,
       ApolloStore apolloStore,
-      Map<ScalarType, CustomTypeAdapter> customTypeAdapters,
+      ScalarTypeAdapters scalarTypeAdapters,
       Executor dispatcher,
       HttpCachePolicy.Policy defaultHttpCachePolicy,
       ResponseFetcher defaultResponseFetcher,
@@ -100,7 +101,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     this.httpCallFactory = httpCallFactory;
     this.httpCache = httpCache;
     this.apolloStore = apolloStore;
-    this.customTypeAdapters = customTypeAdapters;
+    this.scalarTypeAdapters = scalarTypeAdapters;
     this.dispatcher = dispatcher;
     this.defaultHttpCachePolicy = defaultHttpCachePolicy;
     this.defaultResponseFetcher = defaultResponseFetcher;
@@ -135,7 +136,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
       @Nonnull Operation<D, T, V> operation) {
-    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, customTypeAdapters, dispatcher,
+    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, httpCache, scalarTypeAdapters, dispatcher,
         logger, tracker, sendOperationIdentifiers);
   }
 
@@ -203,7 +204,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .httpCache(httpCache)
         .httpCachePolicy(defaultHttpCachePolicy)
         .responseFieldMapperFactory(responseFieldMapperFactory)
-        .customTypeAdapters(customTypeAdapters)
+        .scalarTypeAdapters(scalarTypeAdapters)
         .apolloStore(apolloStore)
         .responseFetcher(defaultResponseFetcher)
         .cacheHeaders(defaultCacheHeaders)
@@ -437,10 +438,12 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         dispatcher = defaultDispatcher();
       }
 
+      ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(customTypeAdapters);
+
       ApolloStore apolloStore = this.apolloStore;
       if (cacheFactory.isPresent() && cacheKeyResolver.isPresent()) {
         final NormalizedCache normalizedCache = cacheFactory.get().createChain(RecordFieldJsonAdapter.create());
-        apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), customTypeAdapters, dispatcher,
+        apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), scalarTypeAdapters, dispatcher,
             apolloLogger);
       }
 
@@ -448,7 +451,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
           callFactory,
           httpCache,
           apolloStore,
-          customTypeAdapters,
+          scalarTypeAdapters,
           dispatcher,
           defaultHttpCachePolicy,
           defaultResponseFetcher,

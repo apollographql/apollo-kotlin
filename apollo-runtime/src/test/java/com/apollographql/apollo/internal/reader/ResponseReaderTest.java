@@ -14,6 +14,7 @@ import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.field.MapFieldValueResolver;
 import com.apollographql.apollo.internal.response.RealResponseReader;
+import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
 
 import org.junit.Test;
 
@@ -188,6 +189,47 @@ public class ResponseReaderTest {
     }
   }
 
+  @Test public void readCustomWithDefaultAdapter() throws Exception {
+    ResponseField.CustomTypeField stringField = ResponseField.forCustomType("stringField", "stringField", null, false,
+        scalarTypeFor(String.class), NO_CONDITIONS);
+    ResponseField.CustomTypeField booleanField = ResponseField.forCustomType("booleanField", "booleanField", null, false,
+        scalarTypeFor(Boolean.class), NO_CONDITIONS);
+    ResponseField.CustomTypeField integerField = ResponseField.forCustomType("integerField", "integerField", null, false,
+        scalarTypeFor(Integer.class), NO_CONDITIONS);
+    ResponseField.CustomTypeField longField = ResponseField.forCustomType("longField", "longField", null, false,
+        scalarTypeFor(Long.class), NO_CONDITIONS);
+    ResponseField.CustomTypeField floatField = ResponseField.forCustomType("floatField", "floatField", null, false,
+        scalarTypeFor(Float.class), NO_CONDITIONS);
+    ResponseField.CustomTypeField doubleField = ResponseField.forCustomType("doubleField", "doubleField", null, false,
+        scalarTypeFor(Double.class), NO_CONDITIONS);
+    ResponseField.CustomTypeField unsupportedField = ResponseField.forCustomType("unsupportedField", "unsupportedField", null, false,
+        scalarTypeFor(RuntimeException.class), NO_CONDITIONS);
+
+    Map<String, Object> recordSet = new HashMap<>();
+    recordSet.put(stringField.responseName(), "string");
+    recordSet.put(booleanField.responseName(), true);
+    recordSet.put(integerField.responseName(), BigDecimal.valueOf(1));
+    recordSet.put(longField.responseName(), BigDecimal.valueOf(2));
+    recordSet.put(floatField.responseName(), BigDecimal.valueOf(3.99));
+    recordSet.put(doubleField.responseName(), BigDecimal.valueOf(4.99));
+    recordSet.put(unsupportedField.responseName(), "smth");
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readCustomType(stringField)).isEqualTo("string");
+    assertThat(responseReader.readCustomType(booleanField)).isEqualTo(true);
+    assertThat(responseReader.readCustomType(integerField)).isEqualTo(1);
+    assertThat(responseReader.readCustomType(longField)).isEqualTo(2);
+    assertThat(responseReader.readCustomType(floatField)).isEqualTo(3.99f);
+    assertThat(responseReader.readCustomType(doubleField)).isEqualTo(4.99d);
+
+    try {
+      responseReader.readCustomType(unsupportedField);
+      fail("Expect IllegalArgumentException");
+    } catch (IllegalArgumentException expected){
+      // expected
+    }
+  }
+
   @Test public void readConditional() throws Exception {
     final Object responseObject1 = new Object();
     final Object responseObject2 = new Object();
@@ -226,7 +268,7 @@ public class ResponseReaderTest {
 
   @Test public void readStringList() throws Exception {
     ResponseField successField = ResponseField.forList("successFieldResponseName", "successFieldName", null,
-        false,  NO_CONDITIONS);
+        false, NO_CONDITIONS);
     ResponseField classCastExceptionField = ResponseField.forList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false, NO_CONDITIONS);
 
@@ -255,8 +297,8 @@ public class ResponseReaderTest {
   }
 
   @Test public void readIntList() throws Exception {
-   ResponseField successField = ResponseField.forList("successFieldResponseName", "successFieldName", null,
-        false,  NO_CONDITIONS);
+    ResponseField successField = ResponseField.forList("successFieldResponseName", "successFieldName", null,
+        false, NO_CONDITIONS);
     ResponseField classCastExceptionField = ResponseField.forList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false, NO_CONDITIONS);
 
@@ -286,7 +328,7 @@ public class ResponseReaderTest {
 
   @Test public void readLongList() throws Exception {
     ResponseField successField = ResponseField.forList("successFieldResponseName", "successFieldName", null,
-        false,  NO_CONDITIONS);
+        false, NO_CONDITIONS);
     ResponseField classCastExceptionField = ResponseField.forList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false, NO_CONDITIONS);
 
@@ -315,8 +357,8 @@ public class ResponseReaderTest {
   }
 
   @Test public void readDoubleList() throws Exception {
-   ResponseField successField = ResponseField.forList("successFieldResponseName", "successFieldName", null,
-        false,  NO_CONDITIONS);
+    ResponseField successField = ResponseField.forList("successFieldResponseName", "successFieldName", null,
+        false, NO_CONDITIONS);
     ResponseField classCastExceptionField = ResponseField.forList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false, NO_CONDITIONS);
 
@@ -346,7 +388,7 @@ public class ResponseReaderTest {
 
   @Test public void readBooleanList() throws Exception {
     ResponseField successField = ResponseField.forList("successFieldResponseName", "successFieldName", null,
-        false,  NO_CONDITIONS);
+        false, NO_CONDITIONS);
     ResponseField classCastExceptionField = ResponseField.forList("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
         null, false, NO_CONDITIONS);
 
@@ -642,7 +684,19 @@ public class ResponseReaderTest {
       }
     });
     return new RealResponseReader<>(EMPTY_OPERATION.variables(), recordSet, new MapFieldValueResolver(),
-        customTypeAdapters, NO_OP_NORMALIZER);
+        new ScalarTypeAdapters(customTypeAdapters), NO_OP_NORMALIZER);
+  }
+
+  private static ScalarType scalarTypeFor(final Class clazz) {
+    return new ScalarType() {
+      @Override public String typeName() {
+        return clazz.getName();
+      }
+
+      @Override public Class javaType() {
+        return clazz;
+      }
+    };
   }
 
   private static final ScalarType CUSTOM_TYPE = new ScalarType() {

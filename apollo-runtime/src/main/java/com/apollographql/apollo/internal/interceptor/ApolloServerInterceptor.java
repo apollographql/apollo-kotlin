@@ -1,8 +1,6 @@
 package com.apollographql.apollo.internal.interceptor;
 
-import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.http.HttpCache;
 import com.apollographql.apollo.cache.http.HttpCachePolicy;
@@ -11,10 +9,10 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.json.InputFieldJsonWriter;
 import com.apollographql.apollo.internal.json.JsonWriter;
+import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.Executor;
 
 import javax.annotation.Nonnull;
@@ -49,20 +47,20 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   final Optional<HttpCachePolicy.Policy> cachePolicy;
   final boolean prefetch;
   final ApolloLogger logger;
-  final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  final ScalarTypeAdapters scalarTypeAdapters;
   final boolean sendOperationIdentifiers;
   volatile Call httpCall;
   volatile boolean disposed;
 
   public ApolloServerInterceptor(@Nonnull HttpUrl serverUrl, @Nonnull Call.Factory httpCallFactory,
       @Nullable HttpCachePolicy.Policy cachePolicy, boolean prefetch,
-      @Nonnull Map<ScalarType, CustomTypeAdapter> customTypeAdapters, @Nonnull ApolloLogger logger,
+      @Nonnull ScalarTypeAdapters scalarTypeAdapters, @Nonnull ApolloLogger logger,
       boolean sendOperationIdentifiers) {
     this.serverUrl = checkNotNull(serverUrl, "serverUrl == null");
     this.httpCallFactory = checkNotNull(httpCallFactory, "httpCallFactory == null");
     this.cachePolicy = Optional.fromNullable(cachePolicy);
     this.prefetch = prefetch;
-    this.customTypeAdapters = checkNotNull(customTypeAdapters, "customTypeAdapters == null");
+    this.scalarTypeAdapters = checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null");
     this.logger = checkNotNull(logger, "logger == null");
     this.sendOperationIdentifiers = sendOperationIdentifiers;
   }
@@ -142,7 +140,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       jsonWriter.name("query").value(operation.queryDocument().replaceAll("\\n", ""));
     }
     jsonWriter.name("variables").beginObject();
-    operation.variables().marshaller().marshal(new InputFieldJsonWriter(jsonWriter, customTypeAdapters));
+    operation.variables().marshaller().marshal(new InputFieldJsonWriter(jsonWriter, scalarTypeAdapters));
     jsonWriter.endObject();
     jsonWriter.endObject();
     jsonWriter.close();

@@ -159,7 +159,7 @@ public class ResponseField {
    * @param conditions   list of conditions for this field
    * @return Field instance representing {@link Type#CUSTOM}
    */
-  public static ResponseField forCustomType(String responseName, String fieldName, Map<String, Object> arguments,
+  public static CustomTypeField forCustomType(String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional, ScalarType scalarType, List<Condition> conditions) {
     return new CustomTypeField(responseName, fieldName, arguments, optional, scalarType, conditions);
   }

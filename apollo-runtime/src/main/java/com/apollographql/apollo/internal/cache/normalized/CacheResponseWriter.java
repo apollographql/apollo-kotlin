@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.Record;
+import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -21,12 +22,12 @@ import javax.annotation.Nullable;
 
 final class CacheResponseWriter implements ResponseWriter {
   private final Operation.Variables operationVariables;
-  private final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+  private final ScalarTypeAdapters scalarTypeAdapters;
   final Map<String, FieldDescriptor> fieldDescriptors = new LinkedHashMap<>();
 
-  CacheResponseWriter(Operation.Variables operationVariables, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+  CacheResponseWriter(Operation.Variables operationVariables, ScalarTypeAdapters scalarTypeAdapters) {
     this.operationVariables = operationVariables;
-    this.customTypeAdapters = customTypeAdapters;
+    this.scalarTypeAdapters = scalarTypeAdapters;
   }
 
   @Override public void writeString(@Nonnull ResponseField field, @Nullable String value) {
@@ -50,12 +51,8 @@ final class CacheResponseWriter implements ResponseWriter {
   }
 
   @Override public void writeCustom(@Nonnull ResponseField.CustomTypeField field, @Nullable Object value) {
-    CustomTypeAdapter typeAdapter = customTypeAdapters.get(field.scalarType());
-    if (typeAdapter == null) {
-      writeScalarFieldValue(field, value);
-    } else {
-      writeScalarFieldValue(field, value != null ? typeAdapter.encode(value) : null);
-    }
+    CustomTypeAdapter typeAdapter = scalarTypeAdapters.adapterFor(field.scalarType());
+    writeScalarFieldValue(field, value != null ? typeAdapter.encode(value) : null);
   }
 
   @Override public void writeObject(@Nonnull ResponseField field, @Nullable ResponseFieldMarshaller marshaller) {
@@ -65,7 +62,7 @@ final class CacheResponseWriter implements ResponseWriter {
       return;
     }
 
-    CacheResponseWriter nestedResponseWriter = new CacheResponseWriter(operationVariables, customTypeAdapters);
+    CacheResponseWriter nestedResponseWriter = new CacheResponseWriter(operationVariables, scalarTypeAdapters);
     marshaller.marshal(nestedResponseWriter);
 
     fieldDescriptors.put(field.responseName(), new FieldDescriptor(field, nestedResponseWriter.fieldDescriptors));
@@ -90,7 +87,7 @@ final class CacheResponseWriter implements ResponseWriter {
   }
 
   @SuppressWarnings("unchecked") private List writeListItemValues(List values, ListWriter listWriter) {
-    ListItemWriter listItemWriter = new ListItemWriter(operationVariables, customTypeAdapters);
+    ListItemWriter listItemWriter = new ListItemWriter(operationVariables, scalarTypeAdapters);
     List items = new ArrayList();
     for (Object value : values) {
       if (value instanceof List) {
@@ -223,12 +220,12 @@ final class CacheResponseWriter implements ResponseWriter {
 
   @SuppressWarnings("unchecked") private static final class ListItemWriter implements ResponseWriter.ListItemWriter {
     final Operation.Variables operationVariables;
-    final Map<ScalarType, CustomTypeAdapter> customTypeAdapters;
+    final ScalarTypeAdapters scalarTypeAdapters;
     Object value;
 
-    ListItemWriter(Operation.Variables operationVariables, Map<ScalarType, CustomTypeAdapter> customTypeAdapters) {
+    ListItemWriter(Operation.Variables operationVariables, ScalarTypeAdapters scalarTypeAdapters) {
       this.operationVariables = operationVariables;
-      this.customTypeAdapters = customTypeAdapters;
+      this.scalarTypeAdapters = scalarTypeAdapters;
     }
 
     @Override public void writeString(@Nullable Object value) {
@@ -252,16 +249,12 @@ final class CacheResponseWriter implements ResponseWriter {
     }
 
     @Override public void writeCustom(@Nonnull ScalarType scalarType, @Nullable Object value) {
-      CustomTypeAdapter typeAdapter = customTypeAdapters.get(scalarType);
-      if (typeAdapter == null) {
-        this.value = value;
-      } else {
-        this.value = typeAdapter.encode(value);
-      }
+      CustomTypeAdapter typeAdapter = scalarTypeAdapters.adapterFor(scalarType);
+      this.value = value != null ? typeAdapter.encode(value) : null;
     }
 
     @Override public void writeObject(ResponseFieldMarshaller marshaller) {
-      CacheResponseWriter nestedResponseWriter = new CacheResponseWriter(operationVariables, customTypeAdapters);
+      CacheResponseWriter nestedResponseWriter = new CacheResponseWriter(operationVariables, scalarTypeAdapters);
       marshaller.marshal(nestedResponseWriter);
       value = nestedResponseWriter.fieldDescriptors;
     }

@@ -8,6 +8,7 @@ import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
+import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
 import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import org.junit.Test;
@@ -40,7 +41,8 @@ public class ApolloStoreTest {
       @Override public boolean remove(@Nonnull CacheKey cacheKey) {
         return false;
       }
-    }, CacheKeyResolver.DEFAULT, Collections.EMPTY_MAP, Executors.newSingleThreadExecutor(), new ApolloLogger(Optional.<Logger>absent()));
+    }, CacheKeyResolver.DEFAULT, new ScalarTypeAdapters(Collections.EMPTY_MAP), Executors.newSingleThreadExecutor(),
+        new ApolloLogger(Optional.<Logger>absent()));
     realApolloStore.clearAll().execute();
     latch.awaitOrThrowWithTimeout(3, TimeUnit.SECONDS);
   }
