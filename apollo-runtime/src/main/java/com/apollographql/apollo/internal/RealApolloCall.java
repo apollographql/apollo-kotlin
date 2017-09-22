@@ -9,8 +9,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.internal.Action;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.cache.http.HttpCache;
-import com.apollographql.apollo.cache.http.HttpCachePolicy;
+import com.apollographql.apollo.api.cache.http.HttpCache;
+import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
@@ -25,7 +25,6 @@ import com.apollographql.apollo.internal.interceptor.ApolloParseInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
 import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
-import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -434,11 +433,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
     public Builder<T> cacheHeaders(CacheHeaders cacheHeaders) {
       this.cacheHeaders = cacheHeaders;
-      return this;
-    }
-
-    public Builder<T> interceptorChain(ApolloInterceptorChain interceptorChain) {
-      this.interceptorChain = interceptorChain;
       return this;
     }
 

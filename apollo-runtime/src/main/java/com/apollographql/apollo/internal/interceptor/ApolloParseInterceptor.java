@@ -3,7 +3,7 @@ package com.apollographql.apollo.internal.interceptor;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ResponseFieldMapper;
-import com.apollographql.apollo.cache.http.HttpCache;
+import com.apollographql.apollo.api.cache.http.HttpCache;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloParseException;
@@ -12,7 +12,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.response.OperationResponseParser;
 import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
-import com.apollographql.apollo.internal.util.ApolloLogger;
+import com.apollographql.apollo.internal.ApolloLogger;
 
 import java.io.Closeable;
 import java.util.Map;

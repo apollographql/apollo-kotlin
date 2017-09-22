@@ -1,7 +1,7 @@
 package com.apollographql.apollo.fetcher;
 
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
-import com.apollographql.apollo.internal.util.ApolloLogger;
+import com.apollographql.apollo.internal.ApolloLogger;
 
 /**
  * A ResponseFetcher is an {@link ApolloInterceptor} inserted at the beginning of a request chain.

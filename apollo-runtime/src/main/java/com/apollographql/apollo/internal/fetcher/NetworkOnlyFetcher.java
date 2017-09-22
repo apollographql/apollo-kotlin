@@ -3,7 +3,7 @@ package com.apollographql.apollo.internal.fetcher;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo.internal.util.ApolloLogger;
+import com.apollographql.apollo.internal.ApolloLogger;
 
 import java.util.concurrent.Executor;
 

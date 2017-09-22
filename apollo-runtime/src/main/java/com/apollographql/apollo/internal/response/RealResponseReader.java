@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("WeakerAccess") public final class RealResponseReader<R> implements ResponseReader {
   private final Operation.Variables operationVariables;

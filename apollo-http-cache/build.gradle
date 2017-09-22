@@ -5,12 +5,16 @@ sourceCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
   compile dep.jsr305
-  compile dep.jsr250
+  compile dep.okHttp
 
-  compileOnly dep.okHttp
+  compile project(":apollo-api")
 
   testCompile dep.junit
   testCompile dep.truth
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
+
+javadoc {
+  options.encoding = 'UTF-8'
+}

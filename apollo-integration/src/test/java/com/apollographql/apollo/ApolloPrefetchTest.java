@@ -1,9 +1,10 @@
 package com.apollographql.apollo;
 
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.cache.http.HttpCache;
+import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
+import com.apollographql.apollo.cache.http.ApolloHttpCache;
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
-import com.apollographql.apollo.cache.http.HttpCache;
-import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
@@ -58,7 +59,7 @@ public class ApolloPrefetchTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .httpCacheStore(cacheStore)
+        .httpCache(new ApolloHttpCache(cacheStore, null))
         .build();
   }
 

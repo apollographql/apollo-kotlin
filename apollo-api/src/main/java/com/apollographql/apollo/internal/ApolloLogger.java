@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.util;
+package com.apollographql.apollo.internal;
 
 import com.apollographql.apollo.Logger;
 import com.apollographql.apollo.api.internal.Optional;

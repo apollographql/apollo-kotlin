@@ -1,5 +1,6 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.cache.http.ApolloHttpCache;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
@@ -32,7 +33,7 @@ public class ApolloCancelCallTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .httpCacheStore(cacheStore)
+        .httpCache(new ApolloHttpCache(cacheStore, null))
         .build();
   }
 

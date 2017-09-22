@@ -1,4 +1,4 @@
-package com.apollographql.apollo.cache.http;
+package com.apollographql.apollo.api.cache.http;
 
 import java.io.IOException;
 
@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * ResponseCacheStore is an abstraction for a cache store that is used to read, modify or delete http responses.
+ * CacheStore is an abstraction for a cache store that is used to read, modify or delete http responses.
  */
 public interface HttpCacheStore {
   /**
