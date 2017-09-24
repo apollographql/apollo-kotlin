@@ -307,10 +307,10 @@ EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build(
 ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.query(query);
 
 //RxJava1 Observable
-Observable<EpisodeHeroName.Data> single1 = RxApollo.from(apolloCall);
+Observable<EpisodeHeroName.Data> observable1 = RxApollo.from(apolloCall);
 
 //RxJava2 Observable
-Observable<EpisodeHeroName.Data> single2 = Rx2Apollo.from(apolloCall);
+Observable<EpisodeHeroName.Data> observable2 = Rx2Apollo.from(apolloCall);
 ```
 
 Converting ApolloPrefetch to a Completable:
