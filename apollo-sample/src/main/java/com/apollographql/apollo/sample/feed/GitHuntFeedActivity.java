@@ -29,7 +29,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import static com.apollographql.apollo.sample.FeedQuery.*;
+import static com.apollographql.apollo.sample.FeedQuery.FeedEntry;
 
 public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNavigator {
 
@@ -93,7 +93,7 @@ public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNav
   }
 
   private void fetchFeed() {
-    final FeedQuery feedQuery = builder()
+    final FeedQuery feedQuery = FeedQuery.builder()
         .limit(FEED_SIZE)
         .type(FeedType.HOT)
         .build();
