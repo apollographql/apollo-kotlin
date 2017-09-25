@@ -109,7 +109,7 @@ Note: This is a file that Apollo generates and therefore should not be mutated.
 
 You can use the generated classes to make requests to your GraphQL API.  Apollo includes an `ApolloClient` that allows you to edit networking options like pick the base url for your GraphQL Endpoint.
 
-In our sample project, we have the base url pointing to `https://githunt-api.herokuapp.com/graphql`
+In our sample project, we have the base url pointing to `https://api.githunt.com/graphql/`
 
 There is also a #query && #mutation instance method on ApolloClient that can take as input any Query or Mutation that you have generated using Apollo.
 
@@ -230,16 +230,26 @@ ApolloSqlHelper apolloSqlHelper = ApolloSqlHelper.create(context, "db_name");
 //Create NormalizedCacheFactory
 NormalizedCacheFactory cacheFactory = new SqlNormalizedCacheFactory(apolloSqlHelper);
 
-//Create the cache key resolver
-CacheKeyResolver<Map<String, Object>> resolver =  new CacheKeyResolver<Map<String, Object>>() {
-          @Nonnull @Override public CacheKey resolve(@Nonnull Map<String, Object> objectSource) {
-            String id = (String) objectSource.get("id");
-            if (id == null || id.isEmpty()) {
-              return CacheKey.NO_KEY;
-            }
-            return CacheKey.from(id);
-          }
-        }
+//Create the cache key resolver, this example works well when all types have globally unique ids.
+CacheKeyResolver resolver =  new CacheKeyResolver() {
+         @Nonnull @Override
+           public CacheKey fromFieldRecordSet(@Nonnull ResponseField field, @Nonnull Map<String, Object> recordSet) {
+             return formatCacheKey((String) recordSet.get("id"));
+           }
+         
+           @Nonnull @Override
+           public CacheKey fromFieldArguments(@Nonnull ResponseField field, @Nonnull Operation.Variables variables) {
+             return formatCacheKey((String) field.resolveArgument("id", variables));
+           }
+         
+           private CacheKey formatCacheKey(String id) {
+             if (id == null || id.isEmpty()) {
+               return CacheKey.NO_KEY;
+             } else {
+               return CacheKey.from(id);
+             }
+           }
+        };
 
 //Build the Apollo Client
 ApolloClient apolloClient = ApolloClient.builder()
@@ -249,22 +259,11 @@ ApolloClient apolloClient = ApolloClient.builder()
                                     .build();
 ```
 
-Normalized InMemory Cache:
+Normalized In-Memory Cache:
 ```java
 
 //Create NormalizedCacheFactory
 NormalizedCacheFactory cacheFactory = new LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10 * 1024).build());
-
-//Create the cache key resolver
-CacheKeyResolver<Map<String, Object>> resolver =  new CacheKeyResolver<Map<String, Object>>() {
-          @Nonnull @Override public CacheKey resolve(@Nonnull Map<String, Object> objectSource) {
-            String id = (String) objectSource.get("id");
-            if (id == null || id.isEmpty()) {
-              return CacheKey.NO_KEY;
-            }
-            return CacheKey.from(id);
-          }
-        }
 
 //Build the Apollo Client
 ApolloClient apolloClient = ApolloClient.builder()
@@ -272,6 +271,20 @@ ApolloClient apolloClient = ApolloClient.builder()
                                     .normalizedCache(cacheFactory, resolver)
                                     .okHttpClient(okHttpClient)
                                     .build();
+
+```
+
+Chaining Caches:
+You can use both an memory cache and sql cache, with a cache chain. Reads will read from the first cache
+hit in the chain. Writes will propagate down the entire chain.
+
+```java
+
+NormalizedCacheFactory sqlCacheFactory = new SqlNormalizedCacheFactory(apolloSqlHelper)
+NormalizedCacheFactory memoryFirstThenSqlCacheFactory = new LruNormalizedCacheFactory(
+                EvictionPolicy.builder().maxSizeBytes(10 * 1024).build()
+            )
+            .chain(sqlCacheFactory);
 
 ```
 
@@ -285,7 +298,7 @@ to their corresponding RxJava1 & RxJava2 Observable types by using wrapper funct
 
 ### Usage
 
-Converting ApolloCall to a Single:
+Converting ApolloCall to a Observable:
 ```java
 //Create a query object
 EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
@@ -293,11 +306,11 @@ EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build(
 //Create an ApolloCall object
 ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.query(query);
 
-//RxJava1 Single
-Single<EpisodeHeroName.Data> single1 = RxApollo.from(apolloCall);
+//RxJava1 Observable
+Observable<EpisodeHeroName.Data> observable1 = RxApollo.from(apolloCall);
 
-//RxJava2 Single
-Single<EpisodeHeroName.Data> single2 = Rx2Apollo.from(apolloCall);
+//RxJava2 Observable
+Observable<EpisodeHeroName.Data> observable2 = Rx2Apollo.from(apolloCall);
 ```
 
 Converting ApolloPrefetch to a Completable:
