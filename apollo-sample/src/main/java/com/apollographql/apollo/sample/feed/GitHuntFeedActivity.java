@@ -15,15 +15,21 @@ import android.widget.ProgressBar;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloCallback;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.cache.normalized.CacheControl;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.sample.FeedQuery;
 import com.apollographql.apollo.sample.GitHuntApplication;
 import com.apollographql.apollo.sample.R;
 import com.apollographql.apollo.sample.detail.GitHuntEntryDetailActivity;
 import com.apollographql.apollo.sample.type.FeedType;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.annotation.Nonnull;
+
+import static com.apollographql.apollo.sample.FeedQuery.FeedEntry;
 
 public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNavigator {
 
@@ -58,7 +64,7 @@ public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNav
   private ApolloCall.Callback<FeedQuery.Data> dataCallback
       = new ApolloCallback<>(new ApolloCall.Callback<FeedQuery.Data>() {
     @Override public void onResponse(@Nonnull Response<FeedQuery.Data> response) {
-      feedAdapter.setFeed(response.data().feedEntries());
+      feedAdapter.setFeed(feedResponseToEntriesWithRepositories(response));
       progressBar.setVisibility(View.GONE);
       content.setVisibility(View.VISIBLE);
     }
@@ -68,6 +74,24 @@ public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNav
     }
   }, uiHandler);
 
+  private List<FeedEntry> feedResponseToEntriesWithRepositories(Response<FeedQuery.Data> response) {
+    List<FeedEntry> feedEntriesWithRepos = new ArrayList<>();
+    final FeedQuery.Data responseData = response.data();
+    if (responseData == null) {
+      return Collections.emptyList();
+    }
+    final List<FeedEntry> feedEntries = responseData.feedEntries();
+    if (feedEntries == null) {
+      return Collections.emptyList();
+    }
+    for (FeedEntry entry : feedEntries) {
+      if (entry.repository() != null) {
+        feedEntriesWithRepos.add(entry);
+      }
+    }
+    return feedEntriesWithRepos;
+  }
+
   private void fetchFeed() {
     final FeedQuery feedQuery = FeedQuery.builder()
         .limit(FEED_SIZE)
@@ -75,7 +99,7 @@ public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNav
         .build();
     githuntFeedCall = application.apolloClient()
         .query(feedQuery)
-        .cacheControl(CacheControl.NETWORK_FIRST);
+        .responseFetcher(ApolloResponseFetchers.NETWORK_FIRST);
     githuntFeedCall.enqueue(dataCallback);
   }
 

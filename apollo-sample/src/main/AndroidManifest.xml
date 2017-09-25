@@ -20,7 +20,7 @@
       </intent-filter>
     </activity>
 
-    <activity android:name="com.apollographql.apollo.sample.detail.GitHuntEntryDetailActivity"></activity>
+    <activity android:name="com.apollographql.apollo.sample.detail.GitHuntEntryDetailActivity"/>
   </application>
 
 </manifest>

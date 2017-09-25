@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.cache.normalized.CacheControl;
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 import com.apollographql.apollo.sample.EntryDetailQuery;
 import com.apollographql.apollo.sample.GitHuntApplication;
@@ -22,7 +22,7 @@ import com.apollographql.apollo.sample.R;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class GitHuntEntryDetailActivity extends AppCompatActivity {
@@ -90,19 +90,23 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
   private void fetchRepositoryDetails() {
     ApolloCall<EntryDetailQuery.Data> entryDetailQuery = application.apolloClient()
         .query(new EntryDetailQuery(repoFullName))
-        .cacheControl(CacheControl.CACHE_FIRST);
+        .responseFetcher(ApolloResponseFetchers.CACHE_FIRST);
 
     //Example call using Rx2Support
     disposables.add(Rx2Apollo.from(entryDetailQuery)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(new DisposableSingleObserver<Response<EntryDetailQuery.Data>>() {
-          @Override public void onSuccess(Response<EntryDetailQuery.Data> dataResponse) {
+        .subscribeWith(new DisposableObserver<Response<EntryDetailQuery.Data>>() {
+          @Override public void onNext(Response<EntryDetailQuery.Data> dataResponse) {
             setEntryData(dataResponse.data());
           }
 
           @Override public void onError(Throwable e) {
             Log.e(TAG, e.getMessage(), e);
+          }
+
+          @Override public void onComplete() {
+
           }
         }));
   }
