@@ -5,14 +5,13 @@ import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
-import com.apollographql.apollo.internal.util.ApolloLogger;
 
 import java.util.ArrayList;
 import java.util.Collections;

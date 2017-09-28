@@ -5,8 +5,7 @@ import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
-import com.apollographql.apollo.cache.http.HttpCachePolicy;
-import com.apollographql.apollo.internal.cache.http.HttpCacheFetchStrategy;
+import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -71,7 +70,7 @@ public class ResponseFetcherTest {
         .build();
 
     RealApolloCall realApolloCall = (RealApolloCall) apolloClient.query(emptyQuery);
-    assertThat(realApolloCall.httpCachePolicy.fetchStrategy).isEqualTo(HttpCacheFetchStrategy.CACHE_ONLY);
+    assertThat(realApolloCall.httpCachePolicy.fetchStrategy).isEqualTo(HttpCachePolicy.FetchStrategy.CACHE_ONLY);
     assertThat(realApolloCall.responseFetcher).isEqualTo(NETWORK_ONLY);
   }
 
@@ -82,7 +81,7 @@ public class ResponseFetcherTest {
         .build();
 
     RealApolloCall realApolloCall = (RealApolloCall) apolloClient.query(emptyQuery);
-    assertThat(realApolloCall.httpCachePolicy.fetchStrategy).isEqualTo(HttpCacheFetchStrategy.NETWORK_ONLY);
+    assertThat(realApolloCall.httpCachePolicy.fetchStrategy).isEqualTo(HttpCachePolicy.FetchStrategy.NETWORK_ONLY);
     assertThat(realApolloCall.responseFetcher).isEqualTo(CACHE_FIRST);
   }
 }

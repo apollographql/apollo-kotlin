@@ -1,6 +1,12 @@
 package com.apollographql.apollo.cache.http;
 
-import com.apollographql.apollo.internal.util.ApolloLogger;
+import com.apollographql.apollo.Logger;
+import com.apollographql.apollo.api.cache.http.HttpCache;
+import com.apollographql.apollo.api.cache.http.HttpCacheRecord;
+import com.apollographql.apollo.api.cache.http.HttpCacheRecordEditor;
+import com.apollographql.apollo.api.cache.http.HttpCacheStore;
+import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.internal.ApolloLogger;
 
 import java.io.IOException;
 
@@ -15,23 +21,18 @@ import okio.Source;
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static com.apollographql.apollo.cache.http.Utils.copyResponseBody;
 
-@SuppressWarnings("WeakerAccess") public final class HttpCache {
-  public static final String CACHE_KEY_HEADER = "X-APOLLO-CACHE-KEY";
-  public static final String CACHE_FETCH_STRATEGY_HEADER = "X-APOLLO-CACHE-FETCH-STRATEGY";
-  public static final String CACHE_SERVED_DATE_HEADER = "X-APOLLO-SERVED-DATE";
-  public static final String CACHE_PREFETCH_HEADER = "X-APOLLO-PREFETCH";
-  public static final String CACHE_EXPIRE_TIMEOUT_HEADER = "X-APOLLO-EXPIRE-TIMEOUT";
-  public static final String CACHE_EXPIRE_AFTER_READ_HEADER = "X-APOLLO-EXPIRE-AFTER-READ";
+@SuppressWarnings("WeakerAccess")
+public final class ApolloHttpCache implements HttpCache {
 
   private final HttpCacheStore cacheStore;
   private final ApolloLogger logger;
 
-  public HttpCache(@Nonnull HttpCacheStore cacheStore, @Nonnull ApolloLogger logger) {
-    this.cacheStore = checkNotNull(cacheStore, "cacheStore can't be null");
-    this.logger = checkNotNull(logger, "logger can't be null");
+  public ApolloHttpCache(@Nonnull final HttpCacheStore cacheStore, final Logger logger) {
+    this.cacheStore = checkNotNull(cacheStore, "cacheStore == null");
+    this.logger = new ApolloLogger(Optional.fromNullable(logger));
   }
 
-  public void clear() {
+  @Override public void clear() {
     try {
       cacheStore.delete();
     } catch (IOException e) {
@@ -39,11 +40,11 @@ import static com.apollographql.apollo.cache.http.Utils.copyResponseBody;
     }
   }
 
-  public void remove(@Nonnull String cacheKey) throws IOException {
+  @Override public void remove(@Nonnull String cacheKey) throws IOException {
     cacheStore.remove(cacheKey);
   }
 
-  public void removeQuietly(@Nonnull String cacheKey) {
+  @Override public void removeQuietly(@Nonnull String cacheKey) {
     try {
       remove(cacheKey);
     } catch (Exception ignore) {
@@ -51,11 +52,11 @@ import static com.apollographql.apollo.cache.http.Utils.copyResponseBody;
     }
   }
 
-  public Response read(@Nonnull final String cacheKey) {
+  @Override public Response read(@Nonnull final String cacheKey) {
     return read(cacheKey, false);
   }
 
-  public Response read(@Nonnull final String cacheKey, final boolean expireAfterRead) {
+  @Override public Response read(@Nonnull final String cacheKey, final boolean expireAfterRead) {
     HttpCacheRecord responseCacheRecord = null;
     try {
       responseCacheRecord = cacheStore.cacheRecord(cacheKey);
@@ -65,7 +66,8 @@ import static com.apollographql.apollo.cache.http.Utils.copyResponseBody;
 
       final HttpCacheRecord cacheRecord = responseCacheRecord;
       Source cacheResponseSource = new ForwardingSource(responseCacheRecord.bodySource()) {
-        @Override public void close() throws IOException {
+        @Override
+        public void close() throws IOException {
           super.close();
           closeQuietly(cacheRecord);
           if (expireAfterRead) {
@@ -78,8 +80,8 @@ import static com.apollographql.apollo.cache.http.Utils.copyResponseBody;
       String contentType = response.header("Content-Type");
       String contentLength = response.header("Content-Length");
       return response.newBuilder()
-          .body(new CacheResponseBody(cacheResponseSource, contentType, contentLength))
-          .build();
+        .body(new CacheResponseBody(cacheResponseSource, contentType, contentLength))
+        .build();
     } catch (Exception e) {
       closeQuietly(responseCacheRecord);
       logger.e(e, "Failed to read http cache entry for key: %s", cacheKey);
@@ -87,7 +89,7 @@ import static com.apollographql.apollo.cache.http.Utils.copyResponseBody;
     }
   }
 
-  public Interceptor interceptor() {
+  @Override public Interceptor interceptor() {
     return new HttpCacheInterceptor(this, logger);
   }
 
@@ -104,8 +106,8 @@ import static com.apollographql.apollo.cache.http.Utils.copyResponseBody;
         }
 
         return response.newBuilder()
-            .body(new ResponseBodyProxy(cacheRecordEditor, response, logger))
-            .build();
+          .body(new ResponseBodyProxy(cacheRecordEditor, response, logger))
+          .build();
       }
     } catch (Exception e) {
       abortQuietly(cacheRecordEditor);

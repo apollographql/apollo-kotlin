@@ -14,7 +14,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.cache.normalized.Transaction;
 import com.apollographql.apollo.internal.cache.normalized.WriteableStore;
-import com.apollographql.apollo.internal.util.ApolloLogger;
+import com.apollographql.apollo.internal.ApolloLogger;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package com.apollographql.apollo.cache.http;
+package com.apollographql.apollo.api.cache.http;
 
 import javax.annotation.Nonnull;
 

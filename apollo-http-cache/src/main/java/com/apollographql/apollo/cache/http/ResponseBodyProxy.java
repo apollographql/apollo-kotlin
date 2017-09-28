@@ -1,6 +1,7 @@
 package com.apollographql.apollo.cache.http;
 
-import com.apollographql.apollo.internal.util.ApolloLogger;
+import com.apollographql.apollo.api.cache.http.HttpCacheRecordEditor;
+import com.apollographql.apollo.internal.ApolloLogger;
 
 import java.io.IOException;
 

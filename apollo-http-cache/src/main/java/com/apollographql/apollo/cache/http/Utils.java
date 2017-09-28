@@ -1,6 +1,6 @@
 package com.apollographql.apollo.cache.http;
 
-import com.apollographql.apollo.internal.cache.http.HttpCacheFetchStrategy;
+import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 
 import java.io.IOException;
 import java.util.Date;
@@ -16,12 +16,12 @@ import okio.Okio;
 import okio.Sink;
 import okio.Source;
 
-import static com.apollographql.apollo.cache.http.HttpCache.CACHE_EXPIRE_AFTER_READ_HEADER;
-import static com.apollographql.apollo.cache.http.HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER;
-import static com.apollographql.apollo.cache.http.HttpCache.CACHE_FETCH_STRATEGY_HEADER;
-import static com.apollographql.apollo.cache.http.HttpCache.CACHE_KEY_HEADER;
-import static com.apollographql.apollo.cache.http.HttpCache.CACHE_PREFETCH_HEADER;
-import static com.apollographql.apollo.cache.http.HttpCache.CACHE_SERVED_DATE_HEADER;
+import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_EXPIRE_AFTER_READ_HEADER;
+import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER;
+import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_FETCH_STRATEGY_HEADER;
+import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_KEY_HEADER;
+import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_PREFETCH_HEADER;
+import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_SERVED_DATE_HEADER;
 
 final class Utils {
   static Response strip(Response response) {
@@ -42,7 +42,7 @@ final class Utils {
 
   static boolean shouldSkipCache(Request request) {
     String cacheKey = request.header(CACHE_KEY_HEADER);
-    HttpCacheFetchStrategy fetchStrategy = fetchStrategy(request);
+    HttpCachePolicy.FetchStrategy fetchStrategy = fetchStrategy(request);
     return cacheKey == null
         || cacheKey.isEmpty()
         || fetchStrategy == null;
@@ -50,20 +50,20 @@ final class Utils {
 
   static boolean shouldSkipNetwork(Request request) {
     String cacheKey = request.header(CACHE_KEY_HEADER);
-    HttpCacheFetchStrategy fetchStrategy = fetchStrategy(request);
+    HttpCachePolicy.FetchStrategy fetchStrategy = fetchStrategy(request);
     return cacheKey != null
         && !cacheKey.isEmpty()
-        && fetchStrategy == HttpCacheFetchStrategy.CACHE_ONLY;
+        && fetchStrategy == HttpCachePolicy.FetchStrategy.CACHE_ONLY;
   }
 
   static boolean isNetworkOnly(Request request) {
-    HttpCacheFetchStrategy fetchStrategy = fetchStrategy(request);
-    return fetchStrategy == HttpCacheFetchStrategy.NETWORK_ONLY;
+    HttpCachePolicy.FetchStrategy fetchStrategy = fetchStrategy(request);
+    return fetchStrategy == HttpCachePolicy.FetchStrategy.NETWORK_ONLY;
   }
 
   static boolean isNetworkFirst(Request request) {
-    HttpCacheFetchStrategy fetchStrategy = fetchStrategy(request);
-    return fetchStrategy == HttpCacheFetchStrategy.NETWORK_FIRST;
+    HttpCachePolicy.FetchStrategy fetchStrategy = fetchStrategy(request);
+    return fetchStrategy == HttpCachePolicy.FetchStrategy.NETWORK_FIRST;
   }
 
 //  static boolean shouldReturnStaleCache(Request request) {
@@ -132,13 +132,13 @@ final class Utils {
     return servedDate == null || now - servedDate.getTime() > timeout;
   }
 
-  private static HttpCacheFetchStrategy fetchStrategy(Request request) {
+  private static HttpCachePolicy.FetchStrategy fetchStrategy(Request request) {
     String fetchStrategyHeader = request.header(CACHE_FETCH_STRATEGY_HEADER);
     if (fetchStrategyHeader == null || fetchStrategyHeader.isEmpty()) {
       return null;
     }
 
-    for (HttpCacheFetchStrategy fetchStrategy : HttpCacheFetchStrategy.values()) {
+    for (HttpCachePolicy.FetchStrategy fetchStrategy : HttpCachePolicy.FetchStrategy.values()) {
       if (fetchStrategy.name().equals(fetchStrategyHeader)) {
         return fetchStrategy;
       }

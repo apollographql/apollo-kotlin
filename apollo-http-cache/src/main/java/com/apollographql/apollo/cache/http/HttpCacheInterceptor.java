@@ -1,6 +1,6 @@
 package com.apollographql.apollo.cache.http;
 
-import com.apollographql.apollo.internal.util.ApolloLogger;
+import com.apollographql.apollo.internal.ApolloLogger;
 
 import java.io.IOException;
 
@@ -8,8 +8,8 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_KEY_HEADER;
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-import static com.apollographql.apollo.cache.http.HttpCache.CACHE_KEY_HEADER;
 import static com.apollographql.apollo.cache.http.Utils.isNetworkFirst;
 import static com.apollographql.apollo.cache.http.Utils.isNetworkOnly;
 import static com.apollographql.apollo.cache.http.Utils.isPrefetchResponse;
@@ -21,11 +21,11 @@ import static com.apollographql.apollo.cache.http.Utils.strip;
 import static com.apollographql.apollo.cache.http.Utils.unsatisfiableCacheRequest;
 import static com.apollographql.apollo.cache.http.Utils.withServedDateHeader;
 
-public final class HttpCacheInterceptor implements Interceptor {
-  private final HttpCache cache;
+final class HttpCacheInterceptor implements Interceptor {
+  private final ApolloHttpCache cache;
   private final ApolloLogger logger;
 
-  HttpCacheInterceptor(HttpCache cache, ApolloLogger logger) {
+  HttpCacheInterceptor(ApolloHttpCache cache, ApolloLogger logger) {
     this.cache = checkNotNull(cache, "cache == null");
     this.logger = checkNotNull(logger, "logger == null");
   }

@@ -10,3 +10,5 @@ include ':apollo-integration'
 include ':apollo-rxsupport'
 include ':apollo-rx2support'
 include 'apollo-espresso-support'
+include 'apollo-http-cache'
+

@@ -2,15 +2,15 @@ package com.apollographql.apollo.internal.interceptor;
 
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.cache.http.HttpCache;
-import com.apollographql.apollo.cache.http.HttpCachePolicy;
+import com.apollographql.apollo.api.cache.http.HttpCache;
+import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.json.InputFieldJsonWriter;
 import com.apollographql.apollo.internal.json.JsonWriter;
 import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
-import com.apollographql.apollo.internal.util.ApolloLogger;
+import com.apollographql.apollo.internal.ApolloLogger;
 
 import java.io.IOException;
 import java.util.concurrent.Executor;
