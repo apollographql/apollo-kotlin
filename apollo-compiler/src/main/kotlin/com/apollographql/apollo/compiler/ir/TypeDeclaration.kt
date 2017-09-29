@@ -32,30 +32,24 @@ data class TypeDeclaration(
 
     fun TypeSpec.Builder.addEnumConstants(): TypeSpec.Builder {
       values?.forEach { value ->
-        if (value.description.isNullOrEmpty()) {
-          addEnumConstant(value.name)
-              .let {
-                if (value.isDeprecated ?: false && !value.deprecationReason.isNullOrBlank()) {
-                  it.addJavadoc("@deprecated \$L\n", value.deprecationReason)
-                } else {
-                  it
-                }
+        val typeSpec = TypeSpec.anonymousClassBuilder("")
+            .apply {
+              if (!value.description.isNullOrEmpty()) {
+                addJavadoc("\$L\n", value.description)
               }
-              .let { if (value.isDeprecated ?: false) it.addAnnotation(Annotations.DEPRECATED) else it }
-        } else {
-          addEnumConstant(value.name, TypeSpec.anonymousClassBuilder("")
-              .addJavadoc("\$L\n", value.description)
-              .let {
-                if (value.isDeprecated ?: false && !value.deprecationReason.isNullOrBlank()) {
-                  it.addJavadoc("@deprecated \$L\n", value.deprecationReason)
-                } else {
-                  it
-                }
+            }
+            .apply {
+              if (value.isDeprecated == true && !value.deprecationReason.isNullOrBlank()) {
+                addJavadoc("@deprecated \$L\n", value.deprecationReason)
               }
-              .let { if (value.isDeprecated ?: false) it.addAnnotation(Annotations.DEPRECATED) else it }
-              .build()
-          )
-        }
+            }
+            .apply {
+              if (value.isDeprecated == true) {
+                addAnnotation(Annotations.DEPRECATED)
+              }
+            }
+            .build()
+        addEnumConstant(value.name, typeSpec)
       }
       return this
     }
