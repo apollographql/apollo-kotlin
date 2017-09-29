@@ -156,6 +156,26 @@
 					"name": "listOfEnums",
 					"description": "for test purpose only",
 					"type": "[Episode]"
+				},
+				{
+					"name": "listOfInt",
+					"description": "for test purpose only",
+					"type": "[Int]",
+					"defaultValue": [
+						1,
+						2,
+						3
+					]
+				},
+				{
+					"name": "listOfString",
+					"description": "for test purpose only",
+					"type": "[String]",
+					"defaultValue": [
+						"test1",
+						"test2",
+						"test3"
+					]
 				}
 			]
 		},
