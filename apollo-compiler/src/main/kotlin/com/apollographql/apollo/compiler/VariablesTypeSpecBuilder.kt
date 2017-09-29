@@ -64,7 +64,7 @@ class VariablesTypeSpecBuilder(
   private fun TypeSpec.Builder.addVariableAccessors(): TypeSpec.Builder =
       addMethods(variables.map { variable ->
         MethodSpec
-            .methodBuilder(variable.name)
+            .methodBuilder(variable.name.decapitalize())
             .addModifiers(Modifier.PUBLIC)
             .returns(variable.javaTypeName(context, context.typesPackage))
             .addStatement("return \$L", variable.name.decapitalize())
@@ -102,7 +102,7 @@ class VariablesTypeSpecBuilder(
     val writeCode = variables
         .map {
           InputFieldSpec.build(
-              name = it.name,
+              name = it.name.decapitalize(),
               graphQLType = it.type,
               context = context,
               nullableValueType = NullableValueType.ANNOTATED

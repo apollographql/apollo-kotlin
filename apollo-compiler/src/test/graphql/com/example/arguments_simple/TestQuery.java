@@ -28,10 +28,10 @@ import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_DEFINITION = "query TestQuery($episode: Episode, $includeName: Boolean!) {\n"
+  public static final String OPERATION_DEFINITION = "query TestQuery($episode: Episode, $IncludeName: Boolean!) {\n"
       + "  hero(episode: $episode) {\n"
       + "    __typename\n"
-      + "    name @include(if: $includeName)\n"
+      + "    name @include(if: $IncludeName)\n"
       + "  }\n"
       + "}";
 
@@ -52,7 +52,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   @Override
   public String operationId() {
-    return "125df1054cbcf295890b4747e575075f18f2be2635a6b313ab793d1d91a4d4f2";
+    return "8e8ef66a6e97a76a5579df7768bd4d2ac09df975bcadb51fc040ac98eb5e4e0f";
   }
 
   @Override
@@ -118,7 +118,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.episode = episode;
       this.includeName = includeName;
       this.valueMap.put("episode", episode);
-      this.valueMap.put("includeName", includeName);
+      this.valueMap.put("IncludeName", includeName);
     }
 
     public @Nullable Episode episode() {
@@ -234,7 +234,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Hero {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forString("name", "name", null, true, Arrays.<ResponseField.Condition>asList(ResponseField.Condition.booleanCondition("includeName", false)))
+      ResponseField.forString("name", "name", null, true, Arrays.<ResponseField.Condition>asList(ResponseField.Condition.booleanCondition("IncludeName", false)))
     };
 
     final @Nonnull String __typename;
