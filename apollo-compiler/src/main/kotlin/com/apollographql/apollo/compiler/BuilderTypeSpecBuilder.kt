@@ -2,6 +2,7 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.ir.TypeDeclaration
 import com.squareup.javapoet.*
+import java.util.*
 import javax.lang.model.element.Modifier
 
 class BuilderTypeSpecBuilder(
@@ -22,30 +23,47 @@ class BuilderTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addBuilderFields(): TypeSpec.Builder {
-    return addFields(fields.map {
-      val fieldName = it.first
-      val fieldType = it.second
-      val initializerCode = fieldDefaultValues[fieldName]
-          ?.let { (it as? Number)?.castTo(fieldType.unwrapOptionalType(true)) ?: it }
-          ?.let { defaultValue ->
-            if (fieldType.unwrapOptionalType(true).isEnum(typeDeclarations))
-              CodeBlock.of("\$T.\$L", fieldType.unwrapOptionalType(true), defaultValue)
-            else
-              CodeBlock.of("\$L", defaultValue)
+    fun valueCode(value: Any, type: TypeName): CodeBlock = when {
+      value is Number -> CodeBlock.of("\$L", value.castTo(type))
+      type.isEnum(typeDeclarations) -> CodeBlock.of("\$T.\$L", type, value)
+      else -> CodeBlock.of("\$S", value)
+    }
+
+    fun listInitializerCode(values: List<*>, type: TypeName): CodeBlock {
+      val codeBuilder = CodeBlock.builder().add("\$T.<\$T>asList(", Arrays::class.java, type)
+      return values
+          .filterNotNull()
+          .map { valueCode(it, type) }
+          .foldIndexed(codeBuilder) { index, builder, code ->
+            builder.add(if (index > 0) ", " else "").add(code)
           }
-          ?.let { fieldType.wrapOptionalValue(it) }
-          ?: fieldType.defaultOptionalValue()
+          .add(")")
+          .build()
+    }
+
+    return addFields(fields.map { (fieldName, fieldType) ->
+      val rawFieldType = fieldType.unwrapOptionalType(true).let {
+        if (it.isList()) it.listParamType() else it
+      }
+      val initializer = fieldDefaultValues[fieldName]
+          ?.let { value ->
+            when (value) {
+              is List<*> -> listInitializerCode(value, rawFieldType)
+              else -> valueCode(value, rawFieldType)
+            }
+          }
+          ?.let { code ->
+            fieldType.wrapOptionalValue(code)
+          }
       FieldSpec.builder(fieldType, fieldName)
           .addModifiers(Modifier.PRIVATE)
-          .initializer(initializerCode)
+          .initializer(initializer ?: fieldType.defaultOptionalValue())
           .build()
     })
   }
 
   private fun TypeSpec.Builder.addBuilderMethods(): TypeSpec.Builder {
-    return addMethods(fields.map {
-      val fieldName = it.first
-      val fieldType = it.second
+    return addMethods(fields.map { (fieldName, fieldType) ->
       val javaDoc = fieldJavaDocs[fieldName]
       MethodSpec.methodBuilder(fieldName)
           .addModifiers(Modifier.PUBLIC)
@@ -64,11 +82,9 @@ class BuilderTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addBuilderBuildMethod(): TypeSpec.Builder {
-    val validationCodeBuilder = fields.filter {
-      val fieldType = it.second
+    val validationCodeBuilder = fields.filter { (_, fieldType) ->
       !fieldType.isPrimitive && fieldType.annotations.contains(Annotations.NONNULL)
-    }.map {
-      val fieldName = it.first
+    }.map { (fieldName, _) ->
       CodeBlock.of("\$T.checkNotNull(\$L, \$S);\n", ClassNames.API_UTILS, fieldName, "$fieldName == null")
     }.fold(CodeBlock.builder(), CodeBlock.Builder::add)
 

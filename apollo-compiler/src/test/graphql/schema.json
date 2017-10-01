@@ -1691,6 +1691,36 @@
                   "ofType": null
                 }
               }
+            },
+            {
+              "name": "listOfInt",
+              "description": "for test purpose only",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "defaultValue": "[1, 2, 3]"
+            },
+            {
+              "name": "listOfString",
+              "description": "for test purpose only",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": "[\"test1\", \"test2\", \"test3\"]"
             }
           ],
           "interfaces": null,
