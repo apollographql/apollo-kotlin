@@ -11,11 +11,11 @@
 					"type": "Episode"
 				},
 				{
-					"name": "includeName",
+					"name": "IncludeName",
 					"type": "Boolean!"
 				}
 			],
-			"source": "query TestQuery($episode: Episode, $includeName: Boolean!) {\n  hero(episode: $episode) {\n    __typename\n    name @include(if: $includeName)\n  }\n}",
+			"source": "query TestQuery($episode: Episode, $IncludeName: Boolean!) {\n  hero(episode: $episode) {\n    __typename\n    name @include(if: $IncludeName)\n  }\n}",
 			"fields": [
 				{
 					"responseName": "hero",
@@ -48,7 +48,7 @@
 							"conditions": [
 								{
 									"kind": "BooleanCondition",
-									"variableName": "includeName",
+									"variableName": "IncludeName",
 									"inverted": false
 								}
 							],
@@ -64,8 +64,8 @@
 			"fragmentSpreads": [],
 			"inlineFragments": [],
 			"fragmentsReferenced": [],
-			"sourceWithFragments": "query TestQuery($episode: Episode, $includeName: Boolean!) {\n  hero(episode: $episode) {\n    __typename\n    name @include(if: $includeName)\n  }\n}",
-			"operationId": "125df1054cbcf295890b4747e575075f18f2be2635a6b313ab793d1d91a4d4f2"
+			"sourceWithFragments": "query TestQuery($episode: Episode, $IncludeName: Boolean!) {\n  hero(episode: $episode) {\n    __typename\n    name @include(if: $IncludeName)\n  }\n}",
+			"operationId": "8e8ef66a6e97a76a5579df7768bd4d2ac09df975bcadb51fc040ac98eb5e4e0f"
 		}
 	],
 	"fragments": [],
