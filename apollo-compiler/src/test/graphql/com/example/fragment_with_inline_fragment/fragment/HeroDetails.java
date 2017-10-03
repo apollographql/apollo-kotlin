@@ -732,6 +732,19 @@ public class HeroDetails implements GraphqlFragment {
       return $hashCode;
     }
 
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.__typename = __typename;
+      builder.name = name;
+      builder.friendsConnection = friendsConnection;
+      builder.primaryFunction = primaryFunction.isPresent() ? primaryFunction.get() : null;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
     public static final class Mapper implements ResponseFieldMapper<AsDroid> {
       final FriendsConnection1.Mapper friendsConnection1FieldMapper = new FriendsConnection1.Mapper();
 
@@ -746,6 +759,46 @@ public class HeroDetails implements GraphqlFragment {
           }
         });
         final String primaryFunction = reader.readString($responseFields[3]);
+        return new AsDroid(__typename, name, friendsConnection, primaryFunction);
+      }
+    }
+
+    public static final class Builder {
+      private @Nonnull String __typename;
+
+      private @Nonnull String name;
+
+      private @Nonnull FriendsConnection1 friendsConnection;
+
+      private @Nullable String primaryFunction;
+
+      Builder() {
+      }
+
+      public Builder __typename(@Nonnull String __typename) {
+        this.__typename = __typename;
+        return this;
+      }
+
+      public Builder name(@Nonnull String name) {
+        this.name = name;
+        return this;
+      }
+
+      public Builder friendsConnection(@Nonnull FriendsConnection1 friendsConnection) {
+        this.friendsConnection = friendsConnection;
+        return this;
+      }
+
+      public Builder primaryFunction(@Nullable String primaryFunction) {
+        this.primaryFunction = primaryFunction;
+        return this;
+      }
+
+      public AsDroid build() {
+        Utils.checkNotNull(__typename, "__typename == null");
+        Utils.checkNotNull(name, "name == null");
+        Utils.checkNotNull(friendsConnection, "friendsConnection == null");
         return new AsDroid(__typename, name, friendsConnection, primaryFunction);
       }
     }

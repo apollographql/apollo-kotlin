@@ -2,6 +2,7 @@ package com.apollographql.apollo.compiler.ir
 
 import com.apollographql.apollo.compiler.JavaTypeResolver
 import com.apollographql.apollo.compiler.SchemaTypeSpecBuilder
+import com.apollographql.apollo.compiler.withBuilder
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeSpec
@@ -20,7 +21,15 @@ data class InlineFragment(
           fragmentSpreads = fragmentSpreads ?: emptyList(),
           inlineFragments = emptyList(),
           context = context
-      ).build(Modifier.PUBLIC, Modifier.STATIC)
+      )
+          .build(Modifier.PUBLIC, Modifier.STATIC)
+          .let {
+            if (context.generateModelBuilder) {
+              it.withBuilder()
+            } else {
+              it
+            }
+          }
 
   fun accessorMethodSpec(context: CodeGenerationContext): MethodSpec {
     return MethodSpec.methodBuilder(formatClassName().decapitalize())
