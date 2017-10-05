@@ -176,6 +176,12 @@
 						"test2",
 						"test3"
 					]
+				},
+				{
+					"name": "booleanWithDefaultValue",
+					"description": "for test purpose only",
+					"type": "Boolean",
+					"defaultValue": true
 				}
 			]
 		},

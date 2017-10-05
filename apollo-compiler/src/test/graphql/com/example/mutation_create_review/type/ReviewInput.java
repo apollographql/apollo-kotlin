@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.internal.Utils;
 import java.io.IOException;
+import java.lang.Boolean;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
@@ -37,11 +38,13 @@ public final class ReviewInput {
 
   private final Input<List<String>> listOfString;
 
+  private final Input<Boolean> booleanWithDefaultValue;
+
   ReviewInput(int stars, Input<Integer> nullableIntFieldWithDefaultValue, Input<String> commentary,
       @Nonnull ColorInput favoriteColor, Input<Episode> enumWithDefaultValue,
       Input<Episode> nullableEnum, Input<List<Object>> listOfCustomScalar,
       Input<List<Episode>> listOfEnums, Input<List<Integer>> listOfInt,
-      Input<List<String>> listOfString) {
+      Input<List<String>> listOfString, Input<Boolean> booleanWithDefaultValue) {
     this.stars = stars;
     this.nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue;
     this.commentary = commentary;
@@ -52,6 +55,7 @@ public final class ReviewInput {
     this.listOfEnums = listOfEnums;
     this.listOfInt = listOfInt;
     this.listOfString = listOfString;
+    this.booleanWithDefaultValue = booleanWithDefaultValue;
   }
 
   /**
@@ -124,6 +128,13 @@ public final class ReviewInput {
     return this.listOfString.value;
   }
 
+  /**
+   * for test purpose only
+   */
+  public @Nullable Boolean booleanWithDefaultValue() {
+    return this.booleanWithDefaultValue.value;
+  }
+
   public static Builder builder() {
     return new Builder();
   }
@@ -186,6 +197,9 @@ public final class ReviewInput {
             }
           } : null);
         }
+        if (booleanWithDefaultValue.defined) {
+          writer.writeBoolean("booleanWithDefaultValue", booleanWithDefaultValue.value);
+        }
       }
     };
   }
@@ -210,6 +224,8 @@ public final class ReviewInput {
     private Input<List<Integer>> listOfInt = Input.fromNullable(Arrays.<Integer>asList(1, 2, 3));
 
     private Input<List<String>> listOfString = Input.fromNullable(Arrays.<String>asList("test1", "test2", "test3"));
+
+    private Input<Boolean> booleanWithDefaultValue = Input.fromNullable(true);
 
     Builder() {
     }
@@ -294,9 +310,17 @@ public final class ReviewInput {
       return this;
     }
 
+    /**
+     * for test purpose only
+     */
+    public Builder booleanWithDefaultValue(@Nullable Boolean booleanWithDefaultValue) {
+      this.booleanWithDefaultValue = Input.fromNullable(booleanWithDefaultValue);
+      return this;
+    }
+
     public ReviewInput build() {
       Utils.checkNotNull(favoriteColor, "favoriteColor == null");
-      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nullableEnum, listOfCustomScalar, listOfEnums, listOfInt, listOfString);
+      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nullableEnum, listOfCustomScalar, listOfEnums, listOfInt, listOfString, booleanWithDefaultValue);
     }
   }
 }
