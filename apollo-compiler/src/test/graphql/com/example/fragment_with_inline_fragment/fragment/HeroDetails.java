@@ -6,12 +6,14 @@ import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
+import com.apollographql.apollo.api.internal.Mutator;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -354,6 +356,23 @@ public class HeroDetails implements GraphqlFragment {
         return this;
       }
 
+      public Builder edges(@Nonnull Mutator<List<Edge.Builder>> mutator) {
+        Utils.checkNotNull(mutator, "mutator == null");
+        List<Edge.Builder> builders = new ArrayList<>();
+        if (this.edges != null) {
+          for (Edge item : this.edges) {
+            builders.add(item != null ? item.toBuilder() : null);
+          }
+        }
+        mutator.accept(builders);
+        List<Edge> edges = new ArrayList<>();
+        for (Edge.Builder item : builders) {
+          edges.add(item != null ? item.build() : null);
+        }
+        this.edges = edges;
+        return this;
+      }
+
       public FriendsConnection build() {
         Utils.checkNotNull(__typename, "__typename == null");
         return new FriendsConnection(__typename, totalCount, edges);
@@ -483,6 +502,14 @@ public class HeroDetails implements GraphqlFragment {
 
       public Builder node(@Nullable Node node) {
         this.node = node;
+        return this;
+      }
+
+      public Builder node(@Nonnull Mutator<Node.Builder> mutator) {
+        Utils.checkNotNull(mutator, "mutator == null");
+        Node.Builder builder = this.node != null ? this.node.toBuilder() : Node.builder();
+        mutator.accept(builder);
+        this.node = builder.build();
         return this;
       }
 
@@ -795,6 +822,14 @@ public class HeroDetails implements GraphqlFragment {
         return this;
       }
 
+      public Builder friendsConnection(@Nonnull Mutator<FriendsConnection1.Builder> mutator) {
+        Utils.checkNotNull(mutator, "mutator == null");
+        FriendsConnection1.Builder builder = this.friendsConnection != null ? this.friendsConnection.toBuilder() : FriendsConnection1.builder();
+        mutator.accept(builder);
+        this.friendsConnection = builder.build();
+        return this;
+      }
+
       public AsDroid build() {
         Utils.checkNotNull(__typename, "__typename == null");
         Utils.checkNotNull(name, "name == null");
@@ -965,6 +1000,23 @@ public class HeroDetails implements GraphqlFragment {
         return this;
       }
 
+      public Builder edges(@Nonnull Mutator<List<Edge1.Builder>> mutator) {
+        Utils.checkNotNull(mutator, "mutator == null");
+        List<Edge1.Builder> builders = new ArrayList<>();
+        if (this.edges != null) {
+          for (Edge1 item : this.edges) {
+            builders.add(item != null ? item.toBuilder() : null);
+          }
+        }
+        mutator.accept(builders);
+        List<Edge1> edges = new ArrayList<>();
+        for (Edge1.Builder item : builders) {
+          edges.add(item != null ? item.build() : null);
+        }
+        this.edges = edges;
+        return this;
+      }
+
       public FriendsConnection1 build() {
         Utils.checkNotNull(__typename, "__typename == null");
         return new FriendsConnection1(__typename, totalCount, edges);
@@ -1094,6 +1146,14 @@ public class HeroDetails implements GraphqlFragment {
 
       public Builder node(@Nullable Node1 node) {
         this.node = node;
+        return this;
+      }
+
+      public Builder node(@Nonnull Mutator<Node1.Builder> mutator) {
+        Utils.checkNotNull(mutator, "mutator == null");
+        Node1.Builder builder = this.node != null ? this.node.toBuilder() : Node1.builder();
+        mutator.accept(builder);
+        this.node = builder.build();
         return this;
       }
 
@@ -1259,6 +1319,22 @@ public class HeroDetails implements GraphqlFragment {
 
     public Builder asDroid(@Nullable AsDroid asDroid) {
       this.asDroid = asDroid;
+      return this;
+    }
+
+    public Builder friendsConnection(@Nonnull Mutator<FriendsConnection.Builder> mutator) {
+      Utils.checkNotNull(mutator, "mutator == null");
+      FriendsConnection.Builder builder = this.friendsConnection != null ? this.friendsConnection.toBuilder() : FriendsConnection.builder();
+      mutator.accept(builder);
+      this.friendsConnection = builder.build();
+      return this;
+    }
+
+    public Builder asDroid(@Nonnull Mutator<AsDroid.Builder> mutator) {
+      Utils.checkNotNull(mutator, "mutator == null");
+      AsDroid.Builder builder = this.asDroid != null ? this.asDroid.toBuilder() : AsDroid.builder();
+      mutator.accept(builder);
+      this.asDroid = builder.build();
       return this;
     }
 
