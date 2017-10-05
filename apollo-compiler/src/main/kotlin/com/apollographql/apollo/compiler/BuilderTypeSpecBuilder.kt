@@ -26,6 +26,7 @@ class BuilderTypeSpecBuilder(
     fun valueCode(value: Any, type: TypeName): CodeBlock = when {
       value is Number -> CodeBlock.of("\$L", value.castTo(type))
       type.isEnum(typeDeclarations) -> CodeBlock.of("\$T.\$L", type, value)
+      value !is String -> CodeBlock.of("\$L", value)
       else -> CodeBlock.of("\$S", value)
     }
 

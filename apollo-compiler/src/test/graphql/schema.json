@@ -1721,6 +1721,16 @@
                 }
               },
               "defaultValue": "[\"test1\", \"test2\", \"test3\"]"
+            },
+            {
+              "name": "booleanWithDefaultValue",
+              "description": "for test purpose only",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": "true"
             }
           ],
           "interfaces": null,
