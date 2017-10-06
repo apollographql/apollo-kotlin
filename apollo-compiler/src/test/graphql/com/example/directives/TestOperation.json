@@ -67,27 +67,13 @@
 									"responseName": "__typename",
 									"fieldName": "__typename",
 									"type": "String!",
-									"isConditional": true,
-									"conditions": [
-										{
-											"kind": "BooleanCondition",
-											"variableName": "skipFriends",
-											"inverted": true
-										}
-									]
+									"isConditional": false
 								},
 								{
 									"responseName": "totalCount",
 									"fieldName": "totalCount",
 									"type": "Int",
-									"isConditional": true,
-									"conditions": [
-										{
-											"kind": "BooleanCondition",
-											"variableName": "skipFriends",
-											"inverted": true
-										}
-									],
+									"isConditional": false,
 									"description": "The total number of friends",
 									"isDeprecated": false,
 									"deprecationReason": null
