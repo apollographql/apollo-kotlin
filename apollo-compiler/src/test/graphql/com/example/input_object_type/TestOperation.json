@@ -150,7 +150,17 @@
 				{
 					"name": "listOfCustomScalar",
 					"type": "[Date]",
-					"description": "for test purpose only"
+					"description": "for test purpose only",
+					"defaultValue": [
+						false,
+						false
+					]
+				},
+				{
+					"name": "customScalar",
+					"type": "Date",
+					"description": "for test purpose only",
+					"defaultValue": false
 				},
 				{
 					"name": "listOfEnums",
