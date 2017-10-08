@@ -330,10 +330,9 @@ fun TypeSpec.withBuilder(): TypeSpec {
     val fields = fieldSpecs
         .filter { !it.modifiers.contains(Modifier.STATIC) }
         .filterNot { it.name.startsWith(prefix = "$") }
-
-    val builderVariable = BuilderTypeSpecBuilder.CLASS_NAME.decapitalize()
-    val builderClass = ClassName.get("", BuilderTypeSpecBuilder.CLASS_NAME)
-    val toBuilderMethod = MethodSpec.methodBuilder("toBuilder")
+    val builderVariable = ClassNames.BUILDER.simpleName().decapitalize()
+    val builderClass = ClassName.get("", ClassNames.BUILDER.simpleName())
+    val toBuilderMethod = MethodSpec.methodBuilder(BuilderTypeSpecBuilder.TO_BUILDER_METHOD_NAME)
         .addModifiers(Modifier.PUBLIC)
         .returns(builderClass)
         .addStatement("\$T \$L = new \$T()", builderClass, builderVariable, builderClass)
@@ -344,6 +343,10 @@ fun TypeSpec.withBuilder(): TypeSpec {
         )
         .addStatement("return \$L", builderVariable)
         .build()
+    val buildableTypes = typeSpecs.filter {
+      it.typeSpecs.find { it.name == ClassNames.BUILDER.simpleName() } != null
+    }.map { ClassName.get("", it.name) }
+
     return toBuilder()
         .addMethod(toBuilderMethod)
         .addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
@@ -353,7 +356,8 @@ fun TypeSpec.withBuilder(): TypeSpec {
                 fields = fields.map { it.name to it.type.unwrapOptionalType() },
                 fieldDefaultValues = emptyMap(),
                 fieldJavaDocs = emptyMap(),
-                typeDeclarations = emptyList()
+                typeDeclarations = emptyList(),
+                buildableTypes = buildableTypes
             ).build()
         )
         .build()

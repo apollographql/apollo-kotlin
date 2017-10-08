@@ -38,7 +38,7 @@ data class Fragment(
         .flatten(excludeTypeNames = listOf(
             Util.RESPONSE_FIELD_MAPPER_TYPE_NAME,
             (SchemaTypeSpecBuilder.FRAGMENTS_FIELD.type as ClassName).simpleName(),
-            BuilderTypeSpecBuilder.CLASS_NAME
+            ClassNames.BUILDER.simpleName()
         ))
         .let {
           if (context.generateModelBuilder) {

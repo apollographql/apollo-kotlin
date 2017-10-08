@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
+import com.apollographql.apollo.api.internal.Mutator;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
 import com.example.fragment_with_inline_fragment.fragment.HeroDetails;
@@ -190,6 +191,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       public Builder hero(@Nullable Hero hero) {
         this.hero = hero;
+        return this;
+      }
+
+      public Builder hero(@Nonnull Mutator<Hero.Builder> mutator) {
+        Utils.checkNotNull(mutator, "mutator == null");
+        Hero.Builder builder = this.hero != null ? this.hero.toBuilder() : Hero.builder();
+        mutator.accept(builder);
+        this.hero = builder.build();
         return this;
       }
 
@@ -391,6 +400,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return $hashCode;
       }
 
+      public Builder toBuilder() {
+        Builder builder = new Builder();
+        builder.heroDetails = heroDetails;
+        return builder;
+      }
+
+      public static Builder builder() {
+        return new Builder();
+      }
+
       public static final class Mapper implements FragmentResponseFieldMapper<Fragments> {
         final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();
 
@@ -401,6 +420,23 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             heroDetails = heroDetailsFieldMapper.map(reader);
           }
           return new Fragments(Utils.checkNotNull(heroDetails, "heroDetails == null"));
+        }
+      }
+
+      public static final class Builder {
+        private @Nonnull HeroDetails heroDetails;
+
+        Builder() {
+        }
+
+        public Builder heroDetails(@Nonnull HeroDetails heroDetails) {
+          this.heroDetails = heroDetails;
+          return this;
+        }
+
+        public Fragments build() {
+          Utils.checkNotNull(heroDetails, "heroDetails == null");
+          return new Fragments(heroDetails);
         }
       }
     }
@@ -457,6 +493,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       public Builder fragments(@Nonnull Fragments fragments) {
         this.fragments = fragments;
+        return this;
+      }
+
+      public Builder fragments(@Nonnull Mutator<Fragments.Builder> mutator) {
+        Utils.checkNotNull(mutator, "mutator == null");
+        Fragments.Builder builder = this.fragments != null ? this.fragments.toBuilder() : Fragments.builder();
+        mutator.accept(builder);
+        this.fragments = builder.build();
         return this;
       }
 

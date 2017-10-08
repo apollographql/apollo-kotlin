@@ -176,6 +176,13 @@ class SchemaTypeSpecBuilder(
         .withToStringImplementation()
         .withEqualsImplementation()
         .withHashCodeImplementation()
+        .let {
+          if (context.generateModelBuilder) {
+            it.withBuilder()
+          } else {
+            it
+          }
+        }
   }
 
   private fun formatUniqueTypeName(typeName: String, reservedTypeNames: List<String>): String {

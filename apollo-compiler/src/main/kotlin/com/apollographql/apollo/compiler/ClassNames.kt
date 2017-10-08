@@ -1,6 +1,7 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.api.*
+import com.apollographql.apollo.api.internal.Mutator
 import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder
 import com.apollographql.apollo.api.internal.Utils
@@ -13,6 +14,7 @@ object ClassNames {
   val OBJECT: ClassName = ClassName.get(Object::class.java)
   val STRING: ClassName = ClassName.get(String::class.java)
   val LIST: ClassName = ClassName.get(List::class.java)
+  val ARRAY_LIST: ClassName = ClassName.get(ArrayList::class.java)
   val GRAPHQL_OPERATION: ClassName = ClassName.get(Operation::class.java)
   val GRAPHQL_QUERY: ClassName = ClassName.get(Query::class.java)
   val GRAPHQL_MUTATION: ClassName = ClassName.get(Mutation::class.java)
@@ -27,6 +29,8 @@ object ClassNames {
   val API_UTILS: ClassName = ClassName.get(Utils::class.java)
   val FRAGMENT: ClassName = ClassName.get(GraphqlFragment::class.java)
   val INPUT_TYPE: ClassName = ClassName.get(Input::class.java)
+  val BUILDER: ClassName = ClassName.get("", "Builder")
+  val MUTATOR: ClassName = ClassName.get(Mutator::class.java)
 
   fun <K : Any> parameterizedListOf(type: Class<K>): TypeName =
       ParameterizedTypeName.get(LIST, ClassName.get(type))
