@@ -32,6 +32,8 @@ public final class ReviewInput {
 
   private final Input<List<Object>> listOfCustomScalar;
 
+  private final Input<Object> customScalar;
+
   private final Input<List<Episode>> listOfEnums;
 
   private final Input<List<Integer>> listOfInt;
@@ -43,7 +45,7 @@ public final class ReviewInput {
   ReviewInput(int stars, Input<Integer> nullableIntFieldWithDefaultValue, Input<String> commentary,
       @Nonnull ColorInput favoriteColor, Input<Episode> enumWithDefaultValue,
       Input<Episode> nullableEnum, Input<List<Object>> listOfCustomScalar,
-      Input<List<Episode>> listOfEnums, Input<List<Integer>> listOfInt,
+      Input<Object> customScalar, Input<List<Episode>> listOfEnums, Input<List<Integer>> listOfInt,
       Input<List<String>> listOfString, Input<Boolean> booleanWithDefaultValue) {
     this.stars = stars;
     this.nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue;
@@ -52,6 +54,7 @@ public final class ReviewInput {
     this.enumWithDefaultValue = enumWithDefaultValue;
     this.nullableEnum = nullableEnum;
     this.listOfCustomScalar = listOfCustomScalar;
+    this.customScalar = customScalar;
     this.listOfEnums = listOfEnums;
     this.listOfInt = listOfInt;
     this.listOfString = listOfString;
@@ -105,6 +108,13 @@ public final class ReviewInput {
    */
   public @Nullable List<Object> listOfCustomScalar() {
     return this.listOfCustomScalar.value;
+  }
+
+  /**
+   * for test purpose only
+   */
+  public @Nullable Object customScalar() {
+    return this.customScalar.value;
   }
 
   /**
@@ -167,6 +177,9 @@ public final class ReviewInput {
             }
           } : null);
         }
+        if (customScalar.defined) {
+          writer.writeCustom("customScalar", com.example.mutation_create_review_semantic_naming.type.CustomType.DATE, customScalar.value != null ? customScalar.value : null);
+        }
         if (listOfEnums.defined) {
           writer.writeList("listOfEnums", listOfEnums.value != null ? new InputFieldWriter.ListWriter() {
             @Override
@@ -218,6 +231,8 @@ public final class ReviewInput {
     private Input<Episode> nullableEnum = Input.absent();
 
     private Input<List<Object>> listOfCustomScalar = Input.absent();
+
+    private Input<Object> customScalar = Input.absent();
 
     private Input<List<Episode>> listOfEnums = Input.absent();
 
@@ -289,6 +304,14 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
+    public Builder customScalar(@Nullable Object customScalar) {
+      this.customScalar = Input.fromNullable(customScalar);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
     public Builder listOfEnums(@Nullable List<Episode> listOfEnums) {
       this.listOfEnums = Input.fromNullable(listOfEnums);
       return this;
@@ -320,7 +343,7 @@ public final class ReviewInput {
 
     public ReviewInput build() {
       Utils.checkNotNull(favoriteColor, "favoriteColor == null");
-      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nullableEnum, listOfCustomScalar, listOfEnums, listOfInt, listOfString, booleanWithDefaultValue);
+      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, booleanWithDefaultValue);
     }
   }
 }

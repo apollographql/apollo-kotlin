@@ -346,11 +346,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class FriendsConnection {
     static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, true, Arrays.<ResponseField.Condition>asList(ResponseField.Condition.booleanCondition("skipFriends", true))),
-      ResponseField.forInt("totalCount", "totalCount", null, true, Arrays.<ResponseField.Condition>asList(ResponseField.Condition.booleanCondition("skipFriends", true)))
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final Optional<String> __typename;
+    final @Nonnull String __typename;
 
     final Optional<Integer> totalCount;
 
@@ -360,12 +360,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public FriendsConnection(@Nullable String __typename, @Nullable Integer totalCount) {
-      this.__typename = Optional.fromNullable(__typename);
+    public FriendsConnection(@Nonnull String __typename, @Nullable Integer totalCount) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.totalCount = Optional.fromNullable(totalCount);
     }
 
-    public Optional<String> __typename() {
+    public @Nonnull String __typename() {
       return this.__typename;
     }
 
@@ -380,7 +380,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename.isPresent() ? __typename.get() : null);
+          writer.writeString($responseFields[0], __typename);
           writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
         }
       };

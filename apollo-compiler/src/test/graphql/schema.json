@@ -1676,7 +1676,19 @@
                   "name": "Date",
                   "ofType": null
                 }
-              }
+              },
+              "defaultValue": "[\"1984-06-21\", \"1984-11-21\"]"
+            },
+            {
+              "name": "customScalar",
+              "description": "for test purpose only",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Date",
+                "ofType": null
+              },
+              "defaultValue": "\"1984-06-21\""
             },
             {
               "name": "listOfEnums",
@@ -1690,7 +1702,8 @@
                   "name": "Episode",
                   "ofType": null
                 }
-              }
+              },
+              "defaultValue": "[\"NEWHOPE\", \"EMPIRE\"]"
             },
             {
               "name": "listOfInt",

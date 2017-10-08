@@ -117,50 +117,60 @@
 			"fields": [
 				{
 					"name": "stars",
-					"description": "0-5 stars",
-					"type": "Int!"
+					"type": "Int!",
+					"description": "0-5 stars"
 				},
 				{
 					"name": "nullableIntFieldWithDefaultValue",
-					"description": "for test purpose only",
 					"type": "Int",
+					"description": "for test purpose only",
 					"defaultValue": 10
 				},
 				{
 					"name": "commentary",
-					"description": "Comment about the movie, optional",
-					"type": "String"
+					"type": "String",
+					"description": "Comment about the movie, optional"
 				},
 				{
 					"name": "favoriteColor",
-					"description": "Favorite color, optional",
-					"type": "ColorInput!"
+					"type": "ColorInput!",
+					"description": "Favorite color, optional"
 				},
 				{
 					"name": "enumWithDefaultValue",
-					"description": "for test purpose only",
 					"type": "Episode",
+					"description": "for test purpose only",
 					"defaultValue": "JEDI"
 				},
 				{
 					"name": "nullableEnum",
-					"description": "for test purpose only",
-					"type": "Episode"
+					"type": "Episode",
+					"description": "for test purpose only"
 				},
 				{
 					"name": "listOfCustomScalar",
+					"type": "[Date]",
 					"description": "for test purpose only",
-					"type": "[Date]"
+					"defaultValue": [
+						false,
+						false
+					]
+				},
+				{
+					"name": "customScalar",
+					"type": "Date",
+					"description": "for test purpose only",
+					"defaultValue": false
 				},
 				{
 					"name": "listOfEnums",
-					"description": "for test purpose only",
-					"type": "[Episode]"
+					"type": "[Episode]",
+					"description": "for test purpose only"
 				},
 				{
 					"name": "listOfInt",
-					"description": "for test purpose only",
 					"type": "[Int]",
+					"description": "for test purpose only",
 					"defaultValue": [
 						1,
 						2,
@@ -169,8 +179,8 @@
 				},
 				{
 					"name": "listOfString",
-					"description": "for test purpose only",
 					"type": "[String]",
+					"description": "for test purpose only",
 					"defaultValue": [
 						"test1",
 						"test2",
@@ -179,8 +189,8 @@
 				},
 				{
 					"name": "booleanWithDefaultValue",
-					"description": "for test purpose only",
 					"type": "Boolean",
+					"description": "for test purpose only",
 					"defaultValue": true
 				}
 			]
@@ -192,26 +202,26 @@
 			"fields": [
 				{
 					"name": "red",
-					"description": "Red color",
 					"type": "Int!",
+					"description": "Red color",
 					"defaultValue": 1
 				},
 				{
 					"name": "green",
-					"description": "Green color",
 					"type": "Float",
+					"description": "Green color",
 					"defaultValue": 0
 				},
 				{
 					"name": "blue",
-					"description": "Blue color",
 					"type": "Float!",
+					"description": "Blue color",
 					"defaultValue": 1.5
 				},
 				{
 					"name": "enumWithDefaultValue",
-					"description": "for test purpose only",
 					"type": "Episode",
+					"description": "for test purpose only",
 					"defaultValue": "JEDI"
 				}
 			]
