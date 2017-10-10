@@ -16,9 +16,8 @@ jdk:
   - oraclejdk8
 
 script:
-  - ./gradlew clean build connectedCheck -x checkstyleTest --stacktrace --max-workers=2 -x apollo-gradle-plugin:test
-  # -x apollo-integration:build -x apollo-integration:connectedCheck
-  # - .buildscript/integration_tests_composite.sh
+  - ./gradlew clean build connectedCheck -x checkstyleTest --stacktrace --max-workers=2 -x apollo-gradle-plugin:test -x apollo-integration:build -x apollo-integration:connectedCheck
+  - .buildscript/integration_tests_composite.sh
 
 before_script:
   - echo no | android create avd --force -n test -t android-15 --abi armeabi-v7a
