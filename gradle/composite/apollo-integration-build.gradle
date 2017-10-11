@@ -44,6 +44,7 @@ dependencies {
   compile dep.apolloRxSupport
   compile dep.apolloRx2Support
   compile dep.appcompat
+  compile dep.apolloHttpCache
 
   testCompile dep.junit
   testCompile dep.truth
