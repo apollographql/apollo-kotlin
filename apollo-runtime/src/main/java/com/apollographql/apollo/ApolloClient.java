@@ -15,6 +15,7 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
+import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
@@ -157,10 +158,14 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   /**
    * Clear all entries from the normalized cache.
    *
-   * @return {@link ApolloStoreOperation} operation to execute
+   * @return {@code true} if operation was executed successfully, {@code false} otherwise
    */
-  public @Nonnull ApolloStoreOperation<Boolean> clearNormalizedCache() {
-    return apolloStore.clearAll();
+  public boolean clearNormalizedCache() {
+    try {
+      return apolloStore.clearAll().execute();
+    } catch (ApolloException e) {
+      return false;
+    }
   }
 
   /**
