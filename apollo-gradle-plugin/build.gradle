@@ -22,6 +22,7 @@ dependencies {
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
+apply from: rootProject.file('gradle/bintray.gradle')
 
 tasks.withType(Test) {
   jvmArgs '-Xmx512m'

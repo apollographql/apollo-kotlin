@@ -6,7 +6,8 @@ def versions = [
     supportLibVersion            : '25.3.1',
     mockito                      : '1.9.5',
     testRunner                   : '0.5',
-    espressoIdlingResourceVersion: '2.2.2'
+    espressoIdlingResourceVersion: '2.2.2',
+    bintray                      : '1.2'
 ]
 
 ext.isCi = "true" == System.getenv('CI')
@@ -50,5 +51,6 @@ ext.dep = [
     okHttp                  : "com.squareup.okhttp3:okhttp:$versions.okHttpVersion",
     okhttpTestSupport       : "com.squareup.okhttp3:okhttp-testing-support:$versions.okHttpVersion",
     testRunner              : "com.android.support.test:runner:$versions.testRunner",
-    espressoIdlingResource  : "com.android.support.test.espresso:espresso-idling-resource:$versions.espressoIdlingResourceVersion"
+    espressoIdlingResource  : "com.android.support.test.espresso:espresso-idling-resource:$versions.espressoIdlingResourceVersion",
+    bintrayGradlePlugin     : "com.jfrog.bintray.gradle:gradle-bintray-plugin:$versions.bintray"
 ]
