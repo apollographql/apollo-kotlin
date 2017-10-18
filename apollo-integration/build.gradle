@@ -32,8 +32,8 @@ dependencies {
   compile dep.jsr305
   compile project(':apollo-api')
   compile project(':apollo-runtime')
-  compile project(':apollo-rxsupport')
-  compile project(':apollo-rx2support')
+  compile project(':apollo-rx-support')
+  compile project(':apollo-rx2-support')
   compile project(':apollo-http-cache')
   compile dep.appcompat
   compile dep.rxjava

@@ -9,6 +9,7 @@ subprojects {
 
     dependencies {
       classpath dep.kotlinGradlePlugin
+      classpath dep.bintrayGradlePlugin
     }
   }
   repositories {
