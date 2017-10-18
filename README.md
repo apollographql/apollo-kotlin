@@ -18,7 +18,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.apollographql.apollo:gradle-plugin:0.4.1'
+        classpath 'com.apollographql.apollo:apollo-gradle-plugin:0.4.1'
     }
 }
 ```
@@ -32,7 +32,7 @@ buildscript {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
   }
   dependencies {
-    classpath 'com.apollographql.apollo:gradle-plugin:0.4.2-SNAPSHOT'
+    classpath 'com.apollographql.apollo:apollo-gradle-plugin:0.4.2-SNAPSHOT'
   }
 }
 ```

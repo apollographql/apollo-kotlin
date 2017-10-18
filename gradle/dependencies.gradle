@@ -21,7 +21,7 @@ ext.androidConfig = [
 
 ext.dep = [
     androidPlugin           : 'com.android.tools.build:gradle:2.3.1',
-    apolloPlugin            : "com.apollographql.apollo:gradle-plugin:$versions.apolloVersion",
+    apolloPlugin            : "com.apollographql.apollo:apollo-gradle-plugin:$versions.apolloVersion",
     apolloAndroidSupport    : "com.apollographql.apollo:apollo-android-support:$versions.apolloVersion",
     apolloRuntime           : "com.apollographql.apollo:apollo-runtime:$versions.apolloVersion",
     apolloRxSupport         : "com.apollographql.apollo:apollo-rx-support:$versions.apolloVersion",
