@@ -8,7 +8,7 @@ Apollo-Android is a GraphQL compliant client that generates Java models from sta
 
 ## Adding Apollo to your Project
 
-The latest Gradle plugin version is 0.4.2.
+The latest Gradle plugin version is [ ![Download](https://api.bintray.com/packages/apollographql/android/apollo-gradle-plugin/images/download.svg) ](https://bintray.com/apollographql/android/apollo-gradle-plugin/_latestVersion)
 
 To use this plugin, add the dependency to your project's build.gradle file:
 
@@ -18,7 +18,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.apollographql.apollo:apollo-gradle-plugin:0.4.2'
+        classpath 'com.apollographql.apollo:apollo-gradle-plugin:x.y.z'
     }
 }
 ```
@@ -455,14 +455,15 @@ apollo {
 
 RxJava1:
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo/apollo-rx-support.svg)](http://repo1.maven.org/maven2/com/apollographql/apollo/apollo-rx-support/)
+[ ![Download](https://api.bintray.com/packages/apollographql/android/apollo-rx-support/images/download.svg) ](https://bintray.com/apollographql/android/apollo-rx-support/_latestVersion)
 ```gradle
 compile 'com.apollographql.apollo:apollo-rx-support:x.y.z'
 ```
 
 RxJava2:
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo/apollo-rx2-support.svg)](http://repo1.maven.org/maven2/com/apollographql/apollo/apollo-rx2-support/)
+[ ![Download](https://api.bintray.com/packages/apollographql/android/apollo-rx2-support/images/download.svg) ](https://bintray.com/apollographql/android/apollo-rx2-support/_latestVersion)
+
 ```gradle
 compile 'com.apollographql.apollo:apollo-rx2-support:x.y.z'
 ```
