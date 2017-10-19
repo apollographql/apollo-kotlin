@@ -11,6 +11,7 @@ import com.apollographql.apollo.internal.ApolloLogger;
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
@@ -27,7 +28,11 @@ public final class ApolloHttpCache implements HttpCache {
   private final HttpCacheStore cacheStore;
   private final ApolloLogger logger;
 
-  public ApolloHttpCache(@Nonnull final HttpCacheStore cacheStore, final Logger logger) {
+  public ApolloHttpCache(@Nonnull final HttpCacheStore cacheStore) {
+    this(cacheStore, null);
+  }
+
+  public ApolloHttpCache(@Nonnull final HttpCacheStore cacheStore, @Nullable final Logger logger) {
     this.cacheStore = checkNotNull(cacheStore, "cacheStore == null");
     this.logger = new ApolloLogger(Optional.fromNullable(logger));
   }
@@ -80,8 +85,8 @@ public final class ApolloHttpCache implements HttpCache {
       String contentType = response.header("Content-Type");
       String contentLength = response.header("Content-Length");
       return response.newBuilder()
-        .body(new CacheResponseBody(cacheResponseSource, contentType, contentLength))
-        .build();
+          .body(new CacheResponseBody(cacheResponseSource, contentType, contentLength))
+          .build();
     } catch (Exception e) {
       closeQuietly(responseCacheRecord);
       logger.e(e, "Failed to read http cache entry for key: %s", cacheKey);
@@ -106,8 +111,8 @@ public final class ApolloHttpCache implements HttpCache {
         }
 
         return response.newBuilder()
-          .body(new ResponseBodyProxy(cacheRecordEditor, response, logger))
-          .build();
+            .body(new ResponseBodyProxy(cacheRecordEditor, response, logger))
+            .build();
       }
     } catch (Exception e) {
       abortQuietly(cacheRecordEditor);
