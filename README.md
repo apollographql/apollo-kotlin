@@ -8,7 +8,7 @@ Apollo-Android is a GraphQL compliant client that generates Java models from sta
 
 ## Adding Apollo to your Project
 
-The latest Gradle plugin version is 0.4.1.
+The latest Gradle plugin version is 0.4.2.
 
 To use this plugin, add the dependency to your project's build.gradle file:
 
@@ -18,7 +18,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.apollographql.apollo:apollo-gradle-plugin:0.4.1'
+        classpath 'com.apollographql.apollo:apollo-gradle-plugin:0.4.2'
     }
 }
 ```
@@ -32,7 +32,7 @@ buildscript {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
   }
   dependencies {
-    classpath 'com.apollographql.apollo:apollo-gradle-plugin:0.4.2-SNAPSHOT'
+    classpath 'com.apollographql.apollo:apollo-gradle-plugin:0.4.3-SNAPSHOT'
   }
 }
 ```
@@ -114,38 +114,38 @@ In our sample project, we have the base url pointing to `https://api.githunt.com
 There is also a #query && #mutation instance method on ApolloClient that can take as input any Query or Mutation that you have generated using Apollo.
 
 ```java
+apolloClient.query(
+  FeedQuery.builder()
+    .limit(10)
+    .type(FeedType.HOT)
+    .build()
+).enqueue(new ApolloCall.Callback<FeedQuery.Data>() {
 
-apolloClient.query(FeedQuery.builder()
-                .limit(10)
-                .type(FeedType.HOT)
-                .build()).enqueue(new ApolloCall.Callback<FeedQuery.Data>() {
+  @Override public void onResponse(@Nonnull Response<FeedQuery.Data> dataResponse) {
 
-            @Override public void onResponse(@Nonnull Response<FeedQuery.Data> dataResponse) {
+    final StringBuffer buffer = new StringBuffer();
+    for (FeedQuery.Data.Feed feed : dataResponse.data().feed()) {
+      buffer.append("name:" + feed.repository().fragments().repositoryFragment().name());
+      buffer.append(" owner: " + feed.repository().fragments().repositoryFragment().owner().login());
+      buffer.append(" postedBy: " + feed.postedBy().login());
+      buffer.append("\n~~~~~~~~~~~");
+      buffer.append("\n\n");
+    }
 
-                final StringBuffer buffer = new StringBuffer();
-                for (FeedQuery.Data.Feed feed : dataResponse.data().feed()) {
-                    buffer.append("name:" + feed.repository().fragments().repositoryFragment().name());
-                    buffer.append(" owner: " + feed.repository().fragments().repositoryFragment().owner().login());
-                    buffer.append(" postedBy: " + feed.postedBy().login());
-                    buffer.append("\n~~~~~~~~~~~");
-                    buffer.append("\n\n");
-                }
+    // onResponse returns on a background thread. If you want to make UI updates make sure they are done on the Main Thread.
+    MainActivity.this.runOnUiThread(new Runnable() {
+      @Override public void run() {
+        TextView txtResponse = (TextView) findViewById(R.id.txtResponse);
+        txtResponse.setText(buffer.toString());
+      }
+    });
+      
+  }
 
-				// onResponse returns on a background thread. If you want to make UI updates make sure they are done on the Main Thread.
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override public void run() {
-                        TextView txtResponse = (TextView) findViewById(R.id.txtResponse);
-                        txtResponse.setText(buffer.toString());
-                    }
-                });
-
-            }
-
-            @Override public void onFailure(@Nonnull Throwable t) {
-                Log.e(TAG, t.getMessage(), t);
-            }
-        });
-             
+  @Override public void onFailure(@Nonnull Throwable t) {
+    Log.e(TAG, t.getMessage(), t);
+  }
+});       
 ```
 
 ## Custom Scalar Types
@@ -165,28 +165,27 @@ Then register your custom adapter:
 
 ```java
 CustomTypeAdapter<Date> customTypeAdapter = new CustomTypeAdapter<Date>() {
-    @Override
-    public Date decode(String value) {
-        try {
-            return ISO8601_DATE_FORMAT.parse(value);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+  @Override
+  public Date decode(String value) {
+    try {
+      return ISO8601_DATE_FORMAT.parse(value);
+    } catch (ParseException e) {
+      throw new RuntimeException(e);
     }
+  }
 
-    @Override
-    public String encode(Date value) {
-        return ISO8601_DATE_FORMAT.format(value);
-    }
+  @Override
+  public String encode(Date value) {
+    return ISO8601_DATE_FORMAT.format(value);
+  }
 };
 
 // use on creating ApolloClient
 ApolloClient.builder()
-    .serverUrl(serverUrl)
-    .okHttpClient(okHttpClient)
-    .normalizedCache(normalizedCacheFactory, cacheKeyResolver)
-    .addCustomTypeAdapter(CustomType.DATETIME, customTypeAdapter)
-    .build();
+  .serverUrl(serverUrl)
+  .okHttpClient(okHttpClient)
+  .addCustomTypeAdapter(CustomType.DATETIME, customTypeAdapter)
+  .build();
 ```
 
 ## Support For Cached Responses
@@ -199,7 +198,16 @@ Apollo GraphQL client allows you to cache responses, making it suitable for use 
 
 ### Usage
 
+To enable HTTP Cache support, add the dependency to your project's build.gradle file:
+
+```groovy
+dependencies {
+  compile 'com.apollographql.apollo:apollo-http-cache:0.4.2'
+}
+```
+
 Raw HTTP Response Cache:
+
 ```java
 //Directory where cached responses will be stored
 File file = new File("/cache/");
@@ -207,19 +215,46 @@ File file = new File("/cache/");
 //Size in bytes of the cache
 int size = 1024*1024;
 
-//Strategy for deciding when the cache becomes stale
-EvictionStrategy evictionStrategy = new TimeoutEvictionStrategy(5, TimeUnit.SECONDS);
-
 //Create the http response cache store
 ResponseCacheStore cacheStore = new DiskLruCacheStore(file, size); 
 
 //Build the Apollo Client
 ApolloClient apolloClient = ApolloClient.builder()
-                                    .serverUrl("/")
-                                    .httpCache(cacheStore, evictionStrategy)
-                                    .okHttpClient(okHttpClient)
-                                    .build();
+  .serverUrl("/")
+  .httpCache(new HttpCache(cacheStore))
+  .okHttpClient(okHttpClient)
+  .build();
+
+apolloClient
+  .query(
+    FeedQuery.builder()
+      .limit(10)
+      .type(FeedType.HOT)
+      .build()
+  )
+  .httpCachePolicy(HttpCachePolicy.CACHE_FIRST)
+  .enqueue(new ApolloCall.Callback<FeedQuery.Data>() {
+
+    @Override public void onResponse(@Nonnull Response<FeedQuery.Data> dataResponse) {
+      ...
+    }
+
+    @Override public void onFailure(@Nonnull Throwable t) {
+      ...
+    }
+  }); 
 ```
+
+**IMPORTANT:** Caching is provided only for `query` operations. It isn't available for `mutation` operations.
+
+There are four available cache policies `HttpCachePolicy`:
+
+- `CACHE_ONLY` - Fetch a response from the cache only, ignoring the network. If the cached response doesn't exist or is expired, then return an error.
+- `NETWORK_ONLY` - Fetch a response from the network only, ignoring any cached responses.
+- `CACHE_FIRST` - Fetch a response from the cache first. If the response doesn't exist or is expired, then fetch a response from the network.
+- `NETWORK_FIRST` - Fetch a response from the network first. If the network fails and the cached response isn't expired, then return cached data instead.
+
+For `CACHE_ONLY`, `CACHE_FIRST` and `NETWORK_FIRST` policies you can define the timeout after what cached response is treated as expired and will be evicted from the http cache, `expireAfter(expireTimeout, timeUnit)`.`
 
 Normalized Disk Cache:
 ```java
@@ -232,31 +267,31 @@ NormalizedCacheFactory cacheFactory = new SqlNormalizedCacheFactory(apolloSqlHel
 
 //Create the cache key resolver, this example works well when all types have globally unique ids.
 CacheKeyResolver resolver =  new CacheKeyResolver() {
-         @Nonnull @Override
-           public CacheKey fromFieldRecordSet(@Nonnull ResponseField field, @Nonnull Map<String, Object> recordSet) {
-             return formatCacheKey((String) recordSet.get("id"));
-           }
-         
-           @Nonnull @Override
-           public CacheKey fromFieldArguments(@Nonnull ResponseField field, @Nonnull Operation.Variables variables) {
-             return formatCacheKey((String) field.resolveArgument("id", variables));
-           }
-         
-           private CacheKey formatCacheKey(String id) {
-             if (id == null || id.isEmpty()) {
-               return CacheKey.NO_KEY;
-             } else {
-               return CacheKey.from(id);
-             }
-           }
-        };
+ @Nonnull @Override
+   public CacheKey fromFieldRecordSet(@Nonnull ResponseField field, @Nonnull Map<String, Object> recordSet) {
+     return formatCacheKey((String) recordSet.get("id"));
+   }
+ 
+   @Nonnull @Override
+   public CacheKey fromFieldArguments(@Nonnull ResponseField field, @Nonnull Operation.Variables variables) {
+     return formatCacheKey((String) field.resolveArgument("id", variables));
+   }
+ 
+   private CacheKey formatCacheKey(String id) {
+     if (id == null || id.isEmpty()) {
+       return CacheKey.NO_KEY;
+     } else {
+       return CacheKey.from(id);
+     }
+   }
+};
 
 //Build the Apollo Client
 ApolloClient apolloClient = ApolloClient.builder()
-                                    .serverUrl("/")
-                                    .normalizedCache(cacheFactory, resolver)
-                                    .okHttpClient(okHttpClient)
-                                    .build();
+  .serverUrl("/")
+  .normalizedCache(cacheFactory, resolver)
+  .okHttpClient(okHttpClient)
+  .build();
 ```
 
 Normalized In-Memory Cache:
@@ -267,10 +302,10 @@ NormalizedCacheFactory cacheFactory = new LruNormalizedCacheFactory(EvictionPoli
 
 //Build the Apollo Client
 ApolloClient apolloClient = ApolloClient.builder()
-                                    .serverUrl("/")
-                                    .normalizedCache(cacheFactory, resolver)
-                                    .okHttpClient(okHttpClient)
-                                    .build();
+  .serverUrl("/")
+  .normalizedCache(cacheFactory, resolver)
+  .okHttpClient(okHttpClient)
+  .build();
 
 ```
 
@@ -282,9 +317,8 @@ hit in the chain. Writes will propagate down the entire chain.
 
 NormalizedCacheFactory sqlCacheFactory = new SqlNormalizedCacheFactory(apolloSqlHelper)
 NormalizedCacheFactory memoryFirstThenSqlCacheFactory = new LruNormalizedCacheFactory(
-                EvictionPolicy.builder().maxSizeBytes(10 * 1024).build()
-            )
-            .chain(sqlCacheFactory);
+  EvictionPolicy.builder().maxSizeBytes(10 * 1024).build()
+).chain(sqlCacheFactory);
 
 ```
 
