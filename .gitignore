@@ -6,4 +6,14 @@ local.properties
 /reports
 node_modules/
 generated
+
 .DS_Store
+Thumbs.db
+db.json
+*.log
+node_modules/
+docs/public/*
+!docs/public/_redirects
+.deploy*/
+docs.json
+package-lock.json
