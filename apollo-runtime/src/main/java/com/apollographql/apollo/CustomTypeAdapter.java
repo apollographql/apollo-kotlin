@@ -67,7 +67,7 @@ public interface CustomTypeAdapter<T> {
    * @param value the value to de-serialize
    * @return custom scalar type
    */
-  @Nonnull T decode(@Nonnull String value);
+  T decode(@Nonnull String value);
 
   /**
    * Serializes the custom scalar type to the corresponding string value. Usually used in serializing variables or input
