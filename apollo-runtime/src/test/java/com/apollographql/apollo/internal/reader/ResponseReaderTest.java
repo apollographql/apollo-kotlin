@@ -1,5 +1,7 @@
 package com.apollographql.apollo.internal.reader;
 
+import com.google.common.truth.Truth;
+
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
@@ -19,6 +21,7 @@ import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -170,9 +173,9 @@ public class ResponseReaderTest {
   }
 
   @Test public void readCustom() throws Exception {
-    ResponseField successField = ResponseField.forCustomType("successFieldResponseName", "successFieldName", null, false, CUSTOM_TYPE, NO_CONDITIONS);
+    ResponseField successField = ResponseField.forCustomType("successFieldResponseName", "successFieldName", null, false, DATE_CUSTOM_TYPE, NO_CONDITIONS);
     ResponseField classCastExceptionField = ResponseField.forCustomType("classCastExceptionFieldResponseName", "classCastExceptionFieldName",
-        null, false, CUSTOM_TYPE, NO_CONDITIONS);
+        null, false, DATE_CUSTOM_TYPE, NO_CONDITIONS);
 
     Map<String, Object> recordSet = new HashMap<>();
     recordSet.put("successFieldResponseName", "2017-04-16");
@@ -187,6 +190,23 @@ public class ResponseReaderTest {
     } catch (ClassCastException expected) {
       // expected
     }
+  }
+
+  @Test public void readCustomWithDecodedNullValue() throws Exception {
+    Map<String, Object> recordSet = new HashMap<>();
+    recordSet.put("responseName", "http:://");
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+
+    ResponseField field = ResponseField.forCustomType("responseName", "fieldName", null, false, URL_CUSTOM_TYPE, NO_CONDITIONS);
+    try {
+      responseReader.readCustomType((ResponseField.CustomTypeField) field);
+      fail("expected NullPointerException");
+    } catch (NullPointerException e) {
+      // expected
+    }
+
+    field = ResponseField.forCustomType("responseName", "fieldName", null, true, URL_CUSTOM_TYPE, NO_CONDITIONS);
+    Truth.assertThat(responseReader.readCustomType((ResponseField.CustomTypeField) field)).isNull();
   }
 
   @Test public void readCustomWithDefaultAdapter() throws Exception {
@@ -225,7 +245,7 @@ public class ResponseReaderTest {
     try {
       responseReader.readCustomType(unsupportedField);
       fail("Expect IllegalArgumentException");
-    } catch (IllegalArgumentException expected){
+    } catch (IllegalArgumentException expected) {
       // expected
     }
   }
@@ -428,7 +448,7 @@ public class ResponseReaderTest {
     RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
     assertThat(responseReader.readList(successField, new ResponseReader.ListReader() {
       @Override public Object read(ResponseReader.ListItemReader reader) {
-        return reader.readCustomType(CUSTOM_TYPE);
+        return reader.readCustomType(DATE_CUSTOM_TYPE);
       }
     })).isEqualTo(asList(DATE_TIME_FORMAT.parse("2017-04-16"), DATE_TIME_FORMAT.parse("2017-04-17"), DATE_TIME_FORMAT.parse("2017-04-18")));
 
@@ -442,6 +462,19 @@ public class ResponseReaderTest {
     } catch (ClassCastException expected) {
       // expected
     }
+  }
+
+  @Test public void readCustomListWithDecodedNull() throws Exception {
+    final Map<String, Object> recordSet = new HashMap<>();
+    recordSet.put("responseName", asList("http://", "http://"));
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+
+    ResponseField field = ResponseField.forList("responseName", "fieldName", null, false, NO_CONDITIONS);
+    Truth.assertThat(responseReader.readList(field, new ResponseReader.ListReader() {
+      @Override public Object read(ResponseReader.ListItemReader reader) {
+        return reader.readCustomType(URL_CUSTOM_TYPE);
+      }
+    })).isEmpty();
   }
 
   @Test public void readObjectList() throws Exception {
@@ -538,7 +571,7 @@ public class ResponseReaderTest {
       }
     });
     responseReader.readCustomType((ResponseField.CustomTypeField) ResponseField.forCustomType("customTypeField", "customTypeField",
-        null, true, CUSTOM_TYPE, NO_CONDITIONS));
+        null, true, DATE_CUSTOM_TYPE, NO_CONDITIONS));
   }
 
   @Test public void mandatoryFieldsIOException() throws Exception {
@@ -603,7 +636,7 @@ public class ResponseReaderTest {
 
     try {
       responseReader.readCustomType((ResponseField.CustomTypeField) ResponseField.forCustomType("customTypeField",
-          "customTypeField", null, false, CUSTOM_TYPE, NO_CONDITIONS));
+          "customTypeField", null, false, DATE_CUSTOM_TYPE, NO_CONDITIONS));
       fail("expected NullPointerException");
     } catch (NullPointerException expected) {
       //expected
@@ -670,13 +703,22 @@ public class ResponseReaderTest {
   @SuppressWarnings("unchecked") private static RealResponseReader<Map<String, Object>> responseReader(
       Map<String, Object> recordSet) {
     Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
-    customTypeAdapters.put(CUSTOM_TYPE, new CustomTypeAdapter() {
+    customTypeAdapters.put(DATE_CUSTOM_TYPE, new CustomTypeAdapter() {
       @Override public Object decode(String value) {
         try {
           return DATE_TIME_FORMAT.parse(value);
         } catch (ParseException e) {
           throw new ClassCastException();
         }
+      }
+
+      @Override public String encode(Object value) {
+        return null;
+      }
+    });
+    customTypeAdapters.put(URL_CUSTOM_TYPE, new CustomTypeAdapter() {
+      @Override public Object decode(String value) {
+        return null;
       }
 
       @Override public String encode(Object value) {
@@ -699,13 +741,23 @@ public class ResponseReaderTest {
     };
   }
 
-  private static final ScalarType CUSTOM_TYPE = new ScalarType() {
+  private static final ScalarType DATE_CUSTOM_TYPE = new ScalarType() {
     @Override public String typeName() {
       return Date.class.getName();
     }
 
     @Override public Class javaType() {
       return Date.class;
+    }
+  };
+
+  private static final ScalarType URL_CUSTOM_TYPE = new ScalarType() {
+    @Override public String typeName() {
+      return URL.class.getName();
+    }
+
+    @Override public Class javaType() {
+      return URL.class;
     }
   };
 

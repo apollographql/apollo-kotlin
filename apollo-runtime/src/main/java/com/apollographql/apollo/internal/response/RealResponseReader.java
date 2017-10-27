@@ -161,7 +161,9 @@ import java.util.Map;
         Object value = values.get(i);
         if (value != null) {
           T item = (T) listReader.read(new ListItemReader(field, value));
-          result.add(item);
+          if (item != null) {
+            result.add(item);
+          }
         }
         readerShadow.didResolveElement(i);
       }
@@ -185,8 +187,9 @@ import java.util.Map;
       result = null;
     } else {
       CustomTypeAdapter<T> typeAdapter = scalarTypeAdapters.adapterFor(field.scalarType());
-      readerShadow.didResolveScalar(value);
       result = typeAdapter.decode(value.toString());
+      checkValue(field, result);
+      readerShadow.didResolveScalar(value);
     }
     didResolve(field);
     return result;
