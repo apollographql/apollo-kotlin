@@ -423,7 +423,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
 
       HttpCache httpCache = this.httpCache;
       if (httpCache != null) {
-        callFactory = addHttCacheInterceptorIfNeeded(callFactory, httpCache.interceptor());
+        callFactory = addHttpCacheInterceptorIfNeeded(callFactory, httpCache.interceptor());
       }
 
       Executor dispatcher = this.dispatcher;
@@ -463,16 +463,16 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       });
     }
 
-    private static okhttp3.Call.Factory addHttCacheInterceptorIfNeeded(Call.Factory callFactory,
-        Interceptor httCacheInterceptor) {
+    private static okhttp3.Call.Factory addHttpCacheInterceptorIfNeeded(Call.Factory callFactory,
+        Interceptor httpCacheInterceptor) {
       if (callFactory instanceof OkHttpClient) {
         OkHttpClient client = (OkHttpClient) callFactory;
         for (Interceptor interceptor : client.interceptors()) {
-          if (interceptor.getClass().equals(httCacheInterceptor.getClass())) {
+          if (interceptor.getClass().equals(httpCacheInterceptor.getClass())) {
             return callFactory;
           }
         }
-        return client.newBuilder().addInterceptor(httCacheInterceptor).build();
+        return client.newBuilder().addInterceptor(httpCacheInterceptor).build();
       }
       return callFactory;
     }
