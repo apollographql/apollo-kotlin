@@ -1,5 +1,6 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheKey;
@@ -76,7 +77,7 @@ public class NormalizedCacheTestCase {
     cacheAndAssertCachedResponse(
         server,
         "HeroNameResponse.json",
-        apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)),
+        apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))),
         new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
           @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
             assertThat(response.hasErrors()).isFalse();
@@ -91,7 +92,7 @@ public class NormalizedCacheTestCase {
     cacheAndAssertCachedResponse(
         server,
         "HeroAndFriendsNameResponse.json",
-        apolloClient.query(new HeroAndFriendsNamesQuery(Episode.JEDI)),
+        apolloClient.query(new HeroAndFriendsNamesQuery(Input.fromNullable(Episode.JEDI))),
         new Predicate<Response<HeroAndFriendsNamesQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesQuery.Data> response) throws Exception {
             assertThat(response.hasErrors()).isFalse();
@@ -110,7 +111,7 @@ public class NormalizedCacheTestCase {
     cacheAndAssertCachedResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
-        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)),
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE))),
         new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
             assertThat(response.hasErrors()).isFalse();
@@ -133,7 +134,7 @@ public class NormalizedCacheTestCase {
     cacheAndAssertCachedResponse(
         server,
         "HeroAndFriendsNameWithIdsParentOnlyResponse.json",
-        apolloClient.query(new HeroAndFriendsNamesWithIDForParentOnlyQuery(Episode.NEWHOPE)),
+        apolloClient.query(new HeroAndFriendsNamesWithIDForParentOnlyQuery(Input.fromNullable(Episode.NEWHOPE))),
         new Predicate<Response<HeroAndFriendsNamesWithIDForParentOnlyQuery.Data>>() {
           @Override
           public boolean test(Response<HeroAndFriendsNamesWithIDForParentOnlyQuery.Data> response) throws Exception {
@@ -174,7 +175,7 @@ public class NormalizedCacheTestCase {
     cacheAndAssertCachedResponse(
         server,
         "HeroParentTypeDependentFieldDroidResponse.json",
-        apolloClient.query(new HeroParentTypeDependentFieldQuery(Episode.NEWHOPE)),
+        apolloClient.query(new HeroParentTypeDependentFieldQuery(Input.fromNullable(Episode.NEWHOPE))),
         new Predicate<Response<HeroParentTypeDependentFieldQuery.Data>>() {
           @Override public boolean test(Response<HeroParentTypeDependentFieldQuery.Data> response) throws Exception {
             assertThat(response.hasErrors()).isFalse();
@@ -194,7 +195,7 @@ public class NormalizedCacheTestCase {
     cacheAndAssertCachedResponse(
         server,
         "HeroTypeDependentAliasedFieldResponse.json",
-        apolloClient.query(new HeroTypeDependentAliasedFieldQuery(Episode.NEWHOPE)),
+        apolloClient.query(new HeroTypeDependentAliasedFieldQuery(Input.fromNullable(Episode.NEWHOPE))),
         new Predicate<Response<HeroTypeDependentAliasedFieldQuery.Data>>() {
           @Override
           public boolean test(Response<HeroTypeDependentAliasedFieldQuery.Data> response) throws Exception {
@@ -209,7 +210,7 @@ public class NormalizedCacheTestCase {
     cacheAndAssertCachedResponse(
         server,
         "HeroTypeDependentAliasedFieldResponse.json",
-        apolloClient.query(new HeroTypeDependentAliasedFieldQuery(Episode.NEWHOPE)),
+        apolloClient.query(new HeroTypeDependentAliasedFieldQuery(Input.fromNullable(Episode.NEWHOPE))),
         new Predicate<Response<HeroTypeDependentAliasedFieldQuery.Data>>() {
           @Override
           public boolean test(Response<HeroTypeDependentAliasedFieldQuery.Data> response) throws Exception {
@@ -245,8 +246,8 @@ public class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
-        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).responseFetcher(NETWORK_ONLY),
-        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE)))
+            .responseFetcher(NETWORK_ONLY), new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
             return !response.hasErrors();
           }
@@ -269,8 +270,8 @@ public class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
-        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).responseFetcher(NETWORK_ONLY),
-        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE)))
+            .responseFetcher(NETWORK_ONLY), new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
             return !response.hasErrors();
           }
@@ -293,7 +294,7 @@ public class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroNameResponse.json",
-        apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)),
+        apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))),
         new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
           @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
             assertThat(response.hasErrors()).isFalse();
@@ -319,7 +320,7 @@ public class NormalizedCacheTestCase {
 
   @Test public void cacheOnlyMissReturnsNullData() throws Exception {
     assertResponse(
-        apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).responseFetcher(CACHE_ONLY),
+        apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).responseFetcher(CACHE_ONLY),
         new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
           @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
             return response.data() == null;
@@ -358,7 +359,7 @@ public class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
-        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)),
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE))),
         new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
             assertThat(response.data().hero().id()).isEqualTo("2001");
@@ -380,7 +381,7 @@ public class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsWithFragmentResponse.json",
-        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)),
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE))),
         new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -421,7 +422,7 @@ public class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroNameResponse.json",
-        apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)),
+        apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))),
         new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
           @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
             return !response.fromCache();
@@ -432,7 +433,7 @@ public class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroNameResponse.json",
-        apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).responseFetcher(NETWORK_ONLY),
+        apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).responseFetcher(NETWORK_ONLY),
         new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
           @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
             return !response.fromCache();
@@ -441,7 +442,7 @@ public class NormalizedCacheTestCase {
     );
 
     assertResponse(
-        apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).responseFetcher(CACHE_ONLY),
+        apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).responseFetcher(CACHE_ONLY),
         new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
           @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
             return response.fromCache();
@@ -450,7 +451,7 @@ public class NormalizedCacheTestCase {
     );
 
     assertResponse(
-        apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).responseFetcher(CACHE_FIRST),
+        apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).responseFetcher(CACHE_FIRST),
         new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
           @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
             return response.fromCache();
@@ -459,7 +460,7 @@ public class NormalizedCacheTestCase {
     );
 
     assertResponse(
-        apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).responseFetcher(NETWORK_FIRST),
+        apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).responseFetcher(NETWORK_FIRST),
         new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
           @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
             return response.fromCache();
@@ -472,8 +473,8 @@ public class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
-        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).responseFetcher(NETWORK_ONLY),
-        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE)))
+            .responseFetcher(NETWORK_ONLY), new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
             assertThat(response.data().hero().name()).isEqualTo("R2-D2");
             assertThat(response.data().hero().friends()).hasSize(3);
@@ -497,8 +498,8 @@ public class NormalizedCacheTestCase {
     assertThat(apolloClient.apolloStore().remove(CacheKey.from("2001")).execute()).isTrue();
 
     assertResponse(
-        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).responseFetcher(CACHE_ONLY),
-        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE)))
+            .responseFetcher(CACHE_ONLY), new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
             assertThat(response.fromCache()).isTrue();
             assertThat(response.data()).isNull();
@@ -510,8 +511,8 @@ public class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
-        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).responseFetcher(NETWORK_ONLY),
-        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE)))
+            .responseFetcher(NETWORK_ONLY), new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
             return !response.hasErrors();
           }
@@ -533,8 +534,8 @@ public class NormalizedCacheTestCase {
     assertThat(apolloClient.apolloStore().remove(CacheKey.from("1002")).execute()).isTrue();
 
     assertResponse(
-        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).responseFetcher(CACHE_ONLY),
-        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE)))
+            .responseFetcher(CACHE_ONLY), new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
             assertThat(response.fromCache()).isTrue();
             assertThat(response.data()).isNull();
@@ -571,8 +572,8 @@ public class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
-        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).responseFetcher(NETWORK_ONLY),
-        new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE)))
+            .responseFetcher(NETWORK_ONLY), new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
           @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
             assertThat(response.data().hero().name()).isEqualTo("R2-D2");
             assertThat(response.data().hero().friends()).hasSize(3);

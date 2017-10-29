@@ -2,6 +2,7 @@ package com.apollographql.apollo;
 
 import android.support.annotation.NonNull;
 
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.CacheKey;
@@ -84,7 +85,8 @@ public class CacheHeadersTest {
 
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
     CacheHeaders cacheHeaders = CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build();
-    Rx2Apollo.from(apolloClient.query(new HeroAndFriendsNamesQuery(Episode.NEWHOPE)).cacheHeaders(cacheHeaders))
+    Rx2Apollo.from(apolloClient.query(new HeroAndFriendsNamesQuery(Input.fromNullable(Episode.NEWHOPE)))
+        .cacheHeaders(cacheHeaders))
         .test().awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     assertThat(hasHeader.get()).isTrue();
   }
@@ -127,8 +129,10 @@ public class CacheHeadersTest {
         .build();
 
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
-    Rx2Apollo.from(apolloClient.query(new HeroAndFriendsNamesQuery(Episode.NEWHOPE)).cacheHeaders(cacheHeaders))
-        .test().awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    Rx2Apollo.from(apolloClient.query(new HeroAndFriendsNamesQuery(Input.fromNullable(Episode.NEWHOPE)))
+        .cacheHeaders(cacheHeaders))
+        .test()
+        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     assertThat(hasHeader.get()).isTrue();
   }
 

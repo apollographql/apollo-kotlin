@@ -1,5 +1,6 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
@@ -26,6 +27,8 @@ import rx.observers.TestSubscriber;
 import static com.apollographql.apollo.Utils.TIME_OUT_SECONDS;
 import static com.apollographql.apollo.Utils.mockResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
+import static com.apollographql.apollo.integration.normalizer.type.Episode.EMPIRE;
+import static com.apollographql.apollo.integration.normalizer.type.Episode.NEWHOPE;
 import static com.google.common.truth.Truth.assertThat;
 
 public class RxApolloTest {
@@ -61,7 +64,7 @@ public class RxApolloTest {
 
     TestSubscriber<Response<EpisodeHeroNameQuery.Data>> testSubscriber = new TestSubscriber<>();
     RxApollo
-        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)))
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
         .subscribe(testSubscriber);
 
     testSubscriber.awaitTerminalEvent(TIME_OUT_SECONDS, TimeUnit.SECONDS);
@@ -78,7 +81,7 @@ public class RxApolloTest {
 
     TestSubscriber<Response<EpisodeHeroNameQuery.Data>> testSubscriber = new TestSubscriber<>();
     Subscription subscription = RxApollo
-        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)))
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
         .subscribe(testSubscriber);
 
     subscription.unsubscribe();
@@ -95,7 +98,7 @@ public class RxApolloTest {
 
     TestSubscriber<Response<EpisodeHeroNameQuery.Data>> testSubscriber = new TestSubscriber<>();
     RxApollo
-        .from(apolloClient.prefetch(new EpisodeHeroNameQuery(Episode.EMPIRE)))
+        .from(apolloClient.prefetch(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
         .subscribe(testSubscriber);
 
     testSubscriber.awaitTerminalEvent(TIME_OUT_SECONDS, TimeUnit.SECONDS);
@@ -110,7 +113,7 @@ public class RxApolloTest {
 
     final TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
     Subscription subscription = RxApollo
-        .from(apolloClient.prefetch(new EpisodeHeroNameQuery(Episode.EMPIRE)))
+        .from(apolloClient.prefetch(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
         .subscribe(new Action0() {
           @Override public void call() {
             testSubscriber.onCompleted();
@@ -134,7 +137,7 @@ public class RxApolloTest {
 
     final TestSubscriber<Response<EpisodeHeroNameQuery.Data>> testSubscriber = new TestSubscriber<>();
     RxApollo
-        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).watcher())
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
         .doOnNext(new Action1<Response<EpisodeHeroNameQuery.Data>>() {
           AtomicBoolean executed = new AtomicBoolean();
 
@@ -145,7 +148,7 @@ public class RxApolloTest {
               } catch (Exception ignore) {
               }
 
-              apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE))
+              apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE)))
                   .responseFetcher(NETWORK_ONLY)
                   .enqueue(null);
             }
@@ -166,7 +169,7 @@ public class RxApolloTest {
 
     final TestSubscriber<Response<EpisodeHeroNameQuery.Data>> testSubscriber = new TestSubscriber<>();
     RxApollo
-        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).watcher())
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
         .doOnNext(new Action1<Response<EpisodeHeroNameQuery.Data>>() {
           AtomicBoolean executed = new AtomicBoolean();
 
@@ -176,7 +179,7 @@ public class RxApolloTest {
                 server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
               } catch (Exception ignore) {
               }
-              apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).responseFetcher(NETWORK_ONLY)
+              apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).responseFetcher(NETWORK_ONLY)
                   .enqueue(null);
             }
           }
@@ -195,7 +198,7 @@ public class RxApolloTest {
 
     final TestSubscriber<Response<EpisodeHeroNameQuery.Data>> testSubscriber = new TestSubscriber<>();
     RxApollo
-        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).watcher())
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
         .doOnNext(new Action1<Response<EpisodeHeroNameQuery.Data>>() {
           AtomicBoolean executed = new AtomicBoolean();
 
@@ -205,7 +208,7 @@ public class RxApolloTest {
                 server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
               } catch (Exception ignore) {
               }
-              apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).enqueue(null);
+              apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(NEWHOPE))).enqueue(null);
             }
           }
         })
@@ -224,7 +227,7 @@ public class RxApolloTest {
 
     final TestSubscriber<Response<EpisodeHeroNameQuery.Data>> testSubscriber = new TestSubscriber<>();
     Subscription subscription = RxApollo
-        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).watcher())
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
         .doOnNext(new Action1<Response<EpisodeHeroNameQuery.Data>>() {
           AtomicBoolean executed = new AtomicBoolean();
 
@@ -234,7 +237,7 @@ public class RxApolloTest {
                 server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE).setBodyDelay(TIME_OUT_SECONDS, TimeUnit.SECONDS));
               } catch (Exception ignore) {
               }
-              apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).responseFetcher(NETWORK_ONLY).enqueue(null);
+              apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).responseFetcher(NETWORK_ONLY).enqueue(null);
             }
           }
         })

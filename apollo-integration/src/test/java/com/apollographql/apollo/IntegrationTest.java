@@ -5,6 +5,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
 import com.apollographql.apollo.api.Error;
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
@@ -217,7 +218,7 @@ public class IntegrationTest {
   @Test public void errorResponse_with_data() throws Exception {
     server.enqueue(mockResponse("ResponseErrorWithData.json"));
     assertResponse(
-        apolloClient.query(new EpisodeHeroNameQuery(JEDI)),
+        apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(JEDI))),
         new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
           @Override public boolean test(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
             assertThat(response.data()).isNotNull();
