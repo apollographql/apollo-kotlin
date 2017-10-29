@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.ResponseWriter
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.Condition
 import com.apollographql.apollo.compiler.ir.Field
+import com.apollographql.apollo.compiler.ir.TypeDeclaration
 import com.squareup.javapoet.*
 import java.util.*
 import javax.lang.model.element.Modifier
@@ -94,7 +95,8 @@ class ResponseFieldSpec(
     val readValueCode = CodeBlock.builder()
         .addStatement("final \$T \$L", normalizedFieldSpec.type, fieldSpec.name)
         .beginControlFlow("if (\$LStr != null)", fieldSpec.name)
-        .addStatement("\$L = \$T.valueOf(\$LStr)", fieldSpec.name, normalizedFieldSpec.type, fieldSpec.name)
+        .addStatement("\$L = \$T.\$L(\$LStr)", fieldSpec.name, normalizedFieldSpec.type,
+            TypeDeclaration.ENUM_SAFE_VALUE_OF, fieldSpec.name)
         .nextControlFlow("else")
         .addStatement("\$L = null", fieldSpec.name)
         .endControlFlow()
@@ -138,7 +140,8 @@ class ResponseFieldSpec(
     fun readScalar(): CodeBlock {
       val readMethod = SCALAR_LIST_ITEM_READ_METHODS[rawFieldType] ?: "readString"
       return if (rawFieldType.isEnum(context)) {
-        CodeBlock.of("return \$T.valueOf(\$L.\$L());\n", rawFieldType, RESPONSE_LIST_ITEM_READER_PARAM.name, readMethod)
+        CodeBlock.of("return \$T.\$L(\$L.\$L());\n", rawFieldType, TypeDeclaration.ENUM_SAFE_VALUE_OF,
+            RESPONSE_LIST_ITEM_READER_PARAM.name, readMethod)
       } else {
         CodeBlock.of("return \$L.\$L();\n", RESPONSE_LIST_ITEM_READER_PARAM.name, readMethod)
       }
@@ -279,9 +282,11 @@ class ResponseFieldSpec(
       return CodeBlock.builder()
           .add(
               if (listItemType.isEnum(context)) {
-                CodeBlock.of("\$L.\$L(((\$L) \$L).name());\n", RESPONSE_LIST_ITEM_WRITER_PARAM.name, writeMethod, listItemType, OBJECT_VALUE_PARAM.name)
+                CodeBlock.of("\$L.\$L(((\$L) \$L).name());\n", RESPONSE_LIST_ITEM_WRITER_PARAM.name, writeMethod,
+                    listItemType, OBJECT_VALUE_PARAM.name)
               } else {
-                CodeBlock.of("\$L.\$L(\$L);\n", RESPONSE_LIST_ITEM_WRITER_PARAM.name, writeMethod, OBJECT_VALUE_PARAM.name)
+                CodeBlock.of("\$L.\$L(\$L);\n", RESPONSE_LIST_ITEM_WRITER_PARAM.name, writeMethod,
+                    OBJECT_VALUE_PARAM.name)
               })
           .build()
     }
@@ -297,7 +302,8 @@ class ResponseFieldSpec(
 
     fun writeObject(): CodeBlock {
       return CodeBlock.builder()
-          .addStatement("\$L.writeObject(((\$L) \$L).\$L)", RESPONSE_LIST_ITEM_WRITER_PARAM.name, listItemType, OBJECT_VALUE_PARAM.name, marshaller)
+          .addStatement("\$L.writeObject(((\$L) \$L).\$L)", RESPONSE_LIST_ITEM_WRITER_PARAM.name, listItemType,
+              OBJECT_VALUE_PARAM.name, marshaller)
           .build()
     }
 

@@ -701,7 +701,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         final List<Episode> appearsIn = reader.readList($responseFields[2], new ResponseReader.ListReader<Episode>() {
           @Override
           public Episode read(ResponseReader.ListItemReader listItemReader) {
-            return Episode.valueOf(listItemReader.readString());
+            return Episode.safeValueOf(listItemReader.readString());
           }
         });
         final List<Friend2> friends = reader.readList($responseFields[3], new ResponseReader.ListReader<Friend2>() {
