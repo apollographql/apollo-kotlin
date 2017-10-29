@@ -16,10 +16,11 @@ class BuilderTypeSpecBuilder(
   fun build(): TypeSpec {
     return TypeSpec.classBuilder(ClassNames.BUILDER.simpleName())
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-        .apply { addFields(builderFields()) }
+        .addFields(builderFields())
         .addMethod(MethodSpec.constructorBuilder().build())
-        .apply { addMethods(setFieldMethods()) }
-        .apply { addMethods(setFieldWithMutatorMethods()) }
+        .addMethods(fieldSetterMethodSpecs())
+        .addMethods(inputFieldSetterMethodSpecs())
+        .addMethods(fieldSetterWithMutatorMethodSpecs())
         .addMethod(buildMethod())
         .build()
   }
@@ -65,22 +66,21 @@ class BuilderTypeSpecBuilder(
     }
   }
 
-  private fun setFieldMethods(): List<MethodSpec> {
+  private fun fieldSetterMethodSpecs(): List<MethodSpec> {
     return fields.map { (fieldName, fieldType) ->
       val javaDoc = fieldJavaDocs[fieldName]
-      setFieldMethod(fieldName, fieldType, javaDoc)
+      fieldSetterMethodSpec(fieldName, fieldType, javaDoc)
     }
   }
 
-  private fun setFieldMethod(fieldName: String, fieldType: TypeName, javaDoc: String?): MethodSpec {
+  private fun fieldSetterMethodSpec(fieldName: String, fieldType: TypeName, javaDoc: String?): MethodSpec {
     return MethodSpec.methodBuilder(fieldName)
         .addModifiers(Modifier.PUBLIC)
         .addParameter(ParameterSpec.builder(fieldType.unwrapOptionalType(), fieldName).build())
-        .let {
-          if (!javaDoc.isNullOrBlank())
-            it.addJavadoc(CodeBlock.of("\$L\n", javaDoc))
-          else
-            it
+        .apply {
+          if (!javaDoc.isNullOrBlank()) {
+            addJavadoc(CodeBlock.of("\$L\n", javaDoc))
+          }
         }
         .returns(ClassNames.BUILDER)
         .addStatement("this.\$L = \$L", fieldName, fieldType.wrapOptionalValue(CodeBlock.of("\$L", fieldName)))
@@ -88,7 +88,30 @@ class BuilderTypeSpecBuilder(
         .build()
   }
 
-  private fun setFieldWithMutatorMethods(): List<MethodSpec> {
+  private fun inputFieldSetterMethodSpecs(): List<MethodSpec> {
+    return fields.filter { (_, fieldType) -> fieldType.isOptional(ClassNames.INPUT_TYPE) }
+        .map { (fieldName, fieldType) ->
+          val javaDoc = fieldJavaDocs[fieldName]
+          inputFieldSetterMethodSpec(fieldName, fieldType, javaDoc)
+        }
+  }
+
+  private fun inputFieldSetterMethodSpec(fieldName: String, fieldType: TypeName, javaDoc: String?): MethodSpec {
+    return MethodSpec.methodBuilder("${fieldName}Input")
+        .addModifiers(Modifier.PUBLIC)
+        .addParameter(ParameterSpec.builder(fieldType, fieldName).addAnnotation(Annotations.NONNULL).build())
+        .apply {
+          if (!javaDoc.isNullOrBlank()) {
+            addJavadoc(CodeBlock.of("\$L\n", javaDoc))
+          }
+        }
+        .returns(ClassNames.BUILDER)
+        .addStatement("this.\$L = \$T.checkNotNull(\$L, \$S)", fieldName, ClassNames.API_UTILS, fieldName, "$fieldName == null")
+        .addStatement("return this")
+        .build()
+  }
+
+  private fun fieldSetterWithMutatorMethodSpecs(): List<MethodSpec> {
     return fields
         .map { (fieldName, fieldType) ->
           fieldName to fieldType.withoutAnnotations()
@@ -101,11 +124,11 @@ class BuilderTypeSpecBuilder(
           }
         }
         .map { (fieldName, fieldType) ->
-          setFieldWithMutatorMethod(fieldName, fieldType)
+          fieldSetterWithMutatorMethodSpec(fieldName, fieldType)
         }
   }
 
-  private fun setFieldWithMutatorMethod(fieldName: String, fieldType: TypeName): MethodSpec {
+  private fun fieldSetterWithMutatorMethodSpec(fieldName: String, fieldType: TypeName): MethodSpec {
     fun setFieldCode(mutatorParam: ParameterSpec): CodeBlock {
       return CodeBlock.builder()
           .addStatement("\$T.\$L builder = this.\$L != null ? this.\$L.\$L() : \$T.\$L()", fieldType,

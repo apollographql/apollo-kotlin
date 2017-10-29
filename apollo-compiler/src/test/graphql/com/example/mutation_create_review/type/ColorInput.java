@@ -3,10 +3,12 @@ package com.example.mutation_create_review.type;
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
+import com.apollographql.apollo.api.internal.Utils;
 import java.io.IOException;
 import java.lang.Double;
 import java.lang.Override;
 import javax.annotation.Generated;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
@@ -115,6 +117,22 @@ public final class ColorInput {
      */
     public Builder enumWithDefaultValue(@Nullable Episode enumWithDefaultValue) {
       this.enumWithDefaultValue = Input.fromNullable(enumWithDefaultValue);
+      return this;
+    }
+
+    /**
+     * Green color
+     */
+    public Builder greenInput(@Nonnull Input<Double> green) {
+      this.green = Utils.checkNotNull(green, "green == null");
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder enumWithDefaultValueInput(@Nonnull Input<Episode> enumWithDefaultValue) {
+      this.enumWithDefaultValue = Utils.checkNotNull(enumWithDefaultValue, "enumWithDefaultValue == null");
       return this;
     }
 

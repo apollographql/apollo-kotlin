@@ -341,6 +341,86 @@ public final class ReviewInput {
       return this;
     }
 
+    /**
+     * for test purpose only
+     */
+    public Builder nullableIntFieldWithDefaultValueInput(@Nonnull Input<Integer> nullableIntFieldWithDefaultValue) {
+      this.nullableIntFieldWithDefaultValue = Utils.checkNotNull(nullableIntFieldWithDefaultValue, "nullableIntFieldWithDefaultValue == null");
+      return this;
+    }
+
+    /**
+     * Comment about the movie, optional
+     */
+    public Builder commentaryInput(@Nonnull Input<String> commentary) {
+      this.commentary = Utils.checkNotNull(commentary, "commentary == null");
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder enumWithDefaultValueInput(@Nonnull Input<Episode> enumWithDefaultValue) {
+      this.enumWithDefaultValue = Utils.checkNotNull(enumWithDefaultValue, "enumWithDefaultValue == null");
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder nullableEnumInput(@Nonnull Input<Episode> nullableEnum) {
+      this.nullableEnum = Utils.checkNotNull(nullableEnum, "nullableEnum == null");
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfCustomScalarInput(@Nonnull Input<List<Date>> listOfCustomScalar) {
+      this.listOfCustomScalar = Utils.checkNotNull(listOfCustomScalar, "listOfCustomScalar == null");
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder customScalarInput(@Nonnull Input<Date> customScalar) {
+      this.customScalar = Utils.checkNotNull(customScalar, "customScalar == null");
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfEnumsInput(@Nonnull Input<List<Episode>> listOfEnums) {
+      this.listOfEnums = Utils.checkNotNull(listOfEnums, "listOfEnums == null");
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfIntInput(@Nonnull Input<List<Integer>> listOfInt) {
+      this.listOfInt = Utils.checkNotNull(listOfInt, "listOfInt == null");
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfStringInput(@Nonnull Input<List<String>> listOfString) {
+      this.listOfString = Utils.checkNotNull(listOfString, "listOfString == null");
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder booleanWithDefaultValueInput(@Nonnull Input<Boolean> booleanWithDefaultValue) {
+      this.booleanWithDefaultValue = Utils.checkNotNull(booleanWithDefaultValue, "booleanWithDefaultValue == null");
+      return this;
+    }
+
     public ReviewInput build() {
       Utils.checkNotNull(favoriteColor, "favoriteColor == null");
       return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, booleanWithDefaultValue);

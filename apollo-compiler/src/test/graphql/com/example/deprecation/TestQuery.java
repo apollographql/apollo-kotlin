@@ -1,5 +1,6 @@
 package com.example.deprecation;
 
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.Operation;
@@ -47,7 +48,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   private final TestQuery.Variables variables;
 
-  public TestQuery(@Nullable Episode episode) {
+  public TestQuery(@Nonnull Input<Episode> episode) {
+    Utils.checkNotNull(episode, "episode == null");
     variables = new TestQuery.Variables(episode);
   }
 
@@ -86,13 +88,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static final class Builder {
-    private @Nullable Episode episode;
+    private Input<Episode> episode = Input.absent();
 
     Builder() {
     }
 
     public Builder episode(@Nullable Episode episode) {
-      this.episode = episode;
+      this.episode = Input.fromNullable(episode);
+      return this;
+    }
+
+    public Builder episodeInput(@Nonnull Input<Episode> episode) {
+      this.episode = Utils.checkNotNull(episode, "episode == null");
       return this;
     }
 
@@ -102,16 +109,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static final class Variables extends Operation.Variables {
-    private final @Nullable Episode episode;
+    private final Input<Episode> episode;
 
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
-    Variables(@Nullable Episode episode) {
+    Variables(Input<Episode> episode) {
       this.episode = episode;
-      this.valueMap.put("episode", episode);
+      if (episode.defined) {
+        this.valueMap.put("episode", episode.value);
+      }
     }
 
-    public @Nullable Episode episode() {
+    public Input<Episode> episode() {
       return episode;
     }
 
@@ -125,7 +134,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new InputFieldMarshaller() {
         @Override
         public void marshal(InputFieldWriter writer) throws IOException {
-          writer.writeString("episode", episode != null ? episode.name() : null);
+          if (episode.defined) {
+            writer.writeString("episode", episode.value != null ? episode.value.name() : null);
+          }
         }
       };
     }

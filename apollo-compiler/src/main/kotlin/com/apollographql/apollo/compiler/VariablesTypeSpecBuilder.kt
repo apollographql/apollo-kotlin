@@ -13,78 +13,89 @@ class VariablesTypeSpecBuilder(
     val variables: List<Variable>,
     val context: CodeGenerationContext
 ) {
-  fun build(): TypeSpec =
-      TypeSpec.classBuilder(VARIABLES_CLASS_NAME)
-          .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-          .superclass(ClassNames.GRAPHQL_OPERATION_VARIABLES)
-          .addVariableFields()
-          .addValueMapField()
-          .addConstructor()
-          .addVariableAccessors()
-          .addValueMapAccessor()
-          .addMethod(marshallerMethodSpec())
+  fun build(): TypeSpec {
+    return TypeSpec.classBuilder(VARIABLES_CLASS_NAME)
+        .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+        .superclass(ClassNames.GRAPHQL_OPERATION_VARIABLES)
+        .addFields(variableFieldSpecs())
+        .addField(valueMapFieldSpec())
+        .addMethod(constructor())
+        .addMethods(variableAccessorMethodSpecs())
+        .addMethod(valueMapAccessorMethodSpec())
+        .addMethod(marshallerMethodSpec())
+        .build()
+  }
+
+  private fun variableFieldSpecs(): List<FieldSpec> {
+    return variables.map { variable ->
+      FieldSpec.builder(variable.javaTypeName(context), variable.name.decapitalize())
+          .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
           .build()
+    }
+  }
 
-  private fun TypeSpec.Builder.addVariableFields(): TypeSpec.Builder =
-      addFields(variables.map { variable ->
-        FieldSpec
-            .builder(variable.javaTypeName(context, context.typesPackage), variable.name.decapitalize())
-            .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
-            .build()
-      })
+  private fun valueMapFieldSpec(): FieldSpec {
+    return FieldSpec.builder(ClassNames.parameterizedMapOf(java.lang.String::class.java, Object::class.java),
+        VALUE_MAP_FIELD_NAME)
+        .addModifiers(Modifier.PRIVATE, Modifier.FINAL, Modifier.TRANSIENT)
+        .initializer("new \$T<>()", LinkedHashMap::class.java)
+        .build()
+  }
 
-  @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
-  private fun TypeSpec.Builder.addValueMapField(): TypeSpec.Builder =
-      addField(FieldSpec.builder(ClassNames.parameterizedMapOf(java.lang.String::class.java, Object::class.java),
-          VALUE_MAP_FIELD_NAME)
-          .addModifiers(Modifier.PRIVATE, Modifier.FINAL, Modifier.TRANSIENT)
-          .initializer("new \$T<>()", LinkedHashMap::class.java)
-          .build())
-
-  private fun TypeSpec.Builder.addConstructor(): TypeSpec.Builder {
+  private fun constructor(): MethodSpec {
     val fieldInitializeCode = variables.map {
       CodeBlock.of("this.\$L = \$L;\n", it.name.decapitalize(), it.name.decapitalize())
     }.fold(CodeBlock.builder(), CodeBlock.Builder::add)
 
-    val fieldMapInitializeCode = variables.map {
-      CodeBlock.of("this.valueMap.put(\$S, \$L);\n", it.name, it.name.decapitalize())
+    val fieldMapInitializeCode = variables.map { variable ->
+      val javaType = variable.javaTypeName(context)
+      CodeBlock.builder()
+          .apply {
+            if (javaType.isOptional()) {
+              beginControlFlow("if (\$L.defined)", variable.name.decapitalize())
+                  .addStatement("this.valueMap.put(\$S, \$L.value)", variable.name, variable.name.decapitalize())
+                  .endControlFlow()
+            } else {
+              addStatement("this.valueMap.put(\$S, \$L)", variable.name, variable.name.decapitalize())
+            }
+          }
+          .build()
     }.fold(CodeBlock.builder(), CodeBlock.Builder::add)
 
-    return addMethod(MethodSpec
-        .constructorBuilder()
+    return MethodSpec.constructorBuilder()
         .addParameters(variables.map {
-          ParameterSpec.builder(it.javaTypeName(context, context.typesPackage), it.name.decapitalize()).build()
+          ParameterSpec.builder(it.javaTypeName(context), it.name.decapitalize()).build()
         })
         .addCode(fieldInitializeCode.build())
         .addCode(fieldMapInitializeCode.build())
         .build()
-    )
   }
 
-  private fun TypeSpec.Builder.addVariableAccessors(): TypeSpec.Builder =
-      addMethods(variables.map { variable ->
-        MethodSpec
-            .methodBuilder(variable.name.decapitalize())
-            .addModifiers(Modifier.PUBLIC)
-            .returns(variable.javaTypeName(context, context.typesPackage))
-            .addStatement("return \$L", variable.name.decapitalize())
-            .build()
-      })
-
-  @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
-  private fun TypeSpec.Builder.addValueMapAccessor(): TypeSpec.Builder =
-      addMethod(MethodSpec.methodBuilder(VALUE_MAP_FIELD_NAME)
+  private fun variableAccessorMethodSpecs(): List<MethodSpec> {
+    return variables.map { variable ->
+      MethodSpec
+          .methodBuilder(variable.name.decapitalize())
           .addModifiers(Modifier.PUBLIC)
-          .addAnnotation(Override::class.java)
-          .returns(ClassNames.parameterizedMapOf(java.lang.String::class.java, Object::class.java))
-          .addStatement("return \$T.unmodifiableMap(\$L)", Collections::class.java, VALUE_MAP_FIELD_NAME)
-          .build())
+          .returns(variable.javaTypeName(context))
+          .addStatement("return \$L", variable.name.decapitalize())
+          .build()
+    }
+  }
+
+  private fun valueMapAccessorMethodSpec(): MethodSpec {
+    return MethodSpec.methodBuilder(VALUE_MAP_FIELD_NAME)
+        .addModifiers(Modifier.PUBLIC)
+        .addAnnotation(Override::class.java)
+        .returns(ClassNames.parameterizedMapOf(java.lang.String::class.java, Object::class.java))
+        .addStatement("return \$T.unmodifiableMap(\$L)", Collections::class.java, VALUE_MAP_FIELD_NAME)
+        .build()
+  }
 
   fun TypeSpec.Builder.builder(): TypeSpec.Builder {
     if (variables.isEmpty()) {
       return this
     } else {
-      val builderFields = variables.map { it.name.decapitalize() to it.javaTypeName(context, context.typesPackage) }
+      val builderFields = variables.map { it.name.decapitalize() to it.javaTypeName(context) }
       return addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
           .addType(
               BuilderTypeSpecBuilder(
@@ -105,7 +116,7 @@ class VariablesTypeSpecBuilder(
               name = it.name.decapitalize(),
               graphQLType = it.type,
               context = context,
-              nullableValueType = NullableValueType.ANNOTATED
+              nullableValueType = NullableValueType.INPUT_TYPE
           )
         }
         .map {
@@ -135,12 +146,14 @@ class VariablesTypeSpecBuilder(
         .build()
   }
 
+  private fun Variable.javaTypeName(context: CodeGenerationContext): TypeName {
+    return JavaTypeResolver(context.copy(nullableValueType = NullableValueType.INPUT_TYPE), context.typesPackage)
+        .resolve(type)
+  }
+
   companion object {
     private val VARIABLES_CLASS_NAME: String = "Variables"
     private val VARIABLES_TYPE_NAME: ClassName = ClassName.get("", VARIABLES_CLASS_NAME)
-    private fun Variable.javaTypeName(context: CodeGenerationContext, packageName: String) =
-        JavaTypeResolver(context, packageName).resolve(type).unwrapOptionalType()
-
     private val VALUE_MAP_FIELD_NAME = "valueMap"
     private val WRITER_PARAM = ParameterSpec.builder(InputFieldWriter::class.java, "writer").build()
     private const val MARSHALLER_PARAM_NAME = "marshaller"

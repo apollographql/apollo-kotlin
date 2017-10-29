@@ -1,5 +1,6 @@
 package com.example.arguments_simple;
 
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.Operation;
@@ -46,7 +47,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   private final TestQuery.Variables variables;
 
-  public TestQuery(@Nullable Episode episode, boolean includeName) {
+  public TestQuery(@Nonnull Input<Episode> episode, boolean includeName) {
+    Utils.checkNotNull(episode, "episode == null");
     variables = new TestQuery.Variables(episode, includeName);
   }
 
@@ -85,7 +87,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static final class Builder {
-    private @Nullable Episode episode;
+    private Input<Episode> episode = Input.absent();
 
     private boolean includeName;
 
@@ -93,12 +95,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public Builder episode(@Nullable Episode episode) {
-      this.episode = episode;
+      this.episode = Input.fromNullable(episode);
       return this;
     }
 
     public Builder includeName(boolean includeName) {
       this.includeName = includeName;
+      return this;
+    }
+
+    public Builder episodeInput(@Nonnull Input<Episode> episode) {
+      this.episode = Utils.checkNotNull(episode, "episode == null");
       return this;
     }
 
@@ -108,20 +115,22 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static final class Variables extends Operation.Variables {
-    private final @Nullable Episode episode;
+    private final Input<Episode> episode;
 
     private final boolean includeName;
 
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
-    Variables(@Nullable Episode episode, boolean includeName) {
+    Variables(Input<Episode> episode, boolean includeName) {
       this.episode = episode;
       this.includeName = includeName;
-      this.valueMap.put("episode", episode);
+      if (episode.defined) {
+        this.valueMap.put("episode", episode.value);
+      }
       this.valueMap.put("IncludeName", includeName);
     }
 
-    public @Nullable Episode episode() {
+    public Input<Episode> episode() {
       return episode;
     }
 
@@ -139,7 +148,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new InputFieldMarshaller() {
         @Override
         public void marshal(InputFieldWriter writer) throws IOException {
-          writer.writeString("episode", episode != null ? episode.name() : null);
+          if (episode.defined) {
+            writer.writeString("episode", episode.value != null ? episode.value.name() : null);
+          }
           writer.writeBoolean("includeName", includeName);
         }
       };
