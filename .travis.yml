@@ -1,16 +1,20 @@
 language: android
 sudo: true
-dist: precise
 
 android:
   components:
     - tools
     - platform-tools
+    - tools  # Upgrade again after upgrading platform-tools
     - build-tools-25.0.3
+    - android-22
+    - extra-google-m2repository
     - extra-android-m2repository
-    - android-25
+    - sys-img-armeabi-v7a-android-22
   licenses:
-    - 'android-sdk-license-.+'
+    - android-sdk-preview-license-.+
+    - android-sdk-license-.+
+    - google-gdk-license-.+
 
 jdk:
   - oraclejdk8
@@ -20,7 +24,7 @@ script:
   - .buildscript/integration_tests_composite.sh
 
 before_script:
-  - echo no | android create avd --force -n test -t android-15 --abi armeabi-v7a
+  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82
