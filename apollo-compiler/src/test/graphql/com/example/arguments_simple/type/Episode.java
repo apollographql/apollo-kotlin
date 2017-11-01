@@ -1,6 +1,7 @@
 package com.example.arguments_simple.type;
 
 import java.lang.Deprecated;
+import java.lang.String;
 import javax.annotation.Generated;
 
 /**
@@ -28,5 +29,19 @@ public enum Episode {
    * @deprecated For test purpose only
    */
   @Deprecated
-  DEPRECATED
+  DEPRECATED,
+
+  /**
+   * Auto generated constant for unknown enum values
+   */
+  $UNKNOWN;
+
+  public static Episode safeValueOf(String value) {
+    for (Episode enumValue : values()) {
+      if (enumValue.name().equals(value)) {
+        return enumValue;
+      }
+    }
+    return Episode.$UNKNOWN;
+  }
 }

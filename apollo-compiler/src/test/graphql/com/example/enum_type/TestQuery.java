@@ -295,13 +295,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final List<Episode> appearsIn = reader.readList($responseFields[2], new ResponseReader.ListReader<Episode>() {
           @Override
           public Episode read(ResponseReader.ListItemReader listItemReader) {
-            return Episode.valueOf(listItemReader.readString());
+            return Episode.safeValueOf(listItemReader.readString());
           }
         });
         final String firstAppearsInStr = reader.readString($responseFields[3]);
         final Episode firstAppearsIn;
         if (firstAppearsInStr != null) {
-          firstAppearsIn = Episode.valueOf(firstAppearsInStr);
+          firstAppearsIn = Episode.safeValueOf(firstAppearsInStr);
         } else {
           firstAppearsIn = null;
         }

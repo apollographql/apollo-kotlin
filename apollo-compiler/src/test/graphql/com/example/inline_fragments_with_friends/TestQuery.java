@@ -557,7 +557,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final List<Episode> appearsIn = reader.readList($responseFields[1], new ResponseReader.ListReader<Episode>() {
           @Override
           public Episode read(ResponseReader.ListItemReader listItemReader) {
-            return Episode.valueOf(listItemReader.readString());
+            return Episode.safeValueOf(listItemReader.readString());
           }
         });
         return new Friend(__typename, appearsIn);

@@ -1,5 +1,6 @@
 package com.example.enum_type.type;
 
+import java.lang.String;
 import javax.annotation.Generated;
 
 /**
@@ -20,5 +21,19 @@ public enum Episode {
   /**
    * Star Wars Episode VI: Return of the Jedi, released in 1983. (JEDI in lowercase)
    */
-  jedi
+  jedi,
+
+  /**
+   * Auto generated constant for unknown enum values
+   */
+  $UNKNOWN;
+
+  public static Episode safeValueOf(String value) {
+    for (Episode enumValue : values()) {
+      if (enumValue.name().equals(value)) {
+        return enumValue;
+      }
+    }
+    return Episode.$UNKNOWN;
+  }
 }

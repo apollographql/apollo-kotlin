@@ -451,7 +451,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final List<Episode> appearsIn = reader.readList($responseFields[2], new ResponseReader.ListReader<Episode>() {
           @Override
           public Episode read(ResponseReader.ListItemReader listItemReader) {
-            return Episode.valueOf(listItemReader.readString());
+            return Episode.safeValueOf(listItemReader.readString());
           }
         });
         final Fragments fragments = reader.readConditional($responseFields[3], new ResponseReader.ConditionalTypeReader<Fragments>() {
