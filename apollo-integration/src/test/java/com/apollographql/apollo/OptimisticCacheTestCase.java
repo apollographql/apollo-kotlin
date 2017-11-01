@@ -1,5 +1,6 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
@@ -72,7 +73,7 @@ public class OptimisticCacheTestCase {
   }
 
   @Test public void simple() throws Exception {
-    HeroAndFriendsNamesQuery query = new HeroAndFriendsNamesQuery(Episode.JEDI);
+    HeroAndFriendsNamesQuery query = new HeroAndFriendsNamesQuery(Input.fromNullable(Episode.JEDI));
 
     enqueueAndAssertResponse(
         server,
@@ -133,7 +134,7 @@ public class OptimisticCacheTestCase {
   }
 
   @Test public void two_optimistic_two_rollback() throws Exception {
-    HeroAndFriendsNamesWithIDsQuery query1 = new HeroAndFriendsNamesWithIDsQuery(Episode.JEDI);
+    HeroAndFriendsNamesWithIDsQuery query1 = new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.JEDI));
     UUID mutationId1 = UUID.randomUUID();
 
     HeroNameWithIdQuery query2 = new HeroNameWithIdQuery();
@@ -416,7 +417,7 @@ public class OptimisticCacheTestCase {
   }
 
   @Test public void two_optimistic_reverse_rollback_order() throws Exception {
-    HeroAndFriendsNamesWithIDsQuery query1 = new HeroAndFriendsNamesWithIDsQuery(Episode.JEDI);
+    HeroAndFriendsNamesWithIDsQuery query1 = new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.JEDI));
     UUID mutationId1 = UUID.randomUUID();
 
     HeroNameWithIdQuery query2 = new HeroNameWithIdQuery();

@@ -1,5 +1,6 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
@@ -36,6 +37,8 @@ import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
 import static com.apollographql.apollo.Utils.mockResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_FIRST;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
+import static com.apollographql.apollo.integration.normalizer.type.Episode.EMPIRE;
+import static com.apollographql.apollo.integration.normalizer.type.Episode.NEWHOPE;
 import static com.google.common.truth.Truth.assertThat;
 
 public class Rx2ApolloTest {
@@ -69,7 +72,7 @@ public class Rx2ApolloTest {
   public void callProducesValue() throws Exception {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
     Rx2Apollo
-        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)))
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
         .test()
         .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertNoErrors()
@@ -88,7 +91,7 @@ public class Rx2ApolloTest {
 
     TestObserver<Response<EpisodeHeroNameQuery.Data>> testObserver = new TestObserver<>();
     Disposable disposable = Rx2Apollo
-        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)))
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
         .delay(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .subscribeWith(testObserver);
 
@@ -103,7 +106,7 @@ public class Rx2ApolloTest {
   public void prefetchCompletes() throws Exception {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
     Rx2Apollo
-        .from(apolloClient.prefetch(new EpisodeHeroNameQuery(Episode.EMPIRE)))
+        .from(apolloClient.prefetch(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
         .test()
         .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertNoErrors()
@@ -116,7 +119,7 @@ public class Rx2ApolloTest {
 
     TestObserver<EpisodeHeroNameQuery.Data> testObserver = new TestObserver<>();
     Disposable disposable = Rx2Apollo
-        .from(apolloClient.prefetch(new EpisodeHeroNameQuery(Episode.EMPIRE)))
+        .from(apolloClient.prefetch(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
         .delay(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .subscribeWith(testObserver);
 
@@ -131,7 +134,7 @@ public class Rx2ApolloTest {
   public void queryWatcherUpdatedSameQueryDifferentResults() throws Exception {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
     Rx2Apollo
-        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).watcher())
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
         .map(new Function<Response<EpisodeHeroNameQuery.Data>, EpisodeHeroNameQuery.Data>() {
           @Override
           public EpisodeHeroNameQuery.Data apply(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
@@ -144,7 +147,7 @@ public class Rx2ApolloTest {
           @Override public void accept(EpisodeHeroNameQuery.Data data) throws Exception {
             if (executed.compareAndSet(false, true)) {
               server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
-              apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE))
+              apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE)))
                   .responseFetcher(NETWORK_ONLY)
                   .enqueue(null);
             }
@@ -172,7 +175,7 @@ public class Rx2ApolloTest {
   public void queryWatcherNotUpdatedSameQuerySameResults() throws Exception {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
     Rx2Apollo
-        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).watcher())
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
         .map(new Function<Response<EpisodeHeroNameQuery.Data>, EpisodeHeroNameQuery.Data>() {
           @Override
           public EpisodeHeroNameQuery.Data apply(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
@@ -185,7 +188,7 @@ public class Rx2ApolloTest {
           @Override public void accept(EpisodeHeroNameQuery.Data data) throws Exception {
             if (executed.compareAndSet(false, true)) {
               server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
-              apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).responseFetcher(NETWORK_ONLY)
+              apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).responseFetcher(NETWORK_ONLY)
                   .enqueue(null);
             }
           }
@@ -206,7 +209,7 @@ public class Rx2ApolloTest {
   public void queryWatcherUpdatedDifferentQueryDifferentResults() throws Exception {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
     Rx2Apollo
-        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).watcher())
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
         .map(new Function<Response<EpisodeHeroNameQuery.Data>, EpisodeHeroNameQuery.Data>() {
           @Override
           public EpisodeHeroNameQuery.Data apply(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
@@ -219,7 +222,7 @@ public class Rx2ApolloTest {
           @Override public void accept(EpisodeHeroNameQuery.Data data) throws Exception {
             if (executed.compareAndSet(false, true)) {
               server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
-              apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).enqueue(null);
+              apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(NEWHOPE))).enqueue(null);
             }
           }
         })
@@ -247,7 +250,7 @@ public class Rx2ApolloTest {
 
     TestObserver<EpisodeHeroNameQuery.Data> testObserver = new TestObserver<>();
     Disposable disposable = Rx2Apollo
-        .from(apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).watcher())
+        .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
         .map(new Function<Response<EpisodeHeroNameQuery.Data>, EpisodeHeroNameQuery.Data>() {
           @Override
           public EpisodeHeroNameQuery.Data apply(Response<EpisodeHeroNameQuery.Data> response) throws Exception {
@@ -260,7 +263,7 @@ public class Rx2ApolloTest {
           @Override public void accept(EpisodeHeroNameQuery.Data data) throws Exception {
             if (executed.compareAndSet(false, true)) {
               server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE).setBodyDelay(TIME_OUT_SECONDS, TimeUnit.SECONDS));
-              apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE)).responseFetcher(NETWORK_ONLY)
+              apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).responseFetcher(NETWORK_ONLY)
                   .enqueue(null);
             }
           }

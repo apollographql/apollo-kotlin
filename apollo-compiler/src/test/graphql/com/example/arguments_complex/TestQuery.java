@@ -1,5 +1,6 @@
 package com.example.arguments_complex;
 
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.Operation;
@@ -47,7 +48,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   private final TestQuery.Variables variables;
 
-  public TestQuery(@Nullable Episode episode, int stars, double greenValue) {
+  public TestQuery(@Nonnull Input<Episode> episode, int stars, double greenValue) {
+    Utils.checkNotNull(episode, "episode == null");
     variables = new TestQuery.Variables(episode, stars, greenValue);
   }
 
@@ -86,7 +88,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static final class Builder {
-    private @Nullable Episode episode;
+    private Input<Episode> episode = Input.absent();
 
     private int stars;
 
@@ -96,7 +98,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public Builder episode(@Nullable Episode episode) {
-      this.episode = episode;
+      this.episode = Input.fromNullable(episode);
       return this;
     }
 
@@ -110,13 +112,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this;
     }
 
+    public Builder episodeInput(@Nonnull Input<Episode> episode) {
+      this.episode = Utils.checkNotNull(episode, "episode == null");
+      return this;
+    }
+
     public TestQuery build() {
       return new TestQuery(episode, stars, greenValue);
     }
   }
 
   public static final class Variables extends Operation.Variables {
-    private final @Nullable Episode episode;
+    private final Input<Episode> episode;
 
     private final int stars;
 
@@ -124,16 +131,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
-    Variables(@Nullable Episode episode, int stars, double greenValue) {
+    Variables(Input<Episode> episode, int stars, double greenValue) {
       this.episode = episode;
       this.stars = stars;
       this.greenValue = greenValue;
-      this.valueMap.put("episode", episode);
+      if (episode.defined) {
+        this.valueMap.put("episode", episode.value);
+      }
       this.valueMap.put("stars", stars);
       this.valueMap.put("greenValue", greenValue);
     }
 
-    public @Nullable Episode episode() {
+    public Input<Episode> episode() {
       return episode;
     }
 
@@ -155,7 +164,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new InputFieldMarshaller() {
         @Override
         public void marshal(InputFieldWriter writer) throws IOException {
-          writer.writeString("episode", episode != null ? episode.name() : null);
+          if (episode.defined) {
+            writer.writeString("episode", episode.value != null ? episode.value.name() : null);
+          }
           writer.writeInt("stars", stars);
           writer.writeDouble("greenValue", greenValue);
         }

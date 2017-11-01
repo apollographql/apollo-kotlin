@@ -1,5 +1,6 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.cache.http.ApolloHttpCache;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
@@ -48,7 +49,7 @@ public class ApolloCancelCallTest {
   public void cancelCallBeforeEnqueueCanceledException() throws Exception {
     server.enqueue(mockResponse("EpisodeHeroNameResponse.json"));
 
-    ApolloCall<EpisodeHeroNameQuery.Data> call = apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE));
+    ApolloCall<EpisodeHeroNameQuery.Data> call = apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)));
     call.cancel();
 
     Rx2Apollo.from(call)
@@ -62,7 +63,7 @@ public class ApolloCancelCallTest {
     server.enqueue(mockResponse("EpisodeHeroNameResponse.json")
         .setBodyDelay(TIME_OUT_SECONDS / 2, TimeUnit.SECONDS));
 
-    final ApolloCall<EpisodeHeroNameQuery.Data> call = apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE));
+    final ApolloCall<EpisodeHeroNameQuery.Data> call = apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)));
 
     new Thread(new Runnable() {
       @Override public void run() {
@@ -87,7 +88,7 @@ public class ApolloCancelCallTest {
     server.enqueue(mockResponse("EpisodeHeroNameResponse.json"));
 
     final AtomicReference<ApolloException> errorRef = new AtomicReference<>();
-    ApolloCall<EpisodeHeroNameQuery.Data> call = apolloClient.query(new EpisodeHeroNameQuery(Episode.EMPIRE));
+    ApolloCall<EpisodeHeroNameQuery.Data> call = apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)));
 
     call.cancel();
 
@@ -102,7 +103,7 @@ public class ApolloCancelCallTest {
     server.enqueue(mockResponse("EpisodeHeroNameResponse.json")
         .setBodyDelay(TIME_OUT_SECONDS / 2, TimeUnit.SECONDS));
 
-    final ApolloPrefetch call = apolloClient.prefetch(new EpisodeHeroNameQuery(Episode.EMPIRE));
+    final ApolloPrefetch call = apolloClient.prefetch(new EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)));
 
     new Thread(new Runnable() {
       @Override public void run() {

@@ -1,5 +1,6 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheKey;
@@ -77,7 +78,7 @@ public class ResponseWriteTestCase {
 
   @Test
   public void customType() throws Exception {
-    EpisodeHeroWithDatesQuery query = new EpisodeHeroWithDatesQuery(JEDI);
+    EpisodeHeroWithDatesQuery query = new EpisodeHeroWithDatesQuery(Input.fromNullable(JEDI));
 
     enqueueAndAssertResponse(
         server,
@@ -213,7 +214,7 @@ public class ResponseWriteTestCase {
 
   @Test
   public void objects() throws Exception {
-    HeroAndFriendsNamesWithIDsQuery query = new HeroAndFriendsNamesWithIDsQuery(JEDI);
+    HeroAndFriendsNamesWithIDsQuery query = new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(JEDI));
 
     enqueueAndAssertResponse(
         server,
@@ -292,7 +293,7 @@ public class ResponseWriteTestCase {
 
   @Test
   public void operation_with_fragments() throws Exception {
-    HeroAndFriendsWithFragmentsQuery query = new HeroAndFriendsWithFragmentsQuery(Episode.NEWHOPE);
+    HeroAndFriendsWithFragmentsQuery query = new HeroAndFriendsWithFragmentsQuery(Input.fromNullable(Episode.NEWHOPE));
 
     enqueueAndAssertResponse(
         server,
@@ -376,7 +377,7 @@ public class ResponseWriteTestCase {
 
   @Test
   public void operation_with_inline_fragments() throws Exception {
-    EpisodeHeroWithInlineFragmentQuery query = new EpisodeHeroWithInlineFragmentQuery(Episode.NEWHOPE);
+    EpisodeHeroWithInlineFragmentQuery query = new EpisodeHeroWithInlineFragmentQuery(Input.fromNullable(Episode.NEWHOPE));
 
     enqueueAndAssertResponse(
         server,
@@ -452,7 +453,7 @@ public class ResponseWriteTestCase {
 
   @Test
   public void fragments() throws Exception {
-    HeroAndFriendsWithFragmentsQuery query = new HeroAndFriendsWithFragmentsQuery(Episode.NEWHOPE);
+    HeroAndFriendsWithFragmentsQuery query = new HeroAndFriendsWithFragmentsQuery(Input.fromNullable(Episode.NEWHOPE));
 
     enqueueAndAssertResponse(
         server,

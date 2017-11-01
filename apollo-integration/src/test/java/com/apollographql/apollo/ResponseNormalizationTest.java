@@ -1,5 +1,6 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.CacheHeaders;
@@ -96,7 +97,7 @@ public class ResponseNormalizationTest {
 
   @Test
   public void testHeroNameWithVariable() throws Exception {
-    assertHasNoErrors("EpisodeHeroNameResponse.json", new EpisodeHeroNameQuery(JEDI));
+    assertHasNoErrors("EpisodeHeroNameResponse.json", new EpisodeHeroNameQuery(Input.fromNullable(JEDI)));
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE);
     CacheReference reference = (CacheReference) record.field("hero(episode:JEDI)");
@@ -121,7 +122,7 @@ public class ResponseNormalizationTest {
 
   @Test
   public void testHeroAndFriendsNamesQueryWithoutIDs() throws Exception {
-    assertHasNoErrors("HeroAndFriendsNameResponse.json", new HeroAndFriendsNamesQuery(JEDI));
+    assertHasNoErrors("HeroAndFriendsNameResponse.json", new HeroAndFriendsNamesQuery(Input.fromNullable(JEDI)));
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:JEDI)");
@@ -142,7 +143,7 @@ public class ResponseNormalizationTest {
 
   @Test
   public void testHeroAndFriendsNamesQueryWithIDs() throws Exception {
-    assertHasNoErrors("HeroAndFriendsNameWithIdsResponse.json", new HeroAndFriendsNamesWithIDsQuery(JEDI));
+    assertHasNoErrors("HeroAndFriendsNameWithIdsResponse.json", new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(JEDI)));
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:JEDI)");
@@ -163,7 +164,8 @@ public class ResponseNormalizationTest {
 
   @Test
   public void testHeroAndFriendsNamesWithIDForParentOnly() throws Exception {
-    assertHasNoErrors("HeroAndFriendsNameWithIdsParentOnlyResponse.json", new HeroAndFriendsNamesWithIDForParentOnlyQuery(JEDI));
+    assertHasNoErrors("HeroAndFriendsNameWithIdsParentOnlyResponse.json",
+        new HeroAndFriendsNamesWithIDForParentOnlyQuery(Input.fromNullable(JEDI)));
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:JEDI)");
@@ -197,7 +199,8 @@ public class ResponseNormalizationTest {
 
   @Test
   public void testHeroTypeDependentAliasedFieldQueryDroid() throws Exception {
-    assertHasNoErrors("HeroTypeDependentAliasedFieldResponse.json", new HeroTypeDependentAliasedFieldQuery(JEDI));
+    assertHasNoErrors("HeroTypeDependentAliasedFieldResponse.json",
+        new HeroTypeDependentAliasedFieldQuery(Input.fromNullable(JEDI)));
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:JEDI)");
@@ -209,7 +212,8 @@ public class ResponseNormalizationTest {
 
   @Test
   public void testHeroTypeDependentAliasedFieldQueryHuman() throws Exception {
-    assertHasNoErrors("HeroTypeDependentAliasedFieldResponseHuman.json", new HeroTypeDependentAliasedFieldQuery(EMPIRE));
+    assertHasNoErrors("HeroTypeDependentAliasedFieldResponseHuman.json",
+        new HeroTypeDependentAliasedFieldQuery(Input.fromNullable(EMPIRE)));
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:EMPIRE)");
@@ -221,7 +225,8 @@ public class ResponseNormalizationTest {
 
   @Test
   public void testHeroParentTypeDependentAliasedFieldQueryHuman() throws Exception {
-    assertHasNoErrors("HeroTypeDependentAliasedFieldResponseHuman.json", new HeroTypeDependentAliasedFieldQuery(EMPIRE));
+    assertHasNoErrors("HeroTypeDependentAliasedFieldResponseHuman.json",
+        new HeroTypeDependentAliasedFieldQuery(Input.fromNullable(EMPIRE)));
 
     Record record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE);
     CacheReference heroReference = (CacheReference) record.field("hero(episode:EMPIRE)");
@@ -233,7 +238,8 @@ public class ResponseNormalizationTest {
 
   @Test
   public void testHeroParentTypeDependentFieldDroid() throws Exception {
-    assertHasNoErrors("HeroParentTypeDependentFieldDroidResponse.json", new HeroParentTypeDependentFieldQuery(JEDI));
+    assertHasNoErrors("HeroParentTypeDependentFieldDroidResponse.json",
+        new HeroParentTypeDependentFieldQuery(Input.fromNullable(JEDI)));
 
     Record lukeRecord = normalizedCache
         .loadRecord("hero(episode:JEDI).friends.0", CacheHeaders.NONE);
@@ -249,7 +255,8 @@ public class ResponseNormalizationTest {
 
   @Test
   public void testHeroParentTypeDependentFieldHuman() throws Exception {
-    assertHasNoErrors("HeroParentTypeDependentFieldHumanResponse.json", new HeroParentTypeDependentFieldQuery(EMPIRE));
+    assertHasNoErrors("HeroParentTypeDependentFieldHumanResponse.json",
+        new HeroParentTypeDependentFieldQuery(Input.fromNullable(EMPIRE)));
 
     Record lukeRecord = normalizedCache
         .loadRecord("hero(episode:EMPIRE).friends.0", CacheHeaders.NONE);

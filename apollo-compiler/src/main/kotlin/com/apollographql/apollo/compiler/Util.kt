@@ -238,10 +238,14 @@ fun ClassName.mapperFieldName(): String = "${simpleName().decapitalize()}FieldMa
 
 fun TypeName.isNullable(): Boolean = isOptional() || annotations.contains(Annotations.NULLABLE)
 
-fun TypeName.isOptional(): Boolean {
+fun TypeName.isOptional(expectedOptionalType: ClassName? = null): Boolean {
   val rawType = (this as? ParameterizedTypeName)?.rawType ?: this
-  return rawType == ClassNames.OPTIONAL || rawType == ClassNames.GUAVA_OPTIONAL || rawType == ClassNames.JAVA_OPTIONAL
-      || rawType == ClassNames.INPUT_TYPE
+  return if (expectedOptionalType == null) {
+    rawType == ClassNames.OPTIONAL || rawType == ClassNames.GUAVA_OPTIONAL || rawType == ClassNames.JAVA_OPTIONAL
+        || rawType == ClassNames.INPUT_TYPE
+  } else {
+    rawType == expectedOptionalType
+  }
 }
 
 fun TypeName.unwrapOptionalType(withoutAnnotations: Boolean = false): TypeName {

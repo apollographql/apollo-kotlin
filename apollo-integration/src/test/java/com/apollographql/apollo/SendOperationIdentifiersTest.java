@@ -1,5 +1,6 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 
@@ -18,13 +19,14 @@ import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
 import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
+import static com.apollographql.apollo.integration.normalizer.type.Episode.EMPIRE;
 import static com.google.common.truth.Truth.assertThat;
 
 public class SendOperationIdentifiersTest {
   @Rule public final MockWebServer server = new MockWebServer();
 
   @Test public void sendOperationIdsTrue() throws Exception {
-    final HeroAndFriendsNamesQuery query = new HeroAndFriendsNamesQuery(Episode.EMPIRE);
+    final HeroAndFriendsNamesQuery query = new HeroAndFriendsNamesQuery(Input.fromNullable(EMPIRE));
     ApolloClient apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .sendOperationIdentifiers(true)
@@ -36,7 +38,7 @@ public class SendOperationIdentifiersTest {
   }
 
   @Test public void doesNotSendOperationIdsWhenFalse() throws Exception {
-    final HeroAndFriendsNamesQuery query = new HeroAndFriendsNamesQuery(Episode.EMPIRE);
+    final HeroAndFriendsNamesQuery query = new HeroAndFriendsNamesQuery(Input.fromNullable(EMPIRE));
     ApolloClient apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .sendOperationIdentifiers(false)
@@ -49,7 +51,7 @@ public class SendOperationIdentifiersTest {
   }
 
   @Test public void operationIdHttpRequestHeader() throws Exception {
-    final HeroAndFriendsNamesQuery heroAndFriendsNamesQuery = new HeroAndFriendsNamesQuery(Episode.EMPIRE);
+    final HeroAndFriendsNamesQuery heroAndFriendsNamesQuery = new HeroAndFriendsNamesQuery(Input.fromNullable(EMPIRE));
     final AtomicBoolean applicationInterceptorHeader = new AtomicBoolean();
     final AtomicBoolean networkInterceptorHeader = new AtomicBoolean();
     OkHttpClient okHttpClient = new OkHttpClient.Builder()

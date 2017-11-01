@@ -160,40 +160,53 @@ class OperationTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addConstructor(context: CodeGenerationContext): TypeSpec.Builder {
-    val code = if (operation.variables.isEmpty()) {
-      CodeBlock.of("this.\$L = \$T.EMPTY_VARIABLES;\n", VARIABLES_VAR, ClassNames.GRAPHQL_OPERATION)
-    } else {
-      val builder = operation.variables.map {
-        val name = it.name.decapitalize()
-        val type = JavaTypeResolver(context, context.typesPackage).resolve(it.type)
-        val optional = !it.type.endsWith("!")
-        if (!type.isPrimitive && !optional) {
-          CodeBlock.of("\$T.checkNotNull(\$L, \$S);\n", ClassNames.API_UTILS, name, "$name == null")
-        } else {
-          CodeBlock.of("")
-        }
-      }.fold(CodeBlock.builder(), CodeBlock.Builder::add)
-
-      operation.variables
-          .map { it.name.decapitalize() }
-          .mapIndexed { i, v -> CodeBlock.of("\$L\$L", if (i > 0) ", " else "", v) }
-          .fold(builder.add("\$L = new \$T(", VARIABLES_VAR, variablesType()), CodeBlock.Builder::add)
-          .add(");\n")
-          .build()
+    fun arguments(): List<ParameterSpec> {
+      return operation.variables
+          .map { variable ->
+            variable.name.decapitalize() to JavaTypeResolver(
+                context.copy(nullableValueType = NullableValueType.INPUT_TYPE),
+                context.typesPackage
+            ).resolve(variable.type)
+          }
+          .map { (name, type) ->
+            ParameterSpec.builder(type, name)
+                .apply {
+                  if (type.isOptional(ClassNames.INPUT_TYPE)) {
+                    addAnnotation(Annotations.NONNULL)
+                  }
+                }
+                .build()
+          }
     }
+
+    fun code(arguments: List<ParameterSpec>): CodeBlock {
+      return if (arguments.isEmpty()) {
+        CodeBlock.of("this.\$L = \$T.EMPTY_VARIABLES;\n", VARIABLES_VAR, ClassNames.GRAPHQL_OPERATION)
+      } else {
+        val codeBuilder = CodeBlock.builder()
+        arguments.filter { !it.type.isPrimitive }.forEach {
+          codeBuilder.addStatement("\$T.checkNotNull(\$L, \$S)", ClassNames.API_UTILS, it.name, "${it.name} == null")
+        }
+        codeBuilder.add("\$L = new \$T(", VARIABLES_VAR, variablesType())
+        arguments.forEachIndexed { i, argument ->
+          codeBuilder.add("\$L\$L", if (i > 0) ", " else "", argument.name)
+        }
+        codeBuilder.add(");\n").build()
+      }
+    }
+
+    val arguments = arguments()
     return MethodSpec.constructorBuilder()
         .addModifiers(Modifier.PUBLIC)
-        .addParameters(operation.variables
-            .map { it.name.decapitalize() to it.type }
-            .map { it.first to JavaTypeResolver(context, context.typesPackage).resolve(it.second) }
-            .map { ParameterSpec.builder(it.second.unwrapOptionalType(), it.first).build() })
-        .addCode(code)
+        .addParameters(arguments)
+        .addCode(code(arguments))
         .build()
         .let { addMethod(it) }
   }
 
   private fun TypeSpec.Builder.addBuilder(context: CodeGenerationContext): TypeSpec.Builder {
     addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
+
     if (operation.variables.isEmpty()) {
       return BuilderTypeSpecBuilder(
           targetObjectClassName = ClassName.get("", operationTypeName),
@@ -203,9 +216,15 @@ class OperationTypeSpecBuilder(
           typeDeclarations = context.typeDeclarations
       ).let { addType(it.build()) }
     }
-    return operation.variables
+
+    operation.variables
         .map { it.name.decapitalize() to it.type }
-        .map { it.first to JavaTypeResolver(context, context.typesPackage).resolve(it.second).unwrapOptionalType() }
+        .map {
+          it.first to JavaTypeResolver(
+              context.copy(nullableValueType = NullableValueType.INPUT_TYPE),
+              context.typesPackage
+          ).resolve(it.second)
+        }
         .let {
           BuilderTypeSpecBuilder(
               targetObjectClassName = ClassName.get("", operationTypeName),
@@ -216,6 +235,8 @@ class OperationTypeSpecBuilder(
           )
         }
         .let { addType(it.build()) }
+
+    return this
   }
 
   private fun variablesType() =
