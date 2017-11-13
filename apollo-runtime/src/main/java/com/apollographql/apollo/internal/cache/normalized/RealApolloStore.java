@@ -13,10 +13,11 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.OptimisticNormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.internal.field.CacheFieldValueResolver;
-import com.apollographql.apollo.internal.response.RealResponseReader;
-import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
 import com.apollographql.apollo.internal.ApolloLogger;
+import com.apollographql.apollo.internal.field.CacheFieldValueResolver;
+import com.apollographql.apollo.internal.response.RealResponseWriter;
+import com.apollographql.apollo.internal.response.RealResponseReader;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -403,20 +404,20 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
       final UUID mutationId) {
     return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
       @Override public Set<String> execute(WriteableStore cache) {
-        CacheResponseWriter cacheResponseWriter = new CacheResponseWriter(operation.variables(),
-            scalarTypeAdapters);
-        operationData.marshaller().marshal(cacheResponseWriter);
+        RealResponseWriter responseWriter = new RealResponseWriter(operation.variables(), scalarTypeAdapters);
+        operationData.marshaller().marshal(responseWriter);
+
         ResponseNormalizer<Map<String, Object>> responseNormalizer = networkResponseNormalizer();
         responseNormalizer.willResolveRootQuery(operation);
-        Collection<Record> records = cacheResponseWriter.normalize(responseNormalizer);
+        responseWriter.resolveFields(responseNormalizer);
         if (optimistic) {
           List<Record> updatedRecords = new ArrayList<>();
-          for (Record record : records) {
+          for (Record record : responseNormalizer.records()) {
             updatedRecords.add(record.toBuilder().mutationId(mutationId).build());
           }
           return optimisticCache.mergeOptimisticUpdates(updatedRecords);
         } else {
-          return optimisticCache.merge(records, CacheHeaders.NONE);
+          return optimisticCache.merge(responseNormalizer.records(), CacheHeaders.NONE);
         }
       }
     });
@@ -426,12 +427,14 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
       final Operation.Variables variables) {
     return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
       @Override public Set<String> execute(WriteableStore cache) {
-        CacheResponseWriter cacheResponseWriter = new CacheResponseWriter(variables, scalarTypeAdapters);
-        fragment.marshaller().marshal(cacheResponseWriter);
+        RealResponseWriter responseWriter = new RealResponseWriter(variables, scalarTypeAdapters);
+        fragment.marshaller().marshal(responseWriter);
+
         ResponseNormalizer<Map<String, Object>> responseNormalizer = networkResponseNormalizer();
         responseNormalizer.willResolveRecord(cacheKey);
-        Collection<Record> records = cacheResponseWriter.normalize(responseNormalizer);
-        return merge(records, CacheHeaders.NONE);
+        responseWriter.resolveFields(responseNormalizer);
+
+        return merge(responseNormalizer.records(), CacheHeaders.NONE);
       }
     });
   }

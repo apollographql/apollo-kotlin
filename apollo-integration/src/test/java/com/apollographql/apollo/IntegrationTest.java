@@ -7,7 +7,6 @@ import com.google.common.collect.FluentIterable;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.exception.ApolloException;
@@ -17,9 +16,10 @@ import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.httpcache.type.CustomType;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery;
-import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
-import com.apollographql.apollo.internal.response.OperationResponseParser;
-import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
+import com.apollographql.apollo.internal.json.JsonWriter;
+import com.apollographql.apollo.response.OperationJsonWriter;
+import com.apollographql.apollo.response.OperationResponseParser;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import org.junit.After;
@@ -306,11 +306,27 @@ public class IntegrationTest {
     String json = Utils.readFileToString(getClass(), "/HeroNameResponse.json");
 
     HeroNameQuery query = new HeroNameQuery();
-    Response<HeroNameQuery.Data> response = new OperationResponseParser<>(query, query.responseFieldMapper(),
-        new ScalarTypeAdapters(Collections.EMPTY_MAP), ResponseNormalizer.NO_OP_NORMALIZER)
+    Response<HeroNameQuery.Data> response = new OperationResponseParser<>(query, query.responseFieldMapper(), new ScalarTypeAdapters(Collections.EMPTY_MAP))
         .parse(new Buffer().writeUtf8(json));
 
     assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+  }
+
+  @Test public void operationJsonWriter() throws Exception {
+    String json = Utils.readFileToString(getClass(), "/OperationJsonWriter.json");
+
+    AllPlanetsQuery query = new AllPlanetsQuery();
+    Response<AllPlanetsQuery.Data> response = new OperationResponseParser<>(query, query.responseFieldMapper(), new ScalarTypeAdapters(Collections.EMPTY_MAP))
+        .parse(new Buffer().writeUtf8(json));
+
+    Buffer buffer = new Buffer();
+    OperationJsonWriter writer = new OperationJsonWriter(response.data(), new ScalarTypeAdapters(Collections.EMPTY_MAP));
+
+    JsonWriter jsonWriter = JsonWriter.of(buffer);
+    jsonWriter.setIndent("  ");
+    writer.write(jsonWriter);
+
+    assertThat(buffer.readUtf8()).isEqualTo(json);
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {

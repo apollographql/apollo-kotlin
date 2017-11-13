@@ -7,6 +7,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.internal.field.FieldValueResolver;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -17,19 +18,19 @@ import java.util.Map;
 @SuppressWarnings("WeakerAccess") public final class RealResponseReader<R> implements ResponseReader {
   private final Operation.Variables operationVariables;
   private final R recordSet;
-  private final ScalarTypeAdapters scalarTypeAdapters;
+  private final com.apollographql.apollo.response.ScalarTypeAdapters scalarTypeAdapters;
   private final FieldValueResolver<R> fieldValueResolver;
-  private final ResponseReaderShadow<R> readerShadow;
+  private final ResolveDelegate<R> resolveDelegate;
   private final Map<String, Object> variableValues;
 
   public RealResponseReader(Operation.Variables operationVariables, R recordSet,
       FieldValueResolver<R> fieldValueResolver, ScalarTypeAdapters scalarTypeAdapters,
-      ResponseReaderShadow<R> readerShadow) {
+      ResolveDelegate<R> resolveDelegate) {
     this.operationVariables = operationVariables;
     this.recordSet = recordSet;
     this.fieldValueResolver = fieldValueResolver;
     this.scalarTypeAdapters = scalarTypeAdapters;
-    this.readerShadow = readerShadow;
+    this.resolveDelegate = resolveDelegate;
     this.variableValues = operationVariables.valueMap();
   }
 
@@ -42,9 +43,9 @@ import java.util.Map;
     String value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
     if (value == null) {
-      readerShadow.didResolveNull();
+      resolveDelegate.didResolveNull();
     } else {
-      readerShadow.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value);
     }
     didResolve(field);
     return value;
@@ -59,9 +60,9 @@ import java.util.Map;
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
     if (value == null) {
-      readerShadow.didResolveNull();
+      resolveDelegate.didResolveNull();
     } else {
-      readerShadow.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value);
     }
     didResolve(field);
     return value != null ? value.intValue() : null;
@@ -76,9 +77,9 @@ import java.util.Map;
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
     if (value == null) {
-      readerShadow.didResolveNull();
+      resolveDelegate.didResolveNull();
     } else {
-      readerShadow.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value);
     }
     didResolve(field);
     return value != null ? value.longValue() : null;
@@ -93,9 +94,9 @@ import java.util.Map;
     BigDecimal value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
     if (value == null) {
-      readerShadow.didResolveNull();
+      resolveDelegate.didResolveNull();
     } else {
-      readerShadow.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value);
     }
     didResolve(field);
     return value != null ? value.doubleValue() : null;
@@ -110,9 +111,9 @@ import java.util.Map;
     Boolean value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
     if (value == null) {
-      readerShadow.didResolveNull();
+      resolveDelegate.didResolveNull();
     } else {
-      readerShadow.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value);
     }
     didResolve(field);
     return value;
@@ -127,16 +128,16 @@ import java.util.Map;
     willResolve(field);
     R value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
-    readerShadow.willResolveObject(field, Optional.fromNullable(value));
+    resolveDelegate.willResolveObject(field, Optional.fromNullable(value));
     final T parsedValue;
     if (value == null) {
-      readerShadow.didResolveNull();
+      resolveDelegate.didResolveNull();
       parsedValue = null;
     } else {
       parsedValue = (T) objectReader.read(new RealResponseReader(operationVariables, value, fieldValueResolver,
-          scalarTypeAdapters, readerShadow));
+          scalarTypeAdapters, resolveDelegate));
     }
-    readerShadow.didResolveObject(field, Optional.fromNullable(value));
+    resolveDelegate.didResolveObject(field, Optional.fromNullable(value));
     didResolve(field);
     return parsedValue;
   }
@@ -152,12 +153,12 @@ import java.util.Map;
     checkValue(field, values);
     final List<T> result;
     if (values == null) {
-      readerShadow.didResolveNull();
+      resolveDelegate.didResolveNull();
       result = null;
     } else {
       result = new ArrayList<>();
       for (int i = 0; i < values.size(); i++) {
-        readerShadow.willResolveElement(i);
+        resolveDelegate.willResolveElement(i);
         Object value = values.get(i);
         if (value != null) {
           T item = (T) listReader.read(new ListItemReader(field, value));
@@ -165,9 +166,9 @@ import java.util.Map;
             result.add(item);
           }
         }
-        readerShadow.didResolveElement(i);
+        resolveDelegate.didResolveElement(i);
       }
-      readerShadow.didResolveList(values);
+      resolveDelegate.didResolveList(values);
     }
     didResolve(field);
     return result != null ? Collections.unmodifiableList(result) : null;
@@ -183,13 +184,13 @@ import java.util.Map;
     checkValue(field, value);
     final T result;
     if (value == null) {
-      readerShadow.didResolveNull();
+      resolveDelegate.didResolveNull();
       result = null;
     } else {
       CustomTypeAdapter<T> typeAdapter = scalarTypeAdapters.adapterFor(field.scalarType());
       result = typeAdapter.decode(value.toString());
       checkValue(field, result);
-      readerShadow.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value);
     }
     didResolve(field);
     return result;
@@ -205,11 +206,11 @@ import java.util.Map;
     String value = fieldValueResolver.valueFor(recordSet, field);
     checkValue(field, value);
     if (value == null) {
-      readerShadow.didResolveNull();
+      resolveDelegate.didResolveNull();
       didResolve(field);
       return null;
     } else {
-      readerShadow.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value);
       didResolve(field);
       if (field.type() == ResponseField.Type.INLINE_FRAGMENT) {
         for (ResponseField.Condition condition : field.conditions()) {
@@ -248,11 +249,11 @@ import java.util.Map;
   }
 
   private void willResolve(ResponseField field) {
-    readerShadow.willResolve(field, operationVariables);
+    resolveDelegate.willResolve(field, operationVariables);
   }
 
   private void didResolve(ResponseField field) {
-    readerShadow.didResolve(field, operationVariables);
+    resolveDelegate.didResolve(field, operationVariables);
   }
 
   private void checkValue(ResponseField field, Object value) {
@@ -271,44 +272,44 @@ import java.util.Map;
     }
 
     @Override public String readString() {
-      readerShadow.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value);
       return (String) value;
     }
 
     @Override public Integer readInt() {
-      readerShadow.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value);
       return ((BigDecimal) value).intValue();
     }
 
     @Override public Long readLong() {
-      readerShadow.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value);
       return ((BigDecimal) value).longValue();
     }
 
     @Override public Double readDouble() {
-      readerShadow.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value);
       return ((BigDecimal) value).doubleValue();
     }
 
     @Override public Boolean readBoolean() {
-      readerShadow.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value);
       return (Boolean) value;
     }
 
     @SuppressWarnings("unchecked")
     @Override public <T> T readCustomType(ScalarType scalarType) {
       CustomTypeAdapter<T> typeAdapter = scalarTypeAdapters.adapterFor(scalarType);
-      readerShadow.didResolveScalar(value);
+      resolveDelegate.didResolveScalar(value);
       return typeAdapter.decode(value.toString());
     }
 
     @SuppressWarnings("unchecked")
     @Override public <T> T readObject(ObjectReader<T> objectReader) {
       R value = (R) this.value;
-      readerShadow.willResolveObject(field, Optional.fromNullable(value));
+      resolveDelegate.willResolveObject(field, Optional.fromNullable(value));
       T item = (T) objectReader.read(new RealResponseReader<R>(operationVariables, value, fieldValueResolver,
-          scalarTypeAdapters, readerShadow));
-      readerShadow.didResolveObject(field, Optional.fromNullable(value));
+          scalarTypeAdapters, resolveDelegate));
+      resolveDelegate.didResolveObject(field, Optional.fromNullable(value));
       return item;
     }
 
@@ -320,15 +321,15 @@ import java.util.Map;
 
       List<T> result = new ArrayList<>();
       for (int i = 0; i < values.size(); i++) {
-        readerShadow.willResolveElement(i);
+        resolveDelegate.willResolveElement(i);
         Object value = values.get(i);
         if (value != null) {
           T item = (T) listReader.read(new ListItemReader(field, value));
           result.add(item);
         }
-        readerShadow.didResolveElement(i);
+        resolveDelegate.didResolveElement(i);
       }
-      readerShadow.didResolveList(values);
+      resolveDelegate.didResolveList(values);
       return Collections.unmodifiableList(result);
     }
   }

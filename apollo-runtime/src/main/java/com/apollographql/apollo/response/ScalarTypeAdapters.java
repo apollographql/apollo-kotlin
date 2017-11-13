@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.response;
+package com.apollographql.apollo.response;
 
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.ScalarType;

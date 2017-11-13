@@ -24,7 +24,7 @@ import com.apollographql.apollo.internal.interceptor.ApolloCacheInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloParseInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
-import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import java.util.ArrayList;
 import java.util.Arrays;

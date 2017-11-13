@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.cache.normalized;
+package com.apollographql.apollo.internal.response;
 
 import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
@@ -7,12 +7,10 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,12 +18,12 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-final class CacheResponseWriter implements ResponseWriter {
+public final class RealResponseWriter implements ResponseWriter {
   private final Operation.Variables operationVariables;
   private final ScalarTypeAdapters scalarTypeAdapters;
-  final Map<String, FieldDescriptor> fieldDescriptors = new LinkedHashMap<>();
+  final Map<String, FieldDescriptor> buffer = new LinkedHashMap<>();
 
-  CacheResponseWriter(Operation.Variables operationVariables, ScalarTypeAdapters scalarTypeAdapters) {
+  public RealResponseWriter(Operation.Variables operationVariables, ScalarTypeAdapters scalarTypeAdapters) {
     this.operationVariables = operationVariables;
     this.scalarTypeAdapters = scalarTypeAdapters;
   }
@@ -58,14 +56,15 @@ final class CacheResponseWriter implements ResponseWriter {
   @Override public void writeObject(@Nonnull ResponseField field, @Nullable ResponseFieldMarshaller marshaller) {
     checkFieldValue(field, marshaller);
     if (marshaller == null) {
-      fieldDescriptors.put(field.responseName(), new FieldDescriptor(field, null));
+      buffer.put(field.responseName(), new FieldDescriptor(field, null));
       return;
     }
 
-    CacheResponseWriter nestedResponseWriter = new CacheResponseWriter(operationVariables, scalarTypeAdapters);
+
+    RealResponseWriter nestedResponseWriter = new RealResponseWriter(operationVariables, scalarTypeAdapters);
     marshaller.marshal(nestedResponseWriter);
 
-    fieldDescriptors.put(field.responseName(), new FieldDescriptor(field, nestedResponseWriter.fieldDescriptors));
+    buffer.put(field.responseName(), new FieldDescriptor(field, nestedResponseWriter.buffer));
   }
 
   @Override
@@ -73,17 +72,16 @@ final class CacheResponseWriter implements ResponseWriter {
     checkFieldValue(field, values);
 
     if (values == null) {
-      fieldDescriptors.put(field.responseName(), new FieldDescriptor(field, null));
+      buffer.put(field.responseName(), new FieldDescriptor(field, null));
       return;
     }
 
     List items = writeListItemValues(values, listWriter);
-    fieldDescriptors.put(field.responseName(), new FieldDescriptor(field, items));
+    buffer.put(field.responseName(), new FieldDescriptor(field, items));
   }
 
-  public Collection<Record> normalize(ResponseNormalizer<Map<String, Object>> responseNormalizer) {
-    normalize(operationVariables, responseNormalizer, fieldDescriptors);
-    return responseNormalizer.records();
+  public void resolveFields(ResolveDelegate<Map<String, Object>> delegate) {
+    resolveFields(operationVariables, delegate, buffer);
   }
 
   @SuppressWarnings("unchecked") private List writeListItemValues(List values, ListWriter listWriter) {
@@ -103,13 +101,13 @@ final class CacheResponseWriter implements ResponseWriter {
 
   private void writeScalarFieldValue(ResponseField field, Object value) {
     checkFieldValue(field, value);
-    fieldDescriptors.put(field.responseName(), new FieldDescriptor(field, value));
+    buffer.put(field.responseName(), new FieldDescriptor(field, value));
   }
 
   @SuppressWarnings("unchecked")
-  private Map<String, Object> rawFieldValues(Map<String, FieldDescriptor> fieldDescriptors) {
+  private Map<String, Object> rawFieldValues(Map<String, FieldDescriptor> buffer) {
     Map<String, Object> fieldValues = new LinkedHashMap<>();
-    for (Map.Entry<String, FieldDescriptor> entry : fieldDescriptors.entrySet()) {
+    for (Map.Entry<String, FieldDescriptor> entry : buffer.entrySet()) {
       String fieldResponseName = entry.getKey();
       Object fieldValue = entry.getValue().value;
       if (fieldValue == null) {
@@ -140,75 +138,75 @@ final class CacheResponseWriter implements ResponseWriter {
     return listValues;
   }
 
-  @SuppressWarnings("unchecked") private void normalize(Operation.Variables operationVariables,
-      ResponseNormalizer<Map<String, Object>> responseNormalizer, Map<String, FieldDescriptor> fieldDescriptors) {
-    Map<String, Object> rawFieldValues = rawFieldValues(fieldDescriptors);
-    for (String fieldResponseName : fieldDescriptors.keySet()) {
-      FieldDescriptor fieldDescriptor = fieldDescriptors.get(fieldResponseName);
+  @SuppressWarnings("unchecked") private void resolveFields(Operation.Variables operationVariables,
+      ResolveDelegate<Map<String, Object>> delegate, Map<String, FieldDescriptor> buffer) {
+    Map<String, Object> rawFieldValues = rawFieldValues(buffer);
+    for (String fieldResponseName : buffer.keySet()) {
+      FieldDescriptor fieldDescriptor = buffer.get(fieldResponseName);
       Object rawFieldValue = rawFieldValues.get(fieldResponseName);
-      responseNormalizer.willResolve(fieldDescriptor.field, operationVariables);
+      delegate.willResolve(fieldDescriptor.field, operationVariables);
 
       switch (fieldDescriptor.field.type()) {
         case OBJECT: {
-          normalizeObjectField(fieldDescriptor, (Map<String, Object>) rawFieldValue, responseNormalizer);
+          resolveObjectFields(fieldDescriptor, (Map<String, Object>) rawFieldValue, delegate);
           break;
         }
 
         case LIST: {
-          normalizeList(fieldDescriptor.field, (List) fieldDescriptor.value, (List) rawFieldValue, responseNormalizer);
+          resolveListField(fieldDescriptor.field, (List) fieldDescriptor.value, (List) rawFieldValue, delegate);
           break;
         }
 
         default: {
           if (rawFieldValue == null) {
-            responseNormalizer.didResolveNull();
+            delegate.didResolveNull();
           } else {
-            responseNormalizer.didResolveScalar(rawFieldValue);
+            delegate.didResolveScalar(rawFieldValue);
           }
           break;
         }
       }
 
-      responseNormalizer.didResolve(fieldDescriptor.field, operationVariables);
+      delegate.didResolve(fieldDescriptor.field, operationVariables);
     }
   }
 
-  @SuppressWarnings("unchecked") private void normalizeObjectField(FieldDescriptor fieldDescriptor,
-      Map<String, Object> rawFieldValues, ResponseNormalizer<Map<String, Object>> responseNormalizer) {
-    responseNormalizer.willResolveObject(fieldDescriptor.field, Optional.fromNullable(rawFieldValues));
+  @SuppressWarnings("unchecked") private void resolveObjectFields(FieldDescriptor fieldDescriptor,
+      Map<String, Object> rawFieldValues, ResolveDelegate<Map<String, Object>> delegate) {
+    delegate.willResolveObject(fieldDescriptor.field, Optional.fromNullable(rawFieldValues));
     if (fieldDescriptor.value == null) {
-      responseNormalizer.didResolveNull();
+      delegate.didResolveNull();
     } else {
-      normalize(operationVariables, responseNormalizer, (Map<String, FieldDescriptor>) fieldDescriptor.value);
+      resolveFields(operationVariables, delegate, (Map<String, FieldDescriptor>) fieldDescriptor.value);
     }
-    responseNormalizer.didResolveObject(fieldDescriptor.field, Optional.fromNullable(rawFieldValues));
+    delegate.didResolveObject(fieldDescriptor.field, Optional.fromNullable(rawFieldValues));
   }
 
-  @SuppressWarnings("unchecked") private void normalizeList(ResponseField listResponseField, List fieldValues,
-      List rawFieldValues, ResponseNormalizer<Map<String, Object>> responseNormalizer) {
+  @SuppressWarnings("unchecked") private void resolveListField(ResponseField listResponseField, List fieldValues,
+      List rawFieldValues, ResolveDelegate<Map<String, Object>> delegate) {
     if (fieldValues == null) {
-      responseNormalizer.didResolveNull();
+      delegate.didResolveNull();
       return;
     }
 
     for (int i = 0; i < fieldValues.size(); i++) {
-      responseNormalizer.willResolveElement(i);
+      delegate.willResolveElement(i);
 
       Object fieldValue = fieldValues.get(i);
       if (fieldValue instanceof Map) {
-        responseNormalizer.willResolveObject(listResponseField,
+        delegate.willResolveObject(listResponseField,
             Optional.fromNullable((Map<String, Object>) rawFieldValues.get(i)));
-        normalize(operationVariables, responseNormalizer, (Map<String, FieldDescriptor>) fieldValue);
-        responseNormalizer.didResolveObject(listResponseField,
+        resolveFields(operationVariables, delegate, (Map<String, FieldDescriptor>) fieldValue);
+        delegate.didResolveObject(listResponseField,
             Optional.fromNullable((Map<String, Object>) rawFieldValues.get(i)));
       } else if (fieldValue instanceof List) {
-        normalizeList(listResponseField, (List) fieldValue, (List) rawFieldValues.get(i), responseNormalizer);
+        resolveListField(listResponseField, (List) fieldValue, (List) rawFieldValues.get(i), delegate);
       } else {
-        responseNormalizer.didResolveScalar(rawFieldValues.get(i));
+        delegate.didResolveScalar(rawFieldValues.get(i));
       }
-      responseNormalizer.didResolveElement(i);
+      delegate.didResolveElement(i);
     }
-    responseNormalizer.didResolveList(rawFieldValues);
+    delegate.didResolveList(rawFieldValues);
   }
 
   private static void checkFieldValue(ResponseField field, Object value) {
@@ -220,7 +218,7 @@ final class CacheResponseWriter implements ResponseWriter {
 
   @SuppressWarnings("unchecked") private static final class ListItemWriter implements ResponseWriter.ListItemWriter {
     final Operation.Variables operationVariables;
-    final ScalarTypeAdapters scalarTypeAdapters;
+    final com.apollographql.apollo.response.ScalarTypeAdapters scalarTypeAdapters;
     Object value;
 
     ListItemWriter(Operation.Variables operationVariables, ScalarTypeAdapters scalarTypeAdapters) {
@@ -254,9 +252,9 @@ final class CacheResponseWriter implements ResponseWriter {
     }
 
     @Override public void writeObject(ResponseFieldMarshaller marshaller) {
-      CacheResponseWriter nestedResponseWriter = new CacheResponseWriter(operationVariables, scalarTypeAdapters);
+      RealResponseWriter nestedResponseWriter = new RealResponseWriter(operationVariables, scalarTypeAdapters);
       marshaller.marshal(nestedResponseWriter);
-      value = nestedResponseWriter.fieldDescriptors;
+      value = nestedResponseWriter.buffer;
     }
   }
 

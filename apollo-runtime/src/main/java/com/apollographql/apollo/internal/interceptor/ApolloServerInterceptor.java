@@ -9,7 +9,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.json.InputFieldJsonWriter;
 import com.apollographql.apollo.internal.json.JsonWriter;
-import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 import com.apollographql.apollo.internal.ApolloLogger;
 
 import java.io.IOException;
