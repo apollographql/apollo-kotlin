@@ -221,7 +221,7 @@ final class ResponseHeaderRecord {
           .writeByte('\n');
       writeCertList(bufferedSink, handshake.peerCertificates());
       writeCertList(bufferedSink, handshake.localCertificates());
-      // The handshake’s TLS version is null on HttpsURLConnection and on older cached responses.
+      // The handshake's TLS version is null on HttpsURLConnection and on older cached responses.
       if (handshake.tlsVersion() != null) {
         bufferedSink.writeUtf8(handshake.tlsVersion().javaName())
             .writeByte('\n');

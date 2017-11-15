@@ -14,12 +14,16 @@ To use this plugin, add the dependency to your project's build.gradle file:
 
 ```groovy
 buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.apollographql.apollo:apollo-gradle-plugin:x.y.z'
-    }
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath 'com.apollographql.apollo:apollo-gradle-plugin:x.y.z'
+  }
+}
+
+dependencies {
+  compile 'com.apollographql.apollo:apollo-runtime:x.y.z'
 }
 ```
 
@@ -34,6 +38,10 @@ buildscript {
   dependencies {
     classpath 'com.apollographql.apollo:apollo-gradle-plugin:0.4.3-SNAPSHOT'
   }
+}
+
+dependencies {
+  compile 'com.apollographql.apollo:apollo-runtime:0.4.3-SNAPSHOT'
 }
 ```
 
