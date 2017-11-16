@@ -4,7 +4,7 @@ import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.ScalarType;
-import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import java.io.IOException;
 

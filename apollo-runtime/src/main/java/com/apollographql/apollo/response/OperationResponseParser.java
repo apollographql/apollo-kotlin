@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.response;
+package com.apollographql.apollo.response;
 
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Operation;
@@ -8,6 +8,7 @@ import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.field.MapFieldValueResolver;
 import com.apollographql.apollo.internal.json.BufferedSourceJsonReader;
 import com.apollographql.apollo.internal.json.ResponseJsonStreamReader;
+import com.apollographql.apollo.internal.response.RealResponseReader;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -20,11 +21,16 @@ import okio.BufferedSource;
 
 import static com.apollographql.apollo.internal.json.ApolloJsonReader.responseJsonStreamReader;
 
-public class OperationResponseParser<D extends Operation.Data, W> {
+public final class OperationResponseParser<D extends Operation.Data, W> {
   private final Operation<D, W, ?> operation;
   private final ResponseFieldMapper responseFieldMapper;
   private final ScalarTypeAdapters scalarTypeAdapters;
   private final ResponseNormalizer<Map<String, Object>> responseNormalizer;
+
+  @SuppressWarnings("unchecked") public OperationResponseParser(Operation<D, W, ?> operation,
+      ResponseFieldMapper responseFieldMapper, ScalarTypeAdapters scalarTypeAdapters) {
+    this(operation, responseFieldMapper, scalarTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
+  }
 
   public OperationResponseParser(Operation<D, W, ?> operation, ResponseFieldMapper responseFieldMapper,
       ScalarTypeAdapters scalarTypeAdapters, ResponseNormalizer<Map<String, Object>> responseNormalizer) {

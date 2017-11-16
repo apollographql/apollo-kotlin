@@ -8,7 +8,7 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.CacheReference;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.RecordSet;
-import com.apollographql.apollo.internal.response.ResponseReaderShadow;
+import com.apollographql.apollo.internal.response.ResolveDelegate;
 import com.apollographql.apollo.internal.util.SimpleStack;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class ResponseNormalizer<R> implements ResponseReaderShadow<R> {
+public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
   private SimpleStack<List<String>> pathStack;
   private SimpleStack<Record> recordStack;
   private SimpleStack<Object> valueStack;

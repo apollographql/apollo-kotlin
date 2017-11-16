@@ -10,8 +10,8 @@ import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
-import com.apollographql.apollo.internal.response.OperationResponseParser;
-import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
+import com.apollographql.apollo.response.OperationResponseParser;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 import com.apollographql.apollo.internal.ApolloLogger;
 
 import java.io.Closeable;

@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.internal.Optional;
 
 import java.util.List;
 
-public interface ResponseReaderShadow<R> {
+public interface ResolveDelegate<R> {
 
   void willResolveRootQuery(Operation operation);
 

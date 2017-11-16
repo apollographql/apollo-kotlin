@@ -24,7 +24,7 @@ import com.apollographql.apollo.internal.RealApolloCall;
 import com.apollographql.apollo.internal.RealApolloPrefetch;
 import com.apollographql.apollo.internal.ResponseFieldMapperFactory;
 import com.apollographql.apollo.internal.cache.normalized.RealApolloStore;
-import com.apollographql.apollo.internal.response.ScalarTypeAdapters;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import java.io.IOException;
 import java.util.ArrayList;
