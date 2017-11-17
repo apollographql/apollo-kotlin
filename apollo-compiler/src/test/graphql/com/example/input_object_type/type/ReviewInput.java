@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.internal.Utils;
 import java.io.IOException;
 import java.lang.Boolean;
-import java.lang.Integer;
+import java.lang.Long;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -18,9 +18,9 @@ import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class ReviewInput {
-  private final int stars;
+  private final long stars;
 
-  private final Input<Integer> nullableIntFieldWithDefaultValue;
+  private final Input<Long> nullableIntFieldWithDefaultValue;
 
   private final Input<String> commentary;
 
@@ -36,16 +36,16 @@ public final class ReviewInput {
 
   private final Input<List<Episode>> listOfEnums;
 
-  private final Input<List<Integer>> listOfInt;
+  private final Input<List<Long>> listOfInt;
 
   private final Input<List<String>> listOfString;
 
   private final Input<Boolean> booleanWithDefaultValue;
 
-  ReviewInput(int stars, Input<Integer> nullableIntFieldWithDefaultValue, Input<String> commentary,
+  ReviewInput(long stars, Input<Long> nullableIntFieldWithDefaultValue, Input<String> commentary,
       @Nonnull ColorInput favoriteColor, Input<Episode> enumWithDefaultValue,
       Input<Episode> nullableEnum, Input<List<Date>> listOfCustomScalar, Input<Date> customScalar,
-      Input<List<Episode>> listOfEnums, Input<List<Integer>> listOfInt,
+      Input<List<Episode>> listOfEnums, Input<List<Long>> listOfInt,
       Input<List<String>> listOfString, Input<Boolean> booleanWithDefaultValue) {
     this.stars = stars;
     this.nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue;
@@ -64,14 +64,14 @@ public final class ReviewInput {
   /**
    * 0-5 stars
    */
-  public int stars() {
+  public long stars() {
     return this.stars;
   }
 
   /**
    * for test purpose only
    */
-  public @Nullable Integer nullableIntFieldWithDefaultValue() {
+  public @Nullable Long nullableIntFieldWithDefaultValue() {
     return this.nullableIntFieldWithDefaultValue.value;
   }
 
@@ -127,7 +127,7 @@ public final class ReviewInput {
   /**
    * for test purpose only
    */
-  public @Nullable List<Integer> listOfInt() {
+  public @Nullable List<Long> listOfInt() {
     return this.listOfInt.value;
   }
 
@@ -153,9 +153,9 @@ public final class ReviewInput {
     return new InputFieldMarshaller() {
       @Override
       public void marshal(InputFieldWriter writer) throws IOException {
-        writer.writeInt("stars", stars);
+        writer.writeLong("stars", stars);
         if (nullableIntFieldWithDefaultValue.defined) {
-          writer.writeInt("nullableIntFieldWithDefaultValue", nullableIntFieldWithDefaultValue.value);
+          writer.writeLong("nullableIntFieldWithDefaultValue", nullableIntFieldWithDefaultValue.value);
         }
         if (commentary.defined) {
           writer.writeString("commentary", commentary.value);
@@ -194,8 +194,8 @@ public final class ReviewInput {
           writer.writeList("listOfInt", listOfInt.value != null ? new InputFieldWriter.ListWriter() {
             @Override
             public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
-              for (Integer $item : listOfInt.value) {
-                listItemWriter.writeInt($item);
+              for (Long $item : listOfInt.value) {
+                listItemWriter.writeLong($item);
               }
             }
           } : null);
@@ -218,9 +218,9 @@ public final class ReviewInput {
   }
 
   public static final class Builder {
-    private int stars;
+    private long stars;
 
-    private Input<Integer> nullableIntFieldWithDefaultValue = Input.fromNullable(10);
+    private Input<Long> nullableIntFieldWithDefaultValue = Input.fromNullable(10L);
 
     private Input<String> commentary = Input.absent();
 
@@ -236,7 +236,7 @@ public final class ReviewInput {
 
     private Input<List<Episode>> listOfEnums = Input.absent();
 
-    private Input<List<Integer>> listOfInt = Input.fromNullable(Arrays.<Integer>asList(1, 2, 3));
+    private Input<List<Long>> listOfInt = Input.fromNullable(Arrays.<Long>asList(1L, 2L, 3L));
 
     private Input<List<String>> listOfString = Input.fromNullable(Arrays.<String>asList("test1", "test2", "test3"));
 
@@ -248,7 +248,7 @@ public final class ReviewInput {
     /**
      * 0-5 stars
      */
-    public Builder stars(int stars) {
+    public Builder stars(long stars) {
       this.stars = stars;
       return this;
     }
@@ -256,7 +256,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder nullableIntFieldWithDefaultValue(@Nullable Integer nullableIntFieldWithDefaultValue) {
+    public Builder nullableIntFieldWithDefaultValue(@Nullable Long nullableIntFieldWithDefaultValue) {
       this.nullableIntFieldWithDefaultValue = Input.fromNullable(nullableIntFieldWithDefaultValue);
       return this;
     }
@@ -320,7 +320,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder listOfInt(@Nullable List<Integer> listOfInt) {
+    public Builder listOfInt(@Nullable List<Long> listOfInt) {
       this.listOfInt = Input.fromNullable(listOfInt);
       return this;
     }
@@ -344,7 +344,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder nullableIntFieldWithDefaultValueInput(@Nonnull Input<Integer> nullableIntFieldWithDefaultValue) {
+    public Builder nullableIntFieldWithDefaultValueInput(@Nonnull Input<Long> nullableIntFieldWithDefaultValue) {
       this.nullableIntFieldWithDefaultValue = Utils.checkNotNull(nullableIntFieldWithDefaultValue, "nullableIntFieldWithDefaultValue == null");
       return this;
     }
@@ -400,7 +400,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder listOfIntInput(@Nonnull Input<List<Integer>> listOfInt) {
+    public Builder listOfIntInput(@Nonnull Input<List<Long>> listOfInt) {
       this.listOfInt = Utils.checkNotNull(listOfInt, "listOfInt == null");
       return this;
     }

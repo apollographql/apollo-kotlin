@@ -27,7 +27,10 @@ class BuilderTypeSpecBuilder(
 
   private fun builderFields(): List<FieldSpec> {
     fun valueCode(value: Any, type: TypeName): CodeBlock = when {
-      value is Number -> CodeBlock.of("\$L", value.castTo(type))
+      value is Number -> {
+        val longType = (type == TypeName.LONG || type == TypeName.LONG.box())
+        CodeBlock.of("\$L\$L", value.castTo(type), if (longType) "L" else "")
+      }
       type.isEnum(typeDeclarations) -> CodeBlock.of("\$T.\$L", type, value)
       value !is String -> CodeBlock.of("\$L", value)
       else -> CodeBlock.of("\$S", value)
@@ -106,7 +109,8 @@ class BuilderTypeSpecBuilder(
           }
         }
         .returns(ClassNames.BUILDER)
-        .addStatement("this.\$L = \$T.checkNotNull(\$L, \$S)", fieldName, ClassNames.API_UTILS, fieldName, "$fieldName == null")
+        .addStatement("this.\$L = \$T.checkNotNull(\$L, \$S)", fieldName, ClassNames.API_UTILS, fieldName,
+            "$fieldName == null")
         .addStatement("return this")
         .build()
   }
@@ -219,6 +223,8 @@ class BuilderTypeSpecBuilder(
     private fun Number.castTo(type: TypeName): Number {
       return if (type == TypeName.INT || type == TypeName.INT.box()) {
         toInt()
+      } else if (type == TypeName.LONG || type == TypeName.LONG.box()) {
+        toLong()
       } else if (type == TypeName.FLOAT || type == TypeName.FLOAT.box()) {
         toDouble()
       } else {

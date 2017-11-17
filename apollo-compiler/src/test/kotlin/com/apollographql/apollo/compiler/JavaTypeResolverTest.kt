@@ -28,8 +28,8 @@ class JavaTypeResolverTest {
     Assert.assertEquals(ClassNames.STRING.annotated(Annotations.NONNULL), defaultResolver.resolve("String!"))
     Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.STRING), defaultResolver.resolve("String", true))
 
-    Assert.assertEquals(TypeName.INT, defaultResolver.resolve("Int!"))
-    Assert.assertEquals(ClassNames.parameterizedOptional(TypeName.INT.box()), defaultResolver.resolve("Int", true))
+    Assert.assertEquals(TypeName.LONG, defaultResolver.resolve("Int!"))
+    Assert.assertEquals(ClassNames.parameterizedOptional(TypeName.LONG.box()), defaultResolver.resolve("Int", true))
 
     Assert.assertEquals(TypeName.BOOLEAN, defaultResolver.resolve("Boolean!"))
     Assert.assertEquals(ClassNames.parameterizedOptional(TypeName.BOOLEAN.box()),
@@ -46,9 +46,9 @@ class JavaTypeResolverTest {
     Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.parameterizedListOf(ClassNames.STRING)),
         defaultResolver.resolve("[String!]", true))
 
-    Assert.assertEquals(ClassNames.parameterizedListOf(TypeName.INT.box()).annotated(Annotations.NONNULL),
+    Assert.assertEquals(ClassNames.parameterizedListOf(TypeName.LONG.box()).annotated(Annotations.NONNULL),
         defaultResolver.resolve("[Int]!"))
-    Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.parameterizedListOf(TypeName.INT.box())),
+    Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.parameterizedListOf(TypeName.LONG.box())),
         defaultResolver.resolve("[Int]", true))
 
     Assert.assertEquals(ClassNames.parameterizedListOf(TypeName.BOOLEAN.box()).annotated(Annotations.NONNULL),

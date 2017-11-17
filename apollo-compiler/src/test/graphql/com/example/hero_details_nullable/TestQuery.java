@@ -9,7 +9,7 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Utils;
-import java.lang.Integer;
+import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -295,13 +295,13 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
   public static class FriendsConnection {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forLong("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
 
-    final @Nullable Integer totalCount;
+    final @Nullable Long totalCount;
 
     final @Nullable List<Edge> edges;
 
@@ -311,7 +311,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
     private volatile boolean $hashCodeMemoized;
 
-    public FriendsConnection(@Nonnull String __typename, @Nullable Integer totalCount,
+    public FriendsConnection(@Nonnull String __typename, @Nullable Long totalCount,
         @Nullable List<Edge> edges) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.totalCount = totalCount;
@@ -325,7 +325,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
     /**
      * The total number of friends
      */
-    public @Nullable Integer totalCount() {
+    public @Nullable Long totalCount() {
       return this.totalCount;
     }
 
@@ -341,7 +341,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
-          writer.writeInt($responseFields[1], totalCount);
+          writer.writeLong($responseFields[1], totalCount);
           writer.writeList($responseFields[2], edges, new ResponseWriter.ListWriter() {
             @Override
             public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
@@ -400,7 +400,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
       @Override
       public FriendsConnection map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final Integer totalCount = reader.readInt($responseFields[1]);
+        final Long totalCount = reader.readLong($responseFields[1]);
         final List<Edge> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge>() {
           @Override
           public Edge read(ResponseReader.ListItemReader listItemReader) {

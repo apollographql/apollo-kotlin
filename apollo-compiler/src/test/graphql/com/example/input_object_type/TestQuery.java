@@ -243,13 +243,13 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
   public static class CreateReview {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forInt("stars", "stars", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forLong("stars", "stars", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("commentary", "commentary", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
 
-    final int stars;
+    final long stars;
 
     final Optional<String> commentary;
 
@@ -259,7 +259,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
     private volatile boolean $hashCodeMemoized;
 
-    public CreateReview(@Nonnull String __typename, int stars, @Nullable String commentary) {
+    public CreateReview(@Nonnull String __typename, long stars, @Nullable String commentary) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.stars = stars;
       this.commentary = Optional.fromNullable(commentary);
@@ -272,7 +272,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
     /**
      * The number of stars this review gave, 1-5
      */
-    public int stars() {
+    public long stars() {
       return this.stars;
     }
 
@@ -288,7 +288,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
-          writer.writeInt($responseFields[1], stars);
+          writer.writeLong($responseFields[1], stars);
           writer.writeString($responseFields[2], commentary.isPresent() ? commentary.get() : null);
         }
       };
@@ -340,7 +340,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       @Override
       public CreateReview map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final int stars = reader.readInt($responseFields[1]);
+        final long stars = reader.readLong($responseFields[1]);
         final String commentary = reader.readString($responseFields[2]);
         return new CreateReview(__typename, stars, commentary);
       }
