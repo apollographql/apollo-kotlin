@@ -13,7 +13,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
 import java.io.IOException;
-import java.lang.Integer;
+import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -347,12 +347,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class FriendsConnection {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forLong("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
 
-    final Optional<Integer> totalCount;
+    final Optional<Long> totalCount;
 
     private volatile String $toString;
 
@@ -360,7 +360,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public FriendsConnection(@Nonnull String __typename, @Nullable Integer totalCount) {
+    public FriendsConnection(@Nonnull String __typename, @Nullable Long totalCount) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.totalCount = Optional.fromNullable(totalCount);
     }
@@ -372,7 +372,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     /**
      * The total number of friends
      */
-    public Optional<Integer> totalCount() {
+    public Optional<Long> totalCount() {
       return this.totalCount;
     }
 
@@ -381,7 +381,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
-          writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
+          writer.writeLong($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
         }
       };
     }
@@ -428,7 +428,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public FriendsConnection map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final Integer totalCount = reader.readInt($responseFields[1]);
+        final Long totalCount = reader.readLong($responseFields[1]);
         return new FriendsConnection(__typename, totalCount);
       }
     }

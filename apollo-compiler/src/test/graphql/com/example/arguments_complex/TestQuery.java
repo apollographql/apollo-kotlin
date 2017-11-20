@@ -48,7 +48,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   private final TestQuery.Variables variables;
 
-  public TestQuery(@Nonnull Input<Episode> episode, int stars, double greenValue) {
+  public TestQuery(@Nonnull Input<Episode> episode, long stars, double greenValue) {
     Utils.checkNotNull(episode, "episode == null");
     variables = new TestQuery.Variables(episode, stars, greenValue);
   }
@@ -90,7 +90,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static final class Builder {
     private Input<Episode> episode = Input.absent();
 
-    private int stars;
+    private long stars;
 
     private double greenValue;
 
@@ -102,7 +102,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this;
     }
 
-    public Builder stars(int stars) {
+    public Builder stars(long stars) {
       this.stars = stars;
       return this;
     }
@@ -125,13 +125,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static final class Variables extends Operation.Variables {
     private final Input<Episode> episode;
 
-    private final int stars;
+    private final long stars;
 
     private final double greenValue;
 
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
-    Variables(Input<Episode> episode, int stars, double greenValue) {
+    Variables(Input<Episode> episode, long stars, double greenValue) {
       this.episode = episode;
       this.stars = stars;
       this.greenValue = greenValue;
@@ -146,7 +146,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return episode;
     }
 
-    public int stars() {
+    public long stars() {
       return stars;
     }
 
@@ -167,7 +167,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           if (episode.defined) {
             writer.writeString("episode", episode.value != null ? episode.value.name() : null);
           }
-          writer.writeInt("stars", stars);
+          writer.writeLong("stars", stars);
           writer.writeDouble("greenValue", greenValue);
         }
       };
