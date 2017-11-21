@@ -24,16 +24,10 @@ public abstract class CacheKeyResolver {
       return CacheKey.NO_KEY;
     }
   };
-  public static final CacheKey QUERY_ROOT_KEY = CacheKey.from("QUERY_ROOT");
-  public static final CacheKey MUTATION_ROOT_KEY = CacheKey.from("MUTATION_ROOT");
+  public static final CacheKey SHARED_ROOT_KEY = CacheKey.from("ROOT");
 
   public static CacheKey rootKeyForOperation(@Nonnull Operation operation) {
-    if (operation instanceof Query) {
-      return QUERY_ROOT_KEY;
-    } else if (operation instanceof Mutation) {
-      return MUTATION_ROOT_KEY;
-    }
-    throw new IllegalArgumentException("Unknown operation type.");
+    return SHARED_ROOT_KEY;
   }
 
   @Nonnull public abstract CacheKey fromFieldRecordSet(@Nonnull ResponseField field,
