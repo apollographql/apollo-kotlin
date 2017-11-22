@@ -12,6 +12,7 @@ subprojects {
       classpath dep.bintrayGradlePlugin
     }
   }
+  
   repositories {
     jcenter()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
@@ -20,7 +21,7 @@ subprojects {
   group = GROUP
   version = VERSION_NAME
 
-  if (!project.name.equals('apollo-gradle-plugin')) {
+  if (project.name != 'apollo-gradle-plugin') {
     apply plugin: 'checkstyle'
 
     checkstyle {
