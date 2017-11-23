@@ -41,6 +41,7 @@ import static com.apollographql.apollo.Utils.assertResponse;
 import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
 import static com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse;
 import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.TestCase.fail;
 
 public class ApolloInterceptorTest {
   private static final String FILE_EPISODE_HERO_NAME_WITH_ID = "EpisodeHeroNameResponseWithId.json";
@@ -429,7 +430,7 @@ public class ApolloInterceptorTest {
     return new MockResponse().setChunkedBody(Utils.readFileToString(getClass(), "/" + fileName), 32);
   }
 
-  private class ExceptionHandlingExecutor extends ThreadPoolExecutor {
+  private static class ExceptionHandlingExecutor extends ThreadPoolExecutor {
 
     private String message;
     private Class<?> exceptionClass;
@@ -447,6 +448,7 @@ public class ApolloInterceptorTest {
         @Override public void run() {
           try {
             command.run();
+            fail();
           } catch (Exception e) {
             assertThat(e.getMessage()).isEqualTo(message);
             assertThat(e).isInstanceOf(exceptionClass);

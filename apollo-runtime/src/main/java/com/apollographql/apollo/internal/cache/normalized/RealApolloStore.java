@@ -169,14 +169,17 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     return optimisticCache;
   }
 
+  @Override
   @Nullable public Record read(@Nonnull String key, @Nonnull CacheHeaders cacheHeaders) {
     return optimisticCache.loadRecord(checkNotNull(key, "key == null"), cacheHeaders);
   }
 
+  @Override
   @Nonnull public Collection<Record> read(@Nonnull Collection<String> keys, @Nonnull CacheHeaders cacheHeaders) {
     return optimisticCache.loadRecords(checkNotNull(keys, "keys == null"), cacheHeaders);
   }
 
+  @Override
   @Nonnull public Set<String> merge(@Nonnull Collection<Record> recordSet, @Nonnull CacheHeaders cacheHeaders) {
     return optimisticCache.merge(checkNotNull(recordSet, "recordSet == null"), cacheHeaders);
   }

@@ -23,7 +23,7 @@ public final class Record {
   private final String key;
   private final Map<String, Object> fields;
   private volatile UUID mutationId;
-  private volatile int sizeInBytes = UNKNOWN_SIZE_ESTIMATE;
+  private int sizeInBytes = UNKNOWN_SIZE_ESTIMATE;
 
   public static class Builder {
     private final Map<String, Object> fields;
@@ -91,6 +91,7 @@ public final class Record {
     return mutationId;
   }
 
+  @Override
   public Record clone() {
     return toBuilder().build();
   }
@@ -130,14 +131,14 @@ public final class Record {
   /**
    * @return An approximate number of bytes this Record takes up.
    */
-  public int sizeEstimateBytes() {
+  public synchronized int sizeEstimateBytes() {
     if (sizeInBytes == UNKNOWN_SIZE_ESTIMATE) {
       sizeInBytes = RecordWeigher.calculateBytes(this);
     }
     return sizeInBytes;
   }
 
-  private void adjustSizeEstimate(Object newFieldValue, Object oldFieldValue) {
+  private synchronized void adjustSizeEstimate(Object newFieldValue, Object oldFieldValue) {
     if (sizeInBytes != UNKNOWN_SIZE_ESTIMATE) {
       sizeInBytes += RecordWeigher.byteChange(newFieldValue, oldFieldValue);
     }

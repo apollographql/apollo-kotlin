@@ -26,6 +26,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Locale;
 
 import io.reactivex.functions.Predicate;
 import okhttp3.OkHttpClient;
@@ -39,10 +40,11 @@ import static com.google.common.truth.Truth.assertThat;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
+@SuppressWarnings("SimpleDateFormatConstant")
 public class ResponseWriteTestCase {
   private ApolloClient apolloClient;
   private MockWebServer server;
-  private SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-mm-dd");
+  private SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-mm-dd", Locale.US);
 
   @Before public void setUp() {
     server = new MockWebServer();
@@ -375,6 +377,7 @@ public class ResponseWriteTestCase {
     );
   }
 
+  @SuppressWarnings("CheckReturnValue")
   @Test
   public void operation_with_inline_fragments() throws Exception {
     EpisodeHeroWithInlineFragmentQuery query = new EpisodeHeroWithInlineFragmentQuery(Input.fromNullable(Episode.NEWHOPE));

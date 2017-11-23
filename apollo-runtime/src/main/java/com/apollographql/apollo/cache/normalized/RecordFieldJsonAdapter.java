@@ -5,6 +5,7 @@ import com.apollographql.apollo.internal.json.JsonWriter;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
@@ -61,7 +62,8 @@ public final class RecordFieldJsonAdapter {
   }
 
   public Map<String, Object> from(String jsonFieldSource) throws IOException {
-    final BufferedSource bufferSource = Okio.buffer(Okio.source(new ByteArrayInputStream(jsonFieldSource.getBytes())));
+    final BufferedSource bufferSource
+        = Okio.buffer(Okio.source(new ByteArrayInputStream(jsonFieldSource.getBytes(Charset.defaultCharset()))));
     return from(bufferSource);
   }
 

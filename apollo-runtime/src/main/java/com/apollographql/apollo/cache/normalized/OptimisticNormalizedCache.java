@@ -7,11 +7,12 @@ import com.apollographql.apollo.cache.CacheHeaders;
 import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -63,6 +64,7 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
     }).or(Collections.<String>emptySet());
   }
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   @Override public void clearAll() {
     lruCache.invalidateAll();
     //noinspection ResultOfMethodCallIgnored
@@ -128,9 +130,9 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
     return changedCacheKeys;
   }
 
-  private final class RecordJournal {
+  private static final class RecordJournal {
     Record snapshot;
-    final LinkedList<Record> history = new LinkedList<>();
+    final List<Record> history = new ArrayList<>();
 
     RecordJournal(Record mutationRecord) {
       this.snapshot = mutationRecord.clone();
@@ -141,7 +143,7 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
      * Commits new version of record to the history and invalidate snapshot version.
      */
     Set<String> commit(Record record) {
-      history.addLast(record.clone());
+      history.add(history.size(), record.clone());
       return snapshot.mergeWith(record);
     }
 

@@ -26,7 +26,8 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
     this.cacheHeaders = cacheHeaders;
   }
 
-  @SuppressWarnings("unchecked") @Override public <T> T valueFor(Record record, ResponseField field) {
+  @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
+  @Override public <T> T valueFor(Record record, ResponseField field) {
     switch (field.type()) {
       case OBJECT:
         return (T) valueForObject(record, field);
@@ -90,7 +91,8 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
   }
 
 
-  @SuppressWarnings("unchecked") private <T> T fieldValue(Record record, ResponseField field) {
+  @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
+  private <T> T fieldValue(Record record, ResponseField field) {
     String fieldKey = field.cacheKey(variables);
     if (!record.hasField(fieldKey)) {
       throw new NullPointerException("Missing value: " + field.fieldName());

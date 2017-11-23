@@ -28,7 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.functions.Predicate;
@@ -171,6 +170,7 @@ public class NormalizedCacheTestCase {
     );
   }
 
+  @SuppressWarnings("CheckReturnValue")
   @Test public void heroParentTypeDependentField() throws Exception {
     cacheAndAssertCachedResponse(
         server,

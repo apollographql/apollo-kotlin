@@ -601,6 +601,7 @@ public final class BufferedSourceJsonReader extends JsonReader {
     throw new JsonDataException("Expected a boolean but was " + peek() + " at path " + getPath());
   }
 
+  @SuppressWarnings("TypeParameterUnusedInFormals")
   @Override public <T> T nextNull() throws IOException {
     int p = peeked;
     if (p == PEEKED_NONE) {

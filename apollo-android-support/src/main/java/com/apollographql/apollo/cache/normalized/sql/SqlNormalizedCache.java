@@ -67,6 +67,7 @@ public final class SqlNormalizedCache extends NormalizedCache {
     deleteAllRecordsStatement = database.compileStatement(DELETE_ALL_RECORD_STATEMENT);
   }
 
+  @Override
   @Nullable public Record loadRecord(@Nonnull final String key, @Nonnull final CacheHeaders cacheHeaders) {
     return selectRecordForKey(key)
         .apply(new Action<Record>() {
@@ -84,7 +85,9 @@ public final class SqlNormalizedCache extends NormalizedCache {
         .orNull();
   }
 
-  @Nonnull public Set<String> merge(@Nonnull final Record apolloRecord, @Nonnull final CacheHeaders cacheHeaders) {
+  @SuppressWarnings("ResultOfMethodCallIgnored")
+  @Nonnull @Override public Set<String> merge(@Nonnull final Record apolloRecord, @Nonnull final CacheHeaders
+      cacheHeaders) {
     if (cacheHeaders.hasHeader(DO_NOT_STORE)) {
       return Collections.emptySet();
     }
@@ -112,6 +115,7 @@ public final class SqlNormalizedCache extends NormalizedCache {
     return changedKeys;
   }
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   @Nonnull @Override public Set<String> merge(@Nonnull final Collection<Record> recordSet,
       @Nonnull final CacheHeaders cacheHeaders) {
     if (cacheHeaders.hasHeader(DO_NOT_STORE)) {
@@ -138,6 +142,7 @@ public final class SqlNormalizedCache extends NormalizedCache {
     return changedKeys;
   }
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   @Override public void clearAll() {
     //noinspection ResultOfMethodCallIgnored
     nextCache().apply(new Action<NormalizedCache>() {
@@ -158,7 +163,7 @@ public final class SqlNormalizedCache extends NormalizedCache {
       }
     }).or(Boolean.FALSE);
 
-    return result | deleteRecord(cacheKey.key());
+    return result || deleteRecord(cacheKey.key());
   }
 
   public void close() {

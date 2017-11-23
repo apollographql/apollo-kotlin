@@ -9,6 +9,7 @@ import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -102,15 +103,15 @@ public class LruNormalizedCacheTest {
         .build()).create(basicFieldAdapter);
 
     Record.Builder testRecord1Builder = Record.builder("key1");
-    testRecord1Builder.addField("a", new String(new byte[1100]));
+    testRecord1Builder.addField("a", new String(new byte[1100], Charset.defaultCharset()));
     Record testRecord1 = testRecord1Builder.build();
 
     Record.Builder testRecord2Builder = Record.builder("key2");
-    testRecord2Builder.addField("a", new String(new byte[1100]));
+    testRecord2Builder.addField("a", new String(new byte[1100], Charset.defaultCharset()));
     Record testRecord2 = testRecord2Builder.build();
 
     Record.Builder testRecord3Builder = Record.builder("key3");
-    testRecord3Builder.addField("a", new String(new byte[10]));
+    testRecord3Builder.addField("a", new String(new byte[10], Charset.defaultCharset()));
     Record testRecord3 = testRecord3Builder.build();
 
     List<Record> records = Arrays.asList(
@@ -134,15 +135,15 @@ public class LruNormalizedCacheTest {
         .build()).create(basicFieldAdapter);
 
     Record.Builder testRecord1Builder = Record.builder("key1");
-    testRecord1Builder.addField("a", new String(new byte[10]));
+    testRecord1Builder.addField("a", new String(new byte[10], Charset.defaultCharset()));
     Record testRecord1 = testRecord1Builder.build();
 
     Record.Builder testRecord2Builder = Record.builder("key2");
-    testRecord2Builder.addField("a", new String(new byte[10]));
+    testRecord2Builder.addField("a", new String(new byte[10], Charset.defaultCharset()));
     Record testRecord2 = testRecord2Builder.build();
 
     Record.Builder testRecord3Builder = Record.builder("key3");
-    testRecord3Builder.addField("a", new String(new byte[10]));
+    testRecord3Builder.addField("a", new String(new byte[10], Charset.defaultCharset()));
     Record testRecord3 = testRecord3Builder.build();
 
     List<Record> records = Arrays.asList(
@@ -158,7 +159,7 @@ public class LruNormalizedCacheTest {
     assertThat(lruCache.loadRecord("key3", CacheHeaders.NONE)).isNotNull();
 
     Record.Builder largeTestRecordBuilder = Record.builder("key1");
-    largeTestRecordBuilder.addField("a", new String(new byte[2000]));
+    largeTestRecordBuilder.addField("a", new String(new byte[2000], Charset.defaultCharset()));
     Record largeTestRecord = largeTestRecordBuilder.build();
 
     lruCache.merge(largeTestRecord, CacheHeaders.NONE);
@@ -238,7 +239,7 @@ public class LruNormalizedCacheTest {
     primaryCacheStore.merge(record, CacheHeaders.NONE);
     primaryCacheStore.clearAll();
 
-    assertThat(primaryCacheStore.loadRecord("key", CacheHeaders.NONE));
+    assertThat(primaryCacheStore.loadRecord("key", CacheHeaders.NONE)).isNull();
   }
 
   @Test

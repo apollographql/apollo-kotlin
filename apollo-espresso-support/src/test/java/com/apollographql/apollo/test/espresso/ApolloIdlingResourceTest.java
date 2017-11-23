@@ -33,6 +33,7 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.fail;
 
 public class ApolloIdlingResourceTest {
   private ApolloIdlingResource idlingResource;
@@ -93,13 +94,11 @@ public class ApolloIdlingResourceTest {
     try {
       server.shutdown();
     } catch (IOException ignored) {
-
     }
   }
 
   @Test
   public void onNullNamePassed_NullPointerExceptionIsThrown() {
-
     apolloClient = ApolloClient.builder()
         .okHttpClient(okHttpClient)
         .serverUrl(server.url("/"))
@@ -107,6 +106,7 @@ public class ApolloIdlingResourceTest {
 
     try {
       idlingResource = ApolloIdlingResource.create(null, apolloClient);
+      fail();
     } catch (Exception e) {
       assertThat(e).isInstanceOf(NullPointerException.class);
       assertThat(e.getMessage()).isEqualTo("name == null");
@@ -117,6 +117,7 @@ public class ApolloIdlingResourceTest {
   public void onNullApolloClientPassed_NullPointerExceptionIsThrown() {
     try {
       idlingResource = ApolloIdlingResource.create(IDLING_RESOURCE_NAME, null);
+      fail();
     } catch (Exception e) {
       assertThat(e).isInstanceOf(NullPointerException.class);
       assertThat(e.getMessage()).isEqualTo("apolloClient == null");
@@ -125,7 +126,6 @@ public class ApolloIdlingResourceTest {
 
   @Test
   public void checkValidIdlingResourceNameIsRegistered() {
-
     apolloClient = ApolloClient.builder()
         .okHttpClient(okHttpClient)
         .serverUrl(server.url("/"))
@@ -172,6 +172,7 @@ public class ApolloIdlingResourceTest {
     assertThat(idlingResource.isIdleNow()).isTrue();
   }
 
+  @SuppressWarnings("CheckReturnValue")
   @Test
   public void checkIdlingResourceTransition_whenCallIsQueued() throws IOException, ApolloException {
     server.enqueue(mockResponse());
