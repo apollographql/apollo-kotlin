@@ -28,22 +28,21 @@ android {
     exclude 'META-INF/rxjava.properties'
   }
 }
+
 dependencies {
-  compile dep.jsr305
-  compile project(':apollo-api')
+  provided dep.jsr305
+  provided dep.jsr250
+
   compile project(':apollo-runtime')
   compile project(':apollo-rx-support')
   compile project(':apollo-rx2-support')
   compile project(':apollo-http-cache')
   compile dep.appcompat
-  compile dep.rxjava
-  compile dep.rxjava2
 
   testCompile dep.junit
   testCompile dep.truth
   testCompile dep.mockWebServer
   testCompile dep.okhttpTestSupport
-  testCompile dep.cache
 }
 
 apollo {

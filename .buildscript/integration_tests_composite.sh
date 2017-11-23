@@ -20,7 +20,7 @@ cp gradle/composite/apollo-integration-settings.gradle apollo-integration/settin
 cp gradle/composite/root-settings.gradle settings.gradle
 
 echo "Running integration tests..."
-integrationTestOutput=$(./gradlew -p apollo-integration clean build)
+integrationTestOutput=$(./gradlew -p apollo-integration clean build -s)
 echo "${integrationTestOutput}"
 
 if [[ $integrationTestOutput == *"BUILD FAILED"* ]]; then
