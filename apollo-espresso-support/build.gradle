@@ -10,6 +10,11 @@ android {
   compileSdkVersion androidConfig.compileSdkVersion
   buildToolsVersion androidConfig.buildToolsVersion
 
+  defaultConfig {
+    minSdkVersion androidConfig.minSdkVersion
+    targetSdkVersion androidConfig.targetSdkVersion
+  }
+
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_7
     targetCompatibility JavaVersion.VERSION_1_7
@@ -19,15 +24,12 @@ android {
     textReport true
     textOutput 'stdout'
     ignore 'InvalidPackage'
+    // We run a full lint analysis as build part in CI, so skip vital checks for assemble tasks.
+    checkReleaseBuilds false
   }
 
   dexOptions {
     preDexLibraries = isCi
-  }
-
-  defaultConfig {
-    minSdkVersion androidConfig.minSdkVersion
-    targetSdkVersion androidConfig.targetSdkVersion
   }
 }
 

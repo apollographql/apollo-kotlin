@@ -22,12 +22,15 @@ android {
     textReport true
     textOutput 'stdout'
     ignore 'InvalidPackage', 'GoogleAppIndexingWarning', 'AllowBackup'
+    // We run a full lint analysis as build part in CI, so skip vital checks for assemble tasks.
+    checkReleaseBuilds false
   }
 
   packagingOptions {
     exclude 'META-INF/rxjava.properties'
   }
 }
+
 dependencies {
   compile dep.jsr305
   compile project(':apollo-api')
