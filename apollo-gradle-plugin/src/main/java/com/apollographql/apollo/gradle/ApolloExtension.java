@@ -11,7 +11,6 @@ public class ApolloExtension {
   static final String NAME = "apollo";
   private Map<String, String> customTypeMapping = new LinkedHashMap<>();
   private String nullableValueType = NullableValueType.ANNOTATED.getValue();
-  private boolean generateAccessors = true;
   private boolean useSemanticNaming = true;
   private boolean generateModelBuilder;
   private String schemaFilePath;
@@ -39,14 +38,6 @@ public class ApolloExtension {
 
   public boolean isUseSemanticNaming() {
     return useSemanticNaming;
-  }
-
-  public boolean isGenerateAccessors() {
-    return generateAccessors;
-  }
-
-  public void setGenerateAccessors(boolean generateAccessors) {
-    this.generateAccessors = generateAccessors;
   }
 
   public boolean isGenerateModelBuilder() {

@@ -1,0 +1,31 @@
+query TestQuery {
+  search(text: "test") {
+    ... on Character {
+      id
+      name
+      friends {
+        ... on Character {
+          name
+        }
+        ... on Human {
+          homePlanet
+          friends {
+            ... on Character {
+              firstAppearsIn
+            }
+          }
+        }
+        ... on Droid {
+          primaryFunction
+          friends {
+            id
+            deprecated
+          }
+        }
+      }
+    }
+    ... on Starship {
+      name
+    }
+  }
+}

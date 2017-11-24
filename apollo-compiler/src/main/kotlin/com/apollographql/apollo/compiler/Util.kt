@@ -300,7 +300,20 @@ fun TypeName.defaultOptionalValue(): CodeBlock {
   }
 }
 
-fun TypeSpec.removeNestedTypeSpecs(excludeTypeNames: List<String>): TypeSpec =
+fun TypeSpec.removeNestedTypeSpecs(excludeTypeNames: List<String>): TypeSpec {
+  return if (this.kind == TypeSpec.Kind.INTERFACE) {
+    TypeSpec.interfaceBuilder(name)
+        .addJavadoc(javadoc)
+        .addAnnotations(annotations)
+        .addModifiers(*modifiers.toTypedArray())
+        .addSuperinterfaces(superinterfaces)
+        .addFields(fieldSpecs.filter { it.hasModifier(Modifier.STATIC) })
+        .addTypes(typeSpecs.filter { excludeTypeNames.contains(it.name) })
+        .addMethods(methodSpecs)
+        .let { if (initializerBlock.isEmpty) it else it.addInitializerBlock(initializerBlock) }
+        .let { if (staticBlock.isEmpty) it else it.addStaticBlock(staticBlock) }
+        .build()
+  } else {
     TypeSpec.classBuilder(name)
         .superclass(superclass)
         .addJavadoc(javadoc)
@@ -313,6 +326,8 @@ fun TypeSpec.removeNestedTypeSpecs(excludeTypeNames: List<String>): TypeSpec =
         .let { if (initializerBlock.isEmpty) it else it.addInitializerBlock(initializerBlock) }
         .let { if (staticBlock.isEmpty) it else it.addStaticBlock(staticBlock) }
         .build()
+  }
+}
 
 fun TypeSpec.flatNestedTypeSpecs(excludeTypeNames: List<String>): List<TypeSpec> =
     typeSpecs
@@ -328,12 +343,11 @@ fun TypeSpec.flatten(excludeTypeNames: List<String>): TypeSpec {
 }
 
 fun TypeSpec.withBuilder(): TypeSpec {
-  if (fieldSpecs.isEmpty()) {
+  val fields = fieldSpecs.filter { !it.modifiers.contains(Modifier.STATIC) }
+      .filterNot { it.name.startsWith(prefix = "$") }
+  if (fields.isEmpty()) {
     return this
   } else {
-    val fields = fieldSpecs
-        .filter { !it.modifiers.contains(Modifier.STATIC) }
-        .filterNot { it.name.startsWith(prefix = "$") }
     val builderVariable = ClassNames.BUILDER.simpleName().decapitalize()
     val builderClass = ClassName.get("", ClassNames.BUILDER.simpleName())
     val toBuilderMethod = MethodSpec.methodBuilder(BuilderTypeSpecBuilder.TO_BUILDER_METHOD_NAME)
@@ -387,6 +401,63 @@ fun TypeName.listParamType(): TypeName {
       .typeArguments
       .first()
       .let { if (it is WildcardTypeName) it.upperBounds.first() else it }
+}
+
+fun TypeName.rawType(): TypeName {
+  return (this as? ParameterizedTypeName)?.typeArguments?.first()?.rawType()
+      ?: (this as? WildcardTypeName)?.upperBounds?.first()?.rawType()
+      ?: this
+}
+
+fun TypeSpec.confirmToProtocol(protocolSpec: TypeSpec): TypeSpec {
+  val nestedTypes = typeSpecs.map { it.name }
+  val nestedTypeProtocols = methodSpecs
+      .filter { it.returnType != null }
+      .filter { objectMethodSpec ->
+        val objectMethodReturnType = objectMethodSpec.returnType.rawType()
+        objectMethodReturnType is ClassName && nestedTypes.contains(objectMethodReturnType.simpleName())
+      }
+      .map { it.name to it.returnType.rawType() as ClassName }
+      .associate { (methodName, objectMethodReturnType) ->
+        val protocolMethodReturnType = protocolSpec.methodSpecs.find { it.name == methodName }?.returnType?.rawType()
+        objectMethodReturnType.simpleName() to (protocolMethodReturnType as? ClassName)?.let { protocolNestedType ->
+          protocolSpec.typeSpecs.find { it.name == protocolNestedType.simpleName() }
+        }
+      }.filter { (_, nestedProtocol) -> nestedProtocol != null }
+
+  return TypeSpec.classBuilder(name)
+      .superclass(superclass)
+      .addJavadoc(javadoc)
+      .addAnnotations(annotations)
+      .addModifiers(*modifiers.toTypedArray())
+      .addSuperinterfaces(superinterfaces)
+      .addSuperinterface(ClassName.get("", protocolSpec.name))
+      .addFields(fieldSpecs)
+      .addTypes(typeSpecs.map { typeSpec ->
+        val protocol = nestedTypeProtocols[typeSpec.name]
+        protocol?.let { typeSpec.confirmToProtocol(it) } ?: typeSpec
+      })
+      .addMethods(methodSpecs)
+      .let { if (initializerBlock.isEmpty) it else it.addInitializerBlock(initializerBlock) }
+      .let { if (staticBlock.isEmpty) it else it.addStaticBlock(staticBlock) }
+      .build()
+}
+
+fun MethodSpec.withWildCardReturnType(forTypeNames: List<String>): MethodSpec {
+  fun ParameterizedTypeName.overrideWithWildcard(): ParameterizedTypeName {
+    val typeArgument = typeArguments.first().let {
+      (it as? ParameterizedTypeName)?.overrideWithWildcard() ?: it
+    }
+    return ParameterizedTypeName.get(rawType, WildcardTypeName.subtypeOf(typeArgument))
+  }
+
+  return if (returnType.rawType().let { it as? ClassName }?.let { forTypeNames.contains(it.simpleName()) } == true) {
+    return toBuilder()
+        .returns(returnType.let { (it as? ParameterizedTypeName)?.overrideWithWildcard() ?: it })
+        .build()
+  } else {
+    this
+  }
 }
 
 object Util {

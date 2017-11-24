@@ -40,9 +40,8 @@ public class ApolloClassGenTask extends SourceTask {
       @Override
       public void execute(InputFileDetails inputFileDetails) {
         GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(inputFileDetails.getFile(), outputDir,
-            apolloExtension.getCustomTypeMapping(), nullableValueType, apolloExtension.isGenerateAccessors(),
-            apolloExtension.isUseSemanticNaming(), apolloExtension.isGenerateModelBuilder(),
-            apolloExtension.getOutputPackageName());
+            apolloExtension.getCustomTypeMapping(), nullableValueType, apolloExtension.isUseSemanticNaming(),
+            apolloExtension.isGenerateModelBuilder(), apolloExtension.getOutputPackageName());
         new GraphQLCompiler().write(args);
       }
     });

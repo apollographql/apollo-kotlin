@@ -17,13 +17,14 @@ data class Operation(
     val operationId: String
 
 ) : CodeGenerator {
-  override fun toTypeSpec(context: CodeGenerationContext): TypeSpec =
+  override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec =
       SchemaTypeSpecBuilder(
           typeName = DATA_TYPE_NAME,
           fields = fields,
           fragmentSpreads = emptyList(),
           inlineFragments = emptyList(),
-          context = context
+          context = context,
+          abstract = abstract
       )
           .build(Modifier.PUBLIC, Modifier.STATIC)
           .toBuilder()

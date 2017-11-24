@@ -20,13 +20,14 @@ data class Fragment(
 ) : CodeGenerator {
 
   /** Returns the Java interface that represents this Fragment object. */
-  override fun toTypeSpec(context: CodeGenerationContext): TypeSpec {
+  override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec {
     return SchemaTypeSpecBuilder(
         typeName = formatClassName(),
         fields = fields,
         fragmentSpreads = fragmentSpreads,
         inlineFragments = inlineFragments,
-        context = context
+        context = context,
+        abstract = abstract
     )
         .build(Modifier.PUBLIC)
         .toBuilder()
