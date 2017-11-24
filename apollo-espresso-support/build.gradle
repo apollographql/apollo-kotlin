@@ -32,9 +32,9 @@ android {
 }
 
 dependencies {
+  provided project(":apollo-runtime")
 
   compile dep.espressoIdlingResource
-  provided project(":apollo-runtime")
 
   testCompile dep.junit
   testCompile dep.truth

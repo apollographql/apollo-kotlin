@@ -28,15 +28,16 @@ android {
 }
 
 dependencies {
+  provided dep.jsr305
+
   compile "com.apollographql.apollo:apollo-runtime:$apolloReleaseVersion"
   compile "com.apollographql.apollo:apollo-android-support:$apolloReleaseVersion"
   compile "com.apollographql.apollo:apollo-rx2-support:$apolloReleaseVersion"
-
-  compile dep.jsr305
   compile dep.appcompat
   compile dep.okhttpLoggingInterceptor
   compile dep.recyclerView
   compile dep.rxandroid
   compile dep.rxjava2
+
   testCompile dep.junit
 }

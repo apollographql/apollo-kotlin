@@ -4,10 +4,10 @@ targetCompatibility = JavaVersion.VERSION_1_7
 sourceCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
-  compile dep.jsr305
+  compileOnly dep.jsr305
+
   compile dep.okHttp
   compile dep.cache
-
   compile project(":apollo-api")
 
   testCompile dep.junit
