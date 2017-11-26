@@ -38,6 +38,7 @@ import okio.Buffer;
 
 import static com.google.common.truth.Truth.assertThat;
 
+@SuppressWarnings("SimpleDateFormatConstant")
 public class HttpCacheTest {
   private static final int TIME_OUT_SECONDS = 3;
   private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.US);

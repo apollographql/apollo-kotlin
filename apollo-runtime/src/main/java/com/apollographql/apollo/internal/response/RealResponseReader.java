@@ -174,7 +174,8 @@ import java.util.Map;
     return result != null ? Collections.unmodifiableList(result) : null;
   }
 
-  @SuppressWarnings("unchecked") @Override public <T> T readCustomType(ResponseField.CustomTypeField field) {
+  @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
+  @Override public <T> T readCustomType(ResponseField.CustomTypeField field) {
     if (shouldSkip(field)) {
       return null;
     }
@@ -216,13 +217,13 @@ import java.util.Map;
         for (ResponseField.Condition condition : field.conditions()) {
           if (condition instanceof ResponseField.TypeNameCondition) {
             if (((ResponseField.TypeNameCondition) condition).typeName().equals(value)) {
-              return (T) conditionalTypeReader.read(value, this);
+              return conditionalTypeReader.read(value, this);
             }
           }
         }
         return null;
       } else {
-        return (T) conditionalTypeReader.read(value, this);
+        return conditionalTypeReader.read(value, this);
       }
     }
   }
@@ -234,12 +235,12 @@ import java.util.Map;
         Boolean conditionValue = (Boolean) variableValues.get(booleanCondition.variableName());
         if (booleanCondition.inverted()) {
           // means it's a skip directive
-          if (conditionValue == Boolean.TRUE) {
+          if (Boolean.TRUE.equals(conditionValue)) {
             return true;
           }
         } else {
           // means it's an include directive
-          if (conditionValue == Boolean.FALSE) {
+          if (Boolean.FALSE.equals(conditionValue)) {
             return true;
           }
         }
@@ -296,7 +297,7 @@ import java.util.Map;
       return (Boolean) value;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     @Override public <T> T readCustomType(ScalarType scalarType) {
       CustomTypeAdapter<T> typeAdapter = scalarTypeAdapters.adapterFor(scalarType);
       resolveDelegate.didResolveScalar(value);

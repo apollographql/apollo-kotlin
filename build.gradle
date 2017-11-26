@@ -1,9 +1,21 @@
+buildscript {
+  apply from: rootProject.file("gradle/dependencies.gradle")
+
+  repositories {
+    maven { url "https://plugins.gradle.org/m2/" }
+  }
+
+  dependencies {
+    classpath dep.gradleErrorpronePlugin
+  }
+}
+
 subprojects {
   apply from: rootProject.file("gradle/dependencies.gradle")
 
   buildscript {
     repositories {
-      jcenter()
+      maven { url "https://plugins.gradle.org/m2/" }
       maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
 
@@ -12,15 +24,22 @@ subprojects {
       classpath dep.bintrayGradlePlugin
     }
   }
+
   repositories {
-    jcenter()
+    maven { url "https://plugins.gradle.org/m2/" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+  }
+
+  apply plugin: "net.ltgt.errorprone"
+
+  configurations.errorprone {
+    resolutionStrategy.force dep.errorProneCore // Only upgrade dependency as needed
   }
 
   group = GROUP
   version = VERSION_NAME
 
-  if (!project.name.equals('apollo-gradle-plugin')) {
+  if (project.name != 'apollo-gradle-plugin') {
     apply plugin: 'checkstyle'
 
     checkstyle {
@@ -35,6 +54,12 @@ subprojects {
       include '**/*.java'
 
       classpath = files()
+    }
+
+    tasks.withType(JavaCompile) {
+      configure(options) {
+        compilerArgs << "-XepDisableWarningsInGeneratedCode" // Ignore generated code
+      }
     }
 
     afterEvaluate {

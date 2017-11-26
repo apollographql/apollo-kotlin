@@ -39,12 +39,14 @@ android {
 }
 
 dependencies {
-  compile dep.jsr305
+  provided dep.jsr305
+  provided dep.jsr250
+
   compile dep.apolloRuntime
   compile dep.apolloRxSupport
   compile dep.apolloRx2Support
-  compile dep.appcompat
   compile dep.apolloHttpCache
+  compile dep.appcompat
 
   testCompile dep.junit
   testCompile dep.truth

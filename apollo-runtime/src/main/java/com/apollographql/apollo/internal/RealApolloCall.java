@@ -253,6 +253,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         callback.get().onStatusEvent(StatusEvent.COMPLETED);
       }
 
+      @SuppressWarnings("ResultOfMethodCallIgnored")
       @Override public void onFetch(final ApolloInterceptor.FetchSourceType sourceType) {
         responseCallback().apply(new Action<Callback<T>>() {
           @Override public void apply(@Nonnull Callback<T> callback) {
@@ -296,6 +297,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .optimisticUpdates(optimisticUpdates);
   }
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   private synchronized void activate(Optional<Callback<T>> callback) throws ApolloCanceledException {
     switch (state.get()) {
       case IDLE:

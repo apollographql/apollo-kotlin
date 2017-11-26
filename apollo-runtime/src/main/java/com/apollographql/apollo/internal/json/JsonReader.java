@@ -285,6 +285,7 @@ public abstract class JsonReader implements Closeable {
    *
    * @throws JsonDataException if the next token is not null or if this reader is closed.
    */
+  @SuppressWarnings("TypeParameterUnusedInFormals")
   public abstract <T> T nextNull() throws IOException;
 
   /**

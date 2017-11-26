@@ -12,6 +12,7 @@ import com.nytimes.android.external.cache.Cache;
 import com.nytimes.android.external.cache.CacheBuilder;
 import com.nytimes.android.external.cache.Weigher;
 
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -36,7 +37,7 @@ public final class LruNormalizedCache extends NormalizedCache {
       lruCacheBuilder.maximumWeight(evictionPolicy.maxSizeBytes().get())
           .weigher(new Weigher<String, Record>() {
             @Override public int weigh(String key, Record value) {
-              return key.getBytes().length + value.sizeEstimateBytes();
+              return key.getBytes(Charset.defaultCharset()).length + value.sizeEstimateBytes();
             }
           });
     }
@@ -77,13 +78,13 @@ public final class LruNormalizedCache extends NormalizedCache {
     return record;
   }
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   @Nonnull @Override
   public Set<String> merge(@Nonnull final Record apolloRecord, @Nonnull final CacheHeaders cacheHeaders) {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return Collections.emptySet();
     }
 
-    //noinspection ResultOfMethodCallIgnored
     nextCache().apply(new Action<NormalizedCache>() {
       @Override public void apply(@Nonnull NormalizedCache cache) {
         cache.merge(apolloRecord, cacheHeaders);
@@ -103,8 +104,8 @@ public final class LruNormalizedCache extends NormalizedCache {
     }
   }
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   @Override public void clearAll() {
-    //noinspection ResultOfMethodCallIgnored
     nextCache().apply(new Action<NormalizedCache>() {
       @Override public void apply(@Nonnull NormalizedCache cache) {
         cache.clearAll();

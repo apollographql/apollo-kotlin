@@ -46,15 +46,17 @@ public final class OptionalTest {
     assertFalse(optionalName.isPresent());
   }
 
+  @Test
   public void testOf() {
     assertEquals("training", Optional.of("training").get());
   }
 
+  @Test
   public void testOfNull() {
     try {
       Optional.of(null);
       fail();
-    } catch (NullPointerException expected) {
+    } catch (NullPointerException ignore) {
     }
   }
 
@@ -86,7 +88,7 @@ public final class OptionalTest {
     try {
       optional.get();
       fail();
-    } catch (IllegalStateException expected) {
+    } catch (IllegalStateException ignore) {
     }
   }
 
@@ -142,7 +144,7 @@ public final class OptionalTest {
     try {
       presentAsSet.add("b");
       fail();
-    } catch (UnsupportedOperationException expected) {
+    } catch (UnsupportedOperationException ignore) {
     }
   }
 
@@ -152,7 +154,7 @@ public final class OptionalTest {
     try {
       absentAsSet.add("foo");
       fail();
-    } catch (UnsupportedOperationException expected) {
+    } catch (UnsupportedOperationException ignore) {
     }
   }
 
@@ -185,7 +187,7 @@ public final class OptionalTest {
                     }
                   });
       fail("Should throw if Function returns null.");
-    } catch (NullPointerException expected) {
+    } catch (NullPointerException ignore) {
     }
   }
 
@@ -293,7 +295,7 @@ public final class OptionalTest {
                     }
                   });
       fail("Should throw if Function returns null.");
-    } catch (NullPointerException expected) {
+    } catch (NullPointerException ignore) {
     }
   }
 

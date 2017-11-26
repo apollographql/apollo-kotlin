@@ -4,6 +4,7 @@ import com.apollographql.apollo.cache.normalized.CacheReference;
 import com.apollographql.apollo.cache.normalized.Record;
 
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
@@ -21,9 +22,9 @@ public final class RecordWeigher {
   }
 
   public static int calculateBytes(Record record) {
-    int size = SIZE_OF_RECORD_OVERHEAD + record.key().getBytes().length;
+    int size = SIZE_OF_RECORD_OVERHEAD + record.key().getBytes(Charset.defaultCharset()).length;
     for (Map.Entry<String, Object> field : record.fields().entrySet()) {
-      size += (field.getKey().getBytes().length + weighField(field.getValue()));
+      size += (field.getKey().getBytes(Charset.defaultCharset()).length + weighField(field.getValue()));
     }
     return size;
   }
@@ -37,13 +38,14 @@ public final class RecordWeigher {
       return size;
     }
     if (field instanceof String) {
-      return ((String) field).getBytes().length;
+      return ((String) field).getBytes(Charset.defaultCharset()).length;
     } else if (field instanceof Boolean) {
       return SIZE_OF_BOOLEAN;
     } else if (field instanceof BigDecimal) {
       return SIZE_OF_BIG_DECIMAL;
     } else if (field instanceof CacheReference) {
-      return SIZE_OF_CACHE_REFERENCE_OVERHEAD + ((CacheReference) field).key().getBytes().length;
+      return SIZE_OF_CACHE_REFERENCE_OVERHEAD
+          + ((CacheReference) field).key().getBytes(Charset.defaultCharset()).length;
     } else if (field == null) {
       return SIZE_OF_NULL;
     }

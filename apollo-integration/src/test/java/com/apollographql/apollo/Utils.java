@@ -7,6 +7,7 @@ import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.Executor;
@@ -31,7 +32,7 @@ public final class Utils {
 
     InputStreamReader inputStreamReader = null;
     try {
-      inputStreamReader = new InputStreamReader(contextClass.getResourceAsStream(streamIdentifier));
+      inputStreamReader = new InputStreamReader(contextClass.getResourceAsStream(streamIdentifier), Charset.defaultCharset());
       return CharStreams.toString(inputStreamReader);
     } catch (IOException e) {
       throw new IOException();
