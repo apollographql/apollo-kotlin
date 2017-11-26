@@ -259,13 +259,13 @@ final class JsonUtf8Writer extends JsonWriter {
   /**
    * Flushes and closes this writer and the underlying {@link Sink}.
    *
-   * @throws JsonDataException if the JSON document is incomplete.
+   * @throws IOException if the JSON document is incomplete.
    */
   @Override public void close() throws IOException {
     sink.close();
 
     int size = stackSize;
-    if (size > 1 || size == 1 && scopes[size - 1] != NONEMPTY_DOCUMENT) {
+    if (size > 1 || (size == 1 && scopes[size - 1] != NONEMPTY_DOCUMENT)) {
       throw new IOException("Incomplete document");
     }
     stackSize = 0;

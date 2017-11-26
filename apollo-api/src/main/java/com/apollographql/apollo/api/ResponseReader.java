@@ -21,6 +21,7 @@ public interface ResponseReader {
 
   <T> List<T> readList(ResponseField field, ListReader<T> listReader);
 
+  @SuppressWarnings("TypeParameterUnusedInFormals")
   <T> T readCustomType(ResponseField.CustomTypeField field);
 
   <T> T readConditional(ResponseField field, ConditionalTypeReader<T> conditionalTypeReader);
@@ -49,6 +50,7 @@ public interface ResponseReader {
 
     Boolean readBoolean();
 
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     <T> T readCustomType(ScalarType scalarType);
 
     <T> T readObject(ObjectReader<T> objectReader);

@@ -51,6 +51,7 @@ import okio.Buffer;
 import static com.apollographql.apollo.integration.normalizer.type.Episode.JEDI;
 import static com.google.common.truth.Truth.assertThat;
 
+@SuppressWarnings("SimpleDateFormatConstant")
 public class IntegrationTest {
   private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
@@ -92,7 +93,8 @@ public class IntegrationTest {
     }
   }
 
-  @SuppressWarnings("ConstantConditions") @Test public void allPlanetQuery() throws Exception {
+  @SuppressWarnings({"ConstantConditions", "CheckReturnValue"})
+  @Test public void allPlanetQuery() throws Exception {
     server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"));
 
     assertResponse(
