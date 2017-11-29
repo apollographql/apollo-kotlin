@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static java.util.Collections.emptySet;
+
 public class ApolloStoreTest {
 
   @Test public void storeClearAllCallsNormalizedCacheClearAll() throws Exception {
@@ -31,7 +33,7 @@ public class ApolloStoreTest {
       }
 
       @Nonnull @Override public Set<String> merge(@Nonnull Record record, @Nonnull CacheHeaders cacheHeaders) {
-        return null;
+        return emptySet();
       }
 
       @Override public void clearAll() {
@@ -40,6 +42,11 @@ public class ApolloStoreTest {
 
       @Override public boolean remove(@Nonnull CacheKey cacheKey) {
         return false;
+      }
+
+      @Nonnull @Override
+      protected Set<String> performMerge(@Nonnull Record apolloRecord, @Nonnull CacheHeaders cacheHeaders) {
+        return emptySet();
       }
     }, CacheKeyResolver.DEFAULT, new ScalarTypeAdapters(Collections.EMPTY_MAP), Executors.newSingleThreadExecutor(),
         new ApolloLogger(Optional.<Logger>absent()));

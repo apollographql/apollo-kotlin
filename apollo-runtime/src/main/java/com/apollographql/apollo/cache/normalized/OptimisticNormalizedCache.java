@@ -53,17 +53,6 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
     }
   }
 
-  @Nonnull @Override public Set<String> merge(@Nonnull final Record record, @Nonnull final CacheHeaders cacheHeaders) {
-    checkNotNull(record, "record == null");
-    checkNotNull(cacheHeaders, "cacheHeaders == null");
-
-    return nextCache().map(new Function<NormalizedCache, Set<String>>() {
-      @Nonnull @Override public Set<String> apply(@Nonnull NormalizedCache cache) {
-        return cache.merge(record, cacheHeaders);
-      }
-    }).or(Collections.<String>emptySet());
-  }
-
   @SuppressWarnings("ResultOfMethodCallIgnored")
   @Override public void clearAll() {
     lruCache.invalidateAll();
@@ -128,6 +117,11 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
     }
     lruCache.invalidateAll(removedKeys);
     return changedCacheKeys;
+  }
+
+  @Nonnull @Override
+  protected Set<String> performMerge(@Nonnull Record apolloRecord, @Nonnull CacheHeaders cacheHeaders) {
+    return Collections.emptySet();
   }
 
   private static final class RecordJournal {

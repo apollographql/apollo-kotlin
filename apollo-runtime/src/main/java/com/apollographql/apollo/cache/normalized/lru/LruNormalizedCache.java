@@ -79,32 +79,6 @@ public final class LruNormalizedCache extends NormalizedCache {
   }
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
-  @Nonnull @Override
-  public Set<String> merge(@Nonnull final Record apolloRecord, @Nonnull final CacheHeaders cacheHeaders) {
-    if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
-      return Collections.emptySet();
-    }
-
-    nextCache().apply(new Action<NormalizedCache>() {
-      @Override public void apply(@Nonnull NormalizedCache cache) {
-        cache.merge(apolloRecord, cacheHeaders);
-      }
-    });
-
-    final Record oldRecord = lruCache.getIfPresent(apolloRecord.key());
-    if (oldRecord == null) {
-      lruCache.put(apolloRecord.key(), apolloRecord);
-      return Collections.emptySet();
-    } else {
-      Set<String> changedKeys = oldRecord.mergeWith(apolloRecord);
-
-      //re-insert to trigger new weight calculation
-      lruCache.put(apolloRecord.key(), oldRecord);
-      return changedKeys;
-    }
-  }
-
-  @SuppressWarnings("ResultOfMethodCallIgnored")
   @Override public void clearAll() {
     nextCache().apply(new Action<NormalizedCache>() {
       @Override public void apply(@Nonnull NormalizedCache cache) {
@@ -134,5 +108,20 @@ public final class LruNormalizedCache extends NormalizedCache {
 
   void clearCurrentCache() {
     lruCache.invalidateAll();
+  }
+
+  @Nonnull
+  protected Set<String> performMerge(@Nonnull final Record apolloRecord, @Nonnull final CacheHeaders cacheHeaders) {
+    final Record oldRecord = lruCache.getIfPresent(apolloRecord.key());
+    if (oldRecord == null) {
+      lruCache.put(apolloRecord.key(), apolloRecord);
+      return Collections.emptySet();
+    } else {
+      Set<String> changedKeys = oldRecord.mergeWith(apolloRecord);
+
+      //re-insert to trigger new weight calculation
+      lruCache.put(apolloRecord.key(), oldRecord);
+      return changedKeys;
+    }
   }
 }

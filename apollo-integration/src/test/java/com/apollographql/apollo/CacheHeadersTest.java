@@ -33,6 +33,7 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
 import static com.google.common.truth.Truth.assertThat;
+import static java.util.Collections.emptySet;
 
 public class CacheHeadersTest {
   private static final int TIME_OUT_SECONDS = 3;
@@ -60,7 +61,7 @@ public class CacheHeadersTest {
 
       @Nonnull @Override public Set<String> merge(@NonNull Record record, @NonNull CacheHeaders cacheHeaders) {
         hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE));
-        return Collections.emptySet();
+        return emptySet();
       }
 
       @Override public void clearAll() {
@@ -68,6 +69,11 @@ public class CacheHeadersTest {
 
       @Override public boolean remove(@Nonnull CacheKey cacheKey) {
         return false;
+      }
+
+      @Nonnull @Override
+      protected Set<String> performMerge(@Nonnull Record apolloRecord, @Nonnull CacheHeaders cacheHeaders) {
+        return emptySet();
       }
     };
 
@@ -102,7 +108,7 @@ public class CacheHeadersTest {
 
       @Nonnull @Override public Set<String> merge(@NonNull Record record, @NonNull CacheHeaders cacheHeaders) {
         hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE));
-        return Collections.emptySet();
+        return emptySet();
       }
 
       @Override public void clearAll() {
@@ -110,6 +116,11 @@ public class CacheHeadersTest {
 
       @Override public boolean remove(@Nonnull CacheKey cacheKey) {
         return false;
+      }
+
+      @Nonnull @Override
+      protected Set<String> performMerge(@Nonnull Record apolloRecord, @Nonnull CacheHeaders cacheHeaders) {
+        return emptySet();
       }
     };
 
