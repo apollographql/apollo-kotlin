@@ -16,7 +16,6 @@ class JavaTypeResolverTest {
       typesPackage = "",
       customTypeMap = emptyMap(),
       nullableValueType = NullableValueType.APOLLO_OPTIONAL,
-      generateAccessors = true,
       ir = CodeGenerationIR(emptyList(), emptyList(), emptyList()),
       useSemanticNaming = false,
       generateModelBuilder = false

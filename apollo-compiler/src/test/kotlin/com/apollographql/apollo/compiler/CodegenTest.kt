@@ -85,13 +85,11 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
               it.name == "fragment_with_inline_fragment" -> true
               else -> false
             }
-            val generateAccessors = (it.name != "no_accessors")
             val args = GraphQLCompiler.Arguments(
                 irFile = File(it, "TestOperation.json"),
                 outputDir = GraphQLCompiler.Companion.OUTPUT_DIRECTORY.fold(File("build"), ::File),
                 customTypeMap = customTypeMap,
                 nullableValueType = nullableValueType,
-                generateAccessors = generateAccessors,
                 useSemanticNaming = useSemanticNaming,
                 generateModelBuilder = generateModelBuilder,
                 outputPackageName = null

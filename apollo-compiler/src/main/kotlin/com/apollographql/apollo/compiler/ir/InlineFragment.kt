@@ -14,13 +14,14 @@ data class InlineFragment(
     val fields: List<Field>,
     val fragmentSpreads: List<String>?
 ) : CodeGenerator {
-  override fun toTypeSpec(context: CodeGenerationContext): TypeSpec =
+  override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec =
       SchemaTypeSpecBuilder(
           typeName = formatClassName(),
           fields = fields,
           fragmentSpreads = fragmentSpreads ?: emptyList(),
           inlineFragments = emptyList(),
-          context = context
+          context = context,
+          abstract = abstract
       )
           .build(Modifier.PUBLIC, Modifier.STATIC)
           .let {

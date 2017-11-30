@@ -21,7 +21,7 @@ data class Field(
     val conditions: List<Condition>? = null
 ) : CodeGenerator {
 
-  override fun toTypeSpec(context: CodeGenerationContext): TypeSpec {
+  override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec {
     val fields = if (isNonScalar()) fields!! else emptyList()
     return SchemaTypeSpecBuilder(
         typeName = formatClassName(),
@@ -29,7 +29,8 @@ data class Field(
         fields = fields,
         fragmentSpreads = fragmentSpreads ?: emptyList(),
         inlineFragments = inlineFragments ?: emptyList(),
-        context = context
+        context = context,
+        abstract = abstract
     )
         .build(Modifier.PUBLIC, Modifier.STATIC)
         .let {
@@ -57,24 +58,9 @@ data class Field(
         .build()
   }
 
-  fun fieldSpec(context: CodeGenerationContext, publicModifier: Boolean = false): FieldSpec {
+  fun fieldSpec(context: CodeGenerationContext): FieldSpec {
     return FieldSpec.builder(toTypeName(methodResponseType(), context), responseName.escapeJavaReservedWord())
-        .let { if (publicModifier) it.addModifiers(Modifier.PUBLIC) else it }
         .addModifiers(Modifier.FINAL)
-        .let {
-          if (publicModifier && !description.isNullOrBlank()) {
-            it.addJavadoc("\$L\n", description)
-          } else {
-            it
-          }
-        }
-        .let {
-          if (publicModifier && isDeprecated ?: false && !deprecationReason.isNullOrBlank()) {
-            it.addJavadoc("@deprecated \$L\n", deprecationReason)
-          } else {
-            it
-          }
-        }
         .build()
   }
 

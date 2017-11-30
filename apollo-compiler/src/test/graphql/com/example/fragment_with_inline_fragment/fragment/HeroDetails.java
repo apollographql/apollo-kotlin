@@ -22,15 +22,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
-public class HeroDetails implements GraphqlFragment {
-  static final ResponseField[] $responseFields = {
-    ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-    ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
-    ResponseField.forObject("friendsConnection", "friendsConnection", null, false, Collections.<ResponseField.Condition>emptyList()),
-    ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Droid"))
-  };
-
-  public static final String FRAGMENT_DEFINITION = "fragment HeroDetails on Character {\n"
+public interface HeroDetails extends GraphqlFragment {
+  String FRAGMENT_DEFINITION = "fragment HeroDetails on Character {\n"
       + "  __typename\n"
       + "  name\n"
       + "  friendsConnection {\n"
@@ -50,603 +43,79 @@ public class HeroDetails implements GraphqlFragment {
       + "  }\n"
       + "}";
 
-  public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
+  List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
 
-  final @Nonnull String __typename;
-
-  final @Nonnull String name;
-
-  final @Nonnull FriendsConnection friendsConnection;
-
-  final Optional<AsDroid> asDroid;
-
-  private volatile String $toString;
-
-  private volatile int $hashCode;
-
-  private volatile boolean $hashCodeMemoized;
-
-  public HeroDetails(@Nonnull String __typename, @Nonnull String name,
-      @Nonnull FriendsConnection friendsConnection, @Nullable AsDroid asDroid) {
-    this.__typename = Utils.checkNotNull(__typename, "__typename == null");
-    this.name = Utils.checkNotNull(name, "name == null");
-    this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
-    this.asDroid = Optional.fromNullable(asDroid);
-  }
-
-  public @Nonnull String __typename() {
-    return this.__typename;
-  }
+  @Nonnull String __typename();
 
   /**
    * The name of the character
    */
-  public @Nonnull String name() {
-    return this.name;
-  }
+  @Nonnull String name();
 
   /**
    * The friends of the character exposed as a connection with edges
    */
-  public @Nonnull FriendsConnection friendsConnection() {
-    return this.friendsConnection;
-  }
+  @Nonnull FriendsConnection friendsConnection();
 
-  public Optional<AsDroid> asDroid() {
-    return this.asDroid;
-  }
+  ResponseFieldMarshaller marshaller();
 
-  public ResponseFieldMarshaller marshaller() {
-    return new ResponseFieldMarshaller() {
-      @Override
-      public void marshal(ResponseWriter writer) {
-        writer.writeString($responseFields[0], __typename);
-        writer.writeString($responseFields[1], name);
-        writer.writeObject($responseFields[2], friendsConnection.marshaller());
-        final AsDroid $asDroid = asDroid.isPresent() ? asDroid.get() : null;
-        if ($asDroid != null) {
-          $asDroid.marshaller().marshal(writer);
-        }
-      }
-    };
-  }
-
-  @Override
-  public String toString() {
-    if ($toString == null) {
-      $toString = "HeroDetails{"
-        + "__typename=" + __typename + ", "
-        + "name=" + name + ", "
-        + "friendsConnection=" + friendsConnection + ", "
-        + "asDroid=" + asDroid
-        + "}";
-    }
-    return $toString;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    }
-    if (o instanceof HeroDetails) {
-      HeroDetails that = (HeroDetails) o;
-      return this.__typename.equals(that.__typename)
-       && this.name.equals(that.name)
-       && this.friendsConnection.equals(that.friendsConnection)
-       && this.asDroid.equals(that.asDroid);
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= __typename.hashCode();
-      h *= 1000003;
-      h ^= name.hashCode();
-      h *= 1000003;
-      h ^= friendsConnection.hashCode();
-      h *= 1000003;
-      h ^= asDroid.hashCode();
-      $hashCode = h;
-      $hashCodeMemoized = true;
-    }
-    return $hashCode;
-  }
-
-  public Builder toBuilder() {
-    Builder builder = new Builder();
-    builder.__typename = __typename;
-    builder.name = name;
-    builder.friendsConnection = friendsConnection;
-    builder.asDroid = asDroid.isPresent() ? asDroid.get() : null;
-    return builder;
-  }
-
-  public static Builder builder() {
-    return new Builder();
-  }
-
-  public static final class Mapper implements ResponseFieldMapper<HeroDetails> {
-    final FriendsConnection.Mapper friendsConnectionFieldMapper = new FriendsConnection.Mapper();
-
+  final class Mapper implements ResponseFieldMapper<HeroDetails> {
     final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
     @Override
     public HeroDetails map(ResponseReader reader) {
-      final String __typename = reader.readString($responseFields[0]);
-      final String name = reader.readString($responseFields[1]);
-      final FriendsConnection friendsConnection = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<FriendsConnection>() {
-        @Override
-        public FriendsConnection read(ResponseReader reader) {
-          return friendsConnectionFieldMapper.map(reader);
-        }
-      });
-      final AsDroid asDroid = reader.readConditional($responseFields[3], new ResponseReader.ConditionalTypeReader<AsDroid>() {
+      final AsDroid asDroid = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Droid")), new ResponseReader.ConditionalTypeReader<AsDroid>() {
         @Override
         public AsDroid read(String conditionalType, ResponseReader reader) {
           return asDroidFieldMapper.map(reader);
         }
       });
-      return new HeroDetails(__typename, name, friendsConnection, asDroid);
+      if (asDroid != null) {
+        return asDroid;
+      }
+      return null;
     }
   }
 
-  public static class FriendsConnection {
-    static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forLong("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
-    };
-
-    final @Nonnull String __typename;
-
-    final Optional<Long> totalCount;
-
-    final Optional<List<Edge>> edges;
-
-    private volatile String $toString;
-
-    private volatile int $hashCode;
-
-    private volatile boolean $hashCodeMemoized;
-
-    public FriendsConnection(@Nonnull String __typename, @Nullable Long totalCount,
-        @Nullable List<Edge> edges) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
-      this.totalCount = Optional.fromNullable(totalCount);
-      this.edges = Optional.fromNullable(edges);
-    }
-
-    public @Nonnull String __typename() {
-      return this.__typename;
-    }
+  interface FriendsConnection {
+    @Nonnull String __typename();
 
     /**
      * The total number of friends
      */
-    public Optional<Long> totalCount() {
-      return this.totalCount;
-    }
+    Optional<Long> totalCount();
 
     /**
      * The edges for each of the character's friends.
      */
-    public Optional<List<Edge>> edges() {
-      return this.edges;
-    }
+    Optional<? extends List<? extends Edge>> edges();
 
-    public ResponseFieldMarshaller marshaller() {
-      return new ResponseFieldMarshaller() {
-        @Override
-        public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeLong($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
-          writer.writeList($responseFields[2], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
-            @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((Edge) value).marshaller());
-            }
-          });
-        }
-      };
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "FriendsConnection{"
-          + "__typename=" + __typename + ", "
-          + "totalCount=" + totalCount + ", "
-          + "edges=" + edges
-          + "}";
-      }
-      return $toString;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof FriendsConnection) {
-        FriendsConnection that = (FriendsConnection) o;
-        return this.__typename.equals(that.__typename)
-         && this.totalCount.equals(that.totalCount)
-         && this.edges.equals(that.edges);
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
-        h *= 1000003;
-        h ^= totalCount.hashCode();
-        h *= 1000003;
-        h ^= edges.hashCode();
-        $hashCode = h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    public Builder toBuilder() {
-      Builder builder = new Builder();
-      builder.__typename = __typename;
-      builder.totalCount = totalCount.isPresent() ? totalCount.get() : null;
-      builder.edges = edges.isPresent() ? edges.get() : null;
-      return builder;
-    }
-
-    public static Builder builder() {
-      return new Builder();
-    }
-
-    public static final class Mapper implements ResponseFieldMapper<FriendsConnection> {
-      final Edge.Mapper edgeFieldMapper = new Edge.Mapper();
-
-      @Override
-      public FriendsConnection map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final Long totalCount = reader.readLong($responseFields[1]);
-        final List<Edge> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge>() {
-          @Override
-          public Edge read(ResponseReader.ListItemReader listItemReader) {
-            return listItemReader.readObject(new ResponseReader.ObjectReader<Edge>() {
-              @Override
-              public Edge read(ResponseReader reader) {
-                return edgeFieldMapper.map(reader);
-              }
-            });
-          }
-        });
-        return new FriendsConnection(__typename, totalCount, edges);
-      }
-    }
-
-    public static final class Builder {
-      private @Nonnull String __typename;
-
-      private @Nullable Long totalCount;
-
-      private @Nullable List<Edge> edges;
-
-      Builder() {
-      }
-
-      public Builder __typename(@Nonnull String __typename) {
-        this.__typename = __typename;
-        return this;
-      }
-
-      public Builder totalCount(@Nullable Long totalCount) {
-        this.totalCount = totalCount;
-        return this;
-      }
-
-      public Builder edges(@Nullable List<Edge> edges) {
-        this.edges = edges;
-        return this;
-      }
-
-      public Builder edges(@Nonnull Mutator<List<Edge.Builder>> mutator) {
-        Utils.checkNotNull(mutator, "mutator == null");
-        List<Edge.Builder> builders = new ArrayList<>();
-        if (this.edges != null) {
-          for (Edge item : this.edges) {
-            builders.add(item != null ? item.toBuilder() : null);
-          }
-        }
-        mutator.accept(builders);
-        List<Edge> edges = new ArrayList<>();
-        for (Edge.Builder item : builders) {
-          edges.add(item != null ? item.build() : null);
-        }
-        this.edges = edges;
-        return this;
-      }
-
-      public FriendsConnection build() {
-        Utils.checkNotNull(__typename, "__typename == null");
-        return new FriendsConnection(__typename, totalCount, edges);
-      }
-    }
+    ResponseFieldMarshaller marshaller();
   }
 
-  public static class Edge {
-    static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forObject("node", "node", null, true, Collections.<ResponseField.Condition>emptyList())
-    };
-
-    final @Nonnull String __typename;
-
-    final Optional<Node> node;
-
-    private volatile String $toString;
-
-    private volatile int $hashCode;
-
-    private volatile boolean $hashCodeMemoized;
-
-    public Edge(@Nonnull String __typename, @Nullable Node node) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
-      this.node = Optional.fromNullable(node);
-    }
-
-    public @Nonnull String __typename() {
-      return this.__typename;
-    }
+  interface Edge {
+    @Nonnull String __typename();
 
     /**
      * The character represented by this friendship edge
      */
-    public Optional<Node> node() {
-      return this.node;
-    }
+    Optional<? extends Node> node();
 
-    public ResponseFieldMarshaller marshaller() {
-      return new ResponseFieldMarshaller() {
-        @Override
-        public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
-        }
-      };
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Edge{"
-          + "__typename=" + __typename + ", "
-          + "node=" + node
-          + "}";
-      }
-      return $toString;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Edge) {
-        Edge that = (Edge) o;
-        return this.__typename.equals(that.__typename)
-         && this.node.equals(that.node);
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
-        h *= 1000003;
-        h ^= node.hashCode();
-        $hashCode = h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    public Builder toBuilder() {
-      Builder builder = new Builder();
-      builder.__typename = __typename;
-      builder.node = node.isPresent() ? node.get() : null;
-      return builder;
-    }
-
-    public static Builder builder() {
-      return new Builder();
-    }
-
-    public static final class Mapper implements ResponseFieldMapper<Edge> {
-      final Node.Mapper nodeFieldMapper = new Node.Mapper();
-
-      @Override
-      public Edge map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final Node node = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Node>() {
-          @Override
-          public Node read(ResponseReader reader) {
-            return nodeFieldMapper.map(reader);
-          }
-        });
-        return new Edge(__typename, node);
-      }
-    }
-
-    public static final class Builder {
-      private @Nonnull String __typename;
-
-      private @Nullable Node node;
-
-      Builder() {
-      }
-
-      public Builder __typename(@Nonnull String __typename) {
-        this.__typename = __typename;
-        return this;
-      }
-
-      public Builder node(@Nullable Node node) {
-        this.node = node;
-        return this;
-      }
-
-      public Builder node(@Nonnull Mutator<Node.Builder> mutator) {
-        Utils.checkNotNull(mutator, "mutator == null");
-        Node.Builder builder = this.node != null ? this.node.toBuilder() : Node.builder();
-        mutator.accept(builder);
-        this.node = builder.build();
-        return this;
-      }
-
-      public Edge build() {
-        Utils.checkNotNull(__typename, "__typename == null");
-        return new Edge(__typename, node);
-      }
-    }
+    ResponseFieldMarshaller marshaller();
   }
 
-  public static class Node {
-    static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
-    };
-
-    final @Nonnull String __typename;
-
-    final @Nonnull String name;
-
-    private volatile String $toString;
-
-    private volatile int $hashCode;
-
-    private volatile boolean $hashCodeMemoized;
-
-    public Node(@Nonnull String __typename, @Nonnull String name) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
-      this.name = Utils.checkNotNull(name, "name == null");
-    }
-
-    public @Nonnull String __typename() {
-      return this.__typename;
-    }
+  interface Node {
+    @Nonnull String __typename();
 
     /**
      * The name of the character
      */
-    public @Nonnull String name() {
-      return this.name;
-    }
+    @Nonnull String name();
 
-    public ResponseFieldMarshaller marshaller() {
-      return new ResponseFieldMarshaller() {
-        @Override
-        public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], name);
-        }
-      };
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Node{"
-          + "__typename=" + __typename + ", "
-          + "name=" + name
-          + "}";
-      }
-      return $toString;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Node) {
-        Node that = (Node) o;
-        return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name);
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
-        h *= 1000003;
-        h ^= name.hashCode();
-        $hashCode = h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    public Builder toBuilder() {
-      Builder builder = new Builder();
-      builder.__typename = __typename;
-      builder.name = name;
-      return builder;
-    }
-
-    public static Builder builder() {
-      return new Builder();
-    }
-
-    public static final class Mapper implements ResponseFieldMapper<Node> {
-      @Override
-      public Node map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final String name = reader.readString($responseFields[1]);
-        return new Node(__typename, name);
-      }
-    }
-
-    public static final class Builder {
-      private @Nonnull String __typename;
-
-      private @Nonnull String name;
-
-      Builder() {
-      }
-
-      public Builder __typename(@Nonnull String __typename) {
-        this.__typename = __typename;
-        return this;
-      }
-
-      public Builder name(@Nonnull String name) {
-        this.name = name;
-        return this;
-      }
-
-      public Node build() {
-        Utils.checkNotNull(__typename, "__typename == null");
-        Utils.checkNotNull(name, "name == null");
-        return new Node(__typename, name);
-      }
-    }
+    ResponseFieldMarshaller marshaller();
   }
 
-  public static class AsDroid {
+  class AsDroid implements HeroDetails {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -839,7 +308,7 @@ public class HeroDetails implements GraphqlFragment {
     }
   }
 
-  public static class FriendsConnection1 {
+  class FriendsConnection1 implements FriendsConnection {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forLong("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
@@ -1024,7 +493,7 @@ public class HeroDetails implements GraphqlFragment {
     }
   }
 
-  public static class Edge1 {
+  class Edge1 implements Edge {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forObject("node", "node", null, true, Collections.<ResponseField.Condition>emptyList())
@@ -1164,7 +633,7 @@ public class HeroDetails implements GraphqlFragment {
     }
   }
 
-  public static class Node1 {
+  class Node1 implements Node {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
@@ -1287,62 +756,6 @@ public class HeroDetails implements GraphqlFragment {
         Utils.checkNotNull(name, "name == null");
         return new Node1(__typename, name);
       }
-    }
-  }
-
-  public static final class Builder {
-    private @Nonnull String __typename;
-
-    private @Nonnull String name;
-
-    private @Nonnull FriendsConnection friendsConnection;
-
-    private @Nullable AsDroid asDroid;
-
-    Builder() {
-    }
-
-    public Builder __typename(@Nonnull String __typename) {
-      this.__typename = __typename;
-      return this;
-    }
-
-    public Builder name(@Nonnull String name) {
-      this.name = name;
-      return this;
-    }
-
-    public Builder friendsConnection(@Nonnull FriendsConnection friendsConnection) {
-      this.friendsConnection = friendsConnection;
-      return this;
-    }
-
-    public Builder asDroid(@Nullable AsDroid asDroid) {
-      this.asDroid = asDroid;
-      return this;
-    }
-
-    public Builder friendsConnection(@Nonnull Mutator<FriendsConnection.Builder> mutator) {
-      Utils.checkNotNull(mutator, "mutator == null");
-      FriendsConnection.Builder builder = this.friendsConnection != null ? this.friendsConnection.toBuilder() : FriendsConnection.builder();
-      mutator.accept(builder);
-      this.friendsConnection = builder.build();
-      return this;
-    }
-
-    public Builder asDroid(@Nonnull Mutator<AsDroid.Builder> mutator) {
-      Utils.checkNotNull(mutator, "mutator == null");
-      AsDroid.Builder builder = this.asDroid != null ? this.asDroid.toBuilder() : AsDroid.builder();
-      mutator.accept(builder);
-      this.asDroid = builder.build();
-      return this;
-    }
-
-    public HeroDetails build() {
-      Utils.checkNotNull(__typename, "__typename == null");
-      Utils.checkNotNull(name, "name == null");
-      Utils.checkNotNull(friendsConnection, "friendsConnection == null");
-      return new HeroDetails(__typename, name, friendsConnection, asDroid);
     }
   }
 }

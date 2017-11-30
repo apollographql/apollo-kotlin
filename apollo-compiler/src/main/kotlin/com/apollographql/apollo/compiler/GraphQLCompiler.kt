@@ -25,7 +25,6 @@ class GraphQLCompiler {
         typesPackage = typesPackage,
         customTypeMap = customTypeMap,
         nullableValueType = args.nullableValueType,
-        generateAccessors = args.generateAccessors,
         ir = ir,
         useSemanticNaming = args.useSemanticNaming,
         generateModelBuilder = args.generateModelBuilder
@@ -83,7 +82,6 @@ class GraphQLCompiler {
       val outputDir: File,
       val customTypeMap: Map<String, String>,
       val nullableValueType: NullableValueType,
-      val generateAccessors: Boolean,
       val useSemanticNaming: Boolean,
       val generateModelBuilder: Boolean,
       val outputPackageName: String?

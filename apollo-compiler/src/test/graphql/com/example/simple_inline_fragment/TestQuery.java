@@ -173,146 +173,47 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
   }
 
-  public static class Hero {
-    static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")),
-      ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Droid"))
-    };
-
-    final @Nonnull String __typename;
-
-    final @Nonnull String name;
-
-    final Optional<AsHuman> asHuman;
-
-    final Optional<AsDroid> asDroid;
-
-    private volatile String $toString;
-
-    private volatile int $hashCode;
-
-    private volatile boolean $hashCodeMemoized;
-
-    public Hero(@Nonnull String __typename, @Nonnull String name, @Nullable AsHuman asHuman,
-        @Nullable AsDroid asDroid) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
-      this.name = Utils.checkNotNull(name, "name == null");
-      this.asHuman = Optional.fromNullable(asHuman);
-      this.asDroid = Optional.fromNullable(asDroid);
-    }
-
-    public @Nonnull String __typename() {
-      return this.__typename;
-    }
+  public interface Hero {
+    @Nonnull String __typename();
 
     /**
      * The name of the character
      */
-    public @Nonnull String name() {
-      return this.name;
-    }
+    @Nonnull String name();
 
-    public Optional<AsHuman> asHuman() {
-      return this.asHuman;
-    }
+    ResponseFieldMarshaller marshaller();
 
-    public Optional<AsDroid> asDroid() {
-      return this.asDroid;
-    }
-
-    public ResponseFieldMarshaller marshaller() {
-      return new ResponseFieldMarshaller() {
-        @Override
-        public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], name);
-          final AsHuman $asHuman = asHuman.isPresent() ? asHuman.get() : null;
-          if ($asHuman != null) {
-            $asHuman.marshaller().marshal(writer);
-          }
-          final AsDroid $asDroid = asDroid.isPresent() ? asDroid.get() : null;
-          if ($asDroid != null) {
-            $asDroid.marshaller().marshal(writer);
-          }
-        }
-      };
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Hero{"
-          + "__typename=" + __typename + ", "
-          + "name=" + name + ", "
-          + "asHuman=" + asHuman + ", "
-          + "asDroid=" + asDroid
-          + "}";
-      }
-      return $toString;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Hero) {
-        Hero that = (Hero) o;
-        return this.__typename.equals(that.__typename)
-         && this.name.equals(that.name)
-         && this.asHuman.equals(that.asHuman)
-         && this.asDroid.equals(that.asDroid);
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= __typename.hashCode();
-        h *= 1000003;
-        h ^= name.hashCode();
-        h *= 1000003;
-        h ^= asHuman.hashCode();
-        h *= 1000003;
-        h ^= asDroid.hashCode();
-        $hashCode = h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    public static final class Mapper implements ResponseFieldMapper<Hero> {
+    final class Mapper implements ResponseFieldMapper<Hero> {
       final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
       final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
       @Override
       public Hero map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final String name = reader.readString($responseFields[1]);
-        final AsHuman asHuman = reader.readConditional($responseFields[2], new ResponseReader.ConditionalTypeReader<AsHuman>() {
+        final AsHuman asHuman = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")), new ResponseReader.ConditionalTypeReader<AsHuman>() {
           @Override
           public AsHuman read(String conditionalType, ResponseReader reader) {
             return asHumanFieldMapper.map(reader);
           }
         });
-        final AsDroid asDroid = reader.readConditional($responseFields[3], new ResponseReader.ConditionalTypeReader<AsDroid>() {
+        if (asHuman != null) {
+          return asHuman;
+        }
+        final AsDroid asDroid = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Droid")), new ResponseReader.ConditionalTypeReader<AsDroid>() {
           @Override
           public AsDroid read(String conditionalType, ResponseReader reader) {
             return asDroidFieldMapper.map(reader);
           }
         });
-        return new Hero(__typename, name, asHuman, asDroid);
+        if (asDroid != null) {
+          return asDroid;
+        }
+        return null;
       }
     }
   }
 
-  public static class AsHuman {
+  public static class AsHuman implements Hero {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -419,7 +320,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
   }
 
-  public static class AsDroid {
+  public static class AsDroid implements Hero {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
