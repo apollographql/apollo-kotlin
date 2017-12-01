@@ -419,15 +419,6 @@ apollo {
 }
 ```
 
-### Reduce Method count
-By default Apollo-Android will create a getter for each field present in your query.  Alternatively, you can set a flag to make the field public allowing direct field access without the need of generating an accessor. A use case of this configuration is to reduce method count of generated code.
-
-### Usage
-```java
-apollo {
-  generateAccessors = false
-}
-```
 ### Semantic Naming
 By default Apollo-Android expects queries to be written as follows:
 ```Query someQuery{....}```

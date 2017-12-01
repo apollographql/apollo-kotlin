@@ -1,4 +1,4 @@
-package com.example.no_accessors.type;
+package com.example.union_inline_fragments.type;
 
 import java.lang.Deprecated;
 import java.lang.String;

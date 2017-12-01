@@ -1,4 +1,4 @@
-package com.example.no_accessors.type;
+package com.example.union_inline_fragments.type;
 
 import com.apollographql.apollo.api.ScalarType;
 import java.lang.Class;
