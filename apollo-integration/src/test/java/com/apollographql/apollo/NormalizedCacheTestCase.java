@@ -34,8 +34,8 @@ import io.reactivex.functions.Predicate;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.apollographql.apollo.Utils.cacheAndAssertCachedResponse;
 import static com.apollographql.apollo.Utils.assertResponse;
+import static com.apollographql.apollo.Utils.cacheAndAssertCachedResponse;
 import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
 import static com.apollographql.apollo.Utils.mockResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_FIRST;
@@ -180,11 +180,14 @@ public class NormalizedCacheTestCase {
           @Override public boolean test(Response<HeroParentTypeDependentFieldQuery.Data> response) throws Exception {
             assertThat(response.hasErrors()).isFalse();
             assertThat(response.data().hero().name()).isEqualTo("R2-D2");
-            assertThat(response.data().hero().asDroid().name()).isEqualTo("R2-D2");
-            assertThat(response.data().hero().asDroid().friends()).hasSize(3);
-            assertThat(response.data().hero().asDroid().friends().get(0).name()).isEqualTo("Luke Skywalker");
-            assertThat(response.data().hero().asDroid().friends().get(0).asHuman().name()).isEqualTo("Luke Skywalker");
-            assertThat(response.data().hero().asDroid().friends().get(0).asHuman().height()).isWithin(1.72);
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+
+            HeroParentTypeDependentFieldQuery.AsDroid hero = (HeroParentTypeDependentFieldQuery.AsDroid) response.data().hero();
+            assertThat(hero.friends()).hasSize(3);
+            assertThat(hero.friends().get(0).name()).isEqualTo("Luke Skywalker");
+            assertThat(hero.friends().get(0).name()).isEqualTo("Luke Skywalker");
+
+            assertThat(((HeroParentTypeDependentFieldQuery.AsHuman2) hero.friends().get(0)).height()).isWithin(1.72);
             return true;
           }
         }
@@ -200,8 +203,8 @@ public class NormalizedCacheTestCase {
           @Override
           public boolean test(Response<HeroTypeDependentAliasedFieldQuery.Data> response) throws Exception {
             assertThat(response.hasErrors()).isFalse();
-            assertThat(response.data().hero().asHuman()).isNull();
-            assertThat(response.data().hero().asDroid().property()).isEqualTo("Astromech");
+            assertThat(response.data().hero()).isInstanceOf(HeroTypeDependentAliasedFieldQuery.AsDroid.class);
+            assertThat(((HeroTypeDependentAliasedFieldQuery.AsDroid) response.data().hero()).property()).isEqualTo("Astromech");
             return true;
           }
         }
@@ -215,8 +218,8 @@ public class NormalizedCacheTestCase {
           @Override
           public boolean test(Response<HeroTypeDependentAliasedFieldQuery.Data> response) throws Exception {
             assertThat(response.hasErrors()).isFalse();
-            assertThat(response.data().hero().asDroid()).isNull();
-            assertThat(response.data().hero().asHuman().property()).isEqualTo("Tatooine");
+            assertThat(response.data().hero()).isInstanceOf(HeroTypeDependentAliasedFieldQuery.AsHuman.class);
+            assertThat(((HeroTypeDependentAliasedFieldQuery.AsHuman) response.data().hero()).property()).isEqualTo("Tatooine");
             return true;
           }
         }
@@ -259,7 +262,7 @@ public class NormalizedCacheTestCase {
         new Predicate<Response<CharacterNameByIdQuery.Data>>() {
           @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
             assertThat(response.data().character()).isNotNull();
-            assertThat(response.data().character().asHuman().name()).isEqualTo("Han Solo");
+            assertThat(((CharacterNameByIdQuery.AsHuman) response.data().character()).name()).isEqualTo("Han Solo");
             return true;
           }
         }
@@ -488,7 +491,7 @@ public class NormalizedCacheTestCase {
         new Predicate<Response<CharacterNameByIdQuery.Data>>() {
           @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
             assertThat(response.fromCache()).isTrue();
-            assertThat(response.data().character().asHuman().name()).isEqualTo("Han Solo");
+            assertThat(((CharacterNameByIdQuery.AsHuman) response.data().character()).name()).isEqualTo("Han Solo");
             return true;
           }
         }
@@ -524,7 +527,7 @@ public class NormalizedCacheTestCase {
         new Predicate<Response<CharacterNameByIdQuery.Data>>() {
           @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
             assertThat(response.fromCache()).isTrue();
-            assertThat(response.data().character().asHuman().name()).isEqualTo("Han Solo");
+            assertThat(((CharacterNameByIdQuery.AsHuman) response.data().character()).name()).isEqualTo("Han Solo");
             return true;
           }
         }
@@ -561,7 +564,7 @@ public class NormalizedCacheTestCase {
           @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
             assertThat(response.fromCache()).isTrue();
             assertThat(response.data()).isNotNull();
-            assertThat(response.data().character().asHuman().name()).isEqualTo("Leia Organa");
+            assertThat(((CharacterNameByIdQuery.AsHuman) response.data().character()).name()).isEqualTo("Leia Organa");
             return true;
           }
         }
@@ -587,7 +590,7 @@ public class NormalizedCacheTestCase {
         new Predicate<Response<CharacterNameByIdQuery.Data>>() {
           @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
             assertThat(response.fromCache()).isTrue();
-            assertThat(response.data().character().asHuman().name()).isEqualTo("Luke Skywalker");
+            assertThat(((CharacterNameByIdQuery.AsHuman) response.data().character()).name()).isEqualTo("Luke Skywalker");
             return true;
           }
         }
@@ -598,7 +601,7 @@ public class NormalizedCacheTestCase {
         new Predicate<Response<CharacterNameByIdQuery.Data>>() {
           @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
             assertThat(response.fromCache()).isTrue();
-            assertThat(response.data().character().asHuman().name()).isEqualTo("Han Solo");
+            assertThat(((CharacterNameByIdQuery.AsHuman) response.data().character()).name()).isEqualTo("Han Solo");
             return true;
           }
         }
@@ -609,7 +612,7 @@ public class NormalizedCacheTestCase {
         new Predicate<Response<CharacterNameByIdQuery.Data>>() {
           @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
             assertThat(response.fromCache()).isTrue();
-            assertThat(response.data().character().asHuman().name()).isEqualTo("Leia Organa");
+            assertThat(((CharacterNameByIdQuery.AsHuman) response.data().character()).name()).isEqualTo("Leia Organa");
             return true;
           }
         }
@@ -645,7 +648,7 @@ public class NormalizedCacheTestCase {
         new Predicate<Response<CharacterNameByIdQuery.Data>>() {
           @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
             assertThat(response.fromCache()).isTrue();
-            assertThat(response.data().character().asHuman().name()).isEqualTo("Leia Organa");
+            assertThat(((CharacterNameByIdQuery.AsHuman) response.data().character()).name()).isEqualTo("Leia Organa");
             return true;
           }
         }

@@ -392,16 +392,22 @@ public class ResponseWriteTestCase {
             assertThat(response.data().hero().__typename()).isEqualTo("Droid");
             assertThat(response.data().hero().name()).isEqualTo("R2-D2");
             assertThat(response.data().hero().friends()).hasSize(3);
-            assertThat(response.data().hero().friends().get(0).__typename()).isEqualTo("Human");
-            assertThat(response.data().hero().friends().get(0).asHuman().id()).isEqualTo("1000");
-            assertThat(response.data().hero().friends().get(0).asHuman().name()).isEqualTo("Luke Skywalker");
-            assertThat(response.data().hero().friends().get(0).asHuman().height()).isWithin(1.5);
-            assertThat(response.data().hero().friends().get(1).__typename()).isEqualTo("Droid");
-            assertThat(response.data().hero().friends().get(1).asDroid().name()).isEqualTo("Android");
-            assertThat(response.data().hero().friends().get(1).asDroid().primaryFunction()).isEqualTo("Hunt and destroy iOS devices");
-            assertThat(response.data().hero().friends().get(2).__typename()).isEqualTo("Droid");
-            assertThat(response.data().hero().friends().get(2).asDroid().name()).isEqualTo("Battle Droid");
-            assertThat(response.data().hero().friends().get(2).asDroid().primaryFunction()).isEqualTo("Controlled alternative to human soldiers");
+
+            EpisodeHeroWithInlineFragmentQuery.AsHuman asHuman = (EpisodeHeroWithInlineFragmentQuery.AsHuman) response.data().hero().friends().get(0);
+            assertThat(asHuman.__typename()).isEqualTo("Human");
+            assertThat(asHuman.id()).isEqualTo("1000");
+            assertThat(asHuman.name()).isEqualTo("Luke Skywalker");
+            assertThat(asHuman.height()).isWithin(1.5);
+
+            EpisodeHeroWithInlineFragmentQuery.AsDroid asDroid1 = (EpisodeHeroWithInlineFragmentQuery.AsDroid) response.data().hero().friends().get(1);
+            assertThat(asDroid1.__typename()).isEqualTo("Droid");
+            assertThat(asDroid1.name()).isEqualTo("Android");
+            assertThat(asDroid1.primaryFunction()).isEqualTo("Hunt and destroy iOS devices");
+
+            EpisodeHeroWithInlineFragmentQuery.AsDroid asDroid2 = (EpisodeHeroWithInlineFragmentQuery.AsDroid) response.data().hero().friends().get(2);
+            assertThat(asDroid2.__typename()).isEqualTo("Droid");
+            assertThat(asDroid2.name()).isEqualTo("Battle Droid");
+            assertThat(asDroid2.primaryFunction()).isEqualTo("Controlled alternative to human soldiers");
             return true;
           }
         }
@@ -411,24 +417,16 @@ public class ResponseWriteTestCase {
         "Droid",
         "R22-D22",
         asList(
-            new EpisodeHeroWithInlineFragmentQuery.Friend(
+            new EpisodeHeroWithInlineFragmentQuery.AsHuman(
                 "Human",
-                new EpisodeHeroWithInlineFragmentQuery.AsHuman(
-                    "Human",
-                    "1002",
-                    "Han Solo",
-                    2.5
-                ),
-                null
+                "1002",
+                "Han Solo",
+                2.5
             ),
-            new EpisodeHeroWithInlineFragmentQuery.Friend(
+            new EpisodeHeroWithInlineFragmentQuery.AsDroid(
                 "Droid",
-                null,
-                new EpisodeHeroWithInlineFragmentQuery.AsDroid(
-                    "Droid",
-                    "RD",
-                    "Entertainment"
-                )
+                "RD",
+                "Entertainment"
             )
         )
     );
@@ -441,13 +439,17 @@ public class ResponseWriteTestCase {
             assertThat(response.data().hero().__typename()).isEqualTo("Droid");
             assertThat(response.data().hero().name()).isEqualTo("R22-D22");
             assertThat(response.data().hero().friends()).hasSize(2);
-            assertThat(response.data().hero().friends().get(0).__typename()).isEqualTo("Human");
-            assertThat(response.data().hero().friends().get(0).asHuman().id()).isEqualTo("1002");
-            assertThat(response.data().hero().friends().get(0).asHuman().name()).isEqualTo("Han Solo");
-            assertThat(response.data().hero().friends().get(0).asHuman().height()).isWithin(2.5);
-            assertThat(response.data().hero().friends().get(1).__typename()).isEqualTo("Droid");
-            assertThat(response.data().hero().friends().get(1).asDroid().name()).isEqualTo("RD");
-            assertThat(response.data().hero().friends().get(1).asDroid().primaryFunction()).isEqualTo("Entertainment");
+
+            EpisodeHeroWithInlineFragmentQuery.AsHuman asHuman = (EpisodeHeroWithInlineFragmentQuery.AsHuman) response.data().hero().friends().get(0);
+            assertThat(asHuman.__typename()).isEqualTo("Human");
+            assertThat(asHuman.id()).isEqualTo("1002");
+            assertThat(asHuman.name()).isEqualTo("Han Solo");
+            assertThat(asHuman.height()).isWithin(2.5);
+
+            EpisodeHeroWithInlineFragmentQuery.AsDroid asDroid = (EpisodeHeroWithInlineFragmentQuery.AsDroid) response.data().hero().friends().get(1);
+            assertThat(asDroid.__typename()).isEqualTo("Droid");
+            assertThat(asDroid.name()).isEqualTo("RD");
+            assertThat(asDroid.primaryFunction()).isEqualTo("Entertainment");
             return true;
           }
         }

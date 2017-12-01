@@ -23,7 +23,7 @@ echo "Running integration tests..."
 integrationTestOutput=$(./gradlew -p apollo-integration clean build -s)
 echo "${integrationTestOutput}"
 
-if [[ $integrationTestOutput == *"BUILD FAILED"* ]]; then
+if [[ $integrationTestOutput == *"FAILED"* ]]; then
   success=false
 fi
 

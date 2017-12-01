@@ -22,8 +22,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-import static com.apollographql.apollo.cache.ApolloCacheHeaders.EVICT_AFTER_READ;
 import static com.apollographql.apollo.cache.ApolloCacheHeaders.DO_NOT_STORE;
+import static com.apollographql.apollo.cache.ApolloCacheHeaders.EVICT_AFTER_READ;
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLUMN_KEY;
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.COLUMN_RECORD;
 import static com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper.TABLE_RECORDS;
@@ -86,50 +86,11 @@ public final class SqlNormalizedCache extends NormalizedCache {
   }
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
-  @Nonnull @Override public Set<String> merge(@Nonnull final Record apolloRecord, @Nonnull final CacheHeaders
-      cacheHeaders) {
-    if (cacheHeaders.hasHeader(DO_NOT_STORE)) {
-      return Collections.emptySet();
-    }
-
-    //noinspection ResultOfMethodCallIgnored
-    nextCache().apply(new Action<NormalizedCache>() {
-      @Override public void apply(@Nonnull NormalizedCache cache) {
-        cache.merge(apolloRecord, cacheHeaders);
-      }
-    });
-
-    Optional<Record> optionalOldRecord = selectRecordForKey(apolloRecord.key());
-    Set<String> changedKeys;
-    if (!optionalOldRecord.isPresent()) {
-      createRecord(apolloRecord.key(), recordFieldAdapter.toJson(apolloRecord.fields()));
-      changedKeys = Collections.emptySet();
-    } else {
-      Record oldRecord = optionalOldRecord.get();
-      changedKeys = oldRecord.mergeWith(apolloRecord);
-      if (!changedKeys.isEmpty()) {
-        updateRecord(oldRecord.key(), recordFieldAdapter.toJson(oldRecord.fields()));
-      }
-    }
-
-    return changedKeys;
-  }
-
-  @SuppressWarnings("ResultOfMethodCallIgnored")
   @Nonnull @Override public Set<String> merge(@Nonnull final Collection<Record> recordSet,
       @Nonnull final CacheHeaders cacheHeaders) {
     if (cacheHeaders.hasHeader(DO_NOT_STORE)) {
       return Collections.emptySet();
     }
-
-    //noinspection ResultOfMethodCallIgnored
-    nextCache().apply(new Action<NormalizedCache>() {
-      @Override public void apply(@Nonnull NormalizedCache cache) {
-        for (Record record : recordSet) {
-          cache.merge(record, cacheHeaders);
-        }
-      }
-    });
 
     Set<String> changedKeys;
     try {
@@ -215,5 +176,22 @@ public final class SqlNormalizedCache extends NormalizedCache {
 
   void clearCurrentCache() {
     deleteAllRecordsStatement.execute();
+  }
+
+  @Nonnull
+  protected Set<String> performMerge(@Nonnull final Record apolloRecord, @Nonnull final CacheHeaders cacheHeaders) {
+    Optional<Record> optionalOldRecord = selectRecordForKey(apolloRecord.key());
+    Set<String> changedKeys;
+    if (!optionalOldRecord.isPresent()) {
+      createRecord(apolloRecord.key(), recordFieldAdapter.toJson(apolloRecord.fields()));
+      changedKeys = Collections.emptySet();
+    } else {
+      Record oldRecord = optionalOldRecord.get();
+      changedKeys = oldRecord.mergeWith(apolloRecord);
+      if (!changedKeys.isEmpty()) {
+        updateRecord(oldRecord.key(), recordFieldAdapter.toJson(oldRecord.fields()));
+      }
+    }
+    return changedKeys;
   }
 }

@@ -1,12 +1,15 @@
 package com.apollographql.apollo.cache.normalized;
 
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.api.internal.Function;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -64,7 +67,27 @@ public abstract class NormalizedCache {
    * @param cacheHeaders The {@link CacheHeaders} associated with the request which generated this record.
    * @return A set of record field keys that have changed. This set is returned by {@link Record#mergeWith(Record)}.
    */
-  @Nonnull public abstract Set<String> merge(@Nonnull Record record, @Nonnull CacheHeaders cacheHeaders);
+  @Nonnull public Set<String> merge(@Nonnull final Record record, @Nonnull final CacheHeaders cacheHeaders) {
+    checkNotNull(record, "apolloRecord == null");
+    checkNotNull(cacheHeaders, "cacheHeaders == null");
+
+    if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
+      return Collections.emptySet();
+    }
+
+    Set<String> nextCacheChangedKeys = nextCache().map(new Function<NormalizedCache, Set<String>>() {
+      @Nonnull @Override public Set<String> apply(@Nonnull NormalizedCache cache) {
+        return cache.merge(record, cacheHeaders);
+      }
+    }).or(Collections.<String>emptySet());
+
+    Set<String> currentCacheChangedKeys = performMerge(record, cacheHeaders);
+
+    Set<String> changedKeys = new HashSet<>();
+    changedKeys.addAll(nextCacheChangedKeys);
+    changedKeys.addAll(currentCacheChangedKeys);
+    return changedKeys;
+  }
 
   /**
    * Calls through to {@link NormalizedCache#merge(Record, CacheHeaders)}. Implementations should override this method
@@ -74,13 +97,31 @@ public abstract class NormalizedCache {
    * @param cacheHeaders The {@link CacheHeaders} associated with the request which generated this record.
    * @return A set of record field keys that have changed. This set is returned by {@link Record#mergeWith(Record)}.
    */
-  @Nonnull public Set<String> merge(@Nonnull Collection<Record> recordSet, @Nonnull CacheHeaders cacheHeaders) {
-    Set<String> aggregatedDependentKeys = new LinkedHashSet<>();
+  @Nonnull
+  public Set<String> merge(@Nonnull final Collection<Record> recordSet, @Nonnull final CacheHeaders cacheHeaders) {
+    checkNotNull(recordSet, "recordSet == null");
+    checkNotNull(cacheHeaders, "cacheHeaders == null");
+
+    //noinspection ResultOfMethodCallIgnored
+    Set<String> nextCacheChangedKeys = nextCache().map(new Function<NormalizedCache, Set<String>>() {
+      @Nonnull @Override public Set<String> apply(@Nonnull NormalizedCache cache) {
+        return cache.merge(recordSet, cacheHeaders);
+      }
+    }).or(Collections.<String>emptySet());
+
+    Set<String> currentCacheChangedKeys = new HashSet<>();
     for (Record record : recordSet) {
-      aggregatedDependentKeys.addAll(merge(record, cacheHeaders));
+      currentCacheChangedKeys.addAll(performMerge(record, cacheHeaders));
     }
-    return aggregatedDependentKeys;
+
+    Set<String> changedKeys = new HashSet<>();
+    changedKeys.addAll(nextCacheChangedKeys);
+    changedKeys.addAll(currentCacheChangedKeys);
+    return changedKeys;
   }
+
+  @Nonnull
+  protected abstract Set<String> performMerge(@Nonnull Record apolloRecord, @Nonnull CacheHeaders cacheHeaders);
 
   /**
    * Clears all records from the cache.
