@@ -1,7 +1,7 @@
 package com.apollographql.apollo.internal.cache.normalized;
 
-import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
@@ -40,7 +40,7 @@ public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
   }
 
   @Override public void willResolveRootQuery(Operation operation) {
-    willResolveRecord(CacheKeyResolver.rootKeyForOperation(operation));
+    willResolveRecord(CacheKeyResolver.ROOT_RECORD_KEY);
   }
 
   @Override public void willResolve(ResponseField field, Operation.Variables variables) {
