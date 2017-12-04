@@ -73,7 +73,6 @@ class SchemaTypeSpecBuilder(
         .addTypes(nestedTypeSpecs.map { it.second })
         .addFields(fieldSpecs(nameOverrideMap))
         .addMethods(fieldAccessorMethodSpecs(nameOverrideMap))
-        .addInlineFragments(nameOverrideMap)
         .addFragments()
         .addType(responseMapperSpec(responseFieldSpecs))
         .addField(fieldArray(responseFieldSpecs))
@@ -117,14 +116,6 @@ class SchemaTypeSpecBuilder(
 
   private fun inlineFragmentsTypeSpecs(): List<Pair<String, TypeSpec>> =
       inlineFragments.map { it.formatClassName() to it.toTypeSpec(context = context, abstract = abstract) }
-
-  private fun TypeSpec.Builder.addInlineFragments(nameOverrideMap: Map<String, String>): TypeSpec.Builder {
-    addMethods(inlineFragments
-        .map { it.accessorMethodSpec(context) }
-        .map { it.overrideReturnType(nameOverrideMap) })
-
-    return this
-  }
 
   private fun fragmentsAccessorMethodSpec(): MethodSpec {
     return MethodSpec.methodBuilder(FRAGMENTS_FIELD.name)
