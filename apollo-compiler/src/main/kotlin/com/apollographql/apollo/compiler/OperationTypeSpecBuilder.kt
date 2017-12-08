@@ -257,7 +257,7 @@ class OperationTypeSpecBuilder(
         .build()
 
     fun TypeSpec.Builder.addOperationNameField(): TypeSpec.Builder =
-        addField(FieldSpec.builder(OperationName::class.java, "OPERATION_NAME", Modifier.PRIVATE, Modifier.STATIC,
+        addField(FieldSpec.builder(OperationName::class.java, "OPERATION_NAME", Modifier.PUBLIC, Modifier.STATIC,
             Modifier.FINAL)
             .initializer("\$L", operationNameTypeSpec())
             .build())
