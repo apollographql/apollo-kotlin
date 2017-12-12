@@ -43,7 +43,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
    + StarshipFragment.FRAGMENT_DEFINITION + "\n"
    + PilotFragment.FRAGMENT_DEFINITION;
 
-  private static final OperationName OPERATION_NAME = new OperationName() {
+  public static final OperationName OPERATION_NAME = new OperationName() {
     @Override
     public String name() {
       return "AllStarships";
