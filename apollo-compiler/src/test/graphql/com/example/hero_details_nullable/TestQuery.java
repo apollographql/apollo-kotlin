@@ -41,7 +41,7 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
-  private static final OperationName OPERATION_NAME = new OperationName() {
+  public static final OperationName OPERATION_NAME = new OperationName() {
     @Override
     public String name() {
       return "TestQuery";
