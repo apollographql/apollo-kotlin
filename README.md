@@ -224,12 +224,12 @@ File file = new File("/cache/");
 int size = 1024*1024;
 
 //Create the http response cache store
-ResponseCacheStore cacheStore = new DiskLruCacheStore(file, size); 
+DiskLruHttpCacheStore cacheStore = new DiskLruCacheStore(file, size); 
 
 //Build the Apollo Client
 ApolloClient apolloClient = ApolloClient.builder()
   .serverUrl("/")
-  .httpCache(new HttpCache(cacheStore))
+  .httpCache(new ApolloHttpCache(cacheStore))
   .okHttpClient(okHttpClient)
   .build();
 
