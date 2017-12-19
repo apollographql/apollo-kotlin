@@ -102,6 +102,10 @@ public abstract class NormalizedCache {
     checkNotNull(recordSet, "recordSet == null");
     checkNotNull(cacheHeaders, "cacheHeaders == null");
 
+    if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
+      return Collections.emptySet();
+    }
+
     //noinspection ResultOfMethodCallIgnored
     Set<String> nextCacheChangedKeys = nextCache().map(new Function<NormalizedCache, Set<String>>() {
       @Nonnull @Override public Set<String> apply(@Nonnull NormalizedCache cache) {
