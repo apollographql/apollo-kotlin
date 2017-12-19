@@ -256,7 +256,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     checkNotNull(cacheKey, "cacheKey == null");
     checkNotNull(variables, "operation == null");
 
-    if (cacheKey == CacheKey.NO_KEY) {
+    if (cacheKey.equals(CacheKey.NO_KEY)) {
       throw new IllegalArgumentException("undefined cache key");
     }
 

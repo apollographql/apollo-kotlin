@@ -70,7 +70,7 @@ public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
 
     CacheKey cacheKey = objectSource.isPresent() ? resolveCacheKey(field, objectSource.get()) : CacheKey.NO_KEY;
     String cacheKeyValue = cacheKey.key();
-    if (cacheKey == CacheKey.NO_KEY) {
+    if (cacheKey.equals(CacheKey.NO_KEY)) {
       cacheKeyValue = pathToString();
     } else {
       path = new ArrayList<>();
