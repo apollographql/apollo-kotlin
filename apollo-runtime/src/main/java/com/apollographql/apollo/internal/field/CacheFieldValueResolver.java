@@ -44,7 +44,7 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
   private Record valueForObject(Record record, ResponseField field) {
     CacheReference cacheReference;
     CacheKey fieldCacheKey = cacheKeyResolver.fromFieldArguments(field, variables);
-    if (fieldCacheKey != CacheKey.NO_KEY) {
+    if (!fieldCacheKey.equals(CacheKey.NO_KEY)) {
       cacheReference = new CacheReference(fieldCacheKey.key());
     } else {
       cacheReference = fieldValue(record, field);
