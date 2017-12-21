@@ -192,6 +192,53 @@ public class ResponseReaderTest {
     }
   }
 
+  @Test public void readCustomObject() throws Exception {
+    ResponseField successField = ResponseField.forCustomType("successFieldResponseName", "successFieldName", null,
+        false, OBJECT_CUSTOM_TYPE, NO_CONDITIONS);
+
+    Map<String, Object> objectMap = new HashMap<>();
+    objectMap.put("string", "string");
+    objectMap.put("boolean", true);
+    objectMap.put("double", 1.99D);
+    objectMap.put("float", 2.99F);
+    objectMap.put("long", 3L);
+    objectMap.put("int", 4);
+    objectMap.put("stringList", asList("string1", "string2"));
+    objectMap.put("booleanList", asList("true", "false"));
+    objectMap.put("doubleList", asList(1.99D, 2.99D));
+    objectMap.put("floatList", asList(3.99F, 4.99F, 5.99F));
+    objectMap.put("longList", asList(5L, 7L));
+    objectMap.put("intList", asList(8, 9, 10));
+    objectMap.put("object", new HashMap<>(objectMap));
+    objectMap.put("objectList", asList(new HashMap<>(objectMap), new HashMap<>(objectMap)));
+
+    Map<String, Object> recordSet = new HashMap<>();
+    recordSet.put("successFieldResponseName", objectMap);
+    recordSet.put("successFieldName", objectMap);
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readCustomType((ResponseField.CustomTypeField) successField))
+        .isEqualTo("{\"string\":\"string\",\"double\":1.99,\"intList\":[8,9,10],\"doubleList\":[1.99,2.99]," +
+            "\"float\":2.99,\"longList\":[5,7],\"long\":3,\"int\":4,\"objectList\":[{\"string\":\"string\"," +
+            "\"double\":1.99,\"intList\":[8,9,10],\"doubleList\":[1.99,2.99],\"float\":2.99,\"longList\":[5,7]," +
+            "\"long\":3,\"int\":4,\"boolean\":true,\"stringList\":[\"string1\",\"string2\"]," +
+            "\"floatList\":[3.99,4.99,5.99],\"booleanList\":[\"true\",\"false\"],\"object\":{\"string\":\"string\"," +
+            "\"double\":1.99,\"intList\":[8,9,10],\"doubleList\":[1.99,2.99],\"float\":2.99,\"longList\":[5,7]," +
+            "\"long\":3,\"int\":4,\"boolean\":true,\"stringList\":[\"string1\",\"string2\"]," +
+            "\"floatList\":[3.99,4.99,5.99],\"booleanList\":[\"true\",\"false\"]}},{\"string\":\"string\"," +
+            "\"double\":1.99,\"intList\":[8,9,10],\"doubleList\":[1.99,2.99],\"float\":2.99,\"longList\":[5,7]," +
+            "\"long\":3,\"int\":4,\"boolean\":true,\"stringList\":[\"string1\",\"string2\"]," +
+            "\"floatList\":[3.99,4.99,5.99],\"booleanList\":[\"true\",\"false\"],\"object\":{\"string\":\"string\"," +
+            "\"double\":1.99,\"intList\":[8,9,10],\"doubleList\":[1.99,2.99],\"float\":2.99,\"longList\":[5,7]," +
+            "\"long\":3,\"int\":4,\"boolean\":true,\"stringList\":[\"string1\",\"string2\"]," +
+            "\"floatList\":[3.99,4.99,5.99],\"booleanList\":[\"true\",\"false\"]}}],\"boolean\":true," +
+            "\"stringList\":[\"string1\",\"string2\"],\"floatList\":[3.99,4.99,5.99]," +
+            "\"booleanList\":[\"true\",\"false\"],\"object\":{\"string\":\"string\",\"double\":1.99," +
+            "\"intList\":[8,9,10],\"doubleList\":[1.99,2.99],\"float\":2.99,\"longList\":[5,7],\"long\":3,\"int\":4," +
+            "\"boolean\":true,\"stringList\":[\"string1\",\"string2\"],\"floatList\":[3.99,4.99,5.99]," +
+            "\"booleanList\":[\"true\",\"false\"]}}");
+  }
+
   @Test public void readCustomWithDecodedNullValue() throws Exception {
     Map<String, Object> recordSet = new HashMap<>();
     recordSet.put("responseName", "http:://");
@@ -725,6 +772,15 @@ public class ResponseReaderTest {
         return null;
       }
     });
+    customTypeAdapters.put(OBJECT_CUSTOM_TYPE, new CustomTypeAdapter() {
+      @Override public Object decode(String value) {
+        return value;
+      }
+
+      @Override public String encode(Object value) {
+        return null;
+      }
+    });
     return new RealResponseReader<>(EMPTY_OPERATION.variables(), recordSet, new MapFieldValueResolver(),
         new ScalarTypeAdapters(customTypeAdapters), NO_OP_NORMALIZER);
   }
@@ -740,6 +796,16 @@ public class ResponseReaderTest {
       }
     };
   }
+
+  private static final ScalarType OBJECT_CUSTOM_TYPE = new ScalarType() {
+    @Override public String typeName() {
+      return String.class.getName();
+    }
+
+    @Override public Class javaType() {
+      return String.class;
+    }
+  };
 
   private static final ScalarType DATE_CUSTOM_TYPE = new ScalarType() {
     @Override public String typeName() {
