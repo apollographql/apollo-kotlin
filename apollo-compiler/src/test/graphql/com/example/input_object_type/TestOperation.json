@@ -152,15 +152,15 @@
 					"type": "[Date]",
 					"description": "for test purpose only",
 					"defaultValue": [
-						false,
-						false
+						"1984-06-21",
+						"1984-11-21"
 					]
 				},
 				{
 					"name": "customScalar",
 					"type": "Date",
 					"description": "for test purpose only",
-					"defaultValue": false
+					"defaultValue": "1984-06-21"
 				},
 				{
 					"name": "listOfEnums",
