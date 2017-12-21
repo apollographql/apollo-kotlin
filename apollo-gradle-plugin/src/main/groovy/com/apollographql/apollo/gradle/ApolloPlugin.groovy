@@ -14,6 +14,7 @@ import org.gradle.api.Task
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.compile.AbstractCompile
 import org.gradle.api.tasks.compile.JavaCompile
 
 import javax.inject.Inject
@@ -70,7 +71,7 @@ class ApolloPlugin implements Plugin<Project> {
     }
   }
 
-  private void addVariantTasks(Object variant, Task apolloIRGenTask, Task apolloClassGenTask, Collection<?> sourceSets) {
+  private void addVariantTasks(BaseVariant variant, Task apolloIRGenTask, Task apolloClassGenTask, Collection<?> sourceSets) {
     ApolloIRGenTask variantIRTask = createApolloIRGenTask(variant.name, sourceSets)
     ApolloClassGenTask variantClassTask = createApolloClassGenTask(variant.name)
     variant.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir)
@@ -89,6 +90,17 @@ class ApolloPlugin implements Plugin<Project> {
     JavaCompile compileTask = (JavaCompile) project.tasks.getByName("compile${taskName.capitalize()}Java")
     compileTask.source += project.fileTree(sourceSetClassTask.outputDir)
     compileTask.dependsOn(apolloClassGenTask)
+
+    sourceSet.java.srcDir(sourceSetClassTask.outputDir)
+
+    AbstractCompile compileKotlinTask = (AbstractCompile) project.tasks.findByName("compile${taskName.capitalize()}Kotlin")
+    if (compileKotlinTask != null) {
+      // kotlinc uses the generated java classes as input too so we need the generated classes
+      compileKotlinTask.dependsOn(apolloClassGenTask)
+      // this is somewhat redundant with sourceSet.java.srcDir above but I believe by the time we come here the java plugin
+      // has been configured already so we need to manually tell kotlinc where to find the generated classes
+      compileKotlinTask.source(sourceSetClassTask.outputDir)
+    }
   }
 
   private void setupNode() {

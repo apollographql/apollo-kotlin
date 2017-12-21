@@ -7,20 +7,14 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.internal.field.FieldValueResolver;
-import com.apollographql.apollo.internal.json.JsonWriter;
 import com.apollographql.apollo.internal.json.Utils;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
-
-import okio.Buffer;
 
 @SuppressWarnings("WeakerAccess") public final class RealResponseReader<R> implements ResponseReader {
   private final Operation.Variables operationVariables;
