@@ -107,7 +107,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     this.httpCall = null;
   }
 
-  private Call httpCall(Operation operation) throws IOException {
+  Call httpCall(Operation operation) throws IOException {
     RequestBody requestBody = httpRequestBody(operation);
     Request.Builder requestBuilder = new Request.Builder()
         .url(serverUrl)

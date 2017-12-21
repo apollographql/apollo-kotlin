@@ -65,11 +65,11 @@ public final class Response<T> {
   }
 
   public static final class Builder<T> {
-    private final Operation operation;
-    private T data;
-    private List<Error> errors;
-    private Set<String> dependentKeys;
-    private boolean fromCache;
+    final Operation operation;
+    T data;
+    List<Error> errors;
+    Set<String> dependentKeys;
+    boolean fromCache;
 
     Builder(@Nonnull final Operation operation) {
       this.operation = checkNotNull(operation, "operation == null");

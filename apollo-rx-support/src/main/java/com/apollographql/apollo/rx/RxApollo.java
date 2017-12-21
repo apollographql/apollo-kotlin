@@ -158,7 +158,7 @@ public final class RxApollo {
     });
   }
 
-  private static Subscription getSubscription(CompletableSubscriber subscriber, final Cancelable cancelable) {
+  static Subscription getSubscription(CompletableSubscriber subscriber, final Cancelable cancelable) {
     Subscription subscription = Subscriptions.create(new Action0() {
       @Override public void call() {
         cancelable.cancel();

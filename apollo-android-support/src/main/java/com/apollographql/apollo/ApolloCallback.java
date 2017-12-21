@@ -22,7 +22,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
  * android.os.NetworkOnMainThreadException} exception.
  */
 public final class ApolloCallback<T> extends ApolloCall.Callback<T> {
-  private final ApolloCall.Callback<T> delegate;
+  final ApolloCall.Callback<T> delegate;
   private final Handler handler;
 
   /**

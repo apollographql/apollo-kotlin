@@ -36,7 +36,7 @@ public class ApolloIRGenTask extends NodeTask {
   static final String NAME = "generate%sApolloIR";
 
   @Internal private String variant;
-  @Internal private ImmutableList<String> sourceSets;
+  @Internal ImmutableList<String> sourceSets;
   @Internal private ApolloExtension extension;
 
   @OutputDirectory private File outputFolder;
@@ -215,7 +215,7 @@ public class ApolloIRGenTask extends NodeTask {
    *
    * @return - sourceSet name
    */
-  private String getSourceSetNameFromFile(File file) {
+  String getSourceSetNameFromFile(File file) {
     Path absolutePath = Paths.get(file.getAbsolutePath());
     Path basePath = Paths.get(getProject().file("src").getAbsolutePath());
 
@@ -227,7 +227,7 @@ public class ApolloIRGenTask extends NodeTask {
    *
    * @return path relative to sourceSet directory
    */
-  private String getPathRelativeToSourceSet(File file) {
+  String getPathRelativeToSourceSet(File file) {
     Path absolutePath = Paths.get(file.getAbsolutePath());
     Path basePath = Paths.get(getProject().file("src").getAbsolutePath() + File.separator + getSourceSetNameFromFile(file));
 

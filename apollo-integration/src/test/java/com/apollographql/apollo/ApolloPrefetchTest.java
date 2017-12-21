@@ -36,8 +36,8 @@ public class ApolloPrefetchTest {
   private ApolloClient apolloClient;
   private MockWebServer server;
   @Rule public InMemoryFileSystem inMemoryFileSystem = new InMemoryFileSystem();
-  private okhttp3.Request lastHttRequest;
-  private okhttp3.Response lastHttResponse;
+  okhttp3.Request lastHttRequest;
+  okhttp3.Response lastHttResponse;
   private MockHttpCacheStore cacheStore;
   private OkHttpClient okHttpClient;
 

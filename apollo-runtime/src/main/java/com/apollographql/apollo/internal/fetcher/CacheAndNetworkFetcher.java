@@ -80,22 +80,22 @@ public final class CacheAndNetworkFetcher implements ResponseFetcher {
       disposed = true;
     }
 
-    private synchronized void handleNetworkResponse(ApolloInterceptor.InterceptorResponse response) {
+    synchronized void handleNetworkResponse(ApolloInterceptor.InterceptorResponse response) {
       networkResponse = Optional.of(response);
       dispatch();
     }
 
-    private synchronized void handleNetworkError(ApolloException exception) {
+    synchronized void handleNetworkError(ApolloException exception) {
       networkException = Optional.of(exception);
       dispatch();
     }
 
-    private synchronized void handleCacheResponse(ApolloInterceptor.InterceptorResponse response) {
+    synchronized void handleCacheResponse(ApolloInterceptor.InterceptorResponse response) {
       cacheResponse = Optional.of(response);
       dispatch();
     }
 
-    private synchronized void handleCacheError(ApolloException exception) {
+    synchronized void handleCacheError(ApolloException exception) {
       cacheException = Optional.of(exception);
       dispatch();
     }

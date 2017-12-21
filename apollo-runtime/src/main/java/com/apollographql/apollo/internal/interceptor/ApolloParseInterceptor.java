@@ -31,7 +31,7 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
   private final ResponseFieldMapper responseFieldMapper;
   private final ScalarTypeAdapters scalarTypeAdapters;
   private final ApolloLogger logger;
-  private volatile boolean disposed;
+  volatile boolean disposed;
 
   public ApolloParseInterceptor(HttpCache httpCache, ResponseNormalizer<Map<String, Object>> normalizer,
       ResponseFieldMapper responseFieldMapper, ScalarTypeAdapters scalarTypeAdapters, ApolloLogger logger) {
@@ -77,7 +77,7 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
     disposed = true;
   }
 
-  @SuppressWarnings("unchecked") private InterceptorResponse parse(Operation operation, okhttp3.Response httpResponse)
+  @SuppressWarnings("unchecked") InterceptorResponse parse(Operation operation, okhttp3.Response httpResponse)
       throws ApolloHttpException, ApolloParseException {
     String cacheKey = httpResponse.request().header(HttpCache.CACHE_KEY_HEADER);
     if (httpResponse.isSuccessful()) {

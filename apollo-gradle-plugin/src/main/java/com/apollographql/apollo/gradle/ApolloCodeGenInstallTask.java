@@ -24,7 +24,7 @@ public class ApolloCodeGenInstallTask extends NpmTask {
   private static final String INSTALL_DIR =  "apollo-codegen/node_modules/apollo-codegen";
 
   @OutputDirectory private File installDir;
-  private File apolloPackageFile;
+  File apolloPackageFile;
   
   public ApolloCodeGenInstallTask() {
     // TODO: set to const when ApolloPlugin is in java

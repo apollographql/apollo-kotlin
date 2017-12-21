@@ -126,7 +126,7 @@ final class ResponseBodyProxy extends ResponseBody {
       }
     }
 
-    private void abortCacheQuietly() {
+    void abortCacheQuietly() {
       closeQuietly(responseBodyCacheSink);
       try {
         cacheRecordEditor.abort();

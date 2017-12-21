@@ -83,7 +83,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final List<ApolloInterceptor> applicationInterceptors;
   private final boolean sendOperationIdentifiers;
 
-  private ApolloClient(HttpUrl serverUrl,
+  ApolloClient(HttpUrl serverUrl,
       Call.Factory httpCallFactory,
       HttpCache httpCache,
       ApolloStore apolloStore,
@@ -232,7 +232,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
     boolean sendOperationIdentifiers;
 
-    private Builder() {
+    Builder() {
     }
 
     /**

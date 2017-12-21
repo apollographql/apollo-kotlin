@@ -14,7 +14,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
  * Android wrapper for {@link ApolloPrefetch.Callback} to be operated on specified {@link Handler}
  */
 public final class ApolloPrefetchCallback extends ApolloPrefetch.Callback {
-  private final ApolloPrefetch.Callback delegate;
+  final ApolloPrefetch.Callback delegate;
   private final Handler handler;
 
   /**

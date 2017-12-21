@@ -23,7 +23,7 @@ public final class CacheFirstFetcher implements ResponseFetcher {
 
   private static final class CacheFirstInterceptor implements ApolloInterceptor {
 
-    private volatile boolean disposed;
+    volatile boolean disposed;
 
     @Override
     public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull final ApolloInterceptorChain chain,

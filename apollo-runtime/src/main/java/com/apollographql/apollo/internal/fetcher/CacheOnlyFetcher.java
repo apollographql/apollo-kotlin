@@ -55,7 +55,7 @@ public final class CacheOnlyFetcher implements ResponseFetcher {
       //no-op
     }
 
-    private InterceptorResponse cacheMissResponse(Operation operation) {
+    InterceptorResponse cacheMissResponse(Operation operation) {
       return new InterceptorResponse(null, Response.builder(operation).fromCache(true).build(), null);
     }
   }

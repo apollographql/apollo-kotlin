@@ -23,9 +23,9 @@ class FaultyHttpCacheStore implements HttpCacheStore {
   private static final int ENTRY_COUNT = 2;
 
   private DiskLruCache cache;
-  private final FaultySource faultySource = new FaultySource();
-  private final FaultySink faultySink = new FaultySink();
-  private FailStrategy failStrategy;
+  final FaultySource faultySource = new FaultySource();
+  final FaultySink faultySink = new FaultySink();
+  FailStrategy failStrategy;
 
   FaultyHttpCacheStore(FileSystem fileSystem) {
     this.cache = DiskLruCache.create(fileSystem, new File("/cache/"), VERSION, ENTRY_COUNT, Integer.MAX_VALUE);

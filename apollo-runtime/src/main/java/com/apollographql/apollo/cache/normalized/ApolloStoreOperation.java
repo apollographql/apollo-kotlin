@@ -84,7 +84,7 @@ public abstract class ApolloStoreOperation<T> {
     });
   }
 
-  private void notifySuccess(T result) {
+  void notifySuccess(T result) {
     Callback<T> callback = this.callback.getAndSet(null);
     if (callback == null) {
       return;
@@ -92,7 +92,7 @@ public abstract class ApolloStoreOperation<T> {
     callback.onSuccess(result);
   }
 
-  private void notifyFailure(Throwable t) {
+  void notifyFailure(Throwable t) {
     Callback<T> callback = this.callback.getAndSet(null);
     if (callback == null) {
       return;

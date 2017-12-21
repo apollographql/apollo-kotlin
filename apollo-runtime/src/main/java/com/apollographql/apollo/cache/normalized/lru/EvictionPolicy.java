@@ -49,7 +49,7 @@ public final class EvictionPolicy {
 
   public static class Builder {
 
-    private Builder() { }
+    Builder() { }
 
     private Optional<Long> maxSizeBytes = Optional.absent();
     private Optional<Long> maxEntries = Optional.absent();
@@ -87,7 +87,7 @@ public final class EvictionPolicy {
 
   }
 
-  private EvictionPolicy(Optional<Long> maxSizeBytes, Optional<Long> maxEntries, Optional<Long> expireAfterAccess,
+  EvictionPolicy(Optional<Long> maxSizeBytes, Optional<Long> maxEntries, Optional<Long> expireAfterAccess,
       Optional<TimeUnit> expireAfterAccessTimeUnit, Optional<Long> expireAfterWrite, Optional<TimeUnit>
       expireAfterWriteTimeUnit) {
     this.maxSizeBytes = maxSizeBytes;
