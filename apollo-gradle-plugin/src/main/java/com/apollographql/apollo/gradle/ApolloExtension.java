@@ -13,6 +13,7 @@ public class ApolloExtension {
   private String nullableValueType = NullableValueType.ANNOTATED.getValue();
   private boolean useSemanticNaming = true;
   private boolean generateModelBuilder;
+  private boolean useJavaBeansSemanticNaming = false;
   private String schemaFilePath;
   private String outputPackageName;
 
@@ -36,12 +37,20 @@ public class ApolloExtension {
     this.useSemanticNaming = useSemanticNaming;
   }
 
+  public void setUseJavaBeansSemanticNaming(boolean useJavaBeansSemanticNaming) {
+    this.useJavaBeansSemanticNaming = useJavaBeansSemanticNaming;
+  }
+
   public boolean isUseSemanticNaming() {
     return useSemanticNaming;
   }
 
   public boolean isGenerateModelBuilder() {
     return generateModelBuilder;
+  }
+
+  public boolean isUseJavaBeansSemanticNaming() {
+    return useJavaBeansSemanticNaming;
   }
 
   public void setGenerateModelBuilder(boolean generateModelBuilder) {

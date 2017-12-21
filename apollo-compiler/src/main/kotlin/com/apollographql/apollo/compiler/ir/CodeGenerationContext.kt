@@ -11,5 +11,6 @@ data class CodeGenerationContext(
     val nullableValueType: NullableValueType,
     val ir: CodeGenerationIR,
     val useSemanticNaming: Boolean,
-    val generateModelBuilder: Boolean
+    val generateModelBuilder: Boolean,
+    val useJavaBeansSemanticNaming: Boolean
 )

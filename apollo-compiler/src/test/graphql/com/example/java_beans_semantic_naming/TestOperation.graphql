@@ -1,0 +1,26 @@
+query TestQuery {
+  hero {
+    name
+    ...HeroDetails
+    appearsIn
+  }
+}
+
+fragment HeroDetails on Character {
+  name
+  friendsConnection {
+    totalCount
+    edges {
+      node {
+        name
+      }
+    }
+    pageInfo {
+      hasNextPage
+    }
+  }
+  ... on Droid {
+    name
+    primaryFunction
+  }
+}

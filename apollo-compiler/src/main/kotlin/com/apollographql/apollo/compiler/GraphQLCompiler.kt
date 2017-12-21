@@ -27,7 +27,8 @@ class GraphQLCompiler {
         nullableValueType = args.nullableValueType,
         ir = ir,
         useSemanticNaming = args.useSemanticNaming,
-        generateModelBuilder = args.generateModelBuilder
+        generateModelBuilder = args.generateModelBuilder,
+        useJavaBeansSemanticNaming = args.useJavaBeansSemanticNaming
     )
     ir.writeJavaFiles(
         context = context,
@@ -84,6 +85,7 @@ class GraphQLCompiler {
       val nullableValueType: NullableValueType,
       val useSemanticNaming: Boolean,
       val generateModelBuilder: Boolean,
+      val useJavaBeansSemanticNaming: Boolean,
       val outputPackageName: String?
   )
 }
