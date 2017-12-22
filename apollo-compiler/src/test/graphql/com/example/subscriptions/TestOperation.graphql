@@ -1,0 +1,6 @@
+subscription TestSubscription($repo: String!) {
+  commentAdded(repoFullName: $repo) {
+    id
+    content
+  }
+}

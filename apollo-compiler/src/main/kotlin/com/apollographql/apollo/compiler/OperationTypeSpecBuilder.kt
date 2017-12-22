@@ -11,26 +11,15 @@ class OperationTypeSpecBuilder(
     val fragments: List<Fragment>,
     useSemanticNaming: Boolean
 ) : CodeGenerator {
-  private val operationTypeName: String
-  private val dataVarType: ClassName
-
-  init {
-    if (useSemanticNaming && operation.isMutation() && !operation.operationName.endsWith("Mutation")) {
-      operationTypeName = operation.operationName.capitalize() + "Mutation"
-    } else if (useSemanticNaming && operation.isQuery() && !operation.operationName.endsWith("Query")) {
-      operationTypeName = operation.operationName.capitalize() + "Query"
-    } else {
-      operationTypeName = operation.operationName.capitalize()
-    }
-    dataVarType = ClassName.get("", "$operationTypeName.Data")
-  }
+  private val operationTypeName = operation.normalizedOperationName(useSemanticNaming)
+  private val dataVarType = ClassName.get("", "$operationTypeName.Data")
 
   override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec {
     val newContext = context.copy(reservedTypeNames = context.reservedTypeNames.plus(operationTypeName))
     return TypeSpec.classBuilder(operationTypeName)
         .addAnnotation(Annotations.GENERATED_BY_APOLLO)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-        .addOperationSuperInterface(context)
+        .addSuperinterface(operationSuperInterface(context))
         .addOperationDefinition(operation)
         .addOperationId(operation)
         .addQueryDocumentDefinition(fragments, newContext)
@@ -49,14 +38,19 @@ class OperationTypeSpecBuilder(
         ))
   }
 
-  private fun TypeSpec.Builder.addOperationSuperInterface(context: CodeGenerationContext): TypeSpec.Builder {
-    val superInterfaceClassName = if (operation.isMutation()) ClassNames.GRAPHQL_MUTATION else ClassNames.GRAPHQL_QUERY
+  private fun operationSuperInterface(context: CodeGenerationContext): TypeName {
+    val superInterfaceClassName = when {
+      operation.isQuery() -> ClassNames.GRAPHQL_QUERY
+      operation.isMutation() -> ClassNames.GRAPHQL_MUTATION
+      operation.isSubscription() -> ClassNames.GRAPHQL_SUBSCRIPTION
+      else -> throw IllegalArgumentException("Unknown operation type ${operation.operationType}")
+    }
+
     return if (operation.variables.isNotEmpty()) {
-      addSuperinterface(ParameterizedTypeName.get(superInterfaceClassName, dataVarType,
-          wrapperType(context), variablesType()))
+      ParameterizedTypeName.get(superInterfaceClassName, dataVarType, wrapperType(context), variablesType())
     } else {
-      addSuperinterface(ParameterizedTypeName.get(superInterfaceClassName, dataVarType,
-          wrapperType(context), ClassNames.GRAPHQL_OPERATION_VARIABLES))
+      ParameterizedTypeName.get(superInterfaceClassName, dataVarType, wrapperType(context),
+          ClassNames.GRAPHQL_OPERATION_VARIABLES)
     }
   }
 
