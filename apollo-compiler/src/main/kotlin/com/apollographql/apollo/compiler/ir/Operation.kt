@@ -47,10 +47,10 @@ data class Operation(
   }
 
   private fun normalizedOperationName(useSemanticNaming: Boolean, operationNameSuffix: String): String {
-    return if (operationName.endsWith(operationNameSuffix) || useSemanticNaming) {
-      operationName.capitalize()
-    } else {
+    return if (useSemanticNaming && !operationName.endsWith(operationNameSuffix)) {
       operationName.capitalize() + operationNameSuffix
+    } else {
+      operationName.capitalize()
     }
   }
 
