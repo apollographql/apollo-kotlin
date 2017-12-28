@@ -142,11 +142,11 @@ public class ResponseJsonStreamReader {
     return result;
   }
 
-  private boolean isNextObject() throws IOException {
+  boolean isNextObject() throws IOException {
     return jsonReader.peek() == JsonReader.Token.BEGIN_OBJECT;
   }
 
-  private boolean isNextList() throws IOException {
+  boolean isNextList() throws IOException {
     return jsonReader.peek() == JsonReader.Token.BEGIN_ARRAY;
   }
 
@@ -168,7 +168,7 @@ public class ResponseJsonStreamReader {
     }
   }
 
-  private Map<String, Object> readObject(final ResponseJsonStreamReader streamReader) throws IOException {
+  Map<String, Object> readObject(final ResponseJsonStreamReader streamReader) throws IOException {
     return streamReader.nextObject(false, new ObjectReader<Map<String, Object>>() {
       @Override public Map<String, Object> read(ResponseJsonStreamReader streamReader) throws IOException {
         return streamReader.toMap();
@@ -176,7 +176,7 @@ public class ResponseJsonStreamReader {
     });
   }
 
-  private List<?> readList(final ResponseJsonStreamReader streamReader) throws IOException {
+  List<?> readList(final ResponseJsonStreamReader streamReader) throws IOException {
     return streamReader.nextList(false, new ListReader<Object>() {
       @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
         if (streamReader.isNextList()) {

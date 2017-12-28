@@ -34,11 +34,11 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
  * cache if {@link InterceptorRequest#fetchFromCache} is true. Saves all network responses to cache.
  */
 public final class ApolloCacheInterceptor implements ApolloInterceptor {
-  private final ApolloStore apolloStore;
+  final ApolloStore apolloStore;
   private final ResponseFieldMapper responseFieldMapper;
   private final Executor dispatcher;
-  private final ApolloLogger logger;
-  private volatile boolean disposed;
+  final ApolloLogger logger;
+  volatile boolean disposed;
 
   public ApolloCacheInterceptor(@Nonnull ApolloStore apolloStore, @Nonnull ResponseFieldMapper responseFieldMapper,
       @Nonnull Executor dispatcher, @Nonnull ApolloLogger logger) {
@@ -107,7 +107,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     disposed = true;
   }
 
-  private InterceptorResponse resolveFromCache(InterceptorRequest request) throws ApolloException {
+  InterceptorResponse resolveFromCache(InterceptorRequest request) throws ApolloException {
     ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
     //noinspection unchecked
     ApolloStoreOperation<Response> apolloStoreOperation = apolloStore.read(request.operation, responseFieldMapper,
@@ -121,7 +121,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     throw new ApolloException(String.format("Cache miss for operation %s", request.operation));
   }
 
-  private Set<String> cacheResponse(final InterceptorResponse networkResponse,
+  Set<String> cacheResponse(final InterceptorResponse networkResponse,
       final InterceptorRequest request) {
     final Optional<List<Record>> records = networkResponse.cacheRecords.map(
         new Function<Collection<Record>, List<Record>>() {
@@ -151,7 +151,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     }
   }
 
-  private void writeOptimisticUpdatesAndPublish(final InterceptorRequest request) {
+  void writeOptimisticUpdatesAndPublish(final InterceptorRequest request) {
     dispatcher.execute(new Runnable() {
       @Override public void run() {
         try {
@@ -167,7 +167,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     });
   }
 
-  private void rollbackOptimisticUpdatesAndPublish(final InterceptorRequest request) {
+  void rollbackOptimisticUpdatesAndPublish(final InterceptorRequest request) {
     dispatcher.execute(new Runnable() {
       @Override public void run() {
         try {
@@ -179,7 +179,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     });
   }
 
-  private Set<String> rollbackOptimisticUpdates(final InterceptorRequest request) {
+  Set<String> rollbackOptimisticUpdates(final InterceptorRequest request) {
     try {
       return apolloStore.rollbackOptimisticUpdates(request.uniqueId).execute();
     } catch (Exception e) {
@@ -188,7 +188,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
     }
   }
 
-  private void publishCacheKeys(final Set<String> cacheKeys) {
+  void publishCacheKeys(final Set<String> cacheKeys) {
     dispatcher.execute(new Runnable() {
       @Override public void run() {
         try {

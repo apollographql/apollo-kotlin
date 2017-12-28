@@ -75,7 +75,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     return new Builder<>();
   }
 
-  private RealApolloCall(Builder<T> builder) {
+  RealApolloCall(Builder<T> builder) {
     operation = builder.operation;
     serverUrl = builder.serverUrl;
     httpCallFactory = builder.httpCallFactory;
@@ -320,7 +320,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     state.set(ACTIVE);
   }
 
-  private synchronized Optional<Callback<T>> responseCallback() {
+  synchronized Optional<Callback<T>> responseCallback() {
     switch (state.get()) {
       case ACTIVE:
       case CANCELED:
@@ -334,7 +334,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     }
   }
 
-  private synchronized Optional<Callback<T>> terminate() {
+  synchronized Optional<Callback<T>> terminate() {
     switch (state.get()) {
       case ACTIVE:
         tracker.unregisterCall(this);

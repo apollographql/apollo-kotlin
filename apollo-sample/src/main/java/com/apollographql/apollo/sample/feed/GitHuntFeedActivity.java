@@ -33,7 +33,7 @@ import static com.apollographql.apollo.sample.FeedQuery.FeedEntry;
 
 public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNavigator {
 
-  private static final String TAG = GitHuntFeedActivity.class.getSimpleName();
+  static final String TAG = GitHuntFeedActivity.class.getSimpleName();
 
   private static final int FEED_SIZE = 20;
 
@@ -74,7 +74,7 @@ public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNav
     }
   }, uiHandler);
 
-  private List<FeedEntry> feedResponseToEntriesWithRepositories(Response<FeedQuery.Data> response) {
+  List<FeedEntry> feedResponseToEntriesWithRepositories(Response<FeedQuery.Data> response) {
     List<FeedEntry> feedEntriesWithRepos = new ArrayList<>();
     final FeedQuery.Data responseData = response.data();
     if (responseData == null) {

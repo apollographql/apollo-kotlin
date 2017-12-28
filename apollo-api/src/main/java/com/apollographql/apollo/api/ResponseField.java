@@ -198,7 +198,7 @@ public class ResponseField {
         false, conditions);
   }
 
-  private ResponseField(Type type, String responseName, String fieldName, Map<String, Object> arguments,
+  ResponseField(Type type, String responseName, String fieldName, Map<String, Object> arguments,
       boolean optional, List<Condition> conditions) {
     this.type = type;
     this.responseName = responseName;

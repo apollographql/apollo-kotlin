@@ -132,11 +132,11 @@ public class Rx2Apollo {
     });
   }
 
-  private static void cancelOnCompletableDisposed(CompletableEmitter emitter, final Cancelable cancelable) {
+  static void cancelOnCompletableDisposed(CompletableEmitter emitter, final Cancelable cancelable) {
     emitter.setDisposable(getRx2Disposable(cancelable));
   }
 
-  private static <T> void cancelOnObservableDisposed(ObservableEmitter<T> emitter, final Cancelable cancelable) {
+  static <T> void cancelOnObservableDisposed(ObservableEmitter<T> emitter, final Cancelable cancelable) {
     emitter.setDisposable(getRx2Disposable(cancelable));
   }
 

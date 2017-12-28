@@ -52,7 +52,7 @@ public final class CacheHeaders {
     return builder;
   }
 
-  private CacheHeaders(Map<String, String> headerMap) {
+  CacheHeaders(Map<String, String> headerMap) {
     this.headerMap = headerMap;
   }
 

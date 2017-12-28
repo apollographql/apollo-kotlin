@@ -38,13 +38,13 @@ import javax.annotation.Nullable;
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 public final class RealApolloStore implements ApolloStore, ReadableStore, WriteableStore {
-  private final OptimisticNormalizedCache optimisticCache;
-  private final CacheKeyResolver cacheKeyResolver;
-  private final ScalarTypeAdapters scalarTypeAdapters;
+  final OptimisticNormalizedCache optimisticCache;
+  final CacheKeyResolver cacheKeyResolver;
+  final ScalarTypeAdapters scalarTypeAdapters;
   private final ReadWriteLock lock;
   private final Set<RecordChangeSubscriber> subscribers;
   private final Executor dispatcher;
-  private final ApolloLogger logger;
+  final ApolloLogger logger;
 
   public RealApolloStore(@Nonnull NormalizedCache normalizedCache, @Nonnull CacheKeyResolver cacheKeyResolver,
       @Nonnull final ScalarTypeAdapters scalarTypeAdapters, @Nonnull Executor dispatcher,
@@ -334,7 +334,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     };
   }
 
-  private <D extends Operation.Data, T, V extends Operation.Variables> T doRead(final Operation<D, T, V> operation) {
+  <D extends Operation.Data, T, V extends Operation.Variables> T doRead(final Operation<D, T, V> operation) {
     return readTransaction(new Transaction<ReadableStore, T>() {
       @Nullable @Override public T execute(ReadableStore cache) {
         Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key(), CacheHeaders.NONE);
@@ -353,7 +353,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     });
   }
 
-  private <D extends Operation.Data, T, V extends Operation.Variables> Response<T> doRead(
+  <D extends Operation.Data, T, V extends Operation.Variables> Response<T> doRead(
       final Operation<D, T, V> operation, final ResponseFieldMapper<D> responseFieldMapper,
       final ResponseNormalizer<Record> responseNormalizer, final CacheHeaders cacheHeaders) {
     return readTransaction(new Transaction<ReadableStore, Response<T>>() {
@@ -383,7 +383,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     });
   }
 
-  private <F extends GraphqlFragment> F doRead(final ResponseFieldMapper<F> responseFieldMapper,
+  <F extends GraphqlFragment> F doRead(final ResponseFieldMapper<F> responseFieldMapper,
       final CacheKey cacheKey, final Operation.Variables variables) {
     return readTransaction(new Transaction<ReadableStore, F>() {
       @Nullable @Override public F execute(ReadableStore cache) {
@@ -402,7 +402,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     });
   }
 
-  private <D extends Operation.Data, T, V extends Operation.Variables> Set<String> doWrite(
+  <D extends Operation.Data, T, V extends Operation.Variables> Set<String> doWrite(
       final Operation<D, T, V> operation, final D operationData, final boolean optimistic,
       final UUID mutationId) {
     return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
@@ -426,7 +426,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     });
   }
 
-  private Set<String> doWrite(final GraphqlFragment fragment, final CacheKey cacheKey,
+  Set<String> doWrite(final GraphqlFragment fragment, final CacheKey cacheKey,
       final Operation.Variables variables) {
     return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
       @Override public Set<String> execute(WriteableStore cache) {

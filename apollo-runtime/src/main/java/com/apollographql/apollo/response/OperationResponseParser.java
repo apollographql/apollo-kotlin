@@ -22,10 +22,10 @@ import okio.BufferedSource;
 import static com.apollographql.apollo.internal.json.ApolloJsonReader.responseJsonStreamReader;
 
 public final class OperationResponseParser<D extends Operation.Data, W> {
-  private final Operation<D, W, ?> operation;
-  private final ResponseFieldMapper responseFieldMapper;
-  private final ScalarTypeAdapters scalarTypeAdapters;
-  private final ResponseNormalizer<Map<String, Object>> responseNormalizer;
+  final Operation<D, W, ?> operation;
+  final ResponseFieldMapper responseFieldMapper;
+  final ScalarTypeAdapters scalarTypeAdapters;
+  final ResponseNormalizer<Map<String, Object>> responseNormalizer;
 
   @SuppressWarnings("unchecked") public OperationResponseParser(Operation<D, W, ?> operation,
       ResponseFieldMapper responseFieldMapper, ScalarTypeAdapters scalarTypeAdapters) {
@@ -93,7 +93,7 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
     });
   }
 
-  @SuppressWarnings("unchecked") private Error readError(ResponseJsonStreamReader reader) throws IOException {
+  @SuppressWarnings("unchecked") Error readError(ResponseJsonStreamReader reader) throws IOException {
     String message = null;
     final List<Error.Location> locations = new ArrayList<>();
     final Map<String, Object> customAttributes = new HashMap<>();

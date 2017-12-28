@@ -20,9 +20,9 @@ public class ApolloClassGenTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses";
 
   @Internal private String variant;
-  @Internal private ApolloExtension apolloExtension;
-  @OutputDirectory private File outputDir;
-  private NullableValueType nullableValueType;
+  @Internal ApolloExtension apolloExtension;
+  @OutputDirectory File outputDir;
+  NullableValueType nullableValueType;
 
   public void init(String variant, ApolloExtension apolloExtension) {
     this.variant = variant;

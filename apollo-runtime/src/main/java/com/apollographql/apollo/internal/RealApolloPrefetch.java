@@ -175,7 +175,7 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
     state.set(ACTIVE);
   }
 
-  private synchronized Optional<ApolloPrefetch.Callback> terminate() {
+  synchronized Optional<ApolloPrefetch.Callback> terminate() {
     switch (state.get()) {
       case ACTIVE:
         tracker.unregisterPrefetchCall(this);

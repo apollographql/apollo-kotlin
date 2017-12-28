@@ -31,11 +31,11 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
 final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
   private RealApolloCall<T> activeCall;
   private ResponseFetcher refetchResponseFetcher = ApolloResponseFetchers.CACHE_FIRST;
-  private final ApolloStore apolloStore;
-  private Set<String> dependentKeys = Collections.emptySet();
-  private final ApolloLogger logger;
+  final ApolloStore apolloStore;
+  Set<String> dependentKeys = Collections.emptySet();
+  final ApolloLogger logger;
   private final ApolloCallTracker tracker;
-  private final ApolloStore.RecordChangeSubscriber recordChangeSubscriber = new ApolloStore.RecordChangeSubscriber() {
+  final ApolloStore.RecordChangeSubscriber recordChangeSubscriber = new ApolloStore.RecordChangeSubscriber() {
     @Override public void onCacheRecordsChanged(Set<String> changedRecordKeys) {
       if (!Utils.areDisjoint(dependentKeys, changedRecordKeys)) {
         refetch();
@@ -178,7 +178,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
     state.set(ACTIVE);
   }
 
-  private synchronized Optional<ApolloCall.Callback<T>> responseCallback() {
+  synchronized Optional<ApolloCall.Callback<T>> responseCallback() {
     switch (state.get()) {
       case ACTIVE:
       case CANCELED:
@@ -192,7 +192,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
     }
   }
 
-  private synchronized Optional<ApolloCall.Callback<T>> terminate() {
+  synchronized Optional<ApolloCall.Callback<T>> terminate() {
     switch (state.get()) {
       case ACTIVE:
         tracker.unregisterQueryWatcher(this);

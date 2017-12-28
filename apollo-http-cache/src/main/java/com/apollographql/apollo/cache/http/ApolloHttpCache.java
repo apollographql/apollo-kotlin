@@ -148,7 +148,7 @@ public final class ApolloHttpCache implements HttpCache {
     }
   }
 
-  private void closeQuietly(HttpCacheRecord cacheRecord) {
+  void closeQuietly(HttpCacheRecord cacheRecord) {
     try {
       if (cacheRecord != null) {
         cacheRecord.close();

@@ -27,7 +27,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class GitHuntEntryDetailActivity extends AppCompatActivity {
 
-  private static final String TAG = GitHuntEntryDetailActivity.class.getSimpleName();
+  static final String TAG = GitHuntEntryDetailActivity.class.getSimpleName();
   private static final String ARG_REPOSITORY_FULL_NAME = "arg_repo_full_name";
 
   private GitHuntApplication application;
@@ -75,7 +75,7 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
     }
   }
 
-  private void setEntryData(EntryDetailQuery.Data data) {
+  void setEntryData(EntryDetailQuery.Data data) {
     content.setVisibility(View.VISIBLE);
     progressBar.setVisibility(View.GONE);
 

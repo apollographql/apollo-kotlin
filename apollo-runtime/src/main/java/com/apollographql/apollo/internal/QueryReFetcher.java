@@ -26,7 +26,7 @@ import okhttp3.Call;
 import okhttp3.HttpUrl;
 
 final class QueryReFetcher {
-  private final ApolloLogger logger;
+  final ApolloLogger logger;
   private final List<RealApolloCall> calls;
   private List<OperationName> queryWatchers;
   private ApolloCallTracker callTracker;
@@ -185,7 +185,7 @@ final class QueryReFetcher {
       return new QueryReFetcher(this);
     }
 
-    private Builder() {
+    Builder() {
     }
   }
 

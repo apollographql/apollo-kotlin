@@ -17,11 +17,11 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("WeakerAccess") public final class RealResponseReader<R> implements ResponseReader {
-  private final Operation.Variables operationVariables;
+  final Operation.Variables operationVariables;
   private final R recordSet;
-  private final com.apollographql.apollo.response.ScalarTypeAdapters scalarTypeAdapters;
-  private final FieldValueResolver<R> fieldValueResolver;
-  private final ResolveDelegate<R> resolveDelegate;
+  final com.apollographql.apollo.response.ScalarTypeAdapters scalarTypeAdapters;
+  final FieldValueResolver<R> fieldValueResolver;
+  final ResolveDelegate<R> resolveDelegate;
   private final Map<String, Object> variableValues;
 
   public RealResponseReader(Operation.Variables operationVariables, R recordSet,
