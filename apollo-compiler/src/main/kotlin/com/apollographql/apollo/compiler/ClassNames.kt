@@ -18,6 +18,7 @@ object ClassNames {
   val GRAPHQL_OPERATION: ClassName = ClassName.get(Operation::class.java)
   val GRAPHQL_QUERY: ClassName = ClassName.get(Query::class.java)
   val GRAPHQL_MUTATION: ClassName = ClassName.get(Mutation::class.java)
+  val GRAPHQL_SUBSCRIPTION: ClassName = ClassName.get(Subscription::class.java)
   val GRAPHQL_OPERATION_VARIABLES: ClassName = ClassName.get("", "${GRAPHQL_OPERATION.simpleName()}.Variables")
   val ILLEGAL_STATE_EXCEPTION: TypeName = ClassName.get(IllegalStateException::class.java)
   val MAP: ClassName = ClassName.get(Map::class.java)

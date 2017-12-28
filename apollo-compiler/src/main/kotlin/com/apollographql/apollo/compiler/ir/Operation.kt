@@ -17,6 +17,7 @@ data class Operation(
     val operationId: String
 
 ) : CodeGenerator {
+
   override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec =
       SchemaTypeSpecBuilder(
           typeName = DATA_TYPE_NAME,
@@ -38,17 +39,31 @@ data class Operation(
             }
           }
 
-  fun isMutation(): Boolean {
-    return operationType == TYPE_MUTATION
+  fun normalizedOperationName(useSemanticNaming: Boolean): String = when (operationType) {
+    TYPE_MUTATION -> normalizedOperationName(useSemanticNaming, "Mutation")
+    TYPE_QUERY -> normalizedOperationName(useSemanticNaming, "Query")
+    TYPE_SUBSCRIPTION -> normalizedOperationName(useSemanticNaming, "Subscription")
+    else -> throw IllegalArgumentException("Unknown operation type $operationType")
   }
 
-  fun isQuery(): Boolean {
-    return operationType == TYPE_QUERY
+  private fun normalizedOperationName(useSemanticNaming: Boolean, operationNameSuffix: String): String {
+    return if (useSemanticNaming && !operationName.endsWith(operationNameSuffix)) {
+      operationName.capitalize() + operationNameSuffix
+    } else {
+      operationName.capitalize()
+    }
   }
+
+  fun isMutation() = operationType == TYPE_MUTATION
+
+  fun isQuery() = operationType == TYPE_QUERY
+
+  fun isSubscription() = operationType == TYPE_SUBSCRIPTION
 
   companion object {
     val DATA_TYPE_NAME = "Data"
     val TYPE_MUTATION = "mutation"
     val TYPE_QUERY = "query"
+    val TYPE_SUBSCRIPTION = "subscription"
   }
 }
