@@ -1,9 +1,9 @@
 buildscript {
-  ext.apolloReleaseVersion = '0.4.1'
+  ext.apolloReleaseVersion = '0.4.4-SNAPSHOT'
 
   dependencies {
     classpath dep.androidPlugin
-    classpath "com.apollographql.apollo:gradle-plugin:$apolloReleaseVersion"
+    classpath "com.apollographql.apollo:apollo-gradle-plugin:$apolloReleaseVersion"
   }
 }
 
@@ -30,14 +30,16 @@ android {
 dependencies {
   provided dep.jsr305
 
-  compile "com.apollographql.apollo:apollo-runtime:$apolloReleaseVersion"
+//  compile "com.apollographql.apollo:apollo-runtime:$apolloReleaseVersion"
   compile "com.apollographql.apollo:apollo-android-support:$apolloReleaseVersion"
-  compile "com.apollographql.apollo:apollo-rx2-support:$apolloReleaseVersion"
+//  compile "com.apollographql.apollo:apollo-rx2-support:$apolloReleaseVersion"
   compile dep.appcompat
   compile dep.okhttpLoggingInterceptor
   compile dep.recyclerView
   compile dep.rxandroid
   compile dep.rxjava2
+  compile project(":apollo-runtime")
+  compile project(":apollo-rx2-support")
 
   testCompile dep.junit
 }

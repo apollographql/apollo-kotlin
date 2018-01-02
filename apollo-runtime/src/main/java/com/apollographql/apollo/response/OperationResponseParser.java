@@ -17,10 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import okio.BufferedSource;
 
+import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static com.apollographql.apollo.internal.json.ApolloJsonReader.responseJsonStreamReader;
 
+@SuppressWarnings("WeakerAccess")
 public final class OperationResponseParser<D extends Operation.Data, W> {
   final Operation<D, W, ?> operation;
   final ResponseFieldMapper responseFieldMapper;
@@ -38,6 +42,36 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
     this.responseFieldMapper = responseFieldMapper;
     this.scalarTypeAdapters = scalarTypeAdapters;
     this.responseNormalizer = responseNormalizer;
+  }
+
+  @SuppressWarnings("unchecked")
+  public Response<W> parse(@Nonnull Map<String, Object> payload) {
+    checkNotNull(payload, "payload == null");
+
+    D data = null;
+    if (payload.containsKey("data")) {
+      Map<String, Object> buffer = (Map<String, Object>) payload.get("data");
+      RealResponseReader<Map<String, Object>> realResponseReader = new RealResponseReader<>(operation.variables(),
+          buffer, new MapFieldValueResolver(), scalarTypeAdapters, responseNormalizer);
+      data = (D) responseFieldMapper.map(realResponseReader);
+    }
+
+    List<Error> errors = null;
+    if (payload.containsKey("errors")) {
+      List<Map<String, Object>> errorPayloads = (List<Map<String, Object>>) payload.get("errors");
+      if (errorPayloads != null) {
+        errors = new ArrayList<>();
+        for (Map<String, Object> errorPayload : errorPayloads) {
+          errors.add(readError(errorPayload));
+        }
+      }
+    }
+
+    return Response.<W>builder(operation)
+        .data(operation.wrapData(data))
+        .errors(errors)
+        .dependentKeys(responseNormalizer.dependentKeys())
+        .build();
   }
 
   public Response<W> parse(BufferedSource source) throws IOException {
@@ -86,18 +120,19 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
       @Override public Error read(ResponseJsonStreamReader reader) throws IOException {
         return reader.nextObject(true, new ResponseJsonStreamReader.ObjectReader<Error>() {
           @Override public Error read(ResponseJsonStreamReader reader) throws IOException {
-            return readError(reader);
+            return readError(reader.toMap());
           }
         });
       }
     });
   }
 
-  @SuppressWarnings("unchecked") Error readError(ResponseJsonStreamReader reader) throws IOException {
+  @SuppressWarnings("unchecked")
+  private Error readError(Map<String, Object> payload) {
     String message = null;
     final List<Error.Location> locations = new ArrayList<>();
     final Map<String, Object> customAttributes = new HashMap<>();
-    for (Map.Entry<String, Object> entry : reader.toMap().entrySet()) {
+    for (Map.Entry<String, Object> entry : payload.entrySet()) {
       if ("message".equals(entry.getKey())) {
         Object value = entry.getValue();
         message = value != null ? value.toString() : null;
@@ -118,7 +153,7 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
   }
 
   @SuppressWarnings("ConstantConditions")
-  private Error.Location readErrorLocation(Map<String, Object> data) throws IOException {
+  private Error.Location readErrorLocation(Map<String, Object> data) {
     long line = -1;
     long column = -1;
     if (data != null) {

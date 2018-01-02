@@ -12,6 +12,7 @@ import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper;
 import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory;
+import com.apollographql.apollo.subscription.WebSocketSubscriptionTransport;
 
 import java.util.Map;
 
@@ -21,7 +22,11 @@ import okhttp3.OkHttpClient;
 
 public class GitHuntApplication extends Application {
 
-  private static final String BASE_URL = "https://api.githunt.com/graphql/";
+  private static final String BASE_URL = "http://10.0.2.2:3010/graphql/";
+  private static final String SUBSCRIPTION_BASE_URL = "ws://10.0.2.2:3010/subscriptions";
+//  private static final String BASE_URL = "https://api.githunt.com/graphql";
+//  private static final String SUBSCRIPTION_BASE_URL = "wss://api.githunt.com/subscriptions";
+
   private static final String SQL_CACHE_NAME = "githuntdb";
   private ApolloClient apolloClient;
 
@@ -61,6 +66,7 @@ public class GitHuntApplication extends Application {
         .serverUrl(BASE_URL)
         .okHttpClient(okHttpClient)
         .normalizedCache(normalizedCacheFactory, cacheKeyResolver)
+        .subscriptionTransportFactory(new WebSocketSubscriptionTransport.Factory(SUBSCRIPTION_BASE_URL, okHttpClient))
         .build();
   }
 

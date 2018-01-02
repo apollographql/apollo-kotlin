@@ -3,15 +3,20 @@ package com.apollographql.apollo.rx2;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloPrefetch;
 import com.apollographql.apollo.ApolloQueryWatcher;
+import com.apollographql.apollo.ApolloSubscriptionCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.internal.util.Cancelable;
 
 import javax.annotation.Nonnull;
 
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
 import io.reactivex.CompletableOnSubscribe;
+import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -66,18 +71,18 @@ public class Rx2Apollo {
    * Converts an {@link ApolloCall} to an {@link Observable}. The number of emissions this Observable will have is based
    * on the {@link com.apollographql.apollo.fetcher.ResponseFetcher} used with the call.
    *
-   * @param originalCall the ApolloCall to convert
-   * @param <T>          the value type.
+   * @param call the ApolloCall to convert
+   * @param <T>  the value type.
    * @return the converted Observable
    * @throws NullPointerException if originalCall == null
    */
-  @Nonnull public static <T> Observable<Response<T>> from(@Nonnull final ApolloCall<T> originalCall) {
-    checkNotNull(originalCall, "call == null");
+  @Nonnull public static <T> Observable<Response<T>> from(@Nonnull final ApolloCall<T> call) {
+    checkNotNull(call, "call == null");
 
     return Observable.create(new ObservableOnSubscribe<Response<T>>() {
       @Override public void subscribe(final ObservableEmitter<Response<T>> emitter) throws Exception {
-        cancelOnObservableDisposed(emitter, originalCall);
-        originalCall.enqueue(new ApolloCall.Callback<T>() {
+        cancelOnObservableDisposed(emitter, call);
+        call.enqueue(new ApolloCall.Callback<T>() {
           @Override public void onResponse(@Nonnull Response<T> response) {
             if (!emitter.isDisposed()) {
               emitter.onNext(response);
@@ -132,11 +137,52 @@ public class Rx2Apollo {
     });
   }
 
-  static void cancelOnCompletableDisposed(CompletableEmitter emitter, final Cancelable cancelable) {
+  @Nonnull public static <T> Flowable<Response<T>> from(@Nonnull ApolloSubscriptionCall<T> call) {
+    return from(call, BackpressureStrategy.LATEST);
+  }
+
+  @Nonnull public static <T> Flowable<Response<T>> from(@Nonnull final ApolloSubscriptionCall<T> call,
+      @Nonnull BackpressureStrategy backpressureStrategy) {
+    checkNotNull(call, "originalCall == null");
+    checkNotNull(backpressureStrategy, "backpressureStrategy == null");
+    return Flowable.create(new FlowableOnSubscribe<Response<T>>() {
+      @Override public void subscribe(final FlowableEmitter<Response<T>> emitter) throws Exception {
+        cancelOnFlowableDisposed(emitter, call);
+        call.execute(
+            new ApolloSubscriptionCall.Callback<T>() {
+              @Override public void onResponse(@Nonnull Response<T> response) {
+                if (!emitter.isCancelled()) {
+                  emitter.onNext(response);
+                }
+              }
+
+              @Override public void onFailure(@Nonnull ApolloException e) {
+                Exceptions.throwIfFatal(e);
+                if (!emitter.isCancelled()) {
+                  emitter.onError(e);
+                }
+              }
+
+              @Override public void onCompleted() {
+                if (!emitter.isCancelled()) {
+                  emitter.onComplete();
+                }
+              }
+            }
+        );
+      }
+    }, backpressureStrategy);
+  }
+
+  private static void cancelOnCompletableDisposed(CompletableEmitter emitter, final Cancelable cancelable) {
     emitter.setDisposable(getRx2Disposable(cancelable));
   }
 
-  static <T> void cancelOnObservableDisposed(ObservableEmitter<T> emitter, final Cancelable cancelable) {
+  private static <T> void cancelOnObservableDisposed(ObservableEmitter<T> emitter, final Cancelable cancelable) {
+    emitter.setDisposable(getRx2Disposable(cancelable));
+  }
+
+  private static <T> void cancelOnFlowableDisposed(FlowableEmitter<T> emitter, final Cancelable cancelable) {
     emitter.setDisposable(getRx2Disposable(cancelable));
   }
 

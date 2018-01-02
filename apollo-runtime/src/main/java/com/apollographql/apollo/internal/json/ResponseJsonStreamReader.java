@@ -10,7 +10,7 @@ import java.util.Map;
 public class ResponseJsonStreamReader {
   private final JsonReader jsonReader;
 
-  ResponseJsonStreamReader(JsonReader jsonReader) {
+  public ResponseJsonStreamReader(JsonReader jsonReader) {
     this.jsonReader = jsonReader;
   }
 

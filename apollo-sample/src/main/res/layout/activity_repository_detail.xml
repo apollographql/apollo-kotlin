@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   >
 
   <ProgressBar
@@ -18,6 +20,7 @@
     android:orientation="vertical"
     android:padding="10dp"
     android:visibility="gone"
+    tools:visibility="visible"
     >
 
     <TextView
@@ -25,22 +28,42 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:textColor="@android:color/black"
-      android:textSize="20sp"
+      android:textSize="24sp"
+      tools:text="Repository Name"
       />
-
 
     <TextView
       android:id="@+id/tv_posted_by"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:textStyle="italic"
+      android:layout_marginTop="8dp"
+      tools:text="Posted By"
       />
 
     <TextView
       android:id="@+id/tv_repository_description"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      tools:text="Description"
+      />
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="18sp"
+      android:textColor="@android:color/black"
+      android:text="Comments"
+      android:layout_marginTop="16dp"
+      />
+
+    <android.support.v7.widget.RecyclerView
+      android:id="@+id/comments"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      app:layoutManager="android.support.v7.widget.LinearLayoutManager"
       />
 
   </LinearLayout>
-
 </FrameLayout>
