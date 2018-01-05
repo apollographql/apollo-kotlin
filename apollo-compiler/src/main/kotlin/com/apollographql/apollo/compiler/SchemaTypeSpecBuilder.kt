@@ -118,7 +118,13 @@ class SchemaTypeSpecBuilder(
       inlineFragments.map { it.formatClassName() to it.toTypeSpec(context = context, abstract = abstract) }
 
   private fun fragmentsAccessorMethodSpec(): MethodSpec {
-    return MethodSpec.methodBuilder(FRAGMENTS_FIELD.name)
+    val fragmentsName = FRAGMENTS_FIELD.name
+    val name = if (context.useJavaBeansSemanticNaming) {
+      fragmentsName.toJavaBeansSemanticNaming(isBooleanField = false)
+    } else {
+      fragmentsName
+    }
+    return MethodSpec.methodBuilder(name)
         .returns(FRAGMENTS_FIELD.type)
         .addModifiers(Modifier.PUBLIC)
         .addModifiers(emptyList())
@@ -155,7 +161,12 @@ class SchemaTypeSpecBuilder(
     fun TypeSpec.Builder.addFragmentAccessorMethods(): TypeSpec.Builder {
       addMethods(fragmentSpreads.map { fragmentName ->
         val optional = isOptional(fragmentName)
-        MethodSpec.methodBuilder(fragmentName.decapitalize())
+        val methodName = if (context.useJavaBeansSemanticNaming) {
+          fragmentName.toJavaBeansSemanticNaming(isBooleanField = false)
+        } else {
+          fragmentName.decapitalize()
+        }
+        MethodSpec.methodBuilder(methodName)
             .returns(JavaTypeResolver(context = context, packageName = context.fragmentsPackage)
                 .resolve(typeName = fragmentName.capitalize(), isOptional = optional))
             .addModifiers(Modifier.PUBLIC)

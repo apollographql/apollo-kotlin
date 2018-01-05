@@ -18,7 +18,8 @@ class JavaTypeResolverTest {
       nullableValueType = NullableValueType.APOLLO_OPTIONAL,
       ir = CodeGenerationIR(emptyList(), emptyList(), emptyList()),
       useSemanticNaming = false,
-      generateModelBuilder = false
+      generateModelBuilder = false,
+      useJavaBeansSemanticNaming = false
   )
   private val defaultResolver = JavaTypeResolver(defaultContext, packageName)
 

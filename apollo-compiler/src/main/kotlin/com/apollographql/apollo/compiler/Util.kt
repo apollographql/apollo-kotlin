@@ -14,6 +14,11 @@ private val JAVA_RESERVED_WORDS = arrayOf(
 
 fun String.escapeJavaReservedWord() = if (JAVA_RESERVED_WORDS.contains(this)) "${this}_" else this
 
+fun String.toJavaBeansSemanticNaming(isBooleanField: Boolean): String {
+  val prefix = if (isBooleanField) "is" else "get"
+  return "$prefix${capitalize()}"
+}
+
 fun TypeName.overrideTypeName(typeNameOverrideMap: Map<String, String>): TypeName {
   if (this is ParameterizedTypeName) {
     val typeArguments = typeArguments.map { it.overrideTypeName(typeNameOverrideMap) }.toTypedArray()

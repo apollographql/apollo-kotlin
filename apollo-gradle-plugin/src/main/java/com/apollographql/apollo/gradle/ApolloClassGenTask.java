@@ -6,7 +6,6 @@ import com.apollographql.apollo.compiler.GraphQLCompiler;
 import com.apollographql.apollo.compiler.NullableValueType;
 
 import org.gradle.api.Action;
-import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceTask;
@@ -41,7 +40,8 @@ public class ApolloClassGenTask extends SourceTask {
       public void execute(InputFileDetails inputFileDetails) {
         GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(inputFileDetails.getFile(), outputDir,
             apolloExtension.getCustomTypeMapping(), nullableValueType, apolloExtension.isUseSemanticNaming(),
-            apolloExtension.isGenerateModelBuilder(), apolloExtension.getOutputPackageName());
+            apolloExtension.isGenerateModelBuilder(), apolloExtension.isUseJavaBeansSemanticNaming(), apolloExtension
+            .getOutputPackageName());
         new GraphQLCompiler().write(args);
       }
     });

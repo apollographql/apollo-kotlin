@@ -437,6 +437,34 @@ apollo {
 }
 ```
 
+### Java Beans Semantic Naming for Accessors
+By default, the generated classes have accessor methods whose names are identical to the name of the Schema field.
+
+```query Foo { bar }```
+
+results in a class signature like:
+
+```
+class Foo {
+    public Bar bar() { ... }
+}
+```
+
+Alternatively, turning on Java Beans Semantic Naming will result in those methods being pre-pended with `get` or `is`:
+
+```
+class Foo {
+    public Bar getBar() { ... }
+}
+```
+
+### Usage
+```groovy
+apollo {
+  useJavaBeansSemanticNaming = true
+}
+```
+
 ### Explicit Schema location
 By default Apollo-Android tries to lookup GraphQL schema file in `/graphql` folder, the same folder where all your GraphQL queries are stored. 
 For example, if query files are located at `/src/main/graphql/com/example/api` then the schema file should be placed in the same location `/src/main/graphql/com/example/api`. Relative path of schema file to `/src/main/graphql` root folder defines the package name for generated models, in our example the package name of generated models will be `com.example.api`.

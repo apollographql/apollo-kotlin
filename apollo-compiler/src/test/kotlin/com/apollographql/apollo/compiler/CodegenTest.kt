@@ -85,6 +85,10 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
               it.name == "fragment_with_inline_fragment" -> true
               else -> false
             }
+            val useJavaBeansSemanticNaming = when {
+              it.name == "java_beans_semantic_naming" -> true
+              else -> false
+            }
             val args = GraphQLCompiler.Arguments(
                 irFile = File(it, "TestOperation.json"),
                 outputDir = GraphQLCompiler.Companion.OUTPUT_DIRECTORY.fold(File("build"), ::File),
@@ -92,6 +96,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
                 nullableValueType = nullableValueType,
                 useSemanticNaming = useSemanticNaming,
                 generateModelBuilder = generateModelBuilder,
+                useJavaBeansSemanticNaming = useJavaBeansSemanticNaming,
                 outputPackageName = null
             )
             arrayOf(it.name, args)

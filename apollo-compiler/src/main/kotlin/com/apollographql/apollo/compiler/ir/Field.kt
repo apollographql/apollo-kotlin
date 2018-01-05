@@ -43,9 +43,17 @@ data class Field(
   }
 
   fun accessorMethodSpec(context: CodeGenerationContext): MethodSpec {
-    return MethodSpec.methodBuilder(responseName.escapeJavaReservedWord())
+    val respName = responseName.escapeJavaReservedWord()
+    val returnTypeName = toTypeName(methodResponseType(), context)
+    val name = if (context.useJavaBeansSemanticNaming) {
+      val isBooleanField = returnTypeName == TypeName.BOOLEAN || returnTypeName == TypeName.BOOLEAN.box()
+      respName.toJavaBeansSemanticNaming(isBooleanField = isBooleanField)
+    } else {
+      respName
+    }
+    return MethodSpec.methodBuilder(name)
         .addModifiers(Modifier.PUBLIC)
-        .returns(toTypeName(methodResponseType(), context))
+        .returns(returnTypeName)
         .addStatement("return this.\$L", responseName.escapeJavaReservedWord())
         .let { if (description != null) it.addJavadoc("\$L\n", description) else it }
         .let {
