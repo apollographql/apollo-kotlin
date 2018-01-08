@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
  * @param <V> the type of instance that can be contained
  */
 public final class Input<V> {
-  public final V value;
+  @Nullable public final V value;
   public final boolean defined;
 
   private Input(V value, boolean defined) {
