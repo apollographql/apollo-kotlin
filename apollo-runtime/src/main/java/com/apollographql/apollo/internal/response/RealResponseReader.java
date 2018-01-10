@@ -265,9 +265,9 @@ import java.util.Map;
   }
 
   @SuppressWarnings("unchecked") private static String normalizeCustomTypeValue(Object value) {
-    if (value instanceof Map) {
+    if (value instanceof Map || value instanceof List) {
       try {
-        return Utils.toJsonString((Map<String, Object>) value);
+        return Utils.toJsonString(value);
       } catch (Exception e) {
         throw new RuntimeException(e);
       }

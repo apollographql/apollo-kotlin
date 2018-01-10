@@ -12,7 +12,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 public final class Utils {
 
-  public static String toJsonString(@Nonnull Map<String, Object> data) throws IOException {
+  public static String toJsonString(@Nonnull Object data) throws IOException {
     checkNotNull(data, "data == null");
 
     Buffer buffer = new Buffer();
