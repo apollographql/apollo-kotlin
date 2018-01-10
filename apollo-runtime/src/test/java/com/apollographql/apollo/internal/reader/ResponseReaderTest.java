@@ -192,7 +192,7 @@ public class ResponseReaderTest {
     }
   }
 
-  @Test public void readCustomObject() throws Exception {
+  @Test public void readCustomObjectMap() throws Exception {
     ResponseField successField = ResponseField.forCustomType("successFieldResponseName", "successFieldName", null,
         false, OBJECT_CUSTOM_TYPE, NO_CONDITIONS);
 
@@ -237,6 +237,25 @@ public class ResponseReaderTest {
             "\"intList\":[8,9,10],\"doubleList\":[1.99,2.99],\"float\":2.99,\"longList\":[5,7],\"long\":3,\"int\":4," +
             "\"boolean\":true,\"stringList\":[\"string1\",\"string2\"],\"floatList\":[3.99,4.99,5.99]," +
             "\"booleanList\":[\"true\",\"false\"]}}");
+  }
+
+  @Test public void readCustomObjectList() throws Exception {
+    ResponseField successField = ResponseField.forCustomType("successFieldResponseName", "successFieldName", null,
+        false, OBJECT_CUSTOM_TYPE, NO_CONDITIONS);
+
+    Map<String, Object> objectMap = new HashMap<>();
+    objectMap.put("string", "string");
+    objectMap.put("boolean", true);
+
+    List<?> objectList = asList(objectMap, objectMap);
+
+    Map<String, Object> recordSet = new HashMap<>();
+    recordSet.put("successFieldResponseName", objectList);
+    recordSet.put("successFieldName", objectList);
+
+    RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
+    assertThat(responseReader.readCustomType((ResponseField.CustomTypeField) successField))
+        .isEqualTo("[{\"boolean\":true,\"string\":\"string\"},{\"boolean\":true,\"string\":\"string\"}]");
   }
 
   @Test public void readCustomWithDecodedNullValue() throws Exception {
