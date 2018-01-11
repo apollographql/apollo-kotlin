@@ -63,12 +63,20 @@ class OperationTypeSpecBuilder(
   }
 
   private fun TypeSpec.Builder.addOperationId(operation: Operation): TypeSpec.Builder {
-    return addMethod(MethodSpec.methodBuilder(OPERATION_ID_ACCESSOR_NAME)
+    addField(FieldSpec.builder(ClassNames.STRING, OPERATION_ID_FIELD_NAME)
+        .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+        .initializer("\$S", operation.operationId)
+        .build()
+    )
+
+    addMethod(MethodSpec.methodBuilder(OPERATION_ID_ACCESSOR_NAME)
         .addAnnotation(Annotations.OVERRIDE)
         .addModifiers(Modifier.PUBLIC)
         .returns(ClassNames.STRING)
-        .addStatement("return \$S", operation.operationId)
+        .addStatement("return ${OPERATION_ID_FIELD_NAME}")
         .build())
+
+    return this;
   }
 
   private fun TypeSpec.Builder.addQueryDocumentDefinition(fragments: List<Fragment>,
@@ -271,6 +279,7 @@ class OperationTypeSpecBuilder(
   companion object {
     private val OPERATION_DEFINITION_FIELD_NAME = "OPERATION_DEFINITION"
     private val QUERY_DOCUMENT_FIELD_NAME = "QUERY_DOCUMENT"
+    private val OPERATION_ID_FIELD_NAME = "OPERATION_ID"
     private val QUERY_DOCUMENT_ACCESSOR_NAME = "queryDocument"
     private val OPERATION_ID_ACCESSOR_NAME = "operationId"
     private val VARIABLES_VAR = "variables"
