@@ -34,6 +34,8 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
       + "  }\n"
       + "}";
 
+  public static final String OPERATION_ID = "8f1972cf9af58c4659da0ae72d02b97faf5fa6e6b794070d2cbcb034e2881fb8";
+
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
   public static final OperationName OPERATION_NAME = new OperationName() {
@@ -52,7 +54,7 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
 
   @Override
   public String operationId() {
-    return "8f1972cf9af58c4659da0ae72d02b97faf5fa6e6b794070d2cbcb034e2881fb8";
+    return OPERATION_ID;
   }
 
   @Override

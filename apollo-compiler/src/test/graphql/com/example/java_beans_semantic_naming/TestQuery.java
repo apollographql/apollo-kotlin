@@ -34,6 +34,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       + "  }\n"
       + "}";
 
+  public static final String OPERATION_ID = "c0463bc20566eabd263da887f6c45205c7b42522fa28585baf0e9f6021a2a8a6";
+
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION + "\n"
    + HeroDetails.FRAGMENT_DEFINITION;
 
@@ -52,7 +54,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   @Override
   public String operationId() {
-    return "c0463bc20566eabd263da887f6c45205c7b42522fa28585baf0e9f6021a2a8a6";
+    return OPERATION_ID;
   }
 
   @Override

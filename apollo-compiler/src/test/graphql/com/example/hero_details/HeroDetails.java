@@ -40,6 +40,8 @@ public final class HeroDetails implements Query<HeroDetails.Data, Optional<HeroD
       + "  }\n"
       + "}";
 
+  public static final String OPERATION_ID = "04c4c609078258b0ad954a88e05fb068e53815a35051bb61cde8cc14107583bc";
+
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
   public static final OperationName OPERATION_NAME = new OperationName() {
@@ -57,7 +59,7 @@ public final class HeroDetails implements Query<HeroDetails.Data, Optional<HeroD
 
   @Override
   public String operationId() {
-    return "04c4c609078258b0ad954a88e05fb068e53815a35051bb61cde8cc14107583bc";
+    return OPERATION_ID;
   }
 
   @Override

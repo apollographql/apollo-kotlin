@@ -38,6 +38,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       + "  }\n"
       + "}";
 
+  public static final String OPERATION_ID = "330f0fe4baea1b2e41c551ea45b413502c32080fc6581ed3756890896a897ae9";
+
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
   public static final OperationName OPERATION_NAME = new OperationName() {
@@ -55,7 +57,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   @Override
   public String operationId() {
-    return "330f0fe4baea1b2e41c551ea45b413502c32080fc6581ed3756890896a897ae9";
+    return OPERATION_ID;
   }
 
   @Override

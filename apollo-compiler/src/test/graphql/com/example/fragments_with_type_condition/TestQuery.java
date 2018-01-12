@@ -37,6 +37,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       + "  }\n"
       + "}";
 
+  public static final String OPERATION_ID = "caec283b7a9499b14fe44cbe6e118fe4463bc96e7d186acafc10453fb30fbaa0";
+
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION + "\n"
    + HumanDetails.FRAGMENT_DEFINITION + "\n"
    + DroidDetails.FRAGMENT_DEFINITION;
@@ -56,7 +58,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   @Override
   public String operationId() {
-    return "caec283b7a9499b14fe44cbe6e118fe4463bc96e7d186acafc10453fb30fbaa0";
+    return OPERATION_ID;
   }
 
   @Override

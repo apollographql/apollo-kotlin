@@ -39,6 +39,8 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       + "  }\n"
       + "}";
 
+  public static final String OPERATION_ID = "f3b63150118cfccd52140c4ca6aec578235d7ea99c5b905f14138c49f7f5fc7d";
+
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION + "\n"
    + StarshipFragment.FRAGMENT_DEFINITION + "\n"
    + PilotFragment.FRAGMENT_DEFINITION;
@@ -58,7 +60,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
   @Override
   public String operationId() {
-    return "f3b63150118cfccd52140c4ca6aec578235d7ea99c5b905f14138c49f7f5fc7d";
+    return OPERATION_ID;
   }
 
   @Override

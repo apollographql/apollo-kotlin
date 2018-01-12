@@ -48,6 +48,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       + "  }\n"
       + "}";
 
+  public static final String OPERATION_ID = "92a6f8d924f3a9768021c6685ce6648cc180aa1066a76cf0d7ed7240e22c67bd";
+
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION + "\n"
    + HeroDetails.FRAGMENT_DEFINITION;
 
@@ -66,7 +68,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
   @Override
   public String operationId() {
-    return "92a6f8d924f3a9768021c6685ce6648cc180aa1066a76cf0d7ed7240e22c67bd";
+    return OPERATION_ID;
   }
 
   @Override
