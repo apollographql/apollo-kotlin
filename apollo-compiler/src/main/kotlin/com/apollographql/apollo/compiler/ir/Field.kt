@@ -57,7 +57,7 @@ data class Field(
         .addStatement("return this.\$L", responseName.escapeJavaReservedWord())
         .let { if (description != null) it.addJavadoc("\$L\n", description) else it }
         .let {
-          if (isDeprecated ?: false && !deprecationReason.isNullOrBlank()) {
+          if (isDeprecated == true && !deprecationReason.isNullOrBlank()) {
             it.addJavadoc("@deprecated \$L\n", deprecationReason)
           } else {
             it
@@ -85,6 +85,7 @@ data class Field(
   fun formatClassName() = responseName.capitalize().let { if (isList()) it.singularize() else it }
 
   fun isOptional(): Boolean = isConditional || !methodResponseType().endsWith("!")
+      || (inlineFragments?.isNotEmpty() ?: false)
 
   fun isNonScalar() = hasFragments() || (fields?.any() ?: false)
 

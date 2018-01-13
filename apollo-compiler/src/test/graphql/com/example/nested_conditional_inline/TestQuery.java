@@ -36,23 +36,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       + "    __typename\n"
       + "    name\n"
       + "    ... on Human {\n"
-      + "      __typename\n"
       + "      friends {\n"
       + "        __typename\n"
       + "        name\n"
       + "        ... on Human {\n"
-      + "          __typename\n"
       + "          height(unit: FOOT)\n"
       + "        }\n"
       + "      }\n"
       + "    }\n"
       + "    ... on Droid {\n"
-      + "      __typename\n"
       + "      friends {\n"
       + "        __typename\n"
       + "        name\n"
       + "        ... on Human {\n"
-      + "          __typename\n"
       + "          height(unit: METER)\n"
       + "        }\n"
       + "      }\n"
@@ -60,7 +56,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       + "  }\n"
       + "}";
 
-  public static final String OPERATION_ID = null;
+  public static final String OPERATION_ID = "071e064b3415e8b92bed3befa46bf04501c7194cde77ede0ebf50429624796cc";
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
@@ -255,6 +251,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public interface Hero {
     @Nonnull String __typename();
 
+    /**
+     * The name of the character
+     */
     @Nonnull String name();
 
     ResponseFieldMarshaller marshaller();
@@ -319,10 +318,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.__typename;
     }
 
+    /**
+     * What this human calls themselves
+     */
     public @Nonnull String name() {
       return this.name;
     }
 
+    /**
+     * This human's friends, or an empty list if they have none
+     */
     public Optional<List<Friend>> friends() {
       return this.friends;
     }
@@ -411,6 +416,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public interface Friend {
     @Nonnull String __typename();
 
+    /**
+     * The name of the character
+     */
     @Nonnull String name();
 
     ResponseFieldMarshaller marshaller();
@@ -465,10 +473,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.__typename;
     }
 
+    /**
+     * What this human calls themselves
+     */
     public @Nonnull String name() {
       return this.name;
     }
 
+    /**
+     * Height in the preferred unit, default is meters
+     */
     public Optional<Double> height() {
       return this.height;
     }
@@ -567,10 +581,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.__typename;
     }
 
+    /**
+     * What others call this droid
+     */
     public @Nonnull String name() {
       return this.name;
     }
 
+    /**
+     * This droid's friends, or an empty list if they have none
+     */
     public Optional<List<Friend1>> friends() {
       return this.friends;
     }
@@ -659,6 +679,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public interface Friend1 {
     @Nonnull String __typename();
 
+    /**
+     * The name of the character
+     */
     @Nonnull String name();
 
     ResponseFieldMarshaller marshaller();
@@ -713,10 +736,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.__typename;
     }
 
+    /**
+     * What this human calls themselves
+     */
     public @Nonnull String name() {
       return this.name;
     }
 
+    /**
+     * Height in the preferred unit, default is meters
+     */
     public Optional<Double> height() {
       return this.height;
     }
