@@ -1,5 +1,6 @@
 package com.example.nested_conditional_inline.type;
 
+import java.lang.Deprecated;
 import java.lang.String;
 import javax.annotation.Generated;
 
@@ -22,6 +23,13 @@ public enum Episode {
    * Star Wars Episode VI: Return of the Jedi, released in 1983.
    */
   JEDI,
+
+  /**
+   * Test deprecated enum value
+   * @deprecated For test purpose only
+   */
+  @Deprecated
+  DEPRECATED,
 
   /**
    * Auto generated constant for unknown enum values

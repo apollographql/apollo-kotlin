@@ -1,0 +1,28 @@
+query TestQuery($episode: Episode) {
+  hero(episode: $episode) {
+    __typename
+    name
+    ... on Human {
+      __typename
+      friends {
+        __typename
+        name
+        ... on Human {
+          __typename
+          height(unit: FOOT)
+        }
+      }
+    }
+    ... on Droid {
+      __typename
+      friends {
+        __typename
+        name
+        ... on Human {
+          __typename
+          height(unit: METER)
+        }
+      }
+    }
+  }
+}

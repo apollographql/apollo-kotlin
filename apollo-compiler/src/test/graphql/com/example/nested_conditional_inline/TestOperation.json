@@ -1,16 +1,17 @@
 {
 	"operations": [
 		{
-			"filePath": "src/test/graphql/com/example/nested_conditional_inline/TestQuery.graphql",
+			"filePath": "src/test/graphql/com/example/nested_conditional_inline/TestOperation.graphql",
 			"operationName": "TestQuery",
 			"operationType": "query",
+			"rootType": "Query",
 			"variables": [
 				{
 					"name": "episode",
 					"type": "Episode"
 				}
 			],
-			"source": "query TestQuery($episode: Episode) {\n  hero(episode: $episode) {\n    __typename\n    name\n    ... on Human {\n      __typename\n      friends {\n        __typename\n        name\n        ... on Human {\n          __typename\n          height(unit: FOOT)\n        }\n      }\n    }\n    ... on Droid {\n      __typename\n      friends {\n        __typename\n        name\n        ... on Human {\n          __typename\n          height(unit: METER)\n        }\n      }\n    }\n  }\n}",
+			"source": "query TestQuery($episode: Episode) {\n  hero(episode: $episode) {\n    __typename\n    name\n    ... on Human {\n      friends {\n        __typename\n        name\n        ... on Human {\n          height(unit: FOOT)\n        }\n      }\n    }\n    ... on Droid {\n      friends {\n        __typename\n        name\n        ... on Human {\n          height(unit: METER)\n        }\n      }\n    }\n  }\n}",
 			"fields": [
 				{
 					"responseName": "hero",
@@ -25,63 +26,96 @@
 							}
 						}
 					],
+					"isConditional": false,
+					"isDeprecated": false,
+					"deprecationReason": null,
 					"fields": [
 						{
 							"responseName": "__typename",
 							"fieldName": "__typename",
-							"type": "String!"
+							"type": "String!",
+							"isConditional": false
 						},
 						{
 							"responseName": "name",
 							"fieldName": "name",
-							"type": "String!"
+							"type": "String!",
+							"isConditional": false,
+							"description": "The name of the character",
+							"isDeprecated": false,
+							"deprecationReason": null
 						}
 					],
 					"fragmentSpreads": [],
 					"inlineFragments": [
 						{
 							"typeCondition": "Human",
+							"possibleTypes": [
+								"Human"
+							],
 							"fields": [
 								{
 									"responseName": "__typename",
 									"fieldName": "__typename",
-									"type": "String!"
+									"type": "String!",
+									"isConditional": false
 								},
 								{
 									"responseName": "name",
 									"fieldName": "name",
-									"type": "String!"
+									"type": "String!",
+									"isConditional": false,
+									"description": "What this human calls themselves",
+									"isDeprecated": false,
+									"deprecationReason": null
 								},
 								{
 									"responseName": "friends",
 									"fieldName": "friends",
 									"type": "[Character]",
+									"isConditional": false,
+									"description": "This human's friends, or an empty list if they have none",
+									"isDeprecated": false,
+									"deprecationReason": null,
 									"fields": [
 										{
 											"responseName": "__typename",
 											"fieldName": "__typename",
-											"type": "String!"
+											"type": "String!",
+											"isConditional": false
 										},
 										{
 											"responseName": "name",
 											"fieldName": "name",
-											"type": "String!"
+											"type": "String!",
+											"isConditional": false,
+											"description": "The name of the character",
+											"isDeprecated": false,
+											"deprecationReason": null
 										}
 									],
 									"fragmentSpreads": [],
 									"inlineFragments": [
 										{
 											"typeCondition": "Human",
+											"possibleTypes": [
+												"Human"
+											],
 											"fields": [
 												{
 													"responseName": "__typename",
 													"fieldName": "__typename",
-													"type": "String!"
+													"type": "String!",
+													"isConditional": false
 												},
 												{
 													"responseName": "name",
 													"fieldName": "name",
-													"type": "String!"
+													"type": "String!",
+													"isConditional": false,
+													"description": "What this human calls themselves",
+													"isDeprecated": false,
+													"deprecationReason": null
 												},
 												{
 													"responseName": "height",
@@ -92,7 +126,11 @@
 															"name": "unit",
 															"value": "FOOT"
 														}
-													]
+													],
+													"isConditional": false,
+													"description": "Height in the preferred unit, default is meters",
+													"isDeprecated": false,
+													"deprecationReason": null
 												}
 											],
 											"fragmentSpreads": []
@@ -104,47 +142,72 @@
 						},
 						{
 							"typeCondition": "Droid",
+							"possibleTypes": [
+								"Droid"
+							],
 							"fields": [
 								{
 									"responseName": "__typename",
 									"fieldName": "__typename",
-									"type": "String!"
+									"type": "String!",
+									"isConditional": false
 								},
 								{
 									"responseName": "name",
 									"fieldName": "name",
-									"type": "String!"
+									"type": "String!",
+									"isConditional": false,
+									"description": "What others call this droid",
+									"isDeprecated": false,
+									"deprecationReason": null
 								},
 								{
 									"responseName": "friends",
 									"fieldName": "friends",
 									"type": "[Character]",
+									"isConditional": false,
+									"description": "This droid's friends, or an empty list if they have none",
+									"isDeprecated": false,
+									"deprecationReason": null,
 									"fields": [
 										{
 											"responseName": "__typename",
 											"fieldName": "__typename",
-											"type": "String!"
+											"type": "String!",
+											"isConditional": false
 										},
 										{
 											"responseName": "name",
 											"fieldName": "name",
-											"type": "String!"
+											"type": "String!",
+											"isConditional": false,
+											"description": "The name of the character",
+											"isDeprecated": false,
+											"deprecationReason": null
 										}
 									],
 									"fragmentSpreads": [],
 									"inlineFragments": [
 										{
 											"typeCondition": "Human",
+											"possibleTypes": [
+												"Human"
+											],
 											"fields": [
 												{
 													"responseName": "__typename",
 													"fieldName": "__typename",
-													"type": "String!"
+													"type": "String!",
+													"isConditional": false
 												},
 												{
 													"responseName": "name",
 													"fieldName": "name",
-													"type": "String!"
+													"type": "String!",
+													"isConditional": false,
+													"description": "What this human calls themselves",
+													"isDeprecated": false,
+													"deprecationReason": null
 												},
 												{
 													"responseName": "height",
@@ -155,7 +218,11 @@
 															"name": "unit",
 															"value": "METER"
 														}
-													]
+													],
+													"isConditional": false,
+													"description": "Height in the preferred unit, default is meters",
+													"isDeprecated": false,
+													"deprecationReason": null
 												}
 											],
 											"fragmentSpreads": []
@@ -168,7 +235,11 @@
 					]
 				}
 			],
-			"fragmentsReferenced": []
+			"fragmentSpreads": [],
+			"inlineFragments": [],
+			"fragmentsReferenced": [],
+			"sourceWithFragments": "query TestQuery($episode: Episode) {\n  hero(episode: $episode) {\n    __typename\n    name\n    ... on Human {\n      friends {\n        __typename\n        name\n        ... on Human {\n          height(unit: FOOT)\n        }\n      }\n    }\n    ... on Droid {\n      friends {\n        __typename\n        name\n        ... on Human {\n          height(unit: METER)\n        }\n      }\n    }\n  }\n}",
+			"operationId": "071e064b3415e8b92bed3befa46bf04501c7194cde77ede0ebf50429624796cc"
 		}
 	],
 	"fragments": [],
@@ -180,15 +251,27 @@
 			"values": [
 				{
 					"name": "NEWHOPE",
-					"description": "Star Wars Episode IV: A New Hope, released in 1977."
+					"description": "Star Wars Episode IV: A New Hope, released in 1977.",
+					"isDeprecated": false,
+					"deprecationReason": null
 				},
 				{
 					"name": "EMPIRE",
-					"description": "Star Wars Episode V: The Empire Strikes Back, released in 1980."
+					"description": "Star Wars Episode V: The Empire Strikes Back, released in 1980.",
+					"isDeprecated": false,
+					"deprecationReason": null
 				},
 				{
 					"name": "JEDI",
-					"description": "Star Wars Episode VI: Return of the Jedi, released in 1983."
+					"description": "Star Wars Episode VI: Return of the Jedi, released in 1983.",
+					"isDeprecated": false,
+					"deprecationReason": null
+				},
+				{
+					"name": "DEPRECATED",
+					"description": "Test deprecated enum value",
+					"isDeprecated": true,
+					"deprecationReason": "For test purpose only"
 				}
 			]
 		}
