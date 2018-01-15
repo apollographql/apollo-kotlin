@@ -11,5 +11,9 @@ query EntryDetailQuery($repoFullName: String!) {
     postedBy {
       login
     }
+    comments {
+      id
+      content
+    }
   }
 }

@@ -298,7 +298,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   }
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
-  private synchronized void activate(Optional<Callback<T>> callback) throws ApolloCanceledException {
+  private synchronized void activate(Optional<Callback<T>> callback) {
     switch (state.get()) {
       case IDLE:
         originalCallback.set(callback.orNull());

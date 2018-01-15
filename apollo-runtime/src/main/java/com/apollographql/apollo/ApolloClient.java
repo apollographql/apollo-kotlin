@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.cache.http.HttpCache;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.api.internal.Optional;
@@ -22,8 +23,13 @@ import com.apollographql.apollo.internal.ApolloCallTracker;
 import com.apollographql.apollo.internal.ApolloLogger;
 import com.apollographql.apollo.internal.RealApolloCall;
 import com.apollographql.apollo.internal.RealApolloPrefetch;
+import com.apollographql.apollo.internal.RealApolloSubscriptionCall;
 import com.apollographql.apollo.internal.ResponseFieldMapperFactory;
 import com.apollographql.apollo.internal.cache.normalized.RealApolloStore;
+import com.apollographql.apollo.internal.subscription.NoOpSubscriptionManager;
+import com.apollographql.apollo.internal.subscription.RealSubscriptionManager;
+import com.apollographql.apollo.internal.subscription.SubscriptionManager;
+import com.apollographql.apollo.subscription.SubscriptionTransport;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import java.io.IOException;
@@ -62,7 +68,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
  *
  * <p>See the {@link ApolloClient.Builder} class for configuring the ApolloClient.
  */
-public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutationCall.Factory, ApolloPrefetch.Factory {
+public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutationCall.Factory, ApolloPrefetch.Factory,
+    ApolloSubscriptionCall.Factory {
 
   public static Builder builder() {
     return new Builder();
@@ -82,6 +89,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final ApolloCallTracker tracker = new ApolloCallTracker();
   private final List<ApolloInterceptor> applicationInterceptors;
   private final boolean sendOperationIdentifiers;
+  private final SubscriptionManager subscriptionManager;
 
   ApolloClient(HttpUrl serverUrl,
       Call.Factory httpCallFactory,
@@ -94,7 +102,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       CacheHeaders defaultCacheHeaders,
       ApolloLogger logger,
       List<ApolloInterceptor> applicationInterceptors,
-      boolean sendOperationIdentifiers) {
+      boolean sendOperationIdentifiers,
+      SubscriptionManager subscriptionManager) {
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
     this.httpCache = httpCache;
@@ -107,6 +116,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     this.logger = logger;
     this.applicationInterceptors = applicationInterceptors;
     this.sendOperationIdentifiers = sendOperationIdentifiers;
+    this.subscriptionManager = subscriptionManager;
   }
 
   @Override
@@ -136,6 +146,12 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       @Nonnull Operation<D, T, V> operation) {
     return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, scalarTypeAdapters, dispatcher, logger,
         tracker, sendOperationIdentifiers);
+  }
+
+  @Override
+  public <D extends Subscription.Data, T, V extends Subscription.Variables> ApolloSubscriptionCall<T> subscribe(
+      @Nonnull Subscription<D, T, V> subscription) {
+    return new RealApolloSubscriptionCall<>(subscription, subscriptionManager);
   }
 
   /**
@@ -231,6 +247,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     Optional<Logger> logger = Optional.absent();
     final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
     boolean sendOperationIdentifiers;
+    Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = Optional.absent();
 
     Builder() {
     }
@@ -404,6 +421,12 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       return this;
     }
 
+    public Builder subscriptionTransportFactory(@Nonnull SubscriptionTransport.Factory subscriptionTransportFactory) {
+      this.subscriptionTransportFactory = Optional.of(checkNotNull(subscriptionTransportFactory,
+          "subscriptionTransportFactory is null"));
+      return this;
+    }
+
     /**
      * Builds the {@link ApolloClient} instance using the configured values.
      *
@@ -434,10 +457,19 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(customTypeAdapters);
 
       ApolloStore apolloStore = this.apolloStore;
+      Optional<NormalizedCacheFactory> cacheFactory = this.cacheFactory;
+      Optional<CacheKeyResolver> cacheKeyResolver = this.cacheKeyResolver;
       if (cacheFactory.isPresent() && cacheKeyResolver.isPresent()) {
         final NormalizedCache normalizedCache = cacheFactory.get().createChain(RecordFieldJsonAdapter.create());
         apolloStore = new RealApolloStore(normalizedCache, cacheKeyResolver.get(), scalarTypeAdapters, dispatcher,
             apolloLogger);
+      }
+
+      SubscriptionManager subscriptionManager = new NoOpSubscriptionManager();
+      Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = this.subscriptionTransportFactory;
+      if (subscriptionTransportFactory.isPresent()) {
+        subscriptionManager = new RealSubscriptionManager(scalarTypeAdapters, subscriptionTransportFactory.get(),
+            dispatcher);
       }
 
       return new ApolloClient(serverUrl,
@@ -451,7 +483,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
           defaultCacheHeaders,
           apolloLogger,
           applicationInterceptors,
-          sendOperationIdentifiers);
+          sendOperationIdentifiers,
+          subscriptionManager);
     }
 
     private Executor defaultDispatcher() {
