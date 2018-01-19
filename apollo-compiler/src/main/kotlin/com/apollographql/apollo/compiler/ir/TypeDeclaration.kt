@@ -3,6 +3,7 @@ package com.apollographql.apollo.compiler.ir
 import com.apollographql.apollo.compiler.Annotations
 import com.apollographql.apollo.compiler.ClassNames
 import com.apollographql.apollo.compiler.InputTypeSpecBuilder
+import com.apollographql.apollo.compiler.escapeJavaReservedWord
 import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
@@ -88,7 +89,7 @@ data class TypeDeclaration(
         .addModifiers(Modifier.PUBLIC)
         .apply {
           enumConstants?.forEach { (name, typeSpec) ->
-            addEnumConstant(name, typeSpec)
+            addEnumConstant(name.escapeJavaReservedWord(), typeSpec)
           }
         }
         .addEnumConstant(ENUM_UNKNOWN_CONSTANT, unknownConstantTypeSpec)

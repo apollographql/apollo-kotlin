@@ -312,6 +312,12 @@
               "description": "Test deprecated enum value",
               "isDeprecated": true,
               "deprecationReason": "For test purpose only"
+            },
+            {
+              "name": "new",
+              "description": "Test java reserved word",
+              "isDeprecated": false,
+              "deprecationReason": "For test purpose only"
             }
           ],
           "possibleTypes": null
