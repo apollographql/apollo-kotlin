@@ -32,6 +32,13 @@ public enum Episode {
   DEPRECATED,
 
   /**
+   * Test java reserved word
+   * @deprecated For test purpose only
+   */
+  @Deprecated
+  new_,
+
+  /**
    * Auto generated constant for unknown enum values
    */
   $UNKNOWN;
