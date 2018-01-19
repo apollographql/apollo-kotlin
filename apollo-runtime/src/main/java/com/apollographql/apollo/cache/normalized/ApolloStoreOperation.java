@@ -111,7 +111,7 @@ public abstract class ApolloStoreOperation<T> {
    *
    * @param <T> result type
    */
-  interface Callback<T> {
+  public interface Callback<T> {
 
     void onSuccess(T result);
 
