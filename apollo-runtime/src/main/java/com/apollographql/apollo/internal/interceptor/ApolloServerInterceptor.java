@@ -35,12 +35,12 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
  * ApolloInterceptorChain#proceed(FetchOptions)} on the interceptor chain.
  */
 @SuppressWarnings("WeakerAccess") public final class ApolloServerInterceptor implements ApolloInterceptor {
-  private static final String HEADER_ACCEPT_TYPE = "Accept";
-  private static final String HEADER_CONTENT_TYPE = "CONTENT_TYPE";
-  private static final String HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID";
-  private static final String ACCEPT_TYPE = "application/json";
-  private static final String CONTENT_TYPE = "application/json";
-  private static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
+  static final String HEADER_ACCEPT_TYPE = "Accept";
+  static final String HEADER_CONTENT_TYPE = "CONTENT_TYPE";
+  static final String HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID";
+  static final String ACCEPT_TYPE = "application/json";
+  static final String CONTENT_TYPE = "application/json";
+  static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
 
   final HttpUrl serverUrl;
   final okhttp3.Call.Factory httpCallFactory;
@@ -133,6 +133,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   private RequestBody httpRequestBody(Operation operation) throws IOException {
     Buffer buffer = new Buffer();
     JsonWriter jsonWriter = JsonWriter.of(buffer);
+    jsonWriter.setSerializeNulls(true);
     jsonWriter.beginObject();
     if (sendOperationIdentifiers) {
       jsonWriter.name("id").value(operation.operationId());
