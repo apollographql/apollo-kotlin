@@ -138,9 +138,6 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     return newCall(query);
   }
 
-  /**
-   * Prepares the {@link ApolloPrefetch} which will be executed at some point in the future.
-   */
   @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
       @Nonnull Operation<D, T, V> operation) {
@@ -421,6 +418,13 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       return this;
     }
 
+    /**
+     * <p>Sets up subscription transport factory to be used for subscription server communication.<p/> See also: {@link
+     * com.apollographql.apollo.subscription.WebSocketSubscriptionTransport}
+     *
+     * @param subscriptionTransportFactory transport layer to be used for subscriptions.
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
     public Builder subscriptionTransportFactory(@Nonnull SubscriptionTransport.Factory subscriptionTransportFactory) {
       this.subscriptionTransportFactory = Optional.of(checkNotNull(subscriptionTransportFactory,
           "subscriptionTransportFactory is null"));

@@ -11,6 +11,9 @@ import okhttp3.WebSocket;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
+/**
+ * <p>{@link SubscriptionTransport} implementation based on {@link WebSocket}.<p/>
+ */
 public final class WebSocketSubscriptionTransport implements SubscriptionTransport {
   private final Request webSocketRequest;
   private final WebSocket.Factory webSocketConnectionFactory;
@@ -118,7 +121,8 @@ public final class WebSocketSubscriptionTransport implements SubscriptionTranspo
       }
     }
 
-    @Override public void onClosed(WebSocket webSocket, int code, String reason) {
+    @Override
+    public void onClosed(WebSocket webSocket, int code, String reason) {
       WebSocketSubscriptionTransport delegate = delegateRef.get();
       if (delegate != null) {
         delegate.release();
