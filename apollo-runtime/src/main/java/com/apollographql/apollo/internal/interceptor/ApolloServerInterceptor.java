@@ -38,6 +38,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   static final String HEADER_ACCEPT_TYPE = "Accept";
   static final String HEADER_CONTENT_TYPE = "CONTENT_TYPE";
   static final String HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID";
+  static final String HEADER_APOLLO_OPERATION_NAME = "X-APOLLO-OPERATION-NAME";
   static final String ACCEPT_TYPE = "application/json";
   static final String CONTENT_TYPE = "application/json";
   static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
@@ -114,7 +115,9 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         .post(requestBody)
         .header(HEADER_ACCEPT_TYPE, ACCEPT_TYPE)
         .header(HEADER_CONTENT_TYPE, CONTENT_TYPE)
-        .header(HEADER_APOLLO_OPERATION_ID, operation.operationId());
+        .header(HEADER_APOLLO_OPERATION_ID, operation.operationId())
+        .header(HEADER_APOLLO_OPERATION_NAME, operation.name().name())
+        .tag(operation.operationId());
 
     if (cachePolicy.isPresent()) {
       HttpCachePolicy.Policy cachePolicy = this.cachePolicy.get();
