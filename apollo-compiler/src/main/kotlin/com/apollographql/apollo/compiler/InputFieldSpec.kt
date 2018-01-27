@@ -25,9 +25,7 @@ class InputFieldSpec(
       Type.ENUM -> writeEnumCode(writerParam)
       Type.CUSTOM -> writeCustomCode(writerParam)
       Type.OBJECT -> writeObjectCode(writerParam, marshaller)
-      Type.SCALAR_LIST -> writeScalarList(writerParam)
-      Type.CUSTOM_LIST -> writeCustomList(writerParam)
-      Type.OBJECT_LIST -> writeObjectList(writerParam, marshaller)
+      Type.LIST -> writeList(writerParam, marshaller)
     }.let {
       if (javaType.isOptional()) {
         CodeBlock.builder()
@@ -68,88 +66,71 @@ class InputFieldSpec(
     return CodeBlock.of("\$L.\$L(\$S, \$L);\n", writerParam, WRITE_METHODS[type], name, valueCode)
   }
 
-  private fun writeScalarList(writerParam: CodeBlock): CodeBlock {
-    val rawFieldType = with(javaType.unwrapOptionalType(true)) { if (isList()) listParamType() else this }
-    val writeMethod = SCALAR_LIST_ITEM_WRITE_METHODS[rawFieldType] ?: "writeString"
-    val writeStatement = CodeBlock.builder()
-        .beginControlFlow("for (\$T \$L : \$L)", rawFieldType, "\$item",
-            javaType.unwrapOptionalValue(name, false))
-        .add(
-            if (rawFieldType.isEnum(context)) {
-              CodeBlock.of("\$L.\$L(\$L.name());\n", LIST_ITEM_WRITER_PARAM.name, writeMethod, "\$item")
-            } else {
-              CodeBlock.of("\$L.\$L(\$L);\n", LIST_ITEM_WRITER_PARAM.name, writeMethod, "\$item")
-            })
-        .endControlFlow()
-        .build()
-    val listWriterType = TypeSpec.anonymousClassBuilder("")
-        .addSuperinterface(InputFieldWriter.ListWriter::class.java)
-        .addMethod(MethodSpec.methodBuilder("write")
-            .addModifiers(Modifier.PUBLIC)
-            .addAnnotation(Override::class.java)
-            .addException(IOException::class.java)
-            .addParameter(LIST_ITEM_WRITER_PARAM)
-            .addCode(writeStatement)
-            .build()
-        )
-        .build()
-    val valueCode = javaType.unwrapOptionalValue(name) {
-      CodeBlock.of("\$L", listWriterType)
+  private fun writeList(writerParam: CodeBlock, marshaller: CodeBlock): CodeBlock {
+    val unwrappedListValue = javaType.unwrapOptionalValue(name, false)
+    val listParamType = with(javaType.unwrapOptionalType(true)) { if (isList()) listParamType() else this }
+    val listWriterCode = javaType.unwrapOptionalValue(name) {
+      CodeBlock.of("\$L", listWriter(listParamType, unwrappedListValue, "\$item", marshaller))
     }
-    return CodeBlock.of("\$L.\$L(\$S, \$L);\n", writerParam, WRITE_METHODS[type], name, valueCode)
+    return CodeBlock.of("\$L.\$L(\$S, \$L);\n", writerParam, WRITE_METHODS[Type.LIST], name, listWriterCode)
   }
 
-  private fun writeCustomList(writerParam: CodeBlock): CodeBlock {
-    val rawFieldType = with(javaType.unwrapOptionalType(true)) { if (isList()) listParamType() else this }
-    val customScalarEnum = CustomEnumTypeSpecBuilder.className(context)
-    val customScalarEnumConst = normalizeGraphQlType(graphQLType).toUpperCase(Locale.ENGLISH)
+  private fun listWriter(itemType: TypeName, listParam: CodeBlock, itemParam: String, marshaller: CodeBlock): TypeSpec {
     val writeStatement = CodeBlock.builder()
-        .beginControlFlow("for (\$T \$L : \$L)", rawFieldType, "\$item",
-            javaType.unwrapOptionalValue(name, false))
-        .addStatement("\$L.writeCustom(\$T.\$L, \$L)", LIST_ITEM_WRITER_PARAM.name, customScalarEnum,
-            customScalarEnumConst, "\$item")
+        .beginControlFlow("for (\$T \$L : \$L)", itemType, itemParam, listParam)
+        .add(writeListItemStatement(itemType, itemParam, marshaller))
         .endControlFlow()
         .build()
-    val listWriterType = TypeSpec.anonymousClassBuilder("")
+    return TypeSpec.anonymousClassBuilder("")
         .addSuperinterface(InputFieldWriter.ListWriter::class.java)
         .addMethod(MethodSpec.methodBuilder("write")
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(Override::class.java)
-            .addParameter(LIST_ITEM_WRITER_PARAM)
             .addException(IOException::class.java)
+            .addParameter(LIST_ITEM_WRITER_PARAM)
             .addCode(writeStatement)
             .build()
         )
         .build()
-    val valueCode = javaType.unwrapOptionalValue(name) {
-      CodeBlock.of("\$L", listWriterType)
-    }
-    return CodeBlock.of("\$L.\$L(\$S, \$L);\n", writerParam, WRITE_METHODS[type], name, valueCode)
   }
 
-  private fun writeObjectList(writerParam: CodeBlock, marshaller: CodeBlock): CodeBlock {
-    val rawFieldType = with(javaType.unwrapOptionalType(true)) { if (isList()) listParamType() else this }
-    val writeStatement = CodeBlock.builder()
-        .beginControlFlow("for (\$T \$L : \$L)", rawFieldType, "\$item",
-            javaType.unwrapOptionalValue(name, false))
-        .addStatement("\$L.writeObject(\$L.\$L)", LIST_ITEM_WRITER_PARAM.name, "\$item", marshaller)
-        .endControlFlow()
-        .build()
-    val listWriterType = TypeSpec.anonymousClassBuilder("")
-        .addSuperinterface(InputFieldWriter.ListWriter::class.java)
-        .addMethod(MethodSpec.methodBuilder("write")
-            .addModifiers(Modifier.PUBLIC)
-            .addAnnotation(Override::class.java)
-            .addParameter(LIST_ITEM_WRITER_PARAM)
-            .addException(IOException::class.java)
-            .addCode(writeStatement)
-            .build()
-        )
-        .build()
-    val valueCode = javaType.unwrapOptionalValue(name) {
-      CodeBlock.of("\$L", listWriterType)
+  private fun writeListItemStatement(itemType: TypeName, itemParam: String, marshaller: CodeBlock): CodeBlock {
+    fun writeList(): CodeBlock {
+      val nestedListItemParamType = with(itemType.unwrapOptionalType(true)) { if (isList()) listParamType() else this }
+      val nestedListWriter = listWriter(nestedListItemParamType, CodeBlock.of("\$L", itemParam), "\$$itemParam",
+          marshaller)
+      return CodeBlock.of("\$L.\$L(\$L != null ? \$L : null);\n", LIST_ITEM_WRITER_PARAM.name, WRITE_METHODS[Type.LIST],
+          itemParam, nestedListWriter)
     }
-    return CodeBlock.of("\$L.\$L(\$S, \$L);\n", writerParam, WRITE_METHODS[type], name, valueCode)
+
+    fun writeCustom(): CodeBlock {
+      val customScalarEnum = CustomEnumTypeSpecBuilder.className(context)
+      val customScalarEnumConst = normalizeGraphQlType(graphQLType, true).toUpperCase(Locale.ENGLISH)
+      return CodeBlock.of("\$L.writeCustom(\$T.\$L, \$L);\n", LIST_ITEM_WRITER_PARAM.name, customScalarEnum,
+          customScalarEnumConst, itemParam)
+    }
+
+    fun writeScalar(): CodeBlock {
+      val writeMethod = SCALAR_LIST_ITEM_WRITE_METHODS[itemType] ?: "writeString"
+      return if (itemType.isEnum(context)) {
+        CodeBlock.of("\$L.\$L(\$L != null ? \$L.name() : null);\n", LIST_ITEM_WRITER_PARAM.name, writeMethod, itemParam,
+            itemParam)
+      } else {
+        CodeBlock.of("\$L.\$L(\$L);\n", LIST_ITEM_WRITER_PARAM.name, writeMethod, itemParam)
+      }
+    }
+
+    fun writeObject(): CodeBlock {
+      return CodeBlock.of("\$L.writeObject(\$L != null ? \$L.\$L : null);\n", LIST_ITEM_WRITER_PARAM.name, itemParam,
+          itemParam, marshaller);
+    }
+
+    return when {
+      itemType.isList() -> writeList()
+      graphQLType.isCustomScalarType(context) -> return writeCustom()
+      itemType.isScalar(context) -> return writeScalar()
+      else -> return writeObject()
+    }
   }
 
   companion object {
@@ -162,9 +143,7 @@ class InputFieldSpec(
         Type.ENUM to "writeString",
         Type.CUSTOM to "writeCustom",
         Type.OBJECT to "writeObject",
-        Type.SCALAR_LIST to "writeList",
-        Type.CUSTOM_LIST to "writeList",
-        Type.OBJECT_LIST to "writeList"
+        Type.LIST to "writeList"
     )
     private val SCALAR_LIST_ITEM_WRITE_METHODS = mapOf(
         ClassNames.STRING to "writeString",
@@ -186,16 +165,7 @@ class InputFieldSpec(
           .resolve(typeName = graphQLType, nullableValueType = nullableValueType)
       val normalizedJavaType = javaType.unwrapOptionalType(true)
       val type = when {
-        normalizedJavaType.isList() -> {
-          val rawFieldType = normalizedJavaType.let { if (it.isList()) it.listParamType() else it }
-          if (graphQLType.isCustomScalarType(context)) {
-            Type.CUSTOM_LIST
-          } else if (rawFieldType.isScalar(context)) {
-            Type.SCALAR_LIST
-          } else {
-            Type.OBJECT_LIST
-          }
-        }
+        normalizedJavaType.isList() -> Type.LIST
         graphQLType.isCustomScalarType(context) -> Type.CUSTOM
         normalizedJavaType.isScalar(context) -> {
           when (normalizedJavaType) {
@@ -226,9 +196,7 @@ class InputFieldSpec(
     BOOLEAN,
     ENUM,
     OBJECT,
-    SCALAR_LIST,
-    CUSTOM_LIST,
-    OBJECT_LIST,
+    LIST,
     CUSTOM,
   }
 }

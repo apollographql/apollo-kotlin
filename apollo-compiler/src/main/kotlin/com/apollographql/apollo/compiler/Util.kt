@@ -393,13 +393,25 @@ fun TypeName.isList() =
 fun TypeName.isEnum(context: CodeGenerationContext) =
     ((this is ClassName) && context.typeDeclarations.count { it.kind == "EnumType" && it.name == simpleName() } > 0)
 
-fun String.isCustomScalarType(context: CodeGenerationContext) =
-    context.customTypeMap.containsKey(normalizeGraphQlType(this))
+fun String.isCustomScalarType(context: CodeGenerationContext): Boolean {
+  val normalizedType = normalizeGraphQlType(this)
+  return if (this != normalizedType) {
+    normalizedType.isCustomScalarType(context)
+  } else {
+    context.customTypeMap.containsKey(normalizedType)
+  }
+}
 
 fun TypeName.isScalar(context: CodeGenerationContext) = (Util.SCALAR_TYPES.contains(this) || isEnum(context))
 
-fun normalizeGraphQlType(type: String) =
-    type.removeSuffix("!").removeSurrounding(prefix = "[", suffix = "]").removeSuffix("!")
+fun normalizeGraphQlType(type: String, recursive: Boolean = false): String {
+  val normalizedType = type.removeSuffix("!").removeSurrounding(prefix = "[", suffix = "]").removeSuffix("!")
+  return if (recursive && normalizedType != type) {
+    normalizeGraphQlType(normalizedType, true)
+  } else {
+    normalizedType
+  }
+}
 
 fun TypeName.listParamType(): TypeName {
   return (this as ParameterizedTypeName)

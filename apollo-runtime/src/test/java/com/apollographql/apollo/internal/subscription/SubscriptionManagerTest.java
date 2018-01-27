@@ -92,7 +92,8 @@ public class SubscriptionManagerTest {
 
     assertThat(subscriptionManager.timer.tasks).containsKey(RealSubscriptionManager.INACTIVITY_TIMEOUT_TIMER_TASK_ID);
 
-    subscriptionTransportFactory.subscriptionTransport.disconnectCountDownLatch.awaitOrThrowWithTimeout(RealSubscriptionManager.INACTIVITY_TIMEOUT + 200, TimeUnit.MILLISECONDS);
+    subscriptionTransportFactory.subscriptionTransport.disconnectCountDownLatch.awaitOrThrowWithTimeout
+        (RealSubscriptionManager.INACTIVITY_TIMEOUT + 800, TimeUnit.MILLISECONDS);
     assertThat(subscriptionTransportFactory.subscriptionTransport.disconnectMessage).isInstanceOf(OperationClientMessage.Terminate.class);
     assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
     assertThat(subscriptionManager.timer.tasks).isEmpty();
@@ -104,7 +105,8 @@ public class SubscriptionManagerTest {
     subscriptionTransportFactory.callback.onMessage(new OperationServerMessage.ConnectionAcknowledge());
     subscriptionManager.unsubscribe(subscription1);
 
-    subscriptionTransportFactory.subscriptionTransport.disconnectCountDownLatch.awaitOrThrowWithTimeout(RealSubscriptionManager.INACTIVITY_TIMEOUT + 200, TimeUnit.MILLISECONDS);
+    subscriptionTransportFactory.subscriptionTransport.disconnectCountDownLatch.awaitOrThrowWithTimeout
+        (RealSubscriptionManager.INACTIVITY_TIMEOUT + 800, TimeUnit.MILLISECONDS);
     assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
 
     subscriptionManager.subscribe(subscription2, new SubscriptionManagerCallbackAdapter<Operation.Data>());
@@ -122,7 +124,8 @@ public class SubscriptionManagerTest {
     subscriptionTransportFactory.callback.onConnected();
 
     assertThat(subscriptionManager.timer.tasks).containsKey(RealSubscriptionManager.CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID);
-    subscriptionTransportFactory.subscriptionTransport.disconnectCountDownLatch.awaitOrThrowWithTimeout(RealSubscriptionManager.CONNECTION_ACKNOWLEDGE_TIMEOUT + 200, TimeUnit.MILLISECONDS);
+    subscriptionTransportFactory.subscriptionTransport.disconnectCountDownLatch.awaitOrThrowWithTimeout
+        (RealSubscriptionManager.CONNECTION_ACKNOWLEDGE_TIMEOUT + 800, TimeUnit.MILLISECONDS);
     assertThat(subscriptionTransportFactory.subscriptionTransport.disconnectMessage).isInstanceOf(OperationClientMessage.Terminate.class);
     assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
     assertThat(subscriptionManager.timer.tasks).isEmpty();

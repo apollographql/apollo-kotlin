@@ -42,11 +42,22 @@ public final class ReviewInput {
 
   private final Input<Boolean> booleanWithDefaultValue;
 
+  private final Input<List<List<String>>> listOfListOfString;
+
+  private final Input<List<List<Episode>>> listOfListOfEnum;
+
+  private final Input<List<List<Object>>> listOfListOfCustom;
+
+  private final Input<List<List<ColorInput>>> listOfListOfObject;
+
   ReviewInput(long stars, Input<Long> nullableIntFieldWithDefaultValue, Input<String> commentary,
       @Nonnull ColorInput favoriteColor, Input<Episode> enumWithDefaultValue,
       Input<Episode> nullableEnum, Input<List<Object>> listOfCustomScalar,
       Input<Object> customScalar, Input<List<Episode>> listOfEnums, Input<List<Long>> listOfInt,
-      Input<List<String>> listOfString, Input<Boolean> booleanWithDefaultValue) {
+      Input<List<String>> listOfString, Input<Boolean> booleanWithDefaultValue,
+      Input<List<List<String>>> listOfListOfString, Input<List<List<Episode>>> listOfListOfEnum,
+      Input<List<List<Object>>> listOfListOfCustom,
+      Input<List<List<ColorInput>>> listOfListOfObject) {
     this.stars = stars;
     this.nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue;
     this.commentary = commentary;
@@ -59,6 +70,10 @@ public final class ReviewInput {
     this.listOfInt = listOfInt;
     this.listOfString = listOfString;
     this.booleanWithDefaultValue = booleanWithDefaultValue;
+    this.listOfListOfString = listOfListOfString;
+    this.listOfListOfEnum = listOfListOfEnum;
+    this.listOfListOfCustom = listOfListOfCustom;
+    this.listOfListOfObject = listOfListOfObject;
   }
 
   /**
@@ -145,6 +160,34 @@ public final class ReviewInput {
     return this.booleanWithDefaultValue.value;
   }
 
+  /**
+   * for test purpose only
+   */
+  public @Nullable List<List<String>> listOfListOfString() {
+    return this.listOfListOfString.value;
+  }
+
+  /**
+   * for test purpose only
+   */
+  public @Nullable List<List<Episode>> listOfListOfEnum() {
+    return this.listOfListOfEnum.value;
+  }
+
+  /**
+   * for test purpose only
+   */
+  public @Nullable List<List<Object>> listOfListOfCustom() {
+    return this.listOfListOfCustom.value;
+  }
+
+  /**
+   * for test purpose only
+   */
+  public @Nullable List<List<ColorInput>> listOfListOfObject() {
+    return this.listOfListOfObject.value;
+  }
+
   public static Builder builder() {
     return new Builder();
   }
@@ -185,7 +228,7 @@ public final class ReviewInput {
             @Override
             public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
               for (Episode $item : listOfEnums.value) {
-                listItemWriter.writeString($item.name());
+                listItemWriter.writeString($item != null ? $item.name() : null);
               }
             }
           } : null);
@@ -212,6 +255,78 @@ public final class ReviewInput {
         }
         if (booleanWithDefaultValue.defined) {
           writer.writeBoolean("booleanWithDefaultValue", booleanWithDefaultValue.value);
+        }
+        if (listOfListOfString.defined) {
+          writer.writeList("listOfListOfString", listOfListOfString.value != null ? new InputFieldWriter.ListWriter() {
+            @Override
+            public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
+              for (List<String> $item : listOfListOfString.value) {
+                listItemWriter.writeList($item != null ? new InputFieldWriter.ListWriter() {
+                  @Override
+                  public void write(InputFieldWriter.ListItemWriter listItemWriter) throws
+                      IOException {
+                    for (String $$item : $item) {
+                      listItemWriter.writeString($$item);
+                    }
+                  }
+                } : null);
+              }
+            }
+          } : null);
+        }
+        if (listOfListOfEnum.defined) {
+          writer.writeList("listOfListOfEnum", listOfListOfEnum.value != null ? new InputFieldWriter.ListWriter() {
+            @Override
+            public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
+              for (List<Episode> $item : listOfListOfEnum.value) {
+                listItemWriter.writeList($item != null ? new InputFieldWriter.ListWriter() {
+                  @Override
+                  public void write(InputFieldWriter.ListItemWriter listItemWriter) throws
+                      IOException {
+                    for (Episode $$item : $item) {
+                      listItemWriter.writeString($$item != null ? $$item.name() : null);
+                    }
+                  }
+                } : null);
+              }
+            }
+          } : null);
+        }
+        if (listOfListOfCustom.defined) {
+          writer.writeList("listOfListOfCustom", listOfListOfCustom.value != null ? new InputFieldWriter.ListWriter() {
+            @Override
+            public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
+              for (List<Object> $item : listOfListOfCustom.value) {
+                listItemWriter.writeList($item != null ? new InputFieldWriter.ListWriter() {
+                  @Override
+                  public void write(InputFieldWriter.ListItemWriter listItemWriter) throws
+                      IOException {
+                    for (Object $$item : $item) {
+                      listItemWriter.writeCustom(CustomType.DATE, $$item);
+                    }
+                  }
+                } : null);
+              }
+            }
+          } : null);
+        }
+        if (listOfListOfObject.defined) {
+          writer.writeList("listOfListOfObject", listOfListOfObject.value != null ? new InputFieldWriter.ListWriter() {
+            @Override
+            public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
+              for (List<ColorInput> $item : listOfListOfObject.value) {
+                listItemWriter.writeList($item != null ? new InputFieldWriter.ListWriter() {
+                  @Override
+                  public void write(InputFieldWriter.ListItemWriter listItemWriter) throws
+                      IOException {
+                    for (ColorInput $$item : $item) {
+                      listItemWriter.writeObject($$item != null ? $$item.marshaller() : null);
+                    }
+                  }
+                } : null);
+              }
+            }
+          } : null);
         }
       }
     };
@@ -241,6 +356,14 @@ public final class ReviewInput {
     private Input<List<String>> listOfString = Input.fromNullable(Arrays.<String>asList("test1", "test2", "test3"));
 
     private Input<Boolean> booleanWithDefaultValue = Input.fromNullable(true);
+
+    private Input<List<List<String>>> listOfListOfString = Input.absent();
+
+    private Input<List<List<Episode>>> listOfListOfEnum = Input.absent();
+
+    private Input<List<List<Object>>> listOfListOfCustom = Input.absent();
+
+    private Input<List<List<ColorInput>>> listOfListOfObject = Input.absent();
 
     Builder() {
     }
@@ -344,6 +467,38 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
+    public Builder listOfListOfString(@Nullable List<List<String>> listOfListOfString) {
+      this.listOfListOfString = Input.fromNullable(listOfListOfString);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfListOfEnum(@Nullable List<List<Episode>> listOfListOfEnum) {
+      this.listOfListOfEnum = Input.fromNullable(listOfListOfEnum);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfListOfCustom(@Nullable List<List<Object>> listOfListOfCustom) {
+      this.listOfListOfCustom = Input.fromNullable(listOfListOfCustom);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfListOfObject(@Nullable List<List<ColorInput>> listOfListOfObject) {
+      this.listOfListOfObject = Input.fromNullable(listOfListOfObject);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
     public Builder nullableIntFieldWithDefaultValueInput(@Nonnull Input<Long> nullableIntFieldWithDefaultValue) {
       this.nullableIntFieldWithDefaultValue = Utils.checkNotNull(nullableIntFieldWithDefaultValue, "nullableIntFieldWithDefaultValue == null");
       return this;
@@ -421,9 +576,41 @@ public final class ReviewInput {
       return this;
     }
 
+    /**
+     * for test purpose only
+     */
+    public Builder listOfListOfStringInput(@Nonnull Input<List<List<String>>> listOfListOfString) {
+      this.listOfListOfString = Utils.checkNotNull(listOfListOfString, "listOfListOfString == null");
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfListOfEnumInput(@Nonnull Input<List<List<Episode>>> listOfListOfEnum) {
+      this.listOfListOfEnum = Utils.checkNotNull(listOfListOfEnum, "listOfListOfEnum == null");
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfListOfCustomInput(@Nonnull Input<List<List<Object>>> listOfListOfCustom) {
+      this.listOfListOfCustom = Utils.checkNotNull(listOfListOfCustom, "listOfListOfCustom == null");
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfListOfObjectInput(@Nonnull Input<List<List<ColorInput>>> listOfListOfObject) {
+      this.listOfListOfObject = Utils.checkNotNull(listOfListOfObject, "listOfListOfObject == null");
+      return this;
+    }
+
     public ReviewInput build() {
       Utils.checkNotNull(favoriteColor, "favoriteColor == null");
-      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, booleanWithDefaultValue);
+      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, booleanWithDefaultValue, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject);
     }
   }
 }
