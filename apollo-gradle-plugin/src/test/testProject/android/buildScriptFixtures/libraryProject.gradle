@@ -27,6 +27,7 @@ android {
     textReport true
     textOutput 'stdout'
     ignore 'InvalidPackage', 'GoogleAppIndexingWarning', 'AllowBackup'
+    abortOnError false
   }
   sourceSets {
     main {

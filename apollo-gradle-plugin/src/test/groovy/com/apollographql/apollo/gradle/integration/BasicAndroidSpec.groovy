@@ -29,6 +29,7 @@ class BasicAndroidSpec extends Specification {
         .withPluginClasspath()
         .withArguments("build", "-Dapollographql.skipRuntimeDep=true")
         .forwardStdError(new OutputStreamWriter(System.err))
+//        .forwardStdOutput(new OutputStreamWriter(System.out))
         .build()
 
     then:
@@ -40,10 +41,10 @@ class BasicAndroidSpec extends Specification {
         "build/generated/source/apollo/generatedIR/debug/src/main/graphql/DebugAPI.json").isFile()
 
     // OperationIdMap.json generated successfully
-    assert new File(testProjectDir,
-        "build/generated/source/apollo/generatedIR/release/src/main/graphql/ReleaseOperationIdMap.json").isFile()
-    assert new File(testProjectDir,
-        "build/generated/source/apollo/generatedIR/debug/src/main/graphql/DebugOperationIdMap.json").isFile()
+//    assert new File(testProjectDir,
+//        "build/generated/source/apollo/generatedIR/release/src/main/graphql/ReleaseOperationIdMap.json").isFile()
+//    assert new File(testProjectDir,
+//        "build/generated/source/apollo/generatedIR/debug/src/main/graphql/DebugOperationIdMap.json").isFile()
 
     // Java classes generated successfully
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").isFile()
@@ -58,8 +59,47 @@ class BasicAndroidSpec extends Specification {
     // Optional is not added to the generated classes
     assert !new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("Optional")
-     assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
+    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("import javax.annotation.Nullable;")
+  }
+
+  def "nothing changed, generate ir files up to date"() {
+    when:
+    def result = GradleRunner.create()
+        .withProjectDir(testProjectDir)
+        .withPluginClasspath()
+        .withArguments("generateApolloIR", "-Dapollographql.skipRuntimeDep=true")
+        .forwardStdError(new OutputStreamWriter(System.err))
+//        .forwardStdOutput(new OutputStreamWriter(System.out))
+        .build()
+
+    then:
+    result.task(":generateApolloIR").outcome == TaskOutcome.UP_TO_DATE
+
+    // IR Files generated successfully
+    assert new File(testProjectDir,
+        "build/generated/source/apollo/generatedIR/release/src/main/graphql/ReleaseAPI.json").isFile()
+    assert new File(testProjectDir,
+        "build/generated/source/apollo/generatedIR/debug/src/main/graphql/DebugAPI.json").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/fragment/SpeciesInformation.java").isFile()
+  }
+
+  def "nothing changed, generate classes up to date"() {
+    when:
+    def result = GradleRunner.create()
+        .withProjectDir(testProjectDir)
+        .withPluginClasspath()
+        .withArguments("generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
+        .forwardStdError(new OutputStreamWriter(System.err))
+//        .forwardStdOutput(new OutputStreamWriter(System.out))
+        .build()
+
+    then:
+    result.task(":generateApolloClasses").outcome == TaskOutcome.UP_TO_DATE
+    // Java classes generated successfully
+    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/com/example/FilmsQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/fragment/SpeciesInformation.java").isFile()
   }
 
   def "installApolloCodegenTask is up to date if no changes occur to node_modules and package.json"() {
@@ -69,7 +109,9 @@ class BasicAndroidSpec extends Specification {
     def result = GradleRunner.create().withProjectDir(testProjectDir)
         .withPluginClasspath()
         .withArguments("installApolloCodegen")
-        .forwardStdError(new OutputStreamWriter(System.err)).build()
+        .forwardStdError(new OutputStreamWriter(System.err))
+//        .forwardStdOutput(new OutputStreamWriter(System.out))
+        .build()
 
     then:
     result.task(":installApolloCodegen").outcome == TaskOutcome.UP_TO_DATE
@@ -83,7 +125,9 @@ class BasicAndroidSpec extends Specification {
     def result = GradleRunner.create().withProjectDir(testProjectDir)
         .withPluginClasspath()
         .withArguments("installApolloCodegen")
-        .forwardStdError(new OutputStreamWriter(System.err)).build()
+        .forwardStdError(new OutputStreamWriter(System.err))
+//        .forwardStdOutput(new OutputStreamWriter(System.out))
+        .build()
 
     then:
     result.task(":installApolloCodegen").outcome == TaskOutcome.SUCCESS
@@ -100,7 +144,9 @@ class BasicAndroidSpec extends Specification {
     def result = GradleRunner.create().withProjectDir(testProjectDir)
         .withPluginClasspath()
         .withArguments("installApolloCodegen")
-        .forwardStdError(new OutputStreamWriter(System.err)).build()
+        .forwardStdError(new OutputStreamWriter(System.err))
+//        .forwardStdOutput(new OutputStreamWriter(System.out))
+        .build()
 
     then:
     result.task(":installApolloCodegen").outcome == TaskOutcome.SUCCESS
@@ -114,7 +160,9 @@ class BasicAndroidSpec extends Specification {
     def result = GradleRunner.create().withProjectDir(testProjectDir)
         .withPluginClasspath()
         .withArguments("generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
-        .forwardStdError(new OutputStreamWriter(System.err)).build()
+        .forwardStdError(new OutputStreamWriter(System.err))
+//        .forwardStdOutput(new OutputStreamWriter(System.out))
+        .build()
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.UP_TO_DATE
@@ -123,14 +171,16 @@ class BasicAndroidSpec extends Specification {
   def "adding a custom type to the build script re-generates the CustomType class"() {
     setup: "a testProject with a previous build and an apollo extension appended"
     replaceTextInFile(new File("$testProjectDir/build.gradle")) {
-      it.replace("apollo {", "apollo {\n customTypeMapping {\n DateTime = \"java.util.Date\" \n}\n")
+      it.replace("apollo {", "apollo {\n customTypeMapping['DateTime'] = \"java.util.Date\"\n")
     }
 
     when:
     def result = GradleRunner.create().withProjectDir(testProjectDir)
         .withPluginClasspath()
-        .withArguments("generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
-        .forwardStdError(new OutputStreamWriter(System.err)).build()
+        .withArguments("generateApolloClasses", "-Dapollographql.skipRuntimeDep=true", "--info")
+        .forwardStdError(new OutputStreamWriter(System.err))
+//        .forwardStdOutput(new OutputStreamWriter(System.out))
+        .build()
 
     then:
     // modifying the customTypeMapping should cause the task to be out of date
@@ -152,7 +202,9 @@ class BasicAndroidSpec extends Specification {
     def result = GradleRunner.create().withProjectDir(testProjectDir)
         .withPluginClasspath()
         .withArguments("generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
-        .forwardStdError(new OutputStreamWriter(System.err)).build()
+        .forwardStdError(new OutputStreamWriter(System.err))
+//        .forwardStdOutput(new OutputStreamWriter(System.out))
+        .build()
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
@@ -172,7 +224,9 @@ class BasicAndroidSpec extends Specification {
     def result = GradleRunner.create().withProjectDir(testProjectDir)
         .withPluginClasspath()
         .withArguments("clean", "generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
-        .forwardStdError(new OutputStreamWriter(System.err)).build()
+        .forwardStdError(new OutputStreamWriter(System.err))
+//        .forwardStdOutput(new OutputStreamWriter(System.out))
+        .build()
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
@@ -193,7 +247,9 @@ class BasicAndroidSpec extends Specification {
     def result = GradleRunner.create().withProjectDir(testProjectDir)
         .withPluginClasspath()
         .withArguments("clean", "generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
-        .forwardStdError(new OutputStreamWriter(System.err)).build()
+        .forwardStdError(new OutputStreamWriter(System.err))
+//        .forwardStdOutput(new OutputStreamWriter(System.out))
+        .build()
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
@@ -212,7 +268,9 @@ class BasicAndroidSpec extends Specification {
     def result = GradleRunner.create().withProjectDir(testProjectDir)
         .withPluginClasspath()
         .withArguments("clean", "generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
-        .forwardStdError(new OutputStreamWriter(System.err)).build()
+        .forwardStdError(new OutputStreamWriter(System.err))
+//        .forwardStdOutput(new OutputStreamWriter(System.out))
+        .build()
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
@@ -231,7 +289,9 @@ class BasicAndroidSpec extends Specification {
     def result = GradleRunner.create().withProjectDir(testProjectDir)
         .withPluginClasspath()
         .withArguments("clean", "generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
-        .forwardStdError(new OutputStreamWriter(System.err)).build()
+        .forwardStdError(new OutputStreamWriter(System.err))
+//        .forwardStdOutput(new OutputStreamWriter(System.out))
+        .build()
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
@@ -260,6 +320,7 @@ class BasicAndroidSpec extends Specification {
           .withPluginClasspath()
           .withArguments("clean", "generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
           .forwardStdError(new OutputStreamWriter(System.err))
+//          .forwardStdOutput(new OutputStreamWriter(System.out))
           .build()
     } catch (UnexpectedBuildFailure e) {
       buildFailure = true
@@ -273,7 +334,7 @@ class BasicAndroidSpec extends Specification {
         "build/generated/source/apollo/generatedIR/debug/src/main/graphql/com/myexample/DebugAPI.json").isFile()
     assert !new File(testProjectDir,
         "build/generated/source/apollo/generatedIR/release/src/main/graphql/com/myexample/ReleaseAPI.json").isFile()
-    assert !new File(testProjectDir, "build/generated/source/apollo/com/myexample/DroidDetailsQuery.java").isFile()
+    assert !new File(testProjectDir, "build/generated/source/apollo/com/myexample/DroidDetails.java").isFile()
   }
 
   def "set explicit path path to schema.json and target package name generates classes successfully"() {
@@ -281,20 +342,17 @@ class BasicAndroidSpec extends Specification {
     replaceTextInFile(new File("$testProjectDir/build.gradle")) {
       it.replace("apollo {",
           "apollo {\n " +
-              "schemaFilePath = \"graphql/schema/my-schema.json\"\n " +
               "outputPackageName = \"com.myexample\"\n"
       )
     }
 
     when:
-    new File("$testProjectDir/src/main/graphql/schema.json").delete()
-    String schemaFilesFixtures = "src/test/testProject/android/schemaFilesFixtures"
-    copyFile(new File(schemaFilesFixtures + "/oldswapi.json"),
-        new File("$testProjectDir/graphql/schema/my-schema.json"))
     def result = GradleRunner.create().withProjectDir(testProjectDir)
         .withPluginClasspath()
         .withArguments("clean", "generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
-        .forwardStdError(new OutputStreamWriter(System.err)).build()
+        .forwardStdError(new OutputStreamWriter(System.err))
+//        .forwardStdOutput(new OutputStreamWriter(System.out))
+        .build()
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
@@ -302,7 +360,27 @@ class BasicAndroidSpec extends Specification {
         "build/generated/source/apollo/generatedIR/debug/src/main/graphql/com/myexample/DebugAPI.json").isFile()
     assert new File(testProjectDir,
         "build/generated/source/apollo/generatedIR/release/src/main/graphql/com/myexample/ReleaseAPI.json").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/com/myexample/DroidDetailsQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/com/myexample/DroidDetails.java").isFile()
+  }
+
+  def "remove graphql files, builds successfully and generates expected outputs"() {
+    when:
+    assert new File("$testProjectDir/src/main/graphql/com/example/AllFilms.graphql").delete()
+    assert new File("$testProjectDir/src/main/graphql/com/example/DroidDetailsSpeciesInfo.graphql").delete()
+    def result = GradleRunner.create()
+        .withProjectDir(testProjectDir)
+        .withPluginClasspath()
+        .withArguments("generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
+        .forwardStdError(new OutputStreamWriter(System.err))
+//        .forwardStdOutput(new OutputStreamWriter(System.out))
+        .build()
+
+    then:
+    result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
+    // Java classes generated successfully
+    assert new File(testProjectDir, "build/generated/source/apollo/com/myexample/DroidDetails.java").isFile()
+    assert !new File(testProjectDir, "build/generated/source/apollo/com/myexample/Films.java").exists()
+    assert !new File(testProjectDir, "build/generated/source/apollo/fragment/SpeciesInformation.java").exists()
   }
 
   def cleanupSpec() {

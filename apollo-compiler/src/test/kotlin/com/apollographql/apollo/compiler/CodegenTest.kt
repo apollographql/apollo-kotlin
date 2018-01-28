@@ -91,7 +91,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
             }
             val args = GraphQLCompiler.Arguments(
                 irFile = File(it, "TestOperation.json"),
-                outputDir = GraphQLCompiler.Companion.OUTPUT_DIRECTORY.fold(File("build"), ::File),
+                outputDir = GraphQLCompiler.OUTPUT_DIRECTORY.fold(File("build"), ::File),
                 customTypeMap = customTypeMap,
                 nullableValueType = nullableValueType,
                 useSemanticNaming = useSemanticNaming,
