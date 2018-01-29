@@ -39,5 +39,7 @@ public interface InputFieldWriter {
     void writeCustom(ScalarType scalarType, Object value) throws IOException;
 
     void writeObject(InputFieldMarshaller marshaller) throws IOException;
+
+    void writeList(ListWriter listWriter) throws IOException;
   }
 }

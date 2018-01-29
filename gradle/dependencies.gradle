@@ -14,7 +14,7 @@ ext.isCi = "true" == System.getenv('CI')
 
 ext.androidConfig = [
     compileSdkVersion: 25,
-    buildToolsVersion: '25.0.3',
+    buildToolsVersion: '26.0.2',
     minSdkVersion    : 15,
     targetSdkVersion : 25
 ]

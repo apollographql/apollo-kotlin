@@ -198,6 +198,26 @@
 					"type": "Boolean",
 					"description": "for test purpose only",
 					"defaultValue": true
+				},
+				{
+					"name": "listOfListOfString",
+					"type": "[[String]]",
+					"description": "for test purpose only"
+				},
+				{
+					"name": "listOfListOfEnum",
+					"type": "[[Episode]]",
+					"description": "for test purpose only"
+				},
+				{
+					"name": "listOfListOfCustom",
+					"type": "[[Date]]",
+					"description": "for test purpose only"
+				},
+				{
+					"name": "listOfListOfObject",
+					"type": "[[ColorInput]]",
+					"description": "for test purpose only"
 				}
 			]
 		},

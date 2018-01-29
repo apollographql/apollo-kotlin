@@ -108,47 +108,69 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
 
     @Override public void writeString(String value) throws IOException {
-      if (value != null) {
+      if (value == null) {
+        jsonWriter.nullValue();
+      } else {
         jsonWriter.value(value);
       }
     }
 
     @Override public void writeInt(Integer value) throws IOException {
-      if (value != null) {
+      if (value == null) {
+        jsonWriter.nullValue();
+      } else {
         jsonWriter.value(value);
       }
     }
 
     @Override public void writeLong(Long value) throws IOException {
-      if (value != null) {
+      if (value == null) {
+        jsonWriter.nullValue();
+      } else {
         jsonWriter.value(value);
       }
     }
 
     @Override public void writeDouble(Double value) throws IOException {
-      if (value != null) {
+      if (value == null) {
+        jsonWriter.nullValue();
+      } else {
         jsonWriter.value(value);
       }
     }
 
     @Override public void writeBoolean(Boolean value) throws IOException {
-      if (value != null) {
+      if (value == null) {
+        jsonWriter.nullValue();
+      } else {
         jsonWriter.value(value);
       }
     }
 
     @Override public void writeCustom(ScalarType scalarType, Object value) throws IOException {
-      if (value != null) {
+      if (value == null) {
+        jsonWriter.nullValue();
+      } else {
         CustomTypeAdapter customTypeAdapter = scalarTypeAdapters.adapterFor(scalarType);
         writeString(customTypeAdapter.encode(value));
       }
     }
 
     @Override public void writeObject(InputFieldMarshaller marshaller) throws IOException {
-      if (marshaller != null) {
+      if (marshaller == null) {
+        jsonWriter.nullValue();
+      } else {
         jsonWriter.beginObject();
         marshaller.marshal(new InputFieldJsonWriter(jsonWriter, scalarTypeAdapters));
         jsonWriter.endObject();
+      }
+    }
+
+    @Override public void writeList(ListWriter listWriter) throws IOException {
+      if (listWriter == null) {
+        jsonWriter.nullValue();
+      } else {
+        listWriter.write(new JsonListItemWriter(jsonWriter, scalarTypeAdapters));
       }
     }
   }

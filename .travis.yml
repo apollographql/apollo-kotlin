@@ -8,7 +8,7 @@ android:
     - tools
     - platform-tools
     - tools  # Upgrade again after upgrading platform-tools
-    - build-tools-25.0.3
+    - build-tools-26.0.2
     - android-22
     - extra-google-m2repository
     - extra-android-m2repository
