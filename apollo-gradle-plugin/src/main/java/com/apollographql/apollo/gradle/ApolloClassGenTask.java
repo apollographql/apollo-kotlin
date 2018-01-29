@@ -6,76 +6,84 @@ import com.apollographql.apollo.compiler.GraphQLCompiler;
 import com.apollographql.apollo.compiler.NullableValueType;
 
 import org.gradle.api.Action;
-import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs;
 import org.gradle.api.tasks.incremental.InputFileDetails;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.Map;
 
+@SuppressWarnings("WeakerAccess")
 public class ApolloClassGenTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses";
 
-  @Internal private String variant;
-  @Internal ApolloExtension apolloExtension;
-  @OutputDirectory File outputDir;
-  NullableValueType nullableValueType;
+  Map<String, String> customTypeMapping;
+  String nullableValueType;
+  boolean useSemanticNaming;
+  boolean generateModelBuilder;
+  boolean useJavaBeansSemanticNaming;
+  String outputPackageName;
+  final File outputDir;
 
-  public void init(String variant, ApolloExtension apolloExtension) {
-    this.variant = variant;
-    this.apolloExtension = apolloExtension;
-    nullableValueType = apolloExtension.getNullableValueType() == null
-        ? NullableValueType.ANNOTATED
-        : NullableValueType.Companion.findByValue(apolloExtension.getNullableValueType());
-    outputDir = new File(getProject().getBuildDir() + File.separator + Joiner.on(File.separator).join(GraphQLCompiler.Companion
-        .getOUTPUT_DIRECTORY()));
+  public ApolloClassGenTask() {
+    outputDir = new File(getProject().getBuildDir() + File.separator + Joiner.on(File.separator)
+        .join(GraphQLCompiler.OUTPUT_DIRECTORY));
   }
 
   @TaskAction
   void generateClasses(IncrementalTaskInputs inputs) {
+    final NullableValueType nullableValueType = this.nullableValueType == null ? NullableValueType.ANNOTATED
+        : NullableValueType.Companion.findByValue(this.nullableValueType);
     inputs.outOfDate(new Action<InputFileDetails>() {
       @Override
-      public void execute(InputFileDetails inputFileDetails) {
+      public void execute(@NotNull InputFileDetails inputFileDetails) {
         GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(inputFileDetails.getFile(), outputDir,
-            apolloExtension.getCustomTypeMapping(), nullableValueType, apolloExtension.isUseSemanticNaming(),
-            apolloExtension.isGenerateModelBuilder(), apolloExtension.isUseJavaBeansSemanticNaming(), apolloExtension
-            .getOutputPackageName());
+            customTypeMapping, nullableValueType, useSemanticNaming, generateModelBuilder, useJavaBeansSemanticNaming,
+            outputPackageName);
         new GraphQLCompiler().write(args);
       }
     });
   }
 
-  public String getVariant() {
-    return variant;
-  }
-
-  public void setVariant(String variant) {
-    this.variant = variant;
-  }
-
+  @OutputDirectory
   public File getOutputDir() {
     return outputDir;
   }
 
-  public void setOutputDir(File outputDir) {
-    this.outputDir = outputDir;
+  @Input
+  public Map<String, String> getCustomTypeMapping() {
+    return customTypeMapping;
   }
 
-  public NullableValueType getNullableValueType() {
+  @Input
+  @Optional
+  public String getNullableValueType() {
     return nullableValueType;
   }
 
-  public void setNullableValueType(NullableValueType nullableValueType) {
-    this.nullableValueType = nullableValueType;
+  @Input
+  public boolean isUseSemanticNaming() {
+    return useSemanticNaming;
   }
 
-  public ApolloExtension getApolloExtension() {
-    return apolloExtension;
+  @Input
+  public boolean isGenerateModelBuilder() {
+    return generateModelBuilder;
   }
 
-  public void setApolloExtension(ApolloExtension apolloExtension) {
-    this.apolloExtension = apolloExtension;
+  @Input
+  public boolean isUseJavaBeansSemanticNaming() {
+    return useJavaBeansSemanticNaming;
+  }
+
+  @Input
+  @Optional
+  public String getOutputPackageName() {
+    return outputPackageName;
   }
 }

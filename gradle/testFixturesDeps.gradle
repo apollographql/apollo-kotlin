@@ -11,5 +11,6 @@ ext.apolloRuntimeCompileDeps = [
 
 ext.apolloApiCompileDeps = [
     dep.jsr305,
-    dep.jsr250
+    dep.jsr250,
+		dep.okHttp
 ]

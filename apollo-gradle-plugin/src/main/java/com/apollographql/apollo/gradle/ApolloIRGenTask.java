@@ -6,13 +6,13 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 
 import com.apollographql.apollo.compiler.GraphQLCompiler;
 import com.moowork.gradle.node.task.NodeTask;
 
 import org.gradle.api.GradleException;
-import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 
 import java.io.File;
@@ -30,50 +30,50 @@ import java.util.regex.Matcher;
 
 import javax.annotation.Nullable;
 
+@SuppressWarnings("WeakerAccess")
 public class ApolloIRGenTask extends NodeTask {
   static final String APOLLO_CODEGEN_EXEC_FILE = "lib/cli.js";
-  private static final String APOLLO_CODEGEN = "apollo-codegen/node_modules/apollo-codegen/" + APOLLO_CODEGEN_EXEC_FILE;
+  static final String APOLLO_CODEGEN = "apollo-codegen/node_modules/apollo-codegen/" + APOLLO_CODEGEN_EXEC_FILE;
   static final String NAME = "generate%sApolloIR";
 
-  @Internal private String variant;
-  @Internal ImmutableList<String> sourceSets;
-  @Internal private ApolloExtension extension;
+  String variant;
+  ImmutableList<String> sourceSets;
+  String schemaFilePath;
+  String outputPackageName;
+  File outputFolder;
 
-  @OutputDirectory private File outputFolder;
-
-  public void init(String variant, ImmutableList<String> sourceSets, ApolloExtension extension) {
+  public void init(String variant, ImmutableList<String> sourceSets) {
     this.variant = variant;
     this.sourceSets = sourceSets;
-    this.extension = extension;
     outputFolder = new File(getProject().getBuildDir() + File.separator +
-        Joiner.on(File.separator).join(GraphQLCompiler.Companion.getOUTPUT_DIRECTORY()) + "/generatedIR/" + variant);
+        Joiner.on(File.separator).join(GraphQLCompiler.OUTPUT_DIRECTORY) + "/generatedIR/" + variant);
   }
 
   @Override
   public void exec() {
     File schemaFile = null;
-    if (extension.getSchemaFilePath() != null) {
-      schemaFile = Paths.get(extension.getSchemaFilePath()).toFile();
+    if (schemaFilePath != null) {
+      schemaFile = Paths.get(schemaFilePath).toFile();
       if (!schemaFile.exists()) {
-        schemaFile = Paths.get(getProject().getRootDir().getAbsolutePath(), extension.getSchemaFilePath()).toFile();
+        schemaFile = Paths.get(getProject().getRootDir().getAbsolutePath(), schemaFilePath).toFile();
       }
 
       if (!schemaFile.exists()) {
-        throw new GradleException("Provided schema file path doesn't exists: " + extension.getSchemaFilePath() +
+        throw new GradleException("Provided schema file path doesn't exists: " + schemaFilePath +
             ". Please ensure a valid schema file exists");
       }
     }
 
     File targetPackageFolder = null;
     if (schemaFile != null) {
-      if (extension.getOutputPackageName() == null || extension.getOutputPackageName().trim().isEmpty()) {
-        throw new GradleException("Missing explicit targetPackageName option. Please ensure a valid package name is provided");
+      if (outputPackageName == null || outputPackageName.trim().isEmpty()) {
+        throw new GradleException("Missing explicit outputPackageName option. Please ensure a valid package name is provided");
       } else {
         targetPackageFolder = new File(outputFolder.getAbsolutePath()
             + File.separator + "src"
             + File.separator + "main"
             + File.separator + "graphql"
-            + File.separator + extension.getOutputPackageName().replace(".", File.separator));
+            + File.separator + outputPackageName.replace(".", File.separator));
       }
     }
 
@@ -234,7 +234,20 @@ public class ApolloIRGenTask extends NodeTask {
     return basePath.relativize(absolutePath).toString();
   }
 
+  @OutputDirectory
   public File getOutputFolder() {
     return outputFolder;
+  }
+
+  @Input
+  @Optional
+  public String getSchemaFilePath() {
+    return schemaFilePath;
+  }
+
+  @Input
+  @Optional
+  public String getOutputPackageName() {
+    return outputPackageName;
   }
 }
