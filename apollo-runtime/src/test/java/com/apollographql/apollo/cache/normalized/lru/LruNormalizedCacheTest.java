@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -304,6 +305,22 @@ public class LruNormalizedCacheTest {
     final Record record =
         lruCache.loadRecord("key1", CacheHeaders.NONE);
     assertThat(record).isNull();
+
+
+    Record testRecord1 = createTestRecord("1");
+    Record testRecord2 = createTestRecord("2");
+    Collection<Record> testRecordSet = new HashSet<>();
+    testRecordSet.add(testRecord1);
+    testRecordSet.add(testRecord2);
+
+    lruCache.merge(testRecordSet, CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build());
+
+    final Record record1 = lruCache.loadRecord("key1", CacheHeaders.NONE);
+    final Record record2 = lruCache.loadRecord("key2", CacheHeaders.NONE);
+
+    assertThat(record1).isNull();
+    assertThat(record2).isNull();
+
   }
 
   private void assertTestRecordPresentAndAccurate(Record testRecord, NormalizedCache store) {
