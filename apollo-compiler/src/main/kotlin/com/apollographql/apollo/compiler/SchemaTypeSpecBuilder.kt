@@ -115,7 +115,7 @@ class SchemaTypeSpecBuilder(
   }
 
   private fun inlineFragmentsTypeSpecs(): List<Pair<String, TypeSpec>> =
-      inlineFragments.map { it.formatClassName() to it.toTypeSpec(context = context, abstract = abstract) }
+      inlineFragments.map { it.formatClassName() to it.toTypeSpec(context = context, abstract = false) }
 
   private fun fragmentsAccessorMethodSpec(): MethodSpec {
     val fragmentsName = FRAGMENTS_FIELD.name

@@ -442,21 +442,23 @@ fun TypeSpec.confirmToProtocol(protocolSpec: TypeSpec): TypeSpec {
         }
       }.filter { (_, nestedProtocol) -> nestedProtocol != null }
 
-  return TypeSpec.classBuilder(name)
-      .superclass(superclass)
+  val classBuilder = (kind != TypeSpec.Kind.INTERFACE)
+  val typeSpec = if (classBuilder) TypeSpec.classBuilder(name) else TypeSpec.interfaceBuilder(name)
+  return typeSpec
+      .also { if (classBuilder) it.superclass(superclass) }
       .addJavadoc(javadoc)
       .addAnnotations(annotations)
       .addModifiers(*modifiers.toTypedArray())
       .addSuperinterfaces(superinterfaces)
       .addSuperinterface(ClassName.get("", protocolSpec.name))
-      .addFields(fieldSpecs)
+      .also { if (classBuilder) it.addFields(fieldSpecs) }
+      .addMethods(methodSpecs)
       .addTypes(typeSpecs.map { typeSpec ->
         val protocol = nestedTypeProtocols[typeSpec.name]
         protocol?.let { typeSpec.confirmToProtocol(it) } ?: typeSpec
       })
-      .addMethods(methodSpecs)
-      .let { if (initializerBlock.isEmpty) it else it.addInitializerBlock(initializerBlock) }
-      .let { if (staticBlock.isEmpty) it else it.addStaticBlock(staticBlock) }
+      .also { if (!staticBlock.isEmpty) it.addStaticBlock(staticBlock) }
+      .also { if (classBuilder && !initializerBlock.isEmpty) it.addInitializerBlock(initializerBlock) }
       .build()
 }
 
