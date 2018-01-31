@@ -1,0 +1,210 @@
+{
+  "operations": [
+    {
+      "filePath": "src/test/graphql/com/example/nested_inline_fragment/TestOperation.graphql",
+      "operationName": "TestQuery",
+      "operationType": "query",
+      "rootType": "Query",
+      "variables": [],
+      "source": "query TestOperation {\n  setting {\n    __typename\n    ...TestSetting\n  }\n}",
+      "fields": [
+        {
+          "responseName": "setting",
+          "fieldName": "setting",
+          "type": "Setting!",
+          "args": [],
+          "isConditional": false,
+          "isDeprecated": false,
+          "deprecationReason": "",
+          "fields": [
+            {
+              "responseName": "__typename",
+              "fieldName": "__typename",
+              "type": "String!",
+              "isConditional": false
+            }
+          ],
+          "fragmentSpreads": [
+            "TestSetting"
+          ],
+          "inlineFragments": []
+        }
+      ],
+      "fragmentSpreads": [],
+      "inlineFragments": [],
+      "fragmentsReferenced": [
+        "TestSetting"
+      ],
+      "sourceWithFragments": "query TestOperation {\n  setting {\n    __typename\n    ...TestSetting\n  }\n}\nfragment TestSetting on Setting {\n  __typename\n  value {\n    __typename\n    ... on StringListSettingValue {\n      list\n    }\n  }\n  ... on SelectSetting {\n    options {\n      __typename\n      allowFreeText\n      id\n      label\n    }\n  }\n}",
+      "operationId": "c4e875b8b3292e1ca6a36e8dccd11c724ee40eed3a3b87a1107fceddb3186fd2"
+    }
+  ],
+  "fragments": [
+    {
+      "typeCondition": "Setting",
+      "possibleTypes": [
+        "BooleanSetting",
+        "SelectSetting",
+        "StringListSetting",
+        "TextSetting",
+        "TypedStringListSetting"
+      ],
+      "fragmentName": "TestSetting",
+      "filePath": "src/test/graphql/com/example/nested_inline_fragment/TestOperation.graphql",
+      "source": "fragment TestSetting on Setting {\n  __typename\n  value {\n    __typename\n    ... on StringListSettingValue {\n      list\n    }\n  }\n  ... on SelectSetting {\n    options {\n      __typename\n      allowFreeText\n      id\n      label\n    }\n  }\n}",
+      "fields": [
+        {
+          "responseName": "__typename",
+          "fieldName": "__typename",
+          "type": "String!",
+          "isConditional": false
+        },
+        {
+          "responseName": "value",
+          "fieldName": "value",
+          "type": "SettingValue!",
+          "isConditional": false,
+          "isDeprecated": false,
+          "deprecationReason": "",
+          "fields": [
+            {
+              "responseName": "__typename",
+              "fieldName": "__typename",
+              "type": "String!",
+              "isConditional": false
+            }
+          ],
+          "fragmentSpreads": [],
+          "inlineFragments": [
+            {
+              "typeCondition": "StringListSettingValue",
+              "possibleTypes": [
+                "StringListSettingValue"
+              ],
+              "fields": [
+                {
+                  "responseName": "__typename",
+                  "fieldName": "__typename",
+                  "type": "String!",
+                  "isConditional": false
+                },
+                {
+                  "responseName": "list",
+                  "fieldName": "list",
+                  "type": "[String!]",
+                  "isConditional": false,
+                  "isDeprecated": false,
+                  "deprecationReason": ""
+                }
+              ],
+              "fragmentSpreads": []
+            }
+          ]
+        }
+      ],
+      "fragmentSpreads": [],
+      "inlineFragments": [
+        {
+          "typeCondition": "SelectSetting",
+          "possibleTypes": [
+            "SelectSetting"
+          ],
+          "fields": [
+            {
+              "responseName": "__typename",
+              "fieldName": "__typename",
+              "type": "String!",
+              "isConditional": false
+            },
+            {
+              "responseName": "value",
+              "fieldName": "value",
+              "type": "SettingValue!",
+              "isConditional": false,
+              "isDeprecated": false,
+              "deprecationReason": "",
+              "fields": [
+                {
+                  "responseName": "__typename",
+                  "fieldName": "__typename",
+                  "type": "String!",
+                  "isConditional": false
+                }
+              ],
+              "fragmentSpreads": [],
+              "inlineFragments": [
+                {
+                  "typeCondition": "StringListSettingValue",
+                  "possibleTypes": [
+                    "StringListSettingValue"
+                  ],
+                  "fields": [
+                    {
+                      "responseName": "__typename",
+                      "fieldName": "__typename",
+                      "type": "String!",
+                      "isConditional": false
+                    },
+                    {
+                      "responseName": "list",
+                      "fieldName": "list",
+                      "type": "[String!]",
+                      "isConditional": false,
+                      "isDeprecated": false,
+                      "deprecationReason": ""
+                    }
+                  ],
+                  "fragmentSpreads": []
+                }
+              ]
+            },
+            {
+              "responseName": "options",
+              "fieldName": "options",
+              "type": "[SelectableItem!]",
+              "isConditional": false,
+              "isDeprecated": false,
+              "deprecationReason": "",
+              "fields": [
+                {
+                  "responseName": "__typename",
+                  "fieldName": "__typename",
+                  "type": "String!",
+                  "isConditional": false
+                },
+                {
+                  "responseName": "allowFreeText",
+                  "fieldName": "allowFreeText",
+                  "type": "Boolean!",
+                  "isConditional": false,
+                  "isDeprecated": false,
+                  "deprecationReason": ""
+                },
+                {
+                  "responseName": "id",
+                  "fieldName": "id",
+                  "type": "String!",
+                  "isConditional": false,
+                  "isDeprecated": false,
+                  "deprecationReason": ""
+                },
+                {
+                  "responseName": "label",
+                  "fieldName": "label",
+                  "type": "String!",
+                  "isConditional": false,
+                  "isDeprecated": false,
+                  "deprecationReason": ""
+                }
+              ],
+              "fragmentSpreads": [],
+              "inlineFragments": []
+            }
+          ],
+          "fragmentSpreads": []
+        }
+      ]
+    }
+  ],
+  "typesUsed": []
+}
