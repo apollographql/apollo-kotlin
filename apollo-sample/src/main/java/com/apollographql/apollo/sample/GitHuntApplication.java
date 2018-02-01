@@ -22,10 +22,10 @@ import okhttp3.OkHttpClient;
 
 public class GitHuntApplication extends Application {
 
-  private static final String BASE_URL = "http://10.0.2.2:3010/graphql/";
-  private static final String SUBSCRIPTION_BASE_URL = "ws://10.0.2.2:3010/subscriptions";
-//  private static final String BASE_URL = "https://api.githunt.com/graphql";
-//  private static final String SUBSCRIPTION_BASE_URL = "wss://api.githunt.com/subscriptions";
+//  private static final String BASE_URL = "http://10.0.2.2:3010/graphql/";
+//  private static final String SUBSCRIPTION_BASE_URL = "ws://10.0.2.2:3010/subscriptions";
+  private static final String BASE_URL = "https://api.githunt.com/graphql";
+  private static final String SUBSCRIPTION_BASE_URL = "wss://api.githunt.com/subscriptions";
 
   private static final String SQL_CACHE_NAME = "githuntdb";
   private ApolloClient apolloClient;
