@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -122,6 +123,20 @@ public final class OptimisticNormalizedCache extends NormalizedCache {
   @Nonnull @Override
   protected Set<String> performMerge(@Nonnull Record apolloRecord, @Nonnull CacheHeaders cacheHeaders) {
     return Collections.emptySet();
+  }
+
+  @Override public Map<Class, Map<String, Record>> dump() {
+    Map<String, Record> records = new LinkedHashMap<>();
+    for (Map.Entry<String, RecordJournal> entry : lruCache.asMap().entrySet()) {
+      records.put(entry.getKey(), entry.getValue().snapshot);
+    }
+
+    Map<Class, Map<String, Record>> dump = new LinkedHashMap<>();
+    dump.put(this.getClass(), Collections.unmodifiableMap(records));
+    if (nextCache().isPresent()) {
+      dump.putAll(nextCache().get().dump());
+    }
+    return dump;
   }
 
   private static final class RecordJournal {
