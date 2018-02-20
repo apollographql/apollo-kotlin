@@ -4,6 +4,8 @@ import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.CacheKey;
+import com.apollographql.apollo.cache.normalized.NormalizedCache;
+import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
@@ -28,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.functions.Predicate;
@@ -771,5 +774,55 @@ public class NormalizedCacheTestCase {
           }
         }
     );
+  }
+
+  @Test public void dump() throws Exception {
+    enqueueAndAssertResponse(
+        server,
+        "HeroAndFriendsNameWithIdsResponse.json",
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE)))
+            .responseFetcher(NETWORK_ONLY), new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        }
+    );
+
+    Map<Class, Map<String, Record>> dump = apolloClient.apolloStore().normalizedCache().dump();
+    assertThat(NormalizedCache.prettifyDump(dump)).isEqualTo("OptimisticNormalizedCache {}\n" +
+        "LruNormalizedCache {\n" +
+        "  \"1002\" : {\n" +
+        "    \"__typename\" : Human\n" +
+        "    \"id\" : 1002\n" +
+        "    \"name\" : Han Solo\n" +
+        "  }\n" +
+        "\n" +
+        "  \"QUERY_ROOT\" : {\n" +
+        "    \"hero(episode:NEWHOPE)\" : CacheRecordRef(2001)\n" +
+        "  }\n" +
+        "\n" +
+        "  \"1003\" : {\n" +
+        "    \"__typename\" : Human\n" +
+        "    \"id\" : 1003\n" +
+        "    \"name\" : Leia Organa\n" +
+        "  }\n" +
+        "\n" +
+        "  \"1000\" : {\n" +
+        "    \"__typename\" : Human\n" +
+        "    \"id\" : 1000\n" +
+        "    \"name\" : Luke Skywalker\n" +
+        "  }\n" +
+        "\n" +
+        "  \"2001\" : {\n" +
+        "    \"__typename\" : Droid\n" +
+        "    \"id\" : 2001\n" +
+        "    \"name\" : R2-D2\n" +
+        "    \"friends\" : [\n" +
+        "      CacheRecordRef(1000)\n" +
+        "      CacheRecordRef(1002)\n" +
+        "      CacheRecordRef(1003)\n" +
+        "    ]\n" +
+        "  }\n" +
+        "}\n");
   }
 }

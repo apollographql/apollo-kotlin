@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -156,5 +157,50 @@ public abstract class NormalizedCache {
 
   public final Optional<NormalizedCache> nextCache() {
     return nextCache;
+  }
+
+  public Map<Class, Map<String, Record>> dump() {
+    Class clazz = this.getClass();
+    return Collections.singletonMap(clazz, Collections.<String, Record>emptyMap());
+  }
+
+  public static String prettifyDump(Map<Class, Map<String, Record>> dump) {
+    StringBuilder builder = new StringBuilder();
+    for (Map.Entry<Class, Map<String, Record>> dumpEntry : dump.entrySet()) {
+      builder.append(dumpEntry.getKey().getSimpleName())
+          .append(" {");
+      for (Map.Entry<String, Record> recordEntry : dumpEntry.getValue().entrySet()) {
+        builder
+            .append("\n  \"")
+            .append(recordEntry.getKey())
+            .append("\" : {");
+        for (Map.Entry<String, Object> fieldEntry : recordEntry.getValue().fields().entrySet()) {
+          builder
+              .append("\n    \"")
+              .append(fieldEntry.getKey())
+              .append("\" : ");
+          if (fieldEntry.getValue() instanceof CacheReference) {
+            builder.append("CacheRecordRef(")
+                .append(fieldEntry.getValue())
+                .append(")");
+          } else if (fieldEntry.getValue() instanceof List) {
+            builder.append("[");
+            for (Object item : (List) fieldEntry.getValue()) {
+              builder
+                  .append("\n      ")
+                  .append(item instanceof CacheReference ? "CacheRecordRef(" : "")
+                  .append(item)
+                  .append(item instanceof CacheReference ? ")" : "");
+            }
+            builder.append("\n    ]");
+          } else {
+            builder.append(fieldEntry.getValue());
+          }
+        }
+        builder.append("\n  }\n");
+      }
+      builder.append("}\n");
+    }
+    return builder.toString();
   }
 }

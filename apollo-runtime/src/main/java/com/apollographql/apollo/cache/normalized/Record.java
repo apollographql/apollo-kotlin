@@ -96,6 +96,13 @@ public final class Record {
     return toBuilder().build();
   }
 
+  @Override public String toString() {
+    return "Record{"
+        + "key='" + key + '\''
+        + ", fields=" + fields
+        + '}';
+  }
+
   /**
    * @param otherRecord The record to merge into this record.
    * @return A set of field keys which have changed, or were added. A field key incorporates any GraphQL arguments in
