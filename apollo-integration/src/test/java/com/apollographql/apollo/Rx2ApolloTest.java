@@ -2,40 +2,32 @@ package com.apollographql.apollo;
 
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory;
-import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
-import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
-import io.reactivex.observers.DisposableObserver;
 import io.reactivex.observers.TestObserver;
+import io.reactivex.schedulers.TestScheduler;
+import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.apollographql.apollo.Utils.TIME_OUT_SECONDS;
-import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
 import static com.apollographql.apollo.Utils.mockResponse;
-import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_FIRST;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 import static com.apollographql.apollo.integration.normalizer.type.Episode.EMPIRE;
 import static com.apollographql.apollo.integration.normalizer.type.Episode.NEWHOPE;
@@ -50,10 +42,13 @@ public class Rx2ApolloTest {
 
   @Before public void setup() {
     server = new MockWebServer();
-    OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .dispatcher(new Dispatcher(currentThreadExecutorService()))
+        .build();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
+        .dispatcher(currentThreadExecutorService())
         .okHttpClient(okHttpClient)
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .build();
@@ -74,7 +69,6 @@ public class Rx2ApolloTest {
     Rx2Apollo
         .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertNoErrors()
         .assertComplete()
         .assertValue(new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
@@ -92,13 +86,11 @@ public class Rx2ApolloTest {
     TestObserver<Response<EpisodeHeroNameQuery.Data>> testObserver = new TestObserver<>();
     Disposable disposable = Rx2Apollo
         .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
-        .delay(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .subscribeWith(testObserver);
 
     disposable.dispose();
 
-    testObserver.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-    testObserver.assertNotComplete();
+    testObserver.assertComplete();
     assertThat(testObserver.isDisposed()).isTrue();
   }
 
@@ -108,7 +100,6 @@ public class Rx2ApolloTest {
     Rx2Apollo
         .from(apolloClient.prefetch(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertNoErrors()
         .assertComplete();
   }
@@ -120,19 +111,20 @@ public class Rx2ApolloTest {
     TestObserver<EpisodeHeroNameQuery.Data> testObserver = new TestObserver<>();
     Disposable disposable = Rx2Apollo
         .from(apolloClient.prefetch(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
-        .delay(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+        .observeOn(new TestScheduler())
         .subscribeWith(testObserver);
 
     disposable.dispose();
 
-    testObserver.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     testObserver.assertNotComplete();
     assertThat(testObserver.isDisposed()).isTrue();
   }
 
   @Test
+  @SuppressWarnings("CheckReturnValue")
   public void queryWatcherUpdatedSameQueryDifferentResults() throws Exception {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    TestObserver<EpisodeHeroNameQuery.Data> observer = new TestObserver<>();
     Rx2Apollo
         .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
         .map(new Function<Response<EpisodeHeroNameQuery.Data>, EpisodeHeroNameQuery.Data>() {
@@ -141,22 +133,14 @@ public class Rx2ApolloTest {
             return response.data();
           }
         })
-        .doOnNext(new Consumer<EpisodeHeroNameQuery.Data>() {
-          AtomicBoolean executed = new AtomicBoolean();
+        .subscribeWith(observer);
 
-          @Override public void accept(EpisodeHeroNameQuery.Data data) throws Exception {
-            if (executed.compareAndSet(false, true)) {
-              server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
-              apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE)))
-                  .responseFetcher(NETWORK_ONLY)
-                  .enqueue(null);
-            }
-          }
-        })
-        .take(2)
-        .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
-        .assertValueCount(2)
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
+    apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE)))
+        .responseFetcher(NETWORK_ONLY)
+        .enqueue(null);
+
+    observer.assertValueCount(2)
         .assertValueAt(0, new Predicate<EpisodeHeroNameQuery.Data>() {
           @Override public boolean test(EpisodeHeroNameQuery.Data data) throws Exception {
             assertThat(data.hero().name()).isEqualTo("R2-D2");
@@ -172,8 +156,10 @@ public class Rx2ApolloTest {
   }
 
   @Test
+  @SuppressWarnings("CheckReturnValue")
   public void queryWatcherNotUpdatedSameQuerySameResults() throws Exception {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    TestObserver<EpisodeHeroNameQuery.Data> observer = new TestObserver<>();
     Rx2Apollo
         .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
         .map(new Function<Response<EpisodeHeroNameQuery.Data>, EpisodeHeroNameQuery.Data>() {
@@ -182,20 +168,13 @@ public class Rx2ApolloTest {
             return response.data();
           }
         })
-        .doOnNext(new Consumer<EpisodeHeroNameQuery.Data>() {
-          AtomicBoolean executed = new AtomicBoolean();
+        .subscribeWith(observer);
 
-          @Override public void accept(EpisodeHeroNameQuery.Data data) throws Exception {
-            if (executed.compareAndSet(false, true)) {
-              server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
-              apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).responseFetcher(NETWORK_ONLY)
-                  .enqueue(null);
-            }
-          }
-        })
-        .take(2)
-        .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).responseFetcher(NETWORK_ONLY)
+        .enqueue(null);
+
+    observer
         .assertValueCount(1)
         .assertValueAt(0, new Predicate<EpisodeHeroNameQuery.Data>() {
           @Override public boolean test(EpisodeHeroNameQuery.Data data) throws Exception {
@@ -206,8 +185,11 @@ public class Rx2ApolloTest {
   }
 
   @Test
+  @SuppressWarnings("CheckReturnValue")
   public void queryWatcherUpdatedDifferentQueryDifferentResults() throws Exception {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+
+    TestObserver<EpisodeHeroNameQuery.Data> observer = new TestObserver<>();
     Rx2Apollo
         .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
         .map(new Function<Response<EpisodeHeroNameQuery.Data>, EpisodeHeroNameQuery.Data>() {
@@ -216,19 +198,12 @@ public class Rx2ApolloTest {
             return response.data();
           }
         })
-        .doOnNext(new Consumer<EpisodeHeroNameQuery.Data>() {
-          AtomicBoolean executed = new AtomicBoolean();
+        .subscribeWith(observer);
 
-          @Override public void accept(EpisodeHeroNameQuery.Data data) throws Exception {
-            if (executed.compareAndSet(false, true)) {
-              server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
-              apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(NEWHOPE))).enqueue(null);
-            }
-          }
-        })
-        .take(2)
-        .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
+    apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(NEWHOPE))).enqueue(null);
+
+    observer
         .assertValueCount(2)
         .assertValueAt(0, new Predicate<EpisodeHeroNameQuery.Data>() {
           @Override public boolean test(EpisodeHeroNameQuery.Data data) throws Exception {
@@ -249,6 +224,7 @@ public class Rx2ApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
     TestObserver<EpisodeHeroNameQuery.Data> testObserver = new TestObserver<>();
+    TestScheduler scheduler = new TestScheduler();
     Disposable disposable = Rx2Apollo
         .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
         .map(new Function<Response<EpisodeHeroNameQuery.Data>, EpisodeHeroNameQuery.Data>() {
@@ -257,27 +233,17 @@ public class Rx2ApolloTest {
             return response.data();
           }
         })
-        .doOnNext(new Consumer<EpisodeHeroNameQuery.Data>() {
-          AtomicBoolean executed = new AtomicBoolean();
-
-          @Override public void accept(EpisodeHeroNameQuery.Data data) throws Exception {
-            if (executed.compareAndSet(false, true)) {
-              server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE).setBodyDelay(TIME_OUT_SECONDS, TimeUnit.SECONDS));
-              apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).responseFetcher(NETWORK_ONLY)
-                  .enqueue(null);
-            }
-          }
-        })
+        .observeOn(scheduler)
         .subscribeWith(testObserver);
 
-    try {
-      Thread.sleep(TimeUnit.SECONDS.toMillis(TIME_OUT_SECONDS));
-    } catch (Exception ignore) {
-    }
+    scheduler.triggerActions();
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
+    apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).responseFetcher(NETWORK_ONLY)
+        .enqueue(null);
     disposable.dispose();
+    scheduler.triggerActions();
 
     testObserver
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValueCount(1)
         .assertValueAt(0, new Predicate<EpisodeHeroNameQuery.Data>() {
           @Override public boolean test(EpisodeHeroNameQuery.Data data) throws Exception {
@@ -285,5 +251,15 @@ public class Rx2ApolloTest {
             return true;
           }
         });
+  }
+
+  private static ExecutorService currentThreadExecutorService() {
+    final ThreadPoolExecutor.CallerRunsPolicy callerRunsPolicy = new ThreadPoolExecutor.CallerRunsPolicy();
+    return new ThreadPoolExecutor(0, 1, 0L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), callerRunsPolicy) {
+      @Override
+      public void execute(Runnable command) {
+        callerRunsPolicy.rejectedExecution(command, this);
+      }
+    };
   }
 }
