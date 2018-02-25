@@ -22,7 +22,7 @@ public class CacheKeyForFieldTest {
 
   @Test
   public void testFieldWithNoArguments() {
-    ResponseField field = ResponseField.forString("hero", "hero", null, false, Collections.<ResponseField.Condition>emptyList());
+    ResponseField field = createResponseField("hero", "hero");
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
         return super.valueMap();
@@ -33,7 +33,7 @@ public class CacheKeyForFieldTest {
 
   @Test
   public void testFieldWithNoArgumentsWithAlias() {
-    ResponseField field = ResponseField.forString("r2", "hero", null, false, Collections.<ResponseField.Condition>emptyList());
+    ResponseField field = createResponseField("r2", "hero");
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
         return super.valueMap();
@@ -45,9 +45,10 @@ public class CacheKeyForFieldTest {
   @Test
   public void testFieldWithArgument() {
     //noinspection unchecked
-    ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    Map<String, Object> arguments = new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", "JEDI")
-        .build(), false, Collections.<ResponseField.Condition>emptyList());
+        .build();
+    ResponseField field = createResponseField("hero", "hero", arguments);
 
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
@@ -60,9 +61,10 @@ public class CacheKeyForFieldTest {
   @Test
   public void testFieldWithArgumentAndAlias() {
     //noinspection unchecked
-    ResponseField field = ResponseField.forString("r2", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    Map<String, Object> arguments = new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", "JEDI")
-        .build(), false, Collections.<ResponseField.Condition>emptyList());
+        .build();
+    ResponseField field = createResponseField("r2", "hero", arguments);
 
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
@@ -75,12 +77,13 @@ public class CacheKeyForFieldTest {
   @Test
   public void testFieldWithVariableArgument() {
     //noinspection unchecked
-    ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    UnmodifiableMapBuilder<String, Object> argument = new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
             .put("kind", "Variable")
             .put("variableName", "episode")
-            .build())
-        .build(), false, Collections.<ResponseField.Condition>emptyList());
+            .build());
+    ResponseField field = createResponseField("hero", "hero", argument
+        .build());
 
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
@@ -95,12 +98,13 @@ public class CacheKeyForFieldTest {
   @Test
   public void testFieldWithVariableArgumentNull() {
     //noinspection unchecked
-    ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    UnmodifiableMapBuilder<String, Object> argument = new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
             .put("kind", "Variable")
             .put("variableName", "episode")
-            .build())
-        .build(), false, Collections.<ResponseField.Condition>emptyList());
+            .build());
+    ResponseField field = createResponseField("hero", "hero", argument
+        .build());
 
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
@@ -115,10 +119,11 @@ public class CacheKeyForFieldTest {
   @Test
   public void testFieldWithMultipleArgument() {
     //noinspection unchecked
-    ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    Map<String, Object> build = new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", "JEDI")
         .put("color", "blue")
-        .build(), false, Collections.<ResponseField.Condition>emptyList());
+        .build();
+    ResponseField field = createResponseField("hero", "hero", build);
 
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
@@ -131,10 +136,11 @@ public class CacheKeyForFieldTest {
   @Test
   public void testFieldWithMultipleArgumentsOrderIndependent() {
     //noinspection unchecked
-    ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    Map<String, Object> arguments = new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", "JEDI")
         .put("color", "blue")
-        .build(), false, Collections.<ResponseField.Condition>emptyList());
+        .build();
+    ResponseField field = createResponseField("hero", "hero", arguments);
 
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
@@ -143,10 +149,11 @@ public class CacheKeyForFieldTest {
     };
 
     //noinspection unchecked
-    ResponseField fieldTwo = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    Map<String, Object> fieldTwoArguments = new UnmodifiableMapBuilder<String, Object>(1)
         .put("color", "blue")
         .put("episode", "JEDI")
-        .build(), false, Collections.<ResponseField.Condition>emptyList());
+        .build();
+    ResponseField fieldTwo = createResponseField("hero", "hero", fieldTwoArguments);
 
     assertThat(fieldTwo.cacheKey(variables)).isEqualTo(field.cacheKey(variables));
   }
@@ -154,13 +161,14 @@ public class CacheKeyForFieldTest {
   @Test
   public void testFieldWithNestedObject() {
     //noinspection unchecked
-    ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    Map<String, Object> arguments = new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", "JEDI")
         .put("nested", new UnmodifiableMapBuilder<String, Object>(2)
             .put("foo", 1)
             .put("bar", 2)
             .build())
-        .build(), false, Collections.<ResponseField.Condition>emptyList());
+        .build();
+    ResponseField field = createResponseField("hero", "hero", arguments);
 
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
@@ -173,7 +181,7 @@ public class CacheKeyForFieldTest {
   @Test
   public void testFieldWithNestedObjectAndVariables() {
     //noinspection unchecked
-    ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+    Map<String, Object> arguments = new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", "JEDI")
         .put("nested", new UnmodifiableMapBuilder<String, Object>(2)
             .put("foo", new UnmodifiableMapBuilder<String, Object>(2)
@@ -182,7 +190,8 @@ public class CacheKeyForFieldTest {
                 .build())
             .put("bar", "2")
             .build())
-        .build(), false, Collections.<ResponseField.Condition>emptyList());
+        .build();
+    ResponseField field = createResponseField("hero", "hero", arguments);
 
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
@@ -194,4 +203,16 @@ public class CacheKeyForFieldTest {
     assertThat(field.cacheKey(variables)).isEqualTo("hero(episode:JEDI,nested:[bar:2,foo:1])");
   }
 
+  private ResponseField createResponseField(String responseName, String fieldName) {
+    return createResponseField(responseName, fieldName, null);
+  }
+
+  private ResponseField createResponseField(String responseName, String fieldName, Map<String, Object> arguments) {
+    return ResponseField.forString(
+        responseName,
+        fieldName,
+        arguments,
+        false,
+        Collections.<ResponseField.Condition>emptyList());
+  }
 }
