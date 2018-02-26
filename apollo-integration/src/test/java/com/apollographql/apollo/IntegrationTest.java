@@ -36,7 +36,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
@@ -273,24 +272,18 @@ public class IntegrationTest {
   @Test public void statusEvents() throws Exception {
     server.enqueue(mockResponse("HeroNameResponse.json"));
     List<ApolloCall.StatusEvent> statusEvents = enqueueAndAwaitForStatusEvents(
-        apolloClient.query(new HeroNameQuery()),
-        new NamedCountDownLatch("statusEvents", 1)
-    );
+        apolloClient.query(new HeroNameQuery()));
     assertThat(statusEvents).isEqualTo(Arrays.asList(ApolloCall.StatusEvent.SCHEDULED, ApolloCall.StatusEvent
         .FETCH_NETWORK, ApolloCall.StatusEvent.COMPLETED));
 
     statusEvents = enqueueAndAwaitForStatusEvents(
-        apolloClient.query(new HeroNameQuery()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
-        new NamedCountDownLatch("statusEvents", 1)
-    );
+        apolloClient.query(new HeroNameQuery()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY));
     assertThat(statusEvents).isEqualTo(Arrays.asList(ApolloCall.StatusEvent.SCHEDULED, ApolloCall.StatusEvent
         .FETCH_CACHE, ApolloCall.StatusEvent.COMPLETED));
 
     server.enqueue(mockResponse("HeroNameResponse.json").setBodyDelay(1, TimeUnit.SECONDS));
     statusEvents = enqueueAndAwaitForStatusEvents(
-        apolloClient.query(new HeroNameQuery()).responseFetcher(ApolloResponseFetchers.CACHE_AND_NETWORK),
-        new NamedCountDownLatch("statusEvents", 1)
-    );
+        apolloClient.query(new HeroNameQuery()).responseFetcher(ApolloResponseFetchers.CACHE_AND_NETWORK));
     assertThat(statusEvents).isEqualTo(Arrays.asList(ApolloCall.StatusEvent.SCHEDULED, ApolloCall.StatusEvent
         .FETCH_CACHE, ApolloCall.StatusEvent.FETCH_NETWORK, ApolloCall.StatusEvent.COMPLETED));
   }
@@ -332,8 +325,7 @@ public class IntegrationTest {
         .assertValue(predicate);
   }
 
-  private <T> List<ApolloCall.StatusEvent> enqueueAndAwaitForStatusEvents(ApolloQueryCall<T> call,
-      final CountDownLatch latch) throws Exception {
+  private <T> List<ApolloCall.StatusEvent> enqueueAndAwaitForStatusEvents(ApolloQueryCall<T> call) throws Exception {
     final List<ApolloCall.StatusEvent> statusEvents = new ArrayList<>();
     call.enqueue(new ApolloCall.Callback<T>() {
       @Override public void onResponse(@Nonnull Response<T> response) {
@@ -344,12 +336,8 @@ public class IntegrationTest {
 
       @Override public void onStatusEvent(@Nonnull ApolloCall.StatusEvent event) {
         statusEvents.add(event);
-        if (event == ApolloCall.StatusEvent.COMPLETED) {
-          latch.countDown();
-        }
       }
     });
-    latch.await();
     return statusEvents;
   }
 }
