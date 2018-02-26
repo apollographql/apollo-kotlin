@@ -85,4 +85,32 @@ public final class Utils {
         predicate
     );
   }
+
+  public static ExecutorService immediateExecutorService() {
+    return new AbstractExecutorService() {
+      @Override public void shutdown() {
+
+      }
+
+      @Override public List<Runnable> shutdownNow() {
+        return null;
+      }
+
+      @Override public boolean isShutdown() {
+        return false;
+      }
+
+      @Override public boolean isTerminated() {
+        return false;
+      }
+
+      @Override public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
+        return false;
+      }
+
+      @Override public void execute(Runnable runnable) {
+        runnable.run();
+      }
+    };
+  }
 }

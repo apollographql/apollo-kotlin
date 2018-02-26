@@ -21,10 +21,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.AbstractExecutorService;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -38,6 +35,7 @@ import okhttp3.mockwebserver.MockWebServer;
 
 import static com.apollographql.apollo.Utils.TIME_OUT_SECONDS;
 import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
+import static com.apollographql.apollo.Utils.immediateExecutorService;
 import static com.apollographql.apollo.Utils.mockResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
@@ -428,33 +426,5 @@ public class ApolloWatcherTest {
     //Wait for 3 seconds to check that callback is not called twice.
     //Test is successful if timeout is reached.
     secondResponseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-  }
-
-  private ExecutorService immediateExecutorService() {
-    return new AbstractExecutorService() {
-      @Override public void shutdown() {
-
-      }
-
-      @Override public List<Runnable> shutdownNow() {
-        return null;
-      }
-
-      @Override public boolean isShutdown() {
-        return false;
-      }
-
-      @Override public boolean isTerminated() {
-        return false;
-      }
-
-      @Override public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
-        return false;
-      }
-
-      @Override public void execute(Runnable runnable) {
-        runnable.run();
-      }
-    };
   }
 }
