@@ -8,8 +8,8 @@ import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -23,12 +23,11 @@ import okhttp3.mockwebserver.MockWebServer;
 public class ApolloCancelCallTest {
   private static final long TIME_OUT_SECONDS = 3;
   private ApolloClient apolloClient;
-  private MockWebServer server;
+  @Rule public final MockWebServer server = new MockWebServer();
   private MockHttpCacheStore cacheStore;
 
   @Before
   public void setup() {
-    server = new MockWebServer();
     cacheStore = new MockHttpCacheStore();
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
     apolloClient = ApolloClient.builder()
@@ -36,13 +35,6 @@ public class ApolloCancelCallTest {
         .okHttpClient(okHttpClient)
         .httpCache(new ApolloHttpCache(cacheStore, null))
         .build();
-  }
-
-  @After public void tearDown() {
-    try {
-      server.shutdown();
-    } catch (Exception ignore) {
-    }
   }
 
   @Test

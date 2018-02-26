@@ -15,6 +15,7 @@ import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -38,7 +39,7 @@ import static org.junit.Assert.fail;
 public class ApolloIdlingResourceTest {
   private ApolloIdlingResource idlingResource;
   private ApolloClient apolloClient;
-  private MockWebServer server;
+  @Rule public final MockWebServer server = new MockWebServer();
   private OkHttpClient okHttpClient;
 
   private static final long TIME_OUT_SECONDS = 3;
@@ -83,7 +84,6 @@ public class ApolloIdlingResourceTest {
 
   @Before
   public void setup() {
-    server = new MockWebServer();
     okHttpClient = new OkHttpClient.Builder()
         .build();
   }
@@ -91,10 +91,6 @@ public class ApolloIdlingResourceTest {
   @After
   public void tearDown() {
     idlingResource = null;
-    try {
-      server.shutdown();
-    } catch (IOException ignored) {
-    }
   }
 
   @Test

@@ -17,8 +17,8 @@ import com.apollographql.apollo.integration.normalizer.type.ColorInput;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.integration.normalizer.type.ReviewInput;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -43,11 +43,9 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class OptimisticCacheTestCase {
   private ApolloClient apolloClient;
-  private MockWebServer server;
+  @Rule public final MockWebServer server = new MockWebServer();
 
   @Before public void setUp() {
-    server = new MockWebServer();
-
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
         .writeTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .readTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
@@ -59,13 +57,6 @@ public class OptimisticCacheTestCase {
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .dispatcher(Utils.immediateExecutor())
         .build();
-  }
-
-  @After public void tearDown() {
-    try {
-      server.shutdown();
-    } catch (IOException ignored) {
-    }
   }
 
   private MockResponse mockResponse(String fileName) throws IOException {

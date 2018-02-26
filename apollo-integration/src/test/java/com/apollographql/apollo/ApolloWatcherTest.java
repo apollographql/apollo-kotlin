@@ -15,8 +15,8 @@ import com.apollographql.apollo.internal.cache.normalized.WriteableStore;
 
 import junit.framework.Assert;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -43,11 +43,9 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class ApolloWatcherTest {
   private ApolloClient apolloClient;
-  private MockWebServer server;
+  @Rule public final MockWebServer server = new MockWebServer();
 
   @Before public void setUp() throws IOException {
-    server = new MockWebServer();
-    server.start();
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
 
     apolloClient = ApolloClient.builder()
@@ -66,13 +64,6 @@ public class ApolloWatcherTest {
         })
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .build();
-  }
-
-  @After public void tearDown() {
-    try {
-      server.shutdown();
-    } catch (IOException ignored) {
-    }
   }
 
   @Test

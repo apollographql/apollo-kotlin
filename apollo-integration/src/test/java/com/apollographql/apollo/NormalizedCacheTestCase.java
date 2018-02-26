@@ -25,11 +25,10 @@ import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsF
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -50,11 +49,9 @@ import static java.util.Arrays.asList;
 
 public class NormalizedCacheTestCase {
   private ApolloClient apolloClient;
-  private MockWebServer server;
+  @Rule public final MockWebServer server = new MockWebServer();
 
   @Before public void setUp() {
-    server = new MockWebServer();
-
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
         .writeTimeout(2, TimeUnit.SECONDS)
         .readTimeout(2, TimeUnit.SECONDS)
@@ -66,13 +63,6 @@ public class NormalizedCacheTestCase {
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .dispatcher(Utils.immediateExecutor())
         .build();
-  }
-
-  @After public void tearDown() {
-    try {
-      server.shutdown();
-    } catch (IOException ignored) {
-    }
   }
 
   @Test public void episodeHeroName() throws Exception {

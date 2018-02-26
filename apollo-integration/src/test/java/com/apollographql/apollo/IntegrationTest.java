@@ -22,7 +22,6 @@ import com.apollographql.apollo.response.OperationResponseParser;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -84,13 +83,6 @@ public class IntegrationTest {
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .defaultResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
         .build();
-  }
-
-  @After public void tearDown() {
-    try {
-      server.shutdown();
-    } catch (IOException ignored) {
-    }
   }
 
   @SuppressWarnings({"ConstantConditions", "CheckReturnValue"})

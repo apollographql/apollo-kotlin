@@ -18,6 +18,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +50,7 @@ public class HttpCacheTest {
   private MockHttpCacheStore cacheStore;
   private OkHttpClient okHttpClient;
   @Rule public final MockWebServer server = new MockWebServer();
-  @Rule public InMemoryFileSystem inMemoryFileSystem = new InMemoryFileSystem();
+  @Rule public final InMemoryFileSystem inMemoryFileSystem = new InMemoryFileSystem();
 
   @Before public void setUp() {
     CustomTypeAdapter<Date> dateCustomTypeAdapter = new CustomTypeAdapter<Date>() {
