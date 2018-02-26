@@ -19,15 +19,16 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nonnull;
 
 import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
@@ -36,7 +37,6 @@ import okhttp3.ResponseBody;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.apollographql.apollo.Utils.TIME_OUT_SECONDS;
 import static com.apollographql.apollo.Utils.assertResponse;
 import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
 import static com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse;
@@ -53,13 +53,13 @@ public class ApolloInterceptorTest {
 
   @Before
   public void setup() {
-    okHttpClient = new OkHttpClient.Builder().build();
+    okHttpClient = new OkHttpClient.Builder()
+        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .build();
   }
 
   @Test
   public void asyncApplicationInterceptorCanShortCircuitResponses() throws Exception {
-    server.shutdown();
-
     final NamedCountDownLatch responseLatch = new NamedCountDownLatch("responseLatch", 1);
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
     EpisodeHeroNameQuery query = createHeroNameQuery();
@@ -76,7 +76,7 @@ public class ApolloInterceptorTest {
       }
     };
 
-    client = createApolloClient(interceptor);
+    client = createApolloClient(interceptor, Utils.immediateExecutor());
     client.query(query).enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
       @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
         assertThat(expectedResponse.parsedResponse.get()).isEqualTo(response);
@@ -88,7 +88,7 @@ public class ApolloInterceptorTest {
       }
     });
 
-    responseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    responseLatch.await();
   }
 
   @Test
@@ -126,7 +126,7 @@ public class ApolloInterceptorTest {
       }
     };
 
-    client = createApolloClient(interceptor);
+    client = createApolloClient(interceptor, Utils.immediateExecutor());
     client.query(query).enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
       @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
         assertThat(rewrittenResponse.parsedResponse.get()).isEqualTo(response);
@@ -138,7 +138,7 @@ public class ApolloInterceptorTest {
       }
     });
 
-    responseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    responseLatch.await();
   }
 
   @Test
@@ -160,7 +160,7 @@ public class ApolloInterceptorTest {
       }
     };
 
-    client = createApolloClient(interceptor);
+    client = createApolloClient(interceptor, Utils.immediateExecutor());
     client.query(query)
         .enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
@@ -174,7 +174,7 @@ public class ApolloInterceptorTest {
           }
         });
 
-    responseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    responseLatch.await();
   }
 
   @Test
@@ -198,12 +198,7 @@ public class ApolloInterceptorTest {
       }
     };
 
-    client = ApolloClient.builder()
-        .serverUrl(server.url("/"))
-        .okHttpClient(okHttpClient)
-        .addApplicationInterceptor(interceptor)
-        .dispatcher(new ExceptionHandlingExecutor(message, RuntimeException.class, latch))
-        .build();
+    client = createApolloClient(interceptor, new ExceptionHandlingExecutor(message, RuntimeException.class, latch));
 
     client
         .query(query)
@@ -217,7 +212,7 @@ public class ApolloInterceptorTest {
           }
         });
 
-    latch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    latch.await();
   }
 
   @Test
@@ -240,12 +235,7 @@ public class ApolloInterceptorTest {
       }
     };
 
-    client = ApolloClient.builder()
-        .serverUrl(server.url("/"))
-        .okHttpClient(okHttpClient)
-        .addApplicationInterceptor(interceptor)
-        .dispatcher(new ExceptionHandlingExecutor(null, NullPointerException.class, latch))
-        .build();
+    client = createApolloClient(interceptor, new ExceptionHandlingExecutor(null, NullPointerException.class, latch));
 
     client.query(query).enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
       @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
@@ -257,7 +247,7 @@ public class ApolloInterceptorTest {
       }
     });
 
-    latch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    latch.await();
   }
 
   @Test
@@ -275,7 +265,7 @@ public class ApolloInterceptorTest {
       }
     };
 
-    client = createApolloClient(interceptor);
+    client = createApolloClient(interceptor, Utils.immediateExecutor());
 
     enqueueAndAssertResponse(
         server,
@@ -292,8 +282,6 @@ public class ApolloInterceptorTest {
 
   @Test
   public void onShortCircuitingResponseSubsequentInterceptorsAreNotCalled() throws IOException, ApolloException {
-    server.shutdown();
-
     EpisodeHeroNameQuery query = createHeroNameQuery();
     final InterceptorResponse expectedResponse = prepareInterceptorResponse(query);
 
@@ -341,46 +329,26 @@ public class ApolloInterceptorTest {
   @Test
   public void onApolloCallCanceledAsyncApolloInterceptorIsDisposed() throws ApolloException, TimeoutException,
       InterruptedException, IOException {
-    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID).setBodyDelay(1, TimeUnit.SECONDS));
-    final NamedCountDownLatch latch = new NamedCountDownLatch("latch", 1);
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
     EpisodeHeroNameQuery query = createHeroNameQuery();
-    ApolloInterceptor interceptor = new ApolloInterceptor() {
-      volatile boolean disposed;
+    SpyingApolloInterceptor interceptor = new SpyingApolloInterceptor();
 
-      @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull Executor dispatcher, @Nonnull final CallBack callBack) {
-        chain.proceedAsync(request, dispatcher, callBack);
-      }
-
-      @Override public void dispose() {
-        disposed = true;
-        latch.countDown();
-      }
-    };
-
-    client = createApolloClient(interceptor);
+    Utils.TestExecutor testExecutor = new Utils.TestExecutor();
+    client = createApolloClient(interceptor, testExecutor);
 
     ApolloCall<EpisodeHeroNameQuery.Data> apolloCall = client.query(query);
 
-    final AtomicReference<String> errorState = new AtomicReference<>(null);
     apolloCall.enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
       @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
-        errorState.set("Received a response, even though the request has been canceled");
       }
 
       @Override public void onFailure(@Nonnull ApolloException e) {
-        errorState.set("Received an apolloException, even though the request has been canceled");
       }
     });
-
     apolloCall.cancel();
-
-    //Latch's count should go down to zero in interceptor's dispose,
-    //else timeout is reached which means the test fails.
-    latch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-    assertThat(errorState.get()).isNull();
+    testExecutor.triggerActions();
+    assertThat(interceptor.isDisposed).isTrue();
   }
 
   @NonNull private EpisodeHeroNameQuery createHeroNameQuery() {
@@ -390,11 +358,12 @@ public class ApolloInterceptorTest {
         .build();
   }
 
-  private ApolloClient createApolloClient(ApolloInterceptor interceptor) {
+  private ApolloClient createApolloClient(ApolloInterceptor interceptor, Executor dispatcher) {
     return ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .addApplicationInterceptor(interceptor)
+        .dispatcher(dispatcher)
         .build();
   }
 
@@ -447,6 +416,20 @@ public class ApolloInterceptorTest {
           }
         }
       });
+    }
+  }
+
+  private static class SpyingApolloInterceptor implements ApolloInterceptor {
+
+    volatile boolean isDisposed = false;
+
+    @Override
+    public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain, @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
+      chain.proceedAsync(request, dispatcher, callBack);
+    }
+
+    @Override public void dispose() {
+      isDisposed = true;
     }
   }
 }
