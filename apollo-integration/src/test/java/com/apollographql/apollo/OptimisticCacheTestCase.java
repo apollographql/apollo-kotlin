@@ -26,16 +26,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
 import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.apollographql.apollo.Utils.TIME_OUT_SECONDS;
 import static com.apollographql.apollo.Utils.assertResponse;
 import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
@@ -47,8 +46,7 @@ public class OptimisticCacheTestCase {
 
   @Before public void setUp() {
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .writeTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
-        .readTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
         .build();
 
     apolloClient = ApolloClient.builder()
@@ -339,9 +337,9 @@ public class OptimisticCacheTestCase {
             watcherFirstCallLatch.countDown();
           }
         });
-    watcherFirstCallLatch.awaitOrThrowWithTimeout(2, TimeUnit.SECONDS);
+    watcherFirstCallLatch.await();
 
-    server.enqueue(mockResponse("UpdateReviewResponse.json").setBodyDelay(2, TimeUnit.SECONDS));
+    server.enqueue(mockResponse("UpdateReviewResponse.json"));
     UpdateReviewMutation updateReviewMutation = new UpdateReviewMutation(
         "empireReview2",
         ReviewInput.builder()
@@ -363,10 +361,7 @@ public class OptimisticCacheTestCase {
           }
         }
     );
-    mutationCallLatch.await(3, TimeUnit.SECONDS);
-
-    // sleep a while to wait if watcher gets another notification
-    Thread.sleep(TimeUnit.SECONDS.toMillis(2));
+    mutationCallLatch.await();
 
     assertThat(watcherData).hasSize(3);
 

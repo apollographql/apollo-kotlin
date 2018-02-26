@@ -20,7 +20,9 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -30,11 +32,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockWebServer;
 
 import static com.apollographql.apollo.Utils.TIME_OUT_SECONDS;
 import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
+import static com.apollographql.apollo.Utils.immediateExecutor;
 import static com.apollographql.apollo.Utils.immediateExecutorService;
 import static com.apollographql.apollo.Utils.mockResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
@@ -46,11 +50,13 @@ public class ApolloWatcherTest {
   @Rule public final MockWebServer server = new MockWebServer();
 
   @Before public void setUp() throws IOException {
-    OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .build();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
-        .dispatcher(immediateExecutorService())
+        .dispatcher(immediateExecutor())
         .okHttpClient(okHttpClient)
         .logger(new Logger() {
           @Override
@@ -92,7 +98,7 @@ public class ApolloWatcherTest {
           }
         });
 
-    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    firstResponseLatch.await();
 
     // Another newer call gets updated information
     enqueueAndAssertResponse(
@@ -106,18 +112,14 @@ public class ApolloWatcherTest {
         }
     );
 
-    secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    secondResponseLatch.await();
     watcher.cancel();
   }
 
   @Test
   public void testQueryWatcherUpdated_Store_write() throws IOException, InterruptedException,
       TimeoutException, ApolloException {
-    final NamedCountDownLatch firstResponseLatch = new NamedCountDownLatch("firstResponseLatch", 1);
-    final NamedCountDownLatch secondResponseLatch = new NamedCountDownLatch("secondResponseLatch", 2);
-    final AtomicReference<String> firstHeroName = new AtomicReference<>();
-    final AtomicReference<String> secondHeroName = new AtomicReference<>();
-
+    final List<String> responses = new ArrayList<>();
     EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
 
@@ -125,13 +127,7 @@ public class ApolloWatcherTest {
     watcher.enqueueAndWatch(
         new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
           @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
-            if (secondResponseLatch.getCount() == 2) {
-              firstHeroName.set(response.data().hero().name());
-            } else if (secondResponseLatch.getCount() == 1) {
-              secondHeroName.set(response.data().hero().name());
-            }
-            firstResponseLatch.countDown();
-            secondResponseLatch.countDown();
+              responses.add(response.data().hero().name());
           }
 
           @Override public void onFailure(@Nonnull ApolloException e) {
@@ -139,8 +135,7 @@ public class ApolloWatcherTest {
           }
         });
 
-    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-    assertThat(firstHeroName.get()).isEqualTo("R2-D2");
+    assertThat(responses.get(0)).isEqualTo("R2-D2");
 
     // Someone writes to the store directly
     Set<String> changedKeys = apolloClient.apolloStore().writeTransaction(new Transaction<WriteableStore, Set<String>>() {
@@ -153,9 +148,7 @@ public class ApolloWatcherTest {
     });
     apolloClient.apolloStore().publish(changedKeys);
 
-    secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-
-    assertThat(secondHeroName.get()).isEqualTo("Artoo");
+    assertThat(responses.get(1)).isEqualTo("Artoo");
 
     watcher.cancel();
   }
@@ -186,14 +179,9 @@ public class ApolloWatcherTest {
           }
         });
 
-    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-
     server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
     apolloClient.query(query).responseFetcher(NETWORK_ONLY).enqueue(null);
 
-    // Wait 3 seconds to make sure no double callback.
-    // Successful if timeout _is_ reached
-    secondResponseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     watcher.cancel();
   }
 
@@ -223,7 +211,7 @@ public class ApolloWatcherTest {
           }
         });
 
-    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    firstResponseLatch.await();
     HeroAndFriendsNamesWithIDsQuery friendsQuery = HeroAndFriendsNamesWithIDsQuery.builder()
         .episode(Episode.NEWHOPE)
         .build();
@@ -239,7 +227,7 @@ public class ApolloWatcherTest {
         }
     );
 
-    secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    secondResponseLatch.await();
     watcher.cancel();
   }
 
@@ -269,15 +257,11 @@ public class ApolloWatcherTest {
           }
         });
 
-    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     HeroAndFriendsNamesWithIDsQuery friendsQuery = HeroAndFriendsNamesWithIDsQuery.builder().episode(Episode.NEWHOPE).build();
 
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsResponse.json"));
     apolloClient.query(friendsQuery).responseFetcher(NETWORK_ONLY).enqueue(null);
 
-    // Wait 3 seconds to make sure no double callback.
-    // Successful if timeout _is_ reached
-    secondResponseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     watcher.cancel();
   }
 
@@ -309,7 +293,6 @@ public class ApolloWatcherTest {
               }
             });
 
-    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     //A different call gets updated information.
     server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
 
@@ -318,7 +301,6 @@ public class ApolloWatcherTest {
     server.enqueue(mockResponse("EpisodeHeroNameResponseNameChangeTwo.json"));
     apolloClient.query(query).responseFetcher(NETWORK_ONLY).enqueue(null);
 
-    secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     watcher.cancel();
   }
 
@@ -338,7 +320,7 @@ public class ApolloWatcherTest {
         cacheWarmUpLatch.countDown();
       }
     });
-    cacheWarmUpLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    cacheWarmUpLatch.await();
 
     //Cache is now "warm" with response data
 
@@ -364,12 +346,10 @@ public class ApolloWatcherTest {
           }
         });
 
-    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     //Another newer call gets updated information
     server.enqueue(mockResponse("EpisodeHeroNameResponseNameChange.json"));
     apolloClient.query(query).responseFetcher(NETWORK_ONLY).enqueue(null);
 
-    secondResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     watcher.cancel();
   }
 
@@ -400,7 +380,6 @@ public class ApolloWatcherTest {
           }
         });
 
-    firstResponseLatch.awaitOrThrowWithTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS);
 
     watcher.cancel();
     enqueueAndAssertResponse(
@@ -414,8 +393,5 @@ public class ApolloWatcherTest {
         }
     );
 
-    //Wait for 3 seconds to check that callback is not called twice.
-    //Test is successful if timeout is reached.
-    secondResponseLatch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
   }
 }

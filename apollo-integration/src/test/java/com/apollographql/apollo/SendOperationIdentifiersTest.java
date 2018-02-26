@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -55,6 +56,7 @@ public class SendOperationIdentifiersTest {
     final AtomicBoolean applicationInterceptorHeader = new AtomicBoolean();
     final AtomicBoolean networkInterceptorHeader = new AtomicBoolean();
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
         .addInterceptor(new Interceptor() {
           @Override public okhttp3.Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
@@ -78,6 +80,7 @@ public class SendOperationIdentifiersTest {
     ApolloClient apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
+        .dispatcher(Utils.immediateExecutor())
         .build();
 
     enqueueAndAssertResponse(

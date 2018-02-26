@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockWebServer;
 
@@ -55,6 +56,7 @@ public class NormalizedCacheTestCase {
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
         .writeTimeout(2, TimeUnit.SECONDS)
         .readTimeout(2, TimeUnit.SECONDS)
+        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
         .build();
 
     apolloClient = ApolloClient.builder()
