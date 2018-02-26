@@ -169,7 +169,7 @@ public class ResponseField {
    *
    * @param responseName     alias for the result of a field
    * @param fieldName        name of the field in the GraphQL operation
-   * @param conditionalTypes conditional GraphQL types
+   * @param typeConditions conditional GraphQL types
    * @return Field instance representing {@link Type#FRAGMENT}
    */
   public static ResponseField forFragment(String responseName, String fieldName, List<String> typeConditions) {
@@ -186,7 +186,7 @@ public class ResponseField {
    *
    * @param responseName     alias for the result of a field
    * @param fieldName        name of the field in the GraphQL operation
-   * @param conditionalTypes conditional GraphQL types
+   * @param typeConditions conditional GraphQL types
    * @return Field instance representing {@link Type#INLINE_FRAGMENT}
    */
   public static ResponseField forInlineFragment(String responseName, String fieldName, List<String> typeConditions) {
@@ -277,28 +277,45 @@ public class ResponseField {
       }
     });
     StringBuilder independentKey = new StringBuilder();
+    independentKey.append("{");
     for (int i = 0; i < sortedArguments.size(); i++) {
       Map.Entry<String, Object> argument = sortedArguments.get(i);
       if (argument.getValue() instanceof Map) {
         //noinspection unchecked
         final Map<String, Object> objectArg = (Map<String, Object>) argument.getValue();
-        boolean isArgumentVariable = isArgumentValueVariableType(objectArg);
         independentKey
+            .append("\"")
             .append(argument.getKey())
-            .append(":")
-            .append(isArgumentVariable ? "" : "[")
-            .append(orderIndependentKey(objectArg, variables))
-            .append(isArgumentVariable ? "" : "]");
+            .append("\":")
+            .append(orderIndependentKey(objectArg, variables));
       } else {
-        independentKey.append(argument.getKey())
-            .append(":")
-            .append(argument.getValue().toString());
+        independentKey
+            .append("\"")
+            .append(argument.getKey())
+            .append("\":")
+            .append(asJsonValue(argument.getValue()));
       }
       if (i < sortedArguments.size() - 1) {
         independentKey.append(",");
       }
     }
+    independentKey.append("}");
     return independentKey.toString();
+  }
+
+  private String asJsonValue(Object o) {
+    if (o instanceof Boolean ||
+        o instanceof Byte ||
+        o instanceof Character ||
+        o instanceof Double ||
+        o instanceof Float ||
+        o instanceof Integer ||
+        o instanceof Long ||
+        o instanceof Short) {
+      return o.toString();
+    } else {
+      return "\"" + o.toString() + "\"";
+    }
   }
 
   private boolean isArgumentValueVariableType(Map<String, Object> objectMap) {
@@ -317,7 +334,7 @@ public class ResponseField {
       //noinspection unchecked
       return orderIndependentKey((Map<String, Object>) resolvedVariable, variables);
     } else {
-      return resolvedVariable.toString();
+      return asJsonValue(resolvedVariable);
     }
   }
 
