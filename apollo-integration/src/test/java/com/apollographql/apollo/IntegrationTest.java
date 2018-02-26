@@ -42,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 
 import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -56,8 +57,6 @@ public class IntegrationTest {
 
   private ApolloClient apolloClient;
   private CustomTypeAdapter<Date> dateCustomTypeAdapter;
-
-  private static final long TIME_OUT_SECONDS = 3;
 
   @Rule public final MockWebServer server = new MockWebServer();
 
@@ -78,10 +77,11 @@ public class IntegrationTest {
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
-        .okHttpClient(new OkHttpClient.Builder().build())
+        .okHttpClient(new OkHttpClient.Builder().dispatcher(new Dispatcher(Utils.immediateExecutorService())).build())
         .addCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .defaultResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
+        .dispatcher(Utils.immediateExecutor())
         .build();
   }
 
@@ -267,7 +267,6 @@ public class IntegrationTest {
     server.enqueue(mockResponse("ResponseDataMissing.json"));
     Rx2Apollo.from(apolloClient.query(new HeroNameQuery()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertError(ApolloException.class);
   }
 
@@ -330,7 +329,6 @@ public class IntegrationTest {
   private static <T> void assertResponse(ApolloCall<T> call, Predicate<Response<T>> predicate) {
     Rx2Apollo.from(call)
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(predicate);
   }
 
@@ -351,7 +349,7 @@ public class IntegrationTest {
         }
       }
     });
-    latch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+    latch.await();
     return statusEvents;
   }
 }
