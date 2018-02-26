@@ -14,7 +14,6 @@ import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
@@ -128,29 +127,15 @@ public class RxApolloTest {
   @Test
   public void queryWatcherUpdatedSameQueryDifferentResults() throws Exception {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
 
     final TestSubscriber<Response<EpisodeHeroNameQuery.Data>> testSubscriber = new TestSubscriber<>();
     RxApollo
         .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
-        .doOnNext(new Action1<Response<EpisodeHeroNameQuery.Data>>() {
-          AtomicBoolean executed = new AtomicBoolean();
-
-          @Override public void call(Response<EpisodeHeroNameQuery.Data> response) {
-            if (executed.compareAndSet(false, true)) {
-              try {
-                server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
-              } catch (Exception ignore) {
-              }
-
-              apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE)))
-                  .responseFetcher(NETWORK_ONLY)
-                  .enqueue(null);
-            }
-          }
-        })
-        .take(2)
         .subscribe(testSubscriber);
-
+    apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE)))
+        .responseFetcher(NETWORK_ONLY)
+        .enqueue(null);
     testSubscriber.assertValueCount(2);
     assertThat(testSubscriber.getOnNextEvents().get(0).data().hero().name()).isEqualTo("R2-D2");
     assertThat(testSubscriber.getOnNextEvents().get(1).data().hero().name()).isEqualTo("Artoo");
@@ -159,26 +144,13 @@ public class RxApolloTest {
   @Test
   public void queryWatcherNotUpdatedSameQuerySameResults() throws Exception {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
 
     final TestSubscriber<Response<EpisodeHeroNameQuery.Data>> testSubscriber = new TestSubscriber<>();
     RxApollo
         .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
-        .doOnNext(new Action1<Response<EpisodeHeroNameQuery.Data>>() {
-          AtomicBoolean executed = new AtomicBoolean();
-
-          @Override public void call(Response<EpisodeHeroNameQuery.Data> response) {
-            if (executed.compareAndSet(false, true)) {
-              try {
-                server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
-              } catch (Exception ignore) {
-              }
-              apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).responseFetcher(NETWORK_ONLY)
-                  .enqueue(null);
-            }
-          }
-        })
-        .take(2)
         .subscribe(testSubscriber);
+    apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).responseFetcher(NETWORK_ONLY);
 
     testSubscriber.assertValueCount(1);
     assertThat(testSubscriber.getOnNextEvents().get(0).data().hero().name()).isEqualTo("R2-D2");
@@ -187,25 +159,13 @@ public class RxApolloTest {
   @Test
   public void queryWatcherUpdatedDifferentQueryDifferentResults() throws Exception {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
+    server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
 
     final TestSubscriber<Response<EpisodeHeroNameQuery.Data>> testSubscriber = new TestSubscriber<>();
     RxApollo
         .from(apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
-        .doOnNext(new Action1<Response<EpisodeHeroNameQuery.Data>>() {
-          AtomicBoolean executed = new AtomicBoolean();
-
-          @Override public void call(Response<EpisodeHeroNameQuery.Data> response) {
-            if (executed.compareAndSet(false, true)) {
-              try {
-                server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"));
-              } catch (Exception ignore) {
-              }
-              apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(NEWHOPE))).enqueue(null);
-            }
-          }
-        })
-        .take(2)
         .subscribe(testSubscriber);
+    apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(NEWHOPE))).enqueue(null);
 
     testSubscriber.assertValueCount(2);
     assertThat(testSubscriber.getOnNextEvents().get(0).data().hero().name()).isEqualTo("R2-D2");
