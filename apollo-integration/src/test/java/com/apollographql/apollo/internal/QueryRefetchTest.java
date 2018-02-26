@@ -5,7 +5,6 @@ import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.IdFieldCacheKeyResolver;
-import com.apollographql.apollo.NamedCountDownLatch;
 import com.apollographql.apollo.Utils;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
@@ -74,19 +73,11 @@ public class QueryRefetchTest {
     server.enqueue(mockResponse("CreateReviewResponse.json"));
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"));
 
-    final NamedCountDownLatch completionCountDownLatch = new NamedCountDownLatch("refetchNoPreCachedQuery", 1);
     RealApolloCall call = (RealApolloCall) apolloClient.mutate(mutation).refetchQueries(new ReviewsByEpisodeQuery(Episode.EMPIRE));
-    ((QueryReFetcher) call.queryReFetcher.get()).onCompleteCallback = new QueryReFetcher.OnCompleteCallback() {
-      @Override public void onFetchComplete() {
-        completionCountDownLatch.countDown();
-      }
-    };
-
     Rx2Apollo
         .from(call)
         .test();
 
-    completionCountDownLatch.await();
     assertThat(server.getRequestCount()).isEqualTo(2);
     assertResponse(
         apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(CACHE_ONLY),
@@ -133,18 +124,10 @@ public class QueryRefetchTest {
     server.enqueue(mockResponse("CreateReviewResponse.json"));
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponseUpdated.json"));
 
-    final NamedCountDownLatch completionCountDownLatch = new NamedCountDownLatch("refetch_query_no_pre_cached", 1);
     RealApolloCall call = (RealApolloCall) apolloClient.mutate(mutation).refetchQueries(new ReviewsByEpisodeQuery(Episode.EMPIRE));
-    ((QueryReFetcher) call.queryReFetcher.get()).onCompleteCallback = new QueryReFetcher.OnCompleteCallback() {
-      @Override public void onFetchComplete() {
-        completionCountDownLatch.countDown();
-      }
-    };
-
     Rx2Apollo
         .from(call)
         .test();
-    completionCountDownLatch.await();
     assertThat(server.getRequestCount()).isEqualTo(3);
 
     assertResponse(
@@ -165,8 +148,6 @@ public class QueryRefetchTest {
     server.enqueue(mockResponse("CreateReviewResponse.json"));
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponseUpdated.json"));
 
-    final NamedCountDownLatch countDownBeforeMutationLatch = new NamedCountDownLatch("before_mutation", 1);
-    final NamedCountDownLatch countDownRefetchLatch = new NamedCountDownLatch("refetch", 2);
     final AtomicReference<Response<ReviewsByEpisodeQuery.Data>> empireReviewsWatchResponse = new AtomicReference<>();
     ApolloQueryWatcher<ReviewsByEpisodeQuery.Data> queryWatcher = apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE))
         .watcher()
@@ -174,15 +155,12 @@ public class QueryRefetchTest {
         .enqueueAndWatch(new ApolloCall.Callback<ReviewsByEpisodeQuery.Data>() {
           @Override public void onResponse(@Nonnull Response<ReviewsByEpisodeQuery.Data> response) {
             empireReviewsWatchResponse.set(response);
-            countDownBeforeMutationLatch.countDown();
-            countDownRefetchLatch.countDown();
           }
 
           @Override public void onFailure(@Nonnull ApolloException e) {
           }
         });
 
-    countDownBeforeMutationLatch.await();
     CreateReviewMutation mutation = new CreateReviewMutation(
         Episode.EMPIRE,
         ReviewInput.builder().stars(5).commentary("Awesome").favoriteColor(ColorInput.builder().build()).build()
@@ -190,7 +168,6 @@ public class QueryRefetchTest {
     Rx2Apollo
         .from(apolloClient.mutate(mutation).refetchQueries(queryWatcher.operation().name()))
         .test();
-    countDownRefetchLatch.await();
     assertThat(server.getRequestCount()).isEqualTo(3);
 
     Response<ReviewsByEpisodeQuery.Data> empireReviewsQueryResponse = empireReviewsWatchResponse.get();
