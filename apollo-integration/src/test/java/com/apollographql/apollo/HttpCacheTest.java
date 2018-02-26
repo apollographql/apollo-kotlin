@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.internal.io.FileSystem;
@@ -41,7 +42,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 @SuppressWarnings("SimpleDateFormatConstant")
 public class HttpCacheTest {
-  private static final int TIME_OUT_SECONDS = 3;
   private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
   private ApolloClient apolloClient;
@@ -74,6 +74,7 @@ public class HttpCacheTest {
     okHttpClient = new OkHttpClient.Builder()
         .addInterceptor(new TrackingInterceptor())
         .addInterceptor(cache.interceptor())
+        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
         .readTimeout(2, TimeUnit.SECONDS)
         .writeTimeout(2, TimeUnit.SECONDS)
         .build();
@@ -81,6 +82,7 @@ public class HttpCacheTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
+        .dispatcher(Utils.immediateExecutor())
         .addCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
         .httpCache(cache)
         .build();
@@ -105,7 +107,6 @@ public class HttpCacheTest {
         .query(new AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertError(ApolloException.class);
 
     checkNoCachedResponse();
@@ -116,7 +117,6 @@ public class HttpCacheTest {
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -130,7 +130,6 @@ public class HttpCacheTest {
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -142,7 +141,6 @@ public class HttpCacheTest {
     Rx2Apollo.from(apolloClient
         .query(new DroidDetailsQuery()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<DroidDetailsQuery.Data>>() {
           @Override public boolean test(Response<DroidDetailsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -154,7 +152,6 @@ public class HttpCacheTest {
     Rx2Apollo.from(apolloClient
         .query(new AllFilmsQuery()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllFilmsQuery.Data>>() {
           @Override public boolean test(Response<AllFilmsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -170,13 +167,14 @@ public class HttpCacheTest {
         .serverUrl(server.url("/"))
         .okHttpClient(new OkHttpClient.Builder()
             .addInterceptor(new TrackingInterceptor())
+            .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
             .build())
+        .dispatcher(Utils.immediateExecutor())
         .build();
 
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -190,7 +188,6 @@ public class HttpCacheTest {
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()).httpCachePolicy(HttpCachePolicy.NETWORK_ONLY))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -207,7 +204,6 @@ public class HttpCacheTest {
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()).httpCachePolicy(HttpCachePolicy.NETWORK_ONLY))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return response.hasErrors();
@@ -224,7 +220,6 @@ public class HttpCacheTest {
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -237,7 +232,6 @@ public class HttpCacheTest {
         .query(new AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.CACHE_ONLY))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -256,37 +250,33 @@ public class HttpCacheTest {
         .query(new AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.CACHE_ONLY))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertError(ApolloHttpException.class);
   }
 
-  @Test public void cacheNonStale() throws Exception {
+  @Test @SuppressWarnings("CheckReturnValue") public void cacheNonStale() throws Exception {
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
-        .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+        .test();
     assertThat(server.takeRequest()).isNotNull();
     checkCachedResponse("/HttpCacheTestAllPlanets.json");
 
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery())
-        .httpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(TIME_OUT_SECONDS, TimeUnit.SECONDS)))
-        .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+        .httpCachePolicy(HttpCachePolicy.CACHE_FIRST))
+        .test();
 
     assertThat(server.getRequestCount()).isEqualTo(1);
     assertThat(lastHttResponse.networkResponse()).isNull();
     assertThat(lastHttResponse.cacheResponse()).isNotNull();
   }
 
-  @Test public void cacheStale() throws Exception {
+  @Test @SuppressWarnings("CheckReturnValue") public void cacheStale() throws Exception {
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
-        .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+        .test();
     assertThat(server.getRequestCount()).isEqualTo(1);
 
     Thread.sleep(TimeUnit.SECONDS.toMillis(3));
@@ -294,30 +284,24 @@ public class HttpCacheTest {
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
-        .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
-
+        .test();
     assertThat(server.getRequestCount()).isEqualTo(2);
     assertThat(lastHttResponse.networkResponse()).isNotNull();
     assertThat(lastHttResponse.cacheResponse()).isNull();
     checkCachedResponse("/HttpCacheTestAllPlanets.json");
   }
 
-  @Test public void cacheStaleBeforeNetwork() throws Exception {
+  @Test @SuppressWarnings("CheckReturnValue") public void cacheStaleBeforeNetwork() throws Exception {
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
-        .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+        .test();
     assertThat(server.getRequestCount()).isEqualTo(1);
-
-    Thread.sleep(TimeUnit.SECONDS.toMillis(3));
 
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()).httpCachePolicy(HttpCachePolicy.NETWORK_FIRST))
-        .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+        .test();
 
     assertThat(server.getRequestCount()).isEqualTo(2);
     assertThat(lastHttResponse.networkResponse()).isNotNull();
@@ -325,44 +309,36 @@ public class HttpCacheTest {
     checkCachedResponse("/HttpCacheTestAllPlanets.json");
   }
 
-  @Test public void cacheStaleBeforeNetworkError() throws Exception {
+  @Test @SuppressWarnings("CheckReturnValue") public void cacheStaleBeforeNetworkError() throws Exception {
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
-        .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+        .test();
     assertThat(server.getRequestCount()).isEqualTo(1);
-
-    Thread.sleep(TimeUnit.SECONDS.toMillis(3));
 
     server.enqueue(new MockResponse().setResponseCode(504).setBody(""));
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.NETWORK_FIRST))
-        .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+        .test();
     assertThat(server.getRequestCount()).isEqualTo(2);
     assertThat(lastHttResponse.networkResponse()).isNotNull();
     assertThat(lastHttResponse.cacheResponse()).isNotNull();
     checkCachedResponse("/HttpCacheTestAllPlanets.json");
   }
 
-  @Test public void cacheUpdate() throws Exception {
+  @Test @SuppressWarnings("CheckReturnValue") public void cacheUpdate() throws Exception {
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
-        .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+        .test();
     assertThat(server.getRequestCount()).isEqualTo(1);
     checkCachedResponse("/HttpCacheTestAllPlanets.json");
-
-    Thread.sleep(TimeUnit.SECONDS.toMillis(3));
 
     enqueueResponse("/HttpCacheTestAllPlanets2.json");
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
-        .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+        .test();
     assertThat(server.getRequestCount()).isEqualTo(2);
     checkCachedResponse("/HttpCacheTestAllPlanets2.json");
     assertThat(lastHttResponse.networkResponse()).isNotNull();
@@ -371,9 +347,8 @@ public class HttpCacheTest {
     enqueueResponse("/HttpCacheTestAllPlanets2.json");
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery())
-        .httpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(TIME_OUT_SECONDS, TimeUnit.SECONDS)))
-        .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+        .httpCachePolicy(HttpCachePolicy.CACHE_FIRST))
+        .test();
 
     assertThat(server.getRequestCount()).isEqualTo(2);
     assertThat(lastHttResponse.networkResponse()).isNull();
@@ -387,7 +362,6 @@ public class HttpCacheTest {
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -405,7 +379,6 @@ public class HttpCacheTest {
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -418,7 +391,6 @@ public class HttpCacheTest {
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -435,7 +407,6 @@ public class HttpCacheTest {
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -449,7 +420,6 @@ public class HttpCacheTest {
         .query(new AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.CACHE_FIRST))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -465,7 +435,6 @@ public class HttpCacheTest {
         .query(new AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.CACHE_FIRST))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertError(Exception.class);
 
     assertThat(server.getRequestCount()).isEqualTo(2);
@@ -477,7 +446,6 @@ public class HttpCacheTest {
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -489,7 +457,6 @@ public class HttpCacheTest {
         .query(new AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.CACHE_ONLY.expireAfterRead()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -502,13 +469,11 @@ public class HttpCacheTest {
         .query(new AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.CACHE_ONLY))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertError(Exception.class);
 
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     Rx2Apollo.from(apolloClient.query(new AllPlanetsQuery()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -523,7 +488,6 @@ public class HttpCacheTest {
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertError(Exception.class);
 
     checkNoCachedResponse();
@@ -532,7 +496,6 @@ public class HttpCacheTest {
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -544,7 +507,6 @@ public class HttpCacheTest {
         .query(new AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.CACHE_ONLY))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -557,7 +519,6 @@ public class HttpCacheTest {
     Rx2Apollo.from(apolloClient
         .query(new AllPlanetsQuery()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -574,7 +535,6 @@ public class HttpCacheTest {
         .query(new AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.NETWORK_FIRST))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors();
@@ -593,7 +553,6 @@ public class HttpCacheTest {
         .query(new AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.NETWORK_FIRST))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors() && !response.fromCache();
@@ -606,7 +565,6 @@ public class HttpCacheTest {
         .query(new AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors() && !response.fromCache();
@@ -617,7 +575,6 @@ public class HttpCacheTest {
         .query(new AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.CACHE_ONLY))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors() && response.fromCache();
@@ -628,7 +585,6 @@ public class HttpCacheTest {
         .query(new AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.CACHE_FIRST))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors() && response.fromCache();
@@ -639,7 +595,6 @@ public class HttpCacheTest {
         .query(new AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.CACHE_FIRST))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors() && response.fromCache();
@@ -650,7 +605,6 @@ public class HttpCacheTest {
         .query(new AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.NETWORK_FIRST))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
           @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
             return !response.hasErrors() && response.fromCache();
