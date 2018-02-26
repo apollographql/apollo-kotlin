@@ -13,15 +13,14 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
 public class ApolloCancelCallTest {
-  private static final long TIME_OUT_SECONDS = 3;
   private ApolloClient apolloClient;
   @Rule public final MockWebServer server = new MockWebServer();
   private MockHttpCacheStore cacheStore;
@@ -29,7 +28,9 @@ public class ApolloCancelCallTest {
   @Before
   public void setup() {
     cacheStore = new MockHttpCacheStore();
-    OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .build();
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
@@ -46,30 +47,16 @@ public class ApolloCancelCallTest {
 
     Rx2Apollo.from(call)
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertError(ApolloCanceledException.class);
   }
 
   @Test
   public void cancelCallAfterEnqueueNoCallback() throws Exception {
-    server.enqueue(mockResponse("EpisodeHeroNameResponse.json")
-        .setBodyDelay(TIME_OUT_SECONDS / 2, TimeUnit.SECONDS));
-
+    server.enqueue(mockResponse("EpisodeHeroNameResponse.json"));
     final ApolloCall<EpisodeHeroNameQuery.Data> call = apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)));
-
-    new Thread(new Runnable() {
-      @Override public void run() {
-        try {
-          Thread.sleep(500);
-        } catch (Exception e) {
-        }
-        call.cancel();
-      }
-    }).start();
 
     Rx2Apollo.from(call)
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertNoErrors()
         .assertNoValues()
         .assertNotComplete();
@@ -86,30 +73,16 @@ public class ApolloCancelCallTest {
 
     Rx2Apollo.from(call)
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertError(ApolloCanceledException.class);
   }
 
   @Test
   public void cancelPrefetchAfterEnqueueNoCallback() throws Exception {
-    server.enqueue(mockResponse("EpisodeHeroNameResponse.json")
-        .setBodyDelay(TIME_OUT_SECONDS / 2, TimeUnit.SECONDS));
-
+    server.enqueue(mockResponse("EpisodeHeroNameResponse.json"));
     final ApolloPrefetch call = apolloClient.prefetch(new EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)));
-
-    new Thread(new Runnable() {
-      @Override public void run() {
-        try {
-          Thread.sleep(200);
-        } catch (Exception e) {
-        }
-        call.cancel();
-      }
-    }).start();
 
     Rx2Apollo.from(call)
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertNotComplete();
   }
 
