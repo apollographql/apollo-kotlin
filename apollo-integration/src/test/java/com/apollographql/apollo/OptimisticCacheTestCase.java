@@ -323,21 +323,18 @@ public class OptimisticCacheTestCase {
 
   @Test public void mutation_and_query_watcher() throws Exception {
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"));
-    final NamedCountDownLatch watcherFirstCallLatch = new NamedCountDownLatch("WatcherFirstCall", 1);
     final List<ReviewsByEpisodeQuery.Data> watcherData = new ArrayList<>();
     apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST)
         .watcher().refetchResponseFetcher(ApolloResponseFetchers.CACHE_FIRST)
         .enqueueAndWatch(new ApolloCall.Callback<ReviewsByEpisodeQuery.Data>() {
           @Override public void onResponse(@Nonnull Response<ReviewsByEpisodeQuery.Data> response) {
             watcherData.add(response.data());
-            watcherFirstCallLatch.countDown();
           }
 
           @Override public void onFailure(@Nonnull ApolloException e) {
-            watcherFirstCallLatch.countDown();
+
           }
         });
-    watcherFirstCallLatch.await();
 
     server.enqueue(mockResponse("UpdateReviewResponse.json"));
     UpdateReviewMutation updateReviewMutation = new UpdateReviewMutation(
