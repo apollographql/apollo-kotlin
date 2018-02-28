@@ -13,10 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
@@ -27,6 +23,8 @@ import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockWebServer;
 
+import static com.apollographql.apollo.Utils.immediateExecutor;
+import static com.apollographql.apollo.Utils.immediateExecutorService;
 import static com.apollographql.apollo.Utils.mockResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 import static com.apollographql.apollo.integration.normalizer.type.Episode.EMPIRE;
@@ -43,12 +41,12 @@ public class Rx2ApolloTest {
   @Before public void setup() {
     server = new MockWebServer();
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .dispatcher(new Dispatcher(currentThreadExecutorService()))
+        .dispatcher(new Dispatcher(immediateExecutorService()))
         .build();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
-        .dispatcher(currentThreadExecutorService())
+        .dispatcher(immediateExecutor())
         .okHttpClient(okHttpClient)
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .build();
@@ -251,15 +249,5 @@ public class Rx2ApolloTest {
             return true;
           }
         });
-  }
-
-  private static ExecutorService currentThreadExecutorService() {
-    final ThreadPoolExecutor.CallerRunsPolicy callerRunsPolicy = new ThreadPoolExecutor.CallerRunsPolicy();
-    return new ThreadPoolExecutor(0, 1, 0L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), callerRunsPolicy) {
-      @Override
-      public void execute(Runnable command) {
-        callerRunsPolicy.rejectedExecution(command, this);
-      }
-    };
   }
 }
