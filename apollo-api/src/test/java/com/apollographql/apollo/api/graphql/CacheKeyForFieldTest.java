@@ -22,7 +22,8 @@ public class CacheKeyForFieldTest {
 
   @Test
   public void testFieldWithNoArguments() {
-    ResponseField field = createResponseField("hero", "hero");
+    ResponseField field = ResponseField.forString("hero", "hero", null, false,
+        Collections.<ResponseField.Condition>emptyList());
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
         return super.valueMap();
@@ -33,7 +34,8 @@ public class CacheKeyForFieldTest {
 
   @Test
   public void testFieldWithNoArgumentsWithAlias() {
-    ResponseField field = createResponseField("r2", "hero");
+    ResponseField field = ResponseField.forString("r2", "hero", null, false,
+        Collections.<ResponseField.Condition>emptyList());
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
         return super.valueMap();

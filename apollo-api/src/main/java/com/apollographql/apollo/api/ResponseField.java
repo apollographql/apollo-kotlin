@@ -167,8 +167,8 @@ public class ResponseField {
   /**
    * Factory method for creating a Field instance representing {@link Type#FRAGMENT}.
    *
-   * @param responseName     alias for the result of a field
-   * @param fieldName        name of the field in the GraphQL operation
+   * @param responseName   alias for the result of a field
+   * @param fieldName      name of the field in the GraphQL operation
    * @param typeConditions conditional GraphQL types
    * @return Field instance representing {@link Type#FRAGMENT}
    */
@@ -184,8 +184,8 @@ public class ResponseField {
   /**
    * Factory method for creating a Field instance representing {@link Type#INLINE_FRAGMENT}.
    *
-   * @param responseName     alias for the result of a field
-   * @param fieldName        name of the field in the GraphQL operation
+   * @param responseName   alias for the result of a field
+   * @param fieldName      name of the field in the GraphQL operation
    * @param typeConditions conditional GraphQL types
    * @return Field instance representing {@link Type#INLINE_FRAGMENT}
    */
@@ -304,14 +304,14 @@ public class ResponseField {
   }
 
   private String asJsonValue(Object o) {
-    if (o instanceof Boolean ||
-        o instanceof Byte ||
-        o instanceof Character ||
-        o instanceof Double ||
-        o instanceof Float ||
-        o instanceof Integer ||
-        o instanceof Long ||
-        o instanceof Short) {
+    if (o instanceof Boolean
+        || o instanceof Byte
+        || o instanceof Character
+        || o instanceof Double
+        || o instanceof Float
+        || o instanceof Integer
+        || o instanceof Long
+        || o instanceof Short) {
       return o.toString();
     } else {
       return "\"" + o.toString() + "\"";
