@@ -55,7 +55,7 @@ public class ApolloIRGenTask extends NodeTask {
     if (schemaFilePath != null) {
       schemaFile = Paths.get(schemaFilePath).toFile();
       if (!schemaFile.exists()) {
-        schemaFile = Paths.get(getProject().getRootDir().getAbsolutePath(), schemaFilePath).toFile();
+        schemaFile = Paths.get(getProject().getProjectDir().getAbsolutePath(), schemaFilePath).toFile();
       }
 
       if (!schemaFile.exists()) {
