@@ -180,7 +180,6 @@ public class ApolloInterceptorChainTest {
   @Test
   public void onDisposeCalled_interceptorIsDisposed() {
     final AtomicInteger counter = new AtomicInteger(1);
-    EpisodeHeroNameQuery query = createQuery();
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Override
