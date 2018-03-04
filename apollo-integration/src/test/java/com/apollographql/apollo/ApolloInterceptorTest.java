@@ -19,7 +19,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;

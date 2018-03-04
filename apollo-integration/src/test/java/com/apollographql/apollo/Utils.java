@@ -10,7 +10,6 @@ import com.apollographql.apollo.rx2.Rx2Apollo;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -117,7 +116,7 @@ public final class Utils {
     };
   }
 
-  public static class TestExecutor implements Executor{
+  public static class TestExecutor implements Executor {
 
     private ConcurrentLinkedQueue<Runnable> commands = new ConcurrentLinkedQueue<>();
 
@@ -125,7 +124,7 @@ public final class Utils {
       commands.add(command);
     }
 
-    public void triggerActions(){
+    public void triggerActions() {
       for (Runnable command : commands) {
         command.run();
       }

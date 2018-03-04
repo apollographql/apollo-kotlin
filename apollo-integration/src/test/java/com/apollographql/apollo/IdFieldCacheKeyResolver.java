@@ -1,7 +1,7 @@
 package com.apollographql.apollo;
 
-import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.Operation;
+import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 

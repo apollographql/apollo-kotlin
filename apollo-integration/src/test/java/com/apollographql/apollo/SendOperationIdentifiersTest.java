@@ -2,7 +2,6 @@ package com.apollographql.apollo;
 
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery;
-import com.apollographql.apollo.integration.normalizer.type.Episode;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,7 +16,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.mockwebserver.MockWebServer;
-import okhttp3.mockwebserver.RecordedRequest;
 
 import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
 import static com.apollographql.apollo.integration.normalizer.type.Episode.EMPIRE;
