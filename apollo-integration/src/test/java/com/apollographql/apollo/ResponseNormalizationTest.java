@@ -21,11 +21,10 @@ import com.apollographql.apollo.integration.normalizer.HeroParentTypeDependentFi
 import com.apollographql.apollo.integration.normalizer.HeroTypeDependentAliasedFieldQuery;
 import com.apollographql.apollo.integration.normalizer.SameHeroTwiceQuery;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,13 +41,12 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class ResponseNormalizationTest {
   private ApolloClient apolloClient;
-  private MockWebServer server;
+  @Rule public final MockWebServer server = new MockWebServer();
   private NormalizedCache normalizedCache;
 
   private final String QUERY_ROOT_KEY = "QUERY_ROOT";
 
   @Before public void setUp() {
-    server = new MockWebServer();
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
 
     apolloClient = ApolloClient.builder()
@@ -58,13 +56,6 @@ public class ResponseNormalizationTest {
         .dispatcher(Utils.immediateExecutor())
         .build();
     normalizedCache = apolloClient.apolloStore().normalizedCache();
-  }
-
-  @After public void tearDown() {
-    try {
-      server.shutdown();
-    } catch (IOException ignored) {
-    }
   }
 
   @Test public void testHeroName() throws Exception {

@@ -8,8 +8,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -69,14 +69,12 @@ public class ApolloCallTrackerTest {
     }
   };
 
-  private MockWebServer server;
+  @Rule public final MockWebServer server = new MockWebServer();
   private List<Integer> activeCallCounts;
   private ApolloClient apolloClient;
 
   @Before
   public void setUp() throws Exception {
-    server = new MockWebServer();
-
     activeCallCounts = new ArrayList<>();
     Interceptor interceptor = new Interceptor() {
       @Override public okhttp3.Response intercept(Chain chain) throws IOException {
@@ -93,11 +91,6 @@ public class ApolloCallTrackerTest {
         .serverUrl(SERVER_URL)
         .okHttpClient(okHttpClient)
         .build();
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    server.shutdown();
   }
 
   @Test

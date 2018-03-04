@@ -12,8 +12,8 @@ import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -48,21 +48,12 @@ public class ApolloInterceptorTest {
   private static final String FILE_EPISODE_HERO_NAME_CHANGE = "EpisodeHeroNameResponseNameChange.json";
 
   private ApolloClient client;
-  private MockWebServer server;
+  @Rule public final MockWebServer server = new MockWebServer();
   private OkHttpClient okHttpClient;
 
   @Before
   public void setup() {
-    server = new MockWebServer();
     okHttpClient = new OkHttpClient.Builder().build();
-  }
-
-  @After
-  public void tearDown() {
-    try {
-      server.shutdown();
-    } catch (IOException ignore) {
-    }
   }
 
   @Test

@@ -15,12 +15,10 @@ import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -38,17 +36,7 @@ import static java.util.Collections.emptySet;
 public class CacheHeadersTest {
   private static final int TIME_OUT_SECONDS = 3;
 
-  private MockWebServer server;
-
-  @Before
-  public void setUp() {
-    server = new MockWebServer();
-  }
-
-  @After
-  public void tearDown() throws IOException {
-    server.shutdown();
-  }
+  @Rule public final MockWebServer server = new MockWebServer();
 
   @Test
   public void testHeadersReceived() throws ApolloException, IOException {

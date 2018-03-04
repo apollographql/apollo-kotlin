@@ -17,11 +17,10 @@ import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragm
 import com.apollographql.apollo.integration.normalizer.type.CustomType;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -43,11 +42,10 @@ import static java.util.Collections.singletonList;
 @SuppressWarnings("SimpleDateFormatConstant")
 public class ResponseWriteTestCase {
   private ApolloClient apolloClient;
-  private MockWebServer server;
+  @Rule public final MockWebServer server = new MockWebServer();
   private SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-mm-dd", Locale.US);
 
   @Before public void setUp() {
-    server = new MockWebServer();
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
 
     apolloClient = ApolloClient.builder()
@@ -69,13 +67,6 @@ public class ResponseWriteTestCase {
           }
         })
         .build();
-  }
-
-  @After public void tearDown() {
-    try {
-      server.shutdown();
-    } catch (IOException ignored) {
-    }
   }
 
   @Test

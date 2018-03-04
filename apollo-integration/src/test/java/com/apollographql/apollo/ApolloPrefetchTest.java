@@ -34,8 +34,8 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class ApolloPrefetchTest {
   private ApolloClient apolloClient;
-  private MockWebServer server;
-  @Rule public InMemoryFileSystem inMemoryFileSystem = new InMemoryFileSystem();
+  @Rule public final MockWebServer server = new MockWebServer();
+  @Rule public final InMemoryFileSystem inMemoryFileSystem = new InMemoryFileSystem();
   okhttp3.Request lastHttRequest;
   okhttp3.Response lastHttResponse;
   private MockHttpCacheStore cacheStore;
@@ -43,7 +43,6 @@ public class ApolloPrefetchTest {
 
   @Before
   public void setup() {
-    server = new MockWebServer();
     cacheStore = new MockHttpCacheStore();
     cacheStore.delegate = new DiskLruHttpCacheStore(inMemoryFileSystem, new File("/cache/"), Integer.MAX_VALUE);
     okHttpClient = new OkHttpClient.Builder()
@@ -64,11 +63,7 @@ public class ApolloPrefetchTest {
   }
 
   @After public void tearDown() {
-    try {
-      apolloClient.clearHttpCache();
-      server.shutdown();
-    } catch (Exception ignore) {
-    }
+    apolloClient.clearHttpCache();
   }
 
   @Test public void prefetchDefault() throws IOException, ApolloException {

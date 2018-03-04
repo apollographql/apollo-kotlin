@@ -11,6 +11,7 @@ import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -31,11 +32,9 @@ public class AsyncNormalizedCacheTestCase {
   private static final int TIME_OUT_SECONDS = 3;
 
   private ApolloClient apolloClient;
-  private MockWebServer server;
+  @Rule public final MockWebServer server = new MockWebServer();
 
   @Before public void setUp() {
-    server = new MockWebServer();
-
     OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
 
     apolloClient = ApolloClient.builder()
@@ -43,13 +42,6 @@ public class AsyncNormalizedCacheTestCase {
         .okHttpClient(okHttpClient)
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .build();
-  }
-
-  @After public void tearDown() {
-    try {
-      server.shutdown();
-    } catch (IOException ignored) {
-    }
   }
 
   private MockResponse mockResponse(String fileName) throws IOException, ApolloException {

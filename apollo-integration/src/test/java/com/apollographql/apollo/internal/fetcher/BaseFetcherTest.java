@@ -13,6 +13,7 @@ import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 
 import java.io.IOException;
 import java.util.ArrayList;

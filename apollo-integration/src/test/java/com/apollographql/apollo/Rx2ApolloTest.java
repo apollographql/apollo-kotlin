@@ -8,8 +8,8 @@ import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -33,13 +33,12 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class Rx2ApolloTest {
   private ApolloClient apolloClient;
-  private MockWebServer server;
+  @Rule public final MockWebServer server = new MockWebServer();
 
   private static final String FILE_EPISODE_HERO_NAME_WITH_ID = "EpisodeHeroNameResponseWithId.json";
   private static final String FILE_EPISODE_HERO_NAME_CHANGE = "EpisodeHeroNameResponseNameChange.json";
 
   @Before public void setup() {
-    server = new MockWebServer();
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
         .dispatcher(new Dispatcher(immediateExecutorService()))
         .build();
@@ -50,15 +49,6 @@ public class Rx2ApolloTest {
         .okHttpClient(okHttpClient)
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .build();
-  }
-
-  @After
-  public void tearDown() {
-    try {
-      server.shutdown();
-    } catch (IOException ignore) {
-      //ignore
-    }
   }
 
   @Test
