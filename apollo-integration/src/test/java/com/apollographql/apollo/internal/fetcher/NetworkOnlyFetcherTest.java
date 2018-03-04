@@ -24,14 +24,12 @@ public class NetworkOnlyFetcherTest extends BaseFetcherTest {
     server.enqueue(new MockResponse().setResponseCode(HTTP_INTERNAL_ERROR).setBody("Server Error"));
     trackingCallback = new TrackingCallback();
     apolloClient.query(query).responseFetcher(NETWORK_ONLY).enqueue(trackingCallback);
-    trackingCallback.completedOrErrorLatch.await();
     assertThat(trackingCallback.exceptions.size()).isEqualTo(1);
 
     // Goes to network when empty
     server.enqueue(mockResponse("HeroNameResponse.json"));
     trackingCallback = new TrackingCallback();
     apolloClient.query(query).responseFetcher(NETWORK_ONLY).enqueue(trackingCallback);
-    trackingCallback.completedOrErrorLatch.await();
     assertThat(trackingCallback.exceptions).isEmpty();
     assertThat(trackingCallback.responseList.size()).isEqualTo(1);
     assertThat(trackingCallback.responseList.get(0).fromCache()).isFalse();
@@ -41,7 +39,6 @@ public class NetworkOnlyFetcherTest extends BaseFetcherTest {
     server.enqueue(mockResponse("HeroNameResponse.json"));
     trackingCallback = new TrackingCallback();
     apolloClient.query(query).responseFetcher(NETWORK_ONLY).enqueue(trackingCallback);
-    trackingCallback.completedOrErrorLatch.await();
     assertThat(trackingCallback.exceptions).isEmpty();
     assertThat(trackingCallback.responseList.size()).isEqualTo(1);
     assertThat(trackingCallback.responseList.get(0).fromCache()).isFalse();
@@ -51,7 +48,6 @@ public class NetworkOnlyFetcherTest extends BaseFetcherTest {
     server.enqueue(new MockResponse().setResponseCode(HTTP_INTERNAL_ERROR).setBody("Server Error"));
     trackingCallback = new TrackingCallback();
     apolloClient.query(query).responseFetcher(NETWORK_ONLY).enqueue(trackingCallback);
-    trackingCallback.completedOrErrorLatch.await();
     assertThat(trackingCallback.exceptions.size()).isEqualTo(1);
   }
 }

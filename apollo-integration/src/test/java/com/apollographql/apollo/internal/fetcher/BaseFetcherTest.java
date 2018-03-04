@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
+import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -29,13 +30,13 @@ class BaseFetcherTest {
 
   ApolloClient apolloClient;
   MockWebServer server;
-  static final int TIMEOUT_SECONDS = 3;
 
   @Before public void setUp() {
     server = new MockWebServer();
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
         .writeTimeout(2, TimeUnit.SECONDS)
         .readTimeout(2, TimeUnit.SECONDS)
+        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
         .build();
 
     apolloClient = ApolloClient.builder()
@@ -52,10 +53,8 @@ class BaseFetcherTest {
 
   static class TrackingCallback extends ApolloCall.Callback<EpisodeHeroNameQuery.Data> {
     final List<Response<EpisodeHeroNameQuery.Data>> responseList = new ArrayList<>();
-    final NamedCountDownLatch completedOrErrorLatch = new NamedCountDownLatch("completedOrErrorLatch", 1);
     final List<Exception> exceptions = new ArrayList<>();
     volatile boolean completed;
-
 
     @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
       if (completed) throw new IllegalStateException("onCompleted already called Do not reuse tracking callback.");
@@ -65,14 +64,12 @@ class BaseFetcherTest {
     @Override public void onFailure(@Nonnull ApolloException e) {
       if (completed) throw new IllegalStateException("onCompleted already called Do not reuse tracking callback.");
       exceptions.add(e);
-      completedOrErrorLatch.countDown();
     }
 
     @Override public void onStatusEvent(@Nonnull ApolloCall.StatusEvent event) {
       if (event == ApolloCall.StatusEvent.COMPLETED) {
         if (completed) throw new IllegalStateException("onCompleted already called Do not reuse tracking callback.");
         completed = true;
-        completedOrErrorLatch.countDown();
       }
     }
   }

@@ -23,7 +23,6 @@ public class CacheOnlyFetcherTest extends BaseFetcherTest {
     // Is null when cache empty
     trackingCallback = new TrackingCallback();
     apolloClient.query(query).responseFetcher(CACHE_ONLY).enqueue(trackingCallback);
-    trackingCallback.completedOrErrorLatch.await();
     assertThat(trackingCallback.exceptions.size()).isEqualTo(0);
     assertThat(trackingCallback.responseList.size()).isEqualTo(1);
     assertThat(trackingCallback.responseList.get(0).fromCache()).isTrue();
@@ -43,7 +42,6 @@ public class CacheOnlyFetcherTest extends BaseFetcherTest {
     server.enqueue(mockResponse("HeroNameResponse.json"));
     trackingCallback = new TrackingCallback();
     apolloClient.query(query).responseFetcher(CACHE_ONLY).enqueue(trackingCallback);
-    trackingCallback.completedOrErrorLatch.await();
     assertThat(trackingCallback.exceptions.size()).isEqualTo(0);
     assertThat(trackingCallback.responseList.size()).isEqualTo(1);
     assertThat(trackingCallback.responseList.get(0).fromCache()).isTrue();
