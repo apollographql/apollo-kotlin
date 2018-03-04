@@ -59,17 +59,7 @@ public class ApolloInterceptorTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID));
     EpisodeHeroNameQuery query = createHeroNameQuery();
     final InterceptorResponse expectedResponse = prepareInterceptorResponse(query);
-    ApolloInterceptor interceptor = new ApolloInterceptor() {
-      @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
-        callBack.onResponse(expectedResponse);
-      }
-
-      @Override public void dispose() {
-
-      }
-    };
+    ApolloInterceptor interceptor = createShortcutInterceptor(expectedResponse);
 
     client = createApolloClient(interceptor);
     Rx2Apollo.from(client.query(query)).test()
@@ -204,16 +194,7 @@ public class ApolloInterceptorTest {
   public void applicationInterceptorCanMakeMultipleRequestsToServer() throws Exception {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE));
     EpisodeHeroNameQuery query = createHeroNameQuery();
-    ApolloInterceptor interceptor = new ApolloInterceptor() {
-      @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
-        chain.proceedAsync(request, dispatcher, callBack);
-      }
-
-      @Override public void dispose() {
-      }
-    };
+    ApolloInterceptor interceptor = createChainInterceptor();
 
     client = createApolloClient(interceptor);
 
@@ -235,28 +216,8 @@ public class ApolloInterceptorTest {
     EpisodeHeroNameQuery query = createHeroNameQuery();
     final InterceptorResponse expectedResponse = prepareInterceptorResponse(query);
 
-    ApolloInterceptor firstInterceptor = new ApolloInterceptor() {
-      @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
-        callBack.onResponse(expectedResponse);
-      }
-
-      @Override public void dispose() {
-      }
-    };
-
-    ApolloInterceptor secondInterceptor = new ApolloInterceptor() {
-      @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
-        chain.proceedAsync(request, dispatcher, callBack);
-      }
-
-      @Override public void dispose() {
-
-      }
-    };
+    ApolloInterceptor firstInterceptor = createShortcutInterceptor(expectedResponse);
+    ApolloInterceptor secondInterceptor = createChainInterceptor();
 
     client = ApolloClient.builder()
         .serverUrl(server.url("/"))
@@ -356,5 +317,32 @@ public class ApolloInterceptorTest {
     @Override public void dispose() {
       isDisposed = true;
     }
+  }
+
+  @NonNull private static ApolloInterceptor createChainInterceptor() {
+    return new ApolloInterceptor() {
+      @Override
+      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
+        chain.proceedAsync(request, dispatcher, callBack);
+      }
+
+      @Override public void dispose() {
+
+      }
+    };
+  }
+
+  @NonNull private static ApolloInterceptor createShortcutInterceptor(final InterceptorResponse expectedResponse) {
+    return new ApolloInterceptor() {
+      @Override
+      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
+          @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
+        callBack.onResponse(expectedResponse);
+      }
+
+      @Override public void dispose() {
+      }
+    };
   }
 }
