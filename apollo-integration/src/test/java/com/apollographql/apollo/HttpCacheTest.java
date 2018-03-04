@@ -18,7 +18,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.RuleChain;
 
 import java.io.File;
 import java.io.IOException;
@@ -278,8 +277,6 @@ public class HttpCacheTest {
         .query(new AllPlanetsQuery()))
         .test();
     assertThat(server.getRequestCount()).isEqualTo(1);
-
-    Thread.sleep(TimeUnit.SECONDS.toMillis(3));
 
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     Rx2Apollo.from(apolloClient
