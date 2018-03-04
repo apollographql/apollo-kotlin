@@ -34,7 +34,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static java.util.Collections.emptySet;
 
 public class CacheHeadersTest {
-  private static final int TIME_OUT_SECONDS = 3;
 
   @Rule public final MockWebServer server = new MockWebServer();
 

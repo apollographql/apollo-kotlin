@@ -25,7 +25,6 @@ import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 
 public final class Utils {
-  public static final long TIME_OUT_SECONDS = 3;
 
   private Utils() {
   }
