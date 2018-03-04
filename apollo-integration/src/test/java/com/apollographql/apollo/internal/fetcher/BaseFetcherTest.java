@@ -3,7 +3,6 @@ package com.apollographql.apollo.internal.fetcher;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.IdFieldCacheKeyResolver;
-import com.apollographql.apollo.NamedCountDownLatch;
 import com.apollographql.apollo.Utils;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy;
