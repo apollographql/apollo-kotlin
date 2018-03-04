@@ -2,7 +2,7 @@ package com.apollographql.apollo.internal.interceptor;
 
 import com.google.common.base.Predicate;
 
-import com.apollographql.apollo.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.Logger;
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.ScalarType;

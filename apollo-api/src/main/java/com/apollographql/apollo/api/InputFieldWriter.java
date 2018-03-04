@@ -13,6 +13,8 @@ public interface InputFieldWriter {
 
   void writeDouble(@Nonnull String fieldName, Double value) throws IOException;
 
+  void writeNumber(@Nonnull String fieldName, Number value) throws IOException;
+
   void writeBoolean(@Nonnull String fieldName, Boolean value) throws IOException;
 
   void writeCustom(@Nonnull String fieldName, ScalarType scalarType, Object value) throws IOException;
@@ -33,6 +35,8 @@ public interface InputFieldWriter {
     void writeLong(Long value) throws IOException;
 
     void writeDouble(Double value) throws IOException;
+
+    void writeNumber(Number value) throws IOException;
 
     void writeBoolean(Boolean value) throws IOException;
 

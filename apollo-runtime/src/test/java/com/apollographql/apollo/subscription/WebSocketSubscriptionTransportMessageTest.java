@@ -1,6 +1,6 @@
 package com.apollographql.apollo.subscription;
 
-import com.apollographql.apollo.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.ResponseFieldMapper;

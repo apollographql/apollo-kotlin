@@ -1,6 +1,7 @@
 package com.apollographql.apollo.cache.normalized;
 
-import com.apollographql.apollo.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeValue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,12 +22,13 @@ public class RecordFieldAdapterTest {
   @Before public void setUpAdapter() {
     customTypeAdapter = new CustomTypeAdapter<TestCustomScalar>() {
 
-      @Override public TestCustomScalar decode(String value) {
-        return new TestCustomScalar(value.substring(1, value.length()));
+      @Override public TestCustomScalar decode(CustomTypeValue value) {
+        String valueStr = value.value.toString();
+        return new TestCustomScalar(valueStr.substring(1, valueStr.length()));
       }
 
-      @Override public String encode(TestCustomScalar value) {
-        return "#" + value.fieldOne;
+      @Override public CustomTypeValue encode(TestCustomScalar value) {
+        return new CustomTypeValue.GraphQLString("#" + value.fieldOne);
       }
     };
     recordFieldAdapter = RecordFieldJsonAdapter.create();

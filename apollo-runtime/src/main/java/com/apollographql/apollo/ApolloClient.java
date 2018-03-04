@@ -29,6 +29,7 @@ import com.apollographql.apollo.internal.cache.normalized.RealApolloStore;
 import com.apollographql.apollo.internal.subscription.NoOpSubscriptionManager;
 import com.apollographql.apollo.internal.subscription.RealSubscriptionManager;
 import com.apollographql.apollo.internal.subscription.SubscriptionManager;
+import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.subscription.SubscriptionTransport;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 
