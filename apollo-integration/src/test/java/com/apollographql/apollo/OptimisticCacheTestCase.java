@@ -345,21 +345,17 @@ public class OptimisticCacheTestCase {
             .favoriteColor(ColorInput.builder().build())
             .build()
     );
-    final NamedCountDownLatch mutationCallLatch = new NamedCountDownLatch("MutationCall", 1);
     apolloClient.mutate(updateReviewMutation, new UpdateReviewMutation.Data(new UpdateReviewMutation.UpdateReview(
         "Review", "empireReview2", 5, "Great"))).enqueue(
         new ApolloCall.Callback<UpdateReviewMutation.Data>() {
           @Override public void onResponse(@Nonnull Response<UpdateReviewMutation.Data> response) {
-            mutationCallLatch.countDown();
           }
 
           @Override public void onFailure(@Nonnull ApolloException e) {
-            mutationCallLatch.countDown();
+
           }
         }
     );
-    mutationCallLatch.await();
-
     assertThat(watcherData).hasSize(3);
 
     // before mutation and optimistic updates
