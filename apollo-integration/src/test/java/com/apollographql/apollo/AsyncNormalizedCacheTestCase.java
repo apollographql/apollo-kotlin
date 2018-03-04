@@ -9,10 +9,6 @@ import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
-import junit.framework.AssertionFailedError;
-
-import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,10 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
 import io.reactivex.observers.TestObserver;
-import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -36,7 +30,6 @@ public class AsyncNormalizedCacheTestCase {
 
   @Before public void setUp() {
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
         .build();
 
     apolloClient = ApolloClient.builder()
@@ -65,8 +58,7 @@ public class AsyncNormalizedCacheTestCase {
       calls.add(Rx2Apollo.from(queryCall));
     }
     TestObserver<Response<EpisodeHeroNameQuery.Data>> observer = new TestObserver<>();
-    Observable.merge(calls)
-        .subscribe(observer);
+    Observable.merge(calls).subscribe(observer);
     observer.awaitTerminalEvent();
     observer.assertNoErrors();
     observer.assertValueCount(1000);
