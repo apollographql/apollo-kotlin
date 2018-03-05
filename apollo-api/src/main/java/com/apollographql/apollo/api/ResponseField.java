@@ -304,14 +304,7 @@ public class ResponseField {
   }
 
   private String asJsonValue(Object o) {
-    if (o instanceof Boolean
-        || o instanceof Byte
-        || o instanceof Character
-        || o instanceof Double
-        || o instanceof Float
-        || o instanceof Integer
-        || o instanceof Long
-        || o instanceof Short) {
+    if (o instanceof Boolean || o instanceof Number) {
       return o.toString();
     } else {
       return "\"" + o.toString() + "\"";
