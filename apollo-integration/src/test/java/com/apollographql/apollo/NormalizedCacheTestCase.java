@@ -788,7 +788,7 @@ public class NormalizedCacheTestCase {
         "  }\n" +
         "\n" +
         "  \"QUERY_ROOT\" : {\n" +
-        "    \"hero(episode:NEWHOPE)\" : CacheRecordRef(2001)\n" +
+        "    \"hero({\"episode\":\"NEWHOPE\"})\" : CacheRecordRef(2001)\n" +
         "  }\n" +
         "\n" +
         "  \"1003\" : {\n" +

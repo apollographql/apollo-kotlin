@@ -22,7 +22,8 @@ public class CacheKeyForFieldTest {
 
   @Test
   public void testFieldWithNoArguments() {
-    ResponseField field = createResponseField("hero", "hero");
+    ResponseField field = ResponseField.forString("hero", "hero", null, false,
+        Collections.<ResponseField.Condition>emptyList());
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
         return super.valueMap();
@@ -33,7 +34,8 @@ public class CacheKeyForFieldTest {
 
   @Test
   public void testFieldWithNoArgumentsWithAlias() {
-    ResponseField field = createResponseField("r2", "hero");
+    ResponseField field = ResponseField.forString("r2", "hero", null, false,
+        Collections.<ResponseField.Condition>emptyList());
     Operation.Variables variables = new Operation.Variables() {
       @Nonnull @Override public Map<String, Object> valueMap() {
         return super.valueMap();
@@ -55,7 +57,7 @@ public class CacheKeyForFieldTest {
         return super.valueMap();
       }
     };
-    assertThat(field.cacheKey(variables)).isEqualTo("hero(episode:JEDI)");
+    assertThat(field.cacheKey(variables)).isEqualTo("hero({\"episode\":\"JEDI\"})");
   }
 
   @Test
@@ -71,7 +73,7 @@ public class CacheKeyForFieldTest {
         return super.valueMap();
       }
     };
-    assertThat(field.cacheKey(variables)).isEqualTo("hero(episode:JEDI)");
+    assertThat(field.cacheKey(variables)).isEqualTo("hero({\"episode\":\"JEDI\"})");
   }
 
   @Test
@@ -92,7 +94,7 @@ public class CacheKeyForFieldTest {
         return map;
       }
     };
-    assertThat(field.cacheKey(variables)).isEqualTo("hero(episode:JEDI)");
+    assertThat(field.cacheKey(variables)).isEqualTo("hero({\"episode\":\"JEDI\"})");
   }
 
   @Test
@@ -113,7 +115,7 @@ public class CacheKeyForFieldTest {
         return map;
       }
     };
-    assertThat(field.cacheKey(variables)).isEqualTo("hero(episode:null)");
+    assertThat(field.cacheKey(variables)).isEqualTo("hero({\"episode\":null})");
   }
 
   @Test
@@ -130,7 +132,7 @@ public class CacheKeyForFieldTest {
         return super.valueMap();
       }
     };
-    assertThat(field.cacheKey(variables)).isEqualTo("hero(color:blue,episode:JEDI)");
+    assertThat(field.cacheKey(variables)).isEqualTo("hero({\"color\":\"blue\",\"episode\":\"JEDI\"})");
   }
 
   @Test
@@ -175,7 +177,22 @@ public class CacheKeyForFieldTest {
         return super.valueMap();
       }
     };
-    assertThat(field.cacheKey(variables)).isEqualTo("hero(episode:JEDI,nested:[bar:2,foo:1])");
+    assertThat(field.cacheKey(variables)).isEqualTo("hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":2,\"foo\":1}})");
+  }
+
+  @Test
+  public void testFieldWithNonPrimitiveValue() {
+    //noinspection unchecked
+    ResponseField field = ResponseField.forString("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
+        .put("episode", Episode.JEDI)
+        .build(), false, Collections.<ResponseField.Condition>emptyList());
+
+    Operation.Variables variables = new Operation.Variables() {
+      @Nonnull @Override public Map<String, Object> valueMap() {
+        return super.valueMap();
+      }
+    };
+    assertThat(field.cacheKey(variables)).isEqualTo("hero({\"episode\":\"JEDI\"})");
   }
 
   @Test
@@ -200,7 +217,8 @@ public class CacheKeyForFieldTest {
         return map;
       }
     };
-    assertThat(field.cacheKey(variables)).isEqualTo("hero(episode:JEDI,nested:[bar:2,foo:1])");
+    assertThat(field.cacheKey(variables)).isEqualTo(
+        "hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":1}})");
   }
 
   private ResponseField createResponseField(String responseName, String fieldName) {
