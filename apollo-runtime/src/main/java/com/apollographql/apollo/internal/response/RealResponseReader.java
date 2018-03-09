@@ -1,13 +1,13 @@
 package com.apollographql.apollo.internal.response;
 
-import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.internal.field.FieldValueResolver;
-import com.apollographql.apollo.internal.json.Utils;
+import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import java.math.BigDecimal;
@@ -190,7 +190,7 @@ import java.util.Map;
       result = null;
     } else {
       CustomTypeAdapter<T> typeAdapter = scalarTypeAdapters.adapterFor(field.scalarType());
-      result = typeAdapter.decode(normalizeCustomTypeValue(value));
+      result = typeAdapter.decode(CustomTypeValue.fromRawValue(value));
       checkValue(field, result);
       resolveDelegate.didResolveScalar(value);
     }
@@ -264,18 +264,6 @@ import java.util.Map;
     }
   }
 
-  @SuppressWarnings("unchecked") private static String normalizeCustomTypeValue(Object value) {
-    if (value instanceof Map || value instanceof List) {
-      try {
-        return Utils.toJsonString(value);
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    } else {
-      return value.toString();
-    }
-  }
-
   private class ListItemReader implements ResponseReader.ListItemReader {
     private final ResponseField field;
     private final Object value;
@@ -314,7 +302,7 @@ import java.util.Map;
     @Override public <T> T readCustomType(ScalarType scalarType) {
       CustomTypeAdapter<T> typeAdapter = scalarTypeAdapters.adapterFor(scalarType);
       resolveDelegate.didResolveScalar(value);
-      return typeAdapter.decode(normalizeCustomTypeValue(value));
+      return typeAdapter.decode(CustomTypeValue.fromRawValue(value));
     }
 
     @SuppressWarnings("unchecked")

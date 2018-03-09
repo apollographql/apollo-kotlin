@@ -1,9 +1,10 @@
 package com.apollographql.apollo.internal.json;
 
-import com.apollographql.apollo.CustomTypeAdapter;
 import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.ScalarType;
+import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import java.io.IOException;
@@ -57,6 +58,15 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
   }
 
+  @Override public void writeNumber(@Nonnull String fieldName, Number value) throws IOException {
+    checkNotNull(fieldName, "fieldName == null");
+    if (value != null) {
+      jsonWriter.name(fieldName).value(value);
+    } else {
+      jsonWriter.name(fieldName).nullValue();
+    }
+  }
+
   @Override public void writeBoolean(@Nonnull String fieldName, Boolean value) throws IOException {
     checkNotNull(fieldName, "fieldName == null");
     if (value != null) {
@@ -66,11 +76,23 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Override public void writeCustom(@Nonnull String fieldName, ScalarType scalarType, Object value) throws IOException {
     checkNotNull(fieldName, "fieldName == null");
     if (value != null) {
       CustomTypeAdapter customTypeAdapter = scalarTypeAdapters.adapterFor(scalarType);
-      writeString(fieldName, customTypeAdapter.encode(value));
+      CustomTypeValue customTypeValue = customTypeAdapter.encode(value);
+      if (customTypeValue instanceof CustomTypeValue.GraphQLString) {
+        writeString(fieldName, ((CustomTypeValue.GraphQLString) customTypeValue).value);
+      } else if (customTypeValue instanceof CustomTypeValue.GraphQLBoolean) {
+        writeBoolean(fieldName, ((CustomTypeValue.GraphQLBoolean) customTypeValue).value);
+      } else if (customTypeValue instanceof CustomTypeValue.GraphQLNumber) {
+        writeNumber(fieldName, ((CustomTypeValue.GraphQLNumber) customTypeValue).value);
+      } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonString) {
+        writeString(fieldName, ((CustomTypeValue.GraphQLJsonString) customTypeValue).value);
+      } else {
+        throw new IllegalArgumentException("Unsupported custom value type: " + customTypeValue);
+      }
     } else {
       writeString(fieldName, null);
     }
@@ -139,6 +161,14 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       }
     }
 
+    @Override public void writeNumber(Number value) throws IOException {
+      if (value == null) {
+        jsonWriter.nullValue();
+      } else {
+        jsonWriter.value(value);
+      }
+    }
+
     @Override public void writeBoolean(Boolean value) throws IOException {
       if (value == null) {
         jsonWriter.nullValue();
@@ -147,12 +177,24 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       }
     }
 
+    @SuppressWarnings("unchecked")
     @Override public void writeCustom(ScalarType scalarType, Object value) throws IOException {
       if (value == null) {
         jsonWriter.nullValue();
       } else {
         CustomTypeAdapter customTypeAdapter = scalarTypeAdapters.adapterFor(scalarType);
-        writeString(customTypeAdapter.encode(value));
+        CustomTypeValue customTypeValue = customTypeAdapter.encode(value);
+        if (customTypeValue instanceof CustomTypeValue.GraphQLString) {
+          writeString(((CustomTypeValue.GraphQLString) customTypeValue).value);
+        } else if (customTypeValue instanceof CustomTypeValue.GraphQLBoolean) {
+          writeBoolean(((CustomTypeValue.GraphQLBoolean) customTypeValue).value);
+        } else if (customTypeValue instanceof CustomTypeValue.GraphQLNumber) {
+          writeNumber(((CustomTypeValue.GraphQLNumber) customTypeValue).value);
+        } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonString) {
+          writeString(((CustomTypeValue.GraphQLJsonString) customTypeValue).value);
+        } else {
+          throw new IllegalArgumentException("Unsupported custom value type: " + customTypeValue);
+        }
       }
     }
 

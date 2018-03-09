@@ -12,6 +12,8 @@ import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.httpcache.DroidDetailsQuery;
 import com.apollographql.apollo.integration.httpcache.type.CustomType;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
+import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import org.junit.After;
@@ -54,16 +56,16 @@ public class HttpCacheTest {
 
   @Before public void setUp() {
     CustomTypeAdapter<Date> dateCustomTypeAdapter = new CustomTypeAdapter<Date>() {
-      @Override public Date decode(String value) {
+      @Override public Date decode(CustomTypeValue value) {
         try {
-          return DATE_FORMAT.parse(value);
+          return DATE_FORMAT.parse(value.value.toString());
         } catch (ParseException e) {
           throw new RuntimeException(e);
         }
       }
 
-      @Override public String encode(Date value) {
-        return DATE_FORMAT.format(value);
+      @Override public CustomTypeValue encode(Date value) {
+        return new CustomTypeValue.GraphQLString(DATE_FORMAT.format(value));
       }
     };
 

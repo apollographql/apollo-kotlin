@@ -17,6 +17,8 @@ import com.apollographql.apollo.integration.httpcache.type.CustomType;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery;
 import com.apollographql.apollo.internal.json.JsonWriter;
+import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.response.OperationJsonWriter;
 import com.apollographql.apollo.response.OperationResponseParser;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
@@ -63,16 +65,16 @@ public class IntegrationTest {
 
   @Before public void setUp() {
     dateCustomTypeAdapter = new CustomTypeAdapter<Date>() {
-      @Override public Date decode(String value) {
+      @Override public Date decode(CustomTypeValue value) {
         try {
-          return DATE_FORMAT.parse(value);
+          return DATE_FORMAT.parse(value.value.toString());
         } catch (ParseException e) {
           throw new RuntimeException(e);
         }
       }
 
-      @Override public String encode(Date value) {
-        return DATE_FORMAT.format(value);
+      @Override public CustomTypeValue encode(Date value) {
+        return new CustomTypeValue.GraphQLString(DATE_FORMAT.format(value));
       }
     };
 
@@ -238,7 +240,7 @@ public class IntegrationTest {
                 .transform(new Function<AllFilmsQuery.Film, String>() {
                   @Override public String apply(AllFilmsQuery.Film film) {
                     Date releaseDate = film.releaseDate();
-                    return dateCustomTypeAdapter.encode(releaseDate);
+                    return dateCustomTypeAdapter.encode(releaseDate).value.toString();
                   }
                 }).copyInto(new ArrayList<String>());
             assertThat(dates).isEqualTo(Arrays.asList("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19",

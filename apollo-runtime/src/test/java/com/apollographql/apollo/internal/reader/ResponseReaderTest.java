@@ -2,7 +2,7 @@ package com.apollographql.apollo.internal.reader;
 
 import com.google.common.truth.Truth;
 
-import com.apollographql.apollo.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.ResponseField;
@@ -16,6 +16,7 @@ import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.internal.cache.normalized.ResponseNormalizer;
 import com.apollographql.apollo.internal.field.MapFieldValueResolver;
 import com.apollographql.apollo.internal.response.RealResponseReader;
+import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import org.junit.Test;
@@ -770,33 +771,33 @@ public class ResponseReaderTest {
       Map<String, Object> recordSet) {
     Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
     customTypeAdapters.put(DATE_CUSTOM_TYPE, new CustomTypeAdapter() {
-      @Override public Object decode(String value) {
+      @Override public Object decode(CustomTypeValue value) {
         try {
-          return DATE_TIME_FORMAT.parse(value);
+          return DATE_TIME_FORMAT.parse(value.value.toString());
         } catch (ParseException e) {
           throw new ClassCastException();
         }
       }
 
-      @Override public String encode(Object value) {
+      @Override public CustomTypeValue encode(Object value) {
         return null;
       }
     });
     customTypeAdapters.put(URL_CUSTOM_TYPE, new CustomTypeAdapter() {
-      @Override public Object decode(String value) {
+      @Override public Object decode(CustomTypeValue value) {
         return null;
       }
 
-      @Override public String encode(Object value) {
+      @Override public CustomTypeValue encode(Object value) {
         return null;
       }
     });
     customTypeAdapters.put(OBJECT_CUSTOM_TYPE, new CustomTypeAdapter() {
-      @Override public Object decode(String value) {
-        return value;
+      @Override public Object decode(CustomTypeValue value) {
+        return value.value.toString();
       }
 
-      @Override public String encode(Object value) {
+      @Override public CustomTypeValue encode(Object value) {
         return null;
       }
     });

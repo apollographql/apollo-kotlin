@@ -16,6 +16,8 @@ import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsF
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment;
 import com.apollographql.apollo.integration.normalizer.type.CustomType;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
+import com.apollographql.apollo.response.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeValue;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -54,16 +56,16 @@ public class ResponseWriteTestCase {
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .dispatcher(Utils.immediateExecutor())
         .addCustomTypeAdapter(CustomType.DATE, new CustomTypeAdapter<Date>() {
-          @Override public Date decode(String value) {
+          @Override public Date decode(CustomTypeValue value) {
             try {
-              return DATE_TIME_FORMAT.parse(value);
+              return DATE_TIME_FORMAT.parse(value.value.toString());
             } catch (ParseException e) {
               throw new RuntimeException(e);
             }
           }
 
-          @Override public String encode(Date value) {
-            return DATE_TIME_FORMAT.format(value);
+          @Override public CustomTypeValue encode(Date value) {
+            return new CustomTypeValue.GraphQLString(DATE_TIME_FORMAT.format(value));
           }
         })
         .build();

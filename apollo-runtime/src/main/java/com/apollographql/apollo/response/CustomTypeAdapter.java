@@ -1,4 +1,4 @@
-package com.apollographql.apollo;
+package com.apollographql.apollo.response;
 
 import javax.annotation.Nonnull;
 
@@ -67,7 +67,7 @@ public interface CustomTypeAdapter<T> {
    * @param value the value to de-serialize
    * @return custom scalar type
    */
-  T decode(@Nonnull String value);
+  T decode(@Nonnull CustomTypeValue value);
 
   /**
    * Serializes the custom scalar type to the corresponding string value. Usually used in serializing variables or input
@@ -76,5 +76,5 @@ public interface CustomTypeAdapter<T> {
    * @param value the custom scalar type to serialize
    * @return serialized string value
    */
-  @Nonnull String encode(@Nonnull T value);
+  @Nonnull CustomTypeValue encode(@Nonnull T value);
 }

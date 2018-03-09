@@ -1,6 +1,6 @@
 package com.apollographql.apollo.internal.response;
 
-import com.apollographql.apollo.CustomTypeAdapter;
+import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMarshaller;
@@ -48,9 +48,10 @@ public final class RealResponseWriter implements ResponseWriter {
     writeScalarFieldValue(field, value);
   }
 
+  @SuppressWarnings("unchecked")
   @Override public void writeCustom(@Nonnull ResponseField.CustomTypeField field, @Nullable Object value) {
     CustomTypeAdapter typeAdapter = scalarTypeAdapters.adapterFor(field.scalarType());
-    writeScalarFieldValue(field, value != null ? typeAdapter.encode(value) : null);
+    writeScalarFieldValue(field, value != null ? typeAdapter.encode(value).value : null);
   }
 
   @Override public void writeObject(@Nonnull ResponseField field, @Nullable ResponseFieldMarshaller marshaller) {
@@ -248,7 +249,7 @@ public final class RealResponseWriter implements ResponseWriter {
 
     @Override public void writeCustom(@Nonnull ScalarType scalarType, @Nullable Object value) {
       CustomTypeAdapter typeAdapter = scalarTypeAdapters.adapterFor(scalarType);
-      this.value = value != null ? typeAdapter.encode(value) : null;
+      this.value = value != null ? typeAdapter.encode(value).value : null;
     }
 
     @Override public void writeObject(ResponseFieldMarshaller marshaller) {
