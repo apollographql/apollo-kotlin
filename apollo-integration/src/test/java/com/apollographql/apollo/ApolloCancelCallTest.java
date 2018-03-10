@@ -4,7 +4,6 @@ import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.http.ApolloHttpCache;
 import com.apollographql.apollo.exception.ApolloCanceledException;
-import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.rx2.Rx2Apollo;
@@ -15,7 +14,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 import io.reactivex.observers.TestObserver;
 import okhttp3.Dispatcher;
@@ -81,7 +79,6 @@ public class ApolloCancelCallTest {
   public void cancelPrefetchBeforeEnqueueCanceledException() throws Exception {
     server.enqueue(mockResponse("EpisodeHeroNameResponse.json"));
 
-    final AtomicReference<ApolloException> errorRef = new AtomicReference<>();
     ApolloCall<EpisodeHeroNameQuery.Data> call = apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)));
 
     call.cancel();
