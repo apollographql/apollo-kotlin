@@ -1,6 +1,7 @@
 package com.apollographql.apollo;
 
 import com.apollographql.apollo.api.Input;
+import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.http.ApolloHttpCache;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
@@ -13,8 +14,10 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import io.reactivex.observers.TestObserver;
 import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -33,6 +36,7 @@ public class ApolloCancelCallTest {
         .build();
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
+        .dispatcher(Utils.immediateExecutor())
         .okHttpClient(okHttpClient)
         .httpCache(new ApolloHttpCache(cacheStore, null))
         .build();
@@ -52,11 +56,22 @@ public class ApolloCancelCallTest {
 
   @Test
   public void cancelCallAfterEnqueueNoCallback() throws Exception {
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .build();
+    apolloClient = ApolloClient.builder()
+        .serverUrl(server.url("/"))
+        .okHttpClient(okHttpClient)
+        .httpCache(new ApolloHttpCache(cacheStore, null))
+        .build();
     server.enqueue(mockResponse("EpisodeHeroNameResponse.json"));
     final ApolloCall<EpisodeHeroNameQuery.Data> call = apolloClient.query(new EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)));
 
-    Rx2Apollo.from(call)
-        .test()
+    final TestObserver<Response<EpisodeHeroNameQuery.Data>> test = Rx2Apollo.from(call)
+        .test();
+    call.cancel();
+    test
+        .awaitDone(1, TimeUnit.SECONDS)
         .assertNoErrors()
         .assertNoValues()
         .assertNotComplete();
