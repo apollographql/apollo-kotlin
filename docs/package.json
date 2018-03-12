@@ -27,5 +27,10 @@
     "build": "chexo apollo-hexo-config -- generate",
     "clean": "hexo clean",
     "test": "npm run clean; npm run build"
+  },
+  "renovate": {
+    "extends": [
+      "apollo-docs"
+    ]
   }
 }
