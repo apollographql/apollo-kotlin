@@ -8,6 +8,33 @@ Apollo-Android is a GraphQL compliant client that generates Java models from sta
 
 Apollo-Android is designed primarily with Android in mind but you can use it in any java/kotlin app. The android-only parts are in `apollo-android-support` and are only needed to use SQLite as a cache or the android main thread for callbacks.
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE (https://github.com/thlorenz/doctoc) -->
+**Table of Contents**
+
+- [Adding Apollo to your Project](#adding-apollo-to-your-project)
+  - [Kotlin](#kotlin)
+- [Generate Code using Apollo](#generate-code-using-apollo)
+- [Consuming Code](#consuming-code)
+- [Custom Scalar Types](#custom-scalar-types)
+- [Support For Cached Responses](#support-for-cached-responses)
+  - [Usage](#usage)
+- [RxJava Support](#rxjava-support)
+  - [Usage](#usage-1)
+- [Gradle Configuration of Apollo Android](#gradle-configuration-of-apollo-android)
+  - [Optional Support](#optional-support)
+    - [Usage](#usage-2)
+  - [Semantic Naming](#semantic-naming)
+    - [Usage](#usage-3)
+  - [Java Beans Semantic Naming for Accessors](#java-beans-semantic-naming-for-accessors)
+    - [Usage](#usage-4)
+  - [Explicit Schema location](#explicit-schema-location)
+    - [Usage](#usage-5)
+  - [Download](#download)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Adding Apollo to your Project
 
 The latest Gradle plugin version is [ ![Download](https://api.bintray.com/packages/apollographql/android/apollo-gradle-plugin/images/download.svg) ](https://bintray.com/apollographql/android/apollo-gradle-plugin/_latestVersion)
@@ -412,7 +439,7 @@ Apollo Android comes with logical defaults that will work for the majority of us
 ### Optional Support
 By default Apollo-Android will return `null` when a graph api returns a `null` field.  Apollo allows you to configure the generated code to instead use a Guava `Optional<T>` or a shaded`Apollo Optional<T>` rather than simply returning the scalar value or null.
 
-### Usage
+#### Usage
 
 ```java
 apollo {
@@ -429,7 +456,7 @@ alternatively you can turn on Semantic Naming which will allow you to define que
 
 With Semantic Naming enabled you will still see a SomeQuery.java generated same as the first query above.
 
-### Usage 
+#### Usage 
 
 ```java
 apollo {
@@ -458,7 +485,7 @@ class Foo {
 }
 ```
 
-### Usage
+#### Usage
 ```groovy
 apollo {
   useJavaBeansSemanticNaming = true
