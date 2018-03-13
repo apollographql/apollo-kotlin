@@ -70,7 +70,7 @@ public final class ColorInput {
         }
         writer.writeDouble("blue", blue);
         if (enumWithDefaultValue.defined) {
-          writer.writeString("enumWithDefaultValue", enumWithDefaultValue.value != null ? enumWithDefaultValue.value.name() : null);
+          writer.writeString("enumWithDefaultValue", enumWithDefaultValue.value != null ? enumWithDefaultValue.value.rawValue() : null);
         }
       }
     };

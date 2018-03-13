@@ -621,7 +621,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], firstAppearsIn.name());
+          writer.writeString($responseFields[1], firstAppearsIn.rawValue());
         }
       };
     }
@@ -1292,7 +1292,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
-          writer.writeString($responseFields[1], firstAppearsIn.name());
+          writer.writeString($responseFields[1], firstAppearsIn.rawValue());
         }
       };
     }

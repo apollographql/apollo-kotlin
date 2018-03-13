@@ -408,7 +408,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeList($responseFields[1], appearsIn, new ResponseWriter.ListWriter() {
             @Override
             public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeString(((com.example.inline_fragments_with_friends.type.Episode) value).name());
+              listItemWriter.writeString(((com.example.inline_fragments_with_friends.type.Episode) value).rawValue());
             }
           });
         }

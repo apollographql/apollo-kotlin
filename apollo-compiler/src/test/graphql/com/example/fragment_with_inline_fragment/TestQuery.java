@@ -272,7 +272,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeList($responseFields[2], appearsIn, new ResponseWriter.ListWriter() {
             @Override
             public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeString(((com.example.fragment_with_inline_fragment.type.Episode) value).name());
+              listItemWriter.writeString(((com.example.fragment_with_inline_fragment.type.Episode) value).rawValue());
             }
           });
           fragments.marshaller().marshal(writer);
