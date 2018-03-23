@@ -1,4 +1,3 @@
-# Site
 title: Apollo Android Guide
 subtitle: Apollo Android Guide
 versions:
@@ -10,7 +9,6 @@ sidebar_categories:
 github_repo: apollographql/apollo-android
 content_root: docs/source
 
-## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
 url: https://www.apollographql.com/docs/android
 root: /docs/android/
 
