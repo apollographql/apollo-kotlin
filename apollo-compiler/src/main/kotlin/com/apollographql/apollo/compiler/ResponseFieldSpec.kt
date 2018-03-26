@@ -257,7 +257,7 @@ class ResponseFieldSpec(
 
   private fun writeEnumCode(writerParam: CodeBlock, fieldParam: CodeBlock): CodeBlock {
     val valueCode = fieldSpec.type.unwrapOptionalValue(fieldSpec.name) {
-      CodeBlock.of("\$L.name()", it)
+      CodeBlock.of("\$L.rawValue()", it)
     }
     return CodeBlock.of("\$L.\$L(\$L, \$L);\n", writerParam, WRITE_METHODS[responseFieldType],
         fieldParam, valueCode)
@@ -282,7 +282,7 @@ class ResponseFieldSpec(
       return CodeBlock.builder()
           .add(
               if (listItemType.isEnum(context)) {
-                CodeBlock.of("\$L.\$L(((\$L) \$L).name());\n", RESPONSE_LIST_ITEM_WRITER_PARAM.name, writeMethod,
+                CodeBlock.of("\$L.\$L(((\$L) \$L).rawValue());\n", RESPONSE_LIST_ITEM_WRITER_PARAM.name, writeMethod,
                     listItemType, OBJECT_VALUE_PARAM.name)
               } else {
                 CodeBlock.of("\$L.\$L(\$L);\n", RESPONSE_LIST_ITEM_WRITER_PARAM.name, writeMethod,

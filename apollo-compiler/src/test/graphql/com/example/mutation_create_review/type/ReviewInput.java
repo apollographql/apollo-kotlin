@@ -205,10 +205,10 @@ public final class ReviewInput {
         }
         writer.writeObject("favoriteColor", favoriteColor.marshaller());
         if (enumWithDefaultValue.defined) {
-          writer.writeString("enumWithDefaultValue", enumWithDefaultValue.value != null ? enumWithDefaultValue.value.name() : null);
+          writer.writeString("enumWithDefaultValue", enumWithDefaultValue.value != null ? enumWithDefaultValue.value.rawValue() : null);
         }
         if (nullableEnum.defined) {
-          writer.writeString("nullableEnum", nullableEnum.value != null ? nullableEnum.value.name() : null);
+          writer.writeString("nullableEnum", nullableEnum.value != null ? nullableEnum.value.rawValue() : null);
         }
         if (listOfCustomScalar.defined) {
           writer.writeList("listOfCustomScalar", listOfCustomScalar.value != null ? new InputFieldWriter.ListWriter() {
@@ -228,7 +228,7 @@ public final class ReviewInput {
             @Override
             public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
               for (Episode $item : listOfEnums.value) {
-                listItemWriter.writeString($item != null ? $item.name() : null);
+                listItemWriter.writeString($item != null ? $item.rawValue() : null);
               }
             }
           } : null);
@@ -284,7 +284,7 @@ public final class ReviewInput {
                   public void write(InputFieldWriter.ListItemWriter listItemWriter) throws
                       IOException {
                     for (Episode $$item : $item) {
-                      listItemWriter.writeString($$item != null ? $$item.name() : null);
+                      listItemWriter.writeString($$item != null ? $$item.rawValue() : null);
                     }
                   }
                 } : null);

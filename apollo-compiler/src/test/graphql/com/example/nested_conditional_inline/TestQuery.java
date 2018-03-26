@@ -156,7 +156,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Override
         public void marshal(InputFieldWriter writer) throws IOException {
           if (episode.defined) {
-            writer.writeString("episode", episode.value != null ? episode.value.name() : null);
+            writer.writeString("episode", episode.value != null ? episode.value.rawValue() : null);
           }
         }
       };

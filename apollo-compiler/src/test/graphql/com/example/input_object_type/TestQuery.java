@@ -146,7 +146,7 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
       return new InputFieldMarshaller() {
         @Override
         public void marshal(InputFieldWriter writer) throws IOException {
-          writer.writeString("ep", ep.name());
+          writer.writeString("ep", ep.rawValue());
           writer.writeObject("review", review.marshaller());
         }
       };

@@ -440,7 +440,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
           writer.writeList($responseFields[2], appearsIn, new ResponseWriter.ListWriter() {
             @Override
             public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeString(((com.example.unique_type_name.type.Episode) value).name());
+              listItemWriter.writeString(((com.example.unique_type_name.type.Episode) value).rawValue());
             }
           });
           writer.writeList($responseFields[3], friends.isPresent() ? friends.get() : null, new ResponseWriter.ListWriter() {

@@ -30,8 +30,8 @@ import com.apollographql.apollo.internal.subscription.NoOpSubscriptionManager;
 import com.apollographql.apollo.internal.subscription.RealSubscriptionManager;
 import com.apollographql.apollo.internal.subscription.SubscriptionManager;
 import com.apollographql.apollo.response.CustomTypeAdapter;
-import com.apollographql.apollo.subscription.SubscriptionTransport;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
+import com.apollographql.apollo.subscription.SubscriptionTransport;
 
 import java.io.IOException;
 import java.util.ArrayList;
