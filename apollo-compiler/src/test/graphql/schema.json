@@ -376,6 +376,22 @@
               "deprecationReason": "For test purpose only"
             },
             {
+              "name": "deprecatedBool",
+              "description": "Test deprecated field",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "For test purpose only"
+            },
+            {
               "name": "friends",
               "description": "The friends of the character, or an empty list if they have none",
               "args": [],
@@ -927,6 +943,22 @@
               "deprecationReason": "For test purpose only"
             },
             {
+              "name": "deprecatedBool",
+              "description": "Test deprecated field",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "For test purpose only"
+            },
+            {
               "name": "homePlanet",
               "description": "The home planet of the human, or null if unknown",
               "args": [],
@@ -1360,6 +1392,22 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "For test purpose only"
+            },
+            {
+              "name": "deprecatedBool",
+              "description": "Test deprecated field",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
                   "ofType": null
                 }
               },
