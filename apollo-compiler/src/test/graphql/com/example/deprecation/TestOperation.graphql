@@ -2,5 +2,6 @@ query TestQuery($episode: Episode) {
   hero(episode: $episode) {
     name
     deprecated
+    deprecatedBool
   }
 }

@@ -33,7 +33,7 @@ fun TypeName.overrideTypeName(typeNameOverrideMap: Map<String, String>): TypeNam
 }
 
 fun FieldSpec.overrideType(typeNameOverrideMap: Map<String, String>): FieldSpec =
-    FieldSpec.builder(type.overrideTypeName(typeNameOverrideMap).annotated(type.annotations), name)
+    FieldSpec.builder(type.withoutAnnotations().overrideTypeName(typeNameOverrideMap).annotated(type.annotations), name)
         .addModifiers(*modifiers.toTypedArray())
         .addAnnotations(annotations)
         .addJavadoc(javadoc)
@@ -42,7 +42,9 @@ fun FieldSpec.overrideType(typeNameOverrideMap: Map<String, String>): FieldSpec 
 
 fun MethodSpec.overrideReturnType(typeNameOverrideMap: Map<String, String>): MethodSpec =
     MethodSpec.methodBuilder(name)
-        .returns(returnType.overrideTypeName(typeNameOverrideMap).annotated(returnType.annotations))
+        .returns(
+            returnType.withoutAnnotations().overrideTypeName(typeNameOverrideMap).annotated(returnType.annotations))
+        .addAnnotations(annotations)
         .addModifiers(*modifiers.toTypedArray())
         .addCode(code)
         .addJavadoc(javadoc)
@@ -192,9 +194,9 @@ fun TypeSpec.withHashCodeImplementation(): TypeSpec {
           .addStatement("h *= 1000003")
           .let {
             if (field.type.isPrimitive) {
-              if (field.type == TypeName.DOUBLE) {
+              if (field.type.withoutAnnotations() == TypeName.DOUBLE) {
                 it.addStatement("h ^= Double.valueOf(\$L).hashCode()", field.name)
-              } else if (field.type == TypeName.BOOLEAN) {
+              } else if (field.type.withoutAnnotations() == TypeName.BOOLEAN) {
                 it.addStatement("h ^= Boolean.valueOf(\$L).hashCode()", field.name)
               } else {
                 it.addStatement("h ^= \$L", field.name)
