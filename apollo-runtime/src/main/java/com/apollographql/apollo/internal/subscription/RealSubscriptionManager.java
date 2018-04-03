@@ -35,6 +35,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
 
   private final ScalarTypeAdapters scalarTypeAdapters;
   private final SubscriptionTransport transport;
+  private Map<String, Object> connectionParams;
   private final Executor dispatcher;
   private final ResponseFieldMapperFactory responseFieldMapperFactory = new ResponseFieldMapperFactory();
   private final Runnable connectionAcknowledgeTimeoutTimerTask = new Runnable() {
@@ -49,12 +50,14 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   };
 
   public RealSubscriptionManager(@Nonnull ScalarTypeAdapters scalarTypeAdapters,
-      @Nonnull final SubscriptionTransport.Factory transportFactory, @Nonnull final Executor dispatcher) {
+      @Nonnull final SubscriptionTransport.Factory transportFactory, @Nonnull Map<String, Object> connectionParams,
+      @Nonnull final Executor dispatcher) {
     checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null");
     checkNotNull(transportFactory, "transportFactory == null");
     checkNotNull(dispatcher, "dispatcher == null");
 
     this.scalarTypeAdapters = checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null");
+    this.connectionParams = checkNotNull(connectionParams, "connectionParams == null");
     this.transport = transportFactory.create(new SubscriptionTransportCallback(this, dispatcher));
     this.dispatcher = dispatcher;
   }
@@ -122,7 +125,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   void onTransportConnected() {
     synchronized (this) {
       state = State.CONNECTED;
-      transport.send(new OperationClientMessage.Init());
+      transport.send(new OperationClientMessage.Init(connectionParams));
     }
 
     timer.schedule(CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID, connectionAcknowledgeTimeoutTimerTask,

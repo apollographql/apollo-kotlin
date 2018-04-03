@@ -44,8 +44,18 @@ public class WebSocketSubscriptionTransportMessageTest {
   }
 
   @Test public void connectionInit() {
-    subscriptionTransport.send(new OperationClientMessage.Init());
+    subscriptionTransport.send(new OperationClientMessage.Init(Collections.<String, Object>emptyMap()));
     assertThat(webSocketFactory.webSocket.lastSentMessage).isEqualTo("{\"type\":\"connection_init\"}");
+
+    subscriptionTransport.send(
+        new OperationClientMessage.Init(
+            new UnmodifiableMapBuilder<String, Object>()
+                .put("param1", true)
+                .put("param2", "value")
+                .build()
+        )
+    );
+    assertThat(webSocketFactory.webSocket.lastSentMessage).isEqualTo("{\"type\":\"connection_init\",\"payload\":{\"param1\":true,\"param2\":\"value\"}}");
   }
 
   @Test public void startSubscription() {

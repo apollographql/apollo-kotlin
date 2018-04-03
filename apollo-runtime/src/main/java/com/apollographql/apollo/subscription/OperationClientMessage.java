@@ -3,9 +3,11 @@ package com.apollographql.apollo.subscription;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.internal.json.InputFieldJsonWriter;
 import com.apollographql.apollo.internal.json.JsonWriter;
+import com.apollographql.apollo.internal.json.Utils;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -40,10 +42,19 @@ public abstract class OperationClientMessage {
 
   public static final class Init extends OperationClientMessage {
     private static final String TYPE = "connection_init";
+    private final Map<String, Object> connectionParams;
+
+    public Init(@Nonnull Map<String, Object> connectionParams) {
+      this.connectionParams = checkNotNull(connectionParams, "connectionParams == null");
+    }
 
     @Override public void writeToJson(@Nonnull JsonWriter writer) throws IOException {
       checkNotNull(writer, "writer == null");
       writer.name(JSON_KEY_TYPE).value(TYPE);
+      if (!connectionParams.isEmpty()) {
+        writer.name(JSON_KEY_PAYLOAD);
+        Utils.writeToJson(connectionParams, writer);
+      }
     }
   }
 

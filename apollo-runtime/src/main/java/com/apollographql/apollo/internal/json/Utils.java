@@ -24,7 +24,7 @@ public final class Utils {
   }
 
   @SuppressWarnings("unchecked")
-  private static void writeToJson(Object value, JsonWriter jsonWriter) throws IOException {
+  public static void writeToJson(Object value, JsonWriter jsonWriter) throws IOException {
     if (value == null) {
       jsonWriter.nullValue();
     } else if (value instanceof Map) {

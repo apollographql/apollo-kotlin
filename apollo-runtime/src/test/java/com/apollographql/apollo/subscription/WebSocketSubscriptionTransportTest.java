@@ -3,6 +3,7 @@ package com.apollographql.apollo.subscription;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -63,18 +64,18 @@ public class WebSocketSubscriptionTransportTest {
 
   @Test public void send() {
     try {
-      subscriptionTransport.send(new OperationClientMessage.Init());
+      subscriptionTransport.send(new OperationClientMessage.Init(Collections.<String, Object>emptyMap()));
       fail("expected IllegalStateException");
     } catch (IllegalStateException expected) {
       // expected
     }
 
     subscriptionTransport.connect();
-    subscriptionTransport.send(new OperationClientMessage.Init());
+    subscriptionTransport.send(new OperationClientMessage.Init(Collections.<String, Object>emptyMap()));
     subscriptionTransport.disconnect(new OperationClientMessage.Terminate());
 
     try {
-      subscriptionTransport.send(new OperationClientMessage.Init());
+      subscriptionTransport.send(new OperationClientMessage.Init(Collections.<String, Object>emptyMap()));
       fail("expected IllegalStateException");
     } catch (IllegalStateException expected) {
       // expected

@@ -37,7 +37,8 @@ public class SubscriptionManagerTest {
 
   @Before public void setUp() throws Exception {
     subscriptionTransportFactory = new MockSubscriptionTransportFactory();
-    subscriptionManager = new RealSubscriptionManager(new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()), subscriptionTransportFactory, new MockExecutor());
+    subscriptionManager = new RealSubscriptionManager(new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
+        subscriptionTransportFactory, Collections.<String, Object>emptyMap(), new MockExecutor());
     assertThat(subscriptionTransportFactory.subscriptionTransport).isNotNull();
     assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
   }
