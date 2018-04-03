@@ -26,16 +26,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
 import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.apollographql.apollo.Utils.TIME_OUT_SECONDS;
 import static com.apollographql.apollo.Utils.assertResponse;
 import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
@@ -47,8 +46,7 @@ public class OptimisticCacheTestCase {
 
   @Before public void setUp() {
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .writeTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
-        .readTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
         .build();
 
     apolloClient = ApolloClient.builder()
@@ -325,23 +323,20 @@ public class OptimisticCacheTestCase {
 
   @Test public void mutation_and_query_watcher() throws Exception {
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"));
-    final NamedCountDownLatch watcherFirstCallLatch = new NamedCountDownLatch("WatcherFirstCall", 1);
     final List<ReviewsByEpisodeQuery.Data> watcherData = new ArrayList<>();
     apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST)
         .watcher().refetchResponseFetcher(ApolloResponseFetchers.CACHE_FIRST)
         .enqueueAndWatch(new ApolloCall.Callback<ReviewsByEpisodeQuery.Data>() {
           @Override public void onResponse(@Nonnull Response<ReviewsByEpisodeQuery.Data> response) {
             watcherData.add(response.data());
-            watcherFirstCallLatch.countDown();
           }
 
           @Override public void onFailure(@Nonnull ApolloException e) {
-            watcherFirstCallLatch.countDown();
+
           }
         });
-    watcherFirstCallLatch.awaitOrThrowWithTimeout(2, TimeUnit.SECONDS);
 
-    server.enqueue(mockResponse("UpdateReviewResponse.json").setBodyDelay(2, TimeUnit.SECONDS));
+    server.enqueue(mockResponse("UpdateReviewResponse.json"));
     UpdateReviewMutation updateReviewMutation = new UpdateReviewMutation(
         "empireReview2",
         ReviewInput.builder()
@@ -350,24 +345,17 @@ public class OptimisticCacheTestCase {
             .favoriteColor(ColorInput.builder().build())
             .build()
     );
-    final NamedCountDownLatch mutationCallLatch = new NamedCountDownLatch("MutationCall", 1);
     apolloClient.mutate(updateReviewMutation, new UpdateReviewMutation.Data(new UpdateReviewMutation.UpdateReview(
         "Review", "empireReview2", 5, "Great"))).enqueue(
         new ApolloCall.Callback<UpdateReviewMutation.Data>() {
           @Override public void onResponse(@Nonnull Response<UpdateReviewMutation.Data> response) {
-            mutationCallLatch.countDown();
           }
 
           @Override public void onFailure(@Nonnull ApolloException e) {
-            mutationCallLatch.countDown();
+
           }
         }
     );
-    mutationCallLatch.await(3, TimeUnit.SECONDS);
-
-    // sleep a while to wait if watcher gets another notification
-    Thread.sleep(TimeUnit.SECONDS.toMillis(2));
-
     assertThat(watcherData).hasSize(3);
 
     // before mutation and optimistic updates

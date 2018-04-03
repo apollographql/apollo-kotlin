@@ -20,12 +20,12 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -34,12 +34,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static java.util.Collections.emptySet;
 
 public class CacheHeadersTest {
-  private static final int TIME_OUT_SECONDS = 3;
 
   @Rule public final MockWebServer server = new MockWebServer();
 
-  @Test
-  public void testHeadersReceived() throws ApolloException, IOException {
+  @Test @SuppressWarnings("CheckReturnValue") public void testHeadersReceived() throws ApolloException, IOException {
     final AtomicBoolean hasHeader = new AtomicBoolean();
     final NormalizedCache normalizedCache = new NormalizedCache() {
       @Nullable @Override public Record loadRecord(@NonNull String key, @NonNull CacheHeaders cacheHeaders) {
@@ -74,19 +72,19 @@ public class CacheHeadersTest {
     ApolloClient apolloClient = ApolloClient.builder()
         .normalizedCache(cacheFactory, new IdFieldCacheKeyResolver())
         .serverUrl(server.url("/"))
-        .okHttpClient(new OkHttpClient())
+        .okHttpClient(new OkHttpClient.Builder().dispatcher(new Dispatcher(Utils.immediateExecutorService())).build())
+        .dispatcher(Utils.immediateExecutor())
         .build();
 
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
     CacheHeaders cacheHeaders = CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build();
     Rx2Apollo.from(apolloClient.query(new HeroAndFriendsNamesQuery(Input.fromNullable(Episode.NEWHOPE)))
         .cacheHeaders(cacheHeaders))
-        .test().awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+        .test();
     assertThat(hasHeader.get()).isTrue();
   }
 
-  @Test
-  public void testDefaultHeadersReceived() throws IOException, ApolloException {
+  @Test @SuppressWarnings("CheckReturnValue") public void testDefaultHeadersReceived() throws Exception {
     final AtomicBoolean hasHeader = new AtomicBoolean();
     final NormalizedCache normalizedCache = new NormalizedCache() {
       @Nullable @Override public Record loadRecord(@NonNull String key, @NonNull CacheHeaders cacheHeaders) {
@@ -123,15 +121,15 @@ public class CacheHeadersTest {
     ApolloClient apolloClient = ApolloClient.builder()
         .normalizedCache(cacheFactory, new IdFieldCacheKeyResolver())
         .serverUrl(server.url("/"))
-        .okHttpClient(new OkHttpClient())
+        .okHttpClient(new OkHttpClient.Builder().dispatcher(new Dispatcher(Utils.immediateExecutorService())).build())
+        .dispatcher(Utils.immediateExecutor())
         .defaultCacheHeaders(cacheHeaders)
         .build();
 
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"));
     Rx2Apollo.from(apolloClient.query(new HeroAndFriendsNamesQuery(Input.fromNullable(Episode.NEWHOPE)))
         .cacheHeaders(cacheHeaders))
-        .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS);
+        .test();
     assertThat(hasHeader.get()).isTrue();
   }
 

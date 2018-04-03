@@ -38,12 +38,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
 import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -58,8 +57,6 @@ public class IntegrationTest {
 
   private ApolloClient apolloClient;
   private CustomTypeAdapter<Date> dateCustomTypeAdapter;
-
-  private static final long TIME_OUT_SECONDS = 3;
 
   @Rule public final MockWebServer server = new MockWebServer();
 
@@ -80,10 +77,11 @@ public class IntegrationTest {
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
-        .okHttpClient(new OkHttpClient.Builder().build())
+        .okHttpClient(new OkHttpClient.Builder().dispatcher(new Dispatcher(Utils.immediateExecutorService())).build())
         .addCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
         .normalizedCache(new LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), new IdFieldCacheKeyResolver())
         .defaultResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
+        .dispatcher(Utils.immediateExecutor())
         .build();
   }
 
@@ -269,31 +267,23 @@ public class IntegrationTest {
     server.enqueue(mockResponse("ResponseDataMissing.json"));
     Rx2Apollo.from(apolloClient.query(new HeroNameQuery()))
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertError(ApolloException.class);
   }
 
   @Test public void statusEvents() throws Exception {
     server.enqueue(mockResponse("HeroNameResponse.json"));
-    List<ApolloCall.StatusEvent> statusEvents = enqueueAndAwaitForStatusEvents(
-        apolloClient.query(new HeroNameQuery()),
-        new NamedCountDownLatch("statusEvents", 1)
-    );
+    List<ApolloCall.StatusEvent> statusEvents = enqueueCall(apolloClient.query(new HeroNameQuery()));
     assertThat(statusEvents).isEqualTo(Arrays.asList(ApolloCall.StatusEvent.SCHEDULED, ApolloCall.StatusEvent
         .FETCH_NETWORK, ApolloCall.StatusEvent.COMPLETED));
 
-    statusEvents = enqueueAndAwaitForStatusEvents(
-        apolloClient.query(new HeroNameQuery()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
-        new NamedCountDownLatch("statusEvents", 1)
-    );
+    statusEvents = enqueueCall(
+        apolloClient.query(new HeroNameQuery()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY));
     assertThat(statusEvents).isEqualTo(Arrays.asList(ApolloCall.StatusEvent.SCHEDULED, ApolloCall.StatusEvent
         .FETCH_CACHE, ApolloCall.StatusEvent.COMPLETED));
 
-    server.enqueue(mockResponse("HeroNameResponse.json").setBodyDelay(1, TimeUnit.SECONDS));
-    statusEvents = enqueueAndAwaitForStatusEvents(
-        apolloClient.query(new HeroNameQuery()).responseFetcher(ApolloResponseFetchers.CACHE_AND_NETWORK),
-        new NamedCountDownLatch("statusEvents", 1)
-    );
+    server.enqueue(mockResponse("HeroNameResponse.json"));
+    statusEvents = enqueueCall(
+        apolloClient.query(new HeroNameQuery()).responseFetcher(ApolloResponseFetchers.CACHE_AND_NETWORK));
     assertThat(statusEvents).isEqualTo(Arrays.asList(ApolloCall.StatusEvent.SCHEDULED, ApolloCall.StatusEvent
         .FETCH_CACHE, ApolloCall.StatusEvent.FETCH_NETWORK, ApolloCall.StatusEvent.COMPLETED));
   }
@@ -332,12 +322,10 @@ public class IntegrationTest {
   private static <T> void assertResponse(ApolloCall<T> call, Predicate<Response<T>> predicate) {
     Rx2Apollo.from(call)
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(predicate);
   }
 
-  private <T> List<ApolloCall.StatusEvent> enqueueAndAwaitForStatusEvents(ApolloQueryCall<T> call,
-      final CountDownLatch latch) throws Exception {
+  private <T> List<ApolloCall.StatusEvent> enqueueCall(ApolloQueryCall<T> call) throws Exception {
     final List<ApolloCall.StatusEvent> statusEvents = new ArrayList<>();
     call.enqueue(new ApolloCall.Callback<T>() {
       @Override public void onResponse(@Nonnull Response<T> response) {
@@ -348,12 +336,8 @@ public class IntegrationTest {
 
       @Override public void onStatusEvent(@Nonnull ApolloCall.StatusEvent event) {
         statusEvents.add(event);
-        if (event == ApolloCall.StatusEvent.COMPLETED) {
-          latch.countDown();
-        }
       }
     });
-    latch.await(TIME_OUT_SECONDS, TimeUnit.SECONDS);
     return statusEvents;
   }
 }

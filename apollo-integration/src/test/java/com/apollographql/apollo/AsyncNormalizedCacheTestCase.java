@@ -9,33 +9,28 @@ import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery;
 import com.apollographql.apollo.integration.normalizer.type.Episode;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.annotation.Nonnull;
-
+import io.reactivex.Observable;
 import io.reactivex.functions.Predicate;
+import io.reactivex.observers.TestObserver;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.google.common.truth.Truth.assertThat;
-import static junit.framework.Assert.fail;
-
 public class AsyncNormalizedCacheTestCase {
-  private static final int TIME_OUT_SECONDS = 3;
-
   private ApolloClient apolloClient;
   @Rule public final MockWebServer server = new MockWebServer();
 
   @Before public void setUp() {
-    OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .build();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
@@ -51,37 +46,26 @@ public class AsyncNormalizedCacheTestCase {
   @Test public void testAsync() throws IOException, InterruptedException, ApolloException {
     EpisodeHeroNameQuery query = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build();
 
-    server.enqueue(mockResponse("HeroNameResponse.json"));
-    Rx2Apollo.from(apolloClient.query(query))
-        .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
-        .assertValue(new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
-          @Override public boolean test(Response<EpisodeHeroNameQuery.Data> dataResponse) throws Exception {
-            return !dataResponse.hasErrors();
-          }
-        });
-
     for (int i = 0; i < 500; i++) {
       server.enqueue(mockResponse("HeroNameResponse.json"));
     }
 
-    final CountDownLatch latch = new CountDownLatch(1000);
+    List<Observable<Response<EpisodeHeroNameQuery.Data>>> calls = new ArrayList<>();
     for (int i = 0; i < 1000; i++) {
-      apolloClient.query(query).responseFetcher(i % 2 == 0 ? ApolloResponseFetchers.NETWORK_FIRST
-          : ApolloResponseFetchers.CACHE_ONLY)
-          .enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
-            @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
-              assertThat(response.hasErrors()).isFalse();
-              latch.countDown();
-            }
-
-            @Override public void onFailure(@Nonnull ApolloException e) {
-              fail("unexpected error: " + e);
-              latch.countDown();
-            }
-          });
+      ApolloQueryCall<EpisodeHeroNameQuery.Data> queryCall = apolloClient
+          .query(query)
+          .responseFetcher(i % 2 == 0 ? ApolloResponseFetchers.NETWORK_FIRST : ApolloResponseFetchers.CACHE_ONLY);
+      calls.add(Rx2Apollo.from(queryCall));
     }
-
-    latch.await(5, TimeUnit.SECONDS);
+    TestObserver<Response<EpisodeHeroNameQuery.Data>> observer = new TestObserver<>();
+    Observable.merge(calls).subscribe(observer);
+    observer.awaitTerminalEvent();
+    observer.assertNoErrors();
+    observer.assertValueCount(1000);
+    observer.assertNever(new Predicate<Response<EpisodeHeroNameQuery.Data>>() {
+      @Override public boolean test(Response<EpisodeHeroNameQuery.Data> dataResponse) throws Exception {
+        return dataResponse.hasErrors();
+      }
+    });
   }
 }

@@ -7,7 +7,6 @@ import com.apollographql.apollo.integration.normalizer.type.Episode;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import okhttp3.mockwebserver.MockResponse;
@@ -25,14 +24,12 @@ public class CacheAndNetworkFetcherTest extends BaseFetcherTest {
     server.enqueue(new MockResponse().setResponseCode(HTTP_INTERNAL_ERROR).setBody("Server Error"));
     trackingCallback = new TrackingCallback();
     apolloClient.query(query).responseFetcher(CACHE_AND_NETWORK).enqueue(trackingCallback);
-    trackingCallback.completedOrErrorLatch.awaitOrThrowWithTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
     assertThat(trackingCallback.exceptions.size()).isEqualTo(1);
 
     // Goes to network when cache empty, one response
     server.enqueue(mockResponse("HeroNameResponse.json"));
     trackingCallback = new TrackingCallback();
     apolloClient.query(query).responseFetcher(CACHE_AND_NETWORK).enqueue(trackingCallback);
-    trackingCallback.completedOrErrorLatch.awaitOrThrowWithTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
     assertThat(trackingCallback.exceptions).isEmpty();
     assertThat(trackingCallback.responseList.size()).isEqualTo(1);
     assertThat(trackingCallback.responseList.get(0).fromCache()).isFalse();
@@ -42,7 +39,6 @@ public class CacheAndNetworkFetcherTest extends BaseFetcherTest {
     server.enqueue(mockResponse("HeroNameResponse.json"));
     trackingCallback = new TrackingCallback();
     apolloClient.query(query).responseFetcher(CACHE_AND_NETWORK).enqueue(trackingCallback);
-    trackingCallback.completedOrErrorLatch.awaitOrThrowWithTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
     assertThat(trackingCallback.exceptions).isEmpty();
     assertThat(trackingCallback.responseList.size()).isEqualTo(2);
 
@@ -57,7 +53,6 @@ public class CacheAndNetworkFetcherTest extends BaseFetcherTest {
     server.enqueue(new MockResponse().setResponseCode(HTTP_INTERNAL_ERROR).setBody("Server Error"));
     trackingCallback = new TrackingCallback();
     apolloClient.query(query).responseFetcher(CACHE_AND_NETWORK).enqueue(trackingCallback);
-    trackingCallback.completedOrErrorLatch.awaitOrThrowWithTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
     assertThat(trackingCallback.exceptions).isEmpty();
     assertThat(trackingCallback.responseList.size()).isEqualTo(1);
     assertThat(trackingCallback.responseList.get(0).fromCache()).isTrue();

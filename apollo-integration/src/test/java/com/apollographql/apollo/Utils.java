@@ -2,6 +2,8 @@ package com.apollographql.apollo;
 
 import com.google.common.io.CharStreams;
 
+import android.support.annotation.NonNull;
+
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
@@ -10,6 +12,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.concurrent.AbstractExecutorService;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -22,7 +25,6 @@ import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 
 public final class Utils {
-  public static final long TIME_OUT_SECONDS = 3;
 
   private Utils() {
   }
@@ -58,7 +60,6 @@ public final class Utils {
   public static <T> void assertResponse(ApolloCall<T> call, Predicate<Response<T>> predicate) {
     Rx2Apollo.from(call)
         .test()
-        .awaitDone(TIME_OUT_SECONDS, TimeUnit.SECONDS)
         .assertValue(predicate);
   }
 
@@ -112,5 +113,20 @@ public final class Utils {
         runnable.run();
       }
     };
+  }
+
+  public static class TestExecutor implements Executor {
+
+    private ConcurrentLinkedQueue<Runnable> commands = new ConcurrentLinkedQueue<>();
+
+    @Override public void execute(@NonNull Runnable command) {
+      commands.add(command);
+    }
+
+    public void triggerActions() {
+      for (Runnable command : commands) {
+        command.run();
+      }
+    }
   }
 }

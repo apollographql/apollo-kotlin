@@ -9,7 +9,6 @@ import com.apollographql.apollo.rx2.Rx2Apollo;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
@@ -24,7 +23,6 @@ public class CacheOnlyFetcherTest extends BaseFetcherTest {
     // Is null when cache empty
     trackingCallback = new TrackingCallback();
     apolloClient.query(query).responseFetcher(CACHE_ONLY).enqueue(trackingCallback);
-    trackingCallback.completedOrErrorLatch.awaitOrThrowWithTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
     assertThat(trackingCallback.exceptions.size()).isEqualTo(0);
     assertThat(trackingCallback.responseList.size()).isEqualTo(1);
     assertThat(trackingCallback.responseList.get(0).fromCache()).isTrue();
@@ -44,7 +42,6 @@ public class CacheOnlyFetcherTest extends BaseFetcherTest {
     server.enqueue(mockResponse("HeroNameResponse.json"));
     trackingCallback = new TrackingCallback();
     apolloClient.query(query).responseFetcher(CACHE_ONLY).enqueue(trackingCallback);
-    trackingCallback.completedOrErrorLatch.awaitOrThrowWithTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
     assertThat(trackingCallback.exceptions.size()).isEqualTo(0);
     assertThat(trackingCallback.responseList.size()).isEqualTo(1);
     assertThat(trackingCallback.responseList.get(0).fromCache()).isTrue();

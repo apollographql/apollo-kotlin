@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockWebServer;
 
@@ -48,7 +49,9 @@ public class ResponseWriteTestCase {
   private SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-mm-dd", Locale.US);
 
   @Before public void setUp() {
-    OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .build();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))

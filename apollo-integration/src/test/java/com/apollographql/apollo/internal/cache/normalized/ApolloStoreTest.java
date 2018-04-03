@@ -8,8 +8,8 @@ import com.apollographql.apollo.cache.normalized.CacheKey;
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.response.ScalarTypeAdapters;
 import com.apollographql.apollo.internal.ApolloLogger;
+import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import org.junit.Test;
 

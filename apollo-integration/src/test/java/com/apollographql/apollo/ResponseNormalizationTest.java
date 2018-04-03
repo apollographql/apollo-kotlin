@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.functions.Predicate;
+import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockWebServer;
 
@@ -49,7 +50,9 @@ public class ResponseNormalizationTest {
   private final String QUERY_ROOT_KEY = "QUERY_ROOT";
 
   @Before public void setUp() {
-    OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .dispatcher(new Dispatcher(Utils.immediateExecutorService()))
+        .build();
 
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
