@@ -156,10 +156,13 @@ public final class SqlNormalizedCache extends NormalizedCache {
     Cursor cursor = database.query(ApolloSqlHelper.TABLE_RECORDS,
         allColumns, ApolloSqlHelper.COLUMN_KEY + " = ?", new String[]{key},
         null, null, null);
-    if (cursor == null || !cursor.moveToFirst()) {
+    if (cursor == null) {
       return Optional.absent();
     }
     try {
+      if (!cursor.moveToFirst()) {
+        return Optional.absent();
+      }
       return Optional.of(cursorToRecord(cursor));
     } catch (IOException exception) {
       return Optional.absent();
