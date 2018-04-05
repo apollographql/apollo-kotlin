@@ -246,6 +246,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
     boolean sendOperationIdentifiers;
     Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = Optional.absent();
+    Optional<Map<String, Object>> subscriptionConnectionParams = Optional.absent();
 
     Builder() {
     }
@@ -433,6 +434,19 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
+     * <p>Sets up subscription connection parameters to be sent to the server when connection is established with
+     * subscription server</p>
+     *
+     * @param subscriptionConnectionParams map of connection parameters to be sent
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
+    public Builder subscriptionConnectionParams(@Nonnull Map<String, Object> subscriptionConnectionParams) {
+      this.subscriptionConnectionParams = Optional.of(checkNotNull(subscriptionConnectionParams,
+          "subscriptionConnectionParams is null"));
+      return this;
+    }
+
+    /**
      * Builds the {@link ApolloClient} instance using the configured values.
      *
      * Note that if the {@link #dispatcher} is not called, then a default {@link Executor} is used.
@@ -474,7 +488,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = this.subscriptionTransportFactory;
       if (subscriptionTransportFactory.isPresent()) {
         subscriptionManager = new RealSubscriptionManager(scalarTypeAdapters, subscriptionTransportFactory.get(),
-            dispatcher);
+            subscriptionConnectionParams.or(Collections.<String, Object>emptyMap()), dispatcher);
       }
 
       return new ApolloClient(serverUrl,
