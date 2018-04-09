@@ -169,12 +169,24 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   }
 
   /**
-   * Clear all entries from the normalized cache.
+   * Clear all entries from the normalized cache. This is asynchronous operation and will be scheduled on the
+   * dispatcher
    *
-   * @return {@link ApolloStoreOperation} operation to execute
+   * @param callback to be notified when operation is completed
    */
-  public @Nonnull ApolloStoreOperation<Boolean> clearNormalizedCache() {
-    return apolloStore.clearAll();
+  public void clearNormalizedCache(@Nonnull ApolloStoreOperation.Callback<Boolean> callback) {
+    checkNotNull(callback, "callback == null");
+    apolloStore.clearAll().enqueue(callback);
+  }
+
+  /**
+   * Clear all entries from the normalized cache. This is synchronous operation and will be executed int the current
+   * thread
+   *
+   * @return {@code true} if operation succeed, {@code false} otherwise
+   */
+  public boolean clearNormalizedCache() {
+    return apolloStore.clearAll().execute();
   }
 
   /**
