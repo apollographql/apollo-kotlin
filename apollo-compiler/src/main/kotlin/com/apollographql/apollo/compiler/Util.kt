@@ -16,6 +16,9 @@ fun String.escapeJavaReservedWord() = if (JAVA_RESERVED_WORDS.contains(this)) "$
 
 fun String.toJavaBeansSemanticNaming(isBooleanField: Boolean): String {
   val prefix = if (isBooleanField) "is" else "get"
+  if (isBooleanField && startsWith(prefix) && removePrefix(prefix) == removePrefix(prefix).capitalize()) {
+    return this
+  }
   return "$prefix${capitalize()}"
 }
 

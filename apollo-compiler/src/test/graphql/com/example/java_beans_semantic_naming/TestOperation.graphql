@@ -18,6 +18,7 @@ fragment HeroDetails on Character {
     pageInfo {
       hasNextPage
     }
+    isEmpty
   }
   ... on Droid {
     name
