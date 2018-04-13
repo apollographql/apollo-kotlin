@@ -125,7 +125,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
       ResponseField.forList("search", "search", new UnmodifiableMapBuilder<String, Object>(1)
-        .put("text", "test")
+      .put("text", "test")
       .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 

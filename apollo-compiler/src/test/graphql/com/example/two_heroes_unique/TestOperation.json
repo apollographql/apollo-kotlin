@@ -42,7 +42,8 @@
 					"args": [
 						{
 							"name": "episode",
-							"value": "EMPIRE"
+							"value": "EMPIRE",
+							"type": "Episode"
 						}
 					],
 					"isConditional": false,

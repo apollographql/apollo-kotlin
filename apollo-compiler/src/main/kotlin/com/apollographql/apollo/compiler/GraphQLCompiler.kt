@@ -81,7 +81,7 @@ class GraphQLCompiler {
     const val FILE_EXTENSION = "graphql"
     @JvmField
     val OUTPUT_DIRECTORY = listOf("generated", "source", "apollo")
-    const val APOLLOCODEGEN_VERSION = "0.18.3"
+    const val APOLLOCODEGEN_VERSION = "0.19.1"
   }
 
   data class Arguments(

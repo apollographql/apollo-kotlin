@@ -1,16 +1,14 @@
 package com.apollographql.apollo.compiler.ir
 
 import com.apollographql.apollo.compiler.*
-
 import com.squareup.javapoet.*
-import java.util.*
 import javax.lang.model.element.Modifier
 
 data class Field(
     val responseName: String,
     val fieldName: String,
     val type: String,
-    val args: List<Map<String, Any>>? = null,
+    val args: List<Argument>? = null,
     val isConditional: Boolean = false,
     val fields: List<Field>? = null,
     val fragmentSpreads: List<String>? = null,
@@ -73,13 +71,28 @@ data class Field(
   }
 
   fun argumentCodeBlock(): CodeBlock {
-    if (args == null || args.isEmpty()) {
-      return CodeBlock.builder().add("null").build()
-    }
-    return jsonMapToCodeBlock(args.fold(HashMap<String, Any>(), { map, arg ->
-      map.put(arg["name"].toString(), arg["value"]!!)
-      return@fold map
-    }))
+    if (args == null || args.isEmpty()) return CodeBlock.of("null")
+
+    val mapBuilderClass = ClassNames.parameterizedUnmodifiableMapBuilderOf(String::class.java, Any::class.java)
+    return args
+        .map { (name, value, type) ->
+          when (value) {
+            is Number -> {
+              val scalarType = ScalarType.forName(type.removeSuffix("!"))
+              when (scalarType) {
+                is ScalarType.INT -> CodeBlock.of(".put(\$S, \$L)\n", name, value.toInt())
+                is ScalarType.FLOAT -> CodeBlock.of(".put(\$S, \$Lf)\n", name, value.toDouble())
+                else -> CodeBlock.of(".put(\$S, \$L)\n", name, value)
+              }
+            }
+            is Boolean -> CodeBlock.of(".put(\$S, \$L)\n", name, value)
+            is Map<*, *> -> CodeBlock.of(".put(\$S, \$L)\n", name, jsonMapToCodeBlock(value as Map<String, Any?>))
+            else -> CodeBlock.of(".put(\$S, \$S)\n", name, value)
+          }
+        }
+        .fold(CodeBlock.builder().add("new \$T(\$L)\n", mapBuilderClass, args.size), CodeBlock.Builder::add)
+        .add(".build()")
+        .build()
   }
 
   fun formatClassName() = responseName.capitalize().let { if (isList()) it.singularize() else it }
@@ -93,22 +106,20 @@ data class Field(
 
   private fun isList(): Boolean = type.removeSuffix("!").let { it.startsWith('[') && it.endsWith(']') }
 
-  private fun jsonMapToCodeBlock(jsonMap: Map<String, Any?>): CodeBlock {
-    return jsonMap.entries.map { entry ->
-      val codeBuilder = CodeBlock.builder()
-      if (entry.value is Map<*, *>) {
-        @Suppress("UNCHECKED_CAST")
-        codeBuilder.add(".put(\$S, ", entry.key).add("\$L)\n", jsonMapToCodeBlock(entry.value as Map<String, Any?>))
-      } else {
-        codeBuilder.add(".put(\$S, \$S)\n", entry.key, entry.value).build()
-      }
-      codeBuilder.build()
-    }.fold(CodeBlock.builder().add("new \$T(\$L)\n",
-        ClassNames.parameterizedUnmodifiableMapBuilderOf(String::class.java, Any::class.java),
-        jsonMap.size
-    ).indent(), CodeBlock.Builder::add)
+  private fun jsonMapToCodeBlock(map: Map<String, Any?>): CodeBlock {
+    val mapBuilderClass = ClassNames.parameterizedUnmodifiableMapBuilderOf(String::class.java, Any::class.java)
+    return map
+        .map { (key, value) ->
+          if (value is Map<*, *>) {
+            CodeBlock.of(".put(\$S, \$L)\n", key, jsonMapToCodeBlock(value as Map<String, Any?>))
+          } else {
+            CodeBlock.of(".put(\$S, \$S)\n", key, value)
+          }
+        }
+        .fold(CodeBlock.builder().add("new \$T(\$L)\n", mapBuilderClass, map.size).indent(), CodeBlock.Builder::add)
+        .add(".build()")
         .unindent()
-        .add(".build()").build()
+        .build()
   }
 
   private fun toTypeName(responseType: String, context: CodeGenerationContext): TypeName {

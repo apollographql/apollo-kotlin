@@ -15,7 +15,8 @@
 					"args": [
 						{
 							"name": "first",
-							"value": 7
+							"value": 7,
+							"type": "Int"
 						}
 					],
 					"isConditional": false,

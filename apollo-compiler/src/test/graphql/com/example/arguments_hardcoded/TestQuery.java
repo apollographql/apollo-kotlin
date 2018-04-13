@@ -1,10 +1,8 @@
-package com.example.mutation_create_review_semantic_naming;
+package com.example.arguments_hardcoded;
 
-import com.apollographql.apollo.api.InputFieldMarshaller;
-import com.apollographql.apollo.api.InputFieldWriter;
-import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
+import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseFieldMarshaller;
@@ -13,46 +11,40 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
-import com.example.mutation_create_review_semantic_naming.type.Episode;
-import com.example.mutation_create_review_semantic_naming.type.ReviewInput;
-import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
-public final class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForEpisodeMutation.Data, Optional<CreateReviewForEpisodeMutation.Data>, CreateReviewForEpisodeMutation.Variables> {
-  public static final String OPERATION_DEFINITION = "mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {\n"
-      + "  createReview(episode: $ep, review: $review) {\n"
+public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
+  public static final String OPERATION_DEFINITION = "query TestQuery {\n"
+      + "  reviews(episode: JEDI, starsInt: 10, starsFloat: 9.9) {\n"
       + "    __typename\n"
       + "    stars\n"
       + "    commentary\n"
       + "  }\n"
       + "}";
 
-  public static final String OPERATION_ID = "eb015fa9dd6e305a9228393e61579154ae22719f6a18df6d00b45659ee2e7f7f";
+  public static final String OPERATION_ID = "a6746506c2fb20405972e7e76920eec4aa2e5e02dc429cfbd1585a4f1787b0d9";
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override
     public String name() {
-      return "CreateReviewForEpisode";
+      return "TestQuery";
     }
   };
 
-  private final CreateReviewForEpisodeMutation.Variables variables;
+  private final Operation.Variables variables;
 
-  public CreateReviewForEpisodeMutation(@Nonnull Episode ep, @Nonnull ReviewInput review) {
-    Utils.checkNotNull(ep, "ep == null");
-    Utils.checkNotNull(review, "review == null");
-    variables = new CreateReviewForEpisodeMutation.Variables(ep, review);
+  public TestQuery() {
+    this.variables = Operation.EMPTY_VARIABLES;
   }
 
   @Override
@@ -66,17 +58,17 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
   }
 
   @Override
-  public Optional<CreateReviewForEpisodeMutation.Data> wrapData(CreateReviewForEpisodeMutation.Data data) {
+  public Optional<TestQuery.Data> wrapData(TestQuery.Data data) {
     return Optional.fromNullable(data);
   }
 
   @Override
-  public CreateReviewForEpisodeMutation.Variables variables() {
+  public Operation.Variables variables() {
     return variables;
   }
 
   @Override
-  public ResponseFieldMapper<CreateReviewForEpisodeMutation.Data> responseFieldMapper() {
+  public ResponseFieldMapper<TestQuery.Data> responseFieldMapper() {
     return new Data.Mapper();
   }
 
@@ -90,84 +82,24 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
   }
 
   public static final class Builder {
-    private @Nonnull Episode ep;
-
-    private @Nonnull ReviewInput review;
-
     Builder() {
     }
 
-    public Builder ep(@Nonnull Episode ep) {
-      this.ep = ep;
-      return this;
-    }
-
-    public Builder review(@Nonnull ReviewInput review) {
-      this.review = review;
-      return this;
-    }
-
-    public CreateReviewForEpisodeMutation build() {
-      Utils.checkNotNull(ep, "ep == null");
-      Utils.checkNotNull(review, "review == null");
-      return new CreateReviewForEpisodeMutation(ep, review);
-    }
-  }
-
-  public static final class Variables extends Operation.Variables {
-    private final @Nonnull Episode ep;
-
-    private final @Nonnull ReviewInput review;
-
-    private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
-
-    Variables(@Nonnull Episode ep, @Nonnull ReviewInput review) {
-      this.ep = ep;
-      this.review = review;
-      this.valueMap.put("ep", ep);
-      this.valueMap.put("review", review);
-    }
-
-    public @Nonnull Episode ep() {
-      return ep;
-    }
-
-    public @Nonnull ReviewInput review() {
-      return review;
-    }
-
-    @Override
-    public Map<String, Object> valueMap() {
-      return Collections.unmodifiableMap(valueMap);
-    }
-
-    @Override
-    public InputFieldMarshaller marshaller() {
-      return new InputFieldMarshaller() {
-        @Override
-        public void marshal(InputFieldWriter writer) throws IOException {
-          writer.writeString("ep", ep.rawValue());
-          writer.writeObject("review", review.marshaller());
-        }
-      };
+    public TestQuery build() {
+      return new TestQuery();
     }
   }
 
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
-      ResponseField.forObject("createReview", "createReview", new UnmodifiableMapBuilder<String, Object>(2)
-      .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
-        .put("kind", "Variable")
-        .put("variableName", "ep")
-        .build())
-      .put("review", new UnmodifiableMapBuilder<String, Object>(2)
-        .put("kind", "Variable")
-        .put("variableName", "review")
-        .build())
+      ResponseField.forList("reviews", "reviews", new UnmodifiableMapBuilder<String, Object>(3)
+      .put("episode", "JEDI")
+      .put("starsInt", 10)
+      .put("starsFloat", 9.9f)
       .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final Optional<CreateReview> createReview;
+    final Optional<List<Review>> reviews;
 
     private volatile String $toString;
 
@@ -175,19 +107,24 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
 
     private volatile boolean $hashCodeMemoized;
 
-    public Data(@Nullable CreateReview createReview) {
-      this.createReview = Optional.fromNullable(createReview);
+    public Data(@Nullable List<Review> reviews) {
+      this.reviews = Optional.fromNullable(reviews);
     }
 
-    public Optional<CreateReview> createReview() {
-      return this.createReview;
+    public Optional<List<Review>> reviews() {
+      return this.reviews;
     }
 
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeObject($responseFields[0], createReview.isPresent() ? createReview.get().marshaller() : null);
+          writer.writeList($responseFields[0], reviews.isPresent() ? reviews.get() : null, new ResponseWriter.ListWriter() {
+            @Override
+            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
+              listItemWriter.writeObject(((Review) value).marshaller());
+            }
+          });
         }
       };
     }
@@ -196,7 +133,7 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
     public String toString() {
       if ($toString == null) {
         $toString = "Data{"
-          + "createReview=" + createReview
+          + "reviews=" + reviews
           + "}";
       }
       return $toString;
@@ -209,7 +146,7 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return this.createReview.equals(that.createReview);
+        return this.reviews.equals(that.reviews);
       }
       return false;
     }
@@ -219,7 +156,7 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= createReview.hashCode();
+        h ^= reviews.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -227,22 +164,27 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
-      final CreateReview.Mapper createReviewFieldMapper = new CreateReview.Mapper();
+      final Review.Mapper reviewFieldMapper = new Review.Mapper();
 
       @Override
       public Data map(ResponseReader reader) {
-        final CreateReview createReview = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<CreateReview>() {
+        final List<Review> reviews = reader.readList($responseFields[0], new ResponseReader.ListReader<Review>() {
           @Override
-          public CreateReview read(ResponseReader reader) {
-            return createReviewFieldMapper.map(reader);
+          public Review read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readObject(new ResponseReader.ObjectReader<Review>() {
+              @Override
+              public Review read(ResponseReader reader) {
+                return reviewFieldMapper.map(reader);
+              }
+            });
           }
         });
-        return new Data(createReview);
+        return new Data(reviews);
       }
     }
   }
 
-  public static class CreateReview {
+  public static class Review {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forLong("stars", "stars", null, false, Collections.<ResponseField.Condition>emptyList()),
@@ -261,7 +203,7 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
 
     private volatile boolean $hashCodeMemoized;
 
-    public CreateReview(@Nonnull String __typename, long stars, @Nullable String commentary) {
+    public Review(@Nonnull String __typename, long stars, @Nullable String commentary) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.stars = stars;
       this.commentary = Optional.fromNullable(commentary);
@@ -299,7 +241,7 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "CreateReview{"
+        $toString = "Review{"
           + "__typename=" + __typename + ", "
           + "stars=" + stars + ", "
           + "commentary=" + commentary
@@ -313,8 +255,8 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
       if (o == this) {
         return true;
       }
-      if (o instanceof CreateReview) {
-        CreateReview that = (CreateReview) o;
+      if (o instanceof Review) {
+        Review that = (Review) o;
         return this.__typename.equals(that.__typename)
          && this.stars == that.stars
          && this.commentary.equals(that.commentary);
@@ -338,13 +280,13 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
       return $hashCode;
     }
 
-    public static final class Mapper implements ResponseFieldMapper<CreateReview> {
+    public static final class Mapper implements ResponseFieldMapper<Review> {
       @Override
-      public CreateReview map(ResponseReader reader) {
+      public Review map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
         final long stars = reader.readLong($responseFields[1]);
         final String commentary = reader.readString($responseFields[2]);
-        return new CreateReview(__typename, stars, commentary);
+        return new Review(__typename, stars, commentary);
       }
     }
   }

@@ -264,7 +264,7 @@ public class ResponseNormalizationTest {
   @Test public void list_of_objects_with_null_object() throws Exception {
     assertHasNoErrors("AllPlanetsListOfObjectWithNullObject.json", new AllPlanetsQuery());
 
-    String fieldKey = "allPlanets({\"first\":\"300.0\"})";
+    String fieldKey = "allPlanets({\"first\":300})";
     Record record = normalizedCache
         .loadRecord(fieldKey + ".planets.0", CacheHeaders.NONE);
     assertThat(record.field("filmConnection")).isNull();

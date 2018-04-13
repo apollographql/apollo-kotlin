@@ -104,7 +104,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
       ResponseField.forObject("allStarships", "allStarships", new UnmodifiableMapBuilder<String, Object>(1)
-        .put("first", "7.0")
+      .put("first", 7)
       .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 

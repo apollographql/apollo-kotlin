@@ -23,7 +23,8 @@
 							"value": {
 								"kind": "Variable",
 								"variableName": "episode"
-							}
+							},
+							"type": "Episode"
 						}
 					],
 					"isConditional": false,
@@ -124,7 +125,8 @@
 													"args": [
 														{
 															"name": "unit",
-															"value": "FOOT"
+															"value": "FOOT",
+															"type": "LengthUnit"
 														}
 													],
 													"isConditional": false,
@@ -216,7 +218,8 @@
 													"args": [
 														{
 															"name": "unit",
-															"value": "METER"
+															"value": "METER",
+															"type": "LengthUnit"
 														}
 													],
 													"isConditional": false,

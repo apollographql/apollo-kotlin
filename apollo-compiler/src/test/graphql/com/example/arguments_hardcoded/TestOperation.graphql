@@ -1,0 +1,6 @@
+query TestQuery {
+  reviews(episode: JEDI, starsInt: 10, starsFloat: 9.9) {
+    stars
+    commentary
+  }
+}

@@ -65,7 +65,7 @@ class UpdateTestIRFilesTask extends DefaultTask {
     apolloCodeGenProcess.waitFor()
     def error = apolloCodeGenProcess.err.text
     if (error != null && !error.isEmpty()) {
-      logger.error("Failed to generate IR file for: ${testDir.name} reason:" +runtimeError)
+      logger.error("Failed to generate IR file for: ${testDir.name} reason:" +error)
     }
     //apollo code-gen has not std output if successful.
     def runtimeError = apolloCodeGenProcess.in.text

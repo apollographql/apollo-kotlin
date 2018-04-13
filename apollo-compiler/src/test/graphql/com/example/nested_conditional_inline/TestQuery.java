@@ -166,9 +166,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
       ResponseField.forObject("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
-        .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
-          .put("kind", "Variable")
-          .put("variableName", "episode")
+      .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
+        .put("kind", "Variable")
+        .put("variableName", "episode")
         .build())
       .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
@@ -447,7 +447,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forDouble("height", "height", new UnmodifiableMapBuilder<String, Object>(1)
-        .put("unit", "FOOT")
+      .put("unit", "FOOT")
       .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 
@@ -710,7 +710,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forDouble("height", "height", new UnmodifiableMapBuilder<String, Object>(1)
-        .put("unit", "METER")
+      .put("unit", "METER")
       .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 

@@ -156,13 +156,13 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
       ResponseField.forObject("createReview", "createReview", new UnmodifiableMapBuilder<String, Object>(2)
-        .put("review", new UnmodifiableMapBuilder<String, Object>(2)
-          .put("kind", "Variable")
-          .put("variableName", "review")
+      .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
+        .put("kind", "Variable")
+        .put("variableName", "ep")
         .build())
-        .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
-          .put("kind", "Variable")
-          .put("variableName", "ep")
+      .put("review", new UnmodifiableMapBuilder<String, Object>(2)
+        .put("kind", "Variable")
+        .put("variableName", "review")
         .build())
       .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
