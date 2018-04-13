@@ -98,7 +98,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     static final ResponseField[] $responseFields = {
       ResponseField.forObject("r2", "hero", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forObject("luke", "hero", new UnmodifiableMapBuilder<String, Object>(1)
-        .put("episode", "EMPIRE")
+      .put("episode", "EMPIRE")
       .build(), true, Collections.<ResponseField.Condition>emptyList())
     };
 

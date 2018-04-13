@@ -481,6 +481,18 @@ fun MethodSpec.withWildCardReturnType(forTypeNames: List<String>): MethodSpec {
   }
 }
 
+fun Number.castTo(type: TypeName): Number {
+  return if (type == TypeName.INT || type == TypeName.INT.box()) {
+    toInt()
+  } else if (type == TypeName.LONG || type == TypeName.LONG.box()) {
+    toLong()
+  } else if (type == TypeName.FLOAT || type == TypeName.FLOAT.box()) {
+    toDouble()
+  } else {
+    this
+  }
+}
+
 object Util {
   const val RESPONSE_FIELD_MAPPER_TYPE_NAME: String = "Mapper"
   const val MEMOIZED_HASH_CODE_VAR: String = "\$hashCode"

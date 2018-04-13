@@ -23,7 +23,8 @@
 							"value": {
 								"kind": "Variable",
 								"variableName": "id"
-							}
+							},
+							"type": "ID!"
 						}
 					],
 					"isConditional": false,

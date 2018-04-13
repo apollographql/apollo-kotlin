@@ -220,18 +220,6 @@ class BuilderTypeSpecBuilder(
           .build()
     }
 
-    private fun Number.castTo(type: TypeName): Number {
-      return if (type == TypeName.INT || type == TypeName.INT.box()) {
-        toInt()
-      } else if (type == TypeName.LONG || type == TypeName.LONG.box()) {
-        toLong()
-      } else if (type == TypeName.FLOAT || type == TypeName.FLOAT.box()) {
-        toDouble()
-      } else {
-        this
-      }
-    }
-
     private fun TypeName.isEnum(typeDeclarations: List<TypeDeclaration>): Boolean {
       return ((this is ClassName) && typeDeclarations.count { it.kind == "EnumType" && it.name == simpleName() } > 0)
     }

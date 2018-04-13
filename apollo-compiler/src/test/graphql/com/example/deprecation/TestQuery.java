@@ -148,9 +148,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
       ResponseField.forObject("hero", "hero", new UnmodifiableMapBuilder<String, Object>(1)
-        .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
-          .put("kind", "Variable")
-          .put("variableName", "episode")
+      .put("episode", new UnmodifiableMapBuilder<String, Object>(2)
+        .put("kind", "Variable")
+        .put("variableName", "episode")
         .build())
       .build(), true, Collections.<ResponseField.Condition>emptyList())
     };

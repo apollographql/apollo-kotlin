@@ -99,6 +99,26 @@
                     }
                   },
                   "defaultValue": null
+                },
+                {
+                  "name": "starsInt",
+                  "description": "",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "starsFloat",
+                  "description": "",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Float",
+                    "ofType": null
+                  },
+                  "defaultValue": null
                 }
               ],
               "type": {

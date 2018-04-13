@@ -23,7 +23,8 @@
 							"value": {
 								"kind": "Variable",
 								"variableName": "repo"
-							}
+							},
+							"type": "String!"
 						}
 					],
 					"isConditional": false,

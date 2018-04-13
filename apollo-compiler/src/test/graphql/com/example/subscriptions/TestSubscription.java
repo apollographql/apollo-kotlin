@@ -136,9 +136,9 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
       ResponseField.forObject("commentAdded", "commentAdded", new UnmodifiableMapBuilder<String, Object>(1)
-        .put("repoFullName", new UnmodifiableMapBuilder<String, Object>(2)
-          .put("kind", "Variable")
-          .put("variableName", "repo")
+      .put("repoFullName", new UnmodifiableMapBuilder<String, Object>(2)
+        .put("kind", "Variable")
+        .put("variableName", "repo")
         .build())
       .build(), true, Collections.<ResponseField.Condition>emptyList())
     };

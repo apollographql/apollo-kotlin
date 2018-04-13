@@ -27,14 +27,16 @@
 							"value": {
 								"kind": "Variable",
 								"variableName": "ep"
-							}
+							},
+							"type": "Episode"
 						},
 						{
 							"name": "review",
 							"value": {
 								"kind": "Variable",
 								"variableName": "review"
-							}
+							},
+							"type": "ReviewInput!"
 						}
 					],
 					"isConditional": false,

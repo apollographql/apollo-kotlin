@@ -23,7 +23,8 @@
 							"value": {
 								"kind": "Variable",
 								"variableName": "episode"
-							}
+							},
+							"type": "Episode"
 						}
 					],
 					"isConditional": false,

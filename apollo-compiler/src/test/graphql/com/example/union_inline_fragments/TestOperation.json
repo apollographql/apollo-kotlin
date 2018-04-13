@@ -15,7 +15,8 @@
 					"args": [
 						{
 							"name": "text",
-							"value": "test"
+							"value": "test",
+							"type": "String"
 						}
 					],
 					"isConditional": false,
