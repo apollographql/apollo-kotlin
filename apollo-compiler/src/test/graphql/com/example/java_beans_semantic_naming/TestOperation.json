@@ -52,8 +52,8 @@
 			"fragmentsReferenced": [
 				"HeroDetails"
 			],
-			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name\n    ...HeroDetails\n    appearsIn\n  }\n}\nfragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n    pageInfo {\n      __typename\n      hasNextPage\n    }\n  }\n  ... on Droid {\n    name\n    primaryFunction\n  }\n}",
-			"operationId": "c0463bc20566eabd263da887f6c45205c7b42522fa28585baf0e9f6021a2a8a6"
+			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    name\n    ...HeroDetails\n    appearsIn\n  }\n}\nfragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n    pageInfo {\n      __typename\n      hasNextPage\n    }\n    isEmpty\n  }\n  ... on Droid {\n    name\n    primaryFunction\n  }\n}",
+			"operationId": "4141e194c5f3846dabfcb576e735c71968b03a940baf49cc5e647c5e50eda72a"
 		}
 	],
 	"fragments": [
@@ -65,7 +65,7 @@
 			],
 			"fragmentName": "HeroDetails",
 			"filePath": "src/test/graphql/com/example/java_beans_semantic_naming/TestOperation.graphql",
-			"source": "fragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n    pageInfo {\n      __typename\n      hasNextPage\n    }\n  }\n  ... on Droid {\n    name\n    primaryFunction\n  }\n}",
+			"source": "fragment HeroDetails on Character {\n  __typename\n  name\n  friendsConnection {\n    __typename\n    totalCount\n    edges {\n      __typename\n      node {\n        __typename\n        name\n      }\n    }\n    pageInfo {\n      __typename\n      hasNextPage\n    }\n    isEmpty\n  }\n  ... on Droid {\n    name\n    primaryFunction\n  }\n}",
 			"fields": [
 				{
 					"responseName": "__typename",
@@ -179,6 +179,15 @@
 							],
 							"fragmentSpreads": [],
 							"inlineFragments": []
+						},
+						{
+							"responseName": "isEmpty",
+							"fieldName": "isEmpty",
+							"type": "Boolean!",
+							"isConditional": false,
+							"description": "For test java beans semantic naming only",
+							"isDeprecated": false,
+							"deprecationReason": null
 						}
 					],
 					"fragmentSpreads": [],
@@ -305,6 +314,15 @@
 									],
 									"fragmentSpreads": [],
 									"inlineFragments": []
+								},
+								{
+									"responseName": "isEmpty",
+									"fieldName": "isEmpty",
+									"type": "Boolean!",
+									"isConditional": false,
+									"description": "For test java beans semantic naming only",
+									"isDeprecated": false,
+									"deprecationReason": null
 								}
 							],
 							"fragmentSpreads": [],

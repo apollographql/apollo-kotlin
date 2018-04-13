@@ -38,6 +38,7 @@ public interface HeroDetails extends GraphqlFragment {
       + "      __typename\n"
       + "      hasNextPage\n"
       + "    }\n"
+      + "    isEmpty\n"
       + "  }\n"
       + "  ... on Droid {\n"
       + "    name\n"
@@ -96,6 +97,11 @@ public interface HeroDetails extends GraphqlFragment {
      * Information for paginating this connection
      */
     @Nonnull PageInfo getPageInfo();
+
+    /**
+     * For test java beans semantic naming only
+     */
+    boolean isEmpty();
 
     ResponseFieldMarshaller marshaller();
   }
@@ -267,7 +273,8 @@ public interface HeroDetails extends GraphqlFragment {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forLong("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forObject("pageInfo", "pageInfo", null, false, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forObject("pageInfo", "pageInfo", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forBoolean("isEmpty", "isEmpty", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
@@ -278,6 +285,8 @@ public interface HeroDetails extends GraphqlFragment {
 
     final @Nonnull PageInfo1 pageInfo;
 
+    final boolean isEmpty;
+
     private volatile String $toString;
 
     private volatile int $hashCode;
@@ -285,11 +294,12 @@ public interface HeroDetails extends GraphqlFragment {
     private volatile boolean $hashCodeMemoized;
 
     public FriendsConnection1(@Nonnull String __typename, @Nullable Long totalCount,
-        @Nullable List<Edge1> edges, @Nonnull PageInfo1 pageInfo) {
+        @Nullable List<Edge1> edges, @Nonnull PageInfo1 pageInfo, boolean isEmpty) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
       this.pageInfo = Utils.checkNotNull(pageInfo, "pageInfo == null");
+      this.isEmpty = isEmpty;
     }
 
     public @Nonnull String get__typename() {
@@ -317,6 +327,13 @@ public interface HeroDetails extends GraphqlFragment {
       return this.pageInfo;
     }
 
+    /**
+     * For test java beans semantic naming only
+     */
+    public boolean isEmpty() {
+      return this.isEmpty;
+    }
+
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -330,6 +347,7 @@ public interface HeroDetails extends GraphqlFragment {
             }
           });
           writer.writeObject($responseFields[3], pageInfo.marshaller());
+          writer.writeBoolean($responseFields[4], isEmpty);
         }
       };
     }
@@ -341,7 +359,8 @@ public interface HeroDetails extends GraphqlFragment {
           + "__typename=" + __typename + ", "
           + "totalCount=" + totalCount + ", "
           + "edges=" + edges + ", "
-          + "pageInfo=" + pageInfo
+          + "pageInfo=" + pageInfo + ", "
+          + "isEmpty=" + isEmpty
           + "}";
       }
       return $toString;
@@ -357,7 +376,8 @@ public interface HeroDetails extends GraphqlFragment {
         return this.__typename.equals(that.__typename)
          && this.totalCount.equals(that.totalCount)
          && this.edges.equals(that.edges)
-         && this.pageInfo.equals(that.pageInfo);
+         && this.pageInfo.equals(that.pageInfo)
+         && this.isEmpty == that.isEmpty;
       }
       return false;
     }
@@ -374,6 +394,8 @@ public interface HeroDetails extends GraphqlFragment {
         h ^= edges.hashCode();
         h *= 1000003;
         h ^= pageInfo.hashCode();
+        h *= 1000003;
+        h ^= Boolean.valueOf(isEmpty).hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -406,7 +428,8 @@ public interface HeroDetails extends GraphqlFragment {
             return pageInfo1FieldMapper.map(reader);
           }
         });
-        return new FriendsConnection1(__typename, totalCount, edges, pageInfo);
+        final boolean isEmpty = reader.readBoolean($responseFields[4]);
+        return new FriendsConnection1(__typename, totalCount, edges, pageInfo, isEmpty);
       }
     }
   }
