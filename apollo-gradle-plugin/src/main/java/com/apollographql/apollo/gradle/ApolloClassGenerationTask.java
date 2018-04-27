@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.Map;
 
 @SuppressWarnings("WeakerAccess")
-public class ApolloClassGenTask extends SourceTask {
+public class ApolloClassGenerationTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses";
 
   Map<String, String> customTypeMapping;
@@ -30,7 +30,7 @@ public class ApolloClassGenTask extends SourceTask {
   String outputPackageName;
   final File outputDir;
 
-  public ApolloClassGenTask() {
+  public ApolloClassGenerationTask() {
     outputDir = new File(getProject().getBuildDir() + File.separator + Joiner.on(File.separator)
         .join(GraphQLCompiler.OUTPUT_DIRECTORY));
   }

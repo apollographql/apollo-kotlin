@@ -19,14 +19,14 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
 
-public class ApolloCodeGenInstallTask extends NpmTask {
+public class ApolloCodegenInstallTask extends NpmTask {
   static final String NAME = "installApolloCodegen";
   private static final String INSTALL_DIR =  "apollo-codegen/node_modules/apollo-codegen";
 
   @OutputDirectory private File installDir;
   File apolloPackageFile;
   
-  public ApolloCodeGenInstallTask() {
+  public ApolloCodegenInstallTask() {
     // TODO: set to const when ApolloPlugin is in java
     setGroup("apollo");
     setDescription("Runs npm install for apollo-codegen");

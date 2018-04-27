@@ -3,6 +3,7 @@ package com.apollographql.apollo.gradle
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.BaseVariant
+import com.apollographql.apollo.compiler.GraphQLCompiler
 import com.google.common.collect.ImmutableList
 import com.moowork.gradle.node.NodeExtension
 import com.moowork.gradle.node.NodePlugin
@@ -10,6 +11,7 @@ import org.gradle.api.DomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.internal.AbstractTask
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.SourceSet
@@ -21,9 +23,11 @@ import javax.inject.Inject
 class ApolloPlugin implements Plugin<Project> {
   private static final String NODE_VERSION = "6.7.0"
   public static final String TASK_GROUP = "apollo"
+  public static final String APOLLO_CODEGEN_GENERATE_TASK_NAME = "generate%sApolloIR"
 
   private Project project
   private final FileResolver fileResolver
+  private boolean useGlobalApolloCodegen
 
   @Inject
   public ApolloPlugin(FileResolver fileResolver) {
@@ -42,17 +46,26 @@ class ApolloPlugin implements Plugin<Project> {
   }
 
   private void applyApolloPlugin() {
-    setupNode()
+    if (isUseGlobalApolloCodegenEnabled() && verifySystemApolloCodegenVersion()) {
+      useGlobalApolloCodegen = true
+    } else {
+      setupNode()
+    }
+
     project.extensions.create(ApolloExtension.NAME, ApolloExtension)
     createSourceSetExtensions()
 
-    project.tasks.create(ApolloCodeGenInstallTask.NAME, ApolloCodeGenInstallTask.class)
+    if (!useGlobalApolloCodegen) {
+      project.tasks.create(ApolloCodegenInstallTask.NAME, ApolloCodegenInstallTask.class)
+    }
+
     addApolloTasks()
   }
 
   private void addApolloTasks() {
     Task apolloIRGenTask = project.task("generateApolloIR")
     apolloIRGenTask.group(TASK_GROUP)
+
     Task apolloClassGenTask = project.task("generateApolloClasses")
     apolloClassGenTask.group(TASK_GROUP)
 
@@ -71,8 +84,8 @@ class ApolloPlugin implements Plugin<Project> {
   }
 
   private void addVariantTasks(BaseVariant variant, Task apolloIRGenTask, Task apolloClassGenTask, Collection<?> sourceSets) {
-    ApolloIRGenTask variantIRTask = createApolloIRGenTask(variant.name, sourceSets)
-    ApolloClassGenTask variantClassTask = createApolloClassGenTask(variant.name)
+    AbstractTask variantIRTask = createApolloIRGenTask(variant.name, sourceSets)
+    ApolloClassGenerationTask variantClassTask = createApolloClassGenTask(variant.name)
     variant.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir)
     apolloIRGenTask.dependsOn(variantIRTask)
     apolloClassGenTask.dependsOn(variantClassTask)
@@ -81,8 +94,8 @@ class ApolloPlugin implements Plugin<Project> {
   private void addSourceSetTasks(SourceSet sourceSet, Task apolloIRGenTask, Task apolloClassGenTask) {
     String taskName = "main".equals(sourceSet.name) ? "" : sourceSet.name
 
-    ApolloIRGenTask sourceSetIRTask = createApolloIRGenTask(sourceSet.name, [sourceSet])
-    ApolloClassGenTask sourceSetClassTask = createApolloClassGenTask(sourceSet.name)
+    AbstractTask sourceSetIRTask = createApolloIRGenTask(sourceSet.name, [sourceSet])
+    ApolloClassGenerationTask sourceSetClassTask = createApolloClassGenTask(sourceSet.name)
     apolloIRGenTask.dependsOn(sourceSetIRTask)
     apolloClassGenTask.dependsOn(sourceSetClassTask)
 
@@ -110,31 +123,48 @@ class ApolloPlugin implements Plugin<Project> {
     nodeConfig.version = NODE_VERSION
   }
 
-  private ApolloIRGenTask createApolloIRGenTask(String sourceSetOrVariantName, Collection<Object> sourceSets) {
-    String taskName = String.format(ApolloIRGenTask.NAME, sourceSetOrVariantName.capitalize())
-    ApolloIRGenTask task = project.tasks.create(taskName, ApolloIRGenTask) {
-      group = TASK_GROUP
-      description = "Generate an IR file using apollo-codegen for ${sourceSetOrVariantName.capitalize()} GraphQL queries"
-      dependsOn(ApolloCodeGenInstallTask.NAME)
-      sourceSets.each { sourceSet ->
-        inputs.files(sourceSet.graphql).skipWhenEmpty()
+  private AbstractTask createApolloIRGenTask(String sourceSetOrVariantName, Collection<Object> sourceSets) {
+    String taskName = String.format(APOLLO_CODEGEN_GENERATE_TASK_NAME, sourceSetOrVariantName.capitalize())
+
+    AbstractTask task;
+    if (useGlobalApolloCodegen) {
+      task = project.tasks.create(taskName, ApolloSystemCodegenGenerationTask) {
+        group = TASK_GROUP
+        description = "Generate an IR file using apollo-codegen for ${sourceSetOrVariantName.capitalize()} GraphQL queries"
+        sourceSets.each { sourceSet ->
+          inputs.files(sourceSet.graphql).skipWhenEmpty()
+        }
+        schemaFilePath = project.apollo.schemaFilePath
+        outputPackageName = project.apollo.outputPackageName
       }
-      schemaFilePath = project.apollo.schemaFilePath
-      outputPackageName = project.apollo.outputPackageName
+
+    } else {
+      task = project.tasks.create(taskName, ApolloLocalCodegenGenerationTask) {
+        group = TASK_GROUP
+        description = "Generate an IR file using apollo-codegen for ${sourceSetOrVariantName.capitalize()} GraphQL queries"
+        dependsOn(ApolloCodegenInstallTask.NAME)
+        sourceSets.each { sourceSet ->
+          inputs.files(sourceSet.graphql).skipWhenEmpty()
+        }
+        schemaFilePath = project.apollo.schemaFilePath
+        outputPackageName = project.apollo.outputPackageName
+      }
     }
+
     ImmutableList.Builder<String> sourceSetNamesList = ImmutableList.builder()
     sourceSets.each { sourceSet -> sourceSetNamesList.add(sourceSet.name) }
     task.init(sourceSetOrVariantName, sourceSetNamesList.build())
     return task
   }
 
-  private ApolloClassGenTask createApolloClassGenTask(String name) {
-    String taskName = String.format(ApolloClassGenTask.NAME, name.capitalize())
-    return project.tasks.create(taskName, ApolloClassGenTask) {
+  private ApolloClassGenerationTask createApolloClassGenTask(String name) {
+    String taskName = String.format(ApolloClassGenerationTask.NAME, name.capitalize())
+    return project.tasks.create(taskName, ApolloClassGenerationTask) {
       group = TASK_GROUP
       description = "Generate Android classes for ${name.capitalize()} GraphQL queries"
-      dependsOn(getProject().getTasks().findByName(String.format(ApolloIRGenTask.NAME, name.capitalize())))
-      source = project.tasks.findByName(String.format(ApolloIRGenTask.NAME, name.capitalize())).outputFolder
+      dependsOn(getProject().getTasks().findByName(String.format(APOLLO_CODEGEN_GENERATE_TASK_NAME, name.capitalize())))
+      source = project.tasks.findByName(
+          String.format(APOLLO_CODEGEN_GENERATE_TASK_NAME, name.capitalize())).outputFolder
       include "**${File.separatorChar}*API.json"
       customTypeMapping = project.apollo.customTypeMapping
       nullableValueType = project.apollo.nullableValueType
@@ -163,5 +193,34 @@ class ApolloPlugin implements Plugin<Project> {
   private DomainObjectCollection<BaseVariant> getVariants() {
     return project.android.hasProperty(
         'libraryVariants') ? project.android.libraryVariants : project.android.applicationVariants
+  }
+
+  private static boolean isUseGlobalApolloCodegenEnabled() {
+    return (System.properties['apollographql.useGlobalApolloCodegen'] != null) &&
+        System.properties['apollographql.useGlobalApolloCodegen'].toBoolean()
+  }
+
+  private static boolean verifySystemApolloCodegenVersion() {
+    println("Verifying system 'apollo-codegen' version (executing command 'apollo-codegen --version') ...")
+    try {
+      StringBuilder output = new StringBuilder()
+      Process checkGlobalApolloCodegen = "apollo-codegen --version".execute()
+      checkGlobalApolloCodegen.consumeProcessOutput(output, null)
+      checkGlobalApolloCodegen.waitForOrKill(5000)
+
+      if (output.toString().trim() == GraphQLCompiler.APOLLOCODEGEN_VERSION) {
+        println("Found required 'apollo-codegen@" + GraphQLCompiler.APOLLOCODEGEN_VERSION + "' version.")
+        println("Skip apollo-codegen installation.")
+        return true
+      } else {
+        println("Required 'apollo-codegen@" + GraphQLCompiler.APOLLOCODEGEN_VERSION + "' version not found.")
+        println("Installing apollo-codegen ... ")
+        return false
+      }
+    } catch (Exception e) {
+      println("Failed to verify system 'apollo-codegen' version: " + e)
+      println("Installing apollo-codegen ... ")
+      return false
+    }
   }
 }
