@@ -22,10 +22,10 @@ public abstract class CustomTypeValue<T> {
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
-    } else if (value instanceof java.lang.Boolean) {
-      return new GraphQLBoolean((java.lang.Boolean) value);
-    } else if (value instanceof java.lang.Number) {
-      return new GraphQLNumber((java.lang.Number) value);
+    } else if (value instanceof Boolean) {
+      return new GraphQLBoolean((Boolean) value);
+    } else if (value instanceof Number) {
+      return new GraphQLNumber((Number) value);
     } else {
       return new GraphQLString(value.toString());
     }
@@ -38,8 +38,8 @@ public abstract class CustomTypeValue<T> {
   /**
    * Represents a {@code String} value
    */
-  public static class GraphQLString extends CustomTypeValue<java.lang.String> {
-    public GraphQLString(java.lang.String value) {
+  public static class GraphQLString extends CustomTypeValue<String> {
+    public GraphQLString(String value) {
       super(value);
     }
   }
@@ -47,8 +47,8 @@ public abstract class CustomTypeValue<T> {
   /**
    * Represents a {@code Boolean} value
    */
-  public static class GraphQLBoolean extends CustomTypeValue<java.lang.Boolean> {
-    public GraphQLBoolean(java.lang.Boolean value) {
+  public static class GraphQLBoolean extends CustomTypeValue<Boolean> {
+    public GraphQLBoolean(Boolean value) {
       super(value);
     }
   }
@@ -56,8 +56,8 @@ public abstract class CustomTypeValue<T> {
   /**
    * Represents a {@code Number} value
    */
-  public static class GraphQLNumber extends CustomTypeValue<java.lang.Number> {
-    public GraphQLNumber(java.lang.Number value) {
+  public static class GraphQLNumber extends CustomTypeValue<Number> {
+    public GraphQLNumber(Number value) {
       super(value);
     }
   }
@@ -65,8 +65,17 @@ public abstract class CustomTypeValue<T> {
   /**
    * Represents a {@code JsonString} value
    */
-  public static class GraphQLJsonString extends CustomTypeValue<java.lang.String> {
-    public GraphQLJsonString(java.lang.String value) {
+  public static class GraphQLJsonString extends CustomTypeValue<String> {
+    public GraphQLJsonString(String value) {
+      super(value);
+    }
+  }
+
+  /**
+   * Represents a JSON object value, will serialized as an regular json object
+   */
+  public static class GraphQLJson extends CustomTypeValue<Map<String, Object>> {
+    public GraphQLJson(Map<String, Object> value) {
       super(value);
     }
   }

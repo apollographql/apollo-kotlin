@@ -1,6 +1,7 @@
 package com.apollographql.apollo.api;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -22,6 +23,8 @@ public interface InputFieldWriter {
   void writeObject(@Nonnull String fieldName, InputFieldMarshaller marshaller) throws IOException;
 
   void writeList(@Nonnull String fieldName, ListWriter listWriter) throws IOException;
+
+  void writeMap(@Nonnull String fieldName, Map<String, Object> value) throws IOException;
 
   interface ListWriter {
     void write(@Nonnull ListItemWriter listItemWriter) throws IOException;
@@ -45,5 +48,7 @@ public interface InputFieldWriter {
     void writeObject(InputFieldMarshaller marshaller) throws IOException;
 
     void writeList(ListWriter listWriter) throws IOException;
+
+    void writeMap(Map<String, Object> value) throws IOException;
   }
 }

@@ -8,10 +8,12 @@ import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import static com.apollographql.apollo.internal.json.Utils.writeToJson;
 
 public class InputFieldJsonWriter implements InputFieldWriter {
   private final JsonWriter jsonWriter;
@@ -90,11 +92,13 @@ public class InputFieldJsonWriter implements InputFieldWriter {
         writeNumber(fieldName, ((CustomTypeValue.GraphQLNumber) customTypeValue).value);
       } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonString) {
         writeString(fieldName, ((CustomTypeValue.GraphQLJsonString) customTypeValue).value);
+      } else if (customTypeValue instanceof CustomTypeValue.GraphQLJson) {
+        writeMap(fieldName, ((CustomTypeValue.GraphQLJson) customTypeValue).value);
       } else {
         throw new IllegalArgumentException("Unsupported custom value type: " + customTypeValue);
       }
     } else {
-      writeString(fieldName, null);
+      jsonWriter.name(fieldName).nullValue();
     }
   }
 
@@ -117,6 +121,16 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       jsonWriter.endArray();
     } else {
       jsonWriter.name(fieldName).nullValue();
+    }
+  }
+
+  @Override public void writeMap(@Nonnull String fieldName, Map<String, Object> value) throws IOException {
+    checkNotNull(fieldName, "fieldName == null");
+    if (value == null) {
+      jsonWriter.name(fieldName).nullValue();
+    } else {
+      jsonWriter.name(fieldName);
+      writeToJson(value, jsonWriter);
     }
   }
 
@@ -177,6 +191,10 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       }
     }
 
+    @Override public void writeMap(Map<String, Object> value) throws IOException {
+      writeToJson(value, jsonWriter);
+    }
+
     @SuppressWarnings("unchecked")
     @Override public void writeCustom(ScalarType scalarType, Object value) throws IOException {
       if (value == null) {
@@ -192,6 +210,8 @@ public class InputFieldJsonWriter implements InputFieldWriter {
           writeNumber(((CustomTypeValue.GraphQLNumber) customTypeValue).value);
         } else if (customTypeValue instanceof CustomTypeValue.GraphQLJsonString) {
           writeString(((CustomTypeValue.GraphQLJsonString) customTypeValue).value);
+        } else if (customTypeValue instanceof CustomTypeValue.GraphQLJson) {
+          writeMap(((CustomTypeValue.GraphQLJson) customTypeValue).value);
         } else {
           throw new IllegalArgumentException("Unsupported custom value type: " + customTypeValue);
         }
