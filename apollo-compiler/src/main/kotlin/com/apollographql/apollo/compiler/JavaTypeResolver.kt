@@ -22,7 +22,7 @@ class JavaTypeResolver(
     val javaType = when {
       isList -> ClassNames.parameterizedListOf(resolve(normalizedTypeName.removeSurrounding("[", "]"), false))
       normalizedTypeName == ScalarType.STRING.name -> ClassNames.STRING
-      normalizedTypeName == ScalarType.INT.name -> if (isOptional) TypeName.LONG.box() else TypeName.LONG
+      normalizedTypeName == ScalarType.INT.name -> if (isOptional) TypeName.INT.box() else TypeName.INT
       normalizedTypeName == ScalarType.BOOLEAN.name -> if (isOptional) TypeName.BOOLEAN.box() else TypeName.BOOLEAN
       normalizedTypeName == ScalarType.FLOAT.name -> if (isOptional) TypeName.DOUBLE.box() else TypeName.DOUBLE
       customScalarType != null -> customScalarType.toJavaType()

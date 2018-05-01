@@ -37,8 +37,8 @@ public class ApolloServerInterceptorTest {
   private final AllFilmsQuery query = AllFilmsQuery.builder()
       .after("some cursor")
       .beforeInput(Input.<String>absent())
-      .firstInput(Input.<Long>fromNullable(null))
-      .last(100L)
+      .firstInput(Input.<Integer>fromNullable(null))
+      .last(100)
       .build();
   private final String expectedRequestBody = "{\"query\":\"query AllFilms($after: String, $first: Int, " +
       "$before: String, $last: Int) {  allFilms(after: $after, first: $first, before: $before, last: $last) {    " +

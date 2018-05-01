@@ -187,13 +187,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static class Review {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forLong("stars", "stars", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forInt("stars", "stars", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("commentary", "commentary", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
 
-    final long stars;
+    final int stars;
 
     final Optional<String> commentary;
 
@@ -203,7 +203,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Review(@Nonnull String __typename, long stars, @Nullable String commentary) {
+    public Review(@Nonnull String __typename, int stars, @Nullable String commentary) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.stars = stars;
       this.commentary = Optional.fromNullable(commentary);
@@ -216,7 +216,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     /**
      * The number of stars this review gave, 1-5
      */
-    public long stars() {
+    public int stars() {
       return this.stars;
     }
 
@@ -232,7 +232,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
-          writer.writeLong($responseFields[1], stars);
+          writer.writeInt($responseFields[1], stars);
           writer.writeString($responseFields[2], commentary.isPresent() ? commentary.get() : null);
         }
       };
@@ -284,7 +284,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       @Override
       public Review map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final long stars = reader.readLong($responseFields[1]);
+        final int stars = reader.readInt($responseFields[1]);
         final String commentary = reader.readString($responseFields[2]);
         return new Review(__typename, stars, commentary);
       }

@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class ColorInput {
-  private final long red;
+  private final int red;
 
   private final Input<Double> green;
 
@@ -26,7 +26,7 @@ public final class ColorInput {
 
   private volatile boolean $hashCodeMemoized;
 
-  ColorInput(long red, Input<Double> green, double blue, Input<Episode> enumWithDefaultValue) {
+  ColorInput(int red, Input<Double> green, double blue, Input<Episode> enumWithDefaultValue) {
     this.red = red;
     this.green = green;
     this.blue = blue;
@@ -36,7 +36,7 @@ public final class ColorInput {
   /**
    * Red color
    */
-  public long red() {
+  public int red() {
     return this.red;
   }
 
@@ -69,7 +69,7 @@ public final class ColorInput {
     return new InputFieldMarshaller() {
       @Override
       public void marshal(InputFieldWriter writer) throws IOException {
-        writer.writeLong("red", red);
+        writer.writeInt("red", red);
         if (green.defined) {
           writer.writeDouble("green", green.value);
         }
@@ -115,7 +115,7 @@ public final class ColorInput {
   }
 
   public static final class Builder {
-    private long red = 1L;
+    private int red = 1;
 
     private Input<Double> green = Input.fromNullable(0.0);
 
@@ -129,7 +129,7 @@ public final class ColorInput {
     /**
      * Red color
      */
-    public Builder red(long red) {
+    public Builder red(int red) {
       this.red = red;
       return this;
     }
