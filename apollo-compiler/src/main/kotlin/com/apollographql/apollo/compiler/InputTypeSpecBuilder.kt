@@ -24,6 +24,8 @@ class InputTypeSpecBuilder(
           .addBuilder()
           .addMethod(marshallerMethodSpec())
           .build()
+          .withHashCodeImplementation()
+          .withEqualsImplementation()
 
   private fun TypeSpec.Builder.addConstructor(): TypeSpec.Builder {
     val fieldInitializeCodeBuilder = fields.map {

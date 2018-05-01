@@ -50,6 +50,10 @@ public final class ReviewInput {
 
   private final Input<List<List<ColorInput>>> listOfListOfObject;
 
+  private volatile int $hashCode;
+
+  private volatile boolean $hashCodeMemoized;
+
   ReviewInput(long stars, Input<Long> nullableIntFieldWithDefaultValue, Input<String> commentary,
       @Nonnull ColorInput favoriteColor, Input<Episode> enumWithDefaultValue,
       Input<Episode> nullableEnum, Input<List<Object>> listOfCustomScalar,
@@ -330,6 +334,75 @@ public final class ReviewInput {
         }
       }
     };
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int h = 1;
+      h *= 1000003;
+      h ^= stars;
+      h *= 1000003;
+      h ^= nullableIntFieldWithDefaultValue.hashCode();
+      h *= 1000003;
+      h ^= commentary.hashCode();
+      h *= 1000003;
+      h ^= favoriteColor.hashCode();
+      h *= 1000003;
+      h ^= enumWithDefaultValue.hashCode();
+      h *= 1000003;
+      h ^= nullableEnum.hashCode();
+      h *= 1000003;
+      h ^= listOfCustomScalar.hashCode();
+      h *= 1000003;
+      h ^= customScalar.hashCode();
+      h *= 1000003;
+      h ^= listOfEnums.hashCode();
+      h *= 1000003;
+      h ^= listOfInt.hashCode();
+      h *= 1000003;
+      h ^= listOfString.hashCode();
+      h *= 1000003;
+      h ^= booleanWithDefaultValue.hashCode();
+      h *= 1000003;
+      h ^= listOfListOfString.hashCode();
+      h *= 1000003;
+      h ^= listOfListOfEnum.hashCode();
+      h *= 1000003;
+      h ^= listOfListOfCustom.hashCode();
+      h *= 1000003;
+      h ^= listOfListOfObject.hashCode();
+      $hashCode = h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ReviewInput) {
+      ReviewInput that = (ReviewInput) o;
+      return this.stars == that.stars
+       && this.nullableIntFieldWithDefaultValue.equals(that.nullableIntFieldWithDefaultValue)
+       && this.commentary.equals(that.commentary)
+       && this.favoriteColor.equals(that.favoriteColor)
+       && this.enumWithDefaultValue.equals(that.enumWithDefaultValue)
+       && this.nullableEnum.equals(that.nullableEnum)
+       && this.listOfCustomScalar.equals(that.listOfCustomScalar)
+       && this.customScalar.equals(that.customScalar)
+       && this.listOfEnums.equals(that.listOfEnums)
+       && this.listOfInt.equals(that.listOfInt)
+       && this.listOfString.equals(that.listOfString)
+       && this.booleanWithDefaultValue.equals(that.booleanWithDefaultValue)
+       && this.listOfListOfString.equals(that.listOfListOfString)
+       && this.listOfListOfEnum.equals(that.listOfListOfEnum)
+       && this.listOfListOfCustom.equals(that.listOfListOfCustom)
+       && this.listOfListOfObject.equals(that.listOfListOfObject);
+    }
+    return false;
   }
 
   public static final class Builder {
