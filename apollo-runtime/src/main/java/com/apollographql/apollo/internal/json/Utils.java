@@ -29,8 +29,8 @@ public final class Utils {
       jsonWriter.nullValue();
     } else if (value instanceof Map) {
       jsonWriter.beginObject();
-      for (Map.Entry<String, Object> entry : ((Map<String, Object>) value).entrySet()) {
-        String key = entry.getKey();
+      for (Map.Entry<Object, Object> entry : ((Map<Object, Object>) value).entrySet()) {
+        String key = entry.getKey().toString();
         jsonWriter.name(key);
         writeToJson(entry.getValue(), jsonWriter);
       }
