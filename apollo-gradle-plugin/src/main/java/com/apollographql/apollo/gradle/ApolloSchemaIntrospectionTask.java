@@ -21,7 +21,7 @@ public class ApolloSchemaIntrospectionTask extends NodeTask{
   private boolean insecure;
 
   public ApolloSchemaIntrospectionTask() {
-    dependsOn(ApolloCodeGenInstallTask.NAME);
+    dependsOn(ApolloCodegenInstallTask.NAME);
     headers = new ArrayList<>();
   }
 
@@ -31,8 +31,8 @@ public class ApolloSchemaIntrospectionTask extends NodeTask{
       throw new IllegalArgumentException("Schema URL and output path can't be empty");
     }
 
-    setScript(new File(getProject().getTasks().getByPath(ApolloCodeGenInstallTask.NAME).getOutputs().getFiles()
-        .getAsPath(), ApolloIRGenTask.APOLLO_CODEGEN_EXEC_FILE));
+    setScript(new File(getProject().getTasks().getByPath(ApolloCodegenInstallTask.NAME).getOutputs().getFiles()
+        .getAsPath(), ApolloLocalCodegenGenerationTask.APOLLO_CODEGEN_EXEC_FILE));
 
     List<String> args = Lists.newArrayList("introspect-schema", url, "--output", getProject().file(output)
         .getAbsolutePath());

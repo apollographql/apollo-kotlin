@@ -1,7 +1,7 @@
 package com.apollographql.apollo.gradle.unit
 
-import com.apollographql.apollo.gradle.ApolloCodeGenInstallTask
-import com.apollographql.apollo.gradle.ApolloIRGenTask
+import com.apollographql.apollo.gradle.ApolloCodegenInstallTask
+import com.apollographql.apollo.gradle.ApolloPlugin
 import com.apollographql.apollo.gradle.ApolloPluginTestHelper
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
@@ -16,12 +16,12 @@ class ApolloIRGenTaskSpec extends Specification {
     ApolloPluginTestHelper.applyApolloPlugin(project)
     project.evaluate()
 
-    def debugTask = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "Debug"))
-    def releaseTask = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "Release"))
+    def debugTask = project.tasks.getByName(String.format(ApolloPlugin.APOLLO_CODEGEN_GENERATE_TASK_NAME, "Debug"))
+    def releaseTask = project.tasks.getByName(String.format(ApolloPlugin.APOLLO_CODEGEN_GENERATE_TASK_NAME, "Release"))
 
     then:
-    debugTask.dependsOn.contains(ApolloCodeGenInstallTask.NAME)
-    releaseTask.dependsOn.contains(ApolloCodeGenInstallTask.NAME)
+    debugTask.dependsOn.contains(ApolloCodegenInstallTask.NAME)
+    releaseTask.dependsOn.contains(ApolloCodegenInstallTask.NAME)
   }
 
   def "creates a top-level generateApolloIR task that depends on the variant tasks in a default project"() {
@@ -33,10 +33,10 @@ class ApolloIRGenTaskSpec extends Specification {
     ApolloPluginTestHelper.applyApolloPlugin(project)
     project.evaluate()
 
-    def generateApolloIR = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, ""))
+    def generateApolloIR = project.tasks.getByName(String.format(ApolloPlugin.APOLLO_CODEGEN_GENERATE_TASK_NAME, ""))
 
     then:
-    generateApolloIR.dependsOn.contains(project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "Debug")))
-    generateApolloIR.dependsOn.contains(project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "Release")))
+    generateApolloIR.dependsOn.contains(project.tasks.getByName(String.format(ApolloPlugin.APOLLO_CODEGEN_GENERATE_TASK_NAME, "Debug")))
+    generateApolloIR.dependsOn.contains(project.tasks.getByName(String.format(ApolloPlugin.APOLLO_CODEGEN_GENERATE_TASK_NAME, "Release")))
   }
 }

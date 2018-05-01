@@ -507,6 +507,15 @@ apollo {
 }
 ```
 
+### Use system pre-installed `apollo-codegen`
+By default Apollo will enable gradle plugin that installs Node-JS and downloads `apollo-codegen` module into your project's build directory. If you already have Node-JS and `apollo-codegen` module installed on your computer, you can enable Apollo to use it and skip these steps. Apollo will fallback to default behaviour if verification of pre-installed version of `apollo-codegen` fails.          
+
+#### Usage
+To enable usage of pre-installed `apollo-codegen` module, set gradle system property `apollographql.useGlobalApolloCodegen` (for example in `gradle.properties` file):
+```properties
+systemProp.apollographql.useGlobalApolloCodegen=true
+```
+
 ### Download
 
 RxJava1:

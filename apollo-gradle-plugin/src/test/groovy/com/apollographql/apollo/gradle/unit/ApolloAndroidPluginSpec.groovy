@@ -15,8 +15,8 @@ class ApolloAndroidPluginSpec extends Specification {
     ApolloPluginTestHelper.applyApolloPlugin(project)
     project.evaluate()
 
-    def debugTask = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "Debug"))
-    def releaseTask = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "Release"))
+    def debugTask = project.tasks.getByName(String.format(ApolloPlugin.APOLLO_CODEGEN_GENERATE_TASK_NAME, "Debug"))
+    def releaseTask = project.tasks.getByName(String.format(ApolloPlugin.APOLLO_CODEGEN_GENERATE_TASK_NAME, "Release"))
 
     then:
     debugTask.group.equals(ApolloPlugin.TASK_GROUP)
@@ -38,8 +38,8 @@ class ApolloAndroidPluginSpec extends Specification {
 
     then:
     flavors.each { flavor ->
-      def debugTask = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "${flavor}Debug"))
-      def releaseTask = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "${flavor}Release"))
+      def debugTask = project.tasks.getByName(String.format(ApolloPlugin.APOLLO_CODEGEN_GENERATE_TASK_NAME, "${flavor}Debug"))
+      def releaseTask = project.tasks.getByName(String.format(ApolloPlugin.APOLLO_CODEGEN_GENERATE_TASK_NAME, "${flavor}Release"))
 
       assert (debugTask.group) == ApolloPlugin.TASK_GROUP
       assert (debugTask.description) == "Generate an IR file using apollo-codegen for " + flavor + "Debug GraphQL queries"

@@ -1,6 +1,6 @@
 package com.apollographql.apollo.gradle.unit
 
-import com.apollographql.apollo.gradle.ApolloCodeGenInstallTask
+import com.apollographql.apollo.gradle.ApolloCodegenInstallTask
 import com.apollographql.apollo.gradle.ApolloPlugin
 import com.apollographql.apollo.gradle.ApolloPluginTestHelper
 import groovy.json.JsonSlurper
@@ -18,7 +18,7 @@ class ApolloCodeGenInstallTaskSpec extends Specification {
     project.evaluate()
 
     then:
-    def task = project.tasks.getByName(ApolloCodeGenInstallTask.NAME)
+    def task = project.tasks.getByName(ApolloCodegenInstallTask.NAME)
     task.group.equals(ApolloPlugin.TASK_GROUP)
     task.description.equals("Runs npm install for apollo-codegen")
   }
@@ -33,7 +33,7 @@ class ApolloCodeGenInstallTaskSpec extends Specification {
     project.evaluate()
 
     then:
-    def task = project.tasks.getByName(ApolloCodeGenInstallTask.NAME)
+    def task = project.tasks.getByName(ApolloCodegenInstallTask.NAME)
     task.dependsOn.contains("nodeSetup")
   }
 

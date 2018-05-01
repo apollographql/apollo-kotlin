@@ -15,7 +15,7 @@ class ApolloJavaPluginSpec extends Specification {
     ApolloPluginTestHelper.applyApolloPlugin(project)
     project.evaluate()
 
-    def mainTask = project.tasks.getByName(String.format(ApolloIRGenTask.NAME, "Main"))
+    def mainTask = project.tasks.getByName(String.format(ApolloPlugin.APOLLO_CODEGEN_GENERATE_TASK_NAME, "Main"))
 
     then:
     mainTask.group.equals(ApolloPlugin.TASK_GROUP)
@@ -31,7 +31,7 @@ class ApolloJavaPluginSpec extends Specification {
     ApolloPluginTestHelper.applyApolloPlugin(project)
     project.evaluate()
 
-    def mainTask = project.tasks.getByName(String.format(ApolloClassGenTask.NAME, "Main"))
+    def mainTask = project.tasks.getByName(String.format(ApolloClassGenerationTask.NAME, "Main"))
 
     then:
     mainTask.group.equals(ApolloPlugin.TASK_GROUP)
