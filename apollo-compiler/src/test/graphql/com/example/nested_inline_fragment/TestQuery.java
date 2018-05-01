@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
@@ -252,7 +253,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class Fragments {
-      final @Nonnull TestSetting testSetting;
+      final Optional<TestSetting> testSetting;
 
       private volatile String $toString;
 
@@ -260,11 +261,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       private volatile boolean $hashCodeMemoized;
 
-      public Fragments(@Nonnull TestSetting testSetting) {
-        this.testSetting = Utils.checkNotNull(testSetting, "testSetting == null");
+      public Fragments(@Nullable TestSetting testSetting) {
+        this.testSetting = Optional.fromNullable(testSetting);
       }
 
-      public @Nonnull TestSetting testSetting() {
+      public Optional<TestSetting> testSetting() {
         return this.testSetting;
       }
 
@@ -272,7 +273,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final TestSetting $testSetting = testSetting;
+            final TestSetting $testSetting = testSetting.isPresent() ? testSetting.get() : null;
             if ($testSetting != null) {
               $testSetting.marshaller().marshal(writer);
             }
@@ -323,7 +324,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           if (TestSetting.POSSIBLE_TYPES.contains(conditionalType)) {
             testSetting = testSettingFieldMapper.map(reader);
           }
-          return new Fragments(Utils.checkNotNull(testSetting, "testSetting == null"));
+          return new Fragments(testSetting);
         }
       }
     }
