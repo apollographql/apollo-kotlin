@@ -1,7 +1,7 @@
 {
   "operations": [
     {
-      "operationName": "TestQuery",
+      "operationName": "TestMutation",
       "operationType": "mutation",
       "variables": [
         {
