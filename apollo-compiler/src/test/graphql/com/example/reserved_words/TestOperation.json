@@ -2,8 +2,13 @@
   "operations": [
     {
       "operationName": "TestQuery",
-      "operationType": "query",
-      "variables": [],
+      "operationType": "mutation",
+      "variables": [
+        {
+          "name": "input",
+          "type": "TestInputType!"
+        }
+      ],
       "source": "",
       "fields": [
         {
@@ -362,5 +367,18 @@
     }
   ],
   "fragments": [],
-  "typesUsed": []
+  "typesUsed": [
+    {
+      "kind": "InputObjectType",
+      "name": "TestInputType",
+      "description": null,
+      "fields": [
+        {
+          "name": "private",
+          "type": "Boolean",
+          "description": ""
+        }
+      ]
+    }
+  ]
 }
