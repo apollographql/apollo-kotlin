@@ -187,9 +187,9 @@ apolloClient.query(
 
 ## Custom Scalar Types
 
-Apollo supports Custom Scalar Types like `DateTime` for an example.
+Apollo supports Custom Scalar Types like `Date`.
 
-You first need to define the mapping in your build.gradle file. This will tell the compiler what type to use when generating the classes.
+You first need to define the mapping in your build.gradle file. This will tell the annotation processor what type to use when generating the classes.
 
 ```gradle
 apollo {
@@ -197,7 +197,7 @@ apollo {
 }
 ```
 
-Then register your custom adapter:
+Next register your custom adapter & add it to your Apollo Client Builder:
 
 ```java
  dateCustomTypeAdapter = new CustomTypeAdapter<Date>() {
@@ -214,7 +214,6 @@ Then register your custom adapter:
       }
     };
 
-// use on creating ApolloClient
 ApolloClient.builder()
   .serverUrl(serverUrl)
   .okHttpClient(okHttpClient)
