@@ -193,35 +193,32 @@ You first need to define the mapping in your build.gradle file. This will tell t
 
 ```gradle
 apollo {
-    customTypeMapping['DateTime'] = "java.util.Date"
-    customTypeMapping['Currency'] = "java.math.BigDecimal"
+  customTypeMapping['Date'] = "java.util.Date"
 }
 ```
 
 Then register your custom adapter:
 
 ```java
-CustomTypeAdapter<Date> customTypeAdapter = new CustomTypeAdapter<Date>() {
-  @Override
-  public Date decode(String value) {
-    try {
-      return ISO8601_DATE_FORMAT.parse(value);
-    } catch (ParseException e) {
-      throw new RuntimeException(e);
-    }
-  }
+ dateCustomTypeAdapter = new CustomTypeAdapter<Date>() {
+      @Override public Date decode(CustomTypeValue value) {
+        try {
+          return DATE_FORMAT.parse(value.value.toString());
+        } catch (ParseException e) {
+          throw new RuntimeException(e);
+        }
+      }
 
-  @Override
-  public String encode(Date value) {
-    return ISO8601_DATE_FORMAT.format(value);
-  }
-};
+      @Override public CustomTypeValue encode(Date value) {
+        return new CustomTypeValue.GraphQLString(DATE_FORMAT.format(value));
+      }
+    };
 
 // use on creating ApolloClient
 ApolloClient.builder()
   .serverUrl(serverUrl)
   .okHttpClient(okHttpClient)
-  .addCustomTypeAdapter(CustomType.DATETIME, customTypeAdapter)
+  .addCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
   .build();
 ```
 
