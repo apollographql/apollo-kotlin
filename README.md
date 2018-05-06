@@ -189,7 +189,7 @@ apolloClient.query(
 
 Apollo supports Custom Scalar Types like `Date`.
 
-You first need to define the mapping in your build.gradle file. This will tell the annotation processor what type to use when generating the classes.
+You first need to define the mapping in your build.gradle file. This will tell the code generator/gradle plugin what type to use when generating the classes.
 
 ```gradle
 apollo {
