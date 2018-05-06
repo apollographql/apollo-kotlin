@@ -29,13 +29,13 @@ class InputTypeSpecBuilder(
 
   private fun TypeSpec.Builder.addConstructor(): TypeSpec.Builder {
     val fieldInitializeCodeBuilder = fields.map {
-      CodeBlock.of("this.\$L = \$L;\n", it.name.decapitalize(), it.name.decapitalize())
+      CodeBlock.of("this.\$L = \$L;\n", it.name.decapitalize().escapeJavaReservedWord(), it.name.decapitalize().escapeJavaReservedWord())
     }.fold(CodeBlock.builder(), CodeBlock.Builder::add)
 
     return addMethod(MethodSpec
         .constructorBuilder()
         .addParameters(fields.map {
-          ParameterSpec.builder(it.javaTypeName(context), it.name.decapitalize()).build()
+          ParameterSpec.builder(it.javaTypeName(context), it.name.decapitalize().escapeJavaReservedWord()).build()
         })
         .addCode(fieldInitializeCodeBuilder.build())
         .build()
@@ -46,17 +46,17 @@ class InputTypeSpecBuilder(
     if (fields.isEmpty()) {
       return this
     } else {
-      val builderFields = fields.map { it.name.decapitalize() to it.javaTypeName(context) }
+      val builderFields = fields.map { it.name.decapitalize().escapeJavaReservedWord() to it.javaTypeName(context) }
       val builderFieldDefaultValues = fields
           .filterNot {
             // ignore any custom type default values for now as we don't support them
             val normalizedType = it.type.removeSuffix("!").removeSurrounding("[", "]").removeSuffix("!")
             normalizedType.isCustomScalarType(context)
           }
-          .associate { it.name.decapitalize() to it.defaultValue }
+          .associate { it.name.decapitalize().escapeJavaReservedWord() to it.defaultValue }
       val javaDocs = fields
           .filter { !it.description.isNullOrBlank() }
-          .associate { it.name.decapitalize() to it.description }
+          .associate { it.name.decapitalize().escapeJavaReservedWord() to it.description }
       return addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
           .addType(
               BuilderTypeSpecBuilder(
@@ -74,7 +74,7 @@ class InputTypeSpecBuilder(
     val writeCode = fields
         .map {
           InputFieldSpec.build(
-              name = it.name.decapitalize(),
+              name = it.name.decapitalize().escapeJavaReservedWord(),
               graphQLType = it.type,
               context = context
           )
@@ -108,14 +108,14 @@ class InputTypeSpecBuilder(
   private fun TypeSpec.Builder.addFields(): TypeSpec.Builder {
     fun addFieldDefinition(field: TypeDeclarationField) {
       addField(FieldSpec
-          .builder(field.javaTypeName(context), field.name.decapitalize())
+          .builder(field.javaTypeName(context), field.name.decapitalize().escapeJavaReservedWord())
           .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
           .build())
     }
 
     fun addFieldAccessor(field: TypeDeclarationField) {
       val optional = !field.type.endsWith("!")
-      addMethod(MethodSpec.methodBuilder(field.name.decapitalize())
+      addMethod(MethodSpec.methodBuilder(field.name.decapitalize().escapeJavaReservedWord())
           .addModifiers(Modifier.PUBLIC)
           .returns(field.javaTypeName(context).unwrapOptionalType())
           .let {
@@ -124,7 +124,7 @@ class InputTypeSpecBuilder(
             else
               it
           }
-          .addStatement("return this.\$L\$L", field.name.decapitalize(), if (optional) ".value" else "")
+          .addStatement("return this.\$L\$L", field.name.decapitalize().escapeJavaReservedWord(), if (optional) ".value" else "")
           .build())
     }
 

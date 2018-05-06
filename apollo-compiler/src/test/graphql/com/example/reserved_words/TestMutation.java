@@ -1,23 +1,31 @@
 package com.example.reserved_words;
 
+import com.apollographql.apollo.api.InputFieldMarshaller;
+import com.apollographql.apollo.api.InputFieldWriter;
+import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
-import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
 import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
+import com.apollographql.apollo.api.internal.Utils;
+import com.example.reserved_words.type.TestInputType;
+import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.annotation.Generated;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
-public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
+public final class TestMutation implements Mutation<TestMutation.Data, Optional<TestMutation.Data>, TestMutation.Variables> {
   public static final String OPERATION_DEFINITION = "";
 
   public static final String OPERATION_ID = null;
@@ -27,14 +35,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override
     public String name() {
-      return "TestQuery";
+      return "TestMutation";
     }
   };
 
-  private final Operation.Variables variables;
+  private final TestMutation.Variables variables;
 
-  public TestQuery() {
-    this.variables = Operation.EMPTY_VARIABLES;
+  public TestMutation(@Nonnull TestInputType input) {
+    Utils.checkNotNull(input, "input == null");
+    variables = new TestMutation.Variables(input);
   }
 
   @Override
@@ -48,17 +57,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   @Override
-  public Optional<TestQuery.Data> wrapData(TestQuery.Data data) {
+  public Optional<TestMutation.Data> wrapData(TestMutation.Data data) {
     return Optional.fromNullable(data);
   }
 
   @Override
-  public Operation.Variables variables() {
+  public TestMutation.Variables variables() {
     return variables;
   }
 
   @Override
-  public ResponseFieldMapper<TestQuery.Data> responseFieldMapper() {
+  public ResponseFieldMapper<TestMutation.Data> responseFieldMapper() {
     return new Data.Mapper();
   }
 
@@ -72,11 +81,49 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public static final class Builder {
+    private @Nonnull TestInputType input;
+
     Builder() {
     }
 
-    public TestQuery build() {
-      return new TestQuery();
+    public Builder input(@Nonnull TestInputType input) {
+      this.input = input;
+      return this;
+    }
+
+    public TestMutation build() {
+      Utils.checkNotNull(input, "input == null");
+      return new TestMutation(input);
+    }
+  }
+
+  public static final class Variables extends Operation.Variables {
+    private final @Nonnull TestInputType input;
+
+    private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
+
+    Variables(@Nonnull TestInputType input) {
+      this.input = input;
+      this.valueMap.put("input", input);
+    }
+
+    public @Nonnull TestInputType input() {
+      return input;
+    }
+
+    @Override
+    public Map<String, Object> valueMap() {
+      return Collections.unmodifiableMap(valueMap);
+    }
+
+    @Override
+    public InputFieldMarshaller marshaller() {
+      return new InputFieldMarshaller() {
+        @Override
+        public void marshal(InputFieldWriter writer) throws IOException {
+          writer.writeObject("input", input.marshaller());
+        }
+      };
     }
   }
 
