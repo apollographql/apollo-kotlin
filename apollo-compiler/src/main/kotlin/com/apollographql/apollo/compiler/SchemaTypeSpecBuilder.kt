@@ -143,8 +143,8 @@ class SchemaTypeSpecBuilder(
 
     fun isOptional(fragmentName: String): Boolean {
       return context.ir.fragments
-          .find { it.fragmentName == fragmentName }
-          ?.let { it.typeCondition != normalizeGraphQlType(schemaType) } ?: true
+          .first { it.fragmentName == fragmentName }
+          .let { it.inlineFragments.isNotEmpty() || it.typeCondition != normalizeGraphQlType(schemaType) }
     }
 
     fun fragmentFields(): List<FieldSpec> {

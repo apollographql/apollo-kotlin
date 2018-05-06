@@ -340,7 +340,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class Fragments {
-      final @Nonnull HeroDetails heroDetails;
+      final Optional<HeroDetails> heroDetails;
 
       private volatile String $toString;
 
@@ -348,11 +348,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       private volatile boolean $hashCodeMemoized;
 
-      public Fragments(@Nonnull HeroDetails heroDetails) {
-        this.heroDetails = Utils.checkNotNull(heroDetails, "heroDetails == null");
+      public Fragments(@Nullable HeroDetails heroDetails) {
+        this.heroDetails = Optional.fromNullable(heroDetails);
       }
 
-      public @Nonnull HeroDetails heroDetails() {
+      public Optional<HeroDetails> heroDetails() {
         return this.heroDetails;
       }
 
@@ -360,7 +360,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final HeroDetails $heroDetails = heroDetails;
+            final HeroDetails $heroDetails = heroDetails.isPresent() ? heroDetails.get() : null;
             if ($heroDetails != null) {
               $heroDetails.marshaller().marshal(writer);
             }
@@ -404,7 +404,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       public Builder toBuilder() {
         Builder builder = new Builder();
-        builder.heroDetails = heroDetails;
+        builder.heroDetails = heroDetails.isPresent() ? heroDetails.get() : null;
         return builder;
       }
 
@@ -421,23 +421,22 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) {
             heroDetails = heroDetailsFieldMapper.map(reader);
           }
-          return new Fragments(Utils.checkNotNull(heroDetails, "heroDetails == null"));
+          return new Fragments(heroDetails);
         }
       }
 
       public static final class Builder {
-        private @Nonnull HeroDetails heroDetails;
+        private @Nullable HeroDetails heroDetails;
 
         Builder() {
         }
 
-        public Builder heroDetails(@Nonnull HeroDetails heroDetails) {
+        public Builder heroDetails(@Nullable HeroDetails heroDetails) {
           this.heroDetails = heroDetails;
           return this;
         }
 
         public Fragments build() {
-          Utils.checkNotNull(heroDetails, "heroDetails == null");
           return new Fragments(heroDetails);
         }
       }
