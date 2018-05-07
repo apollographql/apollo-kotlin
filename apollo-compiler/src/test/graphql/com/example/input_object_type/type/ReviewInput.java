@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.internal.Utils;
 import java.io.IOException;
 import java.lang.Boolean;
-import java.lang.Long;
+import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -19,9 +19,9 @@ import javax.annotation.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class ReviewInput {
-  private final long stars;
+  private final int stars;
 
-  private final Input<Long> nullableIntFieldWithDefaultValue;
+  private final Input<Integer> nullableIntFieldWithDefaultValue;
 
   private final Input<String> commentary;
 
@@ -37,7 +37,7 @@ public final class ReviewInput {
 
   private final Input<List<Episode>> listOfEnums;
 
-  private final Input<List<Long>> listOfInt;
+  private final Input<List<Integer>> listOfInt;
 
   private final Input<List<String>> listOfString;
 
@@ -55,10 +55,10 @@ public final class ReviewInput {
 
   private volatile boolean $hashCodeMemoized;
 
-  ReviewInput(long stars, Input<Long> nullableIntFieldWithDefaultValue, Input<String> commentary,
+  ReviewInput(int stars, Input<Integer> nullableIntFieldWithDefaultValue, Input<String> commentary,
       @Nonnull ColorInput favoriteColor, Input<Episode> enumWithDefaultValue,
       Input<Episode> nullableEnum, Input<List<Date>> listOfCustomScalar, Input<Date> customScalar,
-      Input<List<Episode>> listOfEnums, Input<List<Long>> listOfInt,
+      Input<List<Episode>> listOfEnums, Input<List<Integer>> listOfInt,
       Input<List<String>> listOfString, Input<Boolean> booleanWithDefaultValue,
       Input<List<List<String>>> listOfListOfString, Input<List<List<Episode>>> listOfListOfEnum,
       Input<List<List<Date>>> listOfListOfCustom,
@@ -84,14 +84,14 @@ public final class ReviewInput {
   /**
    * 0-5 stars
    */
-  public long stars() {
+  public int stars() {
     return this.stars;
   }
 
   /**
    * for test purpose only
    */
-  public @Nullable Long nullableIntFieldWithDefaultValue() {
+  public @Nullable Integer nullableIntFieldWithDefaultValue() {
     return this.nullableIntFieldWithDefaultValue.value;
   }
 
@@ -147,7 +147,7 @@ public final class ReviewInput {
   /**
    * for test purpose only
    */
-  public @Nullable List<Long> listOfInt() {
+  public @Nullable List<Integer> listOfInt() {
     return this.listOfInt.value;
   }
 
@@ -201,9 +201,9 @@ public final class ReviewInput {
     return new InputFieldMarshaller() {
       @Override
       public void marshal(InputFieldWriter writer) throws IOException {
-        writer.writeLong("stars", stars);
+        writer.writeInt("stars", stars);
         if (nullableIntFieldWithDefaultValue.defined) {
-          writer.writeLong("nullableIntFieldWithDefaultValue", nullableIntFieldWithDefaultValue.value);
+          writer.writeInt("nullableIntFieldWithDefaultValue", nullableIntFieldWithDefaultValue.value);
         }
         if (commentary.defined) {
           writer.writeString("commentary", commentary.value);
@@ -242,8 +242,8 @@ public final class ReviewInput {
           writer.writeList("listOfInt", listOfInt.value != null ? new InputFieldWriter.ListWriter() {
             @Override
             public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
-              for (Long $item : listOfInt.value) {
-                listItemWriter.writeLong($item);
+              for (Integer $item : listOfInt.value) {
+                listItemWriter.writeInt($item);
               }
             }
           } : null);
@@ -407,9 +407,9 @@ public final class ReviewInput {
   }
 
   public static final class Builder {
-    private long stars;
+    private int stars;
 
-    private Input<Long> nullableIntFieldWithDefaultValue = Input.fromNullable(10L);
+    private Input<Integer> nullableIntFieldWithDefaultValue = Input.fromNullable(10);
 
     private Input<String> commentary = Input.absent();
 
@@ -425,7 +425,7 @@ public final class ReviewInput {
 
     private Input<List<Episode>> listOfEnums = Input.absent();
 
-    private Input<List<Long>> listOfInt = Input.fromNullable(Arrays.<Long>asList(1L, 2L, 3L));
+    private Input<List<Integer>> listOfInt = Input.fromNullable(Arrays.<Integer>asList(1, 2, 3));
 
     private Input<List<String>> listOfString = Input.fromNullable(Arrays.<String>asList("test1", "test2", "test3"));
 
@@ -445,7 +445,7 @@ public final class ReviewInput {
     /**
      * 0-5 stars
      */
-    public Builder stars(long stars) {
+    public Builder stars(int stars) {
       this.stars = stars;
       return this;
     }
@@ -453,7 +453,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder nullableIntFieldWithDefaultValue(@Nullable Long nullableIntFieldWithDefaultValue) {
+    public Builder nullableIntFieldWithDefaultValue(@Nullable Integer nullableIntFieldWithDefaultValue) {
       this.nullableIntFieldWithDefaultValue = Input.fromNullable(nullableIntFieldWithDefaultValue);
       return this;
     }
@@ -517,7 +517,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder listOfInt(@Nullable List<Long> listOfInt) {
+    public Builder listOfInt(@Nullable List<Integer> listOfInt) {
       this.listOfInt = Input.fromNullable(listOfInt);
       return this;
     }
@@ -573,7 +573,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder nullableIntFieldWithDefaultValueInput(@Nonnull Input<Long> nullableIntFieldWithDefaultValue) {
+    public Builder nullableIntFieldWithDefaultValueInput(@Nonnull Input<Integer> nullableIntFieldWithDefaultValue) {
       this.nullableIntFieldWithDefaultValue = Utils.checkNotNull(nullableIntFieldWithDefaultValue, "nullableIntFieldWithDefaultValue == null");
       return this;
     }
@@ -629,7 +629,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder listOfIntInput(@Nonnull Input<List<Long>> listOfInt) {
+    public Builder listOfIntInput(@Nonnull Input<List<Integer>> listOfInt) {
       this.listOfInt = Utils.checkNotNull(listOfInt, "listOfInt == null");
       return this;
     }

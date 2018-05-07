@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.internal.Utils;
 import java.io.IOException;
 import java.lang.Boolean;
+import java.lang.Object;
 import java.lang.Override;
 import javax.annotation.Generated;
 import javax.annotation.Nonnull;
@@ -14,6 +15,10 @@ import javax.annotation.Nullable;
 @Generated("Apollo GraphQL")
 public final class TestInputType {
   private final Input<Boolean> private_;
+
+  private volatile int $hashCode;
+
+  private volatile boolean $hashCodeMemoized;
 
   TestInputType(Input<Boolean> private_) {
     this.private_ = private_;
@@ -36,6 +41,30 @@ public final class TestInputType {
         }
       }
     };
+  }
+
+  @Override
+  public int hashCode() {
+    if (!$hashCodeMemoized) {
+      int h = 1;
+      h *= 1000003;
+      h ^= private_.hashCode();
+      $hashCode = h;
+      $hashCodeMemoized = true;
+    }
+    return $hashCode;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof TestInputType) {
+      TestInputType that = (TestInputType) o;
+      return this.private_.equals(that.private_);
+    }
+    return false;
   }
 
   public static final class Builder {

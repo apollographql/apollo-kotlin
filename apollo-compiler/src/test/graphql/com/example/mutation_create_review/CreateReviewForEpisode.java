@@ -245,13 +245,13 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
   public static class CreateReview {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forLong("stars", "stars", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forInt("stars", "stars", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("commentary", "commentary", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
 
-    final long stars;
+    final int stars;
 
     final Optional<String> commentary;
 
@@ -261,7 +261,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
 
     private volatile boolean $hashCodeMemoized;
 
-    public CreateReview(@Nonnull String __typename, long stars, @Nullable String commentary) {
+    public CreateReview(@Nonnull String __typename, int stars, @Nullable String commentary) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.stars = stars;
       this.commentary = Optional.fromNullable(commentary);
@@ -274,7 +274,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
     /**
      * The number of stars this review gave, 1-5
      */
-    public long stars() {
+    public int stars() {
       return this.stars;
     }
 
@@ -290,7 +290,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
-          writer.writeLong($responseFields[1], stars);
+          writer.writeInt($responseFields[1], stars);
           writer.writeString($responseFields[2], commentary.isPresent() ? commentary.get() : null);
         }
       };
@@ -342,7 +342,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
       @Override
       public CreateReview map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final long stars = reader.readLong($responseFields[1]);
+        final int stars = reader.readInt($responseFields[1]);
         final String commentary = reader.readString($responseFields[2]);
         return new CreateReview(__typename, stars, commentary);
       }

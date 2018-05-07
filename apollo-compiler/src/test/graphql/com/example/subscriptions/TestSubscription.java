@@ -224,13 +224,13 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
   public static class CommentAdded {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forLong("id", "id", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forInt("id", "id", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("content", "content", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
     final @Nonnull String __typename;
 
-    final long id;
+    final int id;
 
     final @Nonnull String content;
 
@@ -240,7 +240,7 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
 
     private volatile boolean $hashCodeMemoized;
 
-    public CommentAdded(@Nonnull String __typename, long id, @Nonnull String content) {
+    public CommentAdded(@Nonnull String __typename, int id, @Nonnull String content) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.id = id;
       this.content = Utils.checkNotNull(content, "content == null");
@@ -253,7 +253,7 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
     /**
      * The SQL ID of this entry
      */
-    public long id() {
+    public int id() {
       return this.id;
     }
 
@@ -269,7 +269,7 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
-          writer.writeLong($responseFields[1], id);
+          writer.writeInt($responseFields[1], id);
           writer.writeString($responseFields[2], content);
         }
       };
@@ -321,7 +321,7 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
       @Override
       public CommentAdded map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final long id = reader.readLong($responseFields[1]);
+        final int id = reader.readInt($responseFields[1]);
         final String content = reader.readString($responseFields[2]);
         return new CommentAdded(__typename, id, content);
       }

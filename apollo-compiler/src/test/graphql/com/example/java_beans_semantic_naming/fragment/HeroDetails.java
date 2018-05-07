@@ -8,7 +8,7 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
-import java.lang.Long;
+import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -86,7 +86,7 @@ public interface HeroDetails extends GraphqlFragment {
     /**
      * The total number of friends
      */
-    Optional<Long> getTotalCount();
+    Optional<Integer> getTotalCount();
 
     /**
      * The edges for each of the character's friends.
@@ -271,7 +271,7 @@ public interface HeroDetails extends GraphqlFragment {
   class FriendsConnection1 implements FriendsConnection {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forLong("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forObject("pageInfo", "pageInfo", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forBoolean("isEmpty", "isEmpty", null, false, Collections.<ResponseField.Condition>emptyList())
@@ -279,7 +279,7 @@ public interface HeroDetails extends GraphqlFragment {
 
     final @Nonnull String __typename;
 
-    final Optional<Long> totalCount;
+    final Optional<Integer> totalCount;
 
     final Optional<List<Edge1>> edges;
 
@@ -293,7 +293,7 @@ public interface HeroDetails extends GraphqlFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public FriendsConnection1(@Nonnull String __typename, @Nullable Long totalCount,
+    public FriendsConnection1(@Nonnull String __typename, @Nullable Integer totalCount,
         @Nullable List<Edge1> edges, @Nonnull PageInfo1 pageInfo, boolean isEmpty) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.totalCount = Optional.fromNullable(totalCount);
@@ -309,7 +309,7 @@ public interface HeroDetails extends GraphqlFragment {
     /**
      * The total number of friends
      */
-    public Optional<Long> getTotalCount() {
+    public Optional<Integer> getTotalCount() {
       return this.totalCount;
     }
 
@@ -339,7 +339,7 @@ public interface HeroDetails extends GraphqlFragment {
         @Override
         public void marshal(ResponseWriter writer) {
           writer.writeString($responseFields[0], __typename);
-          writer.writeLong($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
+          writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
           writer.writeList($responseFields[2], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
             @Override
             public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
@@ -410,7 +410,7 @@ public interface HeroDetails extends GraphqlFragment {
       @Override
       public FriendsConnection1 map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        final Long totalCount = reader.readLong($responseFields[1]);
+        final Integer totalCount = reader.readInt($responseFields[1]);
         final List<Edge1> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge1>() {
           @Override
           public Edge1 read(ResponseReader.ListItemReader listItemReader) {
