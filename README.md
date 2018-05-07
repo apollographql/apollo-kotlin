@@ -82,17 +82,6 @@ apply plugin: 'com.apollographql.android'
 
 The Android Plugin must be applied before the Apollo plugin
 
-### Kotlin
-
-If using Apollo in your Kotlin project, make sure to apply the Apollo plugin before your Kotlin plugins within your app module's `build.gradle`:
-
-```
-apply plugin: 'com.apollographql.android'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-...
-```
-
 ## Generate Code using Apollo
 
 Follow these steps:
@@ -434,7 +423,7 @@ disposable.clear();
 For a concrete example of using Rx wrappers for apollo types, checkout the sample app in the [`apollo-sample`](apollo-sample) module.
 
 ##  Gradle Configuration of Apollo Android
-Apollo Android comes with logical defaults that will work for the majority of use cases, below you will find additional configuration that will add Optional Support, Semantic Query Naming & reduction in method count of generated code.
+Apollo Android comes with logical defaults that will work for the majority of use cases, below you will find additional configuration that will add Optional Support & Semantic Query Naming.
 
 ### Optional Support
 By default Apollo-Android will return `null` when a graph api returns a `null` field.  Apollo allows you to configure the generated code to instead use a Guava `Optional<T>` or a shaded`Apollo Optional<T>` rather than simply returning the scalar value or null.
