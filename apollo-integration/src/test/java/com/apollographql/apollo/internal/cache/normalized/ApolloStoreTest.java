@@ -18,8 +18,8 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Collections.emptySet;
 
@@ -28,11 +28,11 @@ public class ApolloStoreTest {
   @Test public void storeClearAllCallsNormalizedCacheClearAll() throws Exception {
     final NamedCountDownLatch latch = new NamedCountDownLatch("storeClearAllCallsNormalizedCacheClearAll", 1);
     final RealApolloStore realApolloStore = new RealApolloStore(new NormalizedCache() {
-      @Nullable @Override public Record loadRecord(@Nonnull String key, @Nonnull CacheHeaders cacheHeaders) {
+      @Nullable @Override public Record loadRecord(@NotNull String key, @NotNull CacheHeaders cacheHeaders) {
         return null;
       }
 
-      @Nonnull @Override public Set<String> merge(@Nonnull Record record, @Nonnull CacheHeaders cacheHeaders) {
+      @NotNull @Override public Set<String> merge(@NotNull Record record, @NotNull CacheHeaders cacheHeaders) {
         return emptySet();
       }
 
@@ -40,12 +40,12 @@ public class ApolloStoreTest {
         latch.countDown();
       }
 
-      @Override public boolean remove(@Nonnull CacheKey cacheKey) {
+      @Override public boolean remove(@NotNull CacheKey cacheKey) {
         return false;
       }
 
-      @Nonnull @Override
-      protected Set<String> performMerge(@Nonnull Record apolloRecord, @Nonnull CacheHeaders cacheHeaders) {
+      @NotNull @Override
+      protected Set<String> performMerge(@NotNull Record apolloRecord, @NotNull CacheHeaders cacheHeaders) {
         return emptySet();
       }
     }, CacheKeyResolver.DEFAULT, new ScalarTypeAdapters(Collections.EMPTY_MAP), Executors.newSingleThreadExecutor(),

@@ -10,7 +10,7 @@ import com.apollographql.apollo.internal.ApolloLogger;
 
 import java.util.concurrent.Executor;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Signals the apollo client to <b>only</b> fetch the data from the normalized cache. If it's not present in the
@@ -27,15 +27,15 @@ public final class CacheOnlyFetcher implements ResponseFetcher {
   private static final class CacheOnlyInterceptor implements ApolloInterceptor {
 
     @Override
-    public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-        @Nonnull Executor dispatcher, @Nonnull final CallBack callBack) {
+    public void interceptAsync(@NotNull final InterceptorRequest request, @NotNull ApolloInterceptorChain chain,
+        @NotNull Executor dispatcher, @NotNull final CallBack callBack) {
       InterceptorRequest cacheRequest = request.toBuilder().fetchFromCache(true).build();
       chain.proceedAsync(cacheRequest, dispatcher, new CallBack() {
-        @Override public void onResponse(@Nonnull InterceptorResponse response) {
+        @Override public void onResponse(@NotNull InterceptorResponse response) {
           callBack.onResponse(response);
         }
 
-        @Override public void onFailure(@Nonnull ApolloException e) {
+        @Override public void onFailure(@NotNull ApolloException e) {
           // Cache only returns null instead of throwing when the cache is empty
           callBack.onResponse(cacheMissResponse(request.operation));
           callBack.onCompleted();

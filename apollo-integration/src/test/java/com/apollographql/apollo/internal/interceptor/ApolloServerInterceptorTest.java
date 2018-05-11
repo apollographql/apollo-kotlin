@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -120,7 +120,7 @@ public class ApolloServerInterceptorTest {
       this.predicate = predicate;
     }
 
-    @Override public Call newCall(@Nonnull Request request) {
+    @Override public Call newCall(@NotNull Request request) {
       if (!predicate.apply(request)) {
         fail("Assertion failed");
       }

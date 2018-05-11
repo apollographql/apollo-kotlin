@@ -18,8 +18,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
   private SimpleStack<List<String>> pathStack;
@@ -111,7 +111,7 @@ public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
     valueStack.push(null);
   }
 
-  @Nonnull public abstract CacheKey resolveCacheKey(@Nonnull ResponseField field, @Nonnull R record);
+  @NotNull public abstract CacheKey resolveCacheKey(@NotNull ResponseField field, @NotNull R record);
 
   void willResolveRecord(CacheKey cacheKey) {
     pathStack = new SimpleStack<>();
@@ -175,7 +175,7 @@ public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
       return Collections.emptySet();
     }
 
-    @Nonnull @Override public CacheKey resolveCacheKey(@Nonnull ResponseField field, @Nonnull Object record) {
+    @NotNull @Override public CacheKey resolveCacheKey(@NotNull ResponseField field, @NotNull Object record) {
       return CacheKey.NO_KEY;
     }
   };

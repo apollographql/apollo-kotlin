@@ -1,6 +1,6 @@
 package com.apollographql.apollo.subscription;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <p>{@code ApolloSubscriptionCall} is an abstraction for network transport layer that handles connection to the
@@ -62,6 +62,6 @@ public interface SubscriptionTransport {
      * @param callback which will handle the transport communication events.
      * @return prepared {@link SubscriptionTransport}
      */
-    SubscriptionTransport create(@Nonnull Callback callback);
+    SubscriptionTransport create(@NotNull Callback callback);
   }
 }

@@ -9,8 +9,8 @@ import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestInputType {
@@ -78,7 +78,7 @@ public final class TestInputType {
       return this;
     }
 
-    public Builder private_Input(@Nonnull Input<Boolean> private_) {
+    public Builder private_Input(@NotNull Input<Boolean> private_) {
       this.private_ = Utils.checkNotNull(private_, "private_ == null");
       return this;
     }

@@ -6,20 +6,20 @@ import com.apollographql.apollo.api.cache.http.HttpCacheStore;
 
 import java.io.IOException;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 final class MockHttpCacheStore implements HttpCacheStore {
   HttpCacheStore delegate;
 
-  @Override public HttpCacheRecord cacheRecord(@Nonnull String cacheKey) throws IOException {
+  @Override public HttpCacheRecord cacheRecord(@NotNull String cacheKey) throws IOException {
     return delegate.cacheRecord(cacheKey);
   }
 
-  @Override public HttpCacheRecordEditor cacheRecordEditor(@Nonnull String cacheKey) throws IOException {
+  @Override public HttpCacheRecordEditor cacheRecordEditor(@NotNull String cacheKey) throws IOException {
     return delegate.cacheRecordEditor(cacheKey);
   }
 
-  @Override public void remove(@Nonnull String cacheKey) throws IOException {
+  @Override public void remove(@NotNull String cacheKey) throws IOException {
     delegate.remove(cacheKey);
   }
 

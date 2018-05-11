@@ -1,6 +1,6 @@
 package com.apollographql.apollo.exception;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import okhttp3.Response;
 

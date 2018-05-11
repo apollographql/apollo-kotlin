@@ -3,7 +3,7 @@ package com.apollographql.apollo.subscription;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -138,7 +138,7 @@ public final class WebSocketSubscriptionTransport implements SubscriptionTranspo
     private final Request webSocketRequest;
     private final WebSocket.Factory webSocketConnectionFactory;
 
-    public Factory(@Nonnull String webSocketUrl, @Nonnull WebSocket.Factory webSocketConnectionFactory) {
+    public Factory(@NotNull String webSocketUrl, @NotNull WebSocket.Factory webSocketConnectionFactory) {
       this.webSocketRequest = new Request.Builder()
           .url(checkNotNull(webSocketUrl, "webSocketUrl == null"))
           .addHeader("Sec-WebSocket-Protocol", "graphql-ws")
@@ -148,7 +148,7 @@ public final class WebSocketSubscriptionTransport implements SubscriptionTranspo
     }
 
     @Override
-    public SubscriptionTransport create(@Nonnull Callback callback) {
+    public SubscriptionTransport create(@NotNull Callback callback) {
       checkNotNull(callback, "callback == null");
       return new WebSocketSubscriptionTransport(webSocketRequest, webSocketConnectionFactory, callback);
     }

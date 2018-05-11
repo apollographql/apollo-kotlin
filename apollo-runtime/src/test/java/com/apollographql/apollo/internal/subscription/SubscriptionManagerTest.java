@@ -24,7 +24,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.internal.subscription.RealSubscriptionManager.idForSubscription;
 import static com.google.common.truth.Truth.assertThat;
@@ -210,7 +210,7 @@ public class SubscriptionManagerTest {
     MockSubscriptionTransport subscriptionTransport;
     SubscriptionTransport.Callback callback;
 
-    @Override public SubscriptionTransport create(@Nonnull SubscriptionTransport.Callback callback) {
+    @Override public SubscriptionTransport create(@NotNull SubscriptionTransport.Callback callback) {
       this.callback = callback;
       return subscriptionTransport = new MockSubscriptionTransport();
     }
@@ -239,7 +239,7 @@ public class SubscriptionManagerTest {
   }
 
   private static final class MockExecutor implements Executor {
-    @Override public void execute(@Nonnull Runnable command) {
+    @Override public void execute(@NotNull Runnable command) {
       command.run();
     }
   }
@@ -275,7 +275,7 @@ public class SubscriptionManagerTest {
       return data;
     }
 
-    @Nonnull @Override public OperationName name() {
+    @NotNull @Override public OperationName name() {
       return new OperationName() {
         @Override public String name() {
           return "SomeSubscription";
@@ -283,7 +283,7 @@ public class SubscriptionManagerTest {
       };
     }
 
-    @Nonnull @Override public String operationId() {
+    @NotNull @Override public String operationId() {
       return operationId;
     }
   }
@@ -294,15 +294,15 @@ public class SubscriptionManagerTest {
     volatile Throwable networkError;
     volatile boolean completed;
 
-    @Override public void onResponse(@Nonnull Response<T> response) {
+    @Override public void onResponse(@NotNull Response<T> response) {
       this.response = response;
     }
 
-    @Override public void onError(@Nonnull ApolloSubscriptionException error) {
+    @Override public void onError(@NotNull ApolloSubscriptionException error) {
       this.error = error;
     }
 
-    @Override public void onNetworkError(@Nonnull Throwable t) {
+    @Override public void onNetworkError(@NotNull Throwable t) {
       networkError = t;
     }
 

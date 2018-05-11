@@ -10,8 +10,8 @@ import com.apollographql.apollo.internal.ApolloLogger;
 
 import java.io.IOException;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
@@ -28,11 +28,11 @@ public final class ApolloHttpCache implements HttpCache {
   private final HttpCacheStore cacheStore;
   private final ApolloLogger logger;
 
-  public ApolloHttpCache(@Nonnull final HttpCacheStore cacheStore) {
+  public ApolloHttpCache(@NotNull final HttpCacheStore cacheStore) {
     this(cacheStore, null);
   }
 
-  public ApolloHttpCache(@Nonnull final HttpCacheStore cacheStore, @Nullable final Logger logger) {
+  public ApolloHttpCache(@NotNull final HttpCacheStore cacheStore, @Nullable final Logger logger) {
     this.cacheStore = checkNotNull(cacheStore, "cacheStore == null");
     this.logger = new ApolloLogger(Optional.fromNullable(logger));
   }
@@ -45,11 +45,11 @@ public final class ApolloHttpCache implements HttpCache {
     }
   }
 
-  @Override public void remove(@Nonnull String cacheKey) throws IOException {
+  @Override public void remove(@NotNull String cacheKey) throws IOException {
     cacheStore.remove(cacheKey);
   }
 
-  @Override public void removeQuietly(@Nonnull String cacheKey) {
+  @Override public void removeQuietly(@NotNull String cacheKey) {
     try {
       remove(cacheKey);
     } catch (Exception ignore) {
@@ -57,11 +57,11 @@ public final class ApolloHttpCache implements HttpCache {
     }
   }
 
-  @Override public Response read(@Nonnull final String cacheKey) {
+  @Override public Response read(@NotNull final String cacheKey) {
     return read(cacheKey, false);
   }
 
-  @Override public Response read(@Nonnull final String cacheKey, final boolean expireAfterRead) {
+  @Override public Response read(@NotNull final String cacheKey, final boolean expireAfterRead) {
     HttpCacheRecord responseCacheRecord = null;
     try {
       responseCacheRecord = cacheStore.cacheRecord(cacheKey);
@@ -98,7 +98,7 @@ public final class ApolloHttpCache implements HttpCache {
     return new HttpCacheInterceptor(this, logger);
   }
 
-  Response cacheProxy(@Nonnull Response response, @Nonnull String cacheKey) {
+  Response cacheProxy(@NotNull Response response, @NotNull String cacheKey) {
     HttpCacheRecordEditor cacheRecordEditor = null;
     try {
       cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey);
@@ -121,7 +121,7 @@ public final class ApolloHttpCache implements HttpCache {
     return response;
   }
 
-  void write(@Nonnull Response response, @Nonnull String cacheKey) {
+  void write(@NotNull Response response, @NotNull String cacheKey) {
     HttpCacheRecordEditor cacheRecordEditor = null;
     try {
       cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey);

@@ -10,7 +10,7 @@ import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okhttp3.OkHttpClient;
 
@@ -47,11 +47,11 @@ public class ResponseFetcherTest {
         };
       }
 
-      @Nonnull @Override public OperationName name() {
+      @NotNull @Override public OperationName name() {
         return operationName;
       }
 
-      @Nonnull @Override public String operationId() {
+      @NotNull @Override public String operationId() {
         return "";
       }
 

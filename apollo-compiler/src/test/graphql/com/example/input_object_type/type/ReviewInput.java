@@ -14,8 +14,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class ReviewInput {
@@ -25,7 +25,7 @@ public final class ReviewInput {
 
   private final Input<String> commentary;
 
-  private final @Nonnull ColorInput favoriteColor;
+  private final @NotNull ColorInput favoriteColor;
 
   private final Input<Episode> enumWithDefaultValue;
 
@@ -56,7 +56,7 @@ public final class ReviewInput {
   private volatile boolean $hashCodeMemoized;
 
   ReviewInput(int stars, Input<Integer> nullableIntFieldWithDefaultValue, Input<String> commentary,
-      @Nonnull ColorInput favoriteColor, Input<Episode> enumWithDefaultValue,
+      @NotNull ColorInput favoriteColor, Input<Episode> enumWithDefaultValue,
       Input<Episode> nullableEnum, Input<List<Date>> listOfCustomScalar, Input<Date> customScalar,
       Input<List<Episode>> listOfEnums, Input<List<Integer>> listOfInt,
       Input<List<String>> listOfString, Input<Boolean> booleanWithDefaultValue,
@@ -105,7 +105,7 @@ public final class ReviewInput {
   /**
    * Favorite color, optional
    */
-  public @Nonnull ColorInput favoriteColor() {
+  public @NotNull ColorInput favoriteColor() {
     return this.favoriteColor;
   }
 
@@ -413,7 +413,7 @@ public final class ReviewInput {
 
     private Input<String> commentary = Input.absent();
 
-    private @Nonnull ColorInput favoriteColor;
+    private @NotNull ColorInput favoriteColor;
 
     private Input<Episode> enumWithDefaultValue = Input.fromNullable(Episode.JEDI);
 
@@ -469,7 +469,7 @@ public final class ReviewInput {
     /**
      * Favorite color, optional
      */
-    public Builder favoriteColor(@Nonnull ColorInput favoriteColor) {
+    public Builder favoriteColor(@NotNull ColorInput favoriteColor) {
       this.favoriteColor = favoriteColor;
       return this;
     }
@@ -573,7 +573,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder nullableIntFieldWithDefaultValueInput(@Nonnull Input<Integer> nullableIntFieldWithDefaultValue) {
+    public Builder nullableIntFieldWithDefaultValueInput(@NotNull Input<Integer> nullableIntFieldWithDefaultValue) {
       this.nullableIntFieldWithDefaultValue = Utils.checkNotNull(nullableIntFieldWithDefaultValue, "nullableIntFieldWithDefaultValue == null");
       return this;
     }
@@ -581,7 +581,7 @@ public final class ReviewInput {
     /**
      * Comment about the movie, optional
      */
-    public Builder commentaryInput(@Nonnull Input<String> commentary) {
+    public Builder commentaryInput(@NotNull Input<String> commentary) {
       this.commentary = Utils.checkNotNull(commentary, "commentary == null");
       return this;
     }
@@ -589,7 +589,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder enumWithDefaultValueInput(@Nonnull Input<Episode> enumWithDefaultValue) {
+    public Builder enumWithDefaultValueInput(@NotNull Input<Episode> enumWithDefaultValue) {
       this.enumWithDefaultValue = Utils.checkNotNull(enumWithDefaultValue, "enumWithDefaultValue == null");
       return this;
     }
@@ -597,7 +597,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder nullableEnumInput(@Nonnull Input<Episode> nullableEnum) {
+    public Builder nullableEnumInput(@NotNull Input<Episode> nullableEnum) {
       this.nullableEnum = Utils.checkNotNull(nullableEnum, "nullableEnum == null");
       return this;
     }
@@ -605,7 +605,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder listOfCustomScalarInput(@Nonnull Input<List<Date>> listOfCustomScalar) {
+    public Builder listOfCustomScalarInput(@NotNull Input<List<Date>> listOfCustomScalar) {
       this.listOfCustomScalar = Utils.checkNotNull(listOfCustomScalar, "listOfCustomScalar == null");
       return this;
     }
@@ -613,7 +613,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder customScalarInput(@Nonnull Input<Date> customScalar) {
+    public Builder customScalarInput(@NotNull Input<Date> customScalar) {
       this.customScalar = Utils.checkNotNull(customScalar, "customScalar == null");
       return this;
     }
@@ -621,7 +621,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder listOfEnumsInput(@Nonnull Input<List<Episode>> listOfEnums) {
+    public Builder listOfEnumsInput(@NotNull Input<List<Episode>> listOfEnums) {
       this.listOfEnums = Utils.checkNotNull(listOfEnums, "listOfEnums == null");
       return this;
     }
@@ -629,7 +629,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder listOfIntInput(@Nonnull Input<List<Integer>> listOfInt) {
+    public Builder listOfIntInput(@NotNull Input<List<Integer>> listOfInt) {
       this.listOfInt = Utils.checkNotNull(listOfInt, "listOfInt == null");
       return this;
     }
@@ -637,7 +637,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder listOfStringInput(@Nonnull Input<List<String>> listOfString) {
+    public Builder listOfStringInput(@NotNull Input<List<String>> listOfString) {
       this.listOfString = Utils.checkNotNull(listOfString, "listOfString == null");
       return this;
     }
@@ -645,7 +645,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder booleanWithDefaultValueInput(@Nonnull Input<Boolean> booleanWithDefaultValue) {
+    public Builder booleanWithDefaultValueInput(@NotNull Input<Boolean> booleanWithDefaultValue) {
       this.booleanWithDefaultValue = Utils.checkNotNull(booleanWithDefaultValue, "booleanWithDefaultValue == null");
       return this;
     }
@@ -653,7 +653,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder listOfListOfStringInput(@Nonnull Input<List<List<String>>> listOfListOfString) {
+    public Builder listOfListOfStringInput(@NotNull Input<List<List<String>>> listOfListOfString) {
       this.listOfListOfString = Utils.checkNotNull(listOfListOfString, "listOfListOfString == null");
       return this;
     }
@@ -661,7 +661,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder listOfListOfEnumInput(@Nonnull Input<List<List<Episode>>> listOfListOfEnum) {
+    public Builder listOfListOfEnumInput(@NotNull Input<List<List<Episode>>> listOfListOfEnum) {
       this.listOfListOfEnum = Utils.checkNotNull(listOfListOfEnum, "listOfListOfEnum == null");
       return this;
     }
@@ -669,7 +669,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder listOfListOfCustomInput(@Nonnull Input<List<List<Date>>> listOfListOfCustom) {
+    public Builder listOfListOfCustomInput(@NotNull Input<List<List<Date>>> listOfListOfCustom) {
       this.listOfListOfCustom = Utils.checkNotNull(listOfListOfCustom, "listOfListOfCustom == null");
       return this;
     }
@@ -677,7 +677,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder listOfListOfObjectInput(@Nonnull Input<List<List<ColorInput>>> listOfListOfObject) {
+    public Builder listOfListOfObjectInput(@NotNull Input<List<List<ColorInput>>> listOfListOfObject) {
       this.listOfListOfObject = Utils.checkNotNull(listOfListOfObject, "listOfListOfObject == null");
       return this;
     }

@@ -6,7 +6,7 @@ import android.support.test.espresso.IdlingResource;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.IdleResourceCallback;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -28,7 +28,7 @@ public final class ApolloIdlingResource implements IdlingResource {
    * @return a new ApolloIdlingResource.
    * @throws NullPointerException if name == null or apolloClient == null
    */
-  public static ApolloIdlingResource create(@Nonnull String name, @Nonnull ApolloClient apolloClient) {
+  public static ApolloIdlingResource create(@NotNull String name, @NotNull ApolloClient apolloClient) {
     checkNotNull(name, "name == null");
     checkNotNull(apolloClient, "apolloClient == null");
     return new ApolloIdlingResource(name, apolloClient);

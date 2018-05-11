@@ -6,8 +6,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static java.util.Collections.unmodifiableList;
@@ -248,8 +248,8 @@ public class ResponseField {
    * @param variables values of operation variables
    * @return resolved argument value
    */
-  @SuppressWarnings("unchecked") @Nullable public Object resolveArgument(@Nonnull String name,
-      @Nonnull Operation.Variables variables) {
+  @SuppressWarnings("unchecked") @Nullable public Object resolveArgument(@NotNull String name,
+      @NotNull Operation.Variables variables) {
     checkNotNull(name, "name == null");
     checkNotNull(variables, "variables == null");
     Map<String, Object> variableValues = variables.valueMap();
@@ -376,14 +376,14 @@ public class ResponseField {
     /**
      * Creates new {@link TypeNameCondition}
      */
-    @Nonnull public static TypeNameCondition typeCondition(@Nonnull String type) {
+    @NotNull public static TypeNameCondition typeCondition(@NotNull String type) {
       return new TypeNameCondition(type);
     }
 
     /**
      * Creates new {@link BooleanCondition}
      */
-    @Nonnull public static BooleanCondition booleanCondition(@Nonnull String variableName, boolean inverted) {
+    @NotNull public static BooleanCondition booleanCondition(@NotNull String variableName, boolean inverted) {
       return new BooleanCondition(variableName, inverted);
     }
   }
@@ -410,12 +410,12 @@ public class ResponseField {
     private final String variableName;
     private final boolean inverted;
 
-    BooleanCondition(@Nonnull String variableName, boolean inverted) {
+    BooleanCondition(@NotNull String variableName, boolean inverted) {
       this.variableName = checkNotNull(variableName, "variableName == null");
       this.inverted = inverted;
     }
 
-    @Nonnull public String variableName() {
+    @NotNull public String variableName() {
       return variableName;
     }
 

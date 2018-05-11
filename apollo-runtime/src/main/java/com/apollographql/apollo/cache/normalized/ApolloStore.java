@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * ApolloStore exposes a thread-safe api to access a {@link com.apollographql.apollo.cache.normalized.NormalizedCache}.
@@ -52,7 +52,7 @@ public interface ApolloStore {
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with {@code true} if all records was
    * successfully removed, {@code false} otherwise
    */
-  @Nonnull ApolloStoreOperation<Boolean> clearAll();
+  @NotNull ApolloStoreOperation<Boolean> clearAll();
 
   /**
    * Remove cache record by the key
@@ -61,7 +61,7 @@ public interface ApolloStore {
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with {@code true} if record with such key
    * was successfully removed, {@code false} otherwise
    */
-  @Nonnull ApolloStoreOperation<Boolean> remove(@Nonnull CacheKey cacheKey);
+  @NotNull ApolloStoreOperation<Boolean> remove(@NotNull CacheKey cacheKey);
 
   /**
    * Remove cache records by the list of keys
@@ -69,7 +69,7 @@ public interface ApolloStore {
    * @param cacheKeys keys of records to be removed
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with the count of records been removed
    */
-  @Nonnull ApolloStoreOperation<Integer> remove(@Nonnull List<CacheKey> cacheKeys);
+  @NotNull ApolloStoreOperation<Integer> remove(@NotNull List<CacheKey> cacheKeys);
 
   /**
    * @return The {@link ResponseNormalizer} used to generate normalized records from the network.
@@ -118,8 +118,8 @@ public interface ApolloStore {
    * @param <V>       type of operation variables
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached data for specified operation
    */
-  @Nonnull <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<T> read(
-      @Nonnull Operation<D, T, V> operation);
+  @NotNull <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<T> read(
+      @NotNull Operation<D, T, V> operation);
 
   /**
    * Read GraphQL operation response from store.
@@ -133,9 +133,9 @@ public interface ApolloStore {
    * @param <V>                 type of operation variables
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached response for specified operation
    */
-  @Nonnull <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Response<T>> read(
-      @Nonnull Operation<D, T, V> operation, @Nonnull ResponseFieldMapper<D> responseFieldMapper,
-      @Nonnull ResponseNormalizer<Record> responseNormalizer, @Nonnull CacheHeaders cacheHeaders);
+  @NotNull <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Response<T>> read(
+      @NotNull Operation<D, T, V> operation, @NotNull ResponseFieldMapper<D> responseFieldMapper,
+      @NotNull ResponseNormalizer<Record> responseNormalizer, @NotNull CacheHeaders cacheHeaders);
 
   /**
    * Read GraphQL fragment from store.
@@ -146,8 +146,8 @@ public interface ApolloStore {
    * @param <F>         type of fragment to be read
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached fragment data
    */
-  @Nonnull <F extends GraphqlFragment> ApolloStoreOperation<F> read(@Nonnull ResponseFieldMapper<F> fieldMapper,
-      @Nonnull CacheKey cacheKey, @Nonnull Operation.Variables variables);
+  @NotNull <F extends GraphqlFragment> ApolloStoreOperation<F> read(@NotNull ResponseFieldMapper<F> fieldMapper,
+      @NotNull CacheKey cacheKey, @NotNull Operation.Variables variables);
 
   /**
    * Write operation to the store.
@@ -160,8 +160,8 @@ public interface ApolloStore {
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of {@link Record} which
    * have changed
    */
-  @Nonnull <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Set<String>> write(
-      @Nonnull Operation<D, T, V> operation, @Nonnull D operationData);
+  @NotNull <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Set<String>> write(
+      @NotNull Operation<D, T, V> operation, @NotNull D operationData);
 
   /**
    * Write operation to the store and publish changes of {@link Record} which have changed, that will notify any {@link
@@ -174,8 +174,8 @@ public interface ApolloStore {
    * @param <V>           type of operation variables
    * @return {@ApolloStoreOperation} to be performed
    */
-  @Nonnull <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean> writeAndPublish(
-      @Nonnull Operation<D, T, V> operation, @Nonnull D operationData);
+  @NotNull <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean> writeAndPublish(
+      @NotNull Operation<D, T, V> operation, @NotNull D operationData);
 
   /**
    * Write fragment to the store.
@@ -186,8 +186,8 @@ public interface ApolloStore {
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of {@link Record} which
    * have changed
    */
-  @Nonnull ApolloStoreOperation<Set<String>> write(@Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey,
-      @Nonnull Operation.Variables variables);
+  @NotNull ApolloStoreOperation<Set<String>> write(@NotNull GraphqlFragment fragment, @NotNull CacheKey cacheKey,
+      @NotNull Operation.Variables variables);
 
   /**
    * Write fragment to the store and publish changes of {@link Record} which have changed, that will notify any {@link
@@ -198,8 +198,8 @@ public interface ApolloStore {
    * @param {@link   Operation.Variables} required for fragment arguments resolving
    * @return {@ApolloStoreOperation} to be performed
    */
-  @Nonnull ApolloStoreOperation<Boolean> writeAndPublish(@Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey,
-      @Nonnull Operation.Variables variables);
+  @NotNull ApolloStoreOperation<Boolean> writeAndPublish(@NotNull GraphqlFragment fragment, @NotNull CacheKey cacheKey,
+      @NotNull Operation.Variables variables);
 
   /**
    * Write operation data to the optimistic store.
@@ -210,8 +210,8 @@ public interface ApolloStore {
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of {@link Record} which
    * have changed
    */
-  @Nonnull <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Set<String>>
-  writeOptimisticUpdates(@Nonnull Operation<D, T, V> operation, @Nonnull D operationData, @Nonnull UUID mutationId);
+  @NotNull <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Set<String>>
+  writeOptimisticUpdates(@NotNull Operation<D, T, V> operation, @NotNull D operationData, @NotNull UUID mutationId);
 
   /**
    * Write operation data to the optimistic store and publish changes of {@link Record}s which have changed, that will
@@ -222,9 +222,9 @@ public interface ApolloStore {
    * @param mutationId    mutation unique identifier
    * @return {@ApolloStoreOperation} to be performed
    */
-  @Nonnull <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean>
-  writeOptimisticUpdatesAndPublish(@Nonnull Operation<D, T, V> operation, @Nonnull D operationData,
-      @Nonnull UUID mutationId);
+  @NotNull <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean>
+  writeOptimisticUpdatesAndPublish(@NotNull Operation<D, T, V> operation, @NotNull D operationData,
+      @NotNull UUID mutationId);
 
   /**
    * Rollback operation data optimistic updates.
@@ -232,7 +232,7 @@ public interface ApolloStore {
    * @param mutationId mutation unique identifier
    * @return {@ApolloStoreOperation} to be performed
    */
-  @Nonnull ApolloStoreOperation<Set<String>> rollbackOptimisticUpdates(@Nonnull UUID mutationId);
+  @NotNull ApolloStoreOperation<Set<String>> rollbackOptimisticUpdates(@NotNull UUID mutationId);
 
   /**
    * Rollback operation data optimistic updates and publish changes of {@link Record}s which have changed, that will
@@ -242,7 +242,7 @@ public interface ApolloStore {
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of {@link Record} which
    * have changed
    */
-  @Nonnull ApolloStoreOperation<Boolean> rollbackOptimisticUpdatesAndPublish(@Nonnull UUID mutationId);
+  @NotNull ApolloStoreOperation<Boolean> rollbackOptimisticUpdatesAndPublish(@NotNull UUID mutationId);
 
   ApolloStore NO_APOLLO_STORE = new NoOpApolloStore();
 }

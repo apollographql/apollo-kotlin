@@ -39,8 +39,8 @@ android {
 }
 
 dependencies {
-  provided dep.jsr305
   provided dep.jsr250
+  provided dep.jetbrainsAnnotations
 
   compile dep.apolloRuntime
   compile dep.apolloRxSupport

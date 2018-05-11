@@ -5,13 +5,13 @@ import com.apollographql.apollo.cache.normalized.Record;
 
 import java.util.Collection;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface ReadableStore {
 
-  @Nullable Record read(@Nonnull String key, @Nonnull CacheHeaders cacheHeaders);
+  @Nullable Record read(@NotNull String key, @NotNull CacheHeaders cacheHeaders);
 
-  Collection<Record> read(@Nonnull Collection<String> keys, @Nonnull CacheHeaders cacheHeaders);
+  Collection<Record> read(@NotNull Collection<String> keys, @NotNull CacheHeaders cacheHeaders);
 
 }

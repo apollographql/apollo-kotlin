@@ -19,27 +19,27 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An alternative to {@link RealApolloStore} for when a no-operation cache is needed.
  */
 public final class NoOpApolloStore implements ApolloStore, ReadableStore, WriteableStore {
 
-  @Override public Set<String> merge(@Nonnull Collection<Record> recordCollection, @Nonnull CacheHeaders cacheHeaders) {
+  @Override public Set<String> merge(@NotNull Collection<Record> recordCollection, @NotNull CacheHeaders cacheHeaders) {
     return Collections.emptySet();
   }
 
-  @Override public Set<String> merge(Record record, @Nonnull CacheHeaders cacheHeaders) {
+  @Override public Set<String> merge(Record record, @NotNull CacheHeaders cacheHeaders) {
     return Collections.emptySet();
   }
 
-  @Nullable @Override public Record read(@Nonnull String key, @Nonnull CacheHeaders cacheHeaders) {
+  @Nullable @Override public Record read(@NotNull String key, @NotNull CacheHeaders cacheHeaders) {
     return null;
   }
 
-  @Override public Collection<Record> read(@Nonnull Collection<String> keys, @Nonnull CacheHeaders cacheHeaders) {
+  @Override public Collection<Record> read(@NotNull Collection<String> keys, @NotNull CacheHeaders cacheHeaders) {
     return Collections.emptySet();
   }
 
@@ -52,15 +52,15 @@ public final class NoOpApolloStore implements ApolloStore, ReadableStore, Writea
   @Override public void publish(Set<String> keys) {
   }
 
-  @Nonnull @Override public ApolloStoreOperation<Boolean> clearAll() {
+  @NotNull @Override public ApolloStoreOperation<Boolean> clearAll() {
     return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
   }
 
-  @Nonnull @Override public ApolloStoreOperation<Boolean> remove(@Nonnull CacheKey cacheKey) {
+  @NotNull @Override public ApolloStoreOperation<Boolean> remove(@NotNull CacheKey cacheKey) {
     return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
   }
 
-  @Nonnull @Override public ApolloStoreOperation<Integer> remove(@Nonnull List<CacheKey> cacheKeys) {
+  @NotNull @Override public ApolloStoreOperation<Integer> remove(@NotNull List<CacheKey> cacheKeys) {
     return ApolloStoreOperation.emptyOperation(0);
   }
 
@@ -90,68 +90,68 @@ public final class NoOpApolloStore implements ApolloStore, ReadableStore, Writea
     return null;
   }
 
-  @Nonnull @Override
+  @NotNull @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<T> read(
-      @Nonnull Operation<D, T, V> operation) {
+      @NotNull Operation<D, T, V> operation) {
     return ApolloStoreOperation.emptyOperation(null);
   }
 
-  @Nonnull @Override
+  @NotNull @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Response<T>> read(
-      @Nonnull Operation<D, T, V> operation, @Nonnull ResponseFieldMapper<D> responseFieldMapper,
-      @Nonnull ResponseNormalizer<Record> responseNormalizer, @Nonnull CacheHeaders cacheHeaders) {
+      @NotNull Operation<D, T, V> operation, @NotNull ResponseFieldMapper<D> responseFieldMapper,
+      @NotNull ResponseNormalizer<Record> responseNormalizer, @NotNull CacheHeaders cacheHeaders) {
     return ApolloStoreOperation.emptyOperation(Response.<T>builder(operation).build());
   }
 
-  @Nonnull @Override
-  public <F extends GraphqlFragment> ApolloStoreOperation<F> read(@Nonnull ResponseFieldMapper<F> fieldMapper,
-      @Nonnull CacheKey cacheKey, @Nonnull Operation.Variables variables) {
+  @NotNull @Override
+  public <F extends GraphqlFragment> ApolloStoreOperation<F> read(@NotNull ResponseFieldMapper<F> fieldMapper,
+      @NotNull CacheKey cacheKey, @NotNull Operation.Variables variables) {
     return ApolloStoreOperation.emptyOperation(null);
   }
 
-  @Nonnull @Override
+  @NotNull @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Set<String>> write(
-      @Nonnull Operation<D, T, V> operation, @Nonnull D operationData) {
+      @NotNull Operation<D, T, V> operation, @NotNull D operationData) {
     return ApolloStoreOperation.emptyOperation(Collections.<String>emptySet());
   }
 
-  @Nonnull @Override
+  @NotNull @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean> writeAndPublish(
-      @Nonnull Operation<D, T, V> operation, @Nonnull D operationData) {
+      @NotNull Operation<D, T, V> operation, @NotNull D operationData) {
     return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
   }
 
-  @Nonnull @Override
-  public ApolloStoreOperation<Set<String>> write(@Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey,
-      @Nonnull Operation.Variables variables) {
+  @NotNull @Override
+  public ApolloStoreOperation<Set<String>> write(@NotNull GraphqlFragment fragment, @NotNull CacheKey cacheKey,
+      @NotNull Operation.Variables variables) {
     return ApolloStoreOperation.emptyOperation(Collections.<String>emptySet());
   }
 
-  @Nonnull @Override
-  public ApolloStoreOperation<Boolean> writeAndPublish(@Nonnull GraphqlFragment fragment, @Nonnull CacheKey cacheKey,
-      @Nonnull Operation.Variables variables) {
+  @NotNull @Override
+  public ApolloStoreOperation<Boolean> writeAndPublish(@NotNull GraphqlFragment fragment, @NotNull CacheKey cacheKey,
+      @NotNull Operation.Variables variables) {
     return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
   }
 
-  @Nonnull @Override
+  @NotNull @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Set<String>>
-  writeOptimisticUpdates(@Nonnull Operation<D, T, V> operation, @Nonnull D operationData, @Nonnull UUID mutationId) {
+  writeOptimisticUpdates(@NotNull Operation<D, T, V> operation, @NotNull D operationData, @NotNull UUID mutationId) {
     return ApolloStoreOperation.emptyOperation(Collections.<String>emptySet());
   }
 
-  @Nonnull @Override
+  @NotNull @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean>
-  writeOptimisticUpdatesAndPublish(@Nonnull Operation<D, T, V> operation, @Nonnull D operationData,
-      @Nonnull UUID mutationId) {
+  writeOptimisticUpdatesAndPublish(@NotNull Operation<D, T, V> operation, @NotNull D operationData,
+      @NotNull UUID mutationId) {
     return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
   }
 
-  @Nonnull @Override
-  public ApolloStoreOperation<Boolean> rollbackOptimisticUpdatesAndPublish(@Nonnull UUID mutationId) {
+  @NotNull @Override
+  public ApolloStoreOperation<Boolean> rollbackOptimisticUpdatesAndPublish(@NotNull UUID mutationId) {
     return ApolloStoreOperation.emptyOperation(Boolean.FALSE);
   }
 
-  @Nonnull @Override public ApolloStoreOperation<Set<String>> rollbackOptimisticUpdates(@Nonnull UUID mutationId) {
+  @NotNull @Override public ApolloStoreOperation<Set<String>> rollbackOptimisticUpdates(@NotNull UUID mutationId) {
     return ApolloStoreOperation.emptyOperation(Collections.<String>emptySet());
   }
 }

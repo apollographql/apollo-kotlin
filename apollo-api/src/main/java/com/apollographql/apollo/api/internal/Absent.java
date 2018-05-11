@@ -20,7 +20,7 @@ package com.apollographql.apollo.api.internal;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 

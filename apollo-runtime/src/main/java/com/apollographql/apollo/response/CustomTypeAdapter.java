@@ -1,6 +1,6 @@
 package com.apollographql.apollo.response;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Class represents the adapter for mapping GraphQL custom scalar types to Java objects.
@@ -52,7 +52,7 @@ public interface CustomTypeAdapter<T> {
    * @param value the value to de-serialize
    * @return custom scalar type
    */
-  T decode(@Nonnull CustomTypeValue value);
+  T decode(@NotNull CustomTypeValue value);
 
   /**
    * Serializes the custom scalar type to the corresponding string value. Usually used in serializing variables or input
@@ -61,5 +61,5 @@ public interface CustomTypeAdapter<T> {
    * @param value the custom scalar type to serialize
    * @return serialized string value
    */
-  @Nonnull CustomTypeValue encode(@Nonnull T value);
+  @NotNull CustomTypeValue encode(@NotNull T value);
 }

@@ -20,7 +20,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okhttp3.Call;
 import okhttp3.HttpUrl;
@@ -94,13 +94,13 @@ final class QueryReFetcher {
     for (final RealApolloCall call : calls) {
       //noinspection unchecked
       call.enqueue(new ApolloCall.Callback() {
-        @Override public void onResponse(@Nonnull Response response) {
+        @Override public void onResponse(@NotNull Response response) {
           if (callsLeft.decrementAndGet() == 0 && completeCallback != null) {
             completeCallback.onFetchComplete();
           }
         }
 
-        @Override public void onFailure(@Nonnull ApolloException e) {
+        @Override public void onFailure(@NotNull ApolloException e) {
           if (logger != null) {
             logger.e(e, "Failed to fetch query: %s", call.operation);
           }

@@ -5,7 +5,7 @@ import com.apollographql.apollo.api.ScalarType;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -13,11 +13,11 @@ public final class ScalarTypeAdapters {
   private static final Map<Class, CustomTypeAdapter> DEFAULT_ADAPTERS = defaultAdapters();
   private final Map<ScalarType, CustomTypeAdapter> customAdapters;
 
-  public ScalarTypeAdapters(@Nonnull Map<ScalarType, CustomTypeAdapter> customAdapters) {
+  public ScalarTypeAdapters(@NotNull Map<ScalarType, CustomTypeAdapter> customAdapters) {
     this.customAdapters = checkNotNull(customAdapters, "customAdapters == null");
   }
 
-  @SuppressWarnings("unchecked") @Nonnull public <T> CustomTypeAdapter<T> adapterFor(@Nonnull ScalarType scalarType) {
+  @SuppressWarnings("unchecked") @NotNull public <T> CustomTypeAdapter<T> adapterFor(@NotNull ScalarType scalarType) {
     checkNotNull(scalarType, "scalarType == null");
 
     CustomTypeAdapter<T> customTypeAdapter = customAdapters.get(scalarType);
@@ -36,12 +36,12 @@ public final class ScalarTypeAdapters {
   private static Map<Class, CustomTypeAdapter> defaultAdapters() {
     Map<Class, CustomTypeAdapter> adapters = new LinkedHashMap<>();
     adapters.put(String.class, new DefaultCustomTypeAdapter<String>() {
-      @Nonnull @Override public String decode(@Nonnull CustomTypeValue value) {
+      @NotNull @Override public String decode(@NotNull CustomTypeValue value) {
         return value.value.toString();
       }
     });
     adapters.put(Boolean.class, new DefaultCustomTypeAdapter<Boolean>() {
-      @Nonnull @Override public Boolean decode(@Nonnull CustomTypeValue value) {
+      @NotNull @Override public Boolean decode(@NotNull CustomTypeValue value) {
         if (value instanceof CustomTypeValue.GraphQLBoolean) {
           return (Boolean) value.value;
         } else if (value instanceof CustomTypeValue.GraphQLString) {
@@ -52,7 +52,7 @@ public final class ScalarTypeAdapters {
       }
     });
     adapters.put(Integer.class, new DefaultCustomTypeAdapter<Integer>() {
-      @Nonnull @Override public Integer decode(@Nonnull CustomTypeValue value) {
+      @NotNull @Override public Integer decode(@NotNull CustomTypeValue value) {
         if (value instanceof CustomTypeValue.GraphQLNumber) {
           return ((Number) value.value).intValue();
         } else if (value instanceof CustomTypeValue.GraphQLString) {
@@ -63,7 +63,7 @@ public final class ScalarTypeAdapters {
       }
     });
     adapters.put(Long.class, new DefaultCustomTypeAdapter<Long>() {
-      @Nonnull @Override public Long decode(@Nonnull CustomTypeValue value) {
+      @NotNull @Override public Long decode(@NotNull CustomTypeValue value) {
         if (value instanceof CustomTypeValue.GraphQLNumber) {
           return ((Number) value.value).longValue();
         } else if (value instanceof CustomTypeValue.GraphQLString) {
@@ -74,7 +74,7 @@ public final class ScalarTypeAdapters {
       }
     });
     adapters.put(Float.class, new DefaultCustomTypeAdapter<Float>() {
-      @Nonnull @Override public Float decode(@Nonnull CustomTypeValue value) {
+      @NotNull @Override public Float decode(@NotNull CustomTypeValue value) {
         if (value instanceof CustomTypeValue.GraphQLNumber) {
           return ((Number) value.value).floatValue();
         } else if (value instanceof CustomTypeValue.GraphQLString) {
@@ -85,7 +85,7 @@ public final class ScalarTypeAdapters {
       }
     });
     adapters.put(Double.class, new DefaultCustomTypeAdapter<Double>() {
-      @Nonnull @Override public Double decode(@Nonnull CustomTypeValue value) {
+      @NotNull @Override public Double decode(@NotNull CustomTypeValue value) {
         if (value instanceof CustomTypeValue.GraphQLNumber) {
           return ((Number) value.value).doubleValue();
         } else if (value instanceof CustomTypeValue.GraphQLString) {
@@ -99,7 +99,7 @@ public final class ScalarTypeAdapters {
   }
 
   private abstract static class DefaultCustomTypeAdapter<T> implements CustomTypeAdapter<T> {
-    @Nonnull @Override public CustomTypeValue encode(@Nonnull T value) {
+    @NotNull @Override public CustomTypeValue encode(@NotNull T value) {
       return CustomTypeValue.fromRawValue(value);
     }
   }

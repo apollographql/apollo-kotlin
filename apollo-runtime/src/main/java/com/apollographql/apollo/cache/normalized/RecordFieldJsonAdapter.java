@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okio.Buffer;
 import okio.BufferedSource;
@@ -32,7 +32,7 @@ public final class RecordFieldJsonAdapter {
   private RecordFieldJsonAdapter() {
   }
 
-  public String toJson(@Nonnull Map<String, Object> fields) {
+  public String toJson(@NotNull Map<String, Object> fields) {
     checkNotNull(fields, "fields == null");
     Buffer buffer = new Buffer();
     JsonWriter jsonWriter = JsonWriter.of(buffer);

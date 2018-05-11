@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -30,8 +30,8 @@ public interface ApolloInterceptor {
    * @param dispatcher the Executor which dispatches the non blocking operations on the request/response.
    * @param callBack   the Callback which will handle the interceptor's response or failure exception.
    */
-  void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-      @Nonnull Executor dispatcher, @Nonnull CallBack callBack);
+  void interceptAsync(@NotNull InterceptorRequest request, @NotNull ApolloInterceptorChain chain,
+      @NotNull Executor dispatcher, @NotNull CallBack callBack);
 
   /**
    * Disposes of the resources which are no longer required.
@@ -52,7 +52,7 @@ public interface ApolloInterceptor {
      *
      * @param response The response returned by the interceptor.
      */
-    void onResponse(@Nonnull InterceptorResponse response);
+    void onResponse(@NotNull InterceptorResponse response);
 
     /**
      * Called when interceptor starts fetching response from source type
@@ -65,7 +65,7 @@ public interface ApolloInterceptor {
      * Gets called when an unexpected exception occurs while performing operations on the request or processing the
      * response returned by the next set of interceptors. Will be called at most once.
      */
-    void onFailure(@Nonnull ApolloException e);
+    void onFailure(@NotNull ApolloException e);
 
     /**
      * Called after the last call to {@link #onResponse}. Do not call after {@link #onFailure(ApolloException)}.
@@ -132,7 +132,7 @@ public interface ApolloInterceptor {
           .optimisticUpdates(optimisticUpdates.orNull());
     }
 
-    public static Builder builder(@Nonnull Operation operation) {
+    public static Builder builder(@NotNull Operation operation) {
       return new Builder(operation);
     }
 
@@ -142,11 +142,11 @@ public interface ApolloInterceptor {
       private boolean fetchFromCache;
       private Optional<Operation.Data> optimisticUpdates = Optional.absent();
 
-      Builder(@Nonnull Operation operation) {
+      Builder(@NotNull Operation operation) {
         this.operation = checkNotNull(operation, "operation == null");
       }
 
-      public Builder cacheHeaders(@Nonnull CacheHeaders cacheHeaders) {
+      public Builder cacheHeaders(@NotNull CacheHeaders cacheHeaders) {
         this.cacheHeaders = checkNotNull(cacheHeaders, "cacheHeaders == null");
         return this;
       }
@@ -161,7 +161,7 @@ public interface ApolloInterceptor {
         return this;
       }
 
-      public Builder optimisticUpdates(@Nonnull Optional<Operation.Data> optimisticUpdates) {
+      public Builder optimisticUpdates(@NotNull Optional<Operation.Data> optimisticUpdates) {
         this.optimisticUpdates = checkNotNull(optimisticUpdates, "optimisticUpdates == null");
         return this;
       }

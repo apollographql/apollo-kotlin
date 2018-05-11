@@ -147,7 +147,7 @@ apolloClient.query(
     .build()
 ).enqueue(new ApolloCall.Callback<FeedQuery.Data>() {
 
-  @Override public void onResponse(@Nonnull Response<FeedQuery.Data> dataResponse) {
+  @Override public void onResponse(@NotNull Response<FeedQuery.Data> dataResponse) {
 
     final StringBuffer buffer = new StringBuffer();
     for (FeedQuery.Data.Feed feed : dataResponse.data().feed()) {
@@ -168,7 +168,7 @@ apolloClient.query(
       
   }
 
-  @Override public void onFailure(@Nonnull Throwable t) {
+  @Override public void onFailure(@NotNull Throwable t) {
     Log.e(TAG, t.getMessage(), t);
   }
 });       
@@ -257,11 +257,11 @@ apolloClient
   .httpCachePolicy(HttpCachePolicy.CACHE_FIRST)
   .enqueue(new ApolloCall.Callback<FeedQuery.Data>() {
 
-    @Override public void onResponse(@Nonnull Response<FeedQuery.Data> dataResponse) {
+    @Override public void onResponse(@NotNull Response<FeedQuery.Data> dataResponse) {
       ...
     }
 
-    @Override public void onFailure(@Nonnull Throwable t) {
+    @Override public void onFailure(@NotNull Throwable t) {
       ...
     }
   }); 
@@ -289,13 +289,13 @@ NormalizedCacheFactory cacheFactory = new SqlNormalizedCacheFactory(apolloSqlHel
 
 //Create the cache key resolver, this example works well when all types have globally unique ids.
 CacheKeyResolver resolver =  new CacheKeyResolver() {
- @Nonnull @Override
-   public CacheKey fromFieldRecordSet(@Nonnull ResponseField field, @Nonnull Map<String, Object> recordSet) {
+ @NotNull @Override
+   public CacheKey fromFieldRecordSet(@NotNull ResponseField field, @NotNull Map<String, Object> recordSet) {
      return formatCacheKey((String) recordSet.get("id"));
    }
  
-   @Nonnull @Override
-   public CacheKey fromFieldArguments(@Nonnull ResponseField field, @Nonnull Operation.Variables variables) {
+   @NotNull @Override
+   public CacheKey fromFieldArguments(@NotNull ResponseField field, @NotNull Operation.Variables variables) {
      return formatCacheKey((String) field.resolveArgument("id", variables));
    }
  

@@ -2,7 +2,7 @@ package com.apollographql.apollo.api.cache.http;
 
 import java.io.IOException;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
@@ -46,14 +46,14 @@ public interface HttpCache {
    *
    * @param cacheKey key of cached response to be removed
    */
-  void remove(@Nonnull String cacheKey) throws IOException;
+  void remove(@NotNull String cacheKey) throws IOException;
 
   /**
    * Remove cached http response by key and suppress any exception
    *
    * @param cacheKey key of cached response to be removed
    */
-  void removeQuietly(@Nonnull String cacheKey);
+  void removeQuietly(@NotNull String cacheKey);
 
   /**
    * Read cached http response by key
@@ -61,7 +61,7 @@ public interface HttpCache {
    * @param cacheKey key of cached response to be read
    * @return cached response
    */
-  Response read(@Nonnull String cacheKey);
+  Response read(@NotNull String cacheKey);
 
   /**
    * Read and remove cached http response by key if {@code expireAfterRead == true}
@@ -70,7 +70,7 @@ public interface HttpCache {
    * @param expireAfterRead if {@code true} cached response will be removed after first read
    * @return cached response
    */
-  Response read(@Nonnull String cacheKey, boolean expireAfterRead);
+  Response read(@NotNull String cacheKey, boolean expireAfterRead);
 
   /**
    * Provide http cache interceptor to be injected into {@link okhttp3.OkHttpClient#interceptors}. Provided interceptor

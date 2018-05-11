@@ -5,7 +5,7 @@ import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Function;
 import com.apollographql.apollo.api.internal.Optional;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -28,7 +28,7 @@ public abstract class NormalizedCacheFactory<T extends NormalizedCache> {
     if (nextFactory.isPresent()) {
       return create(recordFieldAdapter)
           .chain(nextFactory.map(new Function<NormalizedCacheFactory, NormalizedCache>() {
-            @Nonnull @Override public NormalizedCache apply(@Nonnull NormalizedCacheFactory factory) {
+            @NotNull @Override public NormalizedCache apply(@NotNull NormalizedCacheFactory factory) {
               return factory.createChain(recordFieldAdapter);
             }
           }).get());
@@ -37,7 +37,7 @@ public abstract class NormalizedCacheFactory<T extends NormalizedCache> {
     }
   }
 
-  public final NormalizedCacheFactory<T> chain(@Nonnull NormalizedCacheFactory factory) {
+  public final NormalizedCacheFactory<T> chain(@NotNull NormalizedCacheFactory factory) {
     checkNotNull(factory, "factory == null");
 
     NormalizedCacheFactory leafFactory = this;

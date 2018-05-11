@@ -17,8 +17,8 @@ import java.lang.String;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
@@ -179,13 +179,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("firstAppearsIn", "firstAppearsIn", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
-    final @Nonnull List<Episode> appearsIn;
+    final @NotNull List<Episode> appearsIn;
 
-    final @Nonnull Episode firstAppearsIn;
+    final @NotNull Episode firstAppearsIn;
 
     private volatile String $toString;
 
@@ -193,36 +193,36 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Hero(@Nonnull String __typename, @Nonnull String name, @Nonnull List<Episode> appearsIn,
-        @Nonnull Episode firstAppearsIn) {
+    public Hero(@NotNull String __typename, @NotNull String name, @NotNull List<Episode> appearsIn,
+        @NotNull Episode firstAppearsIn) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
       this.appearsIn = Utils.checkNotNull(appearsIn, "appearsIn == null");
       this.firstAppearsIn = Utils.checkNotNull(firstAppearsIn, "firstAppearsIn == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * The name of the character
      */
-    public @Nonnull String name() {
+    public @NotNull String name() {
       return this.name;
     }
 
     /**
      * The movies this character appears in
      */
-    public @Nonnull List<Episode> appearsIn() {
+    public @NotNull List<Episode> appearsIn() {
       return this.appearsIn;
     }
 
     /**
      * The movie this character first appears in
      */
-    public @Nonnull Episode firstAppearsIn() {
+    public @NotNull Episode firstAppearsIn() {
       return this.firstAppearsIn;
     }
 

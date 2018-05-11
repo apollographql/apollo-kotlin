@@ -7,8 +7,8 @@ import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import okhttp3.Protocol;
 import okhttp3.Request;
@@ -112,7 +112,7 @@ public class WebSocketSubscriptionTransportTest {
     Request request;
     MockWebSocket webSocket;
 
-    @Override public WebSocket newWebSocket(@Nonnull Request request, @Nonnull WebSocketListener listener) {
+    @Override public WebSocket newWebSocket(@NotNull Request request, @NotNull WebSocketListener listener) {
       if (webSocket != null) {
         throw new IllegalStateException("already initialized");
       }
@@ -147,12 +147,12 @@ public class WebSocketSubscriptionTransportTest {
       throw new UnsupportedOperationException();
     }
 
-    @Override public boolean send(@Nonnull String text) {
+    @Override public boolean send(@NotNull String text) {
       lastSentMessage = text;
       return true;
     }
 
-    @Override public boolean send(@Nonnull ByteString bytes) {
+    @Override public boolean send(@NotNull ByteString bytes) {
       throw new UnsupportedOperationException();
     }
 

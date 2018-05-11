@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okio.Buffer;
 
@@ -24,7 +24,7 @@ public abstract class OperationServerMessage {
   OperationServerMessage() {
   }
 
-  @Nonnull public static OperationServerMessage fromJsonString(@Nonnull String json) {
+  @NotNull public static OperationServerMessage fromJsonString(@NotNull String json) {
     checkNotNull(json, "json == null");
     try {
       Buffer buffer = new Buffer();
@@ -35,7 +35,7 @@ public abstract class OperationServerMessage {
     }
   }
 
-  private static OperationServerMessage readFromJson(@Nonnull JsonReader reader) throws IOException {
+  private static OperationServerMessage readFromJson(@NotNull JsonReader reader) throws IOException {
     checkNotNull(reader, "reader == null");
 
     ResponseJsonStreamReader responseJsonStreamReader = new ResponseJsonStreamReader(reader);

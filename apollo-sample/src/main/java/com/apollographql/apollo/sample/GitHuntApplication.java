@@ -16,7 +16,7 @@ import com.apollographql.apollo.subscription.WebSocketSubscriptionTransport;
 
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okhttp3.OkHttpClient;
 
@@ -40,8 +40,8 @@ public class GitHuntApplication extends Application {
         .chain(new SqlNormalizedCacheFactory(apolloSqlHelper));
 
     CacheKeyResolver cacheKeyResolver = new CacheKeyResolver() {
-      @Nonnull @Override
-      public CacheKey fromFieldRecordSet(@Nonnull ResponseField field, @Nonnull Map<String, Object> recordSet) {
+      @NotNull @Override
+      public CacheKey fromFieldRecordSet(@NotNull ResponseField field, @NotNull Map<String, Object> recordSet) {
         String typeName = (String) recordSet.get("__typename");
         if ("User".equals(typeName)) {
           String userKey = typeName + "." + recordSet.get("login");
@@ -56,8 +56,8 @@ public class GitHuntApplication extends Application {
 
       // Use this resolver to customize the key for fields with variables: eg entry(repoFullName: $repoFullName).
       // This is useful if you want to make query to be able to resolved, even if it has never been run before.
-      @Nonnull @Override
-      public CacheKey fromFieldArguments(@Nonnull ResponseField field, @Nonnull Operation.Variables variables) {
+      @NotNull @Override
+      public CacheKey fromFieldArguments(@NotNull ResponseField field, @NotNull Operation.Variables variables) {
         return CacheKey.NO_KEY;
       }
     };

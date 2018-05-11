@@ -16,8 +16,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public interface HeroDetails extends GraphqlFragment {
@@ -48,17 +48,17 @@ public interface HeroDetails extends GraphqlFragment {
 
   List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
 
-  @Nonnull String get__typename();
+  @NotNull String get__typename();
 
   /**
    * The name of the character
    */
-  @Nonnull String getName();
+  @NotNull String getName();
 
   /**
    * The friends of the character exposed as a connection with edges
    */
-  @Nonnull FriendsConnection getFriendsConnection();
+  @NotNull FriendsConnection getFriendsConnection();
 
   ResponseFieldMarshaller marshaller();
 
@@ -81,7 +81,7 @@ public interface HeroDetails extends GraphqlFragment {
   }
 
   interface FriendsConnection {
-    @Nonnull String get__typename();
+    @NotNull String get__typename();
 
     /**
      * The total number of friends
@@ -96,7 +96,7 @@ public interface HeroDetails extends GraphqlFragment {
     /**
      * Information for paginating this connection
      */
-    @Nonnull PageInfo getPageInfo();
+    @NotNull PageInfo getPageInfo();
 
     /**
      * For test java beans semantic naming only
@@ -107,7 +107,7 @@ public interface HeroDetails extends GraphqlFragment {
   }
 
   interface Edge {
-    @Nonnull String get__typename();
+    @NotNull String get__typename();
 
     /**
      * The character represented by this friendship edge
@@ -118,18 +118,18 @@ public interface HeroDetails extends GraphqlFragment {
   }
 
   interface Node {
-    @Nonnull String get__typename();
+    @NotNull String get__typename();
 
     /**
      * The name of the character
      */
-    @Nonnull String getName();
+    @NotNull String getName();
 
     ResponseFieldMarshaller marshaller();
   }
 
   interface PageInfo {
-    @Nonnull String get__typename();
+    @NotNull String get__typename();
 
     boolean isHasNextPage();
 
@@ -144,11 +144,11 @@ public interface HeroDetails extends GraphqlFragment {
       ResponseField.forString("primaryFunction", "primaryFunction", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
-    final @Nonnull FriendsConnection1 friendsConnection;
+    final @NotNull FriendsConnection1 friendsConnection;
 
     final Optional<String> primaryFunction;
 
@@ -158,29 +158,29 @@ public interface HeroDetails extends GraphqlFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsDroid(@Nonnull String __typename, @Nonnull String name,
-        @Nonnull FriendsConnection1 friendsConnection, @Nullable String primaryFunction) {
+    public AsDroid(@NotNull String __typename, @NotNull String name,
+        @NotNull FriendsConnection1 friendsConnection, @Nullable String primaryFunction) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
       this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
       this.primaryFunction = Optional.fromNullable(primaryFunction);
     }
 
-    public @Nonnull String get__typename() {
+    public @NotNull String get__typename() {
       return this.__typename;
     }
 
     /**
      * What others call this droid
      */
-    public @Nonnull String getName() {
+    public @NotNull String getName() {
       return this.name;
     }
 
     /**
      * The friends of the droid exposed as a connection with edges
      */
-    public @Nonnull FriendsConnection1 getFriendsConnection() {
+    public @NotNull FriendsConnection1 getFriendsConnection() {
       return this.friendsConnection;
     }
 
@@ -277,13 +277,13 @@ public interface HeroDetails extends GraphqlFragment {
       ResponseField.forBoolean("isEmpty", "isEmpty", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<Integer> totalCount;
 
     final Optional<List<Edge1>> edges;
 
-    final @Nonnull PageInfo1 pageInfo;
+    final @NotNull PageInfo1 pageInfo;
 
     final boolean isEmpty;
 
@@ -293,8 +293,8 @@ public interface HeroDetails extends GraphqlFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public FriendsConnection1(@Nonnull String __typename, @Nullable Integer totalCount,
-        @Nullable List<Edge1> edges, @Nonnull PageInfo1 pageInfo, boolean isEmpty) {
+    public FriendsConnection1(@NotNull String __typename, @Nullable Integer totalCount,
+        @Nullable List<Edge1> edges, @NotNull PageInfo1 pageInfo, boolean isEmpty) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
@@ -302,7 +302,7 @@ public interface HeroDetails extends GraphqlFragment {
       this.isEmpty = isEmpty;
     }
 
-    public @Nonnull String get__typename() {
+    public @NotNull String get__typename() {
       return this.__typename;
     }
 
@@ -323,7 +323,7 @@ public interface HeroDetails extends GraphqlFragment {
     /**
      * Information for paginating this connection
      */
-    public @Nonnull PageInfo1 getPageInfo() {
+    public @NotNull PageInfo1 getPageInfo() {
       return this.pageInfo;
     }
 
@@ -440,7 +440,7 @@ public interface HeroDetails extends GraphqlFragment {
       ResponseField.forObject("node", "node", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<Node1> node;
 
@@ -450,12 +450,12 @@ public interface HeroDetails extends GraphqlFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public Edge1(@Nonnull String __typename, @Nullable Node1 node) {
+    public Edge1(@NotNull String __typename, @Nullable Node1 node) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.node = Optional.fromNullable(node);
     }
 
-    public @Nonnull String get__typename() {
+    public @NotNull String get__typename() {
       return this.__typename;
     }
 
@@ -537,9 +537,9 @@ public interface HeroDetails extends GraphqlFragment {
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
     private volatile String $toString;
 
@@ -547,19 +547,19 @@ public interface HeroDetails extends GraphqlFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public Node1(@Nonnull String __typename, @Nonnull String name) {
+    public Node1(@NotNull String __typename, @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
     }
 
-    public @Nonnull String get__typename() {
+    public @NotNull String get__typename() {
       return this.__typename;
     }
 
     /**
      * The name of the character
      */
-    public @Nonnull String getName() {
+    public @NotNull String getName() {
       return this.name;
     }
 
@@ -627,7 +627,7 @@ public interface HeroDetails extends GraphqlFragment {
       ResponseField.forBoolean("hasNextPage", "hasNextPage", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final boolean hasNextPage;
 
@@ -637,12 +637,12 @@ public interface HeroDetails extends GraphqlFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public PageInfo1(@Nonnull String __typename, boolean hasNextPage) {
+    public PageInfo1(@NotNull String __typename, boolean hasNextPage) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.hasNextPage = hasNextPage;
     }
 
-    public @Nonnull String get__typename() {
+    public @NotNull String get__typename() {
       return this.__typename;
     }
 

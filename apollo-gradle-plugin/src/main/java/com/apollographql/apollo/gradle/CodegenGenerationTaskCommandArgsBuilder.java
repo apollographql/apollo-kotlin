@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 class CodegenGenerationTaskCommandArgsBuilder {
   private final AbstractTask task;

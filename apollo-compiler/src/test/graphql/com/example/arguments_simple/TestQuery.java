@@ -24,8 +24,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
@@ -49,7 +49,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   private final TestQuery.Variables variables;
 
-  public TestQuery(@Nonnull Input<Episode> episode, boolean includeName) {
+  public TestQuery(@NotNull Input<Episode> episode, boolean includeName) {
     Utils.checkNotNull(episode, "episode == null");
     variables = new TestQuery.Variables(episode, includeName);
   }
@@ -106,7 +106,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this;
     }
 
-    public Builder episodeInput(@Nonnull Input<Episode> episode) {
+    public Builder episodeInput(@NotNull Input<Episode> episode) {
       this.episode = Utils.checkNotNull(episode, "episode == null");
       return this;
     }
@@ -250,7 +250,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("name", "name", null, true, Arrays.<ResponseField.Condition>asList(ResponseField.Condition.booleanCondition("IncludeName", false)))
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<String> name;
 
@@ -260,12 +260,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Hero(@Nonnull String __typename, @Nullable String name) {
+    public Hero(@NotNull String __typename, @Nullable String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Optional.fromNullable(name);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 

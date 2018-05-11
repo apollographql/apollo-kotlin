@@ -3,7 +3,7 @@ package com.apollographql.apollo.api;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a GraphQL operation (mutation or query).
@@ -35,14 +35,14 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
    *
    * @return {@link OperationName} operation name
    */
-  @Nonnull OperationName name();
+  @NotNull OperationName name();
 
   /**
    * Returns a unique identifier for this operation.
    *
    * @return operation identifier.
    */
-  @Nonnull String operationId();
+  @NotNull String operationId();
 
   /**
    * Abstraction for data returned by the server in response to this operation.
@@ -79,11 +79,11 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
     protected Variables() {
     }
 
-    @Nonnull public Map<String, Object> valueMap() {
+    @NotNull public Map<String, Object> valueMap() {
       return Collections.emptyMap();
     }
 
-    @Nonnull public InputFieldMarshaller marshaller() {
+    @NotNull public InputFieldMarshaller marshaller() {
       return new InputFieldMarshaller() {
         @Override public void marshal(InputFieldWriter writer) {
         }

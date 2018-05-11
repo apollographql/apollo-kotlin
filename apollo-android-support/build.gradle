@@ -33,7 +33,7 @@ android {
 }
 
 dependencies {
-  provided dep.jsr305
+  provided dep.jetbrainsAnnotations
   provided project(":apollo-runtime")
   provided project(":apollo-api")
 

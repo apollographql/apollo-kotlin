@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeoutException;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import io.reactivex.functions.Predicate;
 import okhttp3.Dispatcher;
@@ -73,14 +73,14 @@ public class ApolloInterceptorTest {
     final InterceptorResponse rewrittenResponse = prepareInterceptorResponse(query);
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull Executor dispatcher, @Nonnull final CallBack callBack) {
+      public void interceptAsync(@NotNull InterceptorRequest request, @NotNull ApolloInterceptorChain chain,
+          @NotNull Executor dispatcher, @NotNull final CallBack callBack) {
         chain.proceedAsync(request, dispatcher, new CallBack() {
-          @Override public void onResponse(@Nonnull InterceptorResponse response) {
+          @Override public void onResponse(@NotNull InterceptorResponse response) {
             callBack.onResponse(rewrittenResponse);
           }
 
-          @Override public void onFailure(@Nonnull ApolloException e) {
+          @Override public void onFailure(@NotNull ApolloException e) {
             throw new RuntimeException(e);
           }
 
@@ -110,8 +110,8 @@ public class ApolloInterceptorTest {
     EpisodeHeroNameQuery query = createHeroNameQuery();
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@NotNull InterceptorRequest request, @NotNull ApolloInterceptorChain chain,
+          @NotNull Executor dispatcher, @NotNull CallBack callBack) {
         ApolloException apolloException = new ApolloParseException(message);
         callBack.onFailure(apolloException);
       }
@@ -137,8 +137,8 @@ public class ApolloInterceptorTest {
     EpisodeHeroNameQuery query = createHeroNameQuery();
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@NotNull InterceptorRequest request, @NotNull ApolloInterceptorChain chain,
+          @NotNull Executor dispatcher, @NotNull CallBack callBack) {
         dispatcher.execute(new Runnable() {
           @Override public void run() {
             throw new RuntimeException(message);
@@ -166,8 +166,8 @@ public class ApolloInterceptorTest {
     EpisodeHeroNameQuery query = createHeroNameQuery();
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull Executor dispatcher, @Nonnull final CallBack callBack) {
+      public void interceptAsync(@NotNull InterceptorRequest request, @NotNull ApolloInterceptorChain chain,
+          @NotNull Executor dispatcher, @NotNull final CallBack callBack) {
         dispatcher.execute(new Runnable() {
           @Override public void run() {
             callBack.onResponse(null);
@@ -251,10 +251,10 @@ public class ApolloInterceptorTest {
     ApolloCall<EpisodeHeroNameQuery.Data> apolloCall = client.query(query);
 
     apolloCall.enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
-      @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
+      @Override public void onResponse(@NotNull Response<EpisodeHeroNameQuery.Data> response) {
       }
 
-      @Override public void onFailure(@Nonnull ApolloException e) {
+      @Override public void onFailure(@NotNull ApolloException e) {
       }
     });
     apolloCall.cancel();
@@ -262,7 +262,7 @@ public class ApolloInterceptorTest {
     assertThat(interceptor.isDisposed).isTrue();
   }
 
-  @NonNull private EpisodeHeroNameQuery createHeroNameQuery() {
+  @NotNull private EpisodeHeroNameQuery createHeroNameQuery() {
     return EpisodeHeroNameQuery
         .builder()
         .episode(Episode.EMPIRE)
@@ -282,7 +282,7 @@ public class ApolloInterceptorTest {
     return createApolloClient(interceptor, Utils.immediateExecutor());
   }
 
-  @NonNull private InterceptorResponse prepareInterceptorResponse(EpisodeHeroNameQuery query) {
+  @NotNull private InterceptorResponse prepareInterceptorResponse(EpisodeHeroNameQuery query) {
     Request request = new Request.Builder()
         .url(server.url("/"))
         .build();
@@ -310,7 +310,7 @@ public class ApolloInterceptorTest {
     volatile boolean isDisposed = false;
 
     @Override
-    public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain, @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
+    public void interceptAsync(@NotNull InterceptorRequest request, @NotNull ApolloInterceptorChain chain, @NotNull Executor dispatcher, @NotNull CallBack callBack) {
       chain.proceedAsync(request, dispatcher, callBack);
     }
 
@@ -319,11 +319,11 @@ public class ApolloInterceptorTest {
     }
   }
 
-  @NonNull private static ApolloInterceptor createChainInterceptor() {
+  @NotNull private static ApolloInterceptor createChainInterceptor() {
     return new ApolloInterceptor() {
       @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@NotNull InterceptorRequest request, @NotNull ApolloInterceptorChain chain,
+          @NotNull Executor dispatcher, @NotNull CallBack callBack) {
         chain.proceedAsync(request, dispatcher, callBack);
       }
 
@@ -333,11 +333,11 @@ public class ApolloInterceptorTest {
     };
   }
 
-  @NonNull private static ApolloInterceptor createShortcutInterceptor(final InterceptorResponse expectedResponse) {
+  @NotNull private static ApolloInterceptor createShortcutInterceptor(final InterceptorResponse expectedResponse) {
     return new ApolloInterceptor() {
       @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@NotNull InterceptorRequest request, @NotNull ApolloInterceptorChain chain,
+          @NotNull Executor dispatcher, @NotNull CallBack callBack) {
         callBack.onResponse(expectedResponse);
       }
 

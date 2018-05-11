@@ -17,7 +17,7 @@ package com.apollographql.apollo.internal.json;
 
 import java.io.IOException;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import okio.BufferedSink;
 import okio.Sink;

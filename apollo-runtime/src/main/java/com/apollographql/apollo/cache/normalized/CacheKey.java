@@ -1,6 +1,6 @@
 package com.apollographql.apollo.cache.normalized;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -13,13 +13,13 @@ public final class CacheKey {
 
   public static final CacheKey NO_KEY = new CacheKey("");
 
-  public static CacheKey from(@Nonnull String key) {
+  public static CacheKey from(@NotNull String key) {
     return new CacheKey(checkNotNull(key, "key == null"));
   }
 
   private final String key;
 
-  private CacheKey(@Nonnull String key) {
+  private CacheKey(@NotNull String key) {
     this.key = key;
   }
 

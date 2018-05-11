@@ -9,8 +9,8 @@ import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class ColorInput {
@@ -161,7 +161,7 @@ public final class ColorInput {
     /**
      * Green color
      */
-    public Builder greenInput(@Nonnull Input<Double> green) {
+    public Builder greenInput(@NotNull Input<Double> green) {
       this.green = Utils.checkNotNull(green, "green == null");
       return this;
     }
@@ -169,7 +169,7 @@ public final class ColorInput {
     /**
      * for test purpose only
      */
-    public Builder enumWithDefaultValueInput(@Nonnull Input<Episode> enumWithDefaultValue) {
+    public Builder enumWithDefaultValueInput(@NotNull Input<Episode> enumWithDefaultValue) {
       this.enumWithDefaultValue = Utils.checkNotNull(enumWithDefaultValue, "enumWithDefaultValue == null");
       return this;
     }

@@ -45,8 +45,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import okhttp3.Call;
 import okhttp3.HttpUrl;
@@ -122,33 +122,33 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
 
   @Override
   public <D extends Mutation.Data, T, V extends Mutation.Variables> ApolloMutationCall<T> mutate(
-      @Nonnull Mutation<D, T, V> mutation) {
+      @NotNull Mutation<D, T, V> mutation) {
     return newCall(mutation).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY);
   }
 
   @Override
   public <D extends Mutation.Data, T, V extends Mutation.Variables> ApolloMutationCall<T> mutate(
-      @Nonnull Mutation<D, T, V> mutation, @Nonnull D withOptimisticUpdates) {
+      @NotNull Mutation<D, T, V> mutation, @NotNull D withOptimisticUpdates) {
     checkNotNull(withOptimisticUpdates, "withOptimisticUpdate == null");
     return newCall(mutation).toBuilder().responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
         .optimisticUpdates(Optional.<Operation.Data>fromNullable(withOptimisticUpdates)).build();
   }
 
   @Override
-  public <D extends Query.Data, T, V extends Query.Variables> ApolloQueryCall<T> query(@Nonnull Query<D, T, V> query) {
+  public <D extends Query.Data, T, V extends Query.Variables> ApolloQueryCall<T> query(@NotNull Query<D, T, V> query) {
     return newCall(query);
   }
 
   @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
-      @Nonnull Operation<D, T, V> operation) {
+      @NotNull Operation<D, T, V> operation) {
     return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, scalarTypeAdapters, dispatcher, logger,
         tracker, sendOperationIdentifiers);
   }
 
   @Override
   public <D extends Subscription.Data, T, V extends Subscription.Variables> ApolloSubscriptionCall<T> subscribe(
-      @Nonnull Subscription<D, T, V> subscription) {
+      @NotNull Subscription<D, T, V> subscription) {
     return new RealApolloSubscriptionCall<>(subscription, subscriptionManager);
   }
 
@@ -174,7 +174,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
    *
    * @param callback to be notified when operation is completed
    */
-  public void clearNormalizedCache(@Nonnull ApolloStoreOperation.Callback<Boolean> callback) {
+  public void clearNormalizedCache(@NotNull ApolloStoreOperation.Callback<Boolean> callback) {
     checkNotNull(callback, "callback == null");
     apolloStore.clearAll().enqueue(callback);
   }
@@ -220,7 +220,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   }
 
   private <D extends Operation.Data, T, V extends Operation.Variables> RealApolloCall<T> newCall(
-      @Nonnull Operation<D, T, V> operation) {
+      @NotNull Operation<D, T, V> operation) {
     return RealApolloCall.<T>builder()
         .operation(operation)
         .serverUrl(serverUrl)
@@ -269,7 +269,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * @param okHttpClient the client to use.
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder okHttpClient(@Nonnull OkHttpClient okHttpClient) {
+    public Builder okHttpClient(@NotNull OkHttpClient okHttpClient) {
       return callFactory(checkNotNull(okHttpClient, "okHttpClient is null"));
     }
 
@@ -277,7 +277,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * Set the custom call factory for creating {@link Call} instances. <p> Note: Calling {@link
      * #okHttpClient(OkHttpClient)} automatically sets this value.
      */
-    public Builder callFactory(@Nonnull Call.Factory factory) {
+    public Builder callFactory(@NotNull Call.Factory factory) {
       this.callFactory = checkNotNull(factory, "factory == null");
       return this;
     }
@@ -288,7 +288,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * @param serverUrl the url to set.
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder serverUrl(@Nonnull HttpUrl serverUrl) {
+    public Builder serverUrl(@NotNull HttpUrl serverUrl) {
       this.serverUrl = checkNotNull(serverUrl, "serverUrl is null");
       return this;
     }
@@ -299,7 +299,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * @param serverUrl the url to set.
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder serverUrl(@Nonnull String serverUrl) {
+    public Builder serverUrl(@NotNull String serverUrl) {
       this.serverUrl = HttpUrl.parse(checkNotNull(serverUrl, "serverUrl == null"));
       return this;
     }
@@ -310,7 +310,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * @param httpCache The to use for reading and writing cached response.
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder httpCache(@Nonnull HttpCache httpCache) {
+    public Builder httpCache(@NotNull HttpCache httpCache) {
       this.httpCache = checkNotNull(httpCache, "httpCache == null");
       return this;
     }
@@ -321,7 +321,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * @param normalizedCacheFactory the {@link NormalizedCacheFactory} used to construct a {@link NormalizedCache}.
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder normalizedCache(@Nonnull NormalizedCacheFactory normalizedCacheFactory) {
+    public Builder normalizedCache(@NotNull NormalizedCacheFactory normalizedCacheFactory) {
       return normalizedCache(normalizedCacheFactory, CacheKeyResolver.DEFAULT);
     }
 
@@ -332,8 +332,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * @param keyResolver            the {@link CacheKeyResolver} to use to normalize records
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder normalizedCache(@Nonnull NormalizedCacheFactory normalizedCacheFactory,
-        @Nonnull CacheKeyResolver keyResolver) {
+    public Builder normalizedCache(@NotNull NormalizedCacheFactory normalizedCacheFactory,
+        @NotNull CacheKeyResolver keyResolver) {
       cacheFactory = Optional.fromNullable(checkNotNull(normalizedCacheFactory, "normalizedCacheFactory == null"));
       cacheKeyResolver = Optional.fromNullable(checkNotNull(keyResolver, "cacheKeyResolver == null"));
       return this;
@@ -347,8 +347,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * @param <T>               the value type
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public <T> Builder addCustomTypeAdapter(@Nonnull ScalarType scalarType,
-        @Nonnull final CustomTypeAdapter<T> customTypeAdapter) {
+    public <T> Builder addCustomTypeAdapter(@NotNull ScalarType scalarType,
+        @NotNull final CustomTypeAdapter<T> customTypeAdapter) {
       customTypeAdapters.put(scalarType, customTypeAdapter);
       return this;
     }
@@ -358,7 +358,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder dispatcher(@Nonnull Executor dispatcher) {
+    public Builder dispatcher(@NotNull Executor dispatcher) {
       this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
       return this;
     }
@@ -369,7 +369,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder defaultHttpCachePolicy(@Nonnull HttpCachePolicy.Policy cachePolicy) {
+    public Builder defaultHttpCachePolicy(@NotNull HttpCachePolicy.Policy cachePolicy) {
       this.defaultHttpCachePolicy = checkNotNull(cachePolicy, "cachePolicy == null");
       return this;
     }
@@ -380,7 +380,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder defaultCacheHeaders(@Nonnull CacheHeaders cacheHeaders) {
+    public Builder defaultCacheHeaders(@NotNull CacheHeaders cacheHeaders) {
       this.defaultCacheHeaders = checkNotNull(cacheHeaders, "cacheHeaders == null");
       return this;
     }
@@ -390,7 +390,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder defaultResponseFetcher(@Nonnull ResponseFetcher defaultResponseFetcher) {
+    public Builder defaultResponseFetcher(@NotNull ResponseFetcher defaultResponseFetcher) {
       this.defaultResponseFetcher = checkNotNull(defaultResponseFetcher, "defaultResponseFetcher == null");
       return this;
     }
@@ -417,7 +417,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * @param interceptor Application level interceptor to add
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder addApplicationInterceptor(@Nonnull ApolloInterceptor interceptor) {
+    public Builder addApplicationInterceptor(@NotNull ApolloInterceptor interceptor) {
       applicationInterceptors.add(interceptor);
       return this;
     }
@@ -439,7 +439,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * @param subscriptionTransportFactory transport layer to be used for subscriptions.
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder subscriptionTransportFactory(@Nonnull SubscriptionTransport.Factory subscriptionTransportFactory) {
+    public Builder subscriptionTransportFactory(@NotNull SubscriptionTransport.Factory subscriptionTransportFactory) {
       this.subscriptionTransportFactory = Optional.of(checkNotNull(subscriptionTransportFactory,
           "subscriptionTransportFactory is null"));
       return this;
@@ -452,7 +452,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      * @param subscriptionConnectionParams map of connection parameters to be sent
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder subscriptionConnectionParams(@Nonnull Map<String, Object> subscriptionConnectionParams) {
+    public Builder subscriptionConnectionParams(@NotNull Map<String, Object> subscriptionConnectionParams) {
       this.subscriptionConnectionParams = Optional.of(checkNotNull(subscriptionConnectionParams,
           "subscriptionConnectionParams is null"));
       return this;
@@ -521,7 +521,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     private Executor defaultDispatcher() {
       return new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
           new SynchronousQueue<Runnable>(), new ThreadFactory() {
-        @Override public Thread newThread(@Nonnull Runnable runnable) {
+        @Override public Thread newThread(@NotNull Runnable runnable) {
           return new Thread(runnable, "Apollo Dispatcher");
         }
       });

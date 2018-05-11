@@ -17,8 +17,8 @@ import java.lang.String;
 import java.util.Arrays;
 import java.util.Collections;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
@@ -172,7 +172,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public interface Hero {
-    @Nonnull String __typename();
+    @NotNull String __typename();
 
     ResponseFieldMarshaller marshaller();
 
@@ -201,7 +201,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forDouble("height", "height", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<Double> height;
 
@@ -211,12 +211,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsHuman(@Nonnull String __typename, @Nullable Double height) {
+    public AsHuman(@NotNull String __typename, @Nullable Double height) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.height = Optional.fromNullable(height);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 

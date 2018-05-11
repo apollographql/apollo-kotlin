@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -60,11 +60,11 @@ public class ApolloCallTrackerTest {
       return data;
     }
 
-    @Nonnull @Override public OperationName name() {
+    @NotNull @Override public OperationName name() {
       return operationName;
     }
 
-    @Nonnull @Override public String operationId() {
+    @NotNull @Override public String operationId() {
       return "";
     }
   };

@@ -18,7 +18,7 @@ import java.util.TimerTask;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -49,9 +49,9 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     }
   };
 
-  public RealSubscriptionManager(@Nonnull ScalarTypeAdapters scalarTypeAdapters,
-      @Nonnull final SubscriptionTransport.Factory transportFactory, @Nonnull Map<String, Object> connectionParams,
-      @Nonnull final Executor dispatcher) {
+  public RealSubscriptionManager(@NotNull ScalarTypeAdapters scalarTypeAdapters,
+      @NotNull final SubscriptionTransport.Factory transportFactory, @NotNull Map<String, Object> connectionParams,
+      @NotNull final Executor dispatcher) {
     checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null");
     checkNotNull(transportFactory, "transportFactory == null");
     checkNotNull(dispatcher, "dispatcher == null");
@@ -63,8 +63,8 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   }
 
   @Override
-  public <T> void subscribe(@Nonnull final Subscription<?, T, ?> subscription,
-      @Nonnull final SubscriptionManager.Callback<T> callback) {
+  public <T> void subscribe(@NotNull final Subscription<?, T, ?> subscription,
+      @NotNull final SubscriptionManager.Callback<T> callback) {
     checkNotNull(subscription, "subscription == null");
     checkNotNull(callback, "callback == null");
     dispatcher.execute(new Runnable() {
@@ -76,7 +76,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   }
 
   @Override
-  public void unsubscribe(@Nonnull final Subscription subscription) {
+  public void unsubscribe(@NotNull final Subscription subscription) {
     checkNotNull(subscription, "subscription == null");
     dispatcher.execute(new Runnable() {
       @Override

@@ -32,8 +32,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -46,9 +46,9 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   private final Executor dispatcher;
   final ApolloLogger logger;
 
-  public RealApolloStore(@Nonnull NormalizedCache normalizedCache, @Nonnull CacheKeyResolver cacheKeyResolver,
-      @Nonnull final ScalarTypeAdapters scalarTypeAdapters, @Nonnull Executor dispatcher,
-      @Nonnull ApolloLogger logger) {
+  public RealApolloStore(@NotNull NormalizedCache normalizedCache, @NotNull CacheKeyResolver cacheKeyResolver,
+      @NotNull final ScalarTypeAdapters scalarTypeAdapters, @NotNull Executor dispatcher,
+      @NotNull ApolloLogger logger) {
     checkNotNull(normalizedCache, "cacheStore == null");
 
     this.optimisticCache = (OptimisticNormalizedCache) new OptimisticNormalizedCache().chain(normalizedCache);
@@ -62,8 +62,8 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
 
   @Override public ResponseNormalizer<Map<String, Object>> networkResponseNormalizer() {
     return new ResponseNormalizer<Map<String, Object>>() {
-      @Nonnull @Override public CacheKey resolveCacheKey(@Nonnull ResponseField field,
-          @Nonnull Map<String, Object> record) {
+      @NotNull @Override public CacheKey resolveCacheKey(@NotNull ResponseField field,
+          @NotNull Map<String, Object> record) {
         return cacheKeyResolver.fromFieldRecordSet(field, record);
       }
     };
@@ -71,7 +71,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
 
   @Override public ResponseNormalizer<Record> cacheResponseNormalizer() {
     return new ResponseNormalizer<Record>() {
-      @Nonnull @Override public CacheKey resolveCacheKey(@Nonnull ResponseField field, @Nonnull Record record) {
+      @NotNull @Override public CacheKey resolveCacheKey(@NotNull ResponseField field, @NotNull Record record) {
         return CacheKey.from(record.key());
       }
     };
@@ -85,7 +85,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     subscribers.remove(subscriber);
   }
 
-  @Override public void publish(@Nonnull final Set<String> changedKeys) {
+  @Override public void publish(@NotNull final Set<String> changedKeys) {
     checkNotNull(changedKeys, "changedKeys == null");
 
     if (changedKeys.isEmpty()) {
@@ -102,7 +102,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     }
   }
 
-  @Override @Nonnull public ApolloStoreOperation<Boolean> clearAll() {
+  @Override @NotNull public ApolloStoreOperation<Boolean> clearAll() {
     return new ApolloStoreOperation<Boolean>(dispatcher) {
       @Override public Boolean perform() {
         return writeTransaction(new Transaction<WriteableStore, Boolean>() {
@@ -115,7 +115,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     };
   }
 
-  @Override @Nonnull public ApolloStoreOperation<Boolean> remove(@Nonnull final CacheKey cacheKey) {
+  @Override @NotNull public ApolloStoreOperation<Boolean> remove(@NotNull final CacheKey cacheKey) {
     checkNotNull(cacheKey, "cacheKey == null");
     return new ApolloStoreOperation<Boolean>(dispatcher) {
       @Override protected Boolean perform() {
@@ -128,7 +128,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     };
   }
 
-  @Override @Nonnull public ApolloStoreOperation<Integer> remove(@Nonnull final List<CacheKey> cacheKeys) {
+  @Override @NotNull public ApolloStoreOperation<Integer> remove(@NotNull final List<CacheKey> cacheKeys) {
     checkNotNull(cacheKeys, "cacheKey == null");
     return new ApolloStoreOperation<Integer>(dispatcher) {
       @Override protected Integer perform() {
@@ -170,21 +170,21 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   }
 
   @Override
-  @Nullable public Record read(@Nonnull String key, @Nonnull CacheHeaders cacheHeaders) {
+  @Nullable public Record read(@NotNull String key, @NotNull CacheHeaders cacheHeaders) {
     return optimisticCache.loadRecord(checkNotNull(key, "key == null"), cacheHeaders);
   }
 
   @Override
-  @Nonnull public Collection<Record> read(@Nonnull Collection<String> keys, @Nonnull CacheHeaders cacheHeaders) {
+  @NotNull public Collection<Record> read(@NotNull Collection<String> keys, @NotNull CacheHeaders cacheHeaders) {
     return optimisticCache.loadRecords(checkNotNull(keys, "keys == null"), cacheHeaders);
   }
 
   @Override
-  @Nonnull public Set<String> merge(@Nonnull Collection<Record> recordSet, @Nonnull CacheHeaders cacheHeaders) {
+  @NotNull public Set<String> merge(@NotNull Collection<Record> recordSet, @NotNull CacheHeaders cacheHeaders) {
     return optimisticCache.merge(checkNotNull(recordSet, "recordSet == null"), cacheHeaders);
   }
 
-  @Override public Set<String> merge(Record record, @Nonnull CacheHeaders cacheHeaders) {
+  @Override public Set<String> merge(Record record, @NotNull CacheHeaders cacheHeaders) {
     return optimisticCache.merge(checkNotNull(record, "record == null"), cacheHeaders);
   }
 
@@ -192,8 +192,8 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     return cacheKeyResolver;
   }
 
-  @Override @Nonnull public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<T> read(
-      @Nonnull final Operation<D, T, V> operation) {
+  @Override @NotNull public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<T> read(
+      @NotNull final Operation<D, T, V> operation) {
     checkNotNull(operation, "operation == null");
     return new ApolloStoreOperation<T>(dispatcher) {
       @Override protected T perform() {
@@ -202,10 +202,10 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     };
   }
 
-  @Override @Nonnull public <D extends Operation.Data, T, V extends Operation.Variables>
-  ApolloStoreOperation<Response<T>> read(@Nonnull final Operation<D, T, V> operation,
-      @Nonnull final ResponseFieldMapper<D> responseFieldMapper,
-      @Nonnull final ResponseNormalizer<Record> responseNormalizer, @Nonnull final CacheHeaders cacheHeaders) {
+  @Override @NotNull public <D extends Operation.Data, T, V extends Operation.Variables>
+  ApolloStoreOperation<Response<T>> read(@NotNull final Operation<D, T, V> operation,
+      @NotNull final ResponseFieldMapper<D> responseFieldMapper,
+      @NotNull final ResponseNormalizer<Record> responseNormalizer, @NotNull final CacheHeaders cacheHeaders) {
     checkNotNull(operation, "operation == null");
     checkNotNull(responseNormalizer, "responseNormalizer == null");
     return new ApolloStoreOperation<Response<T>>(dispatcher) {
@@ -215,9 +215,9 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     };
   }
 
-  @Override @Nonnull public <F extends GraphqlFragment> ApolloStoreOperation<F> read(
-      @Nonnull final ResponseFieldMapper<F> responseFieldMapper, @Nonnull final CacheKey cacheKey,
-      @Nonnull final Operation.Variables variables) {
+  @Override @NotNull public <F extends GraphqlFragment> ApolloStoreOperation<F> read(
+      @NotNull final ResponseFieldMapper<F> responseFieldMapper, @NotNull final CacheKey cacheKey,
+      @NotNull final Operation.Variables variables) {
     checkNotNull(responseFieldMapper, "responseFieldMapper == null");
     checkNotNull(cacheKey, "cacheKey == null");
     checkNotNull(variables, "variables == null");
@@ -228,8 +228,8 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     };
   }
 
-  @Override @Nonnull public <D extends Operation.Data, T, V extends Operation.Variables>
-  ApolloStoreOperation<Set<String>> write(@Nonnull final Operation<D, T, V> operation, @Nonnull final D operationData) {
+  @Override @NotNull public <D extends Operation.Data, T, V extends Operation.Variables>
+  ApolloStoreOperation<Set<String>> write(@NotNull final Operation<D, T, V> operation, @NotNull final D operationData) {
     checkNotNull(operation, "operation == null");
     checkNotNull(operationData, "operationData == null");
     return new ApolloStoreOperation<Set<String>>(dispatcher) {
@@ -239,8 +239,8 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     };
   }
 
-  @Override @Nonnull public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean>
-  writeAndPublish(@Nonnull final Operation<D, T, V> operation, @Nonnull final D operationData) {
+  @Override @NotNull public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean>
+  writeAndPublish(@NotNull final Operation<D, T, V> operation, @NotNull final D operationData) {
     return new ApolloStoreOperation<Boolean>(dispatcher) {
       @Override protected Boolean perform() {
         Set<String> changedKeys = doWrite(operation, operationData, false, null);
@@ -250,8 +250,8 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     };
   }
 
-  @Override @Nonnull public ApolloStoreOperation<Set<String>> write(@Nonnull final GraphqlFragment fragment,
-      @Nonnull final CacheKey cacheKey, @Nonnull final Operation.Variables variables) {
+  @Override @NotNull public ApolloStoreOperation<Set<String>> write(@NotNull final GraphqlFragment fragment,
+      @NotNull final CacheKey cacheKey, @NotNull final Operation.Variables variables) {
     checkNotNull(fragment, "fragment == null");
     checkNotNull(cacheKey, "cacheKey == null");
     checkNotNull(variables, "operation == null");
@@ -271,8 +271,8 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     };
   }
 
-  @Override @Nonnull public ApolloStoreOperation<Boolean> writeAndPublish(@Nonnull final GraphqlFragment fragment,
-      @Nonnull final CacheKey cacheKey, @Nonnull final Operation.Variables variables) {
+  @Override @NotNull public ApolloStoreOperation<Boolean> writeAndPublish(@NotNull final GraphqlFragment fragment,
+      @NotNull final CacheKey cacheKey, @NotNull final Operation.Variables variables) {
     return new ApolloStoreOperation<Boolean>(dispatcher) {
       @Override protected Boolean perform() {
         Set<String> changedKeys = doWrite(fragment, cacheKey, variables);
@@ -282,10 +282,10 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     };
   }
 
-  @Nonnull @Override
+  @NotNull @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Set<String>>
-  writeOptimisticUpdates(@Nonnull final Operation<D, T, V> operation, @Nonnull final D operationData,
-      @Nonnull final UUID mutationId) {
+  writeOptimisticUpdates(@NotNull final Operation<D, T, V> operation, @NotNull final D operationData,
+      @NotNull final UUID mutationId) {
     return new ApolloStoreOperation<Set<String>>(dispatcher) {
       @Override protected Set<String> perform() {
         return doWrite(operation, operationData, true, mutationId);
@@ -293,10 +293,10 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     };
   }
 
-  @Nonnull @Override
+  @NotNull @Override
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloStoreOperation<Boolean>
-  writeOptimisticUpdatesAndPublish(@Nonnull final Operation<D, T, V> operation, @Nonnull final D operationData,
-      @Nonnull final UUID mutationId) {
+  writeOptimisticUpdatesAndPublish(@NotNull final Operation<D, T, V> operation, @NotNull final D operationData,
+      @NotNull final UUID mutationId) {
     return new ApolloStoreOperation<Boolean>(dispatcher) {
       @Override protected Boolean perform() {
         Set<String> changedKeys = doWrite(operation, operationData, true, mutationId);
@@ -306,8 +306,8 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     };
   }
 
-  @Nonnull @Override
-  public ApolloStoreOperation<Set<String>> rollbackOptimisticUpdates(@Nonnull final UUID mutationId) {
+  @NotNull @Override
+  public ApolloStoreOperation<Set<String>> rollbackOptimisticUpdates(@NotNull final UUID mutationId) {
     return new ApolloStoreOperation<Set<String>>(dispatcher) {
       @Override protected Set<String> perform() {
         return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
@@ -319,8 +319,8 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     };
   }
 
-  @Nonnull @Override
-  public ApolloStoreOperation<Boolean> rollbackOptimisticUpdatesAndPublish(@Nonnull final UUID mutationId) {
+  @NotNull @Override
+  public ApolloStoreOperation<Boolean> rollbackOptimisticUpdatesAndPublish(@NotNull final UUID mutationId) {
     return new ApolloStoreOperation<Boolean>(dispatcher) {
       @Override protected Boolean perform() {
         Set<String> changedKeys = writeTransaction(new Transaction<WriteableStore, Set<String>>() {
@@ -357,7 +357,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
       final Operation<D, T, V> operation, final ResponseFieldMapper<D> responseFieldMapper,
       final ResponseNormalizer<Record> responseNormalizer, final CacheHeaders cacheHeaders) {
     return readTransaction(new Transaction<ReadableStore, Response<T>>() {
-      @Nonnull @Override public Response<T> execute(ReadableStore cache) {
+      @NotNull @Override public Response<T> execute(ReadableStore cache) {
         Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).key(), cacheHeaders);
         if (rootRecord == null) {
           return Response.<T>builder(operation).fromCache(true).build();

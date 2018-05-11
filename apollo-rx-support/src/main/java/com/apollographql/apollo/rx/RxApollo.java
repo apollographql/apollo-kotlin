@@ -12,7 +12,7 @@ import com.apollographql.apollo.internal.util.Cancelable;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import rx.Completable;
 import rx.CompletableSubscriber;
@@ -43,8 +43,8 @@ public final class RxApollo {
    * @param <T>     the value type
    * @return the converted Observable
    */
-  @Nonnull
-  public static <T> Observable<Response<T>> from(@Nonnull final ApolloQueryWatcher<T> watcher) {
+  @NotNull
+  public static <T> Observable<Response<T>> from(@NotNull final ApolloQueryWatcher<T> watcher) {
     return from(watcher, Emitter.BackpressureMode.LATEST);
   }
 
@@ -56,8 +56,8 @@ public final class RxApollo {
    * @param <T>              the value type
    * @return the converted Observable
    */
-  @Nonnull public static <T> Observable<Response<T>> from(@Nonnull final ApolloQueryWatcher<T> watcher,
-      @Nonnull Emitter.BackpressureMode backpressureMode) {
+  @NotNull public static <T> Observable<Response<T>> from(@NotNull final ApolloQueryWatcher<T> watcher,
+      @NotNull Emitter.BackpressureMode backpressureMode) {
     checkNotNull(backpressureMode, "backpressureMode == null");
     checkNotNull(watcher, "watcher == null");
     return Observable.create(new Action1<Emitter<Response<T>>>() {
@@ -70,13 +70,13 @@ public final class RxApollo {
           }
         });
         watcher.enqueueAndWatch(new ApolloCall.Callback<T>() {
-          @Override public void onResponse(@Nonnull Response<T> response) {
+          @Override public void onResponse(@NotNull Response<T> response) {
             if (!canceled.get()) {
               emitter.onNext(response);
             }
           }
 
-          @Override public void onFailure(@Nonnull ApolloException e) {
+          @Override public void onFailure(@NotNull ApolloException e) {
             Exceptions.throwIfFatal(e);
             if (!canceled.get()) {
               emitter.onError(e);
@@ -96,7 +96,7 @@ public final class RxApollo {
    * @param backpressureMode The {@link rx.Emitter.BackpressureMode} to use.
    * @return the converted Observable
    */
-  @Nonnull public static <T> Observable<Response<T>> from(@Nonnull final ApolloCall<T> call,
+  @NotNull public static <T> Observable<Response<T>> from(@NotNull final ApolloCall<T> call,
       Emitter.BackpressureMode backpressureMode) {
     checkNotNull(call, "call == null");
     return Observable.create(new Action1<Emitter<Response<T>>>() {
@@ -109,20 +109,20 @@ public final class RxApollo {
           }
         });
         call.enqueue(new ApolloCall.Callback<T>() {
-          @Override public void onResponse(@Nonnull Response<T> response) {
+          @Override public void onResponse(@NotNull Response<T> response) {
             if (!canceled.get()) {
               emitter.onNext(response);
             }
           }
 
-          @Override public void onFailure(@Nonnull ApolloException e) {
+          @Override public void onFailure(@NotNull ApolloException e) {
             Exceptions.throwIfFatal(e);
             if (!canceled.get()) {
               emitter.onError(e);
             }
           }
 
-          @Override public void onStatusEvent(@Nonnull ApolloCall.StatusEvent event) {
+          @Override public void onStatusEvent(@NotNull ApolloCall.StatusEvent event) {
             if (!canceled.get()) {
               if (event == ApolloCall.StatusEvent.COMPLETED) {
                 emitter.onCompleted();
@@ -134,7 +134,7 @@ public final class RxApollo {
     }, backpressureMode);
   }
 
-  @Nonnull public static <T> Observable<Response<T>> from(@Nonnull final ApolloSubscriptionCall<T> call,
+  @NotNull public static <T> Observable<Response<T>> from(@NotNull final ApolloSubscriptionCall<T> call,
       Emitter.BackpressureMode backpressureMode) {
     checkNotNull(call, "call == null");
     return Observable.create(new Action1<Emitter<Response<T>>>() {
@@ -147,13 +147,13 @@ public final class RxApollo {
           }
         });
         call.execute(new ApolloSubscriptionCall.Callback<T>() {
-          @Override public void onResponse(@Nonnull Response<T> response) {
+          @Override public void onResponse(@NotNull Response<T> response) {
             if (!canceled.get()) {
               emitter.onNext(response);
             }
           }
 
-          @Override public void onFailure(@Nonnull ApolloException e) {
+          @Override public void onFailure(@NotNull ApolloException e) {
             Exceptions.throwIfFatal(e);
             if (!canceled.get()) {
               emitter.onError(e);
@@ -178,11 +178,11 @@ public final class RxApollo {
    * @param <T>  the value type
    * @return the converted Observable
    */
-  @Nonnull public static <T> Observable<Response<T>> from(@Nonnull final ApolloCall<T> call) {
+  @NotNull public static <T> Observable<Response<T>> from(@NotNull final ApolloCall<T> call) {
     return from(call, Emitter.BackpressureMode.BUFFER);
   }
 
-  @Nonnull public static <T> Observable<Response<T>> from(@Nonnull final ApolloSubscriptionCall<T> call) {
+  @NotNull public static <T> Observable<Response<T>> from(@NotNull final ApolloSubscriptionCall<T> call) {
     return from(call, Emitter.BackpressureMode.LATEST);
   }
 
@@ -192,7 +192,7 @@ public final class RxApollo {
    * @param prefetch the ApolloPrefetch to convert
    * @return the converted Completable
    */
-  @Nonnull public static Completable from(@Nonnull final ApolloPrefetch prefetch) {
+  @NotNull public static Completable from(@NotNull final ApolloPrefetch prefetch) {
     checkNotNull(prefetch, "prefetch == null");
     return Completable.create(new Completable.OnSubscribe() {
       @Override public void call(final CompletableSubscriber subscriber) {
@@ -204,7 +204,7 @@ public final class RxApollo {
             }
           }
 
-          @Override public void onFailure(@Nonnull ApolloException e) {
+          @Override public void onFailure(@NotNull ApolloException e) {
             Exceptions.throwIfFatal(e);
             if (!subscription.isUnsubscribed()) {
               subscriber.onError(e);

@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
@@ -215,7 +215,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public interface Search {
-    @Nonnull String __typename();
+    @NotNull String __typename();
 
     ResponseFieldMarshaller marshaller();
 
@@ -268,11 +268,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forList("friends", "friends", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String id;
+    final @NotNull String id;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
     final Optional<List<Friend>> friends;
 
@@ -282,7 +282,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsHuman(@Nonnull String __typename, @Nonnull String id, @Nonnull String name,
+    public AsHuman(@NotNull String __typename, @NotNull String id, @NotNull String name,
         @Nullable List<Friend> friends) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.id = Utils.checkNotNull(id, "id == null");
@@ -290,21 +290,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.friends = Optional.fromNullable(friends);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * The ID of the character
      */
-    public @Nonnull String id() {
+    public @NotNull String id() {
       return this.id;
     }
 
     /**
      * The name of the character
      */
-    public @Nonnull String name() {
+    public @NotNull String name() {
       return this.name;
     }
 
@@ -403,12 +403,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public interface Friend {
-    @Nonnull String __typename();
+    @NotNull String __typename();
 
     /**
      * The name of the character
      */
-    @Nonnull String name();
+    @NotNull String name();
 
     ResponseFieldMarshaller marshaller();
 
@@ -450,9 +450,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forList("friends", "friends", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
     final Optional<String> homePlanet;
 
@@ -464,7 +464,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsHuman1(@Nonnull String __typename, @Nonnull String name, @Nullable String homePlanet,
+    public AsHuman1(@NotNull String __typename, @NotNull String name, @Nullable String homePlanet,
         @Nullable List<Friend1> friends) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
@@ -472,14 +472,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.friends = Optional.fromNullable(friends);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * What this human calls themselves
      */
-    public @Nonnull String name() {
+    public @NotNull String name() {
       return this.name;
     }
 
@@ -590,9 +590,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("firstAppearsIn", "firstAppearsIn", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull Episode firstAppearsIn;
+    final @NotNull Episode firstAppearsIn;
 
     private volatile String $toString;
 
@@ -600,19 +600,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Friend1(@Nonnull String __typename, @Nonnull Episode firstAppearsIn) {
+    public Friend1(@NotNull String __typename, @NotNull Episode firstAppearsIn) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.firstAppearsIn = Utils.checkNotNull(firstAppearsIn, "firstAppearsIn == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * The movie this character first appears in
      */
-    public @Nonnull Episode firstAppearsIn() {
+    public @NotNull Episode firstAppearsIn() {
       return this.firstAppearsIn;
     }
 
@@ -688,9 +688,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forList("friends", "friends", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
     final Optional<String> primaryFunction;
 
@@ -702,7 +702,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsDroid(@Nonnull String __typename, @Nonnull String name,
+    public AsDroid(@NotNull String __typename, @NotNull String name,
         @Nullable String primaryFunction, @Nullable List<Friend2> friends) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
@@ -710,14 +710,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.friends = Optional.fromNullable(friends);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * What others call this droid
      */
-    public @Nonnull String name() {
+    public @NotNull String name() {
       return this.name;
     }
 
@@ -829,11 +829,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("deprecated", "deprecated", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String id;
+    final @NotNull String id;
 
-    final @Nonnull @Deprecated String deprecated;
+    final @NotNull @Deprecated String deprecated;
 
     private volatile String $toString;
 
@@ -841,21 +841,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Friend2(@Nonnull String __typename, @Nonnull String id,
-        @Nonnull @Deprecated String deprecated) {
+    public Friend2(@NotNull String __typename, @NotNull String id,
+        @NotNull @Deprecated String deprecated) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.id = Utils.checkNotNull(id, "id == null");
       this.deprecated = Utils.checkNotNull(deprecated, "deprecated == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * The ID of the character
      */
-    public @Nonnull String id() {
+    public @NotNull String id() {
       return this.id;
     }
 
@@ -863,7 +863,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
      * Test deprecated field
      * @deprecated For test purpose only
      */
-    public @Nonnull @Deprecated String deprecated() {
+    public @NotNull @Deprecated String deprecated() {
       return this.deprecated;
     }
 
@@ -939,11 +939,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forList("friends", "friends", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String id;
+    final @NotNull String id;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
     final Optional<List<Friend3>> friends;
 
@@ -953,7 +953,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsDroid1(@Nonnull String __typename, @Nonnull String id, @Nonnull String name,
+    public AsDroid1(@NotNull String __typename, @NotNull String id, @NotNull String name,
         @Nullable List<Friend3> friends) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.id = Utils.checkNotNull(id, "id == null");
@@ -961,21 +961,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.friends = Optional.fromNullable(friends);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * The ID of the character
      */
-    public @Nonnull String id() {
+    public @NotNull String id() {
       return this.id;
     }
 
     /**
      * The name of the character
      */
-    public @Nonnull String name() {
+    public @NotNull String name() {
       return this.name;
     }
 
@@ -1074,12 +1074,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   }
 
   public interface Friend3 {
-    @Nonnull String __typename();
+    @NotNull String __typename();
 
     /**
      * The name of the character
      */
-    @Nonnull String name();
+    @NotNull String name();
 
     ResponseFieldMarshaller marshaller();
 
@@ -1121,9 +1121,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forList("friends", "friends", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
     final Optional<String> homePlanet;
 
@@ -1135,7 +1135,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsHuman2(@Nonnull String __typename, @Nonnull String name, @Nullable String homePlanet,
+    public AsHuman2(@NotNull String __typename, @NotNull String name, @Nullable String homePlanet,
         @Nullable List<Friend4> friends) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
@@ -1143,14 +1143,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.friends = Optional.fromNullable(friends);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * What this human calls themselves
      */
-    public @Nonnull String name() {
+    public @NotNull String name() {
       return this.name;
     }
 
@@ -1261,9 +1261,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("firstAppearsIn", "firstAppearsIn", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull Episode firstAppearsIn;
+    final @NotNull Episode firstAppearsIn;
 
     private volatile String $toString;
 
@@ -1271,19 +1271,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Friend4(@Nonnull String __typename, @Nonnull Episode firstAppearsIn) {
+    public Friend4(@NotNull String __typename, @NotNull Episode firstAppearsIn) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.firstAppearsIn = Utils.checkNotNull(firstAppearsIn, "firstAppearsIn == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * The movie this character first appears in
      */
-    public @Nonnull Episode firstAppearsIn() {
+    public @NotNull Episode firstAppearsIn() {
       return this.firstAppearsIn;
     }
 
@@ -1359,9 +1359,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forList("friends", "friends", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
     final Optional<String> primaryFunction;
 
@@ -1373,7 +1373,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsDroid2(@Nonnull String __typename, @Nonnull String name,
+    public AsDroid2(@NotNull String __typename, @NotNull String name,
         @Nullable String primaryFunction, @Nullable List<Friend5> friends) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
@@ -1381,14 +1381,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.friends = Optional.fromNullable(friends);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * What others call this droid
      */
-    public @Nonnull String name() {
+    public @NotNull String name() {
       return this.name;
     }
 
@@ -1500,11 +1500,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("deprecated", "deprecated", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String id;
+    final @NotNull String id;
 
-    final @Nonnull @Deprecated String deprecated;
+    final @NotNull @Deprecated String deprecated;
 
     private volatile String $toString;
 
@@ -1512,21 +1512,21 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Friend5(@Nonnull String __typename, @Nonnull String id,
-        @Nonnull @Deprecated String deprecated) {
+    public Friend5(@NotNull String __typename, @NotNull String id,
+        @NotNull @Deprecated String deprecated) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.id = Utils.checkNotNull(id, "id == null");
       this.deprecated = Utils.checkNotNull(deprecated, "deprecated == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * The ID of the character
      */
-    public @Nonnull String id() {
+    public @NotNull String id() {
       return this.id;
     }
 
@@ -1534,7 +1534,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
      * Test deprecated field
      * @deprecated For test purpose only
      */
-    public @Nonnull @Deprecated String deprecated() {
+    public @NotNull @Deprecated String deprecated() {
       return this.deprecated;
     }
 
@@ -1608,9 +1608,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
     private volatile String $toString;
 
@@ -1618,19 +1618,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsStarship(@Nonnull String __typename, @Nonnull String name) {
+    public AsStarship(@NotNull String __typename, @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * The name of the starship
      */
-    public @Nonnull String name() {
+    public @NotNull String name() {
       return this.name;
     }
 

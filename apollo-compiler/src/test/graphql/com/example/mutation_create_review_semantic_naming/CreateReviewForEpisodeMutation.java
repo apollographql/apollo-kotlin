@@ -23,8 +23,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForEpisodeMutation.Data, Optional<CreateReviewForEpisodeMutation.Data>, CreateReviewForEpisodeMutation.Variables> {
@@ -49,7 +49,7 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
 
   private final CreateReviewForEpisodeMutation.Variables variables;
 
-  public CreateReviewForEpisodeMutation(@Nonnull Episode ep, @Nonnull ReviewInput review) {
+  public CreateReviewForEpisodeMutation(@NotNull Episode ep, @NotNull ReviewInput review) {
     Utils.checkNotNull(ep, "ep == null");
     Utils.checkNotNull(review, "review == null");
     variables = new CreateReviewForEpisodeMutation.Variables(ep, review);
@@ -90,19 +90,19 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
   }
 
   public static final class Builder {
-    private @Nonnull Episode ep;
+    private @NotNull Episode ep;
 
-    private @Nonnull ReviewInput review;
+    private @NotNull ReviewInput review;
 
     Builder() {
     }
 
-    public Builder ep(@Nonnull Episode ep) {
+    public Builder ep(@NotNull Episode ep) {
       this.ep = ep;
       return this;
     }
 
-    public Builder review(@Nonnull ReviewInput review) {
+    public Builder review(@NotNull ReviewInput review) {
       this.review = review;
       return this;
     }
@@ -115,24 +115,24 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
   }
 
   public static final class Variables extends Operation.Variables {
-    private final @Nonnull Episode ep;
+    private final @NotNull Episode ep;
 
-    private final @Nonnull ReviewInput review;
+    private final @NotNull ReviewInput review;
 
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
-    Variables(@Nonnull Episode ep, @Nonnull ReviewInput review) {
+    Variables(@NotNull Episode ep, @NotNull ReviewInput review) {
       this.ep = ep;
       this.review = review;
       this.valueMap.put("ep", ep);
       this.valueMap.put("review", review);
     }
 
-    public @Nonnull Episode ep() {
+    public @NotNull Episode ep() {
       return ep;
     }
 
-    public @Nonnull ReviewInput review() {
+    public @NotNull ReviewInput review() {
       return review;
     }
 
@@ -249,7 +249,7 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
       ResponseField.forString("commentary", "commentary", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final int stars;
 
@@ -261,13 +261,13 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
 
     private volatile boolean $hashCodeMemoized;
 
-    public CreateReview(@Nonnull String __typename, int stars, @Nullable String commentary) {
+    public CreateReview(@NotNull String __typename, int stars, @Nullable String commentary) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.stars = stars;
       this.commentary = Optional.fromNullable(commentary);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 

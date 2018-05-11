@@ -6,7 +6,7 @@ import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.internal.util.Cancelable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <p>{@code ApolloSubscriptionCall} is an abstraction for a request that has been prepared for subscription.
@@ -26,7 +26,7 @@ public interface ApolloSubscriptionCall<T> extends Cancelable {
    * @throws ApolloCanceledException when the call has already been canceled
    * @throws IllegalStateException   when the call has already been executed
    */
-  void execute(@Nonnull Callback<T> callback);
+  void execute(@NotNull Callback<T> callback);
 
   /**
    * Creates a new, identical call to this one which can be executed even if this call has already been.
@@ -46,7 +46,7 @@ public interface ApolloSubscriptionCall<T> extends Cancelable {
      * @return prepared {@link ApolloSubscriptionCall} call to be executed
      */
     <D extends Subscription.Data, T, V extends Subscription.Variables> ApolloSubscriptionCall<T> subscribe(
-        @Nonnull Subscription<D, T, V> subscription);
+        @NotNull Subscription<D, T, V> subscription);
   }
 
   /**
@@ -60,14 +60,14 @@ public interface ApolloSubscriptionCall<T> extends Cancelable {
      *
      * @param response the GraphQL response
      */
-    void onResponse(@Nonnull Response<T> response);
+    void onResponse(@NotNull Response<T> response);
 
     /**
      * Gets called when an unexpected exception occurs while creating the request or processing the response. Will be
      * called at most one time. It is considered a terminal event. After called, neither {@link #onResponse(Response)}
      * or {@link #onCompleted()} will be called again.
      */
-    void onFailure(@Nonnull ApolloException e);
+    void onFailure(@NotNull ApolloException e);
 
     /**
      * Gets called when final GraphQL response is received.  It is considered a terminal event.

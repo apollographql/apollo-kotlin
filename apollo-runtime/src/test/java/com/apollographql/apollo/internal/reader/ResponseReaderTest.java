@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.google.common.truth.Truth.assertThat;
 import static java.util.Arrays.asList;
@@ -866,11 +866,11 @@ public class ResponseReaderTest {
       throw new UnsupportedOperationException();
     }
 
-    @Nonnull @Override public OperationName name() {
+    @NotNull @Override public OperationName name() {
       return null;
     }
 
-    @Nonnull @Override public String operationId() {
+    @NotNull @Override public String operationId() {
       return "";
     }
   };
@@ -894,7 +894,7 @@ public class ResponseReaderTest {
     @Override public void didResolveObject(ResponseField Field, Optional objectSource) {
     }
 
-    @Nonnull @Override public CacheKey resolveCacheKey(@Nonnull ResponseField field, @Nonnull Object record) {
+    @NotNull @Override public CacheKey resolveCacheKey(@NotNull ResponseField field, @NotNull Object record) {
       return CacheKey.NO_KEY;
     }
 

@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -25,7 +25,7 @@ public class CacheKeyForFieldTest {
     ResponseField field = ResponseField.forString("hero", "hero", null, false,
         Collections.<ResponseField.Condition>emptyList());
     Operation.Variables variables = new Operation.Variables() {
-      @Nonnull @Override public Map<String, Object> valueMap() {
+      @NotNull @Override public Map<String, Object> valueMap() {
         return super.valueMap();
       }
     };
@@ -37,7 +37,7 @@ public class CacheKeyForFieldTest {
     ResponseField field = ResponseField.forString("r2", "hero", null, false,
         Collections.<ResponseField.Condition>emptyList());
     Operation.Variables variables = new Operation.Variables() {
-      @Nonnull @Override public Map<String, Object> valueMap() {
+      @NotNull @Override public Map<String, Object> valueMap() {
         return super.valueMap();
       }
     };
@@ -53,7 +53,7 @@ public class CacheKeyForFieldTest {
     ResponseField field = createResponseField("hero", "hero", arguments);
 
     Operation.Variables variables = new Operation.Variables() {
-      @Nonnull @Override public Map<String, Object> valueMap() {
+      @NotNull @Override public Map<String, Object> valueMap() {
         return super.valueMap();
       }
     };
@@ -69,7 +69,7 @@ public class CacheKeyForFieldTest {
     ResponseField field = createResponseField("r2", "hero", arguments);
 
     Operation.Variables variables = new Operation.Variables() {
-      @Nonnull @Override public Map<String, Object> valueMap() {
+      @NotNull @Override public Map<String, Object> valueMap() {
         return super.valueMap();
       }
     };
@@ -88,7 +88,7 @@ public class CacheKeyForFieldTest {
         .build());
 
     Operation.Variables variables = new Operation.Variables() {
-      @Nonnull @Override public Map<String, Object> valueMap() {
+      @NotNull @Override public Map<String, Object> valueMap() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("episode", Episode.JEDI);
         return map;
@@ -109,7 +109,7 @@ public class CacheKeyForFieldTest {
         .build());
 
     Operation.Variables variables = new Operation.Variables() {
-      @Nonnull @Override public Map<String, Object> valueMap() {
+      @NotNull @Override public Map<String, Object> valueMap() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("episode", null);
         return map;
@@ -128,7 +128,7 @@ public class CacheKeyForFieldTest {
     ResponseField field = createResponseField("hero", "hero", build);
 
     Operation.Variables variables = new Operation.Variables() {
-      @Nonnull @Override public Map<String, Object> valueMap() {
+      @NotNull @Override public Map<String, Object> valueMap() {
         return super.valueMap();
       }
     };
@@ -145,7 +145,7 @@ public class CacheKeyForFieldTest {
     ResponseField field = createResponseField("hero", "hero", arguments);
 
     Operation.Variables variables = new Operation.Variables() {
-      @Nonnull @Override public Map<String, Object> valueMap() {
+      @NotNull @Override public Map<String, Object> valueMap() {
         return super.valueMap();
       }
     };
@@ -173,7 +173,7 @@ public class CacheKeyForFieldTest {
     ResponseField field = createResponseField("hero", "hero", arguments);
 
     Operation.Variables variables = new Operation.Variables() {
-      @Nonnull @Override public Map<String, Object> valueMap() {
+      @NotNull @Override public Map<String, Object> valueMap() {
         return super.valueMap();
       }
     };
@@ -188,7 +188,7 @@ public class CacheKeyForFieldTest {
         .build(), false, Collections.<ResponseField.Condition>emptyList());
 
     Operation.Variables variables = new Operation.Variables() {
-      @Nonnull @Override public Map<String, Object> valueMap() {
+      @NotNull @Override public Map<String, Object> valueMap() {
         return super.valueMap();
       }
     };
@@ -211,7 +211,7 @@ public class CacheKeyForFieldTest {
     ResponseField field = createResponseField("hero", "hero", arguments);
 
     Operation.Variables variables = new Operation.Variables() {
-      @Nonnull @Override public Map<String, Object> valueMap() {
+      @NotNull @Override public Map<String, Object> valueMap() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("stars", 1);
         return map;

@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import io.reactivex.functions.Predicate;
 import okhttp3.Dispatcher;
@@ -327,11 +327,11 @@ public class OptimisticCacheTestCase {
     apolloClient.query(new ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST)
         .watcher().refetchResponseFetcher(ApolloResponseFetchers.CACHE_FIRST)
         .enqueueAndWatch(new ApolloCall.Callback<ReviewsByEpisodeQuery.Data>() {
-          @Override public void onResponse(@Nonnull Response<ReviewsByEpisodeQuery.Data> response) {
+          @Override public void onResponse(@NotNull Response<ReviewsByEpisodeQuery.Data> response) {
             watcherData.add(response.data());
           }
 
-          @Override public void onFailure(@Nonnull ApolloException e) {
+          @Override public void onFailure(@NotNull ApolloException e) {
 
           }
         });
@@ -348,10 +348,10 @@ public class OptimisticCacheTestCase {
     apolloClient.mutate(updateReviewMutation, new UpdateReviewMutation.Data(new UpdateReviewMutation.UpdateReview(
         "Review", "empireReview2", 5, "Great"))).enqueue(
         new ApolloCall.Callback<UpdateReviewMutation.Data>() {
-          @Override public void onResponse(@Nonnull Response<UpdateReviewMutation.Data> response) {
+          @Override public void onResponse(@NotNull Response<UpdateReviewMutation.Data> response) {
           }
 
-          @Override public void onFailure(@Nonnull ApolloException e) {
+          @Override public void onFailure(@NotNull ApolloException e) {
 
           }
         }

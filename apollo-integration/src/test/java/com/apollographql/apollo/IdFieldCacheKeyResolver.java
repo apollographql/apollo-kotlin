@@ -7,16 +7,16 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class IdFieldCacheKeyResolver extends CacheKeyResolver {
-  @Nonnull @Override
-  public CacheKey fromFieldRecordSet(@Nonnull ResponseField field, @Nonnull Map<String, Object> recordSet) {
+  @NotNull @Override
+  public CacheKey fromFieldRecordSet(@NotNull ResponseField field, @NotNull Map<String, Object> recordSet) {
     return formatCacheKey((String) recordSet.get("id"));
   }
 
-  @Nonnull @Override
-  public CacheKey fromFieldArguments(@Nonnull ResponseField field, @Nonnull Operation.Variables variables) {
+  @NotNull @Override
+  public CacheKey fromFieldArguments(@NotNull ResponseField field, @NotNull Operation.Variables variables) {
     return formatCacheKey((String) field.resolveArgument("id", variables));
   }
 

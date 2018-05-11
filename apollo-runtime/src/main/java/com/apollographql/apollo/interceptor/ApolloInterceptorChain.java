@@ -2,7 +2,7 @@ package com.apollographql.apollo.interceptor;
 
 import java.util.concurrent.Executor;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * ApolloInterceptorChain is responsible for building chain of {@link ApolloInterceptor} .
@@ -17,8 +17,8 @@ public interface ApolloInterceptorChain {
    * @param dispatcher the {@link Executor} which dispatches the calls asynchronously.
    * @param callBack   the callback which will handle the response or a failure exception.
    */
-  void proceedAsync(@Nonnull ApolloInterceptor.InterceptorRequest request, @Nonnull Executor dispatcher,
-      @Nonnull ApolloInterceptor.CallBack callBack);
+  void proceedAsync(@NotNull ApolloInterceptor.InterceptorRequest request, @NotNull Executor dispatcher,
+      @NotNull ApolloInterceptor.CallBack callBack);
 
   /**
    * Disposes of the resources which are no longer required.

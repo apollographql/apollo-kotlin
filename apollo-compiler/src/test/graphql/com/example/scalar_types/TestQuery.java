@@ -20,8 +20,8 @@ import java.lang.String;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
@@ -106,7 +106,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<String> graphQlIdNullable;
 
-    final @Nonnull String graphQlIdNonNullable;
+    final @NotNull String graphQlIdNonNullable;
 
     final Optional<Integer> graphQlIntNullable;
 
@@ -131,7 +131,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     private volatile boolean $hashCodeMemoized;
 
     public Data(@Nullable String graphQlString, @Nullable String graphQlIdNullable,
-        @Nonnull String graphQlIdNonNullable, @Nullable Integer graphQlIntNullable,
+        @NotNull String graphQlIdNonNullable, @Nullable Integer graphQlIntNullable,
         int graphQlIntNonNullable, @Nullable Double graphQlFloatNullable,
         double graphQlFloatNonNullable, @Nullable Boolean graphQlBooleanNullable,
         boolean graphQlBooleanNonNullable, @Nullable List<Integer> graphQlListOfInt,
@@ -157,7 +157,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.graphQlIdNullable;
     }
 
-    public @Nonnull String graphQlIdNonNullable() {
+    public @NotNull String graphQlIdNonNullable() {
       return this.graphQlIdNonNullable;
     }
 

@@ -28,7 +28,7 @@ import org.junit.Test;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertFalse;
@@ -313,7 +313,7 @@ public final class OptionalTest {
   @Test
   public void testFlatMapAbsent() {
     assertEquals(Optional.absent(), Optional.absent().flatMap(new Function<Object, Optional<String>>() {
-      @Nonnull @Override public Optional<String> apply(@Nonnull Object o) {
+      @NotNull @Override public Optional<String> apply(@NotNull Object o) {
         return Optional.of(o.toString());
       }
     }));
@@ -322,7 +322,7 @@ public final class OptionalTest {
   @Test
   public void testFlatMapMapPresentIdentity() {
     assertEquals(Optional.of("a"), Optional.of("a").flatMap(new Function<String, Optional<String>>() {
-          @Nonnull @Override public Optional<String> apply(@Nonnull String s) {
+          @NotNull @Override public Optional<String> apply(@NotNull String s) {
             return Optional.of(s);
           }
         })
@@ -332,7 +332,7 @@ public final class OptionalTest {
   @Test
   public void testFlatMapPresentToString() {
     assertEquals(Optional.of("42"), Optional.of(42).flatMap(new Function<Integer, Optional<String>>() {
-      @Nonnull @Override public Optional<String> apply(@Nonnull Integer integer) {
+      @NotNull @Override public Optional<String> apply(@NotNull Integer integer) {
         return Optional.of(integer.toString());
       }
     }));
@@ -342,7 +342,7 @@ public final class OptionalTest {
   public void testFlatMapPresentFunctionReturnsNull() {
     try {
       Optional<String> unused = Optional.of("a").flatMap(new Function<String, Optional<String>>() {
-        @Nonnull @Override public Optional<String> apply(@Nonnull String s) {
+        @NotNull @Override public Optional<String> apply(@NotNull String s) {
           return null;
         }
       });
@@ -354,7 +354,7 @@ public final class OptionalTest {
   @Test
   public void testFlatMapAbssentFunctionReturnsNull() {
     assertEquals(Optional.absent(), Optional.absent().flatMap(new Function<Object, Optional<Object>>() {
-      @Nonnull @Override public Optional<Object> apply(@Nonnull Object o) {
+      @NotNull @Override public Optional<Object> apply(@NotNull Object o) {
         return null;
       }
     }));

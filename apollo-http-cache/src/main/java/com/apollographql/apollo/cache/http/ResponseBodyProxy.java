@@ -5,7 +5,7 @@ import com.apollographql.apollo.internal.ApolloLogger;
 
 import java.io.IOException;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okhttp3.MediaType;
 import okhttp3.Response;
@@ -27,8 +27,8 @@ final class ResponseBodyProxy extends ResponseBody {
   private final String contentLength;
   private final Source responseBodySource;
 
-  ResponseBodyProxy(@Nonnull HttpCacheRecordEditor cacheRecordEditor, @Nonnull Response sourceResponse,
-      @Nonnull ApolloLogger logger) {
+  ResponseBodyProxy(@NotNull HttpCacheRecordEditor cacheRecordEditor, @NotNull Response sourceResponse,
+      @NotNull ApolloLogger logger) {
     checkNotNull(cacheRecordEditor, "cacheRecordEditor == null");
     checkNotNull(sourceResponse, "sourceResponse == null");
     checkNotNull(logger, "logger == null");

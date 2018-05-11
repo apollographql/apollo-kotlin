@@ -2,8 +2,8 @@ package com.apollographql.apollo.api.internal;
 
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Contains utility methods for checking Preconditions
@@ -22,7 +22,7 @@ public final class Utils {
    * @return The object itself
    * @throws NullPointerException if the object is null
    */
-  @Nonnull public static <T> T checkNotNull(T reference, @Nullable Object errorMessage) {
+  @NotNull public static <T> T checkNotNull(T reference, @Nullable Object errorMessage) {
     if (reference == null) {
       throw new NullPointerException(String.valueOf(errorMessage));
     }
@@ -64,7 +64,7 @@ public final class Utils {
    * @return The object itself
    * @throws NullPointerException if the object is null
    */
-  @Nonnull public static <T> T checkNotNull(T reference) {
+  @NotNull public static <T> T checkNotNull(T reference) {
     if (reference == null) {
       throw new NullPointerException();
     }

@@ -18,7 +18,7 @@ import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
@@ -67,11 +67,11 @@ import static com.google.common.truth.Truth.assertThat;
         };
       }
 
-      @Nonnull @Override public OperationName name() {
+      @NotNull @Override public OperationName name() {
         return operationName;
       }
 
-      @Nonnull @Override public String operationId() {
+      @NotNull @Override public String operationId() {
         return "";
       }
 

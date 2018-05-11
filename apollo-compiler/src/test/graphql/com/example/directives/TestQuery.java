@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
@@ -238,7 +238,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObject("friendsConnection", "friendsConnection", null, true, Arrays.<ResponseField.Condition>asList(ResponseField.Condition.booleanCondition("skipFriends", true)))
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<String> name;
 
@@ -250,14 +250,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Hero(@Nonnull String __typename, @Nullable String name,
+    public Hero(@NotNull String __typename, @Nullable String name,
         @Nullable FriendsConnection friendsConnection) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Optional.fromNullable(name);
       this.friendsConnection = Optional.fromNullable(friendsConnection);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
@@ -352,7 +352,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<Integer> totalCount;
 
@@ -362,12 +362,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public FriendsConnection(@Nonnull String __typename, @Nullable Integer totalCount) {
+    public FriendsConnection(@NotNull String __typename, @Nullable Integer totalCount) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.totalCount = Optional.fromNullable(totalCount);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 

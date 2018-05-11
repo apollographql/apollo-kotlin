@@ -1,7 +1,7 @@
 package com.apollographql.apollo.api.internal;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public interface Action<T> {
-  void apply(@Nonnull T t);
+  void apply(@NotNull T t);
 }

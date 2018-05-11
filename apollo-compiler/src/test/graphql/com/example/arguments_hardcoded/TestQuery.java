@@ -17,8 +17,8 @@ import java.lang.String;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
@@ -191,7 +191,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("commentary", "commentary", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final int stars;
 
@@ -203,13 +203,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Review(@Nonnull String __typename, int stars, @Nullable String commentary) {
+    public Review(@NotNull String __typename, int stars, @Nullable String commentary) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.stars = stars;
       this.commentary = Optional.fromNullable(commentary);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 

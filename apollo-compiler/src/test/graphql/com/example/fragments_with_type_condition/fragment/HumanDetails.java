@@ -16,8 +16,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public class HumanDetails implements GraphqlFragment {
@@ -35,9 +35,9 @@ public class HumanDetails implements GraphqlFragment {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human"));
 
-  final @Nonnull String __typename;
+  final @NotNull String __typename;
 
-  final @Nonnull String name;
+  final @NotNull String name;
 
   final Optional<Double> height;
 
@@ -47,20 +47,20 @@ public class HumanDetails implements GraphqlFragment {
 
   private volatile boolean $hashCodeMemoized;
 
-  public HumanDetails(@Nonnull String __typename, @Nonnull String name, @Nullable Double height) {
+  public HumanDetails(@NotNull String __typename, @NotNull String name, @Nullable Double height) {
     this.__typename = Utils.checkNotNull(__typename, "__typename == null");
     this.name = Utils.checkNotNull(name, "name == null");
     this.height = Optional.fromNullable(height);
   }
 
-  public @Nonnull String __typename() {
+  public @NotNull String __typename() {
     return this.__typename;
   }
 
   /**
    * What this human calls themselves
    */
-  public @Nonnull String name() {
+  public @NotNull String name() {
     return this.name;
   }
 

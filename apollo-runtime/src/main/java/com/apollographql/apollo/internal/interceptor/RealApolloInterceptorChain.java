@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -20,7 +20,7 @@ public final class RealApolloInterceptorChain implements ApolloInterceptorChain 
   private final List<ApolloInterceptor> interceptors;
   private final int interceptorIndex;
 
-  public RealApolloInterceptorChain(@Nonnull List<ApolloInterceptor> interceptors) {
+  public RealApolloInterceptorChain(@NotNull List<ApolloInterceptor> interceptors) {
     this(interceptors, 0);
   }
 
@@ -30,8 +30,8 @@ public final class RealApolloInterceptorChain implements ApolloInterceptorChain 
     this.interceptorIndex = interceptorIndex;
   }
 
-  @Override public void proceedAsync(@Nonnull ApolloInterceptor.InterceptorRequest request,
-      @Nonnull Executor dispatcher, @Nonnull ApolloInterceptor.CallBack callBack) {
+  @Override public void proceedAsync(@NotNull ApolloInterceptor.InterceptorRequest request,
+      @NotNull Executor dispatcher, @NotNull ApolloInterceptor.CallBack callBack) {
     if (interceptorIndex >= interceptors.size()) throw new IllegalStateException();
     interceptors.get(interceptorIndex).interceptAsync(request, new RealApolloInterceptorChain(interceptors,
         interceptorIndex + 1), dispatcher, callBack);
