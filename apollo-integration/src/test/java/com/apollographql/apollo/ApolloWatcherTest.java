@@ -1,5 +1,6 @@
 package com.apollographql.apollo;
 
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
@@ -40,6 +41,7 @@ import static com.apollographql.apollo.Utils.mockResponse;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY;
 import static com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY;
 import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.Assert.fail;
 
 public class ApolloWatcherTest {
   private ApolloClient apolloClient;
@@ -337,5 +339,40 @@ public class ApolloWatcherTest {
     );
     assertThat(heroNameList.get(0)).isEqualTo("R2-D2");
     assertThat(heroNameList.size()).isEqualTo(1);
+  }
+
+  @Test
+  public void emptyCacheQueryWatcherCacheOnly() throws Exception {
+    final List<EpisodeHeroNameQuery.Hero> watchedHeroes = new ArrayList<>();
+    EpisodeHeroNameQuery query = new EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE));
+    apolloClient.query(query)
+        .responseFetcher(CACHE_ONLY)
+        .watcher()
+        .enqueueAndWatch(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
+          @Override public void onResponse(Response<EpisodeHeroNameQuery.Data> response) {
+            if (response.data() != null) {
+              watchedHeroes.add(response.data().hero());
+            }
+          }
+
+          @Override public void onFailure(ApolloException e) {
+            fail(e.getMessage());
+          }
+        });
+
+    server.enqueue(mockResponse("EpisodeHeroNameResponseWithId.json"));
+    apolloClient.query(query).enqueue(new ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
+      @Override public void onResponse(Response<EpisodeHeroNameQuery.Data> response) {
+        assertThat(response.data()).isNotNull();
+        assertThat(response.data().hero()).isNotNull();
+      }
+
+      @Override public void onFailure(ApolloException e) {
+        fail(e.getMessage());
+      }
+    });
+
+    assertThat(watchedHeroes).hasSize(1);
+    assertThat(watchedHeroes.get(0).name()).isEqualTo("R2-D2");
   }
 }

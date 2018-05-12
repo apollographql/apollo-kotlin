@@ -37,7 +37,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
   private final ApolloCallTracker tracker;
   final ApolloStore.RecordChangeSubscriber recordChangeSubscriber = new ApolloStore.RecordChangeSubscriber() {
     @Override public void onCacheRecordsChanged(Set<String> changedRecordKeys) {
-      if (!Utils.areDisjoint(dependentKeys, changedRecordKeys)) {
+      if (dependentKeys.isEmpty() || !Utils.areDisjoint(dependentKeys, changedRecordKeys)) {
         refetch();
       }
     }

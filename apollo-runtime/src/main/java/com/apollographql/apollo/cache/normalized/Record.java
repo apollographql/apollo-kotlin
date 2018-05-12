@@ -128,6 +128,17 @@ public final class Record {
   }
 
   /**
+   * @return A set of all field keys. A field key incorporates any GraphQL arguments in addition to the field name.
+   */
+  public Set<String> keys() {
+    Set<String> keys = new HashSet<>();
+    for (Map.Entry<String, Object> field : fields.entrySet()) {
+      keys.add(key() + "." + field.getKey());
+    }
+    return keys;
+  }
+
+  /**
    * @return A map of fieldName to fieldValue. Where fieldValue is a GraphQL Scalar or {@link CacheReference} if it is a
    * GraphQL Object type.
    */
