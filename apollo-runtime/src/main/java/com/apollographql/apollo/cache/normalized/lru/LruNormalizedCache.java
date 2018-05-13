@@ -117,7 +117,7 @@ public final class LruNormalizedCache extends NormalizedCache {
     final Record oldRecord = lruCache.getIfPresent(apolloRecord.key());
     if (oldRecord == null) {
       lruCache.put(apolloRecord.key(), apolloRecord);
-      return Collections.emptySet();
+      return apolloRecord.keys();
     } else {
       Set<String> changedKeys = oldRecord.mergeWith(apolloRecord);
 
