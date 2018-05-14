@@ -29,7 +29,7 @@ class InputFieldSpec(
     }.let {
       if (javaType.isOptional()) {
         CodeBlock.builder()
-            .beginControlFlow("if (\$L.defined)", name)
+            .beginControlFlow("if (\$L.defined)", name.escapeJavaReservedWord())
             .add(it)
             .endControlFlow()
             .build()
@@ -40,12 +40,12 @@ class InputFieldSpec(
   }
 
   private fun writeScalarCode(writerParam: CodeBlock): CodeBlock {
-    val valueCode = javaType.unwrapOptionalValue(varName = name, checkIfPresent = false)
+    val valueCode = javaType.unwrapOptionalValue(varName = name.escapeJavaReservedWord(), checkIfPresent = false)
     return CodeBlock.of("\$L.\$L(\$S, \$L);\n", writerParam, WRITE_METHODS[type], name, valueCode)
   }
 
   private fun writeEnumCode(writerParam: CodeBlock): CodeBlock {
-    val valueCode = javaType.unwrapOptionalValue(name) {
+    val valueCode = javaType.unwrapOptionalValue(name.escapeJavaReservedWord()) {
       CodeBlock.of("\$L.rawValue()", it)
     }
     return CodeBlock.of("\$L.\$L(\$S, \$L);\n", writerParam, WRITE_METHODS[type], name, valueCode)
@@ -54,22 +54,22 @@ class InputFieldSpec(
   private fun writeCustomCode(writerParam: CodeBlock): CodeBlock {
     val customScalarEnum = CustomEnumTypeSpecBuilder.className(context)
     val customScalarEnumConst = normalizeGraphQlType(graphQLType).toUpperCase(Locale.ENGLISH)
-    val valueCode = javaType.unwrapOptionalValue(name)
+    val valueCode = javaType.unwrapOptionalValue(name.escapeJavaReservedWord())
     return CodeBlock.of("\$L.\$L(\$S, \$L.\$L, \$L);\n", writerParam, WRITE_METHODS[type],
         name, customScalarEnum, customScalarEnumConst, valueCode)
   }
 
   private fun writeObjectCode(writerParam: CodeBlock, marshaller: CodeBlock): CodeBlock {
-    val valueCode = javaType.unwrapOptionalValue(name) {
+    val valueCode = javaType.unwrapOptionalValue(name.escapeJavaReservedWord()) {
       CodeBlock.of("\$L.\$L", it, marshaller)
     }
     return CodeBlock.of("\$L.\$L(\$S, \$L);\n", writerParam, WRITE_METHODS[type], name, valueCode)
   }
 
   private fun writeList(writerParam: CodeBlock, marshaller: CodeBlock): CodeBlock {
-    val unwrappedListValue = javaType.unwrapOptionalValue(name, false)
+    val unwrappedListValue = javaType.unwrapOptionalValue(name.escapeJavaReservedWord(), false)
     val listParamType = with(javaType.unwrapOptionalType(true)) { if (isList()) listParamType() else this }
-    val listWriterCode = javaType.unwrapOptionalValue(name) {
+    val listWriterCode = javaType.unwrapOptionalValue(name.escapeJavaReservedWord()) {
       CodeBlock.of("\$L", listWriter(listParamType, unwrappedListValue, "\$item", marshaller))
     }
     return CodeBlock.of("\$L.\$L(\$S, \$L);\n", writerParam, WRITE_METHODS[Type.LIST], name, listWriterCode)
