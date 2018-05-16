@@ -18,8 +18,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
@@ -186,19 +186,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forList("links", "links", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
-    final @Nonnull Date birthDate;
+    final @NotNull Date birthDate;
 
-    final @Nonnull List<Date> appearanceDates;
+    final @NotNull List<Date> appearanceDates;
 
-    final @Nonnull Object fieldWithUnsupportedType;
+    final @NotNull Object fieldWithUnsupportedType;
 
-    final @Nonnull String profileLink;
+    final @NotNull String profileLink;
 
-    final @Nonnull List<String> links;
+    final @NotNull List<String> links;
 
     private volatile String $toString;
 
@@ -206,9 +206,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Hero(@Nonnull String __typename, @Nonnull String name, @Nonnull Date birthDate,
-        @Nonnull List<Date> appearanceDates, @Nonnull Object fieldWithUnsupportedType,
-        @Nonnull String profileLink, @Nonnull List<String> links) {
+    public Hero(@NotNull String __typename, @NotNull String name, @NotNull Date birthDate,
+        @NotNull List<Date> appearanceDates, @NotNull Object fieldWithUnsupportedType,
+        @NotNull String profileLink, @NotNull List<String> links) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
       this.birthDate = Utils.checkNotNull(birthDate, "birthDate == null");
@@ -218,49 +218,49 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.links = Utils.checkNotNull(links, "links == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * The name of the character
      */
-    public @Nonnull String name() {
+    public @NotNull String name() {
       return this.name;
     }
 
     /**
      * The date character was born.
      */
-    public @Nonnull Date birthDate() {
+    public @NotNull Date birthDate() {
       return this.birthDate;
     }
 
     /**
      * The dates of appearances
      */
-    public @Nonnull List<Date> appearanceDates() {
+    public @NotNull List<Date> appearanceDates() {
       return this.appearanceDates;
     }
 
     /**
      * The date character was born.
      */
-    public @Nonnull Object fieldWithUnsupportedType() {
+    public @NotNull Object fieldWithUnsupportedType() {
       return this.fieldWithUnsupportedType;
     }
 
     /**
      * Profile link
      */
-    public @Nonnull String profileLink() {
+    public @NotNull String profileLink() {
       return this.profileLink;
     }
 
     /**
      * Links
      */
-    public @Nonnull List<String> links() {
+    public @NotNull List<String> links() {
       return this.links;
     }
 

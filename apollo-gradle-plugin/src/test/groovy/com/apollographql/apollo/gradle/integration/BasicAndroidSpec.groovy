@@ -60,7 +60,7 @@ class BasicAndroidSpec extends Specification {
     assert !new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("Optional")
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
-        'UTF-8').contains("import javax.annotation.Nullable;")
+        'UTF-8').contains("import org.jetbrains.annotations.Nullable;")
   }
 
   def "nothing changed, generate ir files up to date"() {
@@ -234,7 +234,7 @@ class BasicAndroidSpec extends Specification {
     assert !new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("Optional")
     assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
-        'UTF-8').contains("import javax.annotation.Nullable;")
+        'UTF-8').contains("import org.jetbrains.annotations.Nullable;")
   }
 
   def "adding nullableValueType = `apolloOptional` in Apollo Extension generates classes with Apollo Optional"() {

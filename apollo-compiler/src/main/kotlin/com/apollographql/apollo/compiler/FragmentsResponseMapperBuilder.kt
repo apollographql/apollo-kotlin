@@ -5,7 +5,6 @@ import com.apollographql.apollo.api.ResponseReader
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.Fragment
 import com.squareup.javapoet.*
-import javax.annotation.Nonnull
 import javax.lang.model.element.Modifier
 
 /**
@@ -18,7 +17,7 @@ import javax.lang.model.element.Modifier
  *   final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();
  *
  *   @Override
- *   public Fragments map(ResponseReader reader, @Nonnull String conditionalType) {
+ *   public Fragments map(ResponseReader reader, @NotNull String conditionalType) {
  *     HeroDetails heroDetails = null;
  *     if (conditionalType.equals(HeroDetails.TYPE_CONDITION)) {
  *       heroDetails = heroDetailsFieldMapper.map(reader);
@@ -114,7 +113,7 @@ class FragmentsResponseMapperBuilder(
         SchemaTypeSpecBuilder.FRAGMENTS_FIELD.type.withoutAnnotations())
     private val CONDITIONAL_TYPE_VAR = "conditionalType"
     private val CONDITIONAL_TYPE_PARAM = ParameterSpec.builder(String::class.java, CONDITIONAL_TYPE_VAR)
-        .addAnnotation(Nonnull::class.java).build()
+        .addAnnotation(Annotations.NONNULL).build()
     private val READER_VAR = "reader"
     private val READER_PARAM = ParameterSpec.builder(ResponseReader::class.java, READER_VAR).build()
   }

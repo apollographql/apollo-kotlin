@@ -20,8 +20,7 @@ package com.apollographql.apollo.api.internal;
 import java.io.Serializable;
 import java.util.Set;
 
-import javax.annotation.CheckReturnValue;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -73,7 +72,6 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
  * @author Kevin Bourrillion
  * @since 10.0
  */
-@CheckReturnValue
 public abstract class Optional<T> implements Serializable {
   /**
    * Returns an {@code Optional} instance with no contained reference.

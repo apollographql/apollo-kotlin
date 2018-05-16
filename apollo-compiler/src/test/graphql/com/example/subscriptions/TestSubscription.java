@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestSubscription implements Subscription<TestSubscription.Data, Optional<TestSubscription.Data>, TestSubscription.Variables> {
@@ -47,7 +47,7 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
 
   private final TestSubscription.Variables variables;
 
-  public TestSubscription(@Nonnull String repo) {
+  public TestSubscription(@NotNull String repo) {
     Utils.checkNotNull(repo, "repo == null");
     variables = new TestSubscription.Variables(repo);
   }
@@ -87,12 +87,12 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
   }
 
   public static final class Builder {
-    private @Nonnull String repo;
+    private @NotNull String repo;
 
     Builder() {
     }
 
-    public Builder repo(@Nonnull String repo) {
+    public Builder repo(@NotNull String repo) {
       this.repo = repo;
       return this;
     }
@@ -104,16 +104,16 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
   }
 
   public static final class Variables extends Operation.Variables {
-    private final @Nonnull String repo;
+    private final @NotNull String repo;
 
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
-    Variables(@Nonnull String repo) {
+    Variables(@NotNull String repo) {
       this.repo = repo;
       this.valueMap.put("repo", repo);
     }
 
-    public @Nonnull String repo() {
+    public @NotNull String repo() {
       return repo;
     }
 
@@ -228,11 +228,11 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
       ResponseField.forString("content", "content", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final int id;
 
-    final @Nonnull String content;
+    final @NotNull String content;
 
     private volatile String $toString;
 
@@ -240,13 +240,13 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
 
     private volatile boolean $hashCodeMemoized;
 
-    public CommentAdded(@Nonnull String __typename, int id, @Nonnull String content) {
+    public CommentAdded(@NotNull String __typename, int id, @NotNull String content) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.id = id;
       this.content = Utils.checkNotNull(content, "content == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
@@ -260,7 +260,7 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
     /**
      * The text of the comment
      */
-    public @Nonnull String content() {
+    public @NotNull String content() {
       return this.content;
     }
 

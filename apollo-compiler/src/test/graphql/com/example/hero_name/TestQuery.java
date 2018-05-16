@@ -15,8 +15,8 @@ import java.lang.Override;
 import java.lang.String;
 import java.util.Collections;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
@@ -173,9 +173,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
     private volatile String $toString;
 
@@ -183,19 +183,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Hero(@Nonnull String __typename, @Nonnull String name) {
+    public Hero(@NotNull String __typename, @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * The name of the character
      */
-    public @Nonnull String name() {
+    public @NotNull String name() {
       return this.name;
     }
 

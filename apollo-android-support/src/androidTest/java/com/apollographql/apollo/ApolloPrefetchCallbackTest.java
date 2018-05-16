@@ -17,7 +17,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -53,11 +53,11 @@ public class ApolloPrefetchCallbackTest {
         fail("Expected onHttpError");
       }
 
-      @Override public void onFailure(@Nonnull ApolloException e) {
+      @Override public void onFailure(@NotNull ApolloException e) {
         fail("Expected onHttpError");
       }
 
-      @Override public void onHttpError(@Nonnull ApolloHttpException e) {
+      @Override public void onHttpError(@NotNull ApolloHttpException e) {
         countDownLatch.countDown();
       }
     }, callbackHandler));
@@ -74,11 +74,11 @@ public class ApolloPrefetchCallbackTest {
         fail("Expected onNetworkError");
       }
 
-      @Override public void onFailure(@Nonnull ApolloException e) {
+      @Override public void onFailure(@NotNull ApolloException e) {
         fail("Expected onNetworkError");
       }
 
-      @Override public void onNetworkError(@Nonnull ApolloNetworkException e) {
+      @Override public void onNetworkError(@NotNull ApolloNetworkException e) {
         countDownLatch.countDown();
       }
     }, callbackHandler));
@@ -108,7 +108,7 @@ public class ApolloPrefetchCallbackTest {
         countDownLatch.countDown();
       }
 
-      @Override public void onFailure(@Nonnull ApolloException e) {
+      @Override public void onFailure(@NotNull ApolloException e) {
         fail("Expected onResponse");
       }
     }, callbackHandler));

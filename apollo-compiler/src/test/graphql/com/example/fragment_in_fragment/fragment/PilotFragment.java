@@ -15,8 +15,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public class PilotFragment implements GraphqlFragment {
@@ -37,7 +37,7 @@ public class PilotFragment implements GraphqlFragment {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Person"));
 
-  final @Nonnull String __typename;
+  final @NotNull String __typename;
 
   final Optional<String> name;
 
@@ -49,14 +49,14 @@ public class PilotFragment implements GraphqlFragment {
 
   private volatile boolean $hashCodeMemoized;
 
-  public PilotFragment(@Nonnull String __typename, @Nullable String name,
+  public PilotFragment(@NotNull String __typename, @Nullable String name,
       @Nullable Homeworld homeworld) {
     this.__typename = Utils.checkNotNull(__typename, "__typename == null");
     this.name = Optional.fromNullable(name);
     this.homeworld = Optional.fromNullable(homeworld);
   }
 
-  public @Nonnull String __typename() {
+  public @NotNull String __typename() {
     return this.__typename;
   }
 
@@ -150,7 +150,7 @@ public class PilotFragment implements GraphqlFragment {
       ResponseField.forString("name", "name", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<String> name;
 
@@ -160,12 +160,12 @@ public class PilotFragment implements GraphqlFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public Homeworld(@Nonnull String __typename, @Nullable String name) {
+    public Homeworld(@NotNull String __typename, @Nullable String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Optional.fromNullable(name);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 

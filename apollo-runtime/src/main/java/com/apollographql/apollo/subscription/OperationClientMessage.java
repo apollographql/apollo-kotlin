@@ -9,7 +9,7 @@ import com.apollographql.apollo.response.ScalarTypeAdapters;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okio.Buffer;
 
@@ -38,17 +38,17 @@ public abstract class OperationClientMessage {
     }
   }
 
-  public abstract void writeToJson(@Nonnull JsonWriter writer) throws IOException;
+  public abstract void writeToJson(@NotNull JsonWriter writer) throws IOException;
 
   public static final class Init extends OperationClientMessage {
     private static final String TYPE = "connection_init";
     private final Map<String, Object> connectionParams;
 
-    public Init(@Nonnull Map<String, Object> connectionParams) {
+    public Init(@NotNull Map<String, Object> connectionParams) {
       this.connectionParams = checkNotNull(connectionParams, "connectionParams == null");
     }
 
-    @Override public void writeToJson(@Nonnull JsonWriter writer) throws IOException {
+    @Override public void writeToJson(@NotNull JsonWriter writer) throws IOException {
       checkNotNull(writer, "writer == null");
       writer.name(JSON_KEY_TYPE).value(TYPE);
       if (!connectionParams.isEmpty()) {
@@ -68,14 +68,14 @@ public abstract class OperationClientMessage {
     public final String subscriptionId;
     public final Subscription<?, ?, ?> subscription;
 
-    public Start(@Nonnull String subscriptionId, @Nonnull Subscription<?, ?, ?> subscription,
-        @Nonnull ScalarTypeAdapters scalarTypeAdapters) {
+    public Start(@NotNull String subscriptionId, @NotNull Subscription<?, ?, ?> subscription,
+        @NotNull ScalarTypeAdapters scalarTypeAdapters) {
       this.subscriptionId = checkNotNull(subscriptionId, "subscriptionId == null");
       this.subscription = checkNotNull(subscription, "subscription == null");
       this.scalarTypeAdapters = checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null");
     }
 
-    @Override public void writeToJson(@Nonnull JsonWriter writer) throws IOException {
+    @Override public void writeToJson(@NotNull JsonWriter writer) throws IOException {
       checkNotNull(writer, "writer == null");
       writer.name(JSON_KEY_ID).value(subscriptionId);
       writer.name(JSON_KEY_TYPE).value(TYPE);
@@ -94,11 +94,11 @@ public abstract class OperationClientMessage {
 
     public final String subscriptionId;
 
-    public Stop(@Nonnull String subscriptionId) {
+    public Stop(@NotNull String subscriptionId) {
       this.subscriptionId = checkNotNull(subscriptionId, "subscriptionId == null");
     }
 
-    @Override public void writeToJson(@Nonnull JsonWriter writer) throws IOException {
+    @Override public void writeToJson(@NotNull JsonWriter writer) throws IOException {
       checkNotNull(writer, "writer == null");
       writer.name(JSON_KEY_ID).value(subscriptionId);
       writer.name(JSON_KEY_TYPE).value(TYPE);
@@ -108,7 +108,7 @@ public abstract class OperationClientMessage {
   public static final class Terminate extends OperationClientMessage {
     private static final String TYPE = "connection_terminate";
 
-    @Override public void writeToJson(@Nonnull JsonWriter writer) throws IOException {
+    @Override public void writeToJson(@NotNull JsonWriter writer) throws IOException {
       checkNotNull(writer, "writer == null");
       writer.name(JSON_KEY_TYPE).value(TYPE);
     }

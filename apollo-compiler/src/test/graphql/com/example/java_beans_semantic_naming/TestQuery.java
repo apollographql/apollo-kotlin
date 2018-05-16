@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
@@ -184,13 +184,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       "Droid"))
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
-    final @Nonnull List<Episode> appearsIn;
+    final @NotNull List<Episode> appearsIn;
 
-    private final @Nonnull Fragments fragments;
+    private final @NotNull Fragments fragments;
 
     private volatile String $toString;
 
@@ -198,33 +198,33 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Hero(@Nonnull String __typename, @Nonnull String name, @Nonnull List<Episode> appearsIn,
-        @Nonnull Fragments fragments) {
+    public Hero(@NotNull String __typename, @NotNull String name, @NotNull List<Episode> appearsIn,
+        @NotNull Fragments fragments) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
       this.appearsIn = Utils.checkNotNull(appearsIn, "appearsIn == null");
       this.fragments = Utils.checkNotNull(fragments, "fragments == null");
     }
 
-    public @Nonnull String get__typename() {
+    public @NotNull String get__typename() {
       return this.__typename;
     }
 
     /**
      * The name of the character
      */
-    public @Nonnull String getName() {
+    public @NotNull String getName() {
       return this.name;
     }
 
     /**
      * The movies this character appears in
      */
-    public @Nonnull List<Episode> getAppearsIn() {
+    public @NotNull List<Episode> getAppearsIn() {
       return this.appearsIn;
     }
 
-    public @Nonnull Fragments getFragments() {
+    public @NotNull Fragments getFragments() {
       return this.fragments;
     }
 
@@ -358,7 +358,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();
 
         @Override
-        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) {
+        public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
           HeroDetails heroDetails = null;
           if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) {
             heroDetails = heroDetailsFieldMapper.map(reader);

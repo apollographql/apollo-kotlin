@@ -5,14 +5,14 @@ import com.apollographql.apollo.api.ResponseFieldMapper;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 public final class ResponseFieldMapperFactory {
   private final ConcurrentHashMap<Class, ResponseFieldMapper> pool = new ConcurrentHashMap<>();
 
-  @Nonnull public ResponseFieldMapper create(@Nonnull Operation operation) {
+  @NotNull public ResponseFieldMapper create(@NotNull Operation operation) {
     checkNotNull(operation, "operation == null");
     Class operationClass = operation.getClass();
     ResponseFieldMapper mapper = pool.get(operationClass);

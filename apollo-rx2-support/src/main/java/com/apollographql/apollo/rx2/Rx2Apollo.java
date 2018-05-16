@@ -8,7 +8,7 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.internal.util.Cancelable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
@@ -43,20 +43,20 @@ public class Rx2Apollo {
    * @return the converted Observable
    * @throws NullPointerException if watcher == null
    */
-  public static <T> Observable<Response<T>> from(@Nonnull final ApolloQueryWatcher<T> watcher) {
+  public static <T> Observable<Response<T>> from(@NotNull final ApolloQueryWatcher<T> watcher) {
     checkNotNull(watcher, "watcher == null");
     return Observable.create(new ObservableOnSubscribe<Response<T>>() {
       @Override public void subscribe(final ObservableEmitter<Response<T>> emitter) throws Exception {
         cancelOnObservableDisposed(emitter, watcher);
 
         watcher.enqueueAndWatch(new ApolloCall.Callback<T>() {
-          @Override public void onResponse(@Nonnull Response<T> response) {
+          @Override public void onResponse(@NotNull Response<T> response) {
             if (!emitter.isDisposed()) {
               emitter.onNext(response);
             }
           }
 
-          @Override public void onFailure(@Nonnull ApolloException e) {
+          @Override public void onFailure(@NotNull ApolloException e) {
             Exceptions.throwIfFatal(e);
             if (!emitter.isDisposed()) {
               emitter.onError(e);
@@ -76,27 +76,27 @@ public class Rx2Apollo {
    * @return the converted Observable
    * @throws NullPointerException if originalCall == null
    */
-  @Nonnull public static <T> Observable<Response<T>> from(@Nonnull final ApolloCall<T> call) {
+  @NotNull public static <T> Observable<Response<T>> from(@NotNull final ApolloCall<T> call) {
     checkNotNull(call, "call == null");
 
     return Observable.create(new ObservableOnSubscribe<Response<T>>() {
       @Override public void subscribe(final ObservableEmitter<Response<T>> emitter) throws Exception {
         cancelOnObservableDisposed(emitter, call);
         call.enqueue(new ApolloCall.Callback<T>() {
-          @Override public void onResponse(@Nonnull Response<T> response) {
+          @Override public void onResponse(@NotNull Response<T> response) {
             if (!emitter.isDisposed()) {
               emitter.onNext(response);
             }
           }
 
-          @Override public void onFailure(@Nonnull ApolloException e) {
+          @Override public void onFailure(@NotNull ApolloException e) {
             Exceptions.throwIfFatal(e);
             if (!emitter.isDisposed()) {
               emitter.onError(e);
             }
           }
 
-          @Override public void onStatusEvent(@Nonnull ApolloCall.StatusEvent event) {
+          @Override public void onStatusEvent(@NotNull ApolloCall.StatusEvent event) {
             if (event == ApolloCall.StatusEvent.COMPLETED && !emitter.isDisposed()) {
               emitter.onComplete();
             }
@@ -113,7 +113,7 @@ public class Rx2Apollo {
    * @return the converted Completable
    * @throws NullPointerException if prefetch == null
    */
-  @Nonnull public static Completable from(@Nonnull final ApolloPrefetch prefetch) {
+  @NotNull public static Completable from(@NotNull final ApolloPrefetch prefetch) {
     checkNotNull(prefetch, "prefetch == null");
 
     return Completable.create(new CompletableOnSubscribe() {
@@ -126,7 +126,7 @@ public class Rx2Apollo {
             }
           }
 
-          @Override public void onFailure(@Nonnull ApolloException e) {
+          @Override public void onFailure(@NotNull ApolloException e) {
             Exceptions.throwIfFatal(e);
             if (!emitter.isDisposed()) {
               emitter.onError(e);
@@ -137,12 +137,12 @@ public class Rx2Apollo {
     });
   }
 
-  @Nonnull public static <T> Flowable<Response<T>> from(@Nonnull ApolloSubscriptionCall<T> call) {
+  @NotNull public static <T> Flowable<Response<T>> from(@NotNull ApolloSubscriptionCall<T> call) {
     return from(call, BackpressureStrategy.LATEST);
   }
 
-  @Nonnull public static <T> Flowable<Response<T>> from(@Nonnull final ApolloSubscriptionCall<T> call,
-      @Nonnull BackpressureStrategy backpressureStrategy) {
+  @NotNull public static <T> Flowable<Response<T>> from(@NotNull final ApolloSubscriptionCall<T> call,
+      @NotNull BackpressureStrategy backpressureStrategy) {
     checkNotNull(call, "originalCall == null");
     checkNotNull(backpressureStrategy, "backpressureStrategy == null");
     return Flowable.create(new FlowableOnSubscribe<Response<T>>() {
@@ -150,13 +150,13 @@ public class Rx2Apollo {
         cancelOnFlowableDisposed(emitter, call);
         call.execute(
             new ApolloSubscriptionCall.Callback<T>() {
-              @Override public void onResponse(@Nonnull Response<T> response) {
+              @Override public void onResponse(@NotNull Response<T> response) {
                 if (!emitter.isCancelled()) {
                   emitter.onNext(response);
                 }
               }
 
-              @Override public void onFailure(@Nonnull ApolloException e) {
+              @Override public void onFailure(@NotNull ApolloException e) {
                 Exceptions.throwIfFatal(e);
                 if (!emitter.isCancelled()) {
                   emitter.onError(e);

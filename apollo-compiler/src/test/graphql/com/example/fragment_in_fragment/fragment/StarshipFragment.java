@@ -17,8 +17,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public class StarshipFragment implements GraphqlFragment {
@@ -47,9 +47,9 @@ public class StarshipFragment implements GraphqlFragment {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Starship"));
 
-  final @Nonnull String __typename;
+  final @NotNull String __typename;
 
-  final @Nonnull String id;
+  final @NotNull String id;
 
   final Optional<String> name;
 
@@ -61,7 +61,7 @@ public class StarshipFragment implements GraphqlFragment {
 
   private volatile boolean $hashCodeMemoized;
 
-  public StarshipFragment(@Nonnull String __typename, @Nonnull String id, @Nullable String name,
+  public StarshipFragment(@NotNull String __typename, @NotNull String id, @Nullable String name,
       @Nullable PilotConnection pilotConnection) {
     this.__typename = Utils.checkNotNull(__typename, "__typename == null");
     this.id = Utils.checkNotNull(id, "id == null");
@@ -69,14 +69,14 @@ public class StarshipFragment implements GraphqlFragment {
     this.pilotConnection = Optional.fromNullable(pilotConnection);
   }
 
-  public @Nonnull String __typename() {
+  public @NotNull String __typename() {
     return this.__typename;
   }
 
   /**
    * The ID of an object
    */
-  public @Nonnull String id() {
+  public @NotNull String id() {
     return this.id;
   }
 
@@ -173,7 +173,7 @@ public class StarshipFragment implements GraphqlFragment {
       ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<List<Edge>> edges;
 
@@ -183,12 +183,12 @@ public class StarshipFragment implements GraphqlFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public PilotConnection(@Nonnull String __typename, @Nullable List<Edge> edges) {
+    public PilotConnection(@NotNull String __typename, @Nullable List<Edge> edges) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.edges = Optional.fromNullable(edges);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
@@ -280,7 +280,7 @@ public class StarshipFragment implements GraphqlFragment {
       ResponseField.forObject("node", "node", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<Node> node;
 
@@ -290,12 +290,12 @@ public class StarshipFragment implements GraphqlFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public Edge(@Nonnull String __typename, @Nullable Node node) {
+    public Edge(@NotNull String __typename, @Nullable Node node) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.node = Optional.fromNullable(node);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
@@ -377,9 +377,9 @@ public class StarshipFragment implements GraphqlFragment {
       ResponseField.forFragment("__typename", "__typename", Arrays.asList("Person"))
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    private final @Nonnull Fragments fragments;
+    private final @NotNull Fragments fragments;
 
     private volatile String $toString;
 
@@ -387,16 +387,16 @@ public class StarshipFragment implements GraphqlFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public Node(@Nonnull String __typename, @Nonnull Fragments fragments) {
+    public Node(@NotNull String __typename, @NotNull Fragments fragments) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.fragments = Utils.checkNotNull(fragments, "fragments == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
-    public @Nonnull Fragments fragments() {
+    public @NotNull Fragments fragments() {
       return this.fragments;
     }
 
@@ -449,7 +449,7 @@ public class StarshipFragment implements GraphqlFragment {
     }
 
     public static class Fragments {
-      final @Nonnull PilotFragment pilotFragment;
+      final @NotNull PilotFragment pilotFragment;
 
       private volatile String $toString;
 
@@ -457,11 +457,11 @@ public class StarshipFragment implements GraphqlFragment {
 
       private volatile boolean $hashCodeMemoized;
 
-      public Fragments(@Nonnull PilotFragment pilotFragment) {
+      public Fragments(@NotNull PilotFragment pilotFragment) {
         this.pilotFragment = Utils.checkNotNull(pilotFragment, "pilotFragment == null");
       }
 
-      public @Nonnull PilotFragment pilotFragment() {
+      public @NotNull PilotFragment pilotFragment() {
         return this.pilotFragment;
       }
 
@@ -515,7 +515,7 @@ public class StarshipFragment implements GraphqlFragment {
         final PilotFragment.Mapper pilotFragmentFieldMapper = new PilotFragment.Mapper();
 
         @Override
-        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) {
+        public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
           PilotFragment pilotFragment = null;
           if (PilotFragment.POSSIBLE_TYPES.contains(conditionalType)) {
             pilotFragment = pilotFragmentFieldMapper.map(reader);

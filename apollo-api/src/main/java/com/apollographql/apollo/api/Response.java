@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static java.util.Collections.unmodifiableList;
@@ -19,7 +19,7 @@ public final class Response<T> {
   private Set<String> dependentKeys;
   private final boolean fromCache;
 
-  public static <T> Response.Builder<T> builder(@Nonnull final Operation operation) {
+  public static <T> Response.Builder<T> builder(@NotNull final Operation operation) {
     return new Builder<>(operation);
   }
 
@@ -40,11 +40,11 @@ public final class Response<T> {
     return data;
   }
 
-  @Nonnull public List<Error> errors() {
+  @NotNull public List<Error> errors() {
     return errors;
   }
 
-  @Nonnull public Set<String> dependentKeys() {
+  @NotNull public Set<String> dependentKeys() {
     return dependentKeys;
   }
 
@@ -71,7 +71,7 @@ public final class Response<T> {
     Set<String> dependentKeys;
     boolean fromCache;
 
-    Builder(@Nonnull final Operation operation) {
+    Builder(@NotNull final Operation operation) {
       this.operation = checkNotNull(operation, "operation == null");
     }
 

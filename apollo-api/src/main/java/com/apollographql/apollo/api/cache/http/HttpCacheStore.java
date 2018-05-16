@@ -2,8 +2,8 @@ package com.apollographql.apollo.api.cache.http;
 
 import java.io.IOException;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * CacheStore is an abstraction for a cache store that is used to read, modify or delete http responses.
@@ -15,7 +15,7 @@ public interface HttpCacheStore {
    * @param cacheKey the name of the entry
    * @return ResponseCacheRecord
    */
-  @Nullable HttpCacheRecord cacheRecord(@Nonnull String cacheKey) throws IOException;
+  @Nullable HttpCacheRecord cacheRecord(@NotNull String cacheKey) throws IOException;
 
   /**
    * Returns an editor for the entry named cacheKey or null if another edit is in progress.
@@ -23,13 +23,13 @@ public interface HttpCacheStore {
    * @param cacheKey the entry to edit.
    * @return {@link HttpCacheRecordEditor} to use for editing the entry
    */
-  @Nullable HttpCacheRecordEditor cacheRecordEditor(@Nonnull String cacheKey) throws IOException;
+  @Nullable HttpCacheRecordEditor cacheRecordEditor(@NotNull String cacheKey) throws IOException;
 
   /**
    * Drops the entry for key if it exists and can be removed. If the entry for key is currently being edited, that edit
    * will complete normally but its value will not be stored.
    */
-  void remove(@Nonnull String cacheKey) throws IOException;
+  void remove(@NotNull String cacheKey) throws IOException;
 
   /**
    * Closes the cache and deletes all of its stored values. This will delete all files in the cache directory including

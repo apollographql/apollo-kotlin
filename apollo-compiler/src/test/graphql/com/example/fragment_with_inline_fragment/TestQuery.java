@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
@@ -196,7 +196,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return this;
       }
 
-      public Builder hero(@Nonnull Mutator<Hero.Builder> mutator) {
+      public Builder hero(@NotNull Mutator<Hero.Builder> mutator) {
         Utils.checkNotNull(mutator, "mutator == null");
         Hero.Builder builder = this.hero != null ? this.hero.toBuilder() : Hero.builder();
         mutator.accept(builder);
@@ -219,13 +219,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       "Droid"))
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
-    final @Nonnull List<Episode> appearsIn;
+    final @NotNull List<Episode> appearsIn;
 
-    private final @Nonnull Fragments fragments;
+    private final @NotNull Fragments fragments;
 
     private volatile String $toString;
 
@@ -233,33 +233,33 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Hero(@Nonnull String __typename, @Nonnull String name, @Nonnull List<Episode> appearsIn,
-        @Nonnull Fragments fragments) {
+    public Hero(@NotNull String __typename, @NotNull String name, @NotNull List<Episode> appearsIn,
+        @NotNull Fragments fragments) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
       this.appearsIn = Utils.checkNotNull(appearsIn, "appearsIn == null");
       this.fragments = Utils.checkNotNull(fragments, "fragments == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * The name of the character
      */
-    public @Nonnull String name() {
+    public @NotNull String name() {
       return this.name;
     }
 
     /**
      * The movies this character appears in
      */
-    public @Nonnull List<Episode> appearsIn() {
+    public @NotNull List<Episode> appearsIn() {
       return this.appearsIn;
     }
 
-    public @Nonnull Fragments fragments() {
+    public @NotNull Fragments fragments() {
       return this.fragments;
     }
 
@@ -416,7 +416,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final HeroDetails.Mapper heroDetailsFieldMapper = new HeroDetails.Mapper();
 
         @Override
-        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) {
+        public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
           HeroDetails heroDetails = null;
           if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) {
             heroDetails = heroDetailsFieldMapper.map(reader);
@@ -466,38 +466,38 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static final class Builder {
-      private @Nonnull String __typename;
+      private @NotNull String __typename;
 
-      private @Nonnull String name;
+      private @NotNull String name;
 
-      private @Nonnull List<Episode> appearsIn;
+      private @NotNull List<Episode> appearsIn;
 
-      private @Nonnull Fragments fragments;
+      private @NotNull Fragments fragments;
 
       Builder() {
       }
 
-      public Builder __typename(@Nonnull String __typename) {
+      public Builder __typename(@NotNull String __typename) {
         this.__typename = __typename;
         return this;
       }
 
-      public Builder name(@Nonnull String name) {
+      public Builder name(@NotNull String name) {
         this.name = name;
         return this;
       }
 
-      public Builder appearsIn(@Nonnull List<Episode> appearsIn) {
+      public Builder appearsIn(@NotNull List<Episode> appearsIn) {
         this.appearsIn = appearsIn;
         return this;
       }
 
-      public Builder fragments(@Nonnull Fragments fragments) {
+      public Builder fragments(@NotNull Fragments fragments) {
         this.fragments = fragments;
         return this;
       }
 
-      public Builder fragments(@Nonnull Mutator<Fragments.Builder> mutator) {
+      public Builder fragments(@NotNull Mutator<Fragments.Builder> mutator) {
         Utils.checkNotNull(mutator, "mutator == null");
         Fragments.Builder builder = this.fragments != null ? this.fragments.toBuilder() : Fragments.builder();
         mutator.accept(builder);

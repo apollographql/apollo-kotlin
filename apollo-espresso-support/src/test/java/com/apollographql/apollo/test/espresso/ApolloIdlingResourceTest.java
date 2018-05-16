@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -73,11 +73,11 @@ public class ApolloIdlingResourceTest {
       return data;
     }
 
-    @Nonnull @Override public OperationName name() {
+    @NotNull @Override public OperationName name() {
       return operationName;
     }
 
-    @Nonnull @Override public String operationId() {
+    @NotNull @Override public String operationId() {
       return "";
     }
   };
@@ -150,11 +150,11 @@ public class ApolloIdlingResourceTest {
     assertThat(idlingResource.isIdleNow()).isTrue();
 
     apolloClient.query(EMPTY_QUERY).enqueue(new ApolloCall.Callback<Object>() {
-      @Override public void onResponse(@Nonnull Response<Object> response) {
+      @Override public void onResponse(@NotNull Response<Object> response) {
         latch.countDown();
       }
 
-      @Override public void onFailure(@Nonnull ApolloException e) {
+      @Override public void onFailure(@NotNull ApolloException e) {
         throw new AssertionError("This callback can't be called.");
       }
     });

@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okio.BufferedSource;
 
@@ -45,7 +45,7 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
   }
 
   @SuppressWarnings("unchecked")
-  public Response<W> parse(@Nonnull Map<String, Object> payload) {
+  public Response<W> parse(@NotNull Map<String, Object> payload) {
     checkNotNull(payload, "payload == null");
 
     D data = null;

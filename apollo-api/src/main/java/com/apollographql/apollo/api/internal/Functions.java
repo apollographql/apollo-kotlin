@@ -1,7 +1,7 @@
 package com.apollographql.apollo.api.internal;
 
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 

@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okio.Buffer;
 
@@ -96,7 +96,7 @@ public class InputFieldJsonWriterTest {
   @Test
   public void writeList() throws IOException {
     inputFieldJsonWriter.writeList("someField", new InputFieldWriter.ListWriter() {
-      @Override public void write(@Nonnull InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
+      @Override public void write(@NotNull InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
         listItemWriter.writeString("someValue");
       }
     });
@@ -108,7 +108,7 @@ public class InputFieldJsonWriterTest {
   public void writeCustomBoolean() throws IOException {
     Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
     customTypeAdapters.put(new MockCustomScalarType(CustomTypeValue.GraphQLBoolean.class), new MockCustomTypeAdapter() {
-      @Nonnull @Override public CustomTypeValue encode(@Nonnull Object value) {
+      @NotNull @Override public CustomTypeValue encode(@NotNull Object value) {
         return new CustomTypeValue.GraphQLBoolean((Boolean) value);
       }
     });
@@ -122,7 +122,7 @@ public class InputFieldJsonWriterTest {
   public void writeCustomNumber() throws IOException {
     Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
     customTypeAdapters.put(new MockCustomScalarType(CustomTypeValue.GraphQLNumber.class), new MockCustomTypeAdapter() {
-      @Nonnull @Override public CustomTypeValue encode(@Nonnull Object value) {
+      @NotNull @Override public CustomTypeValue encode(@NotNull Object value) {
         return new CustomTypeValue.GraphQLNumber((Number) value);
       }
     });
@@ -136,7 +136,7 @@ public class InputFieldJsonWriterTest {
   public void writeCustomString() throws IOException {
     Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
     customTypeAdapters.put(new MockCustomScalarType(CustomTypeValue.GraphQLString.class), new MockCustomTypeAdapter() {
-      @Nonnull @Override public CustomTypeValue encode(@Nonnull Object value) {
+      @NotNull @Override public CustomTypeValue encode(@NotNull Object value) {
         return new CustomTypeValue.GraphQLString((String) value);
       }
     });
@@ -150,7 +150,7 @@ public class InputFieldJsonWriterTest {
   public void writeCustomJsonString() throws IOException {
     Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
     customTypeAdapters.put(new MockCustomScalarType(CustomTypeValue.GraphQLJsonString.class), new MockCustomTypeAdapter() {
-      @Nonnull @Override public CustomTypeValue encode(@Nonnull Object value) {
+      @NotNull @Override public CustomTypeValue encode(@NotNull Object value) {
         return new CustomTypeValue.GraphQLJsonString((String) value);
       }
     });
@@ -164,7 +164,7 @@ public class InputFieldJsonWriterTest {
   public void writeCustomJson() throws IOException {
     Map<ScalarType, CustomTypeAdapter> customTypeAdapters = new HashMap<>();
     customTypeAdapters.put(new MockCustomScalarType(CustomTypeValue.GraphQLJson.class), new MockCustomTypeAdapter() {
-      @Nonnull @Override public CustomTypeValue encode(@Nonnull Object value) {
+      @NotNull @Override public CustomTypeValue encode(@NotNull Object value) {
         return new CustomTypeValue.GraphQLJson((Map<String, Object>) value);
       }
     });
@@ -211,7 +211,7 @@ public class InputFieldJsonWriterTest {
   }
 
   private abstract class MockCustomTypeAdapter implements CustomTypeAdapter {
-    @Override public Object decode(@Nonnull CustomTypeValue value) {
+    @Override public Object decode(@NotNull CustomTypeValue value) {
       throw new UnsupportedOperationException();
     }
   }

@@ -1,5 +1,5 @@
 buildscript {
-  ext.apolloReleaseVersion = '0.4.4-SNAPSHOT'
+  ext.apolloReleaseVersion = '0.5.1-SNAPSHOT'
 
   dependencies {
     classpath dep.androidPlugin
@@ -28,13 +28,12 @@ android {
 }
 
 dependencies {
-  provided dep.jsr305
+  provided dep.jetbrainsAnnotations
 
   compile "com.apollographql.apollo:apollo-runtime:$apolloReleaseVersion"
   compile "com.apollographql.apollo:apollo-android-support:$apolloReleaseVersion"
   compile "com.apollographql.apollo:apollo-rx2-support:$apolloReleaseVersion"
   compile dep.appcompat
-  compile dep.okhttpLoggingInterceptor
   compile dep.recyclerView
   compile dep.rxandroid
   compile dep.rxjava2

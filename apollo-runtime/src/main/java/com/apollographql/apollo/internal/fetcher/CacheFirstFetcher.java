@@ -8,7 +8,7 @@ import com.apollographql.apollo.internal.ApolloLogger;
 
 import java.util.concurrent.Executor;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Signals the apollo client to first fetch the data from the normalized cache. If it's not present in the normalized
@@ -26,15 +26,15 @@ public final class CacheFirstFetcher implements ResponseFetcher {
     volatile boolean disposed;
 
     @Override
-    public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull final ApolloInterceptorChain chain,
-        @Nonnull final Executor dispatcher, @Nonnull final CallBack callBack) {
+    public void interceptAsync(@NotNull final InterceptorRequest request, @NotNull final ApolloInterceptorChain chain,
+        @NotNull final Executor dispatcher, @NotNull final CallBack callBack) {
       InterceptorRequest cacheRequest = request.toBuilder().fetchFromCache(true).build();
       chain.proceedAsync(cacheRequest, dispatcher, new CallBack() {
-        @Override public void onResponse(@Nonnull InterceptorResponse response) {
+        @Override public void onResponse(@NotNull InterceptorResponse response) {
           callBack.onResponse(response);
         }
 
-        @Override public void onFailure(@Nonnull ApolloException e) {
+        @Override public void onFailure(@NotNull ApolloException e) {
           if (!disposed) {
             InterceptorRequest networkRequest = request.toBuilder().fetchFromCache(false).build();
             chain.proceedAsync(networkRequest, dispatcher, callBack);

@@ -18,7 +18,7 @@ import java.io.Closeable;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * ApolloParseInterceptor is a concrete {@link ApolloInterceptor} responsible for inflating the http responses into
@@ -43,11 +43,11 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
   }
 
   @Override
-  public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-      @Nonnull Executor dispatcher, @Nonnull final CallBack callBack) {
+  public void interceptAsync(@NotNull final InterceptorRequest request, @NotNull ApolloInterceptorChain chain,
+      @NotNull Executor dispatcher, @NotNull final CallBack callBack) {
     if (disposed) return;
     chain.proceedAsync(request, dispatcher, new CallBack() {
-      @Override public void onResponse(@Nonnull InterceptorResponse response) {
+      @Override public void onResponse(@NotNull InterceptorResponse response) {
         try {
           if (disposed) return;
           InterceptorResponse result = parse(request.operation, response.httpResponse.get());
@@ -58,7 +58,7 @@ public final class ApolloParseInterceptor implements ApolloInterceptor {
         }
       }
 
-      @Override public void onFailure(@Nonnull ApolloException e) {
+      @Override public void onFailure(@NotNull ApolloException e) {
         if (disposed) return;
         callBack.onFailure(e);
       }

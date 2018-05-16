@@ -19,8 +19,8 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static com.apollographql.apollo.internal.CallState.ACTIVE;
@@ -68,8 +68,8 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
     return this;
   }
 
-  @Nonnull
-  @Override public synchronized RealApolloQueryWatcher<T> refetchResponseFetcher(@Nonnull ResponseFetcher fetcher) {
+  @NotNull
+  @Override public synchronized RealApolloQueryWatcher<T> refetchResponseFetcher(@NotNull ResponseFetcher fetcher) {
     if (state.get() != IDLE) throw new IllegalStateException("Already Executed");
     checkNotNull(fetcher, "responseFetcher == null");
     this.refetchResponseFetcher = fetcher;
@@ -104,7 +104,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
     return state.get() == CANCELED;
   }
 
-  @Nonnull @Override public Operation operation() {
+  @NotNull @Override public Operation operation() {
     return activeCall.operation();
   }
 
@@ -131,7 +131,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
 
   private ApolloCall.Callback<T> callbackProxy() {
     return new ApolloCall.Callback<T>() {
-      @Override public void onResponse(@Nonnull Response<T> response) {
+      @Override public void onResponse(@NotNull Response<T> response) {
         Optional<ApolloCall.Callback<T>> callback = responseCallback();
         if (!callback.isPresent()) {
           logger.d("onResponse for watched operation: %s. No callback present.", operation().name().name());
@@ -142,7 +142,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
         callback.get().onResponse(response);
       }
 
-      @Override public void onFailure(@Nonnull ApolloException e) {
+      @Override public void onFailure(@NotNull ApolloException e) {
         Optional<ApolloCall.Callback<T>> callback = terminate();
         if (!callback.isPresent()) {
           logger.d(e, "onFailure for operation: %s. No callback present.", operation().name().name());

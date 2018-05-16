@@ -21,7 +21,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okhttp3.MediaType;
 import okhttp3.Protocol;
@@ -42,8 +42,8 @@ public class ApolloInterceptorChainTest {
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull Executor dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@NotNull InterceptorRequest request, @NotNull ApolloInterceptorChain chain,
+          @NotNull Executor dispatcher, @NotNull CallBack callBack) {
         counter.decrementAndGet();
       }
 
@@ -57,10 +57,10 @@ public class ApolloInterceptorChainTest {
     chain.proceedAsync(
         ApolloInterceptor.InterceptorRequest.builder(query).fetchFromCache(false).build(), Utils.immediateExecutor(),
         new CallBack() {
-          @Override public void onResponse(@Nonnull InterceptorResponse response) {
+          @Override public void onResponse(@NotNull InterceptorResponse response) {
           }
 
-          @Override public void onFailure(@Nonnull ApolloException e) {
+          @Override public void onFailure(@NotNull ApolloException e) {
           }
 
           @Override public void onCompleted() {
@@ -86,8 +86,8 @@ public class ApolloInterceptorChainTest {
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull Executor dispatcher, @Nonnull final CallBack callBack) {
+      public void interceptAsync(@NotNull InterceptorRequest request, @NotNull ApolloInterceptorChain chain,
+          @NotNull Executor dispatcher, @NotNull final CallBack callBack) {
         dispatcher.execute(new Runnable() {
           @Override public void run() {
             callBack.onResponse(expectedResponse);
@@ -104,12 +104,12 @@ public class ApolloInterceptorChainTest {
     RealApolloInterceptorChain chain = new RealApolloInterceptorChain(interceptors);
     chain.proceedAsync(ApolloInterceptor.InterceptorRequest.builder(query).fetchFromCache(false).build(),
         Utils.immediateExecutor(), new CallBack() {
-          @Override public void onResponse(@Nonnull InterceptorResponse response) {
+          @Override public void onResponse(@NotNull InterceptorResponse response) {
             assertThat(response).isEqualTo(expectedResponse);
             counter.decrementAndGet();
           }
 
-          @Override public void onFailure(@Nonnull ApolloException e) {
+          @Override public void onFailure(@NotNull ApolloException e) {
 
           }
 
@@ -135,8 +135,8 @@ public class ApolloInterceptorChainTest {
     EpisodeHeroNameQuery query = createQuery();
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-          @Nonnull Executor dispatcher, @Nonnull final CallBack callBack) {
+      public void interceptAsync(@NotNull InterceptorRequest request, @NotNull ApolloInterceptorChain chain,
+          @NotNull Executor dispatcher, @NotNull final CallBack callBack) {
         dispatcher.execute(new Runnable() {
           @Override public void run() {
             ApolloException apolloException = new ApolloException(message);
@@ -154,11 +154,11 @@ public class ApolloInterceptorChainTest {
     RealApolloInterceptorChain chain = new RealApolloInterceptorChain(interceptors);
     chain.proceedAsync(ApolloInterceptor.InterceptorRequest.builder(query).fetchFromCache(false).build(),
         Utils.immediateExecutor(), new CallBack() {
-          @Override public void onResponse(@Nonnull InterceptorResponse response) {
+          @Override public void onResponse(@NotNull InterceptorResponse response) {
 
           }
 
-          @Override public void onFailure(@Nonnull ApolloException e) {
+          @Override public void onFailure(@NotNull ApolloException e) {
             assertThat(e.getMessage()).isEqualTo(message);
             counter.decrementAndGet();
           }
@@ -183,8 +183,8 @@ public class ApolloInterceptorChainTest {
 
     ApolloInterceptor interceptor = new ApolloInterceptor() {
       @Override
-      public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain, @Nonnull
-          Executor dispatcher, @Nonnull CallBack callBack) {
+      public void interceptAsync(@NotNull InterceptorRequest request, @NotNull ApolloInterceptorChain chain, @NotNull
+          Executor dispatcher, @NotNull CallBack callBack) {
 
       }
 
@@ -201,7 +201,7 @@ public class ApolloInterceptorChainTest {
     }
   }
 
-  @NonNull
+  @NotNull
   private EpisodeHeroNameQuery createQuery() {
     return EpisodeHeroNameQuery
         .builder()
@@ -209,7 +209,7 @@ public class ApolloInterceptorChainTest {
         .build();
   }
 
-  @NonNull
+  @NotNull
   private InterceptorResponse prepareInterceptorResponse(EpisodeHeroNameQuery query) {
     Request request = new Request.Builder()
         .url("https://localhost:8080/")

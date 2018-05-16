@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -40,8 +40,8 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
   final ApolloLogger logger;
   volatile boolean disposed;
 
-  public ApolloCacheInterceptor(@Nonnull ApolloStore apolloStore, @Nonnull ResponseFieldMapper responseFieldMapper,
-      @Nonnull Executor dispatcher, @Nonnull ApolloLogger logger) {
+  public ApolloCacheInterceptor(@NotNull ApolloStore apolloStore, @NotNull ResponseFieldMapper responseFieldMapper,
+      @NotNull Executor dispatcher, @NotNull ApolloLogger logger) {
     this.apolloStore = checkNotNull(apolloStore, "cache == null");
     this.responseFieldMapper = checkNotNull(responseFieldMapper, "responseFieldMapper == null");
     this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
@@ -49,8 +49,8 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
   }
 
   @Override
-  public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull final ApolloInterceptorChain chain,
-      @Nonnull final Executor dispatcher, @Nonnull final CallBack callBack) {
+  public void interceptAsync(@NotNull final InterceptorRequest request, @NotNull final ApolloInterceptorChain chain,
+      @NotNull final Executor dispatcher, @NotNull final CallBack callBack) {
     dispatcher.execute(new Runnable() {
       @Override public void run() {
         if (disposed) return;
@@ -67,7 +67,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
         } else {
           writeOptimisticUpdatesAndPublish(request);
           chain.proceedAsync(request, dispatcher, new CallBack() {
-            @Override public void onResponse(@Nonnull InterceptorResponse networkResponse) {
+            @Override public void onResponse(@NotNull InterceptorResponse networkResponse) {
               if (disposed) return;
 
               try {
@@ -86,7 +86,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
               callBack.onCompleted();
             }
 
-            @Override public void onFailure(@Nonnull ApolloException t) {
+            @Override public void onFailure(@NotNull ApolloException t) {
               rollbackOptimisticUpdatesAndPublish(request);
               callBack.onFailure(t);
             }
@@ -125,7 +125,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
       final InterceptorRequest request) {
     final Optional<List<Record>> records = networkResponse.cacheRecords.map(
         new Function<Collection<Record>, List<Record>>() {
-          @Nonnull @Override public List<Record> apply(@Nonnull Collection<Record> records) {
+          @NotNull @Override public List<Record> apply(@NotNull Collection<Record> records) {
             final List<Record> result = new ArrayList<>(records.size());
             for (Record record : records) {
               result.add(record.toBuilder().mutationId(request.uniqueId).build());

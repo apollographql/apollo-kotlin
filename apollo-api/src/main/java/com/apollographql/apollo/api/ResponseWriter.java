@@ -2,28 +2,28 @@ package com.apollographql.apollo.api;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface ResponseWriter {
-  void writeString(@Nonnull ResponseField field, @Nullable String value);
+  void writeString(@NotNull ResponseField field, @Nullable String value);
 
-  void writeInt(@Nonnull ResponseField field, @Nullable Integer value);
+  void writeInt(@NotNull ResponseField field, @Nullable Integer value);
 
-  void writeLong(@Nonnull ResponseField field, @Nullable Long value);
+  void writeLong(@NotNull ResponseField field, @Nullable Long value);
 
-  void writeDouble(@Nonnull ResponseField field, @Nullable Double value);
+  void writeDouble(@NotNull ResponseField field, @Nullable Double value);
 
-  void writeBoolean(@Nonnull ResponseField field, @Nullable Boolean value);
+  void writeBoolean(@NotNull ResponseField field, @Nullable Boolean value);
 
-  void writeCustom(@Nonnull ResponseField.CustomTypeField field, @Nullable Object value);
+  void writeCustom(@NotNull ResponseField.CustomTypeField field, @Nullable Object value);
 
-  void writeObject(@Nonnull ResponseField field, @Nullable ResponseFieldMarshaller marshaller);
+  void writeObject(@NotNull ResponseField field, @Nullable ResponseFieldMarshaller marshaller);
 
-  void writeList(@Nonnull ResponseField field, @Nullable List values, @Nonnull ListWriter listWriter);
+  void writeList(@NotNull ResponseField field, @Nullable List values, @NotNull ListWriter listWriter);
 
   interface ListWriter {
-    void write(@Nullable Object value, @Nonnull ListItemWriter listItemWriter);
+    void write(@Nullable Object value, @NotNull ListItemWriter listItemWriter);
   }
 
   interface ListItemWriter {
@@ -37,7 +37,7 @@ public interface ResponseWriter {
 
     void writeBoolean(@Nullable Object value);
 
-    void writeCustom(@Nonnull ScalarType scalarType, @Nullable Object value);
+    void writeCustom(@NotNull ScalarType scalarType, @Nullable Object value);
 
     void writeObject(@Nullable ResponseFieldMarshaller marshaller);
   }

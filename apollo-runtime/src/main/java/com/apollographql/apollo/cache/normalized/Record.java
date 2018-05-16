@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -36,12 +36,12 @@ public final class Record {
       this.mutationId = mutationId;
     }
 
-    public Builder addField(@Nonnull String key, @Nullable Object value) {
+    public Builder addField(@NotNull String key, @Nullable Object value) {
       fields.put(checkNotNull(key, "key == null"), value);
       return this;
     }
 
-    public Builder addFields(@Nonnull Map<String, Object> fields) {
+    public Builder addFields(@NotNull Map<String, Object> fields) {
       checkNotNull(fields, "fields == null");
       this.fields.putAll(fields);
       return this;
@@ -61,7 +61,7 @@ public final class Record {
     }
   }
 
-  public static Builder builder(@Nonnull String key) {
+  public static Builder builder(@NotNull String key) {
     return new Builder(checkNotNull(key, "key == null"), new LinkedHashMap<String, Object>(), null);
   }
 

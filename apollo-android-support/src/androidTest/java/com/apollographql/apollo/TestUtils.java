@@ -9,7 +9,7 @@ import com.apollographql.apollo.api.ResponseReader;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public final class TestUtils {
   public static final Query EMPTY_QUERY = new Query() {
@@ -40,11 +40,11 @@ public final class TestUtils {
       return data;
     }
 
-    @Nonnull @Override public OperationName name() {
+    @NotNull @Override public OperationName name() {
       return operationName;
     }
 
-    @Nonnull @Override public String operationId() {
+    @NotNull @Override public String operationId() {
       return "";
     }
   };

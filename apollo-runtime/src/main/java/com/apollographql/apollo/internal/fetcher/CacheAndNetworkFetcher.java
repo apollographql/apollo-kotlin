@@ -9,7 +9,7 @@ import com.apollographql.apollo.internal.ApolloLogger;
 
 import java.util.concurrent.Executor;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Signal the apollo client to fetch the data from both the network and the cache. If cached data is not present, only
@@ -35,17 +35,17 @@ public final class CacheAndNetworkFetcher implements ResponseFetcher {
     private volatile boolean disposed;
 
     @Override
-    public void interceptAsync(@Nonnull InterceptorRequest request, @Nonnull ApolloInterceptorChain chain,
-        @Nonnull Executor dispatcher, @Nonnull final CallBack callBack) {
+    public void interceptAsync(@NotNull InterceptorRequest request, @NotNull ApolloInterceptorChain chain,
+        @NotNull Executor dispatcher, @NotNull final CallBack callBack) {
       if (disposed) return;
       originalCallback = callBack;
       InterceptorRequest cacheRequest = request.toBuilder().fetchFromCache(true).build();
       chain.proceedAsync(cacheRequest, dispatcher, new CallBack() {
-        @Override public void onResponse(@Nonnull InterceptorResponse response) {
+        @Override public void onResponse(@NotNull InterceptorResponse response) {
           handleCacheResponse(response);
         }
 
-        @Override public void onFailure(@Nonnull ApolloException e) {
+        @Override public void onFailure(@NotNull ApolloException e) {
           handleCacheError(e);
         }
 
@@ -59,11 +59,11 @@ public final class CacheAndNetworkFetcher implements ResponseFetcher {
 
       InterceptorRequest networkRequest = request.toBuilder().fetchFromCache(false).build();
       chain.proceedAsync(networkRequest, dispatcher, new CallBack() {
-        @Override public void onResponse(@Nonnull InterceptorResponse response) {
+        @Override public void onResponse(@NotNull InterceptorResponse response) {
           handleNetworkResponse(response);
         }
 
-        @Override public void onFailure(@Nonnull ApolloException e) {
+        @Override public void onFailure(@NotNull ApolloException e) {
           handleNetworkError(e);
         }
 

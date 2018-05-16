@@ -12,8 +12,8 @@ import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.internal.util.Cancelable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * <p>ApolloCall is an abstraction for a request that has been prepared for execution. ApolloCall represents a single
@@ -40,21 +40,21 @@ public interface ApolloCall<T> extends Cancelable {
    *                     defined in {@link ApolloCacheHeaders}.
    * @return The ApolloCall object with the provided {@link CacheHeaders}.
    */
-  @Nonnull ApolloCall<T> cacheHeaders(@Nonnull CacheHeaders cacheHeaders);
+  @NotNull ApolloCall<T> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
 
   /**
    * Creates a new, identical call to this one which can be enqueued or executed even if this call has already been.
    *
    * @return The cloned ApolloCall object.
    */
-  @Nonnull ApolloCall<T> clone();
+  @NotNull ApolloCall<T> clone();
 
   /**
    * Returns GraphQL operation this call executes
    *
    * @return {@link Operation}
    */
-  @Nonnull Operation operation();
+  @NotNull Operation operation();
 
   /**
    * Cancels this {@link ApolloCall}. If the call has already completed, nothing will happen.
@@ -77,21 +77,21 @@ public interface ApolloCall<T> extends Cancelable {
      *
      * @param response the GraphQL response
      */
-    public abstract void onResponse(@Nonnull Response<T> response);
+    public abstract void onResponse(@NotNull Response<T> response);
 
     /**
      * Gets called when an unexpected exception occurs while creating the request or processing the response.
      * Will be called at most one time. It is considered a terminal event. After called,
      * neither {@link #onResponse(Response)} or {@link #onCompleted()} will be called again.
      */
-    public abstract void onFailure(@Nonnull ApolloException e);
+    public abstract void onFailure(@NotNull ApolloException e);
 
     /**
      * Gets called whenever any action happen to this {@link ApolloCall}.
      *
      * @param event status that corresponds to a {@link ApolloCall} action
      */
-    public void onStatusEvent(@Nonnull StatusEvent event) { }
+    public void onStatusEvent(@NotNull StatusEvent event) { }
 
     /**
      * <p>Gets called when an http request error takes place. This is the case when the returned http status code
@@ -100,7 +100,7 @@ public interface ApolloCall<T> extends Cancelable {
      * <b>NOTE:</b> by overriding this callback you must call {@link okhttp3.Response#close()} on {@link
      * ApolloHttpException#rawResponse} to close the network connection.
      */
-    public void onHttpError(@Nonnull ApolloHttpException e) {
+    public void onHttpError(@NotNull ApolloHttpException e) {
       onFailure(e);
       okhttp3.Response response = e.rawResponse();
       if (response != null) {
@@ -111,21 +111,21 @@ public interface ApolloCall<T> extends Cancelable {
     /**
      * Gets called when an http request error takes place due to network failures, timeouts etc.
      */
-    public void onNetworkError(@Nonnull ApolloNetworkException e) {
+    public void onNetworkError(@NotNull ApolloNetworkException e) {
       onFailure(e);
     }
 
     /**
      * Gets called when the network request succeeds but there was an error parsing the response.
      */
-    public void onParseError(@Nonnull ApolloParseException e) {
+    public void onParseError(@NotNull ApolloParseException e) {
       onFailure(e);
     }
 
     /**
      * Gets called when {@link ApolloCall} has been canceled.
      */
-    public void onCanceledError(@Nonnull ApolloCanceledException e) {
+    public void onCanceledError(@NotNull ApolloCanceledException e) {
       onFailure(e);
     }
   }

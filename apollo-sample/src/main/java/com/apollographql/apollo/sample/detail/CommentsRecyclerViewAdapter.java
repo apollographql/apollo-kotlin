@@ -11,7 +11,7 @@ import com.apollographql.apollo.sample.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRecyclerViewAdapter.ViewHolder> {
   private List<String> items = new ArrayList<>();
@@ -30,12 +30,12 @@ class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<CommentsRecyclerV
     return items.size();
   }
 
-  void setItems(@Nonnull List<String> items) {
+  void setItems(@NotNull List<String> items) {
     this.items = new ArrayList<>(items);
     notifyDataSetChanged();
   }
 
-  void addItem(@Nonnull String comment) {
+  void addItem(@NotNull String comment) {
     items.add(0, comment);
     notifyItemInserted(0);
   }

@@ -16,8 +16,8 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import okhttp3.Protocol;
 import okhttp3.Request;
@@ -126,7 +126,7 @@ public class WebSocketSubscriptionTransportMessageTest {
   private static final class MockWebSocketFactory implements WebSocket.Factory {
     MockWebSocket webSocket;
 
-    @Override public WebSocket newWebSocket(@Nonnull Request request, @Nonnull WebSocketListener listener) {
+    @Override public WebSocket newWebSocket(@NotNull Request request, @NotNull WebSocketListener listener) {
       if (webSocket != null) {
         throw new IllegalStateException("already initialized");
       }
@@ -159,12 +159,12 @@ public class WebSocketSubscriptionTransportMessageTest {
       throw new UnsupportedOperationException();
     }
 
-    @Override public boolean send(@Nonnull String text) {
+    @Override public boolean send(@NotNull String text) {
       lastSentMessage = text;
       return true;
     }
 
-    @Override public boolean send(@Nonnull ByteString bytes) {
+    @Override public boolean send(@NotNull ByteString bytes) {
       throw new UnsupportedOperationException();
     }
 
@@ -210,7 +210,7 @@ public class WebSocketSubscriptionTransportMessageTest {
       return data;
     }
 
-    @Nonnull @Override public OperationName name() {
+    @NotNull @Override public OperationName name() {
       return new OperationName() {
         @Override public String name() {
           return "SomeSubscription";
@@ -218,7 +218,7 @@ public class WebSocketSubscriptionTransportMessageTest {
       };
     }
 
-    @Nonnull @Override public String operationId() {
+    @NotNull @Override public String operationId() {
       return "someId";
     }
   }

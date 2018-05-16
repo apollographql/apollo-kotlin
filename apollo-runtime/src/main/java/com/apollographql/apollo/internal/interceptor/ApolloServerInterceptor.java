@@ -15,8 +15,8 @@ import com.apollographql.apollo.internal.ApolloLogger;
 import java.io.IOException;
 import java.util.concurrent.Executor;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -53,9 +53,9 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   volatile Call httpCall;
   volatile boolean disposed;
 
-  public ApolloServerInterceptor(@Nonnull HttpUrl serverUrl, @Nonnull Call.Factory httpCallFactory,
+  public ApolloServerInterceptor(@NotNull HttpUrl serverUrl, @NotNull Call.Factory httpCallFactory,
       @Nullable HttpCachePolicy.Policy cachePolicy, boolean prefetch,
-      @Nonnull ScalarTypeAdapters scalarTypeAdapters, @Nonnull ApolloLogger logger,
+      @NotNull ScalarTypeAdapters scalarTypeAdapters, @NotNull ApolloLogger logger,
       boolean sendOperationIdentifiers) {
     this.serverUrl = checkNotNull(serverUrl, "serverUrl == null");
     this.httpCallFactory = checkNotNull(httpCallFactory, "httpCallFactory == null");
@@ -67,8 +67,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   }
 
   @Override
-  public void interceptAsync(@Nonnull final InterceptorRequest request, @Nonnull final ApolloInterceptorChain chain,
-      @Nonnull Executor dispatcher, @Nonnull final CallBack callBack) {
+  public void interceptAsync(@NotNull final InterceptorRequest request, @NotNull final ApolloInterceptorChain chain,
+      @NotNull Executor dispatcher, @NotNull final CallBack callBack) {
     if (disposed) return;
     dispatcher.execute(new Runnable() {
       @Override public void run() {
@@ -83,13 +83,13 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         }
 
         httpCall.enqueue(new Callback() {
-          @Override public void onFailure(@Nonnull Call call, @Nonnull IOException e) {
+          @Override public void onFailure(@NotNull Call call, @NotNull IOException e) {
             if (disposed) return;
             logger.e(e, "Failed to execute http call for operation %s", request.operation.name().name());
             callBack.onFailure(new ApolloNetworkException("Failed to execute http call", e));
           }
 
-          @Override public void onResponse(@Nonnull Call call, @Nonnull Response response) throws IOException {
+          @Override public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
             if (disposed) return;
             callBack.onResponse(new ApolloInterceptor.InterceptorResponse(response));
             callBack.onCompleted();

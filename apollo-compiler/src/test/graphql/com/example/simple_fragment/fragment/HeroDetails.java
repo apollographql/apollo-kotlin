@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 @Generated("Apollo GraphQL")
 public class HeroDetails implements GraphqlFragment {
@@ -30,9 +30,9 @@ public class HeroDetails implements GraphqlFragment {
 
   public static final List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "Human", "Droid"));
 
-  final @Nonnull String __typename;
+  final @NotNull String __typename;
 
-  final @Nonnull String name;
+  final @NotNull String name;
 
   private volatile String $toString;
 
@@ -40,19 +40,19 @@ public class HeroDetails implements GraphqlFragment {
 
   private volatile boolean $hashCodeMemoized;
 
-  public HeroDetails(@Nonnull String __typename, @Nonnull String name) {
+  public HeroDetails(@NotNull String __typename, @NotNull String name) {
     this.__typename = Utils.checkNotNull(__typename, "__typename == null");
     this.name = Utils.checkNotNull(name, "name == null");
   }
 
-  public @Nonnull String __typename() {
+  public @NotNull String __typename() {
     return this.__typename;
   }
 
   /**
    * The name of the character
    */
-  public @Nonnull String name() {
+  public @NotNull String name() {
     return this.name;
   }
 

@@ -7,8 +7,8 @@ import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.internal.util.Cancelable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 
 import okhttp3.Response;
@@ -48,7 +48,7 @@ public interface ApolloPrefetch extends Cancelable {
    *
    * @return {@link Operation}
    */
-  @Nonnull Operation operation();
+  @NotNull Operation operation();
 
   /**
    * Cancels this {@link ApolloPrefetch}. If the call has already completed, nothing will happen.
@@ -72,13 +72,13 @@ public interface ApolloPrefetch extends Cancelable {
     /**
      * Gets called when an unexpected exception occurs while creating the request or processing the response.
      */
-    public abstract void onFailure(@Nonnull ApolloException e);
+    public abstract void onFailure(@NotNull ApolloException e);
 
     /**
      * Gets called when an http request error takes place. This is the case when the returned http status code doesn't
      * lie in the range 200 (inclusive) and 300 (exclusive).
      */
-    public void onHttpError(@Nonnull ApolloHttpException e) {
+    public void onHttpError(@NotNull ApolloHttpException e) {
       onFailure(e);
       Response response = e.rawResponse();
       if (response != null) {
@@ -89,14 +89,14 @@ public interface ApolloPrefetch extends Cancelable {
     /**
      * Gets called when an http request error takes place due to network failures, timeouts etc.
      */
-    public void onNetworkError(@Nonnull ApolloNetworkException e) {
+    public void onNetworkError(@NotNull ApolloNetworkException e) {
       onFailure(e);
     }
 
     /**
      * Gets called when {@link ApolloCall} has been canceled.
      */
-    public void onCanceledError(@Nonnull ApolloCanceledException e) {
+    public void onCanceledError(@NotNull ApolloCanceledException e) {
       onFailure(e);
     }
   }
@@ -113,7 +113,7 @@ public interface ApolloPrefetch extends Cancelable {
      * @return The ApolloPrefetch object with the wrapped operation object
      */
     <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
-        @Nonnull Operation<D, T, V> operation);
+        @NotNull Operation<D, T, V> operation);
 
   }
 }

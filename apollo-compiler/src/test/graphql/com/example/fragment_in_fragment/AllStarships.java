@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class AllStarships implements Query<AllStarships.Data, Optional<AllStarships.Data>, Operation.Variables> {
@@ -189,7 +189,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<List<Edge>> edges;
 
@@ -199,12 +199,12 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
     private volatile boolean $hashCodeMemoized;
 
-    public AllStarships1(@Nonnull String __typename, @Nullable List<Edge> edges) {
+    public AllStarships1(@NotNull String __typename, @Nullable List<Edge> edges) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.edges = Optional.fromNullable(edges);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
@@ -296,7 +296,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       ResponseField.forObject("node", "node", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<Node> node;
 
@@ -306,12 +306,12 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
     private volatile boolean $hashCodeMemoized;
 
-    public Edge(@Nonnull String __typename, @Nullable Node node) {
+    public Edge(@NotNull String __typename, @Nullable Node node) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.node = Optional.fromNullable(node);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
@@ -393,9 +393,9 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       ResponseField.forFragment("__typename", "__typename", Arrays.asList("Starship"))
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    private final @Nonnull Fragments fragments;
+    private final @NotNull Fragments fragments;
 
     private volatile String $toString;
 
@@ -403,16 +403,16 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
     private volatile boolean $hashCodeMemoized;
 
-    public Node(@Nonnull String __typename, @Nonnull Fragments fragments) {
+    public Node(@NotNull String __typename, @NotNull Fragments fragments) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.fragments = Utils.checkNotNull(fragments, "fragments == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
-    public @Nonnull Fragments fragments() {
+    public @NotNull Fragments fragments() {
       return this.fragments;
     }
 
@@ -465,7 +465,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     }
 
     public static class Fragments {
-      final @Nonnull StarshipFragment starshipFragment;
+      final @NotNull StarshipFragment starshipFragment;
 
       private volatile String $toString;
 
@@ -473,11 +473,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
       private volatile boolean $hashCodeMemoized;
 
-      public Fragments(@Nonnull StarshipFragment starshipFragment) {
+      public Fragments(@NotNull StarshipFragment starshipFragment) {
         this.starshipFragment = Utils.checkNotNull(starshipFragment, "starshipFragment == null");
       }
 
-      public @Nonnull StarshipFragment starshipFragment() {
+      public @NotNull StarshipFragment starshipFragment() {
         return this.starshipFragment;
       }
 
@@ -531,7 +531,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
         final StarshipFragment.Mapper starshipFragmentFieldMapper = new StarshipFragment.Mapper();
 
         @Override
-        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) {
+        public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
           StarshipFragment starshipFragment = null;
           if (StarshipFragment.POSSIBLE_TYPES.contains(conditionalType)) {
             starshipFragment = starshipFragmentFieldMapper.map(reader);

@@ -4,7 +4,6 @@ targetCompatibility = JavaVersion.VERSION_1_7
 sourceCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
-  compileOnly dep.jsr305
   compileOnly project(":apollo-runtime")
   compileOnly project(":apollo-api")
 

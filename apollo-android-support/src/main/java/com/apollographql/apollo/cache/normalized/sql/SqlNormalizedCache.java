@@ -18,8 +18,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static com.apollographql.apollo.cache.ApolloCacheHeaders.DO_NOT_STORE;
@@ -68,17 +68,17 @@ public final class SqlNormalizedCache extends NormalizedCache {
   }
 
   @Override
-  @Nullable public Record loadRecord(@Nonnull final String key, @Nonnull final CacheHeaders cacheHeaders) {
+  @Nullable public Record loadRecord(@NotNull final String key, @NotNull final CacheHeaders cacheHeaders) {
     return selectRecordForKey(key)
         .apply(new Action<Record>() {
-          @Override public void apply(@Nonnull Record record) {
+          @Override public void apply(@NotNull Record record) {
             if (cacheHeaders.hasHeader(EVICT_AFTER_READ)) {
               deleteRecord(key);
             }
           }
         })
         .or(nextCache().flatMap(new Function<NormalizedCache, Optional<Record>>() {
-          @Nonnull @Override public Optional<Record> apply(@Nonnull NormalizedCache cache) {
+          @NotNull @Override public Optional<Record> apply(@NotNull NormalizedCache cache) {
             return Optional.fromNullable(cache.loadRecord(key, cacheHeaders));
           }
         }))
@@ -86,8 +86,8 @@ public final class SqlNormalizedCache extends NormalizedCache {
   }
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
-  @Nonnull @Override public Set<String> merge(@Nonnull final Collection<Record> recordSet,
-      @Nonnull final CacheHeaders cacheHeaders) {
+  @NotNull @Override public Set<String> merge(@NotNull final Collection<Record> recordSet,
+      @NotNull final CacheHeaders cacheHeaders) {
     if (cacheHeaders.hasHeader(DO_NOT_STORE)) {
       return Collections.emptySet();
     }
@@ -107,19 +107,19 @@ public final class SqlNormalizedCache extends NormalizedCache {
   @Override public void clearAll() {
     //noinspection ResultOfMethodCallIgnored
     nextCache().apply(new Action<NormalizedCache>() {
-      @Override public void apply(@Nonnull NormalizedCache cache) {
+      @Override public void apply(@NotNull NormalizedCache cache) {
         cache.clearAll();
       }
     });
     clearCurrentCache();
   }
 
-  @Override public boolean remove(@Nonnull final CacheKey cacheKey) {
+  @Override public boolean remove(@NotNull final CacheKey cacheKey) {
     checkNotNull(cacheKey, "cacheKey == null");
     boolean result;
 
     result = nextCache().map(new Function<NormalizedCache, Boolean>() {
-      @Nonnull @Override public Boolean apply(@Nonnull NormalizedCache cache) {
+      @NotNull @Override public Boolean apply(@NotNull NormalizedCache cache) {
         return cache.remove(cacheKey);
       }
     }).or(Boolean.FALSE);
@@ -181,8 +181,8 @@ public final class SqlNormalizedCache extends NormalizedCache {
     deleteAllRecordsStatement.execute();
   }
 
-  @Nonnull
-  protected Set<String> performMerge(@Nonnull final Record apolloRecord, @Nonnull final CacheHeaders cacheHeaders) {
+  @NotNull
+  protected Set<String> performMerge(@NotNull final Record apolloRecord, @NotNull final CacheHeaders cacheHeaders) {
     Optional<Record> optionalOldRecord = selectRecordForKey(apolloRecord.key());
     Set<String> changedKeys;
     if (!optionalOldRecord.isPresent()) {

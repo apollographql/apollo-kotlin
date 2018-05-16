@@ -6,7 +6,7 @@ import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A call prepared to execute GraphQL query operation.
@@ -18,7 +18,7 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
    *
    * @return {@link ApolloQueryWatcher}
    */
-  @Nonnull ApolloQueryWatcher<T> watcher();
+  @NotNull ApolloQueryWatcher<T> watcher();
 
   /**
    * Sets the http cache policy for response/request cache.
@@ -26,7 +26,7 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
    * @param httpCachePolicy {@link HttpCachePolicy.Policy} to set
    * @return {@link ApolloQueryCall} with the provided {@link HttpCachePolicy.Policy}
    */
-  @Nonnull ApolloQueryCall<T> httpCachePolicy(@Nonnull HttpCachePolicy.Policy httpCachePolicy);
+  @NotNull ApolloQueryCall<T> httpCachePolicy(@NotNull HttpCachePolicy.Policy httpCachePolicy);
 
   /**
    * Sets the {@link CacheHeaders} to use for this call. {@link com.apollographql.apollo.interceptor.FetchOptions} will
@@ -37,7 +37,7 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
    *                     defined in {@link com.apollographql.apollo.cache.ApolloCacheHeaders}.
    * @return The ApolloCall object with the provided {@link CacheHeaders}.
    */
-  @Nonnull @Override ApolloQueryCall<T> cacheHeaders(@Nonnull CacheHeaders cacheHeaders);
+  @NotNull @Override ApolloQueryCall<T> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
 
   /**
    * Sets the {@link ResponseFetcher} strategy for an ApolloCall object.
@@ -45,9 +45,9 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
    * @param fetcher the {@link ResponseFetcher} to use.
    * @return The ApolloCall object with the provided CacheControl strategy
    */
-  @Nonnull ApolloQueryCall<T> responseFetcher(@Nonnull ResponseFetcher fetcher);
+  @NotNull ApolloQueryCall<T> responseFetcher(@NotNull ResponseFetcher fetcher);
 
-  @Nonnull @Override ApolloQueryCall<T> clone();
+  @NotNull @Override ApolloQueryCall<T> clone();
 
   /**
    * Factory for creating {@link ApolloQueryCall} calls.
@@ -59,6 +59,6 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
      * @param query the operation which needs to be performed
      * @return prepared {@link ApolloQueryCall} call to be executed at some point in the future
      */
-    <D extends Query.Data, T, V extends Query.Variables> ApolloQueryCall<T> query(@Nonnull Query<D, T, V> query);
+    <D extends Query.Data, T, V extends Query.Variables> ApolloQueryCall<T> query(@NotNull Query<D, T, V> query);
   }
 }

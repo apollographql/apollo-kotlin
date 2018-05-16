@@ -18,8 +18,8 @@ import java.util.Collections;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import okhttp3.Call;
 import okhttp3.HttpUrl;
@@ -76,13 +76,13 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
     interceptorChain.proceedAsync(request, dispatcher, interceptorCallbackProxy());
   }
 
-  @Nonnull @Override public Operation operation() {
+  @NotNull @Override public Operation operation() {
     return operation;
   }
 
   private ApolloInterceptor.CallBack interceptorCallbackProxy() {
     return new ApolloInterceptor.CallBack() {
-      @Override public void onResponse(@Nonnull ApolloInterceptor.InterceptorResponse response) {
+      @Override public void onResponse(@NotNull ApolloInterceptor.InterceptorResponse response) {
         Response httpResponse = response.httpResponse.get();
         try {
           Optional<Callback> callback = terminate();
@@ -100,7 +100,7 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
         }
       }
 
-      @Override public void onFailure(@Nonnull ApolloException e) {
+      @Override public void onFailure(@NotNull ApolloException e) {
         Optional<Callback> callback = terminate();
         if (!callback.isPresent()) {
           logger.e(e, "onFailure for prefetch operation: %s. No callback present.", operation().name().name());

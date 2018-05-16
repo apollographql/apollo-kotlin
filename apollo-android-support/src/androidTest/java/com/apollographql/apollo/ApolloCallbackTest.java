@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
@@ -55,16 +55,16 @@ public class ApolloCallbackTest {
     final AtomicReference<ApolloException> exceptionRef = new AtomicReference<>();
     server.enqueue(new MockResponse().setResponseCode(401).setBody("Unauthorized request!"));
     apolloClient.query(EMPTY_QUERY).enqueue(ApolloCallback.wrap(new ApolloCall.Callback() {
-      @Override public void onResponse(@Nonnull Response response) {
+      @Override public void onResponse(@NotNull Response response) {
         countDownLatch.countDown();
       }
 
-      @Override public void onFailure(@Nonnull ApolloException e) {
+      @Override public void onFailure(@NotNull ApolloException e) {
         exceptionRef.set(e);
         countDownLatch.countDown();
       }
 
-      @Override public void onHttpError(@Nonnull ApolloHttpException e) {
+      @Override public void onHttpError(@NotNull ApolloHttpException e) {
         exceptionRef.set(e);
         countDownLatch.countDown();
       }
@@ -80,15 +80,15 @@ public class ApolloCallbackTest {
     final Handler callbackHandler = mockCallbackHandler(invoked);
     final AtomicReference<ApolloException> exceptionRef = new AtomicReference<>();
     apolloClient.query(EMPTY_QUERY).enqueue(ApolloCallback.wrap(new ApolloCall.Callback() {
-      @Override public void onResponse(@Nonnull Response response) {
+      @Override public void onResponse(@NotNull Response response) {
         countDownLatch.countDown();
       }
 
-      @Override public void onFailure(@Nonnull ApolloException e) {
+      @Override public void onFailure(@NotNull ApolloException e) {
         countDownLatch.countDown();
       }
 
-      @Override public void onNetworkError(@Nonnull ApolloNetworkException e) {
+      @Override public void onNetworkError(@NotNull ApolloNetworkException e) {
         exceptionRef.set(e);
         countDownLatch.countDown();
       }
@@ -105,15 +105,15 @@ public class ApolloCallbackTest {
     final AtomicReference<ApolloException> exceptionRef = new AtomicReference<>();
     server.enqueue(new MockResponse().setResponseCode(200).setBody("nonsense"));
     apolloClient.query(EMPTY_QUERY).enqueue(ApolloCallback.wrap(new ApolloCall.Callback() {
-      @Override public void onResponse(@Nonnull Response response) {
+      @Override public void onResponse(@NotNull Response response) {
         countDownLatch.countDown();
       }
 
-      @Override public void onFailure(@Nonnull ApolloException e) {
+      @Override public void onFailure(@NotNull ApolloException e) {
         countDownLatch.countDown();
       }
 
-      @Override public void onParseError(@Nonnull ApolloParseException e) {
+      @Override public void onParseError(@NotNull ApolloParseException e) {
         exceptionRef.set(e);
         countDownLatch.countDown();
       }
@@ -142,12 +142,12 @@ public class ApolloCallbackTest {
         "  ]" +
         "}"));
     apolloClient.query(EMPTY_QUERY).enqueue(ApolloCallback.wrap(new ApolloCall.Callback() {
-      @Override public void onResponse(@Nonnull Response response) {
+      @Override public void onResponse(@NotNull Response response) {
         responseRef.set(response);
         countDownLatch.countDown();
       }
 
-      @Override public void onFailure(@Nonnull ApolloException e) {
+      @Override public void onFailure(@NotNull ApolloException e) {
         countDownLatch.countDown();
       }
     }, callbackHandler));

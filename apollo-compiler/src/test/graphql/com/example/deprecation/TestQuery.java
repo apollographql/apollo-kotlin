@@ -24,8 +24,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
@@ -51,7 +51,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   private final TestQuery.Variables variables;
 
-  public TestQuery(@Nonnull Input<Episode> episode) {
+  public TestQuery(@NotNull Input<Episode> episode) {
     Utils.checkNotNull(episode, "episode == null");
     variables = new TestQuery.Variables(episode);
   }
@@ -101,7 +101,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this;
     }
 
-    public Builder episodeInput(@Nonnull Input<Episode> episode) {
+    public Builder episodeInput(@NotNull Input<Episode> episode) {
       this.episode = Utils.checkNotNull(episode, "episode == null");
       return this;
     }
@@ -238,11 +238,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forBoolean("deprecatedBool", "deprecatedBool", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
-    final @Nonnull @Deprecated String deprecated;
+    final @NotNull @Deprecated String deprecated;
 
     final @Deprecated boolean deprecatedBool;
 
@@ -252,22 +252,22 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Hero(@Nonnull String __typename, @Nonnull String name,
-        @Nonnull @Deprecated String deprecated, @Deprecated boolean deprecatedBool) {
+    public Hero(@NotNull String __typename, @NotNull String name,
+        @NotNull @Deprecated String deprecated, @Deprecated boolean deprecatedBool) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
       this.deprecated = Utils.checkNotNull(deprecated, "deprecated == null");
       this.deprecatedBool = deprecatedBool;
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * The name of the character
      */
-    public @Nonnull String name() {
+    public @NotNull String name() {
       return this.name;
     }
 
@@ -275,7 +275,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
      * Test deprecated field
      * @deprecated For test purpose only
      */
-    public @Nonnull @Deprecated String deprecated() {
+    public @NotNull @Deprecated String deprecated() {
       return this.deprecated;
     }
 

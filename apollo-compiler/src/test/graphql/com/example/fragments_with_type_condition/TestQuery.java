@@ -19,8 +19,8 @@ import java.lang.String;
 import java.util.Arrays;
 import java.util.Collections;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
@@ -207,9 +207,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       "Droid"))
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    private final @Nonnull Fragments fragments;
+    private final @NotNull Fragments fragments;
 
     private volatile String $toString;
 
@@ -217,16 +217,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public R2(@Nonnull String __typename, @Nonnull Fragments fragments) {
+    public R2(@NotNull String __typename, @NotNull Fragments fragments) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.fragments = Utils.checkNotNull(fragments, "fragments == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
-    public @Nonnull Fragments fragments() {
+    public @NotNull Fragments fragments() {
       return this.fragments;
     }
 
@@ -362,7 +362,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final DroidDetails.Mapper droidDetailsFieldMapper = new DroidDetails.Mapper();
 
         @Override
-        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) {
+        public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
           HumanDetails humanDetails = null;
           DroidDetails droidDetails = null;
           if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType)) {
@@ -400,9 +400,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       "Droid"))
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    private final @Nonnull Fragments fragments;
+    private final @NotNull Fragments fragments;
 
     private volatile String $toString;
 
@@ -410,16 +410,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Luke(@Nonnull String __typename, @Nonnull Fragments fragments) {
+    public Luke(@NotNull String __typename, @NotNull Fragments fragments) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.fragments = Utils.checkNotNull(fragments, "fragments == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
-    public @Nonnull Fragments fragments() {
+    public @NotNull Fragments fragments() {
       return this.fragments;
     }
 
@@ -555,7 +555,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final DroidDetails.Mapper droidDetailsFieldMapper = new DroidDetails.Mapper();
 
         @Override
-        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) {
+        public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
           HumanDetails humanDetails = null;
           DroidDetails droidDetails = null;
           if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType)) {

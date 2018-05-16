@@ -20,8 +20,8 @@ package com.apollographql.apollo.api.internal;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -73,7 +73,7 @@ final class Present<T> extends Optional<T> {
   @Override public Optional<T> apply(final Action<T> action) {
     checkNotNull(action);
     return map(new Function<T, T>() {
-      @Nonnull @Override public T apply(@Nonnull T t) {
+      @NotNull @Override public T apply(@NotNull T t) {
         action.apply(t);
         return t;
       }

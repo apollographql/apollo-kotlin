@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -24,7 +24,7 @@ public class OperationJsonWriter {
     this.scalarTypeAdapters = scalarTypeAdapters;
   }
 
-  public void write(@Nonnull JsonWriter jsonWriter) throws IOException {
+  public void write(@NotNull JsonWriter jsonWriter) throws IOException {
     checkNotNull(jsonWriter, "jsonWriter == null");
 
     RealResponseWriter realResponseWriter = new RealResponseWriter(Operation.EMPTY_VARIABLES, scalarTypeAdapters);

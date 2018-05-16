@@ -6,8 +6,8 @@ sourceCompatibility = JavaVersion.VERSION_1_7
 dependencies {
   compileOnly dep.okHttp
 
-  compile dep.jsr305
   compile dep.jsr250
+  compile dep.jetbrainsAnnotations
 
   testCompile dep.junit
   testCompile dep.truth

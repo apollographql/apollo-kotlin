@@ -9,7 +9,7 @@ import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.exception.ApolloParseException;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -31,7 +31,7 @@ public final class ApolloCallback<T> extends ApolloCall.Callback<T> {
    * @param callback original callback to delegates calls
    * @param handler  the callback will be run on the thread to which this handler is attached
    */
-  public static <T> ApolloCallback<T> wrap(@Nonnull ApolloCall.Callback<T> callback, @Nonnull Handler handler) {
+  public static <T> ApolloCallback<T> wrap(@NotNull ApolloCall.Callback<T> callback, @NotNull Handler handler) {
     return new ApolloCallback<>(callback, handler);
   }
 
@@ -39,12 +39,12 @@ public final class ApolloCallback<T> extends ApolloCall.Callback<T> {
    * @param callback original callback to delegates calls
    * @param handler  the callback will be run on the thread to which this handler is attached
    */
-  public ApolloCallback(@Nonnull ApolloCall.Callback<T> callback, @Nonnull Handler handler) {
+  public ApolloCallback(@NotNull ApolloCall.Callback<T> callback, @NotNull Handler handler) {
     this.delegate = checkNotNull(callback, "callback == null");
     this.handler = checkNotNull(handler, "handler == null");
   }
 
-  @Override public void onResponse(@Nonnull final Response<T> response) {
+  @Override public void onResponse(@NotNull final Response<T> response) {
     handler.post(new Runnable() {
       @Override public void run() {
         delegate.onResponse(response);
@@ -52,7 +52,7 @@ public final class ApolloCallback<T> extends ApolloCall.Callback<T> {
     });
   }
 
-  @Override public void onStatusEvent(@Nonnull final ApolloCall.StatusEvent event) {
+  @Override public void onStatusEvent(@NotNull final ApolloCall.StatusEvent event) {
     handler.post(new Runnable() {
       @Override public void run() {
         delegate.onStatusEvent(event);
@@ -60,7 +60,7 @@ public final class ApolloCallback<T> extends ApolloCall.Callback<T> {
     });
   }
 
-  @Override public void onFailure(@Nonnull final ApolloException e) {
+  @Override public void onFailure(@NotNull final ApolloException e) {
     handler.post(new Runnable() {
       @Override public void run() {
         delegate.onFailure(e);
@@ -68,7 +68,7 @@ public final class ApolloCallback<T> extends ApolloCall.Callback<T> {
     });
   }
 
-  @Override public void onHttpError(@Nonnull final ApolloHttpException e) {
+  @Override public void onHttpError(@NotNull final ApolloHttpException e) {
     if (Looper.getMainLooper() == handler.getLooper()) {
       delegate.onHttpError(e);
     } else {
@@ -80,7 +80,7 @@ public final class ApolloCallback<T> extends ApolloCall.Callback<T> {
     }
   }
 
-  @Override public void onNetworkError(@Nonnull final ApolloNetworkException e) {
+  @Override public void onNetworkError(@NotNull final ApolloNetworkException e) {
     handler.post(new Runnable() {
       @Override public void run() {
         delegate.onNetworkError(e);
@@ -88,7 +88,7 @@ public final class ApolloCallback<T> extends ApolloCall.Callback<T> {
     });
   }
 
-  @Override public void onParseError(@Nonnull final ApolloParseException e) {
+  @Override public void onParseError(@NotNull final ApolloParseException e) {
     handler.post(new Runnable() {
       @Override public void run() {
         delegate.onParseError(e);

@@ -15,8 +15,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class RealResponseWriter implements ResponseWriter {
   private final Operation.Variables operationVariables;
@@ -28,33 +28,33 @@ public final class RealResponseWriter implements ResponseWriter {
     this.scalarTypeAdapters = scalarTypeAdapters;
   }
 
-  @Override public void writeString(@Nonnull ResponseField field, @Nullable String value) {
+  @Override public void writeString(@NotNull ResponseField field, @Nullable String value) {
     writeScalarFieldValue(field, value);
   }
 
-  @Override public void writeInt(@Nonnull ResponseField field, @Nullable Integer value) {
+  @Override public void writeInt(@NotNull ResponseField field, @Nullable Integer value) {
     writeScalarFieldValue(field, value != null ? BigDecimal.valueOf(value) : null);
   }
 
-  @Override public void writeLong(@Nonnull ResponseField field, @Nullable Long value) {
+  @Override public void writeLong(@NotNull ResponseField field, @Nullable Long value) {
     writeScalarFieldValue(field, value != null ? BigDecimal.valueOf(value) : null);
   }
 
-  @Override public void writeDouble(@Nonnull ResponseField field, @Nullable Double value) {
+  @Override public void writeDouble(@NotNull ResponseField field, @Nullable Double value) {
     writeScalarFieldValue(field, value != null ? BigDecimal.valueOf(value) : null);
   }
 
-  @Override public void writeBoolean(@Nonnull ResponseField field, @Nullable Boolean value) {
+  @Override public void writeBoolean(@NotNull ResponseField field, @Nullable Boolean value) {
     writeScalarFieldValue(field, value);
   }
 
   @SuppressWarnings("unchecked")
-  @Override public void writeCustom(@Nonnull ResponseField.CustomTypeField field, @Nullable Object value) {
+  @Override public void writeCustom(@NotNull ResponseField.CustomTypeField field, @Nullable Object value) {
     CustomTypeAdapter typeAdapter = scalarTypeAdapters.adapterFor(field.scalarType());
     writeScalarFieldValue(field, value != null ? typeAdapter.encode(value).value : null);
   }
 
-  @Override public void writeObject(@Nonnull ResponseField field, @Nullable ResponseFieldMarshaller marshaller) {
+  @Override public void writeObject(@NotNull ResponseField field, @Nullable ResponseFieldMarshaller marshaller) {
     checkFieldValue(field, marshaller);
     if (marshaller == null) {
       buffer.put(field.responseName(), new FieldDescriptor(field, null));
@@ -69,7 +69,7 @@ public final class RealResponseWriter implements ResponseWriter {
   }
 
   @Override
-  public void writeList(@Nonnull ResponseField field, @Nullable List values, @Nonnull ListWriter listWriter) {
+  public void writeList(@NotNull ResponseField field, @Nullable List values, @NotNull ListWriter listWriter) {
     checkFieldValue(field, values);
 
     if (values == null) {
@@ -247,7 +247,7 @@ public final class RealResponseWriter implements ResponseWriter {
       this.value = value;
     }
 
-    @Override public void writeCustom(@Nonnull ScalarType scalarType, @Nullable Object value) {
+    @Override public void writeCustom(@NotNull ScalarType scalarType, @Nullable Object value) {
       CustomTypeAdapter typeAdapter = scalarTypeAdapters.adapterFor(scalarType);
       this.value = value != null ? typeAdapter.encode(value).value : null;
     }

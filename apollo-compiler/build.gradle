@@ -10,14 +10,11 @@ sourceSets {
 }
 
 dependencies {
-  compileOnly dep.jsr305
-
   compile dep.javaPoet
   compile dep.kotlinStdLib
   compile dep.moshi
   compile project(":apollo-api")
 
-  testCompile dep.jsr305
   testCompile dep.junit
   testCompile dep.truth
   testCompile dep.compiletesting

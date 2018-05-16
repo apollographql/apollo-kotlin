@@ -3,31 +3,31 @@ package com.apollographql.apollo.api;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public interface InputFieldWriter {
-  void writeString(@Nonnull String fieldName, String value) throws IOException;
+  void writeString(@NotNull String fieldName, String value) throws IOException;
 
-  void writeInt(@Nonnull String fieldName, Integer value) throws IOException;
+  void writeInt(@NotNull String fieldName, Integer value) throws IOException;
 
-  void writeLong(@Nonnull String fieldName, Long value) throws IOException;
+  void writeLong(@NotNull String fieldName, Long value) throws IOException;
 
-  void writeDouble(@Nonnull String fieldName, Double value) throws IOException;
+  void writeDouble(@NotNull String fieldName, Double value) throws IOException;
 
-  void writeNumber(@Nonnull String fieldName, Number value) throws IOException;
+  void writeNumber(@NotNull String fieldName, Number value) throws IOException;
 
-  void writeBoolean(@Nonnull String fieldName, Boolean value) throws IOException;
+  void writeBoolean(@NotNull String fieldName, Boolean value) throws IOException;
 
-  void writeCustom(@Nonnull String fieldName, ScalarType scalarType, Object value) throws IOException;
+  void writeCustom(@NotNull String fieldName, ScalarType scalarType, Object value) throws IOException;
 
-  void writeObject(@Nonnull String fieldName, InputFieldMarshaller marshaller) throws IOException;
+  void writeObject(@NotNull String fieldName, InputFieldMarshaller marshaller) throws IOException;
 
-  void writeList(@Nonnull String fieldName, ListWriter listWriter) throws IOException;
+  void writeList(@NotNull String fieldName, ListWriter listWriter) throws IOException;
 
-  void writeMap(@Nonnull String fieldName, Map<String, Object> value) throws IOException;
+  void writeMap(@NotNull String fieldName, Map<String, Object> value) throws IOException;
 
   interface ListWriter {
-    void write(@Nonnull ListItemWriter listItemWriter) throws IOException;
+    void write(@NotNull ListItemWriter listItemWriter) throws IOException;
   }
 
   interface ListItemWriter {

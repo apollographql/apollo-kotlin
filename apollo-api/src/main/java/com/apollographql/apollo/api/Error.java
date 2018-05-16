@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
@@ -36,14 +36,14 @@ public final class Error {
   /**
    * Returns the location of the error in the GraphQL operation.
    */
-  @Nonnull public List<Location> locations() {
+  @NotNull public List<Location> locations() {
     return locations;
   }
 
   /**
    * Returns custom attributes associated with this error
    */
-  @Nonnull public Map<String, Object> customAttributes() {
+  @NotNull public Map<String, Object> customAttributes() {
     return customAttributes;
   }
 

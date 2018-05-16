@@ -2,14 +2,14 @@ package com.apollographql.apollo.api.cache.http;
 
 import java.io.IOException;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okio.Sink;
 
 public interface HttpCacheRecordEditor {
-  @Nonnull Sink headerSink();
+  @NotNull Sink headerSink();
 
-  @Nonnull Sink bodySink();
+  @NotNull Sink bodySink();
 
   void abort() throws IOException;
 

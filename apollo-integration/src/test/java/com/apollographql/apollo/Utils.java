@@ -2,10 +2,10 @@ package com.apollographql.apollo;
 
 import com.google.common.io.CharStreams;
 
-import android.support.annotation.NonNull;
-
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.rx2.Rx2Apollo;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -119,7 +119,7 @@ public final class Utils {
 
     private ConcurrentLinkedQueue<Runnable> commands = new ConcurrentLinkedQueue<>();
 
-    @Override public void execute(@NonNull Runnable command) {
+    @Override public void execute(@NotNull Runnable command) {
       commands.add(command);
     }
 

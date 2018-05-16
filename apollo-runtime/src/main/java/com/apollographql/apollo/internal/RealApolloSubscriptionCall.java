@@ -10,7 +10,7 @@ import com.apollographql.apollo.internal.subscription.SubscriptionManager;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static com.apollographql.apollo.internal.CallState.ACTIVE;
@@ -30,7 +30,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
   }
 
   @Override
-  public void execute(@Nonnull Callback<T> callback) throws ApolloCanceledException {
+  public void execute(@NotNull Callback<T> callback) throws ApolloCanceledException {
     checkNotNull(callback, "callback == null");
     synchronized (this) {
       switch (state.get()) {
@@ -127,7 +127,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
     }
 
     @Override
-    public void onResponse(@Nonnull Response<T> response) {
+    public void onResponse(@NotNull Response<T> response) {
       Callback<T> callback = this.originalCallback;
       if (callback != null) {
         callback.onResponse(response);
@@ -135,7 +135,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
     }
 
     @Override
-    public void onError(@Nonnull ApolloSubscriptionException error) {
+    public void onError(@NotNull ApolloSubscriptionException error) {
       Callback<T> callback = this.originalCallback;
       if (callback != null) {
         callback.onFailure(error);
@@ -148,7 +148,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
     }
 
     @Override
-    public void onNetworkError(@Nonnull Throwable t) {
+    public void onNetworkError(@NotNull Throwable t) {
       Callback<T> callback = this.originalCallback;
       if (callback != null) {
         callback.onFailure(new ApolloNetworkException("Subscription failed", t));

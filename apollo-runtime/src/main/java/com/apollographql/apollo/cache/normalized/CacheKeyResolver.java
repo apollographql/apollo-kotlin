@@ -5,7 +5,7 @@ import com.apollographql.apollo.api.ResponseField;
 
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Resolves a cache key for a JSON object.
@@ -14,25 +14,25 @@ public abstract class CacheKeyResolver {
   private static final CacheKey ROOT_CACHE_KEY = CacheKey.from("QUERY_ROOT");
 
   public static final CacheKeyResolver DEFAULT = new CacheKeyResolver() {
-    @Nonnull @Override
-    public CacheKey fromFieldRecordSet(@Nonnull ResponseField field, @Nonnull Map<String, Object> recordSet) {
+    @NotNull @Override
+    public CacheKey fromFieldRecordSet(@NotNull ResponseField field, @NotNull Map<String, Object> recordSet) {
       return CacheKey.NO_KEY;
     }
 
-    @Nonnull @Override
-    public CacheKey fromFieldArguments(@Nonnull ResponseField field, @Nonnull Operation.Variables variables) {
+    @NotNull @Override
+    public CacheKey fromFieldArguments(@NotNull ResponseField field, @NotNull Operation.Variables variables) {
       return CacheKey.NO_KEY;
     }
   };
 
   @SuppressWarnings("unused")
-  public static CacheKey rootKeyForOperation(@Nonnull Operation operation) {
+  public static CacheKey rootKeyForOperation(@NotNull Operation operation) {
     return ROOT_CACHE_KEY;
   }
 
-  @Nonnull public abstract CacheKey fromFieldRecordSet(@Nonnull ResponseField field,
-      @Nonnull Map<String, Object> recordSet);
+  @NotNull public abstract CacheKey fromFieldRecordSet(@NotNull ResponseField field,
+      @NotNull Map<String, Object> recordSet);
 
-  @Nonnull public abstract CacheKey fromFieldArguments(@Nonnull ResponseField field,
-      @Nonnull Operation.Variables variables);
+  @NotNull public abstract CacheKey fromFieldArguments(@NotNull ResponseField field,
+      @NotNull Operation.Variables variables);
 }

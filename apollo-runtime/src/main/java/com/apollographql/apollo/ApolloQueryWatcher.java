@@ -4,8 +4,8 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.internal.util.Cancelable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface ApolloQueryWatcher<T> extends Cancelable {
 
@@ -15,14 +15,14 @@ public interface ApolloQueryWatcher<T> extends Cancelable {
    * @param fetcher The {@link ResponseFetcher} to use when the call is refetched due to a field changing in the
    *                     cache.
    */
-  @Nonnull ApolloQueryWatcher<T> refetchResponseFetcher(@Nonnull ResponseFetcher fetcher);
+  @NotNull ApolloQueryWatcher<T> refetchResponseFetcher(@NotNull ResponseFetcher fetcher);
 
   /**
    * Returns GraphQL watched operation.
    *
    * @return {@link Operation}
    */
-  @Nonnull Operation operation();
+  @NotNull Operation operation();
 
   /**
    * Re-fetches watched GraphQL query.

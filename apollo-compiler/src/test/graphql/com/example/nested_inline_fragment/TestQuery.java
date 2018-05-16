@@ -18,8 +18,8 @@ import java.lang.String;
 import java.util.Arrays;
 import java.util.Collections;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
@@ -96,7 +96,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObject("setting", "setting", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull Setting setting;
+    final @NotNull Setting setting;
 
     private volatile String $toString;
 
@@ -104,11 +104,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Data(@Nonnull Setting setting) {
+    public Data(@NotNull Setting setting) {
       this.setting = Utils.checkNotNull(setting, "setting == null");
     }
 
-    public @Nonnull Setting setting() {
+    public @NotNull Setting setting() {
       return this.setting;
     }
 
@@ -181,9 +181,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       "TypedStringListSetting"))
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    private final @Nonnull Fragments fragments;
+    private final @NotNull Fragments fragments;
 
     private volatile String $toString;
 
@@ -191,16 +191,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Setting(@Nonnull String __typename, @Nonnull Fragments fragments) {
+    public Setting(@NotNull String __typename, @NotNull Fragments fragments) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.fragments = Utils.checkNotNull(fragments, "fragments == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
-    public @Nonnull Fragments fragments() {
+    public @NotNull Fragments fragments() {
       return this.fragments;
     }
 
@@ -319,7 +319,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final TestSetting.Mapper testSettingFieldMapper = new TestSetting.Mapper();
 
         @Override
-        public @Nonnull Fragments map(ResponseReader reader, @Nonnull String conditionalType) {
+        public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
           TestSetting testSetting = null;
           if (TestSetting.POSSIBLE_TYPES.contains(conditionalType)) {
             testSetting = testSettingFieldMapper.map(reader);

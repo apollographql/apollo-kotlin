@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -43,7 +43,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
    *
    * <p><b>Note</b>: This method needs to be called right before an apolloCall is executed.</p>
    */
-  void registerCall(@Nonnull ApolloCall call) {
+  void registerCall(@NotNull ApolloCall call) {
     checkNotNull(call, "call == null");
     Operation operation = call.operation();
     if (operation instanceof Query) {
@@ -65,7 +65,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
    * <p><b>Note</b>: This method needs to be called right after an apolloCall is completed (whether successful or
    * failed).</p>
    */
-  void unregisterCall(@Nonnull ApolloCall call) {
+  void unregisterCall(@NotNull ApolloCall call) {
     checkNotNull(call, "call == null");
     Operation operation = call.operation();
     if (operation instanceof Query) {
@@ -82,7 +82,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
    *
    * <p><b>Note</b>: This method needs to be called right before a prefetch call is executed.</p>
    */
-  void registerPrefetchCall(@Nonnull ApolloPrefetch apolloPrefetch) {
+  void registerPrefetchCall(@NotNull ApolloPrefetch apolloPrefetch) {
     checkNotNull(apolloPrefetch, "apolloPrefetch == null");
     OperationName operationName = apolloPrefetch.operation().name();
     registerCall(activePrefetchCalls, operationName, apolloPrefetch);
@@ -98,7 +98,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
    * <p><b>Note</b>: This method needs to be called right after a prefetch call is completed (whether successful or
    * failed).</p>
    */
-  void unregisterPrefetchCall(@Nonnull ApolloPrefetch apolloPrefetch) {
+  void unregisterPrefetchCall(@NotNull ApolloPrefetch apolloPrefetch) {
     checkNotNull(apolloPrefetch, "apolloPrefetch == null");
     OperationName operationName = apolloPrefetch.operation().name();
     unregisterCall(activePrefetchCalls, operationName, apolloPrefetch);
@@ -110,7 +110,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
    * @param operationName prefetch operation name
    * @return set of active prefetch calls
    */
-  @Nonnull Set<ApolloPrefetch> activePrefetchCalls(@Nonnull OperationName operationName) {
+  @NotNull Set<ApolloPrefetch> activePrefetchCalls(@NotNull OperationName operationName) {
     return activeCalls(activePrefetchCalls, operationName);
   }
 
@@ -119,7 +119,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
    *
    * <p><b>Note</b>: This method needs to be called right before an apolloCall is executed.</p>
    */
-  void registerQueryCall(@Nonnull ApolloQueryCall apolloQueryCall) {
+  void registerQueryCall(@NotNull ApolloQueryCall apolloQueryCall) {
     checkNotNull(apolloQueryCall, "apolloQueryCall == null");
     OperationName operationName = apolloQueryCall.operation().name();
     registerCall(activeQueryCalls, operationName, apolloQueryCall);
@@ -135,7 +135,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
    * <p><b>Note</b>: This method needs to be called right after an apolloCall is completed (whether successful or
    * failed).</p>
    */
-  void unregisterQueryCall(@Nonnull ApolloQueryCall apolloQueryCall) {
+  void unregisterQueryCall(@NotNull ApolloQueryCall apolloQueryCall) {
     checkNotNull(apolloQueryCall, "apolloQueryCall == null");
     OperationName operationName = apolloQueryCall.operation().name();
     unregisterCall(activeQueryCalls, operationName, apolloQueryCall);
@@ -147,7 +147,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
    * @param operationName query operation name
    * @return set of active query calls
    */
-  @Nonnull Set<ApolloQueryCall> activeQueryCalls(@Nonnull OperationName operationName) {
+  @NotNull Set<ApolloQueryCall> activeQueryCalls(@NotNull OperationName operationName) {
     return activeCalls(activeQueryCalls, operationName);
   }
 
@@ -156,7 +156,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
    *
    * <p><b>Note</b>: This method needs to be called right before an apolloCall is executed.</p>
    */
-  void registerMutationCall(@Nonnull ApolloMutationCall apolloMutationCall) {
+  void registerMutationCall(@NotNull ApolloMutationCall apolloMutationCall) {
     checkNotNull(apolloMutationCall, "apolloMutationCall == null");
     OperationName operationName = apolloMutationCall.operation().name();
     registerCall(activeMutationCalls, operationName, apolloMutationCall);
@@ -172,7 +172,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
    * <p><b>Note</b>: This method needs to be called right after an apolloCall is completed (whether successful or
    * failed).</p>
    */
-  void unregisterMutationCall(@Nonnull ApolloMutationCall apolloMutationCall) {
+  void unregisterMutationCall(@NotNull ApolloMutationCall apolloMutationCall) {
     checkNotNull(apolloMutationCall, "apolloMutationCall == null");
     OperationName operationName = apolloMutationCall.operation().name();
     unregisterCall(activeMutationCalls, operationName, apolloMutationCall);
@@ -184,7 +184,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
    * @param operationName query operation name
    * @return set of active mutation calls
    */
-  @Nonnull Set<ApolloMutationCall> activeMutationCalls(@Nonnull OperationName operationName) {
+  @NotNull Set<ApolloMutationCall> activeMutationCalls(@NotNull OperationName operationName) {
     return activeCalls(activeMutationCalls, operationName);
   }
 
@@ -194,7 +194,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
    * <p><b>Note</b>: This method needs to be called right before
    * {@link ApolloQueryWatcher#enqueueAndWatch(ApolloCall.Callback)}.</p>
    */
-  void registerQueryWatcher(@Nonnull ApolloQueryWatcher queryWatcher) {
+  void registerQueryWatcher(@NotNull ApolloQueryWatcher queryWatcher) {
     checkNotNull(queryWatcher, "queryWatcher == null");
     OperationName operationName = queryWatcher.operation().name();
     registerCall(activeQueryWatchers, operationName, queryWatcher);
@@ -210,7 +210,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
    * <p><b>Note</b>: This method needs to be called right after an apolloCall is completed (whether successful or
    * failed).</p>
    */
-  void unregisterQueryWatcher(@Nonnull ApolloQueryWatcher queryWatcher) {
+  void unregisterQueryWatcher(@NotNull ApolloQueryWatcher queryWatcher) {
     checkNotNull(queryWatcher, "queryWatcher == null");
     OperationName operationName = queryWatcher.operation().name();
     unregisterCall(activeQueryWatchers, operationName, queryWatcher);
@@ -222,7 +222,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
    * @param operationName query watcher operation name
    * @return set of active query watchers
    */
-  @Nonnull Set<ApolloQueryWatcher> activeQueryWatchers(@Nonnull OperationName operationName) {
+  @NotNull Set<ApolloQueryWatcher> activeQueryWatchers(@NotNull OperationName operationName) {
     return activeCalls(activeQueryWatchers, operationName);
   }
 
@@ -271,7 +271,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     }
   }
 
-  private <CALL> Set<CALL> activeCalls(Map<OperationName, Set<CALL>> registry, @Nonnull OperationName operationName) {
+  private <CALL> Set<CALL> activeCalls(Map<OperationName, Set<CALL>> registry, @NotNull OperationName operationName) {
     checkNotNull(operationName, "operationName == null");
 
     //noinspection SynchronizationOnLocalVariableOrMethodParameter

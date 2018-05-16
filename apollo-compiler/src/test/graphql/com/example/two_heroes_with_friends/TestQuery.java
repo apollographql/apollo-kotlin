@@ -19,8 +19,8 @@ import java.lang.String;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
@@ -228,11 +228,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObject("friendsConnection", "friendsConnection", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
-    final @Nonnull FriendsConnection friendsConnection;
+    final @NotNull FriendsConnection friendsConnection;
 
     private volatile String $toString;
 
@@ -240,28 +240,28 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public R2(@Nonnull String __typename, @Nonnull String name,
-        @Nonnull FriendsConnection friendsConnection) {
+    public R2(@NotNull String __typename, @NotNull String name,
+        @NotNull FriendsConnection friendsConnection) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
       this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * The name of the character
      */
-    public @Nonnull String name() {
+    public @NotNull String name() {
       return this.name;
     }
 
     /**
      * The friends of the character exposed as a connection with edges
      */
-    public @Nonnull FriendsConnection friendsConnection() {
+    public @NotNull FriendsConnection friendsConnection() {
       return this.friendsConnection;
     }
 
@@ -343,7 +343,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<Integer> totalCount;
 
@@ -355,14 +355,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public FriendsConnection(@Nonnull String __typename, @Nullable Integer totalCount,
+    public FriendsConnection(@NotNull String __typename, @Nullable Integer totalCount,
         @Nullable List<Edge> edges) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
@@ -467,7 +467,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObject("node", "node", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<Node> node;
 
@@ -477,12 +477,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Edge(@Nonnull String __typename, @Nullable Node node) {
+    public Edge(@NotNull String __typename, @Nullable Node node) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.node = Optional.fromNullable(node);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
@@ -564,9 +564,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
     private volatile String $toString;
 
@@ -574,19 +574,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Node(@Nonnull String __typename, @Nonnull String name) {
+    public Node(@NotNull String __typename, @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * The name of the character
      */
-    public @Nonnull String name() {
+    public @NotNull String name() {
       return this.name;
     }
 
@@ -656,13 +656,13 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObject("friendsConnection", "friendsConnection", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String id;
+    final @NotNull String id;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
-    final @Nonnull FriendsConnection1 friendsConnection;
+    final @NotNull FriendsConnection1 friendsConnection;
 
     private volatile String $toString;
 
@@ -670,36 +670,36 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Luke(@Nonnull String __typename, @Nonnull String id, @Nonnull String name,
-        @Nonnull FriendsConnection1 friendsConnection) {
+    public Luke(@NotNull String __typename, @NotNull String id, @NotNull String name,
+        @NotNull FriendsConnection1 friendsConnection) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.id = Utils.checkNotNull(id, "id == null");
       this.name = Utils.checkNotNull(name, "name == null");
       this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * The ID of the character
      */
-    public @Nonnull String id() {
+    public @NotNull String id() {
       return this.id;
     }
 
     /**
      * The name of the character
      */
-    public @Nonnull String name() {
+    public @NotNull String name() {
       return this.name;
     }
 
     /**
      * The friends of the character exposed as a connection with edges
      */
-    public @Nonnull FriendsConnection1 friendsConnection() {
+    public @NotNull FriendsConnection1 friendsConnection() {
       return this.friendsConnection;
     }
 
@@ -787,7 +787,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<Integer> totalCount;
 
@@ -799,14 +799,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public FriendsConnection1(@Nonnull String __typename, @Nullable Integer totalCount,
+    public FriendsConnection1(@NotNull String __typename, @Nullable Integer totalCount,
         @Nullable List<Edge1> edges) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.totalCount = Optional.fromNullable(totalCount);
       this.edges = Optional.fromNullable(edges);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
@@ -911,7 +911,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forObject("node", "node", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<Node1> node;
 
@@ -921,12 +921,12 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Edge1(@Nonnull String __typename, @Nullable Node1 node) {
+    public Edge1(@NotNull String __typename, @Nullable Node1 node) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.node = Optional.fromNullable(node);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
@@ -1008,9 +1008,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
-    final @Nonnull String name;
+    final @NotNull String name;
 
     private volatile String $toString;
 
@@ -1018,19 +1018,19 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Node1(@Nonnull String __typename, @Nonnull String name) {
+    public Node1(@NotNull String __typename, @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.name = Utils.checkNotNull(name, "name == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
     /**
      * The name of the character
      */
-    public @Nonnull String name() {
+    public @NotNull String name() {
       return this.name;
     }
 

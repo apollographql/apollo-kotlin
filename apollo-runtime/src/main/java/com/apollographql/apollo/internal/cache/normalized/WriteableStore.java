@@ -6,10 +6,10 @@ import com.apollographql.apollo.cache.normalized.Record;
 import java.util.Collection;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public interface WriteableStore extends ReadableStore {
 
-  Set<String> merge(@Nonnull Collection<Record> recordCollection, @Nonnull CacheHeaders cacheHeaders);
-  Set<String> merge(Record record, @Nonnull CacheHeaders cacheHeaders);
+  Set<String> merge(@NotNull Collection<Record> recordCollection, @NotNull CacheHeaders cacheHeaders);
+  Set<String> merge(Record record, @NotNull CacheHeaders cacheHeaders);
 }

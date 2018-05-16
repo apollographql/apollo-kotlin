@@ -3,20 +3,20 @@ package com.apollographql.apollo.internal.subscription;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.Subscription;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public interface SubscriptionManager {
-  <T> void subscribe(@Nonnull Subscription<?, T, ?> subscription,
-      @Nonnull RealSubscriptionManager.Callback<T> callback);
+  <T> void subscribe(@NotNull Subscription<?, T, ?> subscription,
+      @NotNull RealSubscriptionManager.Callback<T> callback);
 
-  void unsubscribe(@Nonnull Subscription<?, ?, ?> subscription);
+  void unsubscribe(@NotNull Subscription<?, ?, ?> subscription);
 
   interface Callback<T> {
-    void onResponse(@Nonnull Response<T> response);
+    void onResponse(@NotNull Response<T> response);
 
-    void onError(@Nonnull ApolloSubscriptionException error);
+    void onError(@NotNull ApolloSubscriptionException error);
 
-    void onNetworkError(@Nonnull Throwable t);
+    void onNetworkError(@NotNull Throwable t);
 
     void onCompleted();
   }

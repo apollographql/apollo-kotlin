@@ -39,7 +39,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import io.reactivex.functions.Predicate;
 import okhttp3.Dispatcher;
@@ -328,13 +328,13 @@ public class IntegrationTest {
   private <T> List<ApolloCall.StatusEvent> enqueueCall(ApolloQueryCall<T> call) throws Exception {
     final List<ApolloCall.StatusEvent> statusEvents = new ArrayList<>();
     call.enqueue(new ApolloCall.Callback<T>() {
-      @Override public void onResponse(@Nonnull Response<T> response) {
+      @Override public void onResponse(@NotNull Response<T> response) {
       }
 
-      @Override public void onFailure(@Nonnull ApolloException e) {
+      @Override public void onFailure(@NotNull ApolloException e) {
       }
 
-      @Override public void onStatusEvent(@Nonnull ApolloCall.StatusEvent event) {
+      @Override public void onStatusEvent(@NotNull ApolloCall.StatusEvent event) {
         statusEvents.add(event);
       }
     });

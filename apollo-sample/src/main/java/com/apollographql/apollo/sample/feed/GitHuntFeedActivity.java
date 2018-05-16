@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.sample.FeedQuery.FeedEntry;
 
@@ -63,13 +63,13 @@ public class GitHuntFeedActivity extends AppCompatActivity implements GitHuntNav
 
   private ApolloCall.Callback<FeedQuery.Data> dataCallback
       = new ApolloCallback<>(new ApolloCall.Callback<FeedQuery.Data>() {
-    @Override public void onResponse(@Nonnull Response<FeedQuery.Data> response) {
+    @Override public void onResponse(@NotNull Response<FeedQuery.Data> response) {
       feedAdapter.setFeed(feedResponseToEntriesWithRepositories(response));
       progressBar.setVisibility(View.GONE);
       content.setVisibility(View.VISIBLE);
     }
 
-    @Override public void onFailure(@Nonnull ApolloException e) {
+    @Override public void onFailure(@NotNull ApolloException e) {
       Log.e(TAG, e.getMessage(), e);
     }
   }, uiHandler);

@@ -15,8 +15,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public interface TestSetting extends GraphqlFragment {
@@ -40,7 +40,7 @@ public interface TestSetting extends GraphqlFragment {
 
   List<String> POSSIBLE_TYPES = Collections.unmodifiableList(Arrays.asList( "BooleanSetting", "SelectSetting", "StringListSetting", "TextSetting", "TypedStringListSetting"));
 
-  @Nonnull String __typename();
+  @NotNull String __typename();
 
   Optional<? extends Value> value();
 
@@ -65,7 +65,7 @@ public interface TestSetting extends GraphqlFragment {
   }
 
   interface Value {
-    @Nonnull String __typename();
+    @NotNull String __typename();
 
     ResponseFieldMarshaller marshaller();
 
@@ -94,7 +94,7 @@ public interface TestSetting extends GraphqlFragment {
       ResponseField.forList("list", "list", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<List<String>> list;
 
@@ -104,12 +104,12 @@ public interface TestSetting extends GraphqlFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsStringListSettingValue(@Nonnull String __typename, @Nullable List<String> list) {
+    public AsStringListSettingValue(@NotNull String __typename, @Nullable List<String> list) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.list = Optional.fromNullable(list);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
@@ -192,7 +192,7 @@ public interface TestSetting extends GraphqlFragment {
       ResponseField.forList("options", "options", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<Value1> value;
 
@@ -204,14 +204,14 @@ public interface TestSetting extends GraphqlFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsSelectSetting(@Nonnull String __typename, @Nullable Value1 value,
+    public AsSelectSetting(@NotNull String __typename, @Nullable Value1 value,
         @Nullable List<Option> options) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.value = Optional.fromNullable(value);
       this.options = Optional.fromNullable(options);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
@@ -312,7 +312,7 @@ public interface TestSetting extends GraphqlFragment {
   }
 
   interface Value1 extends Value {
-    @Nonnull String __typename();
+    @NotNull String __typename();
 
     ResponseFieldMarshaller marshaller();
 
@@ -341,7 +341,7 @@ public interface TestSetting extends GraphqlFragment {
       ResponseField.forList("list", "list", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final Optional<List<String>> list;
 
@@ -351,12 +351,12 @@ public interface TestSetting extends GraphqlFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public AsStringListSettingValue1(@Nonnull String __typename, @Nullable List<String> list) {
+    public AsStringListSettingValue1(@NotNull String __typename, @Nullable List<String> list) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.list = Optional.fromNullable(list);
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
@@ -440,13 +440,13 @@ public interface TestSetting extends GraphqlFragment {
       ResponseField.forString("label", "label", null, false, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final @Nonnull String __typename;
+    final @NotNull String __typename;
 
     final boolean allowFreeText;
 
-    final @Nonnull String id;
+    final @NotNull String id;
 
-    final @Nonnull String label;
+    final @NotNull String label;
 
     private volatile String $toString;
 
@@ -454,15 +454,15 @@ public interface TestSetting extends GraphqlFragment {
 
     private volatile boolean $hashCodeMemoized;
 
-    public Option(@Nonnull String __typename, boolean allowFreeText, @Nonnull String id,
-        @Nonnull String label) {
+    public Option(@NotNull String __typename, boolean allowFreeText, @NotNull String id,
+        @NotNull String label) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.allowFreeText = allowFreeText;
       this.id = Utils.checkNotNull(id, "id == null");
       this.label = Utils.checkNotNull(label, "label == null");
     }
 
-    public @Nonnull String __typename() {
+    public @NotNull String __typename() {
       return this.__typename;
     }
 
@@ -470,11 +470,11 @@ public interface TestSetting extends GraphqlFragment {
       return this.allowFreeText;
     }
 
-    public @Nonnull String id() {
+    public @NotNull String id() {
       return this.id;
     }
 
-    public @Nonnull String label() {
+    public @NotNull String label() {
       return this.label;
     }
 

@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.Generated;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestMutation implements Mutation<TestMutation.Data, Optional<TestMutation.Data>, TestMutation.Variables> {
@@ -41,7 +41,7 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
 
   private final TestMutation.Variables variables;
 
-  public TestMutation(@Nonnull TestInputType input) {
+  public TestMutation(@NotNull TestInputType input) {
     Utils.checkNotNull(input, "input == null");
     variables = new TestMutation.Variables(input);
   }
@@ -81,12 +81,12 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
   }
 
   public static final class Builder {
-    private @Nonnull TestInputType input;
+    private @NotNull TestInputType input;
 
     Builder() {
     }
 
-    public Builder input(@Nonnull TestInputType input) {
+    public Builder input(@NotNull TestInputType input) {
       this.input = input;
       return this;
     }
@@ -98,16 +98,16 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
   }
 
   public static final class Variables extends Operation.Variables {
-    private final @Nonnull TestInputType input;
+    private final @NotNull TestInputType input;
 
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
 
-    Variables(@Nonnull TestInputType input) {
+    Variables(@NotNull TestInputType input) {
       this.input = input;
       this.valueMap.put("input", input);
     }
 
-    public @Nonnull TestInputType input() {
+    public @NotNull TestInputType input() {
       return input;
     }
 

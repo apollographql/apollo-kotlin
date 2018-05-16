@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
@@ -40,12 +40,12 @@ public class CacheHeadersTest {
   @Test @SuppressWarnings("CheckReturnValue") public void testHeadersReceived() throws ApolloException, IOException {
     final AtomicBoolean hasHeader = new AtomicBoolean();
     final NormalizedCache normalizedCache = new NormalizedCache() {
-      @Nullable @Override public Record loadRecord(@NonNull String key, @NonNull CacheHeaders cacheHeaders) {
+      @Nullable @Override public Record loadRecord(@NotNull String key, @NotNull CacheHeaders cacheHeaders) {
         hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE));
         return null;
       }
 
-      @Nonnull @Override public Set<String> merge(@NonNull Record record, @NonNull CacheHeaders cacheHeaders) {
+      @NotNull @Override public Set<String> merge(@NotNull Record record, @NotNull CacheHeaders cacheHeaders) {
         hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE));
         return emptySet();
       }
@@ -53,12 +53,12 @@ public class CacheHeadersTest {
       @Override public void clearAll() {
       }
 
-      @Override public boolean remove(@Nonnull CacheKey cacheKey) {
+      @Override public boolean remove(@NotNull CacheKey cacheKey) {
         return false;
       }
 
-      @Nonnull @Override
-      protected Set<String> performMerge(@Nonnull Record apolloRecord, @Nonnull CacheHeaders cacheHeaders) {
+      @NotNull @Override
+      protected Set<String> performMerge(@NotNull Record apolloRecord, @NotNull CacheHeaders cacheHeaders) {
         return emptySet();
       }
     };
@@ -87,12 +87,12 @@ public class CacheHeadersTest {
   @Test @SuppressWarnings("CheckReturnValue") public void testDefaultHeadersReceived() throws Exception {
     final AtomicBoolean hasHeader = new AtomicBoolean();
     final NormalizedCache normalizedCache = new NormalizedCache() {
-      @Nullable @Override public Record loadRecord(@NonNull String key, @NonNull CacheHeaders cacheHeaders) {
+      @Nullable @Override public Record loadRecord(@NotNull String key, @NotNull CacheHeaders cacheHeaders) {
         hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE));
         return null;
       }
 
-      @Nonnull @Override public Set<String> merge(@NonNull Record record, @NonNull CacheHeaders cacheHeaders) {
+      @NotNull @Override public Set<String> merge(@NotNull Record record, @NotNull CacheHeaders cacheHeaders) {
         hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE));
         return emptySet();
       }
@@ -100,12 +100,12 @@ public class CacheHeadersTest {
       @Override public void clearAll() {
       }
 
-      @Override public boolean remove(@Nonnull CacheKey cacheKey) {
+      @Override public boolean remove(@NotNull CacheKey cacheKey) {
         return false;
       }
 
-      @Nonnull @Override
-      protected Set<String> performMerge(@Nonnull Record apolloRecord, @Nonnull CacheHeaders cacheHeaders) {
+      @NotNull @Override
+      protected Set<String> performMerge(@NotNull Record apolloRecord, @NotNull CacheHeaders cacheHeaders) {
         return emptySet();
       }
     };

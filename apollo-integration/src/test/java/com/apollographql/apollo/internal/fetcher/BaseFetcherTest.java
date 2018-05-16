@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
@@ -55,17 +55,17 @@ class BaseFetcherTest {
     final List<Exception> exceptions = new ArrayList<>();
     volatile boolean completed;
 
-    @Override public void onResponse(@Nonnull Response<EpisodeHeroNameQuery.Data> response) {
+    @Override public void onResponse(@NotNull Response<EpisodeHeroNameQuery.Data> response) {
       if (completed) throw new IllegalStateException("onCompleted already called Do not reuse tracking callback.");
       responseList.add(response);
     }
 
-    @Override public void onFailure(@Nonnull ApolloException e) {
+    @Override public void onFailure(@NotNull ApolloException e) {
       if (completed) throw new IllegalStateException("onCompleted already called Do not reuse tracking callback.");
       exceptions.add(e);
     }
 
-    @Override public void onStatusEvent(@Nonnull ApolloCall.StatusEvent event) {
+    @Override public void onStatusEvent(@NotNull ApolloCall.StatusEvent event) {
       if (event == ApolloCall.StatusEvent.COMPLETED) {
         if (completed) throw new IllegalStateException("onCompleted already called Do not reuse tracking callback.");
         completed = true;

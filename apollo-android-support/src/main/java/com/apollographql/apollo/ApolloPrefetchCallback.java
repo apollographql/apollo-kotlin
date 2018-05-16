@@ -6,7 +6,7 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.exception.ApolloHttpException;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -23,7 +23,7 @@ public final class ApolloPrefetchCallback extends ApolloPrefetch.Callback {
    * @param callback original callback to delegates calls
    * @param handler  the callback will be run on the thread to which this handler is attached
    */
-  public static <T> ApolloPrefetchCallback wrap(@Nonnull ApolloPrefetch.Callback callback, @Nonnull Handler handler) {
+  public static <T> ApolloPrefetchCallback wrap(@NotNull ApolloPrefetch.Callback callback, @NotNull Handler handler) {
     return new ApolloPrefetchCallback(callback, handler);
   }
 
@@ -31,7 +31,7 @@ public final class ApolloPrefetchCallback extends ApolloPrefetch.Callback {
    * @param callback original callback to delegates calls
    * @param handler  the callback will be run on the thread to which this handler is attached
    */
-  public ApolloPrefetchCallback(@Nonnull ApolloPrefetch.Callback callback, @Nonnull Handler handler) {
+  public ApolloPrefetchCallback(@NotNull ApolloPrefetch.Callback callback, @NotNull Handler handler) {
     this.delegate = checkNotNull(callback, "callback == null");
     this.handler = checkNotNull(handler, "handler == null");
   }
@@ -44,7 +44,7 @@ public final class ApolloPrefetchCallback extends ApolloPrefetch.Callback {
     });
   }
 
-  @Override public void onFailure(@Nonnull final ApolloException e) {
+  @Override public void onFailure(@NotNull final ApolloException e) {
     handler.post(new Runnable() {
       @Override public void run() {
         delegate.onFailure(e);
@@ -52,7 +52,7 @@ public final class ApolloPrefetchCallback extends ApolloPrefetch.Callback {
     });
   }
 
-  @Override public void onHttpError(@Nonnull final ApolloHttpException e) {
+  @Override public void onHttpError(@NotNull final ApolloHttpException e) {
     handler.post(new Runnable() {
       @Override public void run() {
         delegate.onHttpError(e);
@@ -60,7 +60,7 @@ public final class ApolloPrefetchCallback extends ApolloPrefetch.Callback {
     });
   }
 
-  @Override public void onNetworkError(@Nonnull final ApolloNetworkException e) {
+  @Override public void onNetworkError(@NotNull final ApolloNetworkException e) {
     handler.post(new Runnable() {
       @Override public void run() {
         delegate.onNetworkError(e);
