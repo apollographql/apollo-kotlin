@@ -74,7 +74,7 @@ class InputTypeSpecBuilder(
     val writeCode = fields
         .map {
           InputFieldSpec.build(
-              name = it.name.decapitalize().escapeJavaReservedWord(),
+              name = it.name.decapitalize(),
               graphQLType = it.type,
               context = context
           )

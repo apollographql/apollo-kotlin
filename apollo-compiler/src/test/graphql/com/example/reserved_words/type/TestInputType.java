@@ -37,7 +37,7 @@ public final class TestInputType {
       @Override
       public void marshal(InputFieldWriter writer) throws IOException {
         if (private_.defined) {
-          writer.writeBoolean("private_", private_.value);
+          writer.writeBoolean("private", private_.value);
         }
       }
     };
