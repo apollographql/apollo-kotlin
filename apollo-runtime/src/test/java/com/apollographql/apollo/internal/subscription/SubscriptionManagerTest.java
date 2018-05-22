@@ -18,6 +18,7 @@ import com.apollographql.apollo.subscription.SubscriptionTransport;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.Time;
 import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
@@ -30,6 +31,7 @@ import static com.apollographql.apollo.internal.subscription.RealSubscriptionMan
 import static com.google.common.truth.Truth.assertThat;
 
 public class SubscriptionManagerTest {
+  private final long connectionHeartbeatTimeoutMs = TimeUnit.SECONDS.toMillis(1);
   private MockSubscriptionTransportFactory subscriptionTransportFactory;
   private RealSubscriptionManager subscriptionManager;
   private MockSubscription subscription1 = new MockSubscription("MockSubscription1");
@@ -38,7 +40,7 @@ public class SubscriptionManagerTest {
   @Before public void setUp() throws Exception {
     subscriptionTransportFactory = new MockSubscriptionTransportFactory();
     subscriptionManager = new RealSubscriptionManager(new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
-        subscriptionTransportFactory, Collections.<String, Object>emptyMap(), new MockExecutor());
+        subscriptionTransportFactory, Collections.<String, Object>emptyMap(), new MockExecutor(), connectionHeartbeatTimeoutMs);
     assertThat(subscriptionTransportFactory.subscriptionTransport).isNotNull();
     assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
   }
@@ -204,6 +206,22 @@ public class SubscriptionManagerTest {
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback2);
 
     assertThat(subscriptionManagerCallback2.error).hasMessage("Already subscribed");
+  }
+
+  @Test public void reconnectingAfterHeartbeatTimeout() throws Exception {
+    subscriptionManager.subscribe(subscription1, new SubscriptionManagerCallbackAdapter<Operation.Data>());
+
+    subscriptionTransportFactory.callback.onConnected();
+    subscriptionTransportFactory.callback.onMessage(new OperationServerMessage.ConnectionAcknowledge());
+    subscriptionTransportFactory.callback.onMessage(new OperationServerMessage.ConnectionKeepAlive());
+
+    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.ACTIVE);
+    assertThat(subscriptionManager.timer.tasks).containsKey(RealSubscriptionManager.CONNECTION_KEEP_ALIVE_TIMEOUT_TIMER_TASK_ID);
+
+    subscriptionTransportFactory.subscriptionTransport.disconnectCountDownLatch.awaitOrThrowWithTimeout
+        (connectionHeartbeatTimeoutMs + 800, TimeUnit.MILLISECONDS);
+
+    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.CONNECTING);
   }
 
   private static final class MockSubscriptionTransportFactory implements SubscriptionTransport.Factory {

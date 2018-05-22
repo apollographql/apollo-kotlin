@@ -58,6 +58,9 @@ public abstract class OperationServerMessage {
       case Complete.TYPE:
         return new Complete(id);
 
+      case ConnectionKeepAlive.TYPE:
+        return new ConnectionKeepAlive();
+
       default:
         throw new IOException("Unsupported message");
     }
@@ -114,6 +117,10 @@ public abstract class OperationServerMessage {
     public Complete(String id) {
       this.id = id;
     }
+  }
+
+  public static final class ConnectionKeepAlive extends OperationServerMessage {
+    public static final String TYPE = "ka";
   }
 
   public static final class Unsupported extends OperationServerMessage {

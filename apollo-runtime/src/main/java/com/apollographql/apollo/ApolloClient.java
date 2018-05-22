@@ -259,6 +259,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     boolean sendOperationIdentifiers;
     Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = Optional.absent();
     Optional<Map<String, Object>> subscriptionConnectionParams = Optional.absent();
+    long subscriptionHeartbeatTimeout = -1;
 
     Builder() {
     }
@@ -459,6 +460,21 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
+     * <p>Sets up subscription heartbeat message timeout. Timeout for how long subscription manager should wait for a
+     * keep-alive message from the subscription server before reconnect. <b>NOTE: will be ignored if server doesn't send
+     * keep-alive messages.<b/></p>. By default heartbeat timeout is disabled.
+     *
+     * @param timeout  connection keep alive timeout. Min value is 10 secs.
+     * @param timeUnit time unit
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
+    public Builder subscriptionHeartbeatTimeout(long timeout, @NotNull TimeUnit timeUnit) {
+      checkNotNull(timeUnit, "timeUnit is null");
+      this.subscriptionHeartbeatTimeout = Math.max(timeUnit.toMillis(timeout), TimeUnit.SECONDS.toMillis(10));
+      return this;
+    }
+
+    /**
      * Builds the {@link ApolloClient} instance using the configured values.
      *
      * Note that if the {@link #dispatcher} is not called, then a default {@link Executor} is used.
@@ -500,7 +516,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = this.subscriptionTransportFactory;
       if (subscriptionTransportFactory.isPresent()) {
         subscriptionManager = new RealSubscriptionManager(scalarTypeAdapters, subscriptionTransportFactory.get(),
-            subscriptionConnectionParams.or(Collections.<String, Object>emptyMap()), dispatcher);
+            subscriptionConnectionParams.or(Collections.<String, Object>emptyMap()), dispatcher,
+            subscriptionHeartbeatTimeout);
       }
 
       return new ApolloClient(serverUrl,
