@@ -11,6 +11,8 @@ import com.apollographql.apollo.subscription.OperationClientMessage;
 import com.apollographql.apollo.subscription.OperationServerMessage;
 import com.apollographql.apollo.subscription.SubscriptionTransport;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -18,14 +20,13 @@ import java.util.TimerTask;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
-import org.jetbrains.annotations.NotNull;
-
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 @SuppressWarnings("WeakerAccess")
 public final class RealSubscriptionManager implements SubscriptionManager {
   static final int CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID = 1;
   static final int INACTIVITY_TIMEOUT_TIMER_TASK_ID = 2;
+  static final int CONNECTION_KEEP_ALIVE_TIMEOUT_TIMER_TASK_ID = 3;
   static final long CONNECTION_ACKNOWLEDGE_TIMEOUT = TimeUnit.SECONDS.toMillis(5);
   static final long INACTIVITY_TIMEOUT = TimeUnit.SECONDS.toMillis(10);
 
@@ -37,6 +38,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   private final SubscriptionTransport transport;
   private Map<String, Object> connectionParams;
   private final Executor dispatcher;
+  private final long connectionHeartbeatTimeoutMs;
   private final ResponseFieldMapperFactory responseFieldMapperFactory = new ResponseFieldMapperFactory();
   private final Runnable connectionAcknowledgeTimeoutTimerTask = new Runnable() {
     @Override public void run() {
@@ -48,10 +50,15 @@ public final class RealSubscriptionManager implements SubscriptionManager {
       onInactivityTimeout();
     }
   };
+  private final Runnable connectionHeartbeatTimeoutTimerTask = new Runnable() {
+    @Override public void run() {
+      onConnectionHeartbeatTimeout();
+    }
+  };
 
   public RealSubscriptionManager(@NotNull ScalarTypeAdapters scalarTypeAdapters,
       @NotNull final SubscriptionTransport.Factory transportFactory, @NotNull Map<String, Object> connectionParams,
-      @NotNull final Executor dispatcher) {
+      @NotNull final Executor dispatcher, long connectionHeartbeatTimeoutMs) {
     checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null");
     checkNotNull(transportFactory, "transportFactory == null");
     checkNotNull(dispatcher, "dispatcher == null");
@@ -60,6 +67,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     this.connectionParams = checkNotNull(connectionParams, "connectionParams == null");
     this.transport = transportFactory.create(new SubscriptionTransportCallback(this, dispatcher));
     this.dispatcher = dispatcher;
+    this.connectionHeartbeatTimeoutMs = connectionHeartbeatTimeoutMs;
   }
 
   @Override
@@ -173,6 +181,8 @@ public final class RealSubscriptionManager implements SubscriptionManager {
       onCompleteServerMessage((OperationServerMessage.Complete) message);
     } else if (message instanceof OperationServerMessage.ConnectionError) {
       disconnect(true);
+    } else if (message instanceof OperationServerMessage.ConnectionKeepAlive) {
+      resetConnectionKeepAliveTimerTask();
     }
   }
 
@@ -183,6 +193,25 @@ public final class RealSubscriptionManager implements SubscriptionManager {
         state = State.DISCONNECTED;
         subscriptions = new LinkedHashMap<>();
       }
+    }
+  }
+
+  void onConnectionHeartbeatTimeout() {
+    synchronized (this) {
+      transport.disconnect(new OperationClientMessage.Terminate());
+
+      state = State.CONNECTING;
+      transport.connect();
+    }
+  }
+
+  private void resetConnectionKeepAliveTimerTask() {
+    if (connectionHeartbeatTimeoutMs <= 0) {
+      return;
+    }
+    synchronized (this) {
+      timer.schedule(CONNECTION_KEEP_ALIVE_TIMEOUT_TIMER_TASK_ID, connectionHeartbeatTimeoutTimerTask,
+          connectionHeartbeatTimeoutMs);
     }
   }
 

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloSubscriptionCall;
@@ -165,14 +166,18 @@ public class GitHuntEntryDetailActivity extends AppCompatActivity {
             new DisposableSubscriber<Response<RepoCommentAddedSubscription.Data>>() {
               @Override public void onNext(Response<RepoCommentAddedSubscription.Data> response) {
                 commentsListViewAdapter.addItem(response.data().commentAdded().content());
+                Toast.makeText(GitHuntEntryDetailActivity.this, "Subscription response received", Toast.LENGTH_SHORT)
+                    .show();
               }
 
               @Override public void onError(Throwable e) {
                 Log.e(TAG, e.getMessage(), e);
+                Toast.makeText(GitHuntEntryDetailActivity.this, "Subscription failure", Toast.LENGTH_SHORT).show();
               }
 
               @Override public void onComplete() {
                 Log.d(TAG, "Subscription exhausted");
+                Toast.makeText(GitHuntEntryDetailActivity.this, "Subscription complete", Toast.LENGTH_SHORT).show();
               }
             }
         )
