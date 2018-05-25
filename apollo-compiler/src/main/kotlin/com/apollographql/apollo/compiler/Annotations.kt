@@ -12,5 +12,7 @@ object Annotations {
   val OVERRIDE: AnnotationSpec = AnnotationSpec.builder(Override::class.java).build()
   val GENERATED_BY_APOLLO: AnnotationSpec = AnnotationSpec.builder(Generated::class.java)
       .addMember("value", CodeBlock.of("\$S", "Apollo GraphQL")).build()
+  val SUPPRESS_WARNINGS: AnnotationSpec = AnnotationSpec.builder(SuppressWarnings::class.java)
+          .addMember( "value", CodeBlock.of( "\$S", "rawtypes")).build()
   val DEPRECATED: AnnotationSpec = AnnotationSpec.builder(java.lang.Deprecated::class.java).build()
 }

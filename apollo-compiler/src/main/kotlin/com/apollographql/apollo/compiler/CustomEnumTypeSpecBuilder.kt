@@ -1,6 +1,7 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.api.ScalarType
+import com.apollographql.apollo.compiler.Annotations.SUPPRESS_WARNINGS
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.MethodSpec
@@ -38,6 +39,7 @@ class CustomEnumTypeSpecBuilder(
               .build())
           .addMethod(MethodSpec.methodBuilder("javaType")
               .addModifiers(Modifier.PUBLIC)
+              .addAnnotation(SUPPRESS_WARNINGS)
               .addAnnotation(Override::class.java)
               .returns(Class::class.java)
               .addStatement("return \$T.class", javaTypeName.toJavaType())
