@@ -37,14 +37,6 @@ val VERSION = "${project.version}"
 }
 tasks.getByName('compileKotlin').dependsOn('pluginVersion')
 
-allprojects {
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.compilerArgs << "-Xlint" << "-Werror"
-        }
-    }
-}
-
 apply from: 'gradle/update-test-IR-files.gradle'
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
