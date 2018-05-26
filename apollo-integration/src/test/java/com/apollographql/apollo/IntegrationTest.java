@@ -152,7 +152,7 @@ public class IntegrationTest {
             + "  name"
             + "  climates"
             + "  surfaceWater"
-            + "}\",\"variables\":{}}");
+            + "}\",\"operationName\":\"AllPlanets\",\"variables\":{}}");
   }
 
   @Test public void error_response() throws Exception {

@@ -40,10 +40,10 @@ public class ApolloServerInterceptorTest {
       .firstInput(Input.<Integer>fromNullable(null))
       .last(100)
       .build();
-  private final String expectedRequestBody = "{\"query\":\"query AllFilms($after: String, $first: Int, " +
-      "$before: String, $last: Int) {  allFilms(after: $after, first: $first, before: $before, last: $last) {    " +
-      "__typename    totalCount    films {      __typename      title      releaseDate    }  }}\",\"variables\":" +
-      "{\"after\":\"some cursor\",\"first\":null,\"last\":100}}";
+  private final String expectedRequestBody = "{\"query\":\"query AllFilms($after: String, $first: Int, $before: String, $last: Int) {  " +
+      "allFilms(after: $after, first: $first, before: $before, last: $last) {    " +
+      "__typename    totalCount    films {      __typename      title      releaseDate    }  }}\"," +
+      "\"operationName\":\"AllFilms\",\"variables\":{\"after\":\"some cursor\",\"first\":null,\"last\":100}}";
 
   @Test public void testDefaultHttpCall() throws Exception {
     Predicate<Request> requestAssertPredicate = new Predicate<Request>() {
@@ -73,7 +73,7 @@ public class ApolloServerInterceptorTest {
       @Override public boolean apply(@Nullable Request request) {
         assertThat(request).isNotNull();
         assertDefaultRequestHeaders(request);
-        assertThat(request.header(HttpCache.CACHE_KEY_HEADER)).isEqualTo("1f2f23bb27630f5795166091713e18a1");
+        assertThat(request.header(HttpCache.CACHE_KEY_HEADER)).isEqualTo("a76097787b9ec95cd90eb8b53c6711ff");
         assertThat(request.header(HttpCache.CACHE_FETCH_STRATEGY_HEADER)).isEqualTo("NETWORK_FIRST");
         assertThat(request.header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER)).isEqualTo("10000");
         assertThat(request.header(HttpCache.CACHE_EXPIRE_AFTER_READ_HEADER)).isEqualTo("false");

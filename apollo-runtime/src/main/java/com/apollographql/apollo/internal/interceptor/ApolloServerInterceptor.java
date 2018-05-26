@@ -36,7 +36,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
  */
 @SuppressWarnings("WeakerAccess") public final class ApolloServerInterceptor implements ApolloInterceptor {
   static final String HEADER_ACCEPT_TYPE = "Accept";
-  static final String HEADER_CONTENT_TYPE = "CONTENT_TYPE";
+  static final String HEADER_CONTENT_TYPE = "Content-Type";
   static final String HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID";
   static final String HEADER_APOLLO_OPERATION_NAME = "X-APOLLO-OPERATION-NAME";
   static final String ACCEPT_TYPE = "application/json";
@@ -143,6 +143,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     } else {
       jsonWriter.name("query").value(operation.queryDocument().replaceAll("\\n", ""));
     }
+    jsonWriter.name("operationName").value(operation.name().name());
     jsonWriter.name("variables").beginObject();
     operation.variables().marshaller().marshal(new InputFieldJsonWriter(jsonWriter, scalarTypeAdapters));
     jsonWriter.endObject();
