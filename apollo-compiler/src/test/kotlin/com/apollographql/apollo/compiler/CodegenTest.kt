@@ -97,6 +97,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
                 useSemanticNaming = useSemanticNaming,
                 generateModelBuilder = generateModelBuilder,
                 useJavaBeansSemanticNaming = useJavaBeansSemanticNaming,
+                useRawTypesSuppression = false,
                 outputPackageName = null
             )
             arrayOf(it.name, args)

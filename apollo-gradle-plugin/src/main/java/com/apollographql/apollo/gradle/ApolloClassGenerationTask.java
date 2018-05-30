@@ -27,6 +27,7 @@ public class ApolloClassGenerationTask extends SourceTask {
   boolean useSemanticNaming;
   boolean generateModelBuilder;
   boolean useJavaBeansSemanticNaming;
+  boolean useRawTypesSuppression;
   String outputPackageName;
   final File outputDir;
 
@@ -44,7 +45,7 @@ public class ApolloClassGenerationTask extends SourceTask {
       public void execute(@NotNull InputFileDetails inputFileDetails) {
         GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(inputFileDetails.getFile(), outputDir,
             customTypeMapping, nullableValueType, useSemanticNaming, generateModelBuilder, useJavaBeansSemanticNaming,
-            outputPackageName);
+            outputPackageName, useRawTypesSuppression);
         new GraphQLCompiler().write(args);
       }
     });
@@ -80,6 +81,9 @@ public class ApolloClassGenerationTask extends SourceTask {
   public boolean isUseJavaBeansSemanticNaming() {
     return useJavaBeansSemanticNaming;
   }
+
+  @Input
+  public boolean isUseRawTypesSuppression() { return useRawTypesSuppression; }
 
   @Input
   @Optional

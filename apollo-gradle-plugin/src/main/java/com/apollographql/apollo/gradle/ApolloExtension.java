@@ -14,6 +14,7 @@ public class ApolloExtension {
   private boolean useSemanticNaming = true;
   private boolean generateModelBuilder;
   private boolean useJavaBeansSemanticNaming = false;
+  private boolean useRawTypesSuppression = false;
   private String schemaFilePath;
   private String outputPackageName;
 
@@ -40,6 +41,12 @@ public class ApolloExtension {
   public void setUseJavaBeansSemanticNaming(boolean useJavaBeansSemanticNaming) {
     this.useJavaBeansSemanticNaming = useJavaBeansSemanticNaming;
   }
+
+  public void setUseRawTypesSuppression(boolean useRawTypesSuppression) {
+    this.useRawTypesSuppression = useRawTypesSuppression;
+  }
+
+  public boolean isUseRawTypesSuppression() { return useRawTypesSuppression; }
 
   public boolean isUseSemanticNaming() {
     return useSemanticNaming;

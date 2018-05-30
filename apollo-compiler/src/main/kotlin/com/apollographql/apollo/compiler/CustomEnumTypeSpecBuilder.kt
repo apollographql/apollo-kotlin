@@ -38,11 +38,15 @@ class CustomEnumTypeSpecBuilder(
               .addStatement("return \$S", scalarType)
               .build())
           .addMethod(MethodSpec.methodBuilder("javaType")
-              .addModifiers(Modifier.PUBLIC)
-              .addAnnotation(SUPPRESS_WARNINGS)
-              .addAnnotation(Override::class.java)
-              .returns(Class::class.java)
-              .addStatement("return \$T.class", javaTypeName.toJavaType())
+                  .addModifiers(Modifier.PUBLIC)
+                  .apply {
+                    if (context.useRawTypesSuppression) {
+                      this.addAnnotation(com.apollographql.apollo.compiler.Annotations.SUPPRESS_WARNINGS)
+                    }
+                  }
+                .addAnnotation(Override::class.java)
+                .returns(Class::class.java)
+                .addStatement("return \$T.class", javaTypeName.toJavaType())
               .build())
           .build()
 

@@ -172,6 +172,7 @@ class ApolloPlugin implements Plugin<Project> {
       generateModelBuilder = project.apollo.generateModelBuilder
       useJavaBeansSemanticNaming = project.apollo.useJavaBeansSemanticNaming
       outputPackageName = project.apollo.outputPackageName
+      useRawTypesSuppression = project.apollo.useRawTypesSuppression
     }
   }
 
