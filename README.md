@@ -210,7 +210,7 @@ ApolloClient.builder()
   .build();
 ```
 
-If you are have compiler warnings as errors (`options.compilerArgs << "-Xlint" << "-Werror"`)
+If you have compiler warnings as errors (`options.compilerArgs << "-Xlint" << "-Werror"`)
 turned on, your custom type will not compile. You can add a switch `useRawTypesSuppression` to the
 apollo plugin configuration which will annotate your generated class with the proper suppression
 (`@SuppressWarnings("rawtypes")`:
