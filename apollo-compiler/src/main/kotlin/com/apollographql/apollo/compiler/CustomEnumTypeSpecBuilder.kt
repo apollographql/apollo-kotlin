@@ -1,7 +1,6 @@
 package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.api.ScalarType
-import com.apollographql.apollo.compiler.Annotations.SUPPRESS_WARNINGS
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.MethodSpec
@@ -40,7 +39,7 @@ class CustomEnumTypeSpecBuilder(
           .addMethod(MethodSpec.methodBuilder("javaType")
                   .addModifiers(Modifier.PUBLIC)
                   .apply {
-                    if (context.useRawTypesSuppression) {
+                    if (context.useRawTypesWarningSuppression) {
                       this.addAnnotation(com.apollographql.apollo.compiler.Annotations.SUPPRESS_WARNINGS)
                     }
                   }

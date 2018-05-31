@@ -29,7 +29,7 @@ class GraphQLCompiler {
         useSemanticNaming = args.useSemanticNaming,
         generateModelBuilder = args.generateModelBuilder,
         useJavaBeansSemanticNaming = args.useJavaBeansSemanticNaming,
-        useRawTypesSuppression = args.useRawTypesSuppression
+        useRawTypesWarningSuppression = args.useRawTypesWarningSuppression
     )
 
     if (irPackageName.isNotEmpty()) {
@@ -94,6 +94,6 @@ class GraphQLCompiler {
       val generateModelBuilder: Boolean,
       val useJavaBeansSemanticNaming: Boolean,
       val outputPackageName: String?,
-      val useRawTypesSuppression: Boolean
+      val useRawTypesWarningSuppression: Boolean
   )
 }
