@@ -14,9 +14,11 @@ import com.apollographql.apollo.subscription.SubscriptionTransport;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +33,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   static final long INACTIVITY_TIMEOUT = TimeUnit.SECONDS.toMillis(10);
 
   Map<String, SubscriptionRecord> subscriptions = new LinkedHashMap<>();
-  State state = State.DISCONNECTED;
+  volatile State state = State.DISCONNECTED;
   final AutoReleaseTimer timer = new AutoReleaseTimer();
 
   private final ScalarTypeAdapters scalarTypeAdapters;
@@ -55,6 +57,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
       onConnectionHeartbeatTimeout();
     }
   };
+  private final List<OnStateChangeListener> onStateChangeListeners = new CopyOnWriteArrayList<>();
 
   public RealSubscriptionManager(@NotNull ScalarTypeAdapters scalarTypeAdapters,
       @NotNull final SubscriptionTransport.Factory transportFactory, @NotNull Map<String, Object> connectionParams,
@@ -94,6 +97,14 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     });
   }
 
+  public void addOnStateChangeListener(@NotNull OnStateChangeListener onStateChangeListener) {
+    onStateChangeListeners.add(checkNotNull(onStateChangeListener, "onStateChangeListener == null"));
+  }
+
+  public void removeOnStateChangeListener(@NotNull OnStateChangeListener onStateChangeListener) {
+    onStateChangeListeners.remove(checkNotNull(onStateChangeListener, "onStateChangeListener == null"));
+  }
+
   void doSubscribe(Subscription subscription, SubscriptionManager.Callback callback) {
     timer.cancelTask(INACTIVITY_TIMEOUT_TIMER_TASK_ID);
 
@@ -106,7 +117,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
 
       subscriptions.put(subscriptionId, new SubscriptionRecord(subscription, callback));
       if (state == State.DISCONNECTED) {
-        state = State.CONNECTING;
+        setStateAndNotify(State.CONNECTING);
         transport.connect();
       } else if (state == State.ACTIVE) {
         transport.send(new OperationClientMessage.Start(subscriptionId, subscription, scalarTypeAdapters));
@@ -132,7 +143,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
 
   void onTransportConnected() {
     synchronized (this) {
-      state = State.CONNECTED;
+      setStateAndNotify(State.CONNECTED);
       transport.send(new OperationClientMessage.Init(connectionParams));
     }
 
@@ -190,7 +201,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     synchronized (this) {
       if (force || subscriptions.isEmpty()) {
         transport.disconnect(new OperationClientMessage.Terminate());
-        state = State.DISCONNECTED;
+        setStateAndNotify(State.DISCONNECTED);
         subscriptions = new LinkedHashMap<>();
       }
     }
@@ -199,8 +210,9 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   void onConnectionHeartbeatTimeout() {
     synchronized (this) {
       transport.disconnect(new OperationClientMessage.Terminate());
+      setStateAndNotify(State.DISCONNECTED);
 
-      state = State.CONNECTING;
+      setStateAndNotify(State.CONNECTING);
       transport.connect();
     }
   }
@@ -250,7 +262,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   private void onConnectionAcknowledgeServerMessage() {
     timer.cancelTask(CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID);
     synchronized (this) {
-      state = State.ACTIVE;
+      setStateAndNotify(State.ACTIVE);
       for (Map.Entry<String, SubscriptionRecord> entry : subscriptions.entrySet()) {
         String subscriptionId = entry.getKey();
         Subscription<?, ?, ?> subscription = entry.getValue().subscription;
@@ -284,6 +296,14 @@ public final class RealSubscriptionManager implements SubscriptionManager {
       }
     }
     return subscriptionRecord;
+  }
+
+  private void setStateAndNotify(State newState) {
+    State oldState = state;
+    state = newState;
+    for (OnStateChangeListener onStateChangeListener : onStateChangeListeners) {
+      onStateChangeListener.onStateChange(oldState, newState);
+    }
   }
 
   static String idForSubscription(Subscription<?, ?, ?> subscription) {
@@ -403,5 +423,9 @@ public final class RealSubscriptionManager implements SubscriptionManager {
         }
       }
     }
+  }
+
+  interface OnStateChangeListener {
+    void onStateChange(State fromState, State toState);
   }
 }
