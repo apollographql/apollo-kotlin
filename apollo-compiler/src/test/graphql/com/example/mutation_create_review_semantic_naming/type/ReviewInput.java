@@ -218,7 +218,7 @@ public final class ReviewInput {
           writer.writeList("listOfCustomScalar", listOfCustomScalar.value != null ? new InputFieldWriter.ListWriter() {
             @Override
             public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
-              for (Object $item : listOfCustomScalar.value) {
+              for (final Object $item : listOfCustomScalar.value) {
                 listItemWriter.writeCustom(CustomType.DATE, $item);
               }
             }
@@ -231,7 +231,7 @@ public final class ReviewInput {
           writer.writeList("listOfEnums", listOfEnums.value != null ? new InputFieldWriter.ListWriter() {
             @Override
             public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
-              for (Episode $item : listOfEnums.value) {
+              for (final Episode $item : listOfEnums.value) {
                 listItemWriter.writeString($item != null ? $item.rawValue() : null);
               }
             }
@@ -241,7 +241,7 @@ public final class ReviewInput {
           writer.writeList("listOfInt", listOfInt.value != null ? new InputFieldWriter.ListWriter() {
             @Override
             public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
-              for (Integer $item : listOfInt.value) {
+              for (final Integer $item : listOfInt.value) {
                 listItemWriter.writeInt($item);
               }
             }
@@ -251,7 +251,7 @@ public final class ReviewInput {
           writer.writeList("listOfString", listOfString.value != null ? new InputFieldWriter.ListWriter() {
             @Override
             public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
-              for (String $item : listOfString.value) {
+              for (final String $item : listOfString.value) {
                 listItemWriter.writeString($item);
               }
             }
@@ -264,12 +264,12 @@ public final class ReviewInput {
           writer.writeList("listOfListOfString", listOfListOfString.value != null ? new InputFieldWriter.ListWriter() {
             @Override
             public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
-              for (List<String> $item : listOfListOfString.value) {
+              for (final List<String> $item : listOfListOfString.value) {
                 listItemWriter.writeList($item != null ? new InputFieldWriter.ListWriter() {
                   @Override
                   public void write(InputFieldWriter.ListItemWriter listItemWriter) throws
                       IOException {
-                    for (String $$item : $item) {
+                    for (final String $$item : $item) {
                       listItemWriter.writeString($$item);
                     }
                   }
@@ -282,12 +282,12 @@ public final class ReviewInput {
           writer.writeList("listOfListOfEnum", listOfListOfEnum.value != null ? new InputFieldWriter.ListWriter() {
             @Override
             public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
-              for (List<Episode> $item : listOfListOfEnum.value) {
+              for (final List<Episode> $item : listOfListOfEnum.value) {
                 listItemWriter.writeList($item != null ? new InputFieldWriter.ListWriter() {
                   @Override
                   public void write(InputFieldWriter.ListItemWriter listItemWriter) throws
                       IOException {
-                    for (Episode $$item : $item) {
+                    for (final Episode $$item : $item) {
                       listItemWriter.writeString($$item != null ? $$item.rawValue() : null);
                     }
                   }
@@ -300,12 +300,12 @@ public final class ReviewInput {
           writer.writeList("listOfListOfCustom", listOfListOfCustom.value != null ? new InputFieldWriter.ListWriter() {
             @Override
             public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
-              for (List<Object> $item : listOfListOfCustom.value) {
+              for (final List<Object> $item : listOfListOfCustom.value) {
                 listItemWriter.writeList($item != null ? new InputFieldWriter.ListWriter() {
                   @Override
                   public void write(InputFieldWriter.ListItemWriter listItemWriter) throws
                       IOException {
-                    for (Object $$item : $item) {
+                    for (final Object $$item : $item) {
                       listItemWriter.writeCustom(CustomType.DATE, $$item);
                     }
                   }
@@ -318,12 +318,12 @@ public final class ReviewInput {
           writer.writeList("listOfListOfObject", listOfListOfObject.value != null ? new InputFieldWriter.ListWriter() {
             @Override
             public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
-              for (List<ColorInput> $item : listOfListOfObject.value) {
+              for (final List<ColorInput> $item : listOfListOfObject.value) {
                 listItemWriter.writeList($item != null ? new InputFieldWriter.ListWriter() {
                   @Override
                   public void write(InputFieldWriter.ListItemWriter listItemWriter) throws
                       IOException {
-                    for (ColorInput $$item : $item) {
+                    for (final ColorInput $$item : $item) {
                       listItemWriter.writeObject($$item != null ? $$item.marshaller() : null);
                     }
                   }
