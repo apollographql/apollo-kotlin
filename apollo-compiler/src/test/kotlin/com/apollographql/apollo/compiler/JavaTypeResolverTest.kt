@@ -20,7 +20,7 @@ class JavaTypeResolverTest {
       useSemanticNaming = false,
       generateModelBuilder = false,
       useJavaBeansSemanticNaming = false,
-      useRawTypesWarningSuppression = false
+      suppressRawTypesWarning = false
   )
   private val defaultResolver = JavaTypeResolver(defaultContext, packageName)
 

@@ -13,5 +13,5 @@ data class CodeGenerationContext(
     val useSemanticNaming: Boolean,
     val generateModelBuilder: Boolean,
     val useJavaBeansSemanticNaming: Boolean,
-    val useRawTypesWarningSuppression: Boolean
+    val suppressRawTypesWarning: Boolean
 )
