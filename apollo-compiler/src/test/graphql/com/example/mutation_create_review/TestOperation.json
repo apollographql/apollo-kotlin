@@ -15,7 +15,7 @@
 					"type": "ReviewInput!"
 				}
 			],
-			"source": "mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {\n  createReview(episode: $ep, review: $review) {\n    __typename\n    stars\n    commentary\n  }\n}",
+			"source": "mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {\n  createReview(episode: $ep, review: $review) {\n    __typename\n    stars\n    commentary\n    listOfListOfString\n    listOfListOfEnum\n    listOfListOfCustom\n    listOfListOfObject {\n      __typename\n      name\n    }\n  }\n}",
 			"fields": [
 				{
 					"responseName": "createReview",
@@ -66,6 +66,57 @@
 							"description": "Comment about the movie",
 							"isDeprecated": false,
 							"deprecationReason": null
+						},
+						{
+							"responseName": "listOfListOfString",
+							"fieldName": "listOfListOfString",
+							"type": "[[String!]!]",
+							"isConditional": false,
+							"description": "for test purpose only",
+							"isDeprecated": false
+						},
+						{
+							"responseName": "listOfListOfEnum",
+							"fieldName": "listOfListOfEnum",
+							"type": "[[Episode!]!]",
+							"isConditional": false,
+							"description": "for test purpose only",
+							"isDeprecated": false
+						},
+						{
+							"responseName": "listOfListOfCustom",
+							"fieldName": "listOfListOfCustom",
+							"type": "[[Date!]!]",
+							"isConditional": false,
+							"description": "for test purpose only",
+							"isDeprecated": false
+						},
+						{
+							"responseName": "listOfListOfObject",
+							"fieldName": "listOfListOfObject",
+							"type": "[[Character!]!]",
+							"isConditional": false,
+							"description": "for test purpose only",
+							"isDeprecated": false,
+							"fields": [
+								{
+									"responseName": "__typename",
+									"fieldName": "__typename",
+									"type": "String!",
+									"isConditional": false
+								},
+								{
+									"responseName": "name",
+									"fieldName": "name",
+									"type": "String!",
+									"isConditional": false,
+									"description": "The name of the character",
+									"isDeprecated": false,
+									"deprecationReason": null
+								}
+							],
+							"fragmentSpreads": [],
+							"inlineFragments": []
 						}
 					],
 					"fragmentSpreads": [],
@@ -75,8 +126,8 @@
 			"fragmentSpreads": [],
 			"inlineFragments": [],
 			"fragmentsReferenced": [],
-			"sourceWithFragments": "mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {\n  createReview(episode: $ep, review: $review) {\n    __typename\n    stars\n    commentary\n  }\n}",
-			"operationId": "eb015fa9dd6e305a9228393e61579154ae22719f6a18df6d00b45659ee2e7f7f"
+			"sourceWithFragments": "mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {\n  createReview(episode: $ep, review: $review) {\n    __typename\n    stars\n    commentary\n    listOfListOfString\n    listOfListOfEnum\n    listOfListOfCustom\n    listOfListOfObject {\n      __typename\n      name\n    }\n  }\n}",
+			"operationId": "63f677799b4c5cfe580f133b71712c66179ea84077be680e999b0f1d1e66e0a1"
 		}
 	],
 	"fragments": [],
@@ -203,22 +254,22 @@
 				},
 				{
 					"name": "listOfListOfString",
-					"type": "[[String]]",
+					"type": "[[String!]!]",
 					"description": "for test purpose only"
 				},
 				{
 					"name": "listOfListOfEnum",
-					"type": "[[Episode]]",
+					"type": "[[Episode!]!]",
 					"description": "for test purpose only"
 				},
 				{
 					"name": "listOfListOfCustom",
-					"type": "[[Date]]",
+					"type": "[[Date!]!]",
 					"description": "for test purpose only"
 				},
 				{
 					"name": "listOfListOfObject",
-					"type": "[[ColorInput]]",
+					"type": "[[ColorInput!]!]",
 					"description": "for test purpose only"
 				}
 			]

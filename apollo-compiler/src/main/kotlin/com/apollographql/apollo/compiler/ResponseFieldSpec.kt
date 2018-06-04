@@ -149,10 +149,9 @@ class ResponseFieldSpec(
 
     fun readCustom(): CodeBlock {
       val customScalarEnum = CustomEnumTypeSpecBuilder.className(context)
-      val customScalarEnumConst = normalizeGraphQlType(irField.type).toUpperCase(Locale.ENGLISH)
+      val customScalarEnumConst = normalizeGraphQlType(irField.type, recursive = true).toUpperCase(Locale.ENGLISH)
       return CodeBlock.of("return \$L.readCustomType(\$T.\$L);\n", RESPONSE_LIST_ITEM_READER_PARAM.name,
-          customScalarEnum,
-          customScalarEnumConst)
+          customScalarEnum, customScalarEnumConst)
     }
 
     fun readObject(): CodeBlock {
@@ -293,7 +292,7 @@ class ResponseFieldSpec(
 
     fun writeCustom(): CodeBlock {
       val customScalarEnum = CustomEnumTypeSpecBuilder.className(context)
-      val customScalarEnumConst = normalizeGraphQlType(irField.type).toUpperCase(Locale.ENGLISH)
+      val customScalarEnumConst = normalizeGraphQlType(irField.type, recursive = true).toUpperCase(Locale.ENGLISH)
       return CodeBlock.builder()
           .addStatement("\$L.writeCustom(\$T.\$L, \$L)", RESPONSE_LIST_ITEM_WRITER_PARAM.name,
               customScalarEnum, customScalarEnumConst, OBJECT_VALUE_PARAM.name)
