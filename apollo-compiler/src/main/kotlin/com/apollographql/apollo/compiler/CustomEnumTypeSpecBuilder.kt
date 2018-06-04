@@ -31,21 +31,21 @@ class CustomEnumTypeSpecBuilder(
   private fun scalarMappingTypeSpec(scalarType: String, javaTypeName: String) =
       TypeSpec.anonymousClassBuilder("")
           .addMethod(MethodSpec.methodBuilder("typeName")
-              .addModifiers(Modifier.PUBLIC)
-              .addAnnotation(Override::class.java)
-              .returns(java.lang.String::class.java)
-              .addStatement("return \$S", scalarType)
-              .build())
+          .addModifiers(Modifier.PUBLIC)
+          .addAnnotation(Override::class.java)
+          .returns(java.lang.String::class.java)
+          .addStatement("return \$S", scalarType)
+          .build())
           .addMethod(MethodSpec.methodBuilder("javaType")
-                  .addModifiers(Modifier.PUBLIC)
-                  .apply {
-                    if (context.suppressRawTypesWarning) {
-                      this.addAnnotation(com.apollographql.apollo.compiler.Annotations.SUPPRESS_WARNINGS)
-                    }
-                  }
-                .addAnnotation(Override::class.java)
-                .returns(Class::class.java)
-                .addStatement("return \$T.class", javaTypeName.toJavaType())
+            .addModifiers(Modifier.PUBLIC)
+            .apply {
+              if (context.suppressRawTypesWarning) {
+                this.addAnnotation(com.apollographql.apollo.compiler.Annotations.SUPPRESS_WARNINGS)
+                }
+              }
+              .addAnnotation(Override::class.java)
+              .returns(Class::class.java)
+              .addStatement("return \$T.class", javaTypeName.toJavaType())
               .build())
           .build()
 
