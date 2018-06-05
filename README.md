@@ -210,6 +210,18 @@ ApolloClient.builder()
   .build();
 ```
 
+If you have compiler warnings as errors (`options.compilerArgs << "-Xlint" << "-Werror"`)
+turned on, your custom type will not compile. You can add a switch `suppressRawTypesWarning` to the
+apollo plugin configuration which will annotate your generated class with the proper suppression
+(`@SuppressWarnings("rawtypes")`:
+
+```
+apollo {
+    customTypeMapping['URL'] = "java.lang.String"
+    suppressRawTypesWarning = "true"
+}
+```
+
 ## Support For Cached Responses
 
 Apollo GraphQL client allows you to cache responses, making it suitable for use even while offline. The client can be configured with 3 levels of caching:

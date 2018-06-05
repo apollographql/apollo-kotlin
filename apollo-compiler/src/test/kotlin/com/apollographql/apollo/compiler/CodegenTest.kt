@@ -89,6 +89,10 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
               it.name == "java_beans_semantic_naming" -> true
               else -> false
             }
+            val suppressRawTypesWarning = when {
+              it.name == "custom_scalar_type_warnings" -> true
+              else -> false
+            }
             val args = GraphQLCompiler.Arguments(
                 irFile = File(it, "TestOperation.json"),
                 outputDir = GraphQLCompiler.OUTPUT_DIRECTORY.fold(File("build"), ::File),
@@ -97,6 +101,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
                 useSemanticNaming = useSemanticNaming,
                 generateModelBuilder = generateModelBuilder,
                 useJavaBeansSemanticNaming = useJavaBeansSemanticNaming,
+                suppressRawTypesWarning = suppressRawTypesWarning,
                 outputPackageName = null
             )
             arrayOf(it.name, args)

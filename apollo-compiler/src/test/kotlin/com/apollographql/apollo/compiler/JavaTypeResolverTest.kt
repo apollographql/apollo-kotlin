@@ -19,7 +19,8 @@ class JavaTypeResolverTest {
       ir = CodeGenerationIR(emptyList(), emptyList(), emptyList()),
       useSemanticNaming = false,
       generateModelBuilder = false,
-      useJavaBeansSemanticNaming = false
+      useJavaBeansSemanticNaming = false,
+      suppressRawTypesWarning = false
   )
   private val defaultResolver = JavaTypeResolver(defaultContext, packageName)
 
