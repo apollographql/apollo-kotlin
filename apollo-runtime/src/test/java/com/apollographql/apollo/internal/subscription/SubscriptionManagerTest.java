@@ -1,6 +1,5 @@
 package com.apollographql.apollo.internal.subscription;
 
-import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Response;
@@ -10,22 +9,21 @@ import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
+import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 import com.apollographql.apollo.subscription.OperationClientMessage;
 import com.apollographql.apollo.subscription.OperationServerMessage;
 import com.apollographql.apollo.subscription.SubscriptionTransport;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.concurrent.CountDownLatch;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import org.jetbrains.annotations.NotNull;
 
 import static com.apollographql.apollo.internal.subscription.RealSubscriptionManager.idForSubscription;
 import static com.google.common.truth.Truth.assertThat;
@@ -36,11 +34,13 @@ public class SubscriptionManagerTest {
   private RealSubscriptionManager subscriptionManager;
   private MockSubscription subscription1 = new MockSubscription("MockSubscription1");
   private MockSubscription subscription2 = new MockSubscription("MockSubscription2");
+  private SubscriptionManagerOnStateChangeListener onStateChangeListener = new SubscriptionManagerOnStateChangeListener();
 
   @Before public void setUp() throws Exception {
     subscriptionTransportFactory = new MockSubscriptionTransportFactory();
     subscriptionManager = new RealSubscriptionManager(new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
         subscriptionTransportFactory, Collections.<String, Object>emptyMap(), new MockExecutor(), connectionHeartbeatTimeoutMs);
+    subscriptionManager.addOnStateChangeListener(onStateChangeListener);
     assertThat(subscriptionTransportFactory.subscriptionTransport).isNotNull();
     assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
   }
@@ -95,10 +95,10 @@ public class SubscriptionManagerTest {
 
     assertThat(subscriptionManager.timer.tasks).containsKey(RealSubscriptionManager.INACTIVITY_TIMEOUT_TIMER_TASK_ID);
 
-    subscriptionTransportFactory.subscriptionTransport.disconnectCountDownLatch.awaitOrThrowWithTimeout
-        (RealSubscriptionManager.INACTIVITY_TIMEOUT + 800, TimeUnit.MILLISECONDS);
+    onStateChangeListener.awaitState(RealSubscriptionManager.State.DISCONNECTED, RealSubscriptionManager
+        .INACTIVITY_TIMEOUT + 800, TimeUnit.MILLISECONDS);
+
     assertThat(subscriptionTransportFactory.subscriptionTransport.disconnectMessage).isInstanceOf(OperationClientMessage.Terminate.class);
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
     assertThat(subscriptionManager.timer.tasks).isEmpty();
   }
 
@@ -108,9 +108,8 @@ public class SubscriptionManagerTest {
     subscriptionTransportFactory.callback.onMessage(new OperationServerMessage.ConnectionAcknowledge());
     subscriptionManager.unsubscribe(subscription1);
 
-    subscriptionTransportFactory.subscriptionTransport.disconnectCountDownLatch.awaitOrThrowWithTimeout
-        (RealSubscriptionManager.INACTIVITY_TIMEOUT + 800, TimeUnit.MILLISECONDS);
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
+    onStateChangeListener.awaitState(RealSubscriptionManager.State.DISCONNECTED, RealSubscriptionManager
+        .INACTIVITY_TIMEOUT + 800, TimeUnit.MILLISECONDS);
 
     subscriptionManager.subscribe(subscription2, new SubscriptionManagerCallbackAdapter<Operation.Data>());
     subscriptionTransportFactory.callback.onConnected();
@@ -127,10 +126,11 @@ public class SubscriptionManagerTest {
     subscriptionTransportFactory.callback.onConnected();
 
     assertThat(subscriptionManager.timer.tasks).containsKey(RealSubscriptionManager.CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID);
-    subscriptionTransportFactory.subscriptionTransport.disconnectCountDownLatch.awaitOrThrowWithTimeout
-        (RealSubscriptionManager.CONNECTION_ACKNOWLEDGE_TIMEOUT + 800, TimeUnit.MILLISECONDS);
+
+    onStateChangeListener.awaitState(RealSubscriptionManager.State.DISCONNECTED, RealSubscriptionManager
+        .CONNECTION_ACKNOWLEDGE_TIMEOUT + 800, TimeUnit.MILLISECONDS);
+
     assertThat(subscriptionTransportFactory.subscriptionTransport.disconnectMessage).isInstanceOf(OperationClientMessage.Terminate.class);
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
     assertThat(subscriptionManager.timer.tasks).isEmpty();
     assertThat(subscriptionManager.subscriptions).isEmpty();
   }
@@ -218,10 +218,8 @@ public class SubscriptionManagerTest {
     assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.ACTIVE);
     assertThat(subscriptionManager.timer.tasks).containsKey(RealSubscriptionManager.CONNECTION_KEEP_ALIVE_TIMEOUT_TIMER_TASK_ID);
 
-    subscriptionTransportFactory.subscriptionTransport.disconnectCountDownLatch.awaitOrThrowWithTimeout
-        (connectionHeartbeatTimeoutMs + 800, TimeUnit.MILLISECONDS);
-
-    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.CONNECTING);
+    onStateChangeListener.awaitState(RealSubscriptionManager.State.DISCONNECTED, connectionHeartbeatTimeoutMs + 800, TimeUnit.MILLISECONDS);
+    onStateChangeListener.awaitState(RealSubscriptionManager.State.CONNECTING, 800, TimeUnit.MILLISECONDS);
   }
 
   private static final class MockSubscriptionTransportFactory implements SubscriptionTransport.Factory {
@@ -238,21 +236,43 @@ public class SubscriptionManagerTest {
     volatile OperationClientMessage lastSentMessage;
     volatile boolean connected;
     volatile OperationClientMessage disconnectMessage;
-    NamedCountDownLatch disconnectCountDownLatch;
 
     @Override public void connect() {
       connected = true;
-      disconnectCountDownLatch = new NamedCountDownLatch("Disconnect", 1);
     }
 
     @Override public void disconnect(OperationClientMessage message) {
       connected = false;
       disconnectMessage = message;
-      disconnectCountDownLatch.countDown();
     }
 
     @Override public void send(OperationClientMessage message) {
       lastSentMessage = message;
+    }
+  }
+
+  private static class SubscriptionManagerOnStateChangeListener implements RealSubscriptionManager.OnStateChangeListener {
+    private final List<RealSubscriptionManager.State> stateNotifications = new ArrayList<>();
+
+    @Override
+    public void onStateChange(RealSubscriptionManager.State fromState, RealSubscriptionManager.State toState) {
+      synchronized (stateNotifications) {
+        stateNotifications.add(toState);
+        stateNotifications.notify();
+      }
+    }
+
+    void awaitState(RealSubscriptionManager.State state, long timeout, TimeUnit timeUnit) throws InterruptedException {
+      synchronized (stateNotifications) {
+        if (stateNotifications.contains(state)) {
+          return;
+        }
+
+        stateNotifications.clear();
+        stateNotifications.wait(timeUnit.toMillis(timeout));
+
+        assertThat(stateNotifications).contains(state);
+      }
     }
   }
 
@@ -326,26 +346,6 @@ public class SubscriptionManagerTest {
 
     @Override public void onCompleted() {
       completed = true;
-    }
-  }
-
-  private static class NamedCountDownLatch extends CountDownLatch {
-    private String name;
-
-    NamedCountDownLatch(String name, int count) {
-      super(count);
-      this.name = name;
-    }
-
-    public String name() {
-      return name;
-    }
-
-    public void awaitOrThrowWithTimeout(long timeout, TimeUnit timeUnit)
-        throws InterruptedException, TimeoutException {
-      if (!this.await(timeout, timeUnit)) {
-        throw new TimeoutException("Time expired before latch, " + this.name() + " count went to zero.");
-      }
     }
   }
 }
