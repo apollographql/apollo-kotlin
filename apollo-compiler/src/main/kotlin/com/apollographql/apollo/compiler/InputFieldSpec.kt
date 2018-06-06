@@ -77,7 +77,7 @@ class InputFieldSpec(
 
   private fun listWriter(itemType: TypeName, listParam: CodeBlock, itemParam: String, marshaller: CodeBlock): TypeSpec {
     val writeStatement = CodeBlock.builder()
-        .beginControlFlow("for (\$T \$L : \$L)", itemType, itemParam, listParam)
+        .beginControlFlow("for (final \$T \$L : \$L)", itemType, itemParam, listParam)
         .add(writeListItemStatement(itemType, itemParam, marshaller))
         .endControlFlow()
         .build()
