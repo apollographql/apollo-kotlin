@@ -11,6 +11,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.Generated;
 import org.jetbrains.annotations.NotNull;
@@ -30,9 +31,9 @@ public final class ReviewInput {
 
   private final Input<Episode> nullableEnum;
 
-  private final Input<List<Object>> listOfCustomScalar;
+  private final Input<List<Date>> listOfCustomScalar;
 
-  private final Input<Object> customScalar;
+  private final Input<Date> customScalar;
 
   private final Input<List<Episode>> listOfEnums;
 
@@ -46,7 +47,7 @@ public final class ReviewInput {
 
   private final Input<List<List<Episode>>> listOfListOfEnum;
 
-  private final Input<List<List<Object>>> listOfListOfCustom;
+  private final Input<List<List<Date>>> listOfListOfCustom;
 
   private final Input<List<List<ColorInput>>> listOfListOfObject;
 
@@ -56,11 +57,11 @@ public final class ReviewInput {
 
   ReviewInput(int stars, Input<Integer> nullableIntFieldWithDefaultValue, Input<String> commentary,
       @NotNull ColorInput favoriteColor, Input<Episode> enumWithDefaultValue,
-      Input<Episode> nullableEnum, Input<List<Object>> listOfCustomScalar,
-      Input<Object> customScalar, Input<List<Episode>> listOfEnums, Input<List<Integer>> listOfInt,
+      Input<Episode> nullableEnum, Input<List<Date>> listOfCustomScalar, Input<Date> customScalar,
+      Input<List<Episode>> listOfEnums, Input<List<Integer>> listOfInt,
       Input<List<String>> listOfString, Input<Boolean> booleanWithDefaultValue,
       Input<List<List<String>>> listOfListOfString, Input<List<List<Episode>>> listOfListOfEnum,
-      Input<List<List<Object>>> listOfListOfCustom,
+      Input<List<List<Date>>> listOfListOfCustom,
       Input<List<List<ColorInput>>> listOfListOfObject) {
     this.stars = stars;
     this.nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue;
@@ -125,14 +126,14 @@ public final class ReviewInput {
   /**
    * for test purpose only
    */
-  public @Nullable List<Object> listOfCustomScalar() {
+  public @Nullable List<Date> listOfCustomScalar() {
     return this.listOfCustomScalar.value;
   }
 
   /**
    * for test purpose only
    */
-  public @Nullable Object customScalar() {
+  public @Nullable Date customScalar() {
     return this.customScalar.value;
   }
 
@@ -181,7 +182,7 @@ public final class ReviewInput {
   /**
    * for test purpose only
    */
-  public @Nullable List<List<Object>> listOfListOfCustom() {
+  public @Nullable List<List<Date>> listOfListOfCustom() {
     return this.listOfListOfCustom.value;
   }
 
@@ -218,7 +219,7 @@ public final class ReviewInput {
           writer.writeList("listOfCustomScalar", listOfCustomScalar.value != null ? new InputFieldWriter.ListWriter() {
             @Override
             public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
-              for (final Object $item : listOfCustomScalar.value) {
+              for (final Date $item : listOfCustomScalar.value) {
                 listItemWriter.writeCustom(CustomType.DATE, $item);
               }
             }
@@ -300,12 +301,12 @@ public final class ReviewInput {
           writer.writeList("listOfListOfCustom", listOfListOfCustom.value != null ? new InputFieldWriter.ListWriter() {
             @Override
             public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
-              for (final List<Object> $item : listOfListOfCustom.value) {
+              for (final List<Date> $item : listOfListOfCustom.value) {
                 listItemWriter.writeList($item != null ? new InputFieldWriter.ListWriter() {
                   @Override
                   public void write(InputFieldWriter.ListItemWriter listItemWriter) throws
                       IOException {
-                    for (final Object $$item : $item) {
+                    for (final Date $$item : $item) {
                       listItemWriter.writeCustom(CustomType.DATE, $$item);
                     }
                   }
@@ -418,9 +419,9 @@ public final class ReviewInput {
 
     private Input<Episode> nullableEnum = Input.absent();
 
-    private Input<List<Object>> listOfCustomScalar = Input.absent();
+    private Input<List<Date>> listOfCustomScalar = Input.absent();
 
-    private Input<Object> customScalar = Input.absent();
+    private Input<Date> customScalar = Input.absent();
 
     private Input<List<Episode>> listOfEnums = Input.absent();
 
@@ -434,7 +435,7 @@ public final class ReviewInput {
 
     private Input<List<List<Episode>>> listOfListOfEnum = Input.absent();
 
-    private Input<List<List<Object>>> listOfListOfCustom = Input.absent();
+    private Input<List<List<Date>>> listOfListOfCustom = Input.absent();
 
     private Input<List<List<ColorInput>>> listOfListOfObject = Input.absent();
 
@@ -492,7 +493,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder listOfCustomScalar(@Nullable List<Object> listOfCustomScalar) {
+    public Builder listOfCustomScalar(@Nullable List<Date> listOfCustomScalar) {
       this.listOfCustomScalar = Input.fromNullable(listOfCustomScalar);
       return this;
     }
@@ -500,7 +501,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder customScalar(@Nullable Object customScalar) {
+    public Builder customScalar(@Nullable Date customScalar) {
       this.customScalar = Input.fromNullable(customScalar);
       return this;
     }
@@ -556,7 +557,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder listOfListOfCustom(@Nullable List<List<Object>> listOfListOfCustom) {
+    public Builder listOfListOfCustom(@Nullable List<List<Date>> listOfListOfCustom) {
       this.listOfListOfCustom = Input.fromNullable(listOfListOfCustom);
       return this;
     }
@@ -604,7 +605,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder listOfCustomScalarInput(@NotNull Input<List<Object>> listOfCustomScalar) {
+    public Builder listOfCustomScalarInput(@NotNull Input<List<Date>> listOfCustomScalar) {
       this.listOfCustomScalar = Utils.checkNotNull(listOfCustomScalar, "listOfCustomScalar == null");
       return this;
     }
@@ -612,7 +613,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder customScalarInput(@NotNull Input<Object> customScalar) {
+    public Builder customScalarInput(@NotNull Input<Date> customScalar) {
       this.customScalar = Utils.checkNotNull(customScalar, "customScalar == null");
       return this;
     }
@@ -668,7 +669,7 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder listOfListOfCustomInput(@NotNull Input<List<List<Object>>> listOfListOfCustom) {
+    public Builder listOfListOfCustomInput(@NotNull Input<List<List<Date>>> listOfListOfCustom) {
       this.listOfListOfCustom = Utils.checkNotNull(listOfListOfCustom, "listOfListOfCustom == null");
       return this;
     }

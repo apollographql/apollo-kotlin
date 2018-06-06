@@ -203,22 +203,22 @@
 				},
 				{
 					"name": "listOfListOfString",
-					"type": "[[String]]",
+					"type": "[[String!]!]",
 					"description": "for test purpose only"
 				},
 				{
 					"name": "listOfListOfEnum",
-					"type": "[[Episode]]",
+					"type": "[[Episode!]!]",
 					"description": "for test purpose only"
 				},
 				{
 					"name": "listOfListOfCustom",
-					"type": "[[Date]]",
+					"type": "[[Date!]!]",
 					"description": "for test purpose only"
 				},
 				{
 					"name": "listOfListOfObject",
-					"type": "[[ColorInput]]",
+					"type": "[[ColorInput!]!]",
 					"description": "for test purpose only"
 				}
 			]

@@ -2,9 +2,10 @@ package com.example.mutation_create_review.type;
 
 import com.apollographql.apollo.api.ScalarType;
 import java.lang.Class;
-import java.lang.Object;
+import java.lang.Integer;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Date;
 import javax.annotation.Generated;
 
 @Generated("Apollo GraphQL")
@@ -17,7 +18,7 @@ public enum CustomType implements ScalarType {
 
     @Override
     public Class javaType() {
-      return Object.class;
+      return Date.class;
     }
   },
 
@@ -29,7 +30,7 @@ public enum CustomType implements ScalarType {
 
     @Override
     public Class javaType() {
-      return String.class;
+      return Integer.class;
     }
   }
 }
