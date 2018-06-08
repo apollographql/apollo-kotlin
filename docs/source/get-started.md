@@ -5,7 +5,7 @@ description: Learn how to quickly set up Apollo Client in your Android app
 
 Apollo-Android is a GraphQL compliant client that generates Java models from standard GraphQL queries.  These models give you a typesafe API to work with GraphQL servers. Apollo will help you keep your GraphQL query statements together, organized, and easily accessible from Java.
 
-When you change a query and recompile your project - Apollo code generation will rebuild your data model for you. Code generation also allows Apollo to read and unmarshal responses from the network without the need of any reflection. Future versions of Apollo-Android will also work with AutoValue and other value object generators.
+When you change a query and recompile your project - the Apollo code generator will rebuild your data model for you. Code generation also allows Apollo to read and unmarshal responses from the network without the need of any reflection.
 
 <h2 id="installation">Installation</h2>
 
@@ -38,9 +38,11 @@ apply plugin: 'com.apollographql.android'
 
 <h2 id="download-schema">Downloading a Schema</h2>
 
-Apollo Android requires a GraphQL schema file as input to the code generation process. A schema file is a JSON file that contains the results of an introspection query. Conventionally this file is called `schema.json`, and you store it next to your `.graphql` files.
+Apollo Android requires a GraphQL schema file as input to the code generation process. A schema file is a JSON file that contains the results of an introspection query. Conventionally this file is called `schema.json`, and you store it next to your `.graphql` files. Most users keep these files in the `/src/main/graphql` directory.
 
-You can use `apollo-codegen` to download a GraphQL schema. This works by sending an introspection query to your server:
+![Directory Structure](directory_structure.png)
+
+You can use [apollo-codegen](https://github.com/apollographql/apollo-codegen#usage) to download a GraphQL schema. This works by sending an introspection query to your server:
 
 ```sh
 apollo-codegen download-schema http://localhost:8080/graphql --output schema.json
@@ -69,13 +71,15 @@ ApolloClient apolloClient = ApolloClient.builder()
                                         .build();
 ```
 
+If you need to send header values with your GraphQL requests, you can add those to your `OkHttpClient` instance by means of an [Interceptor](https://github.com/square/okhttp/wiki/Interceptors).
+
 > Note: In the sample project you can find the client here => `apollo-sample/src/main/java/com/apollographql/apollo/sample/GitHuntApplication.java`.
 
 That's it! Now your client is ready to start fetching data. 
 
 <h2 id="creating-graphql-file">Creating a .graphql File</h2>
 
-The Apollo Android plugin works by generating code that corresponds to the GraphQL queries you specify in your application's `.graphql` files. There is nothing Android specific about these queries, they can be used with other GraphQL clients as well.
+The Apollo Android plugin works by generating code that corresponds to the GraphQL queries you specify in your application's `.graphql` files. There is nothing Android specific about these queries, they can be used with other GraphQL clients as well. It is however important to have a name for your query to avoid compilation failures.
 
 So if you wanted to perform the below query, you would place it in a file that ends in `.graphql`. It's common to use the query name as the file name. So in this case your file would be named, `FeedQuery.graphql`.
 
@@ -107,7 +111,7 @@ To have Apollo generate the appropriate Java classes for you, you will need to c
 
 You can use the generated classes to make requests to your GraphQL API. `ApolloClient` can take as input any *Query* or *Mutation* that you have generated using Apollo.
 
-First, you would create an instance of your desired query or mutation by using the associated `builder()` method. This Builder class was generated for you as part of the Apollo code gen process.
+First, you would create an instance of your desired query or mutation class. This class was generated for you as part of the Apollo code gen process. You can either use the associated `builder()` method or create the class directly via its constructor.
 
 ```java
 FeedQuery feedQuery = FeedQuery.builder()
@@ -116,7 +120,7 @@ FeedQuery feedQuery = FeedQuery.builder()
                                .build()
 ```
 
-Then you can pass that query into the `query()` method available on the `ApolloClient` instance and enqueue your request. Once the request is completed you will have access to the data inside of the `onResponse()` method.
+Then you can pass that query into the `query()` method available on the `ApolloClient` instance and enqueue your request. Once the request is completed you will have access to the data inside of the `onResponse()` method. Mutations work in the same way, except that you would use the `mutate()` method on the `ApolloClient` instance.
 
 ```java
 apolloClient.query(feedQuery).enqueue(new ApolloCall.Callback<FeedQuery.Data>() {
