@@ -75,7 +75,6 @@ class UpdateTestIRFilesTask extends DefaultTask {
           --schema ${schema.absoluteFile}
           --output ${outputFile.absoluteFile}
           --target json""".execute()
-
     apolloCodeGenProcess.waitFor()
     def error = apolloCodeGenProcess.err.text
     if (error != null && !error.isEmpty()) {
