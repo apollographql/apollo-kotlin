@@ -17,7 +17,7 @@ class UpdateTestIRFilesTask extends DefaultTask {
     // When this task runs from the Android Studio gradle task menu, it sets working
     // directory to $project/apollo-compiler. When run from the command line, it
     // sets working directory to $project.
-    apolloCompilerRelativeDirectory =
+    def apolloCompilerRelativeDirectory =
       System.getProperty("user.dir").endsWith("apollo-compiler") ?
               "../apollo-compiler" :
               "apollo-compiler"
