@@ -9,7 +9,6 @@ import com.apollographql.apollo.api.ResponseFieldMarshaller;
 import com.apollographql.apollo.api.ResponseReader;
 import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.api.internal.Utils;
 import com.example.custom_scalar_type_warnings.type.CustomType;
 import java.lang.Object;
 import java.lang.Override;
@@ -17,19 +16,15 @@ import java.lang.String;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Generated;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
   public static final String OPERATION_DEFINITION = "query TestQuery {\n"
-      + "  hero {\n"
-      + "    __typename\n"
-      + "    links\n"
-      + "  }\n"
+      + "  links\n"
       + "}";
 
-  public static final String OPERATION_ID = "e85bc0b78c2cf20d9b02def60116c1d698ef6777720553e8f2f4507fad0eef35";
+  public static final String OPERATION_ID = "261d102d2c930a0f9f444325bd349452a77a8c138cc1278825eb48971a8b88cf";
 
   public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
@@ -91,10 +86,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
   public static class Data implements Operation.Data {
     static final ResponseField[] $responseFields = {
-      ResponseField.forObject("hero", "hero", null, true, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forList("links", "links", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
-    final Optional<Hero> hero;
+    final Optional<List<Object>> links;
 
     private volatile String $toString;
 
@@ -102,102 +97,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private volatile boolean $hashCodeMemoized;
 
-    public Data(@Nullable Hero hero) {
-      this.hero = Optional.fromNullable(hero);
+    public Data(@Nullable List<Object> links) {
+      this.links = Optional.fromNullable(links);
     }
 
-    public Optional<Hero> hero() {
-      return this.hero;
-    }
-
-    public ResponseFieldMarshaller marshaller() {
-      return new ResponseFieldMarshaller() {
-        @Override
-        public void marshal(ResponseWriter writer) {
-          writer.writeObject($responseFields[0], hero.isPresent() ? hero.get().marshaller() : null);
-        }
-      };
-    }
-
-    @Override
-    public String toString() {
-      if ($toString == null) {
-        $toString = "Data{"
-          + "hero=" + hero
-          + "}";
-      }
-      return $toString;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Data) {
-        Data that = (Data) o;
-        return this.hero.equals(that.hero);
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= hero.hashCode();
-        $hashCode = h;
-        $hashCodeMemoized = true;
-      }
-      return $hashCode;
-    }
-
-    public static final class Mapper implements ResponseFieldMapper<Data> {
-      final Hero.Mapper heroFieldMapper = new Hero.Mapper();
-
-      @Override
-      public Data map(ResponseReader reader) {
-        final Hero hero = reader.readObject($responseFields[0], new ResponseReader.ObjectReader<Hero>() {
-          @Override
-          public Hero read(ResponseReader reader) {
-            return heroFieldMapper.map(reader);
-          }
-        });
-        return new Data(hero);
-      }
-    }
-  }
-
-  public static class Hero {
-    static final ResponseField[] $responseFields = {
-      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forList("links", "links", null, false, Collections.<ResponseField.Condition>emptyList())
-    };
-
-    final @NotNull String __typename;
-
-    final @NotNull List<Object> links;
-
-    private volatile String $toString;
-
-    private volatile int $hashCode;
-
-    private volatile boolean $hashCodeMemoized;
-
-    public Hero(@NotNull String __typename, @NotNull List<Object> links) {
-      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
-      this.links = Utils.checkNotNull(links, "links == null");
-    }
-
-    public @NotNull String __typename() {
-      return this.__typename;
-    }
-
-    /**
-     * Links
-     */
-    public @NotNull List<Object> links() {
+    public Optional<List<Object>> links() {
       return this.links;
     }
 
@@ -205,8 +109,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return new ResponseFieldMarshaller() {
         @Override
         public void marshal(ResponseWriter writer) {
-          writer.writeString($responseFields[0], __typename);
-          writer.writeList($responseFields[1], links, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[0], links.isPresent() ? links.get() : null, new ResponseWriter.ListWriter() {
             @Override
             public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
               listItemWriter.writeCustom(CustomType.URL, value);
@@ -219,8 +122,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "Hero{"
-          + "__typename=" + __typename + ", "
+        $toString = "Data{"
           + "links=" + links
           + "}";
       }
@@ -232,10 +134,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (o == this) {
         return true;
       }
-      if (o instanceof Hero) {
-        Hero that = (Hero) o;
-        return this.__typename.equals(that.__typename)
-         && this.links.equals(that.links);
+      if (o instanceof Data) {
+        Data that = (Data) o;
+        return this.links.equals(that.links);
       }
       return false;
     }
@@ -245,8 +146,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= __typename.hashCode();
-        h *= 1000003;
         h ^= links.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
@@ -254,17 +153,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return $hashCode;
     }
 
-    public static final class Mapper implements ResponseFieldMapper<Hero> {
+    public static final class Mapper implements ResponseFieldMapper<Data> {
       @Override
-      public Hero map(ResponseReader reader) {
-        final String __typename = reader.readString($responseFields[0]);
-        final List<Object> links = reader.readList($responseFields[1], new ResponseReader.ListReader<Object>() {
+      public Data map(ResponseReader reader) {
+        final List<Object> links = reader.readList($responseFields[0], new ResponseReader.ListReader<Object>() {
           @Override
           public Object read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readCustomType(CustomType.URL);
           }
         });
-        return new Hero(__typename, links);
+        return new Data(links);
       }
     }
   }
