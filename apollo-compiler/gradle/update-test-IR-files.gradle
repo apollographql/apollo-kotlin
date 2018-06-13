@@ -19,14 +19,14 @@ class UpdateTestIRFilesTask extends DefaultTask {
     // sets working directory to $project.
     def apolloCompiler = "apollo-compiler"
     String currentDir = System.getProperty("user.dir")
-    if (currentDir.contains(apolloCompiler)) {
-      currentDir = "../apollo-compiler/"
+    if (currentDir.endsWith(apolloCompiler)) {
+      currentDir = new File( "..", "apollo-compiler" )
     }
       else {
-      currentDir = "./apollo-compiler/"
+      currentDir = new File( "apollo-compiler" )
     }
 
-    def dir = new File("${currentDir}/src/test/graphql/com/example")
+    def dir = new File(currentDir, "src/test/graphql/com/example")
     dir.eachFile(FileType.DIRECTORIES) {
       testDir -> generateIRFile(testDir,currentDir)
     }
@@ -68,16 +68,14 @@ class UpdateTestIRFilesTask extends DefaultTask {
     idFileDir.mkdirs()
     def idFile = new File(idFileDir, "id.json")
 
-      def apolloCodeGenCommand = """apollo-codegen generate ${queryFile.absoluteFile}
+    def apolloCodeGenProcess = """apollo-codegen generate ${queryFile.absoluteFile}
           --add-typename
           --operation-ids-path ${idFile.toString()}
           --merge-in-fields-from-fragment-spreads false
           --schema ${schema.absoluteFile}
           --output ${outputFile.absoluteFile}
-          --target json"""
-    def apolloCodeGenProcess = apolloCodeGenCommand.execute()
+          --target json""".execute()
 
-      println( "CODEGEN: ${apolloCodeGenCommand}")
     apolloCodeGenProcess.waitFor()
     def error = apolloCodeGenProcess.err.text
     if (error != null && !error.isEmpty()) {
