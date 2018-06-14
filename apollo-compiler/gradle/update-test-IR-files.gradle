@@ -13,15 +13,24 @@ class UpdateTestIRFilesTask extends DefaultTask {
     if (apolloVersion == -1) {
       return
     }
-    def dir = new File("apollo-compiler/src/test/graphql/com/example")
+
+    // When this task runs from the Android Studio gradle task menu, it sets working
+    // directory to $project/apollo-compiler. When run from the command line, it
+    // sets working directory to $project.
+    def apolloCompilerRelativeDirectory =
+      System.getProperty("user.dir").endsWith("apollo-compiler") ?
+              "../apollo-compiler" :
+              "apollo-compiler"
+
+    def dir = new File(apolloCompilerRelativeDirectory, "src/test/graphql/com/example")
     dir.eachFile(FileType.DIRECTORIES) {
-      testDir -> generateIRFile(testDir)
+      testDir -> generateIRFile(testDir,apolloCompilerRelativeDirectory)
     }
-    logApolloVersion(apolloVersion)
+    logApolloVersion(apolloVersion,apolloCompilerRelativeDirectory)
   }
 
-  private static def logApolloVersion(apolloVersion) {
-    File outputFile = new File('apollo-compiler/src/test/graphql/apollo-codegen.properties')
+  private static def logApolloVersion(apolloVersion,apolloCompilerDirectory) {
+    File outputFile = new File("${apolloCompilerDirectory}/src/test/graphql/apollo-codegen.properties")
     outputFile.write("apollo-codegen version=${apolloVersion}")
   }
 
@@ -37,7 +46,7 @@ class UpdateTestIRFilesTask extends DefaultTask {
     return localCodeGenVersion
   }
 
-  def generateIRFile(testDir) {
+  def generateIRFile(testDir,apolloCompilerDirectory) {
     logger.info("Generating IR file for: ${testDir.name}")
     def testOperationFileName = 'TestOperation.graphql'
     File queryFile = new File(testDir, testOperationFileName)
@@ -48,10 +57,10 @@ class UpdateTestIRFilesTask extends DefaultTask {
     File outputFile = new File(testDir, 'TestOperation.json')
     File schema = new File(testDir, 'schema.json') //Check for custom schema
     if (!schema.exists()) {
-      schema = new File('apollo-compiler/src/test/graphql/schema.json')
+      schema = new File("${apolloCompilerDirectory}/src/test/graphql/schema.json")
     }
 
-    def idFileDir = new File("apollo-compiler/build/apollo-codegen/${testDir.name}")
+    def idFileDir = new File("${apolloCompilerDirectory}/build/apollo-codegen/${testDir.name}")
     idFileDir.mkdirs()
     def idFile = new File(idFileDir, "id.json")
 
