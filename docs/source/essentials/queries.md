@@ -136,7 +136,8 @@ Because the above query won't fetch `appearsIn`, this property is not part of th
 
 Learning how to build `Query` components to fetch data is one of the most important skills to mastering development with Apollo Client. Now that you're a pro at fetching data, why not try building `Mutation` components to update your data? Here are some resources we think will help you level up your skills:
 
-- [More about queries](https://graphql.org/learn/queries/): Read more about queries directly from the official GraphQL docs. 
+- [More about queries](https://graphql.org/learn/queries/): Read more about queries directly from the official GraphQL docs.
+- [Caching responses](./support-for-cached-responses.md): Learn how to cache responses with apollo-android.
 - [Mutations](./mutations.html): Learn how to update data with mutations and when you'll need to update the Apollo cache. For a full list of options, check out the API reference for `Mutation` components.
 - [Local state management](./local-state.html): Learn how to query local data with `apollo-link-state`.
 - [Pagination](../features/pagination.html): Building lists has never been easier thanks to Apollo Client's `fetchMore` function. Learn more in our pagination tutorial.
