@@ -181,6 +181,21 @@ public class InputFieldJsonWriterTest {
     assertThat(jsonBuffer.readUtf8()).isEqualTo("{\"someField\":{\"booleanField\":true,\"stringField\":\"someValue\",\"numberField\":100,\"objectField\":{\"someField\":\"someValue\"}},\"someNullField\":null");
   }
 
+  @Test
+  public void writeListOfList() throws IOException {
+    inputFieldJsonWriter.writeList("someField", new InputFieldWriter.ListWriter() {
+      @Override public void write(@NotNull InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
+        listItemWriter.writeList(new InputFieldWriter.ListWriter() {
+          @Override public void write(@NotNull InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
+            listItemWriter.writeString("someValue");
+          }
+        });
+      }
+    });
+    inputFieldJsonWriter.writeList("someNullField", null);
+    assertThat(jsonBuffer.readUtf8()).isEqualTo("{\"someField\":[[\"someValue\"]],\"someNullField\":null");
+  }
+
   private class MockCustomScalarType implements ScalarType {
     final Class clazz;
 
