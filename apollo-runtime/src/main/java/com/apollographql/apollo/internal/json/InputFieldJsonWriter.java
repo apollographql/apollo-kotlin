@@ -232,7 +232,9 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       if (listWriter == null) {
         jsonWriter.nullValue();
       } else {
+        jsonWriter.beginArray();
         listWriter.write(new JsonListItemWriter(jsonWriter, scalarTypeAdapters));
+        jsonWriter.endArray();
       }
     }
   }
