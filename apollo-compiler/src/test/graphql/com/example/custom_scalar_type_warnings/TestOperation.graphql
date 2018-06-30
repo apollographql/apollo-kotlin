@@ -1,3 +1,5 @@
 query TestQuery {
-  links 
+  hero {
+    links
+  }
 }
