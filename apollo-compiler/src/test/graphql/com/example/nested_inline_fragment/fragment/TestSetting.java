@@ -49,6 +49,8 @@ public interface TestSetting extends GraphqlFragment {
   final class Mapper implements ResponseFieldMapper<TestSetting> {
     final AsSelectSetting.Mapper asSelectSettingFieldMapper = new AsSelectSetting.Mapper();
 
+    final AsSetting.Mapper asSettingFieldMapper = new AsSetting.Mapper();
+
     @Override
     public TestSetting map(ResponseReader reader) {
       final AsSelectSetting asSelectSetting = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("SelectSetting")), new ResponseReader.ConditionalTypeReader<AsSelectSetting>() {
@@ -60,7 +62,7 @@ public interface TestSetting extends GraphqlFragment {
       if (asSelectSetting != null) {
         return asSelectSetting;
       }
-      return null;
+      return asSettingFieldMapper.map(reader);
     }
   }
 
@@ -71,6 +73,8 @@ public interface TestSetting extends GraphqlFragment {
 
     final class Mapper implements ResponseFieldMapper<Value> {
       final AsStringListSettingValue.Mapper asStringListSettingValueFieldMapper = new AsStringListSettingValue.Mapper();
+
+      final AsSettingValue.Mapper asSettingValueFieldMapper = new AsSettingValue.Mapper();
 
       @Override
       public Value map(ResponseReader reader) {
@@ -83,7 +87,7 @@ public interface TestSetting extends GraphqlFragment {
         if (asStringListSettingValue != null) {
           return asStringListSettingValue;
         }
-        return null;
+        return asSettingValueFieldMapper.map(reader);
       }
     }
   }
@@ -181,6 +185,79 @@ public interface TestSetting extends GraphqlFragment {
           }
         });
         return new AsStringListSettingValue(__typename, list);
+      }
+    }
+  }
+
+  class AsSettingValue implements Value {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public AsSettingValue(@NotNull String __typename) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "AsSettingValue{"
+          + "__typename=" + __typename
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof AsSettingValue) {
+        AsSettingValue that = (AsSettingValue) o;
+        return this.__typename.equals(that.__typename);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<AsSettingValue> {
+      @Override
+      public AsSettingValue map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        return new AsSettingValue(__typename);
       }
     }
   }
@@ -319,6 +396,8 @@ public interface TestSetting extends GraphqlFragment {
     final class Mapper implements ResponseFieldMapper<Value1> {
       final AsStringListSettingValue1.Mapper asStringListSettingValue1FieldMapper = new AsStringListSettingValue1.Mapper();
 
+      final AsSettingValue1.Mapper asSettingValue1FieldMapper = new AsSettingValue1.Mapper();
+
       @Override
       public Value1 map(ResponseReader reader) {
         final AsStringListSettingValue1 asStringListSettingValue = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("StringListSettingValue")), new ResponseReader.ConditionalTypeReader<AsStringListSettingValue1>() {
@@ -330,7 +409,7 @@ public interface TestSetting extends GraphqlFragment {
         if (asStringListSettingValue != null) {
           return asStringListSettingValue;
         }
-        return null;
+        return asSettingValue1FieldMapper.map(reader);
       }
     }
   }
@@ -428,6 +507,79 @@ public interface TestSetting extends GraphqlFragment {
           }
         });
         return new AsStringListSettingValue1(__typename, list);
+      }
+    }
+  }
+
+  class AsSettingValue1 implements Value1 {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public AsSettingValue1(@NotNull String __typename) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "AsSettingValue1{"
+          + "__typename=" + __typename
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof AsSettingValue1) {
+        AsSettingValue1 that = (AsSettingValue1) o;
+        return this.__typename.equals(that.__typename);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<AsSettingValue1> {
+      @Override
+      public AsSettingValue1 map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        return new AsSettingValue1(__typename);
       }
     }
   }
@@ -544,6 +696,296 @@ public interface TestSetting extends GraphqlFragment {
         final String id = reader.readString($responseFields[2]);
         final String label = reader.readString($responseFields[3]);
         return new Option(__typename, allowFreeText, id, label);
+      }
+    }
+  }
+
+  class AsSetting implements TestSetting {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObject("value", "value", null, true, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    final Optional<Value2> value;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public AsSetting(@NotNull String __typename, @Nullable Value2 value) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.value = Optional.fromNullable(value);
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    public Optional<Value2> value() {
+      return this.value;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeObject($responseFields[1], value.isPresent() ? value.get().marshaller() : null);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "AsSetting{"
+          + "__typename=" + __typename + ", "
+          + "value=" + value
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof AsSetting) {
+        AsSetting that = (AsSetting) o;
+        return this.__typename.equals(that.__typename)
+         && this.value.equals(that.value);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= value.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<AsSetting> {
+      final Value2.Mapper value2FieldMapper = new Value2.Mapper();
+
+      @Override
+      public AsSetting map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final Value2 value = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Value2>() {
+          @Override
+          public Value2 read(ResponseReader reader) {
+            return value2FieldMapper.map(reader);
+          }
+        });
+        return new AsSetting(__typename, value);
+      }
+    }
+  }
+
+  interface Value2 extends Value {
+    @NotNull String __typename();
+
+    ResponseFieldMarshaller marshaller();
+
+    final class Mapper implements ResponseFieldMapper<Value2> {
+      final AsStringListSettingValue2.Mapper asStringListSettingValue2FieldMapper = new AsStringListSettingValue2.Mapper();
+
+      final AsSettingValue2.Mapper asSettingValue2FieldMapper = new AsSettingValue2.Mapper();
+
+      @Override
+      public Value2 map(ResponseReader reader) {
+        final AsStringListSettingValue2 asStringListSettingValue = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("StringListSettingValue")), new ResponseReader.ConditionalTypeReader<AsStringListSettingValue2>() {
+          @Override
+          public AsStringListSettingValue2 read(String conditionalType, ResponseReader reader) {
+            return asStringListSettingValue2FieldMapper.map(reader);
+          }
+        });
+        if (asStringListSettingValue != null) {
+          return asStringListSettingValue;
+        }
+        return asSettingValue2FieldMapper.map(reader);
+      }
+    }
+  }
+
+  class AsStringListSettingValue2 implements Value2 {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forList("list", "list", null, true, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    final Optional<List<String>> list;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public AsStringListSettingValue2(@NotNull String __typename, @Nullable List<String> list) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.list = Optional.fromNullable(list);
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    public Optional<List<String>> list() {
+      return this.list;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeList($responseFields[1], list.isPresent() ? list.get() : null, new ResponseWriter.ListWriter() {
+            @Override
+            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
+              listItemWriter.writeString(value);
+            }
+          });
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "AsStringListSettingValue2{"
+          + "__typename=" + __typename + ", "
+          + "list=" + list
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof AsStringListSettingValue2) {
+        AsStringListSettingValue2 that = (AsStringListSettingValue2) o;
+        return this.__typename.equals(that.__typename)
+         && this.list.equals(that.list);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= list.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<AsStringListSettingValue2> {
+      @Override
+      public AsStringListSettingValue2 map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final List<String> list = reader.readList($responseFields[1], new ResponseReader.ListReader<String>() {
+          @Override
+          public String read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readString();
+          }
+        });
+        return new AsStringListSettingValue2(__typename, list);
+      }
+    }
+  }
+
+  class AsSettingValue2 implements Value2 {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public AsSettingValue2(@NotNull String __typename) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "AsSettingValue2{"
+          + "__typename=" + __typename
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof AsSettingValue2) {
+        AsSettingValue2 that = (AsSettingValue2) o;
+        return this.__typename.equals(that.__typename);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<AsSettingValue2> {
+      @Override
+      public AsSettingValue2 map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        return new AsSettingValue2(__typename);
       }
     }
   }

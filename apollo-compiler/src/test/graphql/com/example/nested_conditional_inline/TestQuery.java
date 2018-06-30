@@ -263,6 +263,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
+      final AsCharacter2.Mapper asCharacter2FieldMapper = new AsCharacter2.Mapper();
+
       @Override
       public Hero map(ResponseReader reader) {
         final AsHuman asHuman = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")), new ResponseReader.ConditionalTypeReader<AsHuman>() {
@@ -283,7 +285,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         if (asDroid != null) {
           return asDroid;
         }
-        return null;
+        return asCharacter2FieldMapper.map(reader);
       }
     }
   }
@@ -426,6 +428,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     final class Mapper implements ResponseFieldMapper<Friend> {
       final AsHuman1.Mapper asHuman1FieldMapper = new AsHuman1.Mapper();
 
+      final AsCharacter.Mapper asCharacterFieldMapper = new AsCharacter.Mapper();
+
       @Override
       public Friend map(ResponseReader reader) {
         final AsHuman1 asHuman = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")), new ResponseReader.ConditionalTypeReader<AsHuman1>() {
@@ -437,7 +441,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         if (asHuman != null) {
           return asHuman;
         }
-        return null;
+        return asCharacterFieldMapper.map(reader);
       }
     }
   }
@@ -547,6 +551,96 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final String name = reader.readString($responseFields[1]);
         final Double height = reader.readDouble($responseFields[2]);
         return new AsHuman1(__typename, name, height);
+      }
+    }
+  }
+
+  public static class AsCharacter implements Friend {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    final @NotNull String name;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public AsCharacter(@NotNull String __typename, @NotNull String name) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * The name of the character
+     */
+    public @NotNull String name() {
+      return this.name;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "AsCharacter{"
+          + "__typename=" + __typename + ", "
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof AsCharacter) {
+        AsCharacter that = (AsCharacter) o;
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<AsCharacter> {
+      @Override
+      public AsCharacter map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        return new AsCharacter(__typename, name);
       }
     }
   }
@@ -689,6 +783,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     final class Mapper implements ResponseFieldMapper<Friend1> {
       final AsHuman2.Mapper asHuman2FieldMapper = new AsHuman2.Mapper();
 
+      final AsCharacter1.Mapper asCharacter1FieldMapper = new AsCharacter1.Mapper();
+
       @Override
       public Friend1 map(ResponseReader reader) {
         final AsHuman2 asHuman = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")), new ResponseReader.ConditionalTypeReader<AsHuman2>() {
@@ -700,7 +796,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         if (asHuman != null) {
           return asHuman;
         }
-        return null;
+        return asCharacter1FieldMapper.map(reader);
       }
     }
   }
@@ -810,6 +906,186 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final String name = reader.readString($responseFields[1]);
         final Double height = reader.readDouble($responseFields[2]);
         return new AsHuman2(__typename, name, height);
+      }
+    }
+  }
+
+  public static class AsCharacter1 implements Friend1 {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    final @NotNull String name;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public AsCharacter1(@NotNull String __typename, @NotNull String name) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * The name of the character
+     */
+    public @NotNull String name() {
+      return this.name;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "AsCharacter1{"
+          + "__typename=" + __typename + ", "
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof AsCharacter1) {
+        AsCharacter1 that = (AsCharacter1) o;
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<AsCharacter1> {
+      @Override
+      public AsCharacter1 map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        return new AsCharacter1(__typename, name);
+      }
+    }
+  }
+
+  public static class AsCharacter2 implements Hero {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    final @NotNull String name;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public AsCharacter2(@NotNull String __typename, @NotNull String name) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * The name of the character
+     */
+    public @NotNull String name() {
+      return this.name;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "AsCharacter2{"
+          + "__typename=" + __typename + ", "
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof AsCharacter2) {
+        AsCharacter2 that = (AsCharacter2) o;
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<AsCharacter2> {
+      @Override
+      public AsCharacter2 map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        return new AsCharacter2(__typename, name);
       }
     }
   }

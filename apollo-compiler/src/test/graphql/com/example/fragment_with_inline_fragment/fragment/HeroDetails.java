@@ -62,6 +62,8 @@ public interface HeroDetails extends GraphqlFragment {
   final class Mapper implements ResponseFieldMapper<HeroDetails> {
     final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
+    final AsCharacter.Mapper asCharacterFieldMapper = new AsCharacter.Mapper();
+
     @Override
     public HeroDetails map(ResponseReader reader) {
       final AsDroid asDroid = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Droid")), new ResponseReader.ConditionalTypeReader<AsDroid>() {
@@ -73,7 +75,7 @@ public interface HeroDetails extends GraphqlFragment {
       if (asDroid != null) {
         return asDroid;
       }
-      return null;
+      return asCharacterFieldMapper.map(reader);
     }
   }
 
@@ -755,6 +757,625 @@ public interface HeroDetails extends GraphqlFragment {
         Utils.checkNotNull(__typename, "__typename == null");
         Utils.checkNotNull(name, "name == null");
         return new Node1(__typename, name);
+      }
+    }
+  }
+
+  class AsCharacter implements HeroDetails {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObject("friendsConnection", "friendsConnection", null, false, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    final @NotNull String name;
+
+    final @NotNull FriendsConnection2 friendsConnection;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public AsCharacter(@NotNull String __typename, @NotNull String name,
+        @NotNull FriendsConnection2 friendsConnection) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
+      this.friendsConnection = Utils.checkNotNull(friendsConnection, "friendsConnection == null");
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * The name of the character
+     */
+    public @NotNull String name() {
+      return this.name;
+    }
+
+    /**
+     * The friends of the character exposed as a connection with edges
+     */
+    public @NotNull FriendsConnection2 friendsConnection() {
+      return this.friendsConnection;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          writer.writeObject($responseFields[2], friendsConnection.marshaller());
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "AsCharacter{"
+          + "__typename=" + __typename + ", "
+          + "name=" + name + ", "
+          + "friendsConnection=" + friendsConnection
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof AsCharacter) {
+        AsCharacter that = (AsCharacter) o;
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name)
+         && this.friendsConnection.equals(that.friendsConnection);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
+        h *= 1000003;
+        h ^= friendsConnection.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.__typename = __typename;
+      builder.name = name;
+      builder.friendsConnection = friendsConnection;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<AsCharacter> {
+      final FriendsConnection2.Mapper friendsConnection2FieldMapper = new FriendsConnection2.Mapper();
+
+      @Override
+      public AsCharacter map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final FriendsConnection2 friendsConnection = reader.readObject($responseFields[2], new ResponseReader.ObjectReader<FriendsConnection2>() {
+          @Override
+          public FriendsConnection2 read(ResponseReader reader) {
+            return friendsConnection2FieldMapper.map(reader);
+          }
+        });
+        return new AsCharacter(__typename, name, friendsConnection);
+      }
+    }
+
+    public static final class Builder {
+      private @NotNull String __typename;
+
+      private @NotNull String name;
+
+      private @NotNull FriendsConnection2 friendsConnection;
+
+      Builder() {
+      }
+
+      public Builder __typename(@NotNull String __typename) {
+        this.__typename = __typename;
+        return this;
+      }
+
+      public Builder name(@NotNull String name) {
+        this.name = name;
+        return this;
+      }
+
+      public Builder friendsConnection(@NotNull FriendsConnection2 friendsConnection) {
+        this.friendsConnection = friendsConnection;
+        return this;
+      }
+
+      public Builder friendsConnection(@NotNull Mutator<FriendsConnection2.Builder> mutator) {
+        Utils.checkNotNull(mutator, "mutator == null");
+        FriendsConnection2.Builder builder = this.friendsConnection != null ? this.friendsConnection.toBuilder() : FriendsConnection2.builder();
+        mutator.accept(builder);
+        this.friendsConnection = builder.build();
+        return this;
+      }
+
+      public AsCharacter build() {
+        Utils.checkNotNull(__typename, "__typename == null");
+        Utils.checkNotNull(name, "name == null");
+        Utils.checkNotNull(friendsConnection, "friendsConnection == null");
+        return new AsCharacter(__typename, name, friendsConnection);
+      }
+    }
+  }
+
+  class FriendsConnection2 implements FriendsConnection {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forInt("totalCount", "totalCount", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forList("edges", "edges", null, true, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    final Optional<Integer> totalCount;
+
+    final Optional<List<Edge2>> edges;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public FriendsConnection2(@NotNull String __typename, @Nullable Integer totalCount,
+        @Nullable List<Edge2> edges) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.totalCount = Optional.fromNullable(totalCount);
+      this.edges = Optional.fromNullable(edges);
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * The total number of friends
+     */
+    public Optional<Integer> totalCount() {
+      return this.totalCount;
+    }
+
+    /**
+     * The edges for each of the character's friends.
+     */
+    public Optional<List<Edge2>> edges() {
+      return this.edges;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
+          writer.writeList($responseFields[2], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
+            @Override
+            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
+              listItemWriter.writeObject(((Edge2) value).marshaller());
+            }
+          });
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "FriendsConnection2{"
+          + "__typename=" + __typename + ", "
+          + "totalCount=" + totalCount + ", "
+          + "edges=" + edges
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof FriendsConnection2) {
+        FriendsConnection2 that = (FriendsConnection2) o;
+        return this.__typename.equals(that.__typename)
+         && this.totalCount.equals(that.totalCount)
+         && this.edges.equals(that.edges);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= totalCount.hashCode();
+        h *= 1000003;
+        h ^= edges.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.__typename = __typename;
+      builder.totalCount = totalCount.isPresent() ? totalCount.get() : null;
+      builder.edges = edges.isPresent() ? edges.get() : null;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<FriendsConnection2> {
+      final Edge2.Mapper edge2FieldMapper = new Edge2.Mapper();
+
+      @Override
+      public FriendsConnection2 map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final Integer totalCount = reader.readInt($responseFields[1]);
+        final List<Edge2> edges = reader.readList($responseFields[2], new ResponseReader.ListReader<Edge2>() {
+          @Override
+          public Edge2 read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readObject(new ResponseReader.ObjectReader<Edge2>() {
+              @Override
+              public Edge2 read(ResponseReader reader) {
+                return edge2FieldMapper.map(reader);
+              }
+            });
+          }
+        });
+        return new FriendsConnection2(__typename, totalCount, edges);
+      }
+    }
+
+    public static final class Builder {
+      private @NotNull String __typename;
+
+      private @Nullable Integer totalCount;
+
+      private @Nullable List<Edge2> edges;
+
+      Builder() {
+      }
+
+      public Builder __typename(@NotNull String __typename) {
+        this.__typename = __typename;
+        return this;
+      }
+
+      public Builder totalCount(@Nullable Integer totalCount) {
+        this.totalCount = totalCount;
+        return this;
+      }
+
+      public Builder edges(@Nullable List<Edge2> edges) {
+        this.edges = edges;
+        return this;
+      }
+
+      public Builder edges(@NotNull Mutator<List<Edge2.Builder>> mutator) {
+        Utils.checkNotNull(mutator, "mutator == null");
+        List<Edge2.Builder> builders = new ArrayList<>();
+        if (this.edges != null) {
+          for (Edge2 item : this.edges) {
+            builders.add(item != null ? item.toBuilder() : null);
+          }
+        }
+        mutator.accept(builders);
+        List<Edge2> edges = new ArrayList<>();
+        for (Edge2.Builder item : builders) {
+          edges.add(item != null ? item.build() : null);
+        }
+        this.edges = edges;
+        return this;
+      }
+
+      public FriendsConnection2 build() {
+        Utils.checkNotNull(__typename, "__typename == null");
+        return new FriendsConnection2(__typename, totalCount, edges);
+      }
+    }
+  }
+
+  class Edge2 implements Edge {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObject("node", "node", null, true, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    final Optional<Node2> node;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public Edge2(@NotNull String __typename, @Nullable Node2 node) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.node = Optional.fromNullable(node);
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * The character represented by this friendship edge
+     */
+    public Optional<Node2> node() {
+      return this.node;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeObject($responseFields[1], node.isPresent() ? node.get().marshaller() : null);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Edge2{"
+          + "__typename=" + __typename + ", "
+          + "node=" + node
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Edge2) {
+        Edge2 that = (Edge2) o;
+        return this.__typename.equals(that.__typename)
+         && this.node.equals(that.node);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= node.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.__typename = __typename;
+      builder.node = node.isPresent() ? node.get() : null;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Edge2> {
+      final Node2.Mapper node2FieldMapper = new Node2.Mapper();
+
+      @Override
+      public Edge2 map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final Node2 node = reader.readObject($responseFields[1], new ResponseReader.ObjectReader<Node2>() {
+          @Override
+          public Node2 read(ResponseReader reader) {
+            return node2FieldMapper.map(reader);
+          }
+        });
+        return new Edge2(__typename, node);
+      }
+    }
+
+    public static final class Builder {
+      private @NotNull String __typename;
+
+      private @Nullable Node2 node;
+
+      Builder() {
+      }
+
+      public Builder __typename(@NotNull String __typename) {
+        this.__typename = __typename;
+        return this;
+      }
+
+      public Builder node(@Nullable Node2 node) {
+        this.node = node;
+        return this;
+      }
+
+      public Builder node(@NotNull Mutator<Node2.Builder> mutator) {
+        Utils.checkNotNull(mutator, "mutator == null");
+        Node2.Builder builder = this.node != null ? this.node.toBuilder() : Node2.builder();
+        mutator.accept(builder);
+        this.node = builder.build();
+        return this;
+      }
+
+      public Edge2 build() {
+        Utils.checkNotNull(__typename, "__typename == null");
+        return new Edge2(__typename, node);
+      }
+    }
+  }
+
+  class Node2 implements Node {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    final @NotNull String name;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public Node2(@NotNull String __typename, @NotNull String name) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * The name of the character
+     */
+    public @NotNull String name() {
+      return this.name;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Node2{"
+          + "__typename=" + __typename + ", "
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Node2) {
+        Node2 that = (Node2) o;
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.__typename = __typename;
+      builder.name = name;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Node2> {
+      @Override
+      public Node2 map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        return new Node2(__typename, name);
+      }
+    }
+
+    public static final class Builder {
+      private @NotNull String __typename;
+
+      private @NotNull String name;
+
+      Builder() {
+      }
+
+      public Builder __typename(@NotNull String __typename) {
+        this.__typename = __typename;
+        return this;
+      }
+
+      public Builder name(@NotNull String name) {
+        this.name = name;
+        return this;
+      }
+
+      public Node2 build() {
+        Utils.checkNotNull(__typename, "__typename == null");
+        Utils.checkNotNull(name, "name == null");
+        return new Node2(__typename, name);
       }
     }
   }

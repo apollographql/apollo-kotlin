@@ -19,7 +19,7 @@ class SchemaTypeSpecBuilder(
   private val uniqueTypeName = formatUniqueTypeName(typeName, context.reservedTypeNames)
 
   init {
-    context.reservedTypeNames = context.reservedTypeNames + uniqueTypeName
+    context.reservedTypeNames += uniqueTypeName
   }
 
   fun build(vararg modifiers: Modifier): TypeSpec {
@@ -48,17 +48,39 @@ class SchemaTypeSpecBuilder(
         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
         .returns(ResponseFieldMarshaller::class.java)
         .build()
+    val surrogateInlineFragmentType: TypeSpec? = if (inlineFragments.isNotEmpty()) {
+      SchemaTypeSpecBuilder(
+          typeName = formatUniqueTypeName("As${normalizeGraphQlType(schemaType).capitalize()}",
+              context.reservedTypeNames),
+          schemaType = schemaType,
+          fields = fields,
+          fragmentSpreads = fragmentSpreads,
+          inlineFragments = emptyList(),
+          context = context
+      )
+          .build(Modifier.PUBLIC, Modifier.STATIC)
+          .let { if (context.generateModelBuilder) it.withBuilder() else it }
+    } else {
+      null
+    }
     return TypeSpec.interfaceBuilder(uniqueTypeName)
         .addModifiers(*modifiers)
         .addMethods(methods)
         .addMethod(marshallerAccessorMethodSpec)
         .addTypes(nestedTypeSpecs.map { it.second })
-        .apply { if (inlineFragments.isNotEmpty()) addType(inlineFragmentsResponseMapperSpec(nameOverrideMap)) }
+        .apply {
+          if (inlineFragments.isNotEmpty()) addType(
+              inlineFragmentsResponseMapperSpec(nameOverrideMap, surrogateInlineFragmentType!!))
+        }
         .build()
         .let { protocol ->
           protocol.toBuilder()
-              .addTypes(inlineFragmentTypeSpecs.map { it.second }
-                  .map { it.confirmToProtocol(protocol) })
+              .addTypes(inlineFragmentTypeSpecs.map { it.second }.map { it.conformToProtocol(protocol) })
+              .apply {
+                if (surrogateInlineFragmentType != null) {
+                  addType(surrogateInlineFragmentType.conformToProtocol(protocol))
+                }
+              }
               .build()
         }
   }
@@ -229,7 +251,7 @@ class SchemaTypeSpecBuilder(
         }
   }
 
-  private fun formatUniqueTypeName(typeName: String, reservedTypeNames: List<String>): String {
+  private fun formatUniqueTypeName(typeName: String, reservedTypeNames: Collection<String>): String {
     var index = 1
     var name = typeName
     while (reservedTypeNames.contains(name)) {
@@ -379,7 +401,8 @@ class SchemaTypeSpecBuilder(
         .build()
   }
 
-  private fun inlineFragmentsResponseMapperSpec(nameOverrideMap: Map<String, String>): TypeSpec {
+  private fun inlineFragmentsResponseMapperSpec(nameOverrideMap: Map<String, String>,
+      surrogateInlineFragmentType: TypeSpec): TypeSpec {
     val inlineFragments = inlineFragments.map { inlineFragment ->
       val fieldSpec = inlineFragment.fieldSpec(context).overrideType(nameOverrideMap)
       val normalizedFieldSpec = FieldSpec.builder(
@@ -398,6 +421,13 @@ class SchemaTypeSpecBuilder(
           context = context
       )
     }
+    val surrogateInlineFragmentFieldMapperType = ClassName.get("", surrogateInlineFragmentType.name,
+        Util.RESPONSE_FIELD_MAPPER_TYPE_NAME)
+    val surrogateInlineFragmentFieldMapper = FieldSpec.builder(surrogateInlineFragmentFieldMapperType,
+        "${surrogateInlineFragmentType.name.decapitalize()}${Util.FIELD_MAPPER_SUFFIX}", Modifier.FINAL)
+        .initializer(CodeBlock.of("new \$L()", surrogateInlineFragmentFieldMapperType))
+        .build()
+
     val mapperFields = inlineFragments.map {
       val inlineFragmentResponseFieldType = it.fieldSpec.type.rawType() as ClassName
       val mapperClassName = ClassName.get("", inlineFragmentResponseFieldType.simpleName(),
@@ -405,7 +435,7 @@ class SchemaTypeSpecBuilder(
       FieldSpec.builder(mapperClassName, inlineFragmentResponseFieldType.mapperFieldName(), Modifier.FINAL)
           .initializer(CodeBlock.of("new \$L()", mapperClassName))
           .build()
-    }
+    } + surrogateInlineFragmentFieldMapper
     val typeClassName = ClassName.get("", uniqueTypeName)
     val code = CodeBlock.builder()
         .apply {
@@ -423,7 +453,7 @@ class SchemaTypeSpecBuilder(
             )
           }
         }
-        .addStatement("return null")
+        .addStatement("return \$L.map(reader)", surrogateInlineFragmentFieldMapper.name)
         .build()
     val methodSpec = MethodSpec.methodBuilder("map")
         .addModifiers(Modifier.PUBLIC)

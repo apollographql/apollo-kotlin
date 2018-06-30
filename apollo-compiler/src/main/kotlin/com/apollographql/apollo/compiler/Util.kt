@@ -244,7 +244,7 @@ fun TypeSpec.withHashCodeImplementation(): TypeSpec {
       .build()
 }
 
-fun ClassName.mapperFieldName(): String = "${simpleName().decapitalize()}FieldMapper"
+fun ClassName.mapperFieldName(): String = "${simpleName().decapitalize()}${Util.FIELD_MAPPER_SUFFIX}"
 
 fun TypeName.isNullable(): Boolean = isOptional() || annotations.contains(Annotations.NULLABLE)
 
@@ -431,7 +431,7 @@ fun TypeName.rawType(): TypeName {
       ?: this
 }
 
-fun TypeSpec.confirmToProtocol(protocolSpec: TypeSpec): TypeSpec {
+fun TypeSpec.conformToProtocol(protocolSpec: TypeSpec): TypeSpec {
   val nestedTypes = typeSpecs.map { it.name }
   val nestedTypeProtocols = methodSpecs
       .filter { it.returnType != null }
@@ -460,7 +460,7 @@ fun TypeSpec.confirmToProtocol(protocolSpec: TypeSpec): TypeSpec {
       .addMethods(methodSpecs)
       .addTypes(typeSpecs.map { typeSpec ->
         val protocol = nestedTypeProtocols[typeSpec.name]
-        protocol?.let { typeSpec.confirmToProtocol(it) } ?: typeSpec
+        protocol?.let { typeSpec.conformToProtocol(it) } ?: typeSpec
       })
       .also { if (!staticBlock.isEmpty) it.addStaticBlock(staticBlock) }
       .also { if (classBuilder && !initializerBlock.isEmpty) it.addInitializerBlock(initializerBlock) }
@@ -501,6 +501,7 @@ object Util {
   const val MEMOIZED_HASH_CODE_VAR: String = "\$hashCode"
   const val MEMOIZED_HASH_CODE_FLAG_VAR: String = "\$hashCodeMemoized"
   const val MEMOIZED_TO_STRING_VAR: String = "\$toString"
+  const val FIELD_MAPPER_SUFFIX: String = "FieldMapper"
   val SCALAR_TYPES = listOf(ClassNames.STRING, TypeName.INT, TypeName.INT.box(), TypeName.LONG,
       TypeName.LONG.box(), TypeName.DOUBLE, TypeName.DOUBLE.box(), TypeName.BOOLEAN, TypeName.BOOLEAN.box())
 }
