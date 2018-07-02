@@ -13,6 +13,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.internal.AbstractTask
 import org.gradle.api.internal.file.FileResolver
+import org.gradle.api.plugins.JavaLibraryPlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.compile.AbstractCompile
@@ -36,8 +37,10 @@ class ApolloPlugin implements Plugin<Project> {
 
   @Override void apply(Project project) {
     this.project = project
-    if (project.plugins.hasPlugin(AppPlugin) || project.plugins.hasPlugin(LibraryPlugin) || project.plugins.hasPlugin(
-        JavaPlugin)) {
+    if (project.plugins.hasPlugin(AppPlugin)
+        || project.plugins.hasPlugin(LibraryPlugin)
+        || project.plugins.hasPlugin(JavaPlugin)
+        || project.plugins.hasPlugin(JavaLibraryPlugin)) {
       applyApolloPlugin()
     } else {
       throw new IllegalArgumentException(
