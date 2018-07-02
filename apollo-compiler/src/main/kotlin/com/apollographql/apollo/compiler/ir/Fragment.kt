@@ -23,6 +23,7 @@ data class Fragment(
   override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec {
     return SchemaTypeSpecBuilder(
         typeName = formatClassName(),
+        schemaType = typeCondition,
         fields = fields,
         fragmentSpreads = fragmentSpreads,
         inlineFragments = inlineFragments,

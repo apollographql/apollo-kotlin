@@ -207,6 +207,8 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     final class Mapper implements ResponseFieldMapper<HeroDetailQuery1> {
       final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
+      final AsCharacter.Mapper asCharacterFieldMapper = new AsCharacter.Mapper();
+
       @Override
       public HeroDetailQuery1 map(ResponseReader reader) {
         final AsHuman asHuman = reader.readConditional(ResponseField.forInlineFragment("__typename", "__typename", Arrays.asList("Human")), new ResponseReader.ConditionalTypeReader<AsHuman>() {
@@ -218,7 +220,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         if (asHuman != null) {
           return asHuman;
         }
-        return null;
+        return asCharacterFieldMapper.map(reader);
       }
     }
   }
@@ -696,6 +698,221 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
           }
         });
         return new Friend2(__typename, fragments);
+      }
+    }
+  }
+
+  public static class AsCharacter implements HeroDetailQuery1 {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forList("friends", "friends", null, true, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    final @NotNull String name;
+
+    final Optional<List<Friend3>> friends;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public AsCharacter(@NotNull String __typename, @NotNull String name,
+        @Nullable List<Friend3> friends) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
+      this.friends = Optional.fromNullable(friends);
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * The name of the character
+     */
+    public @NotNull String name() {
+      return this.name;
+    }
+
+    /**
+     * The friends of the character, or an empty list if they have none
+     */
+    public Optional<List<Friend3>> friends() {
+      return this.friends;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          writer.writeList($responseFields[2], friends.isPresent() ? friends.get() : null, new ResponseWriter.ListWriter() {
+            @Override
+            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
+              listItemWriter.writeObject(((Friend3) value).marshaller());
+            }
+          });
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "AsCharacter{"
+          + "__typename=" + __typename + ", "
+          + "name=" + name + ", "
+          + "friends=" + friends
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof AsCharacter) {
+        AsCharacter that = (AsCharacter) o;
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name)
+         && this.friends.equals(that.friends);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
+        h *= 1000003;
+        h ^= friends.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<AsCharacter> {
+      final Friend3.Mapper friend3FieldMapper = new Friend3.Mapper();
+
+      @Override
+      public AsCharacter map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final List<Friend3> friends = reader.readList($responseFields[2], new ResponseReader.ListReader<Friend3>() {
+          @Override
+          public Friend3 read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readObject(new ResponseReader.ObjectReader<Friend3>() {
+              @Override
+              public Friend3 read(ResponseReader reader) {
+                return friend3FieldMapper.map(reader);
+              }
+            });
+          }
+        });
+        return new AsCharacter(__typename, name, friends);
+      }
+    }
+  }
+
+  public static class Friend3 implements Friend {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    final @NotNull String name;
+
+    private volatile String $toString;
+
+    private volatile int $hashCode;
+
+    private volatile boolean $hashCodeMemoized;
+
+    public Friend3(@NotNull String __typename, @NotNull String name) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * The name of the character
+     */
+    public @NotNull String name() {
+      return this.name;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Friend3{"
+          + "__typename=" + __typename + ", "
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Friend3) {
+        Friend3 that = (Friend3) o;
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Friend3> {
+      @Override
+      public Friend3 map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        return new Friend3(__typename, name);
       }
     }
   }
