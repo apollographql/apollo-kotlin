@@ -1,5 +1,5 @@
 def versions = [
-    apolloVersion                : '0.5.1-SNAPSHOT',
+    apolloVersion                : '1.0.0-alpha',
     cacheVersion                 : '2.0.2',
     okHttpVersion                : '3.8.1',
     kotlinVersion                : '1.1.2-3',

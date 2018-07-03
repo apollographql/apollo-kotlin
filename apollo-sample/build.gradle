@@ -1,5 +1,5 @@
 buildscript {
-  ext.apolloReleaseVersion = '0.5.1-SNAPSHOT'
+  ext.apolloReleaseVersion = '1.0.0-alpha'
 
   dependencies {
     classpath dep.androidPlugin
