@@ -81,7 +81,9 @@ class GraphQLCompiler {
   companion object {
     const val FILE_EXTENSION = "graphql"
     @JvmField
-    val OUTPUT_DIRECTORY = listOf("generated", "source", "apollo")
+    val OUTPUT_DIRECTORY = listOf("generated", "source", "apollo", "classes")
+    @JvmField
+    val IR_OUTPUT_DIRECTORY = listOf("generated", "source", "apollo", "generatedIR")
     const val APOLLOCODEGEN_VERSION = "0.19.1"
   }
 

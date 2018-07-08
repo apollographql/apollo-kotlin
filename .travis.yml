@@ -19,7 +19,7 @@ android:
     - google-gdk-license-.+
 
 script:
-  - ./gradlew clean build connectedCheck -x checkstyleTest --stacktrace --max-workers=2 -x apollo-gradle-plugin:test -x apollo-integration:build -x apollo-integration:connectedCheck
+  - ./gradlew clean build connectedCheck -x checkstyleTest --stacktrace --max-workers=2 -x apollo-integration:build -x apollo-integration:connectedCheck
   - .buildscript/integration_tests_composite.sh
 
 before_script:

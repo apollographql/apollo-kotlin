@@ -4,6 +4,7 @@ import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.BaseVariant
 import com.apollographql.apollo.compiler.GraphQLCompiler
+import com.google.common.base.Joiner
 import com.google.common.collect.ImmutableList
 import com.moowork.gradle.node.NodeExtension
 import com.moowork.gradle.node.NodePlugin
@@ -31,11 +32,12 @@ class ApolloPlugin implements Plugin<Project> {
   private boolean useGlobalApolloCodegen
 
   @Inject
-  public ApolloPlugin(FileResolver fileResolver) {
+  ApolloPlugin(FileResolver fileResolver) {
     this.fileResolver = fileResolver
   }
 
-  @Override void apply(Project project) {
+  @Override
+  void apply(Project project) {
     this.project = project
     if (project.plugins.hasPlugin(AppPlugin)
         || project.plugins.hasPlugin(LibraryPlugin)
@@ -55,7 +57,7 @@ class ApolloPlugin implements Plugin<Project> {
       setupNode()
     }
 
-    project.extensions.create(ApolloExtension.NAME, ApolloExtension)
+    project.extensions.create(ApolloExtension.NAME, ApolloExtension, project)
     createSourceSetExtensions()
 
     if (!useGlobalApolloCodegen) {
@@ -67,10 +69,10 @@ class ApolloPlugin implements Plugin<Project> {
 
   private void addApolloTasks() {
     Task apolloIRGenTask = project.task("generateApolloIR")
-    apolloIRGenTask.group(TASK_GROUP)
+    apolloIRGenTask.group = TASK_GROUP
 
     Task apolloClassGenTask = project.task("generateApolloClasses")
-    apolloClassGenTask.group(TASK_GROUP)
+    apolloClassGenTask.group = TASK_GROUP
 
     if (isAndroidProject()) {
       getVariants().all { v ->
@@ -89,7 +91,7 @@ class ApolloPlugin implements Plugin<Project> {
   private void addVariantTasks(BaseVariant variant, Task apolloIRGenTask, Task apolloClassGenTask, Collection<?> sourceSets) {
     AbstractTask variantIRTask = createApolloIRGenTask(variant.name, sourceSets)
     ApolloClassGenerationTask variantClassTask = createApolloClassGenTask(variant.name)
-    variant.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir)
+    variant.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir.asFile.get())
     apolloIRGenTask.dependsOn(variantIRTask)
     apolloClassGenTask.dependsOn(variantClassTask)
   }
@@ -127,37 +129,43 @@ class ApolloPlugin implements Plugin<Project> {
   }
 
   private AbstractTask createApolloIRGenTask(String sourceSetOrVariantName, Collection<Object> sourceSets) {
-    String taskName = String.format(APOLLO_CODEGEN_GENERATE_TASK_NAME, sourceSetOrVariantName.capitalize())
+    ImmutableList.Builder<String> sourceSetNamesList = ImmutableList.builder()
+    sourceSets.each { sourceSet ->
+      sourceSetNamesList.add(sourceSet.name)
+    }
 
-    AbstractTask task;
+    File outputFolder = new File(project.buildDir, Joiner.on(File.separator)
+        .join(GraphQLCompiler.IR_OUTPUT_DIRECTORY + sourceSetOrVariantName))
+
+    String taskName = String.format(APOLLO_CODEGEN_GENERATE_TASK_NAME, sourceSetOrVariantName.capitalize())
     if (useGlobalApolloCodegen) {
-      task = project.tasks.create(taskName, ApolloSystemCodegenGenerationTask) {
-        group = TASK_GROUP
-        description = "Generate an IR file using apollo-codegen for ${sourceSetOrVariantName.capitalize()} GraphQL queries"
+      return project.tasks.create(taskName, ApolloSystemCodegenGenerationTask) {
         sourceSets.each { sourceSet ->
           inputs.files(sourceSet.graphql).skipWhenEmpty()
         }
+        group = TASK_GROUP
+        description = "Generate an IR file using apollo-codegen for ${sourceSetOrVariantName.capitalize()} GraphQL queries"
         schemaFilePath = project.apollo.schemaFilePath
         outputPackageName = project.apollo.outputPackageName
+        variant = sourceSetOrVariantName
+        sourceSetNames = sourceSetNamesList.build()
+        outputDir.set(outputFolder)
       }
-
     } else {
-      task = project.tasks.create(taskName, ApolloLocalCodegenGenerationTask) {
+      return project.tasks.create(taskName, ApolloLocalCodegenGenerationTask) {
+        sourceSets.each { sourceSet ->
+          inputs.files(sourceSet.graphql).skipWhenEmpty()
+        }
         group = TASK_GROUP
         description = "Generate an IR file using apollo-codegen for ${sourceSetOrVariantName.capitalize()} GraphQL queries"
         dependsOn(ApolloCodegenInstallTask.NAME)
-        sourceSets.each { sourceSet ->
-          inputs.files(sourceSet.graphql).skipWhenEmpty()
-        }
         schemaFilePath = project.apollo.schemaFilePath
         outputPackageName = project.apollo.outputPackageName
+        variant = sourceSetOrVariantName
+        sourceSetNames = sourceSetNamesList.build()
+        outputDir.set(outputFolder)
       }
     }
-
-    ImmutableList.Builder<String> sourceSetNamesList = ImmutableList.builder()
-    sourceSets.each { sourceSet -> sourceSetNamesList.add(sourceSet.name) }
-    task.init(sourceSetOrVariantName, sourceSetNamesList.build())
-    return task
   }
 
   private ApolloClassGenerationTask createApolloClassGenTask(String name) {
@@ -167,7 +175,7 @@ class ApolloPlugin implements Plugin<Project> {
       description = "Generate Android classes for ${name.capitalize()} GraphQL queries"
       dependsOn(getProject().getTasks().findByName(String.format(APOLLO_CODEGEN_GENERATE_TASK_NAME, name.capitalize())))
       source = project.tasks.findByName(
-          String.format(APOLLO_CODEGEN_GENERATE_TASK_NAME, name.capitalize())).outputFolder
+          String.format(APOLLO_CODEGEN_GENERATE_TASK_NAME, name.capitalize())).outputDir
       include "**${File.separatorChar}*API.json"
       customTypeMapping = project.apollo.customTypeMapping
       nullableValueType = project.apollo.nullableValueType
@@ -227,4 +235,5 @@ class ApolloPlugin implements Plugin<Project> {
       return false
     }
   }
+
 }
