@@ -5,7 +5,9 @@ versions:
 sidebar_categories:
   null:
     - index
-
+  Essentials:
+      - essentials/get-started
+      - essentials/queries
 github_repo: apollographql/apollo-android
 content_root: docs/source
 

@@ -40,7 +40,7 @@ apply plugin: 'com.apollographql.android'
 
 Apollo Android requires a GraphQL schema file as input to the code generation process. A schema file is a JSON file that contains the results of an introspection query. Conventionally this file is called `schema.json`, and you store it next to your `.graphql` files. Most users keep these files in the `/src/main/graphql` directory.
 
-![Directory Structure](directory_structure.png)
+![Directory Structure](../images/directory_structure.png)
 
 You can use [apollo-codegen](https://github.com/apollographql/apollo-codegen#usage) to download a GraphQL schema. This works by sending an introspection query to your server:
 
@@ -83,7 +83,7 @@ The Apollo Android plugin works by generating code that corresponds to the Graph
 
 So if you wanted to perform the below query, you would place it in a file that ends in `.graphql`. It's common to use the query name as the file name. So in this case your file would be named, `FeedQuery.graphql`.
 
-```
+```graphql
 query FeedQuery($type: FeedType!, $limit: Int!) {
   feedEntries: feed(type: $type, limit: $limit) {
     id
@@ -103,7 +103,7 @@ query FeedQuery($type: FeedType!, $limit: Int!) {
 
 To have Apollo generate the appropriate Java classes for you, you will need to compile your code. Based on your downloaded `schema.json` file and the contents of your `.graphql` files you will have generated Java classes in the following directory `build/generated/source/apollo`. There will be one Java class for each of your queries with nested classes for reading the network response.
 
-![Generated Class Structure](generated_feed_query_class_structure.png)
+![Generated Class Structure](../images/generated_feed_query_class_structure.png)
 
 > Note: These are Apollo generated files. Therefore they **should not** be modified.
 
