@@ -513,6 +513,8 @@ To enable usage of pre-installed `apollo-codegen` module, set gradle system prop
 systemProp.apollographql.useGlobalApolloCodegen=true
 ```
 
+Note that this requires exactly version `0.19.1` (not older, not newer). You can install this conventionally via `npm install -g apollo-codegen@0.19.1`.
+
 ### Download
 
 RxJava1:
