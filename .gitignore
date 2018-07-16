@@ -17,3 +17,6 @@ docs/public/*
 .deploy*/
 docs.json
 package-lock.json
+**/.project
+.vscode/**
+**/bin
