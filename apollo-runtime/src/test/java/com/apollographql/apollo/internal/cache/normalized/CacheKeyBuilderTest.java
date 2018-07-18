@@ -1,20 +1,26 @@
-package com.apollographql.apollo.api.graphql;
+package com.apollographql.apollo.internal.cache.normalized;
 
+import com.apollographql.apollo.api.InputFieldMarshaller;
+import com.apollographql.apollo.api.InputFieldWriter;
+import com.apollographql.apollo.api.InputType;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ResponseField;
+import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-
 import static com.google.common.truth.Truth.assertThat;
 
-public class CacheKeyForFieldTest {
+public class CacheKeyBuilderTest {
+  private final CacheKeyBuilder cacheKeyBuilder = new RealCacheKeyBuilder();
 
   enum Episode {
     JEDI
@@ -29,7 +35,7 @@ public class CacheKeyForFieldTest {
         return super.valueMap();
       }
     };
-    assertThat(field.cacheKey(variables)).isEqualTo("hero");
+    assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero");
   }
 
   @Test
@@ -41,7 +47,7 @@ public class CacheKeyForFieldTest {
         return super.valueMap();
       }
     };
-    assertThat(field.cacheKey(variables)).isEqualTo("hero");
+    assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero");
   }
 
   @Test
@@ -57,7 +63,7 @@ public class CacheKeyForFieldTest {
         return super.valueMap();
       }
     };
-    assertThat(field.cacheKey(variables)).isEqualTo("hero({\"episode\":\"JEDI\"})");
+    assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\"})");
   }
 
   @Test
@@ -73,7 +79,7 @@ public class CacheKeyForFieldTest {
         return super.valueMap();
       }
     };
-    assertThat(field.cacheKey(variables)).isEqualTo("hero({\"episode\":\"JEDI\"})");
+    assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\"})");
   }
 
   @Test
@@ -94,7 +100,7 @@ public class CacheKeyForFieldTest {
         return map;
       }
     };
-    assertThat(field.cacheKey(variables)).isEqualTo("hero({\"episode\":\"JEDI\"})");
+    assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\"})");
   }
 
   @Test
@@ -115,7 +121,7 @@ public class CacheKeyForFieldTest {
         return map;
       }
     };
-    assertThat(field.cacheKey(variables)).isEqualTo("hero({\"episode\":null})");
+    assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":null})");
   }
 
   @Test
@@ -132,7 +138,7 @@ public class CacheKeyForFieldTest {
         return super.valueMap();
       }
     };
-    assertThat(field.cacheKey(variables)).isEqualTo("hero({\"color\":\"blue\",\"episode\":\"JEDI\"})");
+    assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"color\":\"blue\",\"episode\":\"JEDI\"})");
   }
 
   @Test
@@ -157,7 +163,7 @@ public class CacheKeyForFieldTest {
         .build();
     ResponseField fieldTwo = createResponseField("hero", "hero", fieldTwoArguments);
 
-    assertThat(fieldTwo.cacheKey(variables)).isEqualTo(field.cacheKey(variables));
+    assertThat(cacheKeyBuilder.build(fieldTwo, variables)).isEqualTo(cacheKeyBuilder.build(field, variables));
   }
 
   @Test
@@ -177,7 +183,7 @@ public class CacheKeyForFieldTest {
         return super.valueMap();
       }
     };
-    assertThat(field.cacheKey(variables)).isEqualTo("hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":2,\"foo\":1}})");
+    assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":2,\"foo\":1}})");
   }
 
   @Test
@@ -192,7 +198,7 @@ public class CacheKeyForFieldTest {
         return super.valueMap();
       }
     };
-    assertThat(field.cacheKey(variables)).isEqualTo("hero({\"episode\":\"JEDI\"})");
+    assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\"})");
   }
 
   @Test
@@ -217,12 +223,98 @@ public class CacheKeyForFieldTest {
         return map;
       }
     };
-    assertThat(field.cacheKey(variables)).isEqualTo(
-        "hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":1}})");
+    assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":1}})");
   }
 
-  private ResponseField createResponseField(String responseName, String fieldName) {
-    return createResponseField(responseName, fieldName, null);
+
+  @Test
+  public void testFieldWithNestedObjectAndInputTypes() {
+    //noinspection unchecked
+    Map<String, Object> arguments = new UnmodifiableMapBuilder<String, Object>(1)
+        .put("episode", "JEDI")
+        .put("nested", new UnmodifiableMapBuilder<String, Object>(2)
+            .put("foo", new UnmodifiableMapBuilder<String, Object>(2)
+                .put("kind", "Variable")
+                .put("variableName", "testInput")
+                .build())
+            .put("bar", "2")
+            .build())
+        .build();
+    ResponseField field = createResponseField("hero", "hero", arguments);
+
+    final InputType testInput = new InputType() {
+      @NotNull @Override public InputFieldMarshaller marshaller() {
+        return new InputFieldMarshaller() {
+          @Override public void marshal(InputFieldWriter writer) throws IOException {
+            writer.writeString("string", "string");
+            writer.writeInt("int", 1);
+            writer.writeLong("long", 2L);
+            writer.writeDouble("double", 3D);
+            writer.writeNumber("number", BigDecimal.valueOf(4));
+            writer.writeBoolean("boolean", true);
+            writer.writeCustom("custom", new ScalarType() {
+              @Override public String typeName() {
+                return "EPISODE";
+              }
+
+              @Override public Class javaType() {
+                return String.class;
+              }
+            }, "JEDI");
+            writer.writeObject("object", new InputFieldMarshaller() {
+              @Override public void marshal(InputFieldWriter writer) throws IOException {
+                writer.writeString("string", "string");
+                writer.writeInt("int", 1);
+              }
+            });
+            writer.writeList("list", new InputFieldWriter.ListWriter() {
+              @Override
+              public void write(@NotNull InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
+                listItemWriter.writeString("string");
+                listItemWriter.writeInt(1);
+                listItemWriter.writeLong(2L);
+                listItemWriter.writeDouble(3D);
+                listItemWriter.writeNumber(BigDecimal.valueOf(4));
+                listItemWriter.writeBoolean(true);
+                listItemWriter.writeCustom(new ScalarType() {
+                  @Override public String typeName() {
+                    return "EPISODE";
+                  }
+
+                  @Override public Class javaType() {
+                    return String.class;
+                  }
+                }, "JEDI");
+                listItemWriter.writeObject(new InputFieldMarshaller() {
+                  @Override public void marshal(InputFieldWriter writer) throws IOException {
+                    writer.writeString("string", "string");
+                    writer.writeInt("int", 1);
+                  }
+                });
+                listItemWriter.writeList(new InputFieldWriter.ListWriter() {
+                  @Override
+                  public void write(@NotNull InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
+                    listItemWriter.writeString("string");
+                    listItemWriter.writeInt(1);
+                  }
+                });
+              }
+            });
+            writer.writeString("null", null);
+          }
+        };
+      }
+    };
+
+    Operation.Variables variables = new Operation.Variables() {
+      @NotNull @Override public Map<String, Object> valueMap() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("testInput", testInput);
+        return map;
+      }
+    };
+    assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo(
+        "hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":{\"boolean\":true,\"custom\":\"JEDI\",\"double\":3.0,\"int\":1,\"list\":[\"string\",1,2,3.0,4,true,\"JEDI\",{\"int\":1,\"string\":\"string\"},[\"string\",1]],\"long\":2,\"null\":null,\"number\":4,\"object\":{\"int\":1,\"string\":\"string\"},\"string\":\"string\"}}})");
   }
 
   private ResponseField createResponseField(String responseName, String fieldName, Map<String, Object> arguments) {

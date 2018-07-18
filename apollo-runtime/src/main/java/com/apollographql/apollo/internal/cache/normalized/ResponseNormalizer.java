@@ -44,14 +44,14 @@ public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
   }
 
   @Override public void willResolve(ResponseField field, Operation.Variables variables) {
-    String key = field.cacheKey(variables);
+    String key = cacheKeyBuilder().build(field, variables);
     path.add(key);
   }
 
   @Override public void didResolve(ResponseField field, Operation.Variables variables) {
     path.remove(path.size() - 1);
     Object value = valueStack.pop();
-    String cacheKey = field.cacheKey(variables);
+    String cacheKey = cacheKeyBuilder().build(field, variables);
     String dependentKey = currentRecordBuilder.key() + "." + cacheKey;
     dependentKeys.add(dependentKey);
     currentRecordBuilder.addField(cacheKey, value);
@@ -112,6 +112,8 @@ public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
   }
 
   @NotNull public abstract CacheKey resolveCacheKey(@NotNull ResponseField field, @NotNull R record);
+
+  @NotNull public abstract CacheKeyBuilder cacheKeyBuilder();
 
   void willResolveRecord(CacheKey cacheKey) {
     pathStack = new SimpleStack<>();
@@ -177,6 +179,14 @@ public abstract class ResponseNormalizer<R> implements ResolveDelegate<R> {
 
     @NotNull @Override public CacheKey resolveCacheKey(@NotNull ResponseField field, @NotNull Object record) {
       return CacheKey.NO_KEY;
+    }
+
+    @NotNull @Override public CacheKeyBuilder cacheKeyBuilder() {
+      return new CacheKeyBuilder() {
+        @NotNull @Override public String build(@NotNull ResponseField field, @NotNull Operation.Variables variables) {
+          return CacheKey.NO_KEY.key();
+        }
+      };
     }
   };
 }
