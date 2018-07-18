@@ -220,6 +220,11 @@
 					"name": "listOfListOfObject",
 					"type": "[[ColorInput!]!]",
 					"description": "for test purpose only"
+				},
+				{
+					"name": "CapitalizedField",
+					"type": "String",
+					"description": "for test purpose only"
 				}
 			]
 		},
