@@ -244,7 +244,7 @@ Raw HTTP Response Cache:
 
 ```java
 //Directory where cached responses will be stored
-File file = new File("/cache/");
+File file = new File(context.getApplicationContext().getCacheDir());
 
 //Size in bytes of the cache
 int size = 1024*1024;
