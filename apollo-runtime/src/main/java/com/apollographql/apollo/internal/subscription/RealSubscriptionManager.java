@@ -405,9 +405,10 @@ public final class RealSubscriptionManager implements SubscriptionManager {
         if (timer == null) {
           timer = new Timer("Subscription SmartTimer", true);
         }
+
+        timer.schedule(timerTask, delay);
       }
 
-      timer.schedule(timerTask, delay);
     }
 
     void cancelTask(int taskId) {
