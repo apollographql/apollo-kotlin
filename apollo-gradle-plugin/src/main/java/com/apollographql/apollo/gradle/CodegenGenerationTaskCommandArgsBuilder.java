@@ -44,7 +44,7 @@ class CodegenGenerationTaskCommandArgsBuilder {
 
   public List<CommandArgs> build() {
     File schemaFile = null;
-    if (schemaFilePath != null) {
+    if (schemaFilePath != null && !schemaFilePath.trim().isEmpty()) {
       schemaFile = Paths.get(schemaFilePath).toFile();
       if (!schemaFile.exists()) {
         schemaFile = Paths.get(task.getProject().getProjectDir().getAbsolutePath(), schemaFilePath).toFile();

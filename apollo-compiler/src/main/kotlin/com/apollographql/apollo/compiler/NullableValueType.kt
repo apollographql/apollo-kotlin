@@ -8,6 +8,7 @@ enum class NullableValueType(val value: String) {
   INPUT_TYPE("inputType");
 
   companion object {
+    @JvmStatic
     fun findByValue(value: String): NullableValueType? = NullableValueType.values().find { it.value == value }
   }
 }

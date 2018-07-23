@@ -33,7 +33,7 @@ Apollo-Android is designed primarily with Android in mind but you can use it in 
   - [Download](#download)
 - [License](#license)
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<!-- END doctoc generated TOC please keep comment here to allow auto update --> 
 
 ## Adding Apollo to your Project
 
@@ -81,6 +81,8 @@ apply plugin: 'com.apollographql.android'
 ```
 
 The Android Plugin must be applied before the Apollo plugin
+
+**NOTE: Apollo Gradle plugin requires Gradle 4.3 or higher.**
 
 ## Generate Code using Apollo
 
@@ -182,7 +184,9 @@ You first need to define the mapping in your build.gradle file. This will tell t
 
 ```gradle
 apollo {
-  customTypeMapping['Date'] = "java.util.Date"
+  customTypeMapping = [
+    "Date" : "java.util.Date"
+  ]
 }
 ```
 
@@ -217,7 +221,9 @@ apollo plugin configuration which will annotate your generated class with the pr
 
 ```
 apollo {
-    customTypeMapping['URL'] = "java.lang.String"
+    customTypeMapping = [
+      "URL" : "java.lang.String"
+    ]
     suppressRawTypesWarning = "true"
 }
 ```

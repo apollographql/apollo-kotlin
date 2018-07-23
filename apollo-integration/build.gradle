@@ -46,5 +46,7 @@ dependencies {
 }
 
 apollo {
-  customTypeMapping['Date'] = "java.util.Date"
+  customTypeMapping = [
+      "Date": "java.util.Date"
+  ]
 }

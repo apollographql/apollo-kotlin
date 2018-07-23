@@ -47,19 +47,19 @@ class BasicAndroidSpec extends Specification {
 //        "build/generated/source/apollo/generatedIR/debug/src/main/graphql/DebugOperationIdMap.json").isFile()
 
     // Java classes generated successfully
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/FilmsQuery.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/fragment/SpeciesInformation.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/example/DroidDetailsQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/example/FilmsQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/fragment/SpeciesInformation.java").isFile()
 
     // verify that the custom type generated was Object.class because no customType mapping was specified
-    assert new File(testProjectDir, "build/generated/source/apollo/type/CustomType.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/type/CustomType.java").getText('UTF-8').contains(
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/type/CustomType.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/type/CustomType.java").getText('UTF-8').contains(
         "return Object.class;")
 
     // Optional is not added to the generated classes
-    assert !new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("Optional")
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("import org.jetbrains.annotations.Nullable;")
   }
 
@@ -81,7 +81,7 @@ class BasicAndroidSpec extends Specification {
         "build/generated/source/apollo/generatedIR/release/src/main/graphql/ReleaseAPI.json").isFile()
     assert new File(testProjectDir,
         "build/generated/source/apollo/generatedIR/debug/src/main/graphql/DebugAPI.json").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/fragment/SpeciesInformation.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/fragment/SpeciesInformation.java").isFile()
   }
 
   def "nothing changed, generate classes up to date"() {
@@ -97,9 +97,9 @@ class BasicAndroidSpec extends Specification {
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.UP_TO_DATE
     // Java classes generated successfully
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/FilmsQuery.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/fragment/SpeciesInformation.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/example/DroidDetailsQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/example/FilmsQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/fragment/SpeciesInformation.java").isFile()
   }
 
   def "installApolloCodegenTask is up to date if no changes occur to node_modules and package.json"() {
@@ -171,7 +171,7 @@ class BasicAndroidSpec extends Specification {
   def "adding a custom type to the build script re-generates the CustomType class"() {
     setup: "a testProject with a previous build and an apollo extension appended"
     replaceTextInFile(new File("$testProjectDir/build.gradle")) {
-      it.replace("apollo {", "apollo {\n customTypeMapping['DateTime'] = \"java.util.Date\"\n")
+      it.replace("apollo {", "apollo {\n customTypeMapping=[\"DateTime\" : \"java.util.Date\"]\n")
     }
 
     when:
@@ -187,8 +187,8 @@ class BasicAndroidSpec extends Specification {
     // and the task should run again
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
 
-    assert new File(testProjectDir, "build/generated/source/apollo/type/CustomType.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/type/CustomType.java").getText('UTF-8').contains(
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/type/CustomType.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/type/CustomType.java").getText('UTF-8').contains(
         "return Date.class;")
   }
 
@@ -209,8 +209,8 @@ class BasicAndroidSpec extends Specification {
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
 
-    assert new File(testProjectDir, "build/generated/source/apollo/type/CustomType.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/type/CustomType.java").getText('UTF-8').contains(
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/type/CustomType.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/type/CustomType.java").getText('UTF-8').contains(
         "return Currency.class;")
   }
 
@@ -230,10 +230,10 @@ class BasicAndroidSpec extends Specification {
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").isFile()
-    assert !new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/example/DroidDetailsQuery.java").isFile()
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("Optional")
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("import org.jetbrains.annotations.Nullable;")
   }
 
@@ -253,8 +253,8 @@ class BasicAndroidSpec extends Specification {
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/example/DroidDetailsQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("import com.apollographql.apollo.api.internal.Optional;")
   }
 
@@ -274,8 +274,8 @@ class BasicAndroidSpec extends Specification {
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetailsQuery.java").getText(
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/example/DroidDetailsQuery.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("import com.google.common.base.Optional;")
   }
 
@@ -295,7 +295,7 @@ class BasicAndroidSpec extends Specification {
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
-    assert new File(testProjectDir, "build/generated/source/apollo/com/example/DroidDetails.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/example/DroidDetails.java").isFile()
   }
 
   def "set explicit path path to schema.json but missing package name fails"() {
@@ -334,7 +334,7 @@ class BasicAndroidSpec extends Specification {
         "build/generated/source/apollo/generatedIR/debug/src/main/graphql/com/myexample/DebugAPI.json").isFile()
     assert !new File(testProjectDir,
         "build/generated/source/apollo/generatedIR/release/src/main/graphql/com/myexample/ReleaseAPI.json").isFile()
-    assert !new File(testProjectDir, "build/generated/source/apollo/com/myexample/DroidDetails.java").isFile()
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/com/myexample/DroidDetails.java").isFile()
   }
 
   def "set explicit path path to schema.json and target package name generates classes successfully"() {
@@ -360,7 +360,7 @@ class BasicAndroidSpec extends Specification {
         "build/generated/source/apollo/generatedIR/debug/src/main/graphql/com/myexample/DebugAPI.json").isFile()
     assert new File(testProjectDir,
         "build/generated/source/apollo/generatedIR/release/src/main/graphql/com/myexample/ReleaseAPI.json").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/com/myexample/DroidDetails.java").isFile()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/myexample/DroidDetails.java").isFile()
   }
 
   def "remove graphql files, builds successfully and generates expected outputs"() {
@@ -378,9 +378,9 @@ class BasicAndroidSpec extends Specification {
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
     // Java classes generated successfully
-    assert new File(testProjectDir, "build/generated/source/apollo/com/myexample/DroidDetails.java").isFile()
-    assert !new File(testProjectDir, "build/generated/source/apollo/com/myexample/Films.java").exists()
-    assert !new File(testProjectDir, "build/generated/source/apollo/fragment/SpeciesInformation.java").exists()
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/myexample/DroidDetails.java").isFile()
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/com/myexample/Films.java").exists()
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/fragment/SpeciesInformation.java").exists()
   }
 
   def cleanupSpec() {
