@@ -50,6 +50,8 @@ public final class ReviewInput {
 
   private final Input<List<List<ColorInput>>> listOfListOfObject;
 
+  private final Input<String> capitalizedField;
+
   private volatile int $hashCode;
 
   private volatile boolean $hashCodeMemoized;
@@ -61,7 +63,7 @@ public final class ReviewInput {
       Input<List<String>> listOfString, Input<Boolean> booleanWithDefaultValue,
       Input<List<List<String>>> listOfListOfString, Input<List<List<Episode>>> listOfListOfEnum,
       Input<List<List<Object>>> listOfListOfCustom,
-      Input<List<List<ColorInput>>> listOfListOfObject) {
+      Input<List<List<ColorInput>>> listOfListOfObject, Input<String> capitalizedField) {
     this.stars = stars;
     this.nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue;
     this.commentary = commentary;
@@ -78,6 +80,7 @@ public final class ReviewInput {
     this.listOfListOfEnum = listOfListOfEnum;
     this.listOfListOfCustom = listOfListOfCustom;
     this.listOfListOfObject = listOfListOfObject;
+    this.capitalizedField = capitalizedField;
   }
 
   /**
@@ -190,6 +193,13 @@ public final class ReviewInput {
    */
   public @Nullable List<List<ColorInput>> listOfListOfObject() {
     return this.listOfListOfObject.value;
+  }
+
+  /**
+   * for test purpose only
+   */
+  public @Nullable String capitalizedField() {
+    return this.capitalizedField.value;
   }
 
   public static Builder builder() {
@@ -332,6 +342,9 @@ public final class ReviewInput {
             }
           } : null);
         }
+        if (capitalizedField.defined) {
+          writer.writeString("CapitalizedField", capitalizedField.value);
+        }
       }
     };
   }
@@ -372,6 +385,8 @@ public final class ReviewInput {
       h ^= listOfListOfCustom.hashCode();
       h *= 1000003;
       h ^= listOfListOfObject.hashCode();
+      h *= 1000003;
+      h ^= capitalizedField.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -400,7 +415,8 @@ public final class ReviewInput {
        && this.listOfListOfString.equals(that.listOfListOfString)
        && this.listOfListOfEnum.equals(that.listOfListOfEnum)
        && this.listOfListOfCustom.equals(that.listOfListOfCustom)
-       && this.listOfListOfObject.equals(that.listOfListOfObject);
+       && this.listOfListOfObject.equals(that.listOfListOfObject)
+       && this.capitalizedField.equals(that.capitalizedField);
     }
     return false;
   }
@@ -437,6 +453,8 @@ public final class ReviewInput {
     private Input<List<List<Object>>> listOfListOfCustom = Input.absent();
 
     private Input<List<List<ColorInput>>> listOfListOfObject = Input.absent();
+
+    private Input<String> capitalizedField = Input.absent();
 
     Builder() {
     }
@@ -572,6 +590,14 @@ public final class ReviewInput {
     /**
      * for test purpose only
      */
+    public Builder capitalizedField(@Nullable String capitalizedField) {
+      this.capitalizedField = Input.fromNullable(capitalizedField);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
     public Builder nullableIntFieldWithDefaultValueInput(@NotNull Input<Integer> nullableIntFieldWithDefaultValue) {
       this.nullableIntFieldWithDefaultValue = Utils.checkNotNull(nullableIntFieldWithDefaultValue, "nullableIntFieldWithDefaultValue == null");
       return this;
@@ -681,9 +707,17 @@ public final class ReviewInput {
       return this;
     }
 
+    /**
+     * for test purpose only
+     */
+    public Builder capitalizedFieldInput(@NotNull Input<String> capitalizedField) {
+      this.capitalizedField = Utils.checkNotNull(capitalizedField, "capitalizedField == null");
+      return this;
+    }
+
     public ReviewInput build() {
       Utils.checkNotNull(favoriteColor, "favoriteColor == null");
-      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, booleanWithDefaultValue, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject);
+      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, booleanWithDefaultValue, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject, capitalizedField);
     }
   }
 }

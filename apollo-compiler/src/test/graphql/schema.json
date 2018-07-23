@@ -2069,6 +2069,16 @@
                   }
                 }
               }
+            },
+            {
+              "name": "CapitalizedField",
+              "description": "for test purpose only",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
             }
           ],
           "interfaces": null,
