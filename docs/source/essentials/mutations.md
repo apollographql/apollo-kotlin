@@ -2,11 +2,11 @@
 title: Mutation
 ---
 
-Now that we have discussed how to use a query to fetch data from a server using Apollo android, let's look into the other aspect of client-server communication - Sending and writing data to the server.
+Queries are useful to fetch data from a server, but client-server communication also requires sending and writing data to the server. This is where Mutations come handy.
 Just like REST, any request might end up causing some side-effects on the server, but by convention it's suggested that one doesn't use GET requests to modify data. GraphQL is similar - technically any query could be implemented to cause a data write.
 However, it's useful to establish a convention that any operations that cause writes should be sent explicitly via a *mutation*.
 
-Apollo android also handles GraphQL mutations. Mutations are identical to queries in syntax, the only difference being that you use the keyword `mutation` instead of `query` to indicate that the root fields on this query are going to be performing writes to the backend.
+Apollo Android also handles GraphQL mutations. Mutations are identical to queries in syntax, the only difference being that you use the keyword `mutation` instead of `query` to indicate that the root fields on this query are going to be performing writes to the backend.
 
 ```
 mutation UpvotePost($postId: Int!) {
@@ -34,9 +34,13 @@ The above mutation will upvote a post on the server. The result might be:
 }
 ```
 
-Similar to queries, mutations are represented by instances of generated classes, conforming to the `ApolloMutationCall` interface. Constructor arguments are used to define mutation variables. You pass a mutation object to `ApolloClient#perform(mutation:)` to send the mutation to the server, execute it, and receive typed results:
+Similar to queries, mutations are represented by instances of generated classes, conforming to the `ApolloMutationCall` interface. Constructor arguments are used to define mutation variables. You pass a mutation object to `ApolloClient#perform(mutation)` to send the mutation to the server, execute it, and receive typed results:
 
 ```java
+UpvotePostMutation upvotePostMutation = UpvotePostMutation.builder()
+    .votes(3)
+    .build();
+
 apolloClient
     .mutate(upvotePostMutation)
     .enqueue(
