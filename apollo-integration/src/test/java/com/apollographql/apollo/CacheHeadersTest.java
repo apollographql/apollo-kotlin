@@ -53,7 +53,7 @@ public class CacheHeadersTest {
       @Override public void clearAll() {
       }
 
-      @Override public boolean remove(@NotNull CacheKey cacheKey) {
+      @Override public boolean remove(@NotNull CacheKey cacheKey, boolean cascade) {
         return false;
       }
 
@@ -100,7 +100,7 @@ public class CacheHeadersTest {
       @Override public void clearAll() {
       }
 
-      @Override public boolean remove(@NotNull CacheKey cacheKey) {
+      @Override public boolean remove(@NotNull CacheKey cacheKey, boolean cascade) {
         return false;
       }
 

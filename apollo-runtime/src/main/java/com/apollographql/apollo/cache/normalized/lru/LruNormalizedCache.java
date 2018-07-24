@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.CacheKey;
+import com.apollographql.apollo.cache.normalized.CacheReference;
 import com.apollographql.apollo.cache.normalized.NormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.nytimes.android.external.cache.Cache;
@@ -90,19 +91,26 @@ public final class LruNormalizedCache extends NormalizedCache {
     clearCurrentCache();
   }
 
-  @Override public boolean remove(@NotNull final CacheKey cacheKey) {
+  @Override public boolean remove(@NotNull final CacheKey cacheKey, final boolean cascade) {
     checkNotNull(cacheKey, "cacheKey == null");
     boolean result;
 
     result = nextCache().map(new Function<NormalizedCache, Boolean>() {
       @NotNull @Override public Boolean apply(@NotNull NormalizedCache cache) {
-        return cache.remove(cacheKey);
+        return cache.remove(cacheKey, cascade);
       }
     }).or(Boolean.FALSE);
 
-    if (lruCache.getIfPresent(cacheKey.key()) != null) {
+    Record record = lruCache.getIfPresent(cacheKey.key());
+    if (record != null) {
       lruCache.invalidate(cacheKey.key());
       result = true;
+
+      if (cascade) {
+        for (CacheReference cacheReference : record.referencedFields()) {
+          result = result & remove(CacheKey.from(cacheReference.key()), true);
+        }
+      }
     }
 
     return result;

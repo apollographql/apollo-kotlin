@@ -141,7 +141,18 @@ public abstract class NormalizedCache {
    * @param cacheKey of record to be removed
    * @return {@code true} if record with such key was successfully removed, {@code false} otherwise
    */
-  public abstract boolean remove(@NotNull CacheKey cacheKey);
+  public boolean remove(@NotNull CacheKey cacheKey) {
+    return remove(cacheKey, false);
+  }
+
+  /**
+   * Remove cached record by the key
+   *
+   * @param cacheKey of record to be removed
+   * @param cascade defines if remove operation is propagated to the referenced entities
+   * @return {@code true} if record with such key was successfully removed, {@code false} otherwise
+   */
+  public abstract boolean remove(@NotNull CacheKey cacheKey, boolean cascade);
 
   public final NormalizedCache chain(@NotNull NormalizedCache cache) {
     checkNotNull(cache, "cache == null");
