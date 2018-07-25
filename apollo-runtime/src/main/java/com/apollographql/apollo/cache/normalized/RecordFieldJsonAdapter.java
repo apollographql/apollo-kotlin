@@ -3,13 +3,14 @@ package com.apollographql.apollo.cache.normalized;
 import com.apollographql.apollo.internal.json.CacheJsonStreamReader;
 import com.apollographql.apollo.internal.json.JsonWriter;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
 
 import okio.Buffer;
 import okio.BufferedSource;
@@ -84,6 +85,15 @@ public final class RecordFieldJsonAdapter {
         writeJsonValue(item, jsonWriter);
       }
       jsonWriter.endArray();
+    } else if (value instanceof LinkedHashMap) {
+      //noinspection unchecked
+      LinkedHashMap<String, Object> fields = (LinkedHashMap) value;
+      jsonWriter.beginObject();
+      for (Map.Entry<String, Object> fieldEntry : fields.entrySet()) {
+        jsonWriter.name(fieldEntry.getKey());
+        writeJsonValue(fieldEntry.getValue(), jsonWriter);
+      }
+      jsonWriter.endObject();
     } else {
       throw new RuntimeException("Unsupported record value type: " + value.getClass());
     }
