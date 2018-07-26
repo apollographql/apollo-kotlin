@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,9 @@ public class RecordFieldAdapterTest {
     List<CacheReference> expectedCacheReferenceList = Arrays.asList(new CacheReference("bar"), new CacheReference("baz"));
     List<Object> expectedScalarList = Arrays.<Object>asList("scalarOne", "scalarTwo");
     List<List<String>> expectedListOfScalarList = Arrays.asList(Arrays.asList("scalarOne", "scalarTwo"));
+    String expectedMapKey = "foo";
+    String expectedMapValue = "bar";
+    Map<String, String> expectedMap = Collections.singletonMap(expectedMapKey, expectedMapValue);
 
     recordBuilder.addField("bigDecimal", expectedBigDecimal);
     recordBuilder.addField("string", expectedStringValue);
@@ -53,6 +57,7 @@ public class RecordFieldAdapterTest {
     recordBuilder.addField("referenceList", expectedCacheReferenceList);
     recordBuilder.addField("nullValue", null);
     recordBuilder.addField("listOfScalarList", expectedListOfScalarList);
+    recordBuilder.addField("map", expectedMap);
     Record record = recordBuilder.build();
 
     String json = recordFieldAdapter.toJson(record.fields());
@@ -67,5 +72,6 @@ public class RecordFieldAdapterTest {
     assertThat(deserializedMap.get("nullValue")).isNull();
     assertThat((List) deserializedMap.get("listOfScalarList")).hasSize(1);
     assertThat((Iterable) ((List) deserializedMap.get("listOfScalarList")).get(0)).containsExactlyElementsIn(expectedScalarList).inOrder();
+    assertThat((Map) deserializedMap.get("map")).containsEntry(expectedMapKey, expectedMapValue);
   }
 }
