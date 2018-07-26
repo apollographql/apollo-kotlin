@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,9 +84,9 @@ public final class RecordFieldJsonAdapter {
         writeJsonValue(item, jsonWriter);
       }
       jsonWriter.endArray();
-    } else if (value instanceof LinkedHashMap) {
+    } else if (value instanceof Map) {
       //noinspection unchecked
-      LinkedHashMap<String, Object> fields = (LinkedHashMap) value;
+      Map<String, Object> fields = (Map) value;
       jsonWriter.beginObject();
       for (Map.Entry<String, Object> fieldEntry : fields.entrySet()) {
         jsonWriter.name(fieldEntry.getKey());
