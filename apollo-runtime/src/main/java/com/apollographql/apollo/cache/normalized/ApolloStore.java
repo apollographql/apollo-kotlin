@@ -64,6 +64,16 @@ public interface ApolloStore {
   @NotNull ApolloStoreOperation<Boolean> remove(@NotNull CacheKey cacheKey);
 
   /**
+   * Remove cache record by the key
+   *
+   * @param cacheKey of record to be removed
+   * @param cascade defines if remove operation is propagated to the referenced entities
+   * @return {@ApolloStoreOperation} to be performed, that will be resolved with {@code true} if record with such key
+   * was successfully removed, {@code false} otherwise
+   */
+  @NotNull ApolloStoreOperation<Boolean> remove(@NotNull CacheKey cacheKey, boolean cascade);
+
+  /**
    * Remove cache records by the list of keys
    *
    * @param cacheKeys keys of records to be removed

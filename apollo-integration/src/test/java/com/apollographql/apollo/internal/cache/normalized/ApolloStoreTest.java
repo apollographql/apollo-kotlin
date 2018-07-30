@@ -40,7 +40,7 @@ public class ApolloStoreTest {
         latch.countDown();
       }
 
-      @Override public boolean remove(@NotNull CacheKey cacheKey) {
+      @Override public boolean remove(@NotNull CacheKey cacheKey, boolean cascade) {
         return false;
       }
 

@@ -2,14 +2,16 @@ package com.apollographql.apollo.cache.normalized;
 
 import com.apollographql.apollo.internal.cache.normalized.RecordWeigher;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -144,6 +146,33 @@ public final class Record {
    */
   public Map<String, Object> fields() {
     return fields;
+  }
+
+  /**
+   * Returns the list of referenced cache fields
+   *
+   * @return the list of referenced cache fields
+   */
+  public List<CacheReference> referencedFields() {
+    List<CacheReference> cacheReferences = new ArrayList<>();
+    for (Object value : fields.values()) {
+      findCacheReferences(value, cacheReferences);
+    }
+    return cacheReferences;
+  }
+
+  private static void findCacheReferences(Object cachedValue, List<CacheReference> result) {
+    if (cachedValue instanceof CacheReference) {
+      result.add((CacheReference) cachedValue);
+    } else if (cachedValue instanceof Map) {
+      for (Object value : ((Map) cachedValue).values()) {
+        findCacheReferences(value, result);
+      }
+    } else if (cachedValue instanceof List) {
+      for (Object value : (List) cachedValue) {
+        findCacheReferences(value, result);
+      }
+    }
   }
 
   /**

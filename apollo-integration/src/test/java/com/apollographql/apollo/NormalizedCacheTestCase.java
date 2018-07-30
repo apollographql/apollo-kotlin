@@ -817,4 +817,107 @@ public class NormalizedCacheTestCase {
         "  }\n" +
         "}\n");
   }
+
+  @Test public void cascadeRemove() throws Exception {
+    enqueueAndAssertResponse(
+        server,
+        "HeroAndFriendsNameWithIdsResponse.json",
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE)))
+            .responseFetcher(NETWORK_ONLY), new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            assertThat(response.data().hero().name()).isEqualTo("R2-D2");
+            assertThat(response.data().hero().friends()).hasSize(3);
+            return true;
+          }
+        }
+    );
+
+    assertResponse(
+        apolloClient.query(new CharacterNameByIdQuery("1000")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterNameByIdQuery.Data>>() {
+          @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(((CharacterNameByIdQuery.AsHuman) response.data().character()).name()).isEqualTo("Luke Skywalker");
+            return true;
+          }
+        }
+    );
+
+    assertResponse(
+        apolloClient.query(new CharacterNameByIdQuery("1002")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterNameByIdQuery.Data>>() {
+          @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(((CharacterNameByIdQuery.AsHuman) response.data().character()).name()).isEqualTo("Han Solo");
+            return true;
+          }
+        }
+    );
+
+    assertResponse(
+        apolloClient.query(new CharacterNameByIdQuery("1003")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterNameByIdQuery.Data>>() {
+          @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(((CharacterNameByIdQuery.AsHuman) response.data().character()).name()).isEqualTo("Leia Organa");
+            return true;
+          }
+        }
+    );
+
+    // test remove root query object
+    assertThat(apolloClient.apolloStore().remove(CacheKey.from("2001"), true).execute()).isTrue();
+
+    assertResponse(
+        apolloClient.query(new HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE)))
+            .responseFetcher(CACHE_ONLY), new Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>>() {
+          @Override public boolean test(Response<HeroAndFriendsNamesWithIDsQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(response.data()).isNull();
+            return true;
+          }
+        }
+    );
+
+    assertResponse(
+        apolloClient.query(new CharacterNameByIdQuery("1000")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterNameByIdQuery.Data>>() {
+          @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(response.data()).isNull();
+            return true;
+          }
+        }
+    );
+
+    assertResponse(
+        apolloClient.query(new CharacterNameByIdQuery("1002")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterNameByIdQuery.Data>>() {
+          @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(response.data()).isNull();
+            return true;
+          }
+        }
+    );
+
+    assertResponse(
+        apolloClient.query(new CharacterNameByIdQuery("1003")).responseFetcher(CACHE_ONLY),
+        new Predicate<Response<CharacterNameByIdQuery.Data>>() {
+          @Override public boolean test(Response<CharacterNameByIdQuery.Data> response) throws Exception {
+            assertThat(response.fromCache()).isTrue();
+            assertThat(response.data()).isNull();
+            return true;
+          }
+        }
+    );
+
+    assertThat(NormalizedCache.prettifyDump(apolloClient.apolloStore().normalizedCache().dump())).isEqualTo("" +
+        "OptimisticNormalizedCache {}\n" +
+        "LruNormalizedCache {\n" +
+        "  \"QUERY_ROOT\" : {\n" +
+        "    \"hero({\"episode\":\"NEWHOPE\"})\" : CacheRecordRef(2001)\n" +
+        "  }\n" +
+        "}\n");
+  }
 }
