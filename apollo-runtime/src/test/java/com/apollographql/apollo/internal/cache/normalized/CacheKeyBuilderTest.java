@@ -226,9 +226,8 @@ public class CacheKeyBuilderTest {
     assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":1}})");
   }
 
-
   @Test
-  public void testFieldWithNestedObjectAndInputTypes() {
+  public void fieldInputTypeArgument() {
     //noinspection unchecked
     Map<String, Object> arguments = new UnmodifiableMapBuilder<String, Object>(1)
         .put("episode", "JEDI")
@@ -300,6 +299,80 @@ public class CacheKeyBuilderTest {
                 });
               }
             });
+          }
+        };
+      }
+    };
+
+    Operation.Variables variables = new Operation.Variables() {
+      @NotNull @Override public Map<String, Object> valueMap() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("testInput", testInput);
+        return map;
+      }
+    };
+    assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo(
+        "hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":{\"boolean\":true,\"custom\":\"JEDI\",\"double\":3.0,\"int\":1,\"list\":[\"string\",1,2,3.0,4,true,\"JEDI\",{\"int\":1,\"string\":\"string\"},[\"string\",1]],\"long\":2,\"number\":4,\"object\":{\"int\":1,\"string\":\"string\"},\"string\":\"string\"}}})");
+  }
+
+  @Test
+  public void testFieldArgumentInputTypeWithNulls() {
+    //noinspection unchecked
+    Map<String, Object> arguments = new UnmodifiableMapBuilder<String, Object>(1)
+        .put("episode", null)
+        .put("nested", new UnmodifiableMapBuilder<String, Object>(2)
+            .put("foo", new UnmodifiableMapBuilder<String, Object>(2)
+                .put("kind", "Variable")
+                .put("variableName", "testInput")
+                .build())
+            .put("bar", null)
+            .build())
+        .build();
+    ResponseField field = createResponseField("hero", "hero", arguments);
+
+    final InputType testInput = new InputType() {
+      @NotNull @Override public InputFieldMarshaller marshaller() {
+        return new InputFieldMarshaller() {
+          @Override public void marshal(InputFieldWriter writer) throws IOException {
+            writer.writeString("string", null);
+            writer.writeInt("int", null);
+            writer.writeLong("long", null);
+            writer.writeDouble("double", null);
+            writer.writeNumber("number", null);
+            writer.writeBoolean("boolean", null);
+            writer.writeCustom("custom", new ScalarType() {
+              @Override public String typeName() {
+                return "EPISODE";
+              }
+
+              @Override public Class javaType() {
+                return String.class;
+              }
+            }, null);
+            writer.writeObject("object", null);
+            writer.writeList("listNull", null);
+            writer.writeList("listWithNulls", new InputFieldWriter.ListWriter() {
+              @Override
+              public void write(@NotNull InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
+                listItemWriter.writeString(null);
+                listItemWriter.writeInt(null);
+                listItemWriter.writeLong(null);
+                listItemWriter.writeDouble(null);
+                listItemWriter.writeNumber(null);
+                listItemWriter.writeBoolean(null);
+                listItemWriter.writeCustom(new ScalarType() {
+                  @Override public String typeName() {
+                    return "EPISODE";
+                  }
+
+                  @Override public Class javaType() {
+                    return String.class;
+                  }
+                }, null);
+                listItemWriter.writeObject(null);
+                listItemWriter.writeList(null);
+              }
+            });
             writer.writeString("null", null);
           }
         };
@@ -314,7 +387,7 @@ public class CacheKeyBuilderTest {
       }
     };
     assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo(
-        "hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":{\"boolean\":true,\"custom\":\"JEDI\",\"double\":3.0,\"int\":1,\"list\":[\"string\",1,2,3.0,4,true,\"JEDI\",{\"int\":1,\"string\":\"string\"},[\"string\",1]],\"long\":2,\"null\":null,\"number\":4,\"object\":{\"int\":1,\"string\":\"string\"},\"string\":\"string\"}}})");
+        "hero({\"episode\":null,\"nested\":{\"bar\":null,\"foo\":{\"boolean\":null,\"custom\":null,\"double\":null,\"int\":null,\"listNull\":null,\"listWithNulls\":[],\"long\":null,\"null\":null,\"number\":null,\"object\":null,\"string\":null}}})");
   }
 
   private ResponseField createResponseField(String responseName, String fieldName, Map<String, Object> arguments) {
