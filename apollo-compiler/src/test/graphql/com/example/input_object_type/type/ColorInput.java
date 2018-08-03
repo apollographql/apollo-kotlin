@@ -3,6 +3,7 @@ package com.example.input_object_type.type;
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
+import com.apollographql.apollo.api.InputType;
 import com.apollographql.apollo.api.internal.Utils;
 import java.io.IOException;
 import java.lang.Double;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
-public final class ColorInput {
+public final class ColorInput implements InputType {
   private final int red;
 
   private final Input<Double> green;
@@ -65,6 +66,7 @@ public final class ColorInput {
     return new Builder();
   }
 
+  @Override
   public InputFieldMarshaller marshaller() {
     return new InputFieldMarshaller() {
       @Override

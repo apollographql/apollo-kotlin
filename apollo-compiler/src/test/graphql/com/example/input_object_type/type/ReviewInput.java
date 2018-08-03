@@ -3,6 +3,7 @@ package com.example.input_object_type.type;
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
+import com.apollographql.apollo.api.InputType;
 import com.apollographql.apollo.api.internal.Utils;
 import java.io.IOException;
 import java.lang.Boolean;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
-public final class ReviewInput {
+public final class ReviewInput implements InputType {
   private final int stars;
 
   private final Input<Integer> nullableIntFieldWithDefaultValue;
@@ -207,6 +208,7 @@ public final class ReviewInput {
     return new Builder();
   }
 
+  @Override
   public InputFieldMarshaller marshaller() {
     return new InputFieldMarshaller() {
       @Override

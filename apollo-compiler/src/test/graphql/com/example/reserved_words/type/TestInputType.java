@@ -3,6 +3,7 @@ package com.example.reserved_words.type;
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
+import com.apollographql.apollo.api.InputType;
 import com.apollographql.apollo.api.internal.Utils;
 import java.io.IOException;
 import java.lang.Boolean;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
-public final class TestInputType {
+public final class TestInputType implements InputType {
   private final Input<Boolean> private_;
 
   private volatile int $hashCode;
@@ -32,6 +33,7 @@ public final class TestInputType {
     return new Builder();
   }
 
+  @Override
   public InputFieldMarshaller marshaller() {
     return new InputFieldMarshaller() {
       @Override

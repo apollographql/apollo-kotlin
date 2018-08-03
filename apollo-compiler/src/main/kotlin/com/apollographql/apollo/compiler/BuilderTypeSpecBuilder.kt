@@ -92,7 +92,7 @@ class BuilderTypeSpecBuilder(
   }
 
   private fun inputFieldSetterMethodSpecs(): List<MethodSpec> {
-    return fields.filter { (_, fieldType) -> fieldType.isOptional(ClassNames.INPUT_TYPE) }
+    return fields.filter { (_, fieldType) -> fieldType.isOptional(ClassNames.INPUT) }
         .map { (fieldName, fieldType) ->
           val javaDoc = fieldJavaDocs[fieldName]
           inputFieldSetterMethodSpec(fieldName, fieldType, javaDoc)

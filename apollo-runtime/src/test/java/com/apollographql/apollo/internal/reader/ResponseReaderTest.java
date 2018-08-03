@@ -2,6 +2,7 @@ package com.apollographql.apollo.internal.reader;
 
 import com.google.common.truth.Truth;
 
+import com.apollographql.apollo.internal.cache.normalized.CacheKeyBuilder;
 import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
@@ -916,6 +917,14 @@ public class ResponseReaderTest {
 
     @Override public Set<String> dependentKeys() {
       return Collections.emptySet();
+    }
+
+    @NotNull @Override public CacheKeyBuilder cacheKeyBuilder() {
+      return new CacheKeyBuilder() {
+        @NotNull @Override public String build(@NotNull ResponseField field, @NotNull Operation.Variables variables) {
+          return CacheKey.NO_KEY.key();
+        }
+      };
     }
   };
 }

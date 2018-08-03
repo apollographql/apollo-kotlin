@@ -8,6 +8,7 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver;
 import com.apollographql.apollo.cache.normalized.CacheReference;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.internal.cache.normalized.ReadableStore;
+import com.apollographql.apollo.internal.cache.normalized.CacheKeyBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +18,15 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
   private final Operation.Variables variables;
   private final CacheKeyResolver cacheKeyResolver;
   private final CacheHeaders cacheHeaders;
+  private final CacheKeyBuilder cacheKeyBuilder;
 
   public CacheFieldValueResolver(ReadableStore readableCache, Operation.Variables variables,
-      CacheKeyResolver cacheKeyResolver, CacheHeaders cacheHeaders) {
+      CacheKeyResolver cacheKeyResolver, CacheHeaders cacheHeaders, CacheKeyBuilder cacheKeyBuilder) {
     this.readableCache = readableCache;
     this.variables = variables;
     this.cacheKeyResolver = cacheKeyResolver;
     this.cacheHeaders = cacheHeaders;
+    this.cacheKeyBuilder = cacheKeyBuilder;
   }
 
   @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
@@ -93,7 +96,7 @@ public final class CacheFieldValueResolver implements FieldValueResolver<Record>
 
   @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
   private <T> T fieldValue(Record record, ResponseField field) {
-    String fieldKey = field.cacheKey(variables);
+    String fieldKey = cacheKeyBuilder.build(field, variables);
     if (!record.hasField(fieldKey)) {
       throw new NullPointerException("Missing value: " + field.fieldName());
     }

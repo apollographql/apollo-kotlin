@@ -15,9 +15,12 @@ import com.apollographql.apollo.cache.normalized.OptimisticNormalizedCache;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.internal.ApolloLogger;
 import com.apollographql.apollo.internal.field.CacheFieldValueResolver;
-import com.apollographql.apollo.internal.response.RealResponseWriter;
 import com.apollographql.apollo.internal.response.RealResponseReader;
+import com.apollographql.apollo.internal.response.RealResponseWriter;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,9 +35,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 public final class RealApolloStore implements ApolloStore, ReadableStore, WriteableStore {
@@ -44,6 +44,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   private final ReadWriteLock lock;
   private final Set<RecordChangeSubscriber> subscribers;
   private final Executor dispatcher;
+  private final CacheKeyBuilder cacheKeyBuilder;
   final ApolloLogger logger;
 
   public RealApolloStore(@NotNull NormalizedCache normalizedCache, @NotNull CacheKeyResolver cacheKeyResolver,
@@ -58,6 +59,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     this.logger = checkNotNull(logger, "logger == null");
     this.lock = new ReentrantReadWriteLock();
     this.subscribers = Collections.newSetFromMap(new WeakHashMap<RecordChangeSubscriber, Boolean>());
+    this.cacheKeyBuilder = new RealCacheKeyBuilder();
   }
 
   @Override public ResponseNormalizer<Map<String, Object>> networkResponseNormalizer() {
@@ -66,6 +68,10 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
           @NotNull Map<String, Object> record) {
         return cacheKeyResolver.fromFieldRecordSet(field, record);
       }
+
+      @NotNull @Override public CacheKeyBuilder cacheKeyBuilder() {
+        return cacheKeyBuilder;
+      }
     };
   }
 
@@ -73,6 +79,10 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     return new ResponseNormalizer<Record>() {
       @NotNull @Override public CacheKey resolveCacheKey(@NotNull ResponseField field, @NotNull Record record) {
         return CacheKey.from(record.key());
+      }
+
+      @NotNull @Override public CacheKeyBuilder cacheKeyBuilder() {
+        return cacheKeyBuilder;
       }
     };
   }
@@ -349,7 +359,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
 
         ResponseFieldMapper<D> responseFieldMapper = operation.responseFieldMapper();
         CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
-            cacheKeyResolver(), CacheHeaders.NONE);
+            cacheKeyResolver(), CacheHeaders.NONE, cacheKeyBuilder);
         //noinspection unchecked
         RealResponseReader<Record> responseReader = new RealResponseReader<>(operation.variables(), rootRecord,
             fieldValueResolver, scalarTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);
@@ -369,7 +379,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
         }
 
         CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
-            cacheKeyResolver(), cacheHeaders);
+            cacheKeyResolver(), cacheHeaders, cacheKeyBuilder);
         RealResponseReader<Record> responseReader = new RealResponseReader<>(operation.variables(), rootRecord,
             fieldValueResolver, scalarTypeAdapters, responseNormalizer);
         try {
@@ -398,7 +408,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
         }
 
         CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, variables,
-            cacheKeyResolver(), CacheHeaders.NONE);
+            cacheKeyResolver(), CacheHeaders.NONE, cacheKeyBuilder);
         //noinspection unchecked
         RealResponseReader<Record> responseReader = new RealResponseReader<>(variables, rootRecord,
             fieldValueResolver, scalarTypeAdapters, ResponseNormalizer.NO_OP_NORMALIZER);

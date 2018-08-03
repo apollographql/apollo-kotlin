@@ -173,7 +173,7 @@ class OperationTypeSpecBuilder(
           .map { (name, type) ->
             ParameterSpec.builder(type, name)
                 .apply {
-                  if (type.isOptional(ClassNames.INPUT_TYPE)) {
+                  if (type.isOptional(ClassNames.INPUT)) {
                     addAnnotation(Annotations.NONNULL)
                   }
                 }
