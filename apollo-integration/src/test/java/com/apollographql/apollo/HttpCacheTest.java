@@ -273,6 +273,25 @@ public class HttpCacheTest {
     assertThat(lastHttResponse.cacheResponse()).isNotNull();
   }
 
+  @Test @SuppressWarnings("CheckReturnValue") public void cacheAfterDelete() throws Exception {
+    enqueueResponse("/HttpCacheTestAllPlanets.json");
+    Rx2Apollo.from(apolloClient
+        .query(new AllPlanetsQuery()))
+        .test();
+    checkCachedResponse("/HttpCacheTestAllPlanets.json");
+
+    cacheStore.delegate.delete();
+
+    enqueueResponse("/HttpCacheTestAllPlanets.json");
+    Rx2Apollo.from(apolloClient
+        .query(new AllPlanetsQuery())
+        .httpCachePolicy(HttpCachePolicy.CACHE_FIRST))
+        .test();
+    checkCachedResponse("/HttpCacheTestAllPlanets.json");
+
+    assertThat(server.getRequestCount()).isEqualTo(2);
+  }
+
   @Test @SuppressWarnings("CheckReturnValue") public void cacheStale() throws Exception {
     enqueueResponse("/HttpCacheTestAllPlanets.json");
     Rx2Apollo.from(apolloClient
