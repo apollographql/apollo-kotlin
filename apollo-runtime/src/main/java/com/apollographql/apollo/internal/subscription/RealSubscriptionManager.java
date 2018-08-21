@@ -97,6 +97,35 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     });
   }
 
+  /**
+   * Set the {@link RealSubscriptionManager} to a connectible state. It is safe to call this method
+   * at any time.  Does nothing unless we are in the stopped state.
+   */
+  @Override
+  public void start() {
+    synchronized (this) {
+      if (state == State.STOPPED) {
+        setStateAndNotify(State.DISCONNECTED);
+      }
+    }
+  }
+
+  /**
+   * Unsubscribe from all active subscriptions, and disconnect the web socket.  It will not be
+   * possible to add new subscriptions while the {@link SubscriptionManager} is stopping
+   * because we check the state in {@link #doSubscribe(Subscription, Callback)}.  We pass true to
+   * {@link #disconnect(boolean)} because we want to disconnect even if, somehow, a new subscription
+   * is added while or after we are doing the {@link #doUnsubscribe(Subscription)} loop.
+   */
+  @Override
+  public void stop() {
+    setStateAndNotify(State.STOPPING);
+    for (SubscriptionRecord eachSubscriptionRecord : subscriptions.values()) {
+      doUnsubscribe(eachSubscriptionRecord.subscription);
+    }
+    disconnect(true);
+  }
+
   public void addOnStateChangeListener(@NotNull OnStateChangeListener onStateChangeListener) {
     onStateChangeListeners.add(checkNotNull(onStateChangeListener, "onStateChangeListener == null"));
   }
@@ -106,6 +135,10 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   }
 
   void doSubscribe(Subscription subscription, SubscriptionManager.Callback callback) {
+    if (state == State.STOPPING || state == State.STOPPED) {
+      callback.onError(new ApolloSubscriptionException("Illegal state: " + state.name()));
+      return;
+    }
     timer.cancelTask(INACTIVITY_TIMEOUT_TIMER_TASK_ID);
 
     String subscriptionId = idForSubscription(subscription);
@@ -131,7 +164,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     SubscriptionRecord subscriptionRecord;
     synchronized (this) {
       subscriptionRecord = subscriptions.remove(subscriptionId);
-      if (subscriptionRecord != null && state == State.ACTIVE) {
+      if ((subscriptionRecord != null) && (state == State.ACTIVE || state == State.STOPPING)) {
         transport.send(new OperationClientMessage.Stop(subscriptionId));
       }
 
@@ -197,11 +230,20 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     }
   }
 
+  /**
+   * Disconnect the web socket and update the state.  If we are stopping, set the state to
+   * {@link State#STOPPED} so that new subscription requests will <b>not</b> automatically re-open
+   * the web socket.  If we are not stopping, set the state to {@link State#DISCONNECTED} so that
+   * new subscription requests <b>will</b> automatically re-open the web socket.
+   *
+   * @param force if true, always disconnect web socket, regardless of the status of {@link #subscriptions}
+   */
   void disconnect(boolean force) {
     synchronized (this) {
       if (force || subscriptions.isEmpty()) {
         transport.disconnect(new OperationClientMessage.Terminate());
-        setStateAndNotify(State.DISCONNECTED);
+        State disconnectionState = (state == State.STOPPING) ? State.STOPPED : State.DISCONNECTED;
+        setStateAndNotify(disconnectionState);
         subscriptions = new LinkedHashMap<>();
       }
     }
@@ -314,7 +356,9 @@ public final class RealSubscriptionManager implements SubscriptionManager {
     DISCONNECTED,
     CONNECTING,
     CONNECTED,
-    ACTIVE
+    ACTIVE,
+    STOPPING,
+    STOPPED
   }
 
   private static class SubscriptionRecord {
