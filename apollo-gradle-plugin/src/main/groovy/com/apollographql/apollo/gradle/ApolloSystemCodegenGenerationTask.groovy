@@ -10,7 +10,7 @@ import org.gradle.api.tasks.OutputDirectory
 
 class ApolloSystemCodegenGenerationTask extends AbstractExecTask<ApolloSystemCodegenGenerationTask> {
   String variant
-  ImmutableList<String> sourceSets
+  ImmutableList<String> sourceSetNames
   @Input @Optional Property<String> schemaFilePath = project.objects.property(String.class)
   @Input @Optional Property<String> outputPackageName = project.objects.property(String.class)
   @OutputDirectory final DirectoryProperty outputDir = project.layout.directoryProperty()
@@ -24,7 +24,7 @@ class ApolloSystemCodegenGenerationTask extends AbstractExecTask<ApolloSystemCod
     setCommandLine("apollo-codegen")
 
     List<CodegenGenerationTaskCommandArgsBuilder.CommandArgs> args = new CodegenGenerationTaskCommandArgsBuilder(
-        this, schemaFilePath.get(), outputPackageName.get(), outputDir.get().asFile, variant, sourceSets
+        this, schemaFilePath.get(), outputPackageName.get(), outputDir.get().asFile, variant, sourceSetNames
     ).build()
 
     for (CodegenGenerationTaskCommandArgsBuilder.CommandArgs commandArgs : args) {
