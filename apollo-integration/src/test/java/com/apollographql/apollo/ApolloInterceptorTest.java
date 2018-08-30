@@ -1,8 +1,6 @@
 package com.apollographql.apollo;
 
 
-import android.support.annotation.NonNull;
-
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;

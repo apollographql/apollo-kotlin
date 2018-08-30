@@ -1,7 +1,5 @@
 package com.apollographql.apollo;
 
-import android.support.annotation.NonNull;
-
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;

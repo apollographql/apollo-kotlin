@@ -1,52 +1,34 @@
 buildscript {
   dependencies {
-    classpath dep.androidPlugin
     classpath dep.apolloPlugin
   }
 }
 
-apply plugin: 'com.android.application'
+apply plugin: 'java'
+apply plugin: 'kotlin'
 apply plugin: 'com.apollographql.android'
 
-android {
-  compileSdkVersion androidConfig.compileSdkVersion
-  buildToolsVersion androidConfig.buildToolsVersion
-
-  defaultConfig {
-    applicationId "com.example.apollographql.integration"
-    minSdkVersion androidConfig.minSdkVersion
-    targetSdkVersion androidConfig.targetSdkVersion
-  }
-
-  lintOptions {
-    textReport true
-    textOutput 'stdout'
-    ignore 'InvalidPackage', 'GoogleAppIndexingWarning', 'AllowBackup'
-  }
-
-  packagingOptions {
-    exclude 'META-INF/rxjava.properties'
-  }
-}
-
 dependencies {
-  provided dep.jsr250
-  provided dep.jetbrainsAnnotations
+  compile dep.jsr250
+  compile dep.jetbrainsAnnotations
 
   compile project(':apollo-runtime')
   compile project(':apollo-rx-support')
   compile project(':apollo-rx2-support')
   compile project(':apollo-http-cache')
-  compile dep.appcompat
 
   testCompile dep.junit
   testCompile dep.truth
   testCompile dep.mockWebServer
   testCompile dep.okhttpTestSupport
+  compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 apollo {
   customTypeMapping = [
       "Date": "java.util.Date"
   ]
+}
+repositories {
+  mavenCentral()
 }
