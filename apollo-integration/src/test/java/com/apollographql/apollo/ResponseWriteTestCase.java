@@ -100,7 +100,7 @@ public class ResponseWriteTestCase {
         "Droid",
         "R222-D222",
         DATE_TIME_FORMAT.parse("1985-04-16"),
-        Collections.<Date>emptyList()
+        Collections.<Object>emptyList()
     );
     apolloClient.apolloStore().write(query, new EpisodeHeroWithDatesQuery.Data(hero)).execute();
 

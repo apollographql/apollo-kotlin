@@ -237,7 +237,7 @@ public class IntegrationTest {
             List<String> dates = FluentIterable.from(response.data().allFilms().films())
                 .transform(new Function<AllFilmsQuery.Film, String>() {
                   @Override public String apply(AllFilmsQuery.Film film) {
-                    Date releaseDate = film.releaseDate();
+                    Date releaseDate = (Date)film.releaseDate();
                     return dateCustomTypeAdapter.encode(releaseDate).value.toString();
                   }
                 }).copyInto(new ArrayList<String>());
