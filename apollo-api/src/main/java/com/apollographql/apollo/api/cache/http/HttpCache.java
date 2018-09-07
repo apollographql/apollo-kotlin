@@ -35,6 +35,10 @@ public interface HttpCache {
    * Expire cached response flag http header
    */
   String CACHE_EXPIRE_AFTER_READ_HEADER = "X-APOLLO-EXPIRE-AFTER-READ";
+  /**
+   * Do not store the http response
+   */
+  String CACHE_DO_NOT_STORE = "X-APOLLO-CACHE-DO-NOT-STORE";
 
   /**
    * Clear cached http responses

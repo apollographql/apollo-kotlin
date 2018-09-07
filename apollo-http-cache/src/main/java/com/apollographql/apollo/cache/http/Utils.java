@@ -16,6 +16,7 @@ import okio.Okio;
 import okio.Sink;
 import okio.Source;
 
+import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_DO_NOT_STORE;
 import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_EXPIRE_AFTER_READ_HEADER;
 import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER;
 import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_FETCH_STRATEGY_HEADER;
@@ -73,6 +74,10 @@ final class Utils {
 
   static boolean shouldExpireAfterRead(Request request) {
     return Boolean.TRUE.toString().equalsIgnoreCase(request.header(CACHE_EXPIRE_AFTER_READ_HEADER));
+  }
+
+  static boolean skipStoreResponse(Request request) {
+    return Boolean.TRUE.toString().equalsIgnoreCase(request.header(CACHE_DO_NOT_STORE));
   }
 
   static Response unsatisfiableCacheRequest(Request request) {
