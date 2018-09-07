@@ -26,7 +26,7 @@ class JavaTypeResolver(
       normalizedTypeName == ScalarType.BOOLEAN.name -> if (isOptional) TypeName.BOOLEAN.box() else TypeName.BOOLEAN
       normalizedTypeName == ScalarType.FLOAT.name -> if (isOptional) TypeName.DOUBLE.box() else TypeName.DOUBLE
       customScalarType != null -> customScalarType.toJavaType()
-      else -> ClassName.get(packageName, normalizedTypeName)
+      else -> ClassName.get(packageName, normalizedTypeName.capitalize())
     }
 
     return if (javaType.isPrimitive) {
