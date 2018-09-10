@@ -141,7 +141,7 @@
 				},
 				{
 					"name": "favoriteColor",
-					"type": "ColorInput!",
+					"type": "colorInput!",
 					"description": "Favorite color, optional"
 				},
 				{
@@ -218,7 +218,7 @@
 				},
 				{
 					"name": "listOfListOfObject",
-					"type": "[[ColorInput!]!]",
+					"type": "[[colorInput!]!]",
 					"description": "for test purpose only"
 				},
 				{
@@ -230,7 +230,7 @@
 		},
 		{
 			"kind": "InputObjectType",
-			"name": "ColorInput",
+			"name": "colorInput",
 			"description": "The input object sent when passing in a color",
 			"fields": [
 				{

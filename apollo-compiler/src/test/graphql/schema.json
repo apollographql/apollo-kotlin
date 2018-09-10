@@ -1859,7 +1859,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "ColorInput",
+                  "name": "colorInput",
                   "ofType": null
                 }
               },
@@ -2062,7 +2062,7 @@
                       "name": null,
                       "ofType": {
                         "kind": "INPUT_OBJECT",
-                        "name": "ColorInput",
+                        "name": "colorInput",
                         "ofType": null
                       }
                     }
@@ -2087,7 +2087,7 @@
         },
         {
           "kind": "INPUT_OBJECT",
-          "name": "ColorInput",
+          "name": "colorInput",
           "description": "The input object sent when passing in a color",
           "fields": null,
           "inputFields": [
