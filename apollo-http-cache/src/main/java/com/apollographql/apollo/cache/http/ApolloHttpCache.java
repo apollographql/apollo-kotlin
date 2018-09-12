@@ -21,6 +21,7 @@ import okio.Source;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static com.apollographql.apollo.cache.http.Utils.copyResponseBody;
+import static com.apollographql.apollo.cache.http.Utils.skipStoreResponse;
 
 @SuppressWarnings("WeakerAccess")
 public final class ApolloHttpCache implements HttpCache {
@@ -99,6 +100,10 @@ public final class ApolloHttpCache implements HttpCache {
   }
 
   Response cacheProxy(@NotNull Response response, @NotNull String cacheKey) {
+    if (skipStoreResponse(response.request())) {
+      return response;
+    }
+
     HttpCacheRecordEditor cacheRecordEditor = null;
     try {
       cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey);

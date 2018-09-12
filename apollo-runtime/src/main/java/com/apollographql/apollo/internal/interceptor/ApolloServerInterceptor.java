@@ -4,6 +4,8 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.cache.http.HttpCache;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
+import com.apollographql.apollo.cache.ApolloCacheHeaders;
+import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
@@ -75,7 +77,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         callBack.onFetch(FetchSourceType.NETWORK);
 
         try {
-          httpCall = httpCall(request.operation);
+          httpCall = httpCall(request.operation, request.cacheHeaders);
         } catch (IOException e) {
           logger.e(e, "Failed to prepare http call for operation %s", request.operation.name().name());
           callBack.onFailure(new ApolloNetworkException("Failed to prepare http call", e));
@@ -108,7 +110,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     this.httpCall = null;
   }
 
-  Call httpCall(Operation operation) throws IOException {
+  Call httpCall(Operation operation, CacheHeaders cacheHeaders) throws IOException {
     RequestBody requestBody = httpRequestBody(operation);
     Request.Builder requestBuilder = new Request.Builder()
         .url(serverUrl)
@@ -121,13 +123,16 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
     if (cachePolicy.isPresent()) {
       HttpCachePolicy.Policy cachePolicy = this.cachePolicy.get();
+      boolean skipCacheHttpResponse = "true".equalsIgnoreCase(cacheHeaders.headerValue(
+          ApolloCacheHeaders.DO_NOT_STORE));
       String cacheKey = cacheKey(requestBody);
       requestBuilder = requestBuilder
           .header(HttpCache.CACHE_KEY_HEADER, cacheKey)
           .header(HttpCache.CACHE_FETCH_STRATEGY_HEADER, cachePolicy.fetchStrategy.name())
           .header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER, String.valueOf(cachePolicy.expireTimeoutMs()))
           .header(HttpCache.CACHE_EXPIRE_AFTER_READ_HEADER, Boolean.toString(cachePolicy.expireAfterRead))
-          .header(HttpCache.CACHE_PREFETCH_HEADER, Boolean.toString(prefetch));
+          .header(HttpCache.CACHE_PREFETCH_HEADER, Boolean.toString(prefetch))
+          .header(HttpCache.CACHE_DO_NOT_STORE, Boolean.toString(skipCacheHttpResponse));
     }
 
     return httpCallFactory.newCall(requestBuilder.build());

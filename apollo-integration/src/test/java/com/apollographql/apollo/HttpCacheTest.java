@@ -3,6 +3,8 @@ package com.apollographql.apollo;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.cache.http.HttpCache;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
+import com.apollographql.apollo.cache.ApolloCacheHeaders;
+import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.http.ApolloHttpCache;
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
 import com.apollographql.apollo.exception.ApolloException;
@@ -198,6 +200,25 @@ public class HttpCacheTest {
     assertThat(lastHttResponse.networkResponse()).isNotNull();
     assertThat(lastHttResponse.cacheResponse()).isNull();
     checkCachedResponse("/HttpCacheTestAllPlanets.json");
+  }
+
+  @Test public void networkOnly_DoNotStore() throws Exception {
+    enqueueResponse("/HttpCacheTestAllPlanets.json");
+    Rx2Apollo.from(apolloClient
+        .query(new AllPlanetsQuery())
+        .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY)
+        .cacheHeaders(CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build()))
+        .test()
+        .assertValue(new Predicate<Response<AllPlanetsQuery.Data>>() {
+          @Override public boolean test(Response<AllPlanetsQuery.Data> response) throws Exception {
+            return !response.hasErrors();
+          }
+        });
+    assertThat(server.getRequestCount()).isEqualTo(1);
+    assertThat(lastHttResponse.networkResponse()).isNotNull();
+    assertThat(lastHttResponse.cacheResponse()).isNull();
+
+    checkNoCachedResponse();
   }
 
   @Test public void networkOnly_responseWithGraphError_noCached() throws Exception {

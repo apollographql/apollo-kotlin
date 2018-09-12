@@ -2,6 +2,8 @@ package com.apollographql.apollo.internal.interceptor;
 
 import com.google.common.base.Predicate;
 
+import com.apollographql.apollo.cache.ApolloCacheHeaders;
+import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.Logger;
 import com.apollographql.apollo.api.Input;
@@ -65,7 +67,7 @@ public class ApolloServerInterceptorTest {
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
         new ApolloLogger(Optional.<Logger>absent()), false);
 
-    interceptor.httpCall(query);
+    interceptor.httpCall(query, CacheHeaders.NONE);
   }
 
   @Test public void testCachedHttpCall() throws Exception {
@@ -78,6 +80,7 @@ public class ApolloServerInterceptorTest {
         assertThat(request.header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER)).isEqualTo("10000");
         assertThat(request.header(HttpCache.CACHE_EXPIRE_AFTER_READ_HEADER)).isEqualTo("false");
         assertThat(request.header(HttpCache.CACHE_PREFETCH_HEADER)).isEqualTo("false");
+        assertThat(request.header(HttpCache.CACHE_DO_NOT_STORE)).isEqualTo("true");
         assertRequestBody(request);
         return true;
       }
@@ -89,7 +92,7 @@ public class ApolloServerInterceptorTest {
         false, new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
         new ApolloLogger(Optional.<Logger>absent()), false);
 
-    interceptor.httpCall(query);
+    interceptor.httpCall(query, CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build());
   }
 
   private void assertDefaultRequestHeaders(Request request) {
