@@ -306,7 +306,7 @@
 					"name": "enumWithDefaultValue",
 					"type": "Episode",
 					"description": "for test purpose only",
-					"defaultValue": "JEDI"
+					"defaultValue": "new"
 				}
 			]
 		},

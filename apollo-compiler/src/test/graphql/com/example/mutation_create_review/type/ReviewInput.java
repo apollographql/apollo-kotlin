@@ -433,7 +433,7 @@ public final class ReviewInput implements InputType {
 
     private @NotNull ColorInput favoriteColor;
 
-    private Input<Episode> enumWithDefaultValue = Input.fromNullable(Episode.JEDI);
+    private Input<Episode> enumWithDefaultValue = Input.fromNullable(Episode.safeValueOf("JEDI"));
 
     private Input<Episode> nullableEnum = Input.absent();
 

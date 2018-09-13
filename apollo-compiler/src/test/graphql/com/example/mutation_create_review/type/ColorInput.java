@@ -123,7 +123,7 @@ public final class ColorInput implements InputType {
 
     private double blue = 1.5;
 
-    private Input<Episode> enumWithDefaultValue = Input.fromNullable(Episode.JEDI);
+    private Input<Episode> enumWithDefaultValue = Input.fromNullable(Episode.safeValueOf("new"));
 
     Builder() {
     }
