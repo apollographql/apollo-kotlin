@@ -2137,7 +2137,7 @@
                 "name": "Episode",
                 "ofType": null
               },
-              "defaultValue": "JEDI"
+              "defaultValue": "new"
             }
           ],
           "interfaces": null,

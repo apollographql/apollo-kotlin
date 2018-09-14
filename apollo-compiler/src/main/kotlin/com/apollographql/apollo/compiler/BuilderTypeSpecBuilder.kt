@@ -31,7 +31,7 @@ class BuilderTypeSpecBuilder(
         val longType = (type == TypeName.LONG || type == TypeName.LONG.box())
         CodeBlock.of("\$L\$L", value.castTo(type), if (longType) "L" else "")
       }
-      type.isEnum(typeDeclarations) -> CodeBlock.of("\$T.\$L", type, value)
+      type.isEnum(typeDeclarations) -> CodeBlock.of("\$T.safeValueOf(\$S)", type, value)
       value !is String -> CodeBlock.of("\$L", value)
       else -> CodeBlock.of("\$S", value)
     }
