@@ -95,7 +95,7 @@ data class Field(
         .build()
   }
 
-  fun formatClassName() = responseName.capitalize().let { if (isList()) it.singularize() else it }
+  fun formatClassName() = responseName.let { if (isList()) it.singularize() else it }.capitalize()
 
   fun isOptional(): Boolean = isConditional || !methodResponseType().endsWith("!")
       || (inlineFragments?.isNotEmpty() ?: false)
