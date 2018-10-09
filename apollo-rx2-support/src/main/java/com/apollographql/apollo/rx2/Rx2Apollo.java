@@ -5,10 +5,13 @@ import com.apollographql.apollo.ApolloPrefetch;
 import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.ApolloSubscriptionCall;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.internal.util.Cancelable;
 
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
@@ -142,36 +145,71 @@ public class Rx2Apollo {
   }
 
   @NotNull public static <T> Flowable<Response<T>> from(@NotNull final ApolloSubscriptionCall<T> call,
-      @NotNull BackpressureStrategy backpressureStrategy) {
+                                                        @NotNull BackpressureStrategy backpressureStrategy) {
     checkNotNull(call, "originalCall == null");
     checkNotNull(backpressureStrategy, "backpressureStrategy == null");
     return Flowable.create(new FlowableOnSubscribe<Response<T>>() {
       @Override public void subscribe(final FlowableEmitter<Response<T>> emitter) throws Exception {
         cancelOnFlowableDisposed(emitter, call);
         call.execute(
-            new ApolloSubscriptionCall.Callback<T>() {
-              @Override public void onResponse(@NotNull Response<T> response) {
-                if (!emitter.isCancelled()) {
-                  emitter.onNext(response);
-                }
-              }
+                new ApolloSubscriptionCall.Callback<T>() {
+                  @Override public void onResponse(@NotNull Response<T> response) {
+                    if (!emitter.isCancelled()) {
+                      emitter.onNext(response);
+                    }
+                  }
 
-              @Override public void onFailure(@NotNull ApolloException e) {
-                Exceptions.throwIfFatal(e);
-                if (!emitter.isCancelled()) {
-                  emitter.onError(e);
-                }
-              }
+                  @Override public void onFailure(@NotNull ApolloException e) {
+                    Exceptions.throwIfFatal(e);
+                    if (!emitter.isCancelled()) {
+                      emitter.onError(e);
+                    }
+                  }
 
-              @Override public void onCompleted() {
-                if (!emitter.isCancelled()) {
-                  emitter.onComplete();
+                  @Override public void onCompleted() {
+                    if (!emitter.isCancelled()) {
+                      emitter.onComplete();
+                    }
+                  }
                 }
-              }
-            }
         );
       }
     }, backpressureStrategy);
+  }
+
+  @NotNull public static <T> Observable<T> from(@NotNull ApolloStoreOperation<T> operation) {
+    return from(operation, BackpressureStrategy.LATEST);
+  }
+
+  /**
+   * Converts an {@link ApolloStoreOperation} to a Observable.
+   *
+   * @param operation        the ApolloStoreOperation to convert
+   * @param <T>              the value type
+   * @param backpressureStrategy The {@link BackpressureStrategy} to use.
+   * @return the converted Observable
+   */
+  @NotNull public static <T> Observable<T> from(@NotNull final ApolloStoreOperation<T> operation,
+      @Nonnull BackpressureStrategy backpressureStrategy) {
+    checkNotNull(operation, "operation == null");
+    checkNotNull(backpressureStrategy, "backpressureStrategy == null");
+    return Observable.create(new ObservableOnSubscribe<T>() {
+      @Override
+      public void subscribe(final ObservableEmitter<T> emitter) {
+        operation.enqueue(new ApolloStoreOperation.Callback<T>() {
+          @Override
+          public void onSuccess(T result) {
+            emitter.onNext(result);
+            emitter.onComplete();
+          }
+
+          @Override
+          public void onFailure(Throwable t) {
+            emitter.onError(t);
+          }
+        });
+      }
+    });
   }
 
   private static void cancelOnCompletableDisposed(CompletableEmitter emitter, final Cancelable cancelable) {

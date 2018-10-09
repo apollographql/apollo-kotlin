@@ -6,6 +6,7 @@ import com.apollographql.apollo.ApolloPrefetch;
 import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.ApolloSubscriptionCall;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.internal.util.Cancelable;
@@ -171,6 +172,33 @@ public final class RxApollo {
   }
 
   /**
+   * Converts an {@link ApolloStoreOperation} to a Observable.
+   *
+   * @param operation        the ApolloStoreOperation to convert
+   * @param <T>              the value type
+   * @param backpressureMode The {@link rx.Emitter.BackpressureMode} to use.
+   * @return the converted Observable
+   */
+  @NotNull public static <T> Observable<T> from(@NotNull final ApolloStoreOperation<T> operation,
+      Emitter.BackpressureMode backpressureMode) {
+    checkNotNull(operation, "operation == null");
+    return Observable.create(new Action1<Emitter<T>>() {
+      @Override public void call(final Emitter<T> emitter) {
+        operation.enqueue(new ApolloStoreOperation.Callback<T>() {
+          @Override public void onSuccess(T result) {
+            emitter.onNext(result);
+            emitter.onCompleted();
+          }
+
+          @Override public void onFailure(Throwable t) {
+            emitter.onError(t);
+          }
+        });
+      }
+    }, backpressureMode);
+  }
+
+  /**
    * Converts an {@link ApolloCall} to a Observable with backpressure mode {@link rx.Emitter.BackpressureMode#BUFFER}.
    * The number of emissions this Observable will have is based on the {@link ResponseFetcher} used with the call.
    *
@@ -184,6 +212,10 @@ public final class RxApollo {
 
   @NotNull public static <T> Observable<Response<T>> from(@NotNull final ApolloSubscriptionCall<T> call) {
     return from(call, Emitter.BackpressureMode.LATEST);
+  }
+
+  @NotNull public static <T> Observable<T> from(@NotNull final ApolloStoreOperation<T> operation) {
+    return from(operation, Emitter.BackpressureMode.LATEST);
   }
 
   /**
