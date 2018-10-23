@@ -124,11 +124,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<List<GraphQlListOfObject>> graphQlListOfObjects;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Data(@Nullable String graphQlString, @Nullable String graphQlIdNullable,
         @NotNull String graphQlIdNonNullable, @Nullable Integer graphQlIntNullable,
@@ -339,11 +339,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final int someField;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public GraphQlListOfObject(int someField) {
       this.someField = someField;

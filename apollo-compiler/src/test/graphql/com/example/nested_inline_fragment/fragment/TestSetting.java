@@ -102,11 +102,11 @@ public interface TestSetting extends GraphqlFragment {
 
     final Optional<List<String>> list;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsStringListSettingValue(@NotNull String __typename, @Nullable List<String> list) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -196,11 +196,11 @@ public interface TestSetting extends GraphqlFragment {
 
     final @NotNull String __typename;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsSettingValue(@NotNull String __typename) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -275,11 +275,11 @@ public interface TestSetting extends GraphqlFragment {
 
     final Optional<List<Option>> options;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsSelectSetting(@NotNull String __typename, @Nullable Value1 value,
         @Nullable List<Option> options) {
@@ -424,11 +424,11 @@ public interface TestSetting extends GraphqlFragment {
 
     final Optional<List<String>> list;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsStringListSettingValue1(@NotNull String __typename, @Nullable List<String> list) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -518,11 +518,11 @@ public interface TestSetting extends GraphqlFragment {
 
     final @NotNull String __typename;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsSettingValue1(@NotNull String __typename) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -600,11 +600,11 @@ public interface TestSetting extends GraphqlFragment {
 
     final @NotNull String label;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Option(@NotNull String __typename, boolean allowFreeText, @NotNull String id,
         @NotNull String label) {
@@ -710,11 +710,11 @@ public interface TestSetting extends GraphqlFragment {
 
     final Optional<Value2> value;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsSetting(@NotNull String __typename, @Nullable Value2 value) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -830,11 +830,11 @@ public interface TestSetting extends GraphqlFragment {
 
     final Optional<List<String>> list;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsStringListSettingValue2(@NotNull String __typename, @Nullable List<String> list) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -924,11 +924,11 @@ public interface TestSetting extends GraphqlFragment {
 
     final @NotNull String __typename;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsSettingValue2(@NotNull String __typename) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");

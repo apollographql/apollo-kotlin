@@ -131,11 +131,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<List<Search>> search;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Data(@Nullable List<Search> search) {
       this.search = Optional.fromNullable(search);
@@ -278,11 +278,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<List<Friend>> friends;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsHuman(@NotNull String __typename, @NotNull String id, @NotNull String name,
         @Nullable List<Friend> friends) {
@@ -462,11 +462,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<List<Friend1>> friends;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsHuman1(@NotNull String __typename, @NotNull String name, @Nullable String homePlanet,
         @Nullable List<Friend1> friends) {
@@ -598,11 +598,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final @NotNull Episode firstAppearsIn;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Friend1(@NotNull String __typename, @NotNull Episode firstAppearsIn) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -700,11 +700,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<List<Friend2>> friends;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsDroid(@NotNull String __typename, @NotNull String name,
         @Nullable String primaryFunction, @Nullable List<Friend2> friends) {
@@ -839,11 +839,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final @NotNull @Deprecated String deprecated;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Friend2(@NotNull String __typename, @NotNull String id,
         @NotNull @Deprecated String deprecated) {
@@ -945,11 +945,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final @NotNull String name;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsCharacter(@NotNull String __typename, @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -1041,11 +1041,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<List<Friend3>> friends;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsDroid1(@NotNull String __typename, @NotNull String id, @NotNull String name,
         @Nullable List<Friend3> friends) {
@@ -1225,11 +1225,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<List<Friend4>> friends;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsHuman2(@NotNull String __typename, @NotNull String name, @Nullable String homePlanet,
         @Nullable List<Friend4> friends) {
@@ -1361,11 +1361,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final @NotNull Episode firstAppearsIn;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Friend4(@NotNull String __typename, @NotNull Episode firstAppearsIn) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -1463,11 +1463,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<List<Friend5>> friends;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsDroid2(@NotNull String __typename, @NotNull String name,
         @Nullable String primaryFunction, @Nullable List<Friend5> friends) {
@@ -1602,11 +1602,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final @NotNull @Deprecated String deprecated;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Friend5(@NotNull String __typename, @NotNull String id,
         @NotNull @Deprecated String deprecated) {
@@ -1708,11 +1708,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final @NotNull String name;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsCharacter1(@NotNull String __typename, @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -1798,11 +1798,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final @NotNull String name;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsStarship(@NotNull String __typename, @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -1885,11 +1885,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final @NotNull String __typename;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsSearchResult(@NotNull String __typename) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");

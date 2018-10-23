@@ -55,11 +55,11 @@ public class StarshipFragment implements GraphqlFragment {
 
   final Optional<PilotConnection> pilotConnection;
 
-  private volatile String $toString;
+  private transient volatile String $toString;
 
-  private volatile int $hashCode;
+  private transient volatile int $hashCode;
 
-  private volatile boolean $hashCodeMemoized;
+  private transient volatile boolean $hashCodeMemoized;
 
   public StarshipFragment(@NotNull String __typename, @NotNull String id, @Nullable String name,
       @Nullable PilotConnection pilotConnection) {
@@ -177,11 +177,11 @@ public class StarshipFragment implements GraphqlFragment {
 
     final Optional<List<Edge>> edges;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public PilotConnection(@NotNull String __typename, @Nullable List<Edge> edges) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -284,11 +284,11 @@ public class StarshipFragment implements GraphqlFragment {
 
     final Optional<Node> node;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Edge(@NotNull String __typename, @Nullable Node node) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -381,11 +381,11 @@ public class StarshipFragment implements GraphqlFragment {
 
     private final @NotNull Fragments fragments;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Node(@NotNull String __typename, @NotNull Fragments fragments) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -451,11 +451,11 @@ public class StarshipFragment implements GraphqlFragment {
     public static class Fragments {
       final @NotNull PilotFragment pilotFragment;
 
-      private volatile String $toString;
+      private transient volatile String $toString;
 
-      private volatile int $hashCode;
+      private transient volatile int $hashCode;
 
-      private volatile boolean $hashCodeMemoized;
+      private transient volatile boolean $hashCodeMemoized;
 
       public Fragments(@NotNull PilotFragment pilotFragment) {
         this.pilotFragment = Utils.checkNotNull(pilotFragment, "pilotFragment == null");

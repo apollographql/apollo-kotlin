@@ -108,11 +108,11 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
     final @Nullable Luke luke;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Data(@Nullable R2 r2, @Nullable Luke luke) {
       this.r2 = r2;
@@ -210,11 +210,11 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
     private final @NotNull Fragments fragments;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public R2(@NotNull String __typename, @NotNull Fragments fragments) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -282,11 +282,11 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
       final @Nullable DroidDetails droidDetails;
 
-      private volatile String $toString;
+      private transient volatile String $toString;
 
-      private volatile int $hashCode;
+      private transient volatile int $hashCode;
 
-      private volatile boolean $hashCodeMemoized;
+      private transient volatile boolean $hashCodeMemoized;
 
       public Fragments(@Nullable HumanDetails humanDetails, @Nullable DroidDetails droidDetails) {
         this.humanDetails = humanDetails;
@@ -403,11 +403,11 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
     private final @NotNull Fragments fragments;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Luke(@NotNull String __typename, @NotNull Fragments fragments) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -475,11 +475,11 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
       final @Nullable DroidDetails droidDetails;
 
-      private volatile String $toString;
+      private transient volatile String $toString;
 
-      private volatile int $hashCode;
+      private transient volatile int $hashCode;
 
-      private volatile boolean $hashCodeMemoized;
+      private transient volatile boolean $hashCodeMemoized;
 
       public Fragments(@Nullable HumanDetails humanDetails, @Nullable DroidDetails droidDetails) {
         this.humanDetails = humanDetails;

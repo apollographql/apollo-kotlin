@@ -145,11 +145,11 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
 
     final Optional<CommentAdded> commentAdded;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Data(@Nullable CommentAdded commentAdded) {
       this.commentAdded = Optional.fromNullable(commentAdded);
@@ -234,11 +234,11 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
 
     final @NotNull String content;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public CommentAdded(@NotNull String __typename, int id, @NotNull String content) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");

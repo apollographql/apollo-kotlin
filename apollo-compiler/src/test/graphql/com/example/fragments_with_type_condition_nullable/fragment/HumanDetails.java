@@ -40,11 +40,11 @@ public class HumanDetails implements GraphqlFragment {
 
   final @Nullable Double height;
 
-  private volatile String $toString;
+  private transient volatile String $toString;
 
-  private volatile int $hashCode;
+  private transient volatile int $hashCode;
 
-  private volatile boolean $hashCodeMemoized;
+  private transient volatile boolean $hashCodeMemoized;
 
   public HumanDetails(@NotNull String __typename, @NotNull String name, @Nullable Double height) {
     this.__typename = Utils.checkNotNull(__typename, "__typename == null");

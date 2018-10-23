@@ -34,11 +34,11 @@ public class HeroDetails implements GraphqlFragment {
 
   final @NotNull String name;
 
-  private volatile String $toString;
+  private transient volatile String $toString;
 
-  private volatile int $hashCode;
+  private transient volatile int $hashCode;
 
-  private volatile boolean $hashCodeMemoized;
+  private transient volatile boolean $hashCodeMemoized;
 
   public HeroDetails(@NotNull String __typename, @NotNull String name) {
     this.__typename = Utils.checkNotNull(__typename, "__typename == null");

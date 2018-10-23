@@ -281,11 +281,11 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
 
     final Optional<String> while_;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Data(@Nullable String abstract_, @Nullable String assert_, @Nullable String boolean_,
         @Nullable String break_, @Nullable String byte_, @Nullable String case_,

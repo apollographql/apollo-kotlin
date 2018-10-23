@@ -53,9 +53,9 @@ public final class ReviewInput implements InputType {
 
   private final Input<String> capitalizedField;
 
-  private volatile int $hashCode;
+  private transient volatile int $hashCode;
 
-  private volatile boolean $hashCodeMemoized;
+  private transient volatile boolean $hashCodeMemoized;
 
   ReviewInput(int stars, Input<Integer> nullableIntFieldWithDefaultValue, Input<String> commentary,
       @NotNull ColorInput favoriteColor, Input<Episode> enumWithDefaultValue,

@@ -154,11 +154,11 @@ public interface HeroDetails extends GraphqlFragment {
 
     final Optional<String> primaryFunction;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsDroid(@NotNull String __typename, @NotNull String name,
         @NotNull FriendsConnection1 friendsConnection, @Nullable String primaryFunction) {
@@ -289,11 +289,11 @@ public interface HeroDetails extends GraphqlFragment {
 
     final boolean isEmpty;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public FriendsConnection1(@NotNull String __typename, @Nullable Integer totalCount,
         @Nullable List<Edge1> edges, @NotNull PageInfo1 pageInfo, boolean isEmpty) {
@@ -446,11 +446,11 @@ public interface HeroDetails extends GraphqlFragment {
 
     final Optional<Node1> node;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Edge1(@NotNull String __typename, @Nullable Node1 node) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -543,11 +543,11 @@ public interface HeroDetails extends GraphqlFragment {
 
     final @NotNull String name;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Node1(@NotNull String __typename, @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -633,11 +633,11 @@ public interface HeroDetails extends GraphqlFragment {
 
     final boolean hasNextPage;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public PageInfo1(@NotNull String __typename, boolean hasNextPage) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -723,11 +723,11 @@ public interface HeroDetails extends GraphqlFragment {
 
     final @NotNull FriendsConnection2 friendsConnection;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsCharacter(@NotNull String __typename, @NotNull String name,
         @NotNull FriendsConnection2 friendsConnection) {
@@ -844,11 +844,11 @@ public interface HeroDetails extends GraphqlFragment {
 
     final boolean isEmpty;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public FriendsConnection2(@NotNull String __typename, @Nullable Integer totalCount,
         @Nullable List<Edge2> edges, @NotNull PageInfo2 pageInfo, boolean isEmpty) {
@@ -1001,11 +1001,11 @@ public interface HeroDetails extends GraphqlFragment {
 
     final Optional<Node2> node;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Edge2(@NotNull String __typename, @Nullable Node2 node) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -1098,11 +1098,11 @@ public interface HeroDetails extends GraphqlFragment {
 
     final @NotNull String name;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Node2(@NotNull String __typename, @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -1188,11 +1188,11 @@ public interface HeroDetails extends GraphqlFragment {
 
     final boolean hasNextPage;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public PageInfo2(@NotNull String __typename, boolean hasNextPage) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
