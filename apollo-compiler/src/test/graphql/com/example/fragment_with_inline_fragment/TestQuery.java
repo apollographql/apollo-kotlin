@@ -103,11 +103,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<Hero> hero;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Data(@Nullable Hero hero) {
       this.hero = Optional.fromNullable(hero);
@@ -227,11 +227,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private final @NotNull Fragments fragments;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Hero(@NotNull String __typename, @NotNull String name, @NotNull List<Episode> appearsIn,
         @NotNull Fragments fragments) {
@@ -342,11 +342,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static class Fragments {
       final Optional<HeroDetails> heroDetails;
 
-      private volatile String $toString;
+      private transient volatile String $toString;
 
-      private volatile int $hashCode;
+      private transient volatile int $hashCode;
 
-      private volatile boolean $hashCodeMemoized;
+      private transient volatile boolean $hashCodeMemoized;
 
       public Fragments(@Nullable HeroDetails heroDetails) {
         this.heroDetails = Optional.fromNullable(heroDetails);

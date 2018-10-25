@@ -11,6 +11,7 @@ data class Operation(
     val operationType: String,
     val variables: List<Variable>,
     val source: String,
+    val sourceWithFragments: String,
     val fields: List<Field>,
     val filePath: String,
     val fragmentsReferenced: List<String>,

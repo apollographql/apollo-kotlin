@@ -175,11 +175,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<Hero> hero;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Data(@Nullable Hero hero) {
       this.hero = Optional.fromNullable(hero);
@@ -303,11 +303,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<List<Friend>> friends;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsHuman(@NotNull String __typename, @NotNull String name,
         @Nullable List<Friend> friends) {
@@ -461,11 +461,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<Double> height;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsHuman1(@NotNull String __typename, @NotNull String name, @Nullable Double height) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -565,11 +565,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final @NotNull String name;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsCharacter(@NotNull String __typename, @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -658,11 +658,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<List<Friend1>> friends;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsDroid(@NotNull String __typename, @NotNull String name,
         @Nullable List<Friend1> friends) {
@@ -816,11 +816,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<Double> height;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsHuman2(@NotNull String __typename, @NotNull String name, @Nullable Double height) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -920,11 +920,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final @NotNull String name;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsCharacter1(@NotNull String __typename, @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -1010,11 +1010,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final @NotNull String name;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsCharacter2(@NotNull String __typename, @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");

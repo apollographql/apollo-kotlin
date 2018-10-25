@@ -98,11 +98,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final @NotNull Setting setting;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Data(@NotNull Setting setting) {
       this.setting = Utils.checkNotNull(setting, "setting == null");
@@ -185,11 +185,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private final @NotNull Fragments fragments;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Setting(@NotNull String __typename, @NotNull Fragments fragments) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -255,11 +255,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     public static class Fragments {
       final Optional<TestSetting> testSetting;
 
-      private volatile String $toString;
+      private transient volatile String $toString;
 
-      private volatile int $hashCode;
+      private transient volatile int $hashCode;
 
-      private volatile boolean $hashCodeMemoized;
+      private transient volatile boolean $hashCodeMemoized;
 
       public Fragments(@Nullable TestSetting testSetting) {
         this.testSetting = Optional.fromNullable(testSetting);

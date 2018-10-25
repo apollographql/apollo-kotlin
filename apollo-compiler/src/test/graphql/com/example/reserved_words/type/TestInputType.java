@@ -17,9 +17,9 @@ import org.jetbrains.annotations.Nullable;
 public final class TestInputType implements InputType {
   private final Input<Boolean> private_;
 
-  private volatile int $hashCode;
+  private transient volatile int $hashCode;
 
-  private volatile boolean $hashCodeMemoized;
+  private transient volatile boolean $hashCodeMemoized;
 
   TestInputType(Input<Boolean> private_) {
     this.private_ = private_;

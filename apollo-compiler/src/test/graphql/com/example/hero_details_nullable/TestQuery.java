@@ -106,11 +106,11 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
     final @Nullable Hero hero;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Data(@Nullable Hero hero) {
       this.hero = hero;
@@ -192,11 +192,11 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
     final @NotNull FriendsConnection friendsConnection;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Hero(@NotNull String __typename, @NotNull String name,
         @NotNull FriendsConnection friendsConnection) {
@@ -307,11 +307,11 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
     final @Nullable List<Edge> edges;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public FriendsConnection(@NotNull String __typename, @Nullable Integer totalCount,
         @Nullable List<Edge> edges) {
@@ -429,11 +429,11 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
     final @Nullable Node node;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Edge(@NotNull String __typename, @Nullable Node node) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -526,11 +526,11 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
 
     final @NotNull String name;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Node(@NotNull String __typename, @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");

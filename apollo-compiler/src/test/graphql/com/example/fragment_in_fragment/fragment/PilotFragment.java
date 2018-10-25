@@ -43,11 +43,11 @@ public class PilotFragment implements GraphqlFragment {
 
   final Optional<Homeworld> homeworld;
 
-  private volatile String $toString;
+  private transient volatile String $toString;
 
-  private volatile int $hashCode;
+  private transient volatile int $hashCode;
 
-  private volatile boolean $hashCodeMemoized;
+  private transient volatile boolean $hashCodeMemoized;
 
   public PilotFragment(@NotNull String __typename, @Nullable String name,
       @Nullable Homeworld homeworld) {
@@ -154,11 +154,11 @@ public class PilotFragment implements GraphqlFragment {
 
     final Optional<String> name;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Homeworld(@NotNull String __typename, @Nullable String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");

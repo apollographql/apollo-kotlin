@@ -96,11 +96,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<Hero> hero;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Data(@Nullable Hero hero) {
       this.hero = Optional.fromNullable(hero);
@@ -179,11 +179,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final @NotNull List<Object> links;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Hero(@NotNull String __typename, @NotNull List<Object> links) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");

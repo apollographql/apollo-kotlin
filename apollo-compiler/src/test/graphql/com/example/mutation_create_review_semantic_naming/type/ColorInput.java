@@ -23,9 +23,9 @@ public final class ColorInput implements InputType {
 
   private final Input<Episode> enumWithDefaultValue;
 
-  private volatile int $hashCode;
+  private transient volatile int $hashCode;
 
-  private volatile boolean $hashCodeMemoized;
+  private transient volatile boolean $hashCodeMemoized;
 
   ColorInput(int red, Input<Double> green, double blue, Input<Episode> enumWithDefaultValue) {
     this.red = red;

@@ -169,11 +169,11 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
     final Optional<CreateReview> createReview;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Data(@Nullable CreateReview createReview) {
       this.createReview = Optional.fromNullable(createReview);
@@ -255,11 +255,11 @@ public final class TestQuery implements Mutation<TestQuery.Data, Optional<TestQu
 
     final Optional<String> commentary;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public CreateReview(@NotNull String __typename, int stars, @Nullable String commentary) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");

@@ -6,10 +6,10 @@ import javax.lang.model.element.Modifier
 
 private val JAVA_RESERVED_WORDS = arrayOf(
     "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class", "const", "continue", "default",
-    "do", "double", "else", "enum", "extends", "final", "finally", "float", "for", "goto", "if", "implements", "import",
-    "instanceof", "int", "interface", "long", "native", "new", "package", "private", "protected", "public", "return",
-    "short", "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws", "transient", "try",
-    "void", "volatile", "while"
+    "do", "double", "else", "enum", "extends", "false", "final", "finally", "float", "for", "goto", "if", "implements",
+    "import", "instanceof", "int", "interface", "long", "native", "new", "null", "package", "private", "protected",
+    "public", "return", "short", "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws",
+    "transient", "try", "true", "void", "volatile", "while"
 )
 
 fun String.escapeJavaReservedWord() = if (JAVA_RESERVED_WORDS.contains(this)) "${this}_" else this
@@ -127,7 +127,8 @@ fun TypeSpec.withToStringImplementation(): TypeSpec {
           .build()
 
   return toBuilder()
-      .addField(FieldSpec.builder(ClassNames.STRING, Util.MEMOIZED_TO_STRING_VAR, Modifier.PRIVATE, Modifier.VOLATILE)
+      .addField(FieldSpec.builder(ClassNames.STRING, Util.MEMOIZED_TO_STRING_VAR, Modifier.PRIVATE, Modifier.VOLATILE,
+          Modifier.TRANSIENT)
           .build())
       .addMethod(MethodSpec.methodBuilder("toString")
           .addAnnotation(Override::class.java)
@@ -231,10 +232,10 @@ fun TypeSpec.withHashCodeImplementation(): TypeSpec {
           .build()
 
   return toBuilder()
-      .addField(FieldSpec.builder(TypeName.INT, Util.MEMOIZED_HASH_CODE_VAR, Modifier.PRIVATE, Modifier.VOLATILE)
-          .build())
+      .addField(FieldSpec.builder(TypeName.INT, Util.MEMOIZED_HASH_CODE_VAR, Modifier.PRIVATE, Modifier.VOLATILE,
+          Modifier.TRANSIENT).build())
       .addField(FieldSpec.builder(TypeName.BOOLEAN, Util.MEMOIZED_HASH_CODE_FLAG_VAR, Modifier.PRIVATE,
-          Modifier.VOLATILE).build())
+          Modifier.VOLATILE, Modifier.TRANSIENT).build())
       .addMethod(MethodSpec.methodBuilder("hashCode")
           .addAnnotation(Override::class.java)
           .addModifiers(Modifier.PUBLIC)

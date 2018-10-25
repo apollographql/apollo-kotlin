@@ -110,11 +110,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
     final Optional<AllStarships1> allStarships;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Data(@Nullable AllStarships1 allStarships) {
       this.allStarships = Optional.fromNullable(allStarships);
@@ -193,11 +193,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
     final Optional<List<Edge>> edges;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AllStarships1(@NotNull String __typename, @Nullable List<Edge> edges) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -300,11 +300,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
     final Optional<Node> node;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Edge(@NotNull String __typename, @Nullable Node node) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -397,11 +397,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
     private final @NotNull Fragments fragments;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Node(@NotNull String __typename, @NotNull Fragments fragments) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -467,11 +467,11 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
     public static class Fragments {
       final @NotNull StarshipFragment starshipFragment;
 
-      private volatile String $toString;
+      private transient volatile String $toString;
 
-      private volatile int $hashCode;
+      private transient volatile int $hashCode;
 
-      private volatile boolean $hashCodeMemoized;
+      private transient volatile boolean $hashCodeMemoized;
 
       public Fragments(@NotNull StarshipFragment starshipFragment) {
         this.starshipFragment = Utils.checkNotNull(starshipFragment, "starshipFragment == null");

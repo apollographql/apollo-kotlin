@@ -116,11 +116,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     final Optional<HeroDetailQuery1> heroDetailQuery;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Data(@Nullable HeroDetailQuery1 heroDetailQuery) {
       this.heroDetailQuery = Optional.fromNullable(heroDetailQuery);
@@ -252,11 +252,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     final Optional<Double> height;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsHuman(@NotNull String __typename, @NotNull String name,
         @Nullable List<Friend1> friends, @Nullable Double height) {
@@ -394,11 +394,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     final Optional<List<Friend2>> friends;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Friend1(@NotNull String __typename, @NotNull String name,
         @NotNull List<Episode> appearsIn, @Nullable List<Friend2> friends) {
@@ -541,11 +541,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     private final @NotNull Fragments fragments;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Friend2(@NotNull String __typename, @NotNull Fragments fragments) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
@@ -611,11 +611,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
     public static class Fragments {
       final @NotNull HeroDetails heroDetails;
 
-      private volatile String $toString;
+      private transient volatile String $toString;
 
-      private volatile int $hashCode;
+      private transient volatile int $hashCode;
 
-      private volatile boolean $hashCodeMemoized;
+      private transient volatile boolean $hashCodeMemoized;
 
       public Fragments(@NotNull HeroDetails heroDetails) {
         this.heroDetails = Utils.checkNotNull(heroDetails, "heroDetails == null");
@@ -715,11 +715,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     final Optional<List<Friend3>> friends;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public AsCharacter(@NotNull String __typename, @NotNull String name,
         @Nullable List<Friend3> friends) {
@@ -837,11 +837,11 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     final @NotNull String name;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Friend3(@NotNull String __typename, @NotNull String name) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");

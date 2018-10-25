@@ -202,11 +202,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<HeroWithReview> heroWithReview;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public Data(@Nullable HeroWithReview heroWithReview) {
       this.heroWithReview = Optional.fromNullable(heroWithReview);
@@ -290,11 +290,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<Double> height;
 
-    private volatile String $toString;
+    private transient volatile String $toString;
 
-    private volatile int $hashCode;
+    private transient volatile int $hashCode;
 
-    private volatile boolean $hashCodeMemoized;
+    private transient volatile boolean $hashCodeMemoized;
 
     public HeroWithReview(@NotNull String __typename, @NotNull String name,
         @Nullable Double height) {

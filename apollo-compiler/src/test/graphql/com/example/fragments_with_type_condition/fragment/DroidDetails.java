@@ -40,11 +40,11 @@ public class DroidDetails implements GraphqlFragment {
 
   final Optional<String> primaryFunction;
 
-  private volatile String $toString;
+  private transient volatile String $toString;
 
-  private volatile int $hashCode;
+  private transient volatile int $hashCode;
 
-  private volatile boolean $hashCodeMemoized;
+  private transient volatile boolean $hashCodeMemoized;
 
   public DroidDetails(@NotNull String __typename, @NotNull String name,
       @Nullable String primaryFunction) {
