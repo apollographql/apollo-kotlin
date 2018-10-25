@@ -121,8 +121,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         public void marshal(ResponseWriter writer) {
           writer.writeList($responseFields[0], reviews.isPresent() ? reviews.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((Review) value).marshaller());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeObject(((Review) item).marshaller());
+              }
             }
           });
         }

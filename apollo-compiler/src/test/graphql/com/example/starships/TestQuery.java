@@ -283,8 +283,17 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeString($responseFields[2], name);
           writer.writeList($responseFields[3], coordinates.isPresent() ? coordinates.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeDouble(value);
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeList((List) item, new ResponseWriter.ListWriter() {
+                  @Override
+                  public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+                    for (Object item : items) {
+                      listItemWriter.writeDouble((Double) item);
+                    }
+                  }
+                });
+              }
             }
           });
         }

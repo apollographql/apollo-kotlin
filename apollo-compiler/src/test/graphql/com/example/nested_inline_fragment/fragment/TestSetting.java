@@ -128,8 +128,10 @@ public interface TestSetting extends GraphqlFragment {
           writer.writeString($responseFields[0], __typename);
           writer.writeList($responseFields[1], list.isPresent() ? list.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeString(value);
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeString((String) item);
+              }
             }
           });
         }
@@ -308,8 +310,10 @@ public interface TestSetting extends GraphqlFragment {
           writer.writeObject($responseFields[1], value.isPresent() ? value.get().marshaller() : null);
           writer.writeList($responseFields[2], options.isPresent() ? options.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((Option) value).marshaller());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeObject(((Option) item).marshaller());
+              }
             }
           });
         }
@@ -450,8 +454,10 @@ public interface TestSetting extends GraphqlFragment {
           writer.writeString($responseFields[0], __typename);
           writer.writeList($responseFields[1], list.isPresent() ? list.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeString(value);
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeString((String) item);
+              }
             }
           });
         }
@@ -856,8 +862,10 @@ public interface TestSetting extends GraphqlFragment {
           writer.writeString($responseFields[0], __typename);
           writer.writeList($responseFields[1], list.isPresent() ? list.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeString(value);
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeString((String) item);
+              }
             }
           });
         }

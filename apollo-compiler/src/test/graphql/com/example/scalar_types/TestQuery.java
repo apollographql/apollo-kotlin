@@ -99,7 +99,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forBoolean("graphQlBooleanNullable", "graphQlBooleanNullable", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forBoolean("graphQlBooleanNonNullable", "graphQlBooleanNonNullable", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("graphQlListOfInt", "graphQlListOfInt", null, true, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forList("graphQlListOfObjects", "graphQlListOfObjects", null, true, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forList("graphQlListOfObjects", "graphQlListOfObjects", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forList("graphQlListOfListOfObjects", "graphQlListOfListOfObjects", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final Optional<String> graphQlString;
@@ -124,6 +125,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<List<GraphQlListOfObject>> graphQlListOfObjects;
 
+    final Optional<List<List<GraphQlListOfListOfObject>>> graphQlListOfListOfObjects;
+
     private transient volatile String $toString;
 
     private transient volatile int $hashCode;
@@ -135,7 +138,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         int graphQlIntNonNullable, @Nullable Double graphQlFloatNullable,
         double graphQlFloatNonNullable, @Nullable Boolean graphQlBooleanNullable,
         boolean graphQlBooleanNonNullable, @Nullable List<Integer> graphQlListOfInt,
-        @Nullable List<GraphQlListOfObject> graphQlListOfObjects) {
+        @Nullable List<GraphQlListOfObject> graphQlListOfObjects,
+        @Nullable List<List<GraphQlListOfListOfObject>> graphQlListOfListOfObjects) {
       this.graphQlString = Optional.fromNullable(graphQlString);
       this.graphQlIdNullable = Optional.fromNullable(graphQlIdNullable);
       this.graphQlIdNonNullable = Utils.checkNotNull(graphQlIdNonNullable, "graphQlIdNonNullable == null");
@@ -147,6 +151,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.graphQlBooleanNonNullable = graphQlBooleanNonNullable;
       this.graphQlListOfInt = Optional.fromNullable(graphQlListOfInt);
       this.graphQlListOfObjects = Optional.fromNullable(graphQlListOfObjects);
+      this.graphQlListOfListOfObjects = Optional.fromNullable(graphQlListOfListOfObjects);
     }
 
     public Optional<String> graphQlString() {
@@ -193,6 +198,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.graphQlListOfObjects;
     }
 
+    public Optional<List<List<GraphQlListOfListOfObject>>> graphQlListOfListOfObjects() {
+      return this.graphQlListOfListOfObjects;
+    }
+
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -208,14 +217,33 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeBoolean($responseFields[8], graphQlBooleanNonNullable);
           writer.writeList($responseFields[9], graphQlListOfInt.isPresent() ? graphQlListOfInt.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeInt(value);
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeInt((Integer) item);
+              }
             }
           });
           writer.writeList($responseFields[10], graphQlListOfObjects.isPresent() ? graphQlListOfObjects.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((GraphQlListOfObject) value).marshaller());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeObject(((GraphQlListOfObject) item).marshaller());
+              }
+            }
+          });
+          writer.writeList($responseFields[11], graphQlListOfListOfObjects.isPresent() ? graphQlListOfListOfObjects.get() : null, new ResponseWriter.ListWriter() {
+            @Override
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeList((List) item, new ResponseWriter.ListWriter() {
+                  @Override
+                  public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+                    for (Object item : items) {
+                      listItemWriter.writeObject(((GraphQlListOfListOfObject) item).marshaller());
+                    }
+                  }
+                });
+              }
             }
           });
         }
@@ -236,7 +264,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           + "graphQlBooleanNullable=" + graphQlBooleanNullable + ", "
           + "graphQlBooleanNonNullable=" + graphQlBooleanNonNullable + ", "
           + "graphQlListOfInt=" + graphQlListOfInt + ", "
-          + "graphQlListOfObjects=" + graphQlListOfObjects
+          + "graphQlListOfObjects=" + graphQlListOfObjects + ", "
+          + "graphQlListOfListOfObjects=" + graphQlListOfListOfObjects
           + "}";
       }
       return $toString;
@@ -259,7 +288,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
          && this.graphQlBooleanNullable.equals(that.graphQlBooleanNullable)
          && this.graphQlBooleanNonNullable == that.graphQlBooleanNonNullable
          && this.graphQlListOfInt.equals(that.graphQlListOfInt)
-         && this.graphQlListOfObjects.equals(that.graphQlListOfObjects);
+         && this.graphQlListOfObjects.equals(that.graphQlListOfObjects)
+         && this.graphQlListOfListOfObjects.equals(that.graphQlListOfListOfObjects);
       }
       return false;
     }
@@ -290,6 +320,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         h ^= graphQlListOfInt.hashCode();
         h *= 1000003;
         h ^= graphQlListOfObjects.hashCode();
+        h *= 1000003;
+        h ^= graphQlListOfListOfObjects.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -298,6 +330,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
       final GraphQlListOfObject.Mapper graphQlListOfObjectFieldMapper = new GraphQlListOfObject.Mapper();
+
+      final GraphQlListOfListOfObject.Mapper graphQlListOfListOfObjectFieldMapper = new GraphQlListOfListOfObject.Mapper();
 
       @Override
       public Data map(ResponseReader reader) {
@@ -327,7 +361,23 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             });
           }
         });
-        return new Data(graphQlString, graphQlIdNullable, graphQlIdNonNullable, graphQlIntNullable, graphQlIntNonNullable, graphQlFloatNullable, graphQlFloatNonNullable, graphQlBooleanNullable, graphQlBooleanNonNullable, graphQlListOfInt, graphQlListOfObjects);
+        final List<List<GraphQlListOfListOfObject>> graphQlListOfListOfObjects = reader.readList($responseFields[11], new ResponseReader.ListReader<List<GraphQlListOfListOfObject>>() {
+          @Override
+          public List<GraphQlListOfListOfObject> read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readList(new ResponseReader.ListReader<GraphQlListOfListOfObject>() {
+              @Override
+              public GraphQlListOfListOfObject read(ResponseReader.ListItemReader listItemReader) {
+                return listItemReader.readObject(new ResponseReader.ObjectReader<GraphQlListOfListOfObject>() {
+                  @Override
+                  public GraphQlListOfListOfObject read(ResponseReader reader) {
+                    return graphQlListOfListOfObjectFieldMapper.map(reader);
+                  }
+                });
+              }
+            });
+          }
+        });
+        return new Data(graphQlString, graphQlIdNullable, graphQlIdNonNullable, graphQlIntNullable, graphQlIntNonNullable, graphQlFloatNullable, graphQlFloatNonNullable, graphQlBooleanNullable, graphQlBooleanNonNullable, graphQlListOfInt, graphQlListOfObjects, graphQlListOfListOfObjects);
       }
     }
   }
@@ -401,6 +451,79 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       public GraphQlListOfObject map(ResponseReader reader) {
         final int someField = reader.readInt($responseFields[0]);
         return new GraphQlListOfObject(someField);
+      }
+    }
+  }
+
+  public static class GraphQlListOfListOfObject {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forInt("someField", "someField", null, false, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final int someField;
+
+    private transient volatile String $toString;
+
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    public GraphQlListOfListOfObject(int someField) {
+      this.someField = someField;
+    }
+
+    public int someField() {
+      return this.someField;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeInt($responseFields[0], someField);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "GraphQlListOfListOfObject{"
+          + "someField=" + someField
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof GraphQlListOfListOfObject) {
+        GraphQlListOfListOfObject that = (GraphQlListOfListOfObject) o;
+        return this.someField == that.someField;
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= someField;
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<GraphQlListOfListOfObject> {
+      @Override
+      public GraphQlListOfListOfObject map(ResponseReader reader) {
+        final int someField = reader.readInt($responseFields[0]);
+        return new GraphQlListOfListOfObject(someField);
       }
     }
   }

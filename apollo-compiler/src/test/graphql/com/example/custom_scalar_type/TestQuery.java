@@ -273,16 +273,20 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeCustom((ResponseField.CustomTypeField) $responseFields[2], birthDate);
           writer.writeList($responseFields[3], appearanceDates, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeCustom(CustomType.DATE, value);
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeCustom(CustomType.DATE, item);
+              }
             }
           });
           writer.writeCustom((ResponseField.CustomTypeField) $responseFields[4], fieldWithUnsupportedType);
           writer.writeCustom((ResponseField.CustomTypeField) $responseFields[5], profileLink);
           writer.writeList($responseFields[6], links, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeCustom(CustomType.URL, value);
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeCustom(CustomType.URL, item);
+              }
             }
           });
         }

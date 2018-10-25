@@ -104,7 +104,7 @@ data class Field(
 
   private fun hasFragments() = (fragmentSpreads?.any() ?: false) || (inlineFragments?.any() ?: false)
 
-  private fun isList(): Boolean = type.removeSuffix("!").let { it.startsWith('[') && it.endsWith(']') }
+  fun isList(): Boolean = type.removeSuffix("!").let { it.startsWith('[') && it.endsWith(']') }
 
   private fun jsonMapToCodeBlock(map: Map<String, Any?>): CodeBlock {
     val mapBuilderClass = ClassNames.parameterizedUnmodifiableMapBuilderOf(String::class.java, Any::class.java)
@@ -133,15 +133,20 @@ data class Field(
       // However, we need to also encode any extra information from the `type` field
       // eg, [lists], nonNulls!, [[nestedLists]], [nonNullLists]!, etc
       val normalizedName = formatClassName()
-      if (type.startsWith("[")) {
-        // array type
-        return if (type.endsWith("!")) "[$normalizedName]!" else "[$normalizedName]"
-      } else if (type.endsWith("!")) {
-        // non-null type
-        return "$normalizedName!"
-      } else {
-        // nullable type
-        return normalizedName
+      return when {
+        type.startsWith("[") -> {// array type
+          type.count { it == '[' }.let {
+            "[".repeat(it) + normalizedName + "]".repeat(it)
+          }.let {
+            if (type.endsWith("!")) "$it!" else it
+          }
+        }
+        type.endsWith("!") -> {// non-null type
+          "$normalizedName!"
+        }
+        else -> {// nullable type
+          normalizedName
+        }
       }
     } else {
       return type

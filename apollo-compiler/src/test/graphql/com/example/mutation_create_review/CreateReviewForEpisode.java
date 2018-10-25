@@ -275,7 +275,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
 
     final Optional<List<List<Date>>> listOfListOfCustom;
 
-    final Optional<List<ListOfListOfObject>> listOfListOfObject;
+    final Optional<List<List<ListOfListOfObject>>> listOfListOfObject;
 
     private transient volatile String $toString;
 
@@ -287,7 +287,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
         @Nullable List<List<String>> listOfListOfString,
         @Nullable List<List<Episode>> listOfListOfEnum,
         @Nullable List<List<Date>> listOfListOfCustom,
-        @Nullable List<ListOfListOfObject> listOfListOfObject) {
+        @Nullable List<List<ListOfListOfObject>> listOfListOfObject) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
       this.stars = stars;
       this.commentary = Optional.fromNullable(commentary);
@@ -339,7 +339,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
     /**
      * for test purpose only
      */
-    public Optional<List<ListOfListOfObject>> listOfListOfObject() {
+    public Optional<List<List<ListOfListOfObject>>> listOfListOfObject() {
       return this.listOfListOfObject;
     }
 
@@ -352,26 +352,62 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
           writer.writeString($responseFields[2], commentary.isPresent() ? commentary.get() : null);
           writer.writeList($responseFields[3], listOfListOfString.isPresent() ? listOfListOfString.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeString(value);
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeList((List) item, new ResponseWriter.ListWriter() {
+                  @Override
+                  public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+                    for (Object item : items) {
+                      listItemWriter.writeString((String) item);
+                    }
+                  }
+                });
+              }
             }
           });
           writer.writeList($responseFields[4], listOfListOfEnum.isPresent() ? listOfListOfEnum.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeString(((com.example.mutation_create_review.type.Episode) value).rawValue());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeList((List) item, new ResponseWriter.ListWriter() {
+                  @Override
+                  public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+                    for (Object item : items) {
+                      listItemWriter.writeString(((Episode) item).rawValue());
+                    }
+                  }
+                });
+              }
             }
           });
           writer.writeList($responseFields[5], listOfListOfCustom.isPresent() ? listOfListOfCustom.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeCustom(CustomType.DATE, value);
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeList((List) item, new ResponseWriter.ListWriter() {
+                  @Override
+                  public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+                    for (Object item : items) {
+                      listItemWriter.writeCustom(CustomType.DATE, item);
+                    }
+                  }
+                });
+              }
             }
           });
           writer.writeList($responseFields[6], listOfListOfObject.isPresent() ? listOfListOfObject.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((ListOfListOfObject) value).marshaller());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeList((List) item, new ResponseWriter.ListWriter() {
+                  @Override
+                  public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+                    for (Object item : items) {
+                      listItemWriter.writeObject(((ListOfListOfObject) item).marshaller());
+                    }
+                  }
+                });
+              }
             }
           });
         }
@@ -477,13 +513,18 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
             });
           }
         });
-        final List<ListOfListOfObject> listOfListOfObject = reader.readList($responseFields[6], new ResponseReader.ListReader<ListOfListOfObject>() {
+        final List<List<ListOfListOfObject>> listOfListOfObject = reader.readList($responseFields[6], new ResponseReader.ListReader<List<ListOfListOfObject>>() {
           @Override
-          public ListOfListOfObject read(ResponseReader.ListItemReader listItemReader) {
-            return listItemReader.readObject(new ResponseReader.ObjectReader<ListOfListOfObject>() {
+          public List<ListOfListOfObject> read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readList(new ResponseReader.ListReader<ListOfListOfObject>() {
               @Override
-              public ListOfListOfObject read(ResponseReader reader) {
-                return listOfListOfObjectFieldMapper.map(reader);
+              public ListOfListOfObject read(ResponseReader.ListItemReader listItemReader) {
+                return listItemReader.readObject(new ResponseReader.ObjectReader<ListOfListOfObject>() {
+                  @Override
+                  public ListOfListOfObject read(ResponseReader reader) {
+                    return listOfListOfObjectFieldMapper.map(reader);
+                  }
+                });
               }
             });
           }

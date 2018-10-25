@@ -388,8 +388,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
           writer.writeList($responseFields[2], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((Edge) value).marshaller());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeObject(((Edge) item).marshaller());
+              }
             }
           });
         }
@@ -832,8 +834,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeInt($responseFields[1], totalCount.isPresent() ? totalCount.get() : null);
           writer.writeList($responseFields[2], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((Edge1) value).marshaller());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeObject(((Edge1) item).marshaller());
+              }
             }
           });
         }
