@@ -350,7 +350,7 @@ ApolloClient apolloClient = ApolloClient.builder()
 ```
 
 Chaining Caches:
-You can use both an memory cache and sql cache, with a cache chain. Reads will read from the first cache
+You can use both a memory cache and sql cache, with a cache chain. Reads will read from the first cache
 hit in the chain. Writes will propagate down the entire chain.
 
 ```java

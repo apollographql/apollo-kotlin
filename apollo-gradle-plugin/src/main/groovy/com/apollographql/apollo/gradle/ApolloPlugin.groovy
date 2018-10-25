@@ -1,6 +1,7 @@
 package com.apollographql.apollo.gradle
 
 import com.android.build.gradle.AppPlugin
+import com.android.build.gradle.InstantAppPlugin
 import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.api.BaseVariant
 import com.apollographql.apollo.compiler.GraphQLCompiler
@@ -39,10 +40,7 @@ class ApolloPlugin implements Plugin<Project> {
   @Override
   void apply(Project project) {
     this.project = project
-    if (project.plugins.hasPlugin(AppPlugin)
-        || project.plugins.hasPlugin(LibraryPlugin)
-        || project.plugins.hasPlugin(JavaPlugin)
-        || project.plugins.hasPlugin(JavaLibraryPlugin)) {
+    if (hasAndroidPlugin(project) || hasJavaPlugin(project)) {
       applyApolloPlugin()
     } else {
       throw new IllegalArgumentException(
@@ -234,6 +232,18 @@ class ApolloPlugin implements Plugin<Project> {
       println("Installing apollo-codegen ... ")
       return false
     }
+  }
+
+  private static boolean hasAndroidPlugin(Project project) {
+    return project.plugins.hasPlugin(AppPlugin) \
+        || project.plugins.hasPlugin(InstantAppPlugin) \
+        || project.plugins.hasPlugin(LibraryPlugin) \
+        || project.plugins.hasPlugin("com.android.feature")
+  }
+
+  private static boolean hasJavaPlugin(Project project) {
+    return project.plugins.hasPlugin(JavaPlugin) \
+        || project.plugins.hasPlugin(JavaLibraryPlugin)
   }
 
 }
