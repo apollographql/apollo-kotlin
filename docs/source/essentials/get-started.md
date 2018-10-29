@@ -22,16 +22,19 @@ buildscript {
     classpath 'com.apollographql.apollo:apollo-gradle-plugin:x.y.z'
   }
 }
-
-dependencies {
-  compile 'com.apollographql.apollo:apollo-runtime:x.y.z'
-}
 ```
 
 The plugin can then be applied as follows within your app module's `build.gradle` file:
 
 ```
 apply plugin: 'com.apollographql.android'
+
+dependencies {
+  ...
+  implementation 'com.apollographql.apollo:apollo-runtime:x.y.z'
+  ...
+}
+
 ```
 
 > Note: The Android plugin must be applied before the Apollo plugin
@@ -75,7 +78,7 @@ If you need to send header values with your GraphQL requests, you can add those 
 
 > Note: In the sample project you can find the client here => `apollo-sample/src/main/java/com/apollographql/apollo/sample/GitHuntApplication.java`.
 
-That's it! Now your client is ready to start fetching data. 
+That's it! Now your client is ready to start fetching data.
 
 <h2 id="creating-graphql-file">Creating a .graphql File</h2>
 
@@ -142,7 +145,7 @@ apolloClient.query(feedQuery).enqueue(new ApolloCall.Callback<FeedQuery.Data>() 
         txtResponse.setText(buffer.toString());
       }
     });
-      
+
   }
 
   @Override public void onFailure(@NotNull Throwable t) {
