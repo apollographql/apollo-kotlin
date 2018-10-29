@@ -13,7 +13,6 @@ Apollo-Android is designed primarily with Android in mind but you can use it in 
 **Table of Contents**
 
 - [Adding Apollo to your Project](#adding-apollo-to-your-project)
-  - [Kotlin](#kotlin)
 - [Generate Code using Apollo](#generate-code-using-apollo)
 - [Consuming Code](#consuming-code)
 - [Custom Scalar Types](#custom-scalar-types)
