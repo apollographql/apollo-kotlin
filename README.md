@@ -1,3 +1,4 @@
+
 # Apollo GraphQL Client for Android
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://raw.githubusercontent.com/apollographql/apollo-android/master/LICENSE) [![Get on Slack](https://img.shields.io/badge/slack-join-orange.svg)](http://www.apollostack.com/#slack)
@@ -86,8 +87,8 @@ The Android Plugin must be applied before the Apollo plugin
 ## Generate Code using Apollo
 
 Follow these steps:
-
-1) Put your GraphQL queries in a `.graphql` file. For the sample project in this repo you can find the graphql file at `apollo-sample/src/main/graphql/com/apollographql/apollo/sample/GithuntFeedQuery.graphql`. 
+1) Create the directory `graphql`inside the `main`directory and create new directory structure like `com/apollographql/apollo/sample/`so that the **Apollo plugin can generate  java classes with valid package**.
+2) Put your GraphQL queries in a `.graphql` file. For the sample project in this repo you can find the graphql file at `apollo-sample/src/main/graphql/com/apollographql/apollo/sample/GithuntFeedQuery.graphql`. 
 
 ```
 query FeedQuery($type: FeedType!, $limit: Int!) {
@@ -123,11 +124,11 @@ fragment FeedCommentFragment on Comment {
 
 Note: There is nothing Android specific about this query, it can be shared with other GraphQL clients as well
 
-2) You will also need to add a schema to the project. In the sample project you can find the schema `apollo-sample/src/main/graphql/com/apollographql/apollo/sample/schema.json`. 
+3) You will also need to add a schema to the project. In the sample project you can find the schema `apollo-sample/src/main/graphql/com/apollographql/apollo/sample/schema.json`. 
 
 You can find instructions to download your schema using apollo-codegen [HERE](http://dev.apollodata.com/ios/downloading-schema.html)
 
-3) Compile your project to have Apollo generate the appropriate Java classes with nested classes for reading from the network response. In the sample project, a `FeedQuery` Java class is created here `apollo-sample/build/generated/source/apollo/com/apollographql/apollo/sample`.
+4) Compile your project to have Apollo generate the appropriate Java classes with nested classes for reading from the network response. In the sample project, a `FeedQuery` Java class is created here `apollo-sample/build/generated/source/apollo/com/apollographql/apollo/sample`.
 
 Note: This is a file that Apollo generates and therefore should not be mutated.
 
