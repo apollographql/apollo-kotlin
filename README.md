@@ -126,7 +126,7 @@ Note: There is nothing Android specific about this query, it can be shared with 
 
 3) You will also need to add a schema to the project. In the sample project you can find the schema `apollo-sample/src/main/graphql/com/apollographql/apollo/sample/schema.json`. 
 
-You can find instructions to download your schema using apollo-codegen [HERE](http://dev.apollodata.com/ios/downloading-schema.html)
+You can find instructions to download your schema using apollo-codegen [HERE](https://www.apollographql.com/docs/android/essentials/get-started.html#download-schema)
 
 4) Compile your project to have Apollo generate the appropriate Java classes with nested classes for reading from the network response. In the sample project, a `FeedQuery` Java class is created here `apollo-sample/build/generated/source/apollo/com/apollographql/apollo/sample`.
 
