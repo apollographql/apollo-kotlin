@@ -2,11 +2,11 @@
 title: Mutation
 ---
 
-Queries are useful to fetch data from a server, but client-server communication also requires sending and writing data to the server. This is where Mutations come handy.
+Queries are useful to fetch data from a server, but client-server communication may also require sending data to the server. This is where Mutations become handy.
 Just like REST, any request might end up causing some side-effects on the server, but by convention it's suggested that one doesn't use GET requests to modify data. GraphQL is similar - technically any query could be implemented to cause a data write.
 However, it's useful to establish a convention that any operations that cause writes should be sent explicitly via a *mutation*.
 
-Apollo Android also handles GraphQL mutations. Mutations are identical to queries in syntax, the only difference being that you use the keyword `mutation` instead of `query` to indicate that the root fields on this query are going to be performing writes to the backend.
+Apollo Android handles GraphQL mutations. Mutations are similar to queries in syntax, the only difference being that you use the keyword `mutation` instead of `query` to indicate that the root fields on this query are going to be performing writes to the backend.
 
 ```
 mutation UpvotePost($postId: Int!) {
@@ -104,8 +104,6 @@ apolloClient
 ```
 
 <h2 id="designing-mutation-results">Designing mutation results</h2>
-
-When people talk about GraphQL, they often focus on the data fetching side of things, because that's where GraphQL brings the most value. Mutations can be pretty nice if done well, but the principles of designing good mutations, and especially good mutation result types, are not yet well-understood in the open source community. So when you are working with mutations it might often feel like you need to make a lot of application-specific decisions.
 
 In GraphQL, mutations can return any type, and that type can be queried just like a regular GraphQL query. So the question is - what type should a particular mutation return?
 
