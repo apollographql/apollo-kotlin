@@ -11,14 +11,16 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.internal.util.Cancelable;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import rx.Completable;
 import rx.CompletableSubscriber;
 import rx.Emitter;
 import rx.Observable;
+import rx.Single;
+import rx.SingleSubscriber;
 import rx.Subscription;
 import rx.exceptions.Exceptions;
 import rx.functions.Action0;
@@ -176,26 +178,24 @@ public final class RxApollo {
    *
    * @param operation        the ApolloStoreOperation to convert
    * @param <T>              the value type
-   * @param backpressureMode The {@link rx.Emitter.BackpressureMode} to use.
    * @return the converted Observable
    */
-  @NotNull public static <T> Observable<T> from(@NotNull final ApolloStoreOperation<T> operation,
-      Emitter.BackpressureMode backpressureMode) {
+  @NotNull public static <T> Single<T> from(@NotNull final ApolloStoreOperation<T> operation) {
     checkNotNull(operation, "operation == null");
-    return Observable.create(new Action1<Emitter<T>>() {
-      @Override public void call(final Emitter<T> emitter) {
+    return Single.create(new Single.OnSubscribe<T>() {
+      @Override
+      public void call(final SingleSubscriber<? super T> subscriber) {
         operation.enqueue(new ApolloStoreOperation.Callback<T>() {
           @Override public void onSuccess(T result) {
-            emitter.onNext(result);
-            emitter.onCompleted();
+            subscriber.onSuccess(result);
           }
 
           @Override public void onFailure(Throwable t) {
-            emitter.onError(t);
+            subscriber.onError(t);
           }
         });
       }
-    }, backpressureMode);
+    });
   }
 
   /**
@@ -212,10 +212,6 @@ public final class RxApollo {
 
   @NotNull public static <T> Observable<Response<T>> from(@NotNull final ApolloSubscriptionCall<T> call) {
     return from(call, Emitter.BackpressureMode.LATEST);
-  }
-
-  @NotNull public static <T> Observable<T> from(@NotNull final ApolloStoreOperation<T> operation) {
-    return from(operation, Emitter.BackpressureMode.LATEST);
   }
 
   /**

@@ -11,8 +11,6 @@ import com.apollographql.apollo.internal.util.Cancelable;
 
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
@@ -23,6 +21,9 @@ import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.exceptions.Exceptions;
 
@@ -177,30 +178,22 @@ public class Rx2Apollo {
     }, backpressureStrategy);
   }
 
-  @NotNull public static <T> Observable<T> from(@NotNull ApolloStoreOperation<T> operation) {
-    return from(operation, BackpressureStrategy.LATEST);
-  }
-
   /**
    * Converts an {@link ApolloStoreOperation} to a Observable.
    *
    * @param operation        the ApolloStoreOperation to convert
    * @param <T>              the value type
-   * @param backpressureStrategy The {@link BackpressureStrategy} to use.
    * @return the converted Observable
    */
-  @NotNull public static <T> Observable<T> from(@NotNull final ApolloStoreOperation<T> operation,
-      @Nonnull BackpressureStrategy backpressureStrategy) {
+  @NotNull public static <T> Single<T> from(@NotNull final ApolloStoreOperation<T> operation) {
     checkNotNull(operation, "operation == null");
-    checkNotNull(backpressureStrategy, "backpressureStrategy == null");
-    return Observable.create(new ObservableOnSubscribe<T>() {
+    return Single.create(new SingleOnSubscribe<T>() {
       @Override
-      public void subscribe(final ObservableEmitter<T> emitter) {
+      public void subscribe(final SingleEmitter<T> emitter) {
         operation.enqueue(new ApolloStoreOperation.Callback<T>() {
           @Override
           public void onSuccess(T result) {
-            emitter.onNext(result);
-            emitter.onComplete();
+            emitter.onSuccess(result);
           }
 
           @Override
