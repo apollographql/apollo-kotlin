@@ -6,18 +6,21 @@ import com.apollographql.apollo.ApolloPrefetch;
 import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.ApolloSubscriptionCall;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.internal.util.Cancelable;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import rx.Completable;
 import rx.CompletableSubscriber;
 import rx.Emitter;
 import rx.Observable;
+import rx.Single;
+import rx.SingleSubscriber;
 import rx.Subscription;
 import rx.exceptions.Exceptions;
 import rx.functions.Action0;
@@ -168,6 +171,31 @@ public final class RxApollo {
         });
       }
     }, backpressureMode);
+  }
+
+  /**
+   * Converts an {@link ApolloStoreOperation} to a Observable.
+   *
+   * @param operation        the ApolloStoreOperation to convert
+   * @param <T>              the value type
+   * @return the converted Observable
+   */
+  @NotNull public static <T> Single<T> from(@NotNull final ApolloStoreOperation<T> operation) {
+    checkNotNull(operation, "operation == null");
+    return Single.create(new Single.OnSubscribe<T>() {
+      @Override
+      public void call(final SingleSubscriber<? super T> subscriber) {
+        operation.enqueue(new ApolloStoreOperation.Callback<T>() {
+          @Override public void onSuccess(T result) {
+            subscriber.onSuccess(result);
+          }
+
+          @Override public void onFailure(Throwable t) {
+            subscriber.onError(t);
+          }
+        });
+      }
+    });
   }
 
   /**

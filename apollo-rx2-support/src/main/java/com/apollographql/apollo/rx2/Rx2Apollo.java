@@ -5,6 +5,7 @@ import com.apollographql.apollo.ApolloPrefetch;
 import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.ApolloSubscriptionCall;
 import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.internal.util.Cancelable;
 
@@ -20,6 +21,9 @@ import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.exceptions.Exceptions;
 
@@ -142,36 +146,63 @@ public class Rx2Apollo {
   }
 
   @NotNull public static <T> Flowable<Response<T>> from(@NotNull final ApolloSubscriptionCall<T> call,
-      @NotNull BackpressureStrategy backpressureStrategy) {
+                                                        @NotNull BackpressureStrategy backpressureStrategy) {
     checkNotNull(call, "originalCall == null");
     checkNotNull(backpressureStrategy, "backpressureStrategy == null");
     return Flowable.create(new FlowableOnSubscribe<Response<T>>() {
       @Override public void subscribe(final FlowableEmitter<Response<T>> emitter) throws Exception {
         cancelOnFlowableDisposed(emitter, call);
         call.execute(
-            new ApolloSubscriptionCall.Callback<T>() {
-              @Override public void onResponse(@NotNull Response<T> response) {
-                if (!emitter.isCancelled()) {
-                  emitter.onNext(response);
-                }
-              }
+                new ApolloSubscriptionCall.Callback<T>() {
+                  @Override public void onResponse(@NotNull Response<T> response) {
+                    if (!emitter.isCancelled()) {
+                      emitter.onNext(response);
+                    }
+                  }
 
-              @Override public void onFailure(@NotNull ApolloException e) {
-                Exceptions.throwIfFatal(e);
-                if (!emitter.isCancelled()) {
-                  emitter.onError(e);
-                }
-              }
+                  @Override public void onFailure(@NotNull ApolloException e) {
+                    Exceptions.throwIfFatal(e);
+                    if (!emitter.isCancelled()) {
+                      emitter.onError(e);
+                    }
+                  }
 
-              @Override public void onCompleted() {
-                if (!emitter.isCancelled()) {
-                  emitter.onComplete();
+                  @Override public void onCompleted() {
+                    if (!emitter.isCancelled()) {
+                      emitter.onComplete();
+                    }
+                  }
                 }
-              }
-            }
         );
       }
     }, backpressureStrategy);
+  }
+
+  /**
+   * Converts an {@link ApolloStoreOperation} to a Observable.
+   *
+   * @param operation        the ApolloStoreOperation to convert
+   * @param <T>              the value type
+   * @return the converted Observable
+   */
+  @NotNull public static <T> Single<T> from(@NotNull final ApolloStoreOperation<T> operation) {
+    checkNotNull(operation, "operation == null");
+    return Single.create(new SingleOnSubscribe<T>() {
+      @Override
+      public void subscribe(final SingleEmitter<T> emitter) {
+        operation.enqueue(new ApolloStoreOperation.Callback<T>() {
+          @Override
+          public void onSuccess(T result) {
+            emitter.onSuccess(result);
+          }
+
+          @Override
+          public void onFailure(Throwable t) {
+            emitter.onError(t);
+          }
+        });
+      }
+    });
   }
 
   private static void cancelOnCompletableDisposed(CompletableEmitter emitter, final Cancelable cancelable) {
