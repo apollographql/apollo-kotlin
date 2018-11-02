@@ -206,8 +206,10 @@ public class StarshipFragment implements GraphqlFragment {
           writer.writeString($responseFields[0], __typename);
           writer.writeList($responseFields[1], edges.isPresent() ? edges.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((Edge) value).marshaller());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeObject(((Edge) item).marshaller());
+              }
             }
           });
         }

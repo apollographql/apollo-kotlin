@@ -278,16 +278,17 @@ class ResponseFieldSpec(
   private fun writeListItemStatement(listItemType: TypeName, marshaller: CodeBlock): CodeBlock {
     fun writeScalar(): CodeBlock {
       val writeMethod = SCALAR_LIST_ITEM_WRITE_METHODS[listItemType] ?: "writeString"
-      return CodeBlock.builder()
-          .add(
-              if (listItemType.isEnum(context)) {
-                CodeBlock.of("\$L.\$L(((\$L) \$L).rawValue());\n", RESPONSE_LIST_ITEM_WRITER_PARAM.name, writeMethod,
-                    listItemType, OBJECT_VALUE_PARAM.name)
-              } else {
-                CodeBlock.of("\$L.\$L(\$L);\n", RESPONSE_LIST_ITEM_WRITER_PARAM.name, writeMethod,
-                    OBJECT_VALUE_PARAM.name)
-              })
-          .build()
+      return CodeBlock.builder().let {
+        if (listItemType.isEnum(context)) {
+          it.addStatement("\$L.\$L(((\$T) \$L).rawValue())", RESPONSE_LIST_ITEM_WRITER_PARAM.name, writeMethod,
+              listItemType, ITEM_VALUE_PARAM.name)
+        } else {
+          it.addStatement(
+              "\$L.\$L((\$T) \$L)", RESPONSE_LIST_ITEM_WRITER_PARAM.name, writeMethod, listItemType,
+              ITEM_VALUE_PARAM.name
+          )
+        }
+      }.build()
     }
 
     fun writeCustom(): CodeBlock {
@@ -295,35 +296,59 @@ class ResponseFieldSpec(
       val customScalarEnumConst = normalizeGraphQlType(irField.type, recursive = true).toUpperCase(Locale.ENGLISH)
       return CodeBlock.builder()
           .addStatement("\$L.writeCustom(\$T.\$L, \$L)", RESPONSE_LIST_ITEM_WRITER_PARAM.name,
-              customScalarEnum, customScalarEnumConst, OBJECT_VALUE_PARAM.name)
+              customScalarEnum, customScalarEnumConst, ITEM_VALUE_PARAM.name)
           .build()
     }
 
     fun writeObject(): CodeBlock {
       return CodeBlock.builder()
-          .addStatement("\$L.writeObject(((\$L) \$L).\$L)", RESPONSE_LIST_ITEM_WRITER_PARAM.name, listItemType,
-              OBJECT_VALUE_PARAM.name, marshaller)
+          .addStatement("\$L.writeObject(((\$T) \$L).\$L)", RESPONSE_LIST_ITEM_WRITER_PARAM.name, listItemType,
+              ITEM_VALUE_PARAM.name, marshaller)
+          .build()
+    }
+
+    fun writeList(): CodeBlock {
+      val rawFieldType = listItemType.listParamType()
+      val readItemCode = writeListItemStatement(rawFieldType, marshaller)
+      val listWriterType = TypeSpec.anonymousClassBuilder("")
+          .addSuperinterface(ResponseWriter.ListWriter::class.java)
+          .addMethod(MethodSpec
+              .methodBuilder("write")
+              .addModifiers(Modifier.PUBLIC)
+              .addAnnotation(Override::class.java)
+              .addParameter(ITEMS_VALUE_PARAM)
+              .addParameter(RESPONSE_LIST_ITEM_WRITER_PARAM)
+              .addCode(readItemCode)
+              .build())
+          .build()
+      return CodeBlock.builder()
+          .addStatement("\$L.writeList((\$T) \$L, \$L)", RESPONSE_LIST_ITEM_WRITER_PARAM.name, ClassNames.LIST,
+              ITEM_VALUE_PARAM.name, listWriterType)
           .build()
     }
 
     return when {
+      listItemType.isList() -> writeList()
       irField.type.isCustomScalarType(context) -> writeCustom()
       listItemType.isScalar(context) -> writeScalar()
       else -> writeObject()
+    }.let {
+      CodeBlock.builder()
+          .beginControlFlow("for (Object \$L : \$L)", ITEM_VALUE_PARAM.name, ITEMS_VALUE_PARAM.name)
+          .add(it)
+          .endControlFlow()
+          .build()
     }
   }
 
   private fun writeListCode(writerParam: CodeBlock, fieldParam: CodeBlock, marshaller: CodeBlock): CodeBlock {
-    var listItemType = normalizedFieldSpec.type.listParamType()
-    while (listItemType.isList()) {
-      listItemType = listItemType.listParamType()
-    }
+    val listItemType = normalizedFieldSpec.type.listParamType()
     val listWriterType = TypeSpec.anonymousClassBuilder("")
         .addSuperinterface(ResponseWriter.ListWriter::class.java)
         .addMethod(MethodSpec.methodBuilder("write")
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(Override::class.java)
-            .addParameter(OBJECT_VALUE_PARAM)
+            .addParameter(ITEMS_VALUE_PARAM)
             .addParameter(RESPONSE_LIST_ITEM_WRITER_PARAM)
             .addCode(writeListItemStatement(listItemType, marshaller))
             .build()
@@ -442,7 +467,8 @@ class ResponseFieldSpec(
         ParameterSpec.builder(ResponseReader::class.java, "reader").build()
     private val RESPONSE_LIST_ITEM_READER_PARAM =
         ParameterSpec.builder(ResponseReader.ListItemReader::class.java, "listItemReader").build()
-    private val OBJECT_VALUE_PARAM = ParameterSpec.builder(Object::class.java, "value").build()
+    private val ITEMS_VALUE_PARAM = ParameterSpec.builder(List::class.java, "items").build()
+    private val ITEM_VALUE_PARAM = ParameterSpec.builder(TypeName.OBJECT, "item").build()
     private val RESPONSE_LIST_ITEM_WRITER_PARAM =
         ParameterSpec.builder(ResponseWriter.ListItemWriter::class.java, "listItemWriter").build()
 

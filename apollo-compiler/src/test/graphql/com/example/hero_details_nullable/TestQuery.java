@@ -346,8 +346,10 @@ public final class TestQuery implements Query<TestQuery.Data, TestQuery.Data, Op
           writer.writeInt($responseFields[1], totalCount);
           writer.writeList($responseFields[2], edges, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((Edge) value).marshaller());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeObject(((Edge) item).marshaller());
+              }
             }
           });
         }

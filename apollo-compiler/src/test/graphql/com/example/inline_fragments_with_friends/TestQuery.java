@@ -292,8 +292,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeDouble($responseFields[2], height.isPresent() ? height.get() : null);
           writer.writeList($responseFields[3], friends.isPresent() ? friends.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((Friend) value).marshaller());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeObject(((Friend) item).marshaller());
+              }
             }
           });
         }
@@ -409,8 +411,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeString($responseFields[0], __typename);
           writer.writeList($responseFields[1], appearsIn, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeString(((com.example.inline_fragments_with_friends.type.Episode) value).rawValue());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeString(((Episode) item).rawValue());
+              }
             }
           });
         }
@@ -534,8 +538,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeString($responseFields[2], primaryFunction.isPresent() ? primaryFunction.get() : null);
           writer.writeList($responseFields[3], friends.isPresent() ? friends.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((Friend1) value).marshaller());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeObject(((Friend1) item).marshaller());
+              }
             }
           });
         }

@@ -151,8 +151,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         public void marshal(ResponseWriter writer) {
           writer.writeList($responseFields[0], search.isPresent() ? search.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((Search) value).marshaller());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeObject(((Search) item).marshaller());
+              }
             }
           });
         }
@@ -326,8 +328,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeString($responseFields[2], name);
           writer.writeList($responseFields[3], friends.isPresent() ? friends.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((Friend) value).marshaller());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeObject(((Friend) item).marshaller());
+              }
             }
           });
         }
@@ -510,8 +514,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeString($responseFields[2], homePlanet.isPresent() ? homePlanet.get() : null);
           writer.writeList($responseFields[3], friends.isPresent() ? friends.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((Friend1) value).marshaller());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeObject(((Friend1) item).marshaller());
+              }
             }
           });
         }
@@ -748,8 +754,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeString($responseFields[2], primaryFunction.isPresent() ? primaryFunction.get() : null);
           writer.writeList($responseFields[3], friends.isPresent() ? friends.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((Friend2) value).marshaller());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeObject(((Friend2) item).marshaller());
+              }
             }
           });
         }
@@ -1089,8 +1097,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeString($responseFields[2], name);
           writer.writeList($responseFields[3], friends.isPresent() ? friends.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((Friend3) value).marshaller());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeObject(((Friend3) item).marshaller());
+              }
             }
           });
         }
@@ -1273,8 +1283,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeString($responseFields[2], homePlanet.isPresent() ? homePlanet.get() : null);
           writer.writeList($responseFields[3], friends.isPresent() ? friends.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((Friend4) value).marshaller());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeObject(((Friend4) item).marshaller());
+              }
             }
           });
         }
@@ -1511,8 +1523,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeString($responseFields[2], primaryFunction.isPresent() ? primaryFunction.get() : null);
           writer.writeList($responseFields[3], friends.isPresent() ? friends.get() : null, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeObject(((Friend5) value).marshaller());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeObject(((Friend5) item).marshaller());
+              }
             }
           });
         }

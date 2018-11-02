@@ -208,8 +208,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeString($responseFields[0], __typename);
           writer.writeList($responseFields[1], links, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeCustom(CustomType.URL, value);
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeCustom(CustomType.URL, item);
+              }
             }
           });
         }

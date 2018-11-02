@@ -77,27 +77,13 @@ public final class RealResponseWriter implements ResponseWriter {
       return;
     }
 
-    List items = writeListItemValues(values, listWriter);
-    buffer.put(field.responseName(), new FieldDescriptor(field, items));
+    List accumulated = new ArrayList();
+    listWriter.write(values, new ListItemWriter(operationVariables, scalarTypeAdapters, accumulated));
+    buffer.put(field.responseName(), new FieldDescriptor(field, accumulated));
   }
 
   public void resolveFields(ResolveDelegate<Map<String, Object>> delegate) {
     resolveFields(operationVariables, delegate, buffer);
-  }
-
-  @SuppressWarnings("unchecked") private List writeListItemValues(List values, ListWriter listWriter) {
-    ListItemWriter listItemWriter = new ListItemWriter(operationVariables, scalarTypeAdapters);
-    List items = new ArrayList();
-    for (Object value : values) {
-      if (value instanceof List) {
-        List nestedItems = writeListItemValues((List) value, listWriter);
-        items.add(nestedItems);
-      } else {
-        listWriter.write(value, listItemWriter);
-        items.add(listItemWriter.value);
-      }
-    }
-    return items;
   }
 
   private void writeScalarFieldValue(ResponseField field, Object value) {
@@ -220,42 +206,53 @@ public final class RealResponseWriter implements ResponseWriter {
   @SuppressWarnings("unchecked") private static final class ListItemWriter implements ResponseWriter.ListItemWriter {
     final Operation.Variables operationVariables;
     final com.apollographql.apollo.response.ScalarTypeAdapters scalarTypeAdapters;
-    Object value;
+    final List accumulator;
 
-    ListItemWriter(Operation.Variables operationVariables, ScalarTypeAdapters scalarTypeAdapters) {
+    ListItemWriter(Operation.Variables operationVariables, ScalarTypeAdapters scalarTypeAdapters, List accumulator) {
       this.operationVariables = operationVariables;
       this.scalarTypeAdapters = scalarTypeAdapters;
+      this.accumulator = accumulator;
     }
 
-    @Override public void writeString(@Nullable Object value) {
-      this.value = value;
+    @Override public void writeString(@Nullable String value) {
+      accumulator.add(value);
     }
 
-    @Override public void writeInt(@Nullable Object value) {
-      this.value = value != null ? BigDecimal.valueOf((Integer) value) : null;
+    @Override public void writeInt(@Nullable Integer value) {
+      accumulator.add(value != null ? BigDecimal.valueOf(value) : null);
     }
 
-    @Override public void writeLong(@Nullable Object value) {
-      this.value = value != null ? BigDecimal.valueOf((Long) value) : null;
+    @Override public void writeLong(@Nullable Long value) {
+      accumulator.add(value != null ? BigDecimal.valueOf(value) : null);
     }
 
-    @Override public void writeDouble(@Nullable Object value) {
-      this.value = value != null ? BigDecimal.valueOf((Double) value) : null;
+    @Override public void writeDouble(@Nullable Double value) {
+      accumulator.add(value != null ? BigDecimal.valueOf(value) : null);
     }
 
-    @Override public void writeBoolean(@Nullable Object value) {
-      this.value = value;
+    @Override public void writeBoolean(@Nullable Boolean value) {
+      accumulator.add(value);
     }
 
     @Override public void writeCustom(@NotNull ScalarType scalarType, @Nullable Object value) {
       CustomTypeAdapter typeAdapter = scalarTypeAdapters.adapterFor(scalarType);
-      this.value = value != null ? typeAdapter.encode(value).value : null;
+      accumulator.add(value != null ? typeAdapter.encode(value).value : null);
     }
 
     @Override public void writeObject(ResponseFieldMarshaller marshaller) {
       RealResponseWriter nestedResponseWriter = new RealResponseWriter(operationVariables, scalarTypeAdapters);
       marshaller.marshal(nestedResponseWriter);
-      value = nestedResponseWriter.buffer;
+      accumulator.add(nestedResponseWriter.buffer);
+    }
+
+    @Override public void writeList(@Nullable List items, @NotNull ResponseWriter.ListWriter listWriter) {
+      if (items == null) {
+        accumulator.add(null);
+      } else {
+        List nestedAccumulated = new ArrayList();
+        listWriter.write(items, new ListItemWriter(operationVariables, scalarTypeAdapters, nestedAccumulated));
+        accumulator.add(nestedAccumulated);
+      }
     }
   }
 

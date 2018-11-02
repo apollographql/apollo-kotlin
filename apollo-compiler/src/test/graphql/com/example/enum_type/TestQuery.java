@@ -234,8 +234,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeString($responseFields[1], name);
           writer.writeList($responseFields[2], appearsIn, new ResponseWriter.ListWriter() {
             @Override
-            public void write(Object value, ResponseWriter.ListItemWriter listItemWriter) {
-              listItemWriter.writeString(((com.example.enum_type.type.Episode) value).rawValue());
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeString(((Episode) item).rawValue());
+              }
             }
           });
           writer.writeString($responseFields[3], firstAppearsIn.rawValue());
