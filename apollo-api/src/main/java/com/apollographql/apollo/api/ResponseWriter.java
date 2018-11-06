@@ -20,10 +20,10 @@ public interface ResponseWriter {
 
   void writeObject(@NotNull ResponseField field, @Nullable ResponseFieldMarshaller marshaller);
 
-  void writeList(@NotNull ResponseField field, @Nullable List values, @NotNull ListWriter listWriter);
+  <T> void writeList(@NotNull ResponseField field, @Nullable List<T> values, @NotNull ListWriter<T> listWriter);
 
-  interface ListWriter {
-    void write(@Nullable List items, @NotNull ListItemWriter listItemWriter);
+  interface ListWriter<T> {
+    void write(@Nullable List<T> items, @NotNull ListItemWriter listItemWriter);
   }
 
   interface ListItemWriter {
@@ -41,6 +41,6 @@ public interface ResponseWriter {
 
     void writeObject(@Nullable ResponseFieldMarshaller marshaller);
 
-    void writeList(@Nullable List items, @NotNull ListWriter listWriter);
+    <T> void writeList(@Nullable List<T> items, @NotNull ListWriter<T> listWriter);
   }
 }

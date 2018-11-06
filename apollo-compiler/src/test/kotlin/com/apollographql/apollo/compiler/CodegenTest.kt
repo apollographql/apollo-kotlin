@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.compiler.codegen.kotlin.GraphQLKompiler
 import com.google.common.truth.Truth.assertAbout
 import com.google.common.truth.Truth.assertThat
 import com.google.testing.compile.JavaFileObjects
@@ -15,20 +16,27 @@ import javax.tools.JavaFileObject
 
 @RunWith(Parameterized::class)
 class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
-  private val expectedFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.java")
+  private val javaExpectedFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.java")
+  private val kotlinExpectedFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**.kt")
   private val sourceFileObjects: MutableList<JavaFileObject> = ArrayList()
 
   @Test
   fun generateExpectedClasses() {
+    generateJavaExpectedClasses()
+    generateKotlinExpectedClasses()
+  }
+
+  private fun generateJavaExpectedClasses() {
     GraphQLCompiler().write(args)
+
     Files.walkFileTree(args.irFile.parentFile.toPath(), object : SimpleFileVisitor<Path>() {
       override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
-        if (expectedFileMatcher.matches(expectedFile)) {
+        if (javaExpectedFileMatcher.matches(expectedFile)) {
           val expected = expectedFile.toFile()
 
           System.out.print(expectedFile.fileName)
-          val actualClassName = actualClassName(expectedFile)
-          val actual = findActual(actualClassName)
+          val actualClassName = actualClassName(expectedFile, "java")
+          val actual = findActual(actualClassName, "java")
 
           if (!actual.isFile) {
             throw AssertionError("Couldn't find actual file: $actual")
@@ -44,12 +52,44 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
     assertAbout(javaSources()).that(sourceFileObjects).compilesWithoutError()
   }
 
-  private fun actualClassName(expectedFile: Path): String {
-    return expectedFile.fileName.toString().replace("Expected", "").replace(".java", "")
+  private fun generateKotlinExpectedClasses() {
+    GraphQLKompiler().write(
+        GraphQLKompiler.Arguments(
+        irFile = args.irFile,
+        outputDir = args.outputDir,
+        customTypeMap = args.customTypeMap,
+        outputPackageName = args.outputPackageName,
+        useSemanticNaming = true
+    ))
+
+    Files.walkFileTree(args.irFile.parentFile.toPath(), object : SimpleFileVisitor<Path>() {
+      override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
+        if (kotlinExpectedFileMatcher.matches(expectedFile)) {
+          val expected = expectedFile.toFile()
+
+          System.out.print(expectedFile.fileName)
+          val actualClassName = actualClassName(expectedFile, "kt")
+          val actual = findActual(actualClassName, "kt")
+
+          if (!actual.isFile) {
+            throw AssertionError("Couldn't find actual file: $actual")
+          }
+
+          assertThat(actual.readText()).isEqualTo(expected.readText())
+          sourceFileObjects.add(JavaFileObjects.forSourceLines("com.example.$pkgName.$actualClassName",
+              actual.readLines()))
+        }
+        return FileVisitResult.CONTINUE
+      }
+    })
   }
 
-  private fun findActual(className: String): File {
-    val possiblePaths = arrayOf("$className.java", "type/$className.java", "fragment/$className.java")
+  private fun actualClassName(expectedFile: Path, extension: String): String {
+    return expectedFile.fileName.toString().replace("Expected", "").replace(".$extension", "")
+  }
+
+  private fun findActual(className: String, extension: String): File {
+    val possiblePaths = arrayOf("$className.$extension", "type/$className.$extension", "fragment/$className.$extension")
     possiblePaths
         .map { args.outputDir.toPath().resolve("com/example/$pkgName/$it").toFile() }
         .filter { it.isFile }
@@ -64,7 +104,8 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
       return File("src/test/graphql/com/example/").listFiles()
           .filter { it.isDirectory }
           .map {
-            val customTypeMap = if (it.name in listOf("custom_scalar_type", "input_object_type", "mutation_create_review")) {
+            val customTypeMap = if (it.name in listOf("custom_scalar_type", "input_object_type",
+                    "mutation_create_review")) {
               mapOf("Date" to "java.util.Date", "URL" to "java.lang.String", "ID" to "java.lang.Integer")
             } else {
               emptyMap()

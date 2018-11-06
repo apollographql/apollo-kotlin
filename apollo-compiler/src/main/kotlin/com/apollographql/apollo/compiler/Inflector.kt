@@ -18,7 +18,9 @@ fun String.formatPackageName(): String {
 }
 
 fun String.singularize(): String {
-  if (uncountable().contains(this.toLowerCase())) return this
+  if (uncountable.contains(this.toLowerCase())) return this
+
+  if (exclude.contains(this.toLowerCase())) return this
 
   val irregular = irregular().firstOrNull() { this.toLowerCase() == it.component2() }
   if (irregular != null) return irregular.component1()
@@ -72,9 +74,8 @@ private fun irregular(): List<Pair<String, String>> {
       "move" to "moves")
 }
 
-private fun uncountable(): List<String> {
-  return listOf("equipment", "information", "rice", "money", "species", "series", "fish", "sheep")
-}
+private val uncountable = listOf("equipment", "information", "rice", "money", "species", "series", "fish", "sheep")
+private val exclude = listOf("data")
 
 private fun match(pattern: String, word: String): Boolean {
   return Pattern.compile(pattern, Pattern.CASE_INSENSITIVE).matcher(word).find()

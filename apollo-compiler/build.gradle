@@ -11,6 +11,7 @@ sourceSets {
 
 dependencies {
   implementation dep.javaPoet
+  implementation dep.kotlinpoet
   implementation dep.kotlinStdLib
   implementation dep.moshi
   implementation project(":apollo-api")
