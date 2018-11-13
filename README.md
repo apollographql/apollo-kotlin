@@ -293,6 +293,7 @@ There are four available cache policies `HttpCachePolicy`:
 - `NETWORK_ONLY` - Fetch a response from the network only, ignoring any cached responses.
 - `CACHE_FIRST` - Fetch a response from the cache first. If the response doesn't exist or is expired, then fetch a response from the network.
 - `NETWORK_FIRST` - Fetch a response from the network first. If the network fails and the cached response isn't expired, then return cached data instead.
+- `CACHE_AND_NETWORK` - Fetch a response from the cache and the network.
 
 For `CACHE_ONLY`, `CACHE_FIRST` and `NETWORK_FIRST` policies you can define the timeout after what cached response is treated as expired and will be evicted from the http cache, `expireAfter(expireTimeout, timeUnit)`.`
 
