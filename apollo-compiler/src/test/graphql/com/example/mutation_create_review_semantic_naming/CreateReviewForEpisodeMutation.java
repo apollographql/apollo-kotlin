@@ -66,7 +66,8 @@ public final class CreateReviewForEpisodeMutation implements Mutation<CreateRevi
   }
 
   @Override
-  public Optional<CreateReviewForEpisodeMutation.Data> wrapData(CreateReviewForEpisodeMutation.Data data) {
+  public Optional<CreateReviewForEpisodeMutation.Data> wrapData(
+      CreateReviewForEpisodeMutation.Data data) {
     return Optional.fromNullable(data);
   }
 

@@ -1,8 +1,8 @@
 def versions = [
-    apolloVersion                : '1.0.0-alpha',
+    apolloVersion                : '1.0.0-alpha3',
     cacheVersion                 : '2.0.2',
-    okHttpVersion                : '3.8.1',
-    kotlinVersion                : '1.1.2-3',
+    okHttpVersion                : '3.11.0',
+    kotlinVersion                : '1.3.0',
     supportLibVersion            : '25.3.1',
     mockito                      : '1.9.5',
     testRunner                   : '0.5',
@@ -20,7 +20,7 @@ ext.androidConfig = [
 ]
 
 ext.dep = [
-    androidPlugin           : 'com.android.tools.build:gradle:2.3.1',
+    androidPlugin           : 'com.android.tools.build:gradle:2.3.3',
     apolloPlugin            : "com.apollographql.apollo:apollo-gradle-plugin:$versions.apolloVersion",
     apolloAndroidSupport    : "com.apollographql.apollo:apollo-android-support:$versions.apolloVersion",
     apolloRuntime           : "com.apollographql.apollo:apollo-runtime:$versions.apolloVersion",
@@ -29,10 +29,10 @@ ext.dep = [
     apolloHttpCache         : "com.apollographql.apollo:apollo-http-cache:$versions.apolloVersion",
     supportAnnotations      : "com.android.support:support-annotations:$versions.supportLibVersion",
     recyclerView            : "com.android.support:recyclerview-v7:$versions.supportLibVersion",
-    compiletesting          : 'com.google.testing.compile:compile-testing:0.11',
+    compiletesting          : 'com.google.testing.compile:compile-testing:0.15',
     cache                   : "com.nytimes.android:cache:$versions.cacheVersion",
-    javaPoet                : 'com.squareup:javapoet:1.8.0',
-    moshi                   : 'com.squareup.moshi:moshi:1.6.0',
+    javaPoet                : 'com.squareup:javapoet:1.11.1',
+    moshi                   : 'com.squareup.moshi:moshi:1.8.0',
     rxjava                  : 'io.reactivex:rxjava:1.2.9',
     rxjava2                 : 'io.reactivex.rxjava2:rxjava:2.0.5',
     rxandroid               : 'io.reactivex.rxjava2:rxandroid:2.0.1',
