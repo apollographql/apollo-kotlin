@@ -31,7 +31,7 @@ ext.dep = [
     recyclerView            : "com.android.support:recyclerview-v7:$versions.supportLibVersion",
     compiletesting          : 'com.google.testing.compile:compile-testing:0.15',
     cache                   : "com.nytimes.android:cache:$versions.cacheVersion",
-    javaPoet                : 'com.squareup:javapoet:1.11.1',
+    javaPoet                : 'com.squareup:javapoet:1.9.0',
     moshi                   : 'com.squareup.moshi:moshi:1.8.0',
     rxjava                  : 'io.reactivex:rxjava:1.2.9',
     rxjava2                 : 'io.reactivex.rxjava2:rxjava:2.0.5',

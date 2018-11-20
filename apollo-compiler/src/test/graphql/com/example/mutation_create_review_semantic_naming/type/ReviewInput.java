@@ -472,8 +472,7 @@ public final class ReviewInput implements InputType {
     /**
      * for test purpose only
      */
-    public Builder nullableIntFieldWithDefaultValue(
-        @Nullable Integer nullableIntFieldWithDefaultValue) {
+    public Builder nullableIntFieldWithDefaultValue(@Nullable Integer nullableIntFieldWithDefaultValue) {
       this.nullableIntFieldWithDefaultValue = Input.fromNullable(nullableIntFieldWithDefaultValue);
       return this;
     }
@@ -601,8 +600,7 @@ public final class ReviewInput implements InputType {
     /**
      * for test purpose only
      */
-    public Builder nullableIntFieldWithDefaultValueInput(
-        @NotNull Input<Integer> nullableIntFieldWithDefaultValue) {
+    public Builder nullableIntFieldWithDefaultValueInput(@NotNull Input<Integer> nullableIntFieldWithDefaultValue) {
       this.nullableIntFieldWithDefaultValue = Utils.checkNotNull(nullableIntFieldWithDefaultValue, "nullableIntFieldWithDefaultValue == null");
       return this;
     }
@@ -706,8 +704,7 @@ public final class ReviewInput implements InputType {
     /**
      * for test purpose only
      */
-    public Builder listOfListOfObjectInput(
-        @NotNull Input<List<List<ColorInput>>> listOfListOfObject) {
+    public Builder listOfListOfObjectInput(@NotNull Input<List<List<ColorInput>>> listOfListOfObject) {
       this.listOfListOfObject = Utils.checkNotNull(listOfListOfObject, "listOfListOfObject == null");
       return this;
     }
