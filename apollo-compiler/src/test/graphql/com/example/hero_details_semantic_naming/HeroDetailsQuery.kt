@@ -15,6 +15,7 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 class HeroDetailsQuery : Query<HeroDetailsQuery.Data, HeroDetailsQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
@@ -74,8 +75,8 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, HeroDetailsQuery.Data, Ope
 
             operator fun invoke(reader: ResponseReader): Edge {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) {
-                    Node(it)
+                val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
+                    Node(reader)
                 }
 
                 return Edge(
@@ -93,13 +94,12 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, HeroDetailsQuery.Data, Ope
     data class FriendsConnection(
         val __typename: String,
         val totalCount: Int?,
-        val edges: List<Edge>?
+        val edges: List<Edge?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeInt(RESPONSE_FIELDS[1], totalCount)
             it.writeList(RESPONSE_FIELDS[2], edges) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeObject(value?.marshaller())
                 }
@@ -117,8 +117,8 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, HeroDetailsQuery.Data, Ope
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val totalCount = reader.readInt(RESPONSE_FIELDS[1])
                 val edges = reader.readList<Edge>(RESPONSE_FIELDS[2]) {
-                    it.readObject<Edge> {
-                        Edge(it)
+                    it.readObject<Edge> { reader ->
+                        Edge(reader)
                     }
 
                 }
@@ -156,8 +156,8 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, HeroDetailsQuery.Data, Ope
             operator fun invoke(reader: ResponseReader): Hero {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
-                val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) {
-                    FriendsConnection(it)
+                val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+                    FriendsConnection(reader)
                 }
 
                 return Hero(
@@ -180,8 +180,8 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, HeroDetailsQuery.Data, Ope
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
-                val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) {
-                    Hero(it)
+                val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
+                    Hero(reader)
                 }
 
                 return Data(

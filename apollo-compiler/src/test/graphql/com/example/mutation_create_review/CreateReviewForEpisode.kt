@@ -26,7 +26,8 @@ import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 @Generated("Apollo GraphQL")
-data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInput) : Mutation<CreateReviewForEpisodeMutation.Data, CreateReviewForEpisodeMutation.Data, Operation.Variables> {
+@Suppress("NAME_SHADOWING", "LocalVariableName")
+data class CreateReviewForEpisode(val ep: Episode, val review: ReviewInput) : Mutation<CreateReviewForEpisode.Data, CreateReviewForEpisode.Data, Operation.Variables> {
     @Transient
     private val variables: Operation.Variables = object : Operation.Variables() {
         override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -37,7 +38,7 @@ data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInp
         override fun marshaller(): InputFieldMarshaller = object : InputFieldMarshaller {
             @Throws(IOException::class)
             override fun marshal(writer: InputFieldWriter) {
-                writer.writeString("ep", ep.value.rawValue)
+                writer.writeString("ep", ep.rawValue)
                 writer.writeObject("review", review.marshaller())
             }
         }
@@ -45,11 +46,11 @@ data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInp
 
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: CreateReviewForEpisodeMutation.Data): CreateReviewForEpisodeMutation.Data = data
+    override fun wrapData(data: CreateReviewForEpisode.Data): CreateReviewForEpisode.Data = data
     override fun variables(): Operation.Variables = variables
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<CreateReviewForEpisodeMutation.Data> = ResponseFieldMapper {
-        CreateReviewForEpisodeMutation.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<CreateReviewForEpisode.Data> = ResponseFieldMapper {
+        CreateReviewForEpisode.Data(it)
     }
 
     /**
@@ -93,17 +94,16 @@ data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInp
         val __typename: String,
         val stars: Int,
         val commentary: String?,
-        val listOfListOfString: List<List<String>>?,
-        val listOfListOfEnum: List<List<Episode>>?,
-        val listOfListOfCustom: List<List<Date>>?,
-        val listOfListOfObject: List<List<ListOfListOfObject>>?
+        val listOfListOfString: List<List<String?>?>?,
+        val listOfListOfEnum: List<List<Episode?>?>?,
+        val listOfListOfCustom: List<List<Date?>?>?,
+        val listOfListOfObject: List<List<ListOfListOfObject?>?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeInt(RESPONSE_FIELDS[1], stars)
             it.writeString(RESPONSE_FIELDS[2], commentary)
             it.writeList(RESPONSE_FIELDS[3], listOfListOfString) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeList(value) { value, listItemWriter ->
                         value?.forEach { value ->
@@ -113,17 +113,15 @@ data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInp
                 }
             }
             it.writeList(RESPONSE_FIELDS[4], listOfListOfEnum) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeList(value) { value, listItemWriter ->
                         value?.forEach { value ->
-                            listItemWriter.writeString(value)
+                            listItemWriter.writeString(value?.rawValue)
                         }
                     }
                 }
             }
             it.writeList(RESPONSE_FIELDS[5], listOfListOfCustom) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeList(value) { value, listItemWriter ->
                         value?.forEach { value ->
@@ -133,7 +131,6 @@ data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInp
                 }
             }
             it.writeList(RESPONSE_FIELDS[6], listOfListOfObject) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeList(value) { value, listItemWriter ->
                         value?.forEach { value ->
@@ -159,25 +156,25 @@ data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInp
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val stars = reader.readInt(RESPONSE_FIELDS[1])
                 val commentary = reader.readString(RESPONSE_FIELDS[2])
-                val listOfListOfString = reader.readList<List<String>>(RESPONSE_FIELDS[3]) {
+                val listOfListOfString = reader.readList<List<String?>>(RESPONSE_FIELDS[3]) {
                     it.readList<String> {
                         it.readString()
                     }
                 }
-                val listOfListOfEnum = reader.readList<List<Episode>>(RESPONSE_FIELDS[4]) {
+                val listOfListOfEnum = reader.readList<List<Episode?>>(RESPONSE_FIELDS[4]) {
                     it.readList<Episode> {
                         Episode.safeValueOf(it.readString())
                     }
                 }
-                val listOfListOfCustom = reader.readList<List<Date>>(RESPONSE_FIELDS[5]) {
+                val listOfListOfCustom = reader.readList<List<Date?>>(RESPONSE_FIELDS[5]) {
                     it.readList<Date> {
                         it.readCustomType<Date>(CustomType.DATE)
                     }
                 }
-                val listOfListOfObject = reader.readList<List<ListOfListOfObject>>(RESPONSE_FIELDS[6]) {
+                val listOfListOfObject = reader.readList<List<ListOfListOfObject?>>(RESPONSE_FIELDS[6]) {
                     it.readList<ListOfListOfObject> {
-                        it.readObject<ListOfListOfObject> {
-                            ListOfListOfObject(it)
+                        it.readObject<ListOfListOfObject> { reader ->
+                            ListOfListOfObject(reader)
                         }
 
                     }
@@ -212,8 +209,8 @@ data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInp
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
-                val createReview = reader.readObject<CreateReview>(RESPONSE_FIELDS[0]) {
-                    CreateReview(it)
+                val createReview = reader.readObject<CreateReview>(RESPONSE_FIELDS[0]) { reader ->
+                    CreateReview(reader)
                 }
 
                 return Data(
@@ -261,6 +258,6 @@ data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInp
                 |}
                 """.trimMargin()
 
-        val OPERATION_NAME: OperationName = OperationName { "CreateReviewForEpisodeMutation" }
+        val OPERATION_NAME: OperationName = OperationName { "CreateReviewForEpisode" }
     }
 }

@@ -247,6 +247,16 @@
 					]
 				},
 				{
+					"name": "listOfStringNonNull",
+					"type": "[String]!",
+					"description": "for test purpose only",
+					"defaultValue": [
+						"test1",
+						"test2",
+						"test3"
+					]
+				},
+				{
 					"name": "booleanWithDefaultValue",
 					"type": "Boolean",
 					"description": "for test purpose only",

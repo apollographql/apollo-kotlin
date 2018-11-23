@@ -59,7 +59,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
         outputDir = args.outputDir,
         customTypeMap = args.customTypeMap,
         outputPackageName = args.outputPackageName,
-        useSemanticNaming = true
+        useSemanticNaming = args.useSemanticNaming
     ))
 
     Files.walkFileTree(args.irFile.parentFile.toPath(), object : SimpleFileVisitor<Path>() {

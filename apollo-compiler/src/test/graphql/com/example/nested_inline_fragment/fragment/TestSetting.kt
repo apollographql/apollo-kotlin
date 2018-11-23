@@ -12,6 +12,7 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 data class TestSetting(
     val __typename: String,
     val value: Value1?,
@@ -55,8 +56,8 @@ data class TestSetting(
 
         operator fun invoke(reader: ResponseReader): TestSetting {
             val __typename = reader.readString(RESPONSE_FIELDS[0])
-            val value = reader.readObject<Value1>(RESPONSE_FIELDS[1]) {
-                Value1(it)
+            val value = reader.readObject<Value1>(RESPONSE_FIELDS[1]) { reader ->
+                Value1(reader)
             }
 
             val asSelectSetting = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
@@ -71,11 +72,10 @@ data class TestSetting(
         }
     }
 
-    data class AsStringListSettingValue(val __typename: String, val list: List<String>?) {
+    data class AsStringListSettingValue(val __typename: String, val list: List<String?>?) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeList(RESPONSE_FIELDS[1], list) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeString(value)
                 }
@@ -166,13 +166,12 @@ data class TestSetting(
     data class AsSelectSetting(
         val __typename: String,
         val value: Value?,
-        val options: List<Option>?
+        val options: List<Option?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeObject(RESPONSE_FIELDS[1], value?.marshaller())
             it.writeList(RESPONSE_FIELDS[2], options) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeObject(value?.marshaller())
                 }
@@ -188,13 +187,13 @@ data class TestSetting(
 
             operator fun invoke(reader: ResponseReader): AsSelectSetting {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val value = reader.readObject<Value>(RESPONSE_FIELDS[1]) {
-                    Value(it)
+                val value = reader.readObject<Value>(RESPONSE_FIELDS[1]) { reader ->
+                    Value(reader)
                 }
 
                 val options = reader.readList<Option>(RESPONSE_FIELDS[2]) {
-                    it.readObject<Option> {
-                        Option(it)
+                    it.readObject<Option> { reader ->
+                        Option(reader)
                     }
 
                 }
@@ -207,11 +206,10 @@ data class TestSetting(
         }
     }
 
-    data class AsStringListSettingValue1(val __typename: String, val list: List<String>?) {
+    data class AsStringListSettingValue1(val __typename: String, val list: List<String?>?) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeList(RESPONSE_FIELDS[1], list) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeString(value)
                 }

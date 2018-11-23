@@ -9,41 +9,40 @@ import com.apollographql.apollo.compiler.ast.AST
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asTypeName
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.jvm.throws
-import java.io.IOException
 
 fun KotlinCodeGen.inputTypeSpec(inputType: AST.InputType): TypeSpec {
   return with(inputType) {
     TypeSpec.classBuilder(name)
-        .addAnnotation(generatedByApolloAnnotation)
-        .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
-        .addSuperinterface(InputType::class)
-        .primaryConstructor(primaryConstructorSpec)
-        .addProperties(fields.map { field -> field.asPropertySpec(initializer = CodeBlock.of(field.name)) })
-        .addFunction(marshallerFunSpec)
-        .build()
+      .addAnnotation(generatedByApolloAnnotation)
+      .addAnnotation(suppressWarningsAnnotation)
+      .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
+      .addSuperinterface(InputType::class)
+      .primaryConstructor(primaryConstructorSpec)
+      .addProperties(fields.map { field -> field.asPropertySpec(initializer = CodeBlock.of(field.name)) })
+      .addFunction(marshallerFunSpec)
+      .build()
   }
 }
 
 private val AST.InputType.primaryConstructorSpec: FunSpec
   get() {
     return FunSpec.constructorBuilder()
-        .addParameters(fields.map { field -> field.parameterSpec() })
-        .build()
+      .addParameters(fields.map { field -> field.parameterSpec() })
+      .build()
   }
 
 private fun AST.InputType.Field.parameterSpec(): ParameterSpec {
   val typeName = type.asTypeName()
   return ParameterSpec.builder(
-      name = name,
-      type = if (isOptional) Input::class.asClassName().parameterizedBy(typeName) else typeName
+    name = name,
+    type = if (isOptional) Input::class.asClassName().parameterizedBy(typeName) else typeName
   ).apply {
     if (isOptional) {
       defaultValue(
-          CodeBlock.of("%T.optional(%L)", Input::class, defaultValue?.toDefaultValueCodeBlock(
-              typeName = typeName,
-              fieldType = type
-          ))
+        CodeBlock.of("%T.optional(%L)", Input::class, defaultValue?.toDefaultValueCodeBlock(
+          typeName = typeName,
+          fieldType = type
+        ))
       )
     }
   }.build()
@@ -52,48 +51,70 @@ private fun AST.InputType.Field.parameterSpec(): ParameterSpec {
 private val AST.InputType.marshallerFunSpec: FunSpec
   get() {
     return FunSpec.builder("marshaller")
-        .returns(InputFieldMarshaller::class)
-        .addModifiers(KModifier.OVERRIDE)
-        .addStatement("return %L", TypeSpec.anonymousClassBuilder()
-            .addSuperinterface(InputFieldMarshaller::class)
-            .addFunction(marshalFunSpec)
-            .build()
-        ).build()
-  }
-
-private val AST.InputType.marshalFunSpec: FunSpec
-  get() {
-    return FunSpec.builder("marshal")
-        .addModifiers(KModifier.OVERRIDE)
-        .throws(IOException::class)
-        .addParameter(ParameterSpec.builder("writer", InputFieldWriter::class.java).build())
-        .apply { fields.forEach { field -> addCode(field.writeCodeBlock) } }
-        .build()
+      .returns(InputFieldMarshaller::class)
+      .addModifiers(KModifier.OVERRIDE)
+      .addCode(
+        CodeBlock.builder()
+          .add("return %T { writer ->\n", InputFieldMarshaller::class)
+          .indent()
+          .apply { fields.forEach { field -> add(field.writeCodeBlock) } }
+          .unindent()
+          .add("}\n")
+          .build()
+      ).build()
   }
 
 val AST.InputType.Field.writeCodeBlock: CodeBlock
   get() {
     return when (type) {
       is AST.FieldType.Scalar -> when (type) {
-        is AST.FieldType.Scalar.String -> CodeBlock.of("writer.writeString(%S, %L)\n", schemaName, name)
-        is AST.FieldType.Scalar.Int -> CodeBlock.of("writer.writeInt(%S, %L)\n", schemaName, name)
-        is AST.FieldType.Scalar.Boolean -> CodeBlock.of("writer.writeBoolean(%S, %L)\n", schemaName, name)
-        is AST.FieldType.Scalar.Float -> CodeBlock.of("writer.writeDouble(%S, %L)\n", schemaName, name)
-        is AST.FieldType.Scalar.Enum -> {
+        is AST.FieldType.Scalar.String -> {
           if (isOptional) {
-            CodeBlock.of("if (%L.defined) writer.writeString(%S, %L.value?.rawValue)\n", schemaName, name,
-                name)
+            CodeBlock.of("if (%L.defined) writer.writeString(%S, %L.value)\n", name, schemaName, name)
           } else {
-            CodeBlock.of("writer.writeString(%S, %L.value.rawValue)\n", schemaName, name)
+            CodeBlock.of("writer.writeString(%S, %L)\n", schemaName, name)
           }
         }
-        is AST.FieldType.Scalar.Custom -> CodeBlock.of("writer.writeCustom(%S, %T.%L, %L.value)\n", schemaName,
-            type.customEnumType.asTypeName(), type.customEnumConst, name)
+        is AST.FieldType.Scalar.Int -> {
+          if (isOptional) {
+            CodeBlock.of("if (%L.defined) writer.writeInt(%S, %L.value)\n", schemaName, name, name)
+          } else {
+            CodeBlock.of("writer.writeInt(%S, %L)\n", schemaName, name)
+          }
+        }
+        is AST.FieldType.Scalar.Boolean -> {
+          if (isOptional) {
+            CodeBlock.of("if (%L.defined) writer.writeBoolean(%S, %L.value)\n", name, schemaName, name)
+          } else {
+            CodeBlock.of("writer.writeBoolean(%S, %L)\n", schemaName, name)
+          }
+        }
+        is AST.FieldType.Scalar.Float -> {
+          if (isOptional) {
+            CodeBlock.of("if (%L.defined) writer.writeDouble(%S, %L.value)\n", name, schemaName, name)
+          } else {
+            CodeBlock.of("writer.writeDouble(%S, %L)\n", schemaName, name)
+          }
+        }
+        is AST.FieldType.Scalar.Enum -> {
+          if (isOptional) {
+            CodeBlock.of("if (%L.defined) writer.writeString(%S, %L.value?.rawValue)\n", name, schemaName, name)
+          } else {
+            CodeBlock.of("writer.writeString(%S, %L.rawValue)\n", schemaName, name)
+          }
+        }
+        is AST.FieldType.Scalar.Custom -> {
+          if (isOptional) {
+            CodeBlock.of("if (%L.defined) writer.writeCustom(%S, %T.%L, %L.value)\n", name, schemaName, type.customEnumType.asTypeName(),
+              type.customEnumConst, name)
+          } else {
+            CodeBlock.of("writer.writeCustom(%S, %T.%L, %L)\n", schemaName, type.customEnumType.asTypeName(), type.customEnumConst, name)
+          }
+        }
       }
       is AST.FieldType.Object -> {
         if (isOptional) {
-          CodeBlock.of("if (%L.defined) writer.writeString(%S, %L.value?.marshaller())\n", schemaName, name,
-              name)
+          CodeBlock.of("if (%L.defined) writer.writeString(%S, %L.value?.marshaller())\n", name, schemaName, name)
         } else {
           CodeBlock.of("writer.writeObject(%S, %L.marshaller())\n", schemaName, name)
         }
@@ -102,44 +123,35 @@ val AST.InputType.Field.writeCodeBlock: CodeBlock
         val codeBlockBuilder: CodeBlock.Builder = CodeBlock.Builder()
         if (isOptional) {
           codeBlockBuilder
-              .beginControlFlow("if (%L.defined)", name)
-              .add("writer.writeList(%S, %L.value?.let {\n", schemaName, name)
-              .indent()
-              .add("%L", TypeSpec.anonymousClassBuilder()
-                  .addSuperinterface(InputFieldWriter.ListWriter::class)
-                  .addFunction(FunSpec.builder("write")
-                      .addModifiers(KModifier.OVERRIDE)
-                      .addParameter(
-                          ParameterSpec.builder("listItemWriter", InputFieldWriter.ListItemWriter::class).build())
-                      .beginControlFlow("it.foreach")
-                      .addCode(type.rawType.writeListItem)
-                      .endControlFlow()
-                      .build()
-                  )
-                  .build()
-              )
-              .unindent()
-              .add("\n} ?: null)\n")
-              .endControlFlow()
-              .build()
+            .beginControlFlow("if (%L.defined)", name)
+            .add("writer.writeList(%S, %L.value?.let { value ->\n", schemaName, name)
+            .indent()
+            .add("%T { listItemWriter ->\n", InputFieldWriter.ListWriter::class)
+            .indent()
+            .add("value.forEach { value ->\n")
+            .indent()
+            .add(type.rawType.writeListItem)
+            .unindent()
+            .add("}\n")
+            .unindent()
+            .add("}\n")
+            .unindent()
+            .add("})\n")
+            .endControlFlow()
         } else {
           codeBlockBuilder
-              .add("writer.writeList(%S, %L", schemaName, TypeSpec.anonymousClassBuilder()
-                  .addSuperinterface(InputFieldWriter.ListWriter::class)
-                  .addFunction(FunSpec.builder("write")
-                      .addModifiers(KModifier.OVERRIDE)
-                      .addParameter(
-                          ParameterSpec.builder("listItemWriter", InputFieldWriter.ListItemWriter::class).build())
-                      .beginControlFlow("%L.foreach", name)
-                      .addCode(type.rawType.writeListItem)
-                      .endControlFlow()
-                      .build()
-                  )
-                  .build()
-              )
-              .add(")\n")
-              .build()
+            .add("writer.writeList(%S) { listItemWriter ->\n", schemaName)
+            .indent()
+            .add("%L?.forEach { value ->\n", name)
+            .indent()
+            .add(type.rawType.writeListItem)
+            .unindent()
+            .add("}\n")
+            .unindent()
+            .add("}\n")
         }
+
+        codeBlockBuilder.build()
       }
       else -> throw IllegalArgumentException("Unsupported input object field type: $type")
     }
@@ -149,27 +161,26 @@ private val AST.FieldType.writeListItem: CodeBlock
   get() {
     return when (this) {
       is AST.FieldType.Scalar -> when (this) {
-        is AST.FieldType.Scalar.String -> CodeBlock.of("listItemWriter.writeString(it)\n")
-        is AST.FieldType.Scalar.Int -> CodeBlock.of("listItemWriter.writeInt(it)\n")
-        is AST.FieldType.Scalar.Boolean -> CodeBlock.of("listItemWriter.writeBoolean(it)\n")
-        is AST.FieldType.Scalar.Float -> CodeBlock.of("listItemWriter.writeDouble(it)\n")
-        is AST.FieldType.Scalar.Enum -> CodeBlock.of("listItemWriter.writeString(it?.rawValue)\n")
-        is AST.FieldType.Scalar.Custom -> CodeBlock.of("listItemWriter.writeCustom(%T.%L, it)\n",
-            customEnumType.asTypeName(), customEnumConst)
+        is AST.FieldType.Scalar.String -> CodeBlock.of("listItemWriter.writeString(value)\n")
+        is AST.FieldType.Scalar.Int -> CodeBlock.of("listItemWriter.writeInt(value)\n")
+        is AST.FieldType.Scalar.Boolean -> CodeBlock.of("listItemWriter.writeBoolean(value)\n")
+        is AST.FieldType.Scalar.Float -> CodeBlock.of("listItemWriter.writeDouble(value)\n")
+        is AST.FieldType.Scalar.Enum -> CodeBlock.of("listItemWriter.writeString(value?.rawValue)\n")
+        is AST.FieldType.Scalar.Custom -> CodeBlock.of("listItemWriter.writeCustom(%T.%L, value)\n",
+          customEnumType.asTypeName(), customEnumConst)
       }
-      is AST.FieldType.Object -> CodeBlock.of("listItemWriter.writeObject(it.marshaller())\n")
-      is AST.FieldType.Array -> CodeBlock.of("listItemWriter.writeList(%L)\n", TypeSpec.anonymousClassBuilder()
-          .addSuperinterface(InputFieldWriter.ListWriter::class)
-          .addFunction(FunSpec.builder("write")
-              .addModifiers(KModifier.OVERRIDE)
-              .addParameter(ParameterSpec.builder("listItemWriter", InputFieldWriter.ListItemWriter::class).build())
-              .beginControlFlow("it.foreach")
-              .addCode(rawType.writeListItem)
-              .endControlFlow()
-              .build()
-          )
-          .build()
-      )
+      is AST.FieldType.Object -> CodeBlock.of("listItemWriter.writeObject(value?.marshaller())\n")
+      is AST.FieldType.Array -> CodeBlock.builder()
+        .add("listItemWriter.writeList{ listItemWriter-> \n")
+        .indent()
+        .add("value?.forEach { value ->\n")
+        .indent()
+        .add(rawType.writeListItem)
+        .unindent()
+        .add("}\n")
+        .unindent()
+        .add("}\n")
+        .build()
       else -> throw IllegalArgumentException("Unsupported input object field type: $this")
     }
   }

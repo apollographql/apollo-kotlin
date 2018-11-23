@@ -2,13 +2,11 @@ package com.example.input_object_type.type
 
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.InputFieldMarshaller
-import com.apollographql.apollo.api.InputFieldWriter
 import com.apollographql.apollo.api.InputType
-import java.io.IOException
 import javax.annotation.Generated
 import kotlin.Double
 import kotlin.Int
-import kotlin.jvm.Throws
+import kotlin.Suppress
 
 /**
  * The input object sent when passing in a color
@@ -18,19 +16,17 @@ import kotlin.jvm.Throws
  * @param enumWithDefaultValue for test purpose only
  */
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 class ColorInput(
     val red: Int,
     val green: Input<Double> = Input.optional(0.0),
     val blue: Double,
     val enumWithDefaultValue: Input<Episode> = Input.optional(Episode.safeValueOf("new"))
 ) : InputType {
-    override fun marshaller(): InputFieldMarshaller = object : InputFieldMarshaller {
-        @Throws(IOException::class)
-        override fun marshal(writer: InputFieldWriter) {
-            writer.writeInt("red", red)
-            writer.writeDouble("green", green)
-            writer.writeDouble("blue", blue)
-            if (enumWithDefaultValue.defined) writer.writeString("enumWithDefaultValue", enumWithDefaultValue.value?.rawValue)
-        }
+    override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
+        writer.writeInt("red", red)
+        if (green.defined) writer.writeDouble("green", green.value)
+        writer.writeDouble("blue", blue)
+        if (enumWithDefaultValue.defined) writer.writeString("enumWithDefaultValue", enumWithDefaultValue.value?.rawValue)
     }
 }

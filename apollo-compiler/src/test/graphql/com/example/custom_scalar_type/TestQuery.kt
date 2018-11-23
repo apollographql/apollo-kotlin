@@ -17,6 +17,7 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
@@ -39,17 +40,16 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val __typename: String,
         val name: String,
         val birthDate: Date,
-        val appearanceDates: List<Date>,
+        val appearanceDates: List<Date?>,
         val fieldWithUnsupportedType: Object,
         val profileLink: java.lang.String,
-        val links: List<java.lang.String>
+        val links: List<java.lang.String?>
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeString(RESPONSE_FIELDS[1], name)
             it.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, birthDate)
             it.writeList(RESPONSE_FIELDS[3], appearanceDates) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeCustom(CustomType.DATE, value)
                 }
@@ -57,7 +57,6 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             it.writeCustom(RESPONSE_FIELDS[4] as ResponseField.CustomTypeField, fieldWithUnsupportedType)
             it.writeCustom(RESPONSE_FIELDS[5] as ResponseField.CustomTypeField, profileLink)
             it.writeList(RESPONSE_FIELDS[6], links) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeCustom(CustomType.URL, value)
                 }
@@ -111,8 +110,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
-                val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) {
-                    Hero(it)
+                val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
+                    Hero(reader)
                 }
 
                 return Data(

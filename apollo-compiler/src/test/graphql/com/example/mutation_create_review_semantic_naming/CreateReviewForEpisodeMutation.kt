@@ -17,11 +17,13 @@ import kotlin.Any
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
+import kotlin.Suppress
 import kotlin.collections.Map
 import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInput) : Mutation<CreateReviewForEpisodeMutation.Data, CreateReviewForEpisodeMutation.Data, Operation.Variables> {
     @Transient
     private val variables: Operation.Variables = object : Operation.Variables() {
@@ -33,7 +35,7 @@ data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInp
         override fun marshaller(): InputFieldMarshaller = object : InputFieldMarshaller {
             @Throws(IOException::class)
             override fun marshal(writer: InputFieldWriter) {
-                writer.writeString("ep", ep.value.rawValue)
+                writer.writeString("ep", ep.rawValue)
                 writer.writeObject("review", review.marshaller())
             }
         }
@@ -100,8 +102,8 @@ data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInp
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
-                val createReview = reader.readObject<CreateReview>(RESPONSE_FIELDS[0]) {
-                    CreateReview(it)
+                val createReview = reader.readObject<CreateReview>(RESPONSE_FIELDS[0]) { reader ->
+                    CreateReview(reader)
                 }
 
                 return Data(

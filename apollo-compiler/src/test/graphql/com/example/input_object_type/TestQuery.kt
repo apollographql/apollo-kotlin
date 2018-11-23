@@ -17,12 +17,14 @@ import kotlin.Any
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
+import kotlin.Suppress
 import kotlin.collections.Map
 import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 @Generated("Apollo GraphQL")
-data class TestQueryMutation(val ep: Episode, val review: ReviewInput) : Mutation<TestQueryMutation.Data, TestQueryMutation.Data, Operation.Variables> {
+@Suppress("NAME_SHADOWING", "LocalVariableName")
+data class TestQuery(val ep: Episode, val review: ReviewInput) : Mutation<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     @Transient
     private val variables: Operation.Variables = object : Operation.Variables() {
         override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -33,7 +35,7 @@ data class TestQueryMutation(val ep: Episode, val review: ReviewInput) : Mutatio
         override fun marshaller(): InputFieldMarshaller = object : InputFieldMarshaller {
             @Throws(IOException::class)
             override fun marshal(writer: InputFieldWriter) {
-                writer.writeString("ep", ep.value.rawValue)
+                writer.writeString("ep", ep.rawValue)
                 writer.writeObject("review", review.marshaller())
             }
         }
@@ -41,11 +43,11 @@ data class TestQueryMutation(val ep: Episode, val review: ReviewInput) : Mutatio
 
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQueryMutation.Data): TestQueryMutation.Data = data
+    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
     override fun variables(): Operation.Variables = variables
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQueryMutation.Data> = ResponseFieldMapper {
-        TestQueryMutation.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
+        TestQuery.Data(it)
     }
 
     /**
@@ -100,8 +102,8 @@ data class TestQueryMutation(val ep: Episode, val review: ReviewInput) : Mutatio
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
-                val createReview = reader.readObject<CreateReview>(RESPONSE_FIELDS[0]) {
-                    CreateReview(it)
+                val createReview = reader.readObject<CreateReview>(RESPONSE_FIELDS[0]) { reader ->
+                    CreateReview(reader)
                 }
 
                 return Data(
@@ -135,6 +137,6 @@ data class TestQueryMutation(val ep: Episode, val review: ReviewInput) : Mutatio
                 |}
                 """.trimMargin()
 
-        val OPERATION_NAME: OperationName = OperationName { "TestQueryMutation" }
+        val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
     }
 }

@@ -16,6 +16,7 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
@@ -75,8 +76,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
             operator fun invoke(reader: ResponseReader): Edge {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) {
-                    Node(it)
+                val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
+                    Node(reader)
                 }
 
                 return Edge(
@@ -94,13 +95,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     data class FriendsConnection(
         val __typename: String,
         val totalCount: Int?,
-        val edges: List<Edge>?
+        val edges: List<Edge?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeInt(RESPONSE_FIELDS[1], totalCount)
             it.writeList(RESPONSE_FIELDS[2], edges) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeObject(value?.marshaller())
                 }
@@ -118,8 +118,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val totalCount = reader.readInt(RESPONSE_FIELDS[1])
                 val edges = reader.readList<Edge>(RESPONSE_FIELDS[2]) {
-                    it.readObject<Edge> {
-                        Edge(it)
+                    it.readObject<Edge> { reader ->
+                        Edge(reader)
                     }
 
                 }
@@ -157,8 +157,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             operator fun invoke(reader: ResponseReader): R2 {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
-                val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) {
-                    FriendsConnection(it)
+                val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+                    FriendsConnection(reader)
                 }
 
                 return R2(
@@ -219,8 +219,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
             operator fun invoke(reader: ResponseReader): Edge1 {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val node = reader.readObject<Node1>(RESPONSE_FIELDS[1]) {
-                    Node1(it)
+                val node = reader.readObject<Node1>(RESPONSE_FIELDS[1]) { reader ->
+                    Node1(reader)
                 }
 
                 return Edge1(
@@ -238,13 +238,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     data class FriendsConnection1(
         val __typename: String,
         val totalCount: Int?,
-        val edges: List<Edge1>?
+        val edges: List<Edge1?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeInt(RESPONSE_FIELDS[1], totalCount)
             it.writeList(RESPONSE_FIELDS[2], edges) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeObject(value?.marshaller())
                 }
@@ -262,8 +261,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val totalCount = reader.readInt(RESPONSE_FIELDS[1])
                 val edges = reader.readList<Edge1>(RESPONSE_FIELDS[2]) {
-                    it.readObject<Edge1> {
-                        Edge1(it)
+                    it.readObject<Edge1> { reader ->
+                        Edge1(reader)
                     }
 
                 }
@@ -306,8 +305,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
                 val name = reader.readString(RESPONSE_FIELDS[2])
-                val friendsConnection = reader.readObject<FriendsConnection1>(RESPONSE_FIELDS[3]) {
-                    FriendsConnection1(it)
+                val friendsConnection = reader.readObject<FriendsConnection1>(RESPONSE_FIELDS[3]) { reader ->
+                    FriendsConnection1(reader)
                 }
 
                 return Luke(
@@ -334,12 +333,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
-                val r2 = reader.readObject<R2>(RESPONSE_FIELDS[0]) {
-                    R2(it)
+                val r2 = reader.readObject<R2>(RESPONSE_FIELDS[0]) { reader ->
+                    R2(reader)
                 }
 
-                val luke = reader.readObject<Luke>(RESPONSE_FIELDS[1]) {
-                    Luke(it)
+                val luke = reader.readObject<Luke>(RESPONSE_FIELDS[1]) { reader ->
+                    Luke(reader)
                 }
 
                 return Data(

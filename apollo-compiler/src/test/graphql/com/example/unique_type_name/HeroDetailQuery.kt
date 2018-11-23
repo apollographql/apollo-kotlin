@@ -17,6 +17,7 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
@@ -70,20 +71,18 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     data class Friend(
         val __typename: String,
         val name: String,
-        val appearsIn: List<Episode>,
-        val friends: List<Friend1>?
+        val appearsIn: List<Episode?>,
+        val friends: List<Friend1?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeString(RESPONSE_FIELDS[1], name)
             it.writeList(RESPONSE_FIELDS[2], appearsIn) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
-                    listItemWriter.writeString(value)
+                    listItemWriter.writeString(value?.rawValue)
                 }
             }
             it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeObject(value?.marshaller())
                 }
@@ -105,8 +104,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
                     Episode.safeValueOf(it.readString())
                 }
                 val friends = reader.readList<Friend1>(RESPONSE_FIELDS[3]) {
-                    it.readObject<Friend1> {
-                        Friend1(it)
+                    it.readObject<Friend1> { reader ->
+                        Friend1(reader)
                     }
 
                 }
@@ -128,14 +127,13 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     data class AsHuman(
         val __typename: String,
         val name: String,
-        val friends: List<Friend>?,
+        val friends: List<Friend?>?,
         val height: Double?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeString(RESPONSE_FIELDS[1], name)
             it.writeList(RESPONSE_FIELDS[2], friends) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeObject(value?.marshaller())
                 }
@@ -155,8 +153,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
                 val friends = reader.readList<Friend>(RESPONSE_FIELDS[2]) {
-                    it.readObject<Friend> {
-                        Friend(it)
+                    it.readObject<Friend> { reader ->
+                        Friend(reader)
                     }
 
                 }
@@ -204,17 +202,16 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
      * @param name The name of the character
      * @param friends The friends of the character, or an empty list if they have none
      */
-    data class HeroDetailQuery(
+    data class HeroDetailQuery1(
         val __typename: String,
         val name: String,
-        val friends: List<Friend12>?,
+        val friends: List<Friend12?>?,
         val asHuman: AsHuman?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeString(RESPONSE_FIELDS[1], name)
             it.writeList(RESPONSE_FIELDS[2], friends) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeObject(value?.marshaller())
                 }
@@ -230,12 +227,12 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
                     ResponseField.forInlineFragment("__typename", "__typename", listOf("Human"))
                     )
 
-            operator fun invoke(reader: ResponseReader): HeroDetailQuery {
+            operator fun invoke(reader: ResponseReader): HeroDetailQuery1 {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
                 val friends = reader.readList<Friend12>(RESPONSE_FIELDS[2]) {
-                    it.readObject<Friend12> {
-                        Friend12(it)
+                    it.readObject<Friend12> { reader ->
+                        Friend12(reader)
                     }
 
                 }
@@ -243,7 +240,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
                     AsHuman(reader)
                 }
 
-                return HeroDetailQuery(
+                return HeroDetailQuery1(
                     __typename = __typename,
                     name = name,
                     friends = friends,
@@ -253,7 +250,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
         }
     }
 
-    data class Data(val heroDetailQuery: HeroDetailQuery?) : Operation.Data {
+    data class Data(val heroDetailQuery: HeroDetailQuery1?) : Operation.Data {
         override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeObject(RESPONSE_FIELDS[0], heroDetailQuery?.marshaller())
         }
@@ -264,8 +261,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
-                val heroDetailQuery = reader.readObject<HeroDetailQuery>(RESPONSE_FIELDS[0]) {
-                    HeroDetailQuery(it)
+                val heroDetailQuery = reader.readObject<HeroDetailQuery1>(RESPONSE_FIELDS[0]) { reader ->
+                    HeroDetailQuery1(reader)
                 }
 
                 return Data(

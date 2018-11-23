@@ -5,8 +5,22 @@ targetCompatibility = JavaVersion.VERSION_1_6
 sourceCompatibility = JavaVersion.VERSION_1_6
 
 sourceSets {
-  main.java.srcDir "src/main/build"
-  main.java.srcDir "src/generated/kotlin"
+  main {
+    java {
+      srcDir "src/main/build"
+    }
+  }
+  main {
+    java {
+      srcDir "src/generated/kotlin"
+    }
+  }
+  test {
+    java {
+      srcDir "src/test/graphql"
+      exclude '**/*.java'
+    }
+  }
 }
 
 dependencies {

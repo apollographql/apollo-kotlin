@@ -18,11 +18,13 @@ import kotlin.Array
 import kotlin.Double
 import kotlin.Int
 import kotlin.String
+import kotlin.Suppress
 import kotlin.collections.Map
 import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 data class TestQuery(
     val episode: Input<Episode>,
     val stars: Int,
@@ -115,8 +117,8 @@ data class TestQuery(
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
-                val heroWithReview = reader.readObject<HeroWithReview>(RESPONSE_FIELDS[0]) {
-                    HeroWithReview(it)
+                val heroWithReview = reader.readObject<HeroWithReview>(RESPONSE_FIELDS[0]) { reader ->
+                    HeroWithReview(reader)
                 }
 
                 return Data(

@@ -15,11 +15,13 @@ import kotlin.Any
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
+import kotlin.Suppress
 import kotlin.collections.Map
 import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 data class TestSubscription(val repo: String) : Subscription<TestSubscription.Data, TestSubscription.Data, Operation.Variables> {
     @Transient
     private val variables: Operation.Variables = object : Operation.Variables() {
@@ -98,8 +100,8 @@ data class TestSubscription(val repo: String) : Subscription<TestSubscription.Da
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
-                val commentAdded = reader.readObject<CommentAdded>(RESPONSE_FIELDS[0]) {
-                    CommentAdded(it)
+                val commentAdded = reader.readObject<CommentAdded>(RESPONSE_FIELDS[0]) { reader ->
+                    CommentAdded(reader)
                 }
 
                 return Data(

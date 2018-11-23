@@ -11,8 +11,10 @@ import javax.annotation.Generated
 import kotlin.Array
 import kotlin.Double
 import kotlin.String
+import kotlin.Suppress
 
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
@@ -149,8 +151,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
-                val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) {
-                    Hero(it)
+                val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
+                    Hero(reader)
                 }
 
                 return Data(

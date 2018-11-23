@@ -16,6 +16,7 @@ import kotlin.collections.List
  * @param name The name of this starship. The common name, such as "Death Star".
  */
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 data class StarshipFragment(
     val __typename: String,
     val id: String,
@@ -61,8 +62,8 @@ data class StarshipFragment(
             val __typename = reader.readString(RESPONSE_FIELDS[0])
             val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
             val name = reader.readString(RESPONSE_FIELDS[2])
-            val pilotConnection = reader.readObject<PilotConnection>(RESPONSE_FIELDS[3]) {
-                PilotConnection(it)
+            val pilotConnection = reader.readObject<PilotConnection>(RESPONSE_FIELDS[3]) { reader ->
+                PilotConnection(reader)
             }
 
             return StarshipFragment(
@@ -129,8 +130,8 @@ data class StarshipFragment(
 
             operator fun invoke(reader: ResponseReader): Edge {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) {
-                    Node(it)
+                val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
+                    Node(reader)
                 }
 
                 return Edge(
@@ -146,12 +147,11 @@ data class StarshipFragment(
      */
     data class PilotConnection(
         val __typename: String,
-        val edges: List<Edge>?
+        val edges: List<Edge?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeList(RESPONSE_FIELDS[1], edges) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeObject(value?.marshaller())
                 }
@@ -167,8 +167,8 @@ data class StarshipFragment(
             operator fun invoke(reader: ResponseReader): PilotConnection {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val edges = reader.readList<Edge>(RESPONSE_FIELDS[1]) {
-                    it.readObject<Edge> {
-                        Edge(it)
+                    it.readObject<Edge> { reader ->
+                        Edge(reader)
                     }
 
                 }

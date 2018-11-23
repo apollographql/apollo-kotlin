@@ -15,14 +15,15 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 @Generated("Apollo GraphQL")
-class AllStarshipsQuery : Query<AllStarshipsQuery.Data, AllStarshipsQuery.Data, Operation.Variables> {
+@Suppress("NAME_SHADOWING", "LocalVariableName")
+class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: AllStarshipsQuery.Data): AllStarshipsQuery.Data = data
+    override fun wrapData(data: AllStarships.Data): AllStarships.Data = data
     override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<AllStarshipsQuery.Data> = ResponseFieldMapper {
-        AllStarshipsQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<AllStarships.Data> = ResponseFieldMapper {
+        AllStarships.Data(it)
     }
 
     data class Node(val __typename: String, val fragments: Fragments) {
@@ -80,8 +81,8 @@ class AllStarshipsQuery : Query<AllStarshipsQuery.Data, AllStarshipsQuery.Data, 
 
             operator fun invoke(reader: ResponseReader): Edge {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) {
-                    Node(it)
+                val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
+                    Node(reader)
                 }
 
                 return Edge(
@@ -97,12 +98,11 @@ class AllStarshipsQuery : Query<AllStarshipsQuery.Data, AllStarshipsQuery.Data, 
      */
     data class AllStarship(
         val __typename: String,
-        val edges: List<Edge>?
+        val edges: List<Edge?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeList(RESPONSE_FIELDS[1], edges) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeObject(value?.marshaller())
                 }
@@ -118,8 +118,8 @@ class AllStarshipsQuery : Query<AllStarshipsQuery.Data, AllStarshipsQuery.Data, 
             operator fun invoke(reader: ResponseReader): AllStarship {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val edges = reader.readList<Edge>(RESPONSE_FIELDS[1]) {
-                    it.readObject<Edge> {
-                        Edge(it)
+                    it.readObject<Edge> { reader ->
+                        Edge(reader)
                     }
 
                 }
@@ -143,8 +143,8 @@ class AllStarshipsQuery : Query<AllStarshipsQuery.Data, AllStarshipsQuery.Data, 
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
-                val allStarships = reader.readObject<AllStarship>(RESPONSE_FIELDS[0]) {
-                    AllStarship(it)
+                val allStarships = reader.readObject<AllStarship>(RESPONSE_FIELDS[0]) { reader ->
+                    AllStarship(reader)
                 }
 
                 return Data(
@@ -211,6 +211,6 @@ class AllStarshipsQuery : Query<AllStarshipsQuery.Data, AllStarshipsQuery.Data, 
                 |}
                 """.trimMargin()
 
-        val OPERATION_NAME: OperationName = OperationName { "AllStarshipsQuery" }
+        val OPERATION_NAME: OperationName = OperationName { "AllStarships" }
     }
 }

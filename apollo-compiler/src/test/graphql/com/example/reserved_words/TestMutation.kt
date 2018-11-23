@@ -15,11 +15,13 @@ import javax.annotation.Generated
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
+import kotlin.Suppress
 import kotlin.collections.Map
 import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 data class TestMutation(val input: TestInputType) : Mutation<TestMutation.Data, TestMutation.Data, Operation.Variables> {
     @Transient
     private val variables: Operation.Variables = object : Operation.Variables() {

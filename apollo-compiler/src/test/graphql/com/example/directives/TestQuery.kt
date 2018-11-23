@@ -16,11 +16,13 @@ import kotlin.Array
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
+import kotlin.Suppress
 import kotlin.collections.Map
 import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 data class TestQuery(val includeName: Boolean, val skipFriends: Boolean) : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     @Transient
     private val variables: Operation.Variables = object : Operation.Variables() {
@@ -101,8 +103,8 @@ data class TestQuery(val includeName: Boolean, val skipFriends: Boolean) : Query
             operator fun invoke(reader: ResponseReader): Hero {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
-                val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) {
-                    FriendsConnection(it)
+                val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+                    FriendsConnection(reader)
                 }
 
                 return Hero(
@@ -125,8 +127,8 @@ data class TestQuery(val includeName: Boolean, val skipFriends: Boolean) : Query
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
-                val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) {
-                    Hero(it)
+                val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
+                    Hero(reader)
                 }
 
                 return Data(

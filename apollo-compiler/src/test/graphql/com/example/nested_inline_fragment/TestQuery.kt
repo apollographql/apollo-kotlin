@@ -11,8 +11,10 @@ import com.example.nested_inline_fragment.fragment.TestSetting
 import javax.annotation.Generated
 import kotlin.Array
 import kotlin.String
+import kotlin.Suppress
 
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
@@ -69,8 +71,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
-                val setting = reader.readObject<Setting>(RESPONSE_FIELDS[0]) {
-                    Setting(it)
+                val setting = reader.readObject<Setting>(RESPONSE_FIELDS[0]) { reader ->
+                    Setting(reader)
                 }
 
                 return Data(

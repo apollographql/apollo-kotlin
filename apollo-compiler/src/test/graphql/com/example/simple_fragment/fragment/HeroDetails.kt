@@ -7,11 +7,13 @@ import com.apollographql.apollo.api.ResponseReader
 import javax.annotation.Generated
 import kotlin.Array
 import kotlin.String
+import kotlin.Suppress
 
 /**
  * @param name The name of the character
  */
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 data class HeroDetails(
     val __typename: String,
     val name: String

@@ -8,12 +8,14 @@ import javax.annotation.Generated
 import kotlin.Array
 import kotlin.Double
 import kotlin.String
+import kotlin.Suppress
 
 /**
  * @param name What this human calls themselves
  * @param height Height in the preferred unit, default is meters
  */
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 data class HumanDetails(
     val __typename: String,
     val name: String,

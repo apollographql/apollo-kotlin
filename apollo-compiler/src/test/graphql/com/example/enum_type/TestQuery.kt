@@ -15,6 +15,7 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
@@ -33,16 +34,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     data class Hero(
         val __typename: String,
         val name: String,
-        val appearsIn: List<Episode>,
+        val appearsIn: List<Episode?>,
         val firstAppearsIn: Episode
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeString(RESPONSE_FIELDS[1], name)
             it.writeList(RESPONSE_FIELDS[2], appearsIn) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
-                    listItemWriter.writeString(value)
+                    listItemWriter.writeString(value?.rawValue)
                 }
             }
             it.writeString(RESPONSE_FIELDS[3], firstAppearsIn.rawValue)
@@ -84,8 +84,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
-                val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) {
-                    Hero(it)
+                val hero = reader.readObject<Hero>(RESPONSE_FIELDS[0]) { reader ->
+                    Hero(reader)
                 }
 
                 return Data(

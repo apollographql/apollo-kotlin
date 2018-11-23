@@ -17,6 +17,7 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
@@ -65,14 +66,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val __typename: String,
         val name: String,
         val homePlanet: String?,
-        val friends: List<Friend>?
+        val friends: List<Friend?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeString(RESPONSE_FIELDS[1], name)
             it.writeString(RESPONSE_FIELDS[2], homePlanet)
             it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeObject(value?.marshaller())
                 }
@@ -92,8 +92,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                 val name = reader.readString(RESPONSE_FIELDS[1])
                 val homePlanet = reader.readString(RESPONSE_FIELDS[2])
                 val friends = reader.readList<Friend>(RESPONSE_FIELDS[3]) {
-                    it.readObject<Friend> {
-                        Friend(it)
+                    it.readObject<Friend> { reader ->
+                        Friend(reader)
                     }
 
                 }
@@ -151,14 +151,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val __typename: String,
         val name: String,
         val primaryFunction: String?,
-        val friends: List<Friend1>?
+        val friends: List<Friend1?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeString(RESPONSE_FIELDS[1], name)
             it.writeString(RESPONSE_FIELDS[2], primaryFunction)
             it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeObject(value?.marshaller())
                 }
@@ -178,8 +177,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                 val name = reader.readString(RESPONSE_FIELDS[1])
                 val primaryFunction = reader.readString(RESPONSE_FIELDS[2])
                 val friends = reader.readList<Friend1>(RESPONSE_FIELDS[3]) {
-                    it.readObject<Friend1> {
-                        Friend1(it)
+                    it.readObject<Friend1> { reader ->
+                        Friend1(reader)
                     }
 
                 }
@@ -247,14 +246,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val __typename: String,
         val id: String,
         val name: String,
-        val friends: List<Friend12>?
+        val friends: List<Friend12?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
             it.writeString(RESPONSE_FIELDS[2], name)
             it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeObject(value?.marshaller())
                 }
@@ -274,8 +272,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                 val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
                 val name = reader.readString(RESPONSE_FIELDS[2])
                 val friends = reader.readList<Friend12>(RESPONSE_FIELDS[3]) {
-                    it.readObject<Friend12> {
-                        Friend12(it)
+                    it.readObject<Friend12> { reader ->
+                        Friend12(reader)
                     }
 
                 }
@@ -327,14 +325,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val __typename: String,
         val name: String,
         val homePlanet: String?,
-        val friends: List<Friend123>?
+        val friends: List<Friend123?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeString(RESPONSE_FIELDS[1], name)
             it.writeString(RESPONSE_FIELDS[2], homePlanet)
             it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeObject(value?.marshaller())
                 }
@@ -354,8 +351,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                 val name = reader.readString(RESPONSE_FIELDS[1])
                 val homePlanet = reader.readString(RESPONSE_FIELDS[2])
                 val friends = reader.readList<Friend123>(RESPONSE_FIELDS[3]) {
-                    it.readObject<Friend123> {
-                        Friend123(it)
+                    it.readObject<Friend123> { reader ->
+                        Friend123(reader)
                     }
 
                 }
@@ -413,14 +410,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val __typename: String,
         val name: String,
         val primaryFunction: String?,
-        val friends: List<Friend1234>?
+        val friends: List<Friend1234?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeString(RESPONSE_FIELDS[1], name)
             it.writeString(RESPONSE_FIELDS[2], primaryFunction)
             it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeObject(value?.marshaller())
                 }
@@ -440,8 +436,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                 val name = reader.readString(RESPONSE_FIELDS[1])
                 val primaryFunction = reader.readString(RESPONSE_FIELDS[2])
                 val friends = reader.readList<Friend1234>(RESPONSE_FIELDS[3]) {
-                    it.readObject<Friend1234> {
-                        Friend1234(it)
+                    it.readObject<Friend1234> { reader ->
+                        Friend1234(reader)
                     }
 
                 }
@@ -509,14 +505,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val __typename: String,
         val id: String,
         val name: String,
-        val friends: List<Friend12345>?
+        val friends: List<Friend12345?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
             it.writeString(RESPONSE_FIELDS[2], name)
             it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeObject(value?.marshaller())
                 }
@@ -536,8 +531,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                 val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
                 val name = reader.readString(RESPONSE_FIELDS[2])
                 val friends = reader.readList<Friend12345>(RESPONSE_FIELDS[3]) {
-                    it.readObject<Friend12345> {
-                        Friend12345(it)
+                    it.readObject<Friend12345> { reader ->
+                        Friend12345(reader)
                     }
 
                 }
@@ -625,10 +620,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    data class Data(val search: List<Search>?) : Operation.Data {
+    data class Data(val search: List<Search?>?) : Operation.Data {
         override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeList(RESPONSE_FIELDS[0], search) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeObject(value?.marshaller())
                 }
@@ -643,8 +637,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
             operator fun invoke(reader: ResponseReader): Data {
                 val search = reader.readList<Search>(RESPONSE_FIELDS[0]) {
-                    it.readObject<Search> {
-                        Search(it)
+                    it.readObject<Search> { reader ->
+                        Search(reader)
                     }
 
                 }

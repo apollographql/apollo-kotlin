@@ -23,6 +23,7 @@ import kotlin.jvm.Throws
 import kotlin.jvm.Transient
 
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 data class TestQuery(val id: String) : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     @Transient
     private val variables: Operation.Variables = object : Operation.Variables() {
@@ -33,7 +34,7 @@ data class TestQuery(val id: String) : Query<TestQuery.Data, TestQuery.Data, Ope
         override fun marshaller(): InputFieldMarshaller = object : InputFieldMarshaller {
             @Throws(IOException::class)
             override fun marshal(writer: InputFieldWriter) {
-                writer.writeCustom("id", CustomType.ID, id.value)
+                writer.writeCustom("id", CustomType.ID, id)
             }
         }
     }
@@ -55,14 +56,13 @@ data class TestQuery(val id: String) : Query<TestQuery.Data, TestQuery.Data, Ope
         val __typename: String,
         val id: String,
         val name: String,
-        val coordinates: List<List<Double>>?
+        val coordinates: List<List<Double?>?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
             it.writeString(RESPONSE_FIELDS[2], name)
             it.writeList(RESPONSE_FIELDS[3], coordinates) { value, listItemWriter ->
-                @Suppress("NAME_SHADOWING")
                 value?.forEach { value ->
                     listItemWriter.writeList(value) { value, listItemWriter ->
                         value?.forEach { value ->
@@ -85,7 +85,7 @@ data class TestQuery(val id: String) : Query<TestQuery.Data, TestQuery.Data, Ope
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
                 val name = reader.readString(RESPONSE_FIELDS[2])
-                val coordinates = reader.readList<List<Double>>(RESPONSE_FIELDS[3]) {
+                val coordinates = reader.readList<List<Double?>>(RESPONSE_FIELDS[3]) {
                     it.readList<Double> {
                         it.readDouble()
                     }
@@ -114,8 +114,8 @@ data class TestQuery(val id: String) : Query<TestQuery.Data, TestQuery.Data, Ope
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
-                val starship = reader.readObject<Starship>(RESPONSE_FIELDS[0]) {
-                    Starship(it)
+                val starship = reader.readObject<Starship>(RESPONSE_FIELDS[0]) { reader ->
+                    Starship(reader)
                 }
 
                 return Data(

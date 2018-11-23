@@ -7,12 +7,14 @@ import com.apollographql.apollo.api.ResponseReader
 import javax.annotation.Generated
 import kotlin.Array
 import kotlin.String
+import kotlin.Suppress
 
 /**
  * @param name What others call this droid
  * @param primaryFunction This droid's primary function
  */
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 data class DroidDetails(
     val __typename: String,
     val name: String,

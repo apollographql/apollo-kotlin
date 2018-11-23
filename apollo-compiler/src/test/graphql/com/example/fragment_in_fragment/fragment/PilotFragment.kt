@@ -7,12 +7,14 @@ import com.apollographql.apollo.api.ResponseReader
 import javax.annotation.Generated
 import kotlin.Array
 import kotlin.String
+import kotlin.Suppress
 
 /**
  * @param name The name of this person.
  * @param homeworld A planet that this person was born on or inhabits.
  */
 @Generated("Apollo GraphQL")
+@Suppress("NAME_SHADOWING", "LocalVariableName")
 data class PilotFragment(
     val __typename: String,
     val name: String?,
@@ -47,8 +49,8 @@ data class PilotFragment(
         operator fun invoke(reader: ResponseReader): PilotFragment {
             val __typename = reader.readString(RESPONSE_FIELDS[0])
             val name = reader.readString(RESPONSE_FIELDS[1])
-            val homeworld = reader.readObject<Homeworld>(RESPONSE_FIELDS[2]) {
-                Homeworld(it)
+            val homeworld = reader.readObject<Homeworld>(RESPONSE_FIELDS[2]) { reader ->
+                Homeworld(reader)
             }
 
             return PilotFragment(
