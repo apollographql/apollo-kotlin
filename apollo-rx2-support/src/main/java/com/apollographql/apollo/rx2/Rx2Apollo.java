@@ -179,11 +179,11 @@ public class Rx2Apollo {
   }
 
   /**
-   * Converts an {@link ApolloStoreOperation} to a Observable.
+   * Converts an {@link ApolloStoreOperation} to a Single.
    *
    * @param operation        the ApolloStoreOperation to convert
    * @param <T>              the value type
-   * @return the converted Observable
+   * @return the converted Single
    */
   @NotNull public static <T> Single<T> from(@NotNull final ApolloStoreOperation<T> operation) {
     checkNotNull(operation, "operation == null");
