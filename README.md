@@ -51,6 +51,10 @@ buildscript {
   }
 }
 
+repositories {
+    jcenter()
+}
+
 dependencies {
   compile 'com.apollographql.apollo:apollo-runtime:x.y.z'
 }
@@ -67,6 +71,11 @@ buildscript {
   dependencies {
     classpath 'com.apollographql.apollo:apollo-gradle-plugin:1.0.1-SNAPSHOT'
   }
+}
+
+repositories {
+    jcenter()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
 }
 
 dependencies {
