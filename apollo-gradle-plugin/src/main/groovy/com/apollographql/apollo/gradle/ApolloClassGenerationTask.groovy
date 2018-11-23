@@ -38,6 +38,11 @@ class ApolloClassGenerationTask extends SourceTask {
     inputs.outOfDate(new Action<InputFileDetails>() {
       @Override
       void execute(@NotNull InputFileDetails inputFileDetails) {
+        File inputFile = inputFileDetails.getFile()
+        if (!inputFile.isFile()) {
+          // skip if input is not a file
+          return
+        }
         outputDir.asFile.get().delete()
 
         String outputPackageName = outputPackageName.get()
@@ -45,7 +50,7 @@ class ApolloClassGenerationTask extends SourceTask {
           outputPackageName = null
         }
         GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(
-            inputFileDetails.getFile(), outputDir.get().asFile, customTypeMapping.get(),
+            inputFile, outputDir.get().asFile, customTypeMapping.get(),
             nullableValueType != null ? nullableValueType : NullableValueType.ANNOTATED, useSemanticNaming.get(),
             generateModelBuilder.get(), useJavaBeansSemanticNaming.get(), outputPackageName,
             suppressRawTypesWarning.get()
