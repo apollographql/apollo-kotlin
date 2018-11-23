@@ -7,14 +7,14 @@ import org.gradle.api.provider.Property
 class ApolloExtension {
   static final String NAME = "apollo"
 
-  final Property<String> nullableValueType
-  final Property<Boolean> useSemanticNaming
-  final Property<Boolean> generateModelBuilder
-  final Property<Boolean> useJavaBeansSemanticNaming
-  final Property<Boolean> suppressRawTypesWarning
-  final Property<String> schemaFilePath
-  final Property<String> outputPackageName
-  final Property<Map> customTypeMapping
+  private final Property<String> nullableValueType
+  private final Property<Boolean> useSemanticNaming
+  private final Property<Boolean> generateModelBuilder
+  private final Property<Boolean> useJavaBeansSemanticNaming
+  private final Property<Boolean> suppressRawTypesWarning
+  private final Property<String> schemaFilePath
+  private final Property<String> outputPackageName
+  private final Property<Map> customTypeMapping
 
   ApolloExtension(Project project) {
     nullableValueType = project.getObjects().property(String.class)
@@ -40,5 +40,37 @@ class ApolloExtension {
 
     customTypeMapping = project.getObjects().property(Map.class)
     customTypeMapping.set(new LinkedHashMap())
+  }
+
+  Property<String> getNullableValueType() {
+    return nullableValueType
+  }
+
+  Property<Boolean> getUseSemanticNaming() {
+    return useSemanticNaming
+  }
+
+  Property<Boolean> getGenerateModelBuilder() {
+    return generateModelBuilder
+  }
+
+  Property<Boolean> getUseJavaBeansSemanticNaming() {
+    return useJavaBeansSemanticNaming
+  }
+
+  Property<Boolean> getSuppressRawTypesWarning() {
+    return suppressRawTypesWarning
+  }
+
+  Property<String> getSchemaFilePath() {
+    return schemaFilePath
+  }
+
+  Property<String> getOutputPackageName() {
+    return outputPackageName
+  }
+
+  Property<Map> getCustomTypeMapping() {
+    return customTypeMapping
   }
 }
