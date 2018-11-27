@@ -7,14 +7,14 @@ import org.gradle.api.provider.Property
 class ApolloExtension {
   static final String NAME = "apollo"
 
-  private final Property<String> nullableValueType
-  private final Property<Boolean> useSemanticNaming
-  private final Property<Boolean> generateModelBuilder
-  private final Property<Boolean> useJavaBeansSemanticNaming
-  private final Property<Boolean> suppressRawTypesWarning
-  private final Property<String> schemaFilePath
-  private final Property<String> outputPackageName
-  private final Property<Map> customTypeMapping
+  final Property<String> nullableValueType
+  final Property<Boolean> useSemanticNaming
+  final Property<Boolean> generateModelBuilder
+  final Property<Boolean> useJavaBeansSemanticNaming
+  final Property<Boolean> suppressRawTypesWarning
+  final Property<String> schemaFilePath
+  final Property<String> outputPackageName
+  final Property<Map> customTypeMapping
 
   ApolloExtension(Project project) {
     nullableValueType = project.getObjects().property(String.class)
@@ -42,35 +42,37 @@ class ApolloExtension {
     customTypeMapping.set(new LinkedHashMap())
   }
 
-  Property<String> getNullableValueType() {
-    return nullableValueType
+  void setNullableValueType(String nullableValueType) {
+    this.nullableValueType.set(nullableValueType)
   }
 
-  Property<Boolean> getUseSemanticNaming() {
-    return useSemanticNaming
+  void setUseSemanticNaming(Boolean useSemanticNaming) {
+    this.useSemanticNaming.set(useSemanticNaming)
   }
 
-  Property<Boolean> getGenerateModelBuilder() {
-    return generateModelBuilder
+  void setGenerateModelBuilder(Boolean generateModelBuilder) {
+    this.generateModelBuilder.set(generateModelBuilder)
   }
 
-  Property<Boolean> getUseJavaBeansSemanticNaming() {
-    return useJavaBeansSemanticNaming
+  void setUseJavaBeansSemanticNaming(Boolean useJavaBeansSemanticNaming) {
+    this.useJavaBeansSemanticNaming.set(useJavaBeansSemanticNaming)
   }
 
-  Property<Boolean> getSuppressRawTypesWarning() {
-    return suppressRawTypesWarning
+  void setSuppressRawTypesWarning(Boolean suppressRawTypesWarning) {
+    this.suppressRawTypesWarning.set(suppressRawTypesWarning)
   }
 
-  Property<String> getSchemaFilePath() {
-    return schemaFilePath
+  void setSchemaFilePath(String schemaFilePath) {
+    this.schemaFilePath.set(schemaFilePath)
   }
 
-  Property<String> getOutputPackageName() {
-    return outputPackageName
+  void setOutputPackageName(String outputPackageName) {
+    this.outputPackageName.set(outputPackageName)
   }
 
-  Property<Map> getCustomTypeMapping() {
-    return customTypeMapping
+  void setCustomTypeMapping(Map customTypeMapping) {
+    LinkedHashMap tmp = new LinkedHashMap()
+    tmp.putAll(customTypeMapping)
+    this.customTypeMapping.set(tmp)
   }
 }
