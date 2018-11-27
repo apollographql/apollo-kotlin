@@ -1,8 +1,6 @@
 package com.apollographql.apollo.gradle
 
-import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.InstantAppPlugin
-import com.android.build.gradle.LibraryPlugin
+
 import com.android.build.gradle.api.BaseVariant
 import com.apollographql.apollo.compiler.GraphQLCompiler
 import com.google.common.base.Joiner
@@ -15,8 +13,6 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.internal.AbstractTask
 import org.gradle.api.internal.file.FileResolver
-import org.gradle.api.plugins.JavaLibraryPlugin
-import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.compile.AbstractCompile
 import org.gradle.api.tasks.compile.JavaCompile
@@ -40,11 +36,14 @@ class ApolloPlugin implements Plugin<Project> {
   @Override
   void apply(Project project) {
     this.project = project
-    if (hasAndroidPlugin(project) || hasJavaPlugin(project)) {
+    project.plugins.withId("java-base") {
       applyApolloPlugin()
-    } else {
-      throw new IllegalArgumentException(
-          "Apollo plugin couldn't be applied. The Android or Java plugin must be configured first")
+    }
+    project.gradle.getTaskGraph().whenReady {
+      if (!project.plugins.hasPlugin("java-base")) {
+        throw new IllegalArgumentException(
+            "Apollo plugin couldn't be applied without Android or Java or Kotlin plugin.")
+      }
     }
   }
 
@@ -233,17 +232,4 @@ class ApolloPlugin implements Plugin<Project> {
       return false
     }
   }
-
-  private static boolean hasAndroidPlugin(Project project) {
-    return project.plugins.hasPlugin(AppPlugin) \
-        || project.plugins.hasPlugin(InstantAppPlugin) \
-        || project.plugins.hasPlugin(LibraryPlugin) \
-        || project.plugins.hasPlugin("com.android.feature")
-  }
-
-  private static boolean hasJavaPlugin(Project project) {
-    return project.plugins.hasPlugin(JavaPlugin) \
-        || project.plugins.hasPlugin(JavaLibraryPlugin)
-  }
-
 }
