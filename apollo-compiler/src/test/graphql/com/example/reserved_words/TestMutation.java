@@ -3,7 +3,6 @@ package com.example.reserved_words;
 import com.apollographql.apollo.api.InputFieldMarshaller;
 import com.apollographql.apollo.api.InputFieldWriter;
 import com.apollographql.apollo.api.Mutation;
-import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.ResponseFieldMapper;
@@ -97,7 +96,7 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
     }
   }
 
-  public static final class Variables extends Operation.Variables {
+  public static final class Variables extends com.apollographql.apollo.api.Operation.Variables {
     private final @NotNull TestInputType input;
 
     private final transient Map<String, Object> valueMap = new LinkedHashMap<>();
@@ -127,7 +126,7 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
     }
   }
 
-  public static class Data implements Operation.Data {
+  public static class Data implements com.apollographql.apollo.api.Operation.Data {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("abstract", "abstract", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("assert", "assert", null, true, Collections.<ResponseField.Condition>emptyList()),
@@ -178,7 +177,8 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
       ResponseField.forString("try", "try", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("void", "void", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forString("volatile", "volatile", null, true, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forString("while", "while", null, true, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forString("while", "while", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forObject("operation", "operation", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final Optional<String> abstract_;
@@ -281,6 +281,8 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
 
     final Optional<String> while_;
 
+    final Optional<Operation> operation;
+
     private transient volatile String $toString;
 
     private transient volatile int $hashCode;
@@ -303,7 +305,7 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
         @Nullable String super_, @Nullable String switch_, @Nullable String synchronized_,
         @Nullable String this_, @Nullable String throw_, @Nullable String throws_,
         @Nullable String transient_, @Nullable String try_, @Nullable String void_,
-        @Nullable String volatile_, @Nullable String while_) {
+        @Nullable String volatile_, @Nullable String while_, @Nullable Operation operation) {
       this.abstract_ = Optional.fromNullable(abstract_);
       this.assert_ = Optional.fromNullable(assert_);
       this.boolean_ = Optional.fromNullable(boolean_);
@@ -354,6 +356,7 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
       this.void_ = Optional.fromNullable(void_);
       this.volatile_ = Optional.fromNullable(volatile_);
       this.while_ = Optional.fromNullable(while_);
+      this.operation = Optional.fromNullable(operation);
     }
 
     public Optional<String> abstract_() {
@@ -556,6 +559,10 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
       return this.while_;
     }
 
+    public Optional<Operation> operation() {
+      return this.operation;
+    }
+
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -610,6 +617,7 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
           writer.writeString($responseFields[47], void_.isPresent() ? void_.get() : null);
           writer.writeString($responseFields[48], volatile_.isPresent() ? volatile_.get() : null);
           writer.writeString($responseFields[49], while_.isPresent() ? while_.get() : null);
+          writer.writeObject($responseFields[50], operation.isPresent() ? operation.get().marshaller() : null);
         }
       };
     }
@@ -667,7 +675,8 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
           + "try_=" + try_ + ", "
           + "void_=" + void_ + ", "
           + "volatile_=" + volatile_ + ", "
-          + "while_=" + while_
+          + "while_=" + while_ + ", "
+          + "operation=" + operation
           + "}";
       }
       return $toString;
@@ -729,7 +738,8 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
          && this.try_.equals(that.try_)
          && this.void_.equals(that.void_)
          && this.volatile_.equals(that.volatile_)
-         && this.while_.equals(that.while_);
+         && this.while_.equals(that.while_)
+         && this.operation.equals(that.operation);
       }
       return false;
     }
@@ -838,6 +848,8 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
         h ^= volatile_.hashCode();
         h *= 1000003;
         h ^= while_.hashCode();
+        h *= 1000003;
+        h ^= operation.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -845,6 +857,8 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
     }
 
     public static final class Mapper implements ResponseFieldMapper<Data> {
+      final Operation.Mapper operationFieldMapper = new Operation.Mapper();
+
       @Override
       public Data map(ResponseReader reader) {
         final String abstract_ = reader.readString($responseFields[0]);
@@ -897,7 +911,100 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
         final String void_ = reader.readString($responseFields[47]);
         final String volatile_ = reader.readString($responseFields[48]);
         final String while_ = reader.readString($responseFields[49]);
-        return new Data(abstract_, assert_, boolean_, break_, byte_, case_, catch_, char_, class_, const_, continue_, default_, do_, double_, else_, enum_, extends_, final_, finally_, float_, for_, goto_, if_, implements_, import_, instanceof_, int_, interface_, long_, native_, new_, package_, private_, protected_, public_, return_, short_, static_, strictfp_, super_, switch_, synchronized_, this_, throw_, throws_, transient_, try_, void_, volatile_, while_);
+        final Operation operation = reader.readObject($responseFields[50], new ResponseReader.ObjectReader<Operation>() {
+          @Override
+          public Operation read(ResponseReader reader) {
+            return operationFieldMapper.map(reader);
+          }
+        });
+        return new Data(abstract_, assert_, boolean_, break_, byte_, case_, catch_, char_, class_, const_, continue_, default_, do_, double_, else_, enum_, extends_, final_, finally_, float_, for_, goto_, if_, implements_, import_, instanceof_, int_, interface_, long_, native_, new_, package_, private_, protected_, public_, return_, short_, static_, strictfp_, super_, switch_, synchronized_, this_, throw_, throws_, transient_, try_, void_, volatile_, while_, operation);
+      }
+    }
+  }
+
+  public static class Operation {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    final @NotNull String name;
+
+    private transient volatile String $toString;
+
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    public Operation(@NotNull String __typename, @NotNull String name) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    public @NotNull String name() {
+      return this.name;
+    }
+
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Operation{"
+          + "__typename=" + __typename + ", "
+          + "name=" + name
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Operation) {
+        Operation that = (Operation) o;
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<Operation> {
+      @Override
+      public Operation map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        return new Operation(__typename, name);
       }
     }
   }
