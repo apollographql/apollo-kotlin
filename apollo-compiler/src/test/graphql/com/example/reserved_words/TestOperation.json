@@ -360,6 +360,29 @@
           "type": "String",
           "fragmentSpreads": [],
           "inlineFragments": []
+        },
+        {
+          "responseName": "operation",
+          "fieldName": "operation",
+          "type": "Operation",
+          "fields": [
+						{
+							"responseName": "__typename",
+							"fieldName": "__typename",
+							"type": "String!",
+							"isConditional": false
+						},
+						{
+							"responseName": "name",
+							"fieldName": "name",
+							"type": "String!",
+							"isConditional": false,
+							"isDeprecated": false,
+							"deprecationReason": null
+						}
+					],
+          "fragmentSpreads": [],
+          "inlineFragments": []
         }
       ],
       "fragmentsReferenced": [],
