@@ -247,7 +247,7 @@ Apollo GraphQL client allows you to cache responses, making it suitable for use 
 
 ### Usage
 
-To enable HTTP Cache support, add the dependency to your project's build.gradle file. The latest version is [[ ![Download](https://api.bintray.com/packages/apollographql/android/apollo-http-cache/images/download.svg) ](https://bintray.com/apollographql/android/apollo-http-cache/_latestVersion)
+To enable HTTP Cache support, add the dependency to your project's build.gradle file. The latest version is [![Download](https://api.bintray.com/packages/apollographql/android/apollo-http-cache/images/download.svg)](https://bintray.com/apollographql/android/apollo-http-cache/_latestVersion)
 
 ```groovy
 dependencies {
