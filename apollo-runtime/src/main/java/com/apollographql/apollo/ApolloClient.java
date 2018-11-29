@@ -89,7 +89,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final ApolloLogger logger;
   private final ApolloCallTracker tracker = new ApolloCallTracker();
   private final List<ApolloInterceptor> applicationInterceptors;
-  private final boolean sendOperationIdentifiers;
+  private final boolean enableAutoPersistedQueries;
   private final SubscriptionManager subscriptionManager;
 
   ApolloClient(HttpUrl serverUrl,
@@ -103,7 +103,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       CacheHeaders defaultCacheHeaders,
       ApolloLogger logger,
       List<ApolloInterceptor> applicationInterceptors,
-      boolean sendOperationIdentifiers,
+      boolean enableAutoPersistedQueries,
       SubscriptionManager subscriptionManager) {
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
@@ -116,7 +116,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     this.defaultCacheHeaders = defaultCacheHeaders;
     this.logger = logger;
     this.applicationInterceptors = applicationInterceptors;
-    this.sendOperationIdentifiers = sendOperationIdentifiers;
+    this.enableAutoPersistedQueries = enableAutoPersistedQueries;
     this.subscriptionManager = subscriptionManager;
   }
 
@@ -143,7 +143,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   public <D extends Operation.Data, T, V extends Operation.Variables> ApolloPrefetch prefetch(
       @NotNull Operation<D, T, V> operation) {
     return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, scalarTypeAdapters, dispatcher, logger,
-        tracker, sendOperationIdentifiers);
+        tracker);
   }
 
   @Override
@@ -238,7 +238,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .tracker(tracker)
         .refetchQueries(Collections.<Query>emptyList())
         .refetchQueryNames(Collections.<OperationName>emptyList())
-        .sendOperationIdentifiers(sendOperationIdentifiers)
+        .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .build();
   }
 
@@ -256,7 +256,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     Executor dispatcher;
     Optional<Logger> logger = Optional.absent();
     final List<ApolloInterceptor> applicationInterceptors = new ArrayList<>();
-    boolean sendOperationIdentifiers;
+    boolean enableAutoPersistedQueries;
     Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = Optional.absent();
     Optional<Map<String, Object>> subscriptionConnectionParams = Optional.absent();
     long subscriptionHeartbeatTimeout = -1;
@@ -424,12 +424,12 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
-     * @param sendOperationIdentifiers True if ApolloClient should send a operation identifier instead of the operation
-     *                                 definition. Default: false.
+     * @param enableAutoPersistedQueries True if ApolloClient should enable Automatic Persisted Queries support.
+     *                                   Default: false.
      * @return The {@link Builder} object to be used for chaining method calls
      */
-    public Builder sendOperationIdentifiers(boolean sendOperationIdentifiers) {
-      this.sendOperationIdentifiers = sendOperationIdentifiers;
+    public Builder enableAutoPersistedQueries(boolean enableAutoPersistedQueries) {
+      this.enableAutoPersistedQueries = enableAutoPersistedQueries;
       return this;
     }
 
@@ -531,7 +531,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
           defaultCacheHeaders,
           apolloLogger,
           applicationInterceptors,
-          sendOperationIdentifiers,
+          enableAutoPersistedQueries,
           subscriptionManager);
     }
 
