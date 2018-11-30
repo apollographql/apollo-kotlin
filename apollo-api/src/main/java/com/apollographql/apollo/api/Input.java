@@ -59,7 +59,7 @@ public final class Input<V> {
 
     Input<?> input = (Input<?>) o;
 
-    return defined == input.defined && value != null && value.equals(input.value);
+    return defined == input.defined && value == input.value;
   }
 
   @Override public int hashCode() {
