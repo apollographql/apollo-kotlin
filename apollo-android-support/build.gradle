@@ -8,7 +8,6 @@ apply plugin: 'com.android.library'
 
 android {
   compileSdkVersion androidConfig.compileSdkVersion
-  buildToolsVersion androidConfig.buildToolsVersion
 
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_7

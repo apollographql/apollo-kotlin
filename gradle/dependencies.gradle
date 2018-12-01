@@ -13,14 +13,13 @@ def versions = [
 ext.isCi = "true" == System.getenv('CI')
 
 ext.androidConfig = [
-    compileSdkVersion: 25,
-    buildToolsVersion: '26.0.2',
+    compileSdkVersion: 28,
     minSdkVersion    : 15,
-    targetSdkVersion : 25
+    targetSdkVersion : 28
 ]
 
 ext.dep = [
-    androidPlugin           : 'com.android.tools.build:gradle:2.3.3',
+    androidPlugin           : 'com.android.tools.build:gradle:3.2.1',
     apolloPlugin            : "com.apollographql.apollo:apollo-gradle-plugin:$versions.apolloVersion",
     apolloAndroidSupport    : "com.apollographql.apollo:apollo-android-support:$versions.apolloVersion",
     apolloRuntime           : "com.apollographql.apollo:apollo-runtime:$versions.apolloVersion",
