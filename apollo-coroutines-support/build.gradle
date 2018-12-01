@@ -1,0 +1,24 @@
+apply plugin: 'java'
+apply plugin: 'kotlin'
+
+targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_7
+
+dependencies {
+  compileOnly project(":apollo-runtime")
+  compileOnly project(":apollo-api")
+  compile dep.kotlinStdLib
+  compile dep.kotlinxCoroutines
+
+  testCompile dep.junit
+  testCompile dep.truth
+  testCompile dep.mockWebServer
+  testCompile dep.okhttpTestSupport
+}
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
+apply from: rootProject.file('gradle/bintray.gradle')
+
+javadoc {
+  options.encoding = 'UTF-8'
+}

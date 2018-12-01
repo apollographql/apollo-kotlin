@@ -40,6 +40,7 @@ ext.dep = [
     appcompat               : "com.android.support:appcompat-v7:$versions.supportLibVersion",
     kotlinStdLib            : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlinVersion",
     kotlinGradlePlugin      : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlinVersion",
+    kotlinxCoroutines       : "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.1",
     gradleNodePlugin        : "com.moowork.gradle:gradle-node-plugin:1.0.0",
     junit                   : 'junit:junit:4.12',
     spock                   : 'org.spockframework:spock-core:0.7-groovy-2.0',
