@@ -3,11 +3,11 @@ buildscript {
   repositories {
     jcenter()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    google()
   }
   dependencies {
     classpath dep.androidPlugin
     classpath dep.apolloPlugin
-    google()
   }
 }
 
