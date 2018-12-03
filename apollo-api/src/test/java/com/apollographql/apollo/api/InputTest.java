@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotEquals;
 
 public final class InputTest {
 
+
     @Test
     public void testInputEqualsOnNotNullValue() {
         String value = "Hello world!";
@@ -31,5 +32,52 @@ public final class InputTest {
         Input<String> anotherStringInput = Input.fromNullable(null);
 
         assertEquals(stringInput, anotherStringInput);
+    }
+
+    @Test
+    public void testInputEqualsOnNotNullObjects() {
+        TestObject object = new TestObject("Hello world!");
+        Input<TestObject> aInput = Input.fromNullable(object);
+        Input<TestObject> anotherInput = Input.fromNullable(object);
+
+        assertEquals(aInput, anotherInput);
+    }
+
+    @Test
+    public void testInputNotEqualsOnDifferentObjects() {
+        TestObject object = new TestObject("Hello world!");
+        TestObject anotherObject = new TestObject("Bye world!");
+        Input<TestObject> aInput = Input.fromNullable(object);
+        Input<TestObject> anotherInput = Input.fromNullable(anotherObject);
+
+        assertNotEquals(aInput, anotherInput);
+    }
+
+    @Test
+    public void testInputEqualsOnObjectsWithNullValue() {
+        TestObject object = new TestObject(null);
+        Input<TestObject> aInput = Input.fromNullable(object);
+        Input<TestObject> anotherInput = Input.fromNullable(object);
+
+        assertEquals(aInput, anotherInput);
+    }
+
+    @Test
+    public void testInputNotEqualsWhenAnObjectIsNull() {
+        TestObject object = new TestObject(null);
+        Input<TestObject> aInput = Input.fromNullable(object);
+        Input<TestObject> anotherInput = Input.fromNullable(null);
+
+        assertNotEquals(aInput, anotherInput);
+    }
+    //==================================================================
+    //==================================================================
+    class TestObject {
+
+        private String value;
+
+        TestObject(String  value) {
+            this.value = value;
+        }
     }
 }
