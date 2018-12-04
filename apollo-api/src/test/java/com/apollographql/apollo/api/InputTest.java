@@ -102,8 +102,12 @@ public final class InputTest {
             }
 
             TestObject input = (TestObject) o;
-            return value != null && value.equals(input.value) ||
-                    value == null && input.value == null;
+            return value != null && value.equals(input.value) || value == null && input.value == null;
         }
+
+      @Override
+      public int hashCode() {
+        return super.hashCode();
+      }
     }
 }

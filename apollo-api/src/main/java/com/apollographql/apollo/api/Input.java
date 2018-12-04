@@ -68,8 +68,8 @@ public final class Input<V> {
     }
 
     Input<?> input = (Input<?>) o;
-    return defined == input.defined && (value != null && value.equals(input.value) ||
-            value == null && input.value == null);
+    return defined == input.defined
+            && (value != null && value.equals(input.value) || value == null && input.value == null);
   }
 
   @Override
