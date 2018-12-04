@@ -23,9 +23,11 @@ import io.reactivex.functions.Predicate;
 import okhttp3.Dispatcher;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import okhttp3.internal.io.FileSystem;
 import okhttp3.internal.io.InMemoryFileSystem;
 import okhttp3.mockwebserver.MockWebServer;
+import okio.Buffer;
 
 import static com.apollographql.apollo.Utils.assertResponse;
 import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
@@ -127,7 +129,10 @@ public class ApolloPrefetchTest {
   }
 
   private void checkCachedResponse(String fileName) throws IOException {
-    String cacheKey = ApolloServerInterceptor.cacheKey(lastHttRequest.body());
+    RequestBody requestBody = lastHttRequest.body();
+    Buffer buffer = new Buffer();
+    requestBody.writeTo(buffer);
+    String cacheKey = buffer.readByteString().md5().hex();
     okhttp3.Response response = apolloClient.cachedHttpResponse(cacheKey);
     assertThat(response).isNotNull();
     assertThat(response.body().source().readUtf8()).isEqualTo(Utils.readFileToString(getClass(), "/" + fileName));

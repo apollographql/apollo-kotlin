@@ -71,7 +71,7 @@ public class ApolloAutoPersistedQueryInterceptor implements ApolloInterceptor {
             return Optional.of(request.toBuilder().sendQueryDocument(true).build());
           }
 
-          if (isPersistedQueryNotFound(response.errors()) || isPersistedQueryNotSupported(response.errors())) {
+          if (isPersistedQueryNotSupported(response.errors())) {
             // TODO how to disable Automatic Persisted Queries in future and how to notify user about this
             logger.e("GraphQL server doesn't support Automatic Persisted Queries");
             return Optional.of(request.toBuilder().sendQueryDocument(true).build());

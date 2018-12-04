@@ -131,7 +131,8 @@ public interface ApolloInterceptor {
       return new Builder(operation)
           .cacheHeaders(cacheHeaders)
           .fetchFromCache(fetchFromCache)
-          .optimisticUpdates(optimisticUpdates.orNull());
+          .optimisticUpdates(optimisticUpdates.orNull())
+          .sendQueryDocument(sendQueryDocument);
     }
 
     public static Builder builder(@NotNull Operation operation) {

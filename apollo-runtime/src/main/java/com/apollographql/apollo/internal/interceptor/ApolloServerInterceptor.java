@@ -109,7 +109,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   }
 
   Call httpCall(Operation operation, CacheHeaders cacheHeaders, boolean writeQueryDocument) throws IOException {
-    RequestBody requestBody = RequestBody.create(MEDIA_TYPE, httpRequestBody(operation, writeQueryDocument));
+    RequestBody requestBody = RequestBody.create(MEDIA_TYPE, httpRequestBody(operation, scalarTypeAdapters,
+        writeQueryDocument));
     Request.Builder requestBuilder = new Request.Builder()
         .url(serverUrl)
         .post(requestBody)
@@ -124,7 +125,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       boolean skipCacheHttpResponse = "true".equalsIgnoreCase(cacheHeaders.headerValue(
           ApolloCacheHeaders.DO_NOT_STORE));
 
-      String cacheKey = httpRequestBody(operation, true).md5().hex();
+      String cacheKey = httpRequestBody(operation, scalarTypeAdapters, true).md5().hex();
       requestBuilder = requestBuilder
           .header(HttpCache.CACHE_KEY_HEADER, cacheKey)
           .header(HttpCache.CACHE_FETCH_STRATEGY_HEADER, cachePolicy.fetchStrategy.name())
@@ -137,7 +138,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     return httpCallFactory.newCall(requestBuilder.build());
   }
 
-  private ByteString httpRequestBody(Operation operation, boolean writeQueryDocument) throws IOException {
+  static ByteString httpRequestBody(Operation operation, ScalarTypeAdapters scalarTypeAdapters,
+      boolean writeQueryDocument) throws IOException {
     Buffer buffer = new Buffer();
     JsonWriter jsonWriter = JsonWriter.of(buffer);
     jsonWriter.setSerializeNulls(true);

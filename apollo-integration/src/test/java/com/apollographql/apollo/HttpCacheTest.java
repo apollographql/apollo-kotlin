@@ -13,7 +13,6 @@ import com.apollographql.apollo.integration.httpcache.AllFilmsQuery;
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
 import com.apollographql.apollo.integration.httpcache.DroidDetailsQuery;
 import com.apollographql.apollo.integration.httpcache.type.CustomType;
-import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.response.CustomTypeValue;
 import com.apollographql.apollo.rx2.Rx2Apollo;
@@ -35,6 +34,7 @@ import io.reactivex.functions.Predicate;
 import okhttp3.Dispatcher;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import okhttp3.internal.io.FileSystem;
 import okhttp3.internal.io.InMemoryFileSystem;
 import okhttp3.mockwebserver.MockResponse;
@@ -656,7 +656,10 @@ public class HttpCacheTest {
   }
 
   private void checkCachedResponse(String fileName) throws IOException {
-    String cacheKey = ApolloServerInterceptor.cacheKey(lastHttRequest.body());
+    RequestBody requestBody = lastHttRequest.body();
+    Buffer buffer = new Buffer();
+    requestBody.writeTo(buffer);
+    String cacheKey = buffer.readByteString().md5().hex();
     okhttp3.Response response = apolloClient.cachedHttpResponse(cacheKey);
     assertThat(response).isNotNull();
     assertThat(response.body().source().readUtf8()).isEqualTo(Utils.readFileToString(getClass(), fileName));

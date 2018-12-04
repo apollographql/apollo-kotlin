@@ -28,19 +28,20 @@ public class SendOperationIdentifiersTest {
     final HeroAndFriendsNamesQuery query = new HeroAndFriendsNamesQuery(Input.fromNullable(EMPIRE));
     ApolloClient apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
-        .sendOperationIdentifiers(true)
+        .enableAutoPersistedQueries(true)
         .build();
     apolloClient.query(query).enqueue(null);
 
     String serverRequest = server.takeRequest().getBody().readUtf8();
-    assertThat(serverRequest.contains(String.format("\"id\":\"%s\"", query.operationId()))).isTrue();
+    assertThat(serverRequest.contains(String.format("\"sha256Hash\":\"%s\"", query.operationId()))).isTrue();
+    assertThat(serverRequest.contains("\"query\":")).isFalse();
   }
 
   @Test public void doesNotSendOperationIdsWhenFalse() throws Exception {
     final HeroAndFriendsNamesQuery query = new HeroAndFriendsNamesQuery(Input.fromNullable(EMPIRE));
     ApolloClient apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
-        .sendOperationIdentifiers(false)
+        .enableAutoPersistedQueries(false)
         .build();
     apolloClient.query(query).enqueue(null);
 
