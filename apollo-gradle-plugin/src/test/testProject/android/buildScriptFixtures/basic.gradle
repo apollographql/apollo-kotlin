@@ -2,6 +2,7 @@ buildscript {
   apply from: "../../../../gradle/testFixturesDeps.gradle"
   repositories {
     jcenter()
+    google()
   }
 
   dependencies {
@@ -16,7 +17,6 @@ plugins {
 
 android {
   compileSdkVersion androidConfig.compileSdkVersion
-  buildToolsVersion androidConfig.buildToolsVersion
 
   defaultConfig {
     applicationId "com.example.apollographql.testProject.basic"
@@ -42,6 +42,7 @@ android {
 repositories {
   jcenter()
   maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+  google()
 }
 
 dependencies {

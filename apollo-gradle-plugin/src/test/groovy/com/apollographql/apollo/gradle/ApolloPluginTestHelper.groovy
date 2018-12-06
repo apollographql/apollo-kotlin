@@ -11,16 +11,15 @@ class ApolloPluginTestHelper {
   static def setupDefaultAndroidProject(Project project) {
     setupAndroidProject(project)
     project.android {
-      compileSdkVersion 25
-      buildToolsVersion "25.0.2"
+      compileSdkVersion 28
     }
   }
 
   static def setupAndroidProjectWithProductFlavours(Project project) {
     setupAndroidProject(project)
     project.android {
-      compileSdkVersion 25
-      buildToolsVersion "25.0.2"
+      compileSdkVersion 28
+      flavorDimensions "version"
       productFlavors {
         demo {
           applicationIdSuffix ".demo"

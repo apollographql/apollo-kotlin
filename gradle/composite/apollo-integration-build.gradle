@@ -3,6 +3,7 @@ buildscript {
   repositories {
     jcenter()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    google()
   }
   dependencies {
     classpath dep.androidPlugin
@@ -15,11 +16,11 @@ apply plugin: 'com.apollographql.android'
 repositories {
   jcenter()
   maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+  google()
 }
 
 android {
   compileSdkVersion androidConfig.compileSdkVersion
-  buildToolsVersion androidConfig.buildToolsVersion
 
   defaultConfig {
     applicationId "com.example.apollographql.integration"

@@ -10,7 +10,6 @@ apply plugin: 'com.apollographql.android'
 
 android {
   compileSdkVersion androidConfig.compileSdkVersion
-  buildToolsVersion androidConfig.buildToolsVersion
 
   defaultConfig {
     applicationId "com.example.apollographql.integration"
