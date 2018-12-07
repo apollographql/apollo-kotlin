@@ -221,7 +221,9 @@ class BuilderTypeSpecBuilder(
     }
 
     private fun TypeName.isEnum(typeDeclarations: List<TypeDeclaration>): Boolean {
-      return ((this is ClassName) && typeDeclarations.count { it.kind == "EnumType" && it.name == simpleName() } > 0)
+      return ((this is ClassName) && typeDeclarations.count {
+        it.kind == "EnumType" && it.name.capitalize() == simpleName()
+      } > 0)
     }
   }
 }

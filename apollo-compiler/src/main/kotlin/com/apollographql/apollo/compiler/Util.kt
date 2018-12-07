@@ -397,7 +397,9 @@ fun TypeName.isList() =
     (this is ParameterizedTypeName && rawType == ClassNames.LIST)
 
 fun TypeName.isEnum(context: CodeGenerationContext) =
-    ((this is ClassName) && context.typeDeclarations.count { it.kind == "EnumType" && it.name == simpleName() } > 0)
+    ((this is ClassName) && context.typeDeclarations.count {
+      it.kind == "EnumType" && it.name.capitalize() == simpleName()
+    } > 0)
 
 fun String.isCustomScalarType(context: CodeGenerationContext): Boolean {
   val normalizedType = normalizeGraphQlType(this)

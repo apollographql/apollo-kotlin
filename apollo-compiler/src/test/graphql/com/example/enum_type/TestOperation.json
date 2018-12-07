@@ -65,7 +65,7 @@
 	"typesUsed": [
 		{
 			"kind": "EnumType",
-			"name": "Episode",
+			"name": "episode",
 			"description": "The episodes in the Star Wars trilogy (with special symbol $S)",
 			"values": [
 				{
