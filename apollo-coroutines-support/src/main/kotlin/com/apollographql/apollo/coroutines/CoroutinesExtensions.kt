@@ -1,29 +1,22 @@
-package com.apollographql.apollo.rx2
+package com.apollographql.apollo.coroutines
 
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.channels.Channel
 
-fun <T> ApolloCall<T>.toDeferred(): Deferred<Response<T>> {
-    val deferred = CompletableDeferred<Response<T>>()
-
-    deferred.invokeOnCompletion {
-        if (deferred.isCancelled) {
-            cancel()
-        }
-    }
-
-    this.enqueue(object : ApolloCall.Callback<T>() {
+fun <T> ApolloCall<T>.toChannel(): Channel<Response<T>> {
+    val channel = Channel<Response<T>>(Channel.UNLIMITED)
+    enqueue(object : ApolloCall.Callback<T>() {
         override fun onResponse(response: Response<T>) {
-            deferred.complete(response)
+            channel.offer(response)
         }
 
         override fun onFailure(e: ApolloException) {
-            deferred.completeExceptionally(e)
+            channel.close()
         }
     })
 
-    return deferred
+    return channel
 }
+
