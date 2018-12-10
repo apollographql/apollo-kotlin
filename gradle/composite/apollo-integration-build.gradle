@@ -49,6 +49,7 @@ dependencies {
   implementation dep.apolloHttpCache
   implementation dep.appcompat
 
+  testCompileOnly dep.jetbrainsAnnotations
   testImplementation dep.junit
   testImplementation dep.truth
   testImplementation dep.mockWebServer
