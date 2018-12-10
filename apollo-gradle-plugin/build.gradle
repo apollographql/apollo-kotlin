@@ -9,13 +9,13 @@ dependencies {
   compileOnly gradleApi()
   compileOnly dep.jsr250
 
-  compile localGroovy()
-  compile project(':apollo-compiler')
-  compile dep.gradleNodePlugin
-  compile dep.androidPlugin
+  implementation localGroovy()
+  implementation project(':apollo-compiler')
+  implementation dep.gradleNodePlugin
+  implementation dep.androidPlugin
 
-  testCompile dep.junit
-  testCompile(dep.spock) {
+  testImplementation dep.junit
+  testImplementation(dep.spock) {
     exclude module: 'groovy-all'
   }
 }

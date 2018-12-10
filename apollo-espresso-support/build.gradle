@@ -31,14 +31,16 @@ android {
 }
 
 dependencies {
+  compileOnly dep.jetbrainsAnnotations
+
   implementation project(":apollo-runtime")
+  implementation dep.espressoIdlingResource
 
-  compile dep.espressoIdlingResource
-
-  testCompile dep.junit
-  testCompile dep.truth
-  testCompile dep.mockWebServer
-  testCompile project(':apollo-rx2-support')
+  testCompileOnly dep.jetbrainsAnnotations
+  testImplementation dep.junit
+  testImplementation dep.truth
+  testImplementation dep.mockWebServer
+  testImplementation project(':apollo-rx2-support')
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

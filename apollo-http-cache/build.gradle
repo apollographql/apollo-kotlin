@@ -4,11 +4,13 @@ targetCompatibility = JavaVersion.VERSION_1_7
 sourceCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
-  compile dep.okHttp
-  compile project(":apollo-api")
+  compileOnly dep.jetbrainsAnnotations
 
-  testCompile dep.junit
-  testCompile dep.truth
+  implementation dep.okHttp
+  implementation project(":apollo-api")
+
+  testImplementation dep.junit
+  testImplementation dep.truth
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

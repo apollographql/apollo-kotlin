@@ -55,7 +55,7 @@ public final class RecordFieldJsonAdapter {
     }
   }
 
-  public Map<String, Object> from(BufferedSource bufferedFieldSource) throws IOException {
+  private Map<String, Object> fromBufferSource(BufferedSource bufferedFieldSource) throws IOException {
     final CacheJsonStreamReader cacheJsonStreamReader =
         cacheJsonStreamReader(bufferedSourceJsonReader(bufferedFieldSource));
     return cacheJsonStreamReader.toMap();
@@ -64,7 +64,7 @@ public final class RecordFieldJsonAdapter {
   public Map<String, Object> from(String jsonFieldSource) throws IOException {
     final BufferedSource bufferSource
         = Okio.buffer(Okio.source(new ByteArrayInputStream(jsonFieldSource.getBytes(Charset.defaultCharset()))));
-    return from(bufferSource);
+    return fromBufferSource(bufferSource);
   }
 
   private static void writeJsonValue(Object value, JsonWriter jsonWriter) throws IOException {

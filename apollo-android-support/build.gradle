@@ -32,15 +32,17 @@ android {
 }
 
 dependencies {
-  provided dep.jetbrainsAnnotations
-  provided project(":apollo-runtime")
-  provided project(":apollo-api")
+  compileOnly dep.jetbrainsAnnotations
+  compileOnly project(":apollo-runtime")
+  compileOnly project(":apollo-api")
 
-  androidTestCompile project(":apollo-runtime")
-  androidTestCompile project(":apollo-api")
-  androidTestCompile dep.truth
-  androidTestCompile dep.mockWebServer
-  androidTestCompile(dep.testRunner) {
+  androidTestCompileOnly dep.jetbrainsAnnotations
+
+  androidTestImplementation project(":apollo-runtime")
+  androidTestImplementation project(":apollo-api")
+  androidTestImplementation dep.truth
+  androidTestImplementation dep.mockWebServer
+  androidTestImplementation(dep.testRunner) {
     exclude module: 'support-annotations'
   }
 }

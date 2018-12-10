@@ -1,19 +1,23 @@
-apply plugin: 'java'
+apply plugin: 'java-library'
 
 targetCompatibility = JavaVersion.VERSION_1_7
 sourceCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
-  compile project(":apollo-api")
-  compile dep.okHttp
-  compile dep.cache
+  compileOnly dep.jetbrainsAnnotations
 
-  testCompile dep.junit
-  testCompile dep.truth
-  testCompile dep.mockWebServer
-  testCompile dep.okhttpTestSupport
+  implementation dep.okHttp
+  implementation dep.cache
+  api project(":apollo-api") // apollo-espresso-support uses some apollo-api internals
+
+  testCompileOnly dep.jetbrainsAnnotations
+
   testCompile dep.mockito
-  testCompile project(':apollo-rx2-support')
+  testImplementation dep.junit
+  testImplementation dep.truth
+  testImplementation dep.mockWebServer
+  testImplementation dep.okhttpTestSupport
+  testImplementation project(':apollo-rx2-support')
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
