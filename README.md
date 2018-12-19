@@ -56,7 +56,7 @@ repositories {
 }
 
 dependencies {
-  compile 'com.apollographql.apollo:apollo-runtime:x.y.z'
+  implementation 'com.apollographql.apollo:apollo-runtime:x.y.z'
 }
 ```
 
@@ -79,7 +79,7 @@ repositories {
 }
 
 dependencies {
-  compile 'com.apollographql.apollo:apollo-runtime:1.0.1-SNAPSHOT'
+  implementation 'com.apollographql.apollo:apollo-runtime:1.0.1-SNAPSHOT'
 }
 ```
 
