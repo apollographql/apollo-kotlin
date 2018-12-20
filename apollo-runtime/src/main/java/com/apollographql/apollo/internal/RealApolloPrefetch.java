@@ -39,13 +39,11 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
   final ApolloLogger logger;
   final ApolloCallTracker tracker;
   final ApolloInterceptorChain interceptorChain;
-  final boolean sendOperationIds;
   final AtomicReference<CallState> state = new AtomicReference<>(IDLE);
   final AtomicReference<ApolloPrefetch.Callback> originalCallback = new AtomicReference<>();
 
   public RealApolloPrefetch(Operation operation, HttpUrl serverUrl, Call.Factory httpCallFactory,
-      ScalarTypeAdapters scalarTypeAdapters, Executor dispatcher, ApolloLogger logger, ApolloCallTracker callTracker,
-      boolean sendOperationIds) {
+      ScalarTypeAdapters scalarTypeAdapters, Executor dispatcher, ApolloLogger logger, ApolloCallTracker callTracker) {
     this.operation = operation;
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
@@ -53,10 +51,9 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
     this.dispatcher = dispatcher;
     this.logger = logger;
     this.tracker = callTracker;
-    this.sendOperationIds = sendOperationIds;
     interceptorChain = new RealApolloInterceptorChain(Collections.<ApolloInterceptor>singletonList(
-        new ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCachePolicy.NETWORK_ONLY, true,
-            scalarTypeAdapters, logger, sendOperationIds)
+        new ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCachePolicy.NETWORK_ONLY, true, scalarTypeAdapters,
+            logger)
     ));
   }
 
@@ -127,8 +124,8 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
   }
 
   @Override public ApolloPrefetch clone() {
-    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, scalarTypeAdapters, dispatcher,
-        logger, tracker, sendOperationIds);
+    return new RealApolloPrefetch(operation, serverUrl, httpCallFactory, scalarTypeAdapters, dispatcher, logger,
+        tracker);
   }
 
   @Override public synchronized void cancel() {

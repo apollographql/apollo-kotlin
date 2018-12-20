@@ -124,7 +124,10 @@ public class IntegrationTest {
     );
 
     assertThat(server.takeRequest().getBody().readString(Charsets.UTF_8))
-        .isEqualTo("{\"query\":\"query AllPlanets {  "
+        .isEqualTo("{\"operationName\":\"AllPlanets\",\"variables\":{},"
+            + "\"extensions\":{\"persistedQuery\":{\"version\":1," +
+            "\"sha256Hash\":\"99f22cd11d5600fb2b0b15af15f263160815054bbcd7ea1d7e730ecfd1b04751\"}},"
+            + "\"query\":\"query AllPlanets {  "
             + "allPlanets(first: 300) {"
             + "    __typename"
             + "    planets {"
@@ -152,7 +155,7 @@ public class IntegrationTest {
             + "  name"
             + "  climates"
             + "  surfaceWater"
-            + "}\",\"operationName\":\"AllPlanets\",\"variables\":{}}");
+            + "}\"}");
   }
 
   @Test public void error_response() throws Exception {

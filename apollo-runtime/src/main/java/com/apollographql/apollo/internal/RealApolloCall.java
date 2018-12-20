@@ -20,6 +20,7 @@ import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
+import com.apollographql.apollo.internal.interceptor.ApolloAutoPersistedQueryInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloCacheInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloParseInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
@@ -66,7 +67,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final List<OperationName> refetchQueryNames;
   final List<Query> refetchQueries;
   final Optional<QueryReFetcher> queryReFetcher;
-  final boolean sendOperationdIdentifiers;
+  final boolean enableAutoPersistedQueries;
   final AtomicReference<CallState> state = new AtomicReference<>(IDLE);
   final AtomicReference<Callback<T>> originalCallback = new AtomicReference<>();
   final Optional<Operation.Data> optimisticUpdates;
@@ -110,7 +111,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
           .callTracker(builder.tracker)
           .build());
     }
-    sendOperationdIdentifiers = builder.sendOperationIdentifiers;
+    enableAutoPersistedQueries = builder.enableAutoPersistedQueries;
     interceptorChain = prepareInterceptorChain(operation);
     optimisticUpdates = builder.optimisticUpdates;
   }
@@ -293,7 +294,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .tracker(tracker)
         .refetchQueryNames(refetchQueryNames)
         .refetchQueries(refetchQueries)
-        .sendOperationIdentifiers(sendOperationdIdentifiers)
+        .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .optimisticUpdates(optimisticUpdates);
   }
 
@@ -359,10 +360,13 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     interceptors.addAll(applicationInterceptors);
     interceptors.add(responseFetcher.provideInterceptor(logger));
     interceptors.add(new ApolloCacheInterceptor(apolloStore, responseFieldMapper, dispatcher, logger));
+    if (operation instanceof Query && enableAutoPersistedQueries) {
+      interceptors.add(new ApolloAutoPersistedQueryInterceptor(logger));
+    }
     interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
         scalarTypeAdapters, logger));
-    interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCachePolicy, false,
-        scalarTypeAdapters, logger, sendOperationdIdentifiers));
+    interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCachePolicy, false, scalarTypeAdapters,
+        logger));
 
     return new RealApolloInterceptorChain(interceptors);
   }
@@ -385,7 +389,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     List<OperationName> refetchQueryNames = emptyList();
     List<Query> refetchQueries = emptyList();
     ApolloCallTracker tracker;
-    boolean sendOperationIdentifiers;
+    boolean enableAutoPersistedQueries;
     Optional<Operation.Data> optimisticUpdates = Optional.absent();
 
     public Builder<T> operation(Operation operation) {
@@ -469,8 +473,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
       return this;
     }
 
-    public Builder<T> sendOperationIdentifiers(boolean sendOperationIdentifiers) {
-      this.sendOperationIdentifiers = sendOperationIdentifiers;
+    public Builder<T> enableAutoPersistedQueries(boolean enableAutoPersistedQueries) {
+      this.enableAutoPersistedQueries = enableAutoPersistedQueries;
       return this;
     }
 

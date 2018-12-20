@@ -92,6 +92,7 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
             }
 
             @Override public void onCompleted() {
+              // call onCompleted in onResponse
             }
 
             @Override public void onFetch(FetchSourceType sourceType) {

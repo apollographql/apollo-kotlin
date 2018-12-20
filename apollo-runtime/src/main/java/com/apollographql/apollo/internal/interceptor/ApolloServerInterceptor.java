@@ -28,6 +28,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okio.Buffer;
+import okio.ByteString;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -51,21 +52,18 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   final boolean prefetch;
   final ApolloLogger logger;
   final ScalarTypeAdapters scalarTypeAdapters;
-  final boolean sendOperationIdentifiers;
   volatile Call httpCall;
   volatile boolean disposed;
 
   public ApolloServerInterceptor(@NotNull HttpUrl serverUrl, @NotNull Call.Factory httpCallFactory,
       @Nullable HttpCachePolicy.Policy cachePolicy, boolean prefetch,
-      @NotNull ScalarTypeAdapters scalarTypeAdapters, @NotNull ApolloLogger logger,
-      boolean sendOperationIdentifiers) {
+      @NotNull ScalarTypeAdapters scalarTypeAdapters, @NotNull ApolloLogger logger) {
     this.serverUrl = checkNotNull(serverUrl, "serverUrl == null");
     this.httpCallFactory = checkNotNull(httpCallFactory, "httpCallFactory == null");
     this.cachePolicy = Optional.fromNullable(cachePolicy);
     this.prefetch = prefetch;
     this.scalarTypeAdapters = checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null");
     this.logger = checkNotNull(logger, "logger == null");
-    this.sendOperationIdentifiers = sendOperationIdentifiers;
   }
 
   @Override
@@ -77,7 +75,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         callBack.onFetch(FetchSourceType.NETWORK);
 
         try {
-          httpCall = httpCall(request.operation, request.cacheHeaders);
+          httpCall = httpCall(request.operation, request.cacheHeaders, request.sendQueryDocument);
         } catch (IOException e) {
           logger.e(e, "Failed to prepare http call for operation %s", request.operation.name().name());
           callBack.onFailure(new ApolloNetworkException("Failed to prepare http call", e));
@@ -110,8 +108,9 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     this.httpCall = null;
   }
 
-  Call httpCall(Operation operation, CacheHeaders cacheHeaders) throws IOException {
-    RequestBody requestBody = httpRequestBody(operation);
+  Call httpCall(Operation operation, CacheHeaders cacheHeaders, boolean writeQueryDocument) throws IOException {
+    RequestBody requestBody = RequestBody.create(MEDIA_TYPE, httpRequestBody(operation, scalarTypeAdapters,
+        writeQueryDocument));
     Request.Builder requestBuilder = new Request.Builder()
         .url(serverUrl)
         .post(requestBody)
@@ -125,7 +124,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       HttpCachePolicy.Policy cachePolicy = this.cachePolicy.get();
       boolean skipCacheHttpResponse = "true".equalsIgnoreCase(cacheHeaders.headerValue(
           ApolloCacheHeaders.DO_NOT_STORE));
-      String cacheKey = cacheKey(requestBody);
+
+      String cacheKey = httpRequestBody(operation, scalarTypeAdapters, true).md5().hex();
       requestBuilder = requestBuilder
           .header(HttpCache.CACHE_KEY_HEADER, cacheKey)
           .header(HttpCache.CACHE_FETCH_STRATEGY_HEADER, cachePolicy.fetchStrategy.name())
@@ -138,33 +138,29 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     return httpCallFactory.newCall(requestBuilder.build());
   }
 
-  private RequestBody httpRequestBody(Operation operation) throws IOException {
+  static ByteString httpRequestBody(Operation operation, ScalarTypeAdapters scalarTypeAdapters,
+      boolean writeQueryDocument) throws IOException {
     Buffer buffer = new Buffer();
     JsonWriter jsonWriter = JsonWriter.of(buffer);
     jsonWriter.setSerializeNulls(true);
     jsonWriter.beginObject();
-    if (sendOperationIdentifiers) {
-      jsonWriter.name("id").value(operation.operationId());
-    } else {
-      jsonWriter.name("query").value(operation.queryDocument().replaceAll("\\n", ""));
-    }
     jsonWriter.name("operationName").value(operation.name().name());
     jsonWriter.name("variables").beginObject();
     operation.variables().marshaller().marshal(new InputFieldJsonWriter(jsonWriter, scalarTypeAdapters));
     jsonWriter.endObject();
+    jsonWriter.name("extensions")
+        .beginObject()
+        .name("persistedQuery")
+        .beginObject()
+        .name("version").value(1)
+        .name("sha256Hash").value(operation.operationId())
+        .endObject()
+        .endObject();
+    if (writeQueryDocument) {
+      jsonWriter.name("query").value(operation.queryDocument().replaceAll("\\n", ""));
+    }
     jsonWriter.endObject();
     jsonWriter.close();
-    return RequestBody.create(MEDIA_TYPE, buffer.readByteString());
-  }
-
-  public static String cacheKey(RequestBody requestBody) {
-    Buffer hashBuffer = new Buffer();
-    try {
-      requestBody.writeTo(hashBuffer);
-    } catch (IOException e) {
-      // should never happen
-      throw new RuntimeException(e);
-    }
-    return hashBuffer.readByteString().md5().hex();
+    return buffer.readByteString();
   }
 }
