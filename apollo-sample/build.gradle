@@ -27,15 +27,15 @@ android {
 }
 
 dependencies {
-  provided dep.jetbrainsAnnotations
+  compileOnly dep.jetbrainsAnnotations
 
-  compile "com.apollographql.apollo:apollo-runtime:$apolloReleaseVersion"
-  compile "com.apollographql.apollo:apollo-android-support:$apolloReleaseVersion"
-  compile "com.apollographql.apollo:apollo-rx2-support:$apolloReleaseVersion"
-  compile dep.appcompat
-  compile dep.recyclerView
-  compile dep.rxandroid
-  compile dep.rxjava2
+  implementation "com.apollographql.apollo:apollo-runtime:$apolloReleaseVersion"
+  implementation "com.apollographql.apollo:apollo-android-support:$apolloReleaseVersion"
+  implementation "com.apollographql.apollo:apollo-rx2-support:$apolloReleaseVersion"
+  implementation dep.appcompat
+  implementation dep.recyclerView
+  implementation dep.rxandroid
+  implementation dep.rxjava2
 
-  testCompile dep.junit
+  testImplementation dep.junit
 }

@@ -45,8 +45,8 @@ repositories {
 }
 
 dependencies {
-  compile supportDeps
-  compile apolloApiCompileDeps
+  implementation supportDeps
+  implementation apolloApiCompileDeps
 }
 
 apollo {

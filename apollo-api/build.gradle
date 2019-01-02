@@ -6,11 +6,11 @@ sourceCompatibility = JavaVersion.VERSION_1_7
 dependencies {
   compileOnly dep.okHttp
 
-  compile dep.jsr250
-  compile dep.jetbrainsAnnotations
+  implementation dep.jsr250
+  implementation dep.jetbrainsAnnotations
 
-  testCompile dep.junit
-  testCompile dep.truth
+  testImplementation dep.junit
+  testImplementation dep.truth
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

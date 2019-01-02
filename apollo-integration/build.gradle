@@ -29,19 +29,19 @@ android {
 }
 
 dependencies {
-  provided dep.jsr250
-  provided dep.jetbrainsAnnotations
+  compileOnly dep.jsr250
+  compileOnly dep.jetbrainsAnnotations
 
-  compile project(':apollo-runtime')
-  compile project(':apollo-rx-support')
-  compile project(':apollo-rx2-support')
-  compile project(':apollo-http-cache')
-  compile dep.appcompat
+  implementation project(':apollo-runtime')
+  implementation project(':apollo-rx-support')
+  implementation project(':apollo-rx2-support')
+  implementation project(':apollo-http-cache')
+  implementation dep.appcompat
 
-  testCompile dep.junit
-  testCompile dep.truth
-  testCompile dep.mockWebServer
-  testCompile dep.okhttpTestSupport
+  testImplementation dep.junit
+  testImplementation dep.truth
+  testImplementation dep.mockWebServer
+  testImplementation dep.okhttpTestSupport
 }
 
 apollo {

@@ -10,14 +10,14 @@ sourceSets {
 }
 
 dependencies {
-  compile dep.javaPoet
-  compile dep.kotlinStdLib
-  compile dep.moshi
-  compile project(":apollo-api")
+  implementation dep.javaPoet
+  implementation dep.kotlinStdLib
+  implementation dep.moshi
+  implementation project(":apollo-api")
 
-  testCompile dep.junit
-  testCompile dep.truth
-  testCompile dep.compiletesting
+  testImplementation dep.junit
+  testImplementation dep.truth
+  testImplementation dep.compiletesting
 }
 
 task pluginVersion {
