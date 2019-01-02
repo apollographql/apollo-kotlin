@@ -20,9 +20,8 @@ class OperationTypeSpecBuilder(
         .addAnnotation(Annotations.GENERATED_BY_APOLLO)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
         .addSuperinterface(operationSuperInterface(context))
-        .addOperationDefinition(operation)
         .addOperationId(operation)
-        .addQueryDocumentDefinition(fragments, newContext)
+        .addQueryDocumentDefinition()
         .addConstructor(context)
         .addMethod(wrapDataMethod(context))
         .addVariablesDefinition(operation.variables, newContext)
@@ -54,14 +53,6 @@ class OperationTypeSpecBuilder(
     }
   }
 
-  private fun TypeSpec.Builder.addOperationDefinition(operation: Operation): TypeSpec.Builder {
-    return addField(FieldSpec.builder(ClassNames.STRING, OPERATION_DEFINITION_FIELD_NAME)
-        .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-        .initializer("\$S", operation.source)
-        .build()
-    )
-  }
-
   private fun TypeSpec.Builder.addOperationId(operation: Operation): TypeSpec.Builder {
     addField(FieldSpec.builder(ClassNames.STRING, OPERATION_ID_FIELD_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
@@ -79,19 +70,10 @@ class OperationTypeSpecBuilder(
     return this;
   }
 
-  private fun TypeSpec.Builder.addQueryDocumentDefinition(fragments: List<Fragment>,
-      context: CodeGenerationContext): TypeSpec.Builder {
-    val initializeCodeBuilder = CodeBlock.builder().add(OPERATION_DEFINITION_FIELD_NAME)
-    fragments.filter { operation.fragmentsReferenced.contains(it.fragmentName) }.forEach {
-      val className = ClassName.get(context.fragmentsPackage, it.formatClassName())
-      initializeCodeBuilder
-          .add(" + \$S\n", "\n")
-          .add(" + \$T.\$L", className, Fragment.FRAGMENT_DEFINITION_FIELD_NAME)
-    }
-
+  private fun TypeSpec.Builder.addQueryDocumentDefinition(): TypeSpec.Builder {
     addField(FieldSpec.builder(ClassNames.STRING, QUERY_DOCUMENT_FIELD_NAME)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-        .initializer(initializeCodeBuilder.build())
+        .initializer("\$S", operation.sourceWithFragments)
         .build()
     )
 

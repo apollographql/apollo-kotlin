@@ -23,17 +23,18 @@ import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_DEFINITION = "query TestQuery {\n"
+  public static final String OPERATION_ID = "7824113c9abde76f3c8ffbee5d7065129bc5c47757f34dd5959d5cd16464d014";
+
+  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
       + "  hero {\n"
       + "    __typename\n"
       + "    ...HeroDetails\n"
       + "  }\n"
+      + "}\n"
+      + "fragment HeroDetails on Character {\n"
+      + "  __typename\n"
+      + "  name\n"
       + "}";
-
-  public static final String OPERATION_ID = "7824113c9abde76f3c8ffbee5d7065129bc5c47757f34dd5959d5cd16464d014";
-
-  public static final String QUERY_DOCUMENT = OPERATION_DEFINITION + "\n"
-   + HeroDetails.FRAGMENT_DEFINITION;
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

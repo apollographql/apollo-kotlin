@@ -25,19 +25,40 @@ import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_DEFINITION = "query TestQuery {\n"
+  public static final String OPERATION_ID = "4141e194c5f3846dabfcb576e735c71968b03a940baf49cc5e647c5e50eda72a";
+
+  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
       + "  hero {\n"
       + "    __typename\n"
       + "    name\n"
       + "    ...HeroDetails\n"
       + "    appearsIn\n"
       + "  }\n"
+      + "}\n"
+      + "fragment HeroDetails on Character {\n"
+      + "  __typename\n"
+      + "  name\n"
+      + "  friendsConnection {\n"
+      + "    __typename\n"
+      + "    totalCount\n"
+      + "    edges {\n"
+      + "      __typename\n"
+      + "      node {\n"
+      + "        __typename\n"
+      + "        name\n"
+      + "      }\n"
+      + "    }\n"
+      + "    pageInfo {\n"
+      + "      __typename\n"
+      + "      hasNextPage\n"
+      + "    }\n"
+      + "    isEmpty\n"
+      + "  }\n"
+      + "  ... on Droid {\n"
+      + "    name\n"
+      + "    primaryFunction\n"
+      + "  }\n"
       + "}";
-
-  public static final String OPERATION_ID = "4141e194c5f3846dabfcb576e735c71968b03a940baf49cc5e647c5e50eda72a";
-
-  public static final String QUERY_DOCUMENT = OPERATION_DEFINITION + "\n"
-   + HeroDetails.FRAGMENT_DEFINITION;
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override
