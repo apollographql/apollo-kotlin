@@ -47,7 +47,6 @@ class CoroutinesApolloTest {
     fun callProducesValue() {
         server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
-
         val channel = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toChannel()
         runBlocking {
             val response = channel.receive()
