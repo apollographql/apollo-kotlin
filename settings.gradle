@@ -11,4 +11,4 @@ include 'apollo-rx-support'
 include 'apollo-rx2-support'
 include 'apollo-espresso-support'
 include 'apollo-http-cache'
-
+include 'apollo-livedata'

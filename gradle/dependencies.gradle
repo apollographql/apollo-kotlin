@@ -38,6 +38,7 @@ ext.dep = [
     jsr250                  : 'javax.annotation:jsr250-api:1.0',
     jetbrainsAnnotations    : 'org.jetbrains:annotations:13.0',
     appcompat               : "com.android.support:appcompat-v7:$versions.supportLibVersion",
+    livedata                : "android.arch.lifecycle:livedata:1.1.0",
     kotlinStdLib            : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlinVersion",
     kotlinGradlePlugin      : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlinVersion",
     gradleNodePlugin        : "com.moowork.gradle:gradle-node-plugin:1.0.0",
