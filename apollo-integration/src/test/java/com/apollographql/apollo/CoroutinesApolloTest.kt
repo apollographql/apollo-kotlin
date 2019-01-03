@@ -13,6 +13,8 @@ import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithID
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Dispatcher
@@ -146,6 +148,23 @@ class CoroutinesApolloTest {
             val response0 = channel.receive()
             assertThat(response0.data()!!.hero()!!.name()).isEqualTo("R2-D2")
 
+            val response1 = channel.receive()
+            assertThat(response1.data()!!.hero()!!.name()).isEqualTo("Artoo")
+        }
+    }
+
+    @Test
+    fun queryWatcherUpdatedConflatedOnlyReturnsLastResult() {
+        server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
+
+        val channel = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).watcher().toChannel(Channel.CONFLATED)
+
+        server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"))
+        apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE)))
+                .enqueue(null)
+
+        runBlocking {
+            delay(500)
             val response1 = channel.receive()
             assertThat(response1.data()!!.hero()!!.name()).isEqualTo("Artoo")
         }
