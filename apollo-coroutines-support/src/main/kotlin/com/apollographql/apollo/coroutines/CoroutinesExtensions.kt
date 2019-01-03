@@ -10,25 +10,30 @@ import kotlinx.coroutines.channels.Channel
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
+private class ChannelCallback<T>(val channel: Channel<Response<T>>): ApolloCall.Callback<T>() {
+
+    override fun onResponse(response: Response<T>) {
+        channel.offer(response)
+    }
+
+    override fun onFailure(e: ApolloException) {
+        channel.close(e)
+    }
+
+    override fun onStatusEvent(event: ApolloCall.StatusEvent) {
+        if (event == ApolloCall.StatusEvent.COMPLETED) {
+            channel.close()
+        }
+    }
+}
+
 fun <T> ApolloCall<T>.toChannel(): Channel<Response<T>> {
     val channel = Channel<Response<T>>(Channel.UNLIMITED)
 
-    enqueue(object : ApolloCall.Callback<T>() {
-        override fun onResponse(response: Response<T>) {
-            channel.offer(response)
-        }
-
-        override fun onFailure(e: ApolloException) {
-            channel.close(e)
-        }
-
-        override fun onStatusEvent(event: ApolloCall.StatusEvent) {
-            if (event == ApolloCall.StatusEvent.COMPLETED) {
-                channel.close()
-            }
-
-        }
-    })
+    channel.invokeOnClose {
+        cancel()
+    }
+    enqueue(ChannelCallback(channel))
 
     return channel
 }
@@ -36,25 +41,14 @@ fun <T> ApolloCall<T>.toChannel(): Channel<Response<T>> {
 fun <T> ApolloQueryWatcher<T>.toChannel(): Channel<Response<T>> {
     val channel = Channel<Response<T>>(Channel.UNLIMITED)
 
-    enqueueAndWatch(object : ApolloCall.Callback<T>() {
-        override fun onResponse(response: Response<T>) {
-            channel.offer(response)
-        }
-
-        override fun onFailure(e: ApolloException) {
-            channel.close(e)
-        }
-
-        override fun onStatusEvent(event: ApolloCall.StatusEvent) {
-            if (event == ApolloCall.StatusEvent.COMPLETED) {
-                channel.close()
-            }
-
-        }
-    })
+    channel.invokeOnClose {
+        cancel()
+    }
+    enqueueAndWatch(ChannelCallback(channel))
 
     return channel
 }
+
 fun ApolloPrefetch.toJob(): Job {
     val deferred = CompletableDeferred<Unit>()
 
