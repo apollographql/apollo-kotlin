@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import javax.annotation.Generated;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
@@ -253,7 +252,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class Fragments {
-      final Optional<TestSetting> testSetting;
+      final @NotNull TestSetting testSetting;
 
       private transient volatile String $toString;
 
@@ -261,11 +260,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       private transient volatile boolean $hashCodeMemoized;
 
-      public Fragments(@Nullable TestSetting testSetting) {
-        this.testSetting = Optional.fromNullable(testSetting);
+      public Fragments(@NotNull TestSetting testSetting) {
+        this.testSetting = Utils.checkNotNull(testSetting, "testSetting == null");
       }
 
-      public Optional<TestSetting> testSetting() {
+      public @NotNull TestSetting testSetting() {
         return this.testSetting;
       }
 
@@ -273,7 +272,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final TestSetting $testSetting = testSetting.isPresent() ? testSetting.get() : null;
+            final TestSetting $testSetting = testSetting;
             if ($testSetting != null) {
               $testSetting.marshaller().marshal(writer);
             }
@@ -324,7 +323,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           if (TestSetting.POSSIBLE_TYPES.contains(conditionalType)) {
             testSetting = testSettingFieldMapper.map(reader);
           }
-          return new Fragments(testSetting);
+          return new Fragments(Utils.checkNotNull(testSetting, "testSetting == null"));
         }
       }
     }

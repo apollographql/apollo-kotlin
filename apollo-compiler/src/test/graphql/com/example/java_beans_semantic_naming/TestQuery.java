@@ -294,7 +294,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class Fragments {
-      final Optional<HeroDetails> heroDetails;
+      final @NotNull HeroDetails heroDetails;
 
       private transient volatile String $toString;
 
@@ -302,11 +302,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       private transient volatile boolean $hashCodeMemoized;
 
-      public Fragments(@Nullable HeroDetails heroDetails) {
-        this.heroDetails = Optional.fromNullable(heroDetails);
+      public Fragments(@NotNull HeroDetails heroDetails) {
+        this.heroDetails = Utils.checkNotNull(heroDetails, "heroDetails == null");
       }
 
-      public Optional<HeroDetails> getHeroDetails() {
+      public @NotNull HeroDetails getHeroDetails() {
         return this.heroDetails;
       }
 
@@ -314,7 +314,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final HeroDetails $heroDetails = heroDetails.isPresent() ? heroDetails.get() : null;
+            final HeroDetails $heroDetails = heroDetails;
             if ($heroDetails != null) {
               $heroDetails.marshaller().marshal(writer);
             }
@@ -365,7 +365,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) {
             heroDetails = heroDetailsFieldMapper.map(reader);
           }
-          return new Fragments(heroDetails);
+          return new Fragments(Utils.checkNotNull(heroDetails, "heroDetails == null"));
         }
       }
     }
