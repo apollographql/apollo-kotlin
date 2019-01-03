@@ -52,6 +52,10 @@ fun <T> ApolloQueryWatcher<T>.toChannel(): Channel<Response<T>> {
 fun ApolloPrefetch.toJob(): Job {
     val deferred = CompletableDeferred<Unit>()
 
+    deferred.invokeOnCompletion {
+        cancel()
+    }
+
     enqueue(object : ApolloPrefetch.Callback() {
         override fun onSuccess() {
             deferred.complete(Unit)
