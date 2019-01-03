@@ -33,6 +33,8 @@ private fun checkCapacity(capacity: Int) {
         Channel.UNLIMITED,
         Channel.CONFLATED -> return
         else ->
+            // Everything else than UNLIMITED or CONFLATED does not guarantee that channel.offer() succeeds all the time.
+            // We don't support these use cases for now
             throw IllegalArgumentException("Bad channel capacity ($capacity). Only UNLIMITED and CONFLATED are supported")
     }
 }
