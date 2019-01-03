@@ -43,7 +43,6 @@ private fun checkCapacity(capacity: Int) {
  * Converts an {@link ApolloCall} to an {@link kotlinx.coroutines.channels.Channel}. The number of values produced
  * by the channel is based on the {@link com.apollographql.apollo.fetcher.ResponseFetcher} used with the call.
  *
- * @param call the ApolloCall to convert
  * @param <T>  the value type.
  * @param capacity the {@link Capacity} used for the underlying channel. Only {@link kotlinx.coroutines.channels.Channel.UNLIMITED}
  * and {@link kotlinx.coroutines.channels.Channel.CONFLATED} are supported at the moment
@@ -66,7 +65,6 @@ fun <T> ApolloCall<T>.toChannel(capacity: Int = Channel.UNLIMITED): Channel<Resp
 /**
  * Converts an {@link ApolloQueryWatcher} to an {@link kotlinx.coroutines.channels.Channel}.
  *
- * @param call the ApolloQueryWatcher to convert
  * @param <T>  the value type.
  * @param capacity the {@link Capacity} used for the underlying channel. Only {@link kotlinx.coroutines.channels.Channel.UNLIMITED}
  * and {@link kotlinx.coroutines.channels.Channel.CONFLATED} are supported at the moment
@@ -89,7 +87,6 @@ fun <T> ApolloQueryWatcher<T>.toChannel(capacity: Int = Channel.UNLIMITED): Chan
 /**
  * Converts an {@link ApolloSubscriptionCall} to an {@link kotlinx.coroutines.channels.Channel}.
  *
- * @param call the ApolloSubscriptionCall to convert
  * @param <T>  the value type.
  * @param capacity the {@link Capacity} used for the underlying channel. Only {@link kotlinx.coroutines.channels.Channel.UNLIMITED}
  * and {@link kotlinx.coroutines.channels.Channel.CONFLATED} are supported at the moment
@@ -124,7 +121,6 @@ fun <T> ApolloSubscriptionCall<T>.toChannel(capacity: Int = Channel.UNLIMITED): 
 /**
  * Converts an {@link ApolloPrefetch} to an {@link kotlinx.coroutines.Job}.
  *
- * @param call the ApolloPrefetch to convert
  * @param <T>  the value type.
  * @return the converted job
  */
