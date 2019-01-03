@@ -145,16 +145,16 @@ public class IntegrationTest {
             + "    }"
             + "  }"
             + "}"
-            + "fragment FilmFragment on Film {"
-            + "  __typename"
-            + "  title"
-            + "  producers"
-            + "}"
             + "fragment PlanetFragment on Planet {"
             + "  __typename"
             + "  name"
             + "  climates"
             + "  surfaceWater"
+            + "}"
+            + "fragment FilmFragment on Film {"
+            + "  __typename"
+            + "  title"
+            + "  producers"
             + "}\"}");
   }
 
