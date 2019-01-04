@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
 import com.apollographql.apollo.coroutines.toChannel
+import com.apollographql.apollo.coroutines.toDeferred
 import com.apollographql.apollo.coroutines.toJob
 import com.apollographql.apollo.exception.ApolloParseException
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
@@ -46,7 +47,7 @@ class CoroutinesApolloTest {
     }
 
     @Test
-    fun callProducesValue() {
+    fun callChannelProducesValue() {
         server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
         val channel = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toChannel()
@@ -54,6 +55,16 @@ class CoroutinesApolloTest {
             val response = channel.receive()
 
             assertThat(response.data()!!.hero()!!.name()).isEqualTo("R2-D2")
+        }
+    }
+
+    @Test
+    fun callDeferredProducesValue() {
+        server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
+
+        val deferred = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toDeferred()
+        runBlocking {
+            assertThat(deferred.await().data()!!.hero()!!.name()).isEqualTo("R2-D2")
         }
     }
 

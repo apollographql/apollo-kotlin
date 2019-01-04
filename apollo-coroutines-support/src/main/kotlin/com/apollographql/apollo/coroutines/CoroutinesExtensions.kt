@@ -63,6 +63,33 @@ fun <T> ApolloCall<T>.toChannel(capacity: Int = Channel.UNLIMITED): Channel<Resp
 }
 
 /**
+ * Converts an {@link ApolloCall} to an {@link kotlinx.coroutines.Deferred}. This is a convenience method
+ * that will only return the first value emitted. If the more than one response is required, for an example
+ * to retrieve cached and network response, use {@link toChannel} instead.
+ *
+ * @param <T>  the value type.
+ * @return the deferred
+ */
+fun <T> ApolloCall<T>.toDeferred(): Deferred<Response<T>> {
+    val deferred = CompletableDeferred<Response<T>>()
+
+    deferred.invokeOnCompletion {
+        cancel()
+    }
+    enqueue(object: ApolloCall.Callback<T>() {
+        override fun onResponse(response: Response<T>) {
+            deferred.complete(response)
+        }
+
+        override fun onFailure(e: ApolloException) {
+            deferred.completeExceptionally(e)
+        }
+    })
+
+    return deferred
+}
+
+/**
  * Converts an {@link ApolloQueryWatcher} to an {@link kotlinx.coroutines.channels.Channel}.
  *
  * @param <T>  the value type.
