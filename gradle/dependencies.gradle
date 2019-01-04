@@ -48,6 +48,7 @@ ext.dep = [
     truth                   : 'com.google.truth:truth:0.30',
     mockWebServer           : "com.squareup.okhttp3:mockwebserver:$versions.okHttpVersion",
     mockito                 : "org.mockito:mockito-all:$versions.mockito",
+    mockitoKotlin           : "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0-RC1",
     okhttpLoggingInterceptor: "com.squareup.okhttp3:logging-interceptor:$versions.okHttpVersion",
     okHttp                  : "com.squareup.okhttp3:okhttp:$versions.okHttpVersion",
     okhttpTestSupport       : "com.squareup.okhttp3:okhttp-testing-support:$versions.okHttpVersion",
