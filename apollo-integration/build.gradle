@@ -45,7 +45,7 @@ dependencies {
 
   testImplementation dep.junit
   testImplementation dep.truth
-  testImplementation dep.mockito
+  testImplementation dep.mockitoKotlin
   testImplementation dep.mockWebServer
   testImplementation dep.okhttpTestSupport
   testImplementation dep.archCoreTesting
