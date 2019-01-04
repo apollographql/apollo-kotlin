@@ -35,10 +35,12 @@ android {
 
 dependencies {
     compileOnly dep.jetbrainsAnnotations
-
     compileOnly project(":apollo-runtime")
     compileOnly project(":apollo-api")
 
     implementation dep.kotlinStdLib
     api dep.livedata
 }
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
+apply from: rootProject.file('gradle/bintray.gradle')
