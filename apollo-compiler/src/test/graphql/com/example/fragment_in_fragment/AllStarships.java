@@ -12,7 +12,6 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.UnmodifiableMapBuilder;
 import com.apollographql.apollo.api.internal.Utils;
-import com.example.fragment_in_fragment.fragment.PilotFragment;
 import com.example.fragment_in_fragment.fragment.StarshipFragment;
 import java.lang.Object;
 import java.lang.Override;
@@ -26,7 +25,9 @@ import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class AllStarships implements Query<AllStarships.Data, Optional<AllStarships.Data>, Operation.Variables> {
-  public static final String OPERATION_DEFINITION = "query AllStarships {\n"
+  public static final String OPERATION_ID = "f3b63150118cfccd52140c4ca6aec578235d7ea99c5b905f14138c49f7f5fc7d";
+
+  public static final String QUERY_DOCUMENT = "query AllStarships {\n"
       + "  allStarships(first: 7) {\n"
       + "    __typename\n"
       + "    edges {\n"
@@ -37,13 +38,30 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       + "      }\n"
       + "    }\n"
       + "  }\n"
+      + "}\n"
+      + "fragment starshipFragment on Starship {\n"
+      + "  __typename\n"
+      + "  id\n"
+      + "  name\n"
+      + "  pilotConnection {\n"
+      + "    __typename\n"
+      + "    edges {\n"
+      + "      __typename\n"
+      + "      node {\n"
+      + "        __typename\n"
+      + "        ...pilotFragment\n"
+      + "      }\n"
+      + "    }\n"
+      + "  }\n"
+      + "}\n"
+      + "fragment pilotFragment on Person {\n"
+      + "  __typename\n"
+      + "  name\n"
+      + "  homeworld {\n"
+      + "    __typename\n"
+      + "    name\n"
+      + "  }\n"
       + "}";
-
-  public static final String OPERATION_ID = "f3b63150118cfccd52140c4ca6aec578235d7ea99c5b905f14138c49f7f5fc7d";
-
-  public static final String QUERY_DOCUMENT = OPERATION_DEFINITION + "\n"
-   + StarshipFragment.FRAGMENT_DEFINITION + "\n"
-   + PilotFragment.FRAGMENT_DEFINITION;
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

@@ -26,17 +26,15 @@ import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestSubscription implements Subscription<TestSubscription.Data, Optional<TestSubscription.Data>, TestSubscription.Variables> {
-  public static final String OPERATION_DEFINITION = "subscription TestSubscription($repo: String!) {\n"
+  public static final String OPERATION_ID = "8f1972cf9af58c4659da0ae72d02b97faf5fa6e6b794070d2cbcb034e2881fb8";
+
+  public static final String QUERY_DOCUMENT = "subscription TestSubscription($repo: String!) {\n"
       + "  commentAdded(repoFullName: $repo) {\n"
       + "    __typename\n"
       + "    id\n"
       + "    content\n"
       + "  }\n"
       + "}";
-
-  public static final String OPERATION_ID = "8f1972cf9af58c4659da0ae72d02b97faf5fa6e6b794070d2cbcb034e2881fb8";
-
-  public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override
