@@ -36,8 +36,8 @@ dependencies {
   implementation project(':apollo-runtime')
   implementation project(':apollo-rx-support')
   implementation project(':apollo-rx2-support')
+  implementation project(':apollo-livedata-support')
   implementation project(':apollo-http-cache')
-  implementation project(':apollo-livedata')
   implementation dep.appcompat
   implementation dep.kotlinStdLib
 
