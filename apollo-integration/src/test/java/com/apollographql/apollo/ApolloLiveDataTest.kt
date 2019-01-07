@@ -40,7 +40,8 @@ class ApolloLiveDataTest {
     private val FILE_HERO_AND_FRIEND_NAMD_CHANGE = "HeroAndFriendsNameWithIdsNameChange.json"
 
     @Rule
-    @JvmField val instantExecutorRule = InstantTaskExecutorRule()
+    @JvmField
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     @Before
     @Throws(IOException::class)
@@ -49,15 +50,15 @@ class ApolloLiveDataTest {
         mockWebServer.start()
 
         val okHttpClient = OkHttpClient.Builder()
-            .dispatcher(Dispatcher(immediateExecutorService()))
-            .build()
+                .dispatcher(Dispatcher(immediateExecutorService()))
+                .build()
 
         apolloClient = ApolloClient.builder()
-            .serverUrl(mockWebServer.url("/"))
-            .dispatcher(immediateExecutor())
-            .okHttpClient(okHttpClient)
-            .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
-            .build()
+                .serverUrl(mockWebServer.url("/"))
+                .dispatcher(immediateExecutor())
+                .okHttpClient(okHttpClient)
+                .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
+                .build()
     }
 
     @After
@@ -117,8 +118,8 @@ class ApolloLiveDataTest {
 
         mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE))
         apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
-            .responseFetcher(NETWORK_ONLY)
-            .enqueue(null)
+                .responseFetcher(NETWORK_ONLY)
+                .enqueue(null)
 
         val success2 = liveData.value as LiveDataResponse.Success
         assertThat(success2.data?.hero()?.__typename(), `is`("Droid"))
@@ -144,8 +145,8 @@ class ApolloLiveDataTest {
 
         mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
         apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
-            .responseFetcher(NETWORK_ONLY)
-            .enqueue(null)
+                .responseFetcher(NETWORK_ONLY)
+                .enqueue(null)
 
         verifyNoMoreInteractions(observer)
 
@@ -200,8 +201,8 @@ class ApolloLiveDataTest {
 
         mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
         apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
-            .responseFetcher(NETWORK_ONLY)
-            .enqueue(null)
+                .responseFetcher(NETWORK_ONLY)
+                .enqueue(null)
 
         verifyNoMoreInteractions(observer)
 

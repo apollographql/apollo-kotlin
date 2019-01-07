@@ -35,20 +35,20 @@ object LiveDataApollo {
 
             override fun removeObserver(observer: Observer<LiveDataResponse<T>>) {
                 super.removeObserver(observer)
-                if(!hasObservers()) {
+                if (!hasObservers()) {
                     canceled.set(true)
                     watcher.cancel()
                 }
             }
 
             override fun setValue(value: LiveDataResponse<T>?) {
-                if(!canceled.get()) {
+                if (!canceled.get()) {
                     super.setValue(value)
                 }
             }
 
             override fun postValue(value: LiveDataResponse<T>?) {
-                if(!canceled.get()) {
+                if (!canceled.get()) {
                     super.postValue(value)
                 }
             }
@@ -143,19 +143,19 @@ object LiveDataApollo {
 
             override fun removeObserver(observer: Observer<LiveDataResponse<T>>) {
                 super.removeObserver(observer)
-                if(!hasObservers()) {
+                if (!hasObservers()) {
                     canceled.set(true)
                 }
             }
 
             override fun setValue(value: LiveDataResponse<T>?) {
-                if(!canceled.get()) {
+                if (!canceled.get()) {
                     super.setValue(value)
                 }
             }
 
             override fun postValue(value: LiveDataResponse<T>?) {
-                if(!canceled.get()) {
+                if (!canceled.get()) {
                     super.postValue(value)
                 }
             }
@@ -195,13 +195,13 @@ object LiveDataApollo {
             var onPosted = AtomicBoolean(false)
 
             override fun setValue(value: T?) {
-                if(!onPosted.get()) {
+                if (!onPosted.get()) {
                     super.setValue(value)
                 }
             }
 
             override fun postValue(value: T?) {
-                if(!onPosted.get()) {
+                if (!onPosted.get()) {
                     super.postValue(value)
                 }
             }
