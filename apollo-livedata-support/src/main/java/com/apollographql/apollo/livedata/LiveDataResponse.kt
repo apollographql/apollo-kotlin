@@ -16,7 +16,7 @@ sealed class LiveDataResponse<out T> {
      *
      * [data] is an Optional. (There are responses without data)
      */
-    class Success<out T>(response: Response<T>): LiveDataResponse<T>() {
+    class Success<out T>(response: Response<T>) : LiveDataResponse<T>() {
         val operation = response.operation()
         val data: T? = response.data()
         val dependentKeys: Set<String> = response.dependentKeys()
@@ -34,7 +34,7 @@ sealed class LiveDataResponse<out T> {
      * ## API Network format error case.
      * API communication conventions do not match or applications need to handle exceptions or errors.
      */
-    class Failure<out T>(private val error: Exception, response: Response<out T>? = null): LiveDataResponse<T>() {
+    class Failure<out T>(private val error: Exception, response: Response<out T>? = null) : LiveDataResponse<T>() {
         val errorMessage: String? = error.localizedMessage
         val errors: List<Error>? = response?.errors()
 
@@ -43,7 +43,7 @@ sealed class LiveDataResponse<out T> {
 
     class UnsuccessfulResponse : Exception()
 
-    class Complete<out T>: LiveDataResponse<T>()
+    class Complete<out T> : LiveDataResponse<T>()
 
     companion object {
         /**
