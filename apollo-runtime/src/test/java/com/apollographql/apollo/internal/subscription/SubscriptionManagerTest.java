@@ -301,7 +301,8 @@ public class SubscriptionManagerTest {
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback);
 
     assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.STOPPED);
-    assertThat(subscriptionManagerCallback.error).hasMessage("Illegal state: STOPPED");
+    assertThat(subscriptionManagerCallback.error).isInstanceOf(ApolloSubscriptionException.class);
+    assertThat(subscriptionManagerCallback.error.getMessage()).startsWith("Illegal state: STOPPED");
   }
 
   private static final class MockSubscriptionTransportFactory implements SubscriptionTransport.Factory {

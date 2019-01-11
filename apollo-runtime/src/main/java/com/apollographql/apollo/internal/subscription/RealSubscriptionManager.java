@@ -136,7 +136,9 @@ public final class RealSubscriptionManager implements SubscriptionManager {
 
   void doSubscribe(Subscription subscription, SubscriptionManager.Callback callback) {
     if (state == State.STOPPING || state == State.STOPPED) {
-      callback.onError(new ApolloSubscriptionException("Illegal state: " + state.name()));
+      callback.onError(new ApolloSubscriptionException(
+          "Illegal state: " + state.name() + " for subscriptions to be created."
+          + " SubscriptionManager.start() must be called to re-enable subscriptions."));
       return;
     }
     timer.cancelTask(INACTIVITY_TIMEOUT_TIMER_TASK_ID);
