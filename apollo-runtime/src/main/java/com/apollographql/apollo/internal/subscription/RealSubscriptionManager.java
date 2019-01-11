@@ -13,6 +13,7 @@ import com.apollographql.apollo.subscription.SubscriptionTransport;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -170,13 +171,13 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   }
 
   void onTransportFailure(Throwable t) {
-    Map<String, SubscriptionRecord> subscriptions;
+    Collection<SubscriptionRecord> subscriptionRecords;
     synchronized (this) {
-      subscriptions = this.subscriptions;
+      subscriptionRecords = subscriptions.values();
       disconnect(true);
     }
 
-    for (SubscriptionRecord record : subscriptions.values()) {
+    for (SubscriptionRecord record : subscriptionRecords) {
       record.notifyOnNetworkError(t);
     }
   }
@@ -214,6 +215,19 @@ public final class RealSubscriptionManager implements SubscriptionManager {
 
       setStateAndNotify(State.CONNECTING);
       transport.connect();
+    }
+  }
+
+  void onConnectionClosed() {
+    Collection<SubscriptionRecord> subscriptionRecords;
+    synchronized (this) {
+      subscriptionRecords = subscriptions.values();
+      setStateAndNotify(State.DISCONNECTED);
+      subscriptions = new LinkedHashMap<>();
+    }
+
+    for (SubscriptionRecord record : subscriptionRecords) {
+      record.callback.onTerminated();
     }
   }
 
@@ -376,6 +390,15 @@ public final class RealSubscriptionManager implements SubscriptionManager {
       dispatcher.execute(new Runnable() {
         @Override public void run() {
           delegate.onOperationServerMessage(message);
+        }
+      });
+    }
+
+    @Override
+    public void onClosed() {
+      dispatcher.execute(new Runnable() {
+        @Override public void run() {
+          delegate.onConnectionClosed();
         }
       });
     }
