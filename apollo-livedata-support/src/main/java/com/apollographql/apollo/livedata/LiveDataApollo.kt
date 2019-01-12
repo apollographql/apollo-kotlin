@@ -27,13 +27,13 @@ object LiveDataApollo {
      * @return the converted LiveData.
      * @throws NullPointerException if watcher == null
      */
-    fun <T> from(@NonNull watcher: ApolloQueryWatcher<T>): LiveData<LiveDataResponse<T>> {
+    fun <T> from(@NonNull watcher: ApolloQueryWatcher<T>): LiveData<ApolloLiveDataResponse<T>> {
         checkNotNull(watcher, "watcher == null")
-        return object : LiveData<LiveDataResponse<T>>() {
+        return object : LiveData<ApolloLiveDataResponse<T>>() {
             var started = AtomicBoolean(false)
             var canceled = AtomicBoolean()
 
-            override fun removeObserver(observer: Observer<LiveDataResponse<T>>) {
+            override fun removeObserver(observer: Observer<ApolloLiveDataResponse<T>>) {
                 super.removeObserver(observer)
                 if (!hasObservers()) {
                     canceled.set(true)
@@ -41,13 +41,13 @@ object LiveDataApollo {
                 }
             }
 
-            override fun setValue(value: LiveDataResponse<T>?) {
+            override fun setValue(value: ApolloLiveDataResponse<T>?) {
                 if (!canceled.get()) {
                     super.setValue(value)
                 }
             }
 
-            override fun postValue(value: LiveDataResponse<T>?) {
+            override fun postValue(value: ApolloLiveDataResponse<T>?) {
                 if (!canceled.get()) {
                     super.postValue(value)
                 }
@@ -58,11 +58,11 @@ object LiveDataApollo {
                 if (started.compareAndSet(false, true)) {
                     watcher.enqueueAndWatch(object : ApolloCall.Callback<T>() {
                         override fun onResponse(response: Response<T>) {
-                            postValue(LiveDataResponse.of { response })
+                            postValue(ApolloLiveDataResponse.of { response })
                         }
 
                         override fun onFailure(e: ApolloException) {
-                            postValue(LiveDataResponse.Failure(e))
+                            postValue(ApolloLiveDataResponse.Failure(e))
                         }
                     })
                 }
@@ -79,20 +79,20 @@ object LiveDataApollo {
      * @return the converted LiveData.
      * @throws NullPointerException if originalCall == null
      */
-    fun <T> from(@NonNull call: ApolloCall<T>): LiveData<LiveDataResponse<T>> {
+    fun <T> from(@NonNull call: ApolloCall<T>): LiveData<ApolloLiveDataResponse<T>> {
         checkNotNull(call, "call == null")
-        return object : LiveData<LiveDataResponse<T>>() {
+        return object : LiveData<ApolloLiveDataResponse<T>>() {
             var started = AtomicBoolean(false)
             override fun onActive() {
                 super.onActive()
                 if (started.compareAndSet(false, true)) {
                     call.enqueue(object : ApolloCall.Callback<T>() {
                         override fun onResponse(response: Response<T>) {
-                            postValue(LiveDataResponse.of { response })
+                            postValue(ApolloLiveDataResponse.of { response })
                         }
 
                         override fun onFailure(e: ApolloException) {
-                            postValue(LiveDataResponse.Failure(e))
+                            postValue(ApolloLiveDataResponse.Failure(e))
                         }
                     })
                 }
@@ -107,20 +107,20 @@ object LiveDataApollo {
      * @return the converted LiveData.
      * @throws NullPointerException if prefetch == null
      */
-    fun <T> from(@NonNull prefetch: ApolloPrefetch): LiveData<LiveDataResponse<T>> {
+    fun <T> from(@NonNull prefetch: ApolloPrefetch): LiveData<ApolloLiveDataResponse<T>> {
         checkNotNull(prefetch, "prefetch == null")
-        return object : LiveData<LiveDataResponse<T>>() {
+        return object : LiveData<ApolloLiveDataResponse<T>>() {
             var started = AtomicBoolean(false)
             override fun onActive() {
                 super.onActive()
                 if (started.compareAndSet(false, true)) {
                     prefetch.enqueue(object : ApolloPrefetch.Callback() {
                         override fun onSuccess() {
-                            postValue(LiveDataResponse.Complete())
+                            postValue(ApolloLiveDataResponse.Complete())
                         }
 
                         override fun onFailure(e: ApolloException) {
-                            postValue(LiveDataResponse.Failure(e))
+                            postValue(ApolloLiveDataResponse.Failure(e))
                         }
                     })
                 }
@@ -135,26 +135,26 @@ object LiveDataApollo {
      * @return the converted LiveData.
      * @throws NullPointerException if prefetch == null
      */
-    fun <T> from(@NonNull call: ApolloSubscriptionCall<T>): LiveData<LiveDataResponse<T>> {
+    fun <T> from(@NonNull call: ApolloSubscriptionCall<T>): LiveData<ApolloLiveDataResponse<T>> {
         checkNotNull(call, "call == null")
-        return object : LiveData<LiveDataResponse<T>>() {
+        return object : LiveData<ApolloLiveDataResponse<T>>() {
             var started = AtomicBoolean(false)
             var canceled = AtomicBoolean()
 
-            override fun removeObserver(observer: Observer<LiveDataResponse<T>>) {
+            override fun removeObserver(observer: Observer<ApolloLiveDataResponse<T>>) {
                 super.removeObserver(observer)
                 if (!hasObservers()) {
                     canceled.set(true)
                 }
             }
 
-            override fun setValue(value: LiveDataResponse<T>?) {
+            override fun setValue(value: ApolloLiveDataResponse<T>?) {
                 if (!canceled.get()) {
                     super.setValue(value)
                 }
             }
 
-            override fun postValue(value: LiveDataResponse<T>?) {
+            override fun postValue(value: ApolloLiveDataResponse<T>?) {
                 if (!canceled.get()) {
                     super.postValue(value)
                 }
@@ -165,15 +165,15 @@ object LiveDataApollo {
                 if (started.compareAndSet(false, true)) {
                     call.execute(object : ApolloSubscriptionCall.Callback<T> {
                         override fun onResponse(response: Response<T>) {
-                            postValue(LiveDataResponse.of { response })
+                            postValue(ApolloLiveDataResponse.of { response })
                         }
 
                         override fun onFailure(e: ApolloException) {
-                            postValue(LiveDataResponse.Failure(e))
+                            postValue(ApolloLiveDataResponse.Failure(e))
                         }
 
                         override fun onCompleted() {
-                            postValue(LiveDataResponse.Complete())
+                            postValue(ApolloLiveDataResponse.Complete())
                         }
                     })
                 }

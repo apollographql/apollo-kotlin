@@ -15,28 +15,28 @@ import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
 /**
  * Converts an [ApolloCall] to a LiveData.
  */
-fun <T> ApolloCall<T>.asLiveData(): LiveData<LiveDataResponse<T>> {
+fun <T> ApolloCall<T>.asLiveData(): LiveData<ApolloLiveDataResponse<T>> {
     return LiveDataApollo.from(this)
 }
 
 /**
  * Converts an [ApolloQueryWatcher] to a LiveData.
  */
-fun <T> ApolloQueryWatcher<T>.asLiveData(): LiveData<LiveDataResponse<T>> {
+fun <T> ApolloQueryWatcher<T>.asLiveData(): LiveData<ApolloLiveDataResponse<T>> {
     return LiveDataApollo.from(this)
 }
 
 /**
  * Converts an [ApolloPrefetch] to a LiveData.
  */
-fun <T> ApolloPrefetch.asLiveData(): LiveData<LiveDataResponse<T>> {
+fun <T> ApolloPrefetch.asLiveData(): LiveData<ApolloLiveDataResponse<T>> {
     return LiveDataApollo.from(this)
 }
 
 /**
  * Converts an [ApolloSubscriptionCall] to a LiveData.
  */
-fun <T> ApolloSubscriptionCall<T>.asLiveData(): LiveData<LiveDataResponse<T>> {
+fun <T> ApolloSubscriptionCall<T>.asLiveData(): LiveData<ApolloLiveDataResponse<T>> {
     return LiveDataApollo.from(this)
 }
 
