@@ -16,11 +16,11 @@ sealed class ApolloLiveDataResponse<out T> {
      *
      * [data] is an Optional. (There are responses without data)
      */
-    class Success<out T>(response: Response<T>) : ApolloLiveDataResponse<T>() {
-        val operation = response.operation()
-        val data: T? = response.data()
-        val dependentKeys: Set<String> = response.dependentKeys()
-        val fromCache: Boolean = response.fromCache()
+    class Success<T>(var response: Response<T>) : ApolloLiveDataResponse<T>() {
+        var operation = response.operation()
+        var data: T? = response.data()
+        var dependentKeys: Set<String> = response.dependentKeys()
+        var fromCache: Boolean = response.fromCache()
 
         override fun toString() = "[ApiResponse.Success: $data]"
     }
