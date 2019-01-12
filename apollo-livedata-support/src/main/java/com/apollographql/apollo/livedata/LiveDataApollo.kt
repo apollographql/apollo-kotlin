@@ -96,6 +96,12 @@ object LiveDataApollo {
                         override fun onFailure(e: ApolloException) {
                             postValue(ApolloLiveDataResponse.Failure(e))
                         }
+
+                        override fun onStatusEvent(event: ApolloCall.StatusEvent) {
+                            if (event == ApolloCall.StatusEvent.COMPLETED) {
+                                postValue(ApolloLiveDataResponse.Complete())
+                            }
+                        }
                     })
                 }
             }
