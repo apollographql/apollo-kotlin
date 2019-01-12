@@ -1,7 +1,7 @@
 package com.apollographql.apollo.livedata
 
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
+import android.support.annotation.MainThread
 import android.support.annotation.NonNull
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloPrefetch
@@ -31,26 +31,16 @@ object LiveDataApollo {
         checkNotNull(watcher, "watcher == null")
         return object : LiveData<ApolloLiveDataResponse<T>>() {
             var started = AtomicBoolean(false)
-            var canceled = AtomicBoolean()
 
-            override fun removeObserver(observer: Observer<ApolloLiveDataResponse<T>>) {
-                super.removeObserver(observer)
-                if (!hasObservers()) {
-                    canceled.set(true)
-                    watcher.cancel()
-                }
-            }
-
+            @MainThread
             override fun setValue(value: ApolloLiveDataResponse<T>?) {
-                if (!canceled.get()) {
-                    super.setValue(value)
-                }
+                started.set(true)
+                super.setValue(value)
             }
 
             override fun postValue(value: ApolloLiveDataResponse<T>?) {
-                if (!canceled.get()) {
-                    super.postValue(value)
-                }
+                started.set(true)
+                super.postValue(value)
             }
 
             override fun onActive() {
@@ -83,6 +73,18 @@ object LiveDataApollo {
         checkNotNull(call, "call == null")
         return object : LiveData<ApolloLiveDataResponse<T>>() {
             var started = AtomicBoolean(false)
+
+            @MainThread
+            override fun setValue(value: ApolloLiveDataResponse<T>?) {
+                started.set(true)
+                super.setValue(value)
+            }
+
+            override fun postValue(value: ApolloLiveDataResponse<T>?) {
+                started.set(true)
+                super.postValue(value)
+            }
+
             override fun onActive() {
                 super.onActive()
                 if (started.compareAndSet(false, true)) {
@@ -111,6 +113,18 @@ object LiveDataApollo {
         checkNotNull(prefetch, "prefetch == null")
         return object : LiveData<ApolloLiveDataResponse<T>>() {
             var started = AtomicBoolean(false)
+
+            @MainThread
+            override fun setValue(value: ApolloLiveDataResponse<T>?) {
+                started.set(true)
+                super.setValue(value)
+            }
+
+            override fun postValue(value: ApolloLiveDataResponse<T>?) {
+                started.set(true)
+                super.postValue(value)
+            }
+
             override fun onActive() {
                 super.onActive()
                 if (started.compareAndSet(false, true)) {
@@ -139,25 +153,16 @@ object LiveDataApollo {
         checkNotNull(call, "call == null")
         return object : LiveData<ApolloLiveDataResponse<T>>() {
             var started = AtomicBoolean(false)
-            var canceled = AtomicBoolean()
 
-            override fun removeObserver(observer: Observer<ApolloLiveDataResponse<T>>) {
-                super.removeObserver(observer)
-                if (!hasObservers()) {
-                    canceled.set(true)
-                }
-            }
-
+            @MainThread
             override fun setValue(value: ApolloLiveDataResponse<T>?) {
-                if (!canceled.get()) {
-                    super.setValue(value)
-                }
+                started.set(true)
+                super.setValue(value)
             }
 
             override fun postValue(value: ApolloLiveDataResponse<T>?) {
-                if (!canceled.get()) {
-                    super.postValue(value)
-                }
+                started.set(true)
+                super.postValue(value)
             }
 
             override fun onActive() {
@@ -195,12 +200,14 @@ object LiveDataApollo {
             var onPosted = AtomicBoolean(false)
 
             override fun setValue(value: T?) {
+                started.set(true)
                 if (!onPosted.get()) {
                     super.setValue(value)
                 }
             }
 
             override fun postValue(value: T?) {
+                started.set(true)
                 if (!onPosted.get()) {
                     super.postValue(value)
                 }
