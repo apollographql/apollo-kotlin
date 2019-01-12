@@ -4,19 +4,19 @@ import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.Response
 
 /**
- * The LiveDataResponse class maps [Response] to [LiveDataResponse].
+ * The ApolloLiveDataResponse class maps [Response] to [ApolloLiveDataResponse].
  * There are Success, Failure, UnsuccessfulResponse, Complete sealed type classes.
  */
 
 @Suppress("unused")
-sealed class LiveDataResponse<out T> {
+sealed class ApolloLiveDataResponse<out T> {
 
     /**
      * API Success response class.
      *
      * [data] is an Optional. (There are responses without data)
      */
-    class Success<out T>(response: Response<T>) : LiveDataResponse<T>() {
+    class Success<out T>(response: Response<T>) : ApolloLiveDataResponse<T>() {
         val operation = response.operation()
         val data: T? = response.data()
         val dependentKeys: Set<String> = response.dependentKeys()
@@ -34,7 +34,7 @@ sealed class LiveDataResponse<out T> {
      * ## API Network format error case.
      * API communication conventions do not match or applications need to handle exceptions or errors.
      */
-    class Failure<out T>(private val error: Exception, response: Response<out T>? = null) : LiveDataResponse<T>() {
+    class Failure<out T>(private val error: Exception, response: Response<out T>? = null) : ApolloLiveDataResponse<T>() {
         val errorMessage: String? = error.localizedMessage
         val errors: List<Error>? = response?.errors()
 
@@ -43,7 +43,7 @@ sealed class LiveDataResponse<out T> {
 
     class UnsuccessfulResponse : Exception()
 
-    class Complete<out T> : LiveDataResponse<T>()
+    class Complete<out T> : ApolloLiveDataResponse<T>()
 
     companion object {
         /**
@@ -57,10 +57,10 @@ sealed class LiveDataResponse<out T> {
          * ApiResponse Factory
          *
          * [f] Create ApiResponse from [Response] returning from the block.
-         * If [Response] has not errors, It will create [LiveDataResponse.Success]
-         * If [Response] has errors, It will create [LiveDataResponse.Failure] using [UnsuccessfulResponse]
+         * If [Response] has not errors, It will create [ApolloLiveDataResponse.Success]
+         * If [Response] has errors, It will create [ApolloLiveDataResponse.Failure] using [UnsuccessfulResponse]
          */
-        fun <T> of(f: () -> Response<T>): LiveDataResponse<T> = try {
+        fun <T> of(f: () -> Response<T>): ApolloLiveDataResponse<T> = try {
             val response = f()
             if (!response.hasErrors()) {
                 Success(response)
