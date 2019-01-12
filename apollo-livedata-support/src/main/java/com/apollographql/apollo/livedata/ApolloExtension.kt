@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.apollographql.apollo.livedata
 
 import android.arch.lifecycle.LiveData

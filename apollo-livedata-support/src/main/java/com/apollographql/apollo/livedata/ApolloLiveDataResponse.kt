@@ -2,13 +2,14 @@ package com.apollographql.apollo.livedata
 
 import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.exception.ApolloException
 
 /**
  * The ApolloLiveDataResponse class maps [Response] to [ApolloLiveDataResponse].
  * There are Success, Failure, UnsuccessfulResponse, Complete sealed type classes.
  */
 
-@Suppress("unused")
+@Suppress("unused", "HasPlatformType")
 sealed class ApolloLiveDataResponse<out T> {
 
     /**
@@ -34,14 +35,19 @@ sealed class ApolloLiveDataResponse<out T> {
      * ## API Network format error case.
      * API communication conventions do not match or applications need to handle exceptions or errors.
      */
-    class Failure<out T>(private val error: Exception, response: Response<out T>? = null) : ApolloLiveDataResponse<T>() {
-        val errorMessage: String? = error.localizedMessage
+    class Failure<out T>(val exception: ApolloException, response: Response<out T>? = null) : ApolloLiveDataResponse<T>() {
+        val errorMessage: String? = exception.localizedMessage
         val errors: List<Error>? = response?.errors()
 
-        override fun toString() = "[ApiResponse.Failure: ${error.localizedMessage}"
+        override fun toString(): String {
+            if (exception.localizedMessage == "UnsuccessfulResponse") {
+                return "[ApiResponse.Failure: ${errors.toString()}"
+            }
+            return "[ApiResponse.Failure: ${exception.localizedMessage}"
+        }
     }
 
-    class UnsuccessfulResponse : Exception()
+    class UnsuccessfulResponse : ApolloException("UnsuccessfulResponse")
 
     class Complete<out T> : ApolloLiveDataResponse<T>()
 
@@ -49,9 +55,9 @@ sealed class ApolloLiveDataResponse<out T> {
         /**
          * ApiResponse Factory
          *
-         * [Failure] factory function. Only receives [Exception] arguments.
+         * [Failure] factory function. Only receives [ApolloException] arguments.
          */
-        fun <T> error(ex: Exception) = Failure<T>(ex)
+        fun <T> error(ex: ApolloException) = Failure<T>(ex)
 
         /**
          * ApiResponse Factory
@@ -68,7 +74,7 @@ sealed class ApolloLiveDataResponse<out T> {
                 Failure(UnsuccessfulResponse(), response)
             }
         } catch (ex: Exception) {
-            Failure(ex)
+            Failure(ApolloException(ex.localizedMessage))
         }
     }
 }
