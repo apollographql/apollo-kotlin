@@ -18,174 +18,174 @@ import com.apollographql.apollo.exception.ApolloException
  */
 @Suppress("unused")
 internal object LiveDataApollo {
-    /**
-     * Converts an [ApolloQueryWatcher] to a LiveData.
-     *
-     * @param watcher the ApolloQueryWatcher to convert.
-     * @param T       the value type.
-     * @return the converted LiveData.
-     * @throws NullPointerException if watcher == null
-     */
-    fun <T> from(@NonNull watcher: ApolloQueryWatcher<T>): LiveData<ApolloLiveDataResponse<T>> {
-        checkNotNull(watcher, "watcher == null")
-        return object : LiveData<ApolloLiveDataResponse<T>>() {
-            override fun onActive() {
-                super.onActive()
-                watcher.enqueueAndWatch(object : ApolloCall.Callback<T>() {
-                    override fun onResponse(response: Response<T>) {
-                        postValue(ApolloLiveDataResponse.of { response })
-                    }
+  /**
+   * Converts an [ApolloQueryWatcher] to a LiveData.
+   *
+   * @param watcher the ApolloQueryWatcher to convert.
+   * @param T       the value type.
+   * @return the converted LiveData.
+   * @throws NullPointerException if watcher == null
+   */
+  fun <T> from(@NonNull watcher: ApolloQueryWatcher<T>): LiveData<ApolloLiveDataResponse<T>> {
+    checkNotNull(watcher, "watcher == null")
+    return object : LiveData<ApolloLiveDataResponse<T>>() {
+      override fun onActive() {
+        super.onActive()
+        watcher.enqueueAndWatch(object : ApolloCall.Callback<T>() {
+          override fun onResponse(response: Response<T>) {
+            postValue(ApolloLiveDataResponse.of { response })
+          }
 
-                    override fun onFailure(e: ApolloException) {
-                        postValue(ApolloLiveDataResponse.Failure.Exception(e))
-                    }
-                })
-            }
-        }
+          override fun onFailure(e: ApolloException) {
+            postValue(ApolloLiveDataResponse.Failure.Exception(e))
+          }
+        })
+      }
     }
+  }
 
-    /**
-     * Converts an [ApolloCall] to a [LiveData]. The number of emissions this LiveData will have is based
-     * on the [com.apollographql.apollo.fetcher.ResponseFetcher] used with the call.
-     *
-     * @param call the ApolloCall to convert.
-     * @param T    the value type.
-     * @return the converted LiveData.
-     * @throws NullPointerException if originalCall == null
-     */
-    fun <T> from(@NonNull call: ApolloCall<T>): LiveData<ApolloLiveDataResponse<T>> {
-        checkNotNull(call, "call == null")
-        return object : LiveData<ApolloLiveDataResponse<T>>() {
-            override fun onActive() {
-                super.onActive()
-                call.enqueue(object : ApolloCall.Callback<T>() {
-                    override fun onResponse(response: Response<T>) {
-                        postValue(ApolloLiveDataResponse.of { response })
-                    }
+  /**
+   * Converts an [ApolloCall] to a [LiveData]. The number of emissions this LiveData will have is based
+   * on the [com.apollographql.apollo.fetcher.ResponseFetcher] used with the call.
+   *
+   * @param call the ApolloCall to convert.
+   * @param T    the value type.
+   * @return the converted LiveData.
+   * @throws NullPointerException if originalCall == null
+   */
+  fun <T> from(@NonNull call: ApolloCall<T>): LiveData<ApolloLiveDataResponse<T>> {
+    checkNotNull(call, "call == null")
+    return object : LiveData<ApolloLiveDataResponse<T>>() {
+      override fun onActive() {
+        super.onActive()
+        call.enqueue(object : ApolloCall.Callback<T>() {
+          override fun onResponse(response: Response<T>) {
+            postValue(ApolloLiveDataResponse.of { response })
+          }
 
-                    override fun onFailure(e: ApolloException) {
-                        postValue(ApolloLiveDataResponse.Failure.Exception(e))
-                    }
+          override fun onFailure(e: ApolloException) {
+            postValue(ApolloLiveDataResponse.Failure.Exception(e))
+          }
 
-                    override fun onStatusEvent(event: ApolloCall.StatusEvent) {
-                        if (event == ApolloCall.StatusEvent.COMPLETED) {
-                            postValue(ApolloLiveDataResponse.Complete())
-                        }
-                    }
-                })
+          override fun onStatusEvent(event: ApolloCall.StatusEvent) {
+            if (event == ApolloCall.StatusEvent.COMPLETED) {
+              postValue(ApolloLiveDataResponse.Complete())
             }
-        }
+          }
+        })
+      }
     }
+  }
 
-    /**
-     * Converts an [ApolloPrefetch] to a LiveData.
-     *
-     * @param prefetch the ApolloPrefetch to convert.
-     * @return the converted LiveData.
-     * @throws NullPointerException if prefetch == null
-     */
-    fun <T> from(@NonNull prefetch: ApolloPrefetch): LiveData<ApolloLiveDataResponse<T>> {
-        checkNotNull(prefetch, "prefetch == null")
-        return object : LiveData<ApolloLiveDataResponse<T>>() {
-            var started = false
+  /**
+   * Converts an [ApolloPrefetch] to a LiveData.
+   *
+   * @param prefetch the ApolloPrefetch to convert.
+   * @return the converted LiveData.
+   * @throws NullPointerException if prefetch == null
+   */
+  fun <T> from(@NonNull prefetch: ApolloPrefetch): LiveData<ApolloLiveDataResponse<T>> {
+    checkNotNull(prefetch, "prefetch == null")
+    return object : LiveData<ApolloLiveDataResponse<T>>() {
+      var started = false
 
-            @MainThread
-            override fun setValue(value: ApolloLiveDataResponse<T>?) {
-                started = true
-                super.setValue(value)
+      @MainThread
+      override fun setValue(value: ApolloLiveDataResponse<T>?) {
+        started = true
+        super.setValue(value)
+      }
+
+      override fun postValue(value: ApolloLiveDataResponse<T>?) {
+        started = true
+        super.postValue(value)
+      }
+
+      override fun onActive() {
+        super.onActive()
+        if (!started) {
+          started = true
+          prefetch.enqueue(object : ApolloPrefetch.Callback() {
+            override fun onSuccess() {
+              postValue(ApolloLiveDataResponse.Complete())
             }
 
-            override fun postValue(value: ApolloLiveDataResponse<T>?) {
-                started = true
-                super.postValue(value)
+            override fun onFailure(e: ApolloException) {
+              postValue(ApolloLiveDataResponse.Failure.Exception(e))
             }
-
-            override fun onActive() {
-                super.onActive()
-                if (!started) {
-                    started = true
-                    prefetch.enqueue(object : ApolloPrefetch.Callback() {
-                        override fun onSuccess() {
-                            postValue(ApolloLiveDataResponse.Complete())
-                        }
-
-                        override fun onFailure(e: ApolloException) {
-                            postValue(ApolloLiveDataResponse.Failure.Exception(e))
-                        }
-                    })
-                }
-            }
+          })
         }
+      }
     }
+  }
 
-    /**
-     * Converts an [ApolloSubscriptionCall] to a LiveData.
-     *
-     * @param call the ApolloPrefetch to convert.
-     * @return the converted LiveData.
-     * @throws NullPointerException if prefetch == null
-     */
-    fun <T> from(@NonNull call: ApolloSubscriptionCall<T>): LiveData<ApolloLiveDataResponse<T>> {
-        checkNotNull(call, "call == null")
-        return object : LiveData<ApolloLiveDataResponse<T>>() {
-            override fun onActive() {
-                super.onActive()
-                call.execute(object : ApolloSubscriptionCall.Callback<T> {
-                    override fun onResponse(response: Response<T>) {
-                        postValue(ApolloLiveDataResponse.of { response })
-                    }
+  /**
+   * Converts an [ApolloSubscriptionCall] to a LiveData.
+   *
+   * @param call the ApolloPrefetch to convert.
+   * @return the converted LiveData.
+   * @throws NullPointerException if prefetch == null
+   */
+  fun <T> from(@NonNull call: ApolloSubscriptionCall<T>): LiveData<ApolloLiveDataResponse<T>> {
+    checkNotNull(call, "call == null")
+    return object : LiveData<ApolloLiveDataResponse<T>>() {
+      override fun onActive() {
+        super.onActive()
+        call.execute(object : ApolloSubscriptionCall.Callback<T> {
+          override fun onResponse(response: Response<T>) {
+            postValue(ApolloLiveDataResponse.of { response })
+          }
 
-                    override fun onFailure(e: ApolloException) {
-                        postValue(ApolloLiveDataResponse.Failure.Exception(e))
-                    }
+          override fun onFailure(e: ApolloException) {
+            postValue(ApolloLiveDataResponse.Failure.Exception(e))
+          }
 
-                    override fun onCompleted() {
-                        postValue(ApolloLiveDataResponse.Complete())
-                    }
-                })
-            }
+          override fun onCompleted() {
+            postValue(ApolloLiveDataResponse.Complete())
+          }
+        })
+      }
+    }
+  }
+
+  /**
+   * Converts an [ApolloStoreOperation] to a LiveData.
+   *
+   * @param operation the ApolloStoreOperation to convert.
+   * @param T         the value type.
+   * @return the converted LiveData.
+   */
+  fun <T> from(@NonNull operation: ApolloStoreOperation<T>): LiveData<T?> {
+    checkNotNull(operation, "operation == null")
+    return object : LiveData<T?>() {
+      var onPosted = false
+
+      @MainThread
+      override fun setValue(value: T?) {
+        if (!onPosted) {
+          super.setValue(value)
         }
-    }
+      }
 
-    /**
-     * Converts an [ApolloStoreOperation] to a LiveData.
-     *
-     * @param operation the ApolloStoreOperation to convert.
-     * @param T         the value type.
-     * @return the converted LiveData.
-     */
-    fun <T> from(@NonNull operation: ApolloStoreOperation<T>): LiveData<T?> {
-        checkNotNull(operation, "operation == null")
-        return object : LiveData<T?>() {
-            var onPosted = false
-
-            @MainThread
-            override fun setValue(value: T?) {
-                if (!onPosted) {
-                    super.setValue(value)
-                }
-            }
-
-            override fun postValue(value: T?) {
-                if (!onPosted) {
-                    super.postValue(value)
-                }
-            }
-
-            override fun onActive() {
-                super.onActive()
-                operation.enqueue(object : ApolloStoreOperation.Callback<T> {
-                    override fun onSuccess(result: T) {
-                        postValue(result)
-                        onPosted = true
-                    }
-
-                    override fun onFailure(t: Throwable?) {
-                        postValue(null)
-                        onPosted = true
-                    }
-                })
-            }
+      override fun postValue(value: T?) {
+        if (!onPosted) {
+          super.postValue(value)
         }
+      }
+
+      override fun onActive() {
+        super.onActive()
+        operation.enqueue(object : ApolloStoreOperation.Callback<T> {
+          override fun onSuccess(result: T) {
+            postValue(result)
+            onPosted = true
+          }
+
+          override fun onFailure(t: Throwable?) {
+            postValue(null)
+            onPosted = true
+          }
+        })
+      }
     }
+  }
 }
