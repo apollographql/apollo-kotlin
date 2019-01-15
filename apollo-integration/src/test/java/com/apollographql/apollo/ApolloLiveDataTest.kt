@@ -1,6 +1,7 @@
 package com.apollographql.apollo
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
+import android.arch.core.executor.ArchTaskExecutor
+import android.arch.core.executor.TaskExecutor
 import android.arch.lifecycle.Observer
 import com.apollographql.apollo.Utils.*
 import com.apollographql.apollo.api.Input
@@ -24,7 +25,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Assert.assertNotNull
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -38,10 +38,6 @@ class ApolloLiveDataTest {
   private val FILE_EPISODE_HERO_NAME_WITH_ID = "EpisodeHeroNameResponseWithId.json"
   private val FILE_EPISODE_HERO_NAME_CHANGE = "EpisodeHeroNameResponseNameChange.json"
   private val FILE_HERO_AND_FRIEND_NAMD_CHANGE = "HeroAndFriendsNameWithIdsNameChange.json"
-
-  @Rule
-  @JvmField
-  val instantExecutorRule = InstantTaskExecutorRule()
 
   @Before
   @Throws(IOException::class)
@@ -59,12 +55,19 @@ class ApolloLiveDataTest {
             .okHttpClient(okHttpClient)
             .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
             .build()
+
+    ArchTaskExecutor.getInstance().setDelegate(object : TaskExecutor() {
+      override fun executeOnDiskIO(runnable: Runnable) = runnable.run()
+      override fun isMainThread() = true
+      override fun postToMainThread(runnable: Runnable) = runnable.run()
+    })
   }
 
   @After
   @Throws(IOException::class)
   fun stopServer() {
     mockWebServer.shutdown()
+    ArchTaskExecutor.getInstance().setDelegate(null)
   }
 
   @Test
@@ -72,7 +75,9 @@ class ApolloLiveDataTest {
   fun callProducesValue() {
     mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
-    val response = LiveDataTestUtil.getValue(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toLiveData())
+    val response = LiveDataTestUtil.getValue(apolloClient
+            .query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+            .toLiveData())
     assertThat(response, instanceOf(ApolloLiveDataResponse.Success::class.java))
 
     val success = response as ApolloLiveDataResponse.Success
