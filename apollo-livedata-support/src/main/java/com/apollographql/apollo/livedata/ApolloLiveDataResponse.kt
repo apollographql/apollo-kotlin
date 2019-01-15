@@ -25,26 +25,29 @@ sealed class ApolloLiveDataResponse<out T> {
     /**
      * API Failure response class.
      *
-     * ## Throw Exception case.
-     * Communication is not successful or an exception related to the model deserialization occurs.
+     * ## Throw Exception case. [Failure.Exception]
+     * Gets called when an unexpected exception occurs while creating the request or processing the response.
      *
-     * ## API Network format error case.
-     * API communication conventions do not match or applications need to handle exceptions or errors.
+     * ## API Network format error case. [Failure.GraphQLError]
+     * API communication conventions do not match or applications need to handle errors.
      */
-    class Failure<out T>(val exception: ApolloException, response: Response<out T>? = null) : ApolloLiveDataResponse<T>() {
-        val errorMessage: String? = exception.localizedMessage
-        val errors: List<Error>? = response?.errors()
+    sealed class Failure<out T> {
+        class Exception<out T>(val exception: ApolloException) : ApolloLiveDataResponse<T>() {
+            val message: String? = exception.localizedMessage
+            override fun toString(): String = "[ApiResponse.Failure]: $message"
+        }
 
-        override fun toString(): String {
-            if (exception.localizedMessage == "UnsuccessfulResponse") {
-                return "[ApiResponse.Failure]: ${errors.toString()}"
-            }
-            return "[ApiResponse.Failure]: ${exception.localizedMessage}"
+        class GraphQLError<out T>(val response: Response<out T>) : ApolloLiveDataResponse<T>() {
+            val errors: List<Error> = response.errors()
+            override fun toString(): String = "[ApiResponse.Failure]: $errors"
         }
     }
 
-    class UnsuccessfulResponse : ApolloException("UnsuccessfulResponse")
-
+    /**
+     * API Complete response class.
+     *
+     * Gets called when [com.apollographql.apollo.ApolloSubscriptionCall.Callback.onCompleted] occurs.
+     */
     class Complete<out T> : ApolloLiveDataResponse<T>()
 
     companion object {
@@ -53,24 +56,24 @@ sealed class ApolloLiveDataResponse<out T> {
          *
          * [Failure] factory function. Only receives [ApolloException] arguments.
          */
-        fun <T> error(ex: ApolloException) = Failure<T>(ex)
+        fun <T> error(ex: ApolloException) = Failure.Exception<T>(ex)
 
         /**
          * ApiResponse Factory
          *
          * [f] Create ApiResponse from [Response] returning from the block.
          * If [Response] has no errors, it will create [ApolloLiveDataResponse.Success]
-         * If [Response] has errors, it will create [ApolloLiveDataResponse.Failure] using [UnsuccessfulResponse]
+         * If [Response] has errors, it will create [ApolloLiveDataResponse.Failure.GraphQLError]
          */
         fun <T> of(f: () -> Response<T>): ApolloLiveDataResponse<T> = try {
             val response = f()
             if (!response.hasErrors()) {
                 Success(response)
             } else {
-                Failure(UnsuccessfulResponse(), response)
+                Failure.GraphQLError(response)
             }
         } catch (ex: Exception) {
-            Failure(ApolloException(ex.localizedMessage))
+            Failure.Exception(ApolloException(ex.localizedMessage))
         }
     }
 }
