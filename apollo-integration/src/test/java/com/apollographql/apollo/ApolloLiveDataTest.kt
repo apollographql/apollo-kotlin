@@ -72,15 +72,10 @@ class ApolloLiveDataTest {
     fun callProducesValue() {
         mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
-        val observer = mock<Observer<ApolloLiveDataResponse<EpisodeHeroNameQuery.Data>>>()
-        val liveData = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toLiveData()
-        liveData.observeForever(observer)
+        val response = LiveDataTestUtil.getValue(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toLiveData())
+        assertThat(response, instanceOf(ApolloLiveDataResponse.Success::class.java))
 
-        assertNotNull(liveData.value)
-        verify(observer).onChanged(liveData.value)
-        assertThat(liveData.value, instanceOf(ApolloLiveDataResponse.Success::class.java))
-
-        val success = liveData.value as ApolloLiveDataResponse.Success
+        val success = response as ApolloLiveDataResponse.Success
         assertThat(success.data?.hero()?.__typename(), `is`("Droid"))
         assertThat(success.data?.hero()?.name(), `is`("R2-D2"))
     }
@@ -90,13 +85,10 @@ class ApolloLiveDataTest {
     fun prefetchCompletes() {
         mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
-        val observer = mock<Observer<ApolloLiveDataResponse<EpisodeHeroNameQuery.Data>>>()
-        val liveData = apolloClient.prefetch(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toLiveData<EpisodeHeroNameQuery.Data>()
-        liveData.observeForever(observer)
-
-        assertNotNull(liveData.value)
-        verify(observer).onChanged(liveData.value)
-        assertThat(liveData.value, instanceOf(ApolloLiveDataResponse.Complete::class.java))
+        val response = LiveDataTestUtil.getValue(apolloClient
+                .prefetch(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+                .toLiveData<EpisodeHeroNameQuery.Data>())
+        assertThat(response, instanceOf(ApolloLiveDataResponse.Complete::class.java))
     }
 
     @Test
@@ -105,7 +97,10 @@ class ApolloLiveDataTest {
         mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
         val observer = mock<Observer<ApolloLiveDataResponse<EpisodeHeroNameQuery.Data>>>()
-        val liveData = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).watcher().toLiveData()
+        val liveData = apolloClient
+                .query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+                .watcher()
+                .toLiveData()
         liveData.observeForever(observer)
 
         assertNotNull(liveData.value)
@@ -132,7 +127,10 @@ class ApolloLiveDataTest {
         mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
         val observer = mock<Observer<ApolloLiveDataResponse<EpisodeHeroNameQuery.Data>>>()
-        val liveData = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).watcher().toLiveData()
+        val liveData = apolloClient
+                .query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+                .watcher()
+                .toLiveData()
         liveData.observeForever(observer)
 
         assertNotNull(liveData.value)
@@ -161,7 +159,10 @@ class ApolloLiveDataTest {
         mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
         val observer = mock<Observer<ApolloLiveDataResponse<EpisodeHeroNameQuery.Data>>>()
-        val liveData = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).watcher().toLiveData()
+        val liveData = apolloClient
+                .query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+                .watcher()
+                .toLiveData()
         liveData.observeForever(observer)
 
         assertNotNull(liveData.value)
@@ -173,7 +174,9 @@ class ApolloLiveDataTest {
         assertThat(success.data?.hero()?.name(), `is`("R2-D2"))
 
         mockWebServer.enqueue(mockResponse(FILE_HERO_AND_FRIEND_NAMD_CHANGE))
-        apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE))).enqueue(null)
+        apolloClient
+                .query(HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE)))
+                .enqueue(null)
 
         val success2 = liveData.value as ApolloLiveDataResponse.Success
         assertThat(success2.data?.hero()?.__typename(), `is`("Droid"))
