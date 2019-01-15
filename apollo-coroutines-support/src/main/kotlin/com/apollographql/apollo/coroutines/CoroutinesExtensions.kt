@@ -74,7 +74,9 @@ fun <T> ApolloCall<T>.toDeferred(): Deferred<Response<T>> {
     val deferred = CompletableDeferred<Response<T>>()
 
     deferred.invokeOnCompletion {
-        cancel()
+        if (deferred.isCancelled) {
+            cancel()
+        }
     }
     enqueue(object: ApolloCall.Callback<T>() {
         override fun onResponse(response: Response<T>) {
@@ -155,7 +157,9 @@ fun ApolloPrefetch.toJob(): Job {
     val deferred = CompletableDeferred<Unit>()
 
     deferred.invokeOnCompletion {
-        cancel()
+        if (deferred.isCancelled) {
+            cancel()
+        }
     }
 
     enqueue(object : ApolloPrefetch.Callback() {
