@@ -52,7 +52,7 @@ internal object LiveDataApollo {
                         }
 
                         override fun onFailure(e: ApolloException) {
-                            postValue(ApolloLiveDataResponse.Failure(e))
+                            postValue(ApolloLiveDataResponse.Failure.Exception(e))
                         }
                     })
                 }
@@ -94,7 +94,7 @@ internal object LiveDataApollo {
                         }
 
                         override fun onFailure(e: ApolloException) {
-                            postValue(ApolloLiveDataResponse.Failure(e))
+                            postValue(ApolloLiveDataResponse.Failure.Exception(e))
                         }
 
                         override fun onStatusEvent(event: ApolloCall.StatusEvent) {
@@ -140,7 +140,7 @@ internal object LiveDataApollo {
                         }
 
                         override fun onFailure(e: ApolloException) {
-                            postValue(ApolloLiveDataResponse.Failure(e))
+                            postValue(ApolloLiveDataResponse.Failure.Exception(e))
                         }
                     })
                 }
@@ -180,7 +180,7 @@ internal object LiveDataApollo {
                         }
 
                         override fun onFailure(e: ApolloException) {
-                            postValue(ApolloLiveDataResponse.Failure(e))
+                            postValue(ApolloLiveDataResponse.Failure.Exception(e))
                         }
 
                         override fun onCompleted() {
@@ -205,6 +205,7 @@ internal object LiveDataApollo {
             var started = AtomicBoolean(false)
             var onPosted = AtomicBoolean(false)
 
+            @MainThread
             override fun setValue(value: T?) {
                 started.set(true)
                 if (!onPosted.get()) {
