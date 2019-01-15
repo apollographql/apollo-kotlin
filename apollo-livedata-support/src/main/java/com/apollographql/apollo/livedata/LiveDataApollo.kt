@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  * sources.
  */
 @Suppress("unused")
-object LiveDataApollo {
+internal object LiveDataApollo {
     /**
      * Converts an [ApolloQueryWatcher] to a LiveData.
      *
