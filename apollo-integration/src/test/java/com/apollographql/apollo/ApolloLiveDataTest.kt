@@ -10,8 +10,8 @@ import com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo.integration.normalizer.type.Episode
-import com.apollographql.apollo.livedata.LiveDataApollo
 import com.apollographql.apollo.livedata.ApolloLiveDataResponse
+import com.apollographql.apollo.livedata.toLiveData
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
@@ -73,7 +73,7 @@ class ApolloLiveDataTest {
         mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
         val observer = mock<Observer<ApolloLiveDataResponse<EpisodeHeroNameQuery.Data>>>()
-        val liveData = LiveDataApollo.from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))))
+        val liveData = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toLiveData()
         liveData.observeForever(observer)
 
         assertNotNull(liveData.value)
@@ -91,7 +91,7 @@ class ApolloLiveDataTest {
         mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
         val observer = mock<Observer<ApolloLiveDataResponse<EpisodeHeroNameQuery.Data>>>()
-        val liveData = LiveDataApollo.from<EpisodeHeroNameQuery.Data>(apolloClient.prefetch(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))))
+        val liveData = apolloClient.prefetch(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toLiveData<EpisodeHeroNameQuery.Data>()
         liveData.observeForever(observer)
 
         assertNotNull(liveData.value)
@@ -105,7 +105,7 @@ class ApolloLiveDataTest {
         mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
         val observer = mock<Observer<ApolloLiveDataResponse<EpisodeHeroNameQuery.Data>>>()
-        val liveData = LiveDataApollo.from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).watcher())
+        val liveData = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).watcher().toLiveData()
         liveData.observeForever(observer)
 
         assertNotNull(liveData.value)
@@ -132,7 +132,7 @@ class ApolloLiveDataTest {
         mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
         val observer = mock<Observer<ApolloLiveDataResponse<EpisodeHeroNameQuery.Data>>>()
-        val liveData = LiveDataApollo.from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).watcher())
+        val liveData = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).watcher().toLiveData()
         liveData.observeForever(observer)
 
         assertNotNull(liveData.value)
@@ -161,7 +161,7 @@ class ApolloLiveDataTest {
         mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
         val observer = mock<Observer<ApolloLiveDataResponse<EpisodeHeroNameQuery.Data>>>()
-        val liveData = LiveDataApollo.from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).watcher())
+        val liveData = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).watcher().toLiveData()
         liveData.observeForever(observer)
 
         assertNotNull(liveData.value)
