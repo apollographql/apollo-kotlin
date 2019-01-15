@@ -32,154 +32,154 @@ import java.io.IOException
 
 @RunWith(JUnit4::class)
 class ApolloLiveDataTest {
-    private lateinit var apolloClient: ApolloClient
-    private lateinit var mockWebServer: MockWebServer
+  private lateinit var apolloClient: ApolloClient
+  private lateinit var mockWebServer: MockWebServer
 
-    private val FILE_EPISODE_HERO_NAME_WITH_ID = "EpisodeHeroNameResponseWithId.json"
-    private val FILE_EPISODE_HERO_NAME_CHANGE = "EpisodeHeroNameResponseNameChange.json"
-    private val FILE_HERO_AND_FRIEND_NAMD_CHANGE = "HeroAndFriendsNameWithIdsNameChange.json"
+  private val FILE_EPISODE_HERO_NAME_WITH_ID = "EpisodeHeroNameResponseWithId.json"
+  private val FILE_EPISODE_HERO_NAME_CHANGE = "EpisodeHeroNameResponseNameChange.json"
+  private val FILE_HERO_AND_FRIEND_NAMD_CHANGE = "HeroAndFriendsNameWithIdsNameChange.json"
 
-    @Rule
-    @JvmField
-    val instantExecutorRule = InstantTaskExecutorRule()
+  @Rule
+  @JvmField
+  val instantExecutorRule = InstantTaskExecutorRule()
 
-    @Before
-    @Throws(IOException::class)
-    fun setup() {
-        mockWebServer = MockWebServer()
-        mockWebServer.start()
+  @Before
+  @Throws(IOException::class)
+  fun setup() {
+    mockWebServer = MockWebServer()
+    mockWebServer.start()
 
-        val okHttpClient = OkHttpClient.Builder()
-                .dispatcher(Dispatcher(immediateExecutorService()))
-                .build()
+    val okHttpClient = OkHttpClient.Builder()
+            .dispatcher(Dispatcher(immediateExecutorService()))
+            .build()
 
-        apolloClient = ApolloClient.builder()
-                .serverUrl(mockWebServer.url("/"))
-                .dispatcher(immediateExecutor())
-                .okHttpClient(okHttpClient)
-                .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
-                .build()
-    }
+    apolloClient = ApolloClient.builder()
+            .serverUrl(mockWebServer.url("/"))
+            .dispatcher(immediateExecutor())
+            .okHttpClient(okHttpClient)
+            .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
+            .build()
+  }
 
-    @After
-    @Throws(IOException::class)
-    fun stopServer() {
-        mockWebServer.shutdown()
-    }
+  @After
+  @Throws(IOException::class)
+  fun stopServer() {
+    mockWebServer.shutdown()
+  }
 
-    @Test
-    @Throws(Exception::class)
-    fun callProducesValue() {
-        mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
+  @Test
+  @Throws(Exception::class)
+  fun callProducesValue() {
+    mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
-        val response = LiveDataTestUtil.getValue(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toLiveData())
-        assertThat(response, instanceOf(ApolloLiveDataResponse.Success::class.java))
+    val response = LiveDataTestUtil.getValue(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toLiveData())
+    assertThat(response, instanceOf(ApolloLiveDataResponse.Success::class.java))
 
-        val success = response as ApolloLiveDataResponse.Success
-        assertThat(success.data?.hero()?.__typename(), `is`("Droid"))
-        assertThat(success.data?.hero()?.name(), `is`("R2-D2"))
-    }
+    val success = response as ApolloLiveDataResponse.Success
+    assertThat(success.data?.hero()?.__typename(), `is`("Droid"))
+    assertThat(success.data?.hero()?.name(), `is`("R2-D2"))
+  }
 
-    @Test
-    @Throws(Exception::class)
-    fun prefetchCompletes() {
-        mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
+  @Test
+  @Throws(Exception::class)
+  fun prefetchCompletes() {
+    mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
-        val response = LiveDataTestUtil.getValue(apolloClient
-                .prefetch(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
-                .toLiveData<EpisodeHeroNameQuery.Data>())
-        assertThat(response, instanceOf(ApolloLiveDataResponse.Complete::class.java))
-    }
+    val response = LiveDataTestUtil.getValue(apolloClient
+            .prefetch(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+            .toLiveData<EpisodeHeroNameQuery.Data>())
+    assertThat(response, instanceOf(ApolloLiveDataResponse.Complete::class.java))
+  }
 
-    @Test
-    @Throws(Exception::class)
-    fun queryWatcherUpdatedSameQueryDifferentResults() {
-        mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
+  @Test
+  @Throws(Exception::class)
+  fun queryWatcherUpdatedSameQueryDifferentResults() {
+    mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
-        val observer = mock<Observer<ApolloLiveDataResponse<EpisodeHeroNameQuery.Data>>>()
-        val liveData = apolloClient
-                .query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
-                .watcher()
-                .toLiveData()
-        liveData.observeForever(observer)
+    val observer = mock<Observer<ApolloLiveDataResponse<EpisodeHeroNameQuery.Data>>>()
+    val liveData = apolloClient
+            .query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+            .watcher()
+            .toLiveData()
+    liveData.observeForever(observer)
 
-        assertNotNull(liveData.value)
-        verify(observer).onChanged(liveData.value)
-        assertThat(liveData.value, instanceOf(ApolloLiveDataResponse.Success::class.java))
+    assertNotNull(liveData.value)
+    verify(observer).onChanged(liveData.value)
+    assertThat(liveData.value, instanceOf(ApolloLiveDataResponse.Success::class.java))
 
-        val success = liveData.value as ApolloLiveDataResponse.Success
-        assertThat(success.data?.hero()?.__typename(), `is`("Droid"))
-        assertThat(success.data?.hero()?.name(), `is`("R2-D2"))
+    val success = liveData.value as ApolloLiveDataResponse.Success
+    assertThat(success.data?.hero()?.__typename(), `is`("Droid"))
+    assertThat(success.data?.hero()?.name(), `is`("R2-D2"))
 
-        mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE))
-        apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
-                .responseFetcher(NETWORK_ONLY)
-                .enqueue(null)
+    mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE))
+    apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+            .responseFetcher(NETWORK_ONLY)
+            .enqueue(null)
 
-        val success2 = liveData.value as ApolloLiveDataResponse.Success
-        assertThat(success2.data?.hero()?.__typename(), `is`("Droid"))
-        assertThat(success2.data?.hero()?.name(), `is`("Artoo"))
-    }
+    val success2 = liveData.value as ApolloLiveDataResponse.Success
+    assertThat(success2.data?.hero()?.__typename(), `is`("Droid"))
+    assertThat(success2.data?.hero()?.name(), `is`("Artoo"))
+  }
 
-    @Test
-    @Throws(Exception::class)
-    fun queryWatcherNotUpdatedSameQuerySameResults() {
-        mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
+  @Test
+  @Throws(Exception::class)
+  fun queryWatcherNotUpdatedSameQuerySameResults() {
+    mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
-        val observer = mock<Observer<ApolloLiveDataResponse<EpisodeHeroNameQuery.Data>>>()
-        val liveData = apolloClient
-                .query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
-                .watcher()
-                .toLiveData()
-        liveData.observeForever(observer)
+    val observer = mock<Observer<ApolloLiveDataResponse<EpisodeHeroNameQuery.Data>>>()
+    val liveData = apolloClient
+            .query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+            .watcher()
+            .toLiveData()
+    liveData.observeForever(observer)
 
-        assertNotNull(liveData.value)
-        verify(observer).onChanged(liveData.value)
-        assertThat(liveData.value, instanceOf(ApolloLiveDataResponse.Success::class.java))
+    assertNotNull(liveData.value)
+    verify(observer).onChanged(liveData.value)
+    assertThat(liveData.value, instanceOf(ApolloLiveDataResponse.Success::class.java))
 
-        val success = liveData.value as ApolloLiveDataResponse.Success
-        assertThat(success.data?.hero()?.__typename(), `is`("Droid"))
-        assertThat(success.data?.hero()?.name(), `is`("R2-D2"))
+    val success = liveData.value as ApolloLiveDataResponse.Success
+    assertThat(success.data?.hero()?.__typename(), `is`("Droid"))
+    assertThat(success.data?.hero()?.name(), `is`("R2-D2"))
 
-        mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
-        apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
-                .responseFetcher(NETWORK_ONLY)
-                .enqueue(null)
+    mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
+    apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+            .responseFetcher(NETWORK_ONLY)
+            .enqueue(null)
 
-        verifyNoMoreInteractions(observer)
+    verifyNoMoreInteractions(observer)
 
-        val success2 = liveData.value as ApolloLiveDataResponse.Success
-        assertThat(success2.data?.hero()?.__typename(), `is`("Droid"))
-        assertThat(success2.data?.hero()?.name(), `is`("R2-D2"))
-    }
+    val success2 = liveData.value as ApolloLiveDataResponse.Success
+    assertThat(success2.data?.hero()?.__typename(), `is`("Droid"))
+    assertThat(success2.data?.hero()?.name(), `is`("R2-D2"))
+  }
 
-    @Test
-    @Throws(Exception::class)
-    fun queryWatcherUpdatedDifferentQueryDifferentResults() {
-        mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
+  @Test
+  @Throws(Exception::class)
+  fun queryWatcherUpdatedDifferentQueryDifferentResults() {
+    mockWebServer.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
-        val observer = mock<Observer<ApolloLiveDataResponse<EpisodeHeroNameQuery.Data>>>()
-        val liveData = apolloClient
-                .query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
-                .watcher()
-                .toLiveData()
-        liveData.observeForever(observer)
+    val observer = mock<Observer<ApolloLiveDataResponse<EpisodeHeroNameQuery.Data>>>()
+    val liveData = apolloClient
+            .query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+            .watcher()
+            .toLiveData()
+    liveData.observeForever(observer)
 
-        assertNotNull(liveData.value)
-        verify(observer).onChanged(liveData.value)
-        assertThat(liveData.value, instanceOf(ApolloLiveDataResponse.Success::class.java))
+    assertNotNull(liveData.value)
+    verify(observer).onChanged(liveData.value)
+    assertThat(liveData.value, instanceOf(ApolloLiveDataResponse.Success::class.java))
 
-        val success = liveData.value as ApolloLiveDataResponse.Success
-        assertThat(success.data?.hero()?.__typename(), `is`("Droid"))
-        assertThat(success.data?.hero()?.name(), `is`("R2-D2"))
+    val success = liveData.value as ApolloLiveDataResponse.Success
+    assertThat(success.data?.hero()?.__typename(), `is`("Droid"))
+    assertThat(success.data?.hero()?.name(), `is`("R2-D2"))
 
-        mockWebServer.enqueue(mockResponse(FILE_HERO_AND_FRIEND_NAMD_CHANGE))
-        apolloClient
-                .query(HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE)))
-                .enqueue(null)
+    mockWebServer.enqueue(mockResponse(FILE_HERO_AND_FRIEND_NAMD_CHANGE))
+    apolloClient
+            .query(HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE)))
+            .enqueue(null)
 
-        val success2 = liveData.value as ApolloLiveDataResponse.Success
-        assertThat(success2.data?.hero()?.__typename(), `is`("Droid"))
-        assertThat(success2.data?.hero()?.name(), `is`("Artoo"))
-    }
+    val success2 = liveData.value as ApolloLiveDataResponse.Success
+    assertThat(success2.data?.hero()?.__typename(), `is`("Droid"))
+    assertThat(success2.data?.hero()?.name(), `is`("Artoo"))
+  }
 }
