@@ -30,6 +30,7 @@ import okhttp3.Response;
 import okio.Buffer;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import static com.apollographql.apollo.internal.interceptor.ApolloFileUploadInterceptor.httpMultipartRequestBody;
 
 /**
  * ApolloServerInterceptor is a concrete {@link ApolloInterceptor} responsible for making the network calls to the
@@ -154,7 +155,9 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     jsonWriter.endObject();
     jsonWriter.endObject();
     jsonWriter.close();
-    return RequestBody.create(MEDIA_TYPE, buffer.readByteString());
+
+    RequestBody mainBody = RequestBody.create(MEDIA_TYPE, buffer.readByteString());
+    return httpMultipartRequestBody(mainBody, operation);
   }
 
   public static String cacheKey(RequestBody requestBody) {
