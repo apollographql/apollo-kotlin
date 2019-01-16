@@ -31,6 +31,7 @@ import okio.Buffer;
 import okio.ByteString;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import static com.apollographql.apollo.internal.interceptor.ApolloFileUploadInterceptor.httpMultipartRequestBody;
 
 /**
  * ApolloServerInterceptor is a concrete {@link ApolloInterceptor} responsible for making the network calls to the
@@ -111,6 +112,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   Call httpCall(Operation operation, CacheHeaders cacheHeaders, boolean writeQueryDocument) throws IOException {
     RequestBody requestBody = RequestBody.create(MEDIA_TYPE, httpRequestBody(operation, scalarTypeAdapters,
         writeQueryDocument));
+    requestBody = httpMultipartRequestBody(requestBody, operation);
     Request.Builder requestBuilder = new Request.Builder()
         .url(serverUrl)
         .post(requestBody)

@@ -2,6 +2,7 @@ package com.apollographql.apollo.internal.reader;
 
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.IdleResourceCallback;
+import com.apollographql.apollo.api.GraphqlUpload;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.ResponseFieldMapper;
@@ -12,10 +13,13 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -45,7 +49,23 @@ public class ApolloCallTrackerTest {
     }
 
     @Override public Variables variables() {
-      return EMPTY_VARIABLES;
+      return new Variables() {
+          @Override public Map<String, Object> valueMap() {
+              final File f = new File(
+                      "/Users/truongsinh/Dev/android/apollo-android/apollo-runtime/src/main/java/com/apollographql/apollo/internal/interceptor/java.jpg"
+              );
+              final GraphqlUpload graphqlUpload = new GraphqlUpload() {{
+                  file = f;
+                  mimetype = "application/json; charset=utf-8";
+              }};
+              final GraphqlUpload[] uploads = {graphqlUpload, graphqlUpload};
+              return new HashMap<String, Object>() {{
+                  put("a", graphqlUpload);
+                  put("b", uploads);
+                  put("c", "d");
+              }};
+      }
+      };
     }
 
     @Override public ResponseFieldMapper<Data> responseFieldMapper() {
