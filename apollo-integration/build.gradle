@@ -1,12 +1,15 @@
 buildscript {
+  ext.kotlin_version = '1.3.11'
   dependencies {
     classpath dep.androidPlugin
     classpath dep.apolloPlugin
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.apollographql.android'
+apply plugin: 'kotlin-android'
 
 android {
   compileSdkVersion androidConfig.compileSdkVersion
@@ -47,6 +50,7 @@ dependencies {
 
 apollo {
   customTypeMapping = [
+      "Upload": "com.apollographql.apollo.api.GraphqlUpload",
       "Date": "java.util.Date"
   ]
 }
