@@ -29,8 +29,8 @@ android {
 }
 
 dependencies {
-  compileOnly dep.jsr250
-  compileOnly dep.jetbrainsAnnotations
+  implementation dep.jsr250
+  implementation dep.jetbrainsAnnotations
 
   implementation project(':apollo-runtime')
   implementation project(':apollo-rx-support')
