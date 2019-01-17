@@ -81,7 +81,7 @@ public class ApolloFileUploadInterceptor {
         }
         jsonWriter.endObject();
         jsonWriter.close();
-        MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder()
+        MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder("--graphql-multipart-upload-boundary-85763456--")
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("operations", null, mainBody)
                 .addFormDataPart("map", null, RequestBody.create(MEDIA_TYPE, buffer.readByteString()));
