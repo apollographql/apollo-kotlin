@@ -42,7 +42,6 @@ fun readRequestBody(body: RequestBody): String {
 internal var file1 = createGraphqlUpload("test1.txt", "content_testOne", "text/plain")
 internal var file2 = createGraphqlUpload("test2.jpg", "content_testTwo", "image/jpeg")
 internal var file3 = createGraphqlUpload("test3.pdf", "content_testThree", "text/plain")
-internal var boundary = "----graphql-multipart-upload-boundary-85763456--"
 
 class ApolloFileUploadInterceptorTest {
 
@@ -186,9 +185,7 @@ content_testOne
 ----graphql-multipart-upload-boundary-85763456----
         """.trimIndent())
     }
-    // “variables.answer.inputFiles.0”
-
-
+    
     @Test
     fun singleNestedMapListUpload() {
         val mainBody = RequestBody.create(null, "dummy request body")
@@ -197,7 +194,6 @@ content_testOne
                 return object : Operation.Variables() {
                     override fun valueMap(): Map<String, Any> {
                         return object : HashMap<String, Any>() {
-                            //“variables.answer.choices.0.inputFiles.0”
                             init {
                                 put("answer", object : HashMap<String, Any>() {
                                     init {
