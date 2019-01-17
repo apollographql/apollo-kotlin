@@ -164,9 +164,7 @@ import static com.apollographql.apollo.internal.interceptor.ApolloFileUploadInte
     jsonWriter.endObject();
     jsonWriter.endObject();
     jsonWriter.close();
-
-    RequestBody mainBody = RequestBody.create(MEDIA_TYPE, buffer.readByteString());
-    return httpMultipartRequestBody(mainBody, operation);
+    return RequestBody.create(MEDIA_TYPE, buffer.readByteString());
   }
 
   public static String cacheKey(RequestBody requestBody) {
