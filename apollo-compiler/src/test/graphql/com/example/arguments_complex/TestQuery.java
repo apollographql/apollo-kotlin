@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, TestQuery.Variables> {
-  public static final String OPERATION_ID = "4905a0fccc07f97ecd6d660f5a68d4d49ffedc3f4688b76d17288dec1a1fdf93";
+  public static final String OPERATION_ID = "b884beff93e8ae07fb00cfbb6f95ce377673dc97fd56f4a3ce2608dc8f48a8b6";
 
   public static final String QUERY_DOCUMENT = "query TestQuery($episode: Episode, $stars: Int!, $greenValue: Float!) {\n"
       + "  heroWithReview(episode: $episode, review: {stars: $stars, favoriteColor: {red: 0, green: $greenValue, blue: 0}}) {\n"

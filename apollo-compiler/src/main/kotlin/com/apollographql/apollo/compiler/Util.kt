@@ -2,6 +2,9 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.squareup.javapoet.*
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
 import javax.lang.model.element.Modifier
 
 private val JAVA_RESERVED_WORDS = arrayOf(
@@ -497,6 +500,13 @@ fun Number.castTo(type: TypeName): Number {
   } else {
     this
   }
+}
+
+fun String.sha256(): String {
+    val bytes = toByteArray(charset = StandardCharsets.UTF_8)
+    val md = MessageDigest.getInstance("SHA-256")
+    val digest = md.digest(bytes)
+    return digest.fold("") { str, it -> str + "%02x".format(it) }
 }
 
 object Util {

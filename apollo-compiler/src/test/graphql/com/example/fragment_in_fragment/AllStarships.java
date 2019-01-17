@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class AllStarships implements Query<AllStarships.Data, Optional<AllStarships.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "f3b63150118cfccd52140c4ca6aec578235d7ea99c5b905f14138c49f7f5fc7d";
+  public static final String OPERATION_ID = "6c00a8f52589439b636c7ae6e7d58dd405e41a856291dd869bcf9cd8aed85db2";
 
   public static final String QUERY_DOCUMENT = "query AllStarships {\n"
       + "  allStarships(first: 7) {\n"
