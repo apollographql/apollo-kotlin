@@ -24,6 +24,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -110,17 +111,24 @@ import static com.apollographql.apollo.internal.interceptor.ApolloFileUploadInte
   }
 
   Call httpCall(Operation operation, CacheHeaders cacheHeaders, boolean writeQueryDocument) throws IOException {
-    RequestBody requestBody = RequestBody.create(MEDIA_TYPE, httpRequestBody(operation, scalarTypeAdapters,
+    RequestBody requestBodyOriginal = RequestBody.create(MEDIA_TYPE, httpRequestBody(operation, scalarTypeAdapters,
         writeQueryDocument));
-    requestBody = httpMultipartRequestBody(requestBody, operation);
+    RequestBody requestBody = httpMultipartRequestBody(requestBodyOriginal, operation);
     Request.Builder requestBuilder = new Request.Builder()
         .url(serverUrl)
         .post(requestBody)
         .header(HEADER_ACCEPT_TYPE, ACCEPT_TYPE)
-        .header(HEADER_CONTENT_TYPE, CONTENT_TYPE)
         .header(HEADER_APOLLO_OPERATION_ID, operation.operationId())
         .header(HEADER_APOLLO_OPERATION_NAME, operation.name().name())
         .tag(operation.operationId());
+
+    // @todo untested
+    if(requestBody instanceof MultipartBody) {
+      String boundary = ((MultipartBody)requestBody).boundary();
+      requestBuilder = requestBuilder.header(HEADER_CONTENT_TYPE, "multipart/form-data; boundary=" + boundary);
+    } else {
+      requestBuilder = requestBuilder.header(HEADER_CONTENT_TYPE, CONTENT_TYPE);
+    }
 
     if (cachePolicy.isPresent()) {
       HttpCachePolicy.Policy cachePolicy = this.cachePolicy.get();
