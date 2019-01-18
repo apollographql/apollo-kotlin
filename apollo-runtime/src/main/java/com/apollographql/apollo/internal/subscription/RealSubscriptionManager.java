@@ -119,11 +119,13 @@ public final class RealSubscriptionManager implements SubscriptionManager {
    */
   @Override
   public void stop() {
-    setStateAndNotify(State.STOPPING);
-    for (SubscriptionRecord eachSubscriptionRecord : subscriptions.values()) {
-      doUnsubscribe(eachSubscriptionRecord.subscription);
+    synchronized (this) {
+      setStateAndNotify(State.STOPPING);
+      for (SubscriptionRecord eachSubscriptionRecord : subscriptions.values()) {
+        doUnsubscribe(eachSubscriptionRecord.subscription);
+      }
+      disconnect(true);
     }
-    disconnect(true);
   }
 
   public void addOnStateChangeListener(@NotNull OnStateChangeListener onStateChangeListener) {
@@ -170,7 +172,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
         transport.send(new OperationClientMessage.Stop(subscriptionId));
       }
 
-      if (subscriptions.isEmpty()) {
+      if (subscriptions.isEmpty() && state != State.STOPPING) {
         startInactivityTimer();
       }
     }
