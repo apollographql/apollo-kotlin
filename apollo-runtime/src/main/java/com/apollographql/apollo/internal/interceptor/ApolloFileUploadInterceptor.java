@@ -11,9 +11,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -32,11 +29,8 @@ class UploadData {
 public class ApolloFileUploadInterceptor {
 
     private static void recursiveGetUploadData(Object value, String variableName, ArrayList<GraphqlUpload> allUploads, HashMap<String, String[]> filesMap) {
-
-        Logger.global.log(Level.INFO, "INSP UPLOAD, variable: " + variableName, value);
         if (value instanceof InputType) {
             try {
-                Logger.global.log(Level.INFO, "INSP UPLOAD, value instanceof InputType" + variableName, value);
                 Field[] fields = value.getClass().getDeclaredFields();
                 for (Field field : fields) {
                     field.setAccessible(true);
@@ -45,13 +39,11 @@ public class ApolloFileUploadInterceptor {
                     recursiveGetUploadData(subValue, variableName + "." + key, allUploads, filesMap);
                 }
             } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
+                // never happen
             }
         } else if (value instanceof Input) {
-            if (((Input) value).defined) {
-                Object unwrappedValue = ((Input) value).value;
-                recursiveGetUploadData(unwrappedValue, variableName, allUploads, filesMap);
-            }
+            Object unwrappedValue = ((Input) value).value;
+            recursiveGetUploadData(unwrappedValue, variableName, allUploads, filesMap);
         } else if (value instanceof GraphqlUpload) {
             GraphqlUpload upload = (GraphqlUpload) value;
             allUploads.add(upload);
@@ -63,12 +55,6 @@ public class ApolloFileUploadInterceptor {
                 allUploads.add(upload);
                 filesMap.put("" + filesMap.size(), new String[]{variableName + "." + varFileIndex});
                 varFileIndex++;
-            }
-        } else if (value instanceof Map) {
-            Map<String, Object> mapData = (Map) value;
-            for (String key : mapData.keySet()) {
-                Object subValue = mapData.get(key);
-                recursiveGetUploadData(subValue, variableName + "." + key, allUploads, filesMap);
             }
         } else if (value instanceof Collection) {
             Object[] listData = ((Collection) value).toArray();

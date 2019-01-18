@@ -56,7 +56,7 @@ class ApolloServerUploadInterceptorTest {
             .build()
 
     @Test
-    fun testDefaultHttpCall() {
+    fun testUploadWithGraphQL() {
         val requestAssertPredicate = Predicate<Request> { request ->
             assertThat(request!!.header(ApolloServerInterceptor.HEADER_CONTENT_TYPE)).isEqualTo("multipart/form-data; boundary=--graphql-multipart-upload-boundary-85763456--")
             assertRequestBody(request, """

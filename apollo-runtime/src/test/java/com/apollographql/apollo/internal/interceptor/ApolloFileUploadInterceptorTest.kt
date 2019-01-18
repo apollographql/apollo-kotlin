@@ -38,27 +38,27 @@ val httpCallFactory = object : Call.Factory {
     override fun newCall(request: Request): Call {
         return object : Call {
             override fun enqueue(responseCallback: Callback) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                TODO("not implemented")
             }
 
             override fun cancel() {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                TODO("not implemented")
             }
 
             override fun clone(): Call {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                TODO("not implemented")
             }
 
             override fun execute(): Response {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                TODO("not implemented")
             }
 
             override fun isCanceled(): Boolean {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                TODO("not implemented")
             }
 
             override fun isExecuted(): Boolean {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                TODO("not implemented")
             }
 
             override fun request(): Request {
@@ -130,7 +130,7 @@ class ApolloFileUploadInterceptorTest {
 
         val httpRequest = apolloServerInterceptor.httpCall(operation, CacheHeaders.NONE).request()
 
-        assertThat( httpRequest.headers("Content-Type")[0]).isEqualTo("application/json")
+        assertThat(httpRequest.headers("Content-Type")[0]).isEqualTo("application/json")
 
         val body = httpRequest.body() as RequestBody
         val bodyString = readRequestBody(body)
@@ -181,7 +181,7 @@ class ApolloFileUploadInterceptorTest {
 
         val httpRequest = apolloServerInterceptor.httpCall(operation, CacheHeaders.NONE).request()
 
-        assertThat( httpRequest.headers("Content-Type")[0]).isEqualTo("multipart/form-data; boundary=--graphql-multipart-upload-boundary-85763456--")
+        assertThat(httpRequest.headers("Content-Type")[0]).isEqualTo("multipart/form-data; boundary=--graphql-multipart-upload-boundary-85763456--")
 
         val body = httpRequest.body() as RequestBody
         val bodyString = readRequestBody(body)
@@ -211,6 +211,23 @@ content_testOne
 
     @Test
     fun singleNestedMapUpload() {
+        val nestedObject = object : InputType {
+            override fun marshaller(): InputFieldMarshaller {
+                TODO("not implemented")
+            }
+
+            private val k1Lev2 = "v1"
+            private val k2Lev2 = object : InputType {
+                override fun marshaller(): InputFieldMarshaller {
+                    TODO("not implemented")
+                }
+
+                private val k1Lev3 = "v1"
+                private val k2Lev3 = file1
+                private val k3Lev3 = "v3"
+            }
+            private val k3Lev2 = "v3"
+        }
         val operation = object : Mutation<Operation.Data, Void, Operation.Variables> {
             override fun variables(): Operation.Variables {
                 return object : Operation.Variables() {
@@ -218,19 +235,7 @@ content_testOne
                         return object : HashMap<String, Any>() {
                             init {
                                 put("k1Lev1", "v1")
-                                put("k2Lev1", object : HashMap<String, Any>() {
-                                    init {
-                                        put("k1Lev2", "v1")
-                                        put("k2Lev2", object : HashMap<String, Any>() {
-                                            init {
-                                                put("k1Lev3", "v1")
-                                                put("k2Lev3", file1)
-                                                put("k3Lev3", "v3")
-                                            }
-                                        })
-                                        put("k3Lev2", "v3")
-                                    }
-                                })
+                                put("k2Lev1", nestedObject)
                                 put("k3Lev1", "v2")
                             }
                         }
@@ -261,7 +266,7 @@ content_testOne
         val httpRequest = apolloServerInterceptor.httpCall(operation, CacheHeaders.NONE).request()
         val body = httpRequest.body() as RequestBody
 
-        assertThat( httpRequest.headers("Content-Type")[0]).isEqualTo("multipart/form-data; boundary=--graphql-multipart-upload-boundary-85763456--")
+        assertThat(httpRequest.headers("Content-Type")[0]).isEqualTo("multipart/form-data; boundary=--graphql-multipart-upload-boundary-85763456--")
 
         val bodyString = readRequestBody(body)
         assertThat(bodyString.trimIndent()).isEqualTo("""
@@ -289,25 +294,32 @@ content_testOne
 
     @Test
     fun singleNestedMapListUpload() {
+        val nestedObject = object : InputType {
+            override fun marshaller(): InputFieldMarshaller {
+                TODO("not implemented")
+            }
+
+            private val choices = arrayListOf(object : InputType {
+                override fun marshaller(): InputFieldMarshaller {
+                    TODO("not implemented")
+                }
+
+                private val inputFiles = arrayListOf(file1, file2)
+            }, object : InputType {
+                override fun marshaller(): InputFieldMarshaller {
+                    TODO("not implemented")
+                }
+
+                private val inputFiles = arrayListOf(file3)
+            })
+        }
         val operation = object : Mutation<Operation.Data, Void, Operation.Variables> {
             override fun variables(): Operation.Variables {
                 return object : Operation.Variables() {
                     override fun valueMap(): Map<String, Any> {
                         return object : HashMap<String, Any>() {
                             init {
-                                put("answer", object : HashMap<String, Any>() {
-                                    init {
-                                        put("choices", arrayListOf(object : HashMap<String, Any>() {
-                                            init {
-                                                put("inputFiles", arrayListOf(file1, file2))
-                                            }
-                                        }, object : HashMap<String, Any>() {
-                                            init {
-                                                put("inputFiles", arrayListOf(file3))
-                                            }
-                                        }))
-                                    }
-                                })
+                                put("answer", nestedObject)
                             }
                         }
                     }
@@ -339,7 +351,7 @@ content_testOne
         val httpRequest = apolloServerInterceptor.httpCall(operation, CacheHeaders.NONE).request()
         val body = httpRequest.body() as RequestBody
 
-        assertThat( httpRequest.headers("Content-Type")[0]).isEqualTo("multipart/form-data; boundary=--graphql-multipart-upload-boundary-85763456--")
+        assertThat(httpRequest.headers("Content-Type")[0]).isEqualTo("multipart/form-data; boundary=--graphql-multipart-upload-boundary-85763456--")
 
         val bodyString = readRequestBody(body)
         assertThat(bodyString.trimIndent()).isEqualTo("""
