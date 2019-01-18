@@ -1,6 +1,5 @@
 package com.apollographql.apollo.internal.interceptor
 
-import com.apollographql.apollo.api.GraphqlUpload
 import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.integration.interceptor.UploadFileExampleMutation
@@ -18,21 +17,21 @@ import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 
-fun createGraphqlUpload(fileName: String, content: String): GraphqlUpload {
+fun createFile(fileName: String, content: String): File {
     val tempDir = System.getProperty("java.io.tmpdir")
     val filePath = tempDir + "/" + fileName
     val f = File(filePath)
     val bw = BufferedWriter(FileWriter(f))
     bw.write(content)
     bw.close()
-    return GraphqlUpload(f)
+    return f
 }
 
 class ApolloServerUploadInterceptorTest {
     private val serverUrl = HttpUrl.parse("http://google.com")
-    private val file0 = createGraphqlUpload("test0.txt", "content_testZero")
-    private val file1 = createGraphqlUpload("test1.png", "content_testOne")
-    private val file2 = createGraphqlUpload("test2.jpg", "content_test2")
+    private val file0 = createFile("test0.txt", "content_testZero")
+    private val file1 = createFile("test1.png", "content_testOne")
+    private val file2 = createFile("test2.jpg", "content_test2")
     private val nestedObject0 = NestedObject.builder()
             .file(file0)
             .fileList(listOf(file1, file2))

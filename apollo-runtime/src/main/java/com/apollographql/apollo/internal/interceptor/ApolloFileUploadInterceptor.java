@@ -1,13 +1,14 @@
 package com.apollographql.apollo.internal.interceptor;
 
-import com.apollographql.apollo.api.GraphqlUpload;
 import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.InputType;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.internal.json.JsonWriter;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,14 +22,14 @@ import static com.apollographql.apollo.internal.interceptor.ApolloServerIntercep
 
 
 class UploadData {
-    public ArrayList<GraphqlUpload> allUploads = null;
+    public ArrayList<File> allUploads = null;
     public HashMap<String, String[]> filesMap = null;
 }
 
 
 public class ApolloFileUploadInterceptor {
 
-    private static void recursiveGetUploadData(Object value, String variableName, ArrayList<GraphqlUpload> allUploads, HashMap<String, String[]> filesMap) {
+    private static void recursiveGetUploadData(Object value, String variableName, ArrayList<File> allUploads, HashMap<String, String[]> filesMap) {
         if (value instanceof InputType) {
             try {
                 Field[] fields = value.getClass().getDeclaredFields();
@@ -44,14 +45,14 @@ public class ApolloFileUploadInterceptor {
         } else if (value instanceof Input) {
             Object unwrappedValue = ((Input) value).value;
             recursiveGetUploadData(unwrappedValue, variableName, allUploads, filesMap);
-        } else if (value instanceof GraphqlUpload) {
-            GraphqlUpload upload = (GraphqlUpload) value;
+        } else if (value instanceof File) {
+            File upload = (File) value;
             allUploads.add(upload);
             filesMap.put("" + filesMap.size(), new String[]{variableName});
-        } else if (value instanceof GraphqlUpload[]) {
+        } else if (value instanceof File[]) {
             int varFileIndex = 0;
-            GraphqlUpload[] uploads = (GraphqlUpload[]) value;
-            for (GraphqlUpload upload : uploads) {
+            File[] uploads = (File[]) value;
+            for (File upload : uploads) {
                 allUploads.add(upload);
                 filesMap.put("" + filesMap.size(), new String[]{variableName + "." + varFileIndex});
                 varFileIndex++;
@@ -67,14 +68,14 @@ public class ApolloFileUploadInterceptor {
 
     public static UploadData getUploadData(Operation operation) {
 
-        ArrayList<GraphqlUpload> allUploads = new ArrayList<>();
+        ArrayList<File> allUploads = new ArrayList<>();
         HashMap<String, String[]> filesMap = new HashMap<>();
         for (String variableName : operation.variables().valueMap().keySet()) {
             Object value = operation.variables().valueMap().get(variableName);
             recursiveGetUploadData(value, "variables." + variableName, allUploads, filesMap);
         }
 
-        final ArrayList<GraphqlUpload> allUploadsRef = allUploads;
+        final ArrayList<File> allUploadsRef = allUploads;
         final HashMap<String, String[]> filesMapRef = filesMap;
 
         return new UploadData() {{
@@ -92,7 +93,7 @@ public class ApolloFileUploadInterceptor {
 
 
         HashMap<String, String[]> filesMap = uploadData.filesMap;
-        GraphqlUpload[] uploads = uploadData.allUploads.toArray(new GraphqlUpload[0]);
+        File[] uploads = uploadData.allUploads.toArray(new File[0]);
 
 
         Buffer buffer = new Buffer();
@@ -111,9 +112,12 @@ public class ApolloFileUploadInterceptor {
                 .addFormDataPart("operations", null, mainBody)
                 .addFormDataPart("map", null, RequestBody.create(MEDIA_TYPE, buffer.readByteString()));
         int index = 0;
-        for (GraphqlUpload upload : uploads) {
-            multipartBodyBuilder.addFormDataPart("" + index, upload.file.getName(),
-                    RequestBody.create(upload.getMimetype(), upload.file));
+        for (File upload : uploads) {
+            String fileName = upload.getName();
+            MediaType mimetype =  MediaType.parse(URLConnection.guessContentTypeFromName(fileName));
+
+            multipartBodyBuilder.addFormDataPart("" + index, fileName,
+                    RequestBody.create(mimetype, upload));
             index++;
         }
         return multipartBodyBuilder.build();

@@ -14,18 +14,19 @@ import okio.BufferedSink
 import okio.Okio
 import org.junit.Test
 import java.io.BufferedWriter
+import java.io.File
 import java.io.FileWriter
 import java.nio.file.Files
 import java.nio.file.Paths
 
-fun createGraphqlUpload(fileName: String, content: String): GraphqlUpload {
+fun createFile(fileName: String, content: String): File {
     val tempDir = Files.createTempDirectory("graphql-tmp-test-dir")
     val filePath = Paths.get(tempDir.toString(), fileName)
     val f = filePath.toFile()
     val bw = BufferedWriter(FileWriter(f))
     bw.write(content)
     bw.close()
-    return GraphqlUpload(f)
+    return f
 }
 
 val serverUrl = HttpUrl.parse("http://localhost") as HttpUrl
@@ -78,9 +79,9 @@ fun readRequestBody(body: RequestBody): String {
 }
 
 
-internal var file1 = createGraphqlUpload("test1.txt", "content_testOne")
-internal var file2 = createGraphqlUpload("test2.jpg", "content_testTwo")
-internal var file3 = createGraphqlUpload("test3.pdf", "content_testThree")
+internal var file1 = createFile("test1.txt", "content_testOne")
+internal var file2 = createFile("test2.jpg", "content_testTwo")
+internal var file3 = createFile("test3.pdf", "content_testThree")
 
 class ApolloFileUploadInterceptorTest {
 
@@ -376,7 +377,7 @@ Content-Length: 15
 content_testTwo
 ----graphql-multipart-upload-boundary-85763456--
 Content-Disposition: form-data; name="2"; filename="test3.pdf"
-Content-Type: text/plain
+Content-Type: application/pdf
 Content-Length: 17
 
 content_testThree

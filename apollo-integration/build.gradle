@@ -50,7 +50,6 @@ dependencies {
 
 apollo {
   customTypeMapping = [
-      "Upload": "com.apollographql.apollo.api.GraphqlUpload",
       "Date": "java.util.Date"
   ]
 }
