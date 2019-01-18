@@ -54,10 +54,7 @@ public class ApolloCallTrackerTest {
               final File f = new File(
                       "/Users/truongsinh/Dev/android/apollo-android/apollo-runtime/src/main/java/com/apollographql/apollo/internal/interceptor/java.jpg"
               );
-              final GraphqlUpload graphqlUpload = new GraphqlUpload() {{
-                  file = f;
-                  mimetype = "application/json; charset=utf-8";
-              }};
+              final GraphqlUpload graphqlUpload = new GraphqlUpload(f);
               final GraphqlUpload[] uploads = {graphqlUpload, graphqlUpload};
               return new HashMap<String, Object>() {{
                   put("a", graphqlUpload);

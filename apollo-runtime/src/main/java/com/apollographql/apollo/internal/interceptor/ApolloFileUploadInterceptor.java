@@ -113,7 +113,7 @@ public class ApolloFileUploadInterceptor {
         int index = 0;
         for (GraphqlUpload upload : uploads) {
             multipartBodyBuilder.addFormDataPart("" + index, upload.file.getName(),
-                    RequestBody.create(MediaType.parse(upload.mimetype), upload.file));
+                    RequestBody.create(upload.getMimetype(), upload.file));
             index++;
         }
         return multipartBodyBuilder.build();

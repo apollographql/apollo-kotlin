@@ -18,19 +18,14 @@ import java.io.FileWriter
 import java.nio.file.Files
 import java.nio.file.Paths
 
-fun createGraphqlUpload(fileName: String, content: String, mimeType: String): GraphqlUpload {
+fun createGraphqlUpload(fileName: String, content: String): GraphqlUpload {
     val tempDir = Files.createTempDirectory("graphql-tmp-test-dir")
     val filePath = Paths.get(tempDir.toString(), fileName)
     val f = filePath.toFile()
     val bw = BufferedWriter(FileWriter(f))
     bw.write(content)
     bw.close()
-    return object : GraphqlUpload() {
-        init {
-            file = f
-            mimetype = mimeType
-        }
-    }
+    return GraphqlUpload(f)
 }
 
 val serverUrl = HttpUrl.parse("http://localhost") as HttpUrl
@@ -83,9 +78,9 @@ fun readRequestBody(body: RequestBody): String {
 }
 
 
-internal var file1 = createGraphqlUpload("test1.txt", "content_testOne", "text/plain")
-internal var file2 = createGraphqlUpload("test2.jpg", "content_testTwo", "image/jpeg")
-internal var file3 = createGraphqlUpload("test3.pdf", "content_testThree", "text/plain")
+internal var file1 = createGraphqlUpload("test1.txt", "content_testOne")
+internal var file2 = createGraphqlUpload("test2.jpg", "content_testTwo")
+internal var file3 = createGraphqlUpload("test3.pdf", "content_testThree")
 
 class ApolloFileUploadInterceptorTest {
 

@@ -18,26 +18,21 @@ import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 
-fun createGraphqlUpload(fileName: String, content: String, mimeType: String): GraphqlUpload {
+fun createGraphqlUpload(fileName: String, content: String): GraphqlUpload {
     val tempDir = System.getProperty("java.io.tmpdir")
     val filePath = tempDir + "/" + fileName
     val f = File(filePath)
     val bw = BufferedWriter(FileWriter(f))
     bw.write(content)
     bw.close()
-    return object : GraphqlUpload() {
-        init {
-            file = f
-            mimetype = mimeType
-        }
-    }
+    return GraphqlUpload(f)
 }
 
 class ApolloServerUploadInterceptorTest {
     private val serverUrl = HttpUrl.parse("http://google.com")
-    private val file0 = createGraphqlUpload("test0.txt", "content_testZero", "text/plain")
-    private val file1 = createGraphqlUpload("test1.png", "content_testOne", "image/png")
-    private val file2 = createGraphqlUpload("test2.jpg", "content_test2", "image/jpg")
+    private val file0 = createGraphqlUpload("test0.txt", "content_testZero")
+    private val file1 = createGraphqlUpload("test1.png", "content_testOne")
+    private val file2 = createGraphqlUpload("test2.jpg", "content_test2")
     private val nestedObject0 = NestedObject.builder()
             .file(file0)
             .fileList(listOf(file1, file2))
@@ -76,7 +71,7 @@ Content-Length: 507
 {"0":["variables.topFile"],"11":["variables.nested.fileList.1"],"1":["variables.topFileList.0"],"2":["variables.topFileList.1"],"3":["variables.nested.recursiveNested.0.file"],"4":["variables.nested.recursiveNested.0.fileList.0"],"5":["variables.nested.recursiveNested.0.fileList.1"],"6":["variables.nested.recursiveNested.1.file"],"7":["variables.nested.recursiveNested.1.fileList.0"],"8":["variables.nested.recursiveNested.1.fileList.1"],"9":["variables.nested.file"],"10":["variables.nested.fileList.0"]}
 ----graphql-multipart-upload-boundary-85763456--
 Content-Disposition: form-data; name="0"; filename="test2.jpg"
-Content-Type: image/jpg
+Content-Type: image/jpeg
 Content-Length: 13
 
 content_test2
@@ -106,7 +101,7 @@ Content-Length: 15
 content_testOne
 ----graphql-multipart-upload-boundary-85763456--
 Content-Disposition: form-data; name="5"; filename="test2.jpg"
-Content-Type: image/jpg
+Content-Type: image/jpeg
 Content-Length: 13
 
 content_test2
@@ -124,13 +119,13 @@ Content-Length: 16
 content_testZero
 ----graphql-multipart-upload-boundary-85763456--
 Content-Disposition: form-data; name="8"; filename="test2.jpg"
-Content-Type: image/jpg
+Content-Type: image/jpeg
 Content-Length: 13
 
 content_test2
 ----graphql-multipart-upload-boundary-85763456--
 Content-Disposition: form-data; name="9"; filename="test2.jpg"
-Content-Type: image/jpg
+Content-Type: image/jpeg
 Content-Length: 13
 
 content_test2
