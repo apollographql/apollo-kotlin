@@ -53,6 +53,8 @@ class ApolloServerUploadInterceptorTest {
             .build()
     private val query = UploadFileExampleMutation.builder()
             .nested(nestedObject2)
+            .topFile(file2)
+            .topFileList(listOf(file1, file0))
             .build()
 
     @Test
@@ -63,21 +65,21 @@ class ApolloServerUploadInterceptorTest {
 ----graphql-multipart-upload-boundary-85763456--
 Content-Disposition: form-data; name="operations"
 Content-Type: application/json; charset=utf-8
-Content-Length: 290
+Content-Length: 419
 
-{"query":"mutation uploadFileExample(${'$'}nested: NestedObject) {  uploadFileExample(nested: ${'$'}nested)}","operationName":"uploadFileExample","variables":{"nested":{"recursiveNested":[{"file":null,"fileList":[null,null]},{"file":null,"fileList":[null,null]}],"file":null,"fileList":[null,null]}}}
+{"query":"mutation uploadFileExample(${'$'}topFile: Upload, ${'$'}topFileList: [Upload], ${'$'}nested: NestedObject) {  uploadFileExample(topFile: ${'$'}topFile, topFileList: ${'$'}topFileList, nested: ${'$'}nested)}","operationName":"uploadFileExample","variables":{"topFile":null,"topFileList":[null,null],"nested":{"recursiveNested":[{"file":null,"fileList":[null,null]},{"file":null,"fileList":[null,null]}],"file":null,"fileList":[null,null]}}}
 ----graphql-multipart-upload-boundary-85763456--
 Content-Disposition: form-data; name="map"
 Content-Type: application/json; charset=utf-8
-Content-Length: 415
+Content-Length: 507
 
-{"0":["variables.nested.recursiveNested.0.file"],"1":["variables.nested.recursiveNested.0.fileList.0"],"2":["variables.nested.recursiveNested.0.fileList.1"],"3":["variables.nested.recursiveNested.1.file"],"4":["variables.nested.recursiveNested.1.fileList.0"],"5":["variables.nested.recursiveNested.1.fileList.1"],"6":["variables.nested.file"],"7":["variables.nested.fileList.0"],"8":["variables.nested.fileList.1"]}
+{"0":["variables.topFile"],"11":["variables.nested.fileList.1"],"1":["variables.topFileList.0"],"2":["variables.topFileList.1"],"3":["variables.nested.recursiveNested.0.file"],"4":["variables.nested.recursiveNested.0.fileList.0"],"5":["variables.nested.recursiveNested.0.fileList.1"],"6":["variables.nested.recursiveNested.1.file"],"7":["variables.nested.recursiveNested.1.fileList.0"],"8":["variables.nested.recursiveNested.1.fileList.1"],"9":["variables.nested.file"],"10":["variables.nested.fileList.0"]}
 ----graphql-multipart-upload-boundary-85763456--
-Content-Disposition: form-data; name="0"; filename="test0.txt"
-Content-Type: text/plain
-Content-Length: 16
+Content-Disposition: form-data; name="0"; filename="test2.jpg"
+Content-Type: image/jpg
+Content-Length: 13
 
-content_testZero
+content_test2
 ----graphql-multipart-upload-boundary-85763456--
 Content-Disposition: form-data; name="1"; filename="test1.png"
 Content-Type: image/png
@@ -85,23 +87,23 @@ Content-Length: 15
 
 content_testOne
 ----graphql-multipart-upload-boundary-85763456--
-Content-Disposition: form-data; name="2"; filename="test2.jpg"
-Content-Type: image/jpg
-Content-Length: 13
-
-content_test2
-----graphql-multipart-upload-boundary-85763456--
-Content-Disposition: form-data; name="3"; filename="test1.png"
-Content-Type: image/png
-Content-Length: 15
-
-content_testOne
-----graphql-multipart-upload-boundary-85763456--
-Content-Disposition: form-data; name="4"; filename="test0.txt"
+Content-Disposition: form-data; name="2"; filename="test0.txt"
 Content-Type: text/plain
 Content-Length: 16
 
 content_testZero
+----graphql-multipart-upload-boundary-85763456--
+Content-Disposition: form-data; name="3"; filename="test0.txt"
+Content-Type: text/plain
+Content-Length: 16
+
+content_testZero
+----graphql-multipart-upload-boundary-85763456--
+Content-Disposition: form-data; name="4"; filename="test1.png"
+Content-Type: image/png
+Content-Length: 15
+
+content_testOne
 ----graphql-multipart-upload-boundary-85763456--
 Content-Disposition: form-data; name="5"; filename="test2.jpg"
 Content-Type: image/jpg
@@ -109,11 +111,11 @@ Content-Length: 13
 
 content_test2
 ----graphql-multipart-upload-boundary-85763456--
-Content-Disposition: form-data; name="6"; filename="test2.jpg"
-Content-Type: image/jpg
-Content-Length: 13
+Content-Disposition: form-data; name="6"; filename="test1.png"
+Content-Type: image/png
+Content-Length: 15
 
-content_test2
+content_testOne
 ----graphql-multipart-upload-boundary-85763456--
 Content-Disposition: form-data; name="7"; filename="test0.txt"
 Content-Type: text/plain
@@ -121,7 +123,25 @@ Content-Length: 16
 
 content_testZero
 ----graphql-multipart-upload-boundary-85763456--
-Content-Disposition: form-data; name="8"; filename="test1.png"
+Content-Disposition: form-data; name="8"; filename="test2.jpg"
+Content-Type: image/jpg
+Content-Length: 13
+
+content_test2
+----graphql-multipart-upload-boundary-85763456--
+Content-Disposition: form-data; name="9"; filename="test2.jpg"
+Content-Type: image/jpg
+Content-Length: 13
+
+content_test2
+----graphql-multipart-upload-boundary-85763456--
+Content-Disposition: form-data; name="10"; filename="test0.txt"
+Content-Type: text/plain
+Content-Length: 16
+
+content_testZero
+----graphql-multipart-upload-boundary-85763456--
+Content-Disposition: form-data; name="11"; filename="test1.png"
 Content-Type: image/png
 Content-Length: 15
 

@@ -19,6 +19,30 @@
               "description": "",
               "args": [
                 {
+                  "name": "topFile",
+                  "description": "",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Upload",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "topFileList",
+                  "description": "",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Upload",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "nested",
                   "description": "",
                   "type": {
