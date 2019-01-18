@@ -26,11 +26,6 @@ public final class ScalarTypeAdapters {
       customTypeAdapter = DEFAULT_ADAPTERS.get(scalarType.javaType());
     }
 
-    // @todo there should be a better way to do this?
-    if (customTypeAdapter == null && scalarType.typeName() == "Upload") {
-      customTypeAdapter = DEFAULT_ADAPTERS.get(File.class);
-    }
-
     if (customTypeAdapter == null) {
       throw new IllegalArgumentException(String.format("Can't map GraphQL type: %s to: %s. Did you forget to add "
           + "custom type adapter?", scalarType.typeName(), scalarType.javaType()));

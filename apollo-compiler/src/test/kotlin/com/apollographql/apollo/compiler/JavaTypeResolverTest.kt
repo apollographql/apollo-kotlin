@@ -29,6 +29,9 @@ class JavaTypeResolverTest {
     Assert.assertEquals(ClassNames.STRING.annotated(Annotations.NONNULL), defaultResolver.resolve("String!"))
     Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.STRING), defaultResolver.resolve("String", true))
 
+    Assert.assertEquals(ClassNames.UPLOAD.annotated(Annotations.NONNULL), defaultResolver.resolve("Upload!"))
+    Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.UPLOAD), defaultResolver.resolve("Upload", true))
+
     Assert.assertEquals(TypeName.INT, defaultResolver.resolve("Int!"))
     Assert.assertEquals(ClassNames.parameterizedOptional(TypeName.INT.box()), defaultResolver.resolve("Int", true))
 
