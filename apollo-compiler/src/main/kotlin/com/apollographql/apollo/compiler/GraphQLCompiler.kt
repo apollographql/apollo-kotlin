@@ -55,10 +55,8 @@ class GraphQLCompiler {
       JavaFile.builder(context.typesPackage, typeSpec).build().writeTo(outputDir)
     }
 
-    if (context.customTypeMap.isNotEmpty()) {
-      val typeSpec = CustomEnumTypeSpecBuilder(context.copy()).build()
-      JavaFile.builder(context.typesPackage, typeSpec).build().writeTo(outputDir)
-    }
+    val typeSpec = CustomEnumTypeSpecBuilder(context.copy()).build()
+    JavaFile.builder(context.typesPackage, typeSpec).build().writeTo(outputDir)
 
     operations.map { OperationTypeSpecBuilder(it, fragments, context.useSemanticNaming) }
         .forEach {

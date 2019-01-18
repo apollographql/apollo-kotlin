@@ -25,6 +25,7 @@ class CustomEnumTypeSpecBuilder(
       val javaTypeName = mapping.value
       addEnumConstant(constantName, scalarMappingTypeSpec(mapping.key, javaTypeName))
     }
+    addEnumConstant("UPLOAD", scalarMappingTypeSpec("Upload", "java.lang.File"))
     return this
   }
 
