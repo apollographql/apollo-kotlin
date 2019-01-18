@@ -1,8 +1,8 @@
 package com.apollographql.apollo.response;
 
-import com.apollographql.apollo.api.GraphqlUpload;
 import com.apollographql.apollo.api.ScalarType;
 
+import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -24,6 +24,11 @@ public final class ScalarTypeAdapters {
     CustomTypeAdapter<T> customTypeAdapter = customAdapters.get(scalarType);
     if (customTypeAdapter == null) {
       customTypeAdapter = DEFAULT_ADAPTERS.get(scalarType.javaType());
+    }
+
+    // @todo there should be a better way to do this?
+    if (customTypeAdapter == null && scalarType.typeName() == "Upload") {
+      customTypeAdapter = DEFAULT_ADAPTERS.get(File.class);
     }
 
     if (customTypeAdapter == null) {
@@ -96,14 +101,14 @@ public final class ScalarTypeAdapters {
         }
       }
     });
-    adapters.put(GraphqlUpload.class, new CustomTypeAdapter<GraphqlUpload>() {
-      @Override public GraphqlUpload decode(@NotNull CustomTypeValue value) {
+    adapters.put(File.class, new DefaultCustomTypeAdapter<File>() {
+      @Override public File decode(@NotNull CustomTypeValue value) {
         return null;
       }
 
       @NotNull
       @Override
-      public CustomTypeValue encode(@NotNull GraphqlUpload value) {
+      public CustomTypeValue encode(@NotNull File value) {
         return new CustomTypeValue.GraphQLString(null);
       }
     });
