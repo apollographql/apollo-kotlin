@@ -1,14 +1,19 @@
 package com.apollographql.apollo.internal.interceptor;
 
 import com.apollographql.apollo.api.GraphqlUpload;
+import com.apollographql.apollo.api.Input;
+import com.apollographql.apollo.api.InputType;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.internal.json.JsonWriter;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -28,16 +33,35 @@ public class ApolloFileUploadInterceptor {
 
     private static void recursiveGetUploadData(Object value, String variableName, ArrayList<GraphqlUpload> allUploads, HashMap<String, String[]> filesMap) {
 
-        if (value instanceof GraphqlUpload) {
+        Logger.global.log(Level.INFO, "INSP UPLOAD, variable: " + variableName, value);
+        if (value instanceof InputType) {
+            try {
+                Logger.global.log(Level.INFO, "INSP UPLOAD, value instanceof InputType" + variableName, value);
+                Field[] fields = value.getClass().getDeclaredFields();
+                for (Field field : fields) {
+                    field.setAccessible(true);
+                    Object subValue = field.get(value);
+                    String key = field.getName();
+                    recursiveGetUploadData(subValue, variableName + "." + key, allUploads, filesMap);
+                }
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        } else if (value instanceof Input) {
+            if (((Input) value).defined) {
+                Object unwrappedValue = ((Input) value).value;
+                recursiveGetUploadData(unwrappedValue, variableName, allUploads, filesMap);
+            }
+        } else if (value instanceof GraphqlUpload) {
             GraphqlUpload upload = (GraphqlUpload) value;
             allUploads.add(upload);
-            filesMap.put("" + filesMap.size(), new String[]{"variables." + variableName});
+            filesMap.put("" + filesMap.size(), new String[]{variableName});
         } else if (value instanceof GraphqlUpload[]) {
             int varFileIndex = 0;
             GraphqlUpload[] uploads = (GraphqlUpload[]) value;
             for (GraphqlUpload upload : uploads) {
                 allUploads.add(upload);
-                filesMap.put("" + filesMap.size(), new String[]{"variables." + variableName + "." + varFileIndex});
+                filesMap.put("" + filesMap.size(), new String[]{variableName + "." + varFileIndex});
                 varFileIndex++;
             }
         } else if (value instanceof Map) {
@@ -61,7 +85,7 @@ public class ApolloFileUploadInterceptor {
         HashMap<String, String[]> filesMap = new HashMap<>();
         for (String variableName : operation.variables().valueMap().keySet()) {
             Object value = operation.variables().valueMap().get(variableName);
-            recursiveGetUploadData(value, variableName, allUploads, filesMap);
+            recursiveGetUploadData(value, "variables." + variableName, allUploads, filesMap);
         }
 
         final ArrayList<GraphqlUpload> allUploadsRef = allUploads;
