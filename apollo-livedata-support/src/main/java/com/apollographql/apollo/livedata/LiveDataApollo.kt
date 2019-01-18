@@ -157,32 +157,15 @@ internal object LiveDataApollo {
   fun <T> from(@NonNull operation: ApolloStoreOperation<T>): LiveData<T?> {
     checkNotNull(operation, "operation == null")
     return object : LiveData<T?>() {
-      var onPosted = false
-
-      @MainThread
-      override fun setValue(value: T?) {
-        if (!onPosted) {
-          super.setValue(value)
-        }
-      }
-
-      override fun postValue(value: T?) {
-        if (!onPosted) {
-          super.postValue(value)
-        }
-      }
-
       override fun onActive() {
         super.onActive()
         operation.enqueue(object : ApolloStoreOperation.Callback<T> {
           override fun onSuccess(result: T) {
             postValue(result)
-            onPosted = true
           }
 
           override fun onFailure(t: Throwable?) {
             postValue(null)
-            onPosted = true
           }
         })
       }
