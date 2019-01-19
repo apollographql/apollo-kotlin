@@ -49,8 +49,10 @@ class ApolloClassGenerationTask extends SourceTask {
         if (outputPackageName != null && outputPackageName.trim().isEmpty()) {
           outputPackageName = null
         }
+        Map processedCustomTypeMapping = customTypeMapping.get()
+        processedCustomTypeMapping.putIfAbsent("Upload", "java.io.File")
         GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(
-            inputFile, outputDir.get().asFile, customTypeMapping.get(),
+            inputFile, outputDir.get().asFile, processedCustomTypeMapping,
             nullableValueType != null ? nullableValueType : NullableValueType.ANNOTATED, useSemanticNaming.get(),
             generateModelBuilder.get(), useJavaBeansSemanticNaming.get(), outputPackageName,
             suppressRawTypesWarning.get()
