@@ -1,0 +1,22 @@
+query GithubRepositories(
+  $repositoriesCount: Int!
+  $orderBy: RepositoryOrderField!
+  $orderDirection: OrderDirection!
+) {
+  viewer {
+    repositories(
+      first: $repositoriesCount
+      orderBy: { field: $orderBy, direction: $orderDirection }
+    ) {
+      nodes {
+        ...RepositoryFragment
+      }
+    }
+  }
+}
+
+fragment RepositoryFragment on Repository {
+  id
+  name
+  description
+}
