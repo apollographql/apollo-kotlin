@@ -1,0 +1,31 @@
+query GithubRepositoryDetail(
+  $name: String!
+  $pullRequestStates: [PullRequestState!]!
+) {
+  viewer {
+    repository(name: $name) {
+      # parent {
+      ...RepositoryDetail
+      # }
+    }
+  }
+}
+
+fragment RepositoryDetail on Repository {
+  id
+  name
+  description
+  issues {
+    totalCount
+  }
+  pullRequests(states: $pullRequestStates) {
+    totalCount
+  }
+  stargazers {
+    totalCount
+  }
+  forkCount
+  releases {
+    totalCount
+  }
+}
