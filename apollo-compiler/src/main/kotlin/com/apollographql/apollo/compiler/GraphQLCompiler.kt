@@ -55,12 +55,10 @@ class GraphQLCompiler {
       JavaFile.builder(context.typesPackage, typeSpec).build().writeTo(outputDir)
     }
 
-    // @todo there should be a better way to do this?
-    val m = context.customTypeMap.toMutableMap()
-    m.putIfAbsent("Upload", "java.io.File")
-    context.customTypeMap = m
-    val typeSpec = CustomEnumTypeSpecBuilder(context.copy()).build()
-    JavaFile.builder(context.typesPackage, typeSpec).build().writeTo(outputDir)
+    if (context.customTypeMap.isNotEmpty()) {
+      val typeSpec = CustomEnumTypeSpecBuilder(context.copy()).build()
+      JavaFile.builder(context.typesPackage, typeSpec).build().writeTo(outputDir)
+    }
 
     operations.map { OperationTypeSpecBuilder(it, fragments, context.useSemanticNaming) }
         .forEach {

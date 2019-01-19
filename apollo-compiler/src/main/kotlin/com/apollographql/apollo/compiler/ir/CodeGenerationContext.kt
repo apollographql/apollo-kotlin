@@ -7,7 +7,7 @@ data class CodeGenerationContext(
     val typeDeclarations: List<TypeDeclaration>,
     val fragmentsPackage: String = "",
     val typesPackage: String = "",
-    var customTypeMap: Map<String, String>,
+    val customTypeMap: Map<String, String>,
     val nullableValueType: NullableValueType,
     val ir: CodeGenerationIR,
     val useSemanticNaming: Boolean,
