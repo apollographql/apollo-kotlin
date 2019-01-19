@@ -6,7 +6,6 @@ import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeName
 import org.junit.Assert
 import org.junit.Test
-import java.io.File
 import java.util.*
 
 class JavaTypeResolverTest {
@@ -29,9 +28,6 @@ class JavaTypeResolverTest {
   fun resolveScalarType() {
     Assert.assertEquals(ClassNames.STRING.annotated(Annotations.NONNULL), defaultResolver.resolve("String!"))
     Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.STRING), defaultResolver.resolve("String", true))
-
-    Assert.assertEquals(ClassNames.UPLOAD.annotated(Annotations.NONNULL), defaultResolver.resolve("Upload!"))
-    Assert.assertEquals(ClassNames.parameterizedOptional(ClassNames.UPLOAD), defaultResolver.resolve("Upload", true))
 
     Assert.assertEquals(TypeName.INT, defaultResolver.resolve("Int!"))
     Assert.assertEquals(ClassNames.parameterizedOptional(TypeName.INT.box()), defaultResolver.resolve("Int", true))
@@ -95,10 +91,6 @@ class JavaTypeResolverTest {
         JavaTypeResolver(context, packageName).resolve("Date", false))
     Assert.assertEquals(ClassNames.parameterizedOptional(Date::class.java),
         JavaTypeResolver(context, packageName).resolve("Date", true))
-    Assert.assertEquals(ClassName.get(File::class.java).annotated(Annotations.NONNULL),
-            JavaTypeResolver(context, packageName).resolve("Upload", false))
-    Assert.assertEquals(ClassNames.parameterizedOptional(File::class.java),
-            JavaTypeResolver(context, packageName).resolve("Upload", true))
     Assert.assertEquals(ClassNames.parameterizedOptional(ClassName.get("", "Object")),
         JavaTypeResolver(context, packageName).resolve("UnsupportedType", true))
     Assert.assertEquals(ClassName.get(Integer::class.java).annotated(Annotations.NONNULL),

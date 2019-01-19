@@ -8,13 +8,11 @@ import com.apollographql.apollo.api.internal.Utils
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
-import java.io.File
 import java.util.*
 
 object ClassNames {
   val OBJECT: ClassName = ClassName.get(Object::class.java)
   val STRING: ClassName = ClassName.get(String::class.java)
-  val UPLOAD: ClassName = ClassName.get(File::class.java)
   val LIST: ClassName = ClassName.get(List::class.java)
   val ARRAY_LIST: ClassName = ClassName.get(ArrayList::class.java)
   val GRAPHQL_OPERATION: ClassName = ClassName.get(Operation::class.java)

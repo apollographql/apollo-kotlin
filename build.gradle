@@ -15,6 +15,7 @@ subprojects {
 
   buildscript {
     repositories {
+      maven { url "https://dl.bintray.com/truongsinh/android" }
       maven { url "https://plugins.gradle.org/m2/" }
       maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
