@@ -7,6 +7,7 @@ buildscript {
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.apollographql.android'
+apply plugin: 'kotlin-android'
 
 android {
   compileSdkVersion androidConfig.compileSdkVersion
@@ -35,8 +36,11 @@ dependencies {
   implementation project(':apollo-runtime')
   implementation project(':apollo-rx-support')
   implementation project(':apollo-rx2-support')
+  implementation project(':apollo-coroutines-support')
   implementation project(':apollo-http-cache')
   implementation dep.appcompat
+  implementation dep.kotlinStdLib
+  implementation dep.kotlinxCoroutines
 
   testImplementation dep.junit
   testImplementation dep.truth
