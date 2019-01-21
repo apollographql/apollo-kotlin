@@ -31,7 +31,9 @@ import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.Data, Optional<CreateReviewForEpisode.Data>, CreateReviewForEpisode.Variables> {
-  public static final String OPERATION_DEFINITION = "mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {\n"
+  public static final String OPERATION_ID = "e21a7c3210dfc89a23ac6ffa9cd5d4caf1b7ebecce91677433782e7b6f11f39c";
+
+  public static final String QUERY_DOCUMENT = "mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {\n"
       + "  createReview(episode: $ep, review: $review) {\n"
       + "    __typename\n"
       + "    stars\n"
@@ -45,10 +47,6 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
       + "    }\n"
       + "  }\n"
       + "}";
-
-  public static final String OPERATION_ID = "63f677799b4c5cfe580f133b71712c66179ea84077be680e999b0f1d1e66e0a1";
-
-  public static final String QUERY_DOCUMENT = OPERATION_DEFINITION;
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

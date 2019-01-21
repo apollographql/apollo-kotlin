@@ -19,21 +19,34 @@ import java.util.Arrays;
 import java.util.Collections;
 import javax.annotation.Generated;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_DEFINITION = "query TestOperation {\n"
+  public static final String OPERATION_ID = "655a64490f8732ae3e50bdc096824b9bd061f3da19a39fec4e0d010d38b8a8e1";
+
+  public static final String QUERY_DOCUMENT = "query TestOperation {\n"
       + "  setting {\n"
       + "    __typename\n"
       + "    ...TestSetting\n"
       + "  }\n"
+      + "}\n"
+      + "fragment TestSetting on Setting {\n"
+      + "  __typename\n"
+      + "  value {\n"
+      + "    __typename\n"
+      + "    ... on StringListSettingValue {\n"
+      + "      list\n"
+      + "    }\n"
+      + "  }\n"
+      + "  ... on SelectSetting {\n"
+      + "    options {\n"
+      + "      __typename\n"
+      + "      allowFreeText\n"
+      + "      id\n"
+      + "      label\n"
+      + "    }\n"
+      + "  }\n"
       + "}";
-
-  public static final String OPERATION_ID = "c4e875b8b3292e1ca6a36e8dccd11c724ee40eed3a3b87a1107fceddb3186fd2";
-
-  public static final String QUERY_DOCUMENT = OPERATION_DEFINITION + "\n"
-   + TestSetting.FRAGMENT_DEFINITION;
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override
@@ -253,7 +266,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class Fragments {
-      final Optional<TestSetting> testSetting;
+      final @NotNull TestSetting testSetting;
 
       private transient volatile String $toString;
 
@@ -261,11 +274,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       private transient volatile boolean $hashCodeMemoized;
 
-      public Fragments(@Nullable TestSetting testSetting) {
-        this.testSetting = Optional.fromNullable(testSetting);
+      public Fragments(@NotNull TestSetting testSetting) {
+        this.testSetting = Utils.checkNotNull(testSetting, "testSetting == null");
       }
 
-      public Optional<TestSetting> testSetting() {
+      public @NotNull TestSetting testSetting() {
         return this.testSetting;
       }
 
@@ -273,7 +286,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final TestSetting $testSetting = testSetting.isPresent() ? testSetting.get() : null;
+            final TestSetting $testSetting = testSetting;
             if ($testSetting != null) {
               $testSetting.marshaller().marshal(writer);
             }
@@ -324,7 +337,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           if (TestSetting.POSSIBLE_TYPES.contains(conditionalType)) {
             testSetting = testSettingFieldMapper.map(reader);
           }
-          return new Fragments(testSetting);
+          return new Fragments(Utils.checkNotNull(testSetting, "testSetting == null"));
         }
       }
     }

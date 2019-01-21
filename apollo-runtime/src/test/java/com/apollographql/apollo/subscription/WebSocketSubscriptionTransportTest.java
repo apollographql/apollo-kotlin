@@ -37,6 +37,9 @@ public class WebSocketSubscriptionTransportTest {
 
       @Override public void onMessage(OperationServerMessage message) {
       }
+
+      @Override public void onClosed() {
+      }
     });
   }
 
@@ -98,6 +101,9 @@ public class WebSocketSubscriptionTransportTest {
       @Override public void onMessage(OperationServerMessage message) {
         callbackMessage.set(message);
       }
+
+      @Override public void onClosed() {
+      }
     });
     subscriptionTransport.connect();
     webSocketFactory.webSocket.listener.onMessage(webSocketFactory.webSocket, "{\"type\":\"connection_ack\"}");
@@ -106,6 +112,32 @@ public class WebSocketSubscriptionTransportTest {
     assertThat(callbackConnected.get()).isTrue();
     assertThat(callbackMessage.get()).isInstanceOf(OperationServerMessage.ConnectionAcknowledge.class);
     assertThat(callbackFailure.get()).isInstanceOf(UnsupportedOperationException.class);
+  }
+
+  @Test public void subscriptionTransportClosedCallback() {
+    final AtomicBoolean callbackConnected = new AtomicBoolean();
+    final AtomicBoolean callbackClosed = new AtomicBoolean();
+    subscriptionTransport = new WebSocketSubscriptionTransport(webSocketRequest, webSocketFactory, new SubscriptionTransport.Callback() {
+      @Override public void onConnected() {
+        callbackConnected.set(true);
+      }
+
+      @Override public void onFailure(Throwable t) {
+        throw new UnsupportedOperationException("Unexpected");
+      }
+
+      @Override public void onMessage(OperationServerMessage message) {
+      }
+
+      @Override public void onClosed() {
+        callbackClosed.set(true);
+      }
+    });
+    subscriptionTransport.connect();
+    webSocketFactory.webSocket.listener.onClosed(webSocketFactory.webSocket, 1001, "");
+
+    assertThat(callbackConnected.get()).isTrue();
+    assertThat(callbackClosed.get()).isTrue();
   }
 
   private static final class MockWebSocketFactory implements WebSocket.Factory {

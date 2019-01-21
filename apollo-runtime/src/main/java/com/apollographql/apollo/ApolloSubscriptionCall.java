@@ -73,5 +73,11 @@ public interface ApolloSubscriptionCall<T> extends Cancelable {
      * Gets called when final GraphQL response is received.  It is considered a terminal event.
      */
     void onCompleted();
+
+    /**
+     * Gets called when GraphQL subscription server connection is closed unexpectedly. It is considered to re-try
+     * the subscription later.
+     */
+    void onTerminated();
   }
 }

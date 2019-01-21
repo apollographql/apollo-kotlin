@@ -7,6 +7,7 @@ import com.apollographql.apollo.ApolloSubscriptionCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.internal.subscription.ApolloSubscriptionTerminatedException;
 import com.apollographql.apollo.internal.util.Cancelable;
 
 import org.jetbrains.annotations.NotNull;
@@ -146,33 +147,38 @@ public class Rx2Apollo {
   }
 
   @NotNull public static <T> Flowable<Response<T>> from(@NotNull final ApolloSubscriptionCall<T> call,
-                                                        @NotNull BackpressureStrategy backpressureStrategy) {
+      @NotNull BackpressureStrategy backpressureStrategy) {
     checkNotNull(call, "originalCall == null");
     checkNotNull(backpressureStrategy, "backpressureStrategy == null");
     return Flowable.create(new FlowableOnSubscribe<Response<T>>() {
       @Override public void subscribe(final FlowableEmitter<Response<T>> emitter) throws Exception {
         cancelOnFlowableDisposed(emitter, call);
         call.execute(
-                new ApolloSubscriptionCall.Callback<T>() {
-                  @Override public void onResponse(@NotNull Response<T> response) {
-                    if (!emitter.isCancelled()) {
-                      emitter.onNext(response);
-                    }
-                  }
-
-                  @Override public void onFailure(@NotNull ApolloException e) {
-                    Exceptions.throwIfFatal(e);
-                    if (!emitter.isCancelled()) {
-                      emitter.onError(e);
-                    }
-                  }
-
-                  @Override public void onCompleted() {
-                    if (!emitter.isCancelled()) {
-                      emitter.onComplete();
-                    }
-                  }
+            new ApolloSubscriptionCall.Callback<T>() {
+              @Override public void onResponse(@NotNull Response<T> response) {
+                if (!emitter.isCancelled()) {
+                  emitter.onNext(response);
                 }
+              }
+
+              @Override public void onFailure(@NotNull ApolloException e) {
+                Exceptions.throwIfFatal(e);
+                if (!emitter.isCancelled()) {
+                  emitter.onError(e);
+                }
+              }
+
+              @Override public void onCompleted() {
+                if (!emitter.isCancelled()) {
+                  emitter.onComplete();
+                }
+              }
+
+              @Override public void onTerminated() {
+                onFailure(new ApolloSubscriptionTerminatedException("Subscription server unexpectedly terminated "
+                    + "connection"));
+              }
+            }
         );
       }
     }, backpressureStrategy);
@@ -181,8 +187,8 @@ public class Rx2Apollo {
   /**
    * Converts an {@link ApolloStoreOperation} to a Single.
    *
-   * @param operation        the ApolloStoreOperation to convert
-   * @param <T>              the value type
+   * @param operation the ApolloStoreOperation to convert
+   * @param <T>       the value type
    * @return the converted Single
    */
   @NotNull public static <T> Single<T> from(@NotNull final ApolloStoreOperation<T> operation) {

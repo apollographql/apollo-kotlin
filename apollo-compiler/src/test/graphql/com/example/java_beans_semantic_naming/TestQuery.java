@@ -25,19 +25,40 @@ import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_DEFINITION = "query TestQuery {\n"
+  public static final String OPERATION_ID = "4f3cddab484b815b0c6e7999f362c5585f16fcde1011110fc3ae068f71614072";
+
+  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
       + "  hero {\n"
       + "    __typename\n"
       + "    name\n"
       + "    ...HeroDetails\n"
       + "    appearsIn\n"
       + "  }\n"
+      + "}\n"
+      + "fragment HeroDetails on Character {\n"
+      + "  __typename\n"
+      + "  name\n"
+      + "  friendsConnection {\n"
+      + "    __typename\n"
+      + "    totalCount\n"
+      + "    edges {\n"
+      + "      __typename\n"
+      + "      node {\n"
+      + "        __typename\n"
+      + "        name\n"
+      + "      }\n"
+      + "    }\n"
+      + "    pageInfo {\n"
+      + "      __typename\n"
+      + "      hasNextPage\n"
+      + "    }\n"
+      + "    isEmpty\n"
+      + "  }\n"
+      + "  ... on Droid {\n"
+      + "    name\n"
+      + "    primaryFunction\n"
+      + "  }\n"
       + "}";
-
-  public static final String OPERATION_ID = "4141e194c5f3846dabfcb576e735c71968b03a940baf49cc5e647c5e50eda72a";
-
-  public static final String QUERY_DOCUMENT = OPERATION_DEFINITION + "\n"
-   + HeroDetails.FRAGMENT_DEFINITION;
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override
@@ -294,7 +315,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class Fragments {
-      final Optional<HeroDetails> heroDetails;
+      final @NotNull HeroDetails heroDetails;
 
       private transient volatile String $toString;
 
@@ -302,11 +323,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       private transient volatile boolean $hashCodeMemoized;
 
-      public Fragments(@Nullable HeroDetails heroDetails) {
-        this.heroDetails = Optional.fromNullable(heroDetails);
+      public Fragments(@NotNull HeroDetails heroDetails) {
+        this.heroDetails = Utils.checkNotNull(heroDetails, "heroDetails == null");
       }
 
-      public Optional<HeroDetails> getHeroDetails() {
+      public @NotNull HeroDetails getHeroDetails() {
         return this.heroDetails;
       }
 
@@ -314,7 +335,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final HeroDetails $heroDetails = heroDetails.isPresent() ? heroDetails.get() : null;
+            final HeroDetails $heroDetails = heroDetails;
             if ($heroDetails != null) {
               $heroDetails.marshaller().marshal(writer);
             }
@@ -365,7 +386,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) {
             heroDetails = heroDetailsFieldMapper.map(reader);
           }
-          return new Fragments(heroDetails);
+          return new Fragments(Utils.checkNotNull(heroDetails, "heroDetails == null"));
         }
       }
     }

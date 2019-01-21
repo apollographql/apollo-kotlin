@@ -26,19 +26,35 @@ import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_DEFINITION = "query TestQuery {\n"
+  public static final String OPERATION_ID = "79e2a0e5ebf670253687cf4be332e00f5495448f49669ad69931b83a46aed917";
+
+  public static final String QUERY_DOCUMENT = "query TestQuery {\n"
       + "  hero {\n"
       + "    __typename\n"
       + "    name\n"
       + "    ...HeroDetails\n"
       + "    appearsIn\n"
       + "  }\n"
+      + "}\n"
+      + "fragment HeroDetails on Character {\n"
+      + "  __typename\n"
+      + "  name\n"
+      + "  friendsConnection {\n"
+      + "    __typename\n"
+      + "    totalCount\n"
+      + "    edges {\n"
+      + "      __typename\n"
+      + "      node {\n"
+      + "        __typename\n"
+      + "        name\n"
+      + "      }\n"
+      + "    }\n"
+      + "  }\n"
+      + "  ... on Droid {\n"
+      + "    name\n"
+      + "    primaryFunction\n"
+      + "  }\n"
       + "}";
-
-  public static final String OPERATION_ID = "82ed8ea1e7e7b7d0344905a747cc94a1228c7ea59c809e9feb9c9d3604ff07cd";
-
-  public static final String QUERY_DOCUMENT = OPERATION_DEFINITION + "\n"
-   + HeroDetails.FRAGMENT_DEFINITION;
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override
@@ -342,7 +358,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     }
 
     public static class Fragments {
-      final Optional<HeroDetails> heroDetails;
+      final @NotNull HeroDetails heroDetails;
 
       private transient volatile String $toString;
 
@@ -350,11 +366,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       private transient volatile boolean $hashCodeMemoized;
 
-      public Fragments(@Nullable HeroDetails heroDetails) {
-        this.heroDetails = Optional.fromNullable(heroDetails);
+      public Fragments(@NotNull HeroDetails heroDetails) {
+        this.heroDetails = Utils.checkNotNull(heroDetails, "heroDetails == null");
       }
 
-      public Optional<HeroDetails> heroDetails() {
+      public @NotNull HeroDetails heroDetails() {
         return this.heroDetails;
       }
 
@@ -362,7 +378,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         return new ResponseFieldMarshaller() {
           @Override
           public void marshal(ResponseWriter writer) {
-            final HeroDetails $heroDetails = heroDetails.isPresent() ? heroDetails.get() : null;
+            final HeroDetails $heroDetails = heroDetails;
             if ($heroDetails != null) {
               $heroDetails.marshaller().marshal(writer);
             }
@@ -406,7 +422,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
       public Builder toBuilder() {
         Builder builder = new Builder();
-        builder.heroDetails = heroDetails.isPresent() ? heroDetails.get() : null;
+        builder.heroDetails = heroDetails;
         return builder;
       }
 
@@ -423,22 +439,23 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) {
             heroDetails = heroDetailsFieldMapper.map(reader);
           }
-          return new Fragments(heroDetails);
+          return new Fragments(Utils.checkNotNull(heroDetails, "heroDetails == null"));
         }
       }
 
       public static final class Builder {
-        private @Nullable HeroDetails heroDetails;
+        private @NotNull HeroDetails heroDetails;
 
         Builder() {
         }
 
-        public Builder heroDetails(@Nullable HeroDetails heroDetails) {
+        public Builder heroDetails(@NotNull HeroDetails heroDetails) {
           this.heroDetails = heroDetails;
           return this;
         }
 
         public Fragments build() {
+          Utils.checkNotNull(heroDetails, "heroDetails == null");
           return new Fragments(heroDetails);
         }
       }

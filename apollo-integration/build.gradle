@@ -30,16 +30,18 @@ android {
 }
 
 dependencies {
-  compileOnly dep.jsr250
-  compileOnly dep.jetbrainsAnnotations
+  implementation dep.jsr250
+  implementation dep.jetbrainsAnnotations
 
   implementation project(':apollo-runtime')
   implementation project(':apollo-rx-support')
   implementation project(':apollo-rx2-support')
+  implementation project(':apollo-coroutines-support')
   implementation project(':apollo-livedata-support')
   implementation project(':apollo-http-cache')
   implementation dep.appcompat
   implementation dep.kotlinStdLib
+  implementation dep.kotlinxCoroutines
 
   testImplementation dep.junit
   testImplementation dep.truth

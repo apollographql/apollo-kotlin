@@ -45,7 +45,7 @@ public class ApolloServerInterceptorTest {
   private final String expectedRequestBody = "{\"operationName\":\"AllFilms\"," +
       "\"variables\":{\"after\":\"some cursor\",\"first\":null,\"last\":100}," +
       "\"extensions\":{\"persistedQuery\":{\"version\":1," +
-      "\"sha256Hash\":\"8fa100bb7feb139df2c5f581278567fef2a4283ad3250eec3fc25a3bd4a62f61\"}}," +
+      "\"sha256Hash\":\"6fcc6bd6316f31af9b3bd7b83631016be733f9ec1b9ee0e37e1d140247acd901\"}}," +
       "\"query\":\"query AllFilms($after: String, $first: Int, $before: String, $last: Int) {  " +
       "allFilms(after: $after, first: $first, before: $before, last: $last) {    " +
       "__typename    totalCount    films {      __typename      title      releaseDate    }  }}\"}";
@@ -78,7 +78,7 @@ public class ApolloServerInterceptorTest {
       @Override public boolean apply(@Nullable Request request) {
         assertThat(request).isNotNull();
         assertDefaultRequestHeaders(request);
-        assertThat(request.header(HttpCache.CACHE_KEY_HEADER)).isEqualTo("60d184a8bdb6be3f91ebc4360ac063e2");
+        assertThat(request.header(HttpCache.CACHE_KEY_HEADER)).isEqualTo("9f213b5f028deb8df22fec2a8ebdc4e7");
         assertThat(request.header(HttpCache.CACHE_FETCH_STRATEGY_HEADER)).isEqualTo("NETWORK_FIRST");
         assertThat(request.header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER)).isEqualTo("10000");
         assertThat(request.header(HttpCache.CACHE_EXPIRE_AFTER_READ_HEADER)).isEqualTo("false");
