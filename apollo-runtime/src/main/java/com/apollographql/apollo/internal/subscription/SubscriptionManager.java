@@ -30,5 +30,7 @@ public interface SubscriptionManager {
     void onNetworkError(@NotNull Throwable t);
 
     void onCompleted();
+
+    void onTerminated();
   }
 }

@@ -9,6 +9,7 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
+import com.apollographql.apollo.internal.subscription.ApolloSubscriptionTerminatedException;
 import com.apollographql.apollo.internal.util.Cancelable;
 
 import org.jetbrains.annotations.NotNull;
@@ -168,6 +169,11 @@ public final class RxApollo {
               emitter.onCompleted();
             }
           }
+
+          @Override public void onTerminated() {
+            onFailure(new ApolloSubscriptionTerminatedException("Subscription server unexpectedly terminated "
+                + "connection"));
+          }
         });
       }
     }, backpressureMode);
@@ -176,8 +182,8 @@ public final class RxApollo {
   /**
    * Converts an {@link ApolloStoreOperation} to a Single.
    *
-   * @param operation        the ApolloStoreOperation to convert
-   * @param <T>              the value type
+   * @param operation the ApolloStoreOperation to convert
+   * @param <T>       the value type
    * @return the converted Single
    */
   @NotNull public static <T> Single<T> from(@NotNull final ApolloStoreOperation<T> operation) {

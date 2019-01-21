@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "4141e194c5f3846dabfcb576e735c71968b03a940baf49cc5e647c5e50eda72a";
+  public static final String OPERATION_ID = "4f3cddab484b815b0c6e7999f362c5585f16fcde1011110fc3ae068f71614072";
 
   public static final String QUERY_DOCUMENT = "query TestQuery {\n"
       + "  hero {\n"

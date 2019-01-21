@@ -36,7 +36,7 @@ public class SubscriptionManagerTest {
   private MockSubscription subscription2 = new MockSubscription("MockSubscription2");
   private SubscriptionManagerOnStateChangeListener onStateChangeListener = new SubscriptionManagerOnStateChangeListener();
 
-  @Before public void setUp() throws Exception {
+  @Before public void setUp() {
     subscriptionTransportFactory = new MockSubscriptionTransportFactory();
     subscriptionManager = new RealSubscriptionManager(new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
         subscriptionTransportFactory, Collections.<String, Object>emptyMap(), new MockExecutor(), connectionHeartbeatTimeoutMs);
@@ -135,7 +135,7 @@ public class SubscriptionManagerTest {
     assertThat(subscriptionManager.subscriptions).isEmpty();
   }
 
-  @Test public void disconnectedOnTransportFailure() throws Exception {
+  @Test public void disconnectedOnTransportFailure() {
     SubscriptionManagerCallbackAdapter<Operation.Data> subscriptionManagerCallback1 = new SubscriptionManagerCallbackAdapter<>();
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback1);
     SubscriptionManagerCallbackAdapter<Operation.Data> subscriptionManagerCallback2 = new SubscriptionManagerCallbackAdapter<>();
@@ -151,7 +151,7 @@ public class SubscriptionManagerTest {
     assertThat(subscriptionManager.subscriptions).isEmpty();
   }
 
-  @Test public void unsubscribeOnComplete() throws Exception {
+  @Test public void unsubscribeOnComplete() {
     SubscriptionManagerCallbackAdapter<Operation.Data> subscriptionManagerCallback1 = new SubscriptionManagerCallbackAdapter<>();
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback1);
     SubscriptionManagerCallbackAdapter<Operation.Data> subscriptionManagerCallback2 = new SubscriptionManagerCallbackAdapter<>();
@@ -167,7 +167,7 @@ public class SubscriptionManagerTest {
     assertThat(subscriptionManagerCallback2.completed).isFalse();
   }
 
-  @Test public void unsubscribeOnError() throws Exception {
+  @Test public void unsubscribeOnError() {
     SubscriptionManagerCallbackAdapter<Operation.Data> subscriptionManagerCallback1 = new SubscriptionManagerCallbackAdapter<>();
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback1);
     SubscriptionManagerCallbackAdapter<Operation.Data> subscriptionManagerCallback2 = new SubscriptionManagerCallbackAdapter<>();
@@ -187,7 +187,7 @@ public class SubscriptionManagerTest {
     assertThat(subscriptionManagerCallback2.completed).isFalse();
   }
 
-  @Test public void notifyOnData() throws Exception {
+  @Test public void notifyOnData() {
     SubscriptionManagerCallbackAdapter<Operation.Data> subscriptionManagerCallback1 = new SubscriptionManagerCallbackAdapter<>();
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback1);
 
@@ -199,7 +199,7 @@ public class SubscriptionManagerTest {
     assertThat(subscriptionManagerCallback1.response).isNotNull();
   }
 
-  @Test public void duplicateSubscriptions() throws Exception {
+  @Test public void duplicateSubscriptions() {
     SubscriptionManagerCallbackAdapter<Operation.Data> subscriptionManagerCallback1 = new SubscriptionManagerCallbackAdapter<>();
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback1);
     SubscriptionManagerCallbackAdapter<Operation.Data> subscriptionManagerCallback2 = new SubscriptionManagerCallbackAdapter<>();
@@ -303,6 +303,20 @@ public class SubscriptionManagerTest {
     assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.STOPPED);
     assertThat(subscriptionManagerCallback.error).isInstanceOf(ApolloSubscriptionException.class);
     assertThat(subscriptionManagerCallback.error.getMessage()).startsWith("Illegal state: STOPPED");
+  }
+  
+  @Test public void connectionTerminated() {
+    SubscriptionManagerCallbackAdapter<Operation.Data> subscriptionManagerCallback = new SubscriptionManagerCallbackAdapter<>();
+    subscriptionManager.subscribe(subscription1, subscriptionManagerCallback);
+
+    subscriptionTransportFactory.callback.onConnected();
+    subscriptionTransportFactory.callback.onMessage(new OperationServerMessage.ConnectionAcknowledge());
+
+    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.ACTIVE);
+
+    subscriptionTransportFactory.callback.onClosed();
+    assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.DISCONNECTED);
+    assertThat(subscriptionManagerCallback.terminated).isTrue();
   }
 
   private static final class MockSubscriptionTransportFactory implements SubscriptionTransport.Factory {
@@ -414,6 +428,7 @@ public class SubscriptionManagerTest {
     volatile ApolloSubscriptionException error;
     volatile Throwable networkError;
     volatile boolean completed;
+    volatile boolean terminated;
 
     @Override public void onResponse(@NotNull Response<T> response) {
       this.response = response;
@@ -429,6 +444,10 @@ public class SubscriptionManagerTest {
 
     @Override public void onCompleted() {
       completed = true;
+    }
+
+    @Override public void onTerminated() {
+      terminated = true;
     }
   }
 }

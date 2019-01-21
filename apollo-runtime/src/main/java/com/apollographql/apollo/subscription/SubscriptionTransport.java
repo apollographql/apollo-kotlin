@@ -50,6 +50,11 @@ public interface SubscriptionTransport {
      * @param message new message received from the server.
      */
     void onMessage(OperationServerMessage message);
+
+    /**
+     * Gets called when connection with subscription server is closed.
+     */
+    void onClosed();
   }
 
   /**

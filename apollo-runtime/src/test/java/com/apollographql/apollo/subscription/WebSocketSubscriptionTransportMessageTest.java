@@ -181,15 +181,16 @@ public class WebSocketSubscriptionTransportMessageTest {
     OperationServerMessage lastMessage;
 
     @Override public void onConnected() {
-
     }
 
     @Override public void onFailure(Throwable t) {
-
     }
 
     @Override public void onMessage(OperationServerMessage message) {
       lastMessage = message;
+    }
+
+    @Override public void onClosed() {
     }
   }
 

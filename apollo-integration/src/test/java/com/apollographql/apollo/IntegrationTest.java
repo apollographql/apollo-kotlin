@@ -126,7 +126,7 @@ public class IntegrationTest {
     assertThat(server.takeRequest().getBody().readString(Charsets.UTF_8))
         .isEqualTo("{\"operationName\":\"AllPlanets\",\"variables\":{},"
             + "\"extensions\":{\"persistedQuery\":{\"version\":1," +
-            "\"sha256Hash\":\"99f22cd11d5600fb2b0b15af15f263160815054bbcd7ea1d7e730ecfd1b04751\"}},"
+            "\"sha256Hash\":\"c4d45ee8b7464957320775df69251c9bba2f1eea82ef9f64146e71eb6e074930\"}},"
             + "\"query\":\"query AllPlanets {  "
             + "allPlanets(first: 300) {"
             + "    __typename"
