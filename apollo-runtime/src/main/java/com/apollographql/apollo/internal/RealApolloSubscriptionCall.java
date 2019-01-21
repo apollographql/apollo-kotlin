@@ -140,11 +140,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
       if (callback != null) {
         callback.onFailure(error);
       }
-
-      RealApolloSubscriptionCall<T> delegate = this.delegate;
-      if (delegate != null) {
-        delegate.terminate();
-      }
+      terminate();
     }
 
     @Override
@@ -153,11 +149,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
       if (callback != null) {
         callback.onFailure(new ApolloNetworkException("Subscription failed", t));
       }
-
-      RealApolloSubscriptionCall<T> delegate = this.delegate;
-      if (delegate != null) {
-        delegate.terminate();
-      }
+      terminate();
     }
 
     @Override
@@ -166,7 +158,19 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
       if (callback != null) {
         callback.onCompleted();
       }
+      terminate();
+    }
 
+    @Override
+    public void onTerminated() {
+      Callback<T> callback = this.originalCallback;
+      if (callback != null) {
+        callback.onTerminated();
+      }
+      terminate();
+    }
+
+    void terminate() {
       RealApolloSubscriptionCall<T> delegate = this.delegate;
       if (delegate != null) {
         delegate.terminate();

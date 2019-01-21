@@ -73,6 +73,14 @@ public final class WebSocketSubscriptionTransport implements SubscriptionTranspo
     }
   }
 
+  void onClosed() {
+    try {
+      callback.onClosed();
+    } finally {
+      release();
+    }
+  }
+
   void release() {
     WebSocketListener socketListener = webSocketListener.getAndSet(null);
     if (socketListener != null) {
@@ -117,7 +125,7 @@ public final class WebSocketSubscriptionTransport implements SubscriptionTranspo
     public void onClosing(WebSocket webSocket, int code, String reason) {
       WebSocketSubscriptionTransport delegate = delegateRef.get();
       if (delegate != null) {
-        delegate.release();
+        delegate.onClosed();
       }
     }
 
@@ -125,7 +133,7 @@ public final class WebSocketSubscriptionTransport implements SubscriptionTranspo
     public void onClosed(WebSocket webSocket, int code, String reason) {
       WebSocketSubscriptionTransport delegate = delegateRef.get();
       if (delegate != null) {
-        delegate.release();
+        delegate.onClosed();
       }
     }
 
