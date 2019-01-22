@@ -19,12 +19,7 @@ class KotlinSampleApp : Application() {
   }
 
   private val baseUrl = "https://api.github.com/graphql"
-  lateinit var apolloClient: ApolloClient
-    private set
-
-  override fun onCreate() {
-    super.onCreate()
-
+  val apolloClient: ApolloClient by lazy {
     val okHttpClient = OkHttpClient.Builder()
       .addNetworkInterceptor { chain ->
         val request = chain.request().newBuilder()
@@ -51,7 +46,7 @@ class KotlinSampleApp : Application() {
       }
     }
 
-    apolloClient = ApolloClient.builder()
+    ApolloClient.builder()
       .serverUrl(baseUrl)
       .normalizedCache(sqlNormalizedCacheFactory, cacheKeyResolver)
       .okHttpClient(okHttpClient)

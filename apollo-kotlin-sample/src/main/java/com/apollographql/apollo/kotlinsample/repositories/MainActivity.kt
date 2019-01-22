@@ -69,11 +69,9 @@ class MainActivity : AppCompatActivity() {
       }
 
       override fun onFailure(e: ApolloException) {
-        runOnUiThread {
-          tvTokenError.text = e.localizedMessage
-          tvTokenError.visibility = View.VISIBLE
-          progressBar.visibility = View.GONE
-        }
+        tvTokenError.text = e.localizedMessage
+        tvTokenError.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
         e.printStackTrace()
       }
 
@@ -86,16 +84,6 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun mapResponseToRepositories(response: Response<GithubRepositoriesQuery.Data>): List<RepositoryFragment> {
-    val repositoryFragments = mutableListOf<RepositoryFragment>()
-
-    response.data()?.let { responseData ->
-      responseData.viewer().repositories().nodes()?.let { nodes ->
-        nodes.forEach { node ->
-          repositoryFragments.add(node.fragments().repositoryFragment())
-        }
-      }
-    }
-
-    return repositoryFragments.toList()
+    return response.data()?.viewer()?.repositories()?.nodes()?.map { it.fragments().repositoryFragment() } ?: emptyList()
   }
 }
