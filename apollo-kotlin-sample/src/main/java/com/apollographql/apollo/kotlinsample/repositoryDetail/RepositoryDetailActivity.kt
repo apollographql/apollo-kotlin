@@ -73,20 +73,14 @@ class RepositoryDetailActivity : AppCompatActivity() {
 
   @SuppressLint("SetTextI18n")
   private fun updateUI(response: Response<GithubRepositoryDetailQuery.Data>) {
-    response.data()?.let { responseData ->
-      responseData.viewer().repository()?.let { repository ->
-        val repositoryDetail = repository.fragments().repositoryDetail()
-
-        repositoryDetail.run {
-          tvRepositoryName.text = name()
-          tvRepositoryDescription.text = description()
-          tvRepositoryForks.text = "${forkCount()} Forks"
-          tvRepositoryIssues.text = "${issues().totalCount()} Issues"
-          tvRepositoryPullRequests.text = "${pullRequests().totalCount()} Pull requests"
-          tvRepositoryReleases.text = "${releases().totalCount()} Releases"
-          tvRepositoryStars.text = "${stargazers().totalCount()} Stars"
-        }
-      }
+    response.data()?.viewer()?.repository()?.fragments()?.repositoryDetail()?.run {
+      tvRepositoryName.text = name()
+      tvRepositoryDescription.text = description()
+      tvRepositoryForks.text = "${forkCount()} Forks"
+      tvRepositoryIssues.text = "${issues().totalCount()} Issues"
+      tvRepositoryPullRequests.text = "${pullRequests().totalCount()} Pull requests"
+      tvRepositoryReleases.text = "${releases().totalCount()} Releases"
+      tvRepositoryStars.text = "${stargazers().totalCount()} Stars"
     }
   }
 
