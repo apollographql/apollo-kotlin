@@ -148,9 +148,9 @@ content_testOne
         val interceptor = ApolloServerInterceptor(serverUrl!!,
                 AssertHttpCallFactory(requestAssertPredicate), null, false,
                 ScalarTypeAdapters(emptyMap()),
-                ApolloLogger(Optional.absent()), false)
+                ApolloLogger(Optional.absent()))
 
-        interceptor.httpCall(query, CacheHeaders.NONE)
+        interceptor.httpCall(query, CacheHeaders.NONE, true)
     }
 
     private fun assertRequestBody(request: Request?, expectedRequestBody: String) {

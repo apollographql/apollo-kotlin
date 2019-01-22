@@ -9,7 +9,7 @@
         {
           "responseName": "graphQlString",
           "fieldName": "graphQlString",
-          "type": "Upload",
+          "type": "String",
           "fragmentSpreads": [],
           "inlineFragments": []
         },
