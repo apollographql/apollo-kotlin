@@ -29,7 +29,13 @@ class UploadData {
 
 public class ApolloFileUploadInterceptor {
 
-    private static void recursiveGetUploadData(Object value, String variableName, ArrayList<File> allUploads, HashMap<String, String[]> filesMap) {
+    private static void recursiveGetUploadData(
+            Object value,
+            String variableName,
+            ArrayList<File> allUploads,
+            HashMap<String,
+            String[]> filesMap
+    ) {
         if (value instanceof InputType) {
             try {
                 Field[] fields = value.getClass().getDeclaredFields();
@@ -107,7 +113,8 @@ public class ApolloFileUploadInterceptor {
         }
         jsonWriter.endObject();
         jsonWriter.close();
-        MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder("--graphql-multipart-upload-boundary-85763456--")
+        MultipartBody.Builder multipartBodyBuilder = new MultipartBody
+                .Builder("--graphql-multipart-upload-boundary-85763456--")
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("operations", null, mainBody)
                 .addFormDataPart("map", null, RequestBody.create(MEDIA_TYPE, buffer.readByteString()));

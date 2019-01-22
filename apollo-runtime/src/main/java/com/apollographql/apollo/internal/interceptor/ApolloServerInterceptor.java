@@ -123,8 +123,8 @@ import static com.apollographql.apollo.internal.interceptor.ApolloFileUploadInte
         .tag(operation.operationId());
 
     // @todo untested
-    if(requestBody instanceof MultipartBody) {
-      String boundary = ((MultipartBody)requestBody).boundary();
+    if (requestBody instanceof MultipartBody) {
+      String boundary = ((MultipartBody) requestBody).boundary();
       requestBuilder = requestBuilder.header(HEADER_CONTENT_TYPE, "multipart/form-data; boundary=" + boundary);
     } else {
       requestBuilder = requestBuilder.header(HEADER_CONTENT_TYPE, CONTENT_TYPE);
