@@ -1,7 +1,9 @@
 buildscript {
+  ext.kotlin_version = '1.3.11'
   dependencies {
     classpath dep.androidPlugin
     classpath dep.apolloPlugin
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
 }
 

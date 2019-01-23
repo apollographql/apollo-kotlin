@@ -1,0 +1,3 @@
+mutation uploadFileExample($topFile:Upload, $topFileList:[Upload], $nested: NestedObject) {
+  uploadFileExample(topFile: $topFile, topFileList: $topFileList, nested: $nested)
+}
