@@ -142,6 +142,10 @@ fun <T> ApolloSubscriptionCall<T>.toChannel(capacity: Int = Channel.UNLIMITED): 
         override fun onCompleted() {
             channel.close()
         }
+
+        override fun onTerminated() {
+            channel.close()
+        }
     })
 
     return channel
