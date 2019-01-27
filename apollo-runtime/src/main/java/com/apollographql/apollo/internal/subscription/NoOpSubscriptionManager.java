@@ -14,4 +14,14 @@ public final class NoOpSubscriptionManager implements SubscriptionManager {
   @Override public void unsubscribe(@NotNull Subscription<?, ?, ?> subscription) {
     throw new IllegalStateException("Subscription manager is not configured");
   }
+
+  @Override
+  public void start() {
+    throw new IllegalStateException("Subscription manager is not configured");
+  }
+
+  @Override
+  public void stop() {
+    throw new IllegalStateException("Subscription manager is not configured");
+  }
 }

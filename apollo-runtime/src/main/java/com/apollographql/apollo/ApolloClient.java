@@ -153,6 +153,32 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   }
 
   /**
+   * Call {@link SubscriptionManager.start start} on the subscriptionManager.
+   * Which will put the subscriptionManager in a connectible state if its
+   * current state is STOPPED. This is a noop if the current state is anything
+   * other than STOPPED.
+   *
+   * When subscriptions are re-enabled after having been disabled, the
+   * underlying transport isn't reconnected immediately, but will be on the
+   * first new subscription created.
+   */
+  public void enableSubscriptions() {
+    subscriptionManager.start();
+  }
+
+  /**
+   * Call {@link SubscriptionManager.stop stop} on the subscriptionManager.
+   * Which will unsubscribe from all active subscriptions, disconnect the
+   * underlying transport (eg websocket), and put the subscriptionManager in
+   * the STOPPED state.
+   *
+   * New subscriptions will fail until {@link #enableSubscriptions} is called.
+   */
+  public void disableSubscriptions() {
+    subscriptionManager.stop();
+  }
+
+  /**
    * @return The default {@link CacheHeaders} which this instance of {@link ApolloClient} was configured.
    */
   public CacheHeaders defaultCacheHeaders() {
