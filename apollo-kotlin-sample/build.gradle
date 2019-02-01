@@ -20,6 +20,15 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        def f = new File("github_token")
+        if (!f.exists()) {
+            throw new Exception("You need to write a file called `github_token` with a valid github token at the" +
+                    " root of the module.\n" +
+                    "  See https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/")
+        }
+
+        buildConfigField("String", "GITHUB_OAUTH_TOKEN", "\"${f.text.trim()}\"")
     }
 
     buildTypes {

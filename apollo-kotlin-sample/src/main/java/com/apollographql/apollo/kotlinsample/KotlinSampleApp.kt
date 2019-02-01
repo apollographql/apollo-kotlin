@@ -12,18 +12,12 @@ import okhttp3.OkHttpClient
 
 @Suppress("unused")
 class KotlinSampleApp : Application() {
-
-  companion object {
-    // https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
-    const val GITHUB_OAUTH_TOKEN = "your_token"
-  }
-
-  private val baseUrl = "https://api.github.com/graphql"
+    private val baseUrl = "https://api.github.com/graphql"
   val apolloClient: ApolloClient by lazy {
     val okHttpClient = OkHttpClient.Builder()
       .addNetworkInterceptor { chain ->
         val request = chain.request().newBuilder()
-          .addHeader("Authorization", "bearer $GITHUB_OAUTH_TOKEN")
+          .addHeader("Authorization", "bearer ${BuildConfig.GITHUB_OAUTH_TOKEN}")
           .build()
 
         chain.proceed(request)

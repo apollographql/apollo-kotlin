@@ -32,15 +32,6 @@ class MainActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
-    if (KotlinSampleApp.GITHUB_OAUTH_TOKEN == "your_token") {
-      tvTokenError.visibility = View.VISIBLE
-      rvRepositories.visibility = View.GONE
-      progressBar.visibility = View.GONE
-      return
-    }
-
-    tvTokenError.visibility = View.GONE
-
     apolloClient = (application as KotlinSampleApp).apolloClient
 
     rvRepositories.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
@@ -69,8 +60,8 @@ class MainActivity : AppCompatActivity() {
       }
 
       override fun onFailure(e: ApolloException) {
-        tvTokenError.text = e.localizedMessage
-        tvTokenError.visibility = View.VISIBLE
+        tvError.text = e.localizedMessage
+        tvError.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
         e.printStackTrace()
       }
