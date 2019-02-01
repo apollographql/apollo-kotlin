@@ -1,0 +1,29 @@
+query GithubRepositoryCommits(
+  $name: String!
+) {
+    viewer {
+      repository(name: $name) {
+        id
+        ref(qualifiedName: "master") {
+          target {
+            ... on Commit {
+              history(first: 50) {
+                edges {
+                  node {
+                    id
+                    messageHeadline
+                    abbreviatedOid
+                    message
+                    author {
+                      name
+                      email
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }

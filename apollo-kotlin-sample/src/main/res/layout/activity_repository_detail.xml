@@ -92,5 +92,13 @@
       android:alpha=".87"
       android:textColor="#000000"
       tools:text="17 Releases" />
+
+    <Button
+        android:id="@+id/buttonCommits"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="#000000"
+        android:text="Commits" />
   </LinearLayout>
 </FrameLayout>

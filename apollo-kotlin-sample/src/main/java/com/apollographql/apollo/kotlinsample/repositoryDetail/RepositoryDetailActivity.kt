@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.kotlinsample.GithubRepositoryDetailQuery
 import com.apollographql.apollo.kotlinsample.KotlinSampleApp
 import com.apollographql.apollo.kotlinsample.R
+import com.apollographql.apollo.kotlinsample.commits.CommitsActivity
 import com.apollographql.apollo.kotlinsample.type.PullRequestState
 import com.apollographql.apollo.rx2.Rx2Apollo
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -42,6 +43,8 @@ class RepositoryDetailActivity : AppCompatActivity() {
   }
 
   private fun fetchRepository(repoName: String) {
+    buttonCommits.visibility = View.GONE
+
     val repositoryDetailQuery = GithubRepositoryDetailQuery.builder()
       .name(repoName)
       .pullRequestStates(listOf(PullRequestState.OPEN))
@@ -59,6 +62,7 @@ class RepositoryDetailActivity : AppCompatActivity() {
           { response: Response<GithubRepositoryDetailQuery.Data> ->
             progressBar.visibility = View.GONE
             tvError.visibility = View.GONE
+            buttonCommits.visibility = View.VISIBLE
             updateUI(response)
           },
           { t: Throwable ->
@@ -81,6 +85,9 @@ class RepositoryDetailActivity : AppCompatActivity() {
       tvRepositoryPullRequests.text = "${pullRequests().totalCount()} Pull requests"
       tvRepositoryReleases.text = "${releases().totalCount()} Releases"
       tvRepositoryStars.text = "${stargazers().totalCount()} Stars"
+      buttonCommits.setOnClickListener {
+        CommitsActivity.start(this@RepositoryDetailActivity, name())
+      }
     }
   }
 

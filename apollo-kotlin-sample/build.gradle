@@ -38,6 +38,11 @@ android {
         }
     }
 }
+repositories {
+    maven {
+        url 'http://dl.bintray.com/apollographql/android'
+    }
+}
 
 dependencies {
     implementation dep.kotlinStdLib
@@ -45,7 +50,10 @@ dependencies {
     implementation dep.apolloRuntime
     implementation dep.apolloAndroidSupport
     implementation dep.apolloRx2Support
+    implementation dep.apolloCoroutinesSupport
     implementation dep.recyclerView
     implementation dep.rxjava2
     implementation dep.rxandroid
+    implementation dep.kotlinxCoroutines
+    implementation dep.kotlinxCoroutinesAndroid
 }
