@@ -20,4 +20,4 @@ package-lock.json
 **/.project
 .vscode/**
 **/bin
-/github_token
+/apollo-kotlin-sample/github_token
