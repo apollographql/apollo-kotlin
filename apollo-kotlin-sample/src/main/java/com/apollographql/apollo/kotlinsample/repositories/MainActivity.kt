@@ -14,6 +14,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.kotlinsample.BuildConfig
 import com.apollographql.apollo.kotlinsample.GithubRepositoriesQuery
 import com.apollographql.apollo.kotlinsample.KotlinSampleApp
 import com.apollographql.apollo.kotlinsample.R
@@ -31,6 +32,16 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+
+    if (BuildConfig.GITHUB_OAUTH_TOKEN == "your_token") {
+      tvError.visibility = View.VISIBLE
+      tvError.text = "Please replace \"your_token\" in apollo-kotlin-samples/github_token with an actual token.\n\nhttps://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/"
+      rvRepositories.visibility = View.GONE
+      progressBar.visibility = View.GONE
+      return
+    }
+
+    tvError.visibility = View.GONE
 
     apolloClient = (application as KotlinSampleApp).apolloClient
 
