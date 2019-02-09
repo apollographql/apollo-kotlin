@@ -542,7 +542,7 @@ public class ResponseReaderTest {
       @Override public Object read(ResponseReader.ListItemReader reader) {
         return reader.readCustomType(URL_CUSTOM_TYPE);
       }
-    })).isEmpty();
+    })).isEqualTo(asList(null, null));
   }
 
   @Test public void readObjectList() throws Exception {
@@ -726,32 +726,32 @@ public class ResponseReaderTest {
     ResponseField scalarList = ResponseField.forList("list", "list", null, false, NO_CONDITIONS);
 
     final Map<String, Object> recordSet = new HashMap<>();
-    recordSet.put("list", asList(null, "item1", "item2", null, "item3", null));
+    recordSet.put("list", asList(null, "item2", "item3", null, "item5", null));
 
     RealResponseReader<Map<String, Object>> responseReader = responseReader(recordSet);
     assertThat(responseReader.readList(scalarList, new ResponseReader.ListReader() {
       @Override public Object read(ResponseReader.ListItemReader reader) {
         return reader.readString();
       }
-    })).isEqualTo(asList("item1", "item2", "item3"));
+    })).isEqualTo(asList(null, "item2", "item3", null, "item5", null));
   }
 
   @Test public void read_object_list_with_nulls() throws Exception {
     final ResponseField listField = ResponseField.forList("list", "list", null, false, NO_CONDITIONS);
     final ResponseField indexField = ResponseField.forList("index", "index", null, false, NO_CONDITIONS);
-    final List responseObjects = asList(new Object(), new Object(), new Object());
+    final List responseObjects = asList(null, new Object(), new Object(), null, new Object(), null);
     final Map<String, Object> recordSet = new HashMap<>();
     recordSet.put("list", asList(
         null,
         new UnmodifiableMapBuilder<String, Object>(1)
-            .put("index", "0")
+            .put("index", "1")
             .build(),
         new UnmodifiableMapBuilder<String, Object>(1)
-            .put("index", "1")
+            .put("index", "2")
             .build(),
         null,
         new UnmodifiableMapBuilder<String, Object>(1)
-            .put("index", "2")
+            .put("index", "4")
             .build(),
         null
     ));

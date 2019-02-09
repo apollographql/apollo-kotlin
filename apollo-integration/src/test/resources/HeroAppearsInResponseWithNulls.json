@@ -1,0 +1,15 @@
+{
+  "data": {
+    "hero": {
+      "__typename": "Human",
+      "appearsIn": [
+        null,
+        "NEWHOPE",
+        "EMPIRE",
+        null,
+        "JEDI",
+        null
+      ]
+    }
+  }
+}
