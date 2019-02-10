@@ -180,9 +180,15 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   }
 
   void onTransportConnected() {
+    Collection<SubscriptionRecord> subscriptionRecords;
     synchronized (this) {
+      subscriptionRecords = subscriptions.values();
       setStateAndNotify(State.CONNECTED);
       transport.send(new OperationClientMessage.Init(connectionParams));
+    }
+
+    for (SubscriptionRecord record : subscriptionRecords) {
+      record.callback.onConnected();
     }
 
     timer.schedule(CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID, connectionAcknowledgeTimeoutTimerTask,

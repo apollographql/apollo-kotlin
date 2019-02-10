@@ -79,5 +79,10 @@ public interface ApolloSubscriptionCall<T> extends Cancelable {
      * the subscription later.
      */
     void onTerminated();
+
+    /**
+     * Gets called when GraphQL subscription server connection is opened.
+     */
+    void onConnected();
   }
 }

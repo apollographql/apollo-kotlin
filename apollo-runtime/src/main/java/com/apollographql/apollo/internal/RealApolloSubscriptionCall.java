@@ -170,6 +170,14 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
       terminate();
     }
 
+    @Override
+    public void onConnected() {
+      Callback<T> callback = this.originalCallback;
+      if (callback != null) {
+        callback.onConnected();
+      }
+    }
+
     void terminate() {
       RealApolloSubscriptionCall<T> delegate = this.delegate;
       if (delegate != null) {
