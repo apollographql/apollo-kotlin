@@ -199,6 +199,14 @@ public class SubscriptionManagerTest {
     assertThat(subscriptionManagerCallback1.response).isNotNull();
   }
 
+  @Test public void notifyOnConnected() {
+    SubscriptionManagerCallbackAdapter<Operation.Data> subscriptionManagerCallback1 = new SubscriptionManagerCallbackAdapter<>();
+    subscriptionManager.subscribe(subscription1, subscriptionManagerCallback1);
+
+    subscriptionTransportFactory.callback.onConnected();
+    assertThat(subscriptionManagerCallback1.connected).isTrue();
+  }
+
   @Test public void duplicateSubscriptions() {
     SubscriptionManagerCallbackAdapter<Operation.Data> subscriptionManagerCallback1 = new SubscriptionManagerCallbackAdapter<>();
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback1);
@@ -429,6 +437,7 @@ public class SubscriptionManagerTest {
     volatile Throwable networkError;
     volatile boolean completed;
     volatile boolean terminated;
+    volatile boolean connected;
 
     @Override public void onResponse(@NotNull Response<T> response) {
       this.response = response;
@@ -449,5 +458,7 @@ public class SubscriptionManagerTest {
     @Override public void onTerminated() {
       terminated = true;
     }
+
+    @Override public void onConnected() { connected = true; }
   }
 }
