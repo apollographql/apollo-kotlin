@@ -179,7 +179,8 @@ public class Rx2Apollo {
                     + "connection"));
               }
 
-              @Override public void onConnected() {}
+              @Override public void onConnected() {
+              }
             }
         );
       }

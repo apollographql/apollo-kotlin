@@ -175,7 +175,8 @@ public final class RxApollo {
                 + "connection"));
           }
 
-          @Override public void onConnected() {}
+          @Override public void onConnected() {
+          }
         });
       }
     }, backpressureMode);
