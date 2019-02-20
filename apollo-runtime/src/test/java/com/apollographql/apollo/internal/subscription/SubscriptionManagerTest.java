@@ -267,6 +267,7 @@ public class SubscriptionManagerTest {
 
   @Test public void stopWhenConnected() {
     subscriptionManager.subscribe(subscription1, new SubscriptionManagerCallbackAdapter<Operation.Data>());
+    subscriptionManager.subscribe(subscription2, new SubscriptionManagerCallbackAdapter<Operation.Data>());
     subscriptionTransportFactory.callback.onConnected();
     assertThat(subscriptionManager.state).isEqualTo(RealSubscriptionManager.State.CONNECTED);
 
