@@ -32,5 +32,7 @@ public interface SubscriptionManager {
     void onCompleted();
 
     void onTerminated();
+
+    void onConnected();
   }
 }

@@ -174,6 +174,9 @@ public final class RxApollo {
             onFailure(new ApolloSubscriptionTerminatedException("Subscription server unexpectedly terminated "
                 + "connection"));
           }
+
+          @Override public void onConnected() {
+          }
         });
       }
     }, backpressureMode);

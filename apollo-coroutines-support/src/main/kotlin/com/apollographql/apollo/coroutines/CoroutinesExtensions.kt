@@ -131,6 +131,9 @@ fun <T> ApolloSubscriptionCall<T>.toChannel(capacity: Int = Channel.UNLIMITED): 
         cancel()
     }
     execute(object : ApolloSubscriptionCall.Callback<T> {
+        override fun onConnected() {
+        }
+
         override fun onResponse(response: Response<T>) {
             channel.offer(response)
         }
