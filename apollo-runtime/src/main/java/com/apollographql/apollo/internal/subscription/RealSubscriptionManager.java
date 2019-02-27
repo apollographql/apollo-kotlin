@@ -13,6 +13,7 @@ import com.apollographql.apollo.subscription.SubscriptionTransport;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -122,8 +123,9 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   public void stop() {
     synchronized (this) {
       setStateAndNotify(State.STOPPING);
-      for (SubscriptionRecord eachSubscriptionRecord : subscriptions.values()) {
-        doUnsubscribe(eachSubscriptionRecord.subscription);
+      ArrayList<SubscriptionRecord> values = new ArrayList<>(subscriptions.values());
+      for (SubscriptionRecord subscription : values) {
+        doUnsubscribe(subscription.subscription);
       }
       disconnect(true);
     }
