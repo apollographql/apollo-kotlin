@@ -251,7 +251,7 @@ To enable HTTP Cache support, add the dependency to your project's build.gradle 
 
 ```groovy
 dependencies {
-  compile 'com.apollographql.apollo:apollo-http-cache:x.y.z'
+  implementation 'com.apollographql.apollo:apollo-http-cache:x.y.z'
 }
 ```
 
@@ -537,7 +537,7 @@ RxJava1:
 
 [ ![Download](https://api.bintray.com/packages/apollographql/android/apollo-rx-support/images/download.svg) ](https://bintray.com/apollographql/android/apollo-rx-support/_latestVersion)
 ```gradle
-compile 'com.apollographql.apollo:apollo-rx-support:x.y.z'
+implementation 'com.apollographql.apollo:apollo-rx-support:x.y.z'
 ```
 
 RxJava2:
@@ -545,7 +545,7 @@ RxJava2:
 [ ![Download](https://api.bintray.com/packages/apollographql/android/apollo-rx2-support/images/download.svg) ](https://bintray.com/apollographql/android/apollo-rx2-support/_latestVersion)
 
 ```gradle
-compile 'com.apollographql.apollo:apollo-rx2-support:x.y.z'
+implementation 'com.apollographql.apollo:apollo-rx2-support:x.y.z'
 ```
 
 ## License
