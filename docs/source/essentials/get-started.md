@@ -48,13 +48,13 @@ Apollo Android requires a GraphQL schema file as input to the code generation pr
 You can use [apollo-codegen](https://github.com/apollographql/apollo-codegen#usage) to download a GraphQL schema. This works by sending an introspection query to your server:
 
 ```sh
-apollo-codegen download-schema http://localhost:8080/graphql --output schema.json
+apollo schema:download --endpoint=http://localhost:8080/graphql schema.json
 ```
 
-If needed, you can use the `header` option to add additional HTTP headers to the request. For example, to include an authentication token, use `--header "Authorization: Bearer <token>"`:
+If needed, you can use the `header` option to add additional HTTP headers to the request. For example, to include an authentication token, use `--header="Authorization: Bearer <token>"`:
 
 ```sh
-apollo-codegen download-schema https://api.github.com/graphql --output schema.json --header "Authorization: Bearer <token>"
+apollo schema:download --endpoint=http://localhost:8080/graphql --header="Authorization: Bearer <token>"
 ```
 
 > Note: In the sample project you can find the schema here => `apollo-sample/src/main/graphql/com/apollographql/apollo/sample/schema.json`.
