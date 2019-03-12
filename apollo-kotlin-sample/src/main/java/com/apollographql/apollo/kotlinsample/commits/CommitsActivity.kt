@@ -16,9 +16,12 @@ import com.apollographql.apollo.kotlinsample.repositories.CommitsAdapter
 import kotlinx.android.synthetic.main.activity_commits.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class CommitsActivity : AppCompatActivity() {
+  var job: Job? = null
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_commits)
@@ -35,7 +38,7 @@ class CommitsActivity : AppCompatActivity() {
 
     tvError.visibility = GONE
     progressBar.visibility = VISIBLE
-    GlobalScope.launch(Dispatchers.Main) {
+    job = GlobalScope.launch(Dispatchers.Main) {
       try {
         val response = apolloClient.query(GithubRepositoryCommitsQuery(repoName)).toDeferred().await()
         val headCommit = response.data()?.viewer()?.repository()?.ref()?.target() as? GithubRepositoryCommitsQuery.AsCommit
@@ -49,6 +52,10 @@ class CommitsActivity : AppCompatActivity() {
     }
   }
 
+  override fun onDestroy() {
+    super.onDestroy()
+    job?.cancel()
+  }
   companion object {
     private const val REPO_NAME_KEY = "repoName"
 
