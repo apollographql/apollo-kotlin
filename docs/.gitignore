@@ -1,1 +1,3 @@
-_multiconfig.yml
+public
+.cache
+!package-lock.json
