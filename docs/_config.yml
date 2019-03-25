@@ -8,6 +8,7 @@ sidebar_categories:
   Essentials:
       - essentials/get-started
       - essentials/queries
+      - essentials/mutations
 github_repo: apollographql/apollo-android
 content_root: docs/source
 
