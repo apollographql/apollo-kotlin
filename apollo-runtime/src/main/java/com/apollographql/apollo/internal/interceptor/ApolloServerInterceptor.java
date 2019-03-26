@@ -11,6 +11,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.internal.json.InputFieldJsonWriter;
 import com.apollographql.apollo.internal.json.JsonWriter;
+import com.apollographql.apollo.request.RequestHeaders;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 import com.apollographql.apollo.internal.ApolloLogger;
 
@@ -75,7 +76,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         callBack.onFetch(FetchSourceType.NETWORK);
 
         try {
-          httpCall = httpCall(request.operation, request.cacheHeaders, request.sendQueryDocument);
+          httpCall = httpCall(request.operation, request.cacheHeaders, request.requestHeaders,
+              request.sendQueryDocument);
         } catch (IOException e) {
           logger.e(e, "Failed to prepare http call for operation %s", request.operation.name().name());
           callBack.onFailure(new ApolloNetworkException("Failed to prepare http call", e));
@@ -108,7 +110,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     this.httpCall = null;
   }
 
-  Call httpCall(Operation operation, CacheHeaders cacheHeaders, boolean writeQueryDocument) throws IOException {
+  Call httpCall(Operation operation, CacheHeaders cacheHeaders, RequestHeaders requestHeaders,
+      boolean writeQueryDocument) throws IOException {
     RequestBody requestBody = RequestBody.create(MEDIA_TYPE, httpRequestBody(operation, scalarTypeAdapters,
         writeQueryDocument));
     Request.Builder requestBuilder = new Request.Builder()
@@ -120,12 +123,17 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         .header(HEADER_APOLLO_OPERATION_NAME, operation.name().name())
         .tag(operation.operationId());
 
+    for (String header : requestHeaders.headers()) {
+      String value = requestHeaders.headerValue(header);
+      requestBuilder.header(header, value);
+    }
+
     if (cachePolicy.isPresent()) {
       HttpCachePolicy.Policy cachePolicy = this.cachePolicy.get();
       boolean skipCacheHttpResponse = "true".equalsIgnoreCase(cacheHeaders.headerValue(
           ApolloCacheHeaders.DO_NOT_STORE));
 
-      String cacheKey = httpRequestBody(operation, scalarTypeAdapters, true).md5().hex();
+      String cacheKey = cacheKey(operation, scalarTypeAdapters);
       requestBuilder = requestBuilder
           .header(HttpCache.CACHE_KEY_HEADER, cacheKey)
           .header(HttpCache.CACHE_FETCH_STRATEGY_HEADER, cachePolicy.fetchStrategy.name())
@@ -136,6 +144,10 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     }
 
     return httpCallFactory.newCall(requestBuilder.build());
+  }
+
+  static String cacheKey(Operation operation, ScalarTypeAdapters scalarTypeAdapters) throws IOException {
+    return httpRequestBody(operation, scalarTypeAdapters, true).md5().hex();
   }
 
   static ByteString httpRequestBody(Operation operation, ScalarTypeAdapters scalarTypeAdapters,
