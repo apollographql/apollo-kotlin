@@ -30,6 +30,16 @@ public interface ApolloMutationCall<T> extends ApolloCall<T> {
 
   @NotNull @Override ApolloMutationCall<T> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
 
+  /**
+   * Sets the {@link RequestHeaders} to use for this call. These headers will be added to the HTTP request when
+   * it is issued. These headers will be applied after any headers applied by application-level interceptors
+   * and will override those if necessary.
+   *
+   * @param requestHeaders The {@link RequestHeaders} to use for this request.
+   * @return The ApolloCall object with the provided {@link RequestHeaders}.
+   */
+  @NotNull ApolloMutationCall<T> requestHeaders(@NotNull RequestHeaders requestHeaders);
+
   @NotNull @Override ApolloMutationCall<T> clone();
 
   /**
