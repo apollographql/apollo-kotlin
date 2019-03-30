@@ -1,0 +1,58 @@
+buildscript {
+    dependencies {
+        classpath dep.androidPlugin
+        classpath dep.kotlinGradlePlugin
+        classpath dep.apolloPlugin
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.apollographql.android'
+
+android {
+    compileSdkVersion androidConfig.compileSdkVersion
+    defaultConfig {
+        applicationId "com.apollographql.apollo.kotlinsample"
+        minSdkVersion androidConfig.minSdkVersion
+        targetSdkVersion androidConfig.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+
+        def f = project.file("github_token")
+        if (!f.exists()) {
+            f.setText("your_token")
+        }
+
+        buildConfigField("String", "GITHUB_OAUTH_TOKEN", "\"${f.text.trim()}\"")
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+repositories {
+    maven {
+        url 'http://dl.bintray.com/apollographql/android'
+    }
+}
+
+dependencies {
+    implementation dep.kotlinStdLib
+    implementation dep.appcompat
+    implementation dep.apolloRuntime
+    implementation dep.apolloAndroidSupport
+    implementation dep.apolloRx2Support
+    implementation dep.apolloCoroutinesSupport
+    implementation dep.recyclerView
+    implementation dep.rxjava2
+    implementation dep.rxandroid
+    implementation dep.kotlinxCoroutines
+    implementation dep.kotlinxCoroutinesAndroid
+}
