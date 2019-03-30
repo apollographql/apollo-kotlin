@@ -50,7 +50,7 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
 
     D data = null;
     Map<String, Object> buffer = (Map<String, Object>) payload.get("data");
-    if (buffer!=null) {
+    if (buffer != null) {
       RealResponseReader<Map<String, Object>> realResponseReader = new RealResponseReader<>(operation.variables(),
           buffer, new MapFieldValueResolver(), scalarTypeAdapters, responseNormalizer);
       data = (D) responseFieldMapper.map(realResponseReader);
