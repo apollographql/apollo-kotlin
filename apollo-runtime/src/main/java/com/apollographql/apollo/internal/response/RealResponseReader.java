@@ -161,11 +161,12 @@ import java.util.Map;
       for (int i = 0; i < values.size(); i++) {
         resolveDelegate.willResolveElement(i);
         Object value = values.get(i);
-        if (value != null) {
+        if (value == null) {
+          result.add(null);
+          resolveDelegate.didResolveNull();
+        } else {
           T item = (T) listReader.read(new ListItemReader(field, value));
-          if (item != null) {
-            result.add(item);
-          }
+          result.add(item);
         }
         resolveDelegate.didResolveElement(i);
       }
@@ -325,7 +326,10 @@ import java.util.Map;
       for (int i = 0; i < values.size(); i++) {
         resolveDelegate.willResolveElement(i);
         Object value = values.get(i);
-        if (value != null) {
+        if (value == null) {
+          result.add(null);
+          resolveDelegate.didResolveNull();
+        } else {
           T item = (T) listReader.read(new ListItemReader(field, value));
           result.add(item);
         }

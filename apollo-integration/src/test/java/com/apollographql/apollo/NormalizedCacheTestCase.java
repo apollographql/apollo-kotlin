@@ -154,11 +154,32 @@ public class NormalizedCacheTestCase {
           @Override
           public boolean test(Response<HeroAppearsInQuery.Data> response) throws Exception {
             assertThat(response.hasErrors()).isFalse();
-            assertThat(response.hasErrors()).isFalse();
             assertThat(response.data().hero().appearsIn()).hasSize(3);
             assertThat(response.data().hero().appearsIn().get(0).name()).isEqualTo("NEWHOPE");
             assertThat(response.data().hero().appearsIn().get(1).name()).isEqualTo("EMPIRE");
             assertThat(response.data().hero().appearsIn().get(2).name()).isEqualTo("JEDI");
+            return true;
+          }
+        }
+    );
+  }
+
+  @Test public void heroAppearsInResponseWithNulls() throws Exception {
+    cacheAndAssertCachedResponse(
+        server,
+        "HeroAppearsInResponseWithNulls.json",
+        apolloClient.query(new HeroAppearsInQuery()),
+        new Predicate<Response<HeroAppearsInQuery.Data>>() {
+          @Override
+          public boolean test(Response<HeroAppearsInQuery.Data> response) throws Exception {
+            assertThat(response.hasErrors()).isFalse();
+            assertThat(response.data().hero().appearsIn()).hasSize(6);
+            assertThat(response.data().hero().appearsIn().get(0)).isNull();
+            assertThat(response.data().hero().appearsIn().get(1).name()).isEqualTo("NEWHOPE");
+            assertThat(response.data().hero().appearsIn().get(2).name()).isEqualTo("EMPIRE");
+            assertThat(response.data().hero().appearsIn().get(3)).isNull();
+            assertThat(response.data().hero().appearsIn().get(4).name()).isEqualTo("JEDI");
+            assertThat(response.data().hero().appearsIn().get(5)).isNull();
             return true;
           }
         }
