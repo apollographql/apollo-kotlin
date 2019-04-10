@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
+import com.apollographql.apollo.request.RequestHeaders;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -46,6 +47,16 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
    * @return The ApolloCall object with the provided CacheControl strategy
    */
   @NotNull ApolloQueryCall<T> responseFetcher(@NotNull ResponseFetcher fetcher);
+
+  /**
+   * Sets the {@link RequestHeaders} to use for this call. These headers will be added to the HTTP request when
+   * it is issued. These headers will be applied after any headers applied by application-level interceptors
+   * and will override those if necessary.
+   *
+   * @param requestHeaders The {@link RequestHeaders} to use for this request.
+   * @return The ApolloCall object with the provided {@link RequestHeaders}.
+   */
+  @NotNull ApolloQueryCall<T> requestHeaders(@NotNull RequestHeaders requestHeaders);
 
   @NotNull @Override ApolloQueryCall<T> clone();
 

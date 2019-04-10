@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloException;
+import com.apollographql.apollo.request.RequestHeaders;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -114,14 +115,17 @@ public interface ApolloInterceptor {
     public final UUID uniqueId = UUID.randomUUID();
     public final Operation operation;
     public final CacheHeaders cacheHeaders;
+    public final RequestHeaders requestHeaders;
     public final boolean fetchFromCache;
     public final Optional<Operation.Data> optimisticUpdates;
     public final boolean sendQueryDocument;
 
-    InterceptorRequest(Operation operation, CacheHeaders cacheHeaders, Optional<Operation.Data> optimisticUpdates,
-        boolean fetchFromCache, boolean sendQueryDocument) {
+    InterceptorRequest(Operation operation, CacheHeaders cacheHeaders, RequestHeaders requestHeaders,
+        Optional<Operation.Data> optimisticUpdates, boolean fetchFromCache,
+        boolean sendQueryDocument) {
       this.operation = operation;
       this.cacheHeaders = cacheHeaders;
+      this.requestHeaders = requestHeaders;
       this.optimisticUpdates = optimisticUpdates;
       this.fetchFromCache = fetchFromCache;
       this.sendQueryDocument = sendQueryDocument;
@@ -130,6 +134,7 @@ public interface ApolloInterceptor {
     public Builder toBuilder() {
       return new Builder(operation)
           .cacheHeaders(cacheHeaders)
+          .requestHeaders(requestHeaders)
           .fetchFromCache(fetchFromCache)
           .optimisticUpdates(optimisticUpdates.orNull())
           .sendQueryDocument(sendQueryDocument);
@@ -142,6 +147,7 @@ public interface ApolloInterceptor {
     public static final class Builder {
       private final Operation operation;
       private CacheHeaders cacheHeaders = CacheHeaders.NONE;
+      private RequestHeaders requestHeaders = RequestHeaders.NONE;
       private boolean fetchFromCache;
       private Optional<Operation.Data> optimisticUpdates = Optional.absent();
       private boolean sendQueryDocument = true;
@@ -152,6 +158,11 @@ public interface ApolloInterceptor {
 
       public Builder cacheHeaders(@NotNull CacheHeaders cacheHeaders) {
         this.cacheHeaders = checkNotNull(cacheHeaders, "cacheHeaders == null");
+        return this;
+      }
+
+      public Builder requestHeaders(@NotNull RequestHeaders requestHeaders) {
+        this.requestHeaders = checkNotNull(requestHeaders, "requestHeaders == null");
         return this;
       }
 
@@ -176,8 +187,8 @@ public interface ApolloInterceptor {
       }
 
       public InterceptorRequest build() {
-        return new InterceptorRequest(operation, cacheHeaders, optimisticUpdates, fetchFromCache,
-            sendQueryDocument);
+        return new InterceptorRequest(operation, cacheHeaders, requestHeaders, optimisticUpdates,
+            fetchFromCache, sendQueryDocument);
       }
     }
   }

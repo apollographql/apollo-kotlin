@@ -25,6 +25,7 @@ import com.apollographql.apollo.internal.interceptor.ApolloCacheInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloParseInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain;
+import com.apollographql.apollo.request.RequestHeaders;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final ScalarTypeAdapters scalarTypeAdapters;
   final ApolloStore apolloStore;
   final CacheHeaders cacheHeaders;
+  final RequestHeaders requestHeaders;
   final ResponseFetcher responseFetcher;
   final ApolloInterceptorChain interceptorChain;
   final Executor dispatcher;
@@ -87,6 +89,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     apolloStore = builder.apolloStore;
     responseFetcher = builder.responseFetcher;
     cacheHeaders = builder.cacheHeaders;
+    requestHeaders = builder.requestHeaders;
     dispatcher = builder.dispatcher;
     logger = builder.logger;
     applicationInterceptors = builder.applicationInterceptors;
@@ -130,6 +133,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
     ApolloInterceptor.InterceptorRequest request = ApolloInterceptor.InterceptorRequest.builder(operation)
         .cacheHeaders(cacheHeaders)
+        .requestHeaders(requestHeaders)
         .fetchFromCache(false)
         .optimisticUpdates(optimisticUpdates)
         .build();
@@ -158,6 +162,13 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     if (state.get() != IDLE) throw new IllegalStateException("Already Executed");
     return toBuilder()
         .cacheHeaders(checkNotNull(cacheHeaders, "cacheHeaders == null"))
+        .build();
+  }
+
+  @NotNull @Override public RealApolloCall<T> requestHeaders(@NotNull RequestHeaders requestHeaders) {
+    if (state.get() != IDLE) throw new IllegalStateException("Already Executed");
+    return toBuilder()
+        .requestHeaders(checkNotNull(requestHeaders, "requestHeaders == null"))
         .build();
   }
 
@@ -287,6 +298,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .scalarTypeAdapters(scalarTypeAdapters)
         .apolloStore(apolloStore)
         .cacheHeaders(cacheHeaders)
+        .requestHeaders(requestHeaders)
         .responseFetcher(responseFetcher)
         .dispatcher(dispatcher)
         .logger(logger)
@@ -382,6 +394,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     ApolloStore apolloStore;
     ResponseFetcher responseFetcher;
     CacheHeaders cacheHeaders;
+    RequestHeaders requestHeaders = RequestHeaders.NONE;
     ApolloInterceptorChain interceptorChain;
     Executor dispatcher;
     ApolloLogger logger;
@@ -439,6 +452,11 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
     public Builder<T> cacheHeaders(CacheHeaders cacheHeaders) {
       this.cacheHeaders = cacheHeaders;
+      return this;
+    }
+
+    public Builder<T> requestHeaders(RequestHeaders requestHeaders) {
+      this.requestHeaders = requestHeaders;
       return this;
     }
 

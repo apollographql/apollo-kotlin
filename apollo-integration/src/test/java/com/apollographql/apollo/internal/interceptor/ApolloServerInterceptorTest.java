@@ -13,6 +13,7 @@ import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.integration.interceptor.AllFilmsQuery;
 import com.apollographql.apollo.internal.ApolloLogger;
+import com.apollographql.apollo.request.RequestHeaders;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class ApolloServerInterceptorTest {
   private final String expectedRequestBody = "{\"operationName\":\"AllFilms\"," +
       "\"variables\":{\"after\":\"some cursor\",\"first\":null,\"last\":100}," +
       "\"extensions\":{\"persistedQuery\":{\"version\":1," +
-      "\"sha256Hash\":\"6fcc6bd6316f31af9b3bd7b83631016be733f9ec1b9ee0e37e1d140247acd901\"}}," +
+      "\"sha256Hash\":\"" + AllFilmsQuery.OPERATION_ID + "\"}}," +
       "\"query\":\"query AllFilms($after: String, $first: Int, $before: String, $last: Int) {  " +
       "allFilms(after: $after, first: $first, before: $before, last: $last) {    " +
       "__typename    totalCount    films {      __typename      title      releaseDate    }  }}\"}";
@@ -70,15 +71,18 @@ public class ApolloServerInterceptorTest {
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
         new ApolloLogger(Optional.<Logger>absent()));
 
-    interceptor.httpCall(query, CacheHeaders.NONE, true);
+    interceptor.httpCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true);
   }
 
   @Test public void testCachedHttpCall() throws Exception {
+    ScalarTypeAdapters scalarTypeAdapters =
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap());
+    final String cacheKey = ApolloServerInterceptor.cacheKey(query, scalarTypeAdapters);
     Predicate<Request> requestAssertPredicate = new Predicate<Request>() {
       @Override public boolean apply(@Nullable Request request) {
         assertThat(request).isNotNull();
         assertDefaultRequestHeaders(request);
-        assertThat(request.header(HttpCache.CACHE_KEY_HEADER)).isEqualTo("9f213b5f028deb8df22fec2a8ebdc4e7");
+        assertThat(request.header(HttpCache.CACHE_KEY_HEADER)).isEqualTo(cacheKey);
         assertThat(request.header(HttpCache.CACHE_FETCH_STRATEGY_HEADER)).isEqualTo("NETWORK_FIRST");
         assertThat(request.header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER)).isEqualTo("10000");
         assertThat(request.header(HttpCache.CACHE_EXPIRE_AFTER_READ_HEADER)).isEqualTo("false");
@@ -91,12 +95,50 @@ public class ApolloServerInterceptorTest {
 
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate),
-        HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS),
-        false, new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
-        new ApolloLogger(Optional.<Logger>absent()));
+        HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS), false,
+        scalarTypeAdapters, new ApolloLogger(Optional.<Logger>absent()));
 
     interceptor.httpCall(query, CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build(),
-        true);
+        RequestHeaders.NONE, true);
+  }
+
+  @Test public void testAdditionalHeaders() throws Exception {
+    final String testHeader1 = "TEST_HEADER_1";
+    final String testHeaderValue1 = "crappy_value";
+    final String testHeader2 = "TEST_HEADER_2";
+    final String testHeaderValue2 = "fantastic_value";
+    final String testHeader3 = "TEST_HEADER_3";
+    final String testHeaderValue3 = "awesome_value";
+    
+    Predicate<Request> requestAssertPredicate = new Predicate<Request>() {
+      @Override public boolean apply(@Nullable Request request) {
+        assertThat(request).isNotNull();
+        assertDefaultRequestHeaders(request);
+        assertThat(request.header(HttpCache.CACHE_KEY_HEADER)).isNull();
+        assertThat(request.header(HttpCache.CACHE_FETCH_STRATEGY_HEADER)).isNull();
+        assertThat(request.header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER)).isNull();
+        assertThat(request.header(HttpCache.CACHE_EXPIRE_AFTER_READ_HEADER)).isNull();
+        assertThat(request.header(HttpCache.CACHE_PREFETCH_HEADER)).isNull();
+        assertThat(request.header(testHeader1)).isEqualTo(testHeaderValue1);
+        assertThat(request.header(testHeader2)).isEqualTo(testHeaderValue2);
+        assertThat(request.header(testHeader3)).isEqualTo(testHeaderValue3);
+        assertRequestBody(request);
+        return true;
+      }
+    };
+
+    RequestHeaders requestHeaders = RequestHeaders.builder()
+        .addHeader(testHeader1, testHeaderValue1)
+        .addHeader(testHeader2, testHeaderValue2)
+        .addHeader(testHeader3, testHeaderValue3)
+        .build();
+
+    ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
+        new AssertHttpCallFactory(requestAssertPredicate), null, false,
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
+        new ApolloLogger(Optional.<Logger>absent()));
+
+    interceptor.httpCall(query, CacheHeaders.NONE, requestHeaders, true);
   }
 
   private void assertDefaultRequestHeaders(Request request) {

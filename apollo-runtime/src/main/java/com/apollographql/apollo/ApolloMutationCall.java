@@ -4,6 +4,7 @@ import com.apollographql.apollo.api.Mutation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.cache.CacheHeaders;
+import com.apollographql.apollo.request.RequestHeaders;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,6 +30,16 @@ public interface ApolloMutationCall<T> extends ApolloCall<T> {
   @NotNull ApolloMutationCall<T> refetchQueries(@NotNull Query... queries);
 
   @NotNull @Override ApolloMutationCall<T> cacheHeaders(@NotNull CacheHeaders cacheHeaders);
+
+  /**
+   * Sets the {@link RequestHeaders} to use for this call. These headers will be added to the HTTP request when
+   * it is issued. These headers will be applied after any headers applied by application-level interceptors
+   * and will override those if necessary.
+   *
+   * @param requestHeaders The {@link RequestHeaders} to use for this request.
+   * @return The ApolloCall object with the provided {@link RequestHeaders}.
+   */
+  @NotNull ApolloMutationCall<T> requestHeaders(@NotNull RequestHeaders requestHeaders);
 
   @NotNull @Override ApolloMutationCall<T> clone();
 
