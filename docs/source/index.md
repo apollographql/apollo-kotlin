@@ -13,7 +13,7 @@ Apollo Android is a community-driven project with contributors from many compani
 
 We're excited about the idea of further [unifying the clients for JavaScript, iOS and Android](https://blog.apollographql.com/one-graphql-client-for-javascript-ios-and-android-64993c1b7991), including sharing a cache between native and React Native.
 
-If you have questions or would like to contribute, please join the `#android` channel on [Slack](http://www.apollodata.com/#slack).
+If you have questions or would like to contribute, please join the [Apollo Android Community on Spectrum](https://spectrum.chat/apollo/apollo-android).
 
 ## Other platforms
 
