@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.compiler.codegen.kotlin.GraphQLKompiler
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.ScalarType
@@ -36,11 +37,20 @@ class GraphQLCompiler {
       File(args.outputDir, irPackageName.replace('.', File.separatorChar)).deleteRecursively()
     }
 
-    ir.writeJavaFiles(
-        context = context,
-        outputDir = args.outputDir,
-        outputPackageName = args.outputPackageName
-    )
+    if (args.generateKotlinModels) {
+      GraphQLKompiler(
+          irFile = args.irFile,
+          customTypeMap = args.customTypeMap,
+          outputPackageName = args.outputPackageName,
+          useSemanticNaming = args.useSemanticNaming
+      ).write(args.outputDir)
+    } else {
+      ir.writeJavaFiles(
+          context = context,
+          outputDir = args.outputDir,
+          outputPackageName = args.outputPackageName
+      )
+    }
   }
 
   private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File,

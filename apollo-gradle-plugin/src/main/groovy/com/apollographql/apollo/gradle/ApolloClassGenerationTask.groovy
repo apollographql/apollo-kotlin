@@ -20,6 +20,7 @@ class ApolloClassGenerationTask extends SourceTask {
   @Input Property<Boolean> generateModelBuilder = project.objects.property(Boolean.class)
   @Input Property<Boolean> useJavaBeansSemanticNaming = project.objects.property(Boolean.class)
   @Input Property<Boolean> suppressRawTypesWarning = project.objects.property(Boolean.class)
+  @Input Property<Boolean> generateKotlinModels = project.objects.property(Boolean.class)
   @Optional @Input Property<String> outputPackageName = project.objects.property(String.class)
   @OutputDirectory DirectoryProperty outputDir
 
@@ -53,7 +54,7 @@ class ApolloClassGenerationTask extends SourceTask {
             inputFile, outputDir.get().asFile, customTypeMapping.get(),
             nullableValueType != null ? nullableValueType : NullableValueType.ANNOTATED, useSemanticNaming.get(),
             generateModelBuilder.get(), useJavaBeansSemanticNaming.get(), outputPackageName,
-            suppressRawTypesWarning.get()
+            suppressRawTypesWarning.get(), generateKotlinModels.get()
         )
         new GraphQLCompiler().write(args)
       }

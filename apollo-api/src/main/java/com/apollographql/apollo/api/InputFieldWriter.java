@@ -19,7 +19,8 @@ public interface InputFieldWriter {
 
   void writeBoolean(@NotNull String fieldName, @Nullable Boolean value) throws IOException;
 
-  void writeCustom(@NotNull String fieldName, @NotNull ScalarType scalarType, @Nullable Object value) throws IOException;
+  void writeCustom(@NotNull String fieldName, @NotNull ScalarType scalarType, @Nullable Object value)
+      throws IOException;
 
   void writeObject(@NotNull String fieldName, @Nullable InputFieldMarshaller marshaller) throws IOException;
 
