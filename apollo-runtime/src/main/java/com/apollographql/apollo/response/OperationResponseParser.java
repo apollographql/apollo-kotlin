@@ -49,8 +49,8 @@ public final class OperationResponseParser<D extends Operation.Data, W> {
     checkNotNull(payload, "payload == null");
 
     D data = null;
-    if (payload.containsKey("data")) {
-      Map<String, Object> buffer = (Map<String, Object>) payload.get("data");
+    Map<String, Object> buffer = (Map<String, Object>) payload.get("data");
+    if (buffer != null) {
       RealResponseReader<Map<String, Object>> realResponseReader = new RealResponseReader<>(operation.variables(),
           buffer, new MapFieldValueResolver(), scalarTypeAdapters, responseNormalizer);
       data = (D) responseFieldMapper.map(realResponseReader);
