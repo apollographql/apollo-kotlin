@@ -11,15 +11,17 @@ import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
 
-/**
- * @param name The name of the character
- * @param friendsConnection The friends of the character exposed as a connection with edges
- */
 @Generated("Apollo GraphQL")
 @Suppress("NAME_SHADOWING", "LocalVariableName")
 data class HeroDetails(
     val __typename: String,
+    /**
+     * The name of the character
+     */
     val name: String,
+    /**
+     * The friends of the character exposed as a connection with edges
+     */
     val friendsConnection: FriendsConnection1,
     val asDroid: AsDroid?
 ) : GraphqlFragment {
@@ -34,7 +36,8 @@ data class HeroDetails(
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                 ResponseField.forString("__typename", "__typename", null, false, null),
                 ResponseField.forString("name", "name", null, false, null),
-                ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
+                ResponseField.forObject("friendsConnection", "friendsConnection", null, false,
+                        null),
                 ResponseField.forInlineFragment("__typename", "__typename", listOf("Droid"))
                 )
 
@@ -65,7 +68,8 @@ data class HeroDetails(
         operator fun invoke(reader: ResponseReader): HeroDetails {
             val __typename = reader.readString(RESPONSE_FIELDS[0])
             val name = reader.readString(RESPONSE_FIELDS[1])
-            val friendsConnection = reader.readObject<FriendsConnection1>(RESPONSE_FIELDS[2]) { reader ->
+            val friendsConnection = reader.readObject<FriendsConnection1>(RESPONSE_FIELDS[2]) {
+                    reader ->
                 FriendsConnection1(reader)
             }
 
@@ -82,11 +86,11 @@ data class HeroDetails(
         }
     }
 
-    /**
-     * @param name The name of the character
-     */
     data class Node(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -111,11 +115,11 @@ data class HeroDetails(
         }
     }
 
-    /**
-     * @param node The character represented by this friendship edge
-     */
     data class Edge(
         val __typename: String,
+        /**
+         * The character represented by this friendship edge
+         */
         val node: Node?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -143,13 +147,15 @@ data class HeroDetails(
         }
     }
 
-    /**
-     * @param totalCount The total number of friends
-     * @param edges The edges for each of the character's friends.
-     */
     data class FriendsConnection(
         val __typename: String,
+        /**
+         * The total number of friends
+         */
         val totalCount: Int?,
+        /**
+         * The edges for each of the character's friends.
+         */
         val edges: List<Edge?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -187,15 +193,19 @@ data class HeroDetails(
         }
     }
 
-    /**
-     * @param name What others call this droid
-     * @param friendsConnection The friends of the droid exposed as a connection with edges
-     * @param primaryFunction This droid's primary function
-     */
     data class AsDroid(
         val __typename: String,
+        /**
+         * What others call this droid
+         */
         val name: String,
+        /**
+         * The friends of the droid exposed as a connection with edges
+         */
         val friendsConnection: FriendsConnection,
+        /**
+         * This droid's primary function
+         */
         val primaryFunction: String?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -209,14 +219,16 @@ data class HeroDetails(
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                     ResponseField.forString("__typename", "__typename", null, false, null),
                     ResponseField.forString("name", "name", null, false, null),
-                    ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
+                    ResponseField.forObject("friendsConnection", "friendsConnection", null, false,
+                            null),
                     ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
                     )
 
             operator fun invoke(reader: ResponseReader): AsDroid {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
-                val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+                val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) {
+                        reader ->
                     FriendsConnection(reader)
                 }
 
@@ -231,11 +243,11 @@ data class HeroDetails(
         }
     }
 
-    /**
-     * @param name The name of the character
-     */
     data class Node1(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -260,11 +272,11 @@ data class HeroDetails(
         }
     }
 
-    /**
-     * @param node The character represented by this friendship edge
-     */
     data class Edge1(
         val __typename: String,
+        /**
+         * The character represented by this friendship edge
+         */
         val node: Node1?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -292,13 +304,15 @@ data class HeroDetails(
         }
     }
 
-    /**
-     * @param totalCount The total number of friends
-     * @param edges The edges for each of the character's friends.
-     */
     data class FriendsConnection1(
         val __typename: String,
+        /**
+         * The total number of friends
+         */
         val totalCount: Int?,
+        /**
+         * The edges for each of the character's friends.
+         */
         val edges: List<Edge1?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {

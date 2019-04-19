@@ -19,22 +19,26 @@ import kotlin.collections.List
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param name The name of the character
-     * @param appearsIn The movies this character appears in
-     * @param firstAppearsIn The movie this character first appears in
-     */
     data class Hero(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String,
+        /**
+         * The movies this character appears in
+         */
         val appearsIn: List<Episode?>,
+        /**
+         * The movie this character first appears in
+         */
         val firstAppearsIn: Episode
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -96,19 +100,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query TestQuery {
-                |  hero {
-                |    __typename
-                |    name
-                |    appearsIn
-                |    firstAppearsIn
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "b21e7723eade7c2801671c52c5de16f21ea29cb902dd88d8ebf42c334a07e7c0"
+                "424f5306f4be3f78b90e5c704e1770756e3d874fb1355a809808fa972ddb79ed"
 
         val QUERY_DOCUMENT: String = """
                 |query TestQuery {

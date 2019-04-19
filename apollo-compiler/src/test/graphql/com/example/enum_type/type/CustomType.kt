@@ -10,6 +10,6 @@ enum class CustomType : ScalarType {
     ID {
         override fun typeName(): String = "ID"
 
-        override fun javaType(): Class<*> = String::class.java
+        override fun javaType(): Class<*> = kotlin.String::class.java
     }
 }

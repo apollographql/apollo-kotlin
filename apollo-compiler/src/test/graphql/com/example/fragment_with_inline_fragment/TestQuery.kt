@@ -20,20 +20,22 @@ import kotlin.collections.List
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param name The name of the character
-     * @param appearsIn The movies this character appears in
-     */
     data class Hero(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String,
+        /**
+         * The movies this character appears in
+         */
         val appearsIn: List<Episode?>,
         val fragments: Fragments
     ) {
@@ -62,8 +64,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                 val appearsIn = reader.readList<Episode>(RESPONSE_FIELDS[2]) {
                     Episode.safeValueOf(it.readString())
                 }
-                val fragments = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType, reader ->
-                    val heroDetails = if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) HeroDetails(reader) else null
+                val fragments = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType,
+                        reader ->
+                    val heroDetails = if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType))
+                            HeroDetails(reader) else null
                     Fragments(
                         heroDetails = heroDetails!!
                     )
@@ -108,19 +112,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query TestQuery {
-                |  hero {
-                |    __typename
-                |    name
-                |    ...HeroDetails
-                |    appearsIn
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "82ed8ea1e7e7b7d0344905a747cc94a1228c7ea59c809e9feb9c9d3604ff07cd"
+                "79e2a0e5ebf670253687cf4be332e00f5495448f49669ad69931b83a46aed917"
 
         val QUERY_DOCUMENT: String = """
                 |query TestQuery {

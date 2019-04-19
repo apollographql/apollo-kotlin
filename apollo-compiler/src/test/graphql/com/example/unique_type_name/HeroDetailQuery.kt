@@ -21,11 +21,11 @@ import kotlin.collections.List
 class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: HeroDetailQuery.Data): HeroDetailQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<HeroDetailQuery.Data> = ResponseFieldMapper {
-        HeroDetailQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
     data class Friend1(val __typename: String, val fragments: Fragments) {
@@ -42,8 +42,10 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
 
             operator fun invoke(reader: ResponseReader): Friend1 {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-                    val heroDetails = if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) HeroDetails(reader) else null
+                val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType,
+                        reader ->
+                    val heroDetails = if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType))
+                            HeroDetails(reader) else null
                     Fragments(
                         heroDetails = heroDetails
                     )
@@ -63,15 +65,19 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
         }
     }
 
-    /**
-     * @param name The name of the character
-     * @param appearsIn The movies this character appears in
-     * @param friends The friends of the character, or an empty list if they have none
-     */
     data class Friend(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String,
+        /**
+         * The movies this character appears in
+         */
         val appearsIn: List<Episode?>,
+        /**
+         * The friends of the character, or an empty list if they have none
+         */
         val friends: List<Friend1?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -119,15 +125,19 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
         }
     }
 
-    /**
-     * @param name What this human calls themselves
-     * @param friends This human's friends, or an empty list if they have none
-     * @param height Height in the preferred unit, default is meters
-     */
     data class AsHuman(
         val __typename: String,
+        /**
+         * What this human calls themselves
+         */
         val name: String,
+        /**
+         * This human's friends, or an empty list if they have none
+         */
         val friends: List<Friend?>?,
+        /**
+         * Height in the preferred unit, default is meters
+         */
         val height: Double?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -169,11 +179,11 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
         }
     }
 
-    /**
-     * @param name The name of the character
-     */
     data class Friend12(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -198,13 +208,15 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
         }
     }
 
-    /**
-     * @param name The name of the character
-     * @param friends The friends of the character, or an empty list if they have none
-     */
     data class HeroDetailQuery1(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String,
+        /**
+         * The friends of the character, or an empty list if they have none
+         */
         val friends: List<Friend12?>?,
         val asHuman: AsHuman?
     ) {
@@ -236,7 +248,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
                     }
 
                 }
-                val asHuman = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType, reader ->
+                val asHuman = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType,
+                        reader ->
                     AsHuman(reader)
                 }
 
@@ -261,7 +274,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
-                val heroDetailQuery = reader.readObject<HeroDetailQuery1>(RESPONSE_FIELDS[0]) { reader ->
+                val heroDetailQuery = reader.readObject<HeroDetailQuery1>(RESPONSE_FIELDS[0]) {
+                        reader ->
                     HeroDetailQuery1(reader)
                 }
 
@@ -273,32 +287,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query HeroDetailQuery {
-                |  heroDetailQuery {
-                |    __typename
-                |    name
-                |    friends {
-                |      __typename
-                |      name
-                |    }
-                |    ... on Human {
-                |      height
-                |      friends {
-                |        __typename
-                |        appearsIn
-                |        friends {
-                |          __typename
-                |          ...HeroDetails
-                |        }
-                |      }
-                |    }
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "92a6f8d924f3a9768021c6685ce6648cc180aa1066a76cf0d7ed7240e22c67bd"
+                "fbc3185d6cccc75f6ec4858073e261143cd085f47b6701080316e36cc970145a"
 
         val QUERY_DOCUMENT: String = """
                 |query HeroDetailQuery {

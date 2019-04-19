@@ -19,11 +19,11 @@ import kotlin.Suppress
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
     data class R2(val __typename: String, val fragments: Fragments) {
@@ -40,9 +40,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
             operator fun invoke(reader: ResponseReader): R2 {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-                    val humanDetails = if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType)) HumanDetails(reader) else null
-                    val droidDetails = if (DroidDetails.POSSIBLE_TYPES.contains(conditionalType)) DroidDetails(reader) else null
+                val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType,
+                        reader ->
+                    val humanDetails = if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType))
+                            HumanDetails(reader) else null
+                    val droidDetails = if (DroidDetails.POSSIBLE_TYPES.contains(conditionalType))
+                            DroidDetails(reader) else null
                     Fragments(
                         humanDetails = humanDetails,
                         droidDetails = droidDetails
@@ -78,9 +81,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
             operator fun invoke(reader: ResponseReader): Luke {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-                    val humanDetails = if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType)) HumanDetails(reader) else null
-                    val droidDetails = if (DroidDetails.POSSIBLE_TYPES.contains(conditionalType)) DroidDetails(reader) else null
+                val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType,
+                        reader ->
+                    val humanDetails = if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType))
+                            HumanDetails(reader) else null
+                    val droidDetails = if (DroidDetails.POSSIBLE_TYPES.contains(conditionalType))
+                            DroidDetails(reader) else null
                     Fragments(
                         humanDetails = humanDetails,
                         droidDetails = droidDetails
@@ -132,23 +138,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query TestQuery {
-                |  r2: hero {
-                |    __typename
-                |    ...HumanDetails
-                |    ...DroidDetails
-                |  }
-                |  luke: hero {
-                |    __typename
-                |    ...HumanDetails
-                |    ...DroidDetails
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "caec283b7a9499b14fe44cbe6e118fe4463bc96e7d186acafc10453fb30fbaa0"
+                "fd5c78538b2ae8cc23e2da84f634abc4454cf9767e104a0625dc0a8917dfb121"
 
         val QUERY_DOCUMENT: String = """
                 |query TestQuery {

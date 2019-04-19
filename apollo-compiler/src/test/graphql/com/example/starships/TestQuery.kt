@@ -41,20 +41,22 @@ data class TestQuery(val id: String) : Query<TestQuery.Data, TestQuery.Data, Ope
 
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = variables
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param id The ID of the starship
-     * @param name The name of the starship
-     */
     data class Starship(
         val __typename: String,
+        /**
+         * The ID of the starship
+         */
         val id: String,
+        /**
+         * The name of the starship
+         */
         val name: String,
         val coordinates: List<List<Double?>?>?
     ) {
@@ -83,7 +85,8 @@ data class TestQuery(val id: String) : Query<TestQuery.Data, TestQuery.Data, Ope
 
             operator fun invoke(reader: ResponseReader): Starship {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as
+                        ResponseField.CustomTypeField)
                 val name = reader.readString(RESPONSE_FIELDS[2])
                 val coordinates = reader.readList<List<Double?>>(RESPONSE_FIELDS[3]) {
                     it.readList<Double> {
@@ -126,19 +129,8 @@ data class TestQuery(val id: String) : Query<TestQuery.Data, TestQuery.Data, Ope
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query TestQuery(${'$'}id: ID!) {
-                |  starship(id: ${'$'}id) {
-                |    __typename
-                |    id
-                |    name
-                |    coordinates
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "7e7fbeaf6d1978c07e66bb041e7022ad5a7b9b8ca84b28b4faadfb1950ae340c"
+                "b1a5bbb02a3a876846b727d73a26bf205341d6e7b7181f17e93c8f3b0a5d4b3e"
 
         val QUERY_DOCUMENT: String = """
                 |query TestQuery(${'$'}id: ID!) {

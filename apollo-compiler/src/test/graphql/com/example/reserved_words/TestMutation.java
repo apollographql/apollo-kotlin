@@ -25,9 +25,9 @@ import org.jetbrains.annotations.Nullable;
 
 @Generated("Apollo GraphQL")
 public final class TestMutation implements Mutation<TestMutation.Data, Optional<TestMutation.Data>, TestMutation.Variables> {
-  public static final String OPERATION_ID = null;
+  public static final String OPERATION_ID = "413697ef5917f00cd5c2ff0389d350a39a0e707d4629c7721539204c6ce7efa4";
 
-  public static final String QUERY_DOCUMENT = null;
+  public static final String QUERY_DOCUMENT = "query TestMutation {}";
 
   public static final OperationName OPERATION_NAME = new OperationName() {
     @Override

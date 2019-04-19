@@ -20,18 +20,18 @@ import kotlin.collections.List
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param links Links
-     */
     data class Hero(
         val __typename: String,
+        /**
+         * Links
+         */
         val links: List<Object?>
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -85,17 +85,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query TestQuery {
-                |  hero {
-                |    __typename
-                |    links
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "e85bc0b78c2cf20d9b02def60116c1d698ef6777720553e8f2f4507fad0eef35"
+                "3922907e29d945e3c89be3dda4e11ac5dbb88ae281fb804e1f13125b13bb6275"
 
         val QUERY_DOCUMENT: String = """
                 |query TestQuery {

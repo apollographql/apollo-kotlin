@@ -19,20 +19,22 @@ import kotlin.collections.List
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param stars The number of stars this review gave, 1-5
-     * @param commentary Comment about the movie
-     */
     data class Review(
         val __typename: String,
+        /**
+         * The number of stars this review gave, 1-5
+         */
         val stars: Int,
+        /**
+         * Comment about the movie
+         */
         val commentary: String?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -93,18 +95,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query TestQuery {
-                |  reviews(episode: JEDI, starsInt: 10, starsFloat: 9.9) {
-                |    __typename
-                |    stars
-                |    commentary
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "a6746506c2fb20405972e7e76920eec4aa2e5e02dc429cfbd1585a4f1787b0d9"
+                "4f993e15e441a7c02aa5a6d786812f5e37074a333d9c67a83809929f459726f1"
 
         val QUERY_DOCUMENT: String = """
                 |query TestQuery {

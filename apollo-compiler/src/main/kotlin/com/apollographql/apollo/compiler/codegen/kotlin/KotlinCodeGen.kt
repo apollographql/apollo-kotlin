@@ -51,13 +51,13 @@ object KotlinCodeGen {
     )
     is AST.FieldType.Array -> List::class.asClassName().parameterizedBy(rawType.asTypeName(optional = true))
   }.let {
-    if (optional) it.asNullable() else it.asNonNull()
+    if (optional) it.copy(nullable = true) else it.copy(nullable = false)
   }
 
   fun AST.ObjectType.Field.asPropertySpec(initializer: CodeBlock): PropertySpec {
     return PropertySpec.builder(
       name = name,
-      type = if (isOptional) type.asTypeName().asNullable() else type.asTypeName()
+      type = if (isOptional) type.asTypeName().copy(nullable = true) else type.asTypeName()
     )
       .applyIf(isDeprecated) { addAnnotation(deprecatedAnnotation(deprecationReason)) }
       .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }

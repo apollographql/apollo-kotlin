@@ -31,13 +31,12 @@ internal fun Number.castTo(type: TypeName): Number = when (type) {
   else -> this
 }
 
-internal fun AST.TypeRef.asTypeName() = ClassName.bestGuess(
-    if (packageName.isNotBlank()) "$packageName.${name.capitalize()}" else name.capitalize())
+internal fun AST.TypeRef.asTypeName() = ClassName(packageName = packageName, simpleName = name.capitalize())
 
 internal fun Map<String, Any>.toCode(): CodeBlock? {
   return takeIf { it.isNotEmpty() }?.let {
     it.map { it.toCode() }
-        .foldIndexed(CodeBlock.builder().add("mapOf<String, Any>(\n").indent()) { index, builder, code ->
+        .foldIndexed(CodeBlock.builder().add("mapOf<%T, Any>(\n", String::class.asTypeName()).indent()) { index, builder, code ->
           if (index > 0) {
             builder.add(",\n")
           }
@@ -67,8 +66,8 @@ internal fun Any.normalizeJsonValue(graphQLType: String): Any {
       }
     }
     is Boolean, is Map<*, *> -> this
-    is List<*> -> this.map {
-      it!!.normalizeJsonValue(graphQLType.removeSuffix("!").removePrefix("[").removeSuffix("]"))
+    is List<*> -> this.mapNotNull {
+      it?.normalizeJsonValue(graphQLType.removeSuffix("!").removePrefix("[").removeSuffix("]"))
     }
     else -> toString()
   }

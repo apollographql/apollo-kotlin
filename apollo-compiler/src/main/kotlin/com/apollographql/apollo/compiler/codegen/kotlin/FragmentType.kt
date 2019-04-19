@@ -31,7 +31,7 @@ private val AST.FragmentType.primaryConstructorSpec: FunSpec
         val typeName = field.type.asTypeName()
         ParameterSpec.builder(
           name = field.name,
-          type = if (field.isOptional) typeName.asNullable() else typeName
+          type = if (field.isOptional) typeName.copy(nullable = true) else typeName
         ).build()
       })
       .build()

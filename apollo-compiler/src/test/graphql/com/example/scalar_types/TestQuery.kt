@@ -22,11 +22,11 @@ import kotlin.collections.List
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
     data class Data(
@@ -57,7 +57,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], graphQlString)
             it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, graphQlIdNullable)
-            it.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, graphQlIdNonNullable)
+            it.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField,
+                    graphQlIdNonNullable)
             it.writeInt(RESPONSE_FIELDS[3], graphQlIntNullable)
             it.writeInt(RESPONSE_FIELDS[4], graphQlIntNonNullable)
             it.writeDouble(RESPONSE_FIELDS[5], graphQlFloatNullable)
@@ -69,7 +70,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                     listItemWriter.writeString(value)
                 }
             }
-            it.writeList(RESPONSE_FIELDS[10], graphQlListOfStringNonNullable) { value, listItemWriter ->
+            it.writeList(RESPONSE_FIELDS[10], graphQlListOfStringNonNullable) { value,
+                    listItemWriter ->
                 value?.forEach { value ->
                     listItemWriter.writeString(value)
                 }
@@ -89,7 +91,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                     listItemWriter.writeInt(value)
                 }
             }
-            it.writeList(RESPONSE_FIELDS[14], graphQlListOfIntNonNullable) { value, listItemWriter ->
+            it.writeList(RESPONSE_FIELDS[14], graphQlListOfIntNonNullable) { value,
+                    listItemWriter ->
                 value?.forEach { value ->
                     listItemWriter.writeInt(value)
                 }
@@ -99,12 +102,14 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                     listItemWriter.writeDouble(value)
                 }
             }
-            it.writeList(RESPONSE_FIELDS[16], graphQlListOfFloatNonNullable) { value, listItemWriter ->
+            it.writeList(RESPONSE_FIELDS[16], graphQlListOfFloatNonNullable) { value,
+                    listItemWriter ->
                 value?.forEach { value ->
                     listItemWriter.writeDouble(value)
                 }
             }
-            it.writeList(RESPONSE_FIELDS[17], graphQlListOfBooleanNullable) { value, listItemWriter ->
+            it.writeList(RESPONSE_FIELDS[17], graphQlListOfBooleanNullable) { value,
+                    listItemWriter ->
                 value?.forEach { value ->
                     listItemWriter.writeBoolean(value)
                 }
@@ -159,34 +164,58 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         companion object {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                     ResponseField.forString("graphQlString", "graphQlString", null, true, null),
-                    ResponseField.forCustomType("graphQlIdNullable", "graphQlIdNullable", null, true, CustomType.ID, null),
-                    ResponseField.forCustomType("graphQlIdNonNullable", "graphQlIdNonNullable", null, false, CustomType.ID, null),
-                    ResponseField.forInt("graphQlIntNullable", "graphQlIntNullable", null, true, null),
-                    ResponseField.forInt("graphQlIntNonNullable", "graphQlIntNonNullable", null, false, null),
-                    ResponseField.forDouble("graphQlFloatNullable", "graphQlFloatNullable", null, true, null),
-                    ResponseField.forDouble("graphQlFloatNonNullable", "graphQlFloatNonNullable", null, false, null),
-                    ResponseField.forBoolean("graphQlBooleanNullable", "graphQlBooleanNullable", null, true, null),
-                    ResponseField.forBoolean("graphQlBooleanNonNullable", "graphQlBooleanNonNullable", null, false, null),
-                    ResponseField.forList("graphQlListOfStringNullable", "graphQlListOfStringNullable", null, false, null),
-                    ResponseField.forList("graphQlListOfStringNonNullable", "graphQlListOfStringNonNullable", null, false, null),
-                    ResponseField.forList("graphQlListOfIdNullable", "graphQlListOfIdNullable", null, true, null),
-                    ResponseField.forList("graphQlListOfIdNonNullable", "graphQlListOfIdNonNullable", null, false, null),
-                    ResponseField.forList("graphQlListOfIntNullable", "graphQlListOfIntNullable", null, true, null),
-                    ResponseField.forList("graphQlListOfIntNonNullable", "graphQlListOfIntNonNullable", null, false, null),
-                    ResponseField.forList("graphQlListOfFloatNullable", "graphQlListOfFloatNullable", null, true, null),
-                    ResponseField.forList("graphQlListOfFloatNonNullable", "graphQlListOfFloatNonNullable", null, false, null),
-                    ResponseField.forList("graphQlListOfBooleanNullable", "graphQlListOfBooleanNullable", null, true, null),
-                    ResponseField.forList("graphQlListOfListOfString", "graphQlListOfListOfString", null, false, null),
-                    ResponseField.forList("graphQlListOfListOfId", "graphQlListOfListOfId", null, false, null),
-                    ResponseField.forList("graphQlListOfListOfInt", "graphQlListOfListOfInt", null, false, null),
-                    ResponseField.forList("graphQlListOfListOfFloat", "graphQlListOfListOfFloat", null, false, null),
-                    ResponseField.forList("graphQlListOfListOfBoolean", "graphQlListOfListOfBoolean", null, false, null)
+                    ResponseField.forCustomType("graphQlIdNullable", "graphQlIdNullable", null,
+                            true, CustomType.ID, null),
+                    ResponseField.forCustomType("graphQlIdNonNullable", "graphQlIdNonNullable",
+                            null, false, CustomType.ID, null),
+                    ResponseField.forInt("graphQlIntNullable", "graphQlIntNullable", null, true,
+                            null),
+                    ResponseField.forInt("graphQlIntNonNullable", "graphQlIntNonNullable", null,
+                            false, null),
+                    ResponseField.forDouble("graphQlFloatNullable", "graphQlFloatNullable", null,
+                            true, null),
+                    ResponseField.forDouble("graphQlFloatNonNullable", "graphQlFloatNonNullable",
+                            null, false, null),
+                    ResponseField.forBoolean("graphQlBooleanNullable", "graphQlBooleanNullable",
+                            null, true, null),
+                    ResponseField.forBoolean("graphQlBooleanNonNullable",
+                            "graphQlBooleanNonNullable", null, false, null),
+                    ResponseField.forList("graphQlListOfStringNullable",
+                            "graphQlListOfStringNullable", null, false, null),
+                    ResponseField.forList("graphQlListOfStringNonNullable",
+                            "graphQlListOfStringNonNullable", null, false, null),
+                    ResponseField.forList("graphQlListOfIdNullable", "graphQlListOfIdNullable",
+                            null, true, null),
+                    ResponseField.forList("graphQlListOfIdNonNullable",
+                            "graphQlListOfIdNonNullable", null, false, null),
+                    ResponseField.forList("graphQlListOfIntNullable", "graphQlListOfIntNullable",
+                            null, true, null),
+                    ResponseField.forList("graphQlListOfIntNonNullable",
+                            "graphQlListOfIntNonNullable", null, false, null),
+                    ResponseField.forList("graphQlListOfFloatNullable",
+                            "graphQlListOfFloatNullable", null, true, null),
+                    ResponseField.forList("graphQlListOfFloatNonNullable",
+                            "graphQlListOfFloatNonNullable", null, false, null),
+                    ResponseField.forList("graphQlListOfBooleanNullable",
+                            "graphQlListOfBooleanNullable", null, true, null),
+                    ResponseField.forList("graphQlListOfListOfString", "graphQlListOfListOfString",
+                            null, false, null),
+                    ResponseField.forList("graphQlListOfListOfId", "graphQlListOfListOfId", null,
+                            false, null),
+                    ResponseField.forList("graphQlListOfListOfInt", "graphQlListOfListOfInt", null,
+                            false, null),
+                    ResponseField.forList("graphQlListOfListOfFloat", "graphQlListOfListOfFloat",
+                            null, false, null),
+                    ResponseField.forList("graphQlListOfListOfBoolean",
+                            "graphQlListOfListOfBoolean", null, false, null)
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
                 val graphQlString = reader.readString(RESPONSE_FIELDS[0])
-                val graphQlIdNullable = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
-                val graphQlIdNonNullable = reader.readCustomType<String>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+                val graphQlIdNullable = reader.readCustomType<String>(RESPONSE_FIELDS[1] as
+                        ResponseField.CustomTypeField)
+                val graphQlIdNonNullable = reader.readCustomType<String>(RESPONSE_FIELDS[2] as
+                        ResponseField.CustomTypeField)
                 val graphQlIntNullable = reader.readInt(RESPONSE_FIELDS[3])
                 val graphQlIntNonNullable = reader.readInt(RESPONSE_FIELDS[4])
                 val graphQlFloatNullable = reader.readDouble(RESPONSE_FIELDS[5])
@@ -220,7 +249,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                 val graphQlListOfBooleanNullable = reader.readList<Boolean>(RESPONSE_FIELDS[17]) {
                     it.readBoolean()
                 }
-                val graphQlListOfListOfString = reader.readList<List<String?>>(RESPONSE_FIELDS[18]) {
+                val graphQlListOfListOfString = reader.readList<List<String?>>(RESPONSE_FIELDS[18])
+                        {
                     it.readList<String> {
                         it.readString()
                     }
@@ -240,7 +270,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                         it.readDouble()
                     }
                 }
-                val graphQlListOfListOfBoolean = reader.readList<List<Boolean?>>(RESPONSE_FIELDS[22]) {
+                val graphQlListOfListOfBoolean =
+                        reader.readList<List<Boolean?>>(RESPONSE_FIELDS[22]) {
                     it.readList<Boolean> {
                         it.readBoolean()
                     }
@@ -275,10 +306,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = ""
-
         const val OPERATION_ID: String =
-                "7824113c9abde76f3c8ffbee5d7065129bc5c47757f34dd5959d5cd16464d014"
+                "c101538c2f24cfe01e37832d71718e9dc909fae87d377d694ea56074e167c29e"
 
         val QUERY_DOCUMENT: String = "query TestQuery {}"
 

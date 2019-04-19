@@ -10,7 +10,6 @@ data class AST(
   data class OperationType(
     val name: String,
     val type: Type,
-    val definition: String,
     val operationId: String,
     val queryDocument: String,
     val variables: InputType,

@@ -9,15 +9,17 @@ import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 
-/**
- * @param name What others call this droid
- * @param primaryFunction This droid's primary function
- */
 @Generated("Apollo GraphQL")
 @Suppress("NAME_SHADOWING", "LocalVariableName")
 data class DroidDetails(
     val __typename: String,
+    /**
+     * What others call this droid
+     */
     val name: String,
+    /**
+     * This droid's primary function
+     */
     val primaryFunction: String?
 ) : GraphqlFragment {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {

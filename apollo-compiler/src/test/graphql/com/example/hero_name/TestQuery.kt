@@ -17,18 +17,18 @@ import kotlin.Suppress
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param name The name of the character
-     */
     data class Hero(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -76,17 +76,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query TestQuery {
-                |  hero {
-                |    __typename
-                |    name
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "f28c106dcaca07eb2077c9bcf7c64af9b0aa81f85169af29f7b41808b168e468"
+                "8b2daaf4bcd7b88157fe5d1ac7fb10e91a375f4d13ce1d049ed2bbc6cecf7431"
 
         val QUERY_DOCUMENT: String = """
                 |query TestQuery {

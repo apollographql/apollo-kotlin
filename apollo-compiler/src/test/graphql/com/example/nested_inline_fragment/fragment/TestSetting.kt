@@ -51,8 +51,8 @@ data class TestSetting(
                 |}
                 """.trimMargin()
 
-        val POSSIBLE_TYPES: Array<String> =
-                arrayOf("BooleanSetting", "SelectSetting", "StringListSetting", "TextSetting", "TypedStringListSetting")
+        val POSSIBLE_TYPES: Array<String> = arrayOf("BooleanSetting", "SelectSetting",
+                "StringListSetting", "TextSetting", "TypedStringListSetting")
 
         operator fun invoke(reader: ResponseReader): TestSetting {
             val __typename = reader.readString(RESPONSE_FIELDS[0])
@@ -60,7 +60,8 @@ data class TestSetting(
                 Value1(reader)
             }
 
-            val asSelectSetting = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
+            val asSelectSetting = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType,
+                    reader ->
                 AsSelectSetting(reader)
             }
 
@@ -101,7 +102,8 @@ data class TestSetting(
         }
     }
 
-    data class Value(val __typename: String, val asStringListSettingValue: AsStringListSettingValue?) {
+    data class Value(val __typename: String, val asStringListSettingValue:
+            AsStringListSettingValue?) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeObject(RESPONSE_FIELDS[1], asStringListSettingValue?.marshaller())
@@ -110,12 +112,14 @@ data class TestSetting(
         companion object {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                     ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forInlineFragment("__typename", "__typename", listOf("StringListSettingValue"))
+                    ResponseField.forInlineFragment("__typename", "__typename",
+                            listOf("StringListSettingValue"))
                     )
 
             operator fun invoke(reader: ResponseReader): Value {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val asStringListSettingValue = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
+                val asStringListSettingValue = reader.readConditional(RESPONSE_FIELDS[1]) {
+                        conditionalType, reader ->
                     AsStringListSettingValue(reader)
                 }
 
@@ -235,7 +239,8 @@ data class TestSetting(
         }
     }
 
-    data class Value1(val __typename: String, val asStringListSettingValue1: AsStringListSettingValue1?) {
+    data class Value1(val __typename: String, val asStringListSettingValue1:
+            AsStringListSettingValue1?) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeObject(RESPONSE_FIELDS[1], asStringListSettingValue1?.marshaller())
@@ -244,12 +249,14 @@ data class TestSetting(
         companion object {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                     ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forInlineFragment("__typename", "__typename", listOf("StringListSettingValue"))
+                    ResponseField.forInlineFragment("__typename", "__typename",
+                            listOf("StringListSettingValue"))
                     )
 
             operator fun invoke(reader: ResponseReader): Value1 {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val asStringListSettingValue1 = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
+                val asStringListSettingValue1 = reader.readConditional(RESPONSE_FIELDS[1]) {
+                        conditionalType, reader ->
                     AsStringListSettingValue1(reader)
                 }
 

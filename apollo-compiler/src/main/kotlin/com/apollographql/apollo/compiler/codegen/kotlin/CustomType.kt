@@ -28,7 +28,7 @@ private fun enumConstantTypeSpec(schemaType: String, customType: String): TypeSp
           .build()
       )
       .addFunction(FunSpec.builder("javaType")
-          .returns(Class::class.asClassName().parameterizedBy(WildcardTypeName.STAR))
+          .returns(Class::class.asClassName().parameterizedBy(STAR))
           .addModifiers(KModifier.OVERRIDE)
           .addStatement("return %L::class.java", customType)
           .build()

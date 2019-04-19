@@ -18,18 +18,18 @@ import kotlin.Suppress
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param name The name of the character
-     */
     data class R2(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -54,13 +54,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param id The ID of the character
-     * @param name The name of the character
-     */
     data class Luke(
         val __typename: String,
+        /**
+         * The ID of the character
+         */
         val id: String,
+        /**
+         * The name of the character
+         */
         val name: String
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -78,7 +80,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
             operator fun invoke(reader: ResponseReader): Luke {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as
+                        ResponseField.CustomTypeField)
                 val name = reader.readString(RESPONSE_FIELDS[2])
                 return Luke(
                     __typename = __typename,
@@ -120,22 +123,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query TestQuery {
-                |  r2: hero {
-                |    __typename
-                |    name
-                |  }
-                |  luke: hero(episode: EMPIRE) {
-                |    __typename
-                |    id
-                |    name
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "922160ff4bcf150d3b4a84e8b4d218dde7ff83f6a98145fc9d5237b54eb89e6d"
+                "c4890d84f04de970692ee9da3521a903297dea7e613ece3ff1caac59f4016191"
 
         val QUERY_DOCUMENT: String = """
                 |query TestQuery {

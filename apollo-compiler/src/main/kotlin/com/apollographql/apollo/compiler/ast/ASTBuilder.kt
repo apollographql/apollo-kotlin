@@ -4,6 +4,7 @@ import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.codegen.kotlin.normalizeJsonValue
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.*
+import com.apollographql.apollo.compiler.sha256
 import com.apollographql.apollo.compiler.singularize
 
 fun CodeGenerationIR.toAST(
@@ -98,7 +99,7 @@ private fun Operation.asASTOperation(
   context: Context,
   operationClassName: String
 ): AST.OperationType {
-  val dataTypeRef = context.addObjectType(typeName = "Data", packageName = operationClassName) {
+  val dataTypeRef = context.addObjectType(typeName = "Data") {
     AST.ObjectType(
       className = "Data",
       schemaName = "Data",
@@ -109,9 +110,8 @@ private fun Operation.asASTOperation(
   return AST.OperationType(
     name = operationClassName,
     type = astOperationType,
-    definition = source,
-    operationId = operationId,
-    queryDocument = sourceWithFragments,
+    operationId = (sourceWithFragments ?: "").filter { it != '\n' }.sha256(),
+    queryDocument = sourceWithFragments!!,
     variables = AST.InputType(
       name = "Variables",
       description = "",
@@ -284,7 +284,7 @@ private fun inlineObjectFields(
       deprecationReason = "",
       arguments = emptyMap(),
       conditions = inlineFragment.possibleTypes?.map { AST.ObjectType.Field.Condition.Type(it) }
-        ?: inlineFragment.typeCondition.let { listOf(AST.ObjectType.Field.Condition.Type(it)) }
+        ?: listOf(AST.ObjectType.Field.Condition.Type(inlineFragment.typeCondition))
     )
   }
 }
@@ -370,7 +370,7 @@ private fun resolveFieldType(
         )
         customTypeMap.containsKey(graphQLType.removeSuffix("!")) -> AST.FieldType.Scalar.Custom(
           schemaType = graphQLType.removeSuffix("!"),
-          mappedType = customTypeMap[graphQLType.removeSuffix("!")]!!,
+          mappedType = customTypeMap.getValue(graphQLType.removeSuffix("!")),
           customEnumConst = graphQLType.removeSuffix("!").toUpperCase().escapeKotlinReservedWord(),
           customEnumType = AST.TypeRef(
             name = "CustomType",

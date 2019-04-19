@@ -18,11 +18,11 @@ import kotlin.Suppress
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
     data class Hero(val __typename: String, val fragments: Fragments) {
@@ -39,8 +39,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
             operator fun invoke(reader: ResponseReader): Hero {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-                    val heroDetails = if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) HeroDetails(reader) else null
+                val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType,
+                        reader ->
+                    val heroDetails = if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType))
+                            HeroDetails(reader) else null
                     Fragments(
                         heroDetails = heroDetails!!
                     )
@@ -83,17 +85,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query TestQuery {
-                |  hero {
-                |    __typename
-                |    ...HeroDetails
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "04159f026f56177a5ffd90a08c365ebdae5d4775175c48f17bc9d82003e74b84"
+                "a53c3da666f4e7071e484e823ae0bf108000fc520ab154443da70fbd7716ab5f"
 
         val QUERY_DOCUMENT: String = """
                 |query TestQuery {

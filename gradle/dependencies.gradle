@@ -57,5 +57,5 @@ ext.dep = [
     espressoIdlingResource  : "com.android.support.test.espresso:espresso-idling-resource:$versions.espressoIdlingResourceVersion",
     bintrayGradlePlugin     : "com.jfrog.bintray.gradle:gradle-bintray-plugin:$versions.bintray",
     gradleErrorpronePlugin  : "net.ltgt.gradle:gradle-errorprone-plugin:0.0.12",
-    errorProneCore          : "com.google.errorprone:error_prone_core:2.1.1"
+    errorProneCore          : "com.google.errorprone:error_prone_core:2.1.1",
 ]

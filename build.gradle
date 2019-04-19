@@ -31,6 +31,7 @@ subprojects {
     maven { url "https://plugins.gradle.org/m2/" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     google()
+    maven { url 'https://jitpack.io' }
   }
 
   apply plugin: "net.ltgt.errorprone"

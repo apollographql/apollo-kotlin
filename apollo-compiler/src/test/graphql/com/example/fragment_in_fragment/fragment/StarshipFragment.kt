@@ -11,15 +11,17 @@ import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
 
-/**
- * @param id The ID of an object
- * @param name The name of this starship. The common name, such as "Death Star".
- */
 @Generated("Apollo GraphQL")
 @Suppress("NAME_SHADOWING", "LocalVariableName")
 data class StarshipFragment(
     val __typename: String,
+    /**
+     * The ID of an object
+     */
     val id: String,
+    /**
+     * The name of this starship. The common name, such as "Death Star".
+     */
     val name: String?,
     val pilotConnection: PilotConnection?
 ) : GraphqlFragment {
@@ -60,7 +62,8 @@ data class StarshipFragment(
 
         operator fun invoke(reader: ResponseReader): StarshipFragment {
             val __typename = reader.readString(RESPONSE_FIELDS[0])
-            val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+            val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as
+                    ResponseField.CustomTypeField)
             val name = reader.readString(RESPONSE_FIELDS[2])
             val pilotConnection = reader.readObject<PilotConnection>(RESPONSE_FIELDS[3]) { reader ->
                 PilotConnection(reader)
@@ -89,8 +92,10 @@ data class StarshipFragment(
 
             operator fun invoke(reader: ResponseReader): Node {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-                    val pilotFragment = if (PilotFragment.POSSIBLE_TYPES.contains(conditionalType)) PilotFragment(reader) else null
+                val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType,
+                        reader ->
+                    val pilotFragment = if (PilotFragment.POSSIBLE_TYPES.contains(conditionalType))
+                            PilotFragment(reader) else null
                     Fragments(
                         pilotFragment = pilotFragment!!
                     )
@@ -110,11 +115,11 @@ data class StarshipFragment(
         }
     }
 
-    /**
-     * @param node The item at the end of the edge
-     */
     data class Edge(
         val __typename: String,
+        /**
+         * The item at the end of the edge
+         */
         val node: Node?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -142,11 +147,11 @@ data class StarshipFragment(
         }
     }
 
-    /**
-     * @param edges A list of edges.
-     */
     data class PilotConnection(
         val __typename: String,
+        /**
+         * A list of edges.
+         */
         val edges: List<Edge?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {

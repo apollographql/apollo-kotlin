@@ -22,9 +22,11 @@ import kotlin.jvm.Transient
 
 @Generated("Apollo GraphQL")
 @Suppress("NAME_SHADOWING", "LocalVariableName")
-data class TestMutation(val input: TestInputType) : Mutation<TestMutation.Data, TestMutation.Data, Operation.Variables> {
+data class TestMutation(val input: TestInputType) : Mutation<TestMutation.Data, TestMutation.Data,
+        Operation.Variables> {
     @Transient
-    private val variables: Operation.Variables = object : Operation.Variables() {
+    private val variables: com.apollographql.apollo.api.Operation.Variables = object :
+            com.apollographql.apollo.api.Operation.Variables() {
         override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
             this["input"] = input
         }
@@ -39,11 +41,34 @@ data class TestMutation(val input: TestInputType) : Mutation<TestMutation.Data, 
 
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestMutation.Data): TestMutation.Data = data
-    override fun variables(): Operation.Variables = variables
+    override fun wrapData(data: Data): Data = data
+    override fun variables(): com.apollographql.apollo.api.Operation.Variables = variables
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestMutation.Data> = ResponseFieldMapper {
-        TestMutation.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
+    }
+
+    data class Operation(val __typename: String, val name: String) {
+        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+            it.writeString(RESPONSE_FIELDS[0], __typename)
+            it.writeString(RESPONSE_FIELDS[1], name)
+        }
+
+        companion object {
+            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+                    ResponseField.forString("__typename", "__typename", null, false, null),
+                    ResponseField.forString("name", "name", null, false, null)
+                    )
+
+            operator fun invoke(reader: ResponseReader): Operation {
+                val __typename = reader.readString(RESPONSE_FIELDS[0])
+                val name = reader.readString(RESPONSE_FIELDS[1])
+                return Operation(
+                    __typename = __typename,
+                    name = name
+                )
+            }
+        }
     }
 
     data class Data(
@@ -96,8 +121,9 @@ data class TestMutation(val input: TestInputType) : Mutation<TestMutation.Data, 
         val try_: String?,
         val void_: String?,
         val volatile_: String?,
-        val while_: String?
-    ) : Operation.Data {
+        val while_: String?,
+        val operation: Operation?
+    ) : com.apollographql.apollo.api.Operation.Data {
         override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], abstract_)
             it.writeString(RESPONSE_FIELDS[1], assert_)
@@ -149,6 +175,7 @@ data class TestMutation(val input: TestInputType) : Mutation<TestMutation.Data, 
             it.writeString(RESPONSE_FIELDS[47], void_)
             it.writeString(RESPONSE_FIELDS[48], volatile_)
             it.writeString(RESPONSE_FIELDS[49], while_)
+            it.writeObject(RESPONSE_FIELDS[50], operation?.marshaller())
         }
 
         companion object {
@@ -202,7 +229,8 @@ data class TestMutation(val input: TestInputType) : Mutation<TestMutation.Data, 
                     ResponseField.forString("try", "try", null, true, null),
                     ResponseField.forString("void", "void", null, true, null),
                     ResponseField.forString("volatile", "volatile", null, true, null),
-                    ResponseField.forString("while", "while", null, true, null)
+                    ResponseField.forString("while", "while", null, true, null),
+                    ResponseField.forObject("operation", "operation", null, true, null)
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
@@ -256,6 +284,10 @@ data class TestMutation(val input: TestInputType) : Mutation<TestMutation.Data, 
                 val void_ = reader.readString(RESPONSE_FIELDS[47])
                 val volatile_ = reader.readString(RESPONSE_FIELDS[48])
                 val while_ = reader.readString(RESPONSE_FIELDS[49])
+                val operation = reader.readObject<Operation>(RESPONSE_FIELDS[50]) { reader ->
+                    Operation(reader)
+                }
+
                 return Data(
                     abstract_ = abstract_,
                     assert_ = assert_,
@@ -306,17 +338,16 @@ data class TestMutation(val input: TestInputType) : Mutation<TestMutation.Data, 
                     try_ = try_,
                     void_ = void_,
                     volatile_ = volatile_,
-                    while_ = while_
+                    while_ = while_,
+                    operation = operation
                 )
             }
         }
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = ""
-
         const val OPERATION_ID: String =
-                "7824113c9abde76f3c8ffbee5d7065129bc5c47757f34dd5959d5cd16464d014"
+                "413697ef5917f00cd5c2ff0389d350a39a0e707d4629c7721539204c6ce7efa4"
 
         val QUERY_DOCUMENT: String = "query TestMutation {}"
 

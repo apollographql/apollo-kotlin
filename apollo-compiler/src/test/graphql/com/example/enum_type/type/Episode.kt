@@ -31,5 +31,6 @@ enum class Episode(val rawValue: String) {
 
     companion object {
         @JvmStatic
-        fun safeValueOf(rawValue: String): Episode = values().find { it.rawValue == rawValue } ?: UNKNOWN__}
+        fun safeValueOf(rawValue: String): Episode = values().find { it.rawValue == rawValue } ?:
+                UNKNOWN__}
 }

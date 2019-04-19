@@ -16,9 +16,8 @@ private val JAVA_RESERVED_WORDS = arrayOf(
 )
 
 private val KOTLIN_RESERVED_WORDS = arrayOf(
-    "package", "as", "typealias", "class", "this", "super", "val", "var", "fun", "for", "null", "true", "false", "is",
-    "in", "throw", "return", "break", "continue", "object", "if", "try", "else", "while", "do", "when", "interface",
-    "typeof"
+    "as", "break", "class", "continue", "do", "else", "false", "for", "fun", "if", "in", "interface", "is", "null", "object", "package",
+    "return", "super", "this", "throw", "true", "try", "typealias", "typeof", "val", "var", "when", "while"
 )
 
 fun String.escapeJavaReservedWord() = if (JAVA_RESERVED_WORDS.contains(this)) "${this}_" else this
@@ -409,7 +408,9 @@ fun TypeName.isList() =
     (this is ParameterizedTypeName && rawType == ClassNames.LIST)
 
 fun TypeName.isEnum(context: CodeGenerationContext) =
-    ((this is ClassName) && context.typeDeclarations.count { it.kind == "EnumType" && it.name == simpleName() } > 0)
+    ((this is ClassName) && context.typeDeclarations.count {
+      it.kind == "EnumType" && it.name.capitalize() == simpleName()
+    } > 0)
 
 fun String.isCustomScalarType(context: CodeGenerationContext): Boolean {
   val normalizedType = normalizeGraphQlType(this)
@@ -510,10 +511,10 @@ fun Number.castTo(type: TypeName): Number {
 }
 
 fun String.sha256(): String {
-    val bytes = toByteArray(charset = StandardCharsets.UTF_8)
-    val md = MessageDigest.getInstance("SHA-256")
-    val digest = md.digest(bytes)
-    return digest.fold("") { str, it -> str + "%02x".format(it) }
+  val bytes = toByteArray(charset = StandardCharsets.UTF_8)
+  val md = MessageDigest.getInstance("SHA-256")
+  val digest = md.digest(bytes)
+  return digest.fold("") { str, it -> str + "%02x".format(it) }
 }
 
 internal inline fun <T> T.applyIf(condition: Boolean, block: T.() -> Unit): T = if (condition) apply(block) else this

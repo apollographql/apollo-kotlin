@@ -55,12 +55,12 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
   private fun generateKotlinExpectedClasses() {
     GraphQLKompiler().write(
         GraphQLKompiler.Arguments(
-        irFile = args.irFile,
-        outputDir = args.outputDir,
-        customTypeMap = args.customTypeMap,
-        outputPackageName = args.outputPackageName,
-        useSemanticNaming = args.useSemanticNaming
-    ))
+            irFile = args.irFile,
+            outputDir = args.outputDir,
+            customTypeMap = args.customTypeMap,
+            outputPackageName = args.outputPackageName,
+            useSemanticNaming = args.useSemanticNaming
+        ))
 
     Files.walkFileTree(args.irFile.parentFile.toPath(), object : SimpleFileVisitor<Path>() {
       override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
@@ -76,8 +76,6 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
           }
 
           assertThat(actual.readText()).isEqualTo(expected.readText())
-          sourceFileObjects.add(JavaFileObjects.forSourceLines("com.example.$pkgName.$actualClassName",
-              actual.readLines()))
         }
         return FileVisitResult.CONTINUE
       }
@@ -136,7 +134,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
             }
             val args = GraphQLCompiler.Arguments(
                 irFile = File(it, "TestOperation.json"),
-                outputDir = GraphQLCompiler.OUTPUT_DIRECTORY.fold(File("build"), ::File),
+                outputDir = GraphQLCompiler.OUTPUT_DIRECTORY.plus("sources").fold(File("build"), ::File),
                 customTypeMap = customTypeMap,
                 nullableValueType = nullableValueType,
                 useSemanticNaming = useSemanticNaming,

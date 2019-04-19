@@ -20,18 +20,18 @@ import kotlin.collections.List
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param name The name of the character
-     */
     data class Node(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -56,11 +56,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param node The character represented by this friendship edge
-     */
     data class Edge(
         val __typename: String,
+        /**
+         * The character represented by this friendship edge
+         */
         val node: Node?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -88,13 +88,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param totalCount The total number of friends
-     * @param edges The edges for each of the character's friends.
-     */
     data class FriendsConnection(
         val __typename: String,
+        /**
+         * The total number of friends
+         */
         val totalCount: Int?,
+        /**
+         * The edges for each of the character's friends.
+         */
         val edges: List<Edge?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -132,13 +134,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param name The name of the character
-     * @param friendsConnection The friends of the character exposed as a connection with edges
-     */
     data class R2(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String,
+        /**
+         * The friends of the character exposed as a connection with edges
+         */
         val friendsConnection: FriendsConnection
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -151,13 +155,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                     ResponseField.forString("__typename", "__typename", null, false, null),
                     ResponseField.forString("name", "name", null, false, null),
-                    ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
+                    ResponseField.forObject("friendsConnection", "friendsConnection", null, false,
+                            null)
                     )
 
             operator fun invoke(reader: ResponseReader): R2 {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
-                val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+                val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) {
+                        reader ->
                     FriendsConnection(reader)
                 }
 
@@ -170,11 +176,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param name The name of the character
-     */
     data class Node1(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -199,11 +205,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param node The character represented by this friendship edge
-     */
     data class Edge1(
         val __typename: String,
+        /**
+         * The character represented by this friendship edge
+         */
         val node: Node1?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -231,13 +237,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param totalCount The total number of friends
-     * @param edges The edges for each of the character's friends.
-     */
     data class FriendsConnection1(
         val __typename: String,
+        /**
+         * The total number of friends
+         */
         val totalCount: Int?,
+        /**
+         * The edges for each of the character's friends.
+         */
         val edges: List<Edge1?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -275,15 +283,19 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param id The ID of the character
-     * @param name The name of the character
-     * @param friendsConnection The friends of the character exposed as a connection with edges
-     */
     data class Luke(
         val __typename: String,
+        /**
+         * The ID of the character
+         */
         val id: String,
+        /**
+         * The name of the character
+         */
         val name: String,
+        /**
+         * The friends of the character exposed as a connection with edges
+         */
         val friendsConnection: FriendsConnection1
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -298,14 +310,17 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                     ResponseField.forString("__typename", "__typename", null, false, null),
                     ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
                     ResponseField.forString("name", "name", null, false, null),
-                    ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
+                    ResponseField.forObject("friendsConnection", "friendsConnection", null, false,
+                            null)
                     )
 
             operator fun invoke(reader: ResponseReader): Luke {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as
+                        ResponseField.CustomTypeField)
                 val name = reader.readString(RESPONSE_FIELDS[2])
-                val friendsConnection = reader.readObject<FriendsConnection1>(RESPONSE_FIELDS[3]) { reader ->
+                val friendsConnection = reader.readObject<FriendsConnection1>(RESPONSE_FIELDS[3]) {
+                        reader ->
                     FriendsConnection1(reader)
                 }
 
@@ -350,44 +365,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query TestQuery {
-                |  r2: hero {
-                |    __typename
-                |    name
-                |    friendsConnection {
-                |      __typename
-                |      totalCount
-                |      edges {
-                |        __typename
-                |        node {
-                |          __typename
-                |          name
-                |        }
-                |      }
-                |    }
-                |  }
-                |  luke: hero(episode: EMPIRE) {
-                |    __typename
-                |    id
-                |    name
-                |    friendsConnection {
-                |      __typename
-                |      totalCount
-                |      edges {
-                |        __typename
-                |        node {
-                |          __typename
-                |          name
-                |        }
-                |      }
-                |    }
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "e8d7fac5e934be8f96520ce424ad3d9a447507405f3e43733873897b8ec27ec6"
+                "5ee989fce971d5749e601f42de75f04d03083ce81fa7016d192251d7e9c29612"
 
         val QUERY_DOCUMENT: String = """
                 |query TestQuery {

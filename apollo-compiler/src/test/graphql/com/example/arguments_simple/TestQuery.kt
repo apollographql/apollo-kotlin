@@ -24,7 +24,8 @@ import kotlin.jvm.Transient
 
 @Generated("Apollo GraphQL")
 @Suppress("NAME_SHADOWING", "LocalVariableName")
-data class TestQuery(val episode: Input<Episode>, val includeName: Boolean) : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
+data class TestQuery(val episode: Input<Episode>, val includeName: Boolean) : Query<TestQuery.Data,
+        TestQuery.Data, Operation.Variables> {
     @Transient
     private val variables: Operation.Variables = object : Operation.Variables() {
         override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -43,18 +44,18 @@ data class TestQuery(val episode: Input<Episode>, val includeName: Boolean) : Qu
 
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = variables
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param name The name of the character
-     */
     data class Hero(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -65,7 +66,8 @@ data class TestQuery(val episode: Input<Episode>, val includeName: Boolean) : Qu
         companion object {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                     ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forString("name", "name", null, true, listOf(ResponseField.Condition.booleanCondition("IncludeName", false)))
+                    ResponseField.forString("name", "name", null, true,
+                            listOf(ResponseField.Condition.booleanCondition("IncludeName", false)))
                     )
 
             operator fun invoke(reader: ResponseReader): Hero {
@@ -105,17 +107,8 @@ data class TestQuery(val episode: Input<Episode>, val includeName: Boolean) : Qu
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query TestQuery(${'$'}episode: Episode, ${'$'}IncludeName: Boolean!) {
-                |  hero(episode: ${'$'}episode) {
-                |    __typename
-                |    name @include(if: ${'$'}IncludeName)
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "8e8ef66a6e97a76a5579df7768bd4d2ac09df975bcadb51fc040ac98eb5e4e0f"
+                "418ccff4835004e308b902b0231bebd109b6668198cf55d241556a9988bb4f5c"
 
         val QUERY_DOCUMENT: String = """
                 |query TestQuery(${'$'}episode: Episode, ${'$'}IncludeName: Boolean!) {

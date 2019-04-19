@@ -24,7 +24,8 @@ import kotlin.jvm.Transient
 
 @Generated("Apollo GraphQL")
 @Suppress("NAME_SHADOWING", "LocalVariableName")
-data class TestQuery(val ep: Episode, val review: ReviewInput) : Mutation<TestQuery.Data, TestQuery.Data, Operation.Variables> {
+data class TestQuery(val ep: Episode, val review: ReviewInput) : Mutation<TestQuery.Data,
+        TestQuery.Data, Operation.Variables> {
     @Transient
     private val variables: Operation.Variables = object : Operation.Variables() {
         override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -43,20 +44,22 @@ data class TestQuery(val ep: Episode, val review: ReviewInput) : Mutation<TestQu
 
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = variables
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param stars The number of stars this review gave, 1-5
-     * @param commentary Comment about the movie
-     */
     data class CreateReview(
         val __typename: String,
+        /**
+         * The number of stars this review gave, 1-5
+         */
         val stars: Int,
+        /**
+         * Comment about the movie
+         */
         val commentary: String?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -114,18 +117,8 @@ data class TestQuery(val ep: Episode, val review: ReviewInput) : Mutation<TestQu
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |mutation TestQuery(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
-                |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
-                |    __typename
-                |    stars
-                |    commentary
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "557e9010a4f6274a5409cc73de928653c878c931099afa98357c530df729a448"
+                "bee70e240139955f4daaa717766afe0aa3052a987bbca371483628eafcd84efc"
 
         val QUERY_DOCUMENT: String = """
                 |mutation TestQuery(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {

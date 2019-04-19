@@ -18,20 +18,22 @@ import kotlin.Suppress
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param name What this human calls themselves
-     * @param height Height in the preferred unit, default is meters
-     */
     data class AsHuman(
         val __typename: String,
+        /**
+         * What this human calls themselves
+         */
         val name: String,
+        /**
+         * Height in the preferred unit, default is meters
+         */
         val height: Double?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -60,13 +62,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param name What others call this droid
-     * @param primaryFunction This droid's primary function
-     */
     data class AsDroid(
         val __typename: String,
+        /**
+         * What others call this droid
+         */
         val name: String,
+        /**
+         * This droid's primary function
+         */
         val primaryFunction: String?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -95,11 +99,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param name The name of the character
-     */
     data class Hero(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String,
         val asHuman: AsHuman?,
         val asDroid: AsDroid?
@@ -122,11 +126,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             operator fun invoke(reader: ResponseReader): Hero {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
-                val asHuman = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
+                val asHuman = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType,
+                        reader ->
                     AsHuman(reader)
                 }
 
-                val asDroid = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType, reader ->
+                val asDroid = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType,
+                        reader ->
                     AsDroid(reader)
                 }
 
@@ -163,23 +169,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query TestQuery {
-                |  hero {
-                |    __typename
-                |    name
-                |    ... on Human {
-                |      height
-                |    }
-                |    ... on Droid {
-                |      primaryFunction
-                |    }
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "212ff92146147cf94d8e05687d2660c3ead0b054e92d86a52e24eb15880c6dfd"
+                "b3d6f01547404e80d05a9f4fba26ab482a559d03c2ff5ec832234bb045a6d5d4"
 
         val QUERY_DOCUMENT: String = """
                 |query TestQuery {

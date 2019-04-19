@@ -19,11 +19,11 @@ import kotlin.collections.List
 class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: AllStarships.Data): AllStarships.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<AllStarships.Data> = ResponseFieldMapper {
-        AllStarships.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
     data class Node(val __typename: String, val fragments: Fragments) {
@@ -40,8 +40,11 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
 
             operator fun invoke(reader: ResponseReader): Node {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-                    val starshipFragment = if (StarshipFragment.POSSIBLE_TYPES.contains(conditionalType)) StarshipFragment(reader) else null
+                val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType,
+                        reader ->
+                    val starshipFragment = if
+                            (StarshipFragment.POSSIBLE_TYPES.contains(conditionalType))
+                            StarshipFragment(reader) else null
                     Fragments(
                         starshipFragment = starshipFragment!!
                     )
@@ -61,11 +64,11 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
         }
     }
 
-    /**
-     * @param node The item at the end of the edge
-     */
     data class Edge(
         val __typename: String,
+        /**
+         * The item at the end of the edge
+         */
         val node: Node?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -93,11 +96,11 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
         }
     }
 
-    /**
-     * @param edges A list of edges.
-     */
     data class AllStarship(
         val __typename: String,
+        /**
+         * A list of edges.
+         */
         val edges: List<Edge?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -155,23 +158,8 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query AllStarships {
-                |  allStarships(first: 7) {
-                |    __typename
-                |    edges {
-                |      __typename
-                |      node {
-                |        __typename
-                |        ...starshipFragment
-                |      }
-                |    }
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "f3b63150118cfccd52140c4ca6aec578235d7ea99c5b905f14138c49f7f5fc7d"
+                "6c00a8f52589439b636c7ae6e7d58dd405e41a856291dd869bcf9cd8aed85db2"
 
         val QUERY_DOCUMENT: String = """
                 |query AllStarships {

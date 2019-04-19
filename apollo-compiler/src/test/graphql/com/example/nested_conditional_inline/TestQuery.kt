@@ -25,7 +25,8 @@ import kotlin.jvm.Transient
 
 @Generated("Apollo GraphQL")
 @Suppress("NAME_SHADOWING", "LocalVariableName")
-data class TestQuery(val episode: Input<Episode>) : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
+data class TestQuery(val episode: Input<Episode>) : Query<TestQuery.Data, TestQuery.Data,
+        Operation.Variables> {
     @Transient
     private val variables: Operation.Variables = object : Operation.Variables() {
         override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -42,20 +43,22 @@ data class TestQuery(val episode: Input<Episode>) : Query<TestQuery.Data, TestQu
 
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = variables
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param name What this human calls themselves
-     * @param height Height in the preferred unit, default is meters
-     */
     data class AsHuman1(
         val __typename: String,
+        /**
+         * What this human calls themselves
+         */
         val name: String,
+        /**
+         * Height in the preferred unit, default is meters
+         */
         val height: Double?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -85,11 +88,11 @@ data class TestQuery(val episode: Input<Episode>) : Query<TestQuery.Data, TestQu
         }
     }
 
-    /**
-     * @param name The name of the character
-     */
     data class Friend(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String,
         val asHuman1: AsHuman1?
     ) {
@@ -109,7 +112,8 @@ data class TestQuery(val episode: Input<Episode>) : Query<TestQuery.Data, TestQu
             operator fun invoke(reader: ResponseReader): Friend {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
-                val asHuman1 = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
+                val asHuman1 = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType,
+                        reader ->
                     AsHuman1(reader)
                 }
 
@@ -122,13 +126,15 @@ data class TestQuery(val episode: Input<Episode>) : Query<TestQuery.Data, TestQu
         }
     }
 
-    /**
-     * @param name What this human calls themselves
-     * @param friends This human's friends, or an empty list if they have none
-     */
     data class AsHuman(
         val __typename: String,
+        /**
+         * What this human calls themselves
+         */
         val name: String,
+        /**
+         * This human's friends, or an empty list if they have none
+         */
         val friends: List<Friend?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -166,13 +172,15 @@ data class TestQuery(val episode: Input<Episode>) : Query<TestQuery.Data, TestQu
         }
     }
 
-    /**
-     * @param name What this human calls themselves
-     * @param height Height in the preferred unit, default is meters
-     */
     data class AsHuman12(
         val __typename: String,
+        /**
+         * What this human calls themselves
+         */
         val name: String,
+        /**
+         * Height in the preferred unit, default is meters
+         */
         val height: Double?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -202,11 +210,11 @@ data class TestQuery(val episode: Input<Episode>) : Query<TestQuery.Data, TestQu
         }
     }
 
-    /**
-     * @param name The name of the character
-     */
     data class Friend1(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String,
         val asHuman12: AsHuman12?
     ) {
@@ -226,7 +234,8 @@ data class TestQuery(val episode: Input<Episode>) : Query<TestQuery.Data, TestQu
             operator fun invoke(reader: ResponseReader): Friend1 {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
-                val asHuman12 = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
+                val asHuman12 = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType,
+                        reader ->
                     AsHuman12(reader)
                 }
 
@@ -239,13 +248,15 @@ data class TestQuery(val episode: Input<Episode>) : Query<TestQuery.Data, TestQu
         }
     }
 
-    /**
-     * @param name What others call this droid
-     * @param friends This droid's friends, or an empty list if they have none
-     */
     data class AsDroid(
         val __typename: String,
+        /**
+         * What others call this droid
+         */
         val name: String,
+        /**
+         * This droid's friends, or an empty list if they have none
+         */
         val friends: List<Friend1?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -283,11 +294,11 @@ data class TestQuery(val episode: Input<Episode>) : Query<TestQuery.Data, TestQu
         }
     }
 
-    /**
-     * @param name The name of the character
-     */
     data class Hero(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String,
         val asHuman: AsHuman?,
         val asDroid: AsDroid?
@@ -310,11 +321,13 @@ data class TestQuery(val episode: Input<Episode>) : Query<TestQuery.Data, TestQu
             operator fun invoke(reader: ResponseReader): Hero {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
-                val asHuman = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
+                val asHuman = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType,
+                        reader ->
                     AsHuman(reader)
                 }
 
-                val asDroid = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType, reader ->
+                val asDroid = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType,
+                        reader ->
                     AsDroid(reader)
                 }
 
@@ -354,35 +367,8 @@ data class TestQuery(val episode: Input<Episode>) : Query<TestQuery.Data, TestQu
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query TestQuery(${'$'}episode: Episode) {
-                |  hero(episode: ${'$'}episode) {
-                |    __typename
-                |    name
-                |    ... on Human {
-                |      friends {
-                |        __typename
-                |        name
-                |        ... on Human {
-                |          height(unit: FOOT)
-                |        }
-                |      }
-                |    }
-                |    ... on Droid {
-                |      friends {
-                |        __typename
-                |        name
-                |        ... on Human {
-                |          height(unit: METER)
-                |        }
-                |      }
-                |    }
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "071e064b3415e8b92bed3befa46bf04501c7194cde77ede0ebf50429624796cc"
+                "889b355e84859a8d921df39c9c91993790199dc7c93868ed8a6739ac577579d8"
 
         val QUERY_DOCUMENT: String = """
                 |query TestQuery(${'$'}episode: Episode) {

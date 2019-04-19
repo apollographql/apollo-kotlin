@@ -8,6 +8,7 @@ import com.apollographql.apollo.compiler.ir.ScalarType
 import com.apollographql.apollo.compiler.ir.TypeDeclaration
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.asClassName
 import com.squareup.moshi.Moshi
 import java.io.File
 
@@ -50,9 +51,10 @@ class GraphQLKompiler {
 
     if (ast.operations.isNotEmpty()) {
       ast.operations.forEach { operation ->
-        KotlinCodeGen.operationTypeSpec(operation).writeTo(
+        val targetPackage = args.outputPackageName ?: operation.filePath.formatPackageName()
+        KotlinCodeGen.operationTypeSpec(operationType = operation, targetPackage = targetPackage).writeTo(
             outputDir = args.outputDir,
-            packageName = args.outputPackageName ?: operation.filePath.formatPackageName()
+            packageName = targetPackage
         )
       }
     }
@@ -66,7 +68,7 @@ class GraphQLKompiler {
   }
 
   private fun Map<String, String>.supportedTypeMap(typeDeclarations: List<TypeDeclaration>): Map<String, String> {
-    val idScalarTypeMap = ScalarType.ID.name to (this[ScalarType.ID.name] ?: String::class.simpleName!!)
+    val idScalarTypeMap = ScalarType.ID.name to (this[ScalarType.ID.name] ?: String::class.asClassName().toString())
     return typeDeclarations.filter { it.kind == TypeDeclaration.KIND_SCALAR_TYPE }
         .associate { it.name to (this[it.name] ?: ClassNames.OBJECT.toString()) }
         .plus(idScalarTypeMap)

@@ -23,7 +23,8 @@ import kotlin.jvm.Transient
 
 @Generated("Apollo GraphQL")
 @Suppress("NAME_SHADOWING", "LocalVariableName")
-data class TestQuery(val includeName: Boolean, val skipFriends: Boolean) : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
+data class TestQuery(val includeName: Boolean, val skipFriends: Boolean) : Query<TestQuery.Data,
+        TestQuery.Data, Operation.Variables> {
     @Transient
     private val variables: Operation.Variables = object : Operation.Variables() {
         override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -42,18 +43,18 @@ data class TestQuery(val includeName: Boolean, val skipFriends: Boolean) : Query
 
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = variables
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param totalCount The total number of friends
-     */
     data class FriendsConnection(
         val __typename: String,
+        /**
+         * The total number of friends
+         */
         val totalCount: Int?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -78,13 +79,15 @@ data class TestQuery(val includeName: Boolean, val skipFriends: Boolean) : Query
         }
     }
 
-    /**
-     * @param name The name of the character
-     * @param friendsConnection The friends of the character exposed as a connection with edges
-     */
     data class Hero(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String?,
+        /**
+         * The friends of the character exposed as a connection with edges
+         */
         val friendsConnection: FriendsConnection?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -96,14 +99,17 @@ data class TestQuery(val includeName: Boolean, val skipFriends: Boolean) : Query
         companion object {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                     ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forString("name", "name", null, true, listOf(ResponseField.Condition.booleanCondition("includeName", false))),
-                    ResponseField.forObject("friendsConnection", "friendsConnection", null, true, listOf(ResponseField.Condition.booleanCondition("skipFriends", true)))
+                    ResponseField.forString("name", "name", null, true,
+                            listOf(ResponseField.Condition.booleanCondition("includeName", false))),
+                    ResponseField.forObject("friendsConnection", "friendsConnection", null, true,
+                            listOf(ResponseField.Condition.booleanCondition("skipFriends", true)))
                     )
 
             operator fun invoke(reader: ResponseReader): Hero {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
-                val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+                val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) {
+                        reader ->
                     FriendsConnection(reader)
                 }
 
@@ -139,21 +145,8 @@ data class TestQuery(val includeName: Boolean, val skipFriends: Boolean) : Query
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query TestQuery(${'$'}includeName: Boolean!, ${'$'}skipFriends: Boolean!) {
-                |  hero {
-                |    __typename
-                |    name @include(if: ${'$'}includeName)
-                |    friendsConnection @skip(if: ${'$'}skipFriends) {
-                |      __typename
-                |      totalCount
-                |    }
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "330f0fe4baea1b2e41c551ea45b413502c32080fc6581ed3756890896a897ae9"
+                "e442e7d1da90271c3ea02f2b50cdc9fb858fc830cce998243e0ce085595f3ec2"
 
         val QUERY_DOCUMENT: String = """
                 |query TestQuery(${'$'}includeName: Boolean!, ${'$'}skipFriends: Boolean!) {

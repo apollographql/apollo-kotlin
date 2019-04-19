@@ -25,7 +25,8 @@ import kotlin.jvm.Transient
 
 @Generated("Apollo GraphQL")
 @Suppress("NAME_SHADOWING", "LocalVariableName")
-data class TestQuery(val episode: Input<Episode>) : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
+data class TestQuery(val episode: Input<Episode>) : Query<TestQuery.Data, TestQuery.Data,
+        Operation.Variables> {
     @Transient
     private val variables: Operation.Variables = object : Operation.Variables() {
         override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -42,22 +43,26 @@ data class TestQuery(val episode: Input<Episode>) : Query<TestQuery.Data, TestQu
 
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = variables
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param name The name of the character
-     * @param deprecated Test deprecated field
-     * @param deprecatedBool Test deprecated field
-     */
     data class Hero(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String,
+        /**
+         * Test deprecated field
+         */
         @Deprecated(message = "For test purpose only") val deprecated: String,
+        /**
+         * Test deprecated field
+         */
         @Deprecated(message = "For test purpose only") val deprecatedBool: Boolean
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -116,19 +121,8 @@ data class TestQuery(val episode: Input<Episode>) : Query<TestQuery.Data, TestQu
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query TestQuery(${'$'}episode: Episode) {
-                |  hero(episode: ${'$'}episode) {
-                |    __typename
-                |    name
-                |    deprecated
-                |    deprecatedBool
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "d62c8a7f6b24719252b8516389ca97a605b57cdebbbc523f4644847c5bf4efed"
+                "786dfe7aa4320ca4657d7f1eb4e87284e942c640add42bd0e3fa07e8a9fb67b6"
 
         val QUERY_DOCUMENT: String = """
                 |query TestQuery(${'$'}episode: Episode) {

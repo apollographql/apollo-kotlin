@@ -21,18 +21,18 @@ import kotlin.collections.List
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param firstAppearsIn The movie this character first appears in
-     */
     data class Friend(
         val __typename: String,
+        /**
+         * The movie this character first appears in
+         */
         val firstAppearsIn: Episode
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -57,15 +57,19 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param name What this human calls themselves
-     * @param homePlanet The home planet of the human, or null if unknown
-     * @param friends This human's friends, or an empty list if they have none
-     */
     data class AsHuman1(
         val __typename: String,
+        /**
+         * What this human calls themselves
+         */
         val name: String,
+        /**
+         * The home planet of the human, or null if unknown
+         */
         val homePlanet: String?,
+        /**
+         * This human's friends, or an empty list if they have none
+         */
         val friends: List<Friend?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -107,13 +111,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param id The ID of the character
-     * @param deprecated Test deprecated field
-     */
     data class Friend1(
         val __typename: String,
+        /**
+         * The ID of the character
+         */
         val id: String,
+        /**
+         * Test deprecated field
+         */
         @Deprecated(message = "For test purpose only") val deprecated: String
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -131,7 +137,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
             operator fun invoke(reader: ResponseReader): Friend1 {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as
+                        ResponseField.CustomTypeField)
                 val deprecated = reader.readString(RESPONSE_FIELDS[2])
                 return Friend1(
                     __typename = __typename,
@@ -142,15 +149,19 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param name What others call this droid
-     * @param primaryFunction This droid's primary function
-     * @param friends This droid's friends, or an empty list if they have none
-     */
     data class AsDroid(
         val __typename: String,
+        /**
+         * What others call this droid
+         */
         val name: String,
+        /**
+         * This droid's primary function
+         */
         val primaryFunction: String?,
+        /**
+         * This droid's friends, or an empty list if they have none
+         */
         val friends: List<Friend1?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -192,11 +203,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param name The name of the character
-     */
     data class Friend12(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String,
         val asHuman1: AsHuman1?,
         val asDroid: AsDroid?
@@ -219,11 +230,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             operator fun invoke(reader: ResponseReader): Friend12 {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
-                val asHuman1 = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
+                val asHuman1 = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType,
+                        reader ->
                     AsHuman1(reader)
                 }
 
-                val asDroid = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType, reader ->
+                val asDroid = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType,
+                        reader ->
                     AsDroid(reader)
                 }
 
@@ -237,15 +250,19 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param id The ID of the character
-     * @param name The name of the character
-     * @param friends The friends of the character, or an empty list if they have none
-     */
     data class AsHuman(
         val __typename: String,
+        /**
+         * The ID of the character
+         */
         val id: String,
+        /**
+         * The name of the character
+         */
         val name: String,
+        /**
+         * The friends of the character, or an empty list if they have none
+         */
         val friends: List<Friend12?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -269,7 +286,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
             operator fun invoke(reader: ResponseReader): AsHuman {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as
+                        ResponseField.CustomTypeField)
                 val name = reader.readString(RESPONSE_FIELDS[2])
                 val friends = reader.readList<Friend12>(RESPONSE_FIELDS[3]) {
                     it.readObject<Friend12> { reader ->
@@ -287,11 +305,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param firstAppearsIn The movie this character first appears in
-     */
     data class Friend123(
         val __typename: String,
+        /**
+         * The movie this character first appears in
+         */
         val firstAppearsIn: Episode
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -316,15 +334,19 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param name What this human calls themselves
-     * @param homePlanet The home planet of the human, or null if unknown
-     * @param friends This human's friends, or an empty list if they have none
-     */
     data class AsHuman12(
         val __typename: String,
+        /**
+         * What this human calls themselves
+         */
         val name: String,
+        /**
+         * The home planet of the human, or null if unknown
+         */
         val homePlanet: String?,
+        /**
+         * This human's friends, or an empty list if they have none
+         */
         val friends: List<Friend123?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -366,13 +388,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param id The ID of the character
-     * @param deprecated Test deprecated field
-     */
     data class Friend1234(
         val __typename: String,
+        /**
+         * The ID of the character
+         */
         val id: String,
+        /**
+         * Test deprecated field
+         */
         @Deprecated(message = "For test purpose only") val deprecated: String
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -390,7 +414,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
             operator fun invoke(reader: ResponseReader): Friend1234 {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as
+                        ResponseField.CustomTypeField)
                 val deprecated = reader.readString(RESPONSE_FIELDS[2])
                 return Friend1234(
                     __typename = __typename,
@@ -401,15 +426,19 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param name What others call this droid
-     * @param primaryFunction This droid's primary function
-     * @param friends This droid's friends, or an empty list if they have none
-     */
     data class AsDroid12(
         val __typename: String,
+        /**
+         * What others call this droid
+         */
         val name: String,
+        /**
+         * This droid's primary function
+         */
         val primaryFunction: String?,
+        /**
+         * This droid's friends, or an empty list if they have none
+         */
         val friends: List<Friend1234?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -451,11 +480,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param name The name of the character
-     */
     data class Friend12345(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String,
         val asHuman12: AsHuman12?,
         val asDroid12: AsDroid12?
@@ -478,11 +507,13 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
             operator fun invoke(reader: ResponseReader): Friend12345 {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
-                val asHuman12 = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
+                val asHuman12 = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType,
+                        reader ->
                     AsHuman12(reader)
                 }
 
-                val asDroid12 = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType, reader ->
+                val asDroid12 = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType,
+                        reader ->
                     AsDroid12(reader)
                 }
 
@@ -496,15 +527,19 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param id The ID of the character
-     * @param name The name of the character
-     * @param friends The friends of the character, or an empty list if they have none
-     */
     data class AsDroid1(
         val __typename: String,
+        /**
+         * The ID of the character
+         */
         val id: String,
+        /**
+         * The name of the character
+         */
         val name: String,
+        /**
+         * The friends of the character, or an empty list if they have none
+         */
         val friends: List<Friend12345?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -528,7 +563,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
             operator fun invoke(reader: ResponseReader): AsDroid1 {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as
+                        ResponseField.CustomTypeField)
                 val name = reader.readString(RESPONSE_FIELDS[2])
                 val friends = reader.readList<Friend12345>(RESPONSE_FIELDS[3]) {
                     it.readObject<Friend12345> { reader ->
@@ -546,11 +582,11 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    /**
-     * @param name The name of the starship
-     */
     data class AsStarship(
         val __typename: String,
+        /**
+         * The name of the starship
+         */
         val name: String
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -598,15 +634,18 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
             operator fun invoke(reader: ResponseReader): Search {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val asHuman = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
+                val asHuman = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType,
+                        reader ->
                     AsHuman(reader)
                 }
 
-                val asDroid1 = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
+                val asDroid1 = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType,
+                        reader ->
                     AsDroid1(reader)
                 }
 
-                val asStarship = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType, reader ->
+                val asStarship = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType,
+                        reader ->
                     AsStarship(reader)
                 }
 
@@ -650,46 +689,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query TestQuery {
-                |  search(text: "test") {
-                |    __typename
-                |    ... on Character {
-                |      id
-                |      name
-                |      friends {
-                |        __typename
-                |        ... on Character {
-                |          name
-                |        }
-                |        ... on Human {
-                |          homePlanet
-                |          friends {
-                |            __typename
-                |            ... on Character {
-                |              firstAppearsIn
-                |            }
-                |          }
-                |        }
-                |        ... on Droid {
-                |          primaryFunction
-                |          friends {
-                |            __typename
-                |            id
-                |            deprecated
-                |          }
-                |        }
-                |      }
-                |    }
-                |    ... on Starship {
-                |      name
-                |    }
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "1c0af4394c45ee39ec1e3eba06044a9834637fdef3dcfde107b2c801a8b27fa9"
+                "8f2faf5f45edbcd0f65491d582a5a50f13cad39e3995dd5abe5ddb359d3cf066"
 
         val QUERY_DOCUMENT: String = """
                 |query TestQuery {

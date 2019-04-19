@@ -10,15 +10,17 @@ import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
 
-/**
- * @param name What this human calls themselves
- * @param height Height in the preferred unit, default is meters
- */
 @Generated("Apollo GraphQL")
 @Suppress("NAME_SHADOWING", "LocalVariableName")
 data class HumanDetails(
     val __typename: String,
+    /**
+     * What this human calls themselves
+     */
     val name: String,
+    /**
+     * Height in the preferred unit, default is meters
+     */
     val height: Double?
 ) : GraphqlFragment {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {

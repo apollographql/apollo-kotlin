@@ -24,7 +24,9 @@ import kotlin.jvm.Transient
 
 @Generated("Apollo GraphQL")
 @Suppress("NAME_SHADOWING", "LocalVariableName")
-data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInput) : Mutation<CreateReviewForEpisodeMutation.Data, CreateReviewForEpisodeMutation.Data, Operation.Variables> {
+data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInput) :
+        Mutation<CreateReviewForEpisodeMutation.Data, CreateReviewForEpisodeMutation.Data,
+        Operation.Variables> {
     @Transient
     private val variables: Operation.Variables = object : Operation.Variables() {
         override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -43,20 +45,22 @@ data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInp
 
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: CreateReviewForEpisodeMutation.Data): CreateReviewForEpisodeMutation.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = variables
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<CreateReviewForEpisodeMutation.Data> = ResponseFieldMapper {
-        CreateReviewForEpisodeMutation.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param stars The number of stars this review gave, 1-5
-     * @param commentary Comment about the movie
-     */
     data class CreateReview(
         val __typename: String,
+        /**
+         * The number of stars this review gave, 1-5
+         */
         val stars: Int,
+        /**
+         * Comment about the movie
+         */
         val commentary: String?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -114,18 +118,8 @@ data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInp
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
-                |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
-                |    __typename
-                |    stars
-                |    commentary
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "eb015fa9dd6e305a9228393e61579154ae22719f6a18df6d00b45659ee2e7f7f"
+                "dc312e4edc4258722c5ddb00ad2a85faacd285090336d719a22f65fdc94022c7"
 
         val QUERY_DOCUMENT: String = """
                 |mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {

@@ -27,7 +27,8 @@ import kotlin.jvm.Transient
 
 @Generated("Apollo GraphQL")
 @Suppress("NAME_SHADOWING", "LocalVariableName")
-data class CreateReviewForEpisode(val ep: Episode, val review: ReviewInput) : Mutation<CreateReviewForEpisode.Data, CreateReviewForEpisode.Data, Operation.Variables> {
+data class CreateReviewForEpisode(val ep: Episode, val review: ReviewInput) :
+        Mutation<CreateReviewForEpisode.Data, CreateReviewForEpisode.Data, Operation.Variables> {
     @Transient
     private val variables: Operation.Variables = object : Operation.Variables() {
         override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
@@ -46,18 +47,18 @@ data class CreateReviewForEpisode(val ep: Episode, val review: ReviewInput) : Mu
 
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: CreateReviewForEpisode.Data): CreateReviewForEpisode.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = variables
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<CreateReviewForEpisode.Data> = ResponseFieldMapper {
-        CreateReviewForEpisode.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param name The name of the character
-     */
     data class ListOfListOfObject(
         val __typename: String,
+        /**
+         * The name of the character
+         */
         val name: String
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -82,21 +83,31 @@ data class CreateReviewForEpisode(val ep: Episode, val review: ReviewInput) : Mu
         }
     }
 
-    /**
-     * @param stars The number of stars this review gave, 1-5
-     * @param commentary Comment about the movie
-     * @param listOfListOfString for test purpose only
-     * @param listOfListOfEnum for test purpose only
-     * @param listOfListOfCustom for test purpose only
-     * @param listOfListOfObject for test purpose only
-     */
     data class CreateReview(
         val __typename: String,
+        /**
+         * The number of stars this review gave, 1-5
+         */
         val stars: Int,
+        /**
+         * Comment about the movie
+         */
         val commentary: String?,
+        /**
+         * for test purpose only
+         */
         val listOfListOfString: List<List<String?>?>?,
+        /**
+         * for test purpose only
+         */
         val listOfListOfEnum: List<List<Episode?>?>?,
+        /**
+         * for test purpose only
+         */
         val listOfListOfCustom: List<List<Date?>?>?,
+        /**
+         * for test purpose only
+         */
         val listOfListOfObject: List<List<ListOfListOfObject?>?>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -146,10 +157,13 @@ data class CreateReviewForEpisode(val ep: Episode, val review: ReviewInput) : Mu
                     ResponseField.forString("__typename", "__typename", null, false, null),
                     ResponseField.forInt("stars", "stars", null, false, null),
                     ResponseField.forString("commentary", "commentary", null, true, null),
-                    ResponseField.forList("listOfListOfString", "listOfListOfString", null, true, null),
+                    ResponseField.forList("listOfListOfString", "listOfListOfString", null, true,
+                            null),
                     ResponseField.forList("listOfListOfEnum", "listOfListOfEnum", null, true, null),
-                    ResponseField.forList("listOfListOfCustom", "listOfListOfCustom", null, true, null),
-                    ResponseField.forList("listOfListOfObject", "listOfListOfObject", null, true, null)
+                    ResponseField.forList("listOfListOfCustom", "listOfListOfCustom", null, true,
+                            null),
+                    ResponseField.forList("listOfListOfObject", "listOfListOfObject", null, true,
+                            null)
                     )
 
             operator fun invoke(reader: ResponseReader): CreateReview {
@@ -171,7 +185,8 @@ data class CreateReviewForEpisode(val ep: Episode, val review: ReviewInput) : Mu
                         it.readCustomType<Date>(CustomType.DATE)
                     }
                 }
-                val listOfListOfObject = reader.readList<List<ListOfListOfObject?>>(RESPONSE_FIELDS[6]) {
+                val listOfListOfObject =
+                        reader.readList<List<ListOfListOfObject?>>(RESPONSE_FIELDS[6]) {
                     it.readList<ListOfListOfObject> {
                         it.readObject<ListOfListOfObject> { reader ->
                             ListOfListOfObject(reader)
@@ -221,25 +236,8 @@ data class CreateReviewForEpisode(val ep: Episode, val review: ReviewInput) : Mu
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {
-                |  createReview(episode: ${'$'}ep, review: ${'$'}review) {
-                |    __typename
-                |    stars
-                |    commentary
-                |    listOfListOfString
-                |    listOfListOfEnum
-                |    listOfListOfCustom
-                |    listOfListOfObject {
-                |      __typename
-                |      name
-                |    }
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "63f677799b4c5cfe580f133b71712c66179ea84077be680e999b0f1d1e66e0a1"
+                "e21a7c3210dfc89a23ac6ffa9cd5d4caf1b7ebecce91677433782e7b6f11f39c"
 
         val QUERY_DOCUMENT: String = """
                 |mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) {

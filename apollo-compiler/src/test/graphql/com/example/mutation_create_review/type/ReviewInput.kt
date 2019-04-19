@@ -14,53 +14,92 @@ import kotlin.collections.List
 
 /**
  * The input object sent when someone is creating a new review
- * @param stars 0-5 stars
- * @param nullableIntFieldWithDefaultValue for test purpose only
- * @param commentary Comment about the movie, optional
- * @param favoriteColor Favorite color, optional
- * @param enumWithDefaultValue for test purpose only
- * @param nullableEnum for test purpose only
- * @param listOfCustomScalar for test purpose only
- * @param customScalar for test purpose only
- * @param listOfEnums for test purpose only
- * @param listOfInt for test purpose only
- * @param listOfString for test purpose only
- * @param listOfStringNonNull for test purpose only
- * @param booleanWithDefaultValue for test purpose only
- * @param listOfListOfString for test purpose only
- * @param listOfListOfEnum for test purpose only
- * @param listOfListOfCustom for test purpose only
- * @param listOfListOfObject for test purpose only
- * @param capitalizedField for test purpose only
  */
 @Generated("Apollo GraphQL")
 @Suppress("NAME_SHADOWING", "LocalVariableName")
 class ReviewInput(
+    /**
+     * 0-5 stars
+     */
     val stars: Int,
+    /**
+     * for test purpose only
+     */
     val nullableIntFieldWithDefaultValue: Input<Int> = Input.optional(10),
+    /**
+     * Comment about the movie, optional
+     */
     val commentary: Input<String> = Input.optional(null),
+    /**
+     * Favorite color, optional
+     */
     val favoriteColor: ColorInput,
+    /**
+     * for test purpose only
+     */
     val enumWithDefaultValue: Input<Episode> = Input.optional(Episode.safeValueOf("JEDI")),
+    /**
+     * for test purpose only
+     */
     val nullableEnum: Input<Episode> = Input.optional(null),
+    /**
+     * for test purpose only
+     */
     val listOfCustomScalar: Input<List<Date?>> = Input.optional(null),
+    /**
+     * for test purpose only
+     */
     val customScalar: Input<Date> = Input.optional(null),
+    /**
+     * for test purpose only
+     */
     val listOfEnums: Input<List<Episode?>> = Input.optional(null),
+    /**
+     * for test purpose only
+     */
     val listOfInt: Input<List<Int?>> = Input.optional(listOf(1, 2, 3)),
+    /**
+     * for test purpose only
+     */
     val listOfString: Input<List<String?>> = Input.optional(listOf("test1", "test2", "test3")),
+    /**
+     * for test purpose only
+     */
     val listOfStringNonNull: List<String?>,
+    /**
+     * for test purpose only
+     */
     val booleanWithDefaultValue: Input<Boolean> = Input.optional(true),
+    /**
+     * for test purpose only
+     */
     val listOfListOfString: Input<List<List<String?>?>> = Input.optional(null),
+    /**
+     * for test purpose only
+     */
     val listOfListOfEnum: Input<List<List<Episode?>?>> = Input.optional(null),
+    /**
+     * for test purpose only
+     */
     val listOfListOfCustom: Input<List<List<Date?>?>> = Input.optional(null),
+    /**
+     * for test purpose only
+     */
     val listOfListOfObject: Input<List<List<ColorInput?>?>> = Input.optional(null),
+    /**
+     * for test purpose only
+     */
     val capitalizedField: Input<String> = Input.optional(null)
 ) : InputType {
     override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
         writer.writeInt("stars", stars)
-        if (nullableIntFieldWithDefaultValue.defined) writer.writeInt("nullableIntFieldWithDefaultValue", nullableIntFieldWithDefaultValue.value)
+        if (nullableIntFieldWithDefaultValue.defined)
+                writer.writeInt("nullableIntFieldWithDefaultValue",
+                nullableIntFieldWithDefaultValue.value)
         if (commentary.defined) writer.writeString("commentary", commentary.value)
         writer.writeObject("favoriteColor", favoriteColor.marshaller())
-        if (enumWithDefaultValue.defined) writer.writeString("enumWithDefaultValue", enumWithDefaultValue.value?.rawValue)
+        if (enumWithDefaultValue.defined) writer.writeString("enumWithDefaultValue",
+                enumWithDefaultValue.value?.rawValue)
         if (nullableEnum.defined) writer.writeString("nullableEnum", nullableEnum.value?.rawValue)
         if (listOfCustomScalar.defined) {
             writer.writeList("listOfCustomScalar", listOfCustomScalar.value?.let { value ->
@@ -71,7 +110,8 @@ class ReviewInput(
                 }
             })
         }
-        if (customScalar.defined) writer.writeCustom("customScalar", CustomType.DATE, customScalar.value)
+        if (customScalar.defined) writer.writeCustom("customScalar", CustomType.DATE,
+                customScalar.value)
         if (listOfEnums.defined) {
             writer.writeList("listOfEnums", listOfEnums.value?.let { value ->
                 InputFieldWriter.ListWriter { listItemWriter ->
@@ -104,7 +144,8 @@ class ReviewInput(
                 listItemWriter.writeString(value)
             }
         }
-        if (booleanWithDefaultValue.defined) writer.writeBoolean("booleanWithDefaultValue", booleanWithDefaultValue.value)
+        if (booleanWithDefaultValue.defined) writer.writeBoolean("booleanWithDefaultValue",
+                booleanWithDefaultValue.value)
         if (listOfListOfString.defined) {
             writer.writeList("listOfListOfString", listOfListOfString.value?.let { value ->
                 InputFieldWriter.ListWriter { listItemWriter ->

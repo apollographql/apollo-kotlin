@@ -50,20 +50,22 @@ data class TestQuery(
 
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: TestQuery.Data): TestQuery.Data = data
+    override fun wrapData(data: Data): Data = data
     override fun variables(): Operation.Variables = variables
     override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<TestQuery.Data> = ResponseFieldMapper {
-        TestQuery.Data(it)
+    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+        Data(it)
     }
 
-    /**
-     * @param name What this human calls themselves
-     * @param height Height in the preferred unit, default is meters
-     */
     data class HeroWithReview(
         val __typename: String,
+        /**
+         * What this human calls themselves
+         */
         val name: String,
+        /**
+         * Height in the preferred unit, default is meters
+         */
         val height: Double?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -117,7 +119,8 @@ data class TestQuery(
                     )
 
             operator fun invoke(reader: ResponseReader): Data {
-                val heroWithReview = reader.readObject<HeroWithReview>(RESPONSE_FIELDS[0]) { reader ->
+                val heroWithReview = reader.readObject<HeroWithReview>(RESPONSE_FIELDS[0]) {
+                        reader ->
                     HeroWithReview(reader)
                 }
 
@@ -129,18 +132,8 @@ data class TestQuery(
     }
 
     companion object {
-        val OPERATION_DEFINITION: String = """
-                |query TestQuery(${'$'}episode: Episode, ${'$'}stars: Int!, ${'$'}greenValue: Float!) {
-                |  heroWithReview(episode: ${'$'}episode, review: {stars: ${'$'}stars, favoriteColor: {red: 0, green: ${'$'}greenValue, blue: 0}}) {
-                |    __typename
-                |    name
-                |    height(unit: FOOT)
-                |  }
-                |}
-                """.trimMargin()
-
         const val OPERATION_ID: String =
-                "4905a0fccc07f97ecd6d660f5a68d4d49ffedc3f4688b76d17288dec1a1fdf93"
+                "b884beff93e8ae07fb00cfbb6f95ce377673dc97fd56f4a3ce2608dc8f48a8b6"
 
         val QUERY_DOCUMENT: String = """
                 |query TestQuery(${'$'}episode: Episode, ${'$'}stars: Int!, ${'$'}greenValue: Float!) {

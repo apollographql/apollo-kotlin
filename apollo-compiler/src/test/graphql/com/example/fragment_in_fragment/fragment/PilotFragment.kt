@@ -9,15 +9,17 @@ import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 
-/**
- * @param name The name of this person.
- * @param homeworld A planet that this person was born on or inhabits.
- */
 @Generated("Apollo GraphQL")
 @Suppress("NAME_SHADOWING", "LocalVariableName")
 data class PilotFragment(
     val __typename: String,
+    /**
+     * The name of this person.
+     */
     val name: String?,
+    /**
+     * A planet that this person was born on or inhabits.
+     */
     val homeworld: Homeworld?
 ) : GraphqlFragment {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
@@ -61,11 +63,11 @@ data class PilotFragment(
         }
     }
 
-    /**
-     * @param name The name of this planet.
-     */
     data class Homeworld(
         val __typename: String,
+        /**
+         * The name of this planet.
+         */
         val name: String?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {

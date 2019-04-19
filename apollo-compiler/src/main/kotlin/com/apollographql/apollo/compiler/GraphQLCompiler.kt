@@ -96,6 +96,7 @@ class GraphQLCompiler {
       val generateModelBuilder: Boolean,
       val useJavaBeansSemanticNaming: Boolean,
       val outputPackageName: String?,
-      val suppressRawTypesWarning: Boolean
+      val suppressRawTypesWarning: Boolean,
+      val generateKotlinModels: Boolean = false
   )
 }

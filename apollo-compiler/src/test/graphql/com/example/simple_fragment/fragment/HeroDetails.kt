@@ -9,13 +9,13 @@ import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 
-/**
- * @param name The name of the character
- */
 @Generated("Apollo GraphQL")
 @Suppress("NAME_SHADOWING", "LocalVariableName")
 data class HeroDetails(
     val __typename: String,
+    /**
+     * The name of the character
+     */
     val name: String
 ) : GraphqlFragment {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
