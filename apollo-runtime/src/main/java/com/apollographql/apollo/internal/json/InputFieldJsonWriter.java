@@ -80,7 +80,8 @@ public class InputFieldJsonWriter implements InputFieldWriter {
   }
 
   @SuppressWarnings("unchecked")
-  @Override public void writeCustom(@NotNull String fieldName, @NotNull ScalarType scalarType, @Nullable Object value) throws IOException {
+  @Override public void writeCustom(@NotNull String fieldName, @NotNull ScalarType scalarType, @Nullable Object value)
+      throws IOException {
     checkNotNull(fieldName, "fieldName == null");
     if (value != null) {
       CustomTypeAdapter customTypeAdapter = scalarTypeAdapters.adapterFor(scalarType);
@@ -103,7 +104,8 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
   }
 
-  @Override public void writeObject(@NotNull String fieldName, @Nullable InputFieldMarshaller marshaller) throws IOException {
+  @Override public void writeObject(@NotNull String fieldName, @Nullable InputFieldMarshaller marshaller)
+      throws IOException {
     checkNotNull(fieldName, "fieldName == null");
     if (marshaller != null) {
       jsonWriter.name(fieldName).beginObject();

@@ -54,11 +54,12 @@ public class SortedInputFieldMapWriter implements InputFieldWriter {
   }
 
   @Override
-  public void writeCustom(@NotNull String fieldName, @NotNull ScalarType scalarType, @Nullable Object value) throws IOException {
+  public void writeCustom(@NotNull String fieldName, @NotNull ScalarType scalarType, @Nullable Object value) {
     buffer.put(fieldName, value);
   }
 
-  @Override public void writeObject(@NotNull String fieldName, @Nullable InputFieldMarshaller marshaller) throws IOException {
+  @Override public void writeObject(@NotNull String fieldName, @Nullable InputFieldMarshaller marshaller)
+      throws IOException {
     if (marshaller == null) {
       buffer.put(fieldName, null);
     } else {
