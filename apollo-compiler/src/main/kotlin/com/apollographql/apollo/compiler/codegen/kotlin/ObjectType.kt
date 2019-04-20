@@ -2,16 +2,17 @@ package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.compiler.applyIf
-import com.apollographql.apollo.compiler.ast.AST
+import com.apollographql.apollo.compiler.ast.ObjectType
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asTypeName
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.marshallerFunSpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.responseFieldsPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFun
-import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asPropertySpec
 import com.squareup.kotlinpoet.*
 
-fun KotlinCodeGen.objectTypeSpec(objectType: AST.ObjectType): TypeSpec {
-  return with(objectType) {
-    TypeSpec.classBuilder(className)
+internal fun ObjectType.typeSpec() =
+    TypeSpec
+        .classBuilder(className)
         .addModifiers(KModifier.DATA)
         .primaryConstructor(primaryConstructorSpec)
         .addProperties(fields.map { it.asPropertySpec(initializer = CodeBlock.of(it.name)) })
@@ -19,10 +20,8 @@ fun KotlinCodeGen.objectTypeSpec(objectType: AST.ObjectType): TypeSpec {
         .applyIf(fragmentsType != null) { addType(fragmentsType!!.fragmentsTypeSpec) }
         .addFunction(marshallerFunSpec(fields))
         .build()
-  }
-}
 
-private val AST.ObjectType.primaryConstructorSpec: FunSpec
+private val ObjectType.primaryConstructorSpec: FunSpec
   get() {
     return FunSpec.constructorBuilder()
         .addParameters(fields.map { field ->
@@ -35,7 +34,7 @@ private val AST.ObjectType.primaryConstructorSpec: FunSpec
         .build()
   }
 
-private val AST.ObjectType.companionObjectSpec: TypeSpec
+private val ObjectType.companionObjectSpec: TypeSpec
   get() {
     return TypeSpec.companionObjectBuilder()
         .addProperty(responseFieldsPropertySpec(fields))
@@ -43,7 +42,7 @@ private val AST.ObjectType.companionObjectSpec: TypeSpec
         .build()
   }
 
-private val AST.ObjectType.fragmentsTypeSpec: TypeSpec
+private val ObjectType.fragmentsTypeSpec: TypeSpec
   get() {
     return TypeSpec.classBuilder(className)
         .addModifiers(KModifier.DATA)
@@ -53,7 +52,7 @@ private val AST.ObjectType.fragmentsTypeSpec: TypeSpec
         .build()
   }
 
-private val AST.ObjectType.marshallerFunSpec: FunSpec
+private val ObjectType.marshallerFunSpec: FunSpec
   get() {
     return FunSpec.builder("marshaller")
         .returns(ResponseFieldMarshaller::class)

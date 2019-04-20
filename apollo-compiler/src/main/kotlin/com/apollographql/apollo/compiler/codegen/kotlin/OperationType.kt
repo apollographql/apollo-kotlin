@@ -2,20 +2,24 @@ package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.api.*
 import com.apollographql.apollo.compiler.applyIf
-import com.apollographql.apollo.compiler.ast.AST
+import com.apollographql.apollo.compiler.ast.InputType
+import com.apollographql.apollo.compiler.ast.ObjectType
+import com.apollographql.apollo.compiler.ast.OperationType
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asPropertySpec
-import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.marshallerFunSpec
-import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFun
-import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.responseFieldsPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asTypeName
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.generatedByApolloAnnotation
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.marshallerFunSpec
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.responseFieldsPropertySpec
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.suppressWarningsAnnotation
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFun
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.jvm.throws
 import java.io.IOException
 
-fun KotlinCodeGen.operationTypeSpec(operationType: AST.OperationType, targetPackage: String): TypeSpec {
-  return with(operationType) {
-    TypeSpec.classBuilder(name)
+internal fun OperationType.typeSpec(targetPackage: String) =
+    TypeSpec
+        .classBuilder(name)
         .addAnnotation(generatedByApolloAnnotation)
         .addAnnotation(suppressWarningsAnnotation)
         .addSuperinterface(superInterfaceType(targetPackage))
@@ -74,7 +78,7 @@ fun KotlinCodeGen.operationTypeSpec(operationType: AST.OperationType, targetPack
           if (ref == data) {
             type.toOperationDataTypeSpec(data.name)
           } else {
-            objectTypeSpec(type)
+            type.typeSpec()
           }
         })
         .addType(TypeSpec.companionObjectBuilder()
@@ -93,19 +97,17 @@ fun KotlinCodeGen.operationTypeSpec(operationType: AST.OperationType, targetPack
             .build()
         )
         .build()
-  }
-}
 
-private fun AST.OperationType.superInterfaceType(targetPackage: String): TypeName {
+private fun OperationType.superInterfaceType(targetPackage: String): TypeName {
   val dataTypeName = ClassName(packageName = targetPackage, simpleName = name, simpleNames = *arrayOf("Data"))
   return when (type) {
-    AST.OperationType.Type.QUERY -> Query::class.asClassName()
-    AST.OperationType.Type.MUTATION -> Mutation::class.asClassName()
-    AST.OperationType.Type.SUBSCRIPTION -> Subscription::class.asClassName()
+    OperationType.Type.QUERY -> Query::class.asClassName()
+    OperationType.Type.MUTATION -> Mutation::class.asClassName()
+    OperationType.Type.SUBSCRIPTION -> Subscription::class.asClassName()
   }.parameterizedBy(dataTypeName, dataTypeName, Operation.Variables::class.asClassName())
 }
 
-private val AST.OperationType.primaryConstructorSpec: FunSpec
+private val OperationType.primaryConstructorSpec: FunSpec
   get() {
     return FunSpec.constructorBuilder()
         .addParameters(variables.fields.map { variable ->
@@ -118,7 +120,7 @@ private val AST.OperationType.primaryConstructorSpec: FunSpec
         .build()
   }
 
-private val AST.OperationType.variablePropertySpec: PropertySpec
+private val OperationType.variablePropertySpec: PropertySpec
   get() {
     return PropertySpec.builder("variables", Operation.Variables::class)
         .addModifiers(KModifier.PRIVATE)
@@ -132,7 +134,7 @@ private val AST.OperationType.variablePropertySpec: PropertySpec
         .build()
   }
 
-private val AST.InputType.variablesValueMapSpec: FunSpec
+private val InputType.variablesValueMapSpec: FunSpec
   get() {
     return FunSpec.builder("valueMap")
         .addModifiers(KModifier.OVERRIDE)
@@ -154,7 +156,7 @@ private val AST.InputType.variablesValueMapSpec: FunSpec
         .build()
   }
 
-private val AST.InputType.variablesMarshallerSpec: FunSpec
+private val InputType.variablesMarshallerSpec: FunSpec
   get() {
     return FunSpec.builder("marshaller")
         .returns(InputFieldMarshaller::class)
@@ -171,26 +173,26 @@ private val AST.InputType.variablesMarshallerSpec: FunSpec
         ).build()
   }
 
-private fun AST.ObjectType.toOperationDataTypeSpec(name: String): TypeSpec {
-  return TypeSpec.classBuilder(name)
-      .addModifiers(KModifier.DATA)
-      .addSuperinterface(Operation.Data::class)
-      .primaryConstructor(FunSpec.constructorBuilder()
-          .addParameters(fields.map { field ->
-            val typeName = field.type.asTypeName()
-            ParameterSpec.builder(
-                name = field.name,
-                type = if (field.isOptional) typeName.copy(nullable = true) else typeName
-            ).build()
-          })
-          .build()
-      )
-      .addProperties(fields.map { field -> field.asPropertySpec(initializer = CodeBlock.of(field.name)) })
-      .addType(TypeSpec.companionObjectBuilder()
-          .addProperty(responseFieldsPropertySpec(fields))
-          .addFunction(fields.toMapperFun(ClassName.bestGuess(name)))
-          .build()
-      )
-      .addFunction(marshallerFunSpec(fields).toBuilder().addModifiers(KModifier.OVERRIDE).build())
-      .build()
-}
+private fun ObjectType.toOperationDataTypeSpec(name: String) =
+    TypeSpec
+        .classBuilder(name)
+        .addModifiers(KModifier.DATA)
+        .addSuperinterface(Operation.Data::class)
+        .primaryConstructor(FunSpec.constructorBuilder()
+            .addParameters(fields.map { field ->
+              val typeName = field.type.asTypeName()
+              ParameterSpec.builder(
+                  name = field.name,
+                  type = if (field.isOptional) typeName.copy(nullable = true) else typeName
+              ).build()
+            })
+            .build()
+        )
+        .addProperties(fields.map { field -> field.asPropertySpec(initializer = CodeBlock.of(field.name)) })
+        .addType(TypeSpec.companionObjectBuilder()
+            .addProperty(responseFieldsPropertySpec(fields))
+            .addFunction(fields.toMapperFun(ClassName.bestGuess(name)))
+            .build()
+        )
+        .addFunction(marshallerFunSpec(fields).toBuilder().addModifiers(KModifier.OVERRIDE).build())
+        .build()
