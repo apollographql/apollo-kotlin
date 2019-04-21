@@ -7,7 +7,6 @@ package com.example.java_beans_semantic_naming.type
 
 import kotlin.Deprecated
 import kotlin.String
-import kotlin.jvm.JvmStatic
 
 /**
  * The episodes in the Star Wars trilogy
@@ -46,7 +45,7 @@ enum class Episode(val rawValue: String) {
     UNKNOWN__("UNKNOWN__");
 
     companion object {
-        @JvmStatic
         fun safeValueOf(rawValue: String): Episode = values().find { it.rawValue == rawValue } ?:
-                UNKNOWN__}
+                UNKNOWN__
+    }
 }

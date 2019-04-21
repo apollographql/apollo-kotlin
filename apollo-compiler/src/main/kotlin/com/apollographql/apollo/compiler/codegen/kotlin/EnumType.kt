@@ -61,9 +61,8 @@ private val EnumType.safeValueOfFunSpec: FunSpec
   get() {
     return FunSpec
         .builder("safeValueOf")
-        .addAnnotation(JvmStatic::class)
         .addParameter("rawValue", String::class)
         .returns(ClassName("", name))
-        .addCode("return values().find { it.rawValue == rawValue } ?: UNKNOWN__")
+        .addStatement("return values().find { it.rawValue == rawValue } ?: UNKNOWN__")
         .build()
   }
