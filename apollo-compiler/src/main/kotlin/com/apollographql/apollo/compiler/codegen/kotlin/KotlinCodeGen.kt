@@ -12,18 +12,12 @@ import com.apollographql.apollo.compiler.ast.TypeRef
 import com.apollographql.apollo.compiler.ir.ScalarType
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import javax.annotation.Generated
 
 internal object KotlinCodeGen {
 
   val suppressWarningsAnnotation = AnnotationSpec
       .builder(Suppress::class)
-      .addMember("%S, %S", "NAME_SHADOWING", "LocalVariableName")
-      .build()
-
-  val generatedByApolloAnnotation = AnnotationSpec
-      .builder(Generated::class)
-      .addMember("%S", "Apollo GraphQL")
+      .addMember("%S, %S, %S", "NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments")
       .build()
 
   fun deprecatedAnnotation(message: String) = AnnotationSpec
@@ -73,14 +67,19 @@ internal object KotlinCodeGen {
           .build()
 
   fun responseFieldsPropertySpec(fields: List<ObjectType.Field>): PropertySpec {
-    val initializer = fields.map { field ->
-      field.responseFieldInitializerCode
-    }.joinToCode(prefix = "arrayOf(\n", separator = ",\n", suffix = "\n)")
-    return PropertySpec.builder(
-        name = "RESPONSE_FIELDS",
-        type = Array<ResponseField>::class.asClassName().parameterizedBy(ResponseField::class.asClassName()),
-        modifiers = *arrayOf(KModifier.PRIVATE)
-    ).initializer(initializer).build()
+    val initializer = fields
+        .map { field -> field.responseFieldInitializerCode }
+        .joinToCode(prefix = "arrayOf(\n", separator = ",\n", suffix = "\n)")
+    return PropertySpec
+        .builder(
+            name = "RESPONSE_FIELDS",
+            type = Array<ResponseField>::
+            class.asClassName().parameterizedBy(ResponseField::
+            class.asClassName()),
+            modifiers = *arrayOf(KModifier.PRIVATE)
+        )
+        .initializer(initializer)
+        .build()
   }
 
   private val ObjectType.Field.responseFieldInitializerCode: CodeBlock

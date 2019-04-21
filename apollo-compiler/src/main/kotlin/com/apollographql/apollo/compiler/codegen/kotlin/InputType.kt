@@ -8,7 +8,6 @@ import com.apollographql.apollo.compiler.ast.FieldType
 import com.apollographql.apollo.compiler.ast.InputType
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asTypeName
-import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.generatedByApolloAnnotation
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.suppressWarningsAnnotation
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toDefaultValueCodeBlock
 import com.squareup.kotlinpoet.*
@@ -17,9 +16,8 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 internal fun InputType.typeSpec() =
     TypeSpec
         .classBuilder(name)
-        .addAnnotation(generatedByApolloAnnotation)
-        .addAnnotation(suppressWarningsAnnotation)
         .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
+        .addAnnotation(suppressWarningsAnnotation)
         .addSuperinterface(com.apollographql.apollo.api.InputType::class)
         .primaryConstructor(primaryConstructorSpec)
         .addProperties(fields.map { field -> field.asPropertySpec(initializer = CodeBlock.of(field.name)) })

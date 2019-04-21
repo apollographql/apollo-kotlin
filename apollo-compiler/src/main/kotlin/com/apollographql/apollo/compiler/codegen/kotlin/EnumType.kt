@@ -11,7 +11,6 @@ internal fun EnumType.typeSpec() =
     TypeSpec
         .enumBuilder(name)
         .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
-        .addAnnotation(KotlinCodeGen.generatedByApolloAnnotation)
         .primaryConstructor(primaryConstructorSpec)
         .addProperty(rawValuePropertySpec)
         .apply {

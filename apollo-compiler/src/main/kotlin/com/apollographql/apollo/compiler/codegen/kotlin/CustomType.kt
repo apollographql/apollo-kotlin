@@ -9,7 +9,6 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 internal fun CustomTypes.typeSpec() =
     TypeSpec
         .enumBuilder("CustomType")
-        .addAnnotation(KotlinCodeGen.generatedByApolloAnnotation)
         .addSuperinterface(ScalarType::class.java)
         .apply {
           map { (schemaType, customType) ->

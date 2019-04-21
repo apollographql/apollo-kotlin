@@ -2,13 +2,12 @@ package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.compiler.ast.FragmentType
-import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFun
-import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.responseFieldsPropertySpec
-import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asTypeName
-import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.generatedByApolloAnnotation
-import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.suppressWarningsAnnotation
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asPropertySpec
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asTypeName
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.marshallerFunSpec
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.responseFieldsPropertySpec
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.suppressWarningsAnnotation
+import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFun
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
@@ -17,7 +16,6 @@ internal fun FragmentType.typeSpec() =
         .classBuilder(name)
         .addModifiers(KModifier.DATA)
         .addSuperinterface(GraphqlFragment::class.java)
-        .addAnnotation(generatedByApolloAnnotation)
         .addAnnotation(suppressWarningsAnnotation)
         .primaryConstructor(primaryConstructorSpec)
         .addProperties(fields.map { field -> field.asPropertySpec(initializer = CodeBlock.of(field.name)) })

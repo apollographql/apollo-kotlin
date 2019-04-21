@@ -15,12 +15,13 @@ sourceSets {
       srcDir "src/generated/kotlin"
     }
   }
-  test {
-    java {
-      srcDir "src/test/graphql"
-      exclude '**/*.java'
-    }
-  }
+  // As temporary solution enable this to verify if generated kotlin test fixtures compiles
+//  test {
+//    java {
+//      srcDir "src/test/graphql"
+//      exclude '**/*.java'
+//    }
+//  }
 }
 
 dependencies {

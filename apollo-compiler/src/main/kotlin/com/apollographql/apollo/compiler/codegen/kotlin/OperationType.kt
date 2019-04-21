@@ -7,20 +7,16 @@ import com.apollographql.apollo.compiler.ast.ObjectType
 import com.apollographql.apollo.compiler.ast.OperationType
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.asTypeName
-import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.generatedByApolloAnnotation
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.marshallerFunSpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.responseFieldsPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.suppressWarningsAnnotation
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFun
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.jvm.throws
-import java.io.IOException
 
 internal fun OperationType.typeSpec(targetPackage: String) =
     TypeSpec
         .classBuilder(name)
-        .addAnnotation(generatedByApolloAnnotation)
         .addAnnotation(suppressWarningsAnnotation)
         .addSuperinterface(superInterfaceType(targetPackage))
         .applyIf(variables.fields.isNotEmpty()) {
@@ -161,16 +157,15 @@ private val InputType.variablesMarshallerSpec: FunSpec
     return FunSpec.builder("marshaller")
         .returns(InputFieldMarshaller::class)
         .addModifiers(KModifier.OVERRIDE)
-        .addStatement("return %L", TypeSpec.anonymousClassBuilder()
-            .addSuperinterface(InputFieldMarshaller::class)
-            .addFunction(FunSpec.builder("marshal")
-                .addModifiers(KModifier.OVERRIDE)
-                .throws(IOException::class)
-                .addParameter(ParameterSpec.builder("writer", InputFieldWriter::class.java).build())
-                .apply { fields.forEach { field -> addCode(field.writeCodeBlock) } }
-                .build()
-            ).build()
-        ).build()
+        .addCode(CodeBlock.builder()
+            .add("return %T { writer ->\n", InputFieldMarshaller::class)
+            .indent()
+            .apply { fields.forEach { field -> add(field.writeCodeBlock) } }
+            .unindent()
+            .add("}\n")
+            .build()
+        )
+        .build()
   }
 
 private fun ObjectType.toOperationDataTypeSpec(name: String) =
