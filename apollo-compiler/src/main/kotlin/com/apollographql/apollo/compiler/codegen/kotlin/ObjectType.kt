@@ -10,16 +10,33 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.responseFi
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFun
 import com.squareup.kotlinpoet.*
 
-internal fun ObjectType.typeSpec() =
+internal fun ObjectType.typeSpec(): TypeSpec {
+  return if (abstract) {
+    TypeSpec
+        .interfaceBuilder(className)
+        .addFunction(
+            FunSpec.builder("marshaller")
+                .addModifiers(KModifier.ABSTRACT)
+                .returns(ResponseFieldMarshaller::class)
+                .build()
+        )
+        .applyIf(superType != null) { addSuperinterface(superType!!.asTypeName()) }
+        .build()
+
+  } else {
     TypeSpec
         .classBuilder(className)
         .addModifiers(KModifier.DATA)
         .primaryConstructor(primaryConstructorSpec)
         .addProperties(fields.map { it.asPropertySpec(initializer = CodeBlock.of(it.name)) })
+        .applyIf(superType != null) { addSuperinterface(superType!!.asTypeName()) }
         .addType(companionObjectSpec)
         .applyIf(fragmentsType != null) { addType(fragmentsType!!.fragmentsTypeSpec) }
-        .addFunction(marshallerFunSpec(fields))
+        .addFunction(marshallerFunSpec(fields, superType != null))
         .build()
+  }
+}
+
 
 private val ObjectType.primaryConstructorSpec: FunSpec
   get() {

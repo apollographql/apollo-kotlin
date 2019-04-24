@@ -1,18 +1,23 @@
 package com.apollographql.apollo.compiler.ast.builder
 
-import com.apollographql.apollo.compiler.ast.*
+import com.apollographql.apollo.compiler.ast.FieldType
+import com.apollographql.apollo.compiler.ast.FragmentType
+import com.apollographql.apollo.compiler.ast.ObjectType
+import com.apollographql.apollo.compiler.ast.TypeRef
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.Fragment
 
 internal fun Fragment.ast(context: Context): FragmentType {
-  val inlineFragmentFields = inlineFragments
-      .associate { it to context.registerInlineFragmentType(it) }
-      .let { inlineObjectFields(it) { true } }
+  val inlineFragmentField = inlineFragments.takeIf { it.isNotEmpty() }?.inlineFragmentField(
+      type = fragmentName,
+      schemaType = typeCondition,
+      context = context
+  )
   return FragmentType(
       name = fragmentName.capitalize().escapeKotlinReservedWord(),
       definition = source,
       possibleTypes = possibleTypes,
-      fields = fields.map { it.ast(context) } + inlineFragmentFields,
+      fields = fields.map { it.ast(context) }.let { if (inlineFragmentField != null) it + inlineFragmentField else it },
       nestedObjects = context.objectTypes
   )
 }

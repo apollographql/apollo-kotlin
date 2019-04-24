@@ -28,14 +28,18 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         Data(it)
     }
 
+    interface HeroCharacter {
+        fun marshaller(): ResponseFieldMarshaller
+    }
+
     data class AsHuman(
         val __typename: String,
         /**
          * Height in the preferred unit, default is meters
          */
         val height: Double?
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+    ) : HeroCharacter {
+        override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeDouble(RESPONSE_FIELDS[1], height)
         }
@@ -57,10 +61,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         }
     }
 
-    data class Hero(val __typename: String, val asHuman: AsHuman?) {
+    data class Hero(val __typename: String, val inlineFragment: HeroCharacter?) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeObject(RESPONSE_FIELDS[1], asHuman?.marshaller())
+            it.writeObject(RESPONSE_FIELDS[1], inlineFragment?.marshaller())
         }
 
         companion object {
@@ -71,14 +75,17 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
             operator fun invoke(reader: ResponseReader): Hero {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val asHuman = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType,
+                val inlineFragment = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType,
                         reader ->
-                    AsHuman(reader)
+                    when(conditionalType) {
+                        in listOf("Human") -> AsHuman(reader)
+                        else -> null
+                    }
                 }
 
                 return Hero(
                     __typename = __typename,
-                    asHuman = asHuman
+                    inlineFragment = inlineFragment
                 )
             }
         }

@@ -31,6 +31,10 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         Data(it)
     }
 
+    interface HeroCharacter {
+        fun marshaller(): ResponseFieldMarshaller
+    }
+
     data class Friend(
         val __typename: String,
         /**
@@ -80,8 +84,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
          * This human's friends, or an empty list if they have none
          */
         val friends: List<Friend?>?
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+    ) : HeroCharacter {
+        override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeString(RESPONSE_FIELDS[1], name)
             it.writeDouble(RESPONSE_FIELDS[2], height)
@@ -164,8 +168,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
          * This droid's friends, or an empty list if they have none
          */
         val friends: List<Friend1?>?
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+    ) : HeroCharacter {
+        override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeString(RESPONSE_FIELDS[1], name)
             it.writeString(RESPONSE_FIELDS[2], primaryFunction)
@@ -210,42 +214,38 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
          * The name of the character
          */
         val name: String,
-        val asHuman: AsHuman?,
-        val asDroid: AsDroid?
+        val inlineFragment: HeroCharacter?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeString(RESPONSE_FIELDS[1], name)
-            it.writeObject(RESPONSE_FIELDS[2], asHuman?.marshaller())
-            it.writeObject(RESPONSE_FIELDS[3], asDroid?.marshaller())
+            it.writeObject(RESPONSE_FIELDS[2], inlineFragment?.marshaller())
         }
 
         companion object {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                     ResponseField.forString("__typename", "__typename", null, false, null),
                     ResponseField.forString("name", "name", null, false, null),
-                    ResponseField.forInlineFragment("__typename", "__typename", listOf("Human")),
-                    ResponseField.forInlineFragment("__typename", "__typename", listOf("Droid"))
+                    ResponseField.forInlineFragment("__typename", "__typename", listOf("Human",
+                            "Droid"))
                     )
 
             operator fun invoke(reader: ResponseReader): Hero {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
-                val asHuman = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType,
+                val inlineFragment = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType,
                         reader ->
-                    AsHuman(reader)
-                }
-
-                val asDroid = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType,
-                        reader ->
-                    AsDroid(reader)
+                    when(conditionalType) {
+                        in listOf("Human") -> AsHuman(reader)
+                        in listOf("Droid") -> AsDroid(reader)
+                        else -> null
+                    }
                 }
 
                 return Hero(
                     __typename = __typename,
                     name = name,
-                    asHuman = asHuman,
-                    asDroid = asDroid
+                    inlineFragment = inlineFragment
                 )
             }
         }

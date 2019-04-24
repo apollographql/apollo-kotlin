@@ -21,7 +21,7 @@ internal fun FragmentType.typeSpec() =
         .addProperties(fields.map { field -> field.asPropertySpec(initializer = CodeBlock.of(field.name)) })
         .addType(companionObjectTypeSpec)
         .addTypes(nestedObjects.map { (_, type) -> type.typeSpec() })
-        .addFunction(marshallerFunSpec(fields).toBuilder().addModifiers(KModifier.OVERRIDE).build())
+        .addFunction(marshallerFunSpec(fields, true))
         .build()
 
 private val FragmentType.primaryConstructorSpec: FunSpec

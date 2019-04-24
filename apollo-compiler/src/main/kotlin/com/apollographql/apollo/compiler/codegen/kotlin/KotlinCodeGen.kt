@@ -224,20 +224,32 @@ internal object KotlinCodeGen {
             .build()
       }
       is FieldType.InlineFragment -> {
+        val conditionalBranches = fragmentRefs.map { (typeRef, conditionalTypes) ->
+          CodeBlock.of(
+              "in listOf(%L) -> %T(reader)",
+              conditionalTypes.joinToString(prefix = "\"", postfix = "\""),
+              typeRef.asTypeName()
+          )
+        }
         CodeBlock.builder()
             .beginControlFlow("%L.readConditional(%L) { conditionalType, reader ->", reader, field)
-            .addStatement("%T(reader)", typeRef.asTypeName())
+            .beginControlFlow("when(conditionalType)")
+            .add(conditionalBranches.joinToCode("\n"))
+            .addStatement("")
+            .addStatement("else -> null")
+            .endControlFlow()
             .endControlFlow()
             .build()
       }
     }
   }
 
-  fun marshallerFunSpec(fields: List<ObjectType.Field>): FunSpec {
+  fun marshallerFunSpec(fields: List<ObjectType.Field>, override: Boolean = false): FunSpec {
     val writeFieldsCode = fields.mapIndexed { index, field ->
       field.writeCode(field = "RESPONSE_FIELDS[$index]")
     }.joinToCode(separator = "\n", suffix = "\n")
     return FunSpec.builder("marshaller")
+        .applyIf(override) { addModifiers(KModifier.OVERRIDE) }
         .returns(ResponseFieldMarshaller::class)
         .beginControlFlow("return %T", ResponseFieldMarshaller::class)
         .addCode(writeFieldsCode)

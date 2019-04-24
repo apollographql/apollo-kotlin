@@ -27,13 +27,13 @@ data class HeroDetails(
      * The friends of the character exposed as a connection with edges
      */
     val friendsConnection: FriendsConnection1,
-    val asDroid: AsDroid?
+    val inlineFragment: HeroDetailCharacter?
 ) : GraphqlFragment {
     override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
         it.writeString(RESPONSE_FIELDS[0], __typename)
         it.writeString(RESPONSE_FIELDS[1], name)
         it.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())
-        it.writeObject(RESPONSE_FIELDS[3], asDroid?.marshaller())
+        it.writeObject(RESPONSE_FIELDS[3], inlineFragment?.marshaller())
     }
 
     companion object {
@@ -82,17 +82,25 @@ data class HeroDetails(
                 FriendsConnection1(reader)
             }
 
-            val asDroid = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType, reader ->
-                AsDroid(reader)
+            val inlineFragment = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType,
+                    reader ->
+                when(conditionalType) {
+                    in listOf("Droid") -> AsDroid(reader)
+                    else -> null
+                }
             }
 
             return HeroDetails(
                 __typename = __typename,
                 name = name,
                 friendsConnection = friendsConnection,
-                asDroid = asDroid
+                inlineFragment = inlineFragment
             )
         }
+    }
+
+    interface HeroDetailCharacter {
+        fun marshaller(): ResponseFieldMarshaller
     }
 
     data class Node(
@@ -258,8 +266,8 @@ data class HeroDetails(
          * This droid's primary function
          */
         val primaryFunction: String?
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+    ) : HeroDetailCharacter {
+        override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeString(RESPONSE_FIELDS[1], name)
             it.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())

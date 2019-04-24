@@ -31,6 +31,10 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
         Data(it)
     }
 
+    interface HeroDetailQueryCharacter {
+        fun marshaller(): ResponseFieldMarshaller
+    }
+
     data class Friend1(val __typename: String, val fragments: Fragments) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
@@ -142,8 +146,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
          * Height in the preferred unit, default is meters
          */
         val height: Double?
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+    ) : HeroDetailQueryCharacter {
+        override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
             it.writeString(RESPONSE_FIELDS[1], name)
             it.writeList(RESPONSE_FIELDS[2], friends) { value, listItemWriter ->
@@ -182,7 +186,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
         }
     }
 
-    data class Friend12(
+    data class Friend2(
         val __typename: String,
         /**
          * The name of the character
@@ -200,10 +204,10 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
                     ResponseField.forString("name", "name", null, false, null)
                     )
 
-            operator fun invoke(reader: ResponseReader): Friend12 {
+            operator fun invoke(reader: ResponseReader): Friend2 {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
-                return Friend12(
+                return Friend2(
                     __typename = __typename,
                     name = name
                 )
@@ -220,8 +224,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
         /**
          * The friends of the character, or an empty list if they have none
          */
-        val friends: List<Friend12?>?,
-        val asHuman: AsHuman?
+        val friends: List<Friend2?>?,
+        val inlineFragment: HeroDetailQueryCharacter?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
@@ -231,7 +235,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
                     listItemWriter.writeObject(value?.marshaller())
                 }
             }
-            it.writeObject(RESPONSE_FIELDS[3], asHuman?.marshaller())
+            it.writeObject(RESPONSE_FIELDS[3], inlineFragment?.marshaller())
         }
 
         companion object {
@@ -245,22 +249,25 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
             operator fun invoke(reader: ResponseReader): HeroDetailQuery1 {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
-                val friends = reader.readList<Friend12>(RESPONSE_FIELDS[2]) {
-                    it.readObject<Friend12> { reader ->
-                        Friend12(reader)
+                val friends = reader.readList<Friend2>(RESPONSE_FIELDS[2]) {
+                    it.readObject<Friend2> { reader ->
+                        Friend2(reader)
                     }
 
                 }
-                val asHuman = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType,
+                val inlineFragment = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType,
                         reader ->
-                    AsHuman(reader)
+                    when(conditionalType) {
+                        in listOf("Human") -> AsHuman(reader)
+                        else -> null
+                    }
                 }
 
                 return HeroDetailQuery1(
                     __typename = __typename,
                     name = name,
                     friends = friends,
-                    asHuman = asHuman
+                    inlineFragment = inlineFragment
                 )
             }
         }
