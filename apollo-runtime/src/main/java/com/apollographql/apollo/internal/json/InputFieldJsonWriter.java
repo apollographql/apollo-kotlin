@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static com.apollographql.apollo.internal.json.Utils.writeToJson;
@@ -24,7 +25,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     this.scalarTypeAdapters = scalarTypeAdapters;
   }
 
-  @Override public void writeString(@NotNull String fieldName, String value) throws IOException {
+  @Override public void writeString(@NotNull String fieldName, @Nullable String value) throws IOException {
     checkNotNull(fieldName, "fieldName == null");
     if (value != null) {
       jsonWriter.name(fieldName).value(value);
@@ -33,7 +34,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
   }
 
-  @Override public void writeInt(@NotNull String fieldName, Integer value) throws IOException {
+  @Override public void writeInt(@NotNull String fieldName, @Nullable Integer value) throws IOException {
     checkNotNull(fieldName, "fieldName == null");
     if (value != null) {
       jsonWriter.name(fieldName).value(value);
@@ -42,7 +43,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
   }
 
-  @Override public void writeLong(@NotNull String fieldName, Long value) throws IOException {
+  @Override public void writeLong(@NotNull String fieldName, @Nullable Long value) throws IOException {
     checkNotNull(fieldName, "fieldName == null");
     if (value != null) {
       jsonWriter.name(fieldName).value(value);
@@ -51,7 +52,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
   }
 
-  @Override public void writeDouble(@NotNull String fieldName, Double value) throws IOException {
+  @Override public void writeDouble(@NotNull String fieldName, @Nullable Double value) throws IOException {
     checkNotNull(fieldName, "fieldName == null");
     if (value != null) {
       jsonWriter.name(fieldName).value(value);
@@ -60,7 +61,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
   }
 
-  @Override public void writeNumber(@NotNull String fieldName, Number value) throws IOException {
+  @Override public void writeNumber(@NotNull String fieldName, @Nullable Number value) throws IOException {
     checkNotNull(fieldName, "fieldName == null");
     if (value != null) {
       jsonWriter.name(fieldName).value(value);
@@ -69,7 +70,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
   }
 
-  @Override public void writeBoolean(@NotNull String fieldName, Boolean value) throws IOException {
+  @Override public void writeBoolean(@NotNull String fieldName, @Nullable Boolean value) throws IOException {
     checkNotNull(fieldName, "fieldName == null");
     if (value != null) {
       jsonWriter.name(fieldName).value(value);
@@ -79,7 +80,8 @@ public class InputFieldJsonWriter implements InputFieldWriter {
   }
 
   @SuppressWarnings("unchecked")
-  @Override public void writeCustom(@NotNull String fieldName, ScalarType scalarType, Object value) throws IOException {
+  @Override public void writeCustom(@NotNull String fieldName, @NotNull ScalarType scalarType, @Nullable Object value)
+      throws IOException {
     checkNotNull(fieldName, "fieldName == null");
     if (value != null) {
       CustomTypeAdapter customTypeAdapter = scalarTypeAdapters.adapterFor(scalarType);
@@ -102,7 +104,8 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
   }
 
-  @Override public void writeObject(@NotNull String fieldName, InputFieldMarshaller marshaller) throws IOException {
+  @Override public void writeObject(@NotNull String fieldName, @Nullable InputFieldMarshaller marshaller)
+      throws IOException {
     checkNotNull(fieldName, "fieldName == null");
     if (marshaller != null) {
       jsonWriter.name(fieldName).beginObject();
@@ -113,7 +116,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
   }
 
-  @Override public void writeList(@NotNull String fieldName, ListWriter listWriter) throws IOException {
+  @Override public void writeList(@NotNull String fieldName, @Nullable ListWriter listWriter) throws IOException {
     checkNotNull(fieldName, "fieldName == null");
     if (listWriter != null) {
       jsonWriter.name(fieldName).beginArray();
@@ -124,7 +127,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
     }
   }
 
-  @Override public void writeMap(@NotNull String fieldName, Map<String, Object> value) throws IOException {
+  @Override public void writeMap(@NotNull String fieldName, @Nullable Map<String, Object> value) throws IOException {
     checkNotNull(fieldName, "fieldName == null");
     if (value == null) {
       jsonWriter.name(fieldName).nullValue();
@@ -143,7 +146,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       this.scalarTypeAdapters = scalarTypeAdapters;
     }
 
-    @Override public void writeString(String value) throws IOException {
+    @Override public void writeString(@Nullable String value) throws IOException {
       if (value == null) {
         jsonWriter.nullValue();
       } else {
@@ -151,7 +154,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       }
     }
 
-    @Override public void writeInt(Integer value) throws IOException {
+    @Override public void writeInt(@Nullable Integer value) throws IOException {
       if (value == null) {
         jsonWriter.nullValue();
       } else {
@@ -159,7 +162,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       }
     }
 
-    @Override public void writeLong(Long value) throws IOException {
+    @Override public void writeLong(@Nullable Long value) throws IOException {
       if (value == null) {
         jsonWriter.nullValue();
       } else {
@@ -167,7 +170,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       }
     }
 
-    @Override public void writeDouble(Double value) throws IOException {
+    @Override public void writeDouble(@Nullable Double value) throws IOException {
       if (value == null) {
         jsonWriter.nullValue();
       } else {
@@ -175,7 +178,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       }
     }
 
-    @Override public void writeNumber(Number value) throws IOException {
+    @Override public void writeNumber(@Nullable Number value) throws IOException {
       if (value == null) {
         jsonWriter.nullValue();
       } else {
@@ -183,7 +186,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       }
     }
 
-    @Override public void writeBoolean(Boolean value) throws IOException {
+    @Override public void writeBoolean(@Nullable Boolean value) throws IOException {
       if (value == null) {
         jsonWriter.nullValue();
       } else {
@@ -191,12 +194,12 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       }
     }
 
-    @Override public void writeMap(Map<String, Object> value) throws IOException {
+    @Override public void writeMap(@Nullable Map<String, Object> value) throws IOException {
       writeToJson(value, jsonWriter);
     }
 
     @SuppressWarnings("unchecked")
-    @Override public void writeCustom(ScalarType scalarType, Object value) throws IOException {
+    @Override public void writeCustom(@NotNull ScalarType scalarType, @Nullable Object value) throws IOException {
       if (value == null) {
         jsonWriter.nullValue();
       } else {
@@ -218,7 +221,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       }
     }
 
-    @Override public void writeObject(InputFieldMarshaller marshaller) throws IOException {
+    @Override public void writeObject(@Nullable InputFieldMarshaller marshaller) throws IOException {
       if (marshaller == null) {
         jsonWriter.nullValue();
       } else {
@@ -228,7 +231,7 @@ public class InputFieldJsonWriter implements InputFieldWriter {
       }
     }
 
-    @Override public void writeList(ListWriter listWriter) throws IOException {
+    @Override public void writeList(@Nullable ListWriter listWriter) throws IOException {
       if (listWriter == null) {
         jsonWriter.nullValue();
       } else {

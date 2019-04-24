@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.internal.Utils;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,36 +29,37 @@ public class SortedInputFieldMapWriter implements InputFieldWriter {
     return Collections.unmodifiableMap(buffer);
   }
 
-  @Override public void writeString(@NotNull String fieldName, String value) throws IOException {
+  @Override public void writeString(@NotNull String fieldName, @Nullable String value) throws IOException {
     buffer.put(fieldName, value);
   }
 
-  @Override public void writeInt(@NotNull String fieldName, Integer value) throws IOException {
+  @Override public void writeInt(@NotNull String fieldName, @Nullable Integer value) throws IOException {
     buffer.put(fieldName, value);
   }
 
-  @Override public void writeLong(@NotNull String fieldName, Long value) throws IOException {
+  @Override public void writeLong(@NotNull String fieldName, @Nullable Long value) throws IOException {
     buffer.put(fieldName, value);
   }
 
-  @Override public void writeDouble(@NotNull String fieldName, Double value) throws IOException {
+  @Override public void writeDouble(@NotNull String fieldName, @Nullable Double value) throws IOException {
     buffer.put(fieldName, value);
   }
 
-  @Override public void writeNumber(@NotNull String fieldName, Number value) throws IOException {
+  @Override public void writeNumber(@NotNull String fieldName, @Nullable Number value) throws IOException {
     buffer.put(fieldName, value);
   }
 
-  @Override public void writeBoolean(@NotNull String fieldName, Boolean value) throws IOException {
+  @Override public void writeBoolean(@NotNull String fieldName, @Nullable Boolean value) throws IOException {
     buffer.put(fieldName, value);
   }
 
   @Override
-  public void writeCustom(@NotNull String fieldName, ScalarType scalarType, Object value) throws IOException {
+  public void writeCustom(@NotNull String fieldName, @NotNull ScalarType scalarType, @Nullable Object value) {
     buffer.put(fieldName, value);
   }
 
-  @Override public void writeObject(@NotNull String fieldName, InputFieldMarshaller marshaller) throws IOException {
+  @Override public void writeObject(@NotNull String fieldName, @Nullable InputFieldMarshaller marshaller)
+      throws IOException {
     if (marshaller == null) {
       buffer.put(fieldName, null);
     } else {
@@ -68,7 +70,7 @@ public class SortedInputFieldMapWriter implements InputFieldWriter {
   }
 
   @Override
-  public void writeList(@NotNull String fieldName, ListWriter listWriter) throws IOException {
+  public void writeList(@NotNull String fieldName, @Nullable ListWriter listWriter) throws IOException {
     if (listWriter == null) {
       buffer.put(fieldName, null);
     } else {
@@ -78,7 +80,7 @@ public class SortedInputFieldMapWriter implements InputFieldWriter {
     }
   }
 
-  @Override public void writeMap(@NotNull String fieldName, Map<String, Object> value) throws IOException {
+  @Override public void writeMap(@NotNull String fieldName, @Nullable Map<String, Object> value) throws IOException {
     buffer.put(fieldName, value);
   }
 
@@ -91,49 +93,49 @@ public class SortedInputFieldMapWriter implements InputFieldWriter {
       this.fieldNameComparator = fieldNameComparator;
     }
 
-    @Override public void writeString(String value) throws IOException {
+    @Override public void writeString(@Nullable String value) throws IOException {
       if (value != null) {
         list.add(value);
       }
     }
 
-    @Override public void writeInt(Integer value) throws IOException {
+    @Override public void writeInt(@Nullable Integer value) throws IOException {
       if (value != null) {
         list.add(value);
       }
     }
 
-    @Override public void writeLong(Long value) throws IOException {
+    @Override public void writeLong(@Nullable Long value) throws IOException {
       if (value != null) {
         list.add(value);
       }
     }
 
-    @Override public void writeDouble(Double value) throws IOException {
+    @Override public void writeDouble(@Nullable Double value) throws IOException {
       if (value != null) {
         list.add(value);
       }
     }
 
-    @Override public void writeNumber(Number value) throws IOException {
+    @Override public void writeNumber(@Nullable Number value) throws IOException {
       if (value != null) {
         list.add(value);
       }
     }
 
-    @Override public void writeBoolean(Boolean value) throws IOException {
+    @Override public void writeBoolean(@Nullable Boolean value) throws IOException {
       if (value != null) {
         list.add(value);
       }
     }
 
-    @Override public void writeCustom(ScalarType scalarType, Object value) throws IOException {
+    @Override public void writeCustom(@NotNull ScalarType scalarType, @Nullable Object value) throws IOException {
       if (value != null) {
         list.add(value);
       }
     }
 
-    @Override public void writeObject(InputFieldMarshaller marshaller) throws IOException {
+    @Override public void writeObject(@Nullable InputFieldMarshaller marshaller) throws IOException {
       if (marshaller != null) {
         SortedInputFieldMapWriter nestedWriter = new SortedInputFieldMapWriter(fieldNameComparator);
         marshaller.marshal(nestedWriter);
@@ -141,7 +143,7 @@ public class SortedInputFieldMapWriter implements InputFieldWriter {
       }
     }
 
-    @Override public void writeList(ListWriter listWriter) throws IOException {
+    @Override public void writeList(@Nullable ListWriter listWriter) throws IOException {
       if (listWriter != null) {
         ListItemWriter nestedListItemWriter = new ListItemWriter(fieldNameComparator);
         listWriter.write(nestedListItemWriter);
@@ -149,7 +151,7 @@ public class SortedInputFieldMapWriter implements InputFieldWriter {
       }
     }
 
-    @Override public void writeMap(Map<String, Object> value) throws IOException {
+    @Override public void writeMap(@Nullable Map<String, Object> value) throws IOException {
       if (value != null) {
         list.add(value);
       }

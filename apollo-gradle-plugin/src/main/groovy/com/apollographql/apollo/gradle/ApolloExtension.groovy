@@ -12,6 +12,7 @@ class ApolloExtension {
   final Property<Boolean> generateModelBuilder
   final Property<Boolean> useJavaBeansSemanticNaming
   final Property<Boolean> suppressRawTypesWarning
+  final Property<Boolean> generateKotlinModels
   final Property<String> schemaFilePath
   final Property<String> outputPackageName
   final Property<Map> customTypeMapping
@@ -31,6 +32,9 @@ class ApolloExtension {
 
     suppressRawTypesWarning = project.getObjects().property(Boolean.class)
     suppressRawTypesWarning.set(false)
+
+    generateKotlinModels = project.getObjects().property(Boolean.class)
+    generateKotlinModels.set(false)
 
     schemaFilePath = project.getObjects().property(String.class)
     schemaFilePath.set("")
@@ -60,6 +64,10 @@ class ApolloExtension {
 
   void setSuppressRawTypesWarning(Boolean suppressRawTypesWarning) {
     this.suppressRawTypesWarning.set(suppressRawTypesWarning)
+  }
+
+  void setGenerateKotlinModels(Boolean generateKotlinModels) {
+    this.generateKotlinModels.set(generateKotlinModels)
   }
 
   void setSchemaFilePath(String schemaFilePath) {

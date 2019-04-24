@@ -181,6 +181,7 @@ class ApolloPlugin implements Plugin<Project> {
       useJavaBeansSemanticNaming = project.apollo.useJavaBeansSemanticNaming
       outputPackageName = project.apollo.outputPackageName
       suppressRawTypesWarning = project.apollo.suppressRawTypesWarning
+      generateKotlinModels = project.apollo.generateKotlinModels
     }
   }
 

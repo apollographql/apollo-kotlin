@@ -15,7 +15,15 @@ private val JAVA_RESERVED_WORDS = arrayOf(
     "transient", "try", "true", "void", "volatile", "while"
 )
 
+private val KOTLIN_RESERVED_WORDS = arrayOf(
+    "as", "break", "class", "continue", "do", "else", "false", "for", "fun", "if", "in", "interface", "is", "null", "object", "package",
+    "return", "super", "this", "throw", "true", "try", "typealias", "typeof", "val", "var", "when", "while"
+)
+
 fun String.escapeJavaReservedWord() = if (JAVA_RESERVED_WORDS.contains(this)) "${this}_" else this
+
+fun String.escapeKotlinReservedWord() = if ((JAVA_RESERVED_WORDS + KOTLIN_RESERVED_WORDS).contains(
+        this)) "${this}_" else this
 
 fun String.toJavaBeansSemanticNaming(isBooleanField: Boolean): String {
   val prefix = if (isBooleanField) "is" else "get"
@@ -503,11 +511,13 @@ fun Number.castTo(type: TypeName): Number {
 }
 
 fun String.sha256(): String {
-    val bytes = toByteArray(charset = StandardCharsets.UTF_8)
-    val md = MessageDigest.getInstance("SHA-256")
-    val digest = md.digest(bytes)
-    return digest.fold("") { str, it -> str + "%02x".format(it) }
+  val bytes = toByteArray(charset = StandardCharsets.UTF_8)
+  val md = MessageDigest.getInstance("SHA-256")
+  val digest = md.digest(bytes)
+  return digest.fold("") { str, it -> str + "%02x".format(it) }
 }
+
+internal inline fun <T> T.applyIf(condition: Boolean, block: T.() -> Unit): T = if (condition) apply(block) else this
 
 object Util {
   const val RESPONSE_FIELD_MAPPER_TYPE_NAME: String = "Mapper"
