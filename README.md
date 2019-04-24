@@ -50,8 +50,10 @@ buildscript {
     classpath 'com.apollographql.apollo:apollo-gradle-plugin:x.y.z'
   }
 }
+```
 
-repositories {
+Then add the following to your app's build.gradle dependencies:
+```repositories {
     jcenter()
 }
 
@@ -72,8 +74,9 @@ buildscript {
     classpath 'com.apollographql.apollo:apollo-gradle-plugin:1.0.1-SNAPSHOT'
   }
 }
+```
 
-repositories {
+```repositories {
     jcenter()
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
 }
