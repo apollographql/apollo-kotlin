@@ -1,6 +1,7 @@
 package com.apollographql.apollo.compiler.ast.builder
 
-import com.apollographql.apollo.compiler.ast.*
+import com.apollographql.apollo.compiler.ast.FieldType
+import com.apollographql.apollo.compiler.ast.ObjectType
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.normalizeJsonValue
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.Condition

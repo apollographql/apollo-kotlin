@@ -85,7 +85,7 @@ data class HeroDetails(
             val inlineFragment = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType,
                     reader ->
                 when(conditionalType) {
-                    in listOf("Droid") -> AsDroid(reader)
+                    in AsDroid.POSSIBLE_TYPES -> AsDroid(reader)
                     else -> null
                 }
             }
@@ -282,6 +282,8 @@ data class HeroDetails(
                             null),
                     ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
                     )
+
+            val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
 
             operator fun invoke(reader: ResponseReader): AsDroid {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])

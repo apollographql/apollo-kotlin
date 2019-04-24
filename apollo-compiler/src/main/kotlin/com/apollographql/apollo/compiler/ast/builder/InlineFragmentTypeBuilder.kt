@@ -1,7 +1,6 @@
 package com.apollographql.apollo.compiler.ast.builder
 
 import com.apollographql.apollo.compiler.ast.FieldType
-import com.apollographql.apollo.compiler.ast.InlineFragmentRef
 import com.apollographql.apollo.compiler.ast.ObjectType
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.ir.InlineFragment
@@ -12,41 +11,35 @@ internal fun List<InlineFragment>.inlineFragmentField(
     schemaType: String,
     context: Context
 ): ObjectType.Field {
-  val superTypeName = type.replace("[", "").replace("]", "").replace("!", "").singularize().capitalize() +
+  val superInterfaceName = type.replace("[", "").replace("]", "").replace("!", "").singularize().capitalize() +
       schemaType.replace("[", "").replace("]", "").replace("!", "").singularize().capitalize()
-  val superType = context.addObjectType(superTypeName.escapeKotlinReservedWord()) { typeRef ->
-    ObjectType(
-        className = typeRef.name,
-        schemaName = "",
-        fields = emptyList(),
-        fragmentsType = null,
-        abstract = true
-    )
+  val superInterface = context.addObjectType(superInterfaceName.escapeKotlinReservedWord()) { typeRef ->
+    ObjectType.InlineFragmentSuper(className = typeRef.name)
   }
   val inlineFragmentRefs = associate { fragment ->
-    context.registerObjectType(
-        type = "As${fragment.typeCondition}",
-        schemaType = fragment.typeCondition,
-        fragmentSpreads = fragment.fragmentSpreads ?: emptyList(),
-        inlineFragments = emptyList(),
-        fields = fragment.fields,
-        superType = superType
-    ) to (fragment.possibleTypes ?: listOf(fragment.typeCondition))
+    val normalizedClassName = fragment.typeCondition.capitalize().escapeKotlinReservedWord()
+    val possibleTypes = fragment.possibleTypes ?: listOf(fragment.typeCondition)
+    context.addObjectType("As$normalizedClassName") { typeRef ->
+      ObjectType.InlineFragment(
+          className = typeRef.name,
+          fields = fragment.fields.map { it.ast(context) },
+          superInterface = superInterface,
+          possibleTypes = possibleTypes
+      )
+    } to possibleTypes
   }
-      .map { (typeRef, possibleTypes) -> InlineFragmentRef(typeRef, possibleTypes) }
   return ObjectType.Field(
       name = "inlineFragment",
       responseName = "__typename",
       schemaName = "__typename",
-      type = FieldType.InlineFragment(superType, inlineFragmentRefs),
+      type = FieldType.InlineFragment(superInterface, inlineFragmentRefs.keys.toList()),
       description = "",
       isOptional = true,
       isDeprecated = false,
       deprecationReason = "",
       arguments = emptyMap(),
-      conditions = flatMap { inlineFragment ->
-        inlineFragment.possibleTypes?.map { ObjectType.Field.Condition.Type(it) }
-            ?: listOf(ObjectType.Field.Condition.Type(inlineFragment.typeCondition))
+      conditions = inlineFragmentRefs.values.flatten().map {
+        ObjectType.Field.Condition.Type(it)
       }
   )
 }

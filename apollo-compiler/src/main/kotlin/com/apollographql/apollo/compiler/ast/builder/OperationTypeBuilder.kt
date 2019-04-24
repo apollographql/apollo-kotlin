@@ -10,7 +10,7 @@ internal fun Operation.ast(
     context: Context
 ): OperationType {
   val dataTypeRef = context.addObjectType(typeName = "Data") {
-    ObjectType(
+    ObjectType.Object(
         className = "Data",
         schemaName = "Data",
         fields = fields.map { it.ast(context) },

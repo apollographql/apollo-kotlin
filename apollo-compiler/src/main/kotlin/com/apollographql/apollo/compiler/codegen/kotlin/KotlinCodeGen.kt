@@ -224,12 +224,8 @@ internal object KotlinCodeGen {
             .build()
       }
       is FieldType.InlineFragment -> {
-        val conditionalBranches = fragmentRefs.map { (typeRef, conditionalTypes) ->
-          CodeBlock.of(
-              "in listOf(%L) -> %T(reader)",
-              conditionalTypes.joinToString(prefix = "\"", postfix = "\""),
-              typeRef.asTypeName()
-          )
+        val conditionalBranches = fragmentRefs.map { typeRef ->
+          CodeBlock.of("in %T.POSSIBLE_TYPES -> %T(reader)", typeRef.asTypeName(), typeRef.asTypeName())
         }
         CodeBlock.builder()
             .beginControlFlow("%L.readConditional(%L) { conditionalType, reader ->", reader, field)

@@ -29,7 +29,7 @@ internal fun List<Fragment>.astObjectFieldType(
   if (isEmpty()) {
     return null to null
   }
-  val type = ObjectType(
+  val type = ObjectType.Object(
       className = "Fragments",
       schemaName = "Fragments",
       fields = map { fragment ->

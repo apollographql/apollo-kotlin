@@ -4,8 +4,6 @@ internal class CustomTypes(map: Map<String, String>) : Map<String, String> by ma
 
 internal data class TypeRef(val name: String, val packageName: String = "")
 
-internal data class InlineFragmentRef(val type: TypeRef, val possibleTypes: List<String>)
-
 internal sealed class FieldType {
 
   sealed class Scalar : FieldType() {
@@ -32,7 +30,7 @@ internal sealed class FieldType {
 
   data class Object(val typeRef: TypeRef) : FieldType()
 
-  data class InlineFragment(val typeRef: TypeRef, val fragmentRefs: List<InlineFragmentRef>) : FieldType()
+  data class InlineFragment(val typeRef: TypeRef, val fragmentRefs: List<TypeRef>) : FieldType()
 
   data class Array(val rawType: FieldType) : FieldType()
 }
@@ -52,14 +50,32 @@ internal data class OperationType(
   }
 }
 
-internal data class ObjectType(
-    val className: String,
-    val schemaName: String,
-    val fields: List<Field>,
-    val fragmentsType: ObjectType?,
-    val abstract: Boolean = false,
-    val superType: TypeRef? = null
-) {
+internal sealed class ObjectType {
+
+  abstract val className: String
+
+  abstract val fields: List<Field>
+
+  data class Object(
+      override val className: String,
+      val schemaName: String,
+      override val fields: List<Field>,
+      val fragmentsType: ObjectType?
+  ) : ObjectType()
+
+  internal data class InlineFragmentSuper(
+      override val className: String
+  ) : ObjectType() {
+    override val fields: List<Field> = emptyList()
+  }
+
+  data class InlineFragment(
+      override val className: String,
+      override val fields: List<Field>,
+      val superInterface: TypeRef,
+      val possibleTypes: List<String>
+  ) : ObjectType()
+
   data class Field(
       val name: String,
       val responseName: String,

@@ -50,6 +50,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                     ResponseField.forDouble("height", "height", null, true, null)
                     )
 
+            val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
+
             operator fun invoke(reader: ResponseReader): AsHuman {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val height = reader.readDouble(RESPONSE_FIELDS[1])
@@ -78,7 +80,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                 val inlineFragment = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType,
                         reader ->
                     when(conditionalType) {
-                        in listOf("Human") -> AsHuman(reader)
+                        in AsHuman.POSSIBLE_TYPES -> AsHuman(reader)
                         else -> null
                     }
                 }

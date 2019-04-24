@@ -66,7 +66,7 @@ data class TestSetting(
             val inlineFragment = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType,
                     reader ->
                 when(conditionalType) {
-                    in listOf("SelectSetting") -> AsSelectSetting(reader)
+                    in AsSelectSetting.POSSIBLE_TYPES -> AsSelectSetting(reader)
                     else -> null
                 }
             }
@@ -104,6 +104,8 @@ data class TestSetting(
                     ResponseField.forList("list", "list", null, true, null)
                     )
 
+            val POSSIBLE_TYPES: Array<String> = arrayOf("StringListSettingValue")
+
             operator fun invoke(reader: ResponseReader): AsStringListSettingValue {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val list = reader.readList<String>(RESPONSE_FIELDS[1]) {
@@ -135,7 +137,8 @@ data class TestSetting(
                 val inlineFragment = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType,
                         reader ->
                     when(conditionalType) {
-                        in listOf("StringListSettingValue") -> AsStringListSettingValue(reader)
+                        in AsStringListSettingValue.POSSIBLE_TYPES ->
+                                AsStringListSettingValue(reader)
                         else -> null
                     }
                 }
@@ -206,6 +209,8 @@ data class TestSetting(
                     ResponseField.forList("options", "options", null, true, null)
                     )
 
+            val POSSIBLE_TYPES: Array<String> = arrayOf("SelectSetting")
+
             operator fun invoke(reader: ResponseReader): AsSelectSetting {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val value = reader.readObject<Value>(RESPONSE_FIELDS[1]) { reader ->
@@ -248,6 +253,8 @@ data class TestSetting(
                     ResponseField.forList("list", "list", null, true, null)
                     )
 
+            val POSSIBLE_TYPES: Array<String> = arrayOf("StringListSettingValue")
+
             operator fun invoke(reader: ResponseReader): AsStringListSettingValue1 {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val list = reader.readList<String>(RESPONSE_FIELDS[1]) {
@@ -279,7 +286,8 @@ data class TestSetting(
                 val inlineFragment = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType,
                         reader ->
                     when(conditionalType) {
-                        in listOf("StringListSettingValue") -> AsStringListSettingValue1(reader)
+                        in AsStringListSettingValue1.POSSIBLE_TYPES ->
+                                AsStringListSettingValue1(reader)
                         else -> null
                     }
                 }

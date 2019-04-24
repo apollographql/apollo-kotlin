@@ -166,6 +166,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
                     ResponseField.forDouble("height", "height", null, true, null)
                     )
 
+            val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
+
             operator fun invoke(reader: ResponseReader): AsHuman {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val name = reader.readString(RESPONSE_FIELDS[1])
@@ -258,7 +260,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
                 val inlineFragment = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType,
                         reader ->
                     when(conditionalType) {
-                        in listOf("Human") -> AsHuman(reader)
+                        in AsHuman.POSSIBLE_TYPES -> AsHuman(reader)
                         else -> null
                     }
                 }

@@ -9,10 +9,21 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.marshaller
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.responseFieldsPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFun
 import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
 internal fun ObjectType.typeSpec(): TypeSpec {
-  return if (abstract) {
-    TypeSpec
+  return when (this) {
+    is ObjectType.Object -> TypeSpec
+        .classBuilder(className)
+        .addModifiers(KModifier.DATA)
+        .primaryConstructor(primaryConstructorSpec)
+        .addProperties(fields.map { it.asPropertySpec(initializer = CodeBlock.of(it.name)) })
+        .addType(companionObjectSpec)
+        .applyIf(fragmentsType != null) { addType(fragmentsType!!.fragmentsTypeSpec) }
+        .addFunction(marshallerFunSpec(fields))
+        .build()
+
+    is ObjectType.InlineFragmentSuper -> TypeSpec
         .interfaceBuilder(className)
         .addFunction(
             FunSpec.builder("marshaller")
@@ -20,23 +31,19 @@ internal fun ObjectType.typeSpec(): TypeSpec {
                 .returns(ResponseFieldMarshaller::class)
                 .build()
         )
-        .applyIf(superType != null) { addSuperinterface(superType!!.asTypeName()) }
         .build()
 
-  } else {
-    TypeSpec
+    is ObjectType.InlineFragment -> TypeSpec
         .classBuilder(className)
         .addModifiers(KModifier.DATA)
         .primaryConstructor(primaryConstructorSpec)
         .addProperties(fields.map { it.asPropertySpec(initializer = CodeBlock.of(it.name)) })
-        .applyIf(superType != null) { addSuperinterface(superType!!.asTypeName()) }
+        .addSuperinterface(superInterface.asTypeName())
         .addType(companionObjectSpec)
-        .applyIf(fragmentsType != null) { addType(fragmentsType!!.fragmentsTypeSpec) }
-        .addFunction(marshallerFunSpec(fields, superType != null))
+        .addFunction(marshallerFunSpec(fields = fields, override = true))
         .build()
   }
 }
-
 
 private val ObjectType.primaryConstructorSpec: FunSpec
   get() {
@@ -56,6 +63,22 @@ private val ObjectType.companionObjectSpec: TypeSpec
     return TypeSpec.companionObjectBuilder()
         .addProperty(responseFieldsPropertySpec(fields))
         .addFunction(fields.toMapperFun(ClassName.bestGuess(className)))
+        .build()
+  }
+
+private val ObjectType.InlineFragment.companionObjectSpec: TypeSpec
+  get() {
+    return TypeSpec.companionObjectBuilder()
+        .addProperty(responseFieldsPropertySpec(fields))
+        .addFunction(fields.toMapperFun(ClassName.bestGuess(className)))
+        .addProperty(PropertySpec.builder("POSSIBLE_TYPES",
+            Array<String>::class.asClassName().parameterizedBy(String::class.asClassName()))
+            .initializer(possibleTypes
+                .map { CodeBlock.of("%S", it) }
+                .joinToCode(prefix = "arrayOf(", separator = ", ", suffix = ")")
+            )
+            .build()
+        )
         .build()
   }
 

@@ -72,7 +72,7 @@ internal fun OperationType.typeSpec(targetPackage: String) =
         )
         .addTypes(nestedObjects.map { (ref, type) ->
           if (ref == data) {
-            type.toOperationDataTypeSpec(data.name)
+            (type as ObjectType.Object).toOperationDataTypeSpec(data.name)
           } else {
             type.typeSpec()
           }
@@ -168,7 +168,7 @@ private val InputType.variablesMarshallerSpec: FunSpec
         .build()
   }
 
-private fun ObjectType.toOperationDataTypeSpec(name: String) =
+private fun ObjectType.Object.toOperationDataTypeSpec(name: String) =
     TypeSpec
         .classBuilder(name)
         .addModifiers(KModifier.DATA)

@@ -51,8 +51,7 @@ internal fun Context.registerObjectType(
     schemaType: String,
     fragmentSpreads: List<String>,
     inlineFragments: List<InlineFragment>,
-    fields: List<Field>,
-    superType: TypeRef? = null
+    fields: List<Field>
 ): TypeRef {
   val inlineFragmentField = inlineFragments.takeIf { it.isNotEmpty() }?.inlineFragmentField(
       type = type,
@@ -69,14 +68,13 @@ internal fun Context.registerObjectType(
 
   val normalizedClassName = type.removeSuffix("!").capitalize().escapeKotlinReservedWord()
   return addObjectType(normalizedClassName) { typeRef ->
-    ObjectType(
+    ObjectType.Object(
         className = typeRef.name,
         schemaName = type,
         fields = fields.map { it.ast(this) }
             .let { if (fragmentsField != null) it + fragmentsField else it }
             .let { if (inlineFragmentField != null) it + inlineFragmentField else it },
-        fragmentsType = fragmentsObjectType,
-        superType = superType
+        fragmentsType = fragmentsObjectType
     )
   }
 }
