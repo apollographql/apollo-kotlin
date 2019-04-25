@@ -13,6 +13,7 @@ dependencies {
   implementation project(':apollo-compiler')
   implementation dep.gradleNodePlugin
   implementation dep.androidPlugin
+  implementation dep.moshi
 
   testImplementation dep.junit
   testImplementation(dep.spock) {
