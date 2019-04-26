@@ -1,8 +1,8 @@
 def versions = [
     apolloVersion                : '1.0.0-alpha5',
     cacheVersion                 : '2.0.2',
-    okHttpVersion                : '3.11.0',
-    kotlinVersion                : '1.3.0',
+    okHttpVersion                : '3.12.2',
+    kotlinVersion                : '1.3.30',
     supportLibVersion            : '25.3.1',
     mockito                      : '1.9.5',
     testRunner                   : '0.5',
@@ -19,7 +19,7 @@ ext.androidConfig = [
 ]
 
 ext.dep = [
-    androidPlugin           : 'com.android.tools.build:gradle:3.2.1',
+    androidPlugin           : 'com.android.tools.build:gradle:3.3.0',
     apolloPlugin            : "com.apollographql.apollo:apollo-gradle-plugin:$versions.apolloVersion",
     apolloAndroidSupport    : "com.apollographql.apollo:apollo-android-support:$versions.apolloVersion",
     apolloRuntime           : "com.apollographql.apollo:apollo-runtime:$versions.apolloVersion",

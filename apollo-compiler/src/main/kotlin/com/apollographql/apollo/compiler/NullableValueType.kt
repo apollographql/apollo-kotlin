@@ -6,9 +6,4 @@ enum class NullableValueType(val value: String) {
   GUAVA_OPTIONAL("guavaOptional"),
   JAVA_OPTIONAL("javaOptional"),
   INPUT_TYPE("inputType");
-
-  companion object {
-    @JvmStatic
-    fun findByValue(value: String): NullableValueType? = NullableValueType.values().find { it.value == value }
-  }
 }

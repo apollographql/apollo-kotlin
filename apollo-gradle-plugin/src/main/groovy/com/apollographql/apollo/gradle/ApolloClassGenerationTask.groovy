@@ -34,7 +34,7 @@ class ApolloClassGenerationTask extends SourceTask {
     String nullableValueTypeStr = this.nullableValueType.get()
     NullableValueType nullableValueType = null
     if (nullableValueTypeStr != null) {
-      nullableValueType = NullableValueType.findByValue(nullableValueTypeStr)
+      nullableValueType = NullableValueType.values().find { it.value == nullableValueTypeStr }
     }
     inputs.outOfDate(new Action<InputFileDetails>() {
       @Override
