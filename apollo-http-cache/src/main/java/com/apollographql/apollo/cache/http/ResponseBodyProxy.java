@@ -10,7 +10,6 @@ import java.io.IOException;
 import okhttp3.MediaType;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import okhttp3.internal.http.ExchangeCodec;
 import okio.Buffer;
 import okio.BufferedSource;
 import okio.Okio;
@@ -106,7 +105,7 @@ final class ResponseBodyProxy extends ResponseBody {
       if (closed) return;
       closed = true;
 
-      if (discard(this, ExchangeCodec.DISCARD_STREAM_TIMEOUT_MILLIS, MILLISECONDS)) {
+      if (discard(this, 100, MILLISECONDS)) {
         responseBodySource.close();
         commitCache();
       } else {
