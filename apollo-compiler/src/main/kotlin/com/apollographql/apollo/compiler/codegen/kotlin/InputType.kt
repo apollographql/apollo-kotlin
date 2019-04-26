@@ -119,7 +119,7 @@ internal val InputType.Field.writeCodeBlock: CodeBlock
       }
       is FieldType.Object -> {
         if (isOptional) {
-          CodeBlock.of("if (%L.defined) writer.writeString(%S, %L.value?.marshaller())\n", name, schemaName, name)
+          CodeBlock.of("if (%L.defined) writer.writeObject(%S, %L.value?.marshaller())\n", name, schemaName, name)
         } else {
           CodeBlock.of("writer.writeObject(%S, %L.marshaller())\n", schemaName, name)
         }
