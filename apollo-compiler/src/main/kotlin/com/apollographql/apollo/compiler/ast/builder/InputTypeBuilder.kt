@@ -25,7 +25,7 @@ internal fun TypeDeclaration.ast(
           name = field.name.decapitalize().escapeKotlinReservedWord(),
           schemaName = field.name,
           type = inputFieldType,
-          description = field.description,
+          description = field.description ?: "",
           isOptional = !field.type.endsWith("!"),
           defaultValue = if (inputFieldType.isCustomType) null else field.defaultValue?.normalizeJsonValue(field.type)
       )

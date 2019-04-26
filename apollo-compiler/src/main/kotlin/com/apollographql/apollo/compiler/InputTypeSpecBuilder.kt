@@ -57,7 +57,7 @@ class InputTypeSpecBuilder(
           .associate { it.name.decapitalize().escapeJavaReservedWord() to it.defaultValue }
       val javaDocs = fields
           .filter { !it.description.isNullOrBlank() }
-          .associate { it.name.decapitalize().escapeJavaReservedWord() to it.description }
+          .associate { it.name.decapitalize().escapeJavaReservedWord() to it.description!! }
       return addMethod(BuilderTypeSpecBuilder.builderFactoryMethod())
           .addType(
               BuilderTypeSpecBuilder(
