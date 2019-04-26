@@ -31,6 +31,7 @@ import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
 import okio.Buffer;
+import okio.Timeout;
 
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.fail;
@@ -201,6 +202,10 @@ public class ApolloServerInterceptorTest {
     }
 
     @Override public Call clone() {
+      return null;
+    }
+
+    @Override public Timeout timeout() {
       return null;
     }
   }
