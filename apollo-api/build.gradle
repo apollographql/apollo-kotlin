@@ -10,6 +10,8 @@ dependencies {
 
   testImplementation dep.junit
   testImplementation dep.truth
+  testImplementation dep.jsr250
+  testImplementation dep.jetbrainsAnnotations
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
