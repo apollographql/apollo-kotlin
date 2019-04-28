@@ -40,7 +40,6 @@ android {
 }
 
 dependencies {
-  compileOnly dep.jsr250
   compileOnly dep.jetbrainsAnnotations
 
   implementation dep.apolloRuntime

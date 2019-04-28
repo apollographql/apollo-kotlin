@@ -17,7 +17,6 @@ class InputTypeSpecBuilder(
 
   fun build(): TypeSpec =
       TypeSpec.classBuilder(objectClassName)
-          .addAnnotation(Annotations.GENERATED_BY_APOLLO)
           .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
           .addSuperinterface(ClassNames.INPUT_TYPE)
           .addConstructor()

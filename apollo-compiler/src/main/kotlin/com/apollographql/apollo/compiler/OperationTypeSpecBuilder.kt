@@ -17,7 +17,6 @@ class OperationTypeSpecBuilder(
   override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec {
     val newContext = context.copy(reservedTypeNames = context.reservedTypeNames.plus(operationTypeName))
     return TypeSpec.classBuilder(operationTypeName)
-        .addAnnotation(Annotations.GENERATED_BY_APOLLO)
         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
         .addSuperinterface(operationSuperInterface(context))
         .addOperationId(operation)

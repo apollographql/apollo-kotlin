@@ -30,7 +30,6 @@ android {
 }
 
 dependencies {
-  implementation dep.jsr250
   implementation dep.jetbrainsAnnotations
 
   implementation project(':apollo-runtime')
