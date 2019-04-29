@@ -12,7 +12,6 @@ import com.apollographql.apollo.coroutines.toDeferred
 import com.apollographql.apollo.kotlinsample.GithubRepositoryCommitsQuery
 import com.apollographql.apollo.kotlinsample.KotlinSampleApp
 import com.apollographql.apollo.kotlinsample.R
-import com.apollographql.apollo.kotlinsample.repositories.CommitsAdapter
 import kotlinx.android.synthetic.main.activity_commits.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

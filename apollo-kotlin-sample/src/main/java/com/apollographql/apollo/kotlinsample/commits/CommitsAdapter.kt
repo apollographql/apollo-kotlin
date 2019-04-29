@@ -1,4 +1,4 @@
-package com.apollographql.apollo.kotlinsample.repositories
+package com.apollographql.apollo.kotlinsample.commits
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
