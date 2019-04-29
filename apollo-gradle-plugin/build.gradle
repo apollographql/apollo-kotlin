@@ -7,7 +7,6 @@ sourceSets.main.groovy.srcDirs = ["src/main/java", "src/main/groovy"]
 
 dependencies {
   compileOnly gradleApi()
-  compileOnly dep.jsr250
 
   implementation localGroovy()
   implementation project(':apollo-compiler')

@@ -10,7 +10,6 @@ ext.apolloRuntimeCompileDeps = [
 ]
 
 ext.apolloApiCompileDeps = [
-    dep.jsr250,
     dep.jetbrainsAnnotations,
 		dep.okHttp
 ]

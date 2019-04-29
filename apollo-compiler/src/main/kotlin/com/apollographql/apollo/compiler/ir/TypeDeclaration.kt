@@ -61,7 +61,6 @@ data class TypeDeclaration(
         .build()
 
     return TypeSpec.enumBuilder(name.capitalize())
-        .addAnnotation(Annotations.GENERATED_BY_APOLLO)
         .addModifiers(Modifier.PUBLIC)
         .addField(FieldSpec.builder(ClassNames.STRING, "rawValue", Modifier.PRIVATE, Modifier.FINAL).build())
         .addMethod(MethodSpec.constructorBuilder()

@@ -13,7 +13,6 @@ class CustomEnumTypeSpecBuilder(
 ) {
   fun build(): TypeSpec =
       TypeSpec.enumBuilder(className(context))
-          .addAnnotation(Annotations.GENERATED_BY_APOLLO)
           .addSuperinterface(ScalarType::class.java)
           .addModifiers(Modifier.PUBLIC)
           .addEnumConstants()
