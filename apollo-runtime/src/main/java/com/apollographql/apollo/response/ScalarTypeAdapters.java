@@ -1,5 +1,6 @@
 package com.apollographql.apollo.response;
 
+import com.apollographql.apollo.api.GraphqlUpload;
 import com.apollographql.apollo.api.ScalarType;
 
 import java.util.LinkedHashMap;
@@ -93,6 +94,17 @@ public final class ScalarTypeAdapters {
         } else {
           throw new IllegalArgumentException("Can't map: " + value + " to Double");
         }
+      }
+    });
+    adapters.put(GraphqlUpload.class, new CustomTypeAdapter<GraphqlUpload>() {
+      @Override public GraphqlUpload decode(@NotNull CustomTypeValue value) {
+        return null;
+      }
+
+      @NotNull
+      @Override
+      public CustomTypeValue encode(@NotNull GraphqlUpload value) {
+        return new CustomTypeValue.GraphQLString(null);
       }
     });
     return adapters;

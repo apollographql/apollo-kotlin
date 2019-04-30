@@ -1,5 +1,6 @@
 package com.apollographql.apollo.internal.interceptor;
 
+import com.apollographql.apollo.api.GraphqlUpload;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.cache.http.HttpCache;
@@ -16,16 +17,19 @@ import com.apollographql.apollo.internal.json.JsonWriter;
 import com.apollographql.apollo.request.RequestHeaders;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.Executor;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
-import java.util.concurrent.Executor;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -133,6 +137,9 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       boolean writeQueryDocument) throws IOException {
     RequestBody requestBody = RequestBody.create(MEDIA_TYPE, httpPostRequestBody(operation, scalarTypeAdapters,
         writeQueryDocument));
+
+    requestBody = transformToMultiPartIfUploadExists(requestBody, operation);
+
     Request.Builder requestBuilder = new Request.Builder()
         .url(serverUrl)
         .post(requestBody);
@@ -239,5 +246,61 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     jsonWriter.endObject();
     jsonWriter.close();
     urlBuilder.addQueryParameter("extensions", buffer.readUtf8());
+  }
+
+  static RequestBody transformToMultiPartIfUploadExists(RequestBody originalBody, Operation operation)
+      throws IOException {
+    ArrayList<GraphqlUpload> allUploads = new ArrayList<>();
+    HashMap<String, String[]> filesMap = new HashMap<>();
+    int fileIndex = 0;
+    for (String variableName : operation.variables().valueMap().keySet()) {
+      Object value = operation.variables().valueMap().get(variableName);
+      if (value instanceof GraphqlUpload) {
+        GraphqlUpload upload = (GraphqlUpload)value;
+        allUploads.add(upload);
+        filesMap.put("" + fileIndex, new String[] { "variables." + variableName });
+        fileIndex++;
+      }
+      else if (value instanceof  GraphqlUpload[]) {
+        int varFileIndex = 0;
+        GraphqlUpload[] uploads = (GraphqlUpload[])value;
+        for (GraphqlUpload upload: uploads) {
+          allUploads.add(upload);
+          filesMap.put("" + fileIndex, new String[] { "variables." + variableName + "." + varFileIndex });
+          varFileIndex++;
+          fileIndex++;
+        }
+      }
+    }
+    if (allUploads.isEmpty()) {
+      return originalBody;
+    } else {
+      return httpMultipartRequestBody(originalBody, filesMap, allUploads.toArray(new GraphqlUpload[0]));
+    }
+  }
+
+  static RequestBody httpMultipartRequestBody(RequestBody operations, HashMap<String, String[]> filesMap,
+      GraphqlUpload[] uploads) throws IOException {
+    Buffer buffer = new Buffer();
+    JsonWriter jsonWriter = JsonWriter.of(buffer);
+    jsonWriter.setSerializeNulls(true);
+    jsonWriter.beginObject();
+    for (String key: filesMap.keySet()) {
+      jsonWriter.name(key).beginArray();
+      jsonWriter.value((filesMap.get(key))[0]);
+      jsonWriter.endArray();
+    }
+    jsonWriter.endObject();
+    jsonWriter.close();
+    MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder()
+        .setType(MultipartBody.FORM)
+        .addFormDataPart("operations", null, operations)
+        .addFormDataPart("map", null, RequestBody.create(MEDIA_TYPE, buffer.readByteString()));
+    int index = 0;
+    for (GraphqlUpload upload: uploads) {
+      multipartBodyBuilder.addFormDataPart("" + index, upload.file.getName(),
+          RequestBody.create(MediaType.parse(upload.mimetype), upload.file));
+    }
+    return multipartBodyBuilder.build();
   }
 }
