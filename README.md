@@ -53,7 +53,9 @@ buildscript {
 ```
 
 Then add the following to your app's build.gradle dependencies:
-```repositories {
+
+```groovy
+repositories {
     jcenter()
 }
 
@@ -76,7 +78,8 @@ buildscript {
 }
 ```
 
-```repositories {
+```groovy
+repositories {
     jcenter()
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
 }
