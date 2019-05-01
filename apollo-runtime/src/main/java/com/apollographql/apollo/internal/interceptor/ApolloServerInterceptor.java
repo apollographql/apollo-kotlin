@@ -259,16 +259,15 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 
       if (value instanceof GraphqlUpload) {
-        GraphqlUpload upload = (GraphqlUpload)value;
+        GraphqlUpload upload = (GraphqlUpload) value;
         String fileIndexText = "" + fileIndex;
         filesMap.put(fileIndexText, new String[] { "variables." + variableName });
-        allUploads.put(fileIndexText, upload );
+        allUploads.put(fileIndexText, upload);
         fileIndex++;
-      }
-      else if (value instanceof Collection<?> &&
-          ((Collection<Object>)value).size() > 0 &&
-          ((Collection<Object>)value).iterator().next() instanceof GraphqlUpload) {
-        Collection<GraphqlUpload> uploads = (Collection<GraphqlUpload>)value;
+      } else if (value instanceof Collection<?>
+          && ((Collection<Object>) value).size() > 0
+          && ((Collection<Object>) value).iterator().next() instanceof GraphqlUpload) {
+        Collection<GraphqlUpload> uploads = (Collection<GraphqlUpload>) value;
         int varFileIndex = 0;
         for (GraphqlUpload upload: uploads) {
           String fileIndexText = "" + fileIndex;
