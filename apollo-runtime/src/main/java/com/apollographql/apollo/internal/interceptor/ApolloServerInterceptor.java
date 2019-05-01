@@ -18,7 +18,7 @@ import com.apollographql.apollo.request.RequestHeaders;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.Executor;
 
@@ -250,23 +250,30 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
   static RequestBody transformToMultiPartIfUploadExists(RequestBody originalBody, Operation operation)
       throws IOException {
-    ArrayList<GraphqlUpload> allUploads = new ArrayList<>();
+    //ArrayList<GraphqlUpload> allUploads = new ArrayList<>();
     HashMap<String, String[]> filesMap = new HashMap<>();
+    HashMap<String, GraphqlUpload> allUploads = new HashMap<>();
     int fileIndex = 0;
     for (String variableName : operation.variables().valueMap().keySet()) {
       Object value = operation.variables().valueMap().get(variableName);
+
+
       if (value instanceof GraphqlUpload) {
         GraphqlUpload upload = (GraphqlUpload)value;
-        allUploads.add(upload);
-        filesMap.put("" + fileIndex, new String[] { "variables." + variableName });
+        String fileIndexText = "" + fileIndex;
+        filesMap.put(fileIndexText, new String[] { "variables." + variableName });
+        allUploads.put(fileIndexText, upload );
         fileIndex++;
       }
-      else if (value instanceof  GraphqlUpload[]) {
+      else if (value instanceof Collection<?> &&
+          ((Collection<Object>)value).size() > 0 &&
+          ((Collection<Object>)value).iterator().next() instanceof GraphqlUpload) {
+        Collection<GraphqlUpload> uploads = (Collection<GraphqlUpload>)value;
         int varFileIndex = 0;
-        GraphqlUpload[] uploads = (GraphqlUpload[])value;
         for (GraphqlUpload upload: uploads) {
-          allUploads.add(upload);
-          filesMap.put("" + fileIndex, new String[] { "variables." + variableName + "." + varFileIndex });
+          String fileIndexText = "" + fileIndex;
+          filesMap.put(fileIndexText, new String[] { "variables." + variableName + "." + varFileIndex });
+          allUploads.put(fileIndexText, upload);
           varFileIndex++;
           fileIndex++;
         }
@@ -275,12 +282,12 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     if (allUploads.isEmpty()) {
       return originalBody;
     } else {
-      return httpMultipartRequestBody(originalBody, filesMap, allUploads.toArray(new GraphqlUpload[0]));
+      return httpMultipartRequestBody(originalBody, filesMap, allUploads);
     }
   }
 
   static RequestBody httpMultipartRequestBody(RequestBody operations, HashMap<String, String[]> filesMap,
-      GraphqlUpload[] uploads) throws IOException {
+      HashMap<String, GraphqlUpload> uploads) throws IOException {
     Buffer buffer = new Buffer();
     JsonWriter jsonWriter = JsonWriter.of(buffer);
     jsonWriter.setSerializeNulls(true);
@@ -296,11 +303,12 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         .setType(MultipartBody.FORM)
         .addFormDataPart("operations", null, operations)
         .addFormDataPart("map", null, RequestBody.create(MEDIA_TYPE, buffer.readByteString()));
-    int index = 0;
-    for (GraphqlUpload upload: uploads) {
-      multipartBodyBuilder.addFormDataPart("" + index, upload.file.getName(),
+    for (String key : uploads.keySet()) {
+      GraphqlUpload upload = uploads.get(key);
+      multipartBodyBuilder.addFormDataPart(key, upload.file.getName(),
           RequestBody.create(MediaType.parse(upload.mimetype), upload.file));
     }
     return multipartBodyBuilder.build();
   }
+
 }

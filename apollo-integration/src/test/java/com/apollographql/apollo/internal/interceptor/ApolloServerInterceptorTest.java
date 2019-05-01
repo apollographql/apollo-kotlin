@@ -77,6 +77,29 @@ public class ApolloServerInterceptorTest {
     interceptor.httpPostCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true);
   }
 
+  @Test public void testDefaultHttpCall1() throws Exception {
+    Predicate<Request> requestAssertPredicate = new Predicate<Request>() {
+      @Override public boolean apply(@Nullable Request request) {
+        assertThat(request).isNotNull();
+        assertDefaultRequestHeaders(request);
+        assertThat(request.header(HttpCache.CACHE_KEY_HEADER)).isNull();
+        assertThat(request.header(HttpCache.CACHE_FETCH_STRATEGY_HEADER)).isNull();
+        assertThat(request.header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER)).isNull();
+        assertThat(request.header(HttpCache.CACHE_EXPIRE_AFTER_READ_HEADER)).isNull();
+        assertThat(request.header(HttpCache.CACHE_PREFETCH_HEADER)).isNull();
+        assertRequestBody(request);
+        return true;
+      }
+    };
+
+    ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
+        new AssertHttpCallFactory(requestAssertPredicate), null, false,
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
+        new ApolloLogger(Optional.<Logger>absent()));
+
+    interceptor.httpCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true);
+  }
+
   @Test public void testCachedHttpCall() throws Exception {
     ScalarTypeAdapters scalarTypeAdapters =
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap());

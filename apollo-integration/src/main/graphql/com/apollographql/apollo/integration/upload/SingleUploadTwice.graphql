@@ -1,0 +1,14 @@
+mutation SingleUploadTwice($file1: Upload!, $file2: Upload!) {
+  file1: singleUpload(file: $file1) {
+    id
+    path
+    filename
+    mimetype
+  }
+  file2: singleUpload(file: $file2) {
+    id
+    path
+    filename
+    mimetype
+  }
+}
