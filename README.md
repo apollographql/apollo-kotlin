@@ -243,6 +243,28 @@ apollo {
 }
 ```
 
+### Support File Upload
+
+Apollo supports file uploading over [graphql-multipart-request-spec](https://github.com/jaydenseric/graphql-multipart-request-spec).
+
+You need to define this mapping in your build.gradle file.
+
+```gradle
+apollo {
+  customTypeMapping = [
+    "Upload" : "com.apollographql.apollo.api.GraphqlUpload"
+  ]
+}
+```
+
+Then create your mutation with mimetype and a valid `File`.
+
+```java
+  mutationSingle = SingleUploadMutation.builder()
+        .file(new GraphqlUpload("image/jpg", new File("/my/image.jpg")))
+        .build();
+```
+
 ## Support For Cached Responses
 
 Apollo GraphQL client allows you to cache responses, making it suitable for use even while offline. The client can be configured with 3 levels of caching:
