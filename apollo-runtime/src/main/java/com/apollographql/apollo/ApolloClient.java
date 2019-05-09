@@ -91,6 +91,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final List<ApolloInterceptor> applicationInterceptors;
   private final boolean enableAutoPersistedQueries;
   private final SubscriptionManager subscriptionManager;
+  private final boolean useHttpGetMethodForQueries;
 
   ApolloClient(HttpUrl serverUrl,
       Call.Factory httpCallFactory,
@@ -104,7 +105,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       ApolloLogger logger,
       List<ApolloInterceptor> applicationInterceptors,
       boolean enableAutoPersistedQueries,
-      SubscriptionManager subscriptionManager) {
+      SubscriptionManager subscriptionManager,
+      boolean useHttpGetMethodForQueries) {
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
     this.httpCache = httpCache;
@@ -118,6 +120,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     this.applicationInterceptors = applicationInterceptors;
     this.enableAutoPersistedQueries = enableAutoPersistedQueries;
     this.subscriptionManager = subscriptionManager;
+    this.useHttpGetMethodForQueries = useHttpGetMethodForQueries;
   }
 
   @Override
@@ -265,6 +268,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .refetchQueries(Collections.<Query>emptyList())
         .refetchQueryNames(Collections.<OperationName>emptyList())
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
+        .useHttpGetMethodForQueries(useHttpGetMethodForQueries)
         .build();
   }
 
@@ -286,6 +290,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     Optional<SubscriptionTransport.Factory> subscriptionTransportFactory = Optional.absent();
     Optional<Map<String, Object>> subscriptionConnectionParams = Optional.absent();
     long subscriptionHeartbeatTimeout = -1;
+    boolean useHttpGetMethodForQueries;
 
     Builder() {
     }
@@ -501,6 +506,17 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
+     * Sets flag whether GraphQL queries should be sent via HTTP GET requests.
+     *
+     * @param useHttpGetMethodForQueries {@code true} if HTTP GET requests should be used, {@code false} otherwise.
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
+    public Builder useHttpGetMethodForQueries(boolean useHttpGetMethodForQueries) {
+      this.useHttpGetMethodForQueries = useHttpGetMethodForQueries;
+      return this;
+    }
+
+    /**
      * Builds the {@link ApolloClient} instance using the configured values.
      *
      * Note that if the {@link #dispatcher} is not called, then a default {@link Executor} is used.
@@ -558,7 +574,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
           apolloLogger,
           applicationInterceptors,
           enableAutoPersistedQueries,
-          subscriptionManager);
+          subscriptionManager,
+          useHttpGetMethodForQueries);
     }
 
     private Executor defaultDispatcher() {

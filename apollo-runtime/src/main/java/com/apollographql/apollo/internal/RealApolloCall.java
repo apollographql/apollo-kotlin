@@ -73,6 +73,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final AtomicReference<CallState> state = new AtomicReference<>(IDLE);
   final AtomicReference<Callback<T>> originalCallback = new AtomicReference<>();
   final Optional<Operation.Data> optimisticUpdates;
+  final boolean useHttpGetMethodForQueries;
 
   public static <T> Builder<T> builder() {
     return new Builder<>();
@@ -117,6 +118,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     enableAutoPersistedQueries = builder.enableAutoPersistedQueries;
     interceptorChain = prepareInterceptorChain(operation);
     optimisticUpdates = builder.optimisticUpdates;
+    useHttpGetMethodForQueries = builder.useHttpGetMethodForQueries;
   }
 
   @Override public void enqueue(@Nullable final Callback<T> responseCallback) {
@@ -378,7 +380,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
         scalarTypeAdapters, logger));
     interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCachePolicy, false, scalarTypeAdapters,
-        logger));
+        logger, useHttpGetMethodForQueries));
 
     return new RealApolloInterceptorChain(interceptors);
   }
@@ -404,6 +406,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     ApolloCallTracker tracker;
     boolean enableAutoPersistedQueries;
     Optional<Operation.Data> optimisticUpdates = Optional.absent();
+    boolean useHttpGetMethodForQueries;
 
     public Builder<T> operation(Operation operation) {
       this.operation = operation;
@@ -498,6 +501,11 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
     public Builder<T> optimisticUpdates(Optional<Operation.Data> optimisticUpdates) {
       this.optimisticUpdates = optimisticUpdates;
+      return this;
+    }
+
+    public Builder<T> useHttpGetMethodForQueries(boolean useHttpGetMethodForQueries) {
+      this.useHttpGetMethodForQueries = useHttpGetMethodForQueries;
       return this;
     }
 
