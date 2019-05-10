@@ -17,9 +17,10 @@ import com.apollographql.apollo.internal.json.JsonWriter;
 import com.apollographql.apollo.request.RequestHeaders;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.concurrent.Executor;
 
 import org.jetbrains.annotations.NotNull;
@@ -250,50 +251,41 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
   static RequestBody transformToMultiPartIfUploadExists(RequestBody originalBody, Operation operation)
       throws IOException {
-    //ArrayList<GraphqlUpload> allUploads = new ArrayList<>();
-    HashMap<String, String[]> filesMap = new HashMap<>();
-    HashMap<String, GraphqlUpload> allUploads = new HashMap<>();
-    int fileIndex = 0;
+    ArrayList<FileUploadMeta> allUploads = new ArrayList<>();
     for (String variableName : operation.variables().valueMap().keySet()) {
       Object value = operation.variables().valueMap().get(variableName);
 
-
       if (value instanceof GraphqlUpload) {
         GraphqlUpload upload = (GraphqlUpload) value;
-        String fileIndexText = "" + fileIndex;
-        filesMap.put(fileIndexText, new String[] { "variables." + variableName });
-        allUploads.put(fileIndexText, upload);
-        fileIndex++;
+        String key = "variables." + variableName;
+        allUploads.add(new FileUploadMeta(key, upload.mimetype, upload.file));
       } else if (value instanceof Collection<?>
           && ((Collection<Object>) value).size() > 0
           && ((Collection<Object>) value).iterator().next() instanceof GraphqlUpload) {
         Collection<GraphqlUpload> uploads = (Collection<GraphqlUpload>) value;
         int varFileIndex = 0;
         for (GraphqlUpload upload: uploads) {
-          String fileIndexText = "" + fileIndex;
-          filesMap.put(fileIndexText, new String[] { "variables." + variableName + "." + varFileIndex });
-          allUploads.put(fileIndexText, upload);
+          String key = "variables." + variableName + "." + varFileIndex;
+          allUploads.add(new FileUploadMeta(key, upload.mimetype, upload.file));
           varFileIndex++;
-          fileIndex++;
         }
       }
     }
     if (allUploads.isEmpty()) {
       return originalBody;
     } else {
-      return httpMultipartRequestBody(originalBody, filesMap, allUploads);
+      return httpMultipartRequestBody(originalBody, allUploads);
     }
   }
 
-  static RequestBody httpMultipartRequestBody(RequestBody operations, HashMap<String, String[]> filesMap,
-      HashMap<String, GraphqlUpload> uploads) throws IOException {
+  static RequestBody httpMultipartRequestBody(RequestBody operations, ArrayList<FileUploadMeta> fileUploads)
+      throws IOException {
     Buffer buffer = new Buffer();
     JsonWriter jsonWriter = JsonWriter.of(buffer);
-    jsonWriter.setSerializeNulls(true);
     jsonWriter.beginObject();
-    for (String key: filesMap.keySet()) {
-      jsonWriter.name(key).beginArray();
-      jsonWriter.value((filesMap.get(key))[0]);
+    for (int i = 0; i < fileUploads.size(); i++) {
+      jsonWriter.name("" + i).beginArray();
+      jsonWriter.value(fileUploads.get(i).key);
       jsonWriter.endArray();
     }
     jsonWriter.endObject();
@@ -302,12 +294,24 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         .setType(MultipartBody.FORM)
         .addFormDataPart("operations", null, operations)
         .addFormDataPart("map", null, RequestBody.create(MEDIA_TYPE, buffer.readByteString()));
-    for (String key : uploads.keySet()) {
-      GraphqlUpload upload = uploads.get(key);
-      multipartBodyBuilder.addFormDataPart(key, upload.file.getName(),
-          RequestBody.create(MediaType.parse(upload.mimetype), upload.file));
+    for (int i = 0; i < fileUploads.size(); i++) {
+      FileUploadMeta fileMeta = fileUploads.get(i);
+      multipartBodyBuilder.addFormDataPart("" + i, fileMeta.file.getName(),
+          RequestBody.create(MediaType.parse(fileMeta.mimetype), fileMeta.file));
     }
     return multipartBodyBuilder.build();
+  }
+
+  private static class FileUploadMeta {
+    public String key;
+    public String mimetype;
+    public File file;
+
+    FileUploadMeta(String key, String mimetype, File file) {
+      this.key = key;
+      this.mimetype = mimetype;
+      this.file = file;
+    }
   }
 
 }
