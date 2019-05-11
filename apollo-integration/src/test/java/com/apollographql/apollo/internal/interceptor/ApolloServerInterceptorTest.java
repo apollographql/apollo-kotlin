@@ -95,9 +95,10 @@ public class ApolloServerInterceptorTest {
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
-        new ApolloLogger(Optional.<Logger>absent()));
+        new ApolloLogger(Optional.<Logger>absent()),
+        false);
 
-    interceptor.httpCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true);
+    interceptor.httpPostCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true);
   }
 
   @Test public void testCachedHttpCall() throws Exception {
