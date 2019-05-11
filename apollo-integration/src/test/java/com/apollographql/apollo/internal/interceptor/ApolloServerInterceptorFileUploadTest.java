@@ -3,7 +3,7 @@ package com.apollographql.apollo.internal.interceptor;
 import com.google.common.base.Predicate;
 
 import com.apollographql.apollo.Logger;
-import com.apollographql.apollo.api.GraphqlUpload;
+import com.apollographql.apollo.api.FileUpload;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.ScalarType;
 import com.apollographql.apollo.api.cache.http.HttpCache;
@@ -41,12 +41,12 @@ import static junit.framework.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ApolloServerInterceptorGraphqlUploadTest {
+public class ApolloServerInterceptorFileUploadTest {
   private final HttpUrl serverUrl = HttpUrl.parse("http://google.com");
   private final File file1 = mock(File.class);
   private final File file2 = mock(File.class);
-  private final GraphqlUpload upload1 = new GraphqlUpload("image/jpg", file1);
-  private final GraphqlUpload upload2 = new GraphqlUpload("image/png", file2);
+  private final FileUpload upload1 = new FileUpload("image/jpg", file1);
+  private final FileUpload upload2 = new FileUpload("image/png", file2);
 
   private final SingleUploadMutation mutationSingle = SingleUploadMutation.builder()
       .file(upload1)
@@ -86,7 +86,7 @@ public class ApolloServerInterceptorGraphqlUploadTest {
     when(file1.getName()).thenReturn("file1.jpg");
     when(file2.getName()).thenReturn("file2.png");
 
-    ArrayList<GraphqlUpload> uploads = new ArrayList<>();
+    ArrayList<FileUpload> uploads = new ArrayList<>();
     uploads.add(upload1);
     uploads.add(upload2);
     mutationMultiple = MultipleUploadMutation.builder()

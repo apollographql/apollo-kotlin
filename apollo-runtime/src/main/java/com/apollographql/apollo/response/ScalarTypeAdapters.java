@@ -1,6 +1,6 @@
 package com.apollographql.apollo.response;
 
-import com.apollographql.apollo.api.GraphqlUpload;
+import com.apollographql.apollo.api.FileUpload;
 import com.apollographql.apollo.api.ScalarType;
 
 import java.util.LinkedHashMap;
@@ -96,14 +96,14 @@ public final class ScalarTypeAdapters {
         }
       }
     });
-    adapters.put(GraphqlUpload.class, new CustomTypeAdapter<GraphqlUpload>() {
-      @Override public GraphqlUpload decode(@NotNull CustomTypeValue value) {
+    adapters.put(FileUpload.class, new CustomTypeAdapter<FileUpload>() {
+      @Override public FileUpload decode(@NotNull CustomTypeValue value) {
         return null;
       }
 
       @NotNull
       @Override
-      public CustomTypeValue encode(@NotNull GraphqlUpload value) {
+      public CustomTypeValue encode(@NotNull FileUpload value) {
         return new CustomTypeValue.GraphQLString(null);
       }
     });

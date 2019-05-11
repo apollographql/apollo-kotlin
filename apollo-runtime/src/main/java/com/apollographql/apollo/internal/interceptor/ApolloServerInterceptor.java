@@ -1,6 +1,6 @@
 package com.apollographql.apollo.internal.interceptor;
 
-import com.apollographql.apollo.api.GraphqlUpload;
+import com.apollographql.apollo.api.FileUpload;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.cache.http.HttpCache;
@@ -255,16 +255,16 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     for (String variableName : operation.variables().valueMap().keySet()) {
       Object value = operation.variables().valueMap().get(variableName);
 
-      if (value instanceof GraphqlUpload) {
-        GraphqlUpload upload = (GraphqlUpload) value;
+      if (value instanceof FileUpload) {
+        FileUpload upload = (FileUpload) value;
         String key = "variables." + variableName;
         allUploads.add(new FileUploadMeta(key, upload.mimetype, upload.file));
       } else if (value instanceof Collection<?>
           && ((Collection<Object>) value).size() > 0
-          && ((Collection<Object>) value).iterator().next() instanceof GraphqlUpload) {
-        Collection<GraphqlUpload> uploads = (Collection<GraphqlUpload>) value;
+          && ((Collection<Object>) value).iterator().next() instanceof FileUpload) {
+        Collection<FileUpload> uploads = (Collection<FileUpload>) value;
         int varFileIndex = 0;
-        for (GraphqlUpload upload: uploads) {
+        for (FileUpload upload: uploads) {
           String key = "variables." + variableName + "." + varFileIndex;
           allUploads.add(new FileUploadMeta(key, upload.mimetype, upload.file));
           varFileIndex++;
