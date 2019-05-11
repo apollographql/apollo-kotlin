@@ -112,9 +112,10 @@ public class ApolloServerInterceptorGraphqlUploadTest {
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
-        new ApolloLogger(Optional.<Logger>absent()));
+        new ApolloLogger(Optional.<Logger>absent()),
+        false);
 
-    interceptor.httpCall(mutationSingle, CacheHeaders.NONE, RequestHeaders.NONE, true);
+    interceptor.httpPostCall(mutationSingle, CacheHeaders.NONE, RequestHeaders.NONE, true);
   }
 
   @Test public void testDefaultHttpCallWithUploadTwice() throws Exception {
@@ -135,9 +136,10 @@ public class ApolloServerInterceptorGraphqlUploadTest {
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
-        new ApolloLogger(Optional.<Logger>absent()));
+        new ApolloLogger(Optional.<Logger>absent()),
+        false);
 
-    interceptor.httpCall(mutationTwice, CacheHeaders.NONE, RequestHeaders.NONE, true);
+    interceptor.httpPostCall(mutationTwice, CacheHeaders.NONE, RequestHeaders.NONE, true);
   }
 
   @Test public void testDefaultHttpCallWithUploadMultiple() throws Exception {
@@ -158,9 +160,10 @@ public class ApolloServerInterceptorGraphqlUploadTest {
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
-        new ApolloLogger(Optional.<Logger>absent()));
+        new ApolloLogger(Optional.<Logger>absent()),
+        false);
 
-    interceptor.httpCall(mutationMultiple, CacheHeaders.NONE, RequestHeaders.NONE, true);
+    interceptor.httpPostCall(mutationMultiple, CacheHeaders.NONE, RequestHeaders.NONE, true);
   }
 
   @Test public void testAdditionalHeaders() throws Exception {
@@ -197,9 +200,10 @@ public class ApolloServerInterceptorGraphqlUploadTest {
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
-        new ApolloLogger(Optional.<Logger>absent()));
+        new ApolloLogger(Optional.<Logger>absent()),
+        false);
 
-    interceptor.httpCall(mutationSingle, CacheHeaders.NONE, requestHeaders, true);
+    interceptor.httpPostCall(mutationSingle, CacheHeaders.NONE, requestHeaders, true);
   }
 
   private void assertDefaultRequestHeaders(Request request, Operation mutation) {
