@@ -262,12 +262,11 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       } else if (value instanceof Collection<?>
           && ((Collection<Object>) value).size() > 0
           && ((Collection<Object>) value).iterator().next() instanceof FileUpload) {
-        Collection<FileUpload> uploads = (Collection<FileUpload>) value;
-        int varFileIndex = 0;
-        for (FileUpload upload: uploads) {
-          String key = "variables." + variableName + "." + varFileIndex;
+        FileUpload[] uploads = ((Collection<FileUpload>) value).toArray(new FileUpload[0]);
+        for (int fileIndex = 0; fileIndex < uploads.length; fileIndex++) {
+          FileUpload upload = uploads[fileIndex];
+          String key = "variables." + variableName + "." + fileIndex;
           allUploads.add(new FileUploadMeta(key, upload.mimetype, upload.file));
-          varFileIndex++;
         }
       }
     }
@@ -284,7 +283,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     JsonWriter jsonWriter = JsonWriter.of(buffer);
     jsonWriter.beginObject();
     for (int i = 0; i < fileUploads.size(); i++) {
-      jsonWriter.name("" + i).beginArray();
+      jsonWriter.name(String.valueOf(i)).beginArray();
       jsonWriter.value(fileUploads.get(i).key);
       jsonWriter.endArray();
     }
@@ -296,16 +295,16 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         .addFormDataPart("map", null, RequestBody.create(MEDIA_TYPE, buffer.readByteString()));
     for (int i = 0; i < fileUploads.size(); i++) {
       FileUploadMeta fileMeta = fileUploads.get(i);
-      multipartBodyBuilder.addFormDataPart("" + i, fileMeta.file.getName(),
+      multipartBodyBuilder.addFormDataPart(String.valueOf(i), fileMeta.file.getName(),
           RequestBody.create(MediaType.parse(fileMeta.mimetype), fileMeta.file));
     }
     return multipartBodyBuilder.build();
   }
 
-  private static class FileUploadMeta {
-    public String key;
-    public String mimetype;
-    public File file;
+  private static final class FileUploadMeta {
+    public final String key;
+    public final String mimetype;
+    public final File file;
 
     FileUploadMeta(String key, String mimetype, File file) {
       this.key = key;
