@@ -537,6 +537,16 @@ systemProp.apollographql.useGlobalApolloCodegen=true
 
 Note that this requires exactly version `0.19.1` (not older, not newer). You can install this conventionally via `npm install -g apollo-codegen@0.19.1`.
 
+### Kotlin model generation (experimental)
+By default Apollo Gradle plugin generates Java models but you can configure it to generate Kotlin models instead:
+```groovy
+apollo {
+  generateKotlinModels = true
+}
+```
+
+It still an experimental and not finalized yet. The structure of generated models is subject to change.
+
 ### Download
 
 RxJava1:
