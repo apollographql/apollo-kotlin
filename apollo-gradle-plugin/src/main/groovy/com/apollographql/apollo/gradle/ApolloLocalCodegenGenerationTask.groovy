@@ -21,12 +21,7 @@ class ApolloLocalCodegenGenerationTask extends NodeTask {
 
   @Override
   void exec() {
-    File apolloScript = new File(getProject().getBuildDir(), APOLLO_CODEGEN)
-    if (!apolloScript.isFile()) {
-      throw new GradleException(
-          "Apollo-codegen was not found in node_modules. Please run the installApolloCodegen task.")
-    }
-    setScript(apolloScript)
+    setScript(new File(getProject().getBuildDir(), APOLLO_CODEGEN))
 
     List<CodegenGenerationTaskCommandArgsBuilder.CommandArgs> args = new CodegenGenerationTaskCommandArgsBuilder(
         this, schemaFilePath.get(), outputPackageName.get(), outputDir.get().asFile, variant, sourceSetNames
