@@ -1,33 +1,29 @@
 package com.apollographql.apollo.kotlinsample.repositories
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.LinearLayout
-import com.apollographql.apollo.ApolloCall
-import com.apollographql.apollo.ApolloCallback
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.cache.http.HttpCachePolicy
-import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.kotlinsample.BuildConfig
-import com.apollographql.apollo.kotlinsample.GithubRepositoriesQuery
 import com.apollographql.apollo.kotlinsample.KotlinSampleApp
 import com.apollographql.apollo.kotlinsample.R
+import com.apollographql.apollo.kotlinsample.data.GitHubDataSource
 import com.apollographql.apollo.kotlinsample.fragment.RepositoryFragment
 import com.apollographql.apollo.kotlinsample.repositoryDetail.RepositoryDetailActivity
-import com.apollographql.apollo.kotlinsample.type.OrderDirection
-import com.apollographql.apollo.kotlinsample.type.RepositoryOrderField
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-  private lateinit var apolloClient: ApolloClient
   private lateinit var repositoriesAdapter: RepositoriesAdapter
+  private val compositeDisposable = CompositeDisposable()
+  private val dataSource: GitHubDataSource by lazy {
+    (application as KotlinSampleApp).getDataSource()
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -43,8 +39,6 @@ class MainActivity : AppCompatActivity() {
 
     tvError.visibility = View.GONE
 
-    apolloClient = (application as KotlinSampleApp).apolloClient
-
     rvRepositories.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
     rvRepositories.addItemDecoration(DividerItemDecoration(this, LinearLayout.VERTICAL))
     repositoriesAdapter = RepositoriesAdapter { repositoryFragment ->
@@ -52,40 +46,45 @@ class MainActivity : AppCompatActivity() {
     }
     rvRepositories.adapter = repositoriesAdapter
 
+    setupDataSource()
     fetchRepositories()
   }
 
-  private fun fetchRepositories() {
-    val repositoriesQuery = GithubRepositoriesQuery.builder()
-      .repositoriesCount(50)
-      .orderBy(RepositoryOrderField.UPDATED_AT)
-      .orderDirection(OrderDirection.DESC)
-      .build()
+  private fun setupDataSource() {
+    val successDisposable = dataSource.repositories
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::handleRepositories)
 
-    val callback = ApolloCallback.wrap(object : ApolloCall.Callback<GithubRepositoriesQuery.Data>() {
-      override fun onResponse(response: Response<GithubRepositoriesQuery.Data>) {
-        progressBar.visibility = View.GONE
-        rvRepositories.visibility = View.VISIBLE
-        val repositories = mapResponseToRepositories(response)
-        repositoriesAdapter.setItems(repositories)
-      }
+    val errorDisposable = dataSource.error
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::handleError)
 
-      override fun onFailure(e: ApolloException) {
-        tvError.text = e.localizedMessage
-        tvError.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
-        e.printStackTrace()
-      }
-
-    }, Handler(Looper.getMainLooper()))
-
-    apolloClient
-      .query(repositoriesQuery)
-      .httpCachePolicy(HttpCachePolicy.CACHE_FIRST)
-      .enqueue(callback)
+    compositeDisposable.add(successDisposable)
+    compositeDisposable.add(errorDisposable)
   }
 
-  private fun mapResponseToRepositories(response: Response<GithubRepositoriesQuery.Data>): List<RepositoryFragment> {
-    return response.data()?.viewer()?.repositories()?.nodes()?.map { it.fragments().repositoryFragment() } ?: emptyList()
+  private fun handleRepositories(repos: List<RepositoryFragment>) {
+    progressBar.visibility = View.GONE
+    rvRepositories.visibility = View.VISIBLE
+    repositoriesAdapter.setItems(repos)
+  }
+
+  private fun handleError(error: Throwable?) {
+    tvError.text = error?.localizedMessage
+    tvError.visibility = View.VISIBLE
+    progressBar.visibility = View.GONE
+    error?.printStackTrace()
+  }
+
+  private fun fetchRepositories() {
+    dataSource.fetchRepositories()
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    compositeDisposable.dispose()
+    dataSource.cancelFetching()
   }
 }
