@@ -25,7 +25,7 @@ Apollo-Android is designed primarily with Android in mind but you can use it in 
   - [Java Beans Semantic Naming for Accessors](#java-beans-semantic-naming-for-accessors)
   - [Explicit Schema location](#explicit-schema-location)
   - [Use system pre-installed apollo-codegen](#use-system-pre-installed-apollo-codegen)
-  - [Kotlin model generation (experimental)](#kotlin-model-generation-(experimental))
+  - [Kotlin model generation (experimental)](#kotlin-model-generation-experimental)
   - [Download](#download)
 - [License](#license)
 
@@ -541,7 +541,7 @@ apollo {
 }
 ```
 
-It still an experimental and not finalized yet. The structure of generated models is subject to change.
+It is still an experimental and not finalized yet. The structure of generated models is subject to change.
 
 ### Download
 
