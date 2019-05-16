@@ -40,7 +40,7 @@ data class TestQuery(val includeName: Boolean, val skipFriends: Boolean) : Query
 
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: Data): Data = data
+    override fun wrapData(data: Data?): Data? = data
     override fun variables(): Operation.Variables = variables
     override fun name(): OperationName = OPERATION_NAME
     override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {

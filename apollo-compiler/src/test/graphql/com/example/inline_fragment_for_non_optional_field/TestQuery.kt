@@ -21,7 +21,7 @@ import kotlin.Suppress
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: Data): Data = data
+    override fun wrapData(data: Data?): Data? = data
     override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
     override fun name(): OperationName = OPERATION_NAME
     override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
