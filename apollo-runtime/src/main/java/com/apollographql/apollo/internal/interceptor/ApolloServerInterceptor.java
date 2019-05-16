@@ -1,5 +1,6 @@
 package com.apollographql.apollo.internal.interceptor;
 
+import com.apollographql.apollo.api.FileUpload;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.cache.http.HttpCache;
@@ -16,16 +17,20 @@ import com.apollographql.apollo.internal.json.JsonWriter;
 import com.apollographql.apollo.request.RequestHeaders;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.Executor;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
-import java.util.concurrent.Executor;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -133,6 +138,9 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       boolean writeQueryDocument) throws IOException {
     RequestBody requestBody = RequestBody.create(MEDIA_TYPE, httpPostRequestBody(operation, scalarTypeAdapters,
         writeQueryDocument));
+
+    requestBody = transformToMultiPartIfUploadExists(requestBody, operation);
+
     Request.Builder requestBuilder = new Request.Builder()
         .url(serverUrl)
         .post(requestBody);
@@ -240,4 +248,69 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     jsonWriter.close();
     urlBuilder.addQueryParameter("extensions", buffer.readUtf8());
   }
+
+  static RequestBody transformToMultiPartIfUploadExists(RequestBody originalBody, Operation operation)
+      throws IOException {
+    ArrayList<FileUploadMeta> allUploads = new ArrayList<>();
+    for (String variableName : operation.variables().valueMap().keySet()) {
+      Object value = operation.variables().valueMap().get(variableName);
+
+      if (value instanceof FileUpload) {
+        FileUpload upload = (FileUpload) value;
+        String key = "variables." + variableName;
+        allUploads.add(new FileUploadMeta(key, upload.mimetype, upload.file));
+      } else if (value instanceof Collection<?>
+          && ((Collection<Object>) value).size() > 0
+          && ((Collection<Object>) value).iterator().next() instanceof FileUpload) {
+        FileUpload[] uploads = ((Collection<FileUpload>) value).toArray(new FileUpload[0]);
+        for (int fileIndex = 0; fileIndex < uploads.length; fileIndex++) {
+          FileUpload upload = uploads[fileIndex];
+          String key = "variables." + variableName + "." + fileIndex;
+          allUploads.add(new FileUploadMeta(key, upload.mimetype, upload.file));
+        }
+      }
+    }
+    if (allUploads.isEmpty()) {
+      return originalBody;
+    } else {
+      return httpMultipartRequestBody(originalBody, allUploads);
+    }
+  }
+
+  static RequestBody httpMultipartRequestBody(RequestBody operations, ArrayList<FileUploadMeta> fileUploads)
+      throws IOException {
+    Buffer buffer = new Buffer();
+    JsonWriter jsonWriter = JsonWriter.of(buffer);
+    jsonWriter.beginObject();
+    for (int i = 0; i < fileUploads.size(); i++) {
+      jsonWriter.name(String.valueOf(i)).beginArray();
+      jsonWriter.value(fileUploads.get(i).key);
+      jsonWriter.endArray();
+    }
+    jsonWriter.endObject();
+    jsonWriter.close();
+    MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder()
+        .setType(MultipartBody.FORM)
+        .addFormDataPart("operations", null, operations)
+        .addFormDataPart("map", null, RequestBody.create(MEDIA_TYPE, buffer.readByteString()));
+    for (int i = 0; i < fileUploads.size(); i++) {
+      FileUploadMeta fileMeta = fileUploads.get(i);
+      multipartBodyBuilder.addFormDataPart(String.valueOf(i), fileMeta.file.getName(),
+          RequestBody.create(MediaType.parse(fileMeta.mimetype), fileMeta.file));
+    }
+    return multipartBodyBuilder.build();
+  }
+
+  private static final class FileUploadMeta {
+    public final String key;
+    public final String mimetype;
+    public final File file;
+
+    FileUploadMeta(String key, String mimetype, File file) {
+      this.key = key;
+      this.mimetype = mimetype;
+      this.file = file;
+    }
+  }
+
 }

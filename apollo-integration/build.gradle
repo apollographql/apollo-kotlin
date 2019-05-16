@@ -45,10 +45,12 @@ dependencies {
   testImplementation dep.truth
   testImplementation dep.mockWebServer
   testImplementation dep.okhttpTestSupport
+  testImplementation dep.mockito
 }
 
 apollo {
   customTypeMapping = [
-      "Date": "java.util.Date"
+      "Date": "java.util.Date",
+      "Upload": "com.apollographql.apollo.api.FileUpload"
   ]
 }
