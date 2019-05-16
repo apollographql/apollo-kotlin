@@ -87,7 +87,7 @@ dependencies {
 
 The plugin can then be applied as follows within your app module's `build.gradle` :
 
-```
+```groovy
 apply plugin: 'com.apollographql.android'
 ```
 
@@ -202,7 +202,7 @@ Apollo supports Custom Scalar Types like `Date`.
 
 You first need to define the mapping in your build.gradle file. This will tell the code generator/gradle plugin what type to use when generating the classes.
 
-```gradle
+```groovy
 apollo {
   customTypeMapping = [
     "Date" : "java.util.Date"
@@ -239,7 +239,7 @@ turned on, your custom type will not compile. You can add a switch `suppressRawT
 apollo plugin configuration which will annotate your generated class with the proper suppression
 (`@SuppressWarnings("rawtypes")`:
 
-```
+```groovy
 apollo {
     customTypeMapping = [
       "URL" : "java.lang.String"
@@ -465,7 +465,7 @@ By default Apollo-Android will return `null` when a graph api returns a `null` f
 
 #### Usage
 
-```java
+```groovy
 apollo {
   nullableValueType = "apolloOptional"  //use one or the other
   nullableValueType = "guavaOptional"   //use one or the other
@@ -482,7 +482,7 @@ With Semantic Naming enabled you will still see a SomeQuery.java generated same 
 
 #### Usage 
 
-```java
+```groovy
 apollo {
   useSemanticNaming = false
 }
