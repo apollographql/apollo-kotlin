@@ -63,6 +63,6 @@ private val EnumType.safeValueOfFunSpec: FunSpec
         .builder("safeValueOf")
         .addParameter("rawValue", String::class)
         .returns(ClassName("", name))
-        .addStatement("return values().find { it.rawValue == rawValue } ?: UNKNOWN__")
+        .addStatement("return values().find { it.rawValue·==·rawValue } ?: UNKNOWN__")
         .build()
   }
