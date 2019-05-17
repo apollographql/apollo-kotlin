@@ -1957,6 +1957,24 @@
               "defaultValue": "[\"test1\", \"test2\", \"test3\"]"
             },
             {
+              "name": "listOfStringNonOptional",
+              "description": "for test purpose only",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            {
               "name": "booleanWithDefaultValue",
               "description": "for test purpose only",
               "type": {
