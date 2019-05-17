@@ -13,7 +13,7 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.example.custom_scalar_type_warnings.type.CustomType
-import java.lang.Object
+import kotlin.Any
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -35,7 +35,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         /**
          * Links
          */
-        val links: List<Object?>
+        val links: List<Any?>
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
@@ -54,8 +54,8 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
             operator fun invoke(reader: ResponseReader): Hero {
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val links = reader.readList<Object>(RESPONSE_FIELDS[1]) {
-                    it.readCustomType<Object>(CustomType.URL)
+                val links = reader.readList<Any>(RESPONSE_FIELDS[1]) {
+                    it.readCustomType<Any>(CustomType.URL)
                 }
                 return Hero(
                     __typename = __typename,

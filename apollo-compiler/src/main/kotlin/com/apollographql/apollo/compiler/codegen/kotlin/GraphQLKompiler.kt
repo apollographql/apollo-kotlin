@@ -50,7 +50,7 @@ class GraphQLKompiler(
     return CustomTypes(
         typeDeclarations
             .filter { it.kind == TypeDeclaration.KIND_SCALAR_TYPE }
-            .associate { it.name to (this[it.name] ?: ClassNames.OBJECT.toString()) }
+            .associate { it.name to (this[it.name] ?: Any::class.asClassName().canonicalName) }
             .plus(idScalarTypeMap)
     )
   }

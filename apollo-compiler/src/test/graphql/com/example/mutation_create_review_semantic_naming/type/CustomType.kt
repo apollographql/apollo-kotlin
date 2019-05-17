@@ -13,7 +13,7 @@ enum class CustomType : ScalarType {
     DATE {
         override fun typeName(): String = "Date"
 
-        override fun javaType(): Class<*> = java.lang.Object::class.java
+        override fun javaType(): Class<*> = kotlin.Any::class.java
     },
 
     ID {
