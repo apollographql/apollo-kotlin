@@ -224,6 +224,6 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, HeroDetailsQuery.Data, Ope
                 |}
                 """.trimMargin()
 
-        val OPERATION_NAME: OperationName = OperationName { "HeroDetailsQuery" }
+        val OPERATION_NAME: OperationName = OperationName { "HeroDetails" }
     }
 }
