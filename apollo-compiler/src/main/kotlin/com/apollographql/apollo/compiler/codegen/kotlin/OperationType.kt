@@ -88,7 +88,7 @@ internal fun OperationType.typeSpec(targetPackage: String) =
                 .build()
             )
             .addProperty(PropertySpec.builder("OPERATION_NAME", OperationName::class)
-                .initializer("%T { %S }", OperationName::class, name)
+                .initializer("%T { %S }", OperationName::class, operationName)
                 .build())
             .build()
         )

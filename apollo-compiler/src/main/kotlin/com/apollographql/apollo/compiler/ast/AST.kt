@@ -38,6 +38,7 @@ internal sealed class FieldType {
 internal data class OperationType(
     val name: String,
     val type: Type,
+    val operationName: String,
     val operationId: String,
     val queryDocument: String,
     val variables: InputType,

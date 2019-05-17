@@ -26,6 +26,7 @@ internal fun Operation.ast(
   return OperationType(
       name = operationClassName,
       type = operationType,
+      operationName = operationName,
       operationId = (sourceWithFragments ?: "").filter { it != '\n' }.sha256(),
       queryDocument = sourceWithFragments!!,
       variables = InputType(

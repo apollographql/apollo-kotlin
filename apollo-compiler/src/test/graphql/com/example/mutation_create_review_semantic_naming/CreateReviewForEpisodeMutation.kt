@@ -128,6 +128,6 @@ data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInp
                 |}
                 """.trimMargin()
 
-        val OPERATION_NAME: OperationName = OperationName { "CreateReviewForEpisodeMutation" }
+        val OPERATION_NAME: OperationName = OperationName { "CreateReviewForEpisode" }
     }
 }
