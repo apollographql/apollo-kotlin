@@ -5,56 +5,72 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import com.apollographql.apollo.coroutines.toDeferred
 import com.apollographql.apollo.kotlinsample.GithubRepositoryCommitsQuery
 import com.apollographql.apollo.kotlinsample.KotlinSampleApp
 import com.apollographql.apollo.kotlinsample.R
+import com.apollographql.apollo.kotlinsample.data.GitHubDataSource
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_commits.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 class CommitsActivity : AppCompatActivity() {
-  var job: Job? = null
+  private val adapter = CommitsAdapter()
+  private val compositeDisposable = CompositeDisposable()
+  private val dataSource: GitHubDataSource by lazy {
+    (application as KotlinSampleApp).getDataSource()
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_commits)
 
-    val apolloClient = (application as KotlinSampleApp).apolloClient
-
-    val repoName = intent.getStringExtra(CommitsActivity.REPO_NAME_KEY)
+    val repoName = intent.getStringExtra(REPO_NAME_KEY)
     supportActionBar?.title = repoName
-
-    val adapter = CommitsAdapter()
 
     recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
     recyclerView.adapter = adapter
 
     tvError.visibility = GONE
     progressBar.visibility = VISIBLE
-    job = GlobalScope.launch(Dispatchers.Main) {
-      try {
-        val response = apolloClient.query(GithubRepositoryCommitsQuery(repoName)).toDeferred().await()
-        val headCommit = response.data()?.viewer()?.repository()?.ref()?.target() as? GithubRepositoryCommitsQuery.AsCommit
-        adapter.setItems(headCommit?.history()?.edges()!!)
-      } catch (e: Exception) {
-        tvError.visibility = View.VISIBLE
-        tvError.text = e.localizedMessage
-      } finally {
-        progressBar.visibility = GONE
-      }
-    }
+    setupDataSource()
+    dataSource.fetchCommits(repoName)
+  }
+
+  private fun setupDataSource() {
+    val successDisposable = dataSource.commits
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::handleCommits)
+
+    val errorDisposable = dataSource.error
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::handleError)
+
+    compositeDisposable.add(successDisposable)
+    compositeDisposable.add(errorDisposable)
   }
 
   override fun onDestroy() {
     super.onDestroy()
-    job?.cancel()
+    compositeDisposable.dispose()
+    dataSource.cancelFetching()
   }
+
+  private fun handleCommits(commits: List<GithubRepositoryCommitsQuery.Edge>) {
+    progressBar.visibility = GONE
+    adapter.setItems(commits)
+  }
+
+  private fun handleError(error: Throwable?) {
+    progressBar.visibility = GONE
+    tvError.visibility = VISIBLE
+    tvError.text = error?.localizedMessage
+  }
+
   companion object {
     private const val REPO_NAME_KEY = "repoName"
 

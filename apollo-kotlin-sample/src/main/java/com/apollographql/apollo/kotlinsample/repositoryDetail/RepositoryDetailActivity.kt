@@ -6,15 +6,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.kotlinsample.GithubRepositoryDetailQuery
 import com.apollographql.apollo.kotlinsample.KotlinSampleApp
 import com.apollographql.apollo.kotlinsample.R
 import com.apollographql.apollo.kotlinsample.commits.CommitsActivity
-import com.apollographql.apollo.kotlinsample.type.PullRequestState
-import com.apollographql.apollo.rx2.Rx2Apollo
+import com.apollographql.apollo.kotlinsample.data.GitHubDataSource
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -22,14 +19,16 @@ import kotlinx.android.synthetic.main.activity_repository_detail.*
 
 class RepositoryDetailActivity : AppCompatActivity() {
 
-  private lateinit var apolloClient: ApolloClient
   private val compositeDisposable = CompositeDisposable()
+  private val dataSource: GitHubDataSource by lazy {
+    (application as KotlinSampleApp).getDataSource()
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_repository_detail)
 
-    apolloClient = (application as KotlinSampleApp).apolloClient
+    setupDataSource()
 
     val repoName = intent.getStringExtra(REPO_NAME_KEY)
     supportActionBar?.title = repoName
@@ -40,39 +39,42 @@ class RepositoryDetailActivity : AppCompatActivity() {
   override fun onDestroy() {
     super.onDestroy()
     compositeDisposable.clear()
+    dataSource.cancelFetching()
+  }
+
+  private fun setupDataSource() {
+    val successDisposable = dataSource.repositoryDetail
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::handleDetailResponse)
+
+    val errorDisposable = dataSource.error
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::handleError)
+
+    compositeDisposable.add(successDisposable)
+    compositeDisposable.add(errorDisposable)
+  }
+
+  private fun handleDetailResponse(response: Response<GithubRepositoryDetailQuery.Data>) {
+    progressBar.visibility = View.GONE
+    tvError.visibility = View.GONE
+    buttonCommits.visibility = View.VISIBLE
+    updateUI(response)
+  }
+
+  private fun handleError(error: Throwable?) {
+    tvError.text = error?.localizedMessage
+    tvError.visibility = View.VISIBLE
+    progressBar.visibility = View.GONE
+    error?.printStackTrace()
   }
 
   private fun fetchRepository(repoName: String) {
     buttonCommits.visibility = View.GONE
 
-    val repositoryDetailQuery = GithubRepositoryDetailQuery.builder()
-      .name(repoName)
-      .pullRequestStates(listOf(PullRequestState.OPEN))
-      .build()
-
-    val call = apolloClient
-      .query(repositoryDetailQuery)
-      .httpCachePolicy(HttpCachePolicy.CACHE_FIRST)
-
-    compositeDisposable.add(
-      Rx2Apollo.from(call)
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(
-          { response: Response<GithubRepositoryDetailQuery.Data> ->
-            progressBar.visibility = View.GONE
-            tvError.visibility = View.GONE
-            buttonCommits.visibility = View.VISIBLE
-            updateUI(response)
-          },
-          { t: Throwable ->
-            tvError.text = t.localizedMessage
-            tvError.visibility = View.VISIBLE
-            progressBar.visibility = View.GONE
-            t.printStackTrace()
-          }
-        )
-    )
+    dataSource.fetchRepositoryDetail(repositoryName = repoName)
   }
 
   @SuppressLint("SetTextI18n")
