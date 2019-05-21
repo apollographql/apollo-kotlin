@@ -45,7 +45,7 @@ public final class ReviewInput implements InputType {
 
   private final Input<List<String>> listOfString;
 
-  private final @NotNull List<String> listOfStringNonNull;
+  private final @NotNull List<String> listOfStringNonOptional;
 
   private final Input<Boolean> booleanWithDefaultValue;
 
@@ -67,7 +67,7 @@ public final class ReviewInput implements InputType {
       @NotNull ColorInput favoriteColor, Input<Episode> enumWithDefaultValue,
       Input<Episode> nullableEnum, Input<List<Date>> listOfCustomScalar, Input<Date> customScalar,
       Input<List<Episode>> listOfEnums, Input<List<Integer>> listOfInt,
-      Input<List<String>> listOfString, @NotNull List<String> listOfStringNonNull,
+      Input<List<String>> listOfString, @NotNull List<String> listOfStringNonOptional,
       Input<Boolean> booleanWithDefaultValue, Input<List<List<String>>> listOfListOfString,
       Input<List<List<Episode>>> listOfListOfEnum, Input<List<List<Date>>> listOfListOfCustom,
       Input<List<List<ColorInput>>> listOfListOfObject, Input<String> capitalizedField) {
@@ -82,7 +82,7 @@ public final class ReviewInput implements InputType {
     this.listOfEnums = listOfEnums;
     this.listOfInt = listOfInt;
     this.listOfString = listOfString;
-    this.listOfStringNonNull = listOfStringNonNull;
+    this.listOfStringNonOptional = listOfStringNonOptional;
     this.booleanWithDefaultValue = booleanWithDefaultValue;
     this.listOfListOfString = listOfListOfString;
     this.listOfListOfEnum = listOfListOfEnum;
@@ -171,8 +171,8 @@ public final class ReviewInput implements InputType {
   /**
    * for test purpose only
    */
-  public @NotNull List<String> listOfStringNonNull() {
-    return this.listOfStringNonNull;
+  public @NotNull List<String> listOfStringNonOptional() {
+    return this.listOfStringNonOptional;
   }
 
   /**
@@ -283,10 +283,10 @@ public final class ReviewInput implements InputType {
             }
           } : null);
         }
-        writer.writeList("listOfStringNonNull", new InputFieldWriter.ListWriter() {
+        writer.writeList("listOfStringNonOptional", new InputFieldWriter.ListWriter() {
           @Override
           public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
-            for (final String $item : listOfStringNonNull) {
+            for (final String $item : listOfStringNonOptional) {
               listItemWriter.writeString($item);
             }
           }
@@ -400,7 +400,7 @@ public final class ReviewInput implements InputType {
       h *= 1000003;
       h ^= listOfString.hashCode();
       h *= 1000003;
-      h ^= listOfStringNonNull.hashCode();
+      h ^= listOfStringNonOptional.hashCode();
       h *= 1000003;
       h ^= booleanWithDefaultValue.hashCode();
       h *= 1000003;
@@ -437,7 +437,7 @@ public final class ReviewInput implements InputType {
        && this.listOfEnums.equals(that.listOfEnums)
        && this.listOfInt.equals(that.listOfInt)
        && this.listOfString.equals(that.listOfString)
-       && this.listOfStringNonNull.equals(that.listOfStringNonNull)
+       && this.listOfStringNonOptional.equals(that.listOfStringNonOptional)
        && this.booleanWithDefaultValue.equals(that.booleanWithDefaultValue)
        && this.listOfListOfString.equals(that.listOfListOfString)
        && this.listOfListOfEnum.equals(that.listOfListOfEnum)
@@ -471,7 +471,7 @@ public final class ReviewInput implements InputType {
 
     private Input<List<String>> listOfString = Input.fromNullable(Arrays.<String>asList("test1", "test2", "test3"));
 
-    private @NotNull List<String> listOfStringNonNull = Arrays.<String>asList("test1", "test2", "test3");
+    private @NotNull List<String> listOfStringNonOptional;
 
     private Input<Boolean> booleanWithDefaultValue = Input.fromNullable(true);
 
@@ -579,8 +579,8 @@ public final class ReviewInput implements InputType {
     /**
      * for test purpose only
      */
-    public Builder listOfStringNonNull(@NotNull List<String> listOfStringNonNull) {
-      this.listOfStringNonNull = listOfStringNonNull;
+    public Builder listOfStringNonOptional(@NotNull List<String> listOfStringNonOptional) {
+      this.listOfStringNonOptional = listOfStringNonOptional;
       return this;
     }
 
@@ -754,8 +754,8 @@ public final class ReviewInput implements InputType {
 
     public ReviewInput build() {
       Utils.checkNotNull(favoriteColor, "favoriteColor == null");
-      Utils.checkNotNull(listOfStringNonNull, "listOfStringNonNull == null");
-      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, listOfStringNonNull, booleanWithDefaultValue, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject, capitalizedField);
+      Utils.checkNotNull(listOfStringNonOptional, "listOfStringNonOptional == null");
+      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, listOfStringNonOptional, booleanWithDefaultValue, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject, capitalizedField);
     }
   }
 }

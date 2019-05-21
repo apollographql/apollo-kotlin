@@ -68,7 +68,7 @@ class ReviewInput(
     /**
      * for test purpose only
      */
-    val listOfStringNonNull: List<String?>,
+    val listOfStringNonOptional: List<String?>,
     /**
      * for test purpose only
      */
@@ -142,8 +142,8 @@ class ReviewInput(
                 }
             })
         }
-        writer.writeList("listOfStringNonNull") { listItemWriter ->
-            listOfStringNonNull?.forEach { value ->
+        writer.writeList("listOfStringNonOptional") { listItemWriter ->
+            listOfStringNonOptional.forEach { value ->
                 listItemWriter.writeString(value)
             }
         }
@@ -153,7 +153,7 @@ class ReviewInput(
             writer.writeList("listOfListOfString", listOfListOfString.value?.let { value ->
                 InputFieldWriter.ListWriter { listItemWriter ->
                     value.forEach { value ->
-                        listItemWriter.writeList{ listItemWriter-> 
+                        listItemWriter.writeList { listItemWriter ->
                             value?.forEach { value ->
                                 listItemWriter.writeString(value)
                             }
@@ -166,7 +166,7 @@ class ReviewInput(
             writer.writeList("listOfListOfEnum", listOfListOfEnum.value?.let { value ->
                 InputFieldWriter.ListWriter { listItemWriter ->
                     value.forEach { value ->
-                        listItemWriter.writeList{ listItemWriter-> 
+                        listItemWriter.writeList { listItemWriter ->
                             value?.forEach { value ->
                                 listItemWriter.writeString(value?.rawValue)
                             }
@@ -179,7 +179,7 @@ class ReviewInput(
             writer.writeList("listOfListOfCustom", listOfListOfCustom.value?.let { value ->
                 InputFieldWriter.ListWriter { listItemWriter ->
                     value.forEach { value ->
-                        listItemWriter.writeList{ listItemWriter-> 
+                        listItemWriter.writeList { listItemWriter ->
                             value?.forEach { value ->
                                 listItemWriter.writeCustom(CustomType.DATE, value)
                             }
@@ -192,7 +192,7 @@ class ReviewInput(
             writer.writeList("listOfListOfObject", listOfListOfObject.value?.let { value ->
                 InputFieldWriter.ListWriter { listItemWriter ->
                     value.forEach { value ->
-                        listItemWriter.writeList{ listItemWriter-> 
+                        listItemWriter.writeList { listItemWriter ->
                             value?.forEach { value ->
                                 listItemWriter.writeObject(value?.marshaller())
                             }

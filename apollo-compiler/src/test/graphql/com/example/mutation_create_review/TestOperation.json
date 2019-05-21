@@ -247,14 +247,9 @@
 					]
 				},
 				{
-					"name": "listOfStringNonNull",
+					"name": "listOfStringNonOptional",
 					"type": "[String]!",
-					"description": "for test purpose only",
-					"defaultValue": [
-						"test1",
-						"test2",
-						"test3"
-					]
+					"description": "for test purpose only"
 				},
 				{
 					"name": "booleanWithDefaultValue",

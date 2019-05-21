@@ -196,6 +196,11 @@
 					]
 				},
 				{
+					"name": "listOfStringNonOptional",
+					"type": "[String]!",
+					"description": "for test purpose only"
+				},
+				{
 					"name": "booleanWithDefaultValue",
 					"type": "Boolean",
 					"description": "for test purpose only",
