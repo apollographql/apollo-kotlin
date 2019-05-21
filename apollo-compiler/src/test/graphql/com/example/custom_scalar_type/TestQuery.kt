@@ -13,8 +13,8 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.example.custom_scalar_type.type.CustomType
-import java.lang.Object
 import java.util.Date
+import kotlin.Any
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -48,7 +48,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         /**
          * The date character was born.
          */
-        val fieldWithUnsupportedType: Object,
+        val fieldWithUnsupportedType: Any,
         /**
          * Profile link
          */
@@ -100,7 +100,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                 val appearanceDates = reader.readList<Date>(RESPONSE_FIELDS[3]) {
                     it.readCustomType<Date>(CustomType.DATE)
                 }
-                val fieldWithUnsupportedType = reader.readCustomType<Object>(RESPONSE_FIELDS[4] as
+                val fieldWithUnsupportedType = reader.readCustomType<Any>(RESPONSE_FIELDS[4] as
                         ResponseField.CustomTypeField)
                 val profileLink = reader.readCustomType<java.lang.String>(RESPONSE_FIELDS[5] as
                         ResponseField.CustomTypeField)

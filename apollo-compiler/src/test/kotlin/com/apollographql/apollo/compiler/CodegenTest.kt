@@ -98,7 +98,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
     @Parameterized.Parameters(name = "{0}")
     fun data(): Collection<Array<Any>> {
       return File("src/test/graphql/com/example/").listFiles()
-          .filter { it.isDirectory  }
+          .filter { it.isDirectory }
           .map {
             val customTypeMap = if (it.name in listOf("custom_scalar_type", "input_object_type",
                     "mutation_create_review")) {

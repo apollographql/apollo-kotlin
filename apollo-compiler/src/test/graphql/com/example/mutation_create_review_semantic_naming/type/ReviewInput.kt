@@ -9,7 +9,7 @@ import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.InputFieldMarshaller
 import com.apollographql.apollo.api.InputFieldWriter
 import com.apollographql.apollo.api.InputType
-import java.lang.Object
+import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
@@ -48,11 +48,11 @@ class ReviewInput(
     /**
      * for test purpose only
      */
-    val listOfCustomScalar: Input<List<Object?>> = Input.optional(null),
+    val listOfCustomScalar: Input<List<Any?>> = Input.optional(null),
     /**
      * for test purpose only
      */
-    val customScalar: Input<Object> = Input.optional(null),
+    val customScalar: Input<Any> = Input.optional(null),
     /**
      * for test purpose only
      */
@@ -84,7 +84,7 @@ class ReviewInput(
     /**
      * for test purpose only
      */
-    val listOfListOfCustom: Input<List<List<Object?>?>> = Input.optional(null),
+    val listOfListOfCustom: Input<List<List<Any?>?>> = Input.optional(null),
     /**
      * for test purpose only
      */
