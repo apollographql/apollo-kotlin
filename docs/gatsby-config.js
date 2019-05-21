@@ -15,7 +15,8 @@ module.exports = {
           ],
           Essentials: [
             'essentials/get-started',
-            'essentials/queries'
+            'essentials/queries',
+            'essentials/mutations'
           ]
         }
       }
