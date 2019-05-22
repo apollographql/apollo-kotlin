@@ -1,6 +1,8 @@
 package com.apollographql.apollo.internal.interceptor;
 
 import com.apollographql.apollo.api.FileUpload;
+import com.apollographql.apollo.api.Input;
+import com.apollographql.apollo.api.InputType;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Query;
 import com.apollographql.apollo.api.cache.http.HttpCache;
@@ -19,6 +21,7 @@ import com.apollographql.apollo.response.ScalarTypeAdapters;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Executor;
@@ -249,26 +252,51 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     urlBuilder.addQueryParameter("extensions", buffer.readUtf8());
   }
 
+  private static void recursiveGetUploadData(Object value, String variableName, ArrayList<FileUploadMeta> allUploads) {
+    if (value instanceof InputType) {
+      try {
+        Field[] fields = value.getClass().getDeclaredFields();
+        for (Field field : fields) {
+          field.setAccessible(true);
+          Object subValue = field.get(value);
+          String key = field.getName();
+          recursiveGetUploadData(subValue, variableName + "." + key, allUploads);
+        }
+      } catch (IllegalAccessException e) {
+        // never happen
+      }
+    } else if (value instanceof Input) {
+      Object unwrappedValue = ((Input) value).value;
+      recursiveGetUploadData(unwrappedValue, variableName, allUploads);
+    } else if (value instanceof FileUpload) {
+      FileUpload upload = (FileUpload) value;
+      String key = variableName;
+      allUploads.add(new FileUploadMeta(key, upload.mimetype, upload.file));
+      System.out.println(key);
+    } else if (value instanceof FileUpload[]) {
+      int varFileIndex = 0;
+      FileUpload[] uploads = (FileUpload[]) value;
+      for (FileUpload upload : uploads) {
+        String key = variableName + "." + varFileIndex;
+        allUploads.add(new FileUploadMeta(key, upload.mimetype, upload.file));
+        System.out.println(key);
+        varFileIndex++;
+      }
+    } else if (value instanceof Collection<?>) {
+      Object[] listData = ((Collection) value).toArray();
+      for (int i = 0; i < listData.length; i++) {
+        Object subValue = listData[i];
+        recursiveGetUploadData(subValue, variableName + "." + i, allUploads);
+      }
+    }
+  }
+
   static RequestBody transformToMultiPartIfUploadExists(RequestBody originalBody, Operation operation)
       throws IOException {
     ArrayList<FileUploadMeta> allUploads = new ArrayList<>();
     for (String variableName : operation.variables().valueMap().keySet()) {
       Object value = operation.variables().valueMap().get(variableName);
-
-      if (value instanceof FileUpload) {
-        FileUpload upload = (FileUpload) value;
-        String key = "variables." + variableName;
-        allUploads.add(new FileUploadMeta(key, upload.mimetype, upload.file));
-      } else if (value instanceof Collection<?>
-          && ((Collection<Object>) value).size() > 0
-          && ((Collection<Object>) value).iterator().next() instanceof FileUpload) {
-        FileUpload[] uploads = ((Collection<FileUpload>) value).toArray(new FileUpload[0]);
-        for (int fileIndex = 0; fileIndex < uploads.length; fileIndex++) {
-          FileUpload upload = uploads[fileIndex];
-          String key = "variables." + variableName + "." + fileIndex;
-          allUploads.add(new FileUploadMeta(key, upload.mimetype, upload.file));
-        }
-      }
+      recursiveGetUploadData(value, "variables." + variableName, allUploads);
     }
     if (allUploads.isEmpty()) {
       return originalBody;

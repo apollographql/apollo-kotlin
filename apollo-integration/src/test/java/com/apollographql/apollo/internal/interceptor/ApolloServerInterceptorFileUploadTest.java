@@ -1,7 +1,5 @@
 package com.apollographql.apollo.internal.interceptor;
 
-import com.google.common.base.Predicate;
-
 import com.apollographql.apollo.Logger;
 import com.apollographql.apollo.api.FileUpload;
 import com.apollographql.apollo.api.Operation;
@@ -10,21 +8,29 @@ import com.apollographql.apollo.api.cache.http.HttpCache;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.integration.upload.MultipleUploadMutation;
+import com.apollographql.apollo.integration.upload.NestedUploadMutation;
 import com.apollographql.apollo.integration.upload.SingleUploadMutation;
 import com.apollographql.apollo.integration.upload.SingleUploadTwiceMutation;
+import com.apollographql.apollo.integration.upload.type.NestedObject;
 import com.apollographql.apollo.internal.ApolloLogger;
 import com.apollographql.apollo.request.RequestHeaders;
 import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
+import com.google.common.base.Predicate;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -43,10 +49,25 @@ import static org.mockito.Mockito.when;
 
 public class ApolloServerInterceptorFileUploadTest {
   private final HttpUrl serverUrl = HttpUrl.parse("http://google.com");
-  private final File file1 = mock(File.class);
-  private final File file2 = mock(File.class);
+  private final File file0 = createFile("file0.txt", "content_file0");
+  private final File file1 = createFile("file1.jpg", "content_file1");
+  private final File file2 = createFile("file2.png", "content_file2");
+  private final FileUpload upload0 = new FileUpload("plain/txt", file0);
   private final FileUpload upload1 = new FileUpload("image/jpg", file1);
   private final FileUpload upload2 = new FileUpload("image/png", file2);
+  private NestedObject nestedObject0 = NestedObject.builder()
+      .file(upload0)
+      .fileList(new ArrayList<>(Arrays.asList(upload1, upload2)))
+      .build();
+  private NestedObject nestedObject1 = NestedObject.builder()
+      .file(upload1)
+      .fileList(new ArrayList<>(Arrays.asList(upload0, upload2)))
+      .build();
+  private NestedObject nestedObject2 = NestedObject.builder()
+      .file(upload2)
+      .fileList(new ArrayList<>(Arrays.asList(upload0, upload1)))
+      .recursiveNested(new ArrayList<>(Arrays.asList(nestedObject0, nestedObject1)))
+      .build();
 
   private final SingleUploadMutation mutationSingle = SingleUploadMutation.builder()
       .file(upload1)
@@ -82,10 +103,39 @@ public class ApolloServerInterceptorFileUploadTest {
       "multipleUpload(files: $files) {    __typename    id    path    filename    mimetype  }}\"}";
   private final String expectedMapPartBodyMultiple = "{\"0\":[\"variables.files.0\"],\"1\":[\"variables.files.1\"]}";
 
-  @Before public void prepare() {
-    when(file1.getName()).thenReturn("file1.jpg");
-    when(file2.getName()).thenReturn("file2.png");
+  private final NestedUploadMutation mutationNested = NestedUploadMutation.builder()
+      .nested(nestedObject2)
+      .topFile(upload2)
+      .topFileList(new ArrayList<>(Arrays.asList(upload1, upload0)))
+      .build();
+  private final String expectedOperationsPartBodyNested = "{\"operationName\":\"NestedUpload\"," +
+      "\"variables\":{\"topFile\":null,\"topFileList\":[null,null],\"nested\":{\"recursiveNested\":[" +
+      "{\"file\":null,\"fileList\":[null,null]},{\"file\":null,\"fileList\":[null,null]}],\"file\":null,\"fileList\":[null,null]}}," +
+      "\"extensions\":{\"persistedQuery\":{\"version\":1," +
+      "\"sha256Hash\":\"" + NestedUploadMutation.OPERATION_ID + "\"}}," +
+      "\"query\":\"mutation NestedUpload($topFile: Upload, $topFileList: [Upload], $nested: NestedObject) {  " +
+      "nestedUpload(topFile: $topFile, topFileList: $topFileList, nested: $nested)}\"}";
+  private final String expectedMapPartBodyNested = "{\"0\":[\"variables.topFile\"],\"1\":[\"variables.topFileList.0\"]," +
+      "\"2\":[\"variables.topFileList.1\"],\"3\":[\"variables.nested.recursiveNested.0.file\"]," +
+      "\"4\":[\"variables.nested.recursiveNested.0.fileList.0\"],\"5\":[\"variables.nested.recursiveNested.0.fileList.1\"]," +
+      "\"6\":[\"variables.nested.recursiveNested.1.file\"],\"7\":[\"variables.nested.recursiveNested.1.fileList.0\"]," +
+      "\"8\":[\"variables.nested.recursiveNested.1.fileList.1\"],\"9\":[\"variables.nested.file\"]," +
+      "\"10\":[\"variables.nested.fileList.0\"],\"11\":[\"variables.nested.fileList.1\"]}";
 
+  private File createFile(String fileName, String content) {
+    String tempDir = System.getProperty("java.io.tmpdir");
+    String filePath = tempDir + "/" + fileName;
+    File f = new File(filePath);
+    try {
+      BufferedWriter bw = new BufferedWriter(new FileWriter(f));
+      bw.write(content);
+      bw.close();
+    } catch (Exception e) {
+    }
+    return f;
+  }
+
+  @Before public void prepare() {
     ArrayList<FileUpload> uploads = new ArrayList<>();
     uploads.add(upload1);
     uploads.add(upload2);
@@ -164,6 +214,27 @@ public class ApolloServerInterceptorFileUploadTest {
         false);
 
     interceptor.httpPostCall(mutationMultiple, CacheHeaders.NONE, RequestHeaders.NONE, true);
+  }
+
+  @Test public void testDefaultHttpCallWithUploadNested() throws Exception {
+    Predicate<Request> requestAssertPredicate = new Predicate<Request>() {
+
+      @Override
+      public boolean apply(@Nullable Request request) {
+        assertThat(request).isNotNull();
+        assertDefaultRequestHeaders(request, mutationNested);
+        assertRequestBodyNested(request);
+        return true;
+      }
+    };
+
+    ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
+        new AssertHttpCallFactory(requestAssertPredicate), null, false,
+        new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
+        new ApolloLogger(Optional.<Logger>absent()),
+        false);
+
+    interceptor.httpPostCall(mutationNested, CacheHeaders.NONE, RequestHeaders.NONE,true);
   }
 
   @Test public void testAdditionalHeaders() throws Exception {
@@ -274,6 +345,21 @@ public class ApolloServerInterceptorFileUploadTest {
 
     MultipartBody.Part part3 = body.parts().get(3);
     assertFileContentPart(part3, "1", "file2.png", "image/png");
+  }
+
+  private void assertRequestBodyNested(Request request) {
+    assertThat(request.body()).isInstanceOf(MultipartBody.class);
+    MultipartBody body = (MultipartBody) request.body();
+    assertThat(body.contentType().type()).isEqualTo("multipart");
+    assertThat(body.contentType().subtype()).isEqualTo("form-data");
+    assertThat(body.parts().size()).isEqualTo(14);
+
+    // Check
+    MultipartBody.Part part0 = body.parts().get(0);
+    assertOperationsPart(part0, expectedOperationsPartBodyNested);
+
+    MultipartBody.Part part1 = body.parts().get(1);
+    assertMapPart(part1, expectedMapPartBodyNested);
   }
 
   private void assertOperationsPart(MultipartBody.Part part, String expected) {
