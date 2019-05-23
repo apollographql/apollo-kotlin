@@ -21,6 +21,10 @@ echo ${YELLOW}Deploying Coroutines Support ...${CLEAR}
 ./gradlew clean :apollo-coroutines-support:bintrayUpload
 echo ${YELLOW}Deploying Coroutines Support - ${GREEN}Done!${CLEAR}
 
+echo ${YELLOW}Deploying LiveData Support ...${CLEAR}
+./gradlew clean :apollo-livedata-support:bintrayUpload
+echo ${YELLOW}Deploying LiveData Support - ${GREEN}Done!${CLEAR}
+
 echo ${YELLOW}Deploying Espresso Support ...${CLEAR}
 ./gradlew clean :apollo-espresso-support:bintrayUpload
 echo ${YELLOW}Deploying Espresso Support - ${GREEN}Done!${CLEAR}

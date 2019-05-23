@@ -2,6 +2,7 @@
 ./gradlew clean :apollo-api:bintrayUpload
 ./gradlew clean :apollo-compiler:bintrayUpload
 ./gradlew clean :apollo-coroutines-support:bintrayUpload
+./gradlew clean :apollo-livedata-support:bintrayUpload
 ./gradlew clean :apollo-espresso-support:bintrayUpload
 ./gradlew clean :apollo-gradle-plugin:bintrayUpload
 ./gradlew clean :apollo-http-cache:bintrayUpload
