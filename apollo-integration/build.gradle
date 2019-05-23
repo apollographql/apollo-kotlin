@@ -36,6 +36,7 @@ dependencies {
   implementation project(':apollo-rx-support')
   implementation project(':apollo-rx2-support')
   implementation project(':apollo-coroutines-support')
+  implementation project(':apollo-livedata-support')
   implementation project(':apollo-http-cache')
   implementation dep.appcompat
   implementation dep.kotlinStdLib
@@ -46,6 +47,8 @@ dependencies {
   testImplementation dep.mockWebServer
   testImplementation dep.okhttpTestSupport
   testImplementation dep.mockito
+  testImplementation dep.mockitoKotlin
+  testImplementation dep.aacCoreTesting
 }
 
 apollo {
