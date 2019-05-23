@@ -1,0 +1,46 @@
+buildscript {
+    dependencies {
+        classpath dep.androidPlugin
+        classpath dep.kotlinGradlePlugin
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion androidConfig.compileSdkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    lintOptions {
+        textReport true
+        textOutput 'stdout'
+        ignore 'InvalidPackage'
+    }
+
+    dexOptions {
+        preDexLibraries = isCi
+    }
+
+    defaultConfig {
+        minSdkVersion androidConfig.minSdkVersion
+        targetSdkVersion androidConfig.targetSdkVersion
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+    }
+}
+
+dependencies {
+    compileOnly dep.jetbrainsAnnotations
+    compileOnly project(":apollo-runtime")
+    compileOnly project(":apollo-api")
+
+    implementation dep.kotlinStdLib
+    api dep.aacLivedata
+}
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
+apply from: rootProject.file('gradle/bintray.gradle')
