@@ -41,6 +41,7 @@ dependencies {
   implementation dep.appcompat
   implementation dep.kotlinStdLib
   implementation dep.kotlinxCoroutines
+  implementation dep.aacLivedata
 
   testImplementation dep.junit
   testImplementation dep.truth

@@ -29,7 +29,6 @@ android {
     defaultConfig {
         minSdkVersion androidConfig.minSdkVersion
         targetSdkVersion androidConfig.targetSdkVersion
-        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
 }
 
@@ -39,7 +38,7 @@ dependencies {
     compileOnly project(":apollo-api")
 
     implementation dep.kotlinStdLib
-    api dep.aacLivedata
+    implementation dep.aacLivedata
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
