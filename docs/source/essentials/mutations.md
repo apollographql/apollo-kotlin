@@ -56,7 +56,7 @@ apolloClient
     );
 ```
 
-<h2 id="fragments-in-mutation-results">Using fragments in mutation results</h2>
+## Using fragments in mutation results
 
 In many cases, you'll want to use mutation results to update your UI. Fragments can be a great way of sharing result handling between queries and mutations:
 
@@ -84,7 +84,7 @@ apolloClient
     );
 ```
 
-<h2 id="input-objects">Passing input objects</h2>
+## Passing input objects
 
 The GraphQL type system includes [input objects](http://graphql.org/learn/schema/#input-types) as a way to pass complex values to fields. Input objects are often defined as mutation variables, because they give you a compact way to pass in objects to be created:
 
@@ -103,16 +103,16 @@ apolloClient
     .mutate(CreateReviewForEpisodeMutation(episode: .jedi, review: review))
 ```
 
-<h2 id="designing-mutation-results">Designing mutation results</h2>
+## Designing mutation results
 
 In GraphQL, mutations can return any type, and that type can be queried just like a regular GraphQL query. So the question is - what type should a particular mutation return?
 
 In most cases, the data available from a mutation result should be the server developer's best guess of the data a client would need to understand what happened on the server. For example, a mutation that creates a new comment on a blog post might return the comment itself. A mutation that reorders an array might need to return the whole array.
 
-<h2 id="next-steps">Next steps</h2>
+## Next steps
 
 Learning how to build `Mutation` components to update your data is an important part of developing applications with Apollo Client. Now that you're well-versed in updating data, why not try executing client-side mutations with `apollo-link-state`? Here are some resources we think will help you level up your skills:
 
 - [#125, Fragmented Podcast](http://fragmentedpodcast.com/episodes/125/): Why's and How's about Apollo Android and the entire journey.
-- [Caching in Apollo](support-for-cached-responses.md): Dive deep into the Apollo cache and how it's normalized in our advanced guide on caching. Understanding the cache is helpful when writing your mutation's `update` function!
+- [Caching in Apollo](/essentials/support-for-cached-responses/): Dive deep into the Apollo cache and how it's normalized in our advanced guide on caching. Understanding the cache is helpful when writing your mutation's `update` function!
 - [Mutation component video by Sara Vieira](https://youtu.be/2SYa0F50Mb4): If you need a refresher or learn best by watching videos, check out this tutorial on `Mutation` components by Sara!

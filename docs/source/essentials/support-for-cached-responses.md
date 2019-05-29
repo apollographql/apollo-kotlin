@@ -1,4 +1,4 @@
-<h2 id="cache-policy">Support For Cached Responses</h2>
+## Support For Cached Responses
 
 Apollo-android allows you to keep a client-side cache of query results, making it suitable for use even while offline.
 The client can be configured with 3 levels of caching:
