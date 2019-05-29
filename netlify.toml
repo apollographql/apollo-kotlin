@@ -1,6 +1,6 @@
 [build]
   base    = "docs/"
   publish = "docs/public/"
-  command = "gatsby build --prefix-paths && mkdir -p docs/android && mv public/* docs/android && mv docs public/"
+  command = "gatsby build --prefix-paths && mkdir -p docs/android && mv public/* docs/android && mv docs public/ && mv public/docs/android/_redirects public"
 [build.environment]
   NPM_VERSION = "6"
