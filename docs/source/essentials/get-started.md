@@ -7,7 +7,7 @@ Apollo-Android is a GraphQL compliant client that generates Java models from sta
 
 When you change a query and recompile your project - the Apollo code generator will rebuild your data model for you. Code generation also allows Apollo to read and unmarshal responses from the network without the need of any reflection.
 
-<h2 id="installation">Installation</h2>
+## Installation
 
 The latest Gradle plugin version is [ ![Download](https://api.bintray.com/packages/apollographql/android/apollo-gradle-plugin/images/download.svg) ](https://bintray.com/apollographql/android/apollo-gradle-plugin/_latestVersion)
 
@@ -39,7 +39,7 @@ dependencies {
 
 > Note: The Android plugin must be applied before the Apollo plugin
 
-<h2 id="download-schema">Downloading a Schema</h2>
+## Downloading a Schema
 
 Apollo Android requires a GraphQL schema file as input to the code generation process. A schema file is a JSON file that contains the results of an introspection query. Conventionally this file is called `schema.json`, and you store it next to your `.graphql` files. Most users keep these files in the `/src/main/graphql` directory.
 
@@ -59,7 +59,7 @@ apollo schema:download --endpoint=http://localhost:8080/graphql --header="Author
 
 > Note: In the sample project you can find the schema here => `apollo-sample/src/main/graphql/com/apollographql/apollo/sample/schema.json`.
 
-<h2 id="creating-client">Creating a Client</h2>
+## Creating a Client
 
 With the installation complete and schema downloaded, let's create your Apollo Client. In most cases, you’ll want to create a single shared instance of `ApolloClient` and point it at your GraphQL server. `ApolloClient` uses `OkHttp` under the hood for handling network requests. So you will need to create an instance of the `OkHttpClient` and pass it to the `ApolloClient` builder.
 
@@ -80,7 +80,7 @@ If you need to send header values with your GraphQL requests, you can add those 
 
 That's it! Now your client is ready to start fetching data.
 
-<h2 id="creating-graphql-file">Creating a .graphql File</h2>
+## Creating a .graphql File
 
 The Apollo Android plugin works by generating code that corresponds to the GraphQL queries you specify in your application's `.graphql` files. There is nothing Android specific about these queries, they can be used with other GraphQL clients as well. It is however important to have a name for your query to avoid compilation failures.
 
@@ -102,7 +102,7 @@ query FeedQuery($type: FeedType!, $limit: Int!) {
 
 > Note: For the sample project you can find the `.graphql` files here => `apollo-sample/src/main/graphql/com/apollographql/apollo/sample`.
 
-<h2 id="code-generation">Code Generation</h2>
+## Code Generation
 
 To have Apollo generate the appropriate Java classes for you, you will need to compile your code. Based on your downloaded `schema.json` file and the contents of your `.graphql` files you will have generated Java classes in the following directory `build/generated/source/apollo`. There will be one Java class for each of your queries with nested classes for reading the network response.
 
@@ -110,7 +110,7 @@ To have Apollo generate the appropriate Java classes for you, you will need to c
 
 > Note: These are Apollo generated files. Therefore they **should not** be modified.
 
-<h2 id="consuming-code">Consuming Code</h2>
+##Consuming Code
 
 You can use the generated classes to make requests to your GraphQL API. `ApolloClient` can take as input any *Query* or *Mutation* that you have generated using Apollo.
 

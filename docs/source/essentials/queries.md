@@ -8,7 +8,7 @@ You'll also learn how Apollo-android Client simplifies your data management code
 This page assumes some familiarity with building GraphQL queries. If you'd like a refresher, we recommend [reading this guide](http://graphql.org/learn/queries/) and practicing [running queries in GraphiQL](https://graphql.github.io/swapi-graphql/).
 Since Apollo Client queries are just standard GraphQL, anything you can type into the GraphiQL query explorer can also be put into `.graphql` files in your project.
 
-The following examples assume that you've already set up Apollo Client for your Android/Java application. Read our [getting started](./get-started.html) guide if you need help with either of those steps.
+The following examples assume that you've already set up Apollo Client for your Android/Java application. Read our [getting started](/essentials/get-started/) guide if you need help with either of those steps.
 
 > All code snippets are taken from the apollo-sample project and can be found [here](https://github.com/apollographql/apollo-android/tree/master/apollo-sample).
 
@@ -16,7 +16,7 @@ Apollo-android takes a schema and a set of `.graphql` files and uses these to ge
 
 > All `.graphql` files in your project (or the subset you specify as input to `apollo-codegen` if you customize the script you define as the code generation build phase) will be combined and treated as one big GraphQL document. That means fragments defined in one `.graphql` file are available to all other `.graphql` files for example, but it also means operation names and fragment names have to be unique and you will receive validation errors if they are not.
 
-<h2 id="creating-queries">Creating queries</h2>
+## Creating queries
 
 Queries are represented as instances of generated classes conforming to the `GraphQLQuery` protocol. Constructor arguments can be used to define query variables if needed.
 You pass a query object to `ApolloClient#query(query)` to send the query to the server, execute it, and receive results.
@@ -63,7 +63,7 @@ The `ApolloCall.Callback` also provides error handling methods for request parsi
 
 In addition to the `data` property, `response` contains an `errors` list with GraphQL errors (for more on this, see the sections on [error handling](https://facebook.github.io/graphql/#sec-Error-handling) and the [response format](https://facebook.github.io/graphql/#sec-Response-Format) in the GraphQL specification).
 
-<h2 id="typed-query-results">Typed query results</h2>
+## Typed query results
 
 Query results are defined as nested immutable classes that at each level only contain the properties defined in the corresponding part of the query definition. 
 This means the type system won't allow you to access fields that are not actually fetched by the query, even if they *are* part of the schema.
@@ -132,13 +132,13 @@ apolloClient().query(heroAndFriendsQuery)
 
 Because the above query won't fetch `appearsIn`, this property is not part of the returned result type and cannot be accessed here.
 
-<h2 id="next-steps">Next steps</h2>
+## Next steps
 
 Learning how to build `Query` components to fetch data is one of the most important skills to mastering development with Apollo Client. Now that you're a pro at fetching data, why not try building `Mutation` components to update your data? Here are some resources we think will help you level up your skills:
 
 - [More about queries](https://graphql.org/learn/queries/): Read more about queries directly from the official GraphQL docs.
-- [Caching responses](./support-for-cached-responses.html): Learn how to cache responses with apollo-android.
-- [Mutations](./mutations.html): Learn how to update data with mutations and when you'll need to update the Apollo cache. For a full list of options, check out the API reference for `Mutation` components.
-- [Local state management](./local-state.html): Learn how to query local data with `apollo-link-state`.
-- [Pagination](../features/pagination.html): Building lists has never been easier thanks to Apollo Client's `fetchMore` function. Learn more in our pagination tutorial.
+- [Caching responses](/essentials/support-for-cached-responses/): Learn how to cache responses with apollo-android.
+- [Mutations](/essentials/mutations/): Learn how to update data with mutations and when you'll need to update the Apollo cache. For a full list of options, check out the API reference for `Mutation` components.
+- [Local state management](https://www.apollographql.com/docs/react/essentials/local-state): Learn how to query local data with `apollo-link-state`.
+- [Pagination](https://www.apollographql.com/docs/react/features/pagination#relay-cursors): Building lists has never been easier thanks to Apollo Client's `fetchMore` function. Learn more in our pagination tutorial.
 - [Query component video by Sara Vieira](https://youtu.be/YHJ2CaS0vpM): If you need a refresher or learn best by watching videos, check out this tutorial on `Query` components by Sara!
