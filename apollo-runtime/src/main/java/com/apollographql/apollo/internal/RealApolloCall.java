@@ -115,10 +115,11 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
           .callTracker(builder.tracker)
           .build());
     }
+    useHttpGetMethodForQueries = builder.useHttpGetMethodForQueries;
     enableAutoPersistedQueries = builder.enableAutoPersistedQueries;
     interceptorChain = prepareInterceptorChain(operation);
     optimisticUpdates = builder.optimisticUpdates;
-    useHttpGetMethodForQueries = builder.useHttpGetMethodForQueries;
+
   }
 
   @Override public void enqueue(@Nullable final Callback<T> responseCallback) {
