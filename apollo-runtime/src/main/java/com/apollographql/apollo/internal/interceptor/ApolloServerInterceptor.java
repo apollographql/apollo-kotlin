@@ -62,21 +62,18 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   final boolean prefetch;
   final ApolloLogger logger;
   final ScalarTypeAdapters scalarTypeAdapters;
-  final boolean useHttpGetMethodForQueries;
   volatile Call httpCall;
   volatile boolean disposed;
 
   public ApolloServerInterceptor(@NotNull HttpUrl serverUrl, @NotNull Call.Factory httpCallFactory,
       @Nullable HttpCachePolicy.Policy cachePolicy, boolean prefetch,
-      @NotNull ScalarTypeAdapters scalarTypeAdapters, @NotNull ApolloLogger logger,
-      boolean useHttpGetMethodForQueries) {
+      @NotNull ScalarTypeAdapters scalarTypeAdapters, @NotNull ApolloLogger logger) {
     this.serverUrl = checkNotNull(serverUrl, "serverUrl == null");
     this.httpCallFactory = checkNotNull(httpCallFactory, "httpCallFactory == null");
     this.cachePolicy = Optional.fromNullable(cachePolicy);
     this.prefetch = prefetch;
     this.scalarTypeAdapters = checkNotNull(scalarTypeAdapters, "scalarTypeAdapters == null");
     this.logger = checkNotNull(logger, "logger == null");
-    this.useHttpGetMethodForQueries = useHttpGetMethodForQueries;
   }
 
   @Override
@@ -88,12 +85,12 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         callBack.onFetch(FetchSourceType.NETWORK);
 
         try {
-          if (useHttpGetMethodForQueries && request.operation instanceof Query) {
+          if (request.useHttpGetMethodForQueries && request.operation instanceof Query) {
             httpCall = httpGetCall(request.operation, request.cacheHeaders, request.requestHeaders,
-                request.sendQueryDocument);
+                request.sendQueryDocument, request.autoPersistQueries);
           } else {
             httpCall = httpPostCall(request.operation, request.cacheHeaders, request.requestHeaders,
-                request.sendQueryDocument);
+                request.sendQueryDocument, request.autoPersistQueries);
           }
 
         } catch (IOException e) {
@@ -129,18 +126,18 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   }
 
   Call httpGetCall(Operation operation, CacheHeaders cacheHeaders, RequestHeaders requestHeaders,
-      boolean writeQueryDocument) throws IOException {
+      boolean writeQueryDocument, boolean autoPersistQueries) throws IOException {
     Request.Builder requestBuilder = new Request.Builder()
         .get()
-        .url(httpGetUrl(serverUrl, operation, scalarTypeAdapters, writeQueryDocument));
+        .url(httpGetUrl(serverUrl, operation, scalarTypeAdapters, writeQueryDocument, autoPersistQueries));
     decorateRequest(requestBuilder, operation, cacheHeaders, requestHeaders);
     return httpCallFactory.newCall(requestBuilder.build());
   }
 
   Call httpPostCall(Operation operation, CacheHeaders cacheHeaders, RequestHeaders requestHeaders,
-      boolean writeQueryDocument) throws IOException {
+      boolean writeQueryDocument, boolean autoPersistQueries) throws IOException {
     RequestBody requestBody = RequestBody.create(MEDIA_TYPE, httpPostRequestBody(operation, scalarTypeAdapters,
-        writeQueryDocument));
+        writeQueryDocument, autoPersistQueries));
 
     requestBody = transformToMultiPartIfUploadExists(requestBody, operation);
 
@@ -182,11 +179,11 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   }
 
   static String cacheKey(Operation operation, ScalarTypeAdapters scalarTypeAdapters) throws IOException {
-    return httpPostRequestBody(operation, scalarTypeAdapters, true).md5().hex();
+    return httpPostRequestBody(operation, scalarTypeAdapters, true, true).md5().hex();
   }
 
   static ByteString httpPostRequestBody(Operation operation, ScalarTypeAdapters scalarTypeAdapters,
-      boolean writeQueryDocument) throws IOException {
+      boolean writeQueryDocument, boolean autoPersistQueries) throws IOException {
     Buffer buffer = new Buffer();
     JsonWriter jsonWriter = JsonWriter.of(buffer);
     jsonWriter.setSerializeNulls(true);
@@ -195,15 +192,17 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
     jsonWriter.name("variables").beginObject();
     operation.variables().marshaller().marshal(new InputFieldJsonWriter(jsonWriter, scalarTypeAdapters));
     jsonWriter.endObject();
-    jsonWriter.name("extensions")
-        .beginObject()
-        .name("persistedQuery")
-        .beginObject()
-        .name("version").value(1)
-        .name("sha256Hash").value(operation.operationId())
-        .endObject()
-        .endObject();
-    if (writeQueryDocument) {
+    if (autoPersistQueries) {
+      jsonWriter.name("extensions")
+          .beginObject()
+          .name("persistedQuery")
+          .beginObject()
+          .name("version").value(1)
+          .name("sha256Hash").value(operation.operationId())
+          .endObject()
+          .endObject();
+    }
+    if (!autoPersistQueries || writeQueryDocument) {
       jsonWriter.name("query").value(operation.queryDocument().replaceAll("\\n", ""));
     }
     jsonWriter.endObject();
@@ -212,16 +211,19 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   }
 
   static HttpUrl httpGetUrl(HttpUrl serverUrl, Operation operation,
-      ScalarTypeAdapters scalarTypeAdapters, boolean writeQueryDocument) throws IOException {
+      ScalarTypeAdapters scalarTypeAdapters, boolean writeQueryDocument,
+      boolean autoPersistQueries) throws IOException {
     HttpUrl.Builder urlBuilder = serverUrl.newBuilder();
-    if (writeQueryDocument) {
+    if (!autoPersistQueries || writeQueryDocument) {
       urlBuilder.addQueryParameter("query", operation.queryDocument().replaceAll("\\n", ""));
     }
     if (operation.variables() != Operation.EMPTY_VARIABLES) {
       addVariablesUrlQueryParameter(urlBuilder, operation, scalarTypeAdapters);
     }
     urlBuilder.addQueryParameter("operationName", operation.name().name());
-    addExtensionsUrlQueryParameter(urlBuilder, operation);
+    if (autoPersistQueries) {
+      addExtensionsUrlQueryParameter(urlBuilder, operation);
+    }
     return urlBuilder.build();
   }
 
