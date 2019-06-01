@@ -11,21 +11,21 @@ import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 import org.gradle.api.tasks.incremental.InputFileDetails
 import org.jetbrains.annotations.NotNull
 
+@CacheableTask
 class ApolloClassGenerationTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses"
 
-  @Input Property<Map> customTypeMapping = project.objects.property(Map.class)
-  @Optional @Input Property<String> nullableValueType = project.objects.property(String.class)
-  @Input Property<Boolean> useSemanticNaming = project.objects.property(Boolean.class)
-  @Input Property<Boolean> generateModelBuilder = project.objects.property(Boolean.class)
-  @Input Property<Boolean> useJavaBeansSemanticNaming = project.objects.property(Boolean.class)
-  @Input Property<Boolean> suppressRawTypesWarning = project.objects.property(Boolean.class)
-  @Input Property<Boolean> generateKotlinModels = project.objects.property(Boolean.class)
-  @Optional @Input Property<String> outputPackageName = project.objects.property(String.class)
-  @OutputDirectory DirectoryProperty outputDir
+  @Input final Property<Map> customTypeMapping = project.objects.property(Map.class)
+  @Optional @Input final Property<String> nullableValueType = project.objects.property(String.class)
+  @Input final Property<Boolean> useSemanticNaming = project.objects.property(Boolean.class)
+  @Input final Property<Boolean> generateModelBuilder = project.objects.property(Boolean.class)
+  @Input final Property<Boolean> useJavaBeansSemanticNaming = project.objects.property(Boolean.class)
+  @Input final Property<Boolean> suppressRawTypesWarning = project.objects.property(Boolean.class)
+  @Input final Property<Boolean> generateKotlinModels = project.objects.property(Boolean.class)
+  @Optional @Input final Property<String> outputPackageName = project.objects.property(String.class)
+  @OutputDirectory final DirectoryProperty outputDir = project.layout.directoryProperty()
 
   ApolloClassGenerationTask() {
-    outputDir = project.layout.directoryProperty()
     outputDir.set(new File(project.buildDir, Joiner.on(File.separator).join(GraphQLCompiler.OUTPUT_DIRECTORY)))
   }
 
