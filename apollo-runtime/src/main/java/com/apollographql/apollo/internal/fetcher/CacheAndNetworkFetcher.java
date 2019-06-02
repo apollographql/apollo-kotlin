@@ -118,13 +118,7 @@ public final class CacheAndNetworkFetcher implements ResponseFetcher {
           originalCallback.onResponse(networkResponse.get());
           originalCallback.onCompleted();
         } else if (networkException.isPresent()) {
-          if (cacheException.isPresent()) {
-            // Both cache and network errored out
-            originalCallback.onFailure(networkException.get());
-          } else {
-            // Cache was successful. Just terminate.
-            originalCallback.onCompleted();
-          }
+          originalCallback.onFailure(networkException.get());
         }
       }
     }
