@@ -6,7 +6,7 @@ sourceCompatibility = JavaVersion.VERSION_1_7
 dependencies {
   compileOnly dep.jetbrainsAnnotations
 
-  implementation dep.okHttp
+  api dep.okHttp
   implementation dep.cache
   api project(":apollo-api") // apollo-espresso-support uses some apollo-api internals
 
