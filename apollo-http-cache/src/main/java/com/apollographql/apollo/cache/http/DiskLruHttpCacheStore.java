@@ -3,18 +3,15 @@ package com.apollographql.apollo.cache.http;
 import com.apollographql.apollo.api.cache.http.HttpCacheRecord;
 import com.apollographql.apollo.api.cache.http.HttpCacheRecordEditor;
 import com.apollographql.apollo.api.cache.http.HttpCacheStore;
-
-import org.jetbrains.annotations.NotNull;
-
+import com.apollographql.apollo.cache.http.internal.DiskLruCache;
+import com.apollographql.apollo.cache.http.internal.FileSystem;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import okhttp3.internal.cache.DiskLruCache;
-import okhttp3.internal.io.FileSystem;
 import okio.Sink;
 import okio.Source;
+import org.jetbrains.annotations.NotNull;
 
 public final class DiskLruHttpCacheStore implements HttpCacheStore {
   private static final int VERSION = 99991;
