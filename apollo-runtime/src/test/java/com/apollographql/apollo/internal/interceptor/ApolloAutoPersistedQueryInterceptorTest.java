@@ -40,7 +40,11 @@ import static org.mockito.Mockito.verify;
 
 public class ApolloAutoPersistedQueryInterceptorTest {
   private ApolloAutoPersistedQueryInterceptor interceptor =
-      new ApolloAutoPersistedQueryInterceptor(new ApolloLogger(Optional.<Logger>absent()));
+      new ApolloAutoPersistedQueryInterceptor(new ApolloLogger(Optional.<Logger>absent()), false);
+
+  private ApolloAutoPersistedQueryInterceptor interceptorWithGetMethod =
+          new ApolloAutoPersistedQueryInterceptor(new ApolloLogger(Optional.<Logger>absent()), true);
+
   private ApolloInterceptor.InterceptorRequest request = ApolloInterceptor.InterceptorRequest.builder(new MockOperation())
       .build();
 
@@ -56,6 +60,20 @@ public class ApolloAutoPersistedQueryInterceptorTest {
         any(ApolloInterceptor.CallBack.class));
 
     assertThat(requestArgumentCaptor.getValue().sendQueryDocument).isFalse();
+  }
+
+  @Test
+  public void initialRequestWithGetMethodForPersistedQueries() {
+    ApolloInterceptorChain chain = mock(ApolloInterceptorChain.class);
+
+    interceptorWithGetMethod.interceptAsync(request, chain, new TrampolineExecutor(), mock(ApolloInterceptor.CallBack.class));
+
+    ArgumentCaptor<ApolloInterceptor.InterceptorRequest> requestArgumentCaptor =
+            ArgumentCaptor.forClass(ApolloInterceptor.InterceptorRequest.class);
+    verify(chain).proceedAsync(requestArgumentCaptor.capture(), any(Executor.class),
+            any(ApolloInterceptor.CallBack.class));
+
+    assertThat(requestArgumentCaptor.getValue().useHttpGetMethodForQueries).isTrue();
   }
 
   @Test
