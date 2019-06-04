@@ -17,9 +17,9 @@ import okio.Source;
 import okio.Timeout;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import static com.apollographql.apollo.cache.http.Utils.closeQuietly;
+import static com.apollographql.apollo.cache.http.Utils.discard;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static okhttp3.internal.Util.closeQuietly;
-import static okhttp3.internal.Util.discard;
 
 final class ResponseBodyProxy extends ResponseBody {
   private final String contentType;

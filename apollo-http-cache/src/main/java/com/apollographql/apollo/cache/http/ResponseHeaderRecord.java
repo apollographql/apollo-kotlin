@@ -15,6 +15,7 @@
  */
 package com.apollographql.apollo.cache.http;
 
+import com.apollographql.apollo.cache.http.internal.StatusLine;
 import java.io.IOException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
@@ -23,7 +24,6 @@ import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import okhttp3.CipherSuite;
 import okhttp3.Handshake;
 import okhttp3.Headers;
@@ -33,9 +33,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.TlsVersion;
-import okhttp3.internal.http.HttpHeaders;
-import okhttp3.internal.http.StatusLine;
-import okhttp3.internal.platform.Platform;
 import okio.Buffer;
 import okio.BufferedSink;
 import okio.BufferedSource;
@@ -44,15 +41,17 @@ import okio.Okio;
 import okio.Sink;
 import okio.Source;
 
+import static com.apollographql.apollo.cache.http.Utils.varyHeaders;
+
 /**
  * Class was copied and modified from {@link okhttp3.Cache.Entry}
  */
 final class ResponseHeaderRecord {
   /** Synthetic response header: the local time when the request was sent. */
-  private static final String SENT_MILLIS = Platform.get().getPrefix() + "-Sent-Millis";
+  private static final String SENT_MILLIS = "OkHttp-Sent-Millis";
 
   /** Synthetic response header: the local time when the response was received. */
-  private static final String RECEIVED_MILLIS = Platform.get().getPrefix() + "-Received-Millis";
+  private static final String RECEIVED_MILLIS = "OkHttp-Received-Millis";
 
   private final String url;
   private final Headers varyHeaders;
@@ -169,7 +168,7 @@ final class ResponseHeaderRecord {
 
   ResponseHeaderRecord(Response response) {
     this.url = response.request().url().toString();
-    this.varyHeaders = HttpHeaders.varyHeaders(response);
+    this.varyHeaders = varyHeaders(response);
     this.requestMethod = response.request().method();
     this.protocol = response.protocol();
     this.code = response.code();
