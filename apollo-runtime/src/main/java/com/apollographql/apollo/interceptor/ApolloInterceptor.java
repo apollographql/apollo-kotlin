@@ -119,16 +119,18 @@ public interface ApolloInterceptor {
     public final boolean fetchFromCache;
     public final Optional<Operation.Data> optimisticUpdates;
     public final boolean sendQueryDocument;
+    public final boolean useHttpGetMethodForQueries;
 
     InterceptorRequest(Operation operation, CacheHeaders cacheHeaders, RequestHeaders requestHeaders,
         Optional<Operation.Data> optimisticUpdates, boolean fetchFromCache,
-        boolean sendQueryDocument) {
+        boolean sendQueryDocument, boolean useHttpGetMethodForQueries) {
       this.operation = operation;
       this.cacheHeaders = cacheHeaders;
       this.requestHeaders = requestHeaders;
       this.optimisticUpdates = optimisticUpdates;
       this.fetchFromCache = fetchFromCache;
       this.sendQueryDocument = sendQueryDocument;
+      this.useHttpGetMethodForQueries = useHttpGetMethodForQueries;
     }
 
     public Builder toBuilder() {
@@ -137,7 +139,8 @@ public interface ApolloInterceptor {
           .requestHeaders(requestHeaders)
           .fetchFromCache(fetchFromCache)
           .optimisticUpdates(optimisticUpdates.orNull())
-          .sendQueryDocument(sendQueryDocument);
+          .sendQueryDocument(sendQueryDocument)
+          .useHttpGetMethodForQueries(useHttpGetMethodForQueries);
     }
 
     public static Builder builder(@NotNull Operation operation) {
@@ -151,6 +154,7 @@ public interface ApolloInterceptor {
       private boolean fetchFromCache;
       private Optional<Operation.Data> optimisticUpdates = Optional.absent();
       private boolean sendQueryDocument = true;
+      private boolean useHttpGetMethodForQueries = false;
 
       Builder(@NotNull Operation operation) {
         this.operation = checkNotNull(operation, "operation == null");
@@ -186,9 +190,14 @@ public interface ApolloInterceptor {
         return this;
       }
 
+      public Builder useHttpGetMethodForQueries(boolean useHttpGetMethodForQueries) {
+        this.useHttpGetMethodForQueries = useHttpGetMethodForQueries;
+        return this;
+      }
+
       public InterceptorRequest build() {
         return new InterceptorRequest(operation, cacheHeaders, requestHeaders, optimisticUpdates,
-            fetchFromCache, sendQueryDocument);
+            fetchFromCache, sendQueryDocument, useHttpGetMethodForQueries);
       }
     }
   }

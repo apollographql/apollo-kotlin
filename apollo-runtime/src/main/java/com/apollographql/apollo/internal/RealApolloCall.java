@@ -74,6 +74,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final AtomicReference<Callback<T>> originalCallback = new AtomicReference<>();
   final Optional<Operation.Data> optimisticUpdates;
   final boolean useHttpGetMethodForQueries;
+  final boolean useHttpGetMethodForPersistedQueries;
 
   public static <T> Builder<T> builder() {
     return new Builder<>();
@@ -117,6 +118,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     }
     useHttpGetMethodForQueries = builder.useHttpGetMethodForQueries;
     enableAutoPersistedQueries = builder.enableAutoPersistedQueries;
+    useHttpGetMethodForPersistedQueries = builder.useHttpGetMethodForPersistedQueries;
     interceptorChain = prepareInterceptorChain(operation);
     optimisticUpdates = builder.optimisticUpdates;
 
@@ -310,6 +312,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .refetchQueryNames(refetchQueryNames)
         .refetchQueries(refetchQueries)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
+        .useHttpGetMethodForPersistedQueries(useHttpGetMethodForPersistedQueries)
         .optimisticUpdates(optimisticUpdates);
   }
 
@@ -376,7 +379,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     interceptors.add(responseFetcher.provideInterceptor(logger));
     interceptors.add(new ApolloCacheInterceptor(apolloStore, responseFieldMapper, dispatcher, logger));
     if (operation instanceof Query && enableAutoPersistedQueries) {
-      interceptors.add(new ApolloAutoPersistedQueryInterceptor(logger));
+      interceptors.add(new ApolloAutoPersistedQueryInterceptor(logger, useHttpGetMethodForPersistedQueries));
     }
     interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
         scalarTypeAdapters, logger));
@@ -408,6 +411,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     boolean enableAutoPersistedQueries;
     Optional<Operation.Data> optimisticUpdates = Optional.absent();
     boolean useHttpGetMethodForQueries;
+    boolean useHttpGetMethodForPersistedQueries;
 
     public Builder<T> operation(Operation operation) {
       this.operation = operation;
@@ -507,6 +511,11 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
     public Builder<T> useHttpGetMethodForQueries(boolean useHttpGetMethodForQueries) {
       this.useHttpGetMethodForQueries = useHttpGetMethodForQueries;
+      return this;
+    }
+
+    public Builder<T> useHttpGetMethodForPersistedQueries(boolean useHttpGetMethodForPersistedQueries) {
+      this.useHttpGetMethodForPersistedQueries = useHttpGetMethodForPersistedQueries;
       return this;
     }
 

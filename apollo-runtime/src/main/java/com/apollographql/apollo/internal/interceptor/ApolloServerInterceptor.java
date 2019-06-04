@@ -88,7 +88,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
         callBack.onFetch(FetchSourceType.NETWORK);
 
         try {
-          if (useHttpGetMethodForQueries && request.operation instanceof Query) {
+          if ((request.useHttpGetMethodForQueries || useHttpGetMethodForQueries)
+                  && request.operation instanceof Query) {
             httpCall = httpGetCall(request.operation, request.cacheHeaders, request.requestHeaders,
                 request.sendQueryDocument);
           } else {
