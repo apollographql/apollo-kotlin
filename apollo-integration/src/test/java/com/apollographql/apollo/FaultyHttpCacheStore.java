@@ -3,18 +3,15 @@ package com.apollographql.apollo;
 import com.apollographql.apollo.api.cache.http.HttpCacheRecord;
 import com.apollographql.apollo.api.cache.http.HttpCacheRecordEditor;
 import com.apollographql.apollo.api.cache.http.HttpCacheStore;
-
+import com.apollographql.apollo.cache.http.internal.DiskLruCache;
+import com.apollographql.apollo.cache.http.internal.FileSystem;
 import java.io.File;
 import java.io.IOException;
-
-import org.jetbrains.annotations.NotNull;
-
-import okhttp3.internal.cache.DiskLruCache;
-import okhttp3.internal.io.FileSystem;
 import okio.Buffer;
 import okio.Sink;
 import okio.Source;
 import okio.Timeout;
+import org.jetbrains.annotations.NotNull;
 
 class FaultyHttpCacheStore implements HttpCacheStore {
   private static final int VERSION = 99991;
