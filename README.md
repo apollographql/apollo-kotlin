@@ -308,13 +308,13 @@ Raw HTTP Response Cache:
 
 ```java
 //Directory where cached responses will be stored
-File file = new File(context.getApplicationContext().getCacheDir());
+File file = new File(context.getApplicationContext().getFilesDir(), "apolloCache");
 
 //Size in bytes of the cache
-int size = 1024*1024;
+long size = 1024*1024;
 
 //Create the http response cache store
-DiskLruHttpCacheStore cacheStore = new DiskLruCacheStore(file, size); 
+DiskLruHttpCacheStore cacheStore = new DiskLruHttpCacheStore(file, size); 
 
 //Build the Apollo Client
 ApolloClient apolloClient = ApolloClient.builder()
