@@ -35,7 +35,6 @@ public class ApolloAutoPersistedQueryInterceptor implements ApolloInterceptor {
             .sendQueryDocument(false)
             .useHttpGetMethodForQueries(useHttpGetMethodForPersistedQueries)
             .build();
-
     chain.proceedAsync(newRequest, dispatcher, new CallBack() {
       @Override public void onResponse(@NotNull InterceptorResponse response) {
         if (disposed) return;
