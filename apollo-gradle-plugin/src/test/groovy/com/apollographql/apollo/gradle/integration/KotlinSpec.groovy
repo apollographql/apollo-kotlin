@@ -35,4 +35,8 @@ class KotlinSpec extends Specification {
         then:
         result.task(":assemble").outcome == TaskOutcome.SUCCESS
     }
+
+    def cleanupSpec() {
+        FileUtils.deleteDirectory(testProjectDir)
+    }
 }
