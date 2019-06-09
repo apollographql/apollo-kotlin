@@ -18,31 +18,31 @@ class ApolloExtension {
   final Property<Map> customTypeMapping
 
   ApolloExtension(Project project) {
-    nullableValueType = project.getObjects().property(String.class)
+    nullableValueType = project.objects.property(String.class)
     nullableValueType.set(NullableValueType.ANNOTATED.getValue())
 
-    useSemanticNaming = project.getObjects().property(Boolean.class)
+    useSemanticNaming = project.objects.property(Boolean.class)
     useSemanticNaming.set(true)
 
-    generateModelBuilder = project.getObjects().property(Boolean.class)
+    generateModelBuilder = project.objects.property(Boolean.class)
     generateModelBuilder.set(false)
 
-    useJavaBeansSemanticNaming = project.getObjects().property(Boolean.class)
+    useJavaBeansSemanticNaming = project.objects.property(Boolean.class)
     useJavaBeansSemanticNaming.set(false)
 
-    suppressRawTypesWarning = project.getObjects().property(Boolean.class)
+    suppressRawTypesWarning = project.objects.property(Boolean.class)
     suppressRawTypesWarning.set(false)
 
-    generateKotlinModels = project.getObjects().property(Boolean.class)
+    generateKotlinModels = project.objects.property(Boolean.class)
     generateKotlinModels.set(false)
 
-    schemaFilePath = project.getObjects().property(String.class)
+    schemaFilePath = project.objects.property(String.class)
     schemaFilePath.set("")
 
-    outputPackageName = project.getObjects().property(String.class)
+    outputPackageName = project.objects.property(String.class)
     outputPackageName.set("")
 
-    customTypeMapping = project.getObjects().property(Map.class)
+    customTypeMapping = project.objects.property(Map.class)
     customTypeMapping.set(new LinkedHashMap())
   }
 

@@ -30,10 +30,10 @@ class CodegenGenerationTaskCommandArgsBuilder {
   private final String outputPackageName;
   private final File outputFolder;
   private final String variant;
-  private final ImmutableList<String> sourceSets;
+  private final List<String> sourceSets;
 
   CodegenGenerationTaskCommandArgsBuilder(AbstractTask task, String schemaFilePath, String outputPackageName,
-      File outputFolder, String variant, ImmutableList<String> sourceSets) {
+      File outputFolder, String variant, List<String> sourceSets) {
     this.task = task;
     this.schemaFilePath = schemaFilePath;
     this.outputPackageName = outputPackageName;

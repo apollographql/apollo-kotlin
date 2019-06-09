@@ -171,8 +171,7 @@ class ApolloPlugin implements Plugin<Project> {
       group = TASK_GROUP
       description = "Generate Android classes for ${name.capitalize()} GraphQL queries"
       dependsOn(getProject().getTasks().findByName(String.format(APOLLO_CODEGEN_GENERATE_TASK_NAME, name.capitalize())))
-      source = project.tasks.findByName(
-          String.format(APOLLO_CODEGEN_GENERATE_TASK_NAME, name.capitalize())).outputDir
+      source = project.tasks.findByName(String.format(APOLLO_CODEGEN_GENERATE_TASK_NAME, name.capitalize())).outputDir
       include "**${File.separatorChar}*API.json"
       customTypeMapping = project.apollo.customTypeMapping
       nullableValueType = project.apollo.nullableValueType
