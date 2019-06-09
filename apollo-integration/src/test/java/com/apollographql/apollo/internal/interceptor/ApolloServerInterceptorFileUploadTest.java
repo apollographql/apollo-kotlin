@@ -1,5 +1,7 @@
 package com.apollographql.apollo.internal.interceptor;
 
+import com.google.common.base.Predicate;
+
 import com.apollographql.apollo.Logger;
 import com.apollographql.apollo.api.FileUpload;
 import com.apollographql.apollo.api.Operation;
@@ -16,7 +18,6 @@ import com.apollographql.apollo.internal.ApolloLogger;
 import com.apollographql.apollo.request.RequestHeaders;
 import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
-import com.google.common.base.Predicate;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,8 +30,6 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -44,8 +43,6 @@ import okio.Timeout;
 
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ApolloServerInterceptorFileUploadTest {
   private final HttpUrl serverUrl = HttpUrl.parse("http://google.com");
