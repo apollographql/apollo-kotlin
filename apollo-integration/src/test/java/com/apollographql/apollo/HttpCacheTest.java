@@ -34,7 +34,6 @@ import io.reactivex.functions.Predicate;
 import okhttp3.Dispatcher;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 import okhttp3.internal.io.FileSystem;
 import okhttp3.internal.io.InMemoryFileSystem;
 import okhttp3.mockwebserver.MockResponse;
@@ -656,10 +655,7 @@ public class HttpCacheTest {
   }
 
   private void checkCachedResponse(String fileName) throws IOException {
-    RequestBody requestBody = lastHttRequest.body();
-    Buffer buffer = new Buffer();
-    requestBody.writeTo(buffer);
-    String cacheKey = buffer.readByteString().md5().hex();
+    String cacheKey = lastHttRequest.headers(HttpCache.CACHE_KEY_HEADER).get(0);
     okhttp3.Response response = apolloClient.cachedHttpResponse(cacheKey);
     assertThat(response).isNotNull();
     assertThat(response.body().source().readUtf8()).isEqualTo(Utils.readFileToString(getClass(), fileName));
