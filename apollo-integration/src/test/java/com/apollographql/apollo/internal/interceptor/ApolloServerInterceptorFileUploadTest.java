@@ -1,7 +1,5 @@
 package com.apollographql.apollo.internal.interceptor;
 
-import com.google.common.base.Predicate;
-
 import com.apollographql.apollo.Logger;
 import com.apollographql.apollo.api.FileUpload;
 import com.apollographql.apollo.api.Operation;
@@ -18,19 +16,14 @@ import com.apollographql.apollo.internal.ApolloLogger;
 import com.apollographql.apollo.request.RequestHeaders;
 import com.apollographql.apollo.response.CustomTypeAdapter;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.junit.Before;
-import org.junit.Test;
-
+import com.google.common.base.Predicate;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
@@ -40,6 +33,10 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okio.Buffer;
 import okio.Timeout;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.junit.Before;
+import org.junit.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.fail;
@@ -116,7 +113,7 @@ public class ApolloServerInterceptorFileUploadTest {
     String filePath = tempDir + "/" + fileName;
     File f = new File(filePath);
     try {
-      BufferedWriter bw = new BufferedWriter(new FileWriter(f));
+      BufferedWriter bw = Files.newBufferedWriter(f.toPath(), StandardCharsets.UTF_8);
       bw.write(content);
       bw.close();
     } catch (Exception e) {
