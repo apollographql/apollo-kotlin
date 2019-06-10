@@ -22,8 +22,6 @@ import io.reactivex.functions.Predicate;
 import okhttp3.Dispatcher;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.internal.io.FileSystem;
-import okhttp3.internal.io.InMemoryFileSystem;
 import okhttp3.mockwebserver.MockWebServer;
 
 import static com.apollographql.apollo.Utils.assertResponse;
