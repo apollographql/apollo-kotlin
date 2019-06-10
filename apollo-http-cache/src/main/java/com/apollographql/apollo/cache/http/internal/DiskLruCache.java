@@ -835,7 +835,7 @@ public final class DiskLruCache implements Closeable, Flushable {
       return lengths[index];
     }
 
-    public void close() {
+    @Override public void close() {
       for (Source in : sources) {
         closeQuietly(in, "source");
       }
