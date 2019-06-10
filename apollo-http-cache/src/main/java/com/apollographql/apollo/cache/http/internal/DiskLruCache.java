@@ -167,9 +167,9 @@ public final class DiskLruCache implements Closeable, Flushable {
   /** Used to run 'cleanupRunnable' for journal rebuilds. */
   private final Executor executor;
   private final Runnable cleanupRunnable = new Runnable() {
-    public void run() {
+    @Override public void run() {
       synchronized (DiskLruCache.this) {
-        if (!initialized | closed) {
+        if (!initialized || closed) {
           return; // Nothing to do
         }
 
@@ -574,7 +574,7 @@ public final class DiskLruCache implements Closeable, Flushable {
 
     redundantOpCount++;
     entry.currentEditor = null;
-    if (entry.readable | success) {
+    if (entry.readable || success) {
       entry.readable = true;
       journalWriter.writeUtf8(CLEAN).writeByte(' ');
       journalWriter.writeUtf8(entry.key);
