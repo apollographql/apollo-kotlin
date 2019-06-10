@@ -72,8 +72,6 @@ public class ApolloServerInterceptorFileUploadTest {
 
   private final String expectedOperationsPartBodySingle = "{\"operationName\":\"SingleUpload\"," +
       "\"variables\":{\"file\":null}," +
-      "\"extensions\":{\"persistedQuery\":{\"version\":1," +
-      "\"sha256Hash\":\"" + SingleUploadMutation.OPERATION_ID + "\"}}," +
       "\"query\":\"mutation SingleUpload($file: Upload!) {  " +
       "singleUpload(file: $file) {    __typename    id    path    filename    mimetype  }}\"}";
   private final String expectedMapPartBodySingle = "{\"0\":[\"variables.file\"]}";
@@ -84,8 +82,6 @@ public class ApolloServerInterceptorFileUploadTest {
       .build();
   private final String expectedOperationsPartBodyTwice = "{\"operationName\":\"SingleUploadTwice\"," +
       "\"variables\":{\"file1\":null,\"file2\":null}," +
-      "\"extensions\":{\"persistedQuery\":{\"version\":1," +
-      "\"sha256Hash\":\"" + SingleUploadTwiceMutation.OPERATION_ID + "\"}}," +
       "\"query\":\"mutation SingleUploadTwice($file1: Upload!, $file2: Upload!) {  " +
       "file1: singleUpload(file: $file1) {    __typename    id    path    filename    mimetype  }  " +
       "file2: singleUpload(file: $file2) {    __typename    id    path    filename    mimetype  }}\"}";
@@ -94,8 +90,6 @@ public class ApolloServerInterceptorFileUploadTest {
   private MultipleUploadMutation mutationMultiple = null;
   private final String expectedOperationsPartBodyMultiple = "{\"operationName\":\"MultipleUpload\"," +
       "\"variables\":{\"files\":[null,null]}," +
-      "\"extensions\":{\"persistedQuery\":{\"version\":1," +
-      "\"sha256Hash\":\"" + MultipleUploadMutation.OPERATION_ID + "\"}}," +
       "\"query\":\"mutation MultipleUpload($files: [Upload!]!) {  " +
       "multipleUpload(files: $files) {    __typename    id    path    filename    mimetype  }}\"}";
   private final String expectedMapPartBodyMultiple = "{\"0\":[\"variables.files.0\"],\"1\":[\"variables.files.1\"]}";
@@ -108,8 +102,6 @@ public class ApolloServerInterceptorFileUploadTest {
   private final String expectedOperationsPartBodyNested = "{\"operationName\":\"NestedUpload\"," +
       "\"variables\":{\"topFile\":null,\"topFileList\":[null,null],\"nested\":{\"recursiveNested\":[" +
       "{\"file\":null,\"fileList\":[null,null]},{\"file\":null,\"fileList\":[null,null]}],\"file\":null,\"fileList\":[null,null]}}," +
-      "\"extensions\":{\"persistedQuery\":{\"version\":1," +
-      "\"sha256Hash\":\"" + NestedUploadMutation.OPERATION_ID + "\"}}," +
       "\"query\":\"mutation NestedUpload($topFile: Upload, $topFileList: [Upload], $nested: NestedObject) {  " +
       "nestedUpload(topFile: $topFile, topFileList: $topFileList, nested: $nested)}\"}";
   private final String expectedMapPartBodyNested = "{\"0\":[\"variables.topFile\"],\"1\":[\"variables.topFileList.0\"]," +
@@ -159,10 +151,9 @@ public class ApolloServerInterceptorFileUploadTest {
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
-        new ApolloLogger(Optional.<Logger>absent()),
-        false);
+        new ApolloLogger(Optional.<Logger>absent()));
 
-    interceptor.httpPostCall(mutationSingle, CacheHeaders.NONE, RequestHeaders.NONE, true);
+    interceptor.httpPostCall(mutationSingle, CacheHeaders.NONE, RequestHeaders.NONE, true, false);
   }
 
   @Test public void testDefaultHttpCallWithUploadTwice() throws Exception {
@@ -183,10 +174,9 @@ public class ApolloServerInterceptorFileUploadTest {
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
-        new ApolloLogger(Optional.<Logger>absent()),
-        false);
+        new ApolloLogger(Optional.<Logger>absent()));
 
-    interceptor.httpPostCall(mutationTwice, CacheHeaders.NONE, RequestHeaders.NONE, true);
+    interceptor.httpPostCall(mutationTwice, CacheHeaders.NONE, RequestHeaders.NONE, true, false);
   }
 
   @Test public void testDefaultHttpCallWithUploadMultiple() throws Exception {
@@ -207,10 +197,9 @@ public class ApolloServerInterceptorFileUploadTest {
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
-        new ApolloLogger(Optional.<Logger>absent()),
-        false);
+        new ApolloLogger(Optional.<Logger>absent()));
 
-    interceptor.httpPostCall(mutationMultiple, CacheHeaders.NONE, RequestHeaders.NONE, true);
+    interceptor.httpPostCall(mutationMultiple, CacheHeaders.NONE, RequestHeaders.NONE, true, false);
   }
 
   @Test public void testDefaultHttpCallWithUploadNested() throws Exception {
@@ -228,10 +217,9 @@ public class ApolloServerInterceptorFileUploadTest {
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
-        new ApolloLogger(Optional.<Logger>absent()),
-        false);
+        new ApolloLogger(Optional.<Logger>absent()));
 
-    interceptor.httpPostCall(mutationNested, CacheHeaders.NONE, RequestHeaders.NONE,true);
+    interceptor.httpPostCall(mutationNested, CacheHeaders.NONE, RequestHeaders.NONE,true, false);
   }
 
   @Test public void testAdditionalHeaders() throws Exception {
@@ -268,10 +256,9 @@ public class ApolloServerInterceptorFileUploadTest {
     ApolloServerInterceptor interceptor = new ApolloServerInterceptor(serverUrl,
         new AssertHttpCallFactory(requestAssertPredicate), null, false,
         new ScalarTypeAdapters(Collections.<ScalarType, CustomTypeAdapter>emptyMap()),
-        new ApolloLogger(Optional.<Logger>absent()),
-        false);
+        new ApolloLogger(Optional.<Logger>absent()));
 
-    interceptor.httpPostCall(mutationSingle, CacheHeaders.NONE, requestHeaders, true);
+    interceptor.httpPostCall(mutationSingle, CacheHeaders.NONE, requestHeaders, true, false);
   }
 
   private void assertDefaultRequestHeaders(Request request, Operation mutation) {

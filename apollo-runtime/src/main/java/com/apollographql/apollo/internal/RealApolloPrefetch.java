@@ -53,7 +53,7 @@ import static com.apollographql.apollo.internal.CallState.TERMINATED;
     this.tracker = callTracker;
     interceptorChain = new RealApolloInterceptorChain(Collections.<ApolloInterceptor>singletonList(
         new ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCachePolicy.NETWORK_ONLY, true, scalarTypeAdapters,
-            logger, false)
+            logger)
     ));
   }
 

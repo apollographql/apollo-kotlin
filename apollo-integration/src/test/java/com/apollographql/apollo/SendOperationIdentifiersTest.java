@@ -33,6 +33,8 @@ public class SendOperationIdentifiersTest {
     apolloClient.query(query).enqueue(null);
 
     String serverRequest = server.takeRequest().getBody().readUtf8();
+    assertThat(serverRequest.contains("extensions")).isTrue();
+    assertThat(serverRequest.contains("persistedQuery")).isTrue();
     assertThat(serverRequest.contains(String.format("\"sha256Hash\":\"%s\"", query.operationId()))).isTrue();
     assertThat(serverRequest.contains("\"query\":")).isFalse();
   }
@@ -46,7 +48,9 @@ public class SendOperationIdentifiersTest {
     apolloClient.query(query).enqueue(null);
 
     String serverRequest = server.takeRequest().getBody().readUtf8();
-    assertThat(serverRequest.contains("\"id\":\"")).isFalse();
+    assertThat(serverRequest.contains("extensions")).isFalse();
+    assertThat(serverRequest.contains("persistedQuery")).isFalse();
+    assertThat(serverRequest.contains("sha256Hash")).isFalse();
     assertThat(serverRequest.contains("\"query\":")).isTrue();
   }
 

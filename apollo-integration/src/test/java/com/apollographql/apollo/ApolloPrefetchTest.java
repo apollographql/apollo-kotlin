@@ -7,7 +7,6 @@ import com.apollographql.apollo.cache.http.ApolloHttpCache;
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery;
-import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
 import com.apollographql.apollo.rx2.Rx2Apollo;
 
 import org.junit.After;
@@ -23,11 +22,9 @@ import io.reactivex.functions.Predicate;
 import okhttp3.Dispatcher;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 import okhttp3.internal.io.FileSystem;
 import okhttp3.internal.io.InMemoryFileSystem;
 import okhttp3.mockwebserver.MockWebServer;
-import okio.Buffer;
 
 import static com.apollographql.apollo.Utils.assertResponse;
 import static com.apollographql.apollo.Utils.enqueueAndAssertResponse;
@@ -129,10 +126,7 @@ public class ApolloPrefetchTest {
   }
 
   private void checkCachedResponse(String fileName) throws IOException {
-    RequestBody requestBody = lastHttRequest.body();
-    Buffer buffer = new Buffer();
-    requestBody.writeTo(buffer);
-    String cacheKey = buffer.readByteString().md5().hex();
+    String cacheKey = lastHttRequest.headers(HttpCache.CACHE_KEY_HEADER).get(0);
     okhttp3.Response response = apolloClient.cachedHttpResponse(cacheKey);
     assertThat(response).isNotNull();
     assertThat(response.body().source().readUtf8()).isEqualTo(Utils.readFileToString(getClass(), "/" + fileName));

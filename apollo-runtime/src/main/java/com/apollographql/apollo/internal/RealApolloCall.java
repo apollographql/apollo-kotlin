@@ -139,6 +139,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .requestHeaders(requestHeaders)
         .fetchFromCache(false)
         .optimisticUpdates(optimisticUpdates)
+        .useHttpGetMethodForQueries(useHttpGetMethodForQueries)
+        .autoPersistQueries(enableAutoPersistedQueries)
         .build();
     interceptorChain.proceedAsync(request, dispatcher, interceptorCallbackProxy());
   }
@@ -368,11 +370,10 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   }
 
   private ApolloInterceptorChain prepareInterceptorChain(Operation operation) {
-    List<ApolloInterceptor> interceptors = new ArrayList<>();
     HttpCachePolicy.Policy httpCachePolicy = operation instanceof Query ? this.httpCachePolicy : null;
     ResponseFieldMapper responseFieldMapper = responseFieldMapperFactory.create(operation);
 
-    interceptors.addAll(applicationInterceptors);
+    List<ApolloInterceptor> interceptors = new ArrayList<>(applicationInterceptors);
     interceptors.add(responseFetcher.provideInterceptor(logger));
     interceptors.add(new ApolloCacheInterceptor(apolloStore, responseFieldMapper, dispatcher, logger));
     if (operation instanceof Query && enableAutoPersistedQueries) {
@@ -381,7 +382,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
         scalarTypeAdapters, logger));
     interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCachePolicy, false, scalarTypeAdapters,
-        logger, useHttpGetMethodForQueries));
+        logger));
 
     return new RealApolloInterceptorChain(interceptors);
   }
