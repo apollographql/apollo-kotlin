@@ -524,7 +524,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     /**
      * Sets flag whether GraphQL Persisted queries should be sent via HTTP GET requests.
      *
-     * @param useHttpGetMethodForPersistedQueries {@code true} if HTTP GET requests should be used, {@code false} otherwise.
+     * @param useHttpGetMethodForPersistedQueries {@code true} if HTTP GET requests should be used,
+     * {@code false} otherwise.
      * @return The {@link Builder} object to be used for chaining method calls
      */
     public Builder useHttpGetMethodForPersistedQueries(boolean useHttpGetMethodForPersistedQueries) {
