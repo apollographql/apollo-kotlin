@@ -21,7 +21,8 @@ import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
 
-@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments")
+@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
+        "NestedLambdaShadowedImplicitParameter")
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
@@ -43,19 +44,19 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         val graphQlBooleanNullable: Boolean?,
         val graphQlBooleanNonNullable: Boolean,
         val graphQlListOfStringNullable: List<String?>,
-        val graphQlListOfStringNonNullable: List<String?>,
-        val graphQlListOfIdNullable: List<String?>?,
-        val graphQlListOfIdNonNullable: List<String?>,
-        val graphQlListOfIntNullable: List<Int?>?,
-        val graphQlListOfIntNonNullable: List<Int?>,
-        val graphQlListOfFloatNullable: List<Double?>?,
+        val graphQlListOfStringNonNullable: List<String>,
+        val graphQlListOfIdNullable: List<String>?,
+        val graphQlListOfIdNonNullable: List<String>,
+        val graphQlListOfIntNullable: List<Int>?,
+        val graphQlListOfIntNonNullable: List<Int>,
+        val graphQlListOfFloatNullable: List<Double>?,
         val graphQlListOfFloatNonNullable: List<Double?>,
-        val graphQlListOfBooleanNullable: List<Boolean?>?,
-        val graphQlListOfListOfString: List<List<String?>?>,
-        val graphQlListOfListOfId: List<List<String?>?>,
-        val graphQlListOfListOfInt: List<List<Int?>?>,
-        val graphQlListOfListOfFloat: List<List<Double?>?>,
-        val graphQlListOfListOfBoolean: List<List<Boolean?>?>
+        val graphQlListOfBooleanNullable: List<Boolean>?,
+        val graphQlListOfListOfString: List<List<String>>,
+        val graphQlListOfListOfId: List<List<String>>,
+        val graphQlListOfListOfInt: List<List<Int>>,
+        val graphQlListOfListOfFloat: List<List<Double>>,
+        val graphQlListOfListOfBoolean: List<List<Boolean>>
     ) : Operation.Data {
         override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], graphQlString)
@@ -252,29 +253,28 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
                 val graphQlListOfBooleanNullable = reader.readList<Boolean>(RESPONSE_FIELDS[17]) {
                     it.readBoolean()
                 }
-                val graphQlListOfListOfString = reader.readList<List<String?>>(RESPONSE_FIELDS[18])
-                        {
+                val graphQlListOfListOfString = reader.readList<List<String>>(RESPONSE_FIELDS[18]) {
                     it.readList<String> {
                         it.readString()
                     }
                 }
-                val graphQlListOfListOfId = reader.readList<List<String?>>(RESPONSE_FIELDS[19]) {
+                val graphQlListOfListOfId = reader.readList<List<String>>(RESPONSE_FIELDS[19]) {
                     it.readList<String> {
                         it.readCustomType<String>(CustomType.ID)
                     }
                 }
-                val graphQlListOfListOfInt = reader.readList<List<Int?>>(RESPONSE_FIELDS[20]) {
+                val graphQlListOfListOfInt = reader.readList<List<Int>>(RESPONSE_FIELDS[20]) {
                     it.readList<Int> {
                         it.readInt()
                     }
                 }
-                val graphQlListOfListOfFloat = reader.readList<List<Double?>>(RESPONSE_FIELDS[21]) {
+                val graphQlListOfListOfFloat = reader.readList<List<Double>>(RESPONSE_FIELDS[21]) {
                     it.readList<Double> {
                         it.readDouble()
                     }
                 }
-                val graphQlListOfListOfBoolean =
-                        reader.readList<List<Boolean?>>(RESPONSE_FIELDS[22]) {
+                val graphQlListOfListOfBoolean = reader.readList<List<Boolean>>(RESPONSE_FIELDS[22])
+                        {
                     it.readList<Boolean> {
                         it.readBoolean()
                     }

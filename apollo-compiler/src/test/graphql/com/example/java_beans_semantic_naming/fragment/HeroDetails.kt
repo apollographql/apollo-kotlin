@@ -16,7 +16,8 @@ import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
 
-@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments")
+@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
+        "NestedLambdaShadowedImplicitParameter")
 data class HeroDetails(
     val __typename: String,
     /**

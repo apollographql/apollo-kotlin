@@ -23,7 +23,8 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.jvm.Transient
 
-@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments")
+@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
+        "NestedLambdaShadowedImplicitParameter")
 data class TestQuery(val id: String) : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     @Transient
     private val variables: Operation.Variables = object : Operation.Variables() {
@@ -55,7 +56,7 @@ data class TestQuery(val id: String) : Query<TestQuery.Data, TestQuery.Data, Ope
          * The name of the starship
          */
         val name: String,
-        val coordinates: List<List<Double?>?>?
+        val coordinates: List<List<Double>>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
@@ -85,7 +86,7 @@ data class TestQuery(val id: String) : Query<TestQuery.Data, TestQuery.Data, Ope
                 val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as
                         ResponseField.CustomTypeField)
                 val name = reader.readString(RESPONSE_FIELDS[2])
-                val coordinates = reader.readList<List<Double?>>(RESPONSE_FIELDS[3]) {
+                val coordinates = reader.readList<List<Double>>(RESPONSE_FIELDS[3]) {
                     it.readList<Double> {
                         it.readDouble()
                     }

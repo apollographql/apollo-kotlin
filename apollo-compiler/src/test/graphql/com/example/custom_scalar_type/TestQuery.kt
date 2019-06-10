@@ -20,7 +20,8 @@ import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
 
-@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments")
+@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
+        "NestedLambdaShadowedImplicitParameter")
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
@@ -44,7 +45,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         /**
          * The dates of appearances
          */
-        val appearanceDates: List<Date?>,
+        val appearanceDates: List<Date>,
         /**
          * The date character was born.
          */
@@ -56,7 +57,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         /**
          * Links
          */
-        val links: List<java.lang.String?>
+        val links: List<java.lang.String>
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)

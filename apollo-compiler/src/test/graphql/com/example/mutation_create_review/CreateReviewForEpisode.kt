@@ -26,7 +26,8 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.jvm.Transient
 
-@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments")
+@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
+        "NestedLambdaShadowedImplicitParameter")
 data class CreateReviewForEpisode(val ep: Episode, val review: ReviewInput) :
         Mutation<CreateReviewForEpisode.Data, CreateReviewForEpisode.Data, Operation.Variables> {
     @Transient
@@ -93,19 +94,19 @@ data class CreateReviewForEpisode(val ep: Episode, val review: ReviewInput) :
         /**
          * for test purpose only
          */
-        val listOfListOfString: List<List<String?>?>?,
+        val listOfListOfString: List<List<String>>?,
         /**
          * for test purpose only
          */
-        val listOfListOfEnum: List<List<Episode?>?>?,
+        val listOfListOfEnum: List<List<Episode>>?,
         /**
          * for test purpose only
          */
-        val listOfListOfCustom: List<List<Date?>?>?,
+        val listOfListOfCustom: List<List<Date>>?,
         /**
          * for test purpose only
          */
-        val listOfListOfObject: List<List<ListOfListOfObject?>?>?
+        val listOfListOfObject: List<List<ListOfListOfObject>>?
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
@@ -167,23 +168,23 @@ data class CreateReviewForEpisode(val ep: Episode, val review: ReviewInput) :
                 val __typename = reader.readString(RESPONSE_FIELDS[0])
                 val stars = reader.readInt(RESPONSE_FIELDS[1])
                 val commentary = reader.readString(RESPONSE_FIELDS[2])
-                val listOfListOfString = reader.readList<List<String?>>(RESPONSE_FIELDS[3]) {
+                val listOfListOfString = reader.readList<List<String>>(RESPONSE_FIELDS[3]) {
                     it.readList<String> {
                         it.readString()
                     }
                 }
-                val listOfListOfEnum = reader.readList<List<Episode?>>(RESPONSE_FIELDS[4]) {
+                val listOfListOfEnum = reader.readList<List<Episode>>(RESPONSE_FIELDS[4]) {
                     it.readList<Episode> {
                         Episode.safeValueOf(it.readString())
                     }
                 }
-                val listOfListOfCustom = reader.readList<List<Date?>>(RESPONSE_FIELDS[5]) {
+                val listOfListOfCustom = reader.readList<List<Date>>(RESPONSE_FIELDS[5]) {
                     it.readList<Date> {
                         it.readCustomType<Date>(CustomType.DATE)
                     }
                 }
                 val listOfListOfObject =
-                        reader.readList<List<ListOfListOfObject?>>(RESPONSE_FIELDS[6]) {
+                        reader.readList<List<ListOfListOfObject>>(RESPONSE_FIELDS[6]) {
                     it.readList<ListOfListOfObject> {
                         it.readObject<ListOfListOfObject> { reader ->
                             ListOfListOfObject(reader)

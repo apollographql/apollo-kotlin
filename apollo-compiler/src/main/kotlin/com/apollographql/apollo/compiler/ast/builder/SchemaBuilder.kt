@@ -65,12 +65,13 @@ internal fun resolveFieldType(
   val isGraphQLArrayType = graphQLType.removeSuffix("!").let { it.startsWith('[') && it.endsWith(']') }
   if (isGraphQLArrayType) {
     return FieldType.Array(
-        resolveFieldType(
+        rawType = resolveFieldType(
             graphQLType = graphQLType.removeSuffix("!").removePrefix("[").removeSuffix("]").removeSuffix("!"),
             enums = enums,
             customTypeMap = customTypeMap,
             typesPackageName = typesPackageName
-        )
+        ),
+        isOptional = !graphQLType.removeSuffix("!").removeSuffix("]").endsWith("!")
     )
   } else {
     return when (ScalarType.forName(graphQLType.removeSuffix("!"))) {

@@ -19,7 +19,8 @@ import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
 
-@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments")
+@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
+        "NestedLambdaShadowedImplicitParameter")
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
@@ -35,7 +36,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
         /**
          * Links
          */
-        val links: List<Any?>
+        val links: List<Any>
     ) {
         fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)

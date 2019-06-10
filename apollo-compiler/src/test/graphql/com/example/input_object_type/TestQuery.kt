@@ -23,7 +23,8 @@ import kotlin.Suppress
 import kotlin.collections.Map
 import kotlin.jvm.Transient
 
-@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments")
+@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
+        "NestedLambdaShadowedImplicitParameter")
 data class TestQuery(val ep: Episode, val review: ReviewInput) : Mutation<TestQuery.Data,
         TestQuery.Data, Operation.Variables> {
     @Transient
