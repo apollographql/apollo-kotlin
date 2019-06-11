@@ -1,15 +1,21 @@
 package com.apollographql.apollo.cache.http;
 
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
-
+import com.apollographql.apollo.cache.http.internal.HttpDate;
+import java.io.Closeable;
 import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.util.Collections;
 import java.util.Date;
-
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
+import okhttp3.Headers;
 import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.internal.Util;
-import okhttp3.internal.http.HttpDate;
+import okhttp3.ResponseBody;
+import okio.Buffer;
 import okio.BufferedSink;
 import okio.BufferedSource;
 import okio.Okio;
@@ -25,6 +31,10 @@ import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_PREFETCH_H
 import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_SERVED_DATE_HEADER;
 
 final class Utils {
+  private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+
+  private static final ResponseBody EMPTY_RESPONSE = ResponseBody.create(null, EMPTY_BYTE_ARRAY);
+
   static Response strip(Response response) {
     return response != null && response.body() != null
         ? response.newBuilder().body(null).networkResponse(null).cacheResponse(null).build()
@@ -86,7 +96,7 @@ final class Utils {
         .protocol(Protocol.HTTP_1_1)
         .code(504)
         .message("Unsatisfiable Request (cache-only)")
-        .body(Util.EMPTY_RESPONSE)
+        .body(EMPTY_RESPONSE)
         .sentRequestAtMillis(-1L)
         .receivedResponseAtMillis(System.currentTimeMillis())
         .build();
@@ -102,7 +112,7 @@ final class Utils {
     closeQuietly(responseBodySource);
   }
 
-  static void closeQuietly(Source source) {
+  static void closeQuietly(Closeable source) {
     try {
       source.close();
     } catch (Exception ignore) {
@@ -110,13 +120,47 @@ final class Utils {
     }
   }
 
-  static void closeQuietly(Response response) {
+  /**
+   * Attempts to exhaust {@code source}, returning true if successful. This is useful when reading a
+   * complete source is helpful, such as when doing so completes a cache body or frees a socket
+   * connection for reuse.
+   *
+   * <p>Copied from OkHttp.
+   */
+  static boolean discard(Source source, int timeout, TimeUnit timeUnit) {
     try {
-      if (response != null) {
-        response.close();
+      return skipAll(source, timeout, timeUnit);
+    } catch (IOException e) {
+      return false;
+    }
+  }
+
+  /**
+   * Reads until {@code in} is exhausted or the deadline has been reached. This is careful to not
+   * extend the deadline if one exists already.
+   *
+   * <p>Copied from OkHttp.
+   */
+  static boolean skipAll(Source source, int duration, TimeUnit timeUnit) throws IOException {
+    long now = System.nanoTime();
+    long originalDuration = source.timeout().hasDeadline()
+        ? source.timeout().deadlineNanoTime() - now
+        : Long.MAX_VALUE;
+    source.timeout().deadlineNanoTime(now + Math.min(originalDuration, timeUnit.toNanos(duration)));
+    try {
+      Buffer skipBuffer = new Buffer();
+      while (source.read(skipBuffer, 8192) != -1) {
+        skipBuffer.clear();
       }
-    } catch (Exception ignore) {
-      // ignore
+      return true; // Success! The source has been exhausted.
+    } catch (InterruptedIOException e) {
+      return false; // We ran out of time before exhausting the source.
+    } finally {
+      if (originalDuration == Long.MAX_VALUE) {
+        source.timeout().clearDeadline();
+      } else {
+        source.timeout().deadlineNanoTime(now + originalDuration);
+      }
     }
   }
 
@@ -135,6 +179,62 @@ final class Utils {
     Date servedDate = HttpDate.parse(servedDateStr);
     long now = System.currentTimeMillis();
     return servedDate == null || now - servedDate.getTime() > timeout;
+  }
+
+  /**
+   * Returns the subset of the headers in {@code response}'s request that impact the content of
+   * response's body.
+   *
+   * <p>Copied from OkHttp.
+   */
+  static Headers varyHeaders(Response response) {
+    // Use the request headers sent over the network, since that's what the
+    // response varies on. Otherwise OkHttp-supplied headers like
+    // "Accept-Encoding: gzip" may be lost.
+    Headers requestHeaders = response.networkResponse().request().headers();
+    Headers responseHeaders = response.headers();
+    return varyHeaders(requestHeaders, responseHeaders);
+  }
+
+  /**
+   * Returns the subset of the headers in {@code requestHeaders} that impact the content of
+   * response's body.
+   *
+   * <p>Copied from OkHttp.
+   */
+  static Headers varyHeaders(Headers requestHeaders, Headers responseHeaders) {
+    Set<String> varyFields = varyFields(responseHeaders);
+    if (varyFields.isEmpty()) return new Headers.Builder().build();
+
+    Headers.Builder result = new Headers.Builder();
+    for (int i = 0, size = requestHeaders.size(); i < size; i++) {
+      String fieldName = requestHeaders.name(i);
+      if (varyFields.contains(fieldName)) {
+        result.add(fieldName, requestHeaders.value(i));
+      }
+    }
+    return result.build();
+  }
+
+  /**
+   * Returns the names of the request headers that need to be checked for equality when caching.
+   *
+   * <p>Copied from OkHttp.
+   */
+  static Set<String> varyFields(Headers responseHeaders) {
+    Set<String> result = Collections.emptySet();
+    for (int i = 0, size = responseHeaders.size(); i < size; i++) {
+      if (!"Vary".equalsIgnoreCase(responseHeaders.name(i))) continue;
+
+      String value = responseHeaders.value(i);
+      if (result.isEmpty()) {
+        result = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+      }
+      for (String varyField : value.split(",")) {
+        result.add(varyField.trim());
+      }
+    }
+    return result;
   }
 
   private static HttpCachePolicy.FetchStrategy fetchStrategy(Request request) {
