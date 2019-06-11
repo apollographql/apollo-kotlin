@@ -37,7 +37,8 @@ import okio.Source;
  * information. In exchange for these limitations, this interface is easier to implement and works
  * on all versions of Java and Android.
  *
- * <p>Copied from OkHttp 3.14.2: https://github.com/square/okhttp/blob/b8b6ee831c65208940c741f8e091ff02425566d5/okhttp/src/main/java/okhttp3/internal/io/FileSystem.java
+ * <p>Copied from OkHttp 3.14.2: https://github.com/square/okhttp/blob/
+ * b8b6ee831c65208940c741f8e091ff02425566d5/okhttp/src/main/java/okhttp3/internal/io/FileSystem.java
  */
 public interface FileSystem {
   /** The host machine's local file system. */

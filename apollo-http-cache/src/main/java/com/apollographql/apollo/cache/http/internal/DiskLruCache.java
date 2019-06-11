@@ -81,7 +81,9 @@ import org.jetbrains.annotations.Nullable;
  * value, the edit will fail silently. Callers should handle other problems by catching {@code
  * IOException} and responding appropriately.
  *
- * <p>Copied from OkHttp 3.14.2: https://github.com/square/okhttp/blob/b8b6ee831c65208940c741f8e091ff02425566d5/okhttp/src/main/java/okhttp3/internal/cache/DiskLruCache.java
+ * <p>Copied from OkHttp 3.14.2: https://github.com/square/okhttp/blob/
+ * b8b6ee831c65208940c741f8e091ff02425566d5/
+ * okhttp/src/main/java/okhttp3/internal/cache/DiskLruCache.java
  */
 @SuppressWarnings("ConstantConditions")
 public final class DiskLruCache implements Closeable, Flushable {
@@ -375,7 +377,7 @@ public final class DiskLruCache implements Closeable, Flushable {
    */
   private void processJournal() throws IOException {
     fileSystem.delete(journalFileTmp);
-    for (Iterator<Entry> i = lruEntries.values().iterator(); i.hasNext(); ) {
+    for (Iterator<Entry> i = lruEntries.values().iterator(); i.hasNext();) {
       Entry entry = i.next();
       if (entry.currentEditor == null) {
         for (int t = 0; t < valueCount; t++) {
