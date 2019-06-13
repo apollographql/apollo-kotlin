@@ -30,6 +30,7 @@ class KotlinSpec extends Specification {
                 .withPluginClasspath()
                 .withArguments("assemble", "-Dapollographql.skipRuntimeDep=true")
                 .forwardStdError(new OutputStreamWriter(System.err))
+                .forwardStdOutput(new OutputStreamWriter(System.out))
                 .build()
 
         then:

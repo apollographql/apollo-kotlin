@@ -27,6 +27,7 @@ ext.dep = [
     apolloRx2Support        : "com.apollographql.apollo:apollo-rx2-support:$versions.apolloVersion",
     apolloCoroutinesSupport : "com.apollographql.apollo:apollo-coroutine-support:$versions.apolloVersion",
     apolloHttpCache         : "com.apollographql.apollo:apollo-http-cache:$versions.apolloVersion",
+    apolloApi               : "com.apollographql.apollo:apollo-api:$versions.apolloVersion",
     supportAnnotations      : "com.android.support:support-annotations:$versions.supportLibVersion",
     recyclerView            : "com.android.support:recyclerview-v7:$versions.supportLibVersion",
     compiletesting          : 'com.google.testing.compile:compile-testing:0.15',
