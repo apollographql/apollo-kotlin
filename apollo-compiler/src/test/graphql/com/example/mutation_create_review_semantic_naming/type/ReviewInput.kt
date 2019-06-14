@@ -19,7 +19,8 @@ import kotlin.collections.List
 /**
  * The input object sent when someone is creating a new review
  */
-@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments")
+@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
+        "NestedLambdaShadowedImplicitParameter")
 class ReviewInput(
     /**
      * 0-5 stars
@@ -76,19 +77,19 @@ class ReviewInput(
     /**
      * for test purpose only
      */
-    val listOfListOfString: Input<List<List<String?>?>> = Input.optional(null),
+    val listOfListOfString: Input<List<List<String>>> = Input.optional(null),
     /**
      * for test purpose only
      */
-    val listOfListOfEnum: Input<List<List<Episode?>?>> = Input.optional(null),
+    val listOfListOfEnum: Input<List<List<Episode>>> = Input.optional(null),
     /**
      * for test purpose only
      */
-    val listOfListOfCustom: Input<List<List<Any?>?>> = Input.optional(null),
+    val listOfListOfCustom: Input<List<List<Any>>> = Input.optional(null),
     /**
      * for test purpose only
      */
-    val listOfListOfObject: Input<List<List<ColorInput?>?>> = Input.optional(null),
+    val listOfListOfObject: Input<List<List<ColorInput>>> = Input.optional(null),
     /**
      * for test purpose only
      */
@@ -154,7 +155,7 @@ class ReviewInput(
                 InputFieldWriter.ListWriter { listItemWriter ->
                     value.forEach { value ->
                         listItemWriter.writeList { listItemWriter ->
-                            value?.forEach { value ->
+                            value.forEach { value ->
                                 listItemWriter.writeString(value)
                             }
                         }
@@ -167,8 +168,8 @@ class ReviewInput(
                 InputFieldWriter.ListWriter { listItemWriter ->
                     value.forEach { value ->
                         listItemWriter.writeList { listItemWriter ->
-                            value?.forEach { value ->
-                                listItemWriter.writeString(value?.rawValue)
+                            value.forEach { value ->
+                                listItemWriter.writeString(value.rawValue)
                             }
                         }
                     }
@@ -180,7 +181,7 @@ class ReviewInput(
                 InputFieldWriter.ListWriter { listItemWriter ->
                     value.forEach { value ->
                         listItemWriter.writeList { listItemWriter ->
-                            value?.forEach { value ->
+                            value.forEach { value ->
                                 listItemWriter.writeCustom(CustomType.DATE, value)
                             }
                         }
@@ -193,8 +194,8 @@ class ReviewInput(
                 InputFieldWriter.ListWriter { listItemWriter ->
                     value.forEach { value ->
                         listItemWriter.writeList { listItemWriter ->
-                            value?.forEach { value ->
-                                listItemWriter.writeObject(value?.marshaller())
+                            value.forEach { value ->
+                                listItemWriter.writeObject(value.marshaller())
                             }
                         }
                     }

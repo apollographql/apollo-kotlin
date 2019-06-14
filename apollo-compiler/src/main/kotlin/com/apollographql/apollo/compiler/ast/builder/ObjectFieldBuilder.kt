@@ -39,18 +39,22 @@ private fun Field.array(context: Context): ObjectType.Field {
   val fieldType = if (fields?.isNotEmpty() == true) {
     val objectType = FieldType.Object(
         context.registerObjectType(
-            type = responseName.replace("[", "").replace("[", "").replace("!", ""),
-            schemaType = type.replace("[", "").replace("[", "").replace("!", ""),
+            type = responseName.replace("[", "").replace("]", "").replace("!", ""),
+            schemaType = type.replace("[", "").replace("]", "").replace("!", ""),
             fragmentSpreads = fragmentSpreads ?: emptyList(),
             inlineFragments = inlineFragments ?: emptyList(),
             fields = fields
         )
     )
-    var result: FieldType.Array = FieldType.Array(rawType = objectType)
-    repeat(type.count { it == '[' } - 1) {
-      result = FieldType.Array(rawType = result)
-    }
-    result
+
+    Regex("!]|]")
+        .findAll(type)
+        .toList()
+        .flatMap { it.groupValues }
+        .fold<String, FieldType.Array?>(null) { arrayField, arrayTerminator ->
+          if (arrayField == null) FieldType.Array(rawType = objectType, isOptional = arrayTerminator == "]")
+          else FieldType.Array(rawType = arrayField, isOptional = arrayTerminator == "]")
+        } ?: FieldType.Array(rawType = objectType, isOptional = true)
   } else {
     resolveFieldType(
         graphQLType = type,

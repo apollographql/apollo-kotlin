@@ -23,7 +23,8 @@ import kotlin.Suppress
 import kotlin.collections.Map
 import kotlin.jvm.Transient
 
-@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments")
+@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
+        "NestedLambdaShadowedImplicitParameter")
 data class CreateReviewForEpisodeMutation(val ep: Episode, val review: ReviewInput) :
         Mutation<CreateReviewForEpisodeMutation.Data, CreateReviewForEpisodeMutation.Data,
         Operation.Variables> {

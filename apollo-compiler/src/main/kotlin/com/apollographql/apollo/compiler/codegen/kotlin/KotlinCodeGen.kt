@@ -17,7 +17,8 @@ internal object KotlinCodeGen {
 
   val suppressWarningsAnnotation = AnnotationSpec
       .builder(Suppress::class)
-      .addMember("%S, %S, %S", "NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments")
+      .addMember("%S, %S, %S, %S", "NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
+          "NestedLambdaShadowedImplicitParameter")
       .build()
 
   fun deprecatedAnnotation(message: String) = AnnotationSpec
@@ -50,7 +51,7 @@ internal object KotlinCodeGen {
         packageName = typeRef.packageName,
         simpleName = typeRef.name
     )
-    is FieldType.Array -> List::class.asClassName().parameterizedBy(rawType.asTypeName(optional = true))
+    is FieldType.Array -> List::class.asClassName().parameterizedBy(rawType.asTypeName(optional = isOptional))
   }.let {
     if (optional) it.copy(nullable = true) else it.copy(nullable = false)
   }

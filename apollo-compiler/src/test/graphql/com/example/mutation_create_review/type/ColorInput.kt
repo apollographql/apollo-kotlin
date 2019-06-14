@@ -15,7 +15,8 @@ import kotlin.Suppress
 /**
  * The input object sent when passing in a color
  */
-@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments")
+@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
+        "NestedLambdaShadowedImplicitParameter")
 class ColorInput(
     /**
      * Red color

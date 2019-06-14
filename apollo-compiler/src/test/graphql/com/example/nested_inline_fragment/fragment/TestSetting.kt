@@ -15,7 +15,8 @@ import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
 
-@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments")
+@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
+        "NestedLambdaShadowedImplicitParameter")
 data class TestSetting(
     val __typename: String,
     val value: Value1?,
@@ -87,7 +88,7 @@ data class TestSetting(
         fun marshaller(): ResponseFieldMarshaller
     }
 
-    data class AsStringListSettingValue(val __typename: String, val list: List<String?>?) :
+    data class AsStringListSettingValue(val __typename: String, val list: List<String>?) :
             ValueSettingValue {
         override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
@@ -190,7 +191,7 @@ data class TestSetting(
     data class AsSelectSetting(
         val __typename: String,
         val value: Value?,
-        val options: List<Option?>?
+        val options: List<Option>?
     ) : TestSettingSetting {
         override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)
@@ -236,7 +237,7 @@ data class TestSetting(
         fun marshaller(): ResponseFieldMarshaller
     }
 
-    data class AsStringListSettingValue1(val __typename: String, val list: List<String?>?) :
+    data class AsStringListSettingValue1(val __typename: String, val list: List<String>?) :
             ValueSettingValue1 {
         override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
             it.writeString(RESPONSE_FIELDS[0], __typename)

@@ -20,7 +20,8 @@ import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
 
-@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments")
+@Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
+        "NestedLambdaShadowedImplicitParameter")
 class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operation.Variables> {
     override fun operationId(): String = OPERATION_ID
     override fun queryDocument(): String = QUERY_DOCUMENT
@@ -54,7 +55,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
                     val heroDetails = if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType))
                             HeroDetails(reader) else null
                     Fragments(
-                        heroDetails = heroDetails
+                        heroDetails = heroDetails!!
                     )
                 }
 
@@ -65,9 +66,9 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
             }
         }
 
-        data class Fragments(val heroDetails: HeroDetails?) {
+        data class Fragments(val heroDetails: HeroDetails) {
             fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-                heroDetails?.marshaller()?.marshal(it)
+                heroDetails.marshaller().marshal(it)
             }
         }
     }
