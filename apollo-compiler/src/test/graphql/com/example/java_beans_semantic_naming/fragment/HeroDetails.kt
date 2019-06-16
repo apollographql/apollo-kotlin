@@ -17,440 +17,441 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 @Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
-        "NestedLambdaShadowedImplicitParameter")
+    "NestedLambdaShadowedImplicitParameter")
 data class HeroDetails(
+  val __typename: String,
+  /**
+   * The name of the character
+   */
+  val name: String,
+  /**
+   * The friends of the character exposed as a connection with edges
+   */
+  val friendsConnection: FriendsConnection1,
+  val inlineFragment: HeroDetailCharacter?
+) : GraphqlFragment {
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+    it.writeString(RESPONSE_FIELDS[0], __typename)
+    it.writeString(RESPONSE_FIELDS[1], name)
+    it.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())
+    it.writeObject(RESPONSE_FIELDS[3], inlineFragment?.marshaller())
+  }
+
+  companion object {
+    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
+        ResponseField.forInlineFragment("__typename", "__typename", listOf("Droid"))
+        )
+
+    val FRAGMENT_DEFINITION: String = """
+        |fragment HeroDetails on Character {
+        |  __typename
+        |  name
+        |  friendsConnection {
+        |    __typename
+        |    totalCount
+        |    edges {
+        |      __typename
+        |      node {
+        |        __typename
+        |        name
+        |      }
+        |    }
+        |    pageInfo {
+        |      __typename
+        |      hasNextPage
+        |    }
+        |    isEmpty
+        |  }
+        |  ... on Droid {
+        |    name
+        |    primaryFunction
+        |  }
+        |}
+        """.trimMargin()
+
+    val POSSIBLE_TYPES: Array<String> = arrayOf("Human", "Droid")
+
+    operator fun invoke(reader: ResponseReader): HeroDetails {
+      val __typename = reader.readString(RESPONSE_FIELDS[0])
+      val name = reader.readString(RESPONSE_FIELDS[1])
+      val friendsConnection = reader.readObject<FriendsConnection1>(RESPONSE_FIELDS[2]) { reader ->
+        FriendsConnection1(reader)
+      }
+
+      val inlineFragment = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType, reader ->
+        when(conditionalType) {
+          in AsDroid.POSSIBLE_TYPES -> AsDroid(reader)
+          else -> null
+        }
+      }
+
+      return HeroDetails(
+        __typename = __typename,
+        name = name,
+        friendsConnection = friendsConnection,
+        inlineFragment = inlineFragment
+      )
+    }
+  }
+
+  interface HeroDetailCharacter {
+    fun marshaller(): ResponseFieldMarshaller
+  }
+
+  data class Node(
     val __typename: String,
     /**
      * The name of the character
      */
-    val name: String,
-    /**
-     * The friends of the character exposed as a connection with edges
-     */
-    val friendsConnection: FriendsConnection1,
-    val inlineFragment: HeroDetailCharacter?
-) : GraphqlFragment {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeString(RESPONSE_FIELDS[0], __typename)
-        it.writeString(RESPONSE_FIELDS[1], name)
-        it.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())
-        it.writeObject(RESPONSE_FIELDS[3], inlineFragment?.marshaller())
+    val name: String
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeString(RESPONSE_FIELDS[1], name)
     }
 
     companion object {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                ResponseField.forString("__typename", "__typename", null, false, null),
-                ResponseField.forString("name", "name", null, false, null),
-                ResponseField.forObject("friendsConnection", "friendsConnection", null, false,
-                        null),
-                ResponseField.forInlineFragment("__typename", "__typename", listOf("Droid"))
-                )
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null)
+          )
 
-        val FRAGMENT_DEFINITION: String = """
-                |fragment HeroDetails on Character {
-                |  __typename
-                |  name
-                |  friendsConnection {
-                |    __typename
-                |    totalCount
-                |    edges {
-                |      __typename
-                |      node {
-                |        __typename
-                |        name
-                |      }
-                |    }
-                |    pageInfo {
-                |      __typename
-                |      hasNextPage
-                |    }
-                |    isEmpty
-                |  }
-                |  ... on Droid {
-                |    name
-                |    primaryFunction
-                |  }
-                |}
-                """.trimMargin()
+      operator fun invoke(reader: ResponseReader): Node {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val name = reader.readString(RESPONSE_FIELDS[1])
+        return Node(
+          __typename = __typename,
+          name = name
+        )
+      }
+    }
+  }
 
-        val POSSIBLE_TYPES: Array<String> = arrayOf("Human", "Droid")
-
-        operator fun invoke(reader: ResponseReader): HeroDetails {
-            val __typename = reader.readString(RESPONSE_FIELDS[0])
-            val name = reader.readString(RESPONSE_FIELDS[1])
-            val friendsConnection = reader.readObject<FriendsConnection1>(RESPONSE_FIELDS[2]) {
-                    reader ->
-                FriendsConnection1(reader)
-            }
-
-            val inlineFragment = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType,
-                    reader ->
-                when(conditionalType) {
-                    in AsDroid.POSSIBLE_TYPES -> AsDroid(reader)
-                    else -> null
-                }
-            }
-
-            return HeroDetails(
-                __typename = __typename,
-                name = name,
-                friendsConnection = friendsConnection,
-                inlineFragment = inlineFragment
-            )
-        }
+  data class Edge(
+    val __typename: String,
+    /**
+     * The character represented by this friendship edge
+     */
+    val node: Node?
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
     }
 
-    interface HeroDetailCharacter {
-        fun marshaller(): ResponseFieldMarshaller
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forObject("node", "node", null, true, null)
+          )
+
+      operator fun invoke(reader: ResponseReader): Edge {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
+          Node(reader)
+        }
+
+        return Edge(
+          __typename = __typename,
+          node = node
+        )
+      }
+    }
+  }
+
+  data class PageInfo(
+    val __typename: String,
+    val hasNextPage: Boolean
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeBoolean(RESPONSE_FIELDS[1], hasNextPage)
     }
 
-    data class Node(
-        val __typename: String,
-        /**
-         * The name of the character
-         */
-        val name: String
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeString(RESPONSE_FIELDS[1], name)
-        }
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forBoolean("hasNextPage", "hasNextPage", null, false, null)
+          )
 
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forString("name", "name", null, false, null)
-                    )
+      operator fun invoke(reader: ResponseReader): PageInfo {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val hasNextPage = reader.readBoolean(RESPONSE_FIELDS[1])
+        return PageInfo(
+          __typename = __typename,
+          hasNextPage = hasNextPage
+        )
+      }
+    }
+  }
 
-            operator fun invoke(reader: ResponseReader): Node {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val name = reader.readString(RESPONSE_FIELDS[1])
-                return Node(
-                    __typename = __typename,
-                    name = name
-                )
-            }
+  data class FriendsConnection(
+    val __typename: String,
+    /**
+     * The total number of friends
+     */
+    val totalCount: Int?,
+    /**
+     * The edges for each of the character's friends.
+     */
+    val edges: List<Edge?>?,
+    /**
+     * Information for paginating this connection
+     */
+    val pageInfo: PageInfo,
+    /**
+     * For test java beans semantic naming only
+     */
+    val isEmpty: Boolean
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeInt(RESPONSE_FIELDS[1], totalCount)
+      it.writeList(RESPONSE_FIELDS[2], edges) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())
         }
+      }
+      it.writeObject(RESPONSE_FIELDS[3], pageInfo.marshaller())
+      it.writeBoolean(RESPONSE_FIELDS[4], isEmpty)
     }
 
-    data class Edge(
-        val __typename: String,
-        /**
-         * The character represented by this friendship edge
-         */
-        val node: Node?
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forInt("totalCount", "totalCount", null, true, null),
+          ResponseField.forList("edges", "edges", null, true, null),
+          ResponseField.forObject("pageInfo", "pageInfo", null, false, null),
+          ResponseField.forBoolean("isEmpty", "isEmpty", null, false, null)
+          )
+
+      operator fun invoke(reader: ResponseReader): FriendsConnection {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val totalCount = reader.readInt(RESPONSE_FIELDS[1])
+        val edges = reader.readList<Edge>(RESPONSE_FIELDS[2]) {
+          it.readObject<Edge> { reader ->
+            Edge(reader)
+          }
+
+        }
+        val pageInfo = reader.readObject<PageInfo>(RESPONSE_FIELDS[3]) { reader ->
+          PageInfo(reader)
         }
 
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forObject("node", "node", null, true, null)
-                    )
+        val isEmpty = reader.readBoolean(RESPONSE_FIELDS[4])
+        return FriendsConnection(
+          __typename = __typename,
+          totalCount = totalCount,
+          edges = edges,
+          pageInfo = pageInfo,
+          isEmpty = isEmpty
+        )
+      }
+    }
+  }
 
-            operator fun invoke(reader: ResponseReader): Edge {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
-                    Node(reader)
-                }
-
-                return Edge(
-                    __typename = __typename,
-                    node = node
-                )
-            }
-        }
+  data class AsDroid(
+    val __typename: String,
+    /**
+     * What others call this droid
+     */
+    val name: String,
+    /**
+     * The friends of the droid exposed as a connection with edges
+     */
+    val friendsConnection: FriendsConnection,
+    /**
+     * This droid's primary function
+     */
+    val primaryFunction: String?
+  ) : HeroDetailCharacter {
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeString(RESPONSE_FIELDS[1], name)
+      it.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())
+      it.writeString(RESPONSE_FIELDS[3], primaryFunction)
     }
 
-    data class PageInfo(val __typename: String, val hasNextPage: Boolean) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeBoolean(RESPONSE_FIELDS[1], hasNextPage)
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
+          ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
+          )
+
+      val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
+
+      operator fun invoke(reader: ResponseReader): AsDroid {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val name = reader.readString(RESPONSE_FIELDS[1])
+        val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+          FriendsConnection(reader)
         }
 
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forBoolean("hasNextPage", "hasNextPage", null, false, null)
-                    )
+        val primaryFunction = reader.readString(RESPONSE_FIELDS[3])
+        return AsDroid(
+          __typename = __typename,
+          name = name,
+          friendsConnection = friendsConnection,
+          primaryFunction = primaryFunction
+        )
+      }
+    }
+  }
 
-            operator fun invoke(reader: ResponseReader): PageInfo {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val hasNextPage = reader.readBoolean(RESPONSE_FIELDS[1])
-                return PageInfo(
-                    __typename = __typename,
-                    hasNextPage = hasNextPage
-                )
-            }
-        }
+  data class Node1(
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeString(RESPONSE_FIELDS[1], name)
     }
 
-    data class FriendsConnection(
-        val __typename: String,
-        /**
-         * The total number of friends
-         */
-        val totalCount: Int?,
-        /**
-         * The edges for each of the character's friends.
-         */
-        val edges: List<Edge?>?,
-        /**
-         * Information for paginating this connection
-         */
-        val pageInfo: PageInfo,
-        /**
-         * For test java beans semantic naming only
-         */
-        val isEmpty: Boolean
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeInt(RESPONSE_FIELDS[1], totalCount)
-            it.writeList(RESPONSE_FIELDS[2], edges) { value, listItemWriter ->
-                value?.forEach { value ->
-                    listItemWriter.writeObject(value?.marshaller())
-                }
-            }
-            it.writeObject(RESPONSE_FIELDS[3], pageInfo.marshaller())
-            it.writeBoolean(RESPONSE_FIELDS[4], isEmpty)
-        }
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null)
+          )
 
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forInt("totalCount", "totalCount", null, true, null),
-                    ResponseField.forList("edges", "edges", null, true, null),
-                    ResponseField.forObject("pageInfo", "pageInfo", null, false, null),
-                    ResponseField.forBoolean("isEmpty", "isEmpty", null, false, null)
-                    )
+      operator fun invoke(reader: ResponseReader): Node1 {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val name = reader.readString(RESPONSE_FIELDS[1])
+        return Node1(
+          __typename = __typename,
+          name = name
+        )
+      }
+    }
+  }
 
-            operator fun invoke(reader: ResponseReader): FriendsConnection {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val totalCount = reader.readInt(RESPONSE_FIELDS[1])
-                val edges = reader.readList<Edge>(RESPONSE_FIELDS[2]) {
-                    it.readObject<Edge> { reader ->
-                        Edge(reader)
-                    }
-
-                }
-                val pageInfo = reader.readObject<PageInfo>(RESPONSE_FIELDS[3]) { reader ->
-                    PageInfo(reader)
-                }
-
-                val isEmpty = reader.readBoolean(RESPONSE_FIELDS[4])
-                return FriendsConnection(
-                    __typename = __typename,
-                    totalCount = totalCount,
-                    edges = edges,
-                    pageInfo = pageInfo,
-                    isEmpty = isEmpty
-                )
-            }
-        }
+  data class Edge1(
+    val __typename: String,
+    /**
+     * The character represented by this friendship edge
+     */
+    val node: Node1?
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
     }
 
-    data class AsDroid(
-        val __typename: String,
-        /**
-         * What others call this droid
-         */
-        val name: String,
-        /**
-         * The friends of the droid exposed as a connection with edges
-         */
-        val friendsConnection: FriendsConnection,
-        /**
-         * This droid's primary function
-         */
-        val primaryFunction: String?
-    ) : HeroDetailCharacter {
-        override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeString(RESPONSE_FIELDS[1], name)
-            it.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())
-            it.writeString(RESPONSE_FIELDS[3], primaryFunction)
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forObject("node", "node", null, true, null)
+          )
+
+      operator fun invoke(reader: ResponseReader): Edge1 {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val node = reader.readObject<Node1>(RESPONSE_FIELDS[1]) { reader ->
+          Node1(reader)
         }
 
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forString("name", "name", null, false, null),
-                    ResponseField.forObject("friendsConnection", "friendsConnection", null, false,
-                            null),
-                    ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
-                    )
+        return Edge1(
+          __typename = __typename,
+          node = node
+        )
+      }
+    }
+  }
 
-            val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
-
-            operator fun invoke(reader: ResponseReader): AsDroid {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val name = reader.readString(RESPONSE_FIELDS[1])
-                val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) {
-                        reader ->
-                    FriendsConnection(reader)
-                }
-
-                val primaryFunction = reader.readString(RESPONSE_FIELDS[3])
-                return AsDroid(
-                    __typename = __typename,
-                    name = name,
-                    friendsConnection = friendsConnection,
-                    primaryFunction = primaryFunction
-                )
-            }
-        }
+  data class PageInfo1(
+    val __typename: String,
+    val hasNextPage: Boolean
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeBoolean(RESPONSE_FIELDS[1], hasNextPage)
     }
 
-    data class Node1(
-        val __typename: String,
-        /**
-         * The name of the character
-         */
-        val name: String
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeString(RESPONSE_FIELDS[1], name)
-        }
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forBoolean("hasNextPage", "hasNextPage", null, false, null)
+          )
 
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forString("name", "name", null, false, null)
-                    )
+      operator fun invoke(reader: ResponseReader): PageInfo1 {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val hasNextPage = reader.readBoolean(RESPONSE_FIELDS[1])
+        return PageInfo1(
+          __typename = __typename,
+          hasNextPage = hasNextPage
+        )
+      }
+    }
+  }
 
-            operator fun invoke(reader: ResponseReader): Node1 {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val name = reader.readString(RESPONSE_FIELDS[1])
-                return Node1(
-                    __typename = __typename,
-                    name = name
-                )
-            }
+  data class FriendsConnection1(
+    val __typename: String,
+    /**
+     * The total number of friends
+     */
+    val totalCount: Int?,
+    /**
+     * The edges for each of the character's friends.
+     */
+    val edges: List<Edge1?>?,
+    /**
+     * Information for paginating this connection
+     */
+    val pageInfo: PageInfo1,
+    /**
+     * For test java beans semantic naming only
+     */
+    val isEmpty: Boolean
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeInt(RESPONSE_FIELDS[1], totalCount)
+      it.writeList(RESPONSE_FIELDS[2], edges) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())
         }
+      }
+      it.writeObject(RESPONSE_FIELDS[3], pageInfo.marshaller())
+      it.writeBoolean(RESPONSE_FIELDS[4], isEmpty)
     }
 
-    data class Edge1(
-        val __typename: String,
-        /**
-         * The character represented by this friendship edge
-         */
-        val node: Node1?
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forInt("totalCount", "totalCount", null, true, null),
+          ResponseField.forList("edges", "edges", null, true, null),
+          ResponseField.forObject("pageInfo", "pageInfo", null, false, null),
+          ResponseField.forBoolean("isEmpty", "isEmpty", null, false, null)
+          )
+
+      operator fun invoke(reader: ResponseReader): FriendsConnection1 {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val totalCount = reader.readInt(RESPONSE_FIELDS[1])
+        val edges = reader.readList<Edge1>(RESPONSE_FIELDS[2]) {
+          it.readObject<Edge1> { reader ->
+            Edge1(reader)
+          }
+
+        }
+        val pageInfo = reader.readObject<PageInfo1>(RESPONSE_FIELDS[3]) { reader ->
+          PageInfo1(reader)
         }
 
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forObject("node", "node", null, true, null)
-                    )
-
-            operator fun invoke(reader: ResponseReader): Edge1 {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val node = reader.readObject<Node1>(RESPONSE_FIELDS[1]) { reader ->
-                    Node1(reader)
-                }
-
-                return Edge1(
-                    __typename = __typename,
-                    node = node
-                )
-            }
-        }
+        val isEmpty = reader.readBoolean(RESPONSE_FIELDS[4])
+        return FriendsConnection1(
+          __typename = __typename,
+          totalCount = totalCount,
+          edges = edges,
+          pageInfo = pageInfo,
+          isEmpty = isEmpty
+        )
+      }
     }
-
-    data class PageInfo1(val __typename: String, val hasNextPage: Boolean) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeBoolean(RESPONSE_FIELDS[1], hasNextPage)
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forBoolean("hasNextPage", "hasNextPage", null, false, null)
-                    )
-
-            operator fun invoke(reader: ResponseReader): PageInfo1 {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val hasNextPage = reader.readBoolean(RESPONSE_FIELDS[1])
-                return PageInfo1(
-                    __typename = __typename,
-                    hasNextPage = hasNextPage
-                )
-            }
-        }
-    }
-
-    data class FriendsConnection1(
-        val __typename: String,
-        /**
-         * The total number of friends
-         */
-        val totalCount: Int?,
-        /**
-         * The edges for each of the character's friends.
-         */
-        val edges: List<Edge1?>?,
-        /**
-         * Information for paginating this connection
-         */
-        val pageInfo: PageInfo1,
-        /**
-         * For test java beans semantic naming only
-         */
-        val isEmpty: Boolean
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeInt(RESPONSE_FIELDS[1], totalCount)
-            it.writeList(RESPONSE_FIELDS[2], edges) { value, listItemWriter ->
-                value?.forEach { value ->
-                    listItemWriter.writeObject(value?.marshaller())
-                }
-            }
-            it.writeObject(RESPONSE_FIELDS[3], pageInfo.marshaller())
-            it.writeBoolean(RESPONSE_FIELDS[4], isEmpty)
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forInt("totalCount", "totalCount", null, true, null),
-                    ResponseField.forList("edges", "edges", null, true, null),
-                    ResponseField.forObject("pageInfo", "pageInfo", null, false, null),
-                    ResponseField.forBoolean("isEmpty", "isEmpty", null, false, null)
-                    )
-
-            operator fun invoke(reader: ResponseReader): FriendsConnection1 {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val totalCount = reader.readInt(RESPONSE_FIELDS[1])
-                val edges = reader.readList<Edge1>(RESPONSE_FIELDS[2]) {
-                    it.readObject<Edge1> { reader ->
-                        Edge1(reader)
-                    }
-
-                }
-                val pageInfo = reader.readObject<PageInfo1>(RESPONSE_FIELDS[3]) { reader ->
-                    PageInfo1(reader)
-                }
-
-                val isEmpty = reader.readBoolean(RESPONSE_FIELDS[4])
-                return FriendsConnection1(
-                    __typename = __typename,
-                    totalCount = totalCount,
-                    edges = edges,
-                    pageInfo = pageInfo,
-                    isEmpty = isEmpty
-                )
-            }
-        }
-    }
+  }
 }

@@ -15,50 +15,50 @@ import kotlin.String
 import kotlin.Suppress
 
 @Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
-        "NestedLambdaShadowedImplicitParameter")
+    "NestedLambdaShadowedImplicitParameter")
 data class HumanDetails(
-    val __typename: String,
-    /**
-     * What this human calls themselves
-     */
-    val name: String,
-    /**
-     * Height in the preferred unit, default is meters
-     */
-    val height: Double?
+  val __typename: String,
+  /**
+   * What this human calls themselves
+   */
+  val name: String,
+  /**
+   * Height in the preferred unit, default is meters
+   */
+  val height: Double?
 ) : GraphqlFragment {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeString(RESPONSE_FIELDS[0], __typename)
-        it.writeString(RESPONSE_FIELDS[1], name)
-        it.writeDouble(RESPONSE_FIELDS[2], height)
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+    it.writeString(RESPONSE_FIELDS[0], __typename)
+    it.writeString(RESPONSE_FIELDS[1], name)
+    it.writeDouble(RESPONSE_FIELDS[2], height)
+  }
+
+  companion object {
+    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forDouble("height", "height", null, true, null)
+        )
+
+    val FRAGMENT_DEFINITION: String = """
+        |fragment HumanDetails on Human {
+        |  __typename
+        |  name
+        |  height
+        |}
+        """.trimMargin()
+
+    val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
+
+    operator fun invoke(reader: ResponseReader): HumanDetails {
+      val __typename = reader.readString(RESPONSE_FIELDS[0])
+      val name = reader.readString(RESPONSE_FIELDS[1])
+      val height = reader.readDouble(RESPONSE_FIELDS[2])
+      return HumanDetails(
+        __typename = __typename,
+        name = name,
+        height = height
+      )
     }
-
-    companion object {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                ResponseField.forString("__typename", "__typename", null, false, null),
-                ResponseField.forString("name", "name", null, false, null),
-                ResponseField.forDouble("height", "height", null, true, null)
-                )
-
-        val FRAGMENT_DEFINITION: String = """
-                |fragment HumanDetails on Human {
-                |  __typename
-                |  name
-                |  height
-                |}
-                """.trimMargin()
-
-        val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
-
-        operator fun invoke(reader: ResponseReader): HumanDetails {
-            val __typename = reader.readString(RESPONSE_FIELDS[0])
-            val name = reader.readString(RESPONSE_FIELDS[1])
-            val height = reader.readDouble(RESPONSE_FIELDS[2])
-            return HumanDetails(
-                __typename = __typename,
-                name = name,
-                height = height
-            )
-        }
-    }
+  }
 }

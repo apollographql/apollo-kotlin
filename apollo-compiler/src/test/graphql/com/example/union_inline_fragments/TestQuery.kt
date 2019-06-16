@@ -21,722 +21,720 @@ import kotlin.Suppress
 import kotlin.collections.List
 
 @Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
-        "NestedLambdaShadowedImplicitParameter")
+    "NestedLambdaShadowedImplicitParameter")
 class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
-    override fun operationId(): String = OPERATION_ID
-    override fun queryDocument(): String = QUERY_DOCUMENT
-    override fun wrapData(data: Data?): Data? = data
-    override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
-    override fun name(): OperationName = OPERATION_NAME
-    override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
-        Data(it)
-    }
-
-    interface SearchSearchResult {
-        fun marshaller(): ResponseFieldMarshaller
-    }
-
-    interface FriendCharacter {
-        fun marshaller(): ResponseFieldMarshaller
-    }
-
-    data class Friend(
-        val __typename: String,
-        /**
-         * The movie this character first appears in
-         */
-        val firstAppearsIn: Episode
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeString(RESPONSE_FIELDS[1], firstAppearsIn.rawValue)
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forEnum("firstAppearsIn", "firstAppearsIn", null, false, null)
-                    )
-
-            operator fun invoke(reader: ResponseReader): Friend {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val firstAppearsIn = Episode.safeValueOf(reader.readString(RESPONSE_FIELDS[1]))
-                return Friend(
-                    __typename = __typename,
-                    firstAppearsIn = firstAppearsIn
-                )
-            }
-        }
-    }
-
-    data class AsHuman1(
-        val __typename: String,
-        /**
-         * What this human calls themselves
-         */
-        val name: String,
-        /**
-         * The home planet of the human, or null if unknown
-         */
-        val homePlanet: String?,
-        /**
-         * This human's friends, or an empty list if they have none
-         */
-        val friends: List<Friend?>?
-    ) : FriendCharacter {
-        override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeString(RESPONSE_FIELDS[1], name)
-            it.writeString(RESPONSE_FIELDS[2], homePlanet)
-            it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
-                value?.forEach { value ->
-                    listItemWriter.writeObject(value?.marshaller())
-                }
-            }
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forString("name", "name", null, false, null),
-                    ResponseField.forString("homePlanet", "homePlanet", null, true, null),
-                    ResponseField.forList("friends", "friends", null, true, null)
-                    )
-
-            val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
-
-            operator fun invoke(reader: ResponseReader): AsHuman1 {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val name = reader.readString(RESPONSE_FIELDS[1])
-                val homePlanet = reader.readString(RESPONSE_FIELDS[2])
-                val friends = reader.readList<Friend>(RESPONSE_FIELDS[3]) {
-                    it.readObject<Friend> { reader ->
-                        Friend(reader)
-                    }
-
-                }
-                return AsHuman1(
-                    __typename = __typename,
-                    name = name,
-                    homePlanet = homePlanet,
-                    friends = friends
-                )
-            }
-        }
-    }
-
-    data class Friend1(
-        val __typename: String,
-        /**
-         * The ID of the character
-         */
-        val id: String,
-        /**
-         * Test deprecated field
-         */
-        @Deprecated(message = "For test purpose only") val deprecated: String
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-            it.writeString(RESPONSE_FIELDS[2], deprecated)
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
-                    ResponseField.forString("deprecated", "deprecated", null, false, null)
-                    )
-
-            operator fun invoke(reader: ResponseReader): Friend1 {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as
-                        ResponseField.CustomTypeField)
-                val deprecated = reader.readString(RESPONSE_FIELDS[2])
-                return Friend1(
-                    __typename = __typename,
-                    id = id,
-                    deprecated = deprecated
-                )
-            }
-        }
-    }
-
-    data class AsDroid(
-        val __typename: String,
-        /**
-         * What others call this droid
-         */
-        val name: String,
-        /**
-         * This droid's primary function
-         */
-        val primaryFunction: String?,
-        /**
-         * This droid's friends, or an empty list if they have none
-         */
-        val friends: List<Friend1?>?
-    ) : FriendCharacter {
-        override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeString(RESPONSE_FIELDS[1], name)
-            it.writeString(RESPONSE_FIELDS[2], primaryFunction)
-            it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
-                value?.forEach { value ->
-                    listItemWriter.writeObject(value?.marshaller())
-                }
-            }
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forString("name", "name", null, false, null),
-                    ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
-                    ResponseField.forList("friends", "friends", null, true, null)
-                    )
-
-            val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
-
-            operator fun invoke(reader: ResponseReader): AsDroid {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val name = reader.readString(RESPONSE_FIELDS[1])
-                val primaryFunction = reader.readString(RESPONSE_FIELDS[2])
-                val friends = reader.readList<Friend1>(RESPONSE_FIELDS[3]) {
-                    it.readObject<Friend1> { reader ->
-                        Friend1(reader)
-                    }
-
-                }
-                return AsDroid(
-                    __typename = __typename,
-                    name = name,
-                    primaryFunction = primaryFunction,
-                    friends = friends
-                )
-            }
-        }
-    }
-
-    data class Friend2(
-        val __typename: String,
-        /**
-         * The name of the character
-         */
-        val name: String,
-        val inlineFragment: FriendCharacter?
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeString(RESPONSE_FIELDS[1], name)
-            it.writeObject(RESPONSE_FIELDS[2], inlineFragment?.marshaller())
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forString("name", "name", null, false, null),
-                    ResponseField.forInlineFragment("__typename", "__typename", listOf("Human",
-                            "Droid"))
-                    )
-
-            operator fun invoke(reader: ResponseReader): Friend2 {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val name = reader.readString(RESPONSE_FIELDS[1])
-                val inlineFragment = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType,
-                        reader ->
-                    when(conditionalType) {
-                        in AsHuman1.POSSIBLE_TYPES -> AsHuman1(reader)
-                        in AsDroid.POSSIBLE_TYPES -> AsDroid(reader)
-                        else -> null
-                    }
-                }
-
-                return Friend2(
-                    __typename = __typename,
-                    name = name,
-                    inlineFragment = inlineFragment
-                )
-            }
-        }
-    }
-
-    data class AsHuman(
-        val __typename: String,
-        /**
-         * The ID of the character
-         */
-        val id: String,
-        /**
-         * The name of the character
-         */
-        val name: String,
-        /**
-         * The friends of the character, or an empty list if they have none
-         */
-        val friends: List<Friend2?>?
-    ) : SearchSearchResult {
-        override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-            it.writeString(RESPONSE_FIELDS[2], name)
-            it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
-                value?.forEach { value ->
-                    listItemWriter.writeObject(value?.marshaller())
-                }
-            }
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
-                    ResponseField.forString("name", "name", null, false, null),
-                    ResponseField.forList("friends", "friends", null, true, null)
-                    )
-
-            val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
-
-            operator fun invoke(reader: ResponseReader): AsHuman {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as
-                        ResponseField.CustomTypeField)
-                val name = reader.readString(RESPONSE_FIELDS[2])
-                val friends = reader.readList<Friend2>(RESPONSE_FIELDS[3]) {
-                    it.readObject<Friend2> { reader ->
-                        Friend2(reader)
-                    }
-
-                }
-                return AsHuman(
-                    __typename = __typename,
-                    id = id,
-                    name = name,
-                    friends = friends
-                )
-            }
-        }
-    }
-
-    interface FriendCharacter1 {
-        fun marshaller(): ResponseFieldMarshaller
-    }
-
-    data class Friend3(
-        val __typename: String,
-        /**
-         * The movie this character first appears in
-         */
-        val firstAppearsIn: Episode
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeString(RESPONSE_FIELDS[1], firstAppearsIn.rawValue)
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forEnum("firstAppearsIn", "firstAppearsIn", null, false, null)
-                    )
-
-            operator fun invoke(reader: ResponseReader): Friend3 {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val firstAppearsIn = Episode.safeValueOf(reader.readString(RESPONSE_FIELDS[1]))
-                return Friend3(
-                    __typename = __typename,
-                    firstAppearsIn = firstAppearsIn
-                )
-            }
-        }
-    }
-
-    data class AsHuman2(
-        val __typename: String,
-        /**
-         * What this human calls themselves
-         */
-        val name: String,
-        /**
-         * The home planet of the human, or null if unknown
-         */
-        val homePlanet: String?,
-        /**
-         * This human's friends, or an empty list if they have none
-         */
-        val friends: List<Friend3?>?
-    ) : FriendCharacter1 {
-        override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeString(RESPONSE_FIELDS[1], name)
-            it.writeString(RESPONSE_FIELDS[2], homePlanet)
-            it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
-                value?.forEach { value ->
-                    listItemWriter.writeObject(value?.marshaller())
-                }
-            }
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forString("name", "name", null, false, null),
-                    ResponseField.forString("homePlanet", "homePlanet", null, true, null),
-                    ResponseField.forList("friends", "friends", null, true, null)
-                    )
-
-            val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
-
-            operator fun invoke(reader: ResponseReader): AsHuman2 {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val name = reader.readString(RESPONSE_FIELDS[1])
-                val homePlanet = reader.readString(RESPONSE_FIELDS[2])
-                val friends = reader.readList<Friend3>(RESPONSE_FIELDS[3]) {
-                    it.readObject<Friend3> { reader ->
-                        Friend3(reader)
-                    }
-
-                }
-                return AsHuman2(
-                    __typename = __typename,
-                    name = name,
-                    homePlanet = homePlanet,
-                    friends = friends
-                )
-            }
-        }
-    }
-
-    data class Friend4(
-        val __typename: String,
-        /**
-         * The ID of the character
-         */
-        val id: String,
-        /**
-         * Test deprecated field
-         */
-        @Deprecated(message = "For test purpose only") val deprecated: String
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-            it.writeString(RESPONSE_FIELDS[2], deprecated)
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
-                    ResponseField.forString("deprecated", "deprecated", null, false, null)
-                    )
-
-            operator fun invoke(reader: ResponseReader): Friend4 {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as
-                        ResponseField.CustomTypeField)
-                val deprecated = reader.readString(RESPONSE_FIELDS[2])
-                return Friend4(
-                    __typename = __typename,
-                    id = id,
-                    deprecated = deprecated
-                )
-            }
-        }
-    }
-
-    data class AsDroid2(
-        val __typename: String,
-        /**
-         * What others call this droid
-         */
-        val name: String,
-        /**
-         * This droid's primary function
-         */
-        val primaryFunction: String?,
-        /**
-         * This droid's friends, or an empty list if they have none
-         */
-        val friends: List<Friend4?>?
-    ) : FriendCharacter1 {
-        override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeString(RESPONSE_FIELDS[1], name)
-            it.writeString(RESPONSE_FIELDS[2], primaryFunction)
-            it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
-                value?.forEach { value ->
-                    listItemWriter.writeObject(value?.marshaller())
-                }
-            }
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forString("name", "name", null, false, null),
-                    ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
-                    ResponseField.forList("friends", "friends", null, true, null)
-                    )
-
-            val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
-
-            operator fun invoke(reader: ResponseReader): AsDroid2 {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val name = reader.readString(RESPONSE_FIELDS[1])
-                val primaryFunction = reader.readString(RESPONSE_FIELDS[2])
-                val friends = reader.readList<Friend4>(RESPONSE_FIELDS[3]) {
-                    it.readObject<Friend4> { reader ->
-                        Friend4(reader)
-                    }
-
-                }
-                return AsDroid2(
-                    __typename = __typename,
-                    name = name,
-                    primaryFunction = primaryFunction,
-                    friends = friends
-                )
-            }
-        }
-    }
-
-    data class Friend5(
-        val __typename: String,
-        /**
-         * The name of the character
-         */
-        val name: String,
-        val inlineFragment: FriendCharacter1?
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeString(RESPONSE_FIELDS[1], name)
-            it.writeObject(RESPONSE_FIELDS[2], inlineFragment?.marshaller())
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forString("name", "name", null, false, null),
-                    ResponseField.forInlineFragment("__typename", "__typename", listOf("Human",
-                            "Droid"))
-                    )
-
-            operator fun invoke(reader: ResponseReader): Friend5 {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val name = reader.readString(RESPONSE_FIELDS[1])
-                val inlineFragment = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType,
-                        reader ->
-                    when(conditionalType) {
-                        in AsHuman2.POSSIBLE_TYPES -> AsHuman2(reader)
-                        in AsDroid2.POSSIBLE_TYPES -> AsDroid2(reader)
-                        else -> null
-                    }
-                }
-
-                return Friend5(
-                    __typename = __typename,
-                    name = name,
-                    inlineFragment = inlineFragment
-                )
-            }
-        }
-    }
-
-    data class AsDroid1(
-        val __typename: String,
-        /**
-         * The ID of the character
-         */
-        val id: String,
-        /**
-         * The name of the character
-         */
-        val name: String,
-        /**
-         * The friends of the character, or an empty list if they have none
-         */
-        val friends: List<Friend5?>?
-    ) : SearchSearchResult {
-        override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
-            it.writeString(RESPONSE_FIELDS[2], name)
-            it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
-                value?.forEach { value ->
-                    listItemWriter.writeObject(value?.marshaller())
-                }
-            }
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
-                    ResponseField.forString("name", "name", null, false, null),
-                    ResponseField.forList("friends", "friends", null, true, null)
-                    )
-
-            val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
-
-            operator fun invoke(reader: ResponseReader): AsDroid1 {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as
-                        ResponseField.CustomTypeField)
-                val name = reader.readString(RESPONSE_FIELDS[2])
-                val friends = reader.readList<Friend5>(RESPONSE_FIELDS[3]) {
-                    it.readObject<Friend5> { reader ->
-                        Friend5(reader)
-                    }
-
-                }
-                return AsDroid1(
-                    __typename = __typename,
-                    id = id,
-                    name = name,
-                    friends = friends
-                )
-            }
-        }
-    }
-
-    data class AsStarship(
-        val __typename: String,
-        /**
-         * The name of the starship
-         */
-        val name: String
-    ) : SearchSearchResult {
-        override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeString(RESPONSE_FIELDS[1], name)
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forString("name", "name", null, false, null)
-                    )
-
-            val POSSIBLE_TYPES: Array<String> = arrayOf("Starship")
-
-            operator fun invoke(reader: ResponseReader): AsStarship {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val name = reader.readString(RESPONSE_FIELDS[1])
-                return AsStarship(
-                    __typename = __typename,
-                    name = name
-                )
-            }
-        }
-    }
-
-    data class Search(val __typename: String, val inlineFragment: SearchSearchResult?) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeObject(RESPONSE_FIELDS[1], inlineFragment?.marshaller())
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forInlineFragment("__typename", "__typename", listOf("Human",
-                            "Droid", "Starship"))
-                    )
-
-            operator fun invoke(reader: ResponseReader): Search {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val inlineFragment = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType,
-                        reader ->
-                    when(conditionalType) {
-                        in AsHuman.POSSIBLE_TYPES -> AsHuman(reader)
-                        in AsDroid1.POSSIBLE_TYPES -> AsDroid1(reader)
-                        in AsStarship.POSSIBLE_TYPES -> AsStarship(reader)
-                        else -> null
-                    }
-                }
-
-                return Search(
-                    __typename = __typename,
-                    inlineFragment = inlineFragment
-                )
-            }
-        }
-    }
-
-    data class Data(val search: List<Search?>?) : Operation.Data {
-        override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeList(RESPONSE_FIELDS[0], search) { value, listItemWriter ->
-                value?.forEach { value ->
-                    listItemWriter.writeObject(value?.marshaller())
-                }
-            }
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forList("search", "search", mapOf<String, Any>(
-                        "text" to "test"), true, null)
-                    )
-
-            operator fun invoke(reader: ResponseReader): Data {
-                val search = reader.readList<Search>(RESPONSE_FIELDS[0]) {
-                    it.readObject<Search> { reader ->
-                        Search(reader)
-                    }
-
-                }
-                return Data(
-                    search = search
-                )
-            }
-        }
+  override fun operationId(): String = OPERATION_ID
+  override fun queryDocument(): String = QUERY_DOCUMENT
+  override fun wrapData(data: Data?): Data? = data
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+  override fun name(): OperationName = OPERATION_NAME
+  override fun responseFieldMapper(): ResponseFieldMapper<Data> = ResponseFieldMapper {
+    Data(it)
+  }
+
+  interface SearchSearchResult {
+    fun marshaller(): ResponseFieldMarshaller
+  }
+
+  interface FriendCharacter {
+    fun marshaller(): ResponseFieldMarshaller
+  }
+
+  data class Friend(
+    val __typename: String,
+    /**
+     * The movie this character first appears in
+     */
+    val firstAppearsIn: Episode
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeString(RESPONSE_FIELDS[1], firstAppearsIn.rawValue)
     }
 
     companion object {
-        const val OPERATION_ID: String =
-                "8f2faf5f45edbcd0f65491d582a5a50f13cad39e3995dd5abe5ddb359d3cf066"
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forEnum("firstAppearsIn", "firstAppearsIn", null, false, null)
+          )
 
-        val QUERY_DOCUMENT: String = """
-                |query TestQuery {
-                |  search(text: "test") {
-                |    __typename
-                |    ... on Character {
-                |      id
-                |      name
-                |      friends {
-                |        __typename
-                |        ... on Character {
-                |          name
-                |        }
-                |        ... on Human {
-                |          homePlanet
-                |          friends {
-                |            __typename
-                |            ... on Character {
-                |              firstAppearsIn
-                |            }
-                |          }
-                |        }
-                |        ... on Droid {
-                |          primaryFunction
-                |          friends {
-                |            __typename
-                |            id
-                |            deprecated
-                |          }
-                |        }
-                |      }
-                |    }
-                |    ... on Starship {
-                |      name
-                |    }
-                |  }
-                |}
-                """.trimMargin()
-
-        val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
+      operator fun invoke(reader: ResponseReader): Friend {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val firstAppearsIn = Episode.safeValueOf(reader.readString(RESPONSE_FIELDS[1]))
+        return Friend(
+          __typename = __typename,
+          firstAppearsIn = firstAppearsIn
+        )
+      }
     }
+  }
+
+  data class AsHuman1(
+    val __typename: String,
+    /**
+     * What this human calls themselves
+     */
+    val name: String,
+    /**
+     * The home planet of the human, or null if unknown
+     */
+    val homePlanet: String?,
+    /**
+     * This human's friends, or an empty list if they have none
+     */
+    val friends: List<Friend?>?
+  ) : FriendCharacter {
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeString(RESPONSE_FIELDS[1], name)
+      it.writeString(RESPONSE_FIELDS[2], homePlanet)
+      it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())
+        }
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forString("homePlanet", "homePlanet", null, true, null),
+          ResponseField.forList("friends", "friends", null, true, null)
+          )
+
+      val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
+
+      operator fun invoke(reader: ResponseReader): AsHuman1 {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val name = reader.readString(RESPONSE_FIELDS[1])
+        val homePlanet = reader.readString(RESPONSE_FIELDS[2])
+        val friends = reader.readList<Friend>(RESPONSE_FIELDS[3]) {
+          it.readObject<Friend> { reader ->
+            Friend(reader)
+          }
+
+        }
+        return AsHuman1(
+          __typename = __typename,
+          name = name,
+          homePlanet = homePlanet,
+          friends = friends
+        )
+      }
+    }
+  }
+
+  data class Friend1(
+    val __typename: String,
+    /**
+     * The ID of the character
+     */
+    val id: String,
+    /**
+     * Test deprecated field
+     */
+    @Deprecated(message = "For test purpose only")
+    val deprecated: String
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
+      it.writeString(RESPONSE_FIELDS[2], deprecated)
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
+          ResponseField.forString("deprecated", "deprecated", null, false, null)
+          )
+
+      operator fun invoke(reader: ResponseReader): Friend1 {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+        val deprecated = reader.readString(RESPONSE_FIELDS[2])
+        return Friend1(
+          __typename = __typename,
+          id = id,
+          deprecated = deprecated
+        )
+      }
+    }
+  }
+
+  data class AsDroid(
+    val __typename: String,
+    /**
+     * What others call this droid
+     */
+    val name: String,
+    /**
+     * This droid's primary function
+     */
+    val primaryFunction: String?,
+    /**
+     * This droid's friends, or an empty list if they have none
+     */
+    val friends: List<Friend1?>?
+  ) : FriendCharacter {
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeString(RESPONSE_FIELDS[1], name)
+      it.writeString(RESPONSE_FIELDS[2], primaryFunction)
+      it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())
+        }
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
+          ResponseField.forList("friends", "friends", null, true, null)
+          )
+
+      val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
+
+      operator fun invoke(reader: ResponseReader): AsDroid {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val name = reader.readString(RESPONSE_FIELDS[1])
+        val primaryFunction = reader.readString(RESPONSE_FIELDS[2])
+        val friends = reader.readList<Friend1>(RESPONSE_FIELDS[3]) {
+          it.readObject<Friend1> { reader ->
+            Friend1(reader)
+          }
+
+        }
+        return AsDroid(
+          __typename = __typename,
+          name = name,
+          primaryFunction = primaryFunction,
+          friends = friends
+        )
+      }
+    }
+  }
+
+  data class Friend2(
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String,
+    val inlineFragment: FriendCharacter?
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeString(RESPONSE_FIELDS[1], name)
+      it.writeObject(RESPONSE_FIELDS[2], inlineFragment?.marshaller())
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forInlineFragment("__typename", "__typename", listOf("Human", "Droid"))
+          )
+
+      operator fun invoke(reader: ResponseReader): Friend2 {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val name = reader.readString(RESPONSE_FIELDS[1])
+        val inlineFragment = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
+          when(conditionalType) {
+            in AsHuman1.POSSIBLE_TYPES -> AsHuman1(reader)
+            in AsDroid.POSSIBLE_TYPES -> AsDroid(reader)
+            else -> null
+          }
+        }
+
+        return Friend2(
+          __typename = __typename,
+          name = name,
+          inlineFragment = inlineFragment
+        )
+      }
+    }
+  }
+
+  data class AsHuman(
+    val __typename: String,
+    /**
+     * The ID of the character
+     */
+    val id: String,
+    /**
+     * The name of the character
+     */
+    val name: String,
+    /**
+     * The friends of the character, or an empty list if they have none
+     */
+    val friends: List<Friend2?>?
+  ) : SearchSearchResult {
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
+      it.writeString(RESPONSE_FIELDS[2], name)
+      it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())
+        }
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forList("friends", "friends", null, true, null)
+          )
+
+      val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
+
+      operator fun invoke(reader: ResponseReader): AsHuman {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+        val name = reader.readString(RESPONSE_FIELDS[2])
+        val friends = reader.readList<Friend2>(RESPONSE_FIELDS[3]) {
+          it.readObject<Friend2> { reader ->
+            Friend2(reader)
+          }
+
+        }
+        return AsHuman(
+          __typename = __typename,
+          id = id,
+          name = name,
+          friends = friends
+        )
+      }
+    }
+  }
+
+  interface FriendCharacter1 {
+    fun marshaller(): ResponseFieldMarshaller
+  }
+
+  data class Friend3(
+    val __typename: String,
+    /**
+     * The movie this character first appears in
+     */
+    val firstAppearsIn: Episode
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeString(RESPONSE_FIELDS[1], firstAppearsIn.rawValue)
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forEnum("firstAppearsIn", "firstAppearsIn", null, false, null)
+          )
+
+      operator fun invoke(reader: ResponseReader): Friend3 {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val firstAppearsIn = Episode.safeValueOf(reader.readString(RESPONSE_FIELDS[1]))
+        return Friend3(
+          __typename = __typename,
+          firstAppearsIn = firstAppearsIn
+        )
+      }
+    }
+  }
+
+  data class AsHuman2(
+    val __typename: String,
+    /**
+     * What this human calls themselves
+     */
+    val name: String,
+    /**
+     * The home planet of the human, or null if unknown
+     */
+    val homePlanet: String?,
+    /**
+     * This human's friends, or an empty list if they have none
+     */
+    val friends: List<Friend3?>?
+  ) : FriendCharacter1 {
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeString(RESPONSE_FIELDS[1], name)
+      it.writeString(RESPONSE_FIELDS[2], homePlanet)
+      it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())
+        }
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forString("homePlanet", "homePlanet", null, true, null),
+          ResponseField.forList("friends", "friends", null, true, null)
+          )
+
+      val POSSIBLE_TYPES: Array<String> = arrayOf("Human")
+
+      operator fun invoke(reader: ResponseReader): AsHuman2 {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val name = reader.readString(RESPONSE_FIELDS[1])
+        val homePlanet = reader.readString(RESPONSE_FIELDS[2])
+        val friends = reader.readList<Friend3>(RESPONSE_FIELDS[3]) {
+          it.readObject<Friend3> { reader ->
+            Friend3(reader)
+          }
+
+        }
+        return AsHuman2(
+          __typename = __typename,
+          name = name,
+          homePlanet = homePlanet,
+          friends = friends
+        )
+      }
+    }
+  }
+
+  data class Friend4(
+    val __typename: String,
+    /**
+     * The ID of the character
+     */
+    val id: String,
+    /**
+     * Test deprecated field
+     */
+    @Deprecated(message = "For test purpose only")
+    val deprecated: String
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
+      it.writeString(RESPONSE_FIELDS[2], deprecated)
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
+          ResponseField.forString("deprecated", "deprecated", null, false, null)
+          )
+
+      operator fun invoke(reader: ResponseReader): Friend4 {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+        val deprecated = reader.readString(RESPONSE_FIELDS[2])
+        return Friend4(
+          __typename = __typename,
+          id = id,
+          deprecated = deprecated
+        )
+      }
+    }
+  }
+
+  data class AsDroid2(
+    val __typename: String,
+    /**
+     * What others call this droid
+     */
+    val name: String,
+    /**
+     * This droid's primary function
+     */
+    val primaryFunction: String?,
+    /**
+     * This droid's friends, or an empty list if they have none
+     */
+    val friends: List<Friend4?>?
+  ) : FriendCharacter1 {
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeString(RESPONSE_FIELDS[1], name)
+      it.writeString(RESPONSE_FIELDS[2], primaryFunction)
+      it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())
+        }
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forString("primaryFunction", "primaryFunction", null, true, null),
+          ResponseField.forList("friends", "friends", null, true, null)
+          )
+
+      val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
+
+      operator fun invoke(reader: ResponseReader): AsDroid2 {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val name = reader.readString(RESPONSE_FIELDS[1])
+        val primaryFunction = reader.readString(RESPONSE_FIELDS[2])
+        val friends = reader.readList<Friend4>(RESPONSE_FIELDS[3]) {
+          it.readObject<Friend4> { reader ->
+            Friend4(reader)
+          }
+
+        }
+        return AsDroid2(
+          __typename = __typename,
+          name = name,
+          primaryFunction = primaryFunction,
+          friends = friends
+        )
+      }
+    }
+  }
+
+  data class Friend5(
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String,
+    val inlineFragment: FriendCharacter1?
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeString(RESPONSE_FIELDS[1], name)
+      it.writeObject(RESPONSE_FIELDS[2], inlineFragment?.marshaller())
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forInlineFragment("__typename", "__typename", listOf("Human", "Droid"))
+          )
+
+      operator fun invoke(reader: ResponseReader): Friend5 {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val name = reader.readString(RESPONSE_FIELDS[1])
+        val inlineFragment = reader.readConditional(RESPONSE_FIELDS[2]) { conditionalType, reader ->
+          when(conditionalType) {
+            in AsHuman2.POSSIBLE_TYPES -> AsHuman2(reader)
+            in AsDroid2.POSSIBLE_TYPES -> AsDroid2(reader)
+            else -> null
+          }
+        }
+
+        return Friend5(
+          __typename = __typename,
+          name = name,
+          inlineFragment = inlineFragment
+        )
+      }
+    }
+  }
+
+  data class AsDroid1(
+    val __typename: String,
+    /**
+     * The ID of the character
+     */
+    val id: String,
+    /**
+     * The name of the character
+     */
+    val name: String,
+    /**
+     * The friends of the character, or an empty list if they have none
+     */
+    val friends: List<Friend5?>?
+  ) : SearchSearchResult {
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField, id)
+      it.writeString(RESPONSE_FIELDS[2], name)
+      it.writeList(RESPONSE_FIELDS[3], friends) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())
+        }
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forCustomType("id", "id", null, false, CustomType.ID, null),
+          ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forList("friends", "friends", null, true, null)
+          )
+
+      val POSSIBLE_TYPES: Array<String> = arrayOf("Droid")
+
+      operator fun invoke(reader: ResponseReader): AsDroid1 {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val id = reader.readCustomType<String>(RESPONSE_FIELDS[1] as ResponseField.CustomTypeField)
+        val name = reader.readString(RESPONSE_FIELDS[2])
+        val friends = reader.readList<Friend5>(RESPONSE_FIELDS[3]) {
+          it.readObject<Friend5> { reader ->
+            Friend5(reader)
+          }
+
+        }
+        return AsDroid1(
+          __typename = __typename,
+          id = id,
+          name = name,
+          friends = friends
+        )
+      }
+    }
+  }
+
+  data class AsStarship(
+    val __typename: String,
+    /**
+     * The name of the starship
+     */
+    val name: String
+  ) : SearchSearchResult {
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeString(RESPONSE_FIELDS[1], name)
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null)
+          )
+
+      val POSSIBLE_TYPES: Array<String> = arrayOf("Starship")
+
+      operator fun invoke(reader: ResponseReader): AsStarship {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val name = reader.readString(RESPONSE_FIELDS[1])
+        return AsStarship(
+          __typename = __typename,
+          name = name
+        )
+      }
+    }
+  }
+
+  data class Search(
+    val __typename: String,
+    val inlineFragment: SearchSearchResult?
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeObject(RESPONSE_FIELDS[1], inlineFragment?.marshaller())
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forInlineFragment("__typename", "__typename", listOf("Human", "Droid",
+              "Starship"))
+          )
+
+      operator fun invoke(reader: ResponseReader): Search {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val inlineFragment = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
+          when(conditionalType) {
+            in AsHuman.POSSIBLE_TYPES -> AsHuman(reader)
+            in AsDroid1.POSSIBLE_TYPES -> AsDroid1(reader)
+            in AsStarship.POSSIBLE_TYPES -> AsStarship(reader)
+            else -> null
+          }
+        }
+
+        return Search(
+          __typename = __typename,
+          inlineFragment = inlineFragment
+        )
+      }
+    }
+  }
+
+  data class Data(
+    val search: List<Search?>?
+  ) : Operation.Data {
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeList(RESPONSE_FIELDS[0], search) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())
+        }
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forList("search", "search", mapOf<String, Any>(
+            "text" to "test"), true, null)
+          )
+
+      operator fun invoke(reader: ResponseReader): Data {
+        val search = reader.readList<Search>(RESPONSE_FIELDS[0]) {
+          it.readObject<Search> { reader ->
+            Search(reader)
+          }
+
+        }
+        return Data(
+          search = search
+        )
+      }
+    }
+  }
+
+  companion object {
+    const val OPERATION_ID: String =
+        "8f2faf5f45edbcd0f65491d582a5a50f13cad39e3995dd5abe5ddb359d3cf066"
+
+    val QUERY_DOCUMENT: String = """
+        |query TestQuery {
+        |  search(text: "test") {
+        |    __typename
+        |    ... on Character {
+        |      id
+        |      name
+        |      friends {
+        |        __typename
+        |        ... on Character {
+        |          name
+        |        }
+        |        ... on Human {
+        |          homePlanet
+        |          friends {
+        |            __typename
+        |            ... on Character {
+        |              firstAppearsIn
+        |            }
+        |          }
+        |        }
+        |        ... on Droid {
+        |          primaryFunction
+        |          friends {
+        |            __typename
+        |            id
+        |            deprecated
+        |          }
+        |        }
+        |      }
+        |    }
+        |    ... on Starship {
+        |      name
+        |    }
+        |  }
+        |}
+        """.trimMargin()
+
+    val OPERATION_NAME: OperationName = OperationName { "TestQuery" }
+  }
 }
