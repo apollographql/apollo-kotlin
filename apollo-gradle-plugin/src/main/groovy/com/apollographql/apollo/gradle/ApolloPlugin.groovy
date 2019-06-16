@@ -61,7 +61,10 @@ class ApolloPlugin implements Plugin<Project> {
       project.tasks.create(ApolloCodegenInstallTask.NAME, ApolloCodegenInstallTask.class)
     }
 
-    addApolloTasks()
+    // we use afterEvaluate here as we need to know the value of generateKotlinModels from addSourceSetTasks
+    project.afterEvaluate {
+      addApolloTasks()
+    }
   }
 
   private void addApolloTasks() {
@@ -101,9 +104,11 @@ class ApolloPlugin implements Plugin<Project> {
     apolloIRGenTask.dependsOn(sourceSetIRTask)
     apolloClassGenTask.dependsOn(sourceSetClassTask)
 
-    JavaCompile compileTask = (JavaCompile) project.tasks.findByName("compile${taskName.capitalize()}Java")
-    compileTask.source += project.fileTree(sourceSetClassTask.outputDir)
-    compileTask.dependsOn(apolloClassGenTask)
+    if (project.apollo.generateKotlinModels.get() != true) {
+      JavaCompile compileTask = (JavaCompile) project.tasks.findByName("compile${taskName.capitalize()}Java")
+      compileTask.source += project.fileTree(sourceSetClassTask.outputDir)
+      compileTask.dependsOn(apolloClassGenTask)
+    }
 
     sourceSet.java.srcDir(sourceSetClassTask.outputDir)
 

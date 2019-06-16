@@ -4,11 +4,6 @@ ext.supportDeps = [
 	dep.appcompat
 ]
 
-ext.apolloRuntimeCompileDeps = [
-    dep.supportAnnotations,
-    dep.okHttp,
-]
-
 ext.apolloApiCompileDeps = [
     dep.jetbrainsAnnotations,
 		dep.okHttp
