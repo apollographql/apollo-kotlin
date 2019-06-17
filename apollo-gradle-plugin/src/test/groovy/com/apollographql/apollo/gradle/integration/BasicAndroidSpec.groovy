@@ -53,11 +53,13 @@ class BasicAndroidSpec extends Specification {
 
     // verify that the custom type generated was Object.class because no customType mapping was specified
     assert new File(testProjectDir, "build/generated/source/apollo/classes/type/CustomType.java").isFile()
-    assert new File(testProjectDir, "build/generated/source/apollo/classes/type/CustomType.java").getText('UTF-8').contains(
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/type/CustomType.java").getText(
+        'UTF-8').contains(
         "return Object.class;")
 
     // Optional is not added to the generated classes
-    assert !new File(testProjectDir, "build/generated/source/apollo/classes/com/example/DroidDetailsQuery.java").getText(
+    assert !new File(testProjectDir,
+        "build/generated/source/apollo/classes/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("Optional")
     assert new File(testProjectDir, "build/generated/source/apollo/classes/com/example/DroidDetailsQuery.java").getText(
         'UTF-8').contains("import org.jetbrains.annotations.Nullable;")
@@ -166,6 +168,38 @@ class BasicAndroidSpec extends Specification {
 
     then:
     result.task(":generateApolloClasses").outcome == TaskOutcome.UP_TO_DATE
+  }
+
+  def "exclude graphql files, builds successfully and generates expected outputs"() {
+    setup: "a testProject with a excluded files"
+    replaceTextInFile(new File("$testProjectDir/build.gradle")) {
+      it.replace("apollo {",
+          "apollo {\n sourceSet { \n exclude = [\"**/DroidDetails.graphql\", \"**/DroidDetailsSpeciesInfo.graphql\"]\n } \n")
+    }
+
+    when:
+    def result = GradleRunner.create()
+        .withProjectDir(testProjectDir)
+        .withPluginClasspath()
+        .withArguments("clean", "generateApolloClasses", "-Dapollographql.skipRuntimeDep=true")
+        .forwardStdError(new OutputStreamWriter(System.err))
+        .forwardStdOutput(new OutputStreamWriter(System.out))
+        .build()
+
+    then:
+    result.task(":generateApolloClasses").outcome == TaskOutcome.SUCCESS
+
+    // Java classes generated successfully
+    assert new File(testProjectDir, "build/generated/source/apollo/classes/com/example/FilmsQuery.java").exists()
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/com/example/DroidDetailsQuery.java").exists()
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/com/example/DroidDetailsSpeciesInfoQuery.java").exists()
+    assert !new File(testProjectDir, "build/generated/source/apollo/classes/fragment/SpeciesInformation.java").exists()
+
+    cleanup:
+    replaceTextInFile(new File("$testProjectDir/build.gradle")) {
+      it.replace("sourceSet { \n exclude = [\"**/DroidDetails.graphql\", \"**/DroidDetailsSpeciesInfo.graphql\"]\n }",
+          "")
+    }
   }
 
   def "adding a custom type to the build script re-generates the CustomType class"() {
