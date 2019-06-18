@@ -7,9 +7,9 @@ buildscript {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.apollographql.android'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.apollographql.android'
 
 android {
     compileSdkVersion androidConfig.compileSdkVersion

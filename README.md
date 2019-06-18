@@ -564,7 +564,33 @@ Alternatively, you can explicitly provide GraphQL schema file location and packa
 
 ```groovy
 apollo {
-  schemaFilePath = "/path_to_schema_file/my-schema.json"
+  sourceSet {
+    schemaFile = "/path_to_schema_file/my-schema.json"
+  }
+  outputPackageName = "com.my-example.graphql.api"
+}
+```
+
+### Exclude GraphQL files
+Apollo Gradle plugin supports GraphQL operations defined in `*.graphql|*.gql` files. You can provide additional configuration to exclude certain GraphQL files by providing file filters. 
+
+#### Usage
+```groovy
+apollo {
+  sourceSet {
+    exclude = "**/*.gql"
+  }
+  outputPackageName = "com.my-example.graphql.api"
+}
+```
+
+If there is more than one filter:
+
+```groovy
+apollo {
+  sourceSet {
+    exclude = ["**/Query1.graphql", "**/Query2.graphql"]
+  }
   outputPackageName = "com.my-example.graphql.api"
 }
 ```

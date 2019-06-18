@@ -55,7 +55,7 @@ class ApolloPlugin implements Plugin<Project> {
     }
 
     project.extensions.create(ApolloExtension.NAME, ApolloExtension, project)
-    createSourceSetExtensions()
+    project.apollo.extensions.create(ApolloSourceSetExtension.NAME, ApolloSourceSetExtension, project)
 
     if (!useGlobalApolloCodegen) {
       project.tasks.create(ApolloCodegenInstallTask.NAME, ApolloCodegenInstallTask.class)
@@ -63,6 +63,7 @@ class ApolloPlugin implements Plugin<Project> {
 
     // we use afterEvaluate here as we need to know the value of generateKotlinModels from addSourceSetTasks
     project.afterEvaluate {
+      createSourceSetExtensions()
       addApolloTasks()
     }
   }
@@ -147,7 +148,8 @@ class ApolloPlugin implements Plugin<Project> {
         }
         group = TASK_GROUP
         description = "Generate an IR file using apollo-codegen for ${sourceSetOrVariantName.capitalize()} GraphQL queries"
-        schemaFilePath = project.apollo.schemaFilePath
+        schemaFilePath = (project.apollo.sourceSet.schemaFile.get().length() == 0) ? project.apollo.schemaFilePath :
+            project.apollo.sourceSet.schemaFile
         outputPackageName = project.apollo.outputPackageName
         variant = sourceSetOrVariantName
         sourceSetNames = sourceSetNamesList.build()
@@ -161,7 +163,8 @@ class ApolloPlugin implements Plugin<Project> {
         group = TASK_GROUP
         description = "Generate an IR file using apollo-codegen for ${sourceSetOrVariantName.capitalize()} GraphQL queries"
         dependsOn(ApolloCodegenInstallTask.NAME)
-        schemaFilePath = project.apollo.schemaFilePath
+        schemaFilePath = (project.apollo.sourceSet.schemaFile.get().length() == 0) ? project.apollo.schemaFilePath :
+            project.apollo.sourceSet.schemaFile
         outputPackageName = project.apollo.outputPackageName
         variant = sourceSetOrVariantName
         sourceSetNames = sourceSetNamesList.build()
@@ -192,7 +195,7 @@ class ApolloPlugin implements Plugin<Project> {
   private void createSourceSetExtensions() {
     getSourceSets().all { sourceSet ->
       sourceSet.extensions.create(GraphQLSourceDirectorySet.NAME, GraphQLSourceDirectorySet, sourceSet.name,
-          fileResolver)
+          fileResolver, project.apollo.sourceSet.exclude.get())
     }
   }
 
