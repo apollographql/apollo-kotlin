@@ -107,7 +107,7 @@ dependencies {
 ```
 
 Follow these steps:
-1) Create the directory `graphql`inside the `main`directory and create new directory structure like `com/apollographql/apollo/sample/`so that the **Apollo plugin can generate  java classes with valid package**.
+1) Create the directory `graphql` inside the `main`directory and create new directory structure like `com/apollographql/apollo/sample/`so that the **Apollo plugin can generate  java classes with valid package**.
 2) Put your GraphQL queries in a `.graphql` file. For the sample project in this repo you can find the graphql file at `apollo-sample/src/main/graphql/com/apollographql/apollo/sample/GithuntFeedQuery.graphql`. 
 
 ```
