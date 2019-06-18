@@ -10,27 +10,27 @@ import java.lang.Class
 import kotlin.String
 
 enum class CustomType : ScalarType {
-    DATE {
-        override fun typeName(): String = "Date"
+  DATE {
+    override fun typeName(): String = "Date"
 
-        override fun javaType(): Class<*> = java.util.Date::class.java
-    },
+    override fun javaType(): Class<*> = java.util.Date::class.java
+  },
 
-    UNSUPPORTEDTYPE {
-        override fun typeName(): String = "UnsupportedType"
+  UNSUPPORTEDTYPE {
+    override fun typeName(): String = "UnsupportedType"
 
-        override fun javaType(): Class<*> = kotlin.Any::class.java
-    },
+    override fun javaType(): Class<*> = kotlin.Any::class.java
+  },
 
-    URL {
-        override fun typeName(): String = "URL"
+  URL {
+    override fun typeName(): String = "URL"
 
-        override fun javaType(): Class<*> = java.lang.String::class.java
-    },
+    override fun javaType(): Class<*> = java.lang.String::class.java
+  },
 
-    ID {
-        override fun typeName(): String = "ID"
+  ID {
+    override fun typeName(): String = "ID"
 
-        override fun javaType(): Class<*> = java.lang.Integer::class.java
-    }
+    override fun javaType(): Class<*> = java.lang.Integer::class.java
+  }
 }

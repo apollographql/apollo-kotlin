@@ -14,85 +14,85 @@ import kotlin.String
 import kotlin.Suppress
 
 @Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
-        "NestedLambdaShadowedImplicitParameter")
+    "NestedLambdaShadowedImplicitParameter")
 data class PilotFragment(
+  val __typename: String,
+  /**
+   * The name of this person.
+   */
+  val name: String?,
+  /**
+   * A planet that this person was born on or inhabits.
+   */
+  val homeworld: Homeworld?
+) : GraphqlFragment {
+  override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+    it.writeString(RESPONSE_FIELDS[0], __typename)
+    it.writeString(RESPONSE_FIELDS[1], name)
+    it.writeObject(RESPONSE_FIELDS[2], homeworld?.marshaller())
+  }
+
+  companion object {
+    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.forString("__typename", "__typename", null, false, null),
+        ResponseField.forString("name", "name", null, true, null),
+        ResponseField.forObject("homeworld", "homeworld", null, true, null)
+        )
+
+    val FRAGMENT_DEFINITION: String = """
+        |fragment pilotFragment on Person {
+        |  __typename
+        |  name
+        |  homeworld {
+        |    __typename
+        |    name
+        |  }
+        |}
+        """.trimMargin()
+
+    val POSSIBLE_TYPES: Array<String> = arrayOf("Person")
+
+    operator fun invoke(reader: ResponseReader): PilotFragment {
+      val __typename = reader.readString(RESPONSE_FIELDS[0])
+      val name = reader.readString(RESPONSE_FIELDS[1])
+      val homeworld = reader.readObject<Homeworld>(RESPONSE_FIELDS[2]) { reader ->
+        Homeworld(reader)
+      }
+
+      return PilotFragment(
+        __typename = __typename,
+        name = name,
+        homeworld = homeworld
+      )
+    }
+  }
+
+  data class Homeworld(
     val __typename: String,
     /**
-     * The name of this person.
+     * The name of this planet.
      */
-    val name: String?,
-    /**
-     * A planet that this person was born on or inhabits.
-     */
-    val homeworld: Homeworld?
-) : GraphqlFragment {
-    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-        it.writeString(RESPONSE_FIELDS[0], __typename)
-        it.writeString(RESPONSE_FIELDS[1], name)
-        it.writeObject(RESPONSE_FIELDS[2], homeworld?.marshaller())
+    val name: String?
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeString(RESPONSE_FIELDS[1], name)
     }
 
     companion object {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                ResponseField.forString("__typename", "__typename", null, false, null),
-                ResponseField.forString("name", "name", null, true, null),
-                ResponseField.forObject("homeworld", "homeworld", null, true, null)
-                )
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, true, null)
+          )
 
-        val FRAGMENT_DEFINITION: String = """
-                |fragment pilotFragment on Person {
-                |  __typename
-                |  name
-                |  homeworld {
-                |    __typename
-                |    name
-                |  }
-                |}
-                """.trimMargin()
-
-        val POSSIBLE_TYPES: Array<String> = arrayOf("Person")
-
-        operator fun invoke(reader: ResponseReader): PilotFragment {
-            val __typename = reader.readString(RESPONSE_FIELDS[0])
-            val name = reader.readString(RESPONSE_FIELDS[1])
-            val homeworld = reader.readObject<Homeworld>(RESPONSE_FIELDS[2]) { reader ->
-                Homeworld(reader)
-            }
-
-            return PilotFragment(
-                __typename = __typename,
-                name = name,
-                homeworld = homeworld
-            )
-        }
+      operator fun invoke(reader: ResponseReader): Homeworld {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val name = reader.readString(RESPONSE_FIELDS[1])
+        return Homeworld(
+          __typename = __typename,
+          name = name
+        )
+      }
     }
-
-    data class Homeworld(
-        val __typename: String,
-        /**
-         * The name of this planet.
-         */
-        val name: String?
-    ) {
-        fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
-            it.writeString(RESPONSE_FIELDS[0], __typename)
-            it.writeString(RESPONSE_FIELDS[1], name)
-        }
-
-        companion object {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField.forString("__typename", "__typename", null, false, null),
-                    ResponseField.forString("name", "name", null, true, null)
-                    )
-
-            operator fun invoke(reader: ResponseReader): Homeworld {
-                val __typename = reader.readString(RESPONSE_FIELDS[0])
-                val name = reader.readString(RESPONSE_FIELDS[1])
-                return Homeworld(
-                    __typename = __typename,
-                    name = name
-                )
-            }
-        }
-    }
+  }
 }
