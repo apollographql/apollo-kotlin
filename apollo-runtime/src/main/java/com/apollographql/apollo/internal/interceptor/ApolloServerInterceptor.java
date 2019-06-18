@@ -44,8 +44,9 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
  * ApolloServerInterceptor is a concrete {@link ApolloInterceptor} responsible for making the network calls to the
- * server. It is the last interceptor in the chain of interceptors and hence doesn't call {@link
- * ApolloInterceptorChain#proceed(FetchOptions)} on the interceptor chain.
+ * server. It is the last interceptor in the chain of interceptors and hence doesn't call
+ * {@link ApolloInterceptorChain#proceedAsync(InterceptorRequest, Executor, CallBack)}
+ * on the interceptor chain.
  */
 @SuppressWarnings("WeakerAccess") public final class ApolloServerInterceptor implements ApolloInterceptor {
   static final String HEADER_ACCEPT_TYPE = "Accept";
