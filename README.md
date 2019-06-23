@@ -487,21 +487,6 @@ Completable completable1 = RxApollo.from(apolloPrefetch);
 Completable completable2 = Rx2Apollo.from(apolloPrefetch);
 ```
 
-Converting ApolloWatcher to an Observable:
-```java
-//Create a query object
-EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
-
-//Create an ApolloWatcher object
-ApolloWatcher<EpisodeHeroName.Data> apolloWatcher = apolloClient.query(query).watcher();
-
-//RxJava1 Observable
-Observable<EpisodeHeroName.Data> observable1 = RxApollo.from(apolloWatcher);
-
-//RxJava2 Observable
-Observable<EpisodeHeroName.Data> observable1 = Rx2Apollo.from(apolloWatcher);
-```
-
 Also, don't forget to dispose of your Observer/Subscriber when you are finished:
 ```java
 Disposable disposable = Rx2Apollo.from(query).subscribe();
