@@ -26,7 +26,6 @@ Apollo-Android is designed primarily with Android in mind but you can use it in 
   - [Explicit Schema location](#explicit-schema-location)
   - [Use system pre-installed apollo-codegen](#use-system-pre-installed-apollo-codegen)
   - [Kotlin model generation (experimental)](#kotlin-model-generation-experimental)
-  - [Download](#download)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update --> 
@@ -426,12 +425,39 @@ For concrete examples of using response caches, please see the following tests i
 
 ## RxJava Support
 
-Apollo GraphQL client comes with RxJava1 & RxJava2 support. Apollo types such as ApolloCall, ApolloPrefetch & ApolloWatcher can be converted
-to their corresponding RxJava1 & RxJava2 Observable types by using wrapper functions provided in RxApollo & Rx2Apollo classes respectively.
+Apollo GraphQL client comes with RxJava1 & RxJava2 support.
 
-### Usage
+Apollo types can be converted to RxJava1 & RxJava2 `Observable` *types* using wrapper functions `RxApollo.from(...)` & `Rx2Apollo.from(...)` (respectively).
 
-Converting ApolloCall to a Observable:
+Conversion is done according to the following table:
+
+| Apollo type | RxJava1 / RxJava2 type|
+| :--- | :--- |
+| `ApolloCall<T>` | `Observable<Response<T>>` |
+| `ApolloSubscriptionCall<T>` | `Observable<Response<T>>` |
+| `ApolloQueryWatcher<T>` | `Observable<Response<T>>` |
+| `ApolloStoreOperation<T>` | `Single<T>` |
+| `ApolloPrefetch` | `Completable` |
+
+#### Including in your project
+
+Add one of the following `dependencies`:
+
+[ ![apollo-rx-support](https://img.shields.io/bintray/v/apollographql/android/apollo-rx-support.svg?label=apollo-rx-support) ](https://bintray.com/apollographql/android/apollo-rx-support/_latestVersion)
+```gradle
+// RxJava1 support
+implementation 'com.apollographql.apollo:apollo-rx-support:x.y.z'
+```
+
+[ ![apollo-rx2-support](https://img.shields.io/bintray/v/apollographql/android/apollo-rx2-support.svg?label=apollo-rx2-support) ](https://bintray.com/apollographql/android/apollo-rx2-support/_latestVersion)
+```gradle
+// RxJava2 support
+implementation 'com.apollographql.apollo:apollo-rx2-support:x.y.z'
+```
+
+### Usage examples
+
+##### Converting `ApolloCall` to an `Observable`:
 ```java
 //Create a query object
 EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
@@ -440,13 +466,13 @@ EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build(
 ApolloCall<EpisodeHeroName.Data> apolloCall = apolloClient.query(query);
 
 //RxJava1 Observable
-Observable<EpisodeHeroName.Data> observable1 = RxApollo.from(apolloCall);
+Observable<Response<EpisodeHeroName.Data>> observable1 = RxApollo.from(apolloCall);
 
 //RxJava2 Observable
-Observable<EpisodeHeroName.Data> observable2 = Rx2Apollo.from(apolloCall);
+Observable<Response<EpisodeHeroName.Data>> observable2 = Rx2Apollo.from(apolloCall);
 ```
 
-Converting ApolloPrefetch to a Completable:
+##### Converting `ApolloPrefetch` to a `Completable`:
 ```java
 //Create a query object
 EpisodeHeroName query = EpisodeHeroName.builder().episode(Episode.EMPIRE).build();
@@ -615,23 +641,6 @@ apollo {
 ```
 
 It is still an experimental and not finalized yet. The structure of generated models is subject to change.
-
-### Download
-
-RxJava1:
-
-[ ![Download](https://api.bintray.com/packages/apollographql/android/apollo-rx-support/images/download.svg) ](https://bintray.com/apollographql/android/apollo-rx-support/_latestVersion)
-```gradle
-implementation 'com.apollographql.apollo:apollo-rx-support:x.y.z'
-```
-
-RxJava2:
-
-[ ![Download](https://api.bintray.com/packages/apollographql/android/apollo-rx2-support/images/download.svg) ](https://bintray.com/apollographql/android/apollo-rx2-support/_latestVersion)
-
-```gradle
-implementation 'com.apollographql.apollo:apollo-rx2-support:x.y.z'
-```
 
 ## License
 
