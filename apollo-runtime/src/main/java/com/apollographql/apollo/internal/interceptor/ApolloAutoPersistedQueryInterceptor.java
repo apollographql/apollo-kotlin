@@ -21,14 +21,23 @@ public class ApolloAutoPersistedQueryInterceptor implements ApolloInterceptor {
   private final ApolloLogger logger;
   private volatile boolean disposed;
 
-  public ApolloAutoPersistedQueryInterceptor(@NotNull ApolloLogger logger) {
+  final boolean useHttpGetMethodForPersistedQueries;
+
+  public ApolloAutoPersistedQueryInterceptor(@NotNull ApolloLogger logger,
+                                             boolean useHttpGetMethodForPersistedQueries) {
     this.logger = logger;
+    this.useHttpGetMethodForPersistedQueries = useHttpGetMethodForPersistedQueries;
   }
 
   @Override
   public void interceptAsync(@NotNull final InterceptorRequest request, @NotNull final ApolloInterceptorChain chain,
       @NotNull final Executor dispatcher, @NotNull final CallBack callBack) {
-    InterceptorRequest newRequest = request.toBuilder().sendQueryDocument(false).build();
+
+    InterceptorRequest newRequest = request.toBuilder()
+            .sendQueryDocument(false)
+            .autoPersistQueries(true)
+            .useHttpGetMethodForQueries(request.useHttpGetMethodForQueries || useHttpGetMethodForPersistedQueries)
+            .build();
     chain.proceedAsync(newRequest, dispatcher, new CallBack() {
       @Override public void onResponse(@NotNull InterceptorResponse response) {
         if (disposed) return;
@@ -68,13 +77,14 @@ public class ApolloAutoPersistedQueryInterceptor implements ApolloInterceptor {
           if (isPersistedQueryNotFound(response.errors())) {
             logger.w("GraphQL server couldn't find Automatic Persisted Query for operation name: "
                 + request.operation.name().name() + " id: " + request.operation.operationId());
-            return Optional.of(request.toBuilder().sendQueryDocument(true).build());
+
+            return Optional.of(request);
           }
 
           if (isPersistedQueryNotSupported(response.errors())) {
             // TODO how to disable Automatic Persisted Queries in future and how to notify user about this
             logger.e("GraphQL server doesn't support Automatic Persisted Queries");
-            return Optional.of(request.toBuilder().sendQueryDocument(true).build());
+            return Optional.of(request);
           }
         }
         return Optional.absent();

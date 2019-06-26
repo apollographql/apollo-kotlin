@@ -40,9 +40,14 @@ import static org.mockito.Mockito.verify;
 
 public class ApolloAutoPersistedQueryInterceptorTest {
   private ApolloAutoPersistedQueryInterceptor interceptor =
-      new ApolloAutoPersistedQueryInterceptor(new ApolloLogger(Optional.<Logger>absent()));
+      new ApolloAutoPersistedQueryInterceptor(new ApolloLogger(Optional.<Logger>absent()), false);
+
+  private ApolloAutoPersistedQueryInterceptor interceptorWithGetMethod =
+          new ApolloAutoPersistedQueryInterceptor(new ApolloLogger(Optional.<Logger>absent()), true);
+
   private ApolloInterceptor.InterceptorRequest request = ApolloInterceptor.InterceptorRequest.builder(new MockOperation())
-      .build();
+          .autoPersistQueries(true)
+          .build();
 
   @Test
   public void initialRequestWithoutQueryDocument() {
@@ -56,6 +61,24 @@ public class ApolloAutoPersistedQueryInterceptorTest {
         any(ApolloInterceptor.CallBack.class));
 
     assertThat(requestArgumentCaptor.getValue().sendQueryDocument).isFalse();
+    assertThat(requestArgumentCaptor.getValue().useHttpGetMethodForQueries).isFalse();
+    assertThat(requestArgumentCaptor.getValue().autoPersistQueries).isTrue();
+  }
+
+  @Test
+  public void initialRequestWithGetMethodForPersistedQueries() {
+    ApolloInterceptorChain chain = mock(ApolloInterceptorChain.class);
+
+    interceptorWithGetMethod.interceptAsync(request, chain, new TrampolineExecutor(), mock(ApolloInterceptor.CallBack.class));
+
+    ArgumentCaptor<ApolloInterceptor.InterceptorRequest> requestArgumentCaptor =
+            ArgumentCaptor.forClass(ApolloInterceptor.InterceptorRequest.class);
+    verify(chain).proceedAsync(requestArgumentCaptor.capture(), any(Executor.class),
+            any(ApolloInterceptor.CallBack.class));
+
+    assertThat(requestArgumentCaptor.getValue().sendQueryDocument).isFalse();
+    assertThat(requestArgumentCaptor.getValue().useHttpGetMethodForQueries).isTrue();
+    assertThat(requestArgumentCaptor.getValue().autoPersistQueries).isTrue();
   }
 
   @Test
@@ -67,6 +90,7 @@ public class ApolloAutoPersistedQueryInterceptorTest {
         super.proceedAsync(request, dispatcher, callBack);
         if (proceedAsyncInvocationCount == 1) {
           assertThat(request.sendQueryDocument).isFalse();
+          assertThat(request.autoPersistQueries).isTrue();
           callBack.onResponse(
               new ApolloInterceptor.InterceptorResponse(
                   mockHttpResponse(),
@@ -78,6 +102,7 @@ public class ApolloAutoPersistedQueryInterceptorTest {
           );
         } else if (proceedAsyncInvocationCount == 2) {
           assertThat(request.sendQueryDocument).isTrue();
+          assertThat(request.autoPersistQueries).isTrue();
           callBack.onResponse(
               new ApolloInterceptor.InterceptorResponse(
                   mockHttpResponse(),
@@ -114,6 +139,7 @@ public class ApolloAutoPersistedQueryInterceptorTest {
         super.proceedAsync(request, dispatcher, callBack);
         if (proceedAsyncInvocationCount == 1) {
           assertThat(request.sendQueryDocument).isFalse();
+          assertThat(request.autoPersistQueries).isTrue();
           callBack.onResponse(
               new ApolloInterceptor.InterceptorResponse(
                   mockHttpResponse(),
@@ -125,6 +151,7 @@ public class ApolloAutoPersistedQueryInterceptorTest {
           );
         } else if (proceedAsyncInvocationCount == 2) {
           assertThat(request.sendQueryDocument).isTrue();
+          assertThat(request.autoPersistQueries).isTrue();
           callBack.onResponse(
               new ApolloInterceptor.InterceptorResponse(
                   mockHttpResponse(),
