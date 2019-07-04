@@ -69,8 +69,11 @@ class SchemaTypeSpecBuilder(
         .addMethod(marshallerAccessorMethodSpec)
         .addTypes(nestedTypeSpecs.map { it.second })
         .apply {
-          if (inlineFragments.isNotEmpty()) addType(
-              inlineFragmentsResponseMapperSpec(nameOverrideMap, surrogateInlineFragmentType!!))
+          if (inlineFragments.isNotEmpty()) {
+            addType(inlineFragmentsVisitorInterfaceSpec(nameOverrideMap, surrogateInlineFragmentType!!))
+            addMethod(inlineFragmentsVisitorMethodSpec(nameOverrideMap, surrogateInlineFragmentType))
+            addType(inlineFragmentsResponseMapperSpec(nameOverrideMap, surrogateInlineFragmentType))
+          }
         }
         .build()
         .let { protocol ->
@@ -399,6 +402,31 @@ class SchemaTypeSpecBuilder(
         .addFields(mapperFields())
         .addMethod(methodSpec)
         .build()
+  }
+
+  private fun inlineFragmentsVisitorInterfaceSpec(
+    nameOverrideMap: Map<String, String>,
+    surrogateInlineFragmentType: TypeSpec
+  ): TypeSpec {
+    val typeClassName = ClassName.get("", uniqueTypeName)
+    val implementations = inlineFragments.map { inlineFragment ->
+      val fieldSpec = inlineFragment.fieldSpec(context).overrideType(nameOverrideMap)
+      val inlineFragmentResponseFieldType = fieldSpec.type.rawType() as ClassName
+       ClassName.get("", inlineFragmentResponseFieldType.simpleName())
+    } + ClassName.get("", surrogateInlineFragmentType.name)
+    return VisitorInterfaceSpec(typeClassName, implementations).createVisitorInterface()
+  }
+
+  private fun inlineFragmentsVisitorMethodSpec(
+    nameOverrideMap: Map<String, String>,
+    surrogateInlineFragmentType: TypeSpec
+  ): MethodSpec {
+    val implementations = inlineFragments.map { inlineFragment ->
+      val fieldSpec = inlineFragment.fieldSpec(context).overrideType(nameOverrideMap)
+      val inlineFragmentResponseFieldType = fieldSpec.type.rawType() as ClassName
+      ClassName.get("", inlineFragmentResponseFieldType.simpleName())
+    } + ClassName.get("", surrogateInlineFragmentType.name)
+    return VisitorMethodSpec(implementations).createVisitorMethod()
   }
 
   private fun inlineFragmentsResponseMapperSpec(nameOverrideMap: Map<String, String>,

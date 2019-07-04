@@ -222,6 +222,31 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     ResponseFieldMarshaller marshaller();
 
+    default <T> T visit(Visitor<T> visitor) {
+      if (this instanceof AsHuman) {
+        return visitor.visit((AsHuman) this);
+      } else if (this instanceof AsDroid1) {
+        return visitor.visit((AsDroid1) this);
+      } else if (this instanceof AsStarship) {
+        return visitor.visit((AsStarship) this);
+      } else if (this instanceof AsSearchResult) {
+        return visitor.visit((AsSearchResult) this);
+      }
+      return visitor.visitDefault(this);
+    }
+
+    interface Visitor<T> {
+      T visitDefault(@NotNull Search search);
+
+      T visit(@NotNull AsHuman asHuman);
+
+      T visit(@NotNull AsDroid1 asDroid1);
+
+      T visit(@NotNull AsStarship asStarship);
+
+      T visit(@NotNull AsSearchResult asSearchResult);
+    }
+
     final class Mapper implements ResponseFieldMapper<Search> {
       final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
@@ -418,6 +443,27 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     @NotNull String name();
 
     ResponseFieldMarshaller marshaller();
+
+    default <T> T visit(Visitor<T> visitor) {
+      if (this instanceof AsHuman1) {
+        return visitor.visit((AsHuman1) this);
+      } else if (this instanceof AsDroid) {
+        return visitor.visit((AsDroid) this);
+      } else if (this instanceof AsCharacter) {
+        return visitor.visit((AsCharacter) this);
+      }
+      return visitor.visitDefault(this);
+    }
+
+    interface Visitor<T> {
+      T visitDefault(@NotNull Friend friend);
+
+      T visit(@NotNull AsHuman1 asHuman1);
+
+      T visit(@NotNull AsDroid asDroid);
+
+      T visit(@NotNull AsCharacter asCharacter);
+    }
 
     final class Mapper implements ResponseFieldMapper<Friend> {
       final AsHuman1.Mapper asHuman1FieldMapper = new AsHuman1.Mapper();
@@ -1187,6 +1233,27 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     @NotNull String name();
 
     ResponseFieldMarshaller marshaller();
+
+    default <T> T visit(Visitor<T> visitor) {
+      if (this instanceof AsHuman2) {
+        return visitor.visit((AsHuman2) this);
+      } else if (this instanceof AsDroid2) {
+        return visitor.visit((AsDroid2) this);
+      } else if (this instanceof AsCharacter1) {
+        return visitor.visit((AsCharacter1) this);
+      }
+      return visitor.visitDefault(this);
+    }
+
+    interface Visitor<T> {
+      T visitDefault(@NotNull Friend3 friend3);
+
+      T visit(@NotNull AsHuman2 asHuman2);
+
+      T visit(@NotNull AsDroid2 asDroid2);
+
+      T visit(@NotNull AsCharacter1 asCharacter1);
+    }
 
     final class Mapper implements ResponseFieldMapper<Friend3> {
       final AsHuman2.Mapper asHuman2FieldMapper = new AsHuman2.Mapper();

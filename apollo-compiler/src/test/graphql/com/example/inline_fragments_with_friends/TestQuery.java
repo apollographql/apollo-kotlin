@@ -197,6 +197,27 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     ResponseFieldMarshaller marshaller();
 
+    default <T> T visit(Visitor<T> visitor) {
+      if (this instanceof AsHuman) {
+        return visitor.visit((AsHuman) this);
+      } else if (this instanceof AsDroid) {
+        return visitor.visit((AsDroid) this);
+      } else if (this instanceof AsCharacter) {
+        return visitor.visit((AsCharacter) this);
+      }
+      return visitor.visitDefault(this);
+    }
+
+    interface Visitor<T> {
+      T visitDefault(@NotNull Hero hero);
+
+      T visit(@NotNull AsHuman asHuman);
+
+      T visit(@NotNull AsDroid asDroid);
+
+      T visit(@NotNull AsCharacter asCharacter);
+    }
+
     final class Mapper implements ResponseFieldMapper<Hero> {
       final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 

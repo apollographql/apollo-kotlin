@@ -219,6 +219,23 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
     ResponseFieldMarshaller marshaller();
 
+    default <T> T visit(Visitor<T> visitor) {
+      if (this instanceof AsHuman) {
+        return visitor.visit((AsHuman) this);
+      } else if (this instanceof AsCharacter) {
+        return visitor.visit((AsCharacter) this);
+      }
+      return visitor.visitDefault(this);
+    }
+
+    interface Visitor<T> {
+      T visitDefault(@NotNull HeroDetailQuery1 heroDetailQuery1);
+
+      T visit(@NotNull AsHuman asHuman);
+
+      T visit(@NotNull AsCharacter asCharacter);
+    }
+
     final class Mapper implements ResponseFieldMapper<HeroDetailQuery1> {
       final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
