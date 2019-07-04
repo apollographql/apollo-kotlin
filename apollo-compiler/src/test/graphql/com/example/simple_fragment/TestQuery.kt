@@ -13,6 +13,7 @@ import com.apollographql.apollo.api.ResponseFieldMapper
 import com.apollographql.apollo.api.ResponseFieldMarshaller
 import com.apollographql.apollo.api.ResponseReader
 import com.example.simple_fragment.fragment.HeroDetails
+import com.example.simple_fragment.fragment.HumanDetails
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -47,10 +48,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       operator fun invoke(reader: ResponseReader): Hero {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-          val heroDetails = if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType))
-              HeroDetails(reader) else null
+          val heroDetails = HeroDetails(reader)
+          val humanDetails = if (HumanDetails.POSSIBLE_TYPES.contains(conditionalType))
+              HumanDetails(reader) else null
           Fragments(
-            heroDetails = heroDetails!!
+            heroDetails = heroDetails,
+            humanDetails = humanDetails
           )
         }
 
@@ -62,10 +65,12 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     }
 
     data class Fragments(
-      val heroDetails: HeroDetails
+      val heroDetails: HeroDetails,
+      val humanDetails: HumanDetails?
     ) {
       fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
         heroDetails.marshaller().marshal(it)
+        humanDetails?.marshaller()?.marshal(it)
       }
     }
   }
@@ -96,16 +101,21 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "fb34e1f33db46408de360dadc7679f93aa0bd4259eacdff7a4c9c8032c89d60b"
+        "f258982f7e2b12d61c678aa68c0baee6ae552768b670dd2f56b92d36c1cfd83b"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery {
         |  hero {
         |    __typename
         |    ...HeroDetails
+        |    ...HumanDetails
         |  }
         |}
         |fragment HeroDetails on Character {
+        |  __typename
+        |  name
+        |}
+        |fragment HumanDetails on Human {
         |  __typename
         |  name
         |}

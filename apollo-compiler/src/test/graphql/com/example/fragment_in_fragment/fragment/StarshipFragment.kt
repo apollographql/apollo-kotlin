@@ -99,10 +99,9 @@ data class StarshipFragment(
       operator fun invoke(reader: ResponseReader): Node {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-          val pilotFragment = if (PilotFragment.POSSIBLE_TYPES.contains(conditionalType))
-              PilotFragment(reader) else null
+          val pilotFragment = PilotFragment(reader)
           Fragments(
-            pilotFragment = pilotFragment!!
+            pilotFragment = pilotFragment
           )
         }
 

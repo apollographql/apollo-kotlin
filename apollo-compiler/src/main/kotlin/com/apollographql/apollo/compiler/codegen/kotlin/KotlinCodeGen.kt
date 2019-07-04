@@ -203,8 +203,12 @@ internal object KotlinCodeGen {
             .beginControlFlow("%L.readConditional(%L) { conditionalType, reader ->", reader, field)
             .add(
                 fields.map { field ->
-                  CodeBlock.of("val %L = if (%T.POSSIBLE_TYPES.contains(conditionalType)) %T(reader) else null",
-                      field.name, field.type.asTypeName(), field.type.asTypeName())
+                  if (field.isOptional) {
+                    CodeBlock.of("val %L = if (%T.POSSIBLE_TYPES.contains(conditionalType)) %T(reader) else null",
+                        field.name, field.type.asTypeName(), field.type.asTypeName())
+                  } else {
+                     CodeBlock.of("val %L = %T(reader)", field.name, field.type.asTypeName())
+                  }
                 }.joinToCode(separator = "\n", suffix = "\n")
             )
             .addStatement("%L(", name)
@@ -214,7 +218,7 @@ internal object KotlinCodeGen {
                   if (field.isOptional) {
                     CodeBlock.of("%L = %L", field.name, field.name)
                   } else {
-                    CodeBlock.of("%L = %L!!", field.name, field.name)
+                    CodeBlock.of("%L = %L", field.name, field.name)
                   }
 
                 }.joinToCode(separator = ",\n", suffix = "\n")

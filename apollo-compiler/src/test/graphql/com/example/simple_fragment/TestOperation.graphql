@@ -1,7 +1,12 @@
 query TestQuery {
   hero {
     ...HeroDetails
+    ...HumanDetails
   }
+}
+
+fragment HumanDetails on Human {
+  name
 }
 
 fragment HeroDetails on Character {

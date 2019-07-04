@@ -521,10 +521,7 @@ public class StarshipFragment implements GraphqlFragment {
 
         @Override
         public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
-          PilotFragment pilotFragment = null;
-          if (PilotFragment.POSSIBLE_TYPES.contains(conditionalType)) {
-            pilotFragment = pilotFragmentFieldMapper.map(reader);
-          }
+          PilotFragment pilotFragment = pilotFragmentFieldMapper.map(reader);
           return new Fragments(Utils.checkNotNull(pilotFragment, "pilotFragment == null"));
         }
       }
