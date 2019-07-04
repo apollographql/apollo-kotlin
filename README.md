@@ -152,6 +152,9 @@ You can find instructions to download your schema using the apollo CLI [HERE](ht
 
 Note: This is a file that Apollo generates and therefore should not be mutated.
 
+**Optional:**
+
+5) Download the [JS Graphql Intellij Plugin](https://jimkyndemeyer.github.io/js-graphql-intellij-plugin/) to update the schema, queries, and mutations on your machine with auto-completion, error highlighting, and go-to-definition functionality. You can create a [.graphqlconfig](https://jimkyndemeyer.github.io/js-graphql-intellij-plugin/docs/developer-guide#working-with-graphql-endpoints-and-scratch-files) file in order to use GraphQL scratch files to work with your schema outside product code, e.g. by writing temporary queries to test resolvers.
 
 ## Consuming Code
 
