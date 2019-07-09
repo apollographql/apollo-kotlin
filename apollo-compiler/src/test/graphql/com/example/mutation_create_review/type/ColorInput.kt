@@ -17,7 +17,7 @@ import kotlin.Suppress
  */
 @Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
     "NestedLambdaShadowedImplicitParameter")
-class ColorInput(
+data class ColorInput(
   /**
    * Red color
    */

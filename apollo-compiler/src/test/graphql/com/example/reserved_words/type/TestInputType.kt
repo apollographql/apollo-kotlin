@@ -13,7 +13,7 @@ import kotlin.Suppress
 
 @Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
     "NestedLambdaShadowedImplicitParameter")
-class TestInputType(
+data class TestInputType(
   val private_: Input<Boolean> = Input.optional(null)
 ) : InputType {
   override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller { writer ->
