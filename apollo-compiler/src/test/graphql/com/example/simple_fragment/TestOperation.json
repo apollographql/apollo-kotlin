@@ -6,7 +6,7 @@
 			"operationType": "query",
 			"rootType": "Query",
 			"variables": [],
-			"source": "query TestQuery {\n  hero {\n    __typename\n    ...HeroDetails\n  }\n}",
+			"source": "query TestQuery {\n  hero {\n    __typename\n    ...HeroDetails\n    ...HumanDetails\n  }\n}",
 			"fields": [
 				{
 					"responseName": "hero",
@@ -24,7 +24,8 @@
 						}
 					],
 					"fragmentSpreads": [
-						"HeroDetails"
+						"HeroDetails",
+						"HumanDetails"
 					],
 					"inlineFragments": []
 				}
@@ -32,13 +33,42 @@
 			"fragmentSpreads": [],
 			"inlineFragments": [],
 			"fragmentsReferenced": [
-				"HeroDetails"
+				"HeroDetails",
+				"HumanDetails"
 			],
-			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    ...HeroDetails\n  }\n}\nfragment HeroDetails on Character {\n  __typename\n  name\n}",
-			"operationId": "7824113c9abde76f3c8ffbee5d7065129bc5c47757f34dd5959d5cd16464d014"
+			"sourceWithFragments": "query TestQuery {\n  hero {\n    __typename\n    ...HeroDetails\n    ...HumanDetails\n  }\n}\nfragment HeroDetails on Character {\n  __typename\n  name\n}\nfragment HumanDetails on Human {\n  __typename\n  name\n}",
+			"operationId": "2148672df13098682af2d3ce19498bef3a60b1aa3022ef094e403bb0404cea8a"
 		}
 	],
 	"fragments": [
+		{
+			"typeCondition": "Human",
+			"possibleTypes": [
+				"Human"
+			],
+			"fragmentName": "HumanDetails",
+			"filePath": "src/test/graphql/com/example/simple_fragment/TestOperation.graphql",
+			"source": "fragment HumanDetails on Human {\n  __typename\n  name\n}",
+			"fields": [
+				{
+					"responseName": "__typename",
+					"fieldName": "__typename",
+					"type": "String!",
+					"isConditional": false
+				},
+				{
+					"responseName": "name",
+					"fieldName": "name",
+					"type": "String!",
+					"isConditional": false,
+					"description": "What this human calls themselves",
+					"isDeprecated": false,
+					"deprecationReason": null
+				}
+			],
+			"fragmentSpreads": [],
+			"inlineFragments": []
+		},
 		{
 			"typeCondition": "Character",
 			"possibleTypes": [

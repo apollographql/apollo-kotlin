@@ -555,10 +555,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
 
         @Override
         public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
-          StarshipFragment starshipFragment = null;
-          if (StarshipFragment.POSSIBLE_TYPES.contains(conditionalType)) {
-            starshipFragment = starshipFragmentFieldMapper.map(reader);
-          }
+          StarshipFragment starshipFragment = starshipFragmentFieldMapper.map(reader);
           return new Fragments(Utils.checkNotNull(starshipFragment, "starshipFragment == null"));
         }
       }

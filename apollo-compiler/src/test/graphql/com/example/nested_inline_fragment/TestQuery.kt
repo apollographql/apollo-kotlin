@@ -47,10 +47,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       operator fun invoke(reader: ResponseReader): Setting {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-          val testSetting = if (TestSetting.POSSIBLE_TYPES.contains(conditionalType))
-              TestSetting(reader) else null
+          val testSetting = TestSetting(reader)
           Fragments(
-            testSetting = testSetting!!
+            testSetting = testSetting
           )
         }
 

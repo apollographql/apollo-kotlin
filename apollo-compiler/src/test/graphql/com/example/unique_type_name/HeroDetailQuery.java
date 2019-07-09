@@ -697,10 +697,7 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
 
         @Override
         public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
-          HeroDetails heroDetails = null;
-          if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) {
-            heroDetails = heroDetailsFieldMapper.map(reader);
-          }
+          HeroDetails heroDetails = heroDetailsFieldMapper.map(reader);
           return new Fragments(Utils.checkNotNull(heroDetails, "heroDetails == null"));
         }
       }

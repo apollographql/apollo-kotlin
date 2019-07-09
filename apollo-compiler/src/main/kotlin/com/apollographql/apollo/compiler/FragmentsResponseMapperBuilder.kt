@@ -58,17 +58,24 @@ class FragmentsResponseMapperBuilder(
           .add(");\n")
           .build()
 
-  private fun initFragmentsCode(fragmentFields: List<FieldSpec>) =
-      CodeBlock.builder()
-          .add(fragmentFields
-              .fold(CodeBlock.builder()) { builder, field ->
-                builder.addStatement("\$T \$N = null", field.type.unwrapOptionalType(withoutAnnotations = true), field)
-              }
-              .build())
-          .add(fragmentFields
-              .fold(CodeBlock.builder()) { builder, field -> builder.add(initFragmentCode(field)) }
-              .build())
-          .build()
+  private fun initFragmentsCode(fragmentFields: List<FieldSpec>): CodeBlock {
+    val codeBuilder = fragmentFields.fold(CodeBlock.builder()) { builder, fragmentField ->
+      val fieldClass = fragmentField.type.unwrapOptionalType(withoutAnnotations = true) as ClassName
+      if (fragmentField.type.isOptional()) {
+        builder.addStatement("\$T \$N = null", fieldClass, fragmentField)
+      } else {
+        builder.addStatement("\$T \$N = \$L.map(\$L)", fieldClass, fragmentField, fieldClass.mapperFieldName(), READER_VAR)
+      }
+    }
+    fragmentFields.fold(codeBuilder) { builder, fragmentField ->
+      if (fragmentField.type.isOptional()) {
+        builder.add(initFragmentCode(fragmentField))
+      } else {
+        builder
+      }
+    }
+    return codeBuilder.build()
+  }
 
   private fun initFragmentCode(fragmentField: FieldSpec): CodeBlock {
     val fieldClass = fragmentField.type.unwrapOptionalType(withoutAnnotations = true) as ClassName

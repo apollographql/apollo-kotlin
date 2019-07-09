@@ -54,10 +54,9 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, HeroDetailQuery.Data, Operat
       operator fun invoke(reader: ResponseReader): Friend1 {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-          val heroDetails = if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType))
-              HeroDetails(reader) else null
+          val heroDetails = HeroDetails(reader)
           Fragments(
-            heroDetails = heroDetails!!
+            heroDetails = heroDetails
           )
         }
 

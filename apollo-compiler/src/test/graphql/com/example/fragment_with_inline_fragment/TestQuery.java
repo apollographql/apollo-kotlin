@@ -438,10 +438,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
         @Override
         public @NotNull Fragments map(ResponseReader reader, @NotNull String conditionalType) {
-          HeroDetails heroDetails = null;
-          if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType)) {
-            heroDetails = heroDetailsFieldMapper.map(reader);
-          }
+          HeroDetails heroDetails = heroDetailsFieldMapper.map(reader);
           return new Fragments(Utils.checkNotNull(heroDetails, "heroDetails == null"));
         }
       }

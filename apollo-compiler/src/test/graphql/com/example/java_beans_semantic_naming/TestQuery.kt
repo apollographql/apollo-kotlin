@@ -69,10 +69,9 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           Episode.safeValueOf(it.readString())
         }
         val fragments = reader.readConditional(RESPONSE_FIELDS[3]) { conditionalType, reader ->
-          val heroDetails = if (HeroDetails.POSSIBLE_TYPES.contains(conditionalType))
-              HeroDetails(reader) else null
+          val heroDetails = HeroDetails(reader)
           Fragments(
-            heroDetails = heroDetails!!
+            heroDetails = heroDetails
           )
         }
 

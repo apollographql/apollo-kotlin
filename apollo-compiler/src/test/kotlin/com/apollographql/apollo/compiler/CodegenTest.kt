@@ -34,7 +34,6 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
         if (javaExpectedFileMatcher.matches(expectedFile)) {
           val expected = expectedFile.toFile()
 
-          System.out.print(expectedFile.fileName)
           val actualClassName = actualClassName(expectedFile, "java")
           val actual = findActual(actualClassName, "java")
 
@@ -65,7 +64,6 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
         if (kotlinExpectedFileMatcher.matches(expectedFile)) {
           val expected = expectedFile.toFile()
 
-          System.out.print(expectedFile.fileName)
           val actualClassName = actualClassName(expectedFile, "kt")
           val actual = findActual(actualClassName, "kt")
 

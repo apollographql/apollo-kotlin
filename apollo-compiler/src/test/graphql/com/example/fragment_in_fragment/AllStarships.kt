@@ -48,10 +48,9 @@ class AllStarships : Query<AllStarships.Data, AllStarships.Data, Operation.Varia
       operator fun invoke(reader: ResponseReader): Node {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val fragments = reader.readConditional(RESPONSE_FIELDS[1]) { conditionalType, reader ->
-          val starshipFragment = if (StarshipFragment.POSSIBLE_TYPES.contains(conditionalType))
-              StarshipFragment(reader) else null
+          val starshipFragment = StarshipFragment(reader)
           Fragments(
-            starshipFragment = starshipFragment!!
+            starshipFragment = starshipFragment
           )
         }
 
