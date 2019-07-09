@@ -19,6 +19,7 @@ import com.example.enum_type.type.Episode;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Collections;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -113,6 +114,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.hero;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -227,6 +229,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.firstAppearsIn;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

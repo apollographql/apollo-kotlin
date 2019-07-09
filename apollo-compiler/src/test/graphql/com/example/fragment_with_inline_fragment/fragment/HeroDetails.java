@@ -18,6 +18,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -175,6 +176,7 @@ public interface HeroDetails extends GraphqlFragment {
       return this.primaryFunction;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -357,6 +359,7 @@ public interface HeroDetails extends GraphqlFragment {
       return this.edges;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -532,6 +535,7 @@ public interface HeroDetails extends GraphqlFragment {
       return this.node;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -672,6 +676,7 @@ public interface HeroDetails extends GraphqlFragment {
       return this.name;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -810,6 +815,7 @@ public interface HeroDetails extends GraphqlFragment {
       return this.friendsConnection;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -978,6 +984,7 @@ public interface HeroDetails extends GraphqlFragment {
       return this.edges;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -1153,6 +1160,7 @@ public interface HeroDetails extends GraphqlFragment {
       return this.node;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -1293,6 +1301,7 @@ public interface HeroDetails extends GraphqlFragment {
       return this.name;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

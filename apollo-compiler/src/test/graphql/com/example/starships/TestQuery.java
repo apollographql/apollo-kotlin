@@ -24,6 +24,7 @@ import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -164,6 +165,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.starship;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -275,6 +277,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.coordinates;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

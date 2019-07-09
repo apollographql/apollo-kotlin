@@ -25,6 +25,7 @@ import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -190,6 +191,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.hero;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -335,6 +337,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.friends;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -494,6 +497,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.height;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -590,6 +594,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.name;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -692,6 +697,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.friends;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -851,6 +857,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.height;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -947,6 +954,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.name;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -1037,6 +1045,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.name;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

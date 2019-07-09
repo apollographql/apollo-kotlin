@@ -21,6 +21,7 @@ import com.example.java_beans_semantic_naming.type.Episode;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -140,6 +141,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.hero;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -252,6 +254,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.fragments;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

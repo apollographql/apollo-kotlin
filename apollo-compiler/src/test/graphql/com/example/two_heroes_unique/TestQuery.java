@@ -20,6 +20,7 @@ import com.example.two_heroes_unique.type.CustomType;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Collections;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -126,6 +127,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.luke;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -230,6 +232,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.name;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -331,6 +334,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.name;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

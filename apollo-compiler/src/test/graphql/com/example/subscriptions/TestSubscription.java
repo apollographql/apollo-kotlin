@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -163,6 +164,7 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
       return this.commentAdded;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -265,6 +267,7 @@ public final class TestSubscription implements Subscription<TestSubscription.Dat
       return this.content;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

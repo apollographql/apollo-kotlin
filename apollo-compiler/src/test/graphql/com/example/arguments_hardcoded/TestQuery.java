@@ -19,6 +19,7 @@ import com.apollographql.apollo.api.internal.Utils;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Collections;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -116,6 +117,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.reviews;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -230,6 +232,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.commentary;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

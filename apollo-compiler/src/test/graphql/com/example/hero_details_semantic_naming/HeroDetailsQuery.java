@@ -19,6 +19,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Collections;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -122,6 +123,7 @@ public final class HeroDetailsQuery implements Query<HeroDetailsQuery.Data, Opti
       return this.hero;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -225,6 +227,7 @@ public final class HeroDetailsQuery implements Query<HeroDetailsQuery.Data, Opti
       return this.friendsConnection;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -340,6 +343,7 @@ public final class HeroDetailsQuery implements Query<HeroDetailsQuery.Data, Opti
       return this.edges;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -455,6 +459,7 @@ public final class HeroDetailsQuery implements Query<HeroDetailsQuery.Data, Opti
       return this.node;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -552,6 +557,7 @@ public final class HeroDetailsQuery implements Query<HeroDetailsQuery.Data, Opti
       return this.name;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

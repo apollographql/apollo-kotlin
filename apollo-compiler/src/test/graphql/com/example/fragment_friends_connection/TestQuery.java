@@ -20,6 +20,7 @@ import com.example.fragment_friends_connection.fragment.HeroDetails;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.Collections;
 import org.jetbrains.annotations.NotNull;
@@ -127,6 +128,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.hero;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -216,6 +218,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.fragments;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

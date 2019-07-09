@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.internal.Utils;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -73,6 +74,7 @@ public class DroidDetails implements GraphqlFragment {
     return this.primaryFunction;
   }
 
+  @SuppressWarnings("unchecked")
   public ResponseFieldMarshaller marshaller() {
     return new ResponseFieldMarshaller() {
       @Override

@@ -16,6 +16,7 @@ import com.apollographql.apollo.api.internal.Utils;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -77,6 +78,7 @@ public class PilotFragment implements GraphqlFragment {
     return this.homeworld;
   }
 
+  @SuppressWarnings("unchecked")
   public ResponseFieldMarshaller marshaller() {
     return new ResponseFieldMarshaller() {
       @Override
@@ -179,6 +181,7 @@ public class PilotFragment implements GraphqlFragment {
       return this.name;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

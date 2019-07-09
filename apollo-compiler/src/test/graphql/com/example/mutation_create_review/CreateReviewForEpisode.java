@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -194,6 +195,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
       return this.createReview;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -344,6 +346,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
       return this.listOfListOfObject;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -567,6 +570,7 @@ public final class CreateReviewForEpisode implements Mutation<CreateReviewForEpi
       return this.name;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
