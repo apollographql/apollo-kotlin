@@ -21,6 +21,7 @@ import com.example.fragment_in_fragment.fragment.StarshipFragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -145,6 +146,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       return this.allStarships;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -236,6 +238,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       return this.edges;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -345,6 +348,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       return this.node;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -439,6 +443,7 @@ public final class AllStarships implements Query<AllStarships.Data, Optional<All
       return this.fragments;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

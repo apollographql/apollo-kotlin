@@ -19,6 +19,7 @@ import com.example.custom_scalar_type.type.CustomType;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -117,6 +118,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.hero;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -265,6 +267,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.links;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override

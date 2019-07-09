@@ -16,6 +16,7 @@ import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -73,6 +74,7 @@ public class HumanDetails implements GraphqlFragment {
     return this.height;
   }
 
+  @SuppressWarnings("unchecked")
   public ResponseFieldMarshaller marshaller() {
     return new ResponseFieldMarshaller() {
       @Override

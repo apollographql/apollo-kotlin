@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -564,6 +565,7 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
       return this.operation;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
@@ -952,6 +954,7 @@ public final class TestMutation implements Mutation<TestMutation.Data, Optional<
       return this.name;
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
         @Override
