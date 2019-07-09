@@ -18,6 +18,7 @@ internal fun InputType.typeSpec() =
         .classBuilder(name)
         .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
         .addAnnotation(suppressWarningsAnnotation)
+        .addModifiers(KModifier.DATA)
         .addSuperinterface(com.apollographql.apollo.api.InputType::class)
         .primaryConstructor(primaryConstructorSpec)
         .addProperties(fields.map { field -> field.asPropertySpec(initializer = CodeBlock.of(field.name)) })
