@@ -235,18 +235,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return visitor.visitDefault(this);
     }
 
-    interface Visitor<T> {
-      T visitDefault(@NotNull Search search);
-
-      T visit(@NotNull AsHuman asHuman);
-
-      T visit(@NotNull AsDroid1 asDroid1);
-
-      T visit(@NotNull AsStarship asStarship);
-
-      T visit(@NotNull AsSearchResult asSearchResult);
-    }
-
     final class Mapper implements ResponseFieldMapper<Search> {
       final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
@@ -287,6 +275,18 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         }
         return asSearchResultFieldMapper.map(reader);
       }
+    }
+
+    interface Visitor<T> {
+      T visitDefault(@NotNull Search search);
+
+      T visit(@NotNull AsHuman asHuman);
+
+      T visit(@NotNull AsDroid1 asDroid1);
+
+      T visit(@NotNull AsStarship asStarship);
+
+      T visit(@NotNull AsSearchResult asSearchResult);
     }
   }
 
@@ -455,16 +455,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return visitor.visitDefault(this);
     }
 
-    interface Visitor<T> {
-      T visitDefault(@NotNull Friend friend);
-
-      T visit(@NotNull AsHuman1 asHuman1);
-
-      T visit(@NotNull AsDroid asDroid);
-
-      T visit(@NotNull AsCharacter asCharacter);
-    }
-
     final class Mapper implements ResponseFieldMapper<Friend> {
       final AsHuman1.Mapper asHuman1FieldMapper = new AsHuman1.Mapper();
 
@@ -494,6 +484,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         }
         return asCharacterFieldMapper.map(reader);
       }
+    }
+
+    interface Visitor<T> {
+      T visitDefault(@NotNull Friend friend);
+
+      T visit(@NotNull AsHuman1 asHuman1);
+
+      T visit(@NotNull AsDroid asDroid);
+
+      T visit(@NotNull AsCharacter asCharacter);
     }
   }
 
@@ -1245,16 +1245,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return visitor.visitDefault(this);
     }
 
-    interface Visitor<T> {
-      T visitDefault(@NotNull Friend3 friend3);
-
-      T visit(@NotNull AsHuman2 asHuman2);
-
-      T visit(@NotNull AsDroid2 asDroid2);
-
-      T visit(@NotNull AsCharacter1 asCharacter1);
-    }
-
     final class Mapper implements ResponseFieldMapper<Friend3> {
       final AsHuman2.Mapper asHuman2FieldMapper = new AsHuman2.Mapper();
 
@@ -1284,6 +1274,16 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         }
         return asCharacter1FieldMapper.map(reader);
       }
+    }
+
+    interface Visitor<T> {
+      T visitDefault(@NotNull Friend3 friend3);
+
+      T visit(@NotNull AsHuman2 asHuman2);
+
+      T visit(@NotNull AsDroid2 asDroid2);
+
+      T visit(@NotNull AsCharacter1 asCharacter1);
     }
   }
 

@@ -58,14 +58,6 @@ public interface TestSetting extends GraphqlFragment {
     return visitor.visitDefault(this);
   }
 
-  interface Visitor<T> {
-    T visitDefault(@NotNull TestSetting testSetting);
-
-    T visit(@NotNull AsSelectSetting asSelectSetting);
-
-    T visit(@NotNull AsSetting asSetting);
-  }
-
   final class Mapper implements ResponseFieldMapper<TestSetting> {
     final AsSelectSetting.Mapper asSelectSettingFieldMapper = new AsSelectSetting.Mapper();
 
@@ -86,6 +78,14 @@ public interface TestSetting extends GraphqlFragment {
     }
   }
 
+  interface Visitor<T> {
+    T visitDefault(@NotNull TestSetting testSetting);
+
+    T visit(@NotNull AsSelectSetting asSelectSetting);
+
+    T visit(@NotNull AsSetting asSetting);
+  }
+
   interface Value {
     @NotNull String __typename();
 
@@ -98,14 +98,6 @@ public interface TestSetting extends GraphqlFragment {
         return visitor.visit((AsSettingValue) this);
       }
       return visitor.visitDefault(this);
-    }
-
-    interface Visitor<T> {
-      T visitDefault(@NotNull Value value);
-
-      T visit(@NotNull AsStringListSettingValue asStringListSettingValue);
-
-      T visit(@NotNull AsSettingValue asSettingValue);
     }
 
     final class Mapper implements ResponseFieldMapper<Value> {
@@ -126,6 +118,14 @@ public interface TestSetting extends GraphqlFragment {
         }
         return asSettingValueFieldMapper.map(reader);
       }
+    }
+
+    interface Visitor<T> {
+      T visitDefault(@NotNull Value value);
+
+      T visit(@NotNull AsStringListSettingValue asStringListSettingValue);
+
+      T visit(@NotNull AsSettingValue asSettingValue);
     }
   }
 
@@ -443,14 +443,6 @@ public interface TestSetting extends GraphqlFragment {
       return visitor.visitDefault(this);
     }
 
-    interface Visitor<T> {
-      T visitDefault(@NotNull Value1 value1);
-
-      T visit(@NotNull AsStringListSettingValue1 asStringListSettingValue1);
-
-      T visit(@NotNull AsSettingValue1 asSettingValue1);
-    }
-
     final class Mapper implements ResponseFieldMapper<Value1> {
       final AsStringListSettingValue1.Mapper asStringListSettingValue1FieldMapper = new AsStringListSettingValue1.Mapper();
 
@@ -469,6 +461,14 @@ public interface TestSetting extends GraphqlFragment {
         }
         return asSettingValue1FieldMapper.map(reader);
       }
+    }
+
+    interface Visitor<T> {
+      T visitDefault(@NotNull Value1 value1);
+
+      T visit(@NotNull AsStringListSettingValue1 asStringListSettingValue1);
+
+      T visit(@NotNull AsSettingValue1 asSettingValue1);
     }
   }
 
@@ -868,14 +868,6 @@ public interface TestSetting extends GraphqlFragment {
       return visitor.visitDefault(this);
     }
 
-    interface Visitor<T> {
-      T visitDefault(@NotNull Value2 value2);
-
-      T visit(@NotNull AsStringListSettingValue2 asStringListSettingValue2);
-
-      T visit(@NotNull AsSettingValue2 asSettingValue2);
-    }
-
     final class Mapper implements ResponseFieldMapper<Value2> {
       final AsStringListSettingValue2.Mapper asStringListSettingValue2FieldMapper = new AsStringListSettingValue2.Mapper();
 
@@ -894,6 +886,14 @@ public interface TestSetting extends GraphqlFragment {
         }
         return asSettingValue2FieldMapper.map(reader);
       }
+    }
+
+    interface Visitor<T> {
+      T visitDefault(@NotNull Value2 value2);
+
+      T visit(@NotNull AsStringListSettingValue2 asStringListSettingValue2);
+
+      T visit(@NotNull AsSettingValue2 asSettingValue2);
     }
   }
 

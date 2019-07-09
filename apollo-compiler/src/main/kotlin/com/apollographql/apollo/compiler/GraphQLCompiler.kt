@@ -31,8 +31,9 @@ class GraphQLCompiler {
         useSemanticNaming = args.useSemanticNaming,
         generateModelBuilder = args.generateModelBuilder,
         useJavaBeansSemanticNaming = args.useJavaBeansSemanticNaming,
-        suppressRawTypesWarning = args.suppressRawTypesWarning
-    )
+        suppressRawTypesWarning = args.suppressRawTypesWarning,
+        generateVisitorForPolymorphicDatatypes = args.generateVisitorForPolymorphicDatatypes
+      )
 
     if (irPackageName.isNotEmpty()) {
       File(args.outputDir, irPackageName.replace('.', File.separatorChar)).deleteRecursively()
@@ -126,6 +127,7 @@ class GraphQLCompiler {
       val useJavaBeansSemanticNaming: Boolean,
       val outputPackageName: String?,
       val suppressRawTypesWarning: Boolean,
-      val generateKotlinModels: Boolean = false
+      val generateKotlinModels: Boolean = false,
+      val generateVisitorForPolymorphicDatatypes: Boolean = false
   )
 }

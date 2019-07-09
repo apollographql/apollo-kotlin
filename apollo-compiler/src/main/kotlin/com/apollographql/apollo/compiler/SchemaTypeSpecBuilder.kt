@@ -70,9 +70,11 @@ class SchemaTypeSpecBuilder(
         .addTypes(nestedTypeSpecs.map { it.second })
         .apply {
           if (inlineFragments.isNotEmpty()) {
-            addType(inlineFragmentsVisitorInterfaceSpec(nameOverrideMap, surrogateInlineFragmentType!!))
-            addMethod(inlineFragmentsVisitorMethodSpec(nameOverrideMap, surrogateInlineFragmentType))
-            addType(inlineFragmentsResponseMapperSpec(nameOverrideMap, surrogateInlineFragmentType))
+            addType(inlineFragmentsResponseMapperSpec(nameOverrideMap, surrogateInlineFragmentType!!))
+            if (context.generateVisitorForPolymorphicDatatypes) {
+              addType(inlineFragmentsVisitorInterfaceSpec(nameOverrideMap, surrogateInlineFragmentType))
+              addMethod(inlineFragmentsVisitorMethodSpec(nameOverrideMap, surrogateInlineFragmentType))
+            }
           }
         }
         .build()

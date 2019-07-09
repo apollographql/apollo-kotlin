@@ -186,14 +186,6 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return visitor.visitDefault(this);
     }
 
-    interface Visitor<T> {
-      T visitDefault(@NotNull Hero hero);
-
-      T visit(@NotNull AsHuman asHuman);
-
-      T visit(@NotNull AsCharacter asCharacter);
-    }
-
     final class Mapper implements ResponseFieldMapper<Hero> {
       final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
@@ -212,6 +204,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         }
         return asCharacterFieldMapper.map(reader);
       }
+    }
+
+    interface Visitor<T> {
+      T visitDefault(@NotNull Hero hero);
+
+      T visit(@NotNull AsHuman asHuman);
+
+      T visit(@NotNull AsCharacter asCharacter);
     }
   }
 

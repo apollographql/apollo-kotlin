@@ -71,14 +71,6 @@ public interface HeroDetails extends GraphqlFragment {
     return visitor.visitDefault(this);
   }
 
-  interface Visitor<T> {
-    T visitDefault(@NotNull HeroDetails heroDetails);
-
-    T visit(@NotNull AsDroid asDroid);
-
-    T visit(@NotNull AsCharacter asCharacter);
-  }
-
   final class Mapper implements ResponseFieldMapper<HeroDetails> {
     final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
 
@@ -97,6 +89,14 @@ public interface HeroDetails extends GraphqlFragment {
       }
       return asCharacterFieldMapper.map(reader);
     }
+  }
+
+  interface Visitor<T> {
+    T visitDefault(@NotNull HeroDetails heroDetails);
+
+    T visit(@NotNull AsDroid asDroid);
+
+    T visit(@NotNull AsCharacter asCharacter);
   }
 
   interface FriendsConnection {

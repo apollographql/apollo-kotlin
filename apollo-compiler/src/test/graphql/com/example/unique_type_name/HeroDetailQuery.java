@@ -228,14 +228,6 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
       return visitor.visitDefault(this);
     }
 
-    interface Visitor<T> {
-      T visitDefault(@NotNull HeroDetailQuery1 heroDetailQuery1);
-
-      T visit(@NotNull AsHuman asHuman);
-
-      T visit(@NotNull AsCharacter asCharacter);
-    }
-
     final class Mapper implements ResponseFieldMapper<HeroDetailQuery1> {
       final AsHuman.Mapper asHumanFieldMapper = new AsHuman.Mapper();
 
@@ -254,6 +246,14 @@ public final class HeroDetailQuery implements Query<HeroDetailQuery.Data, Option
         }
         return asCharacterFieldMapper.map(reader);
       }
+    }
+
+    interface Visitor<T> {
+      T visitDefault(@NotNull HeroDetailQuery1 heroDetailQuery1);
+
+      T visit(@NotNull AsHuman asHuman);
+
+      T visit(@NotNull AsCharacter asCharacter);
     }
   }
 

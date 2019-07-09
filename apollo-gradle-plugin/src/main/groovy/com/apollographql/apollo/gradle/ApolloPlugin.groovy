@@ -192,6 +192,7 @@ class ApolloPlugin implements Plugin<Project> {
       outputPackageName = project.apollo.outputPackageName
       suppressRawTypesWarning = project.apollo.suppressRawTypesWarning
       generateKotlinModels = project.apollo.generateKotlinModels
+      generateVisitorForPolymorphicDatatypes = project.apollo.generateVisitorForPolymorphicDatatypes
     }
   }
 

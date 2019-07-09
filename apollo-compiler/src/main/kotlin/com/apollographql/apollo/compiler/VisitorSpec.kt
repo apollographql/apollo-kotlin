@@ -13,24 +13,9 @@ class VisitorInterfaceSpec(
 ) {
 
   fun createVisitorInterface(): TypeSpec {
-    val visitDefaultMethod = MethodSpec.methodBuilder(DEFAULT_VISITOR_METHOD_NAME)
-      .returns(VISITOR_TYPE_VARIABLE)
-      .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-      .addParameter(ParameterSpec.builder(
-        ClassName.get("", schemaType.simpleName()),
-        schemaType.simpleName().decapitalize()
-      ).addAnnotation(Annotations.NONNULL).build())
-      .build()
-
-    val visitMethods = implementations.map { classNames ->
-      MethodSpec.methodBuilder(VISITOR_METHOD_NAME)
-        .returns(VISITOR_TYPE_VARIABLE)
-        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-        .addParameter(ParameterSpec.builder(
-          ClassName.get("", classNames.simpleName()),
-          classNames.simpleName().decapitalize()
-        ).addAnnotation(Annotations.NONNULL).build())
-        .build()
+    val visitDefaultMethod = getVisitMethodSpec(DEFAULT_VISITOR_METHOD_NAME, schemaType)
+    val visitMethods = implementations.map { className ->
+      getVisitMethodSpec(VISITOR_METHOD_NAME, className)
     }
 
     return TypeSpec.interfaceBuilder(VISITOR_CLASSNAME)
@@ -38,6 +23,17 @@ class VisitorInterfaceSpec(
       .addMethod(visitDefaultMethod)
       .addMethods(visitMethods)
       .addTypeVariable(VISITOR_TYPE_VARIABLE)
+      .build()
+  }
+
+  private fun getVisitMethodSpec(methodName: String, className: ClassName): MethodSpec? {
+    return MethodSpec.methodBuilder(methodName)
+      .returns(VISITOR_TYPE_VARIABLE)
+      .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+      .addParameter(ParameterSpec.builder(
+        ClassName.get("", className.simpleName()),
+        className.simpleName().decapitalize()
+      ).addAnnotation(Annotations.NONNULL).build())
       .build()
   }
 }
@@ -61,20 +57,15 @@ class VisitorMethodSpec(private val implementations: List<ClassName>) {
             "if (this instanceof \$T)",
             ClassName.get("", className.simpleName())
           )
-          .addStatement(
-            "return visitor.visit((\$T) this)",
-            ClassName.get("", className.simpleName())
-          )
         else -> visitorConsumer
           .nextControlFlow(
             "else if (this instanceof \$T)",
             ClassName.get("", className.simpleName())
           )
-          .addStatement(
-            "return visitor.visit((\$T) this)",
-            ClassName.get("", className.simpleName())
-          )
-      }
+      }.addStatement(
+          "return visitor.visit((\$T) this)",
+          ClassName.get("", className.simpleName())
+        )
     }
 
     return visitorConsumer
