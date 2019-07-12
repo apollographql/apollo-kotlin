@@ -162,8 +162,8 @@ internal object KotlinCodeGen {
         is FieldType.Scalar.Int -> CodeBlock.of("%L.readInt(%L)", reader, field)
         is FieldType.Scalar.Boolean -> CodeBlock.of("%L.readBoolean(%L)", reader, field)
         is FieldType.Scalar.Float -> CodeBlock.of("%L.readDouble(%L)", reader, field)
-        is FieldType.Scalar.Enum -> CodeBlock.of("%T.safeValueOf(%L.readString(%L))", typeRef.asTypeName(), reader,
-            field)
+        is FieldType.Scalar.Enum -> CodeBlock.of("%L.readString(%L)?.let{ %T.safeValueOf(it) }", reader,
+            field, typeRef.asTypeName())
         is FieldType.Scalar.Custom -> if (field.isNotEmpty()) {
           CodeBlock.of("%L.readCustomType<%T>(%L as %T)", reader, ClassName.bestGuess(mappedType),
               field, ResponseField.CustomTypeField::class)
