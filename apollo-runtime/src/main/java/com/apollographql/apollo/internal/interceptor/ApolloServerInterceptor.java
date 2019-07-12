@@ -129,8 +129,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   Call httpGetCall(Operation operation, CacheHeaders cacheHeaders, RequestHeaders requestHeaders,
       boolean writeQueryDocument, boolean autoPersistQueries) throws IOException {
     Request.Builder requestBuilder = new Request.Builder()
-        .get()
-        .url(httpGetUrl(serverUrl, operation, scalarTypeAdapters, writeQueryDocument, autoPersistQueries));
+        .url(httpGetUrl(serverUrl, operation, scalarTypeAdapters, writeQueryDocument, autoPersistQueries))
+        .get();
     decorateRequest(requestBuilder, operation, cacheHeaders, requestHeaders);
     return httpCallFactory.newCall(requestBuilder.build());
   }
@@ -144,6 +144,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
     Request.Builder requestBuilder = new Request.Builder()
         .url(serverUrl)
+        .header(HEADER_CONTENT_TYPE, CONTENT_TYPE)
         .post(requestBody);
     decorateRequest(requestBuilder, operation, cacheHeaders, requestHeaders);
     return httpCallFactory.newCall(requestBuilder.build());
@@ -153,7 +154,6 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
       RequestHeaders requestHeaders) throws IOException {
     requestBuilder
         .header(HEADER_ACCEPT_TYPE, ACCEPT_TYPE)
-        .header(HEADER_CONTENT_TYPE, CONTENT_TYPE)
         .header(HEADER_APOLLO_OPERATION_ID, operation.operationId())
         .header(HEADER_APOLLO_OPERATION_NAME, operation.name().name())
         .tag(operation.operationId());
