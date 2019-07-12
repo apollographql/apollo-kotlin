@@ -70,6 +70,20 @@
           "inlineFragments": []
         },
         {
+          "responseName": "graphQlEnumNullable",
+          "fieldName": "graphQlEnumNullable",
+          "type": "Episode",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "graphQlEnumNonNullable",
+          "fieldName": "graphQlEnumNonNullable",
+          "type": "Episode!",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
           "responseName": "graphQlListOfStringNullable",
           "fieldName": "graphQlListOfStringNullable",
           "type": "[String]!",
@@ -133,6 +147,20 @@
           "inlineFragments": []
         },
         {
+          "responseName": "graphQlListOfNullableEnum",
+          "fieldName": "graphQlListOfNullableEnum",
+          "type": "[Episode]",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "graphQlListOfNonNullableEnum",
+          "fieldName": "graphQlListOfNonNullableEnum",
+          "type": "[Episode!]",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
           "responseName": "graphQlListOfListOfString",
           "fieldName": "graphQlListOfListOfString",
           "type": "[[String!]!]!",
@@ -166,6 +194,20 @@
           "type": "[[Boolean!]!]!",
           "fragmentSpreads": [],
           "inlineFragments": []
+        },
+        {
+          "responseName": "graphQlListOfListOfNonNullableEnum",
+          "fieldName": "graphQlListOfListOfNonNullableEnum",
+          "type": "[[Episode!]!]!",
+          "fragmentSpreads": [],
+          "inlineFragments": []
+        },
+        {
+          "responseName": "graphQlListOfListOfNullableEnum",
+          "fieldName": "graphQlListOfListOfNullableEnum",
+          "type": "[[Episode]]",
+          "fragmentSpreads": [],
+          "inlineFragments": []
         }
       ],
       "fragmentsReferenced": [],
@@ -175,5 +217,31 @@
     }
   ],
   "fragments": [],
-  "typesUsed": []
+  "typesUsed": [
+    {
+      "kind": "EnumType",
+      "name": "Episode",
+      "description": "The episodes in the Star Wars trilogy (with special symbol $S)",
+      "values": [
+        {
+          "name": "NEWHOPE",
+          "description": "Star Wars Episode IV: A New Hope, released in 1977. (with special symbol $S)",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "EMPIRE",
+          "description": "Star Wars Episode V: The Empire Strikes Back, released in 1980.",
+          "isDeprecated": false,
+          "deprecationReason": null
+        },
+        {
+          "name": "JEDI",
+          "description": "Star Wars Episode VI: Return of the Jedi, released in 1983. (JEDI in lowercase)",
+          "isDeprecated": false,
+          "deprecationReason": null
+        }
+      ]
+    }
+  ]
 }
