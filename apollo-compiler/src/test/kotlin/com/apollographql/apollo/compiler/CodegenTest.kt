@@ -128,6 +128,10 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
               it.name == "custom_scalar_type_warnings" -> true
               else -> false
             }
+            val generateVisitorForPolymorphicDatatypes = when {
+              it.name == "java_beans_semantic_naming" -> false
+              else -> true
+            }
             val args = GraphQLCompiler.Arguments(
                 irFile = File(it, "TestOperation.json"),
                 outputDir = GraphQLCompiler.OUTPUT_DIRECTORY.plus("sources").fold(File("build"), ::File),
@@ -137,7 +141,8 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
                 generateModelBuilder = generateModelBuilder,
                 useJavaBeansSemanticNaming = useJavaBeansSemanticNaming,
                 suppressRawTypesWarning = suppressRawTypesWarning,
-                outputPackageName = null
+                outputPackageName = null,
+                generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes
             )
             arrayOf(it.name, args)
           }

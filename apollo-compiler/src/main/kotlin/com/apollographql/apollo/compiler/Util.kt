@@ -353,7 +353,7 @@ fun TypeSpec.removeNestedTypeSpecs(excludeTypeNames: List<String>): TypeSpec {
 
 fun TypeSpec.flatNestedTypeSpecs(excludeTypeNames: List<String>): List<TypeSpec> =
     typeSpecs
-        .filter { !excludeTypeNames.contains(it.name) }
+        .filterNot { excludeTypeNames.contains(it.name) }
         .flatMap { listOf(it.removeNestedTypeSpecs(excludeTypeNames)) + it.flatNestedTypeSpecs(excludeTypeNames) }
 
 fun TypeSpec.flatten(excludeTypeNames: List<String>): TypeSpec {

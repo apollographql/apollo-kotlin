@@ -1,6 +1,7 @@
 package com.apollographql.apollo.compiler.ir
 
 import com.apollographql.apollo.compiler.*
+import com.apollographql.apollo.compiler.VisitorSpec.VISITOR_CLASSNAME
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
@@ -37,6 +38,7 @@ data class Fragment(
         .addTypeConditionField()
         .build()
         .flatten(excludeTypeNames = listOf(
+            VISITOR_CLASSNAME,
             Util.RESPONSE_FIELD_MAPPER_TYPE_NAME,
             (SchemaTypeSpecBuilder.FRAGMENTS_FIELD.type as ClassName).simpleName(),
             ClassNames.BUILDER.simpleName()

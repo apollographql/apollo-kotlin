@@ -621,6 +621,14 @@ systemProp.apollographql.useGlobalApolloCodegen=true
 
 Note that this requires exactly version `0.19.1` (not older, not newer). You can install this conventionally via `npm install -g apollo-codegen@0.19.1`.
 
+### Visitor generation for polymorphic datatypes
+Apollo Gradle plugin also supports generating visitors for compile-time safe handling of polymorphic datatypes. By default the feature is turned off since it requires source/target compatibility with Java 1.8. To opt into visitor generation:
+```groovy
+apollo {
+  generateVisitorForPolymorphicDatatypes = true
+}
+```
+
 ### Kotlin model generation (experimental)
 By default Apollo Gradle plugin generates Java models but you can configure it to generate Kotlin models instead:
 ```groovy
