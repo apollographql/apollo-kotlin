@@ -16,6 +16,7 @@ import com.apollographql.apollo.api.ResponseWriter;
 import com.apollographql.apollo.api.internal.Optional;
 import com.apollographql.apollo.api.internal.Utils;
 import com.example.scalar_types.type.CustomType;
+import com.example.scalar_types.type.Episode;
 import java.lang.Boolean;
 import java.lang.Double;
 import java.lang.Integer;
@@ -100,6 +101,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forDouble("graphQlFloatNonNullable", "graphQlFloatNonNullable", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forBoolean("graphQlBooleanNullable", "graphQlBooleanNullable", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forBoolean("graphQlBooleanNonNullable", "graphQlBooleanNonNullable", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("graphQlEnumNullable", "graphQlEnumNullable", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("graphQlEnumNonNullable", "graphQlEnumNonNullable", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("graphQlListOfStringNullable", "graphQlListOfStringNullable", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("graphQlListOfStringNonNullable", "graphQlListOfStringNonNullable", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("graphQlListOfIdNullable", "graphQlListOfIdNullable", null, true, Collections.<ResponseField.Condition>emptyList()),
@@ -109,11 +112,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       ResponseField.forList("graphQlListOfFloatNullable", "graphQlListOfFloatNullable", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("graphQlListOfFloatNonNullable", "graphQlListOfFloatNonNullable", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("graphQlListOfBooleanNullable", "graphQlListOfBooleanNullable", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forList("graphQlListOfNullableEnum", "graphQlListOfNullableEnum", null, true, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forList("graphQlListOfNonNullableEnum", "graphQlListOfNonNullableEnum", null, true, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("graphQlListOfListOfString", "graphQlListOfListOfString", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("graphQlListOfListOfId", "graphQlListOfListOfId", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("graphQlListOfListOfInt", "graphQlListOfListOfInt", null, false, Collections.<ResponseField.Condition>emptyList()),
       ResponseField.forList("graphQlListOfListOfFloat", "graphQlListOfListOfFloat", null, false, Collections.<ResponseField.Condition>emptyList()),
-      ResponseField.forList("graphQlListOfListOfBoolean", "graphQlListOfListOfBoolean", null, false, Collections.<ResponseField.Condition>emptyList())
+      ResponseField.forList("graphQlListOfListOfBoolean", "graphQlListOfListOfBoolean", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forList("graphQlListOfListOfNonNullableEnum", "graphQlListOfListOfNonNullableEnum", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forList("graphQlListOfListOfNullableEnum", "graphQlListOfListOfNullableEnum", null, true, Collections.<ResponseField.Condition>emptyList())
     };
 
     final Optional<String> graphQlString;
@@ -134,6 +141,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final boolean graphQlBooleanNonNullable;
 
+    final Optional<Episode> graphQlEnumNullable;
+
+    final @NotNull Episode graphQlEnumNonNullable;
+
     final @NotNull List<String> graphQlListOfStringNullable;
 
     final @NotNull List<String> graphQlListOfStringNonNullable;
@@ -152,6 +163,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     final Optional<List<Boolean>> graphQlListOfBooleanNullable;
 
+    final Optional<List<Episode>> graphQlListOfNullableEnum;
+
+    final Optional<List<Episode>> graphQlListOfNonNullableEnum;
+
     final @NotNull List<List<String>> graphQlListOfListOfString;
 
     final @NotNull List<List<String>> graphQlListOfListOfId;
@@ -161,6 +176,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     final @NotNull List<List<Double>> graphQlListOfListOfFloat;
 
     final @NotNull List<List<Boolean>> graphQlListOfListOfBoolean;
+
+    final @NotNull List<List<Episode>> graphQlListOfListOfNonNullableEnum;
+
+    final Optional<List<List<Episode>>> graphQlListOfListOfNullableEnum;
 
     private transient volatile String $toString;
 
@@ -172,7 +191,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @NotNull String graphQlIdNonNullable, @Nullable Integer graphQlIntNullable,
         int graphQlIntNonNullable, @Nullable Double graphQlFloatNullable,
         double graphQlFloatNonNullable, @Nullable Boolean graphQlBooleanNullable,
-        boolean graphQlBooleanNonNullable, @NotNull List<String> graphQlListOfStringNullable,
+        boolean graphQlBooleanNonNullable, @Nullable Episode graphQlEnumNullable,
+        @NotNull Episode graphQlEnumNonNullable, @NotNull List<String> graphQlListOfStringNullable,
         @NotNull List<String> graphQlListOfStringNonNullable,
         @Nullable List<String> graphQlListOfIdNullable,
         @NotNull List<String> graphQlListOfIdNonNullable,
@@ -181,11 +201,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         @Nullable List<Double> graphQlListOfFloatNullable,
         @NotNull List<Double> graphQlListOfFloatNonNullable,
         @Nullable List<Boolean> graphQlListOfBooleanNullable,
+        @Nullable List<Episode> graphQlListOfNullableEnum,
+        @Nullable List<Episode> graphQlListOfNonNullableEnum,
         @NotNull List<List<String>> graphQlListOfListOfString,
         @NotNull List<List<String>> graphQlListOfListOfId,
         @NotNull List<List<Integer>> graphQlListOfListOfInt,
         @NotNull List<List<Double>> graphQlListOfListOfFloat,
-        @NotNull List<List<Boolean>> graphQlListOfListOfBoolean) {
+        @NotNull List<List<Boolean>> graphQlListOfListOfBoolean,
+        @NotNull List<List<Episode>> graphQlListOfListOfNonNullableEnum,
+        @Nullable List<List<Episode>> graphQlListOfListOfNullableEnum) {
       this.graphQlString = Optional.fromNullable(graphQlString);
       this.graphQlIdNullable = Optional.fromNullable(graphQlIdNullable);
       this.graphQlIdNonNullable = Utils.checkNotNull(graphQlIdNonNullable, "graphQlIdNonNullable == null");
@@ -195,6 +219,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.graphQlFloatNonNullable = graphQlFloatNonNullable;
       this.graphQlBooleanNullable = Optional.fromNullable(graphQlBooleanNullable);
       this.graphQlBooleanNonNullable = graphQlBooleanNonNullable;
+      this.graphQlEnumNullable = Optional.fromNullable(graphQlEnumNullable);
+      this.graphQlEnumNonNullable = Utils.checkNotNull(graphQlEnumNonNullable, "graphQlEnumNonNullable == null");
       this.graphQlListOfStringNullable = Utils.checkNotNull(graphQlListOfStringNullable, "graphQlListOfStringNullable == null");
       this.graphQlListOfStringNonNullable = Utils.checkNotNull(graphQlListOfStringNonNullable, "graphQlListOfStringNonNullable == null");
       this.graphQlListOfIdNullable = Optional.fromNullable(graphQlListOfIdNullable);
@@ -204,11 +230,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       this.graphQlListOfFloatNullable = Optional.fromNullable(graphQlListOfFloatNullable);
       this.graphQlListOfFloatNonNullable = Utils.checkNotNull(graphQlListOfFloatNonNullable, "graphQlListOfFloatNonNullable == null");
       this.graphQlListOfBooleanNullable = Optional.fromNullable(graphQlListOfBooleanNullable);
+      this.graphQlListOfNullableEnum = Optional.fromNullable(graphQlListOfNullableEnum);
+      this.graphQlListOfNonNullableEnum = Optional.fromNullable(graphQlListOfNonNullableEnum);
       this.graphQlListOfListOfString = Utils.checkNotNull(graphQlListOfListOfString, "graphQlListOfListOfString == null");
       this.graphQlListOfListOfId = Utils.checkNotNull(graphQlListOfListOfId, "graphQlListOfListOfId == null");
       this.graphQlListOfListOfInt = Utils.checkNotNull(graphQlListOfListOfInt, "graphQlListOfListOfInt == null");
       this.graphQlListOfListOfFloat = Utils.checkNotNull(graphQlListOfListOfFloat, "graphQlListOfListOfFloat == null");
       this.graphQlListOfListOfBoolean = Utils.checkNotNull(graphQlListOfListOfBoolean, "graphQlListOfListOfBoolean == null");
+      this.graphQlListOfListOfNonNullableEnum = Utils.checkNotNull(graphQlListOfListOfNonNullableEnum, "graphQlListOfListOfNonNullableEnum == null");
+      this.graphQlListOfListOfNullableEnum = Optional.fromNullable(graphQlListOfListOfNullableEnum);
     }
 
     public Optional<String> graphQlString() {
@@ -247,6 +277,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.graphQlBooleanNonNullable;
     }
 
+    public Optional<Episode> graphQlEnumNullable() {
+      return this.graphQlEnumNullable;
+    }
+
+    public @NotNull Episode graphQlEnumNonNullable() {
+      return this.graphQlEnumNonNullable;
+    }
+
     public @NotNull List<String> graphQlListOfStringNullable() {
       return this.graphQlListOfStringNullable;
     }
@@ -283,6 +321,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.graphQlListOfBooleanNullable;
     }
 
+    public Optional<List<Episode>> graphQlListOfNullableEnum() {
+      return this.graphQlListOfNullableEnum;
+    }
+
+    public Optional<List<Episode>> graphQlListOfNonNullableEnum() {
+      return this.graphQlListOfNonNullableEnum;
+    }
+
     public @NotNull List<List<String>> graphQlListOfListOfString() {
       return this.graphQlListOfListOfString;
     }
@@ -303,6 +349,14 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return this.graphQlListOfListOfBoolean;
     }
 
+    public @NotNull List<List<Episode>> graphQlListOfListOfNonNullableEnum() {
+      return this.graphQlListOfListOfNonNullableEnum;
+    }
+
+    public Optional<List<List<Episode>>> graphQlListOfListOfNullableEnum() {
+      return this.graphQlListOfListOfNullableEnum;
+    }
+
     @SuppressWarnings("unchecked")
     public ResponseFieldMarshaller marshaller() {
       return new ResponseFieldMarshaller() {
@@ -317,7 +371,9 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           writer.writeDouble($responseFields[6], graphQlFloatNonNullable);
           writer.writeBoolean($responseFields[7], graphQlBooleanNullable.isPresent() ? graphQlBooleanNullable.get() : null);
           writer.writeBoolean($responseFields[8], graphQlBooleanNonNullable);
-          writer.writeList($responseFields[9], graphQlListOfStringNullable, new ResponseWriter.ListWriter() {
+          writer.writeString($responseFields[9], graphQlEnumNullable.isPresent() ? graphQlEnumNullable.get().rawValue() : null);
+          writer.writeString($responseFields[10], graphQlEnumNonNullable.rawValue());
+          writer.writeList($responseFields[11], graphQlListOfStringNullable, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -325,7 +381,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
               }
             }
           });
-          writer.writeList($responseFields[10], graphQlListOfStringNonNullable, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[12], graphQlListOfStringNonNullable, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -333,7 +389,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
               }
             }
           });
-          writer.writeList($responseFields[11], graphQlListOfIdNullable.isPresent() ? graphQlListOfIdNullable.get() : null, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[13], graphQlListOfIdNullable.isPresent() ? graphQlListOfIdNullable.get() : null, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -341,7 +397,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
               }
             }
           });
-          writer.writeList($responseFields[12], graphQlListOfIdNonNullable, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[14], graphQlListOfIdNonNullable, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -349,7 +405,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
               }
             }
           });
-          writer.writeList($responseFields[13], graphQlListOfIntNullable.isPresent() ? graphQlListOfIntNullable.get() : null, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[15], graphQlListOfIntNullable.isPresent() ? graphQlListOfIntNullable.get() : null, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -357,7 +413,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
               }
             }
           });
-          writer.writeList($responseFields[14], graphQlListOfIntNonNullable, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[16], graphQlListOfIntNonNullable, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -365,7 +421,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
               }
             }
           });
-          writer.writeList($responseFields[15], graphQlListOfFloatNullable.isPresent() ? graphQlListOfFloatNullable.get() : null, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[17], graphQlListOfFloatNullable.isPresent() ? graphQlListOfFloatNullable.get() : null, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -373,7 +429,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
               }
             }
           });
-          writer.writeList($responseFields[16], graphQlListOfFloatNonNullable, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[18], graphQlListOfFloatNonNullable, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -381,7 +437,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
               }
             }
           });
-          writer.writeList($responseFields[17], graphQlListOfBooleanNullable.isPresent() ? graphQlListOfBooleanNullable.get() : null, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[19], graphQlListOfBooleanNullable.isPresent() ? graphQlListOfBooleanNullable.get() : null, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -389,7 +445,23 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
               }
             }
           });
-          writer.writeList($responseFields[18], graphQlListOfListOfString, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[20], graphQlListOfNullableEnum.isPresent() ? graphQlListOfNullableEnum.get() : null, new ResponseWriter.ListWriter() {
+            @Override
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeString(((Episode) item).rawValue());
+              }
+            }
+          });
+          writer.writeList($responseFields[21], graphQlListOfNonNullableEnum.isPresent() ? graphQlListOfNonNullableEnum.get() : null, new ResponseWriter.ListWriter() {
+            @Override
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeString(((Episode) item).rawValue());
+              }
+            }
+          });
+          writer.writeList($responseFields[22], graphQlListOfListOfString, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -404,7 +476,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
               }
             }
           });
-          writer.writeList($responseFields[19], graphQlListOfListOfId, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[23], graphQlListOfListOfId, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -419,7 +491,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
               }
             }
           });
-          writer.writeList($responseFields[20], graphQlListOfListOfInt, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[24], graphQlListOfListOfInt, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -434,7 +506,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
               }
             }
           });
-          writer.writeList($responseFields[21], graphQlListOfListOfFloat, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[25], graphQlListOfListOfFloat, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -449,7 +521,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
               }
             }
           });
-          writer.writeList($responseFields[22], graphQlListOfListOfBoolean, new ResponseWriter.ListWriter() {
+          writer.writeList($responseFields[26], graphQlListOfListOfBoolean, new ResponseWriter.ListWriter() {
             @Override
             public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
               for (Object item : items) {
@@ -458,6 +530,36 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
                   public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
                     for (Object item : items) {
                       listItemWriter.writeBoolean((Boolean) item);
+                    }
+                  }
+                });
+              }
+            }
+          });
+          writer.writeList($responseFields[27], graphQlListOfListOfNonNullableEnum, new ResponseWriter.ListWriter() {
+            @Override
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeList((List) item, new ResponseWriter.ListWriter() {
+                  @Override
+                  public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+                    for (Object item : items) {
+                      listItemWriter.writeString(((Episode) item).rawValue());
+                    }
+                  }
+                });
+              }
+            }
+          });
+          writer.writeList($responseFields[28], graphQlListOfListOfNullableEnum.isPresent() ? graphQlListOfListOfNullableEnum.get() : null, new ResponseWriter.ListWriter() {
+            @Override
+            public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+              for (Object item : items) {
+                listItemWriter.writeList((List) item, new ResponseWriter.ListWriter() {
+                  @Override
+                  public void write(List items, ResponseWriter.ListItemWriter listItemWriter) {
+                    for (Object item : items) {
+                      listItemWriter.writeString(((Episode) item).rawValue());
                     }
                   }
                 });
@@ -481,6 +583,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           + "graphQlFloatNonNullable=" + graphQlFloatNonNullable + ", "
           + "graphQlBooleanNullable=" + graphQlBooleanNullable + ", "
           + "graphQlBooleanNonNullable=" + graphQlBooleanNonNullable + ", "
+          + "graphQlEnumNullable=" + graphQlEnumNullable + ", "
+          + "graphQlEnumNonNullable=" + graphQlEnumNonNullable + ", "
           + "graphQlListOfStringNullable=" + graphQlListOfStringNullable + ", "
           + "graphQlListOfStringNonNullable=" + graphQlListOfStringNonNullable + ", "
           + "graphQlListOfIdNullable=" + graphQlListOfIdNullable + ", "
@@ -490,11 +594,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
           + "graphQlListOfFloatNullable=" + graphQlListOfFloatNullable + ", "
           + "graphQlListOfFloatNonNullable=" + graphQlListOfFloatNonNullable + ", "
           + "graphQlListOfBooleanNullable=" + graphQlListOfBooleanNullable + ", "
+          + "graphQlListOfNullableEnum=" + graphQlListOfNullableEnum + ", "
+          + "graphQlListOfNonNullableEnum=" + graphQlListOfNonNullableEnum + ", "
           + "graphQlListOfListOfString=" + graphQlListOfListOfString + ", "
           + "graphQlListOfListOfId=" + graphQlListOfListOfId + ", "
           + "graphQlListOfListOfInt=" + graphQlListOfListOfInt + ", "
           + "graphQlListOfListOfFloat=" + graphQlListOfListOfFloat + ", "
-          + "graphQlListOfListOfBoolean=" + graphQlListOfListOfBoolean
+          + "graphQlListOfListOfBoolean=" + graphQlListOfListOfBoolean + ", "
+          + "graphQlListOfListOfNonNullableEnum=" + graphQlListOfListOfNonNullableEnum + ", "
+          + "graphQlListOfListOfNullableEnum=" + graphQlListOfListOfNullableEnum
           + "}";
       }
       return $toString;
@@ -516,6 +624,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
          && Double.doubleToLongBits(this.graphQlFloatNonNullable) == Double.doubleToLongBits(that.graphQlFloatNonNullable)
          && this.graphQlBooleanNullable.equals(that.graphQlBooleanNullable)
          && this.graphQlBooleanNonNullable == that.graphQlBooleanNonNullable
+         && this.graphQlEnumNullable.equals(that.graphQlEnumNullable)
+         && this.graphQlEnumNonNullable.equals(that.graphQlEnumNonNullable)
          && this.graphQlListOfStringNullable.equals(that.graphQlListOfStringNullable)
          && this.graphQlListOfStringNonNullable.equals(that.graphQlListOfStringNonNullable)
          && this.graphQlListOfIdNullable.equals(that.graphQlListOfIdNullable)
@@ -525,11 +635,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
          && this.graphQlListOfFloatNullable.equals(that.graphQlListOfFloatNullable)
          && this.graphQlListOfFloatNonNullable.equals(that.graphQlListOfFloatNonNullable)
          && this.graphQlListOfBooleanNullable.equals(that.graphQlListOfBooleanNullable)
+         && this.graphQlListOfNullableEnum.equals(that.graphQlListOfNullableEnum)
+         && this.graphQlListOfNonNullableEnum.equals(that.graphQlListOfNonNullableEnum)
          && this.graphQlListOfListOfString.equals(that.graphQlListOfListOfString)
          && this.graphQlListOfListOfId.equals(that.graphQlListOfListOfId)
          && this.graphQlListOfListOfInt.equals(that.graphQlListOfListOfInt)
          && this.graphQlListOfListOfFloat.equals(that.graphQlListOfListOfFloat)
-         && this.graphQlListOfListOfBoolean.equals(that.graphQlListOfListOfBoolean);
+         && this.graphQlListOfListOfBoolean.equals(that.graphQlListOfListOfBoolean)
+         && this.graphQlListOfListOfNonNullableEnum.equals(that.graphQlListOfListOfNonNullableEnum)
+         && this.graphQlListOfListOfNullableEnum.equals(that.graphQlListOfListOfNullableEnum);
       }
       return false;
     }
@@ -557,6 +671,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         h *= 1000003;
         h ^= Boolean.valueOf(graphQlBooleanNonNullable).hashCode();
         h *= 1000003;
+        h ^= graphQlEnumNullable.hashCode();
+        h *= 1000003;
+        h ^= graphQlEnumNonNullable.hashCode();
+        h *= 1000003;
         h ^= graphQlListOfStringNullable.hashCode();
         h *= 1000003;
         h ^= graphQlListOfStringNonNullable.hashCode();
@@ -575,6 +693,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         h *= 1000003;
         h ^= graphQlListOfBooleanNullable.hashCode();
         h *= 1000003;
+        h ^= graphQlListOfNullableEnum.hashCode();
+        h *= 1000003;
+        h ^= graphQlListOfNonNullableEnum.hashCode();
+        h *= 1000003;
         h ^= graphQlListOfListOfString.hashCode();
         h *= 1000003;
         h ^= graphQlListOfListOfId.hashCode();
@@ -584,6 +706,10 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         h ^= graphQlListOfListOfFloat.hashCode();
         h *= 1000003;
         h ^= graphQlListOfListOfBoolean.hashCode();
+        h *= 1000003;
+        h ^= graphQlListOfListOfNonNullableEnum.hashCode();
+        h *= 1000003;
+        h ^= graphQlListOfListOfNullableEnum.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -602,61 +728,87 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         final double graphQlFloatNonNullable = reader.readDouble($responseFields[6]);
         final Boolean graphQlBooleanNullable = reader.readBoolean($responseFields[7]);
         final boolean graphQlBooleanNonNullable = reader.readBoolean($responseFields[8]);
-        final List<String> graphQlListOfStringNullable = reader.readList($responseFields[9], new ResponseReader.ListReader<String>() {
+        final String graphQlEnumNullableStr = reader.readString($responseFields[9]);
+        final Episode graphQlEnumNullable;
+        if (graphQlEnumNullableStr != null) {
+          graphQlEnumNullable = Episode.safeValueOf(graphQlEnumNullableStr);
+        } else {
+          graphQlEnumNullable = null;
+        }
+        final String graphQlEnumNonNullableStr = reader.readString($responseFields[10]);
+        final Episode graphQlEnumNonNullable;
+        if (graphQlEnumNonNullableStr != null) {
+          graphQlEnumNonNullable = Episode.safeValueOf(graphQlEnumNonNullableStr);
+        } else {
+          graphQlEnumNonNullable = null;
+        }
+        final List<String> graphQlListOfStringNullable = reader.readList($responseFields[11], new ResponseReader.ListReader<String>() {
           @Override
           public String read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readString();
           }
         });
-        final List<String> graphQlListOfStringNonNullable = reader.readList($responseFields[10], new ResponseReader.ListReader<String>() {
+        final List<String> graphQlListOfStringNonNullable = reader.readList($responseFields[12], new ResponseReader.ListReader<String>() {
           @Override
           public String read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readString();
           }
         });
-        final List<String> graphQlListOfIdNullable = reader.readList($responseFields[11], new ResponseReader.ListReader<String>() {
+        final List<String> graphQlListOfIdNullable = reader.readList($responseFields[13], new ResponseReader.ListReader<String>() {
           @Override
           public String read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readCustomType(CustomType.ID);
           }
         });
-        final List<String> graphQlListOfIdNonNullable = reader.readList($responseFields[12], new ResponseReader.ListReader<String>() {
+        final List<String> graphQlListOfIdNonNullable = reader.readList($responseFields[14], new ResponseReader.ListReader<String>() {
           @Override
           public String read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readCustomType(CustomType.ID);
           }
         });
-        final List<Integer> graphQlListOfIntNullable = reader.readList($responseFields[13], new ResponseReader.ListReader<Integer>() {
+        final List<Integer> graphQlListOfIntNullable = reader.readList($responseFields[15], new ResponseReader.ListReader<Integer>() {
           @Override
           public Integer read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readInt();
           }
         });
-        final List<Integer> graphQlListOfIntNonNullable = reader.readList($responseFields[14], new ResponseReader.ListReader<Integer>() {
+        final List<Integer> graphQlListOfIntNonNullable = reader.readList($responseFields[16], new ResponseReader.ListReader<Integer>() {
           @Override
           public Integer read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readInt();
           }
         });
-        final List<Double> graphQlListOfFloatNullable = reader.readList($responseFields[15], new ResponseReader.ListReader<Double>() {
+        final List<Double> graphQlListOfFloatNullable = reader.readList($responseFields[17], new ResponseReader.ListReader<Double>() {
           @Override
           public Double read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readDouble();
           }
         });
-        final List<Double> graphQlListOfFloatNonNullable = reader.readList($responseFields[16], new ResponseReader.ListReader<Double>() {
+        final List<Double> graphQlListOfFloatNonNullable = reader.readList($responseFields[18], new ResponseReader.ListReader<Double>() {
           @Override
           public Double read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readDouble();
           }
         });
-        final List<Boolean> graphQlListOfBooleanNullable = reader.readList($responseFields[17], new ResponseReader.ListReader<Boolean>() {
+        final List<Boolean> graphQlListOfBooleanNullable = reader.readList($responseFields[19], new ResponseReader.ListReader<Boolean>() {
           @Override
           public Boolean read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readBoolean();
           }
         });
-        final List<List<String>> graphQlListOfListOfString = reader.readList($responseFields[18], new ResponseReader.ListReader<List<String>>() {
+        final List<Episode> graphQlListOfNullableEnum = reader.readList($responseFields[20], new ResponseReader.ListReader<Episode>() {
+          @Override
+          public Episode read(ResponseReader.ListItemReader listItemReader) {
+            return Episode.safeValueOf(listItemReader.readString());
+          }
+        });
+        final List<Episode> graphQlListOfNonNullableEnum = reader.readList($responseFields[21], new ResponseReader.ListReader<Episode>() {
+          @Override
+          public Episode read(ResponseReader.ListItemReader listItemReader) {
+            return Episode.safeValueOf(listItemReader.readString());
+          }
+        });
+        final List<List<String>> graphQlListOfListOfString = reader.readList($responseFields[22], new ResponseReader.ListReader<List<String>>() {
           @Override
           public List<String> read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readList(new ResponseReader.ListReader<String>() {
@@ -667,7 +819,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             });
           }
         });
-        final List<List<String>> graphQlListOfListOfId = reader.readList($responseFields[19], new ResponseReader.ListReader<List<String>>() {
+        final List<List<String>> graphQlListOfListOfId = reader.readList($responseFields[23], new ResponseReader.ListReader<List<String>>() {
           @Override
           public List<String> read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readList(new ResponseReader.ListReader<String>() {
@@ -678,7 +830,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             });
           }
         });
-        final List<List<Integer>> graphQlListOfListOfInt = reader.readList($responseFields[20], new ResponseReader.ListReader<List<Integer>>() {
+        final List<List<Integer>> graphQlListOfListOfInt = reader.readList($responseFields[24], new ResponseReader.ListReader<List<Integer>>() {
           @Override
           public List<Integer> read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readList(new ResponseReader.ListReader<Integer>() {
@@ -689,7 +841,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             });
           }
         });
-        final List<List<Double>> graphQlListOfListOfFloat = reader.readList($responseFields[21], new ResponseReader.ListReader<List<Double>>() {
+        final List<List<Double>> graphQlListOfListOfFloat = reader.readList($responseFields[25], new ResponseReader.ListReader<List<Double>>() {
           @Override
           public List<Double> read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readList(new ResponseReader.ListReader<Double>() {
@@ -700,7 +852,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             });
           }
         });
-        final List<List<Boolean>> graphQlListOfListOfBoolean = reader.readList($responseFields[22], new ResponseReader.ListReader<List<Boolean>>() {
+        final List<List<Boolean>> graphQlListOfListOfBoolean = reader.readList($responseFields[26], new ResponseReader.ListReader<List<Boolean>>() {
           @Override
           public List<Boolean> read(ResponseReader.ListItemReader listItemReader) {
             return listItemReader.readList(new ResponseReader.ListReader<Boolean>() {
@@ -711,7 +863,29 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
             });
           }
         });
-        return new Data(graphQlString, graphQlIdNullable, graphQlIdNonNullable, graphQlIntNullable, graphQlIntNonNullable, graphQlFloatNullable, graphQlFloatNonNullable, graphQlBooleanNullable, graphQlBooleanNonNullable, graphQlListOfStringNullable, graphQlListOfStringNonNullable, graphQlListOfIdNullable, graphQlListOfIdNonNullable, graphQlListOfIntNullable, graphQlListOfIntNonNullable, graphQlListOfFloatNullable, graphQlListOfFloatNonNullable, graphQlListOfBooleanNullable, graphQlListOfListOfString, graphQlListOfListOfId, graphQlListOfListOfInt, graphQlListOfListOfFloat, graphQlListOfListOfBoolean);
+        final List<List<Episode>> graphQlListOfListOfNonNullableEnum = reader.readList($responseFields[27], new ResponseReader.ListReader<List<Episode>>() {
+          @Override
+          public List<Episode> read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readList(new ResponseReader.ListReader<Episode>() {
+              @Override
+              public Episode read(ResponseReader.ListItemReader listItemReader) {
+                return Episode.safeValueOf(listItemReader.readString());
+              }
+            });
+          }
+        });
+        final List<List<Episode>> graphQlListOfListOfNullableEnum = reader.readList($responseFields[28], new ResponseReader.ListReader<List<Episode>>() {
+          @Override
+          public List<Episode> read(ResponseReader.ListItemReader listItemReader) {
+            return listItemReader.readList(new ResponseReader.ListReader<Episode>() {
+              @Override
+              public Episode read(ResponseReader.ListItemReader listItemReader) {
+                return Episode.safeValueOf(listItemReader.readString());
+              }
+            });
+          }
+        });
+        return new Data(graphQlString, graphQlIdNullable, graphQlIdNonNullable, graphQlIntNullable, graphQlIntNonNullable, graphQlFloatNullable, graphQlFloatNonNullable, graphQlBooleanNullable, graphQlBooleanNonNullable, graphQlEnumNullable, graphQlEnumNonNullable, graphQlListOfStringNullable, graphQlListOfStringNonNullable, graphQlListOfIdNullable, graphQlListOfIdNonNullable, graphQlListOfIntNullable, graphQlListOfIntNonNullable, graphQlListOfFloatNullable, graphQlListOfFloatNonNullable, graphQlListOfBooleanNullable, graphQlListOfNullableEnum, graphQlListOfNonNullableEnum, graphQlListOfListOfString, graphQlListOfListOfId, graphQlListOfListOfInt, graphQlListOfListOfFloat, graphQlListOfListOfBoolean, graphQlListOfListOfNonNullableEnum, graphQlListOfListOfNullableEnum);
       }
     }
   }
