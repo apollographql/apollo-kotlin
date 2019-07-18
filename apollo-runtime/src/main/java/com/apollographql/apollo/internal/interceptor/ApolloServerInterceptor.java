@@ -1,10 +1,6 @@
 package com.apollographql.apollo.internal.interceptor;
 
-import com.apollographql.apollo.api.FileUpload;
-import com.apollographql.apollo.api.Input;
-import com.apollographql.apollo.api.InputType;
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.Query;
+import com.apollographql.apollo.api.*;
 import com.apollographql.apollo.api.cache.http.HttpCache;
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.api.internal.Optional;
@@ -18,6 +14,12 @@ import com.apollographql.apollo.internal.json.InputFieldJsonWriter;
 import com.apollographql.apollo.internal.json.JsonWriter;
 import com.apollographql.apollo.request.RequestHeaders;
 import com.apollographql.apollo.response.ScalarTypeAdapters;
+import okhttp3.*;
+import okhttp3.Response;
+import okio.Buffer;
+import okio.ByteString;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,20 +27,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Executor;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okio.Buffer;
-import okio.ByteString;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
@@ -48,7 +36,8 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
  * {@link ApolloInterceptorChain#proceedAsync(InterceptorRequest, Executor, CallBack)}
  * on the interceptor chain.
  */
-@SuppressWarnings("WeakerAccess") public final class ApolloServerInterceptor implements ApolloInterceptor {
+@SuppressWarnings("WeakerAccess")
+public final class ApolloServerInterceptor implements ApolloInterceptor {
   static final String HEADER_ACCEPT_TYPE = "Accept";
   static final String HEADER_CONTENT_TYPE = "Content-Type";
   static final String HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID";
@@ -63,7 +52,7 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   final boolean prefetch;
   final ApolloLogger logger;
   final ScalarTypeAdapters scalarTypeAdapters;
-  volatile Call httpCall;
+  Call httpCall;
   volatile boolean disposed;
 
   public ApolloServerInterceptor(@NotNull HttpUrl serverUrl, @NotNull Call.Factory httpCallFactory,
@@ -80,50 +69,53 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
   @Override
   public void interceptAsync(@NotNull final InterceptorRequest request, @NotNull final ApolloInterceptorChain chain,
       @NotNull Executor dispatcher, @NotNull final CallBack callBack) {
-    if (disposed) return;
     dispatcher.execute(new Runnable() {
       @Override public void run() {
-        callBack.onFetch(FetchSourceType.NETWORK);
-
-        try {
-          if (request.useHttpGetMethodForQueries && request.operation instanceof Query) {
-            httpCall = httpGetCall(request.operation, request.cacheHeaders, request.requestHeaders,
-                request.sendQueryDocument, request.autoPersistQueries);
-          } else {
-            httpCall = httpPostCall(request.operation, request.cacheHeaders, request.requestHeaders,
-                request.sendQueryDocument, request.autoPersistQueries);
-          }
-
-        } catch (IOException e) {
-          logger.e(e, "Failed to prepare http call for operation %s", request.operation.name().name());
-          callBack.onFailure(new ApolloNetworkException("Failed to prepare http call", e));
-          return;
-        }
-
-        httpCall.enqueue(new Callback() {
-          @Override public void onFailure(@NotNull Call call, @NotNull IOException e) {
-            if (disposed) return;
-            logger.e(e, "Failed to execute http call for operation %s", request.operation.name().name());
-            callBack.onFailure(new ApolloNetworkException("Failed to execute http call", e));
-          }
-
-          @Override public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-            if (disposed) return;
-            callBack.onResponse(new ApolloInterceptor.InterceptorResponse(response));
-            callBack.onCompleted();
-          }
-        });
+        executeHttpCall(request, callBack);
       }
     });
   }
 
-  @Override public void dispose() {
+  @Override public synchronized void dispose() {
     disposed = true;
-    Call httpCall = this.httpCall;
     if (httpCall != null) {
       httpCall.cancel();
+      httpCall = null;
     }
-    this.httpCall = null;
+  }
+
+  synchronized void executeHttpCall(@NotNull final InterceptorRequest request, @NotNull final CallBack callBack) {
+    if (disposed) return;
+
+    callBack.onFetch(FetchSourceType.NETWORK);
+
+    try {
+      if (request.useHttpGetMethodForQueries && request.operation instanceof Query) {
+        httpCall = httpGetCall(request.operation, request.cacheHeaders, request.requestHeaders,
+            request.sendQueryDocument, request.autoPersistQueries);
+      } else {
+        httpCall = httpPostCall(request.operation, request.cacheHeaders, request.requestHeaders,
+            request.sendQueryDocument, request.autoPersistQueries);
+      }
+    } catch (IOException e) {
+      logger.e(e, "Failed to prepare http call for operation %s", request.operation.name().name());
+      callBack.onFailure(new ApolloNetworkException("Failed to prepare http call", e));
+      return;
+    }
+
+    httpCall.enqueue(new Callback() {
+      @Override public void onFailure(@NotNull Call call, @NotNull IOException e) {
+        if (disposed) return;
+        logger.e(e, "Failed to execute http call for operation %s", request.operation.name().name());
+        callBack.onFailure(new ApolloNetworkException("Failed to execute http call", e));
+      }
+
+      @Override public void onResponse(@NotNull Call call, @NotNull Response response) {
+        if (disposed) return;
+        callBack.onResponse(new ApolloInterceptor.InterceptorResponse(response));
+        callBack.onCompleted();
+      }
+    });
   }
 
   Call httpGetCall(Operation operation, CacheHeaders cacheHeaders, RequestHeaders requestHeaders,
