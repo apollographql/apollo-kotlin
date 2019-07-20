@@ -220,7 +220,15 @@ class ApolloPlugin implements Plugin<Project> {
         System.properties['apollographql.useGlobalApolloCodegen'].toBoolean()
   }
 
+  private static boolean noVerifyApolloCodegenEnabled() {
+    return (System.properties['apollographql.useGlobalApolloCodegen.noVerify'] != null) &&
+        System.properties['apollographql.useGlobalApolloCodegen.noVerify'].toBoolean()
+  }
+
   private static boolean verifySystemApolloCodegenVersion() {
+    if (noVerifyApolloCodegenEnabled()) {
+      return
+    }
     println("Verifying system 'apollo-codegen' version (executing command 'apollo-codegen --version') ...")
     try {
       StringBuilder output = new StringBuilder()
