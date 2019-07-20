@@ -13,6 +13,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.internal.AbstractTask
 import org.gradle.api.internal.file.FileResolver
+import org.gradle.api.logging.Logger
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.compile.AbstractCompile
 import org.gradle.api.tasks.compile.JavaCompile
@@ -48,7 +49,7 @@ class ApolloPlugin implements Plugin<Project> {
   }
 
   private void applyApolloPlugin() {
-    if (isUseGlobalApolloCodegenEnabled() && verifySystemApolloCodegenVersion()) {
+    if (isUseGlobalApolloCodegenEnabled() && verifySystemApolloCodegenVersion(project.logger)) {
       useGlobalApolloCodegen = true
     } else {
       setupNode()
@@ -220,8 +221,8 @@ class ApolloPlugin implements Plugin<Project> {
         System.properties['apollographql.useGlobalApolloCodegen'].toBoolean()
   }
 
-  private static boolean verifySystemApolloCodegenVersion() {
-    println("Verifying system 'apollo-codegen' version (executing command 'apollo-codegen --version') ...")
+  private static boolean verifySystemApolloCodegenVersion(Logger logger) {
+    logger.info("Verifying system 'apollo-codegen' version (executing command 'apollo-codegen --version') ...")
     try {
       StringBuilder output = new StringBuilder()
       Process checkGlobalApolloCodegen = "apollo-codegen --version".execute()
@@ -229,17 +230,17 @@ class ApolloPlugin implements Plugin<Project> {
       checkGlobalApolloCodegen.waitForOrKill(5000)
 
       if (output.toString().trim() == GraphQLCompiler.APOLLOCODEGEN_VERSION) {
-        println("Found required 'apollo-codegen@" + GraphQLCompiler.APOLLOCODEGEN_VERSION + "' version.")
-        println("Skip apollo-codegen installation.")
+        logger.info("Found required 'apollo-codegen@" + GraphQLCompiler.APOLLOCODEGEN_VERSION + "' version.")
+        logger.info("Skip apollo-codegen installation.")
         return true
       } else {
-        println("Required 'apollo-codegen@" + GraphQLCompiler.APOLLOCODEGEN_VERSION + "' version not found.")
-        println("Installing apollo-codegen ... ")
+        logger.warn("Required 'apollo-codegen@" + GraphQLCompiler.APOLLOCODEGEN_VERSION + "' version not found.")
+        logger.warn("Installing apollo-codegen ... ")
         return false
       }
     } catch (Exception e) {
-      println("Failed to verify system 'apollo-codegen' version: " + e)
-      println("Installing apollo-codegen ... ")
+      logger.warn("Failed to verify system 'apollo-codegen' version: " + e)
+      logger.warn("Installing apollo-codegen ... ")
       return false
     }
   }
