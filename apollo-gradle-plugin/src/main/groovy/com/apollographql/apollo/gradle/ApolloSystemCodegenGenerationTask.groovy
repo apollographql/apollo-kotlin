@@ -1,12 +1,14 @@
 package com.apollographql.apollo.gradle
 
-
+import org.gradle.api.GradleException
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.AbstractExecTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
+
+import static com.apollographql.apollo.compiler.GraphQLCompiler.APOLLOCODEGEN_VERSION
 
 class ApolloSystemCodegenGenerationTask extends AbstractExecTask<ApolloSystemCodegenGenerationTask> {
   @Input final Property<String> variant = project.objects.property(String.class)
@@ -17,6 +19,9 @@ class ApolloSystemCodegenGenerationTask extends AbstractExecTask<ApolloSystemCod
 
   ApolloSystemCodegenGenerationTask() {
     super(ApolloSystemCodegenGenerationTask.class)
+    doFirst {
+      verifySystemApolloCodegenVersion()
+    }
   }
 
   @Override
@@ -30,6 +35,26 @@ class ApolloSystemCodegenGenerationTask extends AbstractExecTask<ApolloSystemCod
     for (CodegenGenerationTaskCommandArgsBuilder.CommandArgs commandArgs : args) {
       setArgs(commandArgs.taskArguments)
       super.exec()
+    }
+  }
+
+  private static verifySystemApolloCodegenVersion() {
+    println("Verifying system 'apollo-codegen' version (executing command 'apollo-codegen --version') ...")
+    try {
+      StringBuilder output = new StringBuilder()
+      Process checkGlobalApolloCodegen = "apollo-codegen --version".execute()
+      checkGlobalApolloCodegen.consumeProcessOutput(output, null)
+      checkGlobalApolloCodegen.waitForOrKill(5000)
+
+      def version = output.toString().trim()
+      if (version == APOLLOCODEGEN_VERSION) {
+        println("Found required 'apollo-codegen@$APOLLOCODEGEN_VERSION' version.")
+        println("Skip apollo-codegen installation.")
+      } else {
+        throw new GradleException("Required 'apollo-codegen@$APOLLOCODEGEN_VERSION' version but found: $version. Consider disabling `apollographql.useGlobalApolloCodegen` property.")
+      }
+    } catch (Exception exception) {
+      throw new GradleException("Failed to verify system 'apollo-codegen' version. Consider disabling `apollographql.useGlobalApolloCodegen` property.", exception)
     }
   }
 }
