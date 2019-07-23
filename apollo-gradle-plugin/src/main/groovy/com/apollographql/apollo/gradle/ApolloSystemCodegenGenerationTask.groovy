@@ -20,13 +20,11 @@ class ApolloSystemCodegenGenerationTask extends AbstractExecTask<ApolloSystemCod
 
   ApolloSystemCodegenGenerationTask() {
     super(ApolloSystemCodegenGenerationTask.class)
-    doFirst {
-      verifySystemApolloCodegenVersion(logger)
-    }
   }
 
   @Override
   void exec() {
+    verifySystemApolloCodegenVersion(logger)
     setCommandLine("apollo-codegen")
 
     List<CodegenGenerationTaskCommandArgsBuilder.CommandArgs> args = new CodegenGenerationTaskCommandArgsBuilder(
@@ -52,10 +50,10 @@ class ApolloSystemCodegenGenerationTask extends AbstractExecTask<ApolloSystemCod
         logger.info("Found required 'apollo-codegen@$APOLLOCODEGEN_VERSION' version.")
         logger.info("Skip apollo-codegen installation.")
       } else {
-        throw new GradleException("Required 'apollo-codegen@$APOLLOCODEGEN_VERSION' version but found: $version. Consider disabling `apollographql.useGlobalApolloCodegen` property.")
+        throw new GradleException("Required 'apollo-codegen@$APOLLOCODEGEN_VERSION' version but found: $version. Consider disabling `apollographql.useGlobalApolloCodegen` in gradle.properties file.")
       }
     } catch (Exception exception) {
-      throw new GradleException("Failed to verify system 'apollo-codegen' version. Consider disabling `apollographql.useGlobalApolloCodegen` property.", exception)
+      throw new GradleException("Failed to verify system 'apollo-codegen' version. Consider disabling `apollographql.useGlobalApolloCodegen` in gradle.properties file.", exception)
     }
   }
 }
