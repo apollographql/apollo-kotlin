@@ -1,6 +1,5 @@
 package com.apollographql.apollo.gradle
 
-
 import com.android.build.gradle.api.BaseVariant
 import com.apollographql.apollo.compiler.GraphQLCompiler
 import com.google.common.base.Joiner
@@ -73,20 +72,20 @@ class ApolloPlugin implements Plugin<Project> {
     apolloClassGenTask.group = TASK_GROUP
 
     if (isAndroidProject()) {
-      getVariants().all { v ->
-        addVariantTasks(v, apolloIRGenTask, apolloClassGenTask, v.sourceSets)
+      getVariants().all { BaseVariant variant ->
+        addVariantTasks(variant, apolloIRGenTask, apolloClassGenTask, variant.sourceSets)
       }
-      project.android.testVariants.each { tv ->
+      project.android.testVariants.each { BaseVariant tv ->
         addVariantTasks(tv, apolloIRGenTask, apolloClassGenTask, tv.sourceSets)
       }
     } else {
-      getSourceSets().all { sourceSet ->
+      getSourceSets().all { SourceSet sourceSet ->
         addSourceSetTasks(sourceSet, apolloIRGenTask, apolloClassGenTask)
       }
     }
   }
 
-  private void addVariantTasks(BaseVariant variant, Task apolloIRGenTask, Task apolloClassGenTask, Collection<?> sourceSets) {
+  private void addVariantTasks(BaseVariant variant, Task apolloIRGenTask, Task apolloClassGenTask, Collection sourceSets) {
     AbstractTask variantIRTask = createApolloIRGenTask(variant.name, sourceSets)
     ApolloClassGenerationTask variantClassTask = createApolloClassGenTask(variant.name)
     variant.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir.asFile.get())
@@ -132,7 +131,7 @@ class ApolloPlugin implements Plugin<Project> {
     nodeConfig.version = NODE_VERSION
   }
 
-  private AbstractTask createApolloIRGenTask(String sourceSetOrVariantName, Collection<Object> sourceSets) {
+  private AbstractTask createApolloIRGenTask(String sourceSetOrVariantName, Collection sourceSets) {
     ImmutableList.Builder<String> sourceSetNamesList = ImmutableList.builder()
     sourceSets.each { sourceSet ->
       sourceSetNamesList.add(sourceSet.name)
