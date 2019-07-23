@@ -2,6 +2,7 @@ package com.apollographql.apollo.gradle
 
 import org.gradle.api.GradleException
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.logging.Logger
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.AbstractExecTask
 import org.gradle.api.tasks.Input
@@ -20,7 +21,7 @@ class ApolloSystemCodegenGenerationTask extends AbstractExecTask<ApolloSystemCod
   ApolloSystemCodegenGenerationTask() {
     super(ApolloSystemCodegenGenerationTask.class)
     doFirst {
-      verifySystemApolloCodegenVersion()
+      verifySystemApolloCodegenVersion(logger)
     }
   }
 
@@ -38,8 +39,8 @@ class ApolloSystemCodegenGenerationTask extends AbstractExecTask<ApolloSystemCod
     }
   }
 
-  private static verifySystemApolloCodegenVersion() {
-    println("Verifying system 'apollo-codegen' version (executing command 'apollo-codegen --version') ...")
+  private static verifySystemApolloCodegenVersion(Logger logger) {
+    logger.info("Verifying system 'apollo-codegen' version (executing command 'apollo-codegen --version') ...")
     try {
       StringBuilder output = new StringBuilder()
       Process checkGlobalApolloCodegen = "apollo-codegen --version".execute()
@@ -48,8 +49,8 @@ class ApolloSystemCodegenGenerationTask extends AbstractExecTask<ApolloSystemCod
 
       def version = output.toString().trim()
       if (version == APOLLOCODEGEN_VERSION) {
-        println("Found required 'apollo-codegen@$APOLLOCODEGEN_VERSION' version.")
-        println("Skip apollo-codegen installation.")
+        logger.info("Found required 'apollo-codegen@$APOLLOCODEGEN_VERSION' version.")
+        logger.info("Skip apollo-codegen installation.")
       } else {
         throw new GradleException("Required 'apollo-codegen@$APOLLOCODEGEN_VERSION' version but found: $version. Consider disabling `apollographql.useGlobalApolloCodegen` property.")
       }
