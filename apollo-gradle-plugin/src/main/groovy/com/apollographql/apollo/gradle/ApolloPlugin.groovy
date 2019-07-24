@@ -25,7 +25,7 @@ class ApolloPlugin implements Plugin<Project> {
 
   private Project project
   private final FileResolver fileResolver
-  private boolean useGlobalApolloCodegen
+  private boolean useGlobalApolloCodegen = System.properties['apollographql.useGlobalApolloCodegen']?.toBoolean()
 
   @Inject
   ApolloPlugin(FileResolver fileResolver) {
@@ -47,9 +47,7 @@ class ApolloPlugin implements Plugin<Project> {
   }
 
   private void applyApolloPlugin() {
-    if (isUseGlobalApolloCodegenEnabled() && verifySystemApolloCodegenVersion()) {
-      useGlobalApolloCodegen = true
-    } else {
+    if (!useGlobalApolloCodegen) {
       setupNode()
     }
 
@@ -212,34 +210,5 @@ class ApolloPlugin implements Plugin<Project> {
   private DomainObjectCollection<BaseVariant> getVariants() {
     return project.android.hasProperty(
         'libraryVariants') ? project.android.libraryVariants : project.android.applicationVariants
-  }
-
-  private static boolean isUseGlobalApolloCodegenEnabled() {
-    return (System.properties['apollographql.useGlobalApolloCodegen'] != null) &&
-        System.properties['apollographql.useGlobalApolloCodegen'].toBoolean()
-  }
-
-  private static boolean verifySystemApolloCodegenVersion() {
-    println("Verifying system 'apollo-codegen' version (executing command 'apollo-codegen --version') ...")
-    try {
-      StringBuilder output = new StringBuilder()
-      Process checkGlobalApolloCodegen = "apollo-codegen --version".execute()
-      checkGlobalApolloCodegen.consumeProcessOutput(output, null)
-      checkGlobalApolloCodegen.waitForOrKill(5000)
-
-      if (output.toString().trim() == GraphQLCompiler.APOLLOCODEGEN_VERSION) {
-        println("Found required 'apollo-codegen@" + GraphQLCompiler.APOLLOCODEGEN_VERSION + "' version.")
-        println("Skip apollo-codegen installation.")
-        return true
-      } else {
-        println("Required 'apollo-codegen@" + GraphQLCompiler.APOLLOCODEGEN_VERSION + "' version not found.")
-        println("Installing apollo-codegen ... ")
-        return false
-      }
-    } catch (Exception e) {
-      println("Failed to verify system 'apollo-codegen' version: " + e)
-      println("Installing apollo-codegen ... ")
-      return false
-    }
   }
 }
