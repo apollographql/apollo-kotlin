@@ -1,0 +1,6 @@
+rootProject.name = 'apollo-samples'
+
+include 'apollo-sample'
+include 'apollo-kotlin-sample'
+
+includeBuild('../')

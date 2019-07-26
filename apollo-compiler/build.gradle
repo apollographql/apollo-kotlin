@@ -1,8 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'kotlin'
 
-targetCompatibility = JavaVersion.VERSION_1_6
-sourceCompatibility = JavaVersion.VERSION_1_6
+targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_7
 
 sourceSets {
   main {

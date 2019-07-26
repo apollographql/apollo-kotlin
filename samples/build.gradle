@@ -1,0 +1,21 @@
+buildscript {
+  apply from: rootProject.file("../gradle/dependencies.gradle")
+
+  repositories {
+    gradlePluginPortal()
+    google()
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath dep.androidPlugin
+    classpath "com.apollographql.apollo:apollo-gradle-plugin"
+  }
+}
+
+subprojects {
+  repositories {
+    google()
+    mavenCentral()
+  }
+}
