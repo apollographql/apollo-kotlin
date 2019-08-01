@@ -7,11 +7,11 @@ sourceSets.main.groovy.srcDirs = ["src/main/java", "src/main/groovy"]
 
 dependencies {
   compileOnly gradleApi()
+  compileOnly dep.androidPlugin
 
   implementation localGroovy()
   implementation project(':apollo-compiler')
   implementation dep.gradleNodePlugin
-  implementation dep.androidPlugin
   implementation dep.moshi
 
   testImplementation dep.junit
