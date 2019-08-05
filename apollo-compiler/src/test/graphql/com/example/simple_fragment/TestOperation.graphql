@@ -1,14 +1,17 @@
 query TestQuery {
   hero {
+    __typename
     ...HeroDetails
     ...HumanDetails
   }
 }
 
-fragment HumanDetails on Human {
+fragment HeroDetails on Character {
+  __typename
   name
 }
 
-fragment HeroDetails on Character {
+fragment HumanDetails on Human {
+  __typename
   name
 }

@@ -318,7 +318,8 @@ class SchemaTypeSpecBuilder(
           responseFieldType = ResponseField.Type.FRAGMENT,
           typeConditions = context.ir.fragments
               .filter { it.fragmentName in fragmentSpreads }
-              .flatMap { it.possibleTypes },
+              .flatMap { it.possibleTypes }
+              .distinct(),
           context = context
       ))
     } else {

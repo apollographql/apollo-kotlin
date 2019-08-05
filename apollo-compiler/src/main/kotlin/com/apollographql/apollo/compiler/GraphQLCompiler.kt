@@ -15,7 +15,7 @@ class GraphQLCompiler {
   private val irAdapter = moshi.adapter(CodeGenerationIR::class.java)
 
   fun write(args: Arguments) {
-    val ir = irAdapter.fromJson(args.irFile.readText())!!
+    val ir = args.ir ?: irAdapter.fromJson(args.irFile.readText())!!
     val irPackageName = args.outputPackageName ?: args.irFile.absolutePath.formatPackageName()
     val fragmentsPackage = if (irPackageName.isNotEmpty()) "$irPackageName.fragment" else "fragment"
     val typesPackage = if (irPackageName.isNotEmpty()) "$irPackageName.type" else "type"
@@ -33,7 +33,7 @@ class GraphQLCompiler {
         useJavaBeansSemanticNaming = args.useJavaBeansSemanticNaming,
         suppressRawTypesWarning = args.suppressRawTypesWarning,
         generateVisitorForPolymorphicDatatypes = args.generateVisitorForPolymorphicDatatypes
-      )
+    )
 
     if (irPackageName.isNotEmpty()) {
       File(args.outputDir, irPackageName.replace('.', File.separatorChar)).deleteRecursively()
@@ -56,7 +56,7 @@ class GraphQLCompiler {
   }
 
   private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File,
-      outputPackageName: String?) {
+                                              outputPackageName: String?) {
     fragments.forEach {
       val typeSpec = it.toTypeSpec(context.copy())
       JavaFile
@@ -119,6 +119,7 @@ class GraphQLCompiler {
 
   data class Arguments(
       val irFile: File,
+      val ir: CodeGenerationIR? = null,
       val outputDir: File,
       val customTypeMap: Map<String, String>,
       val nullableValueType: NullableValueType,

@@ -53,7 +53,7 @@ data class Field(
         .addModifiers(Modifier.PUBLIC)
         .returns(returnTypeName)
         .addStatement("return this.\$L", responseName.escapeJavaReservedWord())
-        .let { if (description != null) it.addJavadoc("\$L\n", description) else it }
+        .let { if (!description.isNullOrEmpty()) it.addJavadoc("\$L\n", description) else it }
         .let {
           if (isDeprecated == true && !deprecationReason.isNullOrBlank()) {
             it.addJavadoc("@deprecated \$L\n", deprecationReason)

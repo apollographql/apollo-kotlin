@@ -52,7 +52,7 @@ class ApolloClassGenerationTask extends SourceTask {
           outputPackageName = null
         }
         GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(
-            inputFile, outputDir.get().asFile, customTypeMapping.get(),
+            inputFile, null, outputDir.get().asFile, customTypeMapping.get(),
             nullableValueType != null ? nullableValueType : NullableValueType.ANNOTATED, useSemanticNaming.get(),
             generateModelBuilder.get(), useJavaBeansSemanticNaming.get(), outputPackageName,
             suppressRawTypesWarning.get(), generateKotlinModels.get(), generateVisitorForPolymorphicDatatypes.get()
