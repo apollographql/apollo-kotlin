@@ -1,12 +1,3 @@
-buildscript {
-  ext.apolloReleaseVersion = '1.0.2'
-
-  dependencies {
-    classpath dep.androidPlugin
-    classpath "com.apollographql.apollo:apollo-gradle-plugin:$apolloReleaseVersion"
-  }
-}
-
 apply plugin: 'com.android.application'
 apply plugin: 'com.apollographql.android'
 
@@ -29,9 +20,9 @@ android {
 dependencies {
   compileOnly dep.jetbrainsAnnotations
 
-  implementation "com.apollographql.apollo:apollo-runtime:$apolloReleaseVersion"
-  implementation "com.apollographql.apollo:apollo-android-support:$apolloReleaseVersion"
-  implementation "com.apollographql.apollo:apollo-rx2-support:$apolloReleaseVersion"
+  implementation "com.apollographql.apollo:apollo-runtime"
+  implementation "com.apollographql.apollo:apollo-android-support"
+  implementation "com.apollographql.apollo:apollo-rx2-support"
   implementation dep.appcompat
   implementation dep.recyclerView
   implementation dep.rxandroid
