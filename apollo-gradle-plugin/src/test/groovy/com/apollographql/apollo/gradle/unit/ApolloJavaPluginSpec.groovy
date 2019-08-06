@@ -62,8 +62,7 @@ class ApolloJavaPluginSpec extends Specification {
 
     then:
     project.sourceSets.all { sourceSet ->
-      assert (sourceSet.extensions.findByName("graphql")) != null
-      assert (sourceSet.extensions.findByType(GraphQLSourceDirectorySet.class)) != null
+      assert (sourceSet.extensions.findByName(GraphQLSourceDirectorySet.NAME)) != null
     }
   }
 
