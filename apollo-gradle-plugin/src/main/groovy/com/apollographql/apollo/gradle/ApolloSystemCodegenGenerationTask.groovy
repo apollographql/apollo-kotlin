@@ -13,7 +13,7 @@ import static com.apollographql.apollo.compiler.GraphQLCompiler.APOLLOCODEGEN_VE
 
 class ApolloSystemCodegenGenerationTask extends AbstractExecTask<ApolloSystemCodegenGenerationTask> {
   @Input final Property<String> variant = project.objects.property(String.class)
-  @Input final Property<List> sourceSetNames = project.objects.property(List.class)
+  @Input final Property<List<String>> sourceSetNames = project.objects.listProperty(String.class)
   @Input @Optional final Property<String> schemaFilePath = project.objects.property(String.class)
   @Input @Optional final Property<String> outputPackageName = project.objects.property(String.class)
   @OutputDirectory final DirectoryProperty outputDir = project.layout.directoryProperty()
