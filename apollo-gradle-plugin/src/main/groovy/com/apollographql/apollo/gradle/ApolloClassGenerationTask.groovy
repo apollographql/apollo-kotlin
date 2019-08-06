@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull
 class ApolloClassGenerationTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses"
 
-  @Input final Property<Map> customTypeMapping = project.objects.property(Map.class)
+  @Input final Property<Map<String, String>> customTypeMapping = project.objects.property(Map.class)
   @Optional @Input final Property<String> nullableValueType = project.objects.property(String.class)
   @Input final Property<Boolean> useSemanticNaming = project.objects.property(Boolean.class)
   @Input final Property<Boolean> generateModelBuilder = project.objects.property(Boolean.class)

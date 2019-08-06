@@ -16,7 +16,7 @@ class ApolloExtension {
   final Property<Boolean> generateVisitorForPolymorphicDatatypes
   final Property<String> schemaFilePath
   final Property<String> outputPackageName
-  final Property<Map> customTypeMapping
+  final Property<Map<String, String>> customTypeMapping
 
   ApolloExtension(Project project) {
     nullableValueType = project.objects.property(String.class)
@@ -46,7 +46,7 @@ class ApolloExtension {
     outputPackageName = project.objects.property(String.class)
     outputPackageName.set("")
 
-    customTypeMapping = project.objects.property(Map.class)
+    customTypeMapping = project.objects.mapProperty(String.class, String.class)
     customTypeMapping.set(new LinkedHashMap())
   }
 
