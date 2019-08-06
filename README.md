@@ -253,7 +253,7 @@ apollo {
 
 ### Support File Upload
 
-Apollo supports file uploading over [graphql-multipart-request-spec](https://github.com/jaydenseric/graphql-multipart-request-spec).
+From version `1.0.1`, Apollo Android supports file uploading over [graphql-multipart-request-spec](https://github.com/jaydenseric/graphql-multipart-request-spec).
 
 You need to define this mapping in your build.gradle file.
 
@@ -264,6 +264,8 @@ apollo {
   ]
 }
 ```
+
+**Note** You don't need to register custom type adapter for `FileUpload`.
 
 In this example, the GraphQL schema uses custom scalar type named `Upload` for file upload. 
 Change it to match your GraphQL schema.
