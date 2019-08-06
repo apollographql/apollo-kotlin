@@ -16,7 +16,7 @@ class ApolloSystemCodegenGenerationTask extends AbstractExecTask<ApolloSystemCod
   @Input final Property<List<String>> sourceSetNames = project.objects.listProperty(String.class)
   @Input @Optional final Property<String> schemaFilePath = project.objects.property(String.class)
   @Input @Optional final Property<String> outputPackageName = project.objects.property(String.class)
-  @OutputDirectory final DirectoryProperty outputDir = project.layout.directoryProperty()
+  @OutputDirectory final DirectoryProperty outputDir = project.objects.directoryProperty()
 
   ApolloSystemCodegenGenerationTask() {
     super(ApolloSystemCodegenGenerationTask.class)
