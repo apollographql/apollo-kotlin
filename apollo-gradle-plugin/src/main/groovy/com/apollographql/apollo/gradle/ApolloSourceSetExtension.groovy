@@ -7,13 +7,13 @@ class ApolloSourceSetExtension {
   static final String NAME = "sourceSet"
 
   final Property<String> schemaFile
-  final Property<List> exclude
+  final Property<List<String>> exclude
 
   ApolloSourceSetExtension(Project project) {
     schemaFile = project.objects.property(String.class)
     schemaFile.set("")
 
-    exclude = project.objects.property(List.class)
+    exclude = project.objects.listProperty(String.class)
     exclude.set(new ArrayList<String>())
   }
 
