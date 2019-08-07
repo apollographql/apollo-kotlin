@@ -236,7 +236,11 @@ class ApolloPlugin implements Plugin<Project> {
 
   private void createSourceSetExtensions() {
     getSourceSets().all { sourceSet ->
-      sourceSet.extensions.add(SourceDirectorySet.class, GraphQLSourceDirectorySet.NAME, GraphQLSourceDirectorySet.create(project.objects))
+      sourceSet.extensions.add(
+          SourceDirectorySet.class,
+          GraphQLSourceDirectorySet.NAME,
+          GraphQLSourceDirectorySet.create(project.objects)
+      )
     }
   }
 
