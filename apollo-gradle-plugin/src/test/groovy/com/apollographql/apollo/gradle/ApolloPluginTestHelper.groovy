@@ -1,7 +1,7 @@
 package com.apollographql.apollo.gradle
 
 import org.apache.commons.io.FileUtils
-import org.gradle.api.Project;
+import org.gradle.api.Project
 
 class ApolloPluginTestHelper {
   static def setupJavaProject(Project project) {
@@ -107,6 +107,8 @@ class ApolloPluginTestHelper {
     prepareLocalProperties(destDir)
     FileUtils.copyDirectory(projectUnderTest, destDir)
     FileUtils.copyFile(requestedBuildScript, new File("$destDir/build.gradle"))
+    File settingsFile = new File(destDir, "settings.gradle")
+    FileUtils.write(settingsFile, "rootProject.name = '${destDir.name}'")
   }
 
   static def prepareLocalProperties(File destDir) {
