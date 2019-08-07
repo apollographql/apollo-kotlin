@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ApolloQueryWatcher<T> extends Cancelable {
 
-  ApolloQueryWatcher<T> enqueueAndWatch(@Nullable final ApolloCall.Callback<T> callback);
+  ApolloQueryWatcher<T> enqueueAndWatch(@Nullable ApolloCall.Callback<T> callback);
 
   /**
    * @param fetcher The {@link ResponseFetcher} to use when the call is refetched due to a field changing in the

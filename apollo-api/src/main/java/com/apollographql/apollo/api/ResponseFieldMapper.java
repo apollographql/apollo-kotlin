@@ -5,5 +5,5 @@ package com.apollographql.apollo.api;
  * the server back to generated models.
  */
 public interface ResponseFieldMapper<T> {
-  T map(final ResponseReader responseReader);
+  T map(ResponseReader responseReader);
 }
