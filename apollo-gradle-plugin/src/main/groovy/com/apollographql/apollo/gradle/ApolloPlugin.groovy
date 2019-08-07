@@ -11,6 +11,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.internal.AbstractTask
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.tasks.SourceSet
