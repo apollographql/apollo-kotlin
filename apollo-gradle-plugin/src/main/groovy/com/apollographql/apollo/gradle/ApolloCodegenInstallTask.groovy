@@ -19,8 +19,8 @@ class ApolloCodegenInstallTask extends NpmTask {
   static final String INSTALLATION_PATH = "apollo-codegen" + File.separator + "node_modules"
   static final String PACKAGE_FILE_PATH = "apollo-codegen" + File.separator + "package.json"
 
-  @OutputDirectory final DirectoryProperty installDir = project.layout.directoryProperty()
-  @OutputFile final RegularFileProperty apolloPackageFile = project.layout.fileProperty()
+  @OutputDirectory final DirectoryProperty installDir = project.objects.directoryProperty()
+  @OutputFile final RegularFileProperty apolloPackageFile = project.objects.fileProperty()
 
   ApolloCodegenInstallTask() {
     setGroup("apollo")

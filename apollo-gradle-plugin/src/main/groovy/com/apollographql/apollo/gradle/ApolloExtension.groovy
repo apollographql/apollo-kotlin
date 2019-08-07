@@ -2,6 +2,7 @@ package com.apollographql.apollo.gradle
 
 import com.apollographql.apollo.compiler.NullableValueType
 import org.gradle.api.Project
+import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 
 class ApolloExtension {
@@ -16,7 +17,7 @@ class ApolloExtension {
   final Property<Boolean> generateVisitorForPolymorphicDatatypes
   final Property<String> schemaFilePath
   final Property<String> outputPackageName
-  final Property<Map<String, String>> customTypeMapping
+  final MapProperty<String, String> customTypeMapping
 
   ApolloExtension(Project project) {
     nullableValueType = project.objects.property(String.class)

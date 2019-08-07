@@ -3,6 +3,7 @@ package com.apollographql.apollo.gradle
 import org.gradle.api.GradleException
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.logging.Logger
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.AbstractExecTask
 import org.gradle.api.tasks.Input
@@ -13,7 +14,7 @@ import static com.apollographql.apollo.compiler.GraphQLCompiler.APOLLOCODEGEN_VE
 
 class ApolloSystemCodegenGenerationTask extends AbstractExecTask<ApolloSystemCodegenGenerationTask> {
   @Input final Property<String> variant = project.objects.property(String.class)
-  @Input final Property<List<String>> sourceSetNames = project.objects.listProperty(String.class)
+  @Input final ListProperty<String> sourceSetNames = project.objects.listProperty(String.class)
   @Input @Optional final Property<String> schemaFilePath = project.objects.property(String.class)
   @Input @Optional final Property<String> outputPackageName = project.objects.property(String.class)
   @OutputDirectory final DirectoryProperty outputDir = project.objects.directoryProperty()

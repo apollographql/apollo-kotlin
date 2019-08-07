@@ -1,13 +1,14 @@
 package com.apollographql.apollo.gradle
 
 import org.gradle.api.Project
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 
 class ApolloSourceSetExtension {
   static final String NAME = "sourceSet"
 
   final Property<String> schemaFile
-  final Property<List<String>> exclude
+  final ListProperty<String> exclude
 
   ApolloSourceSetExtension(Project project) {
     schemaFile = project.objects.property(String.class)

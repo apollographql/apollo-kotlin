@@ -6,6 +6,7 @@ import com.apollographql.apollo.compiler.NullableValueType
 import com.google.common.base.Joiner
 import org.gradle.api.Action
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.NotNull
 class ApolloClassGenerationTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses"
 
-  @Input final Property<Map<String, String>> customTypeMapping = project.objects.mapProperty(String.class, String.class)
+  @Input final MapProperty<String, String> customTypeMapping = project.objects.mapProperty(String.class, String.class)
   @Optional @Input final Property<String> nullableValueType = project.objects.property(String.class)
   @Input final Property<Boolean> useSemanticNaming = project.objects.property(Boolean.class)
   @Input final Property<Boolean> generateModelBuilder = project.objects.property(Boolean.class)
