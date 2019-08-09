@@ -1,20 +1,12 @@
+apply plugin: 'antlr'
 apply plugin: 'java'
 apply plugin: 'kotlin'
+apply plugin: 'kotlin-kapt'
 
 targetCompatibility = JavaVersion.VERSION_1_7
 sourceCompatibility = JavaVersion.VERSION_1_7
 
 sourceSets {
-  main {
-    java {
-      srcDir "src/main/build"
-    }
-  }
-  main {
-    java {
-      srcDir "src/generated/kotlin"
-    }
-  }
   // As temporary solution enable this to verify if generated kotlin test fixtures compiles
   test {
     java {
@@ -29,12 +21,20 @@ dependencies {
   implementation dep.kotlinpoet
   implementation dep.kotlinStdLib
   implementation dep.moshi
+  implementation dep.moshiKotlin
+  implementation dep.moshiAdapters
   implementation project(":apollo-api")
+
+  compile dep.antlrRuntime
+  antlr dep.antlr
+  kapt dep.moshiKotlinCodegen
 
   testImplementation dep.junit
   testImplementation dep.truth
   testImplementation dep.compiletesting
 }
+
+compileKotlin.dependsOn generateGrammarSource
 
 task pluginVersion {
   def outputDir = file("src/generated/kotlin")
@@ -51,9 +51,13 @@ val VERSION = "${project.version}"
 """
   }
 }
+
 tasks.getByName('compileKotlin').dependsOn('pluginVersion')
 
-apply from: 'gradle/update-test-IR-files.gradle'
+tasks.withType(Checkstyle) {
+    exclude '**com/apollographql/apollo/compiler/parser/antlr/**'
+}
 
+apply from: 'gradle/update-test-IR-files.gradle'
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
 apply from: rootProject.file('gradle/bintray.gradle')
