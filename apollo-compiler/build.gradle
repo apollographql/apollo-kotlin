@@ -34,10 +34,6 @@ dependencies {
   testImplementation dep.compiletesting
 }
 
-generateGrammarSource {
-  outputDirectory = new File("src/main/java")
-}
-
 task pluginVersion {
   def outputDir = file("src/generated/kotlin")
 
@@ -54,6 +50,10 @@ val VERSION = "${project.version}"
   }
 }
 tasks.getByName('compileKotlin').dependsOn('pluginVersion')
+
+tasks.withType(Checkstyle) {
+    exclude '**com/apollographql/apollo/compiler/parser/antlr/**'
+}
 
 apply from: 'gradle/update-test-IR-files.gradle'
 
