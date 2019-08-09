@@ -1,6 +1,6 @@
+apply plugin: 'antlr'
 apply plugin: 'java'
 apply plugin: 'kotlin'
-apply plugin: 'antlr'
 apply plugin: 'kotlin-kapt'
 
 targetCompatibility = JavaVersion.VERSION_1_6
@@ -34,6 +34,8 @@ dependencies {
   testImplementation dep.compiletesting
 }
 
+compileKotlin.dependsOn generateGrammarSource
+
 task pluginVersion {
   def outputDir = file("src/generated/kotlin")
 
@@ -49,6 +51,7 @@ val VERSION = "${project.version}"
 """
   }
 }
+
 tasks.getByName('compileKotlin').dependsOn('pluginVersion')
 
 tasks.withType(Checkstyle) {
@@ -56,6 +59,5 @@ tasks.withType(Checkstyle) {
 }
 
 apply from: 'gradle/update-test-IR-files.gradle'
-
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
 apply from: rootProject.file('gradle/bintray.gradle')
