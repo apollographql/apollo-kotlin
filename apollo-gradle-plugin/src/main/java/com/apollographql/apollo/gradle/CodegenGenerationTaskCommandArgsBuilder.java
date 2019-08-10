@@ -43,6 +43,28 @@ class CodegenGenerationTaskCommandArgsBuilder {
   }
 
   public List<CommandArgs> build() {
+    final List<ApolloCodegenIRArgs> codegenArgs = buildCodegenArgs();
+    List<CommandArgs> taskExecutionArgs = new ArrayList<>();
+    for (ApolloCodegenIRArgs codegenArg : codegenArgs) {
+      codegenArg.irOutputFolder.mkdirs();
+
+      List<String> args = new ArrayList<>();
+      args.add("generate");
+      args.addAll(codegenArg.queryFilePaths);
+      args.addAll(Arrays.asList(
+          "--add-typename",
+          "--schema", codegenArg.schemaFile.getAbsolutePath(),
+          "--output", codegenArg.irOutputFolder.getAbsolutePath() + File.separator + Utils.capitalize(variant) + "API.json",
+          "--operation-ids-path", codegenArg.irOutputFolder.getAbsolutePath() + File.separator + Utils.capitalize(variant) + "OperationIdMap.json",
+          "--merge-in-fields-from-fragment-spreads", "false",
+          "--target", "json"
+      ));
+      taskExecutionArgs.add(new CommandArgs(args));
+    }
+    return taskExecutionArgs;
+  }
+
+  public List<ApolloCodegenIRArgs> buildCodegenArgs() {
     File schemaFile = null;
     if (schemaFilePath != null && !schemaFilePath.trim().isEmpty()) {
       schemaFile = Paths.get(schemaFilePath).toFile();
@@ -80,24 +102,7 @@ class CodegenGenerationTaskCommandArgsBuilder {
       codegenArgs = Collections.singletonList(new ApolloCodegenIRArgs(schemaFile, queryFilePaths, targetPackageFolder));
     }
 
-    List<CommandArgs> taskExecutionArgs = new ArrayList<>();
-    for (ApolloCodegenIRArgs codegenArg : codegenArgs) {
-      codegenArg.irOutputFolder.mkdirs();
-
-      List<String> args = new ArrayList<>();
-      args.add("generate");
-      args.addAll(codegenArg.queryFilePaths);
-      args.addAll(Arrays.asList(
-          "--add-typename",
-          "--schema", codegenArg.schemaFile.getAbsolutePath(),
-          "--output", codegenArg.irOutputFolder.getAbsolutePath() + File.separator + Utils.capitalize(variant) + "API.json",
-          "--operation-ids-path", codegenArg.irOutputFolder.getAbsolutePath() + File.separator + Utils.capitalize(variant) + "OperationIdMap.json",
-          "--merge-in-fields-from-fragment-spreads", "false",
-          "--target", "json"
-      ));
-      taskExecutionArgs.add(new CommandArgs(args));
-    }
-    return taskExecutionArgs;
+    return codegenArgs;
   }
 
   /**
@@ -221,7 +226,7 @@ class CodegenGenerationTaskCommandArgsBuilder {
     return basePath.relativize(absolutePath).toString();
   }
 
-  private static final class ApolloCodegenIRArgs {
+  static final class ApolloCodegenIRArgs {
     final File schemaFile;
     final Set<String> queryFilePaths;
     final File irOutputFolder;

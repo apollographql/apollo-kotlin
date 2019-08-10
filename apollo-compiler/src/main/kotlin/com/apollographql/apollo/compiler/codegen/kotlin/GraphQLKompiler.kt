@@ -2,7 +2,6 @@ package com.apollographql.apollo.compiler.codegen.kotlin
 
 import com.apollographql.apollo.compiler.ast.CustomTypes
 import com.apollographql.apollo.compiler.ast.builder.ast
-import com.apollographql.apollo.compiler.formatPackageName
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.ScalarType
 import com.apollographql.apollo.compiler.ir.TypeDeclaration
@@ -11,17 +10,18 @@ import com.squareup.moshi.Moshi
 import java.io.File
 
 class GraphQLKompiler(
-    private val irFile: File,
+    private val irFile: File?,
+    private val ir: CodeGenerationIR?,
     private val customTypeMap: Map<String, String>,
-    private val outputPackageName: String?,
+    private val outputPackageName: String,
     private val useSemanticNaming: Boolean
 ) {
   private val moshi = Moshi.Builder().build()
   private val irAdapter = moshi.adapter(CodeGenerationIR::class.java)
 
   fun write(outputDir: File) {
-    val ir = irAdapter.fromJson(irFile.readText())!!
-    val irPackageName = outputPackageName ?: irFile.absolutePath.formatPackageName()
+    val ir = ir ?: irAdapter.fromJson(irFile!!.readText())!!
+    val irPackageName = outputPackageName
     val fragmentsPackage = if (irPackageName.isNotEmpty()) "$irPackageName.fragment" else "fragment"
     val typesPackageName = if (irPackageName.isNotEmpty()) "$irPackageName.type" else "type"
     val customTypeMap = customTypeMap.supportedCustomTypes(ir.typesUsed)

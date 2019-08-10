@@ -6,7 +6,6 @@ import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.ir.ScalarType
 import com.apollographql.apollo.compiler.ir.TypeDeclaration
 import com.squareup.javapoet.JavaFile
-import com.squareup.javapoet.TypeSpec
 import com.squareup.moshi.Moshi
 import java.io.File
 
@@ -15,8 +14,8 @@ class GraphQLCompiler {
   private val irAdapter = moshi.adapter(CodeGenerationIR::class.java)
 
   fun write(args: Arguments) {
-    val ir = args.ir ?: irAdapter.fromJson(args.irFile.readText())!!
-    val irPackageName = args.outputPackageName ?: args.irFile.absolutePath.formatPackageName()
+    val ir = args.ir ?: irAdapter.fromJson(args.irFile!!.readText())!!
+    val irPackageName = args.outputPackageName
     val fragmentsPackage = if (irPackageName.isNotEmpty()) "$irPackageName.fragment" else "fragment"
     val typesPackage = if (irPackageName.isNotEmpty()) "$irPackageName.type" else "type"
     val customTypeMap = args.customTypeMap.supportedTypeMap(ir.typesUsed)
@@ -42,6 +41,7 @@ class GraphQLCompiler {
     if (args.generateKotlinModels) {
       GraphQLKompiler(
           irFile = args.irFile,
+          ir = args.ir,
           customTypeMap = args.customTypeMap,
           outputPackageName = args.outputPackageName,
           useSemanticNaming = args.useSemanticNaming
@@ -118,7 +118,7 @@ class GraphQLCompiler {
   }
 
   data class Arguments(
-      val irFile: File,
+      val irFile: File?,
       val ir: CodeGenerationIR? = null,
       val outputDir: File,
       val customTypeMap: Map<String, String>,
@@ -126,7 +126,7 @@ class GraphQLCompiler {
       val useSemanticNaming: Boolean,
       val generateModelBuilder: Boolean,
       val useJavaBeansSemanticNaming: Boolean,
-      val outputPackageName: String?,
+      val outputPackageName: String,
       val suppressRawTypesWarning: Boolean,
       val generateKotlinModels: Boolean = false,
       val generateVisitorForPolymorphicDatatypes: Boolean = false

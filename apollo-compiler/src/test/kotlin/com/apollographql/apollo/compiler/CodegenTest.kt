@@ -37,7 +37,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
   private fun generateJavaExpectedClasses(args: GraphQLCompiler.Arguments) {
     GraphQLCompiler().write(args)
 
-    Files.walkFileTree(args.irFile.parentFile.toPath(), object : SimpleFileVisitor<Path>() {
+    Files.walkFileTree(args.irFile!!.parentFile.toPath(), object : SimpleFileVisitor<Path>() {
       override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
         if (javaExpectedFileMatcher.matches(expectedFile)) {
           val expected = expectedFile.toFile()
@@ -62,12 +62,13 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
   private fun generateKotlinExpectedClasses(args: GraphQLCompiler.Arguments) {
     GraphQLKompiler(
         irFile = args.irFile,
+        ir = args.ir,
         customTypeMap = args.customTypeMap,
         outputPackageName = args.outputPackageName,
         useSemanticNaming = args.useSemanticNaming
     ).write(args.outputDir)
 
-    Files.walkFileTree(args.irFile.parentFile.toPath(), object : SimpleFileVisitor<Path>() {
+    Files.walkFileTree(args.irFile!!.parentFile.toPath(), object : SimpleFileVisitor<Path>() {
       override fun visitFile(expectedFile: Path, attrs: BasicFileAttributes): FileVisitResult {
         if (kotlinExpectedFileMatcher.matches(expectedFile)) {
           val expected = expectedFile.toFile()
@@ -150,8 +151,9 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
               GraphQLDocumentParser(schema).parse(listOf(graphQLFile))
             } else null
 
+            val irFile = File(folder, "TestOperation.json")
             val args = GraphQLCompiler.Arguments(
-                irFile = File(folder, "TestOperation.json"),
+                irFile = irFile,
                 ir = ir,
                 outputDir = GraphQLCompiler.OUTPUT_DIRECTORY.plus("sources").fold(File("build"), ::File),
                 customTypeMap = customTypeMap,
@@ -160,7 +162,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
                 generateModelBuilder = generateModelBuilder,
                 useJavaBeansSemanticNaming = useJavaBeansSemanticNaming,
                 suppressRawTypesWarning = suppressRawTypesWarning,
-                outputPackageName = null,
+                outputPackageName = irFile.absolutePath.formatPackageName(),
                 generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes
             )
             arrayOf(folder.name, args)
