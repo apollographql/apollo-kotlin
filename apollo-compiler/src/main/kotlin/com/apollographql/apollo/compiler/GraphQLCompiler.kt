@@ -15,7 +15,7 @@ class GraphQLCompiler {
 
   fun write(args: Arguments) {
     val ir = args.ir ?: irAdapter.fromJson(args.irFile!!.readText())!!
-    val irPackageName = args.outputPackageName
+    val irPackageName = args.outputPackageName ?: args.irFile!!.absolutePath.formatPackageName()
     val fragmentsPackage = if (irPackageName.isNotEmpty()) "$irPackageName.fragment" else "fragment"
     val typesPackage = if (irPackageName.isNotEmpty()) "$irPackageName.type" else "type"
     val customTypeMap = args.customTypeMap.supportedTypeMap(ir.typesUsed)
@@ -55,8 +55,7 @@ class GraphQLCompiler {
     }
   }
 
-  private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File,
-                                              outputPackageName: String?) {
+  private fun CodeGenerationIR.writeJavaFiles(context: CodeGenerationContext, outputDir: File, outputPackageName: String?) {
     fragments.forEach {
       val typeSpec = it.toTypeSpec(context.copy())
       JavaFile
@@ -126,7 +125,7 @@ class GraphQLCompiler {
       val useSemanticNaming: Boolean,
       val generateModelBuilder: Boolean,
       val useJavaBeansSemanticNaming: Boolean,
-      val outputPackageName: String,
+      val outputPackageName: String?,
       val suppressRawTypesWarning: Boolean,
       val generateKotlinModels: Boolean = false,
       val generateVisitorForPolymorphicDatatypes: Boolean = false
