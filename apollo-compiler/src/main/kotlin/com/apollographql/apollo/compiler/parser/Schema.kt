@@ -116,6 +116,8 @@ class Schema(
   }
 
   companion object {
+    @JvmStatic
+    @JvmName("parse")
     operator fun invoke(schemaFile: File): Schema {
       val moshi = Moshi.Builder()
           .add(

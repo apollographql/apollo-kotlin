@@ -10,6 +10,7 @@ import org.gradle.api.DomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.internal.AbstractTask
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.tasks.SourceSet
@@ -26,6 +27,7 @@ class ApolloPlugin implements Plugin<Project> {
   private Project project
   private final FileResolver fileResolver
   private boolean useGlobalApolloCodegen = System.properties['apollographql.useGlobalApolloCodegen']?.toBoolean()
+  private boolean useExperimentalCodegen = System.properties['apollographql.useExperimentalCodegen']?.toBoolean()
 
   @Inject
   ApolloPlugin(FileResolver fileResolver) {
@@ -47,14 +49,14 @@ class ApolloPlugin implements Plugin<Project> {
   }
 
   private void applyApolloPlugin() {
-    if (!useGlobalApolloCodegen) {
+    if (!useGlobalApolloCodegen && !useExperimentalCodegen) {
       setupNode()
     }
 
     project.extensions.create(ApolloExtension.NAME, ApolloExtension, project)
     project.apollo.extensions.create(ApolloSourceSetExtension.NAME, ApolloSourceSetExtension, project)
 
-    if (!useGlobalApolloCodegen) {
+    if (!useGlobalApolloCodegen && !useExperimentalCodegen) {
       project.tasks.create(ApolloCodegenInstallTask.NAME, ApolloCodegenInstallTask.class)
     }
 
@@ -71,10 +73,20 @@ class ApolloPlugin implements Plugin<Project> {
 
     if (isAndroidProject()) {
       getVariants().all { BaseVariant variant ->
-        addVariantTasks(variant, apolloIRGenTask, apolloClassGenTask, variant.sourceSets)
+        if (useExperimentalCodegen) {
+          ApolloExperimentalCodegenTask codegenTask = createExperimentalCodegenTask(variant.name, variant.sourceSets)
+          apolloClassGenTask.dependsOn(codegenTask)
+        } else {
+          addVariantTasks(variant, apolloIRGenTask, apolloClassGenTask, variant.sourceSets)
+        }
       }
       project.android.testVariants.each { BaseVariant tv ->
-        addVariantTasks(tv, apolloIRGenTask, apolloClassGenTask, tv.sourceSets)
+        if (useExperimentalCodegen) {
+          ApolloExperimentalCodegenTask codegenTask = createExperimentalCodegenTask(tv.name, tv.sourceSets)
+          apolloClassGenTask.dependsOn(codegenTask)
+        } else {
+          addVariantTasks(tv, apolloIRGenTask, apolloClassGenTask, tv.sourceSets)
+        }
       }
     } else {
       getSourceSets().all { SourceSet sourceSet ->
@@ -94,22 +106,30 @@ class ApolloPlugin implements Plugin<Project> {
   private void addSourceSetTasks(SourceSet sourceSet, Task apolloIRGenTask, Task apolloClassGenTask) {
     String taskName = "main".equals(sourceSet.name) ? "" : sourceSet.name
 
-    AbstractTask sourceSetIRTask = createApolloIRGenTask(sourceSet.name, [sourceSet])
-    ApolloClassGenerationTask sourceSetClassTask = createApolloClassGenTask(sourceSet.name)
-    apolloIRGenTask.dependsOn(sourceSetIRTask)
-    apolloClassGenTask.dependsOn(sourceSetClassTask)
+    final DirectoryProperty outputDir;
+    if (useExperimentalCodegen) {
+      ApolloExperimentalCodegenTask codegenTask = createExperimentalCodegenTask(sourceSet.name, [sourceSet])
+      apolloClassGenTask.dependsOn(codegenTask)
+      outputDir = codegenTask.outputDir
+    } else {
+      AbstractTask sourceSetIRTask = createApolloIRGenTask(sourceSet.name, [sourceSet])
+      ApolloClassGenerationTask sourceSetClassTask = createApolloClassGenTask(sourceSet.name)
+      apolloIRGenTask.dependsOn(sourceSetIRTask)
+      apolloClassGenTask.dependsOn(sourceSetClassTask)
+      outputDir = sourceSetClassTask.outputDir
+    }
 
     // we use afterEvaluate here as we need to know the value of generateKotlinModels from addSourceSetTasks
     // TODO we should avoid afterEvaluate usage
     project.afterEvaluate {
       if (project.apollo.generateKotlinModels.get() != true) {
         JavaCompile compileTask = (JavaCompile) project.tasks.findByName("compile${taskName.capitalize()}Java")
-        compileTask.source += project.fileTree(sourceSetClassTask.outputDir)
+        compileTask.source += project.fileTree(outputDir)
         compileTask.dependsOn(apolloClassGenTask)
       }
     }
 
-    sourceSet.java.srcDir(sourceSetClassTask.outputDir)
+    sourceSet.java.srcDir(outputDir)
 
     AbstractCompile compileKotlinTask = (AbstractCompile) project.tasks.findByName(
         "compile${taskName.capitalize()}Kotlin")
@@ -118,7 +138,32 @@ class ApolloPlugin implements Plugin<Project> {
       compileKotlinTask.dependsOn(apolloClassGenTask)
       // this is somewhat redundant with sourceSet.java.srcDir above but I believe by the time we come here the java plugin
       // has been configured already so we need to manually tell kotlinc where to find the generated classes
-      compileKotlinTask.source(sourceSetClassTask.outputDir)
+      compileKotlinTask.source(outputDir)
+    }
+  }
+
+  private ApolloExperimentalCodegenTask createExperimentalCodegenTask(String sourceSetOrVariantName, Collection sourceSets) {
+    File outputFolder = new File(project.buildDir, Joiner.on(File.separator).join(GraphQLCompiler.OUTPUT_DIRECTORY + sourceSetOrVariantName))
+    String taskName = String.format(ApolloExperimentalCodegenTask.NAME, sourceSetOrVariantName.capitalize())
+    return project.tasks.create(taskName, ApolloExperimentalCodegenTask) {
+      source(sourceSets.collect { it.graphql })
+      excludeFiles = project.apollo.sourceSet.exclude
+      group = TASK_GROUP
+      description = "Generate Android classes for ${sourceSetOrVariantName.capitalize()} GraphQL queries"
+      schemaFilePath = (project.apollo.sourceSet.schemaFile.get().length() == 0) ? project.apollo.schemaFilePath :
+          project.apollo.sourceSet.schemaFile
+      outputPackageName = project.apollo.outputPackageName
+      variant = sourceSetOrVariantName
+      sourceSetNames = sourceSets.collect { it.name }
+      outputDir.set(outputFolder)
+      customTypeMapping = project.apollo.customTypeMapping
+      nullableValueType = project.apollo.nullableValueType
+      useSemanticNaming = project.apollo.useSemanticNaming
+      generateModelBuilder = project.apollo.generateModelBuilder
+      useJavaBeansSemanticNaming = project.apollo.useJavaBeansSemanticNaming
+      suppressRawTypesWarning = project.apollo.suppressRawTypesWarning
+      generateKotlinModels = project.apollo.generateKotlinModels
+      generateVisitorForPolymorphicDatatypes = project.apollo.generateVisitorForPolymorphicDatatypes
     }
   }
 
