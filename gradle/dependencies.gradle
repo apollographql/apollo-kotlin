@@ -1,5 +1,5 @@
 def versions = [
-    apolloVersion                : '1.0.2',
+    apolloVersion                : '1.0.3-SNAPSHOT',
     antlr4                       : '4.7.2',
     cacheVersion                 : '2.0.2',
     okHttpVersion                : '3.12.2',
