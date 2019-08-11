@@ -577,7 +577,7 @@ private class GraphQLDocumentParseException(
   companion object {
     private fun preview(graphQLFilePath: String, document: String, parseException: ParseException): String {
       val documentLines = document.lines()
-      return "\nFailed to parse GraphQL file $graphQLFilePath (${parseException.line}:${parseException.position}) ${parseException.message}" +
+      return "\nFailed to parse GraphQL file $graphQLFilePath (${parseException.line}:${parseException.position})\n${parseException.message}" +
           "\n----------------------------------------------------\n" +
           parseException.let { error ->
             val prefix = if (error.line - 2 >= 0) {

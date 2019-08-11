@@ -88,6 +88,7 @@ class ApolloPlugin implements Plugin<Project> {
   private void addVariantTasks(BaseVariant variant, Task apolloIRGenTask, Task apolloClassGenTask, Collection sourceSets) {
     if (useExperimentalCodegen) {
       ApolloExperimentalCodegenTask codegenTask = createExperimentalCodegenTask(variant.name, variant.sourceSets)
+      variant.registerJavaGeneratingTask(codegenTask, codegenTask.outputDir.asFile.get())
       apolloClassGenTask.dependsOn(codegenTask)
     } else {
       AbstractTask variantIRTask = createApolloIRGenTask(variant.name, sourceSets)
