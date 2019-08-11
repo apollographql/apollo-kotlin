@@ -162,7 +162,7 @@ class CodeGenTest(val pkgName: String, val args: GraphQLCompiler.Arguments) {
                 generateModelBuilder = generateModelBuilder,
                 useJavaBeansSemanticNaming = useJavaBeansSemanticNaming,
                 suppressRawTypesWarning = suppressRawTypesWarning,
-                outputPackageName = irFile.absolutePath.formatPackageName(),
+                outputPackageName = "com.example.${folder.name}",
                 generateVisitorForPolymorphicDatatypes = generateVisitorForPolymorphicDatatypes
             )
             arrayOf(folder.name, args)

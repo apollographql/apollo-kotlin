@@ -1,6 +1,7 @@
 package com.apollographql.apollo.gradle
 
 import com.apollographql.apollo.compiler.GraphQLCompiler
+import com.apollographql.apollo.compiler.InflectorKt
 import com.apollographql.apollo.compiler.NullableValueType
 import com.google.common.base.Joiner
 import org.gradle.api.Action
