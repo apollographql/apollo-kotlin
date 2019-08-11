@@ -73,20 +73,10 @@ class ApolloPlugin implements Plugin<Project> {
 
     if (isAndroidProject()) {
       getVariants().all { BaseVariant variant ->
-        if (useExperimentalCodegen) {
-          ApolloExperimentalCodegenTask codegenTask = createExperimentalCodegenTask(variant.name, variant.sourceSets)
-          apolloClassGenTask.dependsOn(codegenTask)
-        } else {
-          addVariantTasks(variant, apolloIRGenTask, apolloClassGenTask, variant.sourceSets)
-        }
+        addVariantTasks(variant, apolloIRGenTask, apolloClassGenTask, variant.sourceSets)
       }
       project.android.testVariants.each { BaseVariant tv ->
-        if (useExperimentalCodegen) {
-          ApolloExperimentalCodegenTask codegenTask = createExperimentalCodegenTask(tv.name, tv.sourceSets)
-          apolloClassGenTask.dependsOn(codegenTask)
-        } else {
-          addVariantTasks(tv, apolloIRGenTask, apolloClassGenTask, tv.sourceSets)
-        }
+        addVariantTasks(tv, apolloIRGenTask, apolloClassGenTask, tv.sourceSets)
       }
     } else {
       getSourceSets().all { SourceSet sourceSet ->
@@ -96,11 +86,16 @@ class ApolloPlugin implements Plugin<Project> {
   }
 
   private void addVariantTasks(BaseVariant variant, Task apolloIRGenTask, Task apolloClassGenTask, Collection sourceSets) {
-    AbstractTask variantIRTask = createApolloIRGenTask(variant.name, sourceSets)
-    ApolloClassGenerationTask variantClassTask = createApolloClassGenTask(variant.name)
-    variant.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir.asFile.get())
-    apolloIRGenTask.dependsOn(variantIRTask)
-    apolloClassGenTask.dependsOn(variantClassTask)
+    if (useExperimentalCodegen) {
+      ApolloExperimentalCodegenTask codegenTask = createExperimentalCodegenTask(variant.name, variant.sourceSets)
+      apolloClassGenTask.dependsOn(codegenTask)
+    } else {
+      AbstractTask variantIRTask = createApolloIRGenTask(variant.name, sourceSets)
+      ApolloClassGenerationTask variantClassTask = createApolloClassGenTask(variant.name)
+      variant.registerJavaGeneratingTask(variantClassTask, variantClassTask.outputDir.asFile.get())
+      apolloIRGenTask.dependsOn(variantIRTask)
+      apolloClassGenTask.dependsOn(variantClassTask)
+    }
   }
 
   private void addSourceSetTasks(SourceSet sourceSet, Task apolloIRGenTask, Task apolloClassGenTask) {

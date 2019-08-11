@@ -50,7 +50,7 @@ class GraphQLDocumentParser(val schema: Schema) {
       throw RuntimeException("Failed to read GraphQL file `$this`", e)
     }
 
-    val tokenStream = GraphQLLexer(CharStreams.fromString(document))
+    val tokenStream = GraphQLLexer(ANTLRInputStream(document))
         .apply { removeErrorListeners() }
         .let { CommonTokenStream(it) }
 
