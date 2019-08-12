@@ -49,9 +49,8 @@ class ApolloExperimentalCodegenTask extends SourceTask {
       CodeGenerationIR codeGenerationIR = new GraphQLDocumentParser(schema).parse(codegenArg.queryFilePaths.toList().collect { new File(it) })
       String outputPackageName = outputPackageName.get()
       if (outputPackageName != null && outputPackageName.trim().isEmpty()) {
-        outputPackageName = InflectorKt.formatPackageName(codegenArg.irOutputFolder.absolutePath)
+        outputPackageName = InflectorKt.formatPackageName(codegenArg.irOutputFolder.absolutePath, false)
       }
-
       GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(
           null, codeGenerationIR, outputDir.get().asFile, customTypeMapping.get(),
           nullableValueType != null ? nullableValueType : NullableValueType.ANNOTATED, useSemanticNaming.get(),
