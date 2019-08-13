@@ -7,6 +7,7 @@ import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.Schema
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 
@@ -15,10 +16,10 @@ class ApolloExperimentalCodegenTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses"
 
   @Input Property<String> variant = project.objects.property(String.class)
-  @Input Property<List> sourceSetNames = project.objects.property(List.class)
+  @Input ListProperty<String> sourceSetNames = project.objects.listProperty(String.class)
   @Input @Optional Property<String> schemaFilePath = project.objects.property(String.class)
   @Input @Optional Property<String> outputPackageName = project.objects.property(String.class)
-  @OutputDirectory DirectoryProperty outputDir = project.layout.directoryProperty()
+  @OutputDirectory DirectoryProperty outputDir = project.objects.directoryProperty()
   @Input Property<Map> customTypeMapping = project.objects.property(Map.class)
   @Optional @Input Property<String> nullableValueType = project.objects.property(String.class)
   @Input Property<Boolean> useSemanticNaming = project.objects.property(Boolean.class)
@@ -27,7 +28,7 @@ class ApolloExperimentalCodegenTask extends SourceTask {
   @Input Property<Boolean> suppressRawTypesWarning = project.objects.property(Boolean.class)
   @Input Property<Boolean> generateKotlinModels = project.objects.property(Boolean.class)
   @Input Property<Boolean> generateVisitorForPolymorphicDatatypes = project.objects.property(Boolean.class)
-  @Input Property<List> excludeFiles = project.objects.property(List.class)
+  @Input ListProperty<String> excludeFiles = project.objects.listProperty(String.class)
 
   @TaskAction
   void generateClasses() {
