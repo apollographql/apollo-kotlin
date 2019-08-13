@@ -59,7 +59,7 @@ class GraphQLDocumentParser(val schema: Schema) {
       removeErrorListeners()
       addErrorListener(object : BaseErrorListener() {
         override fun syntaxError(recognizer: Recognizer<*, *>?, offendingSymbol: Any?, line: Int, position: Int, msg: String?,
-                                 e: RecognitionException?) {
+            e: RecognitionException?) {
           throw GraphQLDocumentParseException(
               graphQLFilePath = absolutePath,
               document = document,
@@ -104,8 +104,15 @@ class GraphQLDocumentParser(val schema: Schema) {
   }
 
   private fun GraphQLParser.DocumentContext.parse(graphQLFilePath: String): DocumentParseResult {
-    val fragments = definition().mapNotNull { ctx ->
-      ctx.fragmentDefinition()?.parse(schema)
+    val fragments = definition().mapNotNull { it.fragmentDefinition() }.map { ctx ->
+      if (ctx.fragmentKeyword().text == "fragment") {
+        ctx.parse(schema)
+      } else {
+        throw ParseException(
+            message = "Unsupported token `${ctx.fragmentKeyword().text}`",
+            token = ctx.fragmentKeyword().start
+        )
+      }
     }
     val operations = definition().mapNotNull { ctx ->
       ctx.operationDefinition()?.parse(graphQLFilePath)
@@ -331,6 +338,13 @@ class GraphQLDocumentParser(val schema: Schema) {
 
   private fun GraphQLParser.FragmentDefinitionContext.parse(schema: Schema): ParseResult<Fragment> {
     val fragmentName = fragmentName().text
+    if (fragmentName == "fragment") {
+      throw ParseException(
+          message = "Unsupported token `${fragmentName().text}`",
+          token = fragmentName().start
+      )
+    }
+
     val typeCondition = typeCondition().typeName().NAME().text
     val schemaType = schema[typeCondition] ?: throw ParseException(
         message = "Unknown GraphQL type `$typeCondition`",
