@@ -36,7 +36,7 @@ definition
    ;
 
 operationDefinition
-   : selectionSet | operationType NAME variableDefinitions? directives? selectionSet
+   : operationType NAME variableDefinitions? directives? selectionSet
    ;
 
 selectionSet
@@ -44,7 +44,7 @@ selectionSet
    ;
 
 operationType
-   : 'query' | 'mutation' | 'subscription'
+   : NAME
    ;
 
 selection
@@ -80,7 +80,11 @@ inlineFragment
    ;
 
 fragmentDefinition
-   : 'fragment' fragmentName 'on' typeCondition directives? selectionSet
+   : fragmentKeyword fragmentName 'on' typeCondition directives? selectionSet
+   ;
+
+fragmentKeyword
+   : NAME
    ;
 
 fragmentName
