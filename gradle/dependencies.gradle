@@ -25,7 +25,6 @@ ext.dep = [
     antlr                   : "org.antlr:antlr4:$versions.antlr4",
     antlrRuntime            : "org.antlr:antlr4-runtime:$versions.antlr4",
     apolloPlugin            : "com.apollographql.apollo:apollo-gradle-plugin:$versions.apolloVersion",
-    apolloAndroidSupport    : "com.apollographql.apollo:apollo-android-support:$versions.apolloVersion",
     apolloRuntime           : "com.apollographql.apollo:apollo-runtime:$versions.apolloVersion",
     apolloRxSupport         : "com.apollographql.apollo:apollo-rx-support:$versions.apolloVersion",
     apolloRx2Support        : "com.apollographql.apollo:apollo-rx2-support:$versions.apolloVersion",

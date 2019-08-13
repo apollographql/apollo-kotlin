@@ -1,0 +1,27 @@
+buildscript {
+  apply from: "../../../../gradle/dependencies.gradle"
+}
+
+plugins {
+  id 'com.android.library'
+  id 'com.apollographql.apollo'
+}
+
+android {
+  compileSdkVersion androidConfig.compileSdkVersion
+}
+
+repositories {
+  google() // for aapt2
+  mavenCentral() // for jetbrainsAnnotations, depended on by apolloApi
+  jcenter() // for org.jetbrains.trove4j, depended on by lint
+  maven {
+    url = uri("file://${projectDir.absolutePath}/../../../../build/localMaven")
+  }
+}
+
+dependencies {
+  implementation dep.jetbrainsAnnotations
+  implementation dep.apolloApi
+}
+
