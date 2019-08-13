@@ -103,7 +103,7 @@ class ApolloPlugin implements Plugin<Project> {
   private void addSourceSetTasks(SourceSet sourceSet, Task apolloIRGenTask, Task apolloClassGenTask) {
     String taskName = "main".equals(sourceSet.name) ? "" : sourceSet.name
 
-    final DirectoryProperty outputDir;
+    DirectoryProperty outputDir;
     if (useExperimentalCodegen) {
       ApolloExperimentalCodegenTask codegenTask = createExperimentalCodegenTask(sourceSet.name, [sourceSet])
       apolloClassGenTask.dependsOn(codegenTask)
