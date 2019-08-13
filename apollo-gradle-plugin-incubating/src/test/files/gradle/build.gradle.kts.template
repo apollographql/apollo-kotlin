@@ -1,0 +1,65 @@
+import com.apollographql.apollo.gradle.ApolloExtension
+
+buildscript {
+  apply("../../../gradle/dependencies.gradle")
+
+  val classpathDep = {artifact: String ->
+    val c = artifact.split(".")
+
+    var ret = (extra["dep"] as Map<String, *>)[c[0]]!!
+
+    if (c.size > 1) {
+      ret = (ret as Map<String, *>)[c[1]]!!
+    }
+    ret
+  }
+
+  repositories {
+    google()
+    mavenCentral()
+    maven {
+      url = uri("../../../build/localMaven")
+    }
+  }
+  dependencies {
+    // ADD BUILDSCRIPT DEPENDENCIES HERE
+  }
+}
+
+fun kotlinDep(artifact: String): Any {
+  val c = artifact.split(".")
+
+  var ret = (extra["dep"] as Map<String, *>)[c[0]]!!
+
+  if (c.size > 1) {
+    ret = (ret as Map<String, *>)[c[1]]!!
+  }
+  return ret
+}
+
+// ADD PLUGINS HERE
+// apply plugin: 'com.android.library'
+// apply plugin: 'com.apollographql.apollo'
+
+repositories {
+  google() // for aapt2
+  mavenCentral() // for jetbrainsAnnotations, depended on by apolloApi
+  jcenter() // for org.jetbrains.trove4j, depended on by lint
+  maven {
+    url = uri("../../../build/localMaven")
+  }
+}
+
+dependencies {
+  // ADD DEPENDENCIES HERE
+  add("implementation", kotlinDep("jetbrainsAnnotations"))
+  add("implementation", kotlinDep("apollo.api"))
+}
+
+// ADD ANDROID CONFIGURATION HERE
+// android {
+//   compileSdkVersion androidConfig.compileSdkVersion
+// }
+
+// ADD APOLLO CONFIGURATION HERE
+

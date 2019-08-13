@@ -39,11 +39,12 @@ ext.dep = [
         runtime: "org.antlr:antlr4-runtime:$versions.antlr4",
     ],
     apollo                : [
-        plugin   : "com.apollographql.apollo:apollo-gradle-plugin:$versions.apollo",
-        runtime  : "com.apollographql.apollo:apollo-runtime:$versions.apollo",
-        rx2      : "com.apollographql.apollo:apollo-rx2-support:$versions.apollo",
-        httpCache: "com.apollographql.apollo:apollo-http-cache:$versions.apollo",
-        api      : "com.apollographql.apollo:apollo-api:$versions.apollo",
+        plugin          : "com.apollographql.apollo:apollo-gradle-plugin:$versions.apollo",
+        pluginIncubating: "com.apollographql.apollo:apollo-gradle-plugin-incubating:$versions.apollo",
+        runtime         : "com.apollographql.apollo:apollo-runtime:$versions.apollo",
+        rx2             : "com.apollographql.apollo:apollo-rx2-support:$versions.apollo",
+        httpCache       : "com.apollographql.apollo:apollo-http-cache:$versions.apollo",
+        api             : "com.apollographql.apollo:apollo-api:$versions.apollo",
     ],
     bintrayGradlePlugin   : "com.jfrog.bintray.gradle:gradle-bintray-plugin:$versions.bintray",
     compiletesting        : "com.google.testing.compile:compile-testing:$versions.compiletesting",
@@ -89,4 +90,3 @@ ext.androidConfig = [
     minSdkVersion    : 15,
     targetSdkVersion : 28
 ]
-

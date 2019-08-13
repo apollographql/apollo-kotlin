@@ -1,8 +1,9 @@
 package com.apollographql.apollo.gradle
 
 import com.apollographql.apollo.compiler.GraphQLCompiler
-import com.apollographql.apollo.compiler.InflectorKt
+import com.apollographql.apollo.compiler.PackageNameProviderKt
 import com.apollographql.apollo.compiler.NullableValueType
+import com.apollographql.apollo.compiler.PackageNameProvider
 import com.apollographql.apollo.compiler.ir.CodeGenerationIR
 import com.apollographql.apollo.compiler.parser.GraphQLDocumentParser
 import com.apollographql.apollo.compiler.parser.Schema
@@ -48,20 +49,34 @@ class ApolloCodegenTask extends SourceTask {
     outputDir.asFile.get().delete()
 
     for (CodegenGenerationTaskCommandArgsBuilder.ApolloCodegenArgs codegenArg : codegenArgs) {
-      Schema schema = Schema.parse(codegenArg.schemaFile)
-      CodeGenerationIR codeGenerationIR = new GraphQLDocumentParser(schema).parse(codegenArg.queryFilePaths.toList().collect { new File(it) })
       String outputPackageName = outputPackageName.get()
       if (outputPackageName != null && outputPackageName.trim().isEmpty()) {
         outputPackageName = null
       }
-      String irPackageName =  InflectorKt.formatPackageName(codegenArg.outputFolder.absolutePath, false)
+      String irPackageName =  PackageNameProviderKt.formatPackageName(codegenArg.outputFolder.canonicalPath, 0)
+
+      PackageNameProvider packageNameProvider = new PackageNameProvider(
+              "",
+              irPackageName,
+              outputPackageName
+      )
+
+      Schema schema = Schema.parse(codegenArg.schemaFile)
+      CodeGenerationIR codeGenerationIR = new GraphQLDocumentParser(schema, packageNameProvider).parse(codegenArg.queryFilePaths.toList().collect { new File(it) })
 
       GraphQLCompiler.Arguments args = new GraphQLCompiler.Arguments(
-          codeGenerationIR, outputDir.get().asFile, customTypeMapping.get(),
-          nullableValueType != null ? nullableValueType : NullableValueType.ANNOTATED, useSemanticNaming.get(),
-          generateModelBuilder.get(), useJavaBeansSemanticNaming.get(), irPackageName, outputPackageName,
-          suppressRawTypesWarning.get(), generateKotlinModels.get(), generateVisitorForPolymorphicDatatypes.get(),
-          transformedQueriesOutputDir.getOrNull()?.asFile
+          codeGenerationIR,
+          outputDir.get().asFile,
+          customTypeMapping.get(),
+          useSemanticNaming.get(),
+          packageNameProvider,
+          generateKotlinModels.get(),
+          transformedQueriesOutputDir.getOrNull()?.asFile,
+          nullableValueType != null ? nullableValueType : NullableValueType.ANNOTATED,
+          generateModelBuilder.get(),
+          useJavaBeansSemanticNaming.get(),
+          suppressRawTypesWarning.get(),
+          generateVisitorForPolymorphicDatatypes.get()
       )
       new GraphQLCompiler().write(args)
     }
