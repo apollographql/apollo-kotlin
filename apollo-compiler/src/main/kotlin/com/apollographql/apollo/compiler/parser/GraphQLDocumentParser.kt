@@ -132,7 +132,7 @@ class GraphQLDocumentParser(val schema: Schema) {
     val fields = selectionSet().parse(schemaType).also { fields ->
       if (fields.result.isEmpty()) {
         throw ParseException(
-            message = "GraphQL operation `$operationName` of type `$operationType` must have a selection of subfields",
+            message = "GraphQL operation `$operationName` of type `$operationType` must have a selection of sub-fields",
             token = operationType().start
         )
       }
@@ -226,7 +226,16 @@ class GraphQLDocumentParser(val schema: Schema) {
     } ?: emptyList()
     val inlineFragments = selectionSet()?.selection()?.mapNotNull { ctx ->
       ctx.inlineFragment()?.parse(selectionSet())
-    } ?: emptyList()
+    }?.flatten() ?: ParseResult(result = emptyList())
+
+    val mergeInlineFragmentFields = inlineFragments.result
+        .filter { it.typeCondition == schemaFieldType.name }
+        .flatMap { it.fields }
+        .filter { it != typenameField }
+    val mergeInlineFragmentSpreadFragments = inlineFragments.result
+        .filter { it.typeCondition == schemaFieldType.name }
+        .flatMap { it.fragmentSpreads ?: emptyList() }
+
     val conditions = directives().parse()
     return ParseResult(
         result = Field(
@@ -235,9 +244,9 @@ class GraphQLDocumentParser(val schema: Schema) {
             type = schemaField.type.asIrType(),
             args = arguments.result,
             isConditional = conditions.isNotEmpty(),
-            fields = fields.result,
-            fragmentSpreads = fragmentSpreads,
-            inlineFragments = inlineFragments.map { it.result },
+            fields = fields.result + mergeInlineFragmentFields,
+            fragmentSpreads = fragmentSpreads + mergeInlineFragmentSpreadFragments,
+            inlineFragments = inlineFragments.result.filter { it.typeCondition != schemaFieldType.name },
             description = schemaField.description?.trim(),
             isDeprecated = schemaField.isDeprecated,
             deprecationReason = schemaField.deprecationReason,
@@ -246,7 +255,7 @@ class GraphQLDocumentParser(val schema: Schema) {
         usedTypes = setOf(schemaField.type.rawType.name!!)
             .union(arguments.usedTypes)
             .union(fields.usedTypes)
-            .union(inlineFragments.flatMap { it.usedTypes })
+            .union(inlineFragments.usedTypes)
     )
   }
 
@@ -316,7 +325,7 @@ class GraphQLDocumentParser(val schema: Schema) {
     ) { left, right -> left.union(right) }
     if (fields.result.isEmpty()) {
       throw ParseException(
-          message = "Inline fragment `$typeCondition` must have a selection of subfields",
+          message = "Inline fragment `$typeCondition` must have a selection of sub-fields",
           token = typeCondition().typeName().NAME().symbol
       )
     }
@@ -360,7 +369,7 @@ class GraphQLDocumentParser(val schema: Schema) {
     val fields = selectionSet().parse(schemaType)
     if (fields.result.isEmpty()) {
       throw ParseException(
-          message = "Fragment `$fragmentName` must have a selection of subfields",
+          message = "Fragment `$fragmentName` must have a selection of sub-fields",
           token = fragmentName().start
       )
     }
