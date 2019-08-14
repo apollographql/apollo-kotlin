@@ -71,12 +71,12 @@ class ApolloPluginTestHelper {
     }
   }
 
-  public static enum ProjectType {
+  static enum ProjectType {
     Android, Java
   }
 
-  static def File createTempTestDirectory(String testProjectName) {
-    File dir = new File(System.getProperty("user.dir"), "build/inegrationTests/$testProjectName")
+  static File createTempTestDirectory(String testProjectName) {
+    File dir = new File(System.getProperty("user.dir"), "build/integrationTests/$testProjectName")
     FileUtils.deleteDirectory(dir)
     FileUtils.forceMkdir(dir)
     return dir
@@ -86,9 +86,9 @@ class ApolloPluginTestHelper {
     String testProjectsRoot = "src/test/testProject"
 
     File projectTypeRoot
-    if (type.equals(ProjectType.Android)) {
+    if (type == ProjectType.Android) {
       projectTypeRoot = new File("$testProjectsRoot/android")
-    } else if (type.equals(ProjectType.Java)) {
+    } else if (type == ProjectType.Java) {
       projectTypeRoot = new File("$testProjectsRoot/java")
     } else {
       throw new IllegalArgumentException("Not a valid project type")
