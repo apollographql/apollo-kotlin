@@ -11,9 +11,9 @@ public final class GraphQLSourceDirectorySet {
   private static final String GQL_QUERY_PATTERN = "**/*.gql";
   private static final String SCHEMA_FILE_PATTERN = "**/" + SCHEMA_FILE_NAME;
 
-  public static SourceDirectorySet create(ObjectFactory objectFactory) {
+  public static SourceDirectorySet create(String name, ObjectFactory objectFactory) {
     SourceDirectorySet sourceSet = objectFactory.sourceDirectorySet(NAME, String.format("%s GraphQL source", NAME));
-    sourceSet.srcDir("src/" + NAME + "/graphql");
+    sourceSet.srcDir("src/" + name + "/graphql");
     sourceSet.include(GRAPHQL_QUERY_PATTERN, GQL_QUERY_PATTERN, SCHEMA_FILE_PATTERN);
     return sourceSet;
   }

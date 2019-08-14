@@ -240,7 +240,7 @@ class ApolloPlugin implements Plugin<Project> {
       sourceSet.extensions.add(
           SourceDirectorySet.class,
           GraphQLSourceDirectorySet.NAME,
-          GraphQLSourceDirectorySet.create(project.objects)
+          GraphQLSourceDirectorySet.create(sourceSet.name, project.objects)
       )
     }
   }
