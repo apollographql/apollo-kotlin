@@ -20,6 +20,11 @@ class KotlinSpec extends Specification {
             throw new IllegalArgumentException("Couldn't find test project")
         }
 
+        File settingsGradle = new File(testProjectDir, "settings.gradle")
+        settingsGradle << """
+rootProject.name = 'test-project'
+"""
+
         FileUtils.copyDirectory(readOnlyDir, testProjectDir)
     }
 
