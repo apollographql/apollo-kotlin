@@ -1,5 +1,8 @@
+# some comment
 query TestQuery {
+  # another comment
   hero {
+    # the last comment
     name
   }
 }
