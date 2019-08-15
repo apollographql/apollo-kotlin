@@ -1,0 +1,23 @@
+query TestQuery {
+  hero {
+    name
+    friendsConnection {
+      edges {
+        node {
+          name
+        }
+      }
+    }
+    ... on Character {
+      name
+      profileLink
+      friendsConnection {
+        edges {
+          node {
+            name
+          }
+        }
+      }
+    }
+  }
+}
