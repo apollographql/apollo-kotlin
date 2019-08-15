@@ -5,6 +5,10 @@ apply plugin: 'java-gradle-plugin'
 sourceSets.main.java.srcDirs = []
 sourceSets.main.groovy.srcDirs = ["src/main/java", "src/main/groovy"]
 
+configurations {
+  fixtureClasspath
+}
+
 dependencies {
   compileOnly gradleApi()
   compileOnly dep.androidPlugin
@@ -19,7 +23,15 @@ dependencies {
   testImplementation(dep.spock) {
     exclude module: 'groovy-all'
   }
+  fixtureClasspath dep.androidPlugin
 }
+
+// Append any extra dependencies to the test fixtures via a custom configuration classpath. This
+// allows us to apply additional plugins in a fixture while still leveraging dependency resolution
+// and de-duplication semantics.
+tasks.getByName('pluginUnderTestMetadata').
+        getPluginClasspath().
+        from(configurations.fixtureClasspath)
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
 apply from: rootProject.file('gradle/bintray.gradle')
