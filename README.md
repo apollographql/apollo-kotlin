@@ -93,7 +93,7 @@ apply plugin: 'com.apollographql.android'
 The Android Plugin must be applied before the Apollo plugin.
 For Kotlin users, the Apollo plugin must be applied before the Kotlin plugins.
 
-**NOTE: Apollo Gradle plugin requires Gradle 4.3 or higher.**
+**NOTE: Apollo Gradle plugin requires Gradle 5.1 or higher.**
 
 ## Generate Code using Apollo
 
