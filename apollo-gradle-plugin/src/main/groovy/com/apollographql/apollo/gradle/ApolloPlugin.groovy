@@ -11,6 +11,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.internal.AbstractTask
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.tasks.SourceSet
@@ -102,7 +103,7 @@ class ApolloPlugin implements Plugin<Project> {
   private void addSourceSetTasks(SourceSet sourceSet, Task apolloIRGenTask, Task apolloClassGenTask) {
     String taskName = "main".equals(sourceSet.name) ? "" : sourceSet.name
 
-    final DirectoryProperty outputDir;
+    DirectoryProperty outputDir;
     if (useExperimentalCodegen) {
       ApolloExperimentalCodegenTask codegenTask = createExperimentalCodegenTask(sourceSet.name, [sourceSet])
       apolloClassGenTask.dependsOn(codegenTask)
@@ -236,7 +237,11 @@ class ApolloPlugin implements Plugin<Project> {
 
   private void createSourceSetExtensions() {
     getSourceSets().all { sourceSet ->
-      sourceSet.extensions.create(GraphQLSourceDirectorySet.NAME, GraphQLSourceDirectorySet, sourceSet.name, fileResolver)
+      sourceSet.extensions.add(
+          SourceDirectorySet.class,
+          GraphQLSourceDirectorySet.NAME,
+          GraphQLSourceDirectorySet.create(sourceSet.name, project.objects)
+      )
     }
   }
 

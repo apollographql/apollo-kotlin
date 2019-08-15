@@ -3,6 +3,7 @@ package com.apollographql.apollo.gradle
 
 import com.moowork.gradle.node.task.NodeTask
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
@@ -16,10 +17,10 @@ class ApolloLocalCodegenGenerationTask extends NodeTask {
       File.separator + "cli.js"
 
   @Input final Property<String> variant = project.objects.property(String.class)
-  @Input final Property<List> sourceSetNames = project.objects.property(List.class)
+  @Input final ListProperty<String> sourceSetNames = project.objects.listProperty(String.class)
   @Input @Optional final Property<String> schemaFilePath = project.objects.property(String.class)
   @Input @Optional final Property<String> outputPackageName = project.objects.property(String.class)
-  @OutputDirectory final DirectoryProperty outputDir = project.layout.directoryProperty()
+  @OutputDirectory final DirectoryProperty outputDir = project.objects.directoryProperty()
 
   @Override
   void exec() {

@@ -8,6 +8,8 @@ buildscript {
 
   dependencies {
     classpath dep.gradleErrorpronePlugin
+    classpath dep.androidPlugin
+    classpath dep.kotlinGradlePlugin
   }
 }
 

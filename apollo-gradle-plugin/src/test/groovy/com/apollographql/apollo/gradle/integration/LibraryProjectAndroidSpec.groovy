@@ -7,8 +7,8 @@ import org.gradle.testkit.runner.TaskOutcome
 import spock.lang.Shared
 import spock.lang.Specification
 
-import static ApolloPluginTestHelper.createTempTestDirectory
-import static ApolloPluginTestHelper.prepareProjectTestDir
+import static com.apollographql.apollo.gradle.ApolloPluginTestHelper.createTempTestDirectory
+import static com.apollographql.apollo.gradle.ApolloPluginTestHelper.prepareProjectTestDir
 import static org.apache.commons.io.FileUtils.copyFile
 
 class LibraryProjectAndroidSpec extends Specification {

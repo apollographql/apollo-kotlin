@@ -1,11 +1,11 @@
 package com.apollographql.apollo.gradle
 
 import com.apollographql.apollo.compiler.GraphQLCompiler
-import com.apollographql.apollo.compiler.InflectorKt
 import com.apollographql.apollo.compiler.NullableValueType
 import com.google.common.base.Joiner
 import org.gradle.api.Action
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull
 class ApolloClassGenerationTask extends SourceTask {
   static final String NAME = "generate%sApolloClasses"
 
-  @Input final Property<Map> customTypeMapping = project.objects.property(Map.class)
+  @Input final MapProperty<String, String> customTypeMapping = project.objects.mapProperty(String.class, String.class)
   @Optional @Input final Property<String> nullableValueType = project.objects.property(String.class)
   @Input final Property<Boolean> useSemanticNaming = project.objects.property(Boolean.class)
   @Input final Property<Boolean> generateModelBuilder = project.objects.property(Boolean.class)
@@ -25,7 +25,7 @@ class ApolloClassGenerationTask extends SourceTask {
   @Input final Property<Boolean> generateKotlinModels = project.objects.property(Boolean.class)
   @Input final Property<Boolean> generateVisitorForPolymorphicDatatypes = project.objects.property(Boolean.class)
   @Optional @Input final Property<String> outputPackageName = project.objects.property(String.class)
-  @OutputDirectory final DirectoryProperty outputDir = project.layout.directoryProperty()
+  @OutputDirectory final DirectoryProperty outputDir = project.objects.directoryProperty()
 
   ApolloClassGenerationTask() {
     outputDir.set(new File(project.buildDir, Joiner.on(File.separator).join(GraphQLCompiler.OUTPUT_DIRECTORY)))
