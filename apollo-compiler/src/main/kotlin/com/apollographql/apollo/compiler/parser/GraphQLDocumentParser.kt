@@ -244,8 +244,8 @@ class GraphQLDocumentParser(val schema: Schema) {
             type = schemaField.type.asIrType(),
             args = arguments.result,
             isConditional = conditions.isNotEmpty(),
-            fields = fields.result + mergeInlineFragmentFields,
-            fragmentSpreads = fragmentSpreads + mergeInlineFragmentSpreadFragments,
+            fields = fields.result.mergeFields(other = mergeInlineFragmentFields, parseContext = this),
+            fragmentSpreads = fragmentSpreads.union(mergeInlineFragmentSpreadFragments).toList(),
             inlineFragments = inlineFragments.result.filter { it.typeCondition != schemaFieldType.name },
             description = schemaField.description?.trim(),
             isDeprecated = schemaField.isDeprecated,
@@ -377,9 +377,17 @@ class GraphQLDocumentParser(val schema: Schema) {
       selection.fragmentSpread()?.fragmentName()?.NAME()?.text
     } ?: emptyList()
 
-    val inlineFragments = selectionSet()?.selection()?.mapNotNull { selection ->
-      selection.inlineFragment()?.parse(selectionSet())
-    } ?: emptyList()
+    val inlineFragments = selectionSet()?.selection()?.mapNotNull { ctx ->
+      ctx.inlineFragment()?.parse(selectionSet())
+    }?.flatten() ?: ParseResult(result = emptyList())
+
+    val mergeInlineFragmentFields = inlineFragments.result
+        .filter { it.typeCondition == typeCondition }
+        .flatMap { it.fields }
+        .filter { it != typenameField }
+    val mergeInlineFragmentSpreadFragments = inlineFragments.result
+        .filter { it.typeCondition == typeCondition }
+        .flatMap { it.fragmentSpreads ?: emptyList() }
 
     return ParseResult(
         result = Fragment(
@@ -387,14 +395,14 @@ class GraphQLDocumentParser(val schema: Schema) {
             typeCondition = typeCondition,
             source = graphQLDocumentSource,
             possibleTypes = possibleTypes,
-            fields = fields.result,
-            fragmentSpreads = fragmentSpreads,
-            fragmentsReferenced = fields.result.referencedFragments(),
-            inlineFragments = inlineFragments.map { it.result }
+            fields = fields.result.mergeFields(other = mergeInlineFragmentFields, parseContext = this),
+            fragmentSpreads = fragmentSpreads.union(mergeInlineFragmentSpreadFragments).toList(),
+            inlineFragments = inlineFragments.result.filter { it.typeCondition != typeCondition },
+            fragmentsReferenced = fields.result.referencedFragments()
         ),
         usedTypes = setOf(typeCondition)
             .union(fields.usedTypes)
-            .union(inlineFragments.flatMap { it.usedTypes })
+            .union(inlineFragments.usedTypes)
     )
   }
 
@@ -556,6 +564,56 @@ class GraphQLDocumentParser(val schema: Schema) {
       result = map { (result, _) -> result },
       usedTypes = flatMap { (_, usedTypes) -> usedTypes }.toSet()
   )
+
+  private fun List<Field>.mergeFields(other: List<Field>, parseContext: ParserRuleContext): List<Field> {
+    val mergeFieldMap = other.groupBy { otherField ->
+      find { field -> field.responseName == otherField.responseName }
+    }
+    return map { field ->
+      field.merge(other = mergeFieldMap[field]?.firstOrNull(), parseContext = parseContext)
+    } + (mergeFieldMap[null] ?: emptyList())
+  }
+
+  private fun Field.merge(other: Field?, parseContext: ParserRuleContext): Field {
+    if (other == null) return this
+
+    if (fieldName != other.fieldName) {
+      throw ParseException(
+          message = "Fields `$responseName` conflict because they have different schema names. Use different aliases on the fields.",
+          token = parseContext.start
+      )
+    }
+
+    if (type != other.type) {
+      throw ParseException(
+          message = "Fields `$responseName` conflict because they have different schema types. Use different aliases on the fields.",
+          token = parseContext.start
+      )
+    }
+
+    if (!(args ?: emptyList()).containsAll(other.args ?: emptyList())) {
+      throw ParseException(
+          message = "Fields `$responseName` conflict because they have different arguments. Use different aliases on the fields.",
+          token = parseContext.start
+      )
+    }
+
+    if (!(fields ?: emptyList()).containsAll(other.fields ?: emptyList())) {
+      throw ParseException(
+          message = "Fields `$responseName` conflict because they have different selection sets. Use different aliases on the fields.",
+          token = parseContext.start
+      )
+    }
+
+    if (!(inlineFragments ?: emptyList()).containsAll(other.inlineFragments ?: emptyList())) {
+      throw ParseException(
+          message = "Fields `$responseName` conflict because they have different inline fragment. Use different aliases on the fields.",
+          token = parseContext.start
+      )
+    }
+
+    return copy(fragmentSpreads = (fragmentSpreads ?: emptyList()).union(other.fragmentSpreads ?: emptyList()).toList())
+  }
 }
 
 private data class DocumentParseResult(

@@ -17,6 +17,7 @@ import kotlin.Any
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 
 @Suppress("NAME_SHADOWING", "LocalVariableName", "RemoveExplicitTypeArguments",
     "NestedLambdaShadowedImplicitParameter")
@@ -30,12 +31,115 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     Data(it)
   }
 
+  data class Node(
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeString(RESPONSE_FIELDS[1], name)
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null)
+          )
+
+      operator fun invoke(reader: ResponseReader): Node {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val name = reader.readString(RESPONSE_FIELDS[1])
+        return Node(
+          __typename = __typename,
+          name = name
+        )
+      }
+    }
+  }
+
+  data class Edge(
+    val __typename: String,
+    /**
+     * The character represented by this friendship edge
+     */
+    val node: Node?
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeObject(RESPONSE_FIELDS[1], node?.marshaller())
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forObject("node", "node", null, true, null)
+          )
+
+      operator fun invoke(reader: ResponseReader): Edge {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val node = reader.readObject<Node>(RESPONSE_FIELDS[1]) { reader ->
+          Node(reader)
+        }
+
+        return Edge(
+          __typename = __typename,
+          node = node
+        )
+      }
+    }
+  }
+
+  data class FriendsConnection(
+    val __typename: String,
+    /**
+     * The edges for each of the character's friends.
+     */
+    val edges: List<Edge?>?
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
+      it.writeString(RESPONSE_FIELDS[0], __typename)
+      it.writeList(RESPONSE_FIELDS[1], edges) { value, listItemWriter ->
+        value?.forEach { value ->
+          listItemWriter.writeObject(value?.marshaller())
+        }
+      }
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forList("edges", "edges", null, true, null)
+          )
+
+      operator fun invoke(reader: ResponseReader): FriendsConnection {
+        val __typename = reader.readString(RESPONSE_FIELDS[0])
+        val edges = reader.readList<Edge>(RESPONSE_FIELDS[1]) {
+          it.readObject<Edge> { reader ->
+            Edge(reader)
+          }
+
+        }
+        return FriendsConnection(
+          __typename = __typename,
+          edges = edges
+        )
+      }
+    }
+  }
+
   data class Hero(
     val __typename: String,
     /**
      * The name of the character
      */
     val name: String,
+    /**
+     * The friends of the character exposed as a connection with edges
+     */
+    val friendsConnection: FriendsConnection,
     /**
      * Profile link
      */
@@ -44,13 +148,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller {
       it.writeString(RESPONSE_FIELDS[0], __typename)
       it.writeString(RESPONSE_FIELDS[1], name)
-      it.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, profileLink)
+      it.writeObject(RESPONSE_FIELDS[2], friendsConnection.marshaller())
+      it.writeCustom(RESPONSE_FIELDS[3] as ResponseField.CustomTypeField, profileLink)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("__typename", "__typename", null, false, null),
           ResponseField.forString("name", "name", null, false, null),
+          ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
           ResponseField.forCustomType("profileLink", "profileLink", null, false, CustomType.URL,
               null)
           )
@@ -58,11 +164,16 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
       operator fun invoke(reader: ResponseReader): Hero {
         val __typename = reader.readString(RESPONSE_FIELDS[0])
         val name = reader.readString(RESPONSE_FIELDS[1])
-        val profileLink = reader.readCustomType<Any>(RESPONSE_FIELDS[2] as
+        val friendsConnection = reader.readObject<FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+          FriendsConnection(reader)
+        }
+
+        val profileLink = reader.readCustomType<Any>(RESPONSE_FIELDS[3] as
             ResponseField.CustomTypeField)
         return Hero(
           __typename = __typename,
           name = name,
+          friendsConnection = friendsConnection,
           profileLink = profileLink
         )
       }
@@ -95,15 +206,36 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "90de3eb5eab498b75034ad1404a73e866c1663378ecf9abdbe1366fca3825514"
+        "7c5b1cf38290937b9969d3c77370740c66f6233428f04e1dd35c2d206efa1719"
 
     val QUERY_DOCUMENT: String = """
         |query TestQuery {
         |  hero {
         |    __typename
+        |    name
+        |    friendsConnection {
+        |      __typename
+        |      edges {
+        |        __typename
+        |        node {
+        |          __typename
+        |          name
+        |        }
+        |      }
+        |    }
         |    ... on Character {
         |      name
         |      profileLink
+        |      friendsConnection {
+        |        __typename
+        |        edges {
+        |          __typename
+        |          node {
+        |            __typename
+        |            name
+        |          }
+        |        }
+        |      }
         |    }
         |  }
         |}
