@@ -42,34 +42,6 @@
 	],
 	"fragments": [
 		{
-			"typeCondition": "Human",
-			"possibleTypes": [
-				"Human"
-			],
-			"fragmentName": "HumanDetails",
-			"filePath": "src/test/graphql/com/example/simple_fragment/TestOperation.graphql",
-			"source": "fragment HumanDetails on Human {\n  __typename\n  name\n}",
-			"fields": [
-				{
-					"responseName": "__typename",
-					"fieldName": "__typename",
-					"type": "String!",
-					"isConditional": false
-				},
-				{
-					"responseName": "name",
-					"fieldName": "name",
-					"type": "String!",
-					"isConditional": false,
-					"description": "What this human calls themselves",
-					"isDeprecated": false,
-					"deprecationReason": null
-				}
-			],
-			"fragmentSpreads": [],
-			"inlineFragments": []
-		},
-		{
 			"typeCondition": "Character",
 			"possibleTypes": [
 				"Human",
@@ -91,6 +63,34 @@
 					"type": "String!",
 					"isConditional": false,
 					"description": "The name of the character",
+					"isDeprecated": false,
+					"deprecationReason": null
+				}
+			],
+			"fragmentSpreads": [],
+			"inlineFragments": []
+		},
+		{
+			"typeCondition": "Human",
+			"possibleTypes": [
+				"Human"
+			],
+			"fragmentName": "HumanDetails",
+			"filePath": "src/test/graphql/com/example/simple_fragment/TestOperation.graphql",
+			"source": "fragment HumanDetails on Human {\n  __typename\n  name\n}",
+			"fields": [
+				{
+					"responseName": "__typename",
+					"fieldName": "__typename",
+					"type": "String!",
+					"isConditional": false
+				},
+				{
+					"responseName": "name",
+					"fieldName": "name",
+					"type": "String!",
+					"isConditional": false,
+					"description": "What this human calls themselves",
 					"isDeprecated": false,
 					"deprecationReason": null
 				}

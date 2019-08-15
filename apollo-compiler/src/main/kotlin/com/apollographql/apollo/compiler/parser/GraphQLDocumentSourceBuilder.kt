@@ -24,6 +24,9 @@ object GraphQLDocumentSourceBuilder {
       return "fragment $fragmentName on $typeCondition $directives$fields".withIndents
     }
 
+  private val GraphQLParser.VariableDefinitionsContext.source: String
+    get() = variableDefinition().joinToString(separator = ", ", prefix = "(", postfix = ")") { it.source }
+
   private fun GraphQLParser.SelectionSetContext.format(addTypeName: Boolean = true): String {
     val withTypeName = addTypeName && selection()?.find {
       it.field()?.fieldName()?.NAME()?.text == "__typename"
@@ -50,6 +53,29 @@ object GraphQLDocumentSourceBuilder {
       val arguments = arguments()?.source ?: ""
       val selectionSet = selectionSet()?.format()?.let { " {\n$it\n}" } ?: ""
       return "$fieldName$directives$arguments$selectionSet"
+    }
+
+  private val GraphQLParser.ArgumentsContext.source: String
+    get() = argument().joinToString(separator = ", ", prefix = "(", postfix = ")") { it.source }
+
+  private val GraphQLParser.ArgumentContext.source: String
+    get() = valueOrVariable()?.value()?.source?.let { "${NAME().text}: $it" } ?: (this as ParserRuleContext).source
+
+  private val GraphQLParser.ValueContext.source: String
+    get() {
+      return when (this) {
+        is GraphQLParser.ArrayValueContext -> source
+        is GraphQLParser.InlineInputTypeValueContext -> inlineInputType().source
+        else -> (this as ParserRuleContext).source
+      }
+    }
+
+  private val GraphQLParser.ArrayValueContext.source: String
+    get() = array().value().joinToString(separator = ", ", prefix = "[", postfix = "]") { it.source }
+
+  private val GraphQLParser.InlineInputTypeContext.source: String
+    get() = inlineInputTypeField().joinToString(separator = ", ", prefix = "{", postfix = "}") { ctx ->
+      "${ctx.NAME().text}: ${ctx.valueOrVariable()?.variable()?.source ?: ctx.valueOrVariable().value().source}"
     }
 
   private val ParserRuleContext.source: String

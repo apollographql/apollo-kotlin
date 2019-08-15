@@ -64,7 +64,7 @@ alias
    ;
 
 arguments
-   : '(' argument ( ',' argument )* ')'
+   : '(' argument ( ','? argument )* ')'
    ;
 
 argument
@@ -104,7 +104,7 @@ typeCondition
    ;
 
 variableDefinitions
-   : '(' variableDefinition ( ',' variableDefinition )* ')'
+   : '(' variableDefinition ( ','? variableDefinition )* ')'
    ;
 
 variableDefinition
@@ -152,7 +152,7 @@ nonNullType
    ;
 
 array
-   : '[' value ( ',' value )* ']' | '[' ']'
+   : '[' value ( ','? value )* ']' | '[' ']'
    ;
 
 STRING
@@ -187,3 +187,6 @@ fragment EXP
 WS
    : [ \t\n\r]+ -> skip
    ;
+COMMENT
+    : '#' ~[\r\n]* -> channel(2)
+    ;
