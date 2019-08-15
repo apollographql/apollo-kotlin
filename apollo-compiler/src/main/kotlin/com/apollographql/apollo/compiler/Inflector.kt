@@ -26,7 +26,7 @@ fun String.singularize(): String {
 
   if (exclude.contains(this.toLowerCase())) return this
 
-  val irregular = irregular().firstOrNull() { this.toLowerCase() == it.component2() }
+  val irregular = irregular().firstOrNull { this.toLowerCase() == it.component2() }
   if (irregular != null) return irregular.component1()
 
   if (singularizationRules().find { match(it.component1(), this) } == null) return this

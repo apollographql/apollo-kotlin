@@ -445,7 +445,7 @@ class SchemaTypeSpecBuilder(
           fieldSpec = fieldSpec,
           normalizedFieldSpec = normalizedFieldSpec,
           responseFieldType = ResponseField.Type.INLINE_FRAGMENT,
-          typeConditions = if (inlineFragment.possibleTypes != null && !inlineFragment.possibleTypes.isEmpty())
+          typeConditions = if (inlineFragment.possibleTypes != null && inlineFragment.possibleTypes.isNotEmpty())
             inlineFragment.possibleTypes
           else
             listOf(inlineFragment.typeCondition),

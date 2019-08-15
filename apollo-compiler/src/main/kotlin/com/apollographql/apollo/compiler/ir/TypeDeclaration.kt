@@ -14,14 +14,10 @@ data class TypeDeclaration(
     val values: List<TypeDeclarationValue>?,
     val fields: List<TypeDeclarationField>?
 ) : CodeGenerator {
-  override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec {
-    if (kind == KIND_ENUM) {
-      return enumTypeToTypeSpec()
-    } else if (kind == KIND_INPUT_OBJECT_TYPE) {
-      return inputObjectToTypeSpec(context)
-    } else {
-      throw UnsupportedOperationException("unsupported $kind type declaration")
-    }
+  override fun toTypeSpec(context: CodeGenerationContext, abstract: Boolean): TypeSpec = when (kind) {
+    KIND_ENUM -> enumTypeToTypeSpec()
+    KIND_INPUT_OBJECT_TYPE -> inputObjectToTypeSpec(context)
+    else -> throw UnsupportedOperationException("unsupported $kind type declaration")
   }
 
   private fun enumTypeToTypeSpec(): TypeSpec {

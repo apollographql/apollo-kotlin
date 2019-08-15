@@ -68,10 +68,10 @@ data class Fragment(
           .build())
 
   private fun possibleTypesInitCode(): CodeBlock {
-    val builder = CodeBlock.builder().add("\$T.unmodifiableList(\$T.asList(", Collections::class.java,
+    val initialBuilder = CodeBlock.builder().add("\$T.unmodifiableList(\$T.asList(", Collections::class.java,
         Arrays::class.java)
     return possibleTypes.foldIndexed(
-        builder,
+        initialBuilder,
         { i, builder, type ->
           if (i > 0) {
             builder.add(",")
@@ -82,7 +82,7 @@ data class Fragment(
   }
 
   companion object {
-    val FRAGMENT_DEFINITION_FIELD_NAME: String = "FRAGMENT_DEFINITION"
-    val POSSIBLE_TYPES_VAR: String = "POSSIBLE_TYPES"
+    const val FRAGMENT_DEFINITION_FIELD_NAME: String = "FRAGMENT_DEFINITION"
+    const val POSSIBLE_TYPES_VAR: String = "POSSIBLE_TYPES"
   }
 }

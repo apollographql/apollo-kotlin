@@ -9,10 +9,10 @@ sealed class ScalarType(val name: String) {
 
   companion object {
     fun forName(name: String): ScalarType? = when (name) {
-      ScalarType.STRING.name -> ScalarType.STRING
-      ScalarType.INT.name -> ScalarType.INT
-      ScalarType.BOOLEAN.name -> ScalarType.BOOLEAN
-      ScalarType.FLOAT.name -> ScalarType.FLOAT
+      STRING.name -> STRING
+      INT.name -> INT
+      BOOLEAN.name -> BOOLEAN
+      FLOAT.name -> FLOAT
       else -> null
     }
   }

@@ -211,7 +211,7 @@ internal object KotlinCodeGen {
                     CodeBlock.of("val %L = if (%T.POSSIBLE_TYPES.contains(conditionalType)) %T(reader) else null",
                         field.name, field.type.asTypeName(), field.type.asTypeName())
                   } else {
-                     CodeBlock.of("val %L = %T(reader)", field.name, field.type.asTypeName())
+                    CodeBlock.of("val %L = %T(reader)", field.name, field.type.asTypeName())
                   }
                 }.joinToCode(separator = "\n", suffix = "\n")
             )
@@ -362,7 +362,10 @@ internal object KotlinCodeGen {
   fun Any.toDefaultValueCodeBlock(typeName: TypeName, fieldType: FieldType): CodeBlock = when {
     this is Number -> CodeBlock.of("%L%L", castTo(typeName), if (typeName == LONG) "L" else "")
     fieldType is FieldType.Scalar.Enum -> CodeBlock.of("%T.safeValueOf(%S)", typeName, this)
-    fieldType is FieldType.Array -> (this as List<Any>).toDefaultValueCodeBlock(typeName, fieldType)
+    fieldType is FieldType.Array -> {
+      @Suppress("UNCHECKED_CAST")
+      (this as List<Any>).toDefaultValueCodeBlock(typeName, fieldType)
+    }
     this !is String -> CodeBlock.of("%L", this)
     else -> CodeBlock.of("%S", this)
   }
@@ -390,19 +393,21 @@ internal object KotlinCodeGen {
   fun TypeRef.asTypeName() = ClassName(packageName = packageName, simpleName = name.capitalize())
 
   private fun Map<String, Any>.toCode(): CodeBlock? {
-    return takeIf { it.isNotEmpty() }?.let {
-      it.map { it.toCode() }
-          .foldIndexed(CodeBlock.builder().add("mapOf<%T, Any>(\n",
-              String::class.asTypeName()).indent()) { index, builder, code ->
-            if (index > 0) {
-              builder.add(",\n")
-            }
-            builder.add(code)
+    if (isEmpty()) return null
+
+    return map { it.toCode() }
+        .foldIndexed(CodeBlock.builder().add(
+            "mapOf<%T, Any>(\n",
+            String::class.asTypeName()).indent()
+        ) { index, builder, code ->
+          if (index > 0) {
+            builder.add(",\n")
           }
-          .unindent()
-          .add(")")
-          .build()
-    }
+          builder.add(code)
+        }
+        .unindent()
+        .add(")")
+        .build()
   }
 
   @Suppress("UNCHECKED_CAST")
@@ -413,8 +418,7 @@ internal object KotlinCodeGen {
 
   fun Any.normalizeJsonValue(graphQLType: String): Any = when (this) {
     is Number -> {
-      val scalarType = ScalarType.forName(graphQLType.removeSuffix("!"))
-      when (scalarType) {
+      when (ScalarType.forName(graphQLType.removeSuffix("!"))) {
         is ScalarType.INT -> toInt()
         is ScalarType.FLOAT -> toDouble()
         else -> this

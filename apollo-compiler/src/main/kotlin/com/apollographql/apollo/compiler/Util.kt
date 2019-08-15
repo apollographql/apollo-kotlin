@@ -2,7 +2,6 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.squareup.javapoet.*
-import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import javax.lang.model.element.Modifier
@@ -33,17 +32,14 @@ fun String.toJavaBeansSemanticNaming(isBooleanField: Boolean): String {
   return "$prefix${capitalize()}"
 }
 
-fun TypeName.overrideTypeName(typeNameOverrideMap: Map<String, String>): TypeName {
-  if (this is ParameterizedTypeName) {
+fun TypeName.overrideTypeName(typeNameOverrideMap: Map<String, String>): TypeName = when (this) {
+  is ParameterizedTypeName -> {
     val typeArguments = typeArguments.map { it.overrideTypeName(typeNameOverrideMap) }.toTypedArray()
-    return ParameterizedTypeName.get(rawType, *typeArguments)
-  } else if (this is ClassName) {
-    return ClassName.get(packageName(), typeNameOverrideMap[simpleName()] ?: simpleName())
-  } else if (this is WildcardTypeName) {
-    return WildcardTypeName.subtypeOf(upperBounds[0].overrideTypeName(typeNameOverrideMap))
-  } else {
-    return this
+    ParameterizedTypeName.get(rawType, *typeArguments)
   }
+  is ClassName -> ClassName.get(packageName(), typeNameOverrideMap[simpleName()] ?: simpleName())
+  is WildcardTypeName -> WildcardTypeName.subtypeOf(upperBounds[0].overrideTypeName(typeNameOverrideMap))
+  else -> this
 }
 
 fun FieldSpec.overrideType(typeNameOverrideMap: Map<String, String>): FieldSpec =
@@ -209,12 +205,10 @@ fun TypeSpec.withHashCodeImplementation(): TypeSpec {
           .addStatement("h *= 1000003")
           .let {
             if (field.type.isPrimitive) {
-              if (field.type.withoutAnnotations() == TypeName.DOUBLE) {
-                it.addStatement("h ^= Double.valueOf(\$L).hashCode()", field.name)
-              } else if (field.type.withoutAnnotations() == TypeName.BOOLEAN) {
-                it.addStatement("h ^= Boolean.valueOf(\$L).hashCode()", field.name)
-              } else {
-                it.addStatement("h ^= \$L", field.name)
+              when (field.type.withoutAnnotations()) {
+                TypeName.DOUBLE -> it.addStatement("h ^= Double.valueOf(\$L).hashCode()", field.name)
+                TypeName.BOOLEAN -> it.addStatement("h ^= Boolean.valueOf(\$L).hashCode()", field.name)
+                else -> it.addStatement("h ^= \$L", field.name)
               }
             } else if (field.type.annotations.contains(Annotations.NONNULL) || field.type.isOptional()) {
               it.addStatement("h ^= \$L.hashCode()", field.name)
@@ -278,8 +272,11 @@ fun TypeName.unwrapOptionalType(withoutAnnotations: Boolean = false): TypeName {
   }.let { if (withoutAnnotations) it.withoutAnnotations() else it }
 }
 
-fun TypeName.unwrapOptionalValue(varName: String, checkIfPresent: Boolean = true,
-    transformation: ((CodeBlock) -> CodeBlock)? = null): CodeBlock {
+fun TypeName.unwrapOptionalValue(
+    varName: String,
+    checkIfPresent: Boolean = true,
+    transformation: ((CodeBlock) -> CodeBlock)? = null
+): CodeBlock {
   return if (isOptional() && this is ParameterizedTypeName) {
     if (rawType == ClassNames.INPUT) {
       val valueCode = CodeBlock.of("\$L.value", varName)
@@ -472,9 +469,9 @@ fun TypeSpec.conformToProtocol(protocolSpec: TypeSpec): TypeSpec {
       .addSuperinterface(ClassName.get("", protocolSpec.name))
       .also { if (classBuilder) it.addFields(fieldSpecs) }
       .addMethods(methodSpecs)
-      .addTypes(typeSpecs.map { typeSpec ->
-        val protocol = nestedTypeProtocols[typeSpec.name]
-        protocol?.let { typeSpec.conformToProtocol(it) } ?: typeSpec
+      .addTypes(typeSpecs.map { nestedTypeSpec ->
+        val protocol = nestedTypeProtocols[nestedTypeSpec.name]
+        protocol?.let { nestedTypeSpec.conformToProtocol(it) } ?: nestedTypeSpec
       })
       .also { if (!staticBlock.isEmpty) it.addStaticBlock(staticBlock) }
       .also { if (classBuilder && !initializerBlock.isEmpty) it.addInitializerBlock(initializerBlock) }

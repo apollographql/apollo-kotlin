@@ -20,7 +20,7 @@ class ResponseFieldSpec(
     val context: CodeGenerationContext
 ) {
   fun factoryCode(): CodeBlock {
-    val factoryMethod = FACTORY_METHODS[responseFieldType]!!
+    val factoryMethod = FACTORY_METHODS[responseFieldType] ?: error("Unrecognized responseFieldType: $responseFieldType")
     return when (responseFieldType) {
       ResponseField.Type.CUSTOM -> customTypeFactoryCode(irField, factoryMethod)
       ResponseField.Type.INLINE_FRAGMENT, ResponseField.Type.FRAGMENT ->
@@ -171,15 +171,15 @@ class ResponseFieldSpec(
     }
 
     fun readList(): CodeBlock {
-      val rawFieldType = rawFieldType.listParamType()
-      val readItemCode = readListItemStatement(rawFieldType)
+      val listItemType = rawFieldType.listParamType()
+      val readItemCode = readListItemStatement(listItemType)
       val listItemReaderTypeSpec = TypeSpec.anonymousClassBuilder("")
-          .superclass(responseFieldListItemReaderType(rawFieldType))
+          .superclass(responseFieldListItemReaderType(listItemType))
           .addMethod(MethodSpec
               .methodBuilder("read")
               .addModifiers(Modifier.PUBLIC)
               .addAnnotation(Override::class.java)
-              .returns(rawFieldType)
+              .returns(listItemType)
               .addParameter(RESPONSE_LIST_ITEM_READER_PARAM)
               .addCode(readItemCode)
               .build())
