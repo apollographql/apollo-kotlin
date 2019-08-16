@@ -1,235 +1,46 @@
-package com.apollographql.apollo.api;
+package com.apollographql.apollo.api
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-import static java.util.Collections.unmodifiableList;
+import java.util.Collections.unmodifiableList
+import java.util.Collections.unmodifiableMap
 
 /**
- * Field is an abstraction for a field in a graphQL operation. Field can refer to: <b>GraphQL Scalar Types, Objects or
- * List</b>. For a complete list of types that a Field object can refer to see {@link ResponseField.Type} class.
+ * Field is an abstraction for a field in a graphQL operation. Field can refer to: **GraphQL Scalar Types, Objects or
+ * List**. For a complete list of types that a Field object can refer to see [ResponseField.Type] class.
  */
-public class ResponseField {
-  private final Type type;
-  private final String responseName;
-  private final String fieldName;
-  private final Map<String, Object> arguments;
-  private final boolean optional;
-  private final List<Condition> conditions;
+open class ResponseField internal constructor(
+    private val type: Type,
+    private val responseName: String,
+    private val fieldName: String,
+    arguments: Map<String, Any>?,
+    private val optional: Boolean,
+    conditions: List<Condition>?
+) {
 
-  public static final String VARIABLE_IDENTIFIER_KEY = "kind";
-  public static final String VARIABLE_IDENTIFIER_VALUE = "Variable";
-  public static final String VARIABLE_NAME_KEY = "variableName";
+  private val arguments: Map<String, Any> = arguments?.let { unmodifiableMap(it) }.orEmpty()
+  private val conditions: List<Condition> = conditions?.let { unmodifiableList(it) }.orEmpty()
 
-  /**
-   * Factory method for creating a Field instance representing {@link Type#STRING}.
-   *
-   * @param responseName alias for the result of a field
-   * @param fieldName    name of the field in the GraphQL operation
-   * @param arguments    arguments to be passed along with the field
-   * @param optional     whether the arguments passed along are optional or required
-   * @param conditions   list of conditions for this field
-   * @return Field instance representing {@link Type#STRING}
-   */
-  public static ResponseField forString(String responseName, String fieldName, Map<String, Object> arguments,
-      boolean optional, List<Condition> conditions) {
-    return new ResponseField(Type.STRING, responseName, fieldName, arguments, optional, conditions);
+  fun type(): Type {
+    return type
   }
 
-  /**
-   * Factory method for creating a Field instance representing {@link Type#INT}.
-   *
-   * @param responseName alias for the result of a field
-   * @param fieldName    name of the field in the GraphQL operation
-   * @param arguments    arguments to be passed along with the field
-   * @param optional     whether the arguments passed along are optional or required
-   * @param conditions   list of conditions for this field
-   * @return Field instance representing {@link Type#INT}
-   */
-  public static ResponseField forInt(String responseName, String fieldName, Map<String, Object> arguments,
-      boolean optional, List<Condition> conditions) {
-    return new ResponseField(Type.INT, responseName, fieldName, arguments, optional, conditions);
+  fun responseName(): String {
+    return responseName
   }
 
-  /**
-   * Factory method for creating a Field instance representing {@link Type#LONG}.
-   *
-   * @param responseName alias for the result of a field
-   * @param fieldName    name of the field in the GraphQL operation
-   * @param arguments    arguments to be passed along with the field
-   * @param optional     whether the arguments passed along are optional or required
-   * @param conditions   list of conditions for this field
-   * @return Field instance representing {@link Type#LONG}
-   */
-  public static ResponseField forLong(String responseName, String fieldName, Map<String, Object> arguments,
-      boolean optional, List<Condition> conditions) {
-    return new ResponseField(Type.LONG, responseName, fieldName, arguments, optional, conditions);
+  fun fieldName(): String {
+    return fieldName
   }
 
-  /**
-   * Factory method for creating a Field instance representing {@link Type#DOUBLE}.
-   *
-   * @param responseName alias for the result of a field
-   * @param fieldName    name of the field in the GraphQL operation
-   * @param arguments    arguments to be passed along with the field
-   * @param optional     whether the arguments passed along are optional or required
-   * @param conditions   list of conditions for this field
-   * @return Field instance representing {@link Type#DOUBLE}
-   */
-  public static ResponseField forDouble(String responseName, String fieldName, Map<String, Object> arguments,
-      boolean optional, List<Condition> conditions) {
-    return new ResponseField(Type.DOUBLE, responseName, fieldName, arguments, optional, conditions);
+  fun arguments(): Map<String, Any> {
+    return arguments
   }
 
-  /**
-   * Factory method for creating a Field instance representing {@link Type#BOOLEAN}.
-   *
-   * @param responseName alias for the result of a field
-   * @param fieldName    name of the field in the GraphQL operation
-   * @param arguments    arguments to be passed along with the field
-   * @param optional     whether the arguments passed along are optional or required
-   * @param conditions   list of conditions for this field
-   * @return Field instance representing {@link Type#BOOLEAN}
-   */
-  public static ResponseField forBoolean(String responseName, String fieldName, Map<String, Object> arguments,
-      boolean optional, List<Condition> conditions) {
-    return new ResponseField(Type.BOOLEAN, responseName, fieldName, arguments, optional, conditions);
+  fun optional(): Boolean {
+    return optional
   }
 
-  /**
-   * Factory method for creating a Field instance representing {@link Type#ENUM}.
-   *
-   * @param responseName alias for the result of a field
-   * @param fieldName    name of the field in the GraphQL operation
-   * @param arguments    arguments to be passed along with the field
-   * @param optional     whether the arguments passed along are optional or required
-   * @param conditions   list of conditions for this field
-   * @return Field instance representing {@link Type#ENUM}
-   */
-  public static ResponseField forEnum(String responseName, String fieldName, Map<String, Object> arguments,
-      boolean optional, List<Condition> conditions) {
-    return new ResponseField(Type.ENUM, responseName, fieldName, arguments, optional, conditions);
-  }
-
-  /**
-   * Factory method for creating a Field instance representing a custom {@link Type#OBJECT}.
-   *
-   * @param responseName alias for the result of a field
-   * @param fieldName    name of the field in the GraphQL operation
-   * @param arguments    arguments to be passed along with the field
-   * @param optional     whether the arguments passed along are optional or required
-   * @param conditions   list of conditions for this field
-   * @return Field instance representing custom {@link Type#OBJECT}
-   */
-  public static ResponseField forObject(String responseName, String fieldName, Map<String, Object> arguments,
-      boolean optional, List<Condition> conditions) {
-    return new ResponseField(Type.OBJECT, responseName, fieldName, arguments, optional, conditions);
-  }
-
-  /**
-   * Factory method for creating a Field instance representing {@link Type#LIST}.
-   *
-   * @param responseName alias for the result of a field
-   * @param fieldName    name of the field in the GraphQL operation
-   * @param arguments    arguments to be passed along with the field
-   * @param optional     whether the arguments passed along are optional or required
-   * @param conditions   list of conditions for this field
-   * @return Field instance representing {@link Type#LIST}
-   */
-  public static ResponseField forList(String responseName, String fieldName, Map<String, Object> arguments,
-      boolean optional, List<Condition> conditions) {
-    return new ResponseField(Type.LIST, responseName, fieldName, arguments, optional, conditions);
-  }
-
-  /**
-   * Factory method for creating a Field instance representing a custom GraphQL Scalar type, {@link Type#CUSTOM}
-   *
-   * @param responseName alias for the result of a field
-   * @param fieldName    name of the field in the GraphQL operation
-   * @param arguments    arguments to be passed along with the field
-   * @param optional     whether the arguments passed along are optional or required
-   * @param scalarType   the custom scalar type of the field
-   * @param conditions   list of conditions for this field
-   * @return Field instance representing {@link Type#CUSTOM}
-   */
-  public static CustomTypeField forCustomType(String responseName, String fieldName, Map<String, Object> arguments,
-      boolean optional, ScalarType scalarType, List<Condition> conditions) {
-    return new CustomTypeField(responseName, fieldName, arguments, optional, scalarType, conditions);
-  }
-
-  /**
-   * Factory method for creating a Field instance representing {@link Type#FRAGMENT}.
-   *
-   * @param responseName   alias for the result of a field
-   * @param fieldName      name of the field in the GraphQL operation
-   * @param typeConditions conditional GraphQL types
-   * @return Field instance representing {@link Type#FRAGMENT}
-   */
-  public static ResponseField forFragment(String responseName, String fieldName, List<String> typeConditions) {
-    List<Condition> conditions = new ArrayList<>(typeConditions.size());
-    for (String typeCondition : typeConditions) {
-      conditions.add(Condition.typeCondition(typeCondition));
-    }
-    return new ResponseField(Type.FRAGMENT, responseName, fieldName, Collections.<String, Object>emptyMap(),
-        false, conditions);
-  }
-
-  /**
-   * Factory method for creating a Field instance representing {@link Type#INLINE_FRAGMENT}.
-   *
-   * @param responseName   alias for the result of a field
-   * @param fieldName      name of the field in the GraphQL operation
-   * @param typeConditions conditional GraphQL types
-   * @return Field instance representing {@link Type#INLINE_FRAGMENT}
-   */
-  public static ResponseField forInlineFragment(String responseName, String fieldName, List<String> typeConditions) {
-    List<Condition> conditions = new ArrayList<>(typeConditions.size());
-    for (String typeCondition : typeConditions) {
-      conditions.add(Condition.typeCondition(typeCondition));
-    }
-    return new ResponseField(Type.INLINE_FRAGMENT, responseName, fieldName, Collections.<String, Object>emptyMap(),
-        false, conditions);
-  }
-
-  ResponseField(Type type, String responseName, String fieldName, Map<String, Object> arguments,
-      boolean optional, List<Condition> conditions) {
-    this.type = type;
-    this.responseName = responseName;
-    this.fieldName = fieldName;
-    this.arguments = arguments == null ? Collections.<String, Object>emptyMap()
-        : Collections.unmodifiableMap(arguments);
-    this.optional = optional;
-    this.conditions = conditions == null ? Collections.<Condition>emptyList() : unmodifiableList(conditions);
-  }
-
-  public Type type() {
-    return type;
-  }
-
-  public String responseName() {
-    return responseName;
-  }
-
-  public String fieldName() {
-    return fieldName;
-  }
-
-  public Map<String, Object> arguments() {
-    return arguments;
-  }
-
-  public boolean optional() {
-    return optional;
-  }
-
-  public List<Condition> conditions() {
-    return conditions;
+  fun conditions(): List<Condition> {
+    return conditions
   }
 
   /**
@@ -240,34 +51,30 @@ public class ResponseField {
    * @param variables values of operation variables
    * @return resolved argument value
    */
-  @SuppressWarnings("unchecked") @Nullable public Object resolveArgument(@NotNull String name,
-      @NotNull Operation.Variables variables) {
-    checkNotNull(name, "name == null");
-    checkNotNull(variables, "variables == null");
-    Map<String, Object> variableValues = variables.valueMap();
-    Object argumentValue = arguments.get(name);
-    if (argumentValue instanceof Map) {
-      Map<String, Object> argumentValueMap = (Map<String, Object>) argumentValue;
+  fun resolveArgument(
+      name: String,
+      variables: Operation.Variables
+  ): Any? {
+    val variableValues = variables.valueMap()
+    val argumentValue = arguments[name]
+    return if (argumentValue is Map<*, *>) {
+      @Suppress("UNCHECKED_CAST")
+      val argumentValueMap = argumentValue as Map<String, Any>
       if (isArgumentValueVariableType(argumentValueMap)) {
-        String variableName = argumentValueMap.get(VARIABLE_NAME_KEY).toString();
-        return variableValues.get(variableName);
+        val variableName = argumentValueMap[VARIABLE_NAME_KEY].toString()
+        variableValues[variableName]
       } else {
-        return null;
+        null
       }
+    } else {
+      argumentValue
     }
-    return argumentValue;
-  }
-
-  public static boolean isArgumentValueVariableType(Map<String, Object> objectMap) {
-    return objectMap.containsKey(VARIABLE_IDENTIFIER_KEY)
-        && objectMap.get(VARIABLE_IDENTIFIER_KEY).equals(VARIABLE_IDENTIFIER_VALUE)
-        && objectMap.containsKey(VARIABLE_NAME_KEY);
   }
 
   /**
    * An abstraction for the field types
    */
-  public enum Type {
+  enum class Type {
     STRING,
     INT,
     LONG,
@@ -284,76 +91,241 @@ public class ResponseField {
   /**
    * Abstraction for a Field representing a custom GraphQL scalar type.
    */
-  public static final class CustomTypeField extends ResponseField {
-    private final ScalarType scalarType;
+  class CustomTypeField internal constructor(
+      responseName: String,
+      fieldName: String,
+      arguments: Map<String, Any>?,
+      optional: Boolean,
+      private val scalarType: ScalarType,
+      conditions: List<Condition>?
+  ) : ResponseField(Type.CUSTOM, responseName, fieldName, arguments, optional, conditions) {
 
-    CustomTypeField(String responseName, String fieldName, Map<String, Object> arguments, boolean optional,
-        ScalarType scalarType, List<Condition> conditions) {
-      super(Type.CUSTOM, responseName, fieldName, arguments, optional, conditions);
-      this.scalarType = scalarType;
-    }
-
-    public ScalarType scalarType() {
-      return scalarType;
-    }
+    fun scalarType(): ScalarType = scalarType
   }
 
   /**
    * Abstraction for condition to be associated with field
    */
-  public static class Condition {
+  open class Condition internal constructor() {
+    companion object {
 
-    Condition() {
-    }
+      /**
+       * Creates new [TypeNameCondition]
+       */
+      fun typeCondition(type: String): TypeNameCondition {
+        return TypeNameCondition(type)
+      }
 
-    /**
-     * Creates new {@link TypeNameCondition}
-     */
-    @NotNull public static TypeNameCondition typeCondition(@NotNull String type) {
-      return new TypeNameCondition(type);
-    }
-
-    /**
-     * Creates new {@link BooleanCondition}
-     */
-    @NotNull public static BooleanCondition booleanCondition(@NotNull String variableName, boolean inverted) {
-      return new BooleanCondition(variableName, inverted);
+      /**
+       * Creates new [BooleanCondition]
+       */
+      fun booleanCondition(variableName: String, inverted: Boolean): BooleanCondition {
+        return BooleanCondition(variableName, inverted)
+      }
     }
   }
 
   /**
    * Abstraction for type name condition
    */
-  public static final class TypeNameCondition extends Condition {
-    private final String typeName;
+  class TypeNameCondition internal constructor(private val typeName: String) : Condition() {
 
-    TypeNameCondition(String typeName) {
-      this.typeName = checkNotNull(typeName, "typeName == null");
-    }
-
-    public String typeName() {
-      return typeName;
-    }
+    fun typeName(): String = typeName
   }
 
   /**
    * Abstraction for boolean condition
    */
-  public static final class BooleanCondition extends Condition {
-    private final String variableName;
-    private final boolean inverted;
+  class BooleanCondition internal constructor(private val variableName: String, private val inverted: Boolean) : Condition() {
 
-    BooleanCondition(@NotNull String variableName, boolean inverted) {
-      this.variableName = checkNotNull(variableName, "variableName == null");
-      this.inverted = inverted;
+    fun variableName(): String = variableName
+    fun inverted(): Boolean = inverted
+  }
+
+  companion object {
+
+    const val VARIABLE_IDENTIFIER_KEY = "kind"
+    const val VARIABLE_IDENTIFIER_VALUE = "Variable"
+    const val VARIABLE_NAME_KEY = "variableName"
+
+    /**
+     * Factory method for creating a Field instance representing [Type.STRING].
+     *
+     * @param responseName alias for the result of a field
+     * @param fieldName    name of the field in the GraphQL operation
+     * @param arguments    arguments to be passed along with the field
+     * @param optional     whether the arguments passed along are optional or required
+     * @param conditions   list of conditions for this field
+     * @return Field instance representing [Type.STRING]
+     */
+    @JvmStatic
+    fun forString(responseName: String, fieldName: String, arguments: Map<String, Any>?,
+                  optional: Boolean, conditions: List<Condition>?): ResponseField {
+      return ResponseField(Type.STRING, responseName, fieldName, arguments, optional, conditions)
     }
 
-    @NotNull public String variableName() {
-      return variableName;
+    /**
+     * Factory method for creating a Field instance representing [Type.INT].
+     *
+     * @param responseName alias for the result of a field
+     * @param fieldName    name of the field in the GraphQL operation
+     * @param arguments    arguments to be passed along with the field
+     * @param optional     whether the arguments passed along are optional or required
+     * @param conditions   list of conditions for this field
+     * @return Field instance representing [Type.INT]
+     */
+    @JvmStatic
+    fun forInt(responseName: String, fieldName: String, arguments: Map<String, Any>?,
+               optional: Boolean, conditions: List<Condition>?): ResponseField {
+      return ResponseField(Type.INT, responseName, fieldName, arguments, optional, conditions)
     }
 
-    public boolean inverted() {
-      return inverted;
+    /**
+     * Factory method for creating a Field instance representing [Type.LONG].
+     *
+     * @param responseName alias for the result of a field
+     * @param fieldName    name of the field in the GraphQL operation
+     * @param arguments    arguments to be passed along with the field
+     * @param optional     whether the arguments passed along are optional or required
+     * @param conditions   list of conditions for this field
+     * @return Field instance representing [Type.LONG]
+     */
+    @JvmStatic
+    fun forLong(responseName: String, fieldName: String, arguments: Map<String, Any>?,
+                optional: Boolean, conditions: List<Condition>?): ResponseField {
+      return ResponseField(Type.LONG, responseName, fieldName, arguments, optional, conditions)
+    }
+
+    /**
+     * Factory method for creating a Field instance representing [Type.DOUBLE].
+     *
+     * @param responseName alias for the result of a field
+     * @param fieldName    name of the field in the GraphQL operation
+     * @param arguments    arguments to be passed along with the field
+     * @param optional     whether the arguments passed along are optional or required
+     * @param conditions   list of conditions for this field
+     * @return Field instance representing [Type.DOUBLE]
+     */
+    @JvmStatic
+    fun forDouble(responseName: String, fieldName: String, arguments: Map<String, Any>?,
+                  optional: Boolean, conditions: List<Condition>?): ResponseField {
+      return ResponseField(Type.DOUBLE, responseName, fieldName, arguments, optional, conditions)
+    }
+
+    /**
+     * Factory method for creating a Field instance representing [Type.BOOLEAN].
+     *
+     * @param responseName alias for the result of a field
+     * @param fieldName    name of the field in the GraphQL operation
+     * @param arguments    arguments to be passed along with the field
+     * @param optional     whether the arguments passed along are optional or required
+     * @param conditions   list of conditions for this field
+     * @return Field instance representing [Type.BOOLEAN]
+     */
+    @JvmStatic
+    fun forBoolean(responseName: String, fieldName: String, arguments: Map<String, Any>?,
+                   optional: Boolean, conditions: List<Condition>?): ResponseField {
+      return ResponseField(Type.BOOLEAN, responseName, fieldName, arguments, optional, conditions)
+    }
+
+    /**
+     * Factory method for creating a Field instance representing [Type.ENUM].
+     *
+     * @param responseName alias for the result of a field
+     * @param fieldName    name of the field in the GraphQL operation
+     * @param arguments    arguments to be passed along with the field
+     * @param optional     whether the arguments passed along are optional or required
+     * @param conditions   list of conditions for this field
+     * @return Field instance representing [Type.ENUM]
+     */
+    @JvmStatic
+    fun forEnum(responseName: String, fieldName: String, arguments: Map<String, Any>?,
+                optional: Boolean, conditions: List<Condition>?): ResponseField {
+      return ResponseField(Type.ENUM, responseName, fieldName, arguments, optional, conditions)
+    }
+
+    /**
+     * Factory method for creating a Field instance representing a custom [Type.OBJECT].
+     *
+     * @param responseName alias for the result of a field
+     * @param fieldName    name of the field in the GraphQL operation
+     * @param arguments    arguments to be passed along with the field
+     * @param optional     whether the arguments passed along are optional or required
+     * @param conditions   list of conditions for this field
+     * @return Field instance representing custom [Type.OBJECT]
+     */
+    @JvmStatic
+    fun forObject(responseName: String, fieldName: String, arguments: Map<String, Any>?,
+                  optional: Boolean, conditions: List<Condition>?): ResponseField {
+      return ResponseField(Type.OBJECT, responseName, fieldName, arguments, optional, conditions)
+    }
+
+    /**
+     * Factory method for creating a Field instance representing [Type.LIST].
+     *
+     * @param responseName alias for the result of a field
+     * @param fieldName    name of the field in the GraphQL operation
+     * @param arguments    arguments to be passed along with the field
+     * @param optional     whether the arguments passed along are optional or required
+     * @param conditions   list of conditions for this field
+     * @return Field instance representing [Type.LIST]
+     */
+    @JvmStatic
+    fun forList(responseName: String, fieldName: String, arguments: Map<String, Any>?,
+                optional: Boolean, conditions: List<Condition>?): ResponseField {
+      return ResponseField(Type.LIST, responseName, fieldName, arguments, optional, conditions)
+    }
+
+    /**
+     * Factory method for creating a Field instance representing a custom GraphQL Scalar type, [Type.CUSTOM]
+     *
+     * @param responseName alias for the result of a field
+     * @param fieldName    name of the field in the GraphQL operation
+     * @param arguments    arguments to be passed along with the field
+     * @param optional     whether the arguments passed along are optional or required
+     * @param scalarType   the custom scalar type of the field
+     * @param conditions   list of conditions for this field
+     * @return Field instance representing [Type.CUSTOM]
+     */
+    @JvmStatic
+    fun forCustomType(responseName: String, fieldName: String, arguments: Map<String, Any>?,
+                      optional: Boolean, scalarType: ScalarType, conditions: List<Condition>?): CustomTypeField {
+      return CustomTypeField(responseName, fieldName, arguments, optional, scalarType, conditions)
+    }
+
+    /**
+     * Factory method for creating a Field instance representing [Type.FRAGMENT].
+     *
+     * @param responseName   alias for the result of a field
+     * @param fieldName      name of the field in the GraphQL operation
+     * @param typeConditions conditional GraphQL types
+     * @return Field instance representing [Type.FRAGMENT]
+     */
+    @JvmStatic
+    fun forFragment(responseName: String, fieldName: String, typeConditions: List<String>): ResponseField {
+      return ResponseField(Type.FRAGMENT, responseName, fieldName, emptyMap(),
+          false, typeConditions.map { Condition.typeCondition(it) })
+    }
+
+    /**
+     * Factory method for creating a Field instance representing [Type.INLINE_FRAGMENT].
+     *
+     * @param responseName   alias for the result of a field
+     * @param fieldName      name of the field in the GraphQL operation
+     * @param typeConditions conditional GraphQL types
+     * @return Field instance representing [Type.INLINE_FRAGMENT]
+     */
+    @JvmStatic
+    fun forInlineFragment(responseName: String, fieldName: String, typeConditions: List<String>): ResponseField {
+      return ResponseField(Type.INLINE_FRAGMENT, responseName, fieldName, emptyMap(),
+          false, typeConditions.map { Condition.typeCondition(it) })
+    }
+
+    @JvmStatic
+    fun isArgumentValueVariableType(objectMap: Map<String, Any>): Boolean {
+      return (objectMap.containsKey(VARIABLE_IDENTIFIER_KEY)
+          && objectMap[VARIABLE_IDENTIFIER_KEY] == VARIABLE_IDENTIFIER_VALUE
+          && objectMap.containsKey(VARIABLE_NAME_KEY))
     }
   }
 }

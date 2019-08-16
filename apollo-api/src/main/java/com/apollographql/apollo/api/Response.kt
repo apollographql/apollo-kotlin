@@ -1,102 +1,76 @@
-package com.apollographql.apollo.api;
+package com.apollographql.apollo.api
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.Collections.unmodifiableList
+import java.util.Collections.unmodifiableSet
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+/** Represents either a successful or failed response received from the GraphQL server.  */
+class Response<T> internal constructor(builder: Builder<T>) {
+  private val operation: Operation<*, *, *>
+  private val data: T?
+  private val errors: List<Error>
+  private val dependentKeys: Set<String>
+  private val fromCache: Boolean
 
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableSet;
-
-/** Represents either a successful or failed response received from the GraphQL server. */
-public final class Response<T> {
-  private final Operation operation;
-  private final T data;
-  private final List<Error> errors;
-  private Set<String> dependentKeys;
-  private final boolean fromCache;
-
-  public static <T> Response.Builder<T> builder(@NotNull final Operation operation) {
-    return new Builder<>(operation);
+  init {
+    operation = builder.operation
+    data = builder.data
+    errors = builder.errors?.let { unmodifiableList(it) }.orEmpty()
+    dependentKeys = builder.dependentKeys?.let { unmodifiableSet(it) }.orEmpty()
+    fromCache = builder.fromCache
   }
 
-  Response(Builder<T> builder) {
-    operation = checkNotNull(builder.operation, "operation == null");
-    data = builder.data;
-    errors = builder.errors != null ? unmodifiableList(builder.errors) : Collections.<Error>emptyList();
-    dependentKeys = builder.dependentKeys != null ? unmodifiableSet(builder.dependentKeys)
-        : Collections.<String>emptySet();
-    fromCache = builder.fromCache;
+  fun operation(): Operation<*, *, *> {
+    return operation
   }
 
-  public Operation operation() {
-    return operation;
+  fun data(): T? = data
+
+  fun errors(): List<Error> = errors
+
+  fun dependentKeys(): Set<String> {
+    return dependentKeys
   }
 
-  @Nullable public T data() {
-    return data;
+  fun hasErrors(): Boolean = errors.isNotEmpty()
+
+  fun fromCache(): Boolean {
+    return fromCache
   }
 
-  @NotNull public List<Error> errors() {
-    return errors;
-  }
+  fun toBuilder(): Builder<T> = Builder<T>(operation)
+      .data(data)
+      .errors(errors)
+      .dependentKeys(dependentKeys)
+      .fromCache(fromCache)
 
-  @NotNull public Set<String> dependentKeys() {
-    return dependentKeys;
-  }
+  class Builder<T> internal constructor(internal val operation: Operation<*, *, *>) {
+    internal var data: T? = null
+    internal var errors: List<Error>? = null
+    internal var dependentKeys: Set<String>? = null
+    internal var fromCache: Boolean = false
 
-  public boolean hasErrors() {
-    return !errors.isEmpty();
-  }
-
-  public boolean fromCache() {
-    return fromCache;
-  }
-
-  public Builder<T> toBuilder() {
-    return new Builder<T>(operation)
-        .data(data)
-        .errors(errors)
-        .dependentKeys(dependentKeys)
-        .fromCache(fromCache);
-  }
-
-  public static final class Builder<T> {
-    final Operation operation;
-    T data;
-    List<Error> errors;
-    Set<String> dependentKeys;
-    boolean fromCache;
-
-    Builder(@NotNull final Operation operation) {
-      this.operation = checkNotNull(operation, "operation == null");
+    fun data(data: T?) = apply {
+      this.data = data
     }
 
-    public Builder<T> data(T data) {
-      this.data = data;
-      return this;
+    fun errors(errors: List<Error>?) = apply {
+      this.errors = errors
     }
 
-    public Builder<T> errors(@Nullable List<Error> errors) {
-      this.errors = errors;
-      return this;
+    fun dependentKeys(dependentKeys: Set<String>?) = apply {
+      this.dependentKeys = dependentKeys
     }
 
-    public Builder<T> dependentKeys(@Nullable Set<String> dependentKeys) {
-      this.dependentKeys = dependentKeys;
-      return this;
+    fun fromCache(fromCache: Boolean) = apply {
+      this.fromCache = fromCache
     }
 
-    public Builder<T> fromCache(boolean fromCache) {
-      this.fromCache = fromCache;
-      return this;
-    }
+    fun build(): Response<T> = Response(this)
+  }
 
-    public Response<T> build() {
-      return new Response<>(this);
-    }
+  companion object {
+
+    @JvmStatic
+    fun <T> builder(operation: Operation<*, *, *>): Builder<T> = Builder(operation)
   }
 }

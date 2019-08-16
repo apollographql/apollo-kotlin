@@ -5,7 +5,6 @@ import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.api.internal.Utils;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.exception.ApolloCanceledException;
 import com.apollographql.apollo.exception.ApolloException;
@@ -15,12 +14,12 @@ import com.apollographql.apollo.exception.ApolloParseException;
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers;
 import com.apollographql.apollo.fetcher.ResponseFetcher;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 import static com.apollographql.apollo.internal.CallState.ACTIVE;
@@ -37,7 +36,7 @@ final class RealApolloQueryWatcher<T> implements ApolloQueryWatcher<T> {
   private final ApolloCallTracker tracker;
   final ApolloStore.RecordChangeSubscriber recordChangeSubscriber = new ApolloStore.RecordChangeSubscriber() {
     @Override public void onCacheRecordsChanged(Set<String> changedRecordKeys) {
-      if (dependentKeys.isEmpty() || !Utils.areDisjoint(dependentKeys, changedRecordKeys)) {
+      if (dependentKeys.isEmpty() || !InternalUtils.areDisjoint(dependentKeys, changedRecordKeys)) {
         refetch();
       }
     }

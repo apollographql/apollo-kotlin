@@ -1,7 +1,5 @@
 package com.apollographql.apollo.api.internal;
 
-import java.util.Set;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,33 +25,6 @@ public final class Utils {
       throw new NullPointerException(String.valueOf(errorMessage));
     }
     return reference;
-  }
-
-  /**
-   * Checks if two {@link Set} are disjoint. Returns true if the sets don't have a single common element. Also returns
-   * true if either of the sets is null.
-   *
-   * @param setOne the first set
-   * @param setTwo the second set
-   * @param <E>    the value type contained within the sets
-   * @return True if the sets don't have a single common element or if either of the sets is null.
-   */
-  public static <E> boolean areDisjoint(Set<E> setOne, Set<E> setTwo) {
-    if (setOne == null || setTwo == null) {
-      return true;
-    }
-    Set<E> smallerSet = setOne;
-    Set<E> largerSet = setTwo;
-    if (setOne.size() > setTwo.size()) {
-      smallerSet = setTwo;
-      largerSet = setOne;
-    }
-    for (E el : smallerSet) {
-      if (largerSet.contains(el)) {
-        return false;
-      }
-    }
-    return true;
   }
 
   /**
