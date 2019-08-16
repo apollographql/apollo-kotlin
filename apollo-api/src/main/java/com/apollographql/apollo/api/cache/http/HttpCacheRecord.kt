@@ -1,13 +1,11 @@
-package com.apollographql.apollo.api.cache.http;
+package com.apollographql.apollo.api.cache.http
 
-import org.jetbrains.annotations.NotNull;
+import okio.Source
 
-import okio.Source;
+interface HttpCacheRecord {
+  fun headerSource(): Source
 
-public interface HttpCacheRecord {
-  @NotNull Source headerSource();
+  fun bodySource(): Source
 
-  @NotNull Source bodySource();
-
-  void close();
+  fun close()
 }
