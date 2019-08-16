@@ -1,56 +1,72 @@
-package com.apollographql.apollo.api;
+package com.apollographql.apollo.api
 
-import java.io.IOException;
-import java.util.Map;
+import java.io.IOException
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+interface InputFieldWriter {
+  @Throws(IOException::class)
+  fun writeString(fieldName: String, value: String?)
 
-public interface InputFieldWriter {
-  void writeString(@NotNull String fieldName, @Nullable String value) throws IOException;
+  @Throws(IOException::class)
+  fun writeInt(fieldName: String, value: Int?)
 
-  void writeInt(@NotNull String fieldName, @Nullable Integer value) throws IOException;
+  @Throws(IOException::class)
+  fun writeLong(fieldName: String, value: Long?)
 
-  void writeLong(@NotNull String fieldName, @Nullable Long value) throws IOException;
+  @Throws(IOException::class)
+  fun writeDouble(fieldName: String, value: Double?)
 
-  void writeDouble(@NotNull String fieldName, @Nullable Double value) throws IOException;
+  @Throws(IOException::class)
+  fun writeNumber(fieldName: String, value: Number?)
 
-  void writeNumber(@NotNull String fieldName, @Nullable Number value) throws IOException;
+  @Throws(IOException::class)
+  fun writeBoolean(fieldName: String, value: Boolean?)
 
-  void writeBoolean(@NotNull String fieldName, @Nullable Boolean value) throws IOException;
+  @Throws(IOException::class)
+  fun writeCustom(fieldName: String, scalarType: ScalarType, value: Any?)
 
-  void writeCustom(@NotNull String fieldName, @NotNull ScalarType scalarType, @Nullable Object value)
-      throws IOException;
+  @Throws(IOException::class)
+  fun writeObject(fieldName: String, marshaller: InputFieldMarshaller?)
 
-  void writeObject(@NotNull String fieldName, @Nullable InputFieldMarshaller marshaller) throws IOException;
+  @Throws(IOException::class)
+  fun writeList(fieldName: String, listWriter: ListWriter?)
 
-  void writeList(@NotNull String fieldName, @Nullable ListWriter listWriter) throws IOException;
-
-  void writeMap(@NotNull String fieldName, @Nullable Map<String, Object> value) throws IOException;
+  @Throws(IOException::class)
+  fun writeMap(fieldName: String, value: Map<String, @JvmSuppressWildcards Any>?)
 
   interface ListWriter {
-    void write(@NotNull ListItemWriter listItemWriter) throws IOException;
+    @Throws(IOException::class)
+    fun write(listItemWriter: ListItemWriter)
   }
 
   interface ListItemWriter {
-    void writeString(@Nullable String value) throws IOException;
+    @Throws(IOException::class)
+    fun writeString(value: String?)
 
-    void writeInt(@Nullable Integer value) throws IOException;
+    @Throws(IOException::class)
+    fun writeInt(value: Int?)
 
-    void writeLong(@Nullable Long value) throws IOException;
+    @Throws(IOException::class)
+    fun writeLong(value: Long?)
 
-    void writeDouble(@Nullable Double value) throws IOException;
+    @Throws(IOException::class)
+    fun writeDouble(value: Double?)
 
-    void writeNumber(@Nullable Number value) throws IOException;
+    @Throws(IOException::class)
+    fun writeNumber(value: Number?)
 
-    void writeBoolean(@Nullable Boolean value) throws IOException;
+    @Throws(IOException::class)
+    fun writeBoolean(value: Boolean?)
 
-    void writeCustom(@NotNull ScalarType scalarType, @Nullable Object value) throws IOException;
+    @Throws(IOException::class)
+    fun writeCustom(scalarType: ScalarType, value: Any?)
 
-    void writeObject(@Nullable InputFieldMarshaller marshaller) throws IOException;
+    @Throws(IOException::class)
+    fun writeObject(marshaller: InputFieldMarshaller?)
 
-    void writeList(@Nullable ListWriter listWriter) throws IOException;
+    @Throws(IOException::class)
+    fun writeList(listWriter: ListWriter?)
 
-    void writeMap(@Nullable Map<String, Object> value) throws IOException;
+    @Throws(IOException::class)
+    fun writeMap(value: Map<String, @JvmSuppressWildcards Any>?)
   }
 }

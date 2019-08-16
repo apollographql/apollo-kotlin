@@ -1,10 +1,11 @@
-package com.apollographql.apollo.api;
+package com.apollographql.apollo.api
 
-import java.io.IOException;
+import java.io.IOException
 
 /**
  * FragmentResponseFieldMapper is responsible for mapping the response back to a fragment of type T.
  */
-public interface FragmentResponseFieldMapper<T> {
-  T map(ResponseReader responseReader, String conditionalType) throws IOException;
+interface FragmentResponseFieldMapper<T> {
+  @Throws(IOException::class)
+  fun map(responseReader: ResponseReader, conditionalType: String): T
 }

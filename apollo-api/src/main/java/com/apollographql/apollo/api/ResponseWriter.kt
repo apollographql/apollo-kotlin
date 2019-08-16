@@ -1,46 +1,41 @@
-package com.apollographql.apollo.api;
+package com.apollographql.apollo.api
 
-import java.util.List;
+interface ResponseWriter {
+  fun writeString(field: ResponseField, value: String?)
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+  fun writeInt(field: ResponseField, value: Int?)
 
-public interface ResponseWriter {
-  void writeString(@NotNull ResponseField field, @Nullable String value);
+  fun writeLong(field: ResponseField, value: Long?)
 
-  void writeInt(@NotNull ResponseField field, @Nullable Integer value);
+  fun writeDouble(field: ResponseField, value: Double?)
 
-  void writeLong(@NotNull ResponseField field, @Nullable Long value);
+  fun writeBoolean(field: ResponseField, value: Boolean?)
 
-  void writeDouble(@NotNull ResponseField field, @Nullable Double value);
+  fun writeCustom(field: ResponseField.CustomTypeField, value: Any?)
 
-  void writeBoolean(@NotNull ResponseField field, @Nullable Boolean value);
+  fun writeObject(field: ResponseField, marshaller: ResponseFieldMarshaller?)
 
-  void writeCustom(@NotNull ResponseField.CustomTypeField field, @Nullable Object value);
-
-  void writeObject(@NotNull ResponseField field, @Nullable ResponseFieldMarshaller marshaller);
-
-  <T> void writeList(@NotNull ResponseField field, @Nullable List<T> values, @NotNull ListWriter<T> listWriter);
+  fun <T> writeList(field: ResponseField, values: List<T>?, listWriter: ListWriter<T>)
 
   interface ListWriter<T> {
-    void write(@Nullable List<T> items, @NotNull ListItemWriter listItemWriter);
+    fun write(items: List<T>?, listItemWriter: ListItemWriter)
   }
 
   interface ListItemWriter {
-    void writeString(@Nullable String value);
+    fun writeString(value: String?)
 
-    void writeInt(@Nullable Integer value);
+    fun writeInt(value: Int?)
 
-    void writeLong(@Nullable Long value);
+    fun writeLong(value: Long?)
 
-    void writeDouble(@Nullable Double value);
+    fun writeDouble(value: Double?)
 
-    void writeBoolean(@Nullable Boolean value);
+    fun writeBoolean(value: Boolean?)
 
-    void writeCustom(@NotNull ScalarType scalarType, @Nullable Object value);
+    fun writeCustom(scalarType: ScalarType, value: Any?)
 
-    void writeObject(@Nullable ResponseFieldMarshaller marshaller);
+    fun writeObject(marshaller: ResponseFieldMarshaller?)
 
-    <T> void writeList(@Nullable List<T> items, @NotNull ListWriter<T> listWriter);
+    fun <T> writeList(items: List<T>?, listWriter: ListWriter<T>)
   }
 }

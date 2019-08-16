@@ -1,7 +1,6 @@
-package com.apollographql.apollo.api;
+package com.apollographql.apollo.api
 
 /**
  * Represents a GraphQL query that will be sent to the server.
  */
-public interface Query<D extends Operation.Data, T, V extends Operation.Variables> extends Operation<D, T, V> {
-}
+interface Query<D : Operation.Data, T, V : Operation.Variables> : Operation<D, T, V>

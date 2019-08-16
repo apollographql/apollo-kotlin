@@ -1,60 +1,56 @@
-package com.apollographql.apollo.api;
-
-import java.util.List;
+package com.apollographql.apollo.api
 
 /*
  * ResponseReader is an abstraction for reading GraphQL fields.
  */
-public interface ResponseReader {
+interface ResponseReader {
 
-  String readString(ResponseField field);
+  fun readString(field: ResponseField): String
 
-  Integer readInt(ResponseField field);
+  fun readInt(field: ResponseField): Int?
 
-  Long readLong(ResponseField field);
+  fun readLong(field: ResponseField): Long?
 
-  Double readDouble(ResponseField field);
+  fun readDouble(field: ResponseField): Double?
 
-  Boolean readBoolean(ResponseField field);
+  fun readBoolean(field: ResponseField): Boolean?
 
-  <T> T readObject(ResponseField field, ObjectReader<T> objectReader);
+  fun <T> readObject(field: ResponseField, objectReader: ObjectReader<T>): T
 
-  <T> List<T> readList(ResponseField field, ListReader<T> listReader);
+  fun <T> readList(field: ResponseField, listReader: ListReader<T>): List<T>
 
-  @SuppressWarnings("TypeParameterUnusedInFormals")
-  <T> T readCustomType(ResponseField.CustomTypeField field);
+  fun <T> readCustomType(field: ResponseField.CustomTypeField): T
 
-  <T> T readConditional(ResponseField field, ConditionalTypeReader<T> conditionalTypeReader);
+  fun <T> readConditional(field: ResponseField, conditionalTypeReader: ConditionalTypeReader<T>): T
 
   interface ObjectReader<T> {
-    T read(ResponseReader reader);
+    fun read(reader: ResponseReader): T
   }
 
   interface ListReader<T> {
-    T read(ListItemReader reader);
+    fun read(reader: ListItemReader): T
   }
 
   interface ConditionalTypeReader<T> {
-    T read(String conditionalType, ResponseReader reader);
+    fun read(conditionalType: String, reader: ResponseReader): T
   }
 
   interface ListItemReader {
 
-    String readString();
+    fun readString(): String
 
-    Integer readInt();
+    fun readInt(): Int?
 
-    Long readLong();
+    fun readLong(): Long?
 
-    Double readDouble();
+    fun readDouble(): Double?
 
-    Boolean readBoolean();
+    fun readBoolean(): Boolean?
 
-    @SuppressWarnings("TypeParameterUnusedInFormals")
-    <T> T readCustomType(ScalarType scalarType);
+    fun <T> readCustomType(scalarType: ScalarType): T
 
-    <T> T readObject(ObjectReader<T> objectReader);
+    fun <T> readObject(objectReader: ObjectReader<T>): T
 
-    <T> List<T> readList(ListReader<T> listReader);
+    fun <T> readList(listReader: ListReader<T>): List<T>
   }
 }

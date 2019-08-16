@@ -1,48 +1,43 @@
-package com.apollographql.apollo.api;
-
-import java.util.Collections;
-import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
+package com.apollographql.apollo.api
 
 /**
  * Represents a GraphQL operation (mutation or query).
  */
-public interface Operation<D extends Operation.Data, T, V extends Operation.Variables> {
+interface Operation<D : Operation.Data, T, V : Operation.Variables> {
   /**
    * Returns the raw GraphQL operation String.
    */
-  String queryDocument();
+  fun queryDocument(): String
 
   /**
    * Returns the variables associated with this GraphQL operation.
    */
-  V variables();
+  fun variables(): V
 
   /**
-   * Returns a mapper that maps the server response data to generated model class {@link D}.
+   * Returns a mapper that maps the server response data to generated model class [D].
    */
-  ResponseFieldMapper<D> responseFieldMapper();
+  fun responseFieldMapper(): ResponseFieldMapper<D>
 
   /**
-   * Wraps the generated response data class {@link D} with another class. For example, a use case for this would be to
+   * Wraps the generated response data class [D] with another class. For example, a use case for this would be to
    * wrap the generated response data class in an Optional i.e. Optional.fromNullable(data).
    */
-  T wrapData(D data);
+  fun wrapData(data: D): T
 
   /**
    * Returns GraphQL operation name.
    *
-   * @return {@link OperationName} operation name
+   * @return [OperationName] operation name
    */
-  @NotNull OperationName name();
+  fun name(): OperationName
 
   /**
    * Returns a unique identifier for this operation.
    *
    * @return operation identifier.
    */
-  @NotNull String operationId();
+  fun operationId(): String
 
   /**
    * Abstraction for data returned by the server in response to this operation.
@@ -52,44 +47,45 @@ public interface Operation<D extends Operation.Data, T, V extends Operation.Vari
     /**
      * Returns marshaller to serialize operation data
      *
-     * @return {@link ResponseFieldMarshaller} to serialize operation data
+     * @return [ResponseFieldMarshaller] to serialize operation data
      */
-    ResponseFieldMarshaller marshaller();
+    fun marshaller(): ResponseFieldMarshaller
   }
 
   /**
    * Abstraction for the variables which are a part of the GraphQL operation. For example, for the following GraphQL
    * operation, Variables represents values for GraphQL '$type' and '$limit' variables:
-   * <pre>{@code
-   *      query FeedQuery($type: FeedType!, $limit: Int!) {
-   *          feedEntries: feed(type: $type, limit: $limit) {
-   *          id
-   *          repository {
-   *              ...RepositoryFragment
-   *          }
-   *          postedBy {
-   *            login
-   *          }
-   *      }
-   *    }
+   * <pre>`query FeedQuery($type: FeedType!, $limit: Int!) {
+   * feedEntries: feed(type: $type, limit: $limit) {
+   * id
+   * repository {
+   * ...RepositoryFragment
    * }
-   * </pre>
+   * postedBy {
+   * login
+   * }
+   * }
+   * }
+  ` *
+  </pre> *
    */
-  class Variables {
-    protected Variables() {
+  open class Variables {
+
+    open fun valueMap(): Map<String, Any> {
+      return emptyMap()
     }
 
-    @NotNull public Map<String, Object> valueMap() {
-      return Collections.emptyMap();
-    }
-
-    @NotNull public InputFieldMarshaller marshaller() {
-      return new InputFieldMarshaller() {
-        @Override public void marshal(InputFieldWriter writer) {
+    fun marshaller(): InputFieldMarshaller {
+      return object : InputFieldMarshaller {
+        override fun marshal(writer: InputFieldWriter) {
         }
-      };
+      }
     }
   }
 
-  Variables EMPTY_VARIABLES = new Variables();
+  companion object {
+
+    @JvmField
+    val EMPTY_VARIABLES = Variables()
+  }
 }

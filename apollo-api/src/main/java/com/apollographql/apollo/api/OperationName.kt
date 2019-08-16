@@ -1,13 +1,13 @@
-package com.apollographql.apollo.api;
+package com.apollographql.apollo.api
 
 /**
  * GraphQL operation name.
  */
-public interface OperationName {
+interface OperationName {
   /**
    * Returns operation name.
    *
    * @return operation name
    */
-  String name();
+  fun name(): String
 }

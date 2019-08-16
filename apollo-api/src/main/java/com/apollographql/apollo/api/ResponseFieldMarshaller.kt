@@ -1,5 +1,5 @@
-package com.apollographql.apollo.api;
+package com.apollographql.apollo.api
 
-public interface ResponseFieldMarshaller {
-  void marshal(ResponseWriter writer);
+interface ResponseFieldMarshaller {
+  fun marshal(writer: ResponseWriter)
 }
