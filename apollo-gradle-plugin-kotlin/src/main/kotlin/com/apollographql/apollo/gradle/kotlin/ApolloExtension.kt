@@ -41,7 +41,6 @@ open class ApolloExtension {
 
     fun create(name: String, action: Action<Service>) {
       val service = Service(name)
-      println("create $name")
       action.execute(service)
       all.add(service)
     }
