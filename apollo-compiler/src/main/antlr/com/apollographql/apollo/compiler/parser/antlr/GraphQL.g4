@@ -188,5 +188,5 @@ WS
    : [ \t\n\r]+ -> skip
    ;
 COMMENT
-    : '#' ~[\r\n]* -> channel(2)
+    : '#' ~[\r\n]* -> skip
     ;
