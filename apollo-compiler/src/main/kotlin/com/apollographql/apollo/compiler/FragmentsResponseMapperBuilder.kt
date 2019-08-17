@@ -8,7 +8,7 @@ import com.squareup.javapoet.*
 import javax.lang.model.element.Modifier
 
 /**
- * Responsible for [Fragments.Mapper] class generation
+ * Responsible for Fragments.Mapper class generation
  *
  * Example of generated class:
  *

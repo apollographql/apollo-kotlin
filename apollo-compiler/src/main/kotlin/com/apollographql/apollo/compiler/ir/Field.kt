@@ -78,15 +78,17 @@ data class Field(
         .map { (name, value, type) ->
           when (value) {
             is Number -> {
-              val scalarType = ScalarType.forName(type.removeSuffix("!"))
-              when (scalarType) {
+              when (ScalarType.forName(type.removeSuffix("!"))) {
                 is ScalarType.INT -> CodeBlock.of(".put(\$S, \$L)\n", name, value.toInt())
                 is ScalarType.FLOAT -> CodeBlock.of(".put(\$S, \$Lf)\n", name, value.toDouble())
                 else -> CodeBlock.of(".put(\$S, \$L)\n", name, value)
               }
             }
             is Boolean -> CodeBlock.of(".put(\$S, \$L)\n", name, value)
-            is Map<*, *> -> CodeBlock.of(".put(\$S, \$L)\n", name, jsonMapToCodeBlock(value as Map<String, Any?>))
+            is Map<*, *> -> {
+              @Suppress("UNCHECKED_CAST")
+              CodeBlock.of(".put(\$S, \$L)\n", name, jsonMapToCodeBlock(value as Map<String, Any?>))
+            }
             else -> CodeBlock.of(".put(\$S, \$S)\n", name, value)
           }
         }
@@ -111,6 +113,7 @@ data class Field(
     return map
         .map { (key, value) ->
           if (value is Map<*, *>) {
+            @Suppress("UNCHECKED_CAST")
             CodeBlock.of(".put(\$S, \$L)\n", key, jsonMapToCodeBlock(value as Map<String, Any?>))
           } else {
             CodeBlock.of(".put(\$S, \$S)\n", key, value)

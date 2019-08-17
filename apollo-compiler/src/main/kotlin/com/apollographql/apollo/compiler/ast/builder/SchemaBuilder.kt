@@ -20,7 +20,7 @@ internal fun CodeGenerationIR.ast(
         typesPackageName = typesPackageName
     )
   }
-  val irFragments = fragments.associate { it.fragmentName to it }
+  val irFragments = fragments.associateBy { it.fragmentName }
   val fragments = fragments.map {
     it.ast(
         Context(

@@ -190,12 +190,13 @@ class BuilderTypeSpecBuilder(
         .returns(targetObjectClassName)
         .addCode(validationCodeBuilder.build())
         .addStatement("return new \$T\$L", targetObjectClassName,
-            fields.map { it.first }.joinToString(prefix = "(", separator = ", ", postfix = ")"))
+            fields.joinToString(prefix = "(", separator = ", ", postfix = ")") { it.first }
+        )
         .build()
   }
 
   companion object {
-    val TO_BUILDER_METHOD_NAME = "toBuilder"
+    const val TO_BUILDER_METHOD_NAME = "toBuilder"
 
     private fun mutatorParam(fieldType: TypeName): ParameterSpec {
       val fieldBuilderType = if (fieldType.isList()) {

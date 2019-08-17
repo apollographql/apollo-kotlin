@@ -114,16 +114,20 @@ class InputFieldSpec(
     fun writeScalar(): CodeBlock {
       val writeMethod = SCALAR_LIST_ITEM_WRITE_METHODS[itemType] ?: "writeString"
       return if (itemType.isEnum(context)) {
-        CodeBlock.of("\$L.\$L(\$L != null ? \$L.rawValue() : null);\n", LIST_ITEM_WRITER_PARAM.name, writeMethod, itemParam,
-            itemParam)
+        CodeBlock.of(
+            "\$L.\$L(\$L != null ? \$L.rawValue() : null);\n",
+            LIST_ITEM_WRITER_PARAM.name, writeMethod, itemParam, itemParam
+        )
       } else {
         CodeBlock.of("\$L.\$L(\$L);\n", LIST_ITEM_WRITER_PARAM.name, writeMethod, itemParam)
       }
     }
 
     fun writeObject(): CodeBlock {
-      return CodeBlock.of("\$L.writeObject(\$L != null ? \$L.\$L : null);\n", LIST_ITEM_WRITER_PARAM.name, itemParam,
-          itemParam, marshaller);
+      return CodeBlock.of(
+          "\$L.writeObject(\$L != null ? \$L.\$L : null);\n",
+          LIST_ITEM_WRITER_PARAM.name, itemParam, itemParam, marshaller
+      )
     }
 
     return when {
